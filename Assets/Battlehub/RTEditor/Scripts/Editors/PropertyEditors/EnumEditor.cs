@@ -31,7 +31,7 @@ namespace Battlehub.RTEditor
         {
             base.InitOverride(target, memberInfo, label);
             List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-            string[] names = Enum.GetNames(MemberInfoType);
+            string[] names = Enum.GetNames(GetValue().GetType());
             for (int i = 0; i < names.Length; ++i)
             {
                 options.Add(new Dropdown.OptionData(names[i]));
@@ -42,13 +42,14 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Enum value)
         {
-            int index = Array.IndexOf(Enum.GetValues(MemberInfoType), value);
+            Type vt = value.GetType();
+            int index = Array.IndexOf(Enum.GetValues(vt), value);
             m_input.value = index;
         }
 
         private void OnValueChanged(int index)
         {
-            Enum value = (Enum)Enum.GetValues(MemberInfoType).GetValue(index);
+            Enum value = (Enum)Enum.GetValues(GetValue().GetType()).GetValue(index);
             SetValue(value);
             EndEdit();
         }
