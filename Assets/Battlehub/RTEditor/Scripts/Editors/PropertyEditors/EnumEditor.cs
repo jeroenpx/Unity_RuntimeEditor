@@ -27,11 +27,27 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public Type GetEnumType(object target)
+        {
+            CustomTypeFieldAccessor fieldAccessor = target as CustomTypeFieldAccessor;
+            if (fieldAccessor != null)
+            {
+                return fieldAccessor.Type;
+            }
+            else
+            {
+                return MemberInfoType;
+            }
+        }
+
         protected override void InitOverride(object target, MemberInfo memberInfo, string label = null)
         {
             base.InitOverride(target, memberInfo, label);
             List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-            string[] names = Enum.GetNames(GetValue().GetType());
+
+            Type enumType = GetEnumType(target);
+            string[] names = Enum.GetNames(enumType);
+
             for (int i = 0; i < names.Length; ++i)
             {
                 options.Add(new Dropdown.OptionData(names[i]));
@@ -42,14 +58,18 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Enum value)
         {
-            Type vt = value.GetType();
-            int index = Array.IndexOf(Enum.GetValues(vt), value);
+            int index = 0;
+
+            Type enumType = GetEnumType(Target);
+            index = Array.IndexOf(Enum.GetValues(enumType), value);
+            
             m_input.value = index;
         }
 
         private void OnValueChanged(int index)
         {
-            Enum value = (Enum)Enum.GetValues(GetValue().GetType()).GetValue(index);
+            Type enumType = GetEnumType(Target);
+            Enum value = (Enum)Enum.GetValues(enumType).GetValue(index);
             SetValue(value);
             EndEdit();
         }

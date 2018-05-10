@@ -13,10 +13,17 @@ namespace Battlehub.RTEditor
 
         protected override IList Resize(IList list, int size)
         {
-            int delta = size - list.Count;
+            int delta = size;
+            if (list != null)
+            {
+                delta = size - list.Count; 
+            }
+
             bool remove = delta < 0;
 
-            IList newList = (IList)Activator.CreateInstance(MemberInfoType, list);
+            IList newList = (list != null) ?
+                (IList)Activator.CreateInstance(MemberInfoType, list):
+                (IList)Activator.CreateInstance(MemberInfoType);
 
             Type elementType = MemberInfoType.GetGenericArguments()[0];
 

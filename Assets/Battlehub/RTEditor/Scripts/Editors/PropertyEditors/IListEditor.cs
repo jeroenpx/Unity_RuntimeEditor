@@ -27,6 +27,8 @@ namespace Battlehub.RTEditor
 
         private PropertyEditor m_editorPrefab;
 
+        private Type m_elementType;
+
         public bool StartExpanded;
 
         protected override void AwakeOverride()
@@ -87,36 +89,34 @@ namespace Battlehub.RTEditor
 
         protected override void InitOverride(object target, MemberInfo memberInfo, string label = null)
         {
-            Type elementType = null;
             if (memberInfo is PropertyInfo)
             {
-                elementType = ((PropertyInfo)memberInfo).PropertyType.GetElementType();
-                if (elementType == null)
+                m_elementType = ((PropertyInfo)memberInfo).PropertyType.GetElementType();
+                if (m_elementType == null)
                 {
                     if (((PropertyInfo)memberInfo).PropertyType.IsGenericType)
                     {
-                        elementType = ((PropertyInfo)memberInfo).PropertyType.GetGenericArguments()[0];
+                        m_elementType = ((PropertyInfo)memberInfo).PropertyType.GetGenericArguments()[0];
                     }
                 }
             }
             else if (memberInfo is FieldInfo)
             {
-                elementType = ((FieldInfo)memberInfo).FieldType.GetElementType();
-                if (elementType == null)
+                m_elementType = ((FieldInfo)memberInfo).FieldType.GetElementType();
+                if (m_elementType == null)
                 {
                     if (((FieldInfo)memberInfo).FieldType.IsGenericType)
                     {
-                        elementType = ((FieldInfo)memberInfo).FieldType.GetGenericArguments()[0];
+                        m_elementType = ((FieldInfo)memberInfo).FieldType.GetGenericArguments()[0];
                     }
                 }
             }
            
-           
 
-            if (elementType != null)
+            if (m_elementType != null)
             {
-                GameObject editor = EditorsMap.GetPropertyEditor(elementType);
-                if (EditorsMap.IsPropertyEditorEnabled(elementType))
+                GameObject editor = EditorsMap.GetPropertyEditor(m_elementType);
+                if (EditorsMap.IsPropertyEditorEnabled(m_elementType))
                 {
                     m_editorPrefab = editor.GetComponent<PropertyEditor>();
                 }
@@ -131,7 +131,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if (elementType == null)
+                if (m_elementType == null)
                 {
                     Debug.LogWarning("Editor for " + memberInfo.Name + " not found");
                     Destroy(gameObject);
@@ -176,6 +176,11 @@ namespace Battlehub.RTEditor
 
         private void CreateElementEditors(IList value)
         {
+            if(value ==  null)
+            {
+                return;
+            }
+
             for (int i = 0; i < value.Count; ++i)
             {
                 PropertyEditor editor = Instantiate(m_editorPrefab);
@@ -215,6 +220,21 @@ namespace Battlehub.RTEditor
                 }
 
                 IList newList = Resize(list, size);
+                if(size > 0)
+                {
+                    if(!m_elementType.IsSubclassOf(typeof(UnityEngine.Object)))
+                    {
+                        var constructor = m_elementType.GetConstructor(Type.EmptyTypes);
+                        if(constructor != null)
+                        {
+                            for(int i = list != null ? list.Count : 0; i < newList.Count; ++i)
+                            {
+                                newList[i] = Activator.CreateInstance(m_elementType);
+                            }
+                        }
+                    }
+                }
+
                 SetValue(newList);
                 EndEdit();
                 if (Expander.isOn)
@@ -232,7 +252,7 @@ namespace Battlehub.RTEditor
         {
             if (value == null)
             {
-                Array newArray = (Array)Activator.CreateInstance(MemberInfoType, 0);
+                IList newArray = (IList)Activator.CreateInstance(MemberInfoType);
                 SetValue(newArray);
                 return;
             }

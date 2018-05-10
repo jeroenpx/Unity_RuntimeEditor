@@ -25,11 +25,11 @@ namespace Battlehub.RTEditor
             private set;
         }
 
-        //public Type Type
-        //{
-        //    get;
-        //    private set;
-        //}
+        public Type Type
+        {
+            get;
+            private set;
+        }
 
         public object Value
         {
@@ -70,16 +70,16 @@ namespace Battlehub.RTEditor
             m_editor = editor;
             m_memberInfo = fieldInfo;
             Name = name;
-            //if (m_editor.MemberInfo is PropertyInfo)
-            //{
-            //    PropertyInfo pInfo = (PropertyInfo)m_editor.MemberInfo;
-            //    Type = pInfo.PropertyType.GetElementType();
-            //}
-            //else
-            //{
-            //    FieldInfo fInfo = (FieldInfo)m_editor.MemberInfo;
-            //    Type = fInfo.FieldType.GetElementType();
-            //}
+            if (m_memberInfo is PropertyInfo)
+            {
+                PropertyInfo pInfo = (PropertyInfo)m_memberInfo;
+                Type = pInfo.PropertyType;
+            }
+            else
+            {
+                FieldInfo fInfo = (FieldInfo)m_memberInfo;
+                Type = fInfo.FieldType;
+            }
         }
     }
 
@@ -169,6 +169,12 @@ namespace Battlehub.RTEditor
                 {
                     return null;
                 }
+
+                if(m_index < 0 || m_index >= list.Count)
+                {
+                    return null;
+                }
+
                 return list[m_index];
             }
             set

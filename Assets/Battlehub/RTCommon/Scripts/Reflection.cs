@@ -140,6 +140,11 @@ namespace Battlehub
         {
             return type.GetTypeInfo().IsClass;
         }
+
+        public ConstructorInfo GetConstructor(this Type type, Type[] types)
+        {
+             return type.GetTypeInfo().GetConstructor(types);
+        }
 #else
         public static Type BaseType(this Type type)
         {
