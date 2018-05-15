@@ -80,8 +80,6 @@ namespace Battlehub.RTHandles
         private Transform[] m_commonCenter;
         private Transform[] m_commonCenterTarget;
 
-
-
         private void GetActiveRealTargets()
         {
             if(m_realTargets == null)
@@ -333,6 +331,7 @@ namespace Battlehub.RTHandles
             }
 
             RuntimeTools.PivotModeChanged += OnPivotModeChanged;
+            RuntimeTools.ToolChanged += OnRuntimeToolChanged;
 
             AwakeOverride();
         }
@@ -417,6 +416,9 @@ namespace Battlehub.RTHandles
 
         private void OnDestroy()
         {
+            RuntimeTools.ToolChanged -= OnRuntimeToolChanged;
+            RuntimeTools.PivotModeChanged -= OnPivotModeChanged;
+
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
@@ -426,8 +428,6 @@ namespace Battlehub.RTHandles
             {
                 RuntimeTools.ActiveTool = null;
             }
-
-            RuntimeTools.PivotModeChanged -= OnPivotModeChanged;
 
             DestroyCommonCenter();
 
@@ -500,13 +500,7 @@ namespace Battlehub.RTHandles
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                if (m_isDragging)
-                {
-                    OnDrop();
-                    RecordTransform();
-                    m_isDragging = false;
-                    RuntimeTools.ActiveTool = null;
-                }
+                TryCancelDrag();
             }
             else
             {
@@ -543,6 +537,17 @@ namespace Battlehub.RTHandles
                         target.transform.localScale = commonCenterTarget.localScale;
                     }
                 }
+            }
+        }
+
+        private void TryCancelDrag()
+        {
+            if (m_isDragging)
+            {
+                OnDrop();
+                RecordTransform();
+                m_isDragging = false;
+                RuntimeTools.ActiveTool = null;
             }
         }
 
@@ -614,6 +619,10 @@ namespace Battlehub.RTHandles
 
         }
 
+        protected virtual void OnRuntimeToolChanged()
+        {
+            TryCancelDrag();
+        }
 
         protected virtual void OnPivotModeChanged()
         {

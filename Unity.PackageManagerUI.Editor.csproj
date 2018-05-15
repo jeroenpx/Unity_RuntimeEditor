@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{08CBCB14-D812-326C-2EB7-B3D1EE73624C}</ProjectGuid>
+    <ProjectGuid>{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-Editor.dll</AssemblyName>
+    <AssemblyName>Unity.PackageManagerUI.Editor.dll</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
@@ -246,15 +246,6 @@
     <Reference Include="UnityEditor.Networking">
       <HintPath>E:/Program Files/Unity_2018_1_0_f2/Editor/Data/UnityExtensions/Unity/Networking/Editor/UnityEditor.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.TestRunner">
-      <HintPath>E:/Program Files/Unity_2018_1_0_f2/Editor/Data/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TestRunner">
-      <HintPath>E:/Program Files/Unity_2018_1_0_f2/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>E:/Program Files/Unity_2018_1_0_f2/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Timeline">
       <HintPath>E:/Program Files/Unity_2018_1_0_f2/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
     </Reference>
@@ -377,43 +368,43 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity_RuntimeEditor.csproj">
-      <Project>{50328339-1E9B-7E3D-F605-8810123E718D}</Project>
-      <Name>Unity_RuntimeEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="UnityEditor.StandardEvents.csproj">
-      <Project>{6800202F-4402-D405-F8CB-03DC7BD78B92}</Project>
-      <Name>UnityEditor.StandardEvents</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.PackageManagerUI.Editor.csproj">
-      <Project>{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}</Project>
-      <Name>Unity.PackageManagerUI.Editor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Assets\Battlehub\ObjectToTexture\Scripts\Editor\ObjectToTextureEditor.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapGen.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorEditor.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorMenu.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\SelectFolderDialog.cs" />
-    <Compile Include="Assets\Battlehub\RTHandles\Demo\Scripts\Editor\RTHandlesMenuDemo.cs" />
-    <Compile Include="Assets\Battlehub\RTHandles\Scripts\Editor\RTHandlesMenu.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\AssetPostprocessor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\CodeGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\InitialConfigWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\RuntimeSaveLoadMenu.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\SaveLoadConfigGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\SaveLoadConfigWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentObjectTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\CodeGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\PersistentClassMapperWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\Test1.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\Editor\VirtualizingScrollRectEditor.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\EnumFlagsDrawer.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\ExposeProperties.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\ReadonlyDrawer.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\ReadonlyPropertyDrawer.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\AssemblyInfo.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\External\SemVersion.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\External\SemVersionExtension.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Common\OperationSignal.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Common\ThreadedDelay.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Interfaces\IAddOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Interfaces\IBaseOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Interfaces\IListOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Interfaces\IOperationFactory.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Interfaces\IRemoveOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Interfaces\ISearchOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\OperationFactory.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\Package.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageCollection.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageFilter.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageGroupOrigins.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageInfo.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageInfoListExtensions.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageListExtensions.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageOrigin.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageState.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Packages\PackageTag.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Upm\UpmAddOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Upm\UpmBaseOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Upm\UpmListOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Upm\UpmOperationFactory.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Upm\UpmRemoveOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\Services\Upm\UpmSearchOperation.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\Common\Alert.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\Common\LoadingSpinner.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\Common\UIUtils.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\PackageDetails.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\PackageGroup.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\PackageItem.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\PackageList.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\PackageManagerWindow.cs" />
+    <Compile Include="C:\Users\vad\AppData\Local\Unity\cache\packages\packages.unity.com\com.unity.package-manager-ui@1.8.8\Editor\Sources\UI\PackageSearchFilterTabs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Battlehub\RTCommon\Shaders\Resources\Billboard.shader" />

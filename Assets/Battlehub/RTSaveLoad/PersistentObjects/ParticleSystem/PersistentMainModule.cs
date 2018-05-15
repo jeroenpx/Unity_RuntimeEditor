@@ -49,7 +49,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 			o.startRotationYMultiplier = startRotationYMultiplier;
 			o.startRotationZ = Write(o.startRotationZ, startRotationZ, objects);
 			o.startRotationZMultiplier = startRotationZMultiplier;
-			o.randomizeRotationDirection = randomizeRotationDirection;
+			o.flipRotation = randomizeRotationDirection;
 			o.startColor = Write(o.startColor, startColor, objects);
 			o.gravityModifier = Write(o.gravityModifier, gravityModifier, objects);
 			o.gravityModifierMultiplier = gravityModifierMultiplier;
@@ -97,7 +97,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 			startRotationYMultiplier = o.startRotationYMultiplier;
 			startRotationZ = Read(startRotationZ, o.startRotationZ);
 			startRotationZMultiplier = o.startRotationZMultiplier;
-			randomizeRotationDirection = o.randomizeRotationDirection;
+			randomizeRotationDirection = o.flipRotation;
 			startColor = Read(startColor, o.startColor);
 			gravityModifier = Read(gravityModifier, o.gravityModifier);
 			gravityModifierMultiplier = o.gravityModifierMultiplier;

@@ -25,7 +25,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 			o.value = value;
 			o.inTangent = inTangent;
 			o.outTangent = outTangent;
-			o.tangentMode = tangentMode;
+			//o.tangentMode = tangentMode;
 			return o;
 		}
 
@@ -41,7 +41,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 			value = o.value;
 			inTangent = o.inTangent;
 			outTangent = o.outTangent;
-			tangentMode = o.tangentMode;
+		    //tangentMode = o.tangentMode;
 		}
 
 		public override void FindDependencies<T>(System.Collections.Generic.Dictionary<long, T> dependencies, System.Collections.Generic.Dictionary<long, T> objects, bool allowNulls)

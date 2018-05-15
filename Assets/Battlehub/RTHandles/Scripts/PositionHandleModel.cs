@@ -10,6 +10,39 @@ namespace Battlehub.RTHandles
         private GameObject[] m_models;
         [SerializeField]
         private Transform[] m_armatures;
+        [SerializeField]
+        private int m_xMatIndex = 0;
+        [SerializeField]
+        private int m_yMatIndex = 1;
+        [SerializeField]
+        private int m_zMatIndex = 2;
+        [SerializeField]
+        private int m_xQMatIndex = 3;
+        [SerializeField]
+        private int m_yQMatIndex = 4;
+        [SerializeField]
+        private int m_zQMatIndex = 5;
+        [SerializeField]
+        private int m_xQuadMatIndex = 6;
+        [SerializeField]
+        private int m_yQuadMatIndex = 7;
+        [SerializeField]
+        private int m_zQuadMatIndex = 8;
+
+        [SerializeField]
+        private Color m_xColor = Color.red;
+        [SerializeField]
+        private Color m_yColor = Color.green;
+        [SerializeField]
+        private Color m_zColor = Color.blue;
+        [SerializeField]
+        private float m_quadTransparency = 0.5f;
+        [SerializeField]
+        private Color m_selectionColor = Color.yellow;
+        [SerializeField]
+        private Color m_higlighColor = new Color(Color.yellow.r / 2, Color.yellow.g / 2, Color.yellow.b / 2, 1.0f);
+
+        private Material[] m_materials;
 
         private Transform[] m_b0;
         private Transform[] m_b1x;
@@ -130,11 +163,80 @@ namespace Battlehub.RTHandles
                 m_defaultB3YScale[i] = transform.TransformVector(m_b3y[i].localScale);
                 m_defaultB3ZScale[i] = transform.TransformVector(m_b3z[i].localScale);
             }
+
+            m_materials = m_models[0].GetComponent<Renderer>().materials;
+            m_materials[m_xMatIndex].color = m_xColor;
+            m_materials[m_yMatIndex].color = m_yColor;
+            m_materials[m_zMatIndex].color = m_zColor;
+            m_materials[m_xQMatIndex].color = m_xColor;
+            m_materials[m_yQMatIndex].color = m_yColor;
+            m_materials[m_zQMatIndex].color = m_zColor;
+
+            Color xQuadColor = m_xColor; xQuadColor.a = m_quadTransparency;
+            m_materials[m_xQuadMatIndex].color =  xQuadColor;
+
+            Color yQuadColor = m_yColor; yQuadColor.a = m_quadTransparency;
+            m_materials[m_yQuadMatIndex].color = yQuadColor;
+
+            Color zQuadColor = m_zColor; zQuadColor.a = m_quadTransparency;
+            m_materials[m_zQuadMatIndex].color = zQuadColor;
+
+            for (int i = 0; i <  m_models.Length; ++i)
+            {
+                Renderer renderer = m_models[i].GetComponent<Renderer>();
+                renderer.sharedMaterials = m_materials;
+            }
         }
 
         private void Start()
         {
             UpdateTransforms();
+        }
+
+        public void Select(bool x, bool y, bool z)
+        {
+
+        }
+
+        public void SetCameraPosition(Vector3 pos)
+        {
+            Vector3 toCam = (pos - transform.position).normalized;
+            toCam = transform.InverseTransformDirection(toCam);
+            float[] dots = new[]
+            {
+                Vector3.Dot(new Vector3( 1,  1,  1).normalized, toCam),
+                Vector3.Dot(new Vector3(-1,  1,  1).normalized, toCam),
+                Vector3.Dot(new Vector3(-1, -1,  1).normalized, toCam),
+                Vector3.Dot(new Vector3( 1, -1,  1).normalized, toCam),
+                Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
+                Vector3.Dot(new Vector3(-1,  1, -1).normalized, toCam),
+                Vector3.Dot(new Vector3(-1, -1, -1).normalized, toCam),
+                Vector3.Dot(new Vector3( 1, -1, -1).normalized, toCam),
+            };
+
+            float maxDot = float.MinValue;
+            int maxIndex = -1;
+            for(int i = 0; i < dots.Length; ++i)
+            {
+                if(dots[i] > maxDot)
+                {
+                    maxDot = dots[i];
+                    maxIndex = i;
+                }
+            }
+
+            for(int i = 0; i < m_models.Length; ++i)
+            {
+                if(i != maxIndex)
+                {
+                    m_models[i].SetActive(false);
+                }
+            }
+
+            if(maxIndex >= 0)
+            {
+                m_models[maxIndex].SetActive(true);
+            }
         }
 
 #if DEBUG
@@ -144,8 +246,23 @@ namespace Battlehub.RTHandles
         private float m_prevArrowLength;
         private float m_prevQuadLength;
 
+        [SerializeField]
+        private Transform m_camera;
+        private Vector3 m_prevCameraPosition = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+        private Vector3 m_prevPosition;
+        private Quaternion m_prevRotation;
+
         private void Update()
         {
+
+            if(m_prevCameraPosition != m_camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
+            {
+                m_prevRotation = transform.rotation;
+                m_prevPosition = transform.position;
+                m_prevCameraPosition = m_camera.transform.position;
+                SetCameraPosition(m_prevCameraPosition);
+            }
+
             if (m_prevRadius != m_radius || m_prevLength != m_length || m_prevArrowRadius != m_arrowRadius || m_prevArrowLength != m_arrowLength || m_prevQuadLength != m_quadLength)
             {
                 m_prevRadius = m_radius;

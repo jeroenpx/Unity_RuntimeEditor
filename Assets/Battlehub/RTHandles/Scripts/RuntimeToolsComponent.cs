@@ -29,7 +29,7 @@ namespace Battlehub.RTHandles
         private void Update()
         {
             #if UNITY_EDITOR
-            UnityEditorToolsListener.Update();
+            //UnityEditorToolsListener.Update();
             #endif
 
             if(RuntimeTools.ActiveTool != null)
