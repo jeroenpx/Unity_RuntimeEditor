@@ -165,6 +165,17 @@ namespace Battlehub.RTHandles
             }
 
             m_materials = m_models[0].GetComponent<Renderer>().materials;
+            SetDefaultColors();
+
+            for (int i = 0; i < m_models.Length; ++i)
+            {
+                Renderer renderer = m_models[i].GetComponent<Renderer>();
+                renderer.sharedMaterials = m_materials;
+            }
+        }
+
+        private void SetDefaultColors()
+        {
             m_materials[m_xMatIndex].color = m_xColor;
             m_materials[m_yMatIndex].color = m_yColor;
             m_materials[m_zMatIndex].color = m_zColor;
@@ -173,29 +184,59 @@ namespace Battlehub.RTHandles
             m_materials[m_zQMatIndex].color = m_zColor;
 
             Color xQuadColor = m_xColor; xQuadColor.a = m_quadTransparency;
-            m_materials[m_xQuadMatIndex].color =  xQuadColor;
+            m_materials[m_xQuadMatIndex].color = xQuadColor;
 
             Color yQuadColor = m_yColor; yQuadColor.a = m_quadTransparency;
             m_materials[m_yQuadMatIndex].color = yQuadColor;
 
             Color zQuadColor = m_zColor; zQuadColor.a = m_quadTransparency;
             m_materials[m_zQuadMatIndex].color = zQuadColor;
-
-            for (int i = 0; i <  m_models.Length; ++i)
-            {
-                Renderer renderer = m_models[i].GetComponent<Renderer>();
-                renderer.sharedMaterials = m_materials;
-            }
         }
 
         private void Start()
         {
             UpdateTransforms();
+
+            Select(true, false, false);
+
         }
 
         public void Select(bool x, bool y, bool z)
         {
-
+            SetDefaultColors();
+            if(x && y)
+            {
+                m_materials[m_xMatIndex].color = m_selectionColor;
+                m_materials[m_yMatIndex].color = m_selectionColor;
+                m_materials[m_zQMatIndex].color = m_selectionColor;
+                m_materials[m_zQuadMatIndex].color = m_selectionColor;
+            }
+            else if(y && z)
+            {
+                m_materials[m_yMatIndex].color = m_selectionColor;
+                m_materials[m_zMatIndex].color = m_selectionColor;
+                m_materials[m_xQMatIndex].color = m_selectionColor;
+                m_materials[m_xQuadMatIndex].color = m_selectionColor;
+            }
+            else if(x && z)
+            {
+                m_materials[m_xMatIndex].color = m_selectionColor;
+                m_materials[m_zMatIndex].color = m_selectionColor;
+                m_materials[m_yQMatIndex].color = m_selectionColor;
+                m_materials[m_yQuadMatIndex].color = m_selectionColor;
+            }
+            else if(x)
+            {
+                m_materials[m_xMatIndex].color = m_selectionColor;
+            }
+            else if(y)
+            {
+                m_materials[m_yMatIndex].color = m_selectionColor;
+            }
+            else if(z)
+            {
+                m_materials[m_zMatIndex].color = m_selectionColor;
+            }
         }
 
         public void SetCameraPosition(Vector3 pos)
@@ -252,6 +293,7 @@ namespace Battlehub.RTHandles
         private Vector3 m_prevPosition;
         private Quaternion m_prevRotation;
 
+    
         private void Update()
         {
 

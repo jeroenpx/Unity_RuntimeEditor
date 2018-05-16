@@ -657,7 +657,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1196858846432960
 GameObject:
   m_ObjectHideFlags: 1
@@ -839,7 +839,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1251154076535812
 GameObject:
   m_ObjectHideFlags: 1
@@ -6399,7 +6399,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1702321915034600}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.016}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4019185220776422}
@@ -6562,6 +6562,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114767379241590584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6591,11 +6592,27 @@ MonoBehaviour:
   - {fileID: 4317611130505764}
   - {fileID: 4937570549332916}
   - {fileID: 4701521082269068}
+  m_xMatIndex: 0
+  m_yMatIndex: 1
+  m_zMatIndex: 2
+  m_xQMatIndex: 3
+  m_yQMatIndex: 4
+  m_zQMatIndex: 5
+  m_xQuadMatIndex: 6
+  m_yQuadMatIndex: 7
+  m_zQuadMatIndex: 8
+  m_xColor: {r: 1, g: 0, b: 0, a: 1}
+  m_yColor: {r: 0, g: 1, b: 0, a: 1}
+  m_zColor: {r: 0, g: 0, b: 1, a: 1}
+  m_quadTransparency: 0.5
+  m_selectionColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  m_higlighColor: {r: 0.5, g: 0.46078432, b: 0.007843138, a: 1}
   m_radius: 0.1
   m_length: 1
   m_arrowRadius: 0.2
   m_arrowLength: 0.2
   m_quadLength: 0.2
+  m_camera: {fileID: 0}
 --- !u!137 &137059856014851128
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -6609,6 +6626,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -6673,6 +6691,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -6737,6 +6756,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -6801,6 +6821,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -6866,6 +6887,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -6930,6 +6952,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -6994,6 +7017,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
@@ -7059,10 +7083,11 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
-  - {fileID: 2100000, guid: 89109dcc21fb1dd489473d5911b11995, type: 2}
-  - {fileID: 2100000, guid: 72e1f598a2337f94fbba031d454eef7a, type: 2}
+  - {fileID: 2100002, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
+  - {fileID: 2100004, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100008, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100006, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
   - {fileID: 2100010, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
