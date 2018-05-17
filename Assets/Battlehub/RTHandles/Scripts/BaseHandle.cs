@@ -305,7 +305,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected RuntimeHandleAxis SelectedAxis
+        protected virtual RuntimeHandleAxis SelectedAxis
         {
             get { return m_selectedAxis; }
             set { m_selectedAxis = value; }

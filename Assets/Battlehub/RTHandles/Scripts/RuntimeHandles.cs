@@ -9,25 +9,20 @@ namespace Battlehub.RTHandles
 {
     public enum RuntimeHandleAxis
     {
-        None,
-        X,
-        Y,
-        Z,
-        XY,
-        XZ,
-        YZ,
-        Screen,
-        Free,
-        Snap,
+        None = 0,
+        X = 1,
+        Y = 2,
+        Z = 4,
+        XY = X | Y,
+        XZ = X | Z,
+        YZ = Y | Z,
+        Screen = 8,
+        Free = 16,
+        Snap = 32,
     }
 
-    /// <summary>
-    /// GL Drawing routines for all handles, gizmos and grid
-    /// </summary>
-    public static class RuntimeHandles
+    public static class RTHColors
     {
-        public const float HandleScale = 1.0f;
-
         public static readonly Color32 DisabledColor = new Color32(128, 128, 128, 128);
         public static readonly Color32 XColor = new Color32(187, 70, 45, 255);
         public static readonly Color32 XColorTransparent = new Color32(187, 70, 45, 128);
@@ -39,6 +34,16 @@ namespace Battlehub.RTHandles
         public static readonly Color32 SelectionColor = new Color32(239, 238, 64, 255);
         public static readonly Color32 BoundsColor = Color.green;
         public static readonly Color32 RaysColor = new Color32(255, 255, 255, 48);
+    }
+
+
+    /// <summary>
+    /// GL Drawing routines for all handles, gizmos and grid
+    /// </summary>
+    public static class RuntimeHandles 
+    {
+        public const float HandleScale = 1.0f;
+
 
         private static readonly Mesh Arrows;
         private static readonly Mesh ArrowY;
@@ -140,8 +145,8 @@ namespace Battlehub.RTHandles
             GridMaterial.color = Color.white;
             GridMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Never);
 
-            Mesh selectionArrowMesh = CreateConeMesh(SelectionColor, HandleScale);
-            Mesh disableArrowMesh = CreateConeMesh(DisabledColor, HandleScale);
+            Mesh selectionArrowMesh = CreateConeMesh(RTHColors.SelectionColor, HandleScale);
+            Mesh disableArrowMesh = CreateConeMesh(RTHColors.DisabledColor, HandleScale);
 
             CombineInstance yArrow = new CombineInstance();
             yArrow.mesh = selectionArrowMesh;
@@ -156,7 +161,7 @@ namespace Battlehub.RTHandles
             DisabledArrowY.CombineMeshes(new[] { yArrow }, true);
             DisabledArrowY.RecalculateNormals();
 
-            yArrow.mesh = CreateConeMesh(YColor, HandleScale); 
+            yArrow.mesh = CreateConeMesh(RTHColors.YColor, HandleScale); 
             yArrow.transform = Matrix4x4.TRS(Vector3.up * HandleScale, Quaternion.identity, Vector3.one);
             ArrowY = new Mesh();
             ArrowY.CombineMeshes(new[] { yArrow }, true);
@@ -175,7 +180,7 @@ namespace Battlehub.RTHandles
             DisabledArrowX.CombineMeshes(new[] { xArrow }, true);
             DisabledArrowX.RecalculateNormals();
 
-            xArrow.mesh = CreateConeMesh(XColor, HandleScale); 
+            xArrow.mesh = CreateConeMesh(RTHColors.XColor, HandleScale); 
             xArrow.transform = Matrix4x4.TRS(Vector3.right * HandleScale, Quaternion.AngleAxis(-90, Vector3.forward), Vector3.one);
             ArrowX = new Mesh();
             ArrowX.CombineMeshes(new[] { xArrow }, true);
@@ -195,32 +200,32 @@ namespace Battlehub.RTHandles
             DisabledArrowZ.CombineMeshes(new[] { zArrow }, true);
             DisabledArrowZ.RecalculateNormals();
 
-            zArrow.mesh = CreateConeMesh(ZColor, HandleScale);
+            zArrow.mesh = CreateConeMesh(RTHColors.ZColor, HandleScale);
             zArrow.transform = Matrix4x4.TRS(Vector3.forward * HandleScale, Quaternion.AngleAxis(90, Vector3.right), Vector3.one);
             ArrowZ = new Mesh();
             ArrowZ.CombineMeshes(new[] { zArrow }, true);
             ArrowZ.RecalculateNormals();
 
-            yArrow.mesh = CreateConeMesh(YColor, HandleScale);
-            xArrow.mesh = CreateConeMesh(XColor, HandleScale);
-            zArrow.mesh = CreateConeMesh(ZColor, HandleScale);
+            yArrow.mesh = CreateConeMesh(RTHColors.YColor, HandleScale);
+            xArrow.mesh = CreateConeMesh(RTHColors.XColor, HandleScale);
+            zArrow.mesh = CreateConeMesh(RTHColors.ZColor, HandleScale);
             Arrows = new Mesh();
             Arrows.CombineMeshes(new[] { yArrow, xArrow, zArrow }, true);
             Arrows.RecalculateNormals();
 
-            SelectionCube = RuntimeGraphics.CreateCubeMesh(SelectionColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
-            DisabledCube = RuntimeGraphics.CreateCubeMesh(DisabledColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
-            CubeX = RuntimeGraphics.CreateCubeMesh(XColor, Vector3.zero, HandleScale,  0.1f, 0.1f, 0.1f);
-            CubeY = RuntimeGraphics.CreateCubeMesh(YColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
-            CubeZ = RuntimeGraphics.CreateCubeMesh(ZColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
-            CubeUniform = RuntimeGraphics.CreateCubeMesh(AltColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
+            SelectionCube = RuntimeGraphics.CreateCubeMesh(RTHColors.SelectionColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
+            DisabledCube = RuntimeGraphics.CreateCubeMesh(RTHColors.DisabledColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
+            CubeX = RuntimeGraphics.CreateCubeMesh(RTHColors.XColor, Vector3.zero, HandleScale,  0.1f, 0.1f, 0.1f);
+            CubeY = RuntimeGraphics.CreateCubeMesh(RTHColors.YColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
+            CubeZ = RuntimeGraphics.CreateCubeMesh(RTHColors.ZColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
+            CubeUniform = RuntimeGraphics.CreateCubeMesh(RTHColors.AltColor, Vector3.zero, HandleScale, 0.1f, 0.1f, 0.1f);
 
-            SceneGizmoSelectedAxis = CreateSceneGizmoHalfAxis(SelectionColor, Quaternion.AngleAxis(90, Vector3.right));
-            SceneGizmoXAxis = CreateSceneGizmoAxis(XColor, AltColor, Quaternion.AngleAxis(-90, Vector3.forward));
-            SceneGizmoYAxis = CreateSceneGizmoAxis(YColor, AltColor, Quaternion.identity);
-            SceneGizmoZAxis = CreateSceneGizmoAxis(ZColor, AltColor, Quaternion.AngleAxis(90, Vector3.right));
-            SceneGizmoCube = RuntimeGraphics.CreateCubeMesh(AltColor, Vector3.zero, 1);
-            SceneGizmoSelectedCube = RuntimeGraphics.CreateCubeMesh(SelectionColor, Vector3.zero, 1);
+            SceneGizmoSelectedAxis = CreateSceneGizmoHalfAxis(RTHColors.SelectionColor, Quaternion.AngleAxis(90, Vector3.right));
+            SceneGizmoXAxis = CreateSceneGizmoAxis(RTHColors.XColor, RTHColors.AltColor, Quaternion.AngleAxis(-90, Vector3.forward));
+            SceneGizmoYAxis = CreateSceneGizmoAxis(RTHColors.YColor, RTHColors.AltColor, Quaternion.identity);
+            SceneGizmoZAxis = CreateSceneGizmoAxis(RTHColors.ZColor, RTHColors.AltColor, Quaternion.AngleAxis(90, Vector3.right));
+            SceneGizmoCube = RuntimeGraphics.CreateCubeMesh(RTHColors.AltColor, Vector3.zero, 1);
+            SceneGizmoSelectedCube = RuntimeGraphics.CreateCubeMesh(RTHColors.SelectionColor, Vector3.zero, 1);
             SceneGizmoQuad = RuntimeGraphics.CreateQuadMesh();
         }
 
@@ -351,11 +356,11 @@ namespace Battlehub.RTHandles
 
             if(xLocked)
             {
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             }
             else
             {
-                GL.Color(selectedAxis != RuntimeHandleAxis.X ? XColor : SelectionColor);
+                GL.Color((selectedAxis & RuntimeHandleAxis.X) == 0 ? RTHColors.XColor : RTHColors.SelectionColor);
             }
             
             GL.Vertex(position);
@@ -363,11 +368,11 @@ namespace Battlehub.RTHandles
 
             if(yLocked)
             {
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             }
             else
             {
-                GL.Color(selectedAxis != RuntimeHandleAxis.Y ? YColor : SelectionColor);
+                GL.Color((selectedAxis & RuntimeHandleAxis.Y) == 0 ? RTHColors.YColor : RTHColors.SelectionColor);
             }
             
             GL.Vertex(position);
@@ -375,11 +380,11 @@ namespace Battlehub.RTHandles
 
             if(zLocked)
             {
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             }
             else
             {
-                GL.Color(selectedAxis != RuntimeHandleAxis.Z ? ZColor : SelectionColor);
+                GL.Color((selectedAxis & RuntimeHandleAxis.Z) == 0 ? RTHColors.ZColor : RTHColors.SelectionColor);
             }
             
             GL.Vertex(position);
@@ -409,7 +414,6 @@ namespace Battlehub.RTHandles
             Vector3 y = Vector3.up * s;
             Vector3 z = Vector3.forward * s;
 
-
             if (snapMode)
             {
                 GL.End();
@@ -421,11 +425,11 @@ namespace Battlehub.RTHandles
 
                 if(selectedAxis == RuntimeHandleAxis.Snap)
                 {
-                    GL.Color(SelectionColor);
+                    GL.Color(RTHColors.SelectionColor);
                 }
                 else
                 {
-                    GL.Color(AltColor);
+                    GL.Color(RTHColors.AltColor);
                 }
                 
                 float s2 = s / 2 * HandleScale;
@@ -474,7 +478,7 @@ namespace Battlehub.RTHandles
                 
                 if(!xLocked && !zLocked)
                 {
-                    GL.Color(selectedAxis != RuntimeHandleAxis.XZ ? YColor : SelectionColor);
+                    GL.Color(selectedAxis != RuntimeHandleAxis.XZ ? RTHColors.YColor : RTHColors.SelectionColor);
                     GL.Vertex(position);
                     GL.Vertex(z);
                     GL.Vertex(z);
@@ -487,7 +491,7 @@ namespace Battlehub.RTHandles
             
                 if(!xLocked && !yLocked)
                 {
-                    GL.Color(selectedAxis != RuntimeHandleAxis.XY ? ZColor : SelectionColor);
+                    GL.Color(selectedAxis != RuntimeHandleAxis.XY ? RTHColors.ZColor : RTHColors.SelectionColor);
                     GL.Vertex(position);
                     GL.Vertex(y);
                     GL.Vertex(y);
@@ -500,7 +504,7 @@ namespace Battlehub.RTHandles
            
                 if(!yLocked && !zLocked)
                 {
-                    GL.Color(selectedAxis != RuntimeHandleAxis.YZ ? XColor : SelectionColor);
+                    GL.Color(selectedAxis != RuntimeHandleAxis.YZ ? RTHColors.XColor : RTHColors.SelectionColor);
                     GL.Vertex(position);
                     GL.Vertex(y);
                     GL.Vertex(y);
@@ -517,7 +521,7 @@ namespace Battlehub.RTHandles
 
                 if(!xLocked && !zLocked)
                 {
-                    GL.Color(YColorTransparent);
+                    GL.Color(RTHColors.YColorTransparent);
                     GL.Vertex(position);
                     GL.Vertex(z);
                     GL.Vertex(xz);
@@ -526,7 +530,7 @@ namespace Battlehub.RTHandles
 
                 if(!xLocked && !yLocked)
                 {
-                    GL.Color(ZColorTransparent);
+                    GL.Color(RTHColors.ZColorTransparent);
                     GL.Vertex(position);
                     GL.Vertex(y);
                     GL.Vertex(xy);
@@ -535,7 +539,7 @@ namespace Battlehub.RTHandles
                 
                 if(!yLocked && !zLocked)
                 {
-                    GL.Color(XColorTransparent);
+                    GL.Color(RTHColors.XColorTransparent);
                     GL.Vertex(position);
                     GL.Vertex(y);
                     GL.Vertex(yz);
@@ -546,20 +550,18 @@ namespace Battlehub.RTHandles
             }
            
             ShapesMaterial.SetPass(0);
-
-
             if(!xLocked && !yLocked && !zLocked)
             {
                 Graphics.DrawMeshNow(Arrows, transform);
-                if (selectedAxis == RuntimeHandleAxis.X)
+                if ((selectedAxis & RuntimeHandleAxis.X) != 0)
                 {
                     Graphics.DrawMeshNow(SelectionArrowX, transform);
                 }
-                else if (selectedAxis == RuntimeHandleAxis.Y)
+                if ((selectedAxis & RuntimeHandleAxis.Y) != 0)
                 {
                     Graphics.DrawMeshNow(SelectionArrowY, transform);
                 }
-                else if (selectedAxis == RuntimeHandleAxis.Z)
+                if ((selectedAxis & RuntimeHandleAxis.Z) != 0)
                 {
                     Graphics.DrawMeshNow(SelectionArrowZ, transform);
                 }
@@ -572,7 +574,7 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-                    if (selectedAxis == RuntimeHandleAxis.X)
+                    if ((selectedAxis & RuntimeHandleAxis.X) != 0)
                     {
                         Graphics.DrawMeshNow(SelectionArrowX, transform);
                     }
@@ -588,15 +590,14 @@ namespace Battlehub.RTHandles
                 }
                 else 
                 {
-                    if (selectedAxis == RuntimeHandleAxis.Y)
+                    if ((selectedAxis & RuntimeHandleAxis.Y) != 0)
                     {
                         Graphics.DrawMeshNow(SelectionArrowY, transform);
                     }
                     else
                     {
                         Graphics.DrawMeshNow(ArrowY, transform);
-                    }
-                        
+                    }     
                 }
 
                 if (zLocked)
@@ -605,7 +606,7 @@ namespace Battlehub.RTHandles
                 }
                 else 
                 {
-                    if (selectedAxis == RuntimeHandleAxis.Z)
+                    if ((selectedAxis & RuntimeHandleAxis.Z) != 0)
                     {
                         Graphics.DrawMeshNow(SelectionArrowZ, transform);
                     }
@@ -639,21 +640,21 @@ namespace Battlehub.RTHandles
 
             GL.Begin(GL.LINES);
             if(xLocked)
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             else
-                GL.Color(selectedAxis != RuntimeHandleAxis.X ? XColor : SelectionColor);
+                GL.Color(selectedAxis != RuntimeHandleAxis.X ? RTHColors.XColor : RTHColors.SelectionColor);
             RuntimeGraphics.DrawCircleGL(xTranform, radius);
 
             if (yLocked)
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             else
-                GL.Color(selectedAxis != RuntimeHandleAxis.Y ? YColor : SelectionColor);
+                GL.Color(selectedAxis != RuntimeHandleAxis.Y ? RTHColors.YColor : RTHColors.SelectionColor);
             RuntimeGraphics.DrawCircleGL(yTranform, radius);
 
             if (zLocked)
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             else
-                GL.Color(selectedAxis != RuntimeHandleAxis.Z ? ZColor : SelectionColor);
+                GL.Color(selectedAxis != RuntimeHandleAxis.Z ? RTHColors.ZColor : RTHColors.SelectionColor);
             RuntimeGraphics.DrawCircleGL(zTranform, radius);
             GL.End();
 
@@ -665,15 +666,15 @@ namespace Battlehub.RTHandles
 
             GL.Begin(GL.LINES);
             if(xLocked && yLocked && zLocked)
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             else
-                GL.Color(selectedAxis != RuntimeHandleAxis.Free ? AltColor : SelectionColor);
+                GL.Color(selectedAxis != RuntimeHandleAxis.Free ? RTHColors.AltColor : RTHColors.SelectionColor);
             RuntimeGraphics.DrawCircleGL(Matrix4x4.identity, radius);
 
             if(screenLocked)
-                GL.Color(DisabledColor);
+                GL.Color(RTHColors.DisabledColor);
             else
-                GL.Color(selectedAxis != RuntimeHandleAxis.Screen ? AltColor : SelectionColor);
+                GL.Color(selectedAxis != RuntimeHandleAxis.Screen ? RTHColors.AltColor : RTHColors.SelectionColor);
             RuntimeGraphics.DrawCircleGL(Matrix4x4.identity, radius * 1.1f);
             GL.End();
 
@@ -930,63 +931,6 @@ namespace Battlehub.RTHandles
             GL.End();
         }
 
-        //public static void DrawBoundRays(ref Bounds bounds, Vector3 position, Quaternion rotation, Vector3 scale)
-        //{
-        //    LinesMaterialZTest.SetPass(0);
-
-        //    Matrix4x4 transform = Matrix4x4.TRS(position, rotation, scale);
-
-        //    Vector3 center = transform.MultiplyPoint(bounds.center);
-        //    float sScale = GetScreenScale(center, Camera.current);
-        //    float length = 10 * sScale;
-
-        //    Vector3 p10 = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z);
-        //    Vector3 p11 = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y - length, bounds.extents.z);
-
-        //    Vector3 p20 = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
-        //    Vector3 p21 = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y - length, -bounds.extents.z);
-
-        //    Vector3 p30 = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z);
-        //    Vector3 p31 = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - length, bounds.extents.z);
-
-
-        //    GL.PushMatrix();
-        //    GL.MultMatrix(transform);
-        //    GL.Begin(GL.LINES);
-        //    GL.Color(RaysColor);
-
-        //    int segments = 100;
-        //    Vector3 dp1 = p11 - p10;
-        //    dp1 = dp1  / segments;
-        //    Vector3 dp2 = p21 - p20;
-        //    dp2 = dp2  / segments;
-        //    Vector3 dp3 = p31 - p30;
-        //    dp3 = dp3 / segments;
-
-        //    for (int i = 0; i < segments; i++)
-        //    {
-        //        p10 += dp1;
-        //        p20 += dp2;
-        //        p30 += dp3;
-
-        //        GL.Vertex(p10);
-        //        GL.Vertex(p10 + dp1);
-
-        //        GL.Vertex(p20);
-        //        GL.Vertex(p20 + dp2);
-
-        //        GL.Vertex(p30);
-        //        GL.Vertex(p30 + dp3);
-        //        p10 += dp1;
-        //        p20 += dp2;
-        //        p30 += dp3;
-        //    }
-
-
-        //    GL.End();
-        //    GL.PopMatrix();
-        //}
-
         public static void DrawBoundRay(ref Bounds bounds, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             LinesMaterialZTest.SetPass(0);
@@ -1000,11 +944,10 @@ namespace Battlehub.RTHandles
             Vector3 p10 = bounds.center;
             Vector3 p11 = bounds.center + new Vector3(0, -length, 0);
             
-
             GL.PushMatrix();
             GL.MultMatrix(transform);
             GL.Begin(GL.LINES);
-            GL.Color(RaysColor);
+            GL.Color(RTHColors.RaysColor);
 
             int segments = 100;
             Vector3 dp1 = p11 - p10;
@@ -1035,7 +978,7 @@ namespace Battlehub.RTHandles
             GL.PushMatrix();
             GL.MultMatrix(transform);
             GL.Begin(GL.LINES);
-            GL.Color(BoundsColor);
+            GL.Color(RTHColors.BoundsColor);
 
             for(int i = -1; i <= 1; i += 2)
             {

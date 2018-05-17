@@ -28,9 +28,9 @@ namespace Battlehub.RTHandles
         private Bounds[] m_snapTargetsBounds;
         private ExposeToEditor[] m_allExposedToEditor;
 
+        public PositionHandleModel m_model;
         public bool SnapToGround;
         public KeyCode SnapToGroundKey = KeyCode.G;
-
 
         public KeyCode SnappingKey = KeyCode.V;
         public KeyCode SnappingToggle = KeyCode.LeftShift;
@@ -40,6 +40,7 @@ namespace Battlehub.RTHandles
         {
             get { return m_isInSnappingMode || RuntimeTools.IsSnapping; }
         }
+
  
         private Vector3[] m_boundingBoxCorners = new Vector3[8];
         private Vector3 m_handleOffset;
@@ -60,6 +61,19 @@ namespace Battlehub.RTHandles
         protected override float CurrentGridUnitSize
         {
             get { return GridSize; }
+        }
+
+        protected override RuntimeHandleAxis SelectedAxis
+        {
+            get { return base.SelectedAxis; }
+            set
+            {
+                base.SelectedAxis = value;
+                if (m_model != null)
+                {
+                    m_model.Select(SelectedAxis);
+                }
+            }
         }
 
         protected override void AwakeOverride()
@@ -103,6 +117,16 @@ namespace Battlehub.RTHandles
         {
             base.UpdateOverride();
 
+            if (m_model != null)
+            {
+                Vector3 position = HandlePosition;
+                m_model.transform.position = position;
+                m_model.transform.rotation = Rotation;
+
+                float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
+                m_model.transform.localScale = Vector3.one * screenScale;
+            }
+
             if (RuntimeTools.IsPointerOverGameObject())
             {
                 return;
@@ -124,7 +148,7 @@ namespace Battlehub.RTHandles
             
             if (InputController.GetKeyDown(SnappingKey))
             {
-                if(!LockObject.IsPositionLocked)
+                if(LockObject == null || !LockObject.IsPositionLocked)
                 {
                     m_isInSnappingMode = true;
                     if (InputController.GetKey(SnappingToggle))
@@ -134,9 +158,7 @@ namespace Battlehub.RTHandles
 
                     BeginSnap();
                     m_prevMousePosition = Input.mousePosition;
-                }
-
-                
+                }                
             }
             else if (InputController.GetKeyUp(SnappingKey))
             {
@@ -385,7 +407,8 @@ namespace Battlehub.RTHandles
         protected override void OnDrop()
         {
             base.OnDrop();
-            if(SnapToGround || InputController.GetKey(SnapToGroundKey))
+       
+            if (SnapToGround || InputController.GetKey(SnapToGroundKey))
             {
                 SnapActiveTargetsToGround(ActiveTargets, SceneCamera, true);
                 transform.position = Targets[0].position;
@@ -652,8 +675,7 @@ namespace Battlehub.RTHandles
 
         protected override bool OnBeginDrag()
         {
-            SelectedAxis = Hit();
-            
+            SelectedAxis = Hit();           
             m_currentPosition = HandlePosition;
             m_cursorPosition = HandlePosition;
 
@@ -715,17 +737,21 @@ namespace Battlehub.RTHandles
                 {
                     offset.x = offset.y = 0.0f;
                 }
-                if (LockObject.PositionX)
+
+                if(LockObject != null)
                 {
-                    offset.x = 0.0f;
-                }
-                if(LockObject.PositionY)
-                {
-                    offset.y = 0.0f;
-                }
-                if(LockObject.PositionZ)
-                {
-                    offset.z = 0.0f;
+                    if (LockObject.PositionX)
+                    {
+                        offset.x = 0.0f;
+                    }
+                    if (LockObject.PositionY)
+                    {
+                        offset.y = 0.0f;
+                    }
+                    if (LockObject.PositionZ)
+                    {
+                        offset.z = 0.0f;
+                    }
                 }
 
                 if (EffectiveGridUnitSize == 0.0)
@@ -765,6 +791,11 @@ namespace Battlehub.RTHandles
 
         protected override void DrawOverride()
         {
+            if(m_model != null)
+            {
+               // return;
+            }
+
             RuntimeHandles.DoPositionHandle(HandlePosition, Rotation, SelectedAxis, IsInSnappingMode, LockObject);
         }
     }

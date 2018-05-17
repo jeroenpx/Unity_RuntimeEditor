@@ -11,15 +11,15 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private Transform[] m_armatures;
         [SerializeField]
-        private int m_xMatIndex = 0;
+        private int m_xMatIndex = 2;
         [SerializeField]
         private int m_yMatIndex = 1;
         [SerializeField]
-        private int m_zMatIndex = 2;
+        private int m_zMatIndex = 0;
         [SerializeField]
-        private int m_xQMatIndex = 3;
+        private int m_xQMatIndex = 4;
         [SerializeField]
-        private int m_yQMatIndex = 4;
+        private int m_yQMatIndex = 3;
         [SerializeField]
         private int m_zQMatIndex = 5;
         [SerializeField]
@@ -30,17 +30,17 @@ namespace Battlehub.RTHandles
         private int m_zQuadMatIndex = 8;
 
         [SerializeField]
-        private Color m_xColor = Color.red;
+        private Color m_xColor = RTHColors.XColor;
         [SerializeField]
-        private Color m_yColor = Color.green;
+        private Color m_yColor = RTHColors.YColor;
         [SerializeField]
-        private Color m_zColor = Color.blue;
+        private Color m_zColor = RTHColors.ZColor;
         [SerializeField]
         private float m_quadTransparency = 0.5f;
         [SerializeField]
-        private Color m_selectionColor = Color.yellow;
+        private Color m_selectionColor = RTHColors.SelectionColor;
         [SerializeField]
-        private Color m_higlighColor = new Color(Color.yellow.r / 2, Color.yellow.g / 2, Color.yellow.b / 2, 1.0f);
+        private Color m_highlightColor = new Color(RTHColors.SelectionColor.r * 0.5f, RTHColors.SelectionColor.g * 0.5f, RTHColors.SelectionColor.b * 0.5f, 1.0f);
 
         private Material[] m_materials;
 
@@ -85,9 +85,9 @@ namespace Battlehub.RTHandles
             m_quadLength = Mathf.Abs(m_quadLength);
             m_radius = Mathf.Max(0.01f, m_radius);
 
-            Vector3 right = transform.rotation * Vector3.right;
-            Vector3 up = transform.rotation * Vector3.up;
-            Vector3 forward = transform.rotation * Vector3.forward;
+            Vector3 right = transform.rotation * Vector3.right * transform.localScale.x;
+            Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;
+            Vector3 forward = transform.rotation * Vector3.forward * transform.localScale.z;
             Vector3 p = transform.position;
             float scale = m_radius / DefaultRadius;
             float arrowScale = m_arrowLength / DefaultArrowLength / scale;
@@ -197,45 +197,45 @@ namespace Battlehub.RTHandles
         {
             UpdateTransforms();
 
-            Select(true, false, false);
-
+            //Select(true, false, false);
         }
 
-        public void Select(bool x, bool y, bool z)
+        public void Select(RuntimeHandleAxis axis)
         {
             SetDefaultColors();
-            if(x && y)
+            switch(axis)
             {
-                m_materials[m_xMatIndex].color = m_selectionColor;
-                m_materials[m_yMatIndex].color = m_selectionColor;
-                m_materials[m_zQMatIndex].color = m_selectionColor;
-                m_materials[m_zQuadMatIndex].color = m_selectionColor;
-            }
-            else if(y && z)
-            {
-                m_materials[m_yMatIndex].color = m_selectionColor;
-                m_materials[m_zMatIndex].color = m_selectionColor;
-                m_materials[m_xQMatIndex].color = m_selectionColor;
-                m_materials[m_xQuadMatIndex].color = m_selectionColor;
-            }
-            else if(x && z)
-            {
-                m_materials[m_xMatIndex].color = m_selectionColor;
-                m_materials[m_zMatIndex].color = m_selectionColor;
-                m_materials[m_yQMatIndex].color = m_selectionColor;
-                m_materials[m_yQuadMatIndex].color = m_selectionColor;
-            }
-            else if(x)
-            {
-                m_materials[m_xMatIndex].color = m_selectionColor;
-            }
-            else if(y)
-            {
-                m_materials[m_yMatIndex].color = m_selectionColor;
-            }
-            else if(z)
-            {
-                m_materials[m_zMatIndex].color = m_selectionColor;
+                case RuntimeHandleAxis.XY:
+                    m_materials[m_xMatIndex].color = m_selectionColor;
+                    m_materials[m_yMatIndex].color = m_selectionColor;
+                    m_materials[m_zQMatIndex].color = m_selectionColor;
+                    m_materials[m_zQuadMatIndex].color = m_selectionColor;
+                    break;
+                case RuntimeHandleAxis.YZ:
+                    m_materials[m_yMatIndex].color = m_selectionColor;
+                    m_materials[m_zMatIndex].color = m_selectionColor;
+                    m_materials[m_xQMatIndex].color = m_selectionColor;
+                    m_materials[m_xQuadMatIndex].color = m_selectionColor;
+                    break;
+                case RuntimeHandleAxis.XZ:
+                    m_materials[m_xMatIndex].color = m_selectionColor;
+                    m_materials[m_zMatIndex].color = m_selectionColor;
+                    m_materials[m_yQMatIndex].color = m_selectionColor;
+                    m_materials[m_yQuadMatIndex].color = m_selectionColor;
+                    break;
+                case RuntimeHandleAxis.X:
+                    m_materials[m_xMatIndex].color = m_selectionColor;
+                    break;
+                case RuntimeHandleAxis.Y:
+                    m_materials[m_yMatIndex].color = m_selectionColor;
+                    break;
+                case RuntimeHandleAxis.Z:
+                    m_materials[m_zMatIndex].color = m_selectionColor;
+                    break;
+                case RuntimeHandleAxis.Snap:
+                    break;
+                case RuntimeHandleAxis.Screen:
+                    break;
             }
         }
 
@@ -293,10 +293,8 @@ namespace Battlehub.RTHandles
         private Vector3 m_prevPosition;
         private Quaternion m_prevRotation;
 
-    
         private void Update()
         {
-
             if(m_prevCameraPosition != m_camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
             {
                 m_prevRotation = transform.rotation;
