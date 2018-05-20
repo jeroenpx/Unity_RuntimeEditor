@@ -28,6 +28,12 @@ namespace Battlehub.RTHandles
         private int m_yQuadMatIndex = 7;
         [SerializeField]
         private int m_zQuadMatIndex = 8;
+        [SerializeField]
+        private int m_xArrowMatIndex = 9;
+        [SerializeField]
+        private int m_yArrowMatIndex = 10;
+        [SerializeField]
+        private int m_zArrowMatIndex = 11;
 
         [SerializeField]
         private Color m_xColor = RTHColors.XColor;
@@ -182,6 +188,9 @@ namespace Battlehub.RTHandles
             m_materials[m_xQMatIndex].color = m_xColor;
             m_materials[m_yQMatIndex].color = m_yColor;
             m_materials[m_zQMatIndex].color = m_zColor;
+            m_materials[m_xArrowMatIndex].color = m_xColor;
+            m_materials[m_yArrowMatIndex].color = m_yColor;
+            m_materials[m_zArrowMatIndex].color = m_zColor;
 
             Color xQuadColor = m_xColor; xQuadColor.a = m_quadTransparency;
             m_materials[m_xQuadMatIndex].color = xQuadColor;
@@ -198,6 +207,32 @@ namespace Battlehub.RTHandles
             UpdateTransforms();
 
             //Select(true, false, false);
+
+           // JoinMesh();
+        }
+
+        public void JoinMesh()
+        {
+            Mesh bm = new Mesh();
+            m_models[0].GetComponent<SkinnedMeshRenderer>().BakeMesh(bm);
+
+            Mesh jm = new Mesh();
+
+            Color32[] colors = bm.colors32; 
+            for(int i = 0; i < bm.subMeshCount; ++i)
+            {
+                int[] submeshTris = bm.GetTriangles(i);
+                colors[submeshTris[i]] = new Color32((byte)i, 0, 0, 0);
+            }
+
+            jm.vertices = bm.vertices;
+            jm.triangles = bm.triangles;
+            jm.colors32 = colors;
+            jm.normals = bm.normals;
+          
+            GameObject go = new GameObject();
+            go.AddComponent<MeshFilter>().sharedMesh = jm;
+            go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
         }
 
         public void Select(RuntimeHandleAxis axis)
@@ -206,30 +241,39 @@ namespace Battlehub.RTHandles
             switch(axis)
             {
                 case RuntimeHandleAxis.XY:
+                    m_materials[m_xArrowMatIndex].color = m_selectionColor;
+                    m_materials[m_yArrowMatIndex].color = m_selectionColor;
                     m_materials[m_xMatIndex].color = m_selectionColor;
                     m_materials[m_yMatIndex].color = m_selectionColor;
                     m_materials[m_zQMatIndex].color = m_selectionColor;
                     m_materials[m_zQuadMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.YZ:
+                    m_materials[m_yArrowMatIndex].color = m_selectionColor;
+                    m_materials[m_zArrowMatIndex].color = m_selectionColor;
                     m_materials[m_yMatIndex].color = m_selectionColor;
                     m_materials[m_zMatIndex].color = m_selectionColor;
                     m_materials[m_xQMatIndex].color = m_selectionColor;
                     m_materials[m_xQuadMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.XZ:
+                    m_materials[m_xArrowMatIndex].color = m_selectionColor;
+                    m_materials[m_zArrowMatIndex].color = m_selectionColor;
                     m_materials[m_xMatIndex].color = m_selectionColor;
                     m_materials[m_zMatIndex].color = m_selectionColor;
                     m_materials[m_yQMatIndex].color = m_selectionColor;
                     m_materials[m_yQuadMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.X:
+                    m_materials[m_xArrowMatIndex].color = m_selectionColor;
                     m_materials[m_xMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.Y:
+                    m_materials[m_yArrowMatIndex].color = m_selectionColor;
                     m_materials[m_yMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.Z:
+                    m_materials[m_zArrowMatIndex].color = m_selectionColor;
                     m_materials[m_zMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.Snap:

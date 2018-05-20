@@ -6601,6 +6601,9 @@ MonoBehaviour:
   m_xQuadMatIndex: 6
   m_yQuadMatIndex: 7
   m_zQuadMatIndex: 8
+  m_xArrowMatIndex: 9
+  m_yArrowMatIndex: 10
+  m_zArrowMatIndex: 11
   m_xColor: {r: 0.73333335, g: 0.27450982, b: 0.1764706, a: 1}
   m_yColor: {r: 0.54509807, g: 0.80784315, b: 0.2901961, a: 1}
   m_zColor: {r: 0.21568628, g: 0.4509804, b: 0.95686275, a: 1}
