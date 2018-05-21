@@ -9,32 +9,41 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private GameObject[] m_models;
         [SerializeField]
+        private GameObject m_screenSpaceQuad;
+        [SerializeField]
+        private GameObject m_normalModeArrows;
+        [SerializeField]
+        private GameObject m_vertexSnappingModeArrows;      
+        [SerializeField]
         private Transform[] m_armatures;
         [SerializeField]
-        private int m_xMatIndex = 2;
+        private Transform m_ssQuadArmature;
+
+        [SerializeField]
+        private int m_xMatIndex = 0;
         [SerializeField]
         private int m_yMatIndex = 1;
         [SerializeField]
-        private int m_zMatIndex = 0;
+        private int m_zMatIndex = 2;
         [SerializeField]
-        private int m_xQMatIndex = 4;
+        private int m_xArrowMatIndex = 3;
         [SerializeField]
-        private int m_yQMatIndex = 3;
+        private int m_yArrowMatIndex = 4;
         [SerializeField]
-        private int m_zQMatIndex = 5;
+        private int m_zArrowMatIndex = 5;
         [SerializeField]
-        private int m_xQuadMatIndex = 6;
+        private int m_xQMatIndex = 6;
         [SerializeField]
-        private int m_yQuadMatIndex = 7;
+        private int m_yQMatIndex = 7;
         [SerializeField]
-        private int m_zQuadMatIndex = 8;
+        private int m_zQMatIndex = 8;
         [SerializeField]
-        private int m_xArrowMatIndex = 9;
+        private int m_xQuadMatIndex = 9;
         [SerializeField]
-        private int m_yArrowMatIndex = 10;
+        private int m_yQuadMatIndex = 10;
         [SerializeField]
-        private int m_zArrowMatIndex = 11;
-
+        private int m_zQuadMatIndex = 11;
+ 
         [SerializeField]
         private Color m_xColor = RTHColors.XColor;
         [SerializeField]
@@ -42,13 +51,17 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private Color m_zColor = RTHColors.ZColor;
         [SerializeField]
+        private Color m_ssQuadColor = RTHColors.AltColor;
+        [SerializeField]
+        private Color m_disabledColor = RTHColors.DisabledColor;
+
+        [SerializeField]
         private float m_quadTransparency = 0.5f;
         [SerializeField]
         private Color m_selectionColor = RTHColors.SelectionColor;
-        [SerializeField]
-        private Color m_highlightColor = new Color(RTHColors.SelectionColor.r * 0.5f, RTHColors.SelectionColor.g * 0.5f, RTHColors.SelectionColor.b * 0.5f, 1.0f);
 
         private Material[] m_materials;
+        private Material m_ssQuadMaterial;
 
         private Transform[] m_b0;
         private Transform[] m_b1x;
@@ -63,6 +76,11 @@ namespace Battlehub.RTHandles
         private Transform[] m_b2z;
         private Transform[] m_b3z;
         private Transform[] m_bSz;
+
+        private Transform m_b1ss;
+        private Transform m_b2ss;
+        private Transform m_b3ss;
+        private Transform m_b4ss;
 
         private Vector3[] m_defaultArmaturesScale;
         private Vector3[] m_defaultB3XScale;
@@ -86,6 +104,22 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private float m_quadLength = DefaultQuadLength;
 
+        private bool m_isVertexSnapping;
+        public bool IsVertexSnapping
+        {
+            get { return m_isVertexSnapping; }
+            set
+            {
+                if(m_isVertexSnapping == value)
+                {
+                    return;
+                }
+                m_isVertexSnapping = true;
+                m_normalModeArrows.SetActive(!m_isVertexSnapping);
+                m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping);
+            }
+        }
+
         private void UpdateTransforms()
         {
             m_quadLength = Mathf.Abs(m_quadLength);
@@ -102,6 +136,7 @@ namespace Battlehub.RTHandles
             for (int i = 0; i < m_models.Length; ++i)
             {
                 m_armatures[i].localScale = m_defaultArmaturesScale[i] * scale;
+                m_ssQuadArmature.localScale = Vector3.one * scale;
 
                 m_b3x[i].position = p + right * m_length;
                 m_b3y[i].position = p + up * m_length;
@@ -126,6 +161,13 @@ namespace Battlehub.RTHandles
                 m_bSy[i].position = p + (m_b1x[i].position - p) + (m_b1z[i].position - p);
                 m_bSz[i].position = p + (m_b1x[i].position - p) + (m_b1y[i].position - p);
             }
+
+           // m_b1ss.position = p + new Vector3(1, 1, 0) * m_quadLength;
+           // m_b2ss.position = p + new Vector3(-1, 1, 0) * m_quadLength;
+           // m_b3ss.position = p + new Vector3(1, -1, 0) * m_quadLength;
+           // m_b3ss.position = p + new Vector3(-1, -1, 0) * m_quadLength;
+
+            m_screenSpaceQuad.transform.localScale = Vector3.one * m_quadLength / DefaultQuadLength;
         }
 
         private void Awake()
@@ -170,7 +212,13 @@ namespace Battlehub.RTHandles
                 m_defaultB3ZScale[i] = transform.TransformVector(m_b3z[i].localScale);
             }
 
+            m_b1ss = m_ssQuadArmature.GetChild(1);
+            m_b2ss = m_ssQuadArmature.GetChild(2);
+            m_b3ss = m_ssQuadArmature.GetChild(3);
+            m_b4ss = m_ssQuadArmature.GetChild(4);
+
             m_materials = m_models[0].GetComponent<Renderer>().materials;
+            m_ssQuadMaterial = m_screenSpaceQuad.GetComponent<Renderer>().sharedMaterial;
             SetDefaultColors();
 
             for (int i = 0; i < m_models.Length; ++i)
@@ -178,6 +226,9 @@ namespace Battlehub.RTHandles
                 Renderer renderer = m_models[i].GetComponent<Renderer>();
                 renderer.sharedMaterials = m_materials;
             }
+
+            m_normalModeArrows.SetActive(!m_isVertexSnapping);
+            m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping);
         }
 
         private void SetDefaultColors()
@@ -200,39 +251,14 @@ namespace Battlehub.RTHandles
 
             Color zQuadColor = m_zColor; zQuadColor.a = m_quadTransparency;
             m_materials[m_zQuadMatIndex].color = zQuadColor;
+
+            m_ssQuadMaterial.color = m_ssQuadColor;
         }
 
         private void Start()
         {
             UpdateTransforms();
-
-            //Select(true, false, false);
-
-           // JoinMesh();
-        }
-
-        public void JoinMesh()
-        {
-            Mesh bm = new Mesh();
-            m_models[0].GetComponent<SkinnedMeshRenderer>().BakeMesh(bm);
-
-            Mesh jm = new Mesh();
-
-            Color32[] colors = bm.colors32; 
-            for(int i = 0; i < bm.subMeshCount; ++i)
-            {
-                int[] submeshTris = bm.GetTriangles(i);
-                colors[submeshTris[i]] = new Color32((byte)i, 0, 0, 0);
-            }
-
-            jm.vertices = bm.vertices;
-            jm.triangles = bm.triangles;
-            jm.colors32 = colors;
-            jm.normals = bm.normals;
-          
-            GameObject go = new GameObject();
-            go.AddComponent<MeshFilter>().sharedMesh = jm;
-            go.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
+            IsVertexSnapping = true;
         }
 
         public void Select(RuntimeHandleAxis axis)
@@ -277,6 +303,7 @@ namespace Battlehub.RTHandles
                     m_materials[m_zMatIndex].color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.Snap:
+                    m_ssQuadMaterial.color = m_ssQuadColor;
                     break;
                 case RuntimeHandleAxis.Screen:
                     break;
@@ -310,7 +337,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            for(int i = 0; i < m_models.Length; ++i)
+            for(int i = 0; i < m_models.Length - 1; ++i)
             {
                 if(i != maxIndex)
                 {

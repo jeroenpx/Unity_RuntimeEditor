@@ -423,6 +423,7 @@
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\ArrowShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\AxisShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\QuadShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\SSQuadShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Grid.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Shape.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColor.shader" />
