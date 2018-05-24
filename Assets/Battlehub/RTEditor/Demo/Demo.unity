@@ -104503,6 +104503,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WindowType: 2
+  m_positonHandleModel: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7,
+    type: 2}
   RuntimeModifierKey: 306
   EditorModifierKey: 304
   SelectAllKey: 97

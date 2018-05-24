@@ -39,6 +39,9 @@ namespace Battlehub.RTHandles
     /// </summary>
     public class RuntimeSelectionComponent : RuntimeEditorWindow
     {
+        [SerializeField]
+        private PositionHandleModel m_positonHandleModel;
+
         public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
         public KeyCode EditorModifierKey = KeyCode.LeftShift;
         public KeyCode ModifierKey
@@ -229,6 +232,7 @@ namespace Battlehub.RTHandles
             GameObject positionHandle = new GameObject();
             positionHandle.name = "PositionHandle";
             m_positionHandle = positionHandle.AddComponent<PositionHandle>();
+            m_positionHandle.Model = m_positonHandleModel;
             m_positionHandle.SceneCamera = SceneCamera;
             positionHandle.SetActive(false);
             positionHandle.transform.SetParent(HandlesParent);

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -60,6 +62,19 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private Color m_selectionColor = RTHColors.SelectionColor;
 
+        [SerializeField]
+        private float m_radius = DefaultRadius;
+        [SerializeField]
+        private float m_length = DefaultLength;
+        [SerializeField]
+        private float m_arrowRadius = DefaultArrowRadius;
+        [SerializeField]
+        private float m_arrowLength = DefaultArrowLength;
+        [SerializeField]
+        private float m_quadLength = DefaultQuadLength;
+        [SerializeField]
+        private bool m_isVertexSnapping;
+
         private Material[] m_materials;
         private Material m_ssQuadMaterial;
 
@@ -93,18 +108,10 @@ namespace Battlehub.RTHandles
         private const float DefaultArrowLength = 0.2f;
         private const float DefaultQuadLength = 0.2f;
 
-        [SerializeField]
-        private float m_radius = DefaultRadius;
-        [SerializeField]
-        private float m_length = DefaultLength;
-        [SerializeField]
-        private float m_arrowRadius = DefaultArrowRadius;
-        [SerializeField]
-        private float m_arrowLength = DefaultArrowLength;
-        [SerializeField]
-        private float m_quadLength = DefaultQuadLength;
+        private RuntimeHandleAxis m_selectedAxis = RuntimeHandleAxis.None;
+        private LockObject m_lockObj = new LockObject();
+        private RuntimeGraphicsLayer m_graphicsLayer;
 
-        private bool m_isVertexSnapping;
         public bool IsVertexSnapping
         {
             get { return m_isVertexSnapping; }
@@ -114,64 +121,30 @@ namespace Battlehub.RTHandles
                 {
                     return;
                 }
-                m_isVertexSnapping = true;
-                m_normalModeArrows.SetActive(!m_isVertexSnapping);
-                m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping);
+                m_isVertexSnapping = value;
+                OnVertexSnappingModeChaged();
+                SetColors();
             }
-        }
-
-        private void UpdateTransforms()
-        {
-            m_quadLength = Mathf.Abs(m_quadLength);
-            m_radius = Mathf.Max(0.01f, m_radius);
-
-            Vector3 right = transform.rotation * Vector3.right * transform.localScale.x;
-            Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;
-            Vector3 forward = transform.rotation * Vector3.forward * transform.localScale.z;
-            Vector3 p = transform.position;
-            float scale = m_radius / DefaultRadius;
-            float arrowScale = m_arrowLength / DefaultArrowLength / scale;
-            float arrowRadiusScale = m_arrowRadius / DefaultArrowRadius / scale;
-
-            for (int i = 0; i < m_models.Length; ++i)
-            {
-                m_armatures[i].localScale = m_defaultArmaturesScale[i] * scale;
-                m_ssQuadArmature.localScale = Vector3.one * scale;
-
-                m_b3x[i].position = p + right * m_length;
-                m_b3y[i].position = p + up * m_length;
-                m_b3z[i].position = p + forward * m_length;
-
-                m_b2x[i].position = p + right * (m_length - m_arrowLength);
-                m_b2y[i].position = p + up * (m_length - m_arrowLength);
-                m_b2z[i].position = p + forward * (m_length - m_arrowLength);
-
-                m_b3x[i].localScale = Vector3.right * arrowScale +
-                    new Vector3(0, 1, 1) * arrowRadiusScale;
-                m_b3y[i].localScale = Vector3.forward * arrowScale +
-                    new Vector3(1, 1, 0) * arrowRadiusScale;
-                m_b3z[i].localScale = Vector3.up * arrowScale +
-                    new Vector3(1, 0, 1) * arrowRadiusScale;
-
-                m_b1x[i].position = p + Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * right * m_quadLength;
-                m_b1y[i].position = p + Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * up * m_quadLength;
-                m_b1z[i].position = p + Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * forward * m_quadLength;
-
-                m_bSx[i].position = p + (m_b1y[i].position - p) + (m_b1z[i].position - p);
-                m_bSy[i].position = p + (m_b1x[i].position - p) + (m_b1z[i].position - p);
-                m_bSz[i].position = p + (m_b1x[i].position - p) + (m_b1y[i].position - p);
-            }
-
-           // m_b1ss.position = p + new Vector3(1, 1, 0) * m_quadLength;
-           // m_b2ss.position = p + new Vector3(-1, 1, 0) * m_quadLength;
-           // m_b3ss.position = p + new Vector3(1, -1, 0) * m_quadLength;
-           // m_b3ss.position = p + new Vector3(-1, -1, 0) * m_quadLength;
-
-            m_screenSpaceQuad.transform.localScale = Vector3.one * m_quadLength / DefaultQuadLength;
         }
 
         private void Awake()
         {
+            m_graphicsLayer = FindObjectOfType<RuntimeGraphicsLayer>();
+            if(m_graphicsLayer == null)
+            {
+                GameObject go = new GameObject();
+                go.AddComponent<PersistentIgnore>();
+                m_graphicsLayer = go.AddComponent<RuntimeGraphicsLayer>();
+                m_graphicsLayer.name = "RuntimeGraphicsLayer";
+            }
+
+            SetLayer(transform, m_graphicsLayer.GraphicsLayer);
+            if(m_camera == null)
+            {
+                OnActiveSceneCameraChanged();
+            }
+            RuntimeEditorApplication.ActiveSceneCameraChanged += OnActiveSceneCameraChanged;
+
             m_defaultArmaturesScale = new Vector3[m_armatures.Length];
             m_defaultB3XScale = new Vector3[m_armatures.Length];
             m_defaultB3YScale = new Vector3[m_armatures.Length];
@@ -227,21 +200,97 @@ namespace Battlehub.RTHandles
                 renderer.sharedMaterials = m_materials;
             }
 
-            m_normalModeArrows.SetActive(!m_isVertexSnapping);
-            m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping);
+            OnVertexSnappingModeChaged();
+        }
+
+        private void Start()
+        {
+            UpdateTransforms();
+        }
+
+        private void OnDestroy()
+        {
+            RuntimeEditorApplication.ActiveSceneCameraChanged -= OnActiveSceneCameraChanged;
+        }
+
+        private void OnActiveSceneCameraChanged()
+        {
+            if (RuntimeEditorApplication.ActiveSceneCamera != null)
+            {
+                m_camera = RuntimeEditorApplication.ActiveSceneCamera.transform;
+            }
+            else if (Camera.main != null)
+            {
+                m_camera = Camera.main.transform;
+            }
+        }
+
+        private void SetLayer(Transform t, int layer)
+        {
+            t.gameObject.layer = layer;
+            foreach (Transform child in t)
+            {
+                SetLayer(child, layer);
+            }
+        }
+
+        public void SetLock(LockObject lockObj)
+        {
+            m_lockObj = lockObj;
+            OnVertexSnappingModeChaged();
+            SetColors();
+        }
+
+        public void Select(RuntimeHandleAxis axis)
+        {
+            m_selectedAxis = axis;
+            OnVertexSnappingModeChaged();
+            SetColors();
+        }
+
+        private void OnVertexSnappingModeChaged()
+        {
+            m_normalModeArrows.SetActive(!m_isVertexSnapping && !m_lockObj.IsPositionLocked);
+            m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping && !m_lockObj.IsPositionLocked);
         }
 
         private void SetDefaultColors()
         {
-            m_materials[m_xMatIndex].color = m_xColor;
-            m_materials[m_yMatIndex].color = m_yColor;
-            m_materials[m_zMatIndex].color = m_zColor;
-            m_materials[m_xQMatIndex].color = m_xColor;
-            m_materials[m_yQMatIndex].color = m_yColor;
-            m_materials[m_zQMatIndex].color = m_zColor;
-            m_materials[m_xArrowMatIndex].color = m_xColor;
-            m_materials[m_yArrowMatIndex].color = m_yColor;
-            m_materials[m_zArrowMatIndex].color = m_zColor;
+            if (m_lockObj.PositionX)
+            {
+                m_materials[m_xMatIndex].color = m_disabledColor;
+                m_materials[m_xArrowMatIndex].color = m_disabledColor;
+            }
+            else
+            {
+                m_materials[m_xMatIndex].color = m_xColor;
+                m_materials[m_xArrowMatIndex].color = m_xColor;
+            }
+
+            if (m_lockObj.PositionY)
+            {
+                m_materials[m_yMatIndex].color = m_disabledColor;
+                m_materials[m_yArrowMatIndex].color = m_disabledColor;
+            }
+            else
+            {
+                m_materials[m_yMatIndex].color = m_yColor;
+                m_materials[m_yArrowMatIndex].color = m_yColor;
+            }
+
+            if (m_lockObj.PositionZ)
+            {
+                m_materials[m_zMatIndex].color = m_disabledColor;
+            }
+            else
+            {
+                m_materials[m_zMatIndex].color = m_zColor;
+                m_materials[m_zArrowMatIndex].color = m_zColor;
+            }
+
+            m_materials[m_xQMatIndex].color = m_lockObj.PositionY || m_lockObj.PositionZ ? m_disabledColor : m_xColor;
+            m_materials[m_yQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionZ ? m_disabledColor : m_yColor;
+            m_materials[m_zQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionY ? m_disabledColor : m_zColor;
 
             Color xQuadColor = m_xColor; xQuadColor.a = m_quadTransparency;
             m_materials[m_xQuadMatIndex].color = xQuadColor;
@@ -255,60 +304,124 @@ namespace Battlehub.RTHandles
             m_ssQuadMaterial.color = m_ssQuadColor;
         }
 
-        private void Start()
-        {
-            UpdateTransforms();
-            IsVertexSnapping = true;
-        }
 
-        public void Select(RuntimeHandleAxis axis)
+        private void SetColors()
         {
             SetDefaultColors();
-            switch(axis)
+            switch (m_selectedAxis)
             {
                 case RuntimeHandleAxis.XY:
-                    m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_xMatIndex].color = m_selectionColor;
-                    m_materials[m_yMatIndex].color = m_selectionColor;
-                    m_materials[m_zQMatIndex].color = m_selectionColor;
-                    m_materials[m_zQuadMatIndex].color = m_selectionColor;
+                    if (!m_lockObj.PositionX && !m_lockObj.PositionY)
+                    {
+                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_xMatIndex].color = m_selectionColor;
+                        m_materials[m_yMatIndex].color = m_selectionColor;
+                        m_materials[m_zQMatIndex].color = m_selectionColor;
+                        m_materials[m_zQuadMatIndex].color = m_selectionColor;
+                    }
                     break;
                 case RuntimeHandleAxis.YZ:
-                    m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_yMatIndex].color = m_selectionColor;
-                    m_materials[m_zMatIndex].color = m_selectionColor;
-                    m_materials[m_xQMatIndex].color = m_selectionColor;
-                    m_materials[m_xQuadMatIndex].color = m_selectionColor;
+                    if (!m_lockObj.PositionY && !m_lockObj.PositionZ)
+                    {
+                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_yMatIndex].color = m_selectionColor;
+                        m_materials[m_zMatIndex].color = m_selectionColor;
+                        m_materials[m_xQMatIndex].color = m_selectionColor;
+                        m_materials[m_xQuadMatIndex].color = m_selectionColor;
+                    }
                     break;
                 case RuntimeHandleAxis.XZ:
-                    m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_xMatIndex].color = m_selectionColor;
-                    m_materials[m_zMatIndex].color = m_selectionColor;
-                    m_materials[m_yQMatIndex].color = m_selectionColor;
-                    m_materials[m_yQuadMatIndex].color = m_selectionColor;
+                    if (!m_lockObj.PositionX && !m_lockObj.PositionZ)
+                    {
+                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_xMatIndex].color = m_selectionColor;
+                        m_materials[m_zMatIndex].color = m_selectionColor;
+                        m_materials[m_yQMatIndex].color = m_selectionColor;
+                        m_materials[m_yQuadMatIndex].color = m_selectionColor;
+                    }
                     break;
                 case RuntimeHandleAxis.X:
-                    m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_xMatIndex].color = m_selectionColor;
+                    if (!m_lockObj.PositionX)
+                    {
+                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_xMatIndex].color = m_selectionColor;
+                    }
                     break;
                 case RuntimeHandleAxis.Y:
-                    m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_yMatIndex].color = m_selectionColor;
+                    if (!m_lockObj.PositionY)
+                    {
+                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_yMatIndex].color = m_selectionColor;
+                    }
                     break;
                 case RuntimeHandleAxis.Z:
-                    m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                    m_materials[m_zMatIndex].color = m_selectionColor;
+                    if (!m_lockObj.PositionZ)
+                    {
+                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
+                        m_materials[m_zMatIndex].color = m_selectionColor;
+                    }
                     break;
                 case RuntimeHandleAxis.Snap:
-                    m_ssQuadMaterial.color = m_ssQuadColor;
+                    m_ssQuadMaterial.color = m_selectionColor;
                     break;
                 case RuntimeHandleAxis.Screen:
                     break;
             }
         }
+
+        private void UpdateTransforms()
+        {
+            m_quadLength = Mathf.Abs(m_quadLength);
+            m_radius = Mathf.Max(0.01f, m_radius);
+
+            Vector3 right = transform.rotation * Vector3.right * transform.localScale.x;
+            Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;
+            Vector3 forward = transform.rotation * Vector3.forward * transform.localScale.z;
+            Vector3 p = transform.position;
+            float scale = m_radius / DefaultRadius;
+            float arrowScale = m_arrowLength / DefaultArrowLength / scale;
+            float arrowRadiusScale = m_arrowRadius / DefaultArrowRadius / scale;
+
+            for (int i = 0; i < m_models.Length; ++i)
+            {
+                m_armatures[i].localScale = m_defaultArmaturesScale[i] * scale;
+                m_ssQuadArmature.localScale = Vector3.one * scale;
+
+                m_b3x[i].position = p + right * m_length;
+                m_b3y[i].position = p + up * m_length;
+                m_b3z[i].position = p + forward * m_length;
+
+                m_b2x[i].position = p + right * (m_length - m_arrowLength);
+                m_b2y[i].position = p + up * (m_length - m_arrowLength);
+                m_b2z[i].position = p + forward * (m_length - m_arrowLength);
+
+                m_b3x[i].localScale = Vector3.right * arrowScale +
+                    new Vector3(0, 1, 1) * arrowRadiusScale;
+                m_b3y[i].localScale = Vector3.forward * arrowScale +
+                    new Vector3(1, 1, 0) * arrowRadiusScale;
+                m_b3z[i].localScale = Vector3.up * arrowScale +
+                    new Vector3(1, 0, 1) * arrowRadiusScale;
+
+                m_b1x[i].position = p + Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * right * m_quadLength;
+                m_b1y[i].position = p + Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * up * m_quadLength;
+                m_b1z[i].position = p + Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * forward * m_quadLength;
+
+                m_bSx[i].position = p + (m_b1y[i].position - p) + (m_b1z[i].position - p);
+                m_bSy[i].position = p + (m_b1x[i].position - p) + (m_b1z[i].position - p);
+                m_bSz[i].position = p + (m_b1x[i].position - p) + (m_b1y[i].position - p);
+            }
+
+            m_b1ss.position = p + transform.rotation * new Vector3(.33f, .33f, 0) * m_quadLength;
+            m_b2ss.position = p + transform.rotation * new Vector3(-.33f, -.33f, 0) * m_quadLength;
+            m_b3ss.position = p + transform.rotation * new Vector3(-.33f, .33f, 0) * m_quadLength;
+            m_b4ss.position = p + transform.rotation * new Vector3(.33f, -.33f, 0) * m_quadLength;
+
+            //m_screenSpaceQuad.transform.localScale = Vector3.one * m_quadLength / DefaultQuadLength;
+        }
+
 
         public void SetCameraPosition(Vector3 pos)
         {

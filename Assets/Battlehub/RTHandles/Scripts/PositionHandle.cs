@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine.EventSystems;
 
 using Battlehub.RTCommon;
+using Battlehub.Utils;
+
 namespace Battlehub.RTHandles
 {
   
@@ -28,7 +30,8 @@ namespace Battlehub.RTHandles
         private Bounds[] m_snapTargetsBounds;
         private ExposeToEditor[] m_allExposedToEditor;
 
-        public PositionHandleModel m_model;
+        public PositionHandleModel Model;
+       
         public bool SnapToGround;
         public KeyCode SnapToGroundKey = KeyCode.G;
 
@@ -41,7 +44,6 @@ namespace Battlehub.RTHandles
             get { return m_isInSnappingMode || RuntimeTools.IsSnapping; }
         }
 
- 
         private Vector3[] m_boundingBoxCorners = new Vector3[8];
         private Vector3 m_handleOffset;
         private Vector3 HandlePosition
@@ -69,21 +71,39 @@ namespace Battlehub.RTHandles
             set
             {
                 base.SelectedAxis = value;
-                if (m_model != null)
+                if (Model != null)
                 {
-                    m_model.Select(SelectedAxis);
+                    Model.Select(SelectedAxis);
                 }
             }
         }
 
         protected override void AwakeOverride()
         {
-           
+            
+        }
+
+        protected override void StartOverride()
+        {
+            base.StartOverride();
+            if (Model != null)
+            {
+                PositionHandleModel model = Instantiate(Model, transform.parent);
+                model.name = Model.name;
+                Model = model;
+            }
         }
 
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
+            if (Model != null && Model.gameObject != null)
+            {
+                if(!Model.gameObject.IsPrefab())
+                {
+                    Destroy(Model);
+                }
+            }
         }
 
         protected override void OnEnableOverride()
@@ -96,6 +116,11 @@ namespace Battlehub.RTHandles
             m_snapTargets = null;
             m_snapTargetsBounds = null;
             m_allExposedToEditor = null;
+
+            if(Model != null)
+            {
+                Model.gameObject.SetActive(true);
+            }
 
             RuntimeTools.IsSnappingChanged += OnSnappingChanged;
             OnSnappingChanged();
@@ -110,6 +135,11 @@ namespace Battlehub.RTHandles
             m_snapTargetsBounds = null;
             m_allExposedToEditor = null;
 
+            if (Model != null)
+            {
+                Model.gameObject.SetActive(false);
+            }
+
             RuntimeTools.IsSnappingChanged -= OnSnappingChanged;
         }
 
@@ -117,14 +147,14 @@ namespace Battlehub.RTHandles
         {
             base.UpdateOverride();
 
-            if (m_model != null)
+            if (Model != null)
             {
                 Vector3 position = HandlePosition;
-                m_model.transform.position = position;
-                m_model.transform.rotation = Rotation;
+                Model.transform.position = position;
+                Model.transform.rotation = Rotation;
 
                 float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
-                m_model.transform.localScale = Vector3.one * screenScale;
+                Model.transform.localScale = Vector3.one * screenScale;
             }
 
             if (RuntimeTools.IsPointerOverGameObject())
@@ -167,6 +197,10 @@ namespace Battlehub.RTHandles
                 if (!IsInSnappingMode)
                 {
                     m_handleOffset = Vector3.zero;
+                }
+                if (Model != null)
+                {
+                    Model.IsVertexSnapping = false;
                 }
             }
 
@@ -477,6 +511,10 @@ namespace Battlehub.RTHandles
             else
             {
                 m_handleOffset = Vector3.zero;
+                if(Model != null)
+                {
+                    Model.IsVertexSnapping = false;
+                }
             }
         }
 
@@ -486,6 +524,12 @@ namespace Battlehub.RTHandles
             {
                 return;
             }
+
+            if (Model != null)
+            {
+                Model.IsVertexSnapping = true;
+            }
+
             HashSet<Transform> snapTargetsHS = new HashSet<Transform>();
             List<Transform> snapTargets = new List<Transform>();
             List<Bounds> snapTargetBounds = new List<Bounds>();
@@ -791,9 +835,9 @@ namespace Battlehub.RTHandles
 
         protected override void DrawOverride()
         {
-            if(m_model != null)
+            if(Model != null)
             {
-               // return;
+                return;
             }
 
             RuntimeHandles.DoPositionHandle(HandlePosition, Rotation, SelectedAxis, IsInSnappingMode, LockObject);

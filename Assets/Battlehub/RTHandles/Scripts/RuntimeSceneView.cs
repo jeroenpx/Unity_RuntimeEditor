@@ -11,25 +11,6 @@ namespace Battlehub.RTHandles
             get { return RuntimeEditorApplication.IsPointerOverWindow(this) || !RuntimeEditorApplication.IsOpened; }
         }
 
-        //[SerializeField]
-        //private LayerMask m_raycastLayerMask = 1 << 31;
-        //private int m_raycastLayer = 31;
-
-        //protected override LayerMask LayerMask
-        //{
-        //    get { return m_raycastLayerMask; }
-        //}
-
-        //public int RaycastLayer
-        //{
-        //    get { return m_raycastLayer; }
-        //    set
-        //    {
-        //        m_raycastLayer = value;
-        //        m_raycastLayerMask = 1 << value;
-        //    }
-        //}
-
         public KeyCode FocusKey = KeyCode.F;
         public KeyCode SnapToGridKey = KeyCode.S;
         public KeyCode RotateKey = KeyCode.LeftAlt;
@@ -353,7 +334,6 @@ namespace Battlehub.RTHandles
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             return exposeToEditor != null && exposeToEditor.CanSelect;
         }
-
 
         private void HandleInput()
         {

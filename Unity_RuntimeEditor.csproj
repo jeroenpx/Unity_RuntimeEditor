@@ -334,6 +334,7 @@
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeEditorApplication.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeEditorWindow.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeGraphics.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeGraphicsLayer.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeSelection.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeTools.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeUndo.cs" />

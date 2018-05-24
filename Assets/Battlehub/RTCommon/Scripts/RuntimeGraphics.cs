@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Battlehub.RTCommon
 {
     public static class RuntimeGraphics
     {
+        public const int RuntimeHandlesLayer = 24;
+
         private static Mesh m_quadMesh;
 
         static RuntimeGraphics()
