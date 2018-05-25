@@ -422,6 +422,7 @@
     <None Include="Assets\Battlehub\RTHandles\Fonts\FontLicense!.txt" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\ArrowShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\AxisShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\DepthMaskShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\QuadShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\SSQuadShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Grid.shader" />

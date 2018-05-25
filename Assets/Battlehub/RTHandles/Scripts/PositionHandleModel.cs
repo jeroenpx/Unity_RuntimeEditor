@@ -102,9 +102,9 @@ namespace Battlehub.RTHandles
         private Vector3[] m_defaultB3YScale;
         private Vector3[] m_defaultB3ZScale;
 
-        private const float DefaultRadius = 0.1f;
+        private const float DefaultRadius = 0.05f;
         private const float DefaultLength = 1.0f;
-        private const float DefaultArrowRadius = 0.2f;
+        private const float DefaultArrowRadius = 0.1f;
         private const float DefaultArrowLength = 0.2f;
         private const float DefaultQuadLength = 0.2f;
 

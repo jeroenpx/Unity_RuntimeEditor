@@ -944,7 +944,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1251154076535812
 GameObject:
   m_ObjectHideFlags: 1
@@ -7597,8 +7597,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1702321915034600}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.053527094, y: 0.12600595, z: 0.4280187}
-  m_LocalScale: {x: 0.7705919, y: 0.7705919, z: 0.7705919}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4019185220776422}
   - {fileID: 4403878129880406}
@@ -7837,9 +7837,9 @@ MonoBehaviour:
   m_disabledColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.5019608}
   m_quadTransparency: 0.5
   m_selectionColor: {r: 0.9372549, g: 0.93333334, b: 0.2509804, a: 1}
-  m_radius: 0.05
+  m_radius: 0.025
   m_length: 1
-  m_arrowRadius: 0.15
+  m_arrowRadius: 0.075
   m_arrowLength: 0.2
   m_quadLength: 0.2
   m_isVertexSnapping: 0
