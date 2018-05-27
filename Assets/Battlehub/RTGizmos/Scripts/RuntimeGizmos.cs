@@ -17,11 +17,13 @@ namespace Battlehub.RTGizmos
         static RuntimeGizmos()
         {
             HandlesMaterial = new Material(Shader.Find("Battlehub/RTGizmos/Handles"));
-            
+            HandlesMaterial.enableInstancing = true;
             LinesMaterial = new Material(Shader.Find("Battlehub/RTHandles/VertexColor"));
+            LinesMaterial.enableInstancing = true;
             SelectionMaterial = new Material(Shader.Find("Battlehub/RTGizmos/Handles"));
             SelectionMaterial.SetFloat("_Offset", 1);
             SelectionMaterial.SetFloat("_MinAlpha", 1);
+            SelectionMaterial.enableInstancing = true;
 
             CubeHandles = CreateCubeHandles(HandleScale);
             ConeHandles = CreateConeHandles(HandleScale);

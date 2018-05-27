@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+﻿// Upgrade NOTE: replaced 'UNITY_INSTANCE_ID' with 'UNITY_VERTEX_INPUT_INSTANCE_ID'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 Shader "Battlehub/RTHandles/VertexColor" {
 	Properties
@@ -9,15 +11,15 @@ Shader "Battlehub/RTHandles/VertexColor" {
 	}
 	SubShader
 	{
-		
+
 		Tags{ "Queue" = "Transparent+5" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		Pass
 		{
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull[_Cull]
-			ZTest [_ZTest]
-			ZWrite [_ZWrite]
-		
+			ZTest[_ZTest]
+			ZWrite[_ZWrite]
+
 			CGPROGRAM
 
 			#include "UnityCG.cginc"
@@ -27,12 +29,14 @@ Shader "Battlehub/RTHandles/VertexColor" {
 			struct vertexInput {
 				float4 vertex : POSITION;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			struct vertexOutput {
 				float4 pos : SV_POSITION;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
-
 
 			inline float4 GammaToLinearSpace(float4 sRGB)
 			{
@@ -46,6 +50,9 @@ Shader "Battlehub/RTHandles/VertexColor" {
 			vertexOutput vert(vertexInput input)
 			{
 				vertexOutput output;
+				UNITY_SETUP_INSTANCE_ID(input);
+				UNITY_TRANSFER_INSTANCE_ID(input, output);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.color = GammaToLinearSpace(input.color);
 				output.color.a = input.color.a;
@@ -53,9 +60,10 @@ Shader "Battlehub/RTHandles/VertexColor" {
 			}
 
 			float4 frag(vertexOutput input) : COLOR
-			{ 
+			{
+				UNITY_SETUP_INSTANCE_ID(input);
 				return  input.color;
-			}	
+			}
 
 			ENDCG
 		}

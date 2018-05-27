@@ -28,15 +28,21 @@ Shader "Battlehub/RTCommon/Billboard"
 		struct vertexInput {
 			float4 vertex : POSITION;
 			float4 tex : TEXCOORD0;
+			UNITY_VERTEX_INPUT_INSTANCE_ID
 		};
 		struct vertexOutput {
 			float4 pos : SV_POSITION;
 			float4 tex : TEXCOORD0;
+			UNITY_VERTEX_INPUT_INSTANCE_ID
+			UNITY_VERTEX_OUTPUT_STEREO
 		};
 
 		vertexOutput vert(vertexInput input)
 		{
 			vertexOutput output;
+			UNITY_SETUP_INSTANCE_ID(input);
+			UNITY_TRANSFER_INSTANCE_ID(input, output);
+			UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 			float scaleX = length(mul(unity_ObjectToWorld, float4(1.0, 0.0, 0.0, 0.0)));
 			float scaleY = length(mul(unity_ObjectToWorld, float4(0.0, 1.0, 0.0, 0.0)));
 
@@ -49,6 +55,7 @@ Shader "Battlehub/RTCommon/Billboard"
 
 		float4 frag(vertexOutput input) : COLOR
 		{
+			UNITY_SETUP_INSTANCE_ID(input);
 			return _Color * tex2D(_MainTex, float2(input.tex.xy));
 		}
 

@@ -1,20 +1,16 @@
-﻿Shader "Battlehub/RTHandles/Models/SSQuadShader"
+﻿Shader "Battlehub/RTHandles/Models/SSCircleShader"
 {
 	Properties
 	{
 		_Color("Color", Color) = (1, 1, 1, 1) // color
 	}
-		SubShader
+	SubShader
 	{
-		Tags{ "Queue" = "Transparent+1" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+		Tags{ "Queue" = "Transparent-1" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		LOD 100
 
 		Pass
 		{
-			//Blend SrcAlpha OneMinusSrcAlpha
-			ZTest Always
-			
-
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -43,7 +39,6 @@
 				o.vertex = mul(UNITY_MATRIX_P,
 					float4(UnityObjectToViewPos(float3(0.0, 0.0, 0.0)), 1.0)
 					- float4(v.vertex.x * scaleX, v.vertex.y * scaleY, 0.0, 0.0));
-
 				return o;
 			}
 

@@ -344,7 +344,6 @@ GameObject:
   m_Component:
   - component: {fileID: 308}
   - component: {fileID: 454}
-  - component: {fileID: 559}
   - component: {fileID: 571}
   - component: {fileID: 558}
   - component: {fileID: 879}
@@ -6829,14 +6828,6 @@ BoxCollider:
 AudioListener:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 81000010364094312, guid: dacb6098268fd964d97dc52df8ac8dd0,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 36}
-  m_Enabled: 1
---- !u!92 &559
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 92000013049097660, guid: dacb6098268fd964d97dc52df8ac8dd0,
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 36}
@@ -104503,8 +104494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WindowType: 2
-  m_positonHandleModel: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7,
-    type: 2}
+  m_positonHandleModel: {fileID: 0}
   RuntimeModifierKey: 306
   EditorModifierKey: 304
   SelectAllKey: 97

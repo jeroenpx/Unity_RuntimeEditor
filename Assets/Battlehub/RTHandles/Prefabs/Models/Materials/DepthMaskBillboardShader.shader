@@ -1,27 +1,24 @@
-﻿Shader "Battlehub/RTHandles/Models/SSQuadShader"
+﻿Shader "Battlehub/RTHandles/Models/DepthMaskBillboard"
 {
 	Properties
 	{
 		_Color("Color", Color) = (1, 1, 1, 1) // color
 	}
-		SubShader
+	SubShader
 	{
-		Tags{ "Queue" = "Transparent+1" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+		Tags{ "Queue" = "Transparent-1" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		LOD 100
 
 		Pass
 		{
-			//Blend SrcAlpha OneMinusSrcAlpha
+			Blend SrcAlpha OneMinusSrcAlpha
 			ZTest Always
-			
-
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			// make fog work
 			#pragma multi_compile_fog
 
-			#include "unitycg.cginc"
+			#include "UnityCG.cginc"
 
 			struct appdata
 			{
@@ -32,6 +29,7 @@
 			{
 				float4 vertex : SV_POSITION;
 			};
+
 
 			fixed4 _Color;
 
@@ -47,11 +45,13 @@
 				return o;
 			}
 
+
 			fixed4 frag(v2f i) : SV_Target
 			{
-				return _Color;
+				//return float4(0, 0, 0, 0.1);
+				return float4(0, 0, 0, 0.0);
 			}
 			ENDCG
 		}
-	}	
+	}
 }

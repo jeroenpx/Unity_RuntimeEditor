@@ -44,12 +44,15 @@
 
 			vertexOutput vert(vertexInput input)
 			{
-				float3 viewNorm = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, input.normal));
+				float3 worldNorm = UnityObjectToWorldNormal(input.normal);
+				float3 viewNorm = mul((float3x3)UNITY_MATRIX_V, worldNorm);
 				vertexOutput output;
+		
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.color = input.color * 1.5 * dot(viewNorm, float3(0, 0, 1));
 				output.color = GammaToLinearSpace(output.color);
 				output.color.a = input.color.a;
+
 
 				return output;
 			}

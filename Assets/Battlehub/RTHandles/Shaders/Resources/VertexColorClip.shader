@@ -26,11 +26,14 @@ Shader "Battlehub/RTHandles/VertexColorClip" {
 			struct vertexInput {
 				float4 vertex : POSITION;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			struct vertexOutput {
 				float4 pos : SV_POSITION;
 				float3 norm : TEXCOORD0;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 
@@ -46,8 +49,15 @@ Shader "Battlehub/RTHandles/VertexColorClip" {
 			vertexOutput vert(vertexInput input)
 			{
 				vertexOutput output;
+				UNITY_SETUP_INSTANCE_ID(input);
+				UNITY_TRANSFER_INSTANCE_ID(input, output);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 				output.pos = UnityObjectToClipPos(input.vertex);
-				output.norm = normalize(mul(UNITY_MATRIX_IT_MV, float4(input.vertex.xyz, 0)));
+
+				float3 worldNorm = UnityObjectToWorldNormal(float4(input.vertex.xyz, 0));
+				output.norm = mul((float3x3)UNITY_MATRIX_V, worldNorm);
+
+				//output.norm = normalize(mul(UNITY_MATRIX_IT_MV, ));
 				output.color = GammaToLinearSpace(input.color);
 				output.color.a = input.color.a;
 				return output;
@@ -55,6 +65,7 @@ Shader "Battlehub/RTHandles/VertexColorClip" {
 
 			float4 frag(vertexOutput input) : COLOR
 			{
+				UNITY_SETUP_INSTANCE_ID(input);
 				clip(dot(input.norm, float3(0, 0, 1)));
 				return  input.color;
 			}	

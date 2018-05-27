@@ -30,10 +30,13 @@ Shader "Battlehub/RTHandles/Shape" {
 				float4 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			struct vertexOutput {
 				float4 pos : SV_POSITION;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			fixed4 _Color;
@@ -50,8 +53,12 @@ Shader "Battlehub/RTHandles/Shape" {
 
 			vertexOutput vert(vertexInput input)
 			{
-				float3 viewNorm = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, input.normal));
+				float3 worldNorm = UnityObjectToWorldNormal(input.normal);
+				float3 viewNorm = mul((float3x3)UNITY_MATRIX_V, worldNorm);
 				vertexOutput output;
+				UNITY_SETUP_INSTANCE_ID(input);
+				UNITY_TRANSFER_INSTANCE_ID(input, output);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.color = input.color * 1.5 * dot(viewNorm, float3(0, 0, 1));
 				output.color = GammaToLinearSpace(output.color);
@@ -63,6 +70,7 @@ Shader "Battlehub/RTHandles/Shape" {
 
 			float4 frag(vertexOutput input) : COLOR
 			{
+				UNITY_SETUP_INSTANCE_ID(input);
 				return _Color * input.color;
 			}	
 

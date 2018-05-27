@@ -253,7 +253,7 @@ namespace Battlehub.RTHandles
         {
             get
             {
-                if(Targets == null)
+                if(Targets == null || Targets.Length == 0)
                 {
                     return null;
                 }

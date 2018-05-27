@@ -35,10 +35,13 @@ Shader "Battlehub/RTGizmos/Handles" {
 				float3 normal : NORMAL;
 				float4 offset : TEXCOORD0;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			struct vertexOutput {
 				float4 pos : SV_POSITION;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			float _Scale;
@@ -49,10 +52,13 @@ Shader "Battlehub/RTGizmos/Handles" {
 			vertexOutput vert(vertexInput input)
 			{
 				vertexOutput output;
+				UNITY_SETUP_INSTANCE_ID(input);
+				UNITY_TRANSFER_INSTANCE_ID(input, output);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-				
 				float3 viewpos = lerp(-UnityObjectToViewPos(input.vertex.xyz), float3(0, 0, 1), unity_OrthoParams.w);
-				float3 viewNorm = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, input.normal));
+				float3 worldNorm = UnityObjectToWorldNormal(input.normal);
+				float3 viewNorm = mul((float3x3)UNITY_MATRIX_V, worldNorm);
 				float dotNorm = dot(viewNorm, viewpos);
 				float s = step(0.0f, dotNorm);
 
@@ -66,7 +72,6 @@ Shader "Battlehub/RTGizmos/Handles" {
 				float dist = dot(vert.xyz, float3(0, 0, 1));
 				float tan = 1.0f / t;
 				float denom = lerp(dist * 6 * _Scale / h * tan, orthoSize * 6.0 * _Scale / h, unity_OrthoParams.w);
-				//denom *= lerp(0.93, 1.0, dotNorm * 0.5 + 0.5);
 
 				output.pos = mul(UNITY_MATRIX_P, vert -
 					float4(input.offset.x * denom, input.offset.y * denom, 0.0, 0.0));
@@ -78,7 +83,8 @@ Shader "Battlehub/RTGizmos/Handles" {
 			}
 
 			float4 frag(vertexOutput input) : COLOR
-			{
+			{ 
+				UNITY_SETUP_INSTANCE_ID(input);
 				return input.color * _Color;
 			}
 

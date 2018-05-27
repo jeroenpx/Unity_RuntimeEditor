@@ -90,24 +90,31 @@ namespace Battlehub.RTHandles
         {
             LinesMaterial = new Material(Shader.Find("Battlehub/RTHandles/VertexColor"));
             LinesMaterial.color = Color.white;
+            LinesMaterial.enableInstancing = true;
 
             LinesMaterialZTest = new Material(Shader.Find("Battlehub/RTHandles/VertexColor"));
             LinesMaterialZTest.color = Color.white;
             LinesMaterialZTest.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
+            LinesMaterialZTest.enableInstancing = true;
 
             LinesClipMaterial = new Material(Shader.Find("Battlehub/RTHandles/VertexColorClip"));
             LinesClipMaterial.color = Color.white;
+            LinesClipMaterial.enableInstancing = true;
 
             LinesBillboardMaterial = new Material(Shader.Find("Battlehub/RTHandles/VertexColorBillboard"));
             LinesBillboardMaterial.color = Color.white;
+            LinesBillboardMaterial.enableInstancing = true;
 
             ShapesMaterial = new Material(Shader.Find("Battlehub/RTHandles/Shape"));
             ShapesMaterial.color = Color.white;
+            ShapesMaterial.enableInstancing = true;
+
 
             ShapesMaterialZTest = new Material(Shader.Find("Battlehub/RTHandles/Shape"));
             ShapesMaterialZTest.color = new Color(1, 1, 1, 0);
             ShapesMaterialZTest.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
             ShapesMaterialZTest.SetFloat("_ZWrite", 1.0f);
+            ShapesMaterialZTest.enableInstancing = true;
 
             ShapesMaterialZTestOffset = new Material(Shader.Find("Battlehub/RTHandles/Shape"));
             ShapesMaterialZTestOffset.color = new Color(1, 1, 1, 1);
@@ -115,35 +122,43 @@ namespace Battlehub.RTHandles
             ShapesMaterialZTestOffset.SetFloat("_ZWrite", 1.0f);
             ShapesMaterialZTestOffset.SetFloat("_OFactors", -1.0f);
             ShapesMaterialZTestOffset.SetFloat("_OUnits", -1.0f);
+            ShapesMaterialZTestOffset.enableInstancing = true;
 
             ShapesMaterialZTest2 = new Material(Shader.Find("Battlehub/RTHandles/Shape"));
             ShapesMaterialZTest2.color = new Color(1, 1, 1, 0);
             ShapesMaterialZTest2.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
             ShapesMaterialZTest2.SetFloat("_ZWrite", 1.0f);
+            ShapesMaterialZTest2.enableInstancing = true;
 
             ShapesMaterialZTest3 = new Material(Shader.Find("Battlehub/RTHandles/Shape"));
             ShapesMaterialZTest3.color = new Color(1, 1, 1, 0);
             ShapesMaterialZTest3.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
             ShapesMaterialZTest3.SetFloat("_ZWrite", 1.0f);
+            ShapesMaterialZTest3.enableInstancing = true;
 
             ShapesMaterialZTest4 = new Material(Shader.Find("Battlehub/RTHandles/Shape"));
             ShapesMaterialZTest4.color = new Color(1, 1, 1, 0); 
             ShapesMaterialZTest4.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
             ShapesMaterialZTest4.SetFloat("_ZWrite", 1.0f);
+            ShapesMaterialZTest4.enableInstancing = true;
 
             XMaterial = new Material(Shader.Find("Battlehub/RTCommon/Billboard"));
             XMaterial.color = Color.white;
             XMaterial.mainTexture = Resources.Load<Texture>("Battlehub.RuntimeHandles.x");
+            XMaterial.enableInstancing = true;
             YMaterial = new Material(Shader.Find("Battlehub/RTCommon/Billboard"));
             YMaterial.color = Color.white;
             YMaterial.mainTexture = Resources.Load<Texture>("Battlehub.RuntimeHandles.y");
+            YMaterial.enableInstancing = true;
             ZMaterial = new Material(Shader.Find("Battlehub/RTCommon/Billboard"));
             ZMaterial.color = Color.white;
             ZMaterial.mainTexture = Resources.Load<Texture>("Battlehub.RuntimeHandles.z");
+            ZMaterial.enableInstancing = true;
 
             GridMaterial = new Material(Shader.Find("Battlehub/RTHandles/Grid"));
             GridMaterial.color = Color.white;
             GridMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Never);
+            GridMaterial.enableInstancing = true;
 
             Mesh selectionArrowMesh = CreateConeMesh(RTHColors.SelectionColor, HandleScale);
             Mesh disableArrowMesh = CreateConeMesh(RTHColors.DisabledColor, HandleScale);
