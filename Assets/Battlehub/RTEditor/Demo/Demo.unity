@@ -104494,7 +104494,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WindowType: 2
-  m_positonHandleModel: {fileID: 0}
+  m_positonHandleModel: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7,
+    type: 2}
+  m_rotationHandleModel: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492,
+    type: 2}
+  m_scaleHandleModel: {fileID: 114244960618619326, guid: d3fd87b8a132d624f846fd97fbb89c85,
+    type: 2}
   RuntimeModifierKey: 306
   EditorModifierKey: 304
   SelectAllKey: 97

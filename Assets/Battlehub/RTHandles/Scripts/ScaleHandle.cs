@@ -180,6 +180,11 @@ namespace Battlehub.RTHandles
                     m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / EffectiveGridUnitSize) * EffectiveGridUnitSize;
                 }
 
+                if (Model != null)
+                {
+                    Model.SetScale(m_roundedScale);
+                }
+
                 for (int i = 0; i < m_refScales.Length; ++i)
                 {
                     Quaternion rotation =  RuntimeTools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
@@ -195,6 +200,10 @@ namespace Battlehub.RTHandles
         {
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
+            if(Model != null)
+            {
+                Model.SetScale(m_roundedScale);
+            }
         }
 
         protected override void DrawOverride()

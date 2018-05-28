@@ -51,6 +51,7 @@ namespace Battlehub.RTCommon
         public static event RuntimeToolsEvent UnitSnappingChanged;
         public static event RuntimeToolsEvent IsSnappingChanged;
         public static event RuntimeToolsEvent SnappingModeChanged;
+        public static event RuntimeToolsEvent LockAxesChanged;
 
         private static RuntimeTool m_current;
         private static RuntimePivotMode m_pivotMode;
@@ -202,11 +203,23 @@ namespace Battlehub.RTCommon
             get;
             set;
         }
-        
+
+
+        public static LockObject m_lockAxes;
         public static LockObject LockAxes
         {
-            get;
-            set;
+            get { return m_lockAxes; }
+            set
+            {
+                if(m_lockAxes != value)
+                {
+                    m_lockAxes = value;
+                    if(LockAxesChanged != null)
+                    {
+                        LockAxesChanged();
+                    }
+                }
+            }
         }
 
         public static RuntimeTool Current

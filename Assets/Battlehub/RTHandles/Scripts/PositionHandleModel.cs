@@ -1,12 +1,9 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
-    public class PositionHandleModel : MonoBehaviour
+    public class PositionHandleModel : BaseHandleModel
     {
         [SerializeField]
         private GameObject[] m_models;
@@ -47,20 +44,7 @@ namespace Battlehub.RTHandles
         private int m_zQuadMatIndex = 11;
  
         [SerializeField]
-        private Color m_xColor = RTHColors.XColor;
-        [SerializeField]
-        private Color m_yColor = RTHColors.YColor;
-        [SerializeField]
-        private Color m_zColor = RTHColors.ZColor;
-        [SerializeField]
-        private Color m_ssQuadColor = RTHColors.AltColor;
-        [SerializeField]
-        private Color m_disabledColor = RTHColors.DisabledColor;
-
-        [SerializeField]
         private float m_quadTransparency = 0.5f;
-        [SerializeField]
-        private Color m_selectionColor = RTHColors.SelectionColor;
 
         [SerializeField]
         private float m_radius = DefaultRadius;
@@ -108,10 +92,6 @@ namespace Battlehub.RTHandles
         private const float DefaultArrowLength = 0.2f;
         private const float DefaultQuadLength = 0.2f;
 
-        private RuntimeHandleAxis m_selectedAxis = RuntimeHandleAxis.None;
-        private LockObject m_lockObj = new LockObject();
-        private RuntimeGraphicsLayer m_graphicsLayer;
-
         public bool IsVertexSnapping
         {
             get { return m_isVertexSnapping; }
@@ -127,18 +107,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void Awake()
+        protected override void Awake()
         {
-            m_graphicsLayer = FindObjectOfType<RuntimeGraphicsLayer>();
-            if(m_graphicsLayer == null)
-            {
-                GameObject go = new GameObject();
-                go.AddComponent<PersistentIgnore>();
-                m_graphicsLayer = go.AddComponent<RuntimeGraphicsLayer>();
-                m_graphicsLayer.name = "RuntimeGraphicsLayer";
-            }
-
-            SetLayer(transform, m_graphicsLayer.GraphicsLayer);
+            base.Awake();
             if(m_camera == null)
             {
                 OnActiveSceneCameraChanged();
@@ -203,13 +174,15 @@ namespace Battlehub.RTHandles
             OnVertexSnappingModeChaged();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             UpdateTransforms();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             RuntimeEditorApplication.ActiveSceneCameraChanged -= OnActiveSceneCameraChanged;
         }
 
@@ -225,25 +198,17 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void SetLayer(Transform t, int layer)
-        {
-            t.gameObject.layer = layer;
-            foreach (Transform child in t)
-            {
-                SetLayer(child, layer);
-            }
-        }
 
-        public void SetLock(LockObject lockObj)
+        public override void SetLock(LockObject lockObj)
         {
-            m_lockObj = lockObj;
+            base.SetLock(m_lockObj);
             OnVertexSnappingModeChaged();
             SetColors();
         }
 
-        public void Select(RuntimeHandleAxis axis)
+        public override void Select(RuntimeHandleAxis axis)
         {
-            m_selectedAxis = axis;
+            base.Select(axis);
             OnVertexSnappingModeChaged();
             SetColors();
         }
@@ -301,7 +266,7 @@ namespace Battlehub.RTHandles
             Color zQuadColor = m_zColor; zQuadColor.a = m_quadTransparency;
             m_materials[m_zQuadMatIndex].color = zQuadColor;
 
-            m_ssQuadMaterial.color = m_ssQuadColor;
+            m_ssQuadMaterial.color = m_altColor;
         }
 
 
@@ -418,10 +383,7 @@ namespace Battlehub.RTHandles
             m_b2ss.position = p + transform.rotation * new Vector3(-.33f, -.33f, 0) * m_quadLength;
             m_b3ss.position = p + transform.rotation * new Vector3(-.33f, .33f, 0) * m_quadLength;
             m_b4ss.position = p + transform.rotation * new Vector3(.33f, -.33f, 0) * m_quadLength;
-
-            //m_screenSpaceQuad.transform.localScale = Vector3.one * m_quadLength / DefaultQuadLength;
         }
-
 
         public void SetCameraPosition(Vector3 pos)
         {
@@ -477,8 +439,10 @@ namespace Battlehub.RTHandles
         private Vector3 m_prevPosition;
         private Quaternion m_prevRotation;
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
+
             if(m_prevCameraPosition != m_camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
             {
                 m_prevRotation = transform.rotation;

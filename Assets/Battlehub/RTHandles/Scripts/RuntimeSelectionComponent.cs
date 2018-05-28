@@ -41,6 +41,10 @@ namespace Battlehub.RTHandles
     {
         [SerializeField]
         private PositionHandleModel m_positonHandleModel;
+        [SerializeField]
+        private RotationHandleModel m_rotationHandleModel;
+        [SerializeField]
+        private ScaleHandleModel m_scaleHandleModel;
 
         public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
         public KeyCode EditorModifierKey = KeyCode.LeftShift;
@@ -240,6 +244,7 @@ namespace Battlehub.RTHandles
             GameObject rotationHandle = new GameObject();
             rotationHandle.name = "RotationHandle";
             m_rotationHandle = rotationHandle.AddComponent<RotationHandle>();
+            m_rotationHandle.Model = m_rotationHandleModel;
             m_rotationHandle.SceneCamera = SceneCamera;
             rotationHandle.SetActive(false);
             rotationHandle.transform.SetParent(HandlesParent);
@@ -247,6 +252,7 @@ namespace Battlehub.RTHandles
             GameObject scaleHandle = new GameObject();
             scaleHandle.name = "ScaleHandle";
             m_scaleHandle = scaleHandle.AddComponent<ScaleHandle>();
+            m_scaleHandle.Model = m_scaleHandleModel;
             m_scaleHandle.SceneCamera = SceneCamera;
             scaleHandle.SetActive(false);
             scaleHandle.transform.SetParent(HandlesParent);

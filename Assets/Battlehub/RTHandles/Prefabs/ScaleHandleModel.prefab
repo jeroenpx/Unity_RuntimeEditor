@@ -306,6 +306,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4959142082407542}
   - component: {fileID: 95305987812735604}
+  - component: {fileID: 114244960618619326}
   m_Layer: 0
   m_Name: ScaleHandleModel
   m_TagString: Untagged
@@ -607,7 +608,7 @@ Transform:
   m_GameObject: {fileID: 1774303146959776}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.049953196, y: 0.1, z: 0.09126971}
   m_Children: []
   m_Father: {fileID: 4959142082407542}
   m_RootOrder: 1
@@ -697,6 +698,36 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114244960618619326
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1907154566080650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0202ef7a6846a4b8a3ce0992bce514, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_xColor: {r: 0.73333335, g: 0.27450982, b: 0.1764706, a: 1}
+  m_yColor: {r: 0.54509807, g: 0.80784315, b: 0.2901961, a: 1}
+  m_zColor: {r: 0.21568628, g: 0.4509804, b: 0.95686275, a: 1}
+  m_altColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 1}
+  m_altColor2: {r: 0.34901962, g: 0.32156864, b: 0.3019608, a: 0.8784314}
+  m_disabledColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.5019608}
+  m_selectionColor: {r: 0.9372549, g: 0.93333334, b: 0.2509804, a: 1}
+  m_xMatIndex: 0
+  m_yMatIndex: 1
+  m_zMatIndex: 2
+  m_xArrowMatIndex: 6
+  m_yArrowMatIndex: 4
+  m_zArrowMatIndex: 5
+  m_xyzMatIndex: 3
+  m_armature: {fileID: 4523351260457718}
+  m_model: {fileID: 4789232515036270}
+  m_radius: 0.01
+  m_length: 1
+  m_arrowRadius: 0.05
 --- !u!137 &137867504772783868
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

@@ -427,6 +427,7 @@
     <Compile Include="Assets\Battlehub\RTHandles\Demo\Scripts\InstantiatePrefab.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Demo\Scripts\RTHandlesDemoSmoothFollow.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\BaseHandle.cs" />
+    <Compile Include="Assets\Battlehub\RTHandles\Scripts\BaseHandleModel.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\BoxSelection.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\Grid.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\PositionHandle.cs" />
@@ -768,12 +769,12 @@
     <None Include="Assets\Battlehub\RTEditor\Demo\BundledObject\NewSurfaceShader.shader" />
     <None Include="Assets\Battlehub\RTGizmos\Shaders\Resources\Handles.shader" />
     <None Include="Assets\Battlehub\RTHandles\Fonts\FontLicense!.txt" />
-    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\ArrowShader.shader" />
-    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\AxisShader.shader" />
-    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\DepthMaskBillboardShader.shader" />
-    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\QuadShader.shader" />
-    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\SSCircleShader.shader" />
-    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\SSQuadShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\ArrowShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\AxisShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\DepthMaskColorBillboardShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\QuadShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\SSCircleShader.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\SSQuadShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Grid.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Shape.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColor.shader" />

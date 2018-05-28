@@ -20,6 +20,16 @@ namespace Battlehub.RTCommon
         {
             get { return PositionX && PositionY && PositionZ; }
         }
+
+        public bool IsRotationLocked
+        {
+            get { return RotationX && RotationY && RotationZ && RotationScreen; }
+        }
+
+        public bool IsScaleLocked
+        {
+            get { return ScaleX && ScaleY && ScaleZ; }
+        }    
     }
 
     public class LockAxes : MonoBehaviour

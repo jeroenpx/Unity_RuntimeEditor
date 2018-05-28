@@ -44,6 +44,11 @@ namespace Battlehub.RTHandles
         public Camera SceneCamera;
 
         /// <summary>
+        /// Configurable model
+        /// </summary>
+        public BaseHandleModel Model;
+
+        /// <summary>
         /// Screen space selection margin in pixesl
         /// </summary>
         public float SelectionMargin = 10;
@@ -53,6 +58,13 @@ namespace Battlehub.RTHandles
             get { return RuntimeTools.LockAxes; }
             set { RuntimeTools.LockAxes = value; }
         }
+
+        protected virtual Vector3 HandlePosition
+        {
+            get { return transform.position; }
+            set { transform.position = value; }
+        }
+
         /// <summary>
         /// Target objects which will be affected by handle (for example if m_targets array containes O1 and O2 objects, and O1 is parent of O2 then m_activeTargets array will contain only O1 object)
         /// </summary>
@@ -308,7 +320,14 @@ namespace Battlehub.RTHandles
         protected virtual RuntimeHandleAxis SelectedAxis
         {
             get { return m_selectedAxis; }
-            set { m_selectedAxis = value; }
+            set
+            {
+                m_selectedAxis = value;
+                if (Model != null)
+                {
+                    Model.Select(SelectedAxis);
+                }
+            }
         }
 
         protected Plane DragPlane
@@ -332,9 +351,12 @@ namespace Battlehub.RTHandles
 
             RuntimeTools.PivotModeChanged += OnPivotModeChanged;
             RuntimeTools.ToolChanged += OnRuntimeToolChanged;
-
+            RuntimeTools.LockAxesChanged += OnLockAxesChanged;
+            
             AwakeOverride();
         }
+
+    
 
         private void Start()
         {
@@ -383,6 +405,14 @@ namespace Battlehub.RTHandles
                 transform.position = Targets[0].position;
             }
 
+            if (Model != null)
+            {
+                BaseHandleModel model = Instantiate(Model, transform.parent);
+                model.name = Model.name;
+                Model = model;
+                Model.SetLock(LockObject);
+            }
+
             StartOverride();
         }
 
@@ -391,6 +421,11 @@ namespace Battlehub.RTHandles
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Add(this);
+            }
+
+            if (Model != null)
+            {
+                Model.gameObject.SetActive(true);
             }
 
             OnEnableOverride();
@@ -408,6 +443,11 @@ namespace Battlehub.RTHandles
 
             DestroyCommonCenter();
 
+            if (Model != null)
+            {
+                Model.gameObject.SetActive(false);
+            }
+
             OnDisableOverride();
 
             RuntimeUndo.UndoCompleted -= OnUndoCompleted;
@@ -418,6 +458,7 @@ namespace Battlehub.RTHandles
         {
             RuntimeTools.ToolChanged -= OnRuntimeToolChanged;
             RuntimeTools.PivotModeChanged -= OnPivotModeChanged;
+            RuntimeTools.LockAxesChanged -= OnLockAxesChanged;
 
             if (GLRenderer.Instance != null)
             {
@@ -431,6 +472,13 @@ namespace Battlehub.RTHandles
 
             DestroyCommonCenter();
 
+            if (Model != null && Model.gameObject != null)
+            {
+                if (!Model.gameObject.IsPrefab())
+                {
+                    Destroy(Model);
+                }
+            }
             OnDestroyOverride();
         }
 
@@ -516,9 +564,17 @@ namespace Battlehub.RTHandles
                     }
 
                     OnDrag();
-
-
                 }
+            }
+
+            if (Model != null)
+            {
+                Vector3 position = HandlePosition;
+                Model.transform.position = position;
+                Model.transform.rotation = Rotation;
+
+                float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
+                Model.transform.localScale = Vector3.one * screenScale;
             }
 
             UpdateOverride();
@@ -559,7 +615,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void StartOverride()
         {
-
+            
         }
 
         protected virtual void OnEnableOverride()
@@ -574,7 +630,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void OnDestroyOverride()
         {
-
+          
         }
 
 
@@ -596,7 +652,6 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-
                     transform.position = Targets[0].position;
                     transform.rotation = Targets[0].rotation;
                 }
@@ -640,6 +695,17 @@ namespace Battlehub.RTHandles
             {
                 transform.position = Target.position;
             }            
+        }
+
+        private void OnLockAxesChanged()
+        {
+            if(Model != null)
+            {
+                if (!Model.gameObject.IsPrefab())
+                {
+                    Model.SetLock(LockObject);
+                }
+            }
         }
 
         protected virtual void RecordTransform()
@@ -789,7 +855,10 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            DrawOverride();
+            if(Model == null)
+            {
+                DrawOverride();
+            }
         }
 
         protected virtual void DrawOverride()

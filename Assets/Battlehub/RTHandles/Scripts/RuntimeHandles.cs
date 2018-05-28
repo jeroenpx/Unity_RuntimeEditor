@@ -31,6 +31,7 @@ namespace Battlehub.RTHandles
         public static readonly Color32 ZColor = new Color32(55, 115, 244, 255);
         public static readonly Color32 ZColorTransparent = new Color32(55, 115, 244, 128);
         public static readonly Color32 AltColor = new Color32(192, 192, 192, 224);
+        public static readonly Color32 AltColor2 = new Color32(89, 82, 77, 224);
         public static readonly Color32 SelectionColor = new Color32(239, 238, 64, 255);
         public static readonly Color32 BoundsColor = Color.green;
         public static readonly Color32 RaysColor = new Color32(255, 255, 255, 48);
