@@ -84,11 +84,11 @@ namespace Battlehub.RTHandles
                 Bounds bounds = m_exposeToEditor.Bounds;
                 Transform trform = m_exposeToEditor.BoundsObject.transform;
                 RuntimeHandles.DrawBounds(ref bounds, trform.position, trform.rotation, trform.lossyScale);
-             
-                if(RuntimeTools.DrawSelectionGizmoRay)
+                if (RuntimeTools.DrawSelectionGizmoRay)
                 {
                     RuntimeHandles.DrawBoundRay(ref bounds, trform.TransformPoint(bounds.center), Quaternion.identity, trform.lossyScale);
                 }
+
             }
         }
     }

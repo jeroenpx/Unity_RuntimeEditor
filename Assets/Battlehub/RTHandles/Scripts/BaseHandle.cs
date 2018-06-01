@@ -418,17 +418,20 @@ namespace Battlehub.RTHandles
 
         private void OnEnable()
         {
-            if (GLRenderer.Instance != null)
-            {
-                GLRenderer.Instance.Add(this);
-            }
+            OnEnableOverride();
 
             if (Model != null)
             {
                 Model.gameObject.SetActive(true);
+                SyncModelTransform();
             }
-
-            OnEnableOverride();
+            else
+            {
+                if (GLRenderer.Instance != null)
+                {
+                    GLRenderer.Instance.Add(this);
+                }
+            }
 
             RuntimeUndo.UndoCompleted += OnUndoCompleted;
             RuntimeUndo.RedoCompleted += OnRedoCompleted;
@@ -567,17 +570,13 @@ namespace Battlehub.RTHandles
                 }
             }
 
+            
+            UpdateOverride();
+
             if (Model != null)
             {
-                Vector3 position = HandlePosition;
-                Model.transform.position = position;
-                Model.transform.rotation = Rotation;
-
-                float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
-                Model.transform.localScale = Vector3.one * screenScale;
+                SyncModelTransform();
             }
-
-            UpdateOverride();
 
             if (m_isDragging)
             {
@@ -594,6 +593,16 @@ namespace Battlehub.RTHandles
                     }
                 }
             }
+        }
+
+        private void SyncModelTransform()
+        {
+            Vector3 position = HandlePosition;
+            Model.transform.position = position;
+            Model.transform.rotation = Rotation;
+
+            float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
+            Model.transform.localScale = Vector3.one * screenScale;
         }
 
         private void TryCancelDrag()

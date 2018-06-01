@@ -407,7 +407,6 @@ namespace Battlehub.RTHandles
             GameObject[] selected = RuntimeSelection.gameObjects;
             if(selected != null)
             {
-                
                 for(int i = 0; i < selected.Length; ++i)
                 {
                     GameObject selectedObj = selected[i];
@@ -449,7 +448,6 @@ namespace Battlehub.RTHandles
                 OnRuntimeToolChanged();
             }
         }
-
 
         protected virtual void SetCursor()
         {

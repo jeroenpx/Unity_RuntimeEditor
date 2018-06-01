@@ -379,10 +379,10 @@ namespace Battlehub.RTHandles
                 m_bSz[i].position = p + (m_b1x[i].position - p) + (m_b1y[i].position - p);
             }
 
-            m_b1ss.position = p + transform.rotation * new Vector3(.33f, .33f, 0) * m_quadLength;
-            m_b2ss.position = p + transform.rotation * new Vector3(-.33f, -.33f, 0) * m_quadLength;
-            m_b3ss.position = p + transform.rotation * new Vector3(-.33f, .33f, 0) * m_quadLength;
-            m_b4ss.position = p + transform.rotation * new Vector3(.33f, -.33f, 0) * m_quadLength;
+            m_b1ss.position = p + transform.rotation * new Vector3(1, 1, 0) * m_quadLength;
+            m_b2ss.position = p + transform.rotation * new Vector3(-1, -1, 0) * m_quadLength;
+            m_b3ss.position = p + transform.rotation * new Vector3(-1, 1, 0) * m_quadLength;
+            m_b4ss.position = p + transform.rotation * new Vector3(1, -1, 0) * m_quadLength;
         }
 
         public void SetCameraPosition(Vector3 pos)

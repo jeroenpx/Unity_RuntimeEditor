@@ -14,6 +14,7 @@ namespace Battlehub.RTCommon
         SkinnedMesh,
         Custom,
         None,
+        Sprite,
     }
     public enum ExposeToEditorObjectType
     {
@@ -51,6 +52,9 @@ namespace Battlehub.RTCommon
         {
             get { return m_colliders; }
         }
+
+
+        private SpriteRenderer m_spriteRenderer;
         private MeshFilter m_filter;
         private SkinnedMeshRenderer m_skinned;
         private static readonly Bounds m_none = new Bounds();
@@ -113,9 +117,13 @@ namespace Battlehub.RTCommon
                     {
                         return m_filter.sharedMesh.bounds;
                     }
-                    if (m_skinned != null && m_skinned.sharedMesh != null)
+                    else if (m_skinned != null && m_skinned.sharedMesh != null)
                     {
                         return m_skinned.sharedMesh.bounds;
+                    }
+                    else if(m_spriteRenderer != null)
+                    {
+                        return m_spriteRenderer.sprite.bounds;
                     }
 
                     return CustomBounds;
@@ -133,6 +141,13 @@ namespace Battlehub.RTCommon
                     if (m_skinned != null && m_skinned.sharedMesh != null)
                     {
                         return m_skinned.sharedMesh.bounds;
+                    }
+                }
+                else if(m_effectiveBoundsType == BoundsType.Sprite)
+                {
+                    if (m_spriteRenderer != null)
+                    {
+                        return m_spriteRenderer.sprite.bounds;
                     }
                 }
                 else if (m_effectiveBoundsType == BoundsType.Custom)
@@ -297,10 +312,17 @@ namespace Battlehub.RTCommon
             {
                 BoundsObject = gameObject;
             }
-            m_effectiveBoundsType = BoundsType;
 
+            m_effectiveBoundsType = BoundsType;
             m_filter = BoundsObject.GetComponent<MeshFilter>();
             m_skinned = BoundsObject.GetComponent<SkinnedMeshRenderer>();
+
+            if(m_filter == null && m_skinned == null)
+            {
+                m_spriteRenderer = BoundsObject.GetComponent<SpriteRenderer>();
+                //BoundsInWorldSpace = true;
+            }
+            
 
             if (RuntimeEditorApplication.IsOpened)
             {
@@ -446,6 +468,15 @@ namespace Battlehub.RTCommon
                             colliders.Add(collider);
                         }
                     }
+                    else if(m_spriteRenderer != null)
+                    {
+                        if(AddColliders && !isRigidBody)
+                        {
+                            BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+                            collider.size = m_spriteRenderer.sprite.bounds.size;
+                            colliders.Add(collider);
+                        }
+                    }
                 }
                 else if (m_effectiveBoundsType == BoundsType.Mesh)
                 {
@@ -469,6 +500,18 @@ namespace Battlehub.RTCommon
                             MeshCollider collider = gameObject.AddComponent<MeshCollider>();
                             collider.convex = isRigidBody;
                             collider.sharedMesh = m_skinned.sharedMesh;
+                            colliders.Add(collider);
+                        }
+                    }
+                }
+                else if(m_effectiveBoundsType == BoundsType.Sprite)
+                {
+                    if (m_spriteRenderer != null)
+                    {
+                        if (AddColliders && !isRigidBody)
+                        {
+                            BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+                            collider.size = m_spriteRenderer.sprite.bounds.size;
                             colliders.Add(collider);
                         }
                     }

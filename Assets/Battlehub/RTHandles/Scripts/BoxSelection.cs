@@ -146,7 +146,7 @@ namespace Battlehub.RTHandles
             }
 
             scaler.referencePixelsPerUnit = 1;
-            m_canvas.sortingOrder = -1;
+           // m_canvas.sortingOrder = -1;
             transform.SetParent(m_canvas.gameObject.transform);
         }
 
@@ -253,7 +253,7 @@ namespace Battlehub.RTHandles
             center.z = 0.0f;
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
 
-            //Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(SceneCamera);
+            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(SceneCamera);
             
             HashSet<GameObject> selection = new HashSet<GameObject>();
             Renderer[] renderers = FindObjectsOfType<Renderer>();
@@ -264,7 +264,7 @@ namespace Battlehub.RTHandles
                 Renderer r = renderers[i];
                 Bounds bounds = r.bounds;
                 GameObject go = r.gameObject;
-                TrySelect(ref selectionBounds, selection, args, ref bounds, go /*, frustumPlanes*/);
+                TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
 
            
             }
@@ -273,13 +273,13 @@ namespace Battlehub.RTHandles
                 Collider c = colliders[i];
                 Bounds bounds = c.bounds;
                 GameObject go = c.gameObject;
-                TrySelect(ref selectionBounds, selection, args, ref bounds, go /*, frustumPlanes*/);
+                TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
             }
 
             RuntimeSelection.objects = selection.ToArray();
         }
 
-        private void TrySelect(ref Bounds selectionBounds, HashSet<GameObject> selection, FilteringArgs args, ref Bounds bounds, GameObject go /*, Plane[] frustumPlanes*/)
+        private void TrySelect(ref Bounds selectionBounds, HashSet<GameObject> selection, FilteringArgs args, ref Bounds bounds, GameObject go, Plane[] frustumPlanes)
         {
 
             bool select;
@@ -296,10 +296,10 @@ namespace Battlehub.RTHandles
                 select = TransformCenter(ref selectionBounds, go.transform);
             }
 
-            //if (!GeometryUtility.TestPlanesAABB(frustumPlanes, bounds))
-            //{
-            //    select = false;
-            //}
+            if (!GeometryUtility.TestPlanesAABB(frustumPlanes, bounds))
+            {
+                select = false;
+            }
 
             if (select)
             {
