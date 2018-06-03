@@ -322,18 +322,25 @@ namespace Battlehub.RTSaveLoad2
 
         public void Reset()
         {
+            for (int typeIndex = 0; typeIndex < m_mappings.Length; ++typeIndex)
+            {
+                UnselectAllProperties(typeIndex);
+            }
             UnselectAll();
             LoadMappings();
         }
 
-        private void LoadMappings()
+        public void ClearDependencies()
         {
-            foreach(Type type in m_dependencyTypes.Keys)
+            foreach (Type type in m_dependencyTypes.Keys)
             {
                 UnlockType(type);
             }
             m_dependencyTypes.Clear();
+        }
 
+        private void LoadMappings()
+        {
             PersistentClassMapping[] mappings = GetMappings();
             for (int i = 0; i < mappings.Length; ++i)
             {
@@ -747,25 +754,11 @@ namespace Battlehub.RTSaveLoad2
                         {
                             if (isAllPropertiesSelected)
                             {
-                                for (int propIndex = 0; propIndex < m_mappings[typeIndex].IsPropertyMappingEnabled.Length; ++propIndex)
-                                {
-                                    m_mappings[typeIndex].IsPropertyMappingEnabled[propIndex] = false;
-
-                                    int selectedIndex = m_mappings[typeIndex].PropertyMappingSelection[propIndex];
-                                    Type mappedType = m_mappings[typeIndex].PropertyMappingTypes[propIndex][selectedIndex];
-                                    TryUnlockType(mappedType);
-                                }
+                                UnselectAllProperties(typeIndex);
                             }
                             else
                             {
-                                for (int propIndex = 0; propIndex < m_mappings[typeIndex].IsPropertyMappingEnabled.Length; ++propIndex)
-                                {
-                                    m_mappings[typeIndex].IsPropertyMappingEnabled[propIndex] = true;
-
-                                    int selectedIndex = m_mappings[typeIndex].PropertyMappingSelection[propIndex];
-                                    Type mappedType = m_mappings[typeIndex].PropertyMappingTypes[propIndex][selectedIndex];
-                                    TryLockType(mappedType);
-                                }
+                                SelectAllProperties(typeIndex);
                             }
                         }
                     }
@@ -873,6 +866,49 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        private void SelectAllProperties(int typeIndex)
+        {
+            if (m_mappings[typeIndex].IsPropertyMappingEnabled == null)
+            {
+                return;
+            }
+            for (int propIndex = 0; propIndex < m_mappings[typeIndex].IsPropertyMappingEnabled.Length; ++propIndex)
+            {
+                if (!m_mappings[typeIndex].IsPropertyMappingEnabled[propIndex])
+                {
+                    m_mappings[typeIndex].IsPropertyMappingEnabled[propIndex] = true;
+
+                    int selectedIndex = m_mappings[typeIndex].PropertyMappingSelection[propIndex];
+                    if(selectedIndex >= 0)
+                    {
+                        Type mappedType = m_mappings[typeIndex].PropertyMappingTypes[propIndex][selectedIndex];
+                        TryLockType(mappedType);
+                    }
+                }
+            }
+        }
+
+        private void UnselectAllProperties(int typeIndex)
+        {
+            if(m_mappings[typeIndex].IsPropertyMappingEnabled == null)
+            {
+                return;
+            }
+            for (int propIndex = 0; propIndex < m_mappings[typeIndex].IsPropertyMappingEnabled.Length; ++propIndex)
+            {
+                if (m_mappings[typeIndex].IsPropertyMappingEnabled[propIndex])
+                {
+                    m_mappings[typeIndex].IsPropertyMappingEnabled[propIndex] = false;
+
+                    int selectedIndex = m_mappings[typeIndex].PropertyMappingSelection[propIndex];
+                    if (selectedIndex >= 0)
+                    {
+                        Type mappedType = m_mappings[typeIndex].PropertyMappingTypes[propIndex][selectedIndex];
+                        TryUnlockType(mappedType);
+                    }
+                }
+            }
+        }
 
         private void TryExpandType(int typeIndex)
         {
@@ -1322,6 +1358,8 @@ namespace Battlehub.RTSaveLoad2
             GUILayout.Button("Undo & Reload", GUILayout.Height(37));
             if (EditorGUI.EndChangeCheck())
             {
+                m_uoMapperGUI.ClearDependencies();
+                m_surrogatesMapperGUI.ClearDependencies();
                 m_uoMapperGUI.Reset();
                 m_surrogatesMapperGUI.Reset();
             }

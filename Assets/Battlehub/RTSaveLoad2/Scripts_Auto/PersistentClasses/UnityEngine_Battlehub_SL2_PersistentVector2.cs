@@ -8,17 +8,17 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentVector3 : PersistentSurrogate
+    public class PersistentVector2 : PersistentSurrogate
     {
         
-        public static implicit operator Vector3(PersistentVector3 surrogate)
+        public static implicit operator Vector2(PersistentVector2 surrogate)
         {
-            return (Vector3)surrogate.WriteTo(new Vector3());
+            return (Vector2)surrogate.WriteTo(new Vector2());
         }
         
-        public static implicit operator PersistentVector3(Vector3 obj)
+        public static implicit operator PersistentVector2(Vector2 obj)
         {
-            PersistentVector3 surrogate = new PersistentVector3();
+            PersistentVector2 surrogate = new PersistentVector2();
             surrogate.ReadFrom(obj);
             return surrogate;
         }

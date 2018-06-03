@@ -6,6 +6,8 @@ namespace Battlehub.RTHandles
     public class PositionHandleModel : BaseHandleModel
     {
         [SerializeField]
+        private Transform m_camera;
+        [SerializeField]
         private GameObject[] m_models;
         [SerializeField]
         private GameObject m_screenSpaceQuad;
@@ -433,8 +435,7 @@ namespace Battlehub.RTHandles
         private float m_prevArrowLength;
         private float m_prevQuadLength;
 
-        [SerializeField]
-        private Transform m_camera;
+      
         private Vector3 m_prevCameraPosition = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         private Vector3 m_prevPosition;
         private Quaternion m_prevRotation;

@@ -506,7 +506,6 @@ namespace Battlehub.RTSaveLoad
                 m_idToId.Add(realId, mapping.Id);
                 if(ids != null)
                 {
-                    //ss
                     ids.Add(realId);
                 }
             }

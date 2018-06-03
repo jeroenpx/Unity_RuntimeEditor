@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Battlehub/RTSaveLoad2/Demo.unity
+    guid: 85b50160880eb2346bd057851ae1bcdf
+  m_configObjects: {}

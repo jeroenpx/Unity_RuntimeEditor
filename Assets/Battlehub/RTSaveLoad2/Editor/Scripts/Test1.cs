@@ -189,7 +189,8 @@ namespace Battlehub.RTSaveLoad2.Tests
         [Test]
         public void TestPass0()
         {
-            Debug.Log(typeof(UnityEngine.Object[]).Name);
+            
+
         }
 
         [Test]

@@ -705,23 +705,21 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Project.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\ProjectItem.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Storage.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Postprocess.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\PrintInstanceId.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\IdentifiersMap.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentClassMapping.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentMonoBehavior.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentObject.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentSurrogate.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\RTSL2Dependencies.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\RTSL2Version.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\TypeModelCreator.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentColor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentGameObject.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMaterial.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMatrix4x4.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMesh.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMeshRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentObject.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentSkinnedMeshRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentTransform.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentVector3.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentShader.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentTexture.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentVector2.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\TypeModelCreator.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\ExternalDragItem.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\ListBoxDemo.cs" />
@@ -763,6 +761,7 @@
     <Compile Include="Assets\Battlehub\Utils\Run.cs" />
     <Compile Include="Assets\Battlehub\Utils\Strong.cs" />
     <Compile Include="Assets\Battlehub\Utils\TextureExtensions.cs" />
+    <Compile Include="Assets\test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Battlehub\RTCommon\Shaders\Resources\Billboard.shader" />
