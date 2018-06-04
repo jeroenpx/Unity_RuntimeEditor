@@ -1139,7 +1139,7 @@ namespace Battlehub.RTSaveLoad2
 
     public class PersistentClassMapperWindow : EditorWindow
     {
-        [MenuItem("Tools/Runtime SaveLoad2/Persistent Classes Mapper")]
+        [MenuItem("Tools/Runtime SaveLoad2/Persistent Classes")]
         public static void ShowMenuItem()
         {
             ShowWindow();
@@ -1154,7 +1154,7 @@ namespace Battlehub.RTSaveLoad2
             }
 
             PersistentClassMapperWindow window = CreateInstance<PersistentClassMapperWindow>();
-            window.titleContent = new GUIContent("RTSL2 Config");
+            window.titleContent = new GUIContent("Persistent Classes");
             window.Show();
             window.position = new Rect(20, 40, 1280, 768);
         }

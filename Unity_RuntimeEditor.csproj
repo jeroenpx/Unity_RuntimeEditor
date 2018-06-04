@@ -705,8 +705,8 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Project.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\ProjectItem.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Storage.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Postprocess.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\PrintInstanceId.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetCounter.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetLibrary.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\IdentifiersMap.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentClassMapping.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentMonoBehavior.cs" />
@@ -761,7 +761,6 @@
     <Compile Include="Assets\Battlehub\Utils\Run.cs" />
     <Compile Include="Assets\Battlehub\Utils\Strong.cs" />
     <Compile Include="Assets\Battlehub\Utils\TextureExtensions.cs" />
-    <Compile Include="Assets\test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Battlehub\RTCommon\Shaders\Resources\Billboard.shader" />

@@ -392,6 +392,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Battlehub\ObjectToTexture\Scripts\Editor\ObjectToTextureEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\Editor\TreeViewDataModel\TreeElement.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\Editor\TreeViewDataModel\TreeElementUtility.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\Editor\TreeViewDataModel\TreeModel.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\Editor\TreeViewDataModel\TreeViewWithTreeModel.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapGen.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapWindow.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorEditor.cs" />
@@ -406,9 +410,15 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\SaveLoadConfigGen.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Editor\SaveLoadConfigWindow.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentObjectTemplate.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryCreatorWindow.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\MultiColumnTreeView.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\MultiColumnWindow.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\MyTreeAsset.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\MyTreeAssetEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\MyTreeElement.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\MyTreeElementGenerator.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\CodeGen.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\PersistentClassMapperWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\Test1.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Scripts\Editor\VirtualizingScrollRectEditor.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\EnumFlagsDrawer.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\ExposeProperties.cs" />
