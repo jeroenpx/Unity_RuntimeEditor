@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 using System.IO;
 using System;
-
+using System.Linq;
 
 namespace Battlehub.RTSaveLoad
 {
@@ -147,6 +147,15 @@ namespace Battlehub.RTSaveLoad
                 });
             }
 
+            if(InputController.GetKeyDown(KeyCode.Keypad7))
+            {
+                ProjectItem projectItem = m_projectManager.Project.FlattenHierarchy().Where(item => item.Name == "TestGO").FirstOrDefault();
+                m_projectManager.GetOrCreateObjects(new[] { projectItem }, result =>
+                {
+                    Instantiate(result.First().Object);
+                });
+            }
+
             if (InputController.GetKeyDown(AddPrefabKey))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
@@ -174,7 +183,6 @@ namespace Battlehub.RTSaveLoad
                         Debug.Log(addedItems[i].ToString() + " added");
                     }
                 });
-
             }
 
             if (InputController.GetKeyDown(AddTextureKey))

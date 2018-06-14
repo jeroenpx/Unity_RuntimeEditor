@@ -1882,7 +1882,7 @@ namespace Battlehub.RTSaveLoad
 
         private static void RestoreDataAndResolveDependencies(ProjectItem projectItem, Dictionary<long, UnityObject> objects)
         {
-            if (projectItem.Internal_Data.PersistentData != null)
+            if (projectItem.Internal_Data != null && projectItem.Internal_Data.PersistentData != null)
             {
                 PersistentData.RestoreDataAndResolveDependencies(projectItem.Internal_Data.PersistentData, objects);
             }
@@ -2152,7 +2152,7 @@ namespace Battlehub.RTSaveLoad
             {
                 return;
             }
-            if (projectItem.Internal_Data.RawData != null)
+            if (projectItem.Internal_Data != null && projectItem.Internal_Data.RawData != null)
             {
                 PersistentData data = projectItem.Internal_Data.PersistentData[0];
                 UnityObject obj = objects.Get(data.InstanceId);

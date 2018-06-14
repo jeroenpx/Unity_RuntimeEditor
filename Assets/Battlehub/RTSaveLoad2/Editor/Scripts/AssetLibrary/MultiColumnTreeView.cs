@@ -22,7 +22,6 @@ namespace Battlehub.RTSaveLoad2
 			EditorGUIUtility.FindTexture ("Camera Icon"),
 			EditorGUIUtility.FindTexture ("Windzone Icon"),
 			EditorGUIUtility.FindTexture ("GameObject Icon")
-
 		};
 
 		// All columns
