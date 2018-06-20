@@ -53,7 +53,7 @@ namespace Battlehub.RTGizmos
         protected override void RecordOverride()
         {
             base.RecordOverride();
-            RuntimeUndo.RecordValue(m_skinnedMeshRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.localBounds));
+            RuntimeUndo.RecordValue(m_skinnedMeshRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.localBounds, "localBounds"));
         }
 
         private void Reset()

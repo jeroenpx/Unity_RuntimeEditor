@@ -1196,7 +1196,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
       cycleCount: 0
-      repeatInterval: 0.01
+      repeatInterval: 0.0001
   SizeModule:
     enabled: 1
     curve:
@@ -4911,7 +4911,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
       cycleCount: 0
-      repeatInterval: 0.01
+      repeatInterval: 0.0001
   SizeModule:
     enabled: 1
     curve:
@@ -8617,7 +8617,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
       cycleCount: 0
-      repeatInterval: 0.01
+      repeatInterval: 0.0001
   SizeModule:
     enabled: 0
     curve:
@@ -12323,7 +12323,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
       cycleCount: 0
-      repeatInterval: 0.01
+      repeatInterval: 0.0001
   SizeModule:
     enabled: 1
     curve:
@@ -19642,7 +19642,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
       cycleCount: 0
-      repeatInterval: 0.01
+      repeatInterval: 0.0001
   SizeModule:
     enabled: 1
     curve:

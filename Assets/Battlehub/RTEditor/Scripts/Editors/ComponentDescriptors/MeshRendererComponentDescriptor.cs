@@ -25,7 +25,7 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo materials = Strong.MemberInfo((MeshRenderer x) => x.sharedMaterials);
+            MemberInfo materials = Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials");
             return new[]
                 {
                     new PropertyDescriptor( "Materials", editor.Component, materials, materials),
@@ -57,12 +57,12 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo shadowCastingMode = Strong.MemberInfo((MeshRenderer x) => x.shadowCastingMode);
-            MemberInfo receiveShadows = Strong.MemberInfo((MeshRenderer x) => x.receiveShadows);
-            MemberInfo materials = Strong.MemberInfo((MeshRenderer x) => x.sharedMaterials);
-            MemberInfo lightProbes = Strong.MemberInfo((MeshRenderer x) => x.lightProbeUsage);
-            MemberInfo reflectionProbes = Strong.MemberInfo((MeshRenderer x) => x.reflectionProbeUsage);
-            MemberInfo anchorOverride = Strong.MemberInfo((MeshRenderer x) => x.probeAnchor);
+            MemberInfo shadowCastingMode = Strong.PropertyInfo((MeshRenderer x) => x.shadowCastingMode, "shadowCastingMode");
+            MemberInfo receiveShadows = Strong.PropertyInfo((MeshRenderer x) => x.receiveShadows, "receiveShadows");
+            MemberInfo materials = Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials");
+            MemberInfo lightProbes = Strong.PropertyInfo((MeshRenderer x) => x.lightProbeUsage, "lightProbeUsage");
+            MemberInfo reflectionProbes = Strong.PropertyInfo((MeshRenderer x) => x.reflectionProbeUsage, "reflectionProbeUsage");
+            MemberInfo anchorOverride = Strong.PropertyInfo((MeshRenderer x) => x.probeAnchor, "probeAnchor");
 
             return new[]
                 {

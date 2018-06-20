@@ -702,27 +702,30 @@ namespace Battlehub.RTSaveLoad
                             if(!field.FieldType.IsEnum())
                             {
                                 object fieldValue = field.GetValue(obj);
-                                if (typeof(IEnumerable).IsAssignableFrom(field.FieldType))
+                                if(fieldValue != null)
                                 {
-                                    IEnumerable enumerable = (IEnumerable)fieldValue;
-                                    foreach (object o in enumerable)
+                                    if (typeof(IEnumerable).IsAssignableFrom(field.FieldType) && field.FieldType != typeof(string) && !(field.FieldType.IsArray && field.FieldType.GetElementType().IsPrimitive))
                                     {
-                                        if (o is IRTSerializable)
+                                        IEnumerable enumerable = (IEnumerable)fieldValue;
+                                        foreach (object o in enumerable)
                                         {
-                                            IRTSerializable rtSerializable = (IRTSerializable)o;
+                                            if (o is IRTSerializable)
+                                            {
+                                                IRTSerializable rtSerializable = (IRTSerializable)o;
+                                                rtSerializable.Serialize();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (fieldValue is IRTSerializable)
+                                        {
+                                            IRTSerializable rtSerializable = (IRTSerializable)fieldValue;
                                             rtSerializable.Serialize();
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    if (fieldValue is IRTSerializable)
-                                    {
-                                        IRTSerializable rtSerializable = (IRTSerializable)fieldValue;
-                                        rtSerializable.Serialize();
-                                    }
-                                }
-
+                            
                                 if (field.FieldType.IsPrimitive() || field.FieldType.IsArray())
                                 {
                                     PrimitiveContract primitive = PrimitiveContract.Create(field.FieldType);

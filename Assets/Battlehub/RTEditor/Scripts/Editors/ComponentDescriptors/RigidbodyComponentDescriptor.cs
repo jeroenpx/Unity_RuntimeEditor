@@ -29,13 +29,13 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo massInfo = Strong.MemberInfo((Rigidbody x) => x.mass);
-            MemberInfo dragInfo = Strong.MemberInfo((Rigidbody x) => x.drag);
-            MemberInfo angularDragInfo = Strong.MemberInfo((Rigidbody x) => x.angularDrag);
-            MemberInfo useGravityInfo = Strong.MemberInfo((Rigidbody x) => x.useGravity);
-            MemberInfo isKinematicInfo = Strong.MemberInfo((Rigidbody x) => x.isKinematic);
-            MemberInfo interpolationInfo = Strong.MemberInfo((Rigidbody x) => x.interpolation);
-            MemberInfo collisionDetectionInfo = Strong.MemberInfo((Rigidbody x) => x.collisionDetectionMode);
+            MemberInfo massInfo = Strong.PropertyInfo((Rigidbody x) => x.mass, "mass");
+            MemberInfo dragInfo = Strong.PropertyInfo((Rigidbody x) => x.drag, "drag");
+            MemberInfo angularDragInfo = Strong.PropertyInfo((Rigidbody x) => x.angularDrag, "angularDrag");
+            MemberInfo useGravityInfo = Strong.PropertyInfo((Rigidbody x) => x.useGravity, "useGravity");
+            MemberInfo isKinematicInfo = Strong.PropertyInfo((Rigidbody x) => x.isKinematic, "isKinematic");
+            MemberInfo interpolationInfo = Strong.PropertyInfo((Rigidbody x) => x.interpolation, "interpolation");
+            MemberInfo collisionDetectionInfo = Strong.PropertyInfo((Rigidbody x) => x.collisionDetectionMode, "collisionDetectionMode");
 
             return new[]
             {

@@ -83,8 +83,8 @@ namespace Battlehub.RTGizmos
         protected override void RecordOverride()
         {
             base.RecordOverride();
-            RuntimeUndo.RecordValue(m_source, Strong.PropertyInfo((AudioReverbZone x) => x.minDistance));
-            RuntimeUndo.RecordValue(m_source, Strong.PropertyInfo((AudioReverbZone x) => x.maxDistance));
+            RuntimeUndo.RecordValue(m_source, Strong.PropertyInfo((AudioReverbZone x) => x.minDistance, "minDistance"));
+            RuntimeUndo.RecordValue(m_source, Strong.PropertyInfo((AudioReverbZone x) => x.maxDistance, "maxDistance"));
         }
 
         private void Reset()

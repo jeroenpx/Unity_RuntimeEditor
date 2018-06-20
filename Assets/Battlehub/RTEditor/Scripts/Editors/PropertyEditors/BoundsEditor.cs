@@ -64,8 +64,8 @@ namespace Battlehub.RTEditor
             base.InitOverride(target, memberInfo, label);
 
             BoundsAccessor accessor = new BoundsAccessor(this);
-            m_center.Init(accessor, Strong.MemberInfo((BoundsAccessor x) => x.Center), "Center", OnValueChanging, null, OnEndEdit, false);
-            m_extents.Init(accessor, Strong.MemberInfo((BoundsAccessor x) => x.Extents), "Extents", OnValueChanging, null, OnEndEdit, false);
+            m_center.Init(accessor, Strong.PropertyInfo((BoundsAccessor x) => x.Center, "Center"), "Center", OnValueChanging, null, OnEndEdit, false);
+            m_extents.Init(accessor, Strong.PropertyInfo((BoundsAccessor x) => x.Extents, "Extents"), "Extents", OnValueChanging, null, OnEndEdit, false);
         }
 
         protected override void ReloadOverride()

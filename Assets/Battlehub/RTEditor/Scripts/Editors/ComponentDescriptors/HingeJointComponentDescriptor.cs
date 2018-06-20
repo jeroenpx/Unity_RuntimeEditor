@@ -29,21 +29,21 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo connectedBodyInfo = Strong.MemberInfo((HingeJoint x) => x.connectedBody);
-            MemberInfo anchorInfo = Strong.MemberInfo((HingeJoint x) => x.anchor);
-            MemberInfo axisInfo = Strong.MemberInfo((HingeJoint x) => x.axis);
-            MemberInfo autoConfigAnchorInfo = Strong.MemberInfo((HingeJoint x) => x.autoConfigureConnectedAnchor);
-            MemberInfo connectedAnchorInfo = Strong.MemberInfo((HingeJoint x) => x.connectedAnchor);
-            MemberInfo useSpringInfo = Strong.MemberInfo((HingeJoint x) => x.useSpring);
-            MemberInfo springInfo = Strong.MemberInfo((HingeJoint x) => x.spring);
-            MemberInfo useMotorInfo = Strong.MemberInfo((HingeJoint x) => x.useMotor);
-            MemberInfo motorInfo = Strong.MemberInfo((HingeJoint x) => x.motor);
-            MemberInfo useLimitsInfo = Strong.MemberInfo((HingeJoint x) => x.useLimits);
-            MemberInfo limitsInfo = Strong.MemberInfo((HingeJoint x) => x.limits);
-            MemberInfo breakForceInfo = Strong.MemberInfo((HingeJoint x) => x.breakForce);
-            MemberInfo breakTorqueInfo = Strong.MemberInfo((HingeJoint x) => x.breakTorque);
-            MemberInfo enableCollisionInfo = Strong.MemberInfo((HingeJoint x) => x.enableCollision);
-            MemberInfo enablePreporcessingInfo = Strong.MemberInfo((HingeJoint x) => x.enablePreprocessing);
+            MemberInfo connectedBodyInfo = Strong.PropertyInfo((HingeJoint x) => x.connectedBody, "connectedBody");
+            MemberInfo anchorInfo = Strong.PropertyInfo((HingeJoint x) => x.anchor, "anchor");
+            MemberInfo axisInfo = Strong.PropertyInfo((HingeJoint x) => x.axis, "axis");
+            MemberInfo autoConfigAnchorInfo = Strong.PropertyInfo((HingeJoint x) => x.autoConfigureConnectedAnchor, "autoConfigureConnectedAnchor");
+            MemberInfo connectedAnchorInfo = Strong.PropertyInfo((HingeJoint x) => x.connectedAnchor, "connectedAnchor");
+            MemberInfo useSpringInfo = Strong.PropertyInfo((HingeJoint x) => x.useSpring, "useSpring");
+            MemberInfo springInfo = Strong.PropertyInfo((HingeJoint x) => x.spring, "spring");
+            MemberInfo useMotorInfo = Strong.PropertyInfo((HingeJoint x) => x.useMotor, "useMotor");
+            MemberInfo motorInfo = Strong.PropertyInfo((HingeJoint x) => x.motor, "motor");
+            MemberInfo useLimitsInfo = Strong.PropertyInfo((HingeJoint x) => x.useLimits, "useLimits");
+            MemberInfo limitsInfo = Strong.PropertyInfo((HingeJoint x) => x.limits, "limits");
+            MemberInfo breakForceInfo = Strong.PropertyInfo((HingeJoint x) => x.breakForce, "breakForce");
+            MemberInfo breakTorqueInfo = Strong.PropertyInfo((HingeJoint x) => x.breakTorque, "breakTorque");
+            MemberInfo enableCollisionInfo = Strong.PropertyInfo((HingeJoint x) => x.enableCollision, "enableCollision");
+            MemberInfo enablePreporcessingInfo = Strong.PropertyInfo((HingeJoint x) => x.enablePreprocessing, "enablePreprocessing");
 
             return new[]
             {
@@ -61,11 +61,11 @@ namespace Battlehub.RTEditor
                 {
                     ChildDesciptors = new[]
                     {
-                        new PropertyDescriptor("Min", null, Strong.MemberInfo((JointLimits x) => x.min)),
-                        new PropertyDescriptor("Max", null, Strong.MemberInfo((JointLimits x) => x.max)),
-                        new PropertyDescriptor("Bounciness", null, Strong.MemberInfo((JointLimits x) => x.bounciness)),
-                        new PropertyDescriptor("Bounce Min Velocity", null, Strong.MemberInfo((JointLimits x) => x.bounceMinVelocity)),
-                        new PropertyDescriptor("Contact Distance", null, Strong.MemberInfo((JointLimits x) => x.contactDistance)),
+                        new PropertyDescriptor("Min", null, Strong.PropertyInfo((JointLimits x) => x.min, "min")),
+                        new PropertyDescriptor("Max", null, Strong.PropertyInfo((JointLimits x) => x.max, "max")),
+                        new PropertyDescriptor("Bounciness", null, Strong.PropertyInfo((JointLimits x) => x.bounciness, "bounciness")),
+                        new PropertyDescriptor("Bounce Min Velocity", null, Strong.PropertyInfo((JointLimits x) => x.bounceMinVelocity, "bounceMinVelocity")),
+                        new PropertyDescriptor("Contact Distance", null, Strong.PropertyInfo((JointLimits x) => x.contactDistance, "contactDistance")),
                     }
                 },
                 new PropertyDescriptor("Break Force", editor.Component, breakForceInfo),

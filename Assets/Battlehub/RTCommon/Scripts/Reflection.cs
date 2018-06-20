@@ -33,6 +33,16 @@ namespace Battlehub
             return type.IsSubclassOf(typeof(MonoBehaviour));
         }
 
+        public static PropertyInfo PropertyInfo<T>(string name)
+        {
+            return typeof(T).GetProperty(name);
+        }
+
+        public static FieldInfo FieldInfo<T>(string name)
+        {
+            return typeof(T).GetField(name);
+        }
+
         public static PropertyInfo[] GetSerializableProperties(this Type type)
         {
             return type.GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).

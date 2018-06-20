@@ -71,13 +71,13 @@ namespace Battlehub.RTEditor
         {
             CapsuleColliderPropertyConverter converter = (CapsuleColliderPropertyConverter)converterObj;
 
-            MemberInfo isTriggerInfo = Strong.MemberInfo((CapsuleCollider x) => x.isTrigger);
-            MemberInfo materialInfo = Strong.MemberInfo((CapsuleCollider x) => x.sharedMaterial);
-            MemberInfo centerInfo = Strong.MemberInfo((CapsuleCollider x) => x.center);
-            MemberInfo radiusInfo = Strong.MemberInfo((CapsuleCollider x) => x.radius);
-            MemberInfo heightInfo = Strong.MemberInfo((CapsuleCollider x) => x.height);
-            MemberInfo directionInfo = Strong.MemberInfo((CapsuleCollider x) => x.direction);
-            MemberInfo directionConvertedInfo = Strong.MemberInfo((CapsuleColliderPropertyConverter x) => x.Direction);
+            MemberInfo isTriggerInfo = Strong.PropertyInfo((CapsuleCollider x) => x.isTrigger, "isTrigger");
+            MemberInfo materialInfo = Strong.PropertyInfo((CapsuleCollider x) => x.sharedMaterial, "sharedMaterial");
+            MemberInfo centerInfo = Strong.PropertyInfo((CapsuleCollider x) => x.center, "center");
+            MemberInfo radiusInfo = Strong.PropertyInfo((CapsuleCollider x) => x.radius, "radius");
+            MemberInfo heightInfo = Strong.PropertyInfo((CapsuleCollider x) => x.height, "height");
+            MemberInfo directionInfo = Strong.PropertyInfo((CapsuleCollider x) => x.direction, "direction");
+            MemberInfo directionConvertedInfo = Strong.PropertyInfo((CapsuleColliderPropertyConverter x) => x.Direction, "Direction");
 
             return new[]
             {

@@ -326,7 +326,7 @@ namespace Battlehub.RTEditor
 
                             if (renderer != null)
                             {
-                                RuntimeUndo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials));
+                                RuntimeUndo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
                                 Material[] materials = renderer.sharedMaterials;
                                 for (int i = 0; i < materials.Length; ++i)
                                 {
@@ -337,7 +337,7 @@ namespace Battlehub.RTEditor
  
                             if (sRenderer != null)
                             {
-                                RuntimeUndo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials));
+                                RuntimeUndo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
                                 Material[] materials = sRenderer.sharedMaterials;
                                 for (int i = 0; i < materials.Length; ++i)
                                 {
@@ -358,12 +358,12 @@ namespace Battlehub.RTEditor
 
                             if(renderer != null)
                             {
-                                RuntimeUndo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials));
+                                RuntimeUndo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
                             }
                             
                             if(sRenderer != null)
                             {
-                                RuntimeUndo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials));
+                                RuntimeUndo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
                             }
                             
                             if (renderer != null || sRenderer != null)

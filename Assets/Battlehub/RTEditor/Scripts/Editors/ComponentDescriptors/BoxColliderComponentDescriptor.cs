@@ -30,10 +30,10 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo isTriggerInfo = Strong.MemberInfo((BoxCollider x) => x.isTrigger);
-            MemberInfo materialInfo = Strong.MemberInfo((BoxCollider x) => x.sharedMaterial);
-            MemberInfo centerInfo = Strong.MemberInfo((BoxCollider x) => x.center);
-            MemberInfo sizeInfo = Strong.MemberInfo((BoxCollider x) => x.size);
+            MemberInfo isTriggerInfo = Strong.PropertyInfo((BoxCollider x) => x.isTrigger, "isTrigger");
+            MemberInfo materialInfo = Strong.PropertyInfo((BoxCollider x) => x.sharedMaterial, "sharedMaterial");
+            MemberInfo centerInfo = Strong.PropertyInfo((BoxCollider x) => x.center, "center");
+            MemberInfo sizeInfo = Strong.PropertyInfo((BoxCollider x) => x.size, "size");
 
             return new[]
             {

@@ -30,19 +30,19 @@ namespace Battlehub.RTEditor
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
            
-            MemberInfo connectedBodyInfo = Strong.MemberInfo((SpringJoint x) => x.connectedBody);
-            MemberInfo anchorInfo = Strong.MemberInfo((SpringJoint x) => x.anchor);
-            MemberInfo autoConfigAnchorInfo = Strong.MemberInfo((SpringJoint x) => x.autoConfigureConnectedAnchor);
-            MemberInfo connectedAnchorInfo = Strong.MemberInfo((SpringJoint x) => x.connectedAnchor);
-            MemberInfo springInfo = Strong.MemberInfo((SpringJoint x) => x.spring);
-            MemberInfo damperInfo = Strong.MemberInfo((SpringJoint x) => x.damper);
-            MemberInfo minDistanceInfo = Strong.MemberInfo((SpringJoint x) => x.minDistance);
-            MemberInfo maxDistanceInfo = Strong.MemberInfo((SpringJoint x) => x.maxDistance);
-            MemberInfo toleranceInfo = Strong.MemberInfo((SpringJoint x) => x.tolerance);
-            MemberInfo breakForceInfo = Strong.MemberInfo((SpringJoint x) => x.breakForce);
-            MemberInfo breakTorqueInfo = Strong.MemberInfo((SpringJoint x) => x.breakTorque);
-            MemberInfo enableCollisionInfo = Strong.MemberInfo((SpringJoint x) => x.enableCollision);
-            MemberInfo enablePreporcessingInfo = Strong.MemberInfo((SpringJoint x) => x.enablePreprocessing);
+            MemberInfo connectedBodyInfo = Strong.PropertyInfo((SpringJoint x) => x.connectedBody, "connectedBody");
+            MemberInfo anchorInfo = Strong.PropertyInfo((SpringJoint x) => x.anchor, "anchor");
+            MemberInfo autoConfigAnchorInfo = Strong.PropertyInfo((SpringJoint x) => x.autoConfigureConnectedAnchor, "autoConfigureConnectedAnchor");
+            MemberInfo connectedAnchorInfo = Strong.PropertyInfo((SpringJoint x) => x.connectedAnchor, "connectedAnchor");
+            MemberInfo springInfo = Strong.PropertyInfo((SpringJoint x) => x.spring, "spring");
+            MemberInfo damperInfo = Strong.PropertyInfo((SpringJoint x) => x.damper, "damper");
+            MemberInfo minDistanceInfo = Strong.PropertyInfo((SpringJoint x) => x.minDistance, "minDistance");
+            MemberInfo maxDistanceInfo = Strong.PropertyInfo((SpringJoint x) => x.maxDistance, "maxDistance");
+            MemberInfo toleranceInfo = Strong.PropertyInfo((SpringJoint x) => x.tolerance, "tolerance");
+            MemberInfo breakForceInfo = Strong.PropertyInfo((SpringJoint x) => x.breakForce, "breakForce");
+            MemberInfo breakTorqueInfo = Strong.PropertyInfo((SpringJoint x) => x.breakTorque, "breakTorque");
+            MemberInfo enableCollisionInfo = Strong.PropertyInfo((SpringJoint x) => x.enableCollision, "enableCollision");
+            MemberInfo enablePreporcessingInfo = Strong.PropertyInfo((SpringJoint x) => x.enablePreprocessing, "enablePreprocessing");
 
             return new[]
             {

@@ -15,7 +15,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if(descriptor.ComponentMemberInfo == Strong.MemberInfo((Transform x) => x.position))
+            if(descriptor.ComponentMemberInfo == Strong.PropertyInfo((Transform x) => x.position, "position"))
             {
                 Vector3Editor vector3Editor = (Vector3Editor)editor;
                 vector3Editor.IsXInteractable = !RuntimeTools.LockAxes.PositionX;
@@ -23,7 +23,7 @@ namespace Battlehub.RTEditor
                 vector3Editor.IsZInteractable = !RuntimeTools.LockAxes.PositionZ;
             }
 
-            if (descriptor.ComponentMemberInfo == Strong.MemberInfo((Transform x) => x.rotation))
+            if (descriptor.ComponentMemberInfo == Strong.PropertyInfo((Transform x) => x.rotation, "rotation"))
             {
                 Vector3Editor vector3Editor = (Vector3Editor)editor;
                 vector3Editor.IsXInteractable = !RuntimeTools.LockAxes.RotationX;
@@ -31,7 +31,7 @@ namespace Battlehub.RTEditor
                 vector3Editor.IsZInteractable = !RuntimeTools.LockAxes.RotationZ;
             }
 
-            if (descriptor.ComponentMemberInfo == Strong.MemberInfo((Transform x) => x.localScale))
+            if (descriptor.ComponentMemberInfo == Strong.PropertyInfo((Transform x) => x.localScale, "localScale"))
             {
                 Vector3Editor vector3Editor = (Vector3Editor)editor;
                 vector3Editor.IsXInteractable = !RuntimeTools.LockAxes.ScaleX;

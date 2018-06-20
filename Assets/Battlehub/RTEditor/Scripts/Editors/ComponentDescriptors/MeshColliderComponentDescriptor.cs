@@ -32,11 +32,10 @@ namespace Battlehub.RTEditor
         {
             PropertyEditorCallback valueChanged = () => editor.BuildEditor();
 
-            MemberInfo convexInfo = Strong.MemberInfo((MeshCollider x) => x.convex);
-            MemberInfo isTriggerInfo = Strong.MemberInfo((MeshCollider x) => x.isTrigger);
-            MemberInfo materialInfo = Strong.MemberInfo((MeshCollider x) => x.sharedMaterial);
-            MemberInfo meshInfo = Strong.MemberInfo((MeshCollider x) => x.sharedMesh);
-
+            MemberInfo convexInfo = Strong.PropertyInfo((MeshCollider x) => x.convex, "convex");
+            MemberInfo isTriggerInfo = Strong.PropertyInfo((MeshCollider x) => x.isTrigger, "isTrigger");
+            MemberInfo materialInfo = Strong.PropertyInfo((MeshCollider x) => x.sharedMaterial, "sharedMaterial");
+            MemberInfo meshInfo = Strong.PropertyInfo((MeshCollider x) => x.sharedMesh, "sharedMesh");
 
             MeshCollider collider = (MeshCollider)editor.Component;
             if (collider.convex)

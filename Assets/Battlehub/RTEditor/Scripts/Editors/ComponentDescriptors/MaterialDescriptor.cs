@@ -334,34 +334,34 @@ namespace Battlehub.RTEditor
                     switch (propertyType)
                     {
                         case RTShaderPropertyType.Color:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Color);
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Color, "Color");
                             break;
                         case RTShaderPropertyType.Float:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float);
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
                             break;
                         case RTShaderPropertyType.Range:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float);
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
                             break;
                         case RTShaderPropertyType.TexEnv:
                             switch (dim)
                             {
                                 case TextureDimension.Any:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture);
+                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture, "Texture");
                                     break;
                                 case TextureDimension.Cube:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Cubemap);
+                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Cubemap, "Cubemap");
                                     break;
                                 case TextureDimension.None:
                                     propertyInfo = null;
                                     break;
                                 case TextureDimension.Tex2D:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2D);
+                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2D, "Texture2D");
                                     break;
                                 case TextureDimension.Tex2DArray:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2DArray);
+                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2DArray, "Texture2DArray");
                                     break;
                                 case TextureDimension.Tex3D:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture3D);
+                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture3D, "Texture3D");
                                     break;
                                 case TextureDimension.Unknown:
                                     propertyInfo = null;
@@ -370,7 +370,7 @@ namespace Battlehub.RTEditor
 
                             break;
                         case RTShaderPropertyType.Vector:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Vector);
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Vector, "Vector");
                             break;
                     }
 

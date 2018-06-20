@@ -34,10 +34,10 @@ namespace Battlehub.RTEditor
         {
             TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
 
-            MemberInfo position = Strong.MemberInfo((Transform x) => x.position);
-            MemberInfo rotation = Strong.MemberInfo((Transform x) => x.rotation);
-            MemberInfo rotationConverted = Strong.MemberInfo((TransformPropertyConverter x) => x.Rotation);
-            MemberInfo scale = Strong.MemberInfo((Transform x) => x.localScale);
+            MemberInfo position = Strong.PropertyInfo((Transform x) => x.position, "position");
+            MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.rotation, "rotation");
+            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.Rotation, "Rotation");
+            MemberInfo scale = Strong.PropertyInfo((Transform x) => x.localScale, "localScale");
 
             return new[]
                 {

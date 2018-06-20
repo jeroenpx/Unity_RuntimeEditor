@@ -29,7 +29,7 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo sharedMeshInfo = Strong.MemberInfo((MeshFilter x) => x.sharedMesh);
+            MemberInfo sharedMeshInfo = Strong.PropertyInfo((MeshFilter x) => x.sharedMesh, "sharedMesh");
             return new[]
             {
                 new PropertyDescriptor("Mesh", editor.Component, sharedMeshInfo, sharedMeshInfo)

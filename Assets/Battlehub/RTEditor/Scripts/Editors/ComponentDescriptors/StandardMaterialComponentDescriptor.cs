@@ -365,22 +365,22 @@ namespace Battlehub.RTEditor
             PropertyEditorCallback valueChangedCallback = () => editor.BuildEditor();
             StandardMaterialValueConverter converter = (StandardMaterialValueConverter)converterObject;
 
-            PropertyInfo modeInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.Mode);
-            PropertyInfo cutoffInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.Cutoff);
-            PropertyInfo metallicMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.MetallicGlossMap);
-            PropertyInfo bumpMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.BumpMap);
-            PropertyInfo parallaxMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.ParallaxMap);
-            PropertyInfo occlusionMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.OcclusionMap);
-            PropertyInfo emissionMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.EmissionMap);
-            PropertyInfo emissionColorInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.EmissionColor);
-            PropertyInfo detailMaskInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.DetailMask);
-            PropertyInfo detailAlbedoMap = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.DetailAlbedoMap);
-            PropertyInfo detailNormalMap = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.DetailNormalMap);
+            PropertyInfo modeInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.Mode, "Mode");
+            PropertyInfo cutoffInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.Cutoff, "Cutoff");
+            PropertyInfo metallicMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.MetallicGlossMap, "MetallicGlossMap");
+            PropertyInfo bumpMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.BumpMap, "BumpMap");
+            PropertyInfo parallaxMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.ParallaxMap, "ParallaxMap");
+            PropertyInfo occlusionMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.OcclusionMap, "OcclusionMap");
+            PropertyInfo emissionMapInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.EmissionMap, "EmissionMap");
+            PropertyInfo emissionColorInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.EmissionColor, "EmissionColor");
+            PropertyInfo detailMaskInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.DetailMask, "DetailMask");
+            PropertyInfo detailAlbedoMap = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.DetailAlbedoMap, "DetailAlbedoMap");
+            PropertyInfo detailNormalMap = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.DetailNormalMap, "DetailNormalMap");
             // PropertyInfo uvSecondaryInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.UVSecondary);
 
-            PropertyInfo texInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture);
-            PropertyInfo colorInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Color);
-            PropertyInfo floatInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float);
+            PropertyInfo texInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture, "Texture");
+            PropertyInfo colorInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Color, "Color");
+            PropertyInfo floatInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
 
             BlendMode mode = GetBlendMode(editor.Material);
             List<MaterialPropertyDescriptor> properties = new List<MaterialPropertyDescriptor>();

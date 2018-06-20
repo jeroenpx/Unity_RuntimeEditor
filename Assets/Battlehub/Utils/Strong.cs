@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿#if UNITY_WSA
+#define USE_REFLECTION
+#endif
+
+using System.Reflection;
 using System.Linq.Expressions;
 using System;
 using System.Linq;
@@ -7,9 +11,13 @@ namespace Battlehub.Utils
 {
     public class Strong
     {
-        public static PropertyInfo PropertyInfo<T, U>(Expression<Func<T, U>> expression)
+        public static PropertyInfo PropertyInfo<T, U>(Expression<Func<T, U>> expression, string propertyName)
         {
+#if USE_REFLECTION
+            return typeof(T).GetProperty(propertyName);
+#else
             return (PropertyInfo)MemberInfo(expression);
+#endif
         }
 
         public static MemberInfo MemberInfo<T, U>(Expression<Func<T, U>> expression)

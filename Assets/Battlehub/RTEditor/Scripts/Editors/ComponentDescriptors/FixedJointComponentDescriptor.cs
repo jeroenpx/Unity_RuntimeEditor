@@ -29,11 +29,11 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo connectedBodyInfo = Strong.MemberInfo((SpringJoint x) => x.connectedBody);
-            MemberInfo breakForceInfo = Strong.MemberInfo((SpringJoint x) => x.breakForce);
-            MemberInfo breakTorqueInfo = Strong.MemberInfo((SpringJoint x) => x.breakTorque);
-            MemberInfo enableCollisionInfo = Strong.MemberInfo((SpringJoint x) => x.enableCollision);
-            MemberInfo enablePreporcessingInfo = Strong.MemberInfo((SpringJoint x) => x.enablePreprocessing);
+            MemberInfo connectedBodyInfo = Strong.PropertyInfo((FixedJoint x) => x.connectedBody, "connectedBody");
+            MemberInfo breakForceInfo = Strong.PropertyInfo((FixedJoint x) => x.breakForce, "breakForce");
+            MemberInfo breakTorqueInfo = Strong.PropertyInfo((FixedJoint x) => x.breakTorque, "breakTorque");
+            MemberInfo enableCollisionInfo = Strong.PropertyInfo((FixedJoint x) => x.enableCollision, "enableCollision");
+            MemberInfo enablePreporcessingInfo = Strong.PropertyInfo((FixedJoint x) => x.enablePreprocessing, "enablePreprocessing");
 
             return new[]
             {

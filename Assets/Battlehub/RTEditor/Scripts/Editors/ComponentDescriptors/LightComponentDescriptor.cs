@@ -36,29 +36,29 @@ namespace Battlehub.RTEditor
 
             PropertyEditorCallback valueChanged = () => editor.BuildEditor();
 
-            MemberInfo enabledInfo = Strong.MemberInfo((Light x) => x.enabled);
-            MemberInfo lightTypeInfo = Strong.MemberInfo((Light x) => x.type);
-            MemberInfo colorInfo = Strong.MemberInfo((Light x) => x.color);
-            MemberInfo intensityInfo = Strong.MemberInfo((Light x) => x.intensity);
-            MemberInfo bounceIntensityInfo = Strong.MemberInfo((Light x) => x.bounceIntensity);
-            MemberInfo shadowTypeInfo = Strong.MemberInfo((Light x) => x.shadows);
-            MemberInfo cookieInfo = Strong.MemberInfo((Light x) => x.cookie);
-            MemberInfo cookieSizeInfo = Strong.MemberInfo((Light x) => x.cookieSize);
-            MemberInfo flareInfo = Strong.MemberInfo((Light x) => x.flare);
-            MemberInfo renderModeInfo = Strong.MemberInfo((Light x) => x.renderMode);
+            MemberInfo enabledInfo = Strong.PropertyInfo((Light x) => x.enabled, "enabled");
+            MemberInfo lightTypeInfo = Strong.PropertyInfo((Light x) => x.type, "type");
+            MemberInfo colorInfo = Strong.PropertyInfo((Light x) => x.color, "color");
+            MemberInfo intensityInfo = Strong.PropertyInfo((Light x) => x.intensity, "intensity");
+            MemberInfo bounceIntensityInfo = Strong.PropertyInfo((Light x) => x.bounceIntensity, "bounceIntensity");
+            MemberInfo shadowTypeInfo = Strong.PropertyInfo((Light x) => x.shadows, "shadows");
+            MemberInfo cookieInfo = Strong.PropertyInfo((Light x) => x.cookie, "cookie");
+            MemberInfo cookieSizeInfo = Strong.PropertyInfo((Light x) => x.cookieSize, "cookieSize");
+            MemberInfo flareInfo = Strong.PropertyInfo((Light x) => x.flare, "flare");
+            MemberInfo renderModeInfo = Strong.PropertyInfo((Light x) => x.renderMode, "renderMode");
 
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
             descriptors.Add(new PropertyDescriptor("Enabled", editor.Component, enabledInfo, enabledInfo));
             descriptors.Add(new PropertyDescriptor("Type", editor.Component, lightTypeInfo, lightTypeInfo, valueChanged));
             if (light.type == LightType.Point)
             {
-                MemberInfo rangeInfo = Strong.MemberInfo((Light x) => x.range);
+                MemberInfo rangeInfo = Strong.PropertyInfo((Light x) => x.range, "range");
                 descriptors.Add(new PropertyDescriptor("Range", editor.Component, rangeInfo, rangeInfo));
             }
             else if (light.type == LightType.Spot)
             {
-                MemberInfo rangeInfo = Strong.MemberInfo((Light x) => x.range);
-                MemberInfo spotAngleInfo = Strong.MemberInfo((Light x) => x.spotAngle);
+                MemberInfo rangeInfo = Strong.PropertyInfo((Light x) => x.range, "range");
+                MemberInfo spotAngleInfo = Strong.PropertyInfo((Light x) => x.spotAngle, "spotAngle");
                 descriptors.Add(new PropertyDescriptor("Range", editor.Component, rangeInfo, rangeInfo));
                 descriptors.Add(new PropertyDescriptor("Spot Angle", editor.Component, spotAngleInfo, spotAngleInfo, null, new Range(1, 179)));
             }
@@ -72,11 +72,11 @@ namespace Battlehub.RTEditor
                 descriptors.Add(new PropertyDescriptor("Shadow Type", editor.Component, shadowTypeInfo, shadowTypeInfo, valueChanged));
                 if (light.shadows == LightShadows.Soft || light.shadows == LightShadows.Hard)
                 {
-                    MemberInfo shadowStrengthInfo = Strong.MemberInfo((Light x) => x.shadowStrength);
-                    MemberInfo shadowResolutionInfo = Strong.MemberInfo((Light x) => x.shadowResolution);
-                    MemberInfo shadowBiasInfo = Strong.MemberInfo((Light x) => x.shadowBias);
-                    MemberInfo shadowNormalBiasInfo = Strong.MemberInfo((Light x) => x.shadowNormalBias);
-                    MemberInfo shadowNearPlaneInfo = Strong.MemberInfo((Light x) => x.shadowNearPlane);
+                    MemberInfo shadowStrengthInfo = Strong.PropertyInfo((Light x) => x.shadowStrength, "shadowStrength");
+                    MemberInfo shadowResolutionInfo = Strong.PropertyInfo((Light x) => x.shadowResolution, "shadowResolution");
+                    MemberInfo shadowBiasInfo = Strong.PropertyInfo((Light x) => x.shadowBias, "shadowBias");
+                    MemberInfo shadowNormalBiasInfo = Strong.PropertyInfo((Light x) => x.shadowNormalBias, "shadowNormalBias");
+                    MemberInfo shadowNearPlaneInfo = Strong.PropertyInfo((Light x) => x.shadowNearPlane, "shadowNearPlane");
 
                     descriptors.Add(new PropertyDescriptor("Strength", editor.Component, shadowStrengthInfo, shadowStrengthInfo, null, new Range(0, 1)));
                     descriptors.Add(new PropertyDescriptor("Resoultion", editor.Component, shadowResolutionInfo, shadowResolutionInfo));

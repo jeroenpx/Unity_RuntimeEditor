@@ -27,7 +27,7 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo materialsInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.sharedMaterials);
+            MemberInfo materialsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials");
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
             descriptors.Add(new PropertyDescriptor("Materials", editor.Component, materialsInfo, materialsInfo));
             return descriptors.ToArray();
@@ -59,18 +59,18 @@ namespace Battlehub.RTEditor
 
         public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            MemberInfo castShadowsInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.shadowCastingMode);
-            MemberInfo receiveShadowsInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.receiveShadows);
-            MemberInfo materialsInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.sharedMaterials);
-            MemberInfo lightProbesInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.lightProbeUsage);
-            MemberInfo reflectionProbesInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.reflectionProbeUsage);
-            MemberInfo anchorOverrideInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.probeAnchor);
-            MemberInfo qualityInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.quality);
-            MemberInfo updateWhenOffscreenInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.updateWhenOffscreen);
-            MemberInfo skinnedMotionVectorsInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.skinnedMotionVectors);
-            MemberInfo meshInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.sharedMesh);
-            MemberInfo rootBoneInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.rootBone);
-            MemberInfo boundsInfo = Strong.MemberInfo((SkinnedMeshRenderer x) => x.localBounds);
+            MemberInfo castShadowsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.shadowCastingMode, "shadowCastingMode");
+            MemberInfo receiveShadowsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.receiveShadows, "receiveShadows");
+            MemberInfo materialsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials");
+            MemberInfo lightProbesInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.lightProbeUsage, "lightProbeUsage");
+            MemberInfo reflectionProbesInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.reflectionProbeUsage, "reflectionProbeUsage");
+            MemberInfo anchorOverrideInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.probeAnchor, "probeAnchor");
+            MemberInfo qualityInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.quality, "quality");
+            MemberInfo updateWhenOffscreenInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.updateWhenOffscreen, "updateWhenOffscreen");
+            MemberInfo skinnedMotionVectorsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.skinnedMotionVectors, "skinnedMotionVectors");
+            MemberInfo meshInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMesh, "sharedMesh");
+            MemberInfo rootBoneInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.rootBone, "rootBone");
+            MemberInfo boundsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.localBounds, "localBounds");
 
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
 
