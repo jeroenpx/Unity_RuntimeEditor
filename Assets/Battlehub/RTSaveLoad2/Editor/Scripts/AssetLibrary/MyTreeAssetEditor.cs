@@ -122,6 +122,8 @@ namespace Battlehub.RTSaveLoad2
 					Undo.RecordObject (asset, "Remove Item From Asset");
 					var selection = m_TreeView.GetSelection ();
 					m_TreeView.treeModel.RemoveElements (selection);
+
+                    
 				}
 			}
 		}

@@ -102,7 +102,7 @@ namespace Battlehub.RTSaveLoad2
 				return m_MyTreeAsset.treeElements;
 
 			// generate some test data
-			return MyTreeElementGenerator.GenerateRandomTree(11130); 
+			return MyTreeElementGenerator.GenerateRandomTree(111); 
 		}
 
 		void OnSelectionChange ()

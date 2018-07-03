@@ -509,7 +509,7 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (InputController._GetMouseButtonDown(0))
             {
                 if (RuntimeTools.Current != Tool && RuntimeTools.Current != RuntimeTool.None || RuntimeTools.IsViewing)
                 {
@@ -549,7 +549,7 @@ namespace Battlehub.RTHandles
                 }
 
             }
-            else if (Input.GetMouseButtonUp(0))
+            else if (InputController._GetMouseButtonUp(0))
             {
                 TryCancelDrag();
             }
@@ -557,7 +557,7 @@ namespace Battlehub.RTHandles
             {
                 if (m_isDragging)
                 {
-                    if (InputController.GetKey(UnitSnapKey) || RuntimeTools.UnitSnapping)
+                    if (InputController._GetKey(UnitSnapKey) || RuntimeTools.UnitSnapping)
                     {
                         EffectiveGridUnitSize = CurrentGridUnitSize;
                     }
@@ -758,7 +758,7 @@ namespace Battlehub.RTHandles
         protected virtual bool HitCenter()
         {
             Vector2 screenCenter = SceneCamera.WorldToScreenPoint(transform.position);
-            Vector2 mouse = Input.mousePosition;
+            Vector2 mouse = InputController._MousePosition;
 
             return (mouse - screenCenter).magnitude <= SelectionMargin;
         }
@@ -778,7 +778,7 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                Vector2 mousePosition = Input.mousePosition;
+                Vector2 mousePosition = InputController._MousePosition;
 
                 distanceToAxis = (screenVectorBegin - mousePosition).magnitude;
                 bool result = distanceToAxis <= SelectionMargin;
@@ -797,7 +797,7 @@ namespace Battlehub.RTHandles
         protected virtual bool HitScreenAxis(out float distanceToAxis, Vector2 screenVectorBegin, Vector3 screenVector, float screenVectorMag)
         {
             Vector2 perp = PerpendicularClockwise(screenVector).normalized;
-            Vector2 mousePosition = Input.mousePosition;
+            Vector2 mousePosition = InputController._MousePosition;
             Vector2 relMousePositon = mousePosition - screenVectorBegin;
 
             distanceToAxis = Mathf.Abs(Vector2.Dot(perp, relMousePositon));

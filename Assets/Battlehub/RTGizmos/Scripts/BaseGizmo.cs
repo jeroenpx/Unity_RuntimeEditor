@@ -158,7 +158,7 @@ namespace Battlehub.RTGizmos
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (InputController._GetMouseButtonDown(0))
             {
                 if (RuntimeTools.IsPointerOverGameObject())
                 {
@@ -186,14 +186,14 @@ namespace Battlehub.RTGizmos
                     return;
                 }
 
-                Vector2 pointer = Input.mousePosition;
+                Vector2 pointer = InputController._MousePosition;
                 m_dragIndex = Hit(pointer, HandlesPositions, HandlesNormals);
                 if (m_dragIndex >= 0 && OnBeginDrag(m_dragIndex))
                 {
                     m_handlesTransform = HandlesTransform;
                     m_handlesInverseTransform =   Matrix4x4.TRS(Target.position, Target.rotation, Target.localScale).inverse;// m_handlesTransform.inverse;
                     m_dragPlane = GetDragPlane();
-                    m_isDragging = GetPointOnDragPlane(Input.mousePosition, out m_prevPoint);
+                    m_isDragging = GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
                     m_normal = HandlesNormals[m_dragIndex].normalized;
                     if(m_isDragging)
                     {
@@ -214,7 +214,7 @@ namespace Battlehub.RTGizmos
                     }
                 }
             }
-            else if (Input.GetMouseButtonUp(0))
+            else if (InputController._GetMouseButtonUp(0))
             {
                 if (m_isDragging)
                 {
@@ -238,11 +238,11 @@ namespace Battlehub.RTGizmos
                 if (m_isDragging)
                 {
                     Vector3 point;
-                    if(GetPointOnDragPlane(Input.mousePosition, out point))
+                    if(GetPointOnDragPlane(InputController._MousePosition, out point))
                     {
                         Vector3 offset = m_handlesInverseTransform.MultiplyVector(point - m_prevPoint);
                         offset = Vector3.Project(offset, m_normal);
-                        if (InputController.GetKey(UnitSnapKey) || RuntimeTools.UnitSnapping)
+                        if (InputController._GetKey(UnitSnapKey) || RuntimeTools.UnitSnapping)
                         {
                             Vector3 gridOffset = Vector3.zero;
                             if (Mathf.Abs(offset.x * 1.5f) >= GridSize)

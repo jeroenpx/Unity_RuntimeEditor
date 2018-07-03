@@ -223,7 +223,7 @@ namespace Battlehub.RTHandles
             }
 
 
-            Vector2 guiMousePositon = Input.mousePosition;
+            Vector2 guiMousePositon = InputController._MousePosition;
             guiMousePositon.y = Screen.height - guiMousePositon.y;
             bool isMouseOverButton = m_buttonRect.Contains(guiMousePositon, true);
             if(isMouseOverButton)
@@ -235,7 +235,7 @@ namespace Battlehub.RTHandles
                 RuntimeTools.ActiveTool = null;
             }
 
-            if (m_camera.pixelRect.Contains(Input.mousePosition))
+            if (m_camera.pixelRect.Contains(InputController._MousePosition))
             {
                 if (!m_mouseOver || updateAlpha)
                 {
@@ -288,7 +288,7 @@ namespace Battlehub.RTHandles
                     RuntimeTools.ActiveTool = null;
                 }
 
-                if (Input.GetMouseButtonUp(0))
+                if (InputController._GetMouseButtonUp(0))
                 {
 
                     if (m_selectedAxis != Vector3.zero)
@@ -409,7 +409,7 @@ namespace Battlehub.RTHandles
 
         private Collider HitTest()
         {
-            Ray ray = m_camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = m_camera.ScreenPointToRay(InputController._MousePosition);
             float minDistance = float.MaxValue;
             Collider result = null;
             for(int i = 0; i < m_colliders.Length; ++i)

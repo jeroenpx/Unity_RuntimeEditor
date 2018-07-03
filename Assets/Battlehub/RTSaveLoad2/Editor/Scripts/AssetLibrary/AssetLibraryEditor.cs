@@ -4,45 +4,40 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2
 {
-    public class AssetLibraryCreatorWindow : EditorWindow
+    [CustomEditor(typeof(AssetLibraryAsset))]
+    public class AssetLibraryEditor : Editor
     {
-        private AssetLibraryLibrariesGUI m_librariesGUI;
         private AssetLibraryProjectGUI m_projectGUI;
         private AssetLibraryAssetsGUI m_assetsGUI;
 
-        private void Awake()
+        private AssetLibraryAsset Asset
         {
-            m_librariesGUI = new AssetLibraryLibrariesGUI();
-            m_projectGUI = new AssetLibraryProjectGUI();
-            m_assetsGUI = new AssetLibraryAssetsGUI();
+            get { return (AssetLibraryAsset)target; }
         }
 
-        [MenuItem("Tools/Runtime SaveLoad2/Asset Libraries")]
-        public static void ShowMenuItem()
+        private void OnEnable()
         {
-            ShowWindow();
-        }
-
-        public static void ShowWindow()
-        {
-            AssetLibraryCreatorWindow prevWindow = GetWindow<AssetLibraryCreatorWindow>();
-            if (prevWindow != null)
+            if (m_projectGUI == null)
             {
-                prevWindow.Close();
+                m_projectGUI = new AssetLibraryProjectGUI();
+                m_projectGUI.SetTreeAsset(Asset);
             }
 
-            AssetLibraryCreatorWindow window = CreateInstance<AssetLibraryCreatorWindow>();
-            window.titleContent = new GUIContent("Asset Libraries");
-            window.Show();
-            window.position = new Rect(20, 40, 1280, 768);
+            if (m_assetsGUI == null)
+            {
+                m_assetsGUI = new AssetLibraryAssetsGUI();
+            }
+            m_projectGUI.OnEnable();
         }
 
-
-        private void OnGUI()
+        private void OnDisable()
         {
-            DropAreaGUI();
+            m_projectGUI.OnDisable();
+        }
+
+        public override void OnInspectorGUI()
+        {
             EditorGUILayout.BeginHorizontal();
-            m_librariesGUI.OnGUI();
             m_projectGUI.OnGUI();
             m_assetsGUI.OnGUI();
             EditorGUILayout.EndHorizontal();
@@ -77,7 +72,7 @@ namespace Battlehub.RTSaveLoad2
                                 if (!string.IsNullOrEmpty(path) && File.Exists(path))
                                 {
                                     path = Path.GetDirectoryName(path);
-                                    break;
+                                    //break;
                                 }
                             
                         

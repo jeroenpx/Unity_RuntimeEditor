@@ -42,7 +42,7 @@ namespace Battlehub.RTHandles
                 Die();
             }
 
-            if(InputController.GetKeyDown(KeyCode.K))
+            if(InputController._GetKeyDown(KeyCode.K))
             {
                 Die();
             }

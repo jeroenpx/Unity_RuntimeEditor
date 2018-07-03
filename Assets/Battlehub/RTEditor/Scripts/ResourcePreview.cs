@@ -218,7 +218,7 @@ namespace Battlehub.RTEditor
                 point = Vector3.zero;
                 return false;
             }
-            Ray ray = sceneCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = sceneCamera.ScreenPointToRay(InputController._MousePosition);
             float distance;
             if (m_dragPlane.Raycast(ray, out distance))
             {
@@ -313,7 +313,7 @@ namespace Battlehub.RTEditor
                     Camera sceneCamera = RuntimeEditorApplication.ActiveSceneCamera;
                     if (sceneCamera)
                     {
-                        Ray ray = sceneCamera.ScreenPointToRay(Input.mousePosition);
+                        Ray ray = sceneCamera.ScreenPointToRay(InputController._MousePosition);
                         RaycastHit hitInfo;
                         if (Physics.Raycast(ray, out hitInfo))
                         {
@@ -459,7 +459,7 @@ namespace Battlehub.RTEditor
                     if (GetPointOnDragPlane(out point))
                     {
                         m_instance.transform.position = point;
-                        Ray ray = RuntimeEditorApplication.ActiveSceneCamera.ScreenPointToRay(Input.mousePosition);
+                        Ray ray = RuntimeEditorApplication.ActiveSceneCamera.ScreenPointToRay(InputController._MousePosition);
                         RaycastHit hit = Physics.RaycastAll(ray).Where(h => h.transform != m_instance.transform).FirstOrDefault();
                         if (hit.transform != null)
                         {
@@ -520,7 +520,7 @@ namespace Battlehub.RTEditor
                 }
 
             }
-            if (Input.GetMouseButtonDown(1))
+            if (InputController._GetMouseButtonDown(1))
             {
                 if (m_state == State.AfterSpawn)
                 {
@@ -530,7 +530,7 @@ namespace Battlehub.RTEditor
 
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (InputController._GetMouseButtonDown(0))
             {
                 CompleteSpawn();
             }

@@ -305,7 +305,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if (InputController.GetKeyDown(RemoveKey))
+            if (InputController._GetKeyDown(RemoveKey))
             {
                 if (m_listBox.SelectedItem != null)
                 {

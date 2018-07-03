@@ -166,7 +166,7 @@ namespace Battlehub.RTEditor
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
-            if (InputController.GetKeyDown(DuplicateKey) && InputController.GetKey(ModifierKey))
+            if (InputController._GetKeyDown(DuplicateKey) && InputController._GetKey(ModifierKey))
             {
                 if (RuntimeEditorApplication.IsActiveWindow(m_projectResources))
                 {

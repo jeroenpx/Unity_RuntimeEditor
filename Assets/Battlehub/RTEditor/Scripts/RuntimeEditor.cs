@@ -194,20 +194,20 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if (InputController.GetKeyDown(SwitchSceneCameraKey))
+            if (InputController._GetKeyDown(SwitchSceneCameraKey))
             {
                 SwitchSceneCamera();
             }
 
-            if (InputController.GetKeyDown(EnterPlayModeKey) && InputController.GetKey(ModifierKey))
+            if (InputController._GetKeyDown(EnterPlayModeKey) && InputController._GetKey(ModifierKey))
             {
                 RuntimeEditorApplication.IsPlaying = !RuntimeEditorApplication.IsPlaying;
             }
-            if (InputController.GetKeyDown(DuplicateKey) && InputController.GetKey(ModifierKey))
+            if (InputController._GetKeyDown(DuplicateKey) && InputController._GetKey(ModifierKey))
             {
                 Duplicate();
             }
-            else if (InputController.GetKeyDown(DeleteKey))
+            else if (InputController._GetKeyDown(DeleteKey))
             {
                 Delete();
             }

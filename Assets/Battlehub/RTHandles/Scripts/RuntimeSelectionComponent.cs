@@ -124,7 +124,7 @@ namespace Battlehub.RTHandles
 
         private void LateUpdate()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (InputController._GetMouseButtonDown(0))
             {
                 if(RuntimeTools.ActiveTool != null && RuntimeTools.ActiveTool != BoxSelection.Current)
                 {
@@ -141,9 +141,9 @@ namespace Battlehub.RTHandles
                     return;
                 }
           
-                bool rangeSelect = InputController.GetKey(RangeSelectKey);
-                bool multiselect = InputController.GetKey(MultiselectKey) || InputController.GetKey(MultiselectKey2) || rangeSelect;
-                Ray ray = SceneCamera.ScreenPointToRay(Input.mousePosition);
+                bool rangeSelect = InputController._GetKey(RangeSelectKey);
+                bool multiselect = InputController._GetKey(MultiselectKey) || InputController._GetKey(MultiselectKey2) || rangeSelect;
+                Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);
                 RaycastHit hitInfo;
 
                 //if (Physics.Raycast(ray, out hitInfo, float.MaxValue, LayerMask.value))
@@ -203,7 +203,7 @@ namespace Battlehub.RTHandles
 
             if (RuntimeEditorApplication.IsActiveWindow(this))
             {
-                if (InputController.GetKeyDown(SelectAllKey) && InputController.GetKey(ModifierKey))
+                if (InputController._GetKeyDown(SelectAllKey) && InputController._GetKey(ModifierKey))
                 {
                     IEnumerable<GameObject> filtered = RuntimeEditorApplication.IsPlaying ?
                           ExposeToEditor.FindAll(ExposeToEditorObjectType.PlayMode) :

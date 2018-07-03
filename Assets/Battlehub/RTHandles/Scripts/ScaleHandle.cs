@@ -111,7 +111,7 @@ namespace Battlehub.RTHandles
             }
 
             DragPlane = GetDragPlane();
-            bool result = GetPointOnDragPlane(Input.mousePosition, out m_prevPoint);
+            bool result = GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
             if(!result)
             {
                 SelectedAxis = RuntimeHandleAxis.None;
@@ -122,7 +122,7 @@ namespace Battlehub.RTHandles
         protected override void OnDrag()
         {
             Vector3 point;
-            if (GetPointOnDragPlane(Input.mousePosition, out point))
+            if (GetPointOnDragPlane(InputController._MousePosition, out point))
             {
                 Vector3 offset = m_inverse.MultiplyVector((point - m_prevPoint) / m_screenScale);
                 float mag = offset.magnitude;

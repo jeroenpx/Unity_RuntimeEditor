@@ -132,7 +132,7 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-                    bool rotate = InputController.GetKey(RotateKey) || InputController.GetKey(RotateKey2) || InputController.GetKey(RotateKey3);
+                    bool rotate = InputController._GetKey(RotateKey) || InputController._GetKey(RotateKey2) || InputController._GetKey(RotateKey3);
                     if(!rotate)
                     {
                         CursorHelper.ResetCursor(this);
@@ -304,11 +304,11 @@ namespace Battlehub.RTHandles
         {
             Vector3 pointOnDragPlane;
             Vector3 prevPointOnDragPlane;
-            if (GetPointOnDragPlane(Input.mousePosition, out pointOnDragPlane) &&
+            if (GetPointOnDragPlane(InputController._MousePosition, out pointOnDragPlane) &&
                 GetPointOnDragPlane(m_lastMousePosition, out prevPointOnDragPlane))
             {
                 Vector3 delta = (pointOnDragPlane - prevPointOnDragPlane);
-                m_lastMousePosition = Input.mousePosition;
+                m_lastMousePosition = InputController._MousePosition;
                 SceneCamera.transform.position -= delta;
                 Pivot.position -= delta;
                 SecondaryPivot.position -= delta;
@@ -369,7 +369,9 @@ namespace Battlehub.RTHandles
                 while (false);
             }
 
-            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2))
+            if (InputController._GetMouseButtonUp(0) || 
+                InputController._GetMouseButtonUp(1) || 
+                InputController._GetMouseButtonUp(2))
             {
                 m_handleInput = false;
                 m_mouseOrbit.enabled = false;
@@ -382,7 +384,7 @@ namespace Battlehub.RTHandles
 
             if(!isGameViewActive)
             {
-                float mouseWheel = Input.GetAxis("Mouse ScrollWheel");
+                float mouseWheel = InputController._GetAxis("Mouse ScrollWheel");
                 if (mouseWheel != 0)
                 {
                     if (!RuntimeTools.IsPointerOverGameObject())
@@ -401,18 +403,18 @@ namespace Battlehub.RTHandles
           
             if(!isGameViewActive)
             {
-                if (InputController.GetKeyDown(SnapToGridKey) && InputController.GetKey(ModifierKey))
+                if (InputController._GetKeyDown(SnapToGridKey) && InputController._GetKey(ModifierKey))
                 {
                     SnapToGrid();
                 }
 
-                if (InputController.GetKeyDown(FocusKey))
+                if (InputController._GetKeyDown(FocusKey))
                 {
                     Focus();
                 }
 
-                bool rotate = InputController.GetKey(RotateKey) || InputController.GetKey(RotateKey2) || InputController.GetKey(RotateKey3);
-                bool pan = Input.GetMouseButton(2) || Input.GetMouseButton(1) || Input.GetMouseButton(0) && RuntimeTools.Current == RuntimeTool.View;
+                bool rotate = InputController._GetKey(RotateKey) || InputController._GetKey(RotateKey2) || InputController._GetKey(RotateKey3);
+                bool pan = InputController._GetMouseButton(2) || InputController._GetMouseButton(1) || InputController._GetMouseButton(0) && RuntimeTools.Current == RuntimeTool.View;
                 if (pan != m_pan)
                 {
                     m_pan = pan;
@@ -444,14 +446,14 @@ namespace Battlehub.RTHandles
             }
 
 
-            bool isMouse0ButtonDown = Input.GetMouseButtonDown(0);
-            bool isMouse1ButtonDown = Input.GetMouseButtonDown(1);
-            bool isMouse2ButtonDown = Input.GetMouseButtonDown(2);
+            bool isMouse0ButtonDown = InputController._GetMouseButtonDown(0);
+            bool isMouse1ButtonDown = InputController._GetMouseButtonDown(1);
+            bool isMouse2ButtonDown = InputController._GetMouseButtonDown(2);
 
             if (isMouse0ButtonDown || isMouse1ButtonDown || isMouse2ButtonDown)
             {
                 m_handleInput = !PositionHandle.IsDragging;
-                m_lastMousePosition = Input.mousePosition;
+                m_lastMousePosition = InputController._MousePosition;
                 if (m_rotate)
                 {
                     m_mouseOrbit.enabled = true;

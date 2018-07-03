@@ -298,9 +298,9 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if (InputController.GetKeyDown(EnterPlayModeKey))
+            if (InputController._GetKeyDown(EnterPlayModeKey))
             {
-                if (InputController.GetKey(ModifierKey))
+                if (InputController._GetKey(ModifierKey))
                 {
                     TogglePlayMode();
                 }
@@ -316,21 +316,21 @@ namespace Battlehub.RTHandles
                 TogBoundingBoxSnap.isOn = BoundingBoxSnapping;
             }
 
-            if (InputController.GetKeyDown(DuplicateKey))
+            if (InputController._GetKeyDown(DuplicateKey))
             {
-                if (InputController.GetKey(ModifierKey))
+                if (InputController._GetKey(ModifierKey))
                 {
                     Duplicate();
                 }
             }
-            else if (InputController.GetKeyDown(SnapToGridKey))
+            else if (InputController._GetKeyDown(SnapToGridKey))
             {
-                if (InputController.GetKey(ModifierKey))
+                if (InputController._GetKey(ModifierKey))
                 {
                     SnapToGrid();
                 }
             }
-            else if (InputController.GetKeyDown(DeleteKey))
+            else if (InputController._GetKeyDown(DeleteKey))
             {
                 Delete();
             }
@@ -338,7 +338,7 @@ namespace Battlehub.RTHandles
             bool useSceneViewInput = SelectionController is RuntimeSceneView;
             if (!useSceneViewInput)
             {
-                float wheel = Input.GetAxis("Mouse ScrollWheel");
+                float wheel = InputController._GetAxis("Mouse ScrollWheel");
                 if (wheel != 0.0f)
                 {
 #if UNITY_WEBGL
@@ -356,32 +356,32 @@ namespace Battlehub.RTHandles
                 }
 
 #if UNITY_WEBGL
-            if (Input.GetMouseButtonDown(1))
+            if (InputController._GetMouseButtonDown(1))
 #else
-                if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+                if (InputController._GetMouseButtonDown(1) || InputController._GetMouseButtonDown(2))
 #endif
                 {
                     m_dragPlane = new Plane(Vector3.up, m_pivot);
-                    m_pan = GetPointOnDragPlane(Input.mousePosition, out m_prevMouse);
-                    m_prevMouse = Input.mousePosition;
+                    m_pan = GetPointOnDragPlane(InputController._MousePosition, out m_prevMouse);
+                    m_prevMouse = InputController._MousePosition;
                     CursorHelper.SetCursor(this, PanTexture, Vector2.zero, CursorMode.Auto);
 
                 }
 #if UNITY_WEBGL
-            else if (Input.GetMouseButton(1))
+            else if (InputController._GetMouseButton(1))
 #else
-                else if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
+                else if (InputController._GetMouseButton(1) || InputController._GetMouseButton(2))
 #endif
                 {
                     if (m_pan)
                     {
                         Vector3 pointOnDragPlane;
                         Vector3 prevPointOnDragPlane;
-                        if (GetPointOnDragPlane(Input.mousePosition, out pointOnDragPlane) &&
+                        if (GetPointOnDragPlane(InputController._MousePosition, out pointOnDragPlane) &&
                             GetPointOnDragPlane(m_prevMouse, out prevPointOnDragPlane))
                         {
                             Vector3 dragOffset = (pointOnDragPlane - prevPointOnDragPlane);
-                            m_prevMouse = Input.mousePosition;
+                            m_prevMouse = InputController._MousePosition;
                             m_panOffset -= dragOffset;
                             EditorCamera.transform.position -= dragOffset;
                         }
@@ -389,51 +389,51 @@ namespace Battlehub.RTHandles
 
                 }
 #if UNITY_WEBGL
-                else if (Input.GetMouseButtonUp(1))
+                else if (InputController._GetMouseButtonUp(1))
 #else
-                else if (Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2))
+                else if (InputController._GetMouseButtonUp(1) || InputController._GetMouseButtonUp(2))
 #endif
                 {
                     m_pan = false;
                     CursorHelper.ResetCursor(this);
                 }
 
-                if (InputController.GetKey(UpKey))
+                if (InputController._GetKey(UpKey))
                 {
                     Vector3 position = EditorCamera.transform.position;
                     position.y += PanSpeed * Time.deltaTime;
                     m_panOffset.y += PanSpeed * Time.deltaTime;
                     EditorCamera.transform.position = position;
                 }
-                if (InputController.GetKey(DownKey))
+                if (InputController._GetKey(DownKey))
                 {
                     Vector3 position = EditorCamera.transform.position;
                     position.y -= PanSpeed * Time.deltaTime;
                     m_panOffset.y -= PanSpeed * Time.deltaTime;
                     EditorCamera.transform.position = position;
                 }
-                if (InputController.GetKey(LeftKey))
+                if (InputController._GetKey(LeftKey))
                 {
                     MoveMinZ();
                     MovePlusX();
                 }
-                if (InputController.GetKey(RightKey))
+                if (InputController._GetKey(RightKey))
                 {
                     MovePlusZ();
                     MoveMinX();
                 }
-                if (InputController.GetKey(FwdKey))
+                if (InputController._GetKey(FwdKey))
                 {
                     MoveMinX();
                     MoveMinZ();
                 }
-                if (InputController.GetKey(BwdKey))
+                if (InputController._GetKey(BwdKey))
                 {
                     MovePlusX();
                     MovePlusZ();
                 }
 
-                if (InputController.GetKeyDown(FocusKey))
+                if (InputController._GetKeyDown(FocusKey))
                 {
                     Focus();
                 }

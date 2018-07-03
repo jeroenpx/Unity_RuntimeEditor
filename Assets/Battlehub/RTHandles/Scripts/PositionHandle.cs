@@ -102,7 +102,7 @@ namespace Battlehub.RTHandles
 
             if (IsDragging)
             {
-                if ((SnapToGround || InputController.GetKey(SnapToGroundKey)) && SelectedAxis != RuntimeHandleAxis.Y)
+                if ((SnapToGround || InputController._GetKey(SnapToGroundKey)) && SelectedAxis != RuntimeHandleAxis.Y)
                 {
                     SnapActiveTargetsToGround(ActiveTargets, SceneCamera, true);
                     transform.position = Targets[0].position;
@@ -114,21 +114,21 @@ namespace Battlehub.RTHandles
                 SelectedAxis = Hit();
             }
             
-            if (InputController.GetKeyDown(SnappingKey))
+            if (InputController._GetKeyDown(SnappingKey))
             {
                 if(LockObject == null || !LockObject.IsPositionLocked)
                 {
                     m_isInSnappingMode = true;
-                    if (InputController.GetKey(SnappingToggle))
+                    if (InputController._GetKey(SnappingToggle))
                     {
                         RuntimeTools.IsSnapping = !RuntimeTools.IsSnapping;
                     }
 
                     BeginSnap();
-                    m_prevMousePosition = Input.mousePosition;
+                    m_prevMousePosition = InputController._MousePosition;
                 }                
             }
-            else if (InputController.GetKeyUp(SnappingKey))
+            else if (InputController._GetKeyUp(SnappingKey))
             {
                 SelectedAxis = RuntimeHandleAxis.None;
                 m_isInSnappingMode = false;
@@ -145,7 +145,7 @@ namespace Battlehub.RTHandles
 
             if (IsInSnappingMode)
             {
-                Vector2 mousePosition = Input.mousePosition;
+                Vector2 mousePosition = InputController._MousePosition;
                 if (RuntimeTools.SnappingMode == SnappingMode.BoundingBox)
                 {
                     if (IsDragging)
@@ -332,7 +332,7 @@ namespace Battlehub.RTHandles
 
                     Vector3 screenPoint = SceneCamera.WorldToScreenPoint(vert);
                     screenPoint.z = 0;
-                    Vector3 mousePoint = Input.mousePosition;
+                    Vector3 mousePoint = InputController._MousePosition;
                     mousePoint.z = 0;
                     float distance = (screenPoint - mousePoint).magnitude;
                     if (distance < minDistance)
@@ -381,7 +381,7 @@ namespace Battlehub.RTHandles
         {
             base.OnDrop();
        
-            if (SnapToGround || InputController.GetKey(SnapToGroundKey))
+            if (SnapToGround || InputController._GetKey(SnapToGroundKey))
             {
                 SnapActiveTargetsToGround(ActiveTargets, SceneCamera, true);
                 transform.position = Targets[0].position;
@@ -547,7 +547,7 @@ namespace Battlehub.RTHandles
                 Vector3 worldPoint = tr.TransformPoint(m_boundingBoxCorners[j]);
                 Vector3 screenPoint = SceneCamera.WorldToScreenPoint(worldPoint);
                 screenPoint.z = 0;
-                Vector3 mousePoint = Input.mousePosition;
+                Vector3 mousePoint = InputController._MousePosition;
                 mousePoint.z = 0;
                 float distance = (screenPoint - mousePoint).magnitude;
                 if (distance < minDistance)
@@ -562,7 +562,7 @@ namespace Battlehub.RTHandles
         private bool HitSnapHandle()
         {
             Vector3 sp = SceneCamera.WorldToScreenPoint(HandlePosition);
-            Vector3 mp = Input.mousePosition;
+            Vector3 mp = InputController._MousePosition;
 
             const float pixelSize = 10;
 
@@ -572,7 +572,7 @@ namespace Battlehub.RTHandles
 
         private bool HitQuad(Vector3 axis, Matrix4x4 matrix, float size)
         {
-            Ray ray = SceneCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);
             Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));
 
             float distance;
@@ -669,23 +669,23 @@ namespace Battlehub.RTHandles
 
             if (SelectedAxis == RuntimeHandleAxis.XZ)
             {
-                return GetPointOnDragPlane(Input.mousePosition, out m_prevPoint);
+                return GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
             }
 
             if (SelectedAxis == RuntimeHandleAxis.YZ)
             {
-                return GetPointOnDragPlane(Input.mousePosition, out m_prevPoint);
+                return GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
             }
 
             if (SelectedAxis == RuntimeHandleAxis.XY)
             {
-                return GetPointOnDragPlane(Input.mousePosition, out m_prevPoint);
+                return GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
             }
 
             if (SelectedAxis != RuntimeHandleAxis.None)
             {
                 DragPlane = GetDragPlane();
-                bool result = GetPointOnDragPlane(Input.mousePosition, out m_prevPoint);
+                bool result = GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
                 if(!result)
                 {
                     SelectedAxis = RuntimeHandleAxis.None;
@@ -704,7 +704,7 @@ namespace Battlehub.RTHandles
             }
 
             Vector3 point;
-            if (GetPointOnDragPlane(Input.mousePosition, out point))
+            if (GetPointOnDragPlane(InputController._MousePosition, out point))
             {
                 Vector3 offset = m_inverse.MultiplyVector(point - m_prevPoint);
                 float mag = offset.magnitude;

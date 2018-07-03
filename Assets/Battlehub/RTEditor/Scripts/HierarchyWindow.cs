@@ -148,9 +148,9 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if(InputController.GetKeyDown(SelectAllKey))
+            if(InputController._GetKeyDown(SelectAllKey))
             {
-                if(InputController.GetKey(ModifierKey))
+                if(InputController._GetKey(ModifierKey))
                 {
                     if(RuntimeEditorApplication.IsActiveWindow(this))
                     {
@@ -164,9 +164,9 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_treeView.ExternalItemDrag(Input.mousePosition);
+            m_treeView.ExternalItemDrag(InputController._MousePosition);
 
-            if (Input.GetMouseButtonUp(0))
+            if (InputController._GetMouseButtonUp(0))
             {
                 m_isSpawningPrefab = true;
                 GameObject prefabInstance = RuntimeTools.SpawnPrefab.InstantiatePrefab(Vector3.zero, Quaternion.identity);

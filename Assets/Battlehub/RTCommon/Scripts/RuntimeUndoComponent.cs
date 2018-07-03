@@ -44,11 +44,11 @@ namespace Battlehub.RTCommon
 
         private void Update()
         {
-            if (InputController.GetKeyDown(UndoKey) && InputController.GetKey(ModifierKey))
+            if (InputController._GetKeyDown(UndoKey) && InputController._GetKey(ModifierKey))
             {
                 RuntimeUndo.Undo();
             }
-            else if (InputController.GetKeyDown(RedoKey) && InputController.GetKey(ModifierKey))
+            else if (InputController._GetKeyDown(RedoKey) && InputController._GetKey(ModifierKey))
             {
                 RuntimeUndo.Redo();
             }

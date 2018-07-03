@@ -112,11 +112,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (InputController.GetKeyDown(KeyCode.Return))
+            if (InputController._GetKeyDown(KeyCode.Return))
             {
                 SwitchPlayer(m_current, 0.0f, true);
             }
-            else if (InputController.GetKeyDown(KeyCode.Backspace))
+            else if (InputController._GetKeyDown(KeyCode.Backspace))
             {
                 SwitchPlayer(m_current, 0.0f, false);
             }

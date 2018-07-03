@@ -40,8 +40,8 @@ namespace Battlehub.RTCommon
 
         private void LateUpdate()
         {
-            float deltaX = Input.GetAxis("Mouse X");
-            float deltaY = Input.GetAxis("Mouse Y");
+            float deltaX = InputController._GetAxis("Mouse X");
+            float deltaY = InputController._GetAxis("Mouse Y");
 
             deltaX = deltaX * XSpeed;
             deltaY = deltaY * YSpeed;
@@ -58,7 +58,7 @@ namespace Battlehub.RTCommon
             Quaternion rotation = Quaternion.Euler(m_y, m_x, 0);
             transform.rotation = rotation;
 
-            float mwheel = Input.GetAxis("Mouse ScrollWheel");
+            float mwheel = InputController._GetAxis("Mouse ScrollWheel");
 
             if (m_camera.orthographic)
             {

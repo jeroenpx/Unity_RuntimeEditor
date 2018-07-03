@@ -19,6 +19,7 @@ namespace Battlehub.RTCommon.EditorTreeView
 
 	internal class TreeViewWithTreeModel<T> : TreeView where T : TreeElement
 	{
+        public bool SupportExternalDragDrop = true;
 		TreeModel<T> m_TreeModel;
 		readonly List<TreeViewItem> m_Rows = new List<TreeViewItem>(100);
 		public event Action treeChanged;
@@ -160,52 +161,98 @@ namespace Battlehub.RTCommon.EditorTreeView
 			return true;
 		}
 
-		protected override void SetupDragAndDrop(SetupDragAndDropArgs args)
-		{
-			if (hasSearch)
-				return;
+        protected override void SetupDragAndDrop(SetupDragAndDropArgs args)
+        {
+            if (hasSearch)
+                return;
 
-			DragAndDrop.PrepareStartDrag();
-			var draggedRows = GetRows().Where(item => args.draggedItemIDs.Contains(item.id)).ToList();
-			DragAndDrop.SetGenericData(k_GenericDragID, draggedRows);
-			DragAndDrop.objectReferences = new UnityEngine.Object[] { }; // this IS required for dragging to work
-			string title = draggedRows.Count == 1 ? draggedRows[0].displayName : "< Multiple >";
-			DragAndDrop.StartDrag (title);
-		}
+            DragAndDrop.PrepareStartDrag();
+            var draggedRows = GetRows().Where(item => args.draggedItemIDs.Contains(item.id)).ToList();
+            DragAndDrop.SetGenericData(k_GenericDragID, draggedRows);
+            DragAndDrop.objectReferences = new UnityEngine.Object[] { }; // this IS required for dragging to work
+            string title = draggedRows.Count == 1 ? draggedRows[0].displayName : "< Multiple >";
+            DragAndDrop.StartDrag(title);
+        }
+
+        protected virtual DragAndDropVisualMode OnExternalDragDropBetweenItems(DragAndDropArgs args)
+        {
+            return DragAndDropVisualMode.Move;
+
+        }
+
+        protected virtual DragAndDropVisualMode OnExternalDragDropOutsideItems(DragAndDropArgs args)
+        {
+            return DragAndDropVisualMode.Move;
+        }
 
 		protected override DragAndDropVisualMode HandleDragAndDrop (DragAndDropArgs args)
 		{
+            bool external = false;
+
 			// Check if we can handle the current drag data (could be dragged in from other areas/windows in the editor)
 			var draggedRows = DragAndDrop.GetGenericData(k_GenericDragID) as List<TreeViewItem>;
 			if (draggedRows == null)
-				return DragAndDropVisualMode.None;
+            {
+                if(SupportExternalDragDrop)
+                {
+                    external = true;
+                }
+                else
+                {
+                    return DragAndDropVisualMode.None;
+                }
+            }
 
-			// Parent item is null when dragging outside any tree view items.
-			switch (args.dragAndDropPosition)
-			{
-				case DragAndDropPosition.UponItem:
-				case DragAndDropPosition.BetweenItems:
-					{
-						bool validDrag = ValidDrag(args.parentItem, draggedRows);
-						if (args.performDrop && validDrag)
-						{
-							T parentData = ((TreeViewItem<T>)args.parentItem).data;
-							OnDropDraggedElementsAtIndex(draggedRows, parentData, args.insertAtIndex == -1 ? 0 : args.insertAtIndex);
-						}
-						return validDrag ? DragAndDropVisualMode.Move : DragAndDropVisualMode.None;
-					}
+            if(external)
+            {
+                // Parent item is null when dragging outside any tree view items.
+                switch (args.dragAndDropPosition)
+                {
+                    case DragAndDropPosition.UponItem:
+                    case DragAndDropPosition.BetweenItems:
+                        {
+                            return OnExternalDragDropBetweenItems(args);
+                        }
+                    case DragAndDropPosition.OutsideItems:
+                        {
+                            return OnExternalDragDropOutsideItems(args);
+                        }
+                    default:
+                        Debug.LogError("Unhandled enum " + args.dragAndDropPosition);
+                        return DragAndDropVisualMode.None;
+                }
+            }
+            else
+            {
+                // Parent item is null when dragging outside any tree view items.
+                switch (args.dragAndDropPosition)
+                {
+                    case DragAndDropPosition.UponItem:
+                    case DragAndDropPosition.BetweenItems:
+                        {
+                            bool validDrag = ValidDrag(args.parentItem, draggedRows);
+                            if (args.performDrop && validDrag)
+                            {
+                                T parentData = ((TreeViewItem<T>)args.parentItem).data;
+                                OnDropDraggedElementsAtIndex(draggedRows, parentData, args.insertAtIndex == -1 ? 0 : args.insertAtIndex);
+                            }
+                            return validDrag ? DragAndDropVisualMode.Move : DragAndDropVisualMode.None;
+                        }
 
-				case DragAndDropPosition.OutsideItems:
-					{
-						if (args.performDrop)
-							OnDropDraggedElementsAtIndex(draggedRows, m_TreeModel.root, m_TreeModel.root.children.Count);
+                    case DragAndDropPosition.OutsideItems:
+                        {
+                            if (args.performDrop)
+                                OnDropDraggedElementsAtIndex(draggedRows, m_TreeModel.root, m_TreeModel.root.children.Count);
 
-						return DragAndDropVisualMode.Move;
-					}
-				default:
-					Debug.LogError("Unhandled enum " + args.dragAndDropPosition);
-					return DragAndDropVisualMode.None;
-			}
+                            return DragAndDropVisualMode.Move;
+                        }
+                    default:
+                        Debug.LogError("Unhandled enum " + args.dragAndDropPosition);
+                        return DragAndDropVisualMode.None;
+                }
+            }
+
+			
 		}
 
 		public virtual void OnDropDraggedElementsAtIndex (List<TreeViewItem> draggedRows, T parent, int insertIndex)
@@ -223,7 +270,7 @@ namespace Battlehub.RTCommon.EditorTreeView
 		}
 
 
-		bool ValidDrag(TreeViewItem parent, List<TreeViewItem> draggedItems)
+		protected virtual bool ValidDrag(TreeViewItem parent, List<TreeViewItem> draggedItems)
 		{
 			TreeViewItem currentParent = parent;
 			while (currentParent != null)

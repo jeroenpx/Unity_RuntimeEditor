@@ -11,8 +11,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
   m_Name: AssetLibrary
   m_EditorClassIdentifier: 
-  AssetLibrary:
+  m_assetLibrary:
     m_ID: 0
-    m_Name: 
-    m_Depth: 0
-    Folders: []
+    m_Name: Root
+    m_Depth: -1
+    Folders:
+    - m_ID: 0
+      m_Name: Assets
+      m_Depth: -1
+      IsEnabled: 0
+    - m_ID: 1
+      m_Name: Folder
+      m_Depth: 0
+      IsEnabled: 0
+    - m_ID: 6
+      m_Name: Folder 1
+      m_Depth: 1
+      IsEnabled: 0
+    - m_ID: 3
+      m_Name: Folder 0
+      m_Depth: 1
+      IsEnabled: 0
+    - m_ID: 2
+      m_Name: Folder
+      m_Depth: 2
+      IsEnabled: 0
+    - m_ID: 5
+      m_Name: Folder 1
+      m_Depth: 2
+      IsEnabled: 0

@@ -295,7 +295,7 @@ namespace Battlehub.RTEditor
             base.UpdateOverride();
             if (RuntimeEditorApplication.IsActiveWindow(this))
             {
-                if (InputController.GetKeyDown(RemoveKey))
+                if (InputController._GetKeyDown(RemoveKey))
                 {
                     if (m_treeView.SelectedItem != null)
                     {
@@ -320,7 +320,7 @@ namespace Battlehub.RTEditor
             {
                 if (m_dragProjectItem != null)
                 {
-                    m_treeView.ExternalItemDrag(Input.mousePosition);
+                    m_treeView.ExternalItemDrag(InputController._MousePosition);
                 }
             }
         }

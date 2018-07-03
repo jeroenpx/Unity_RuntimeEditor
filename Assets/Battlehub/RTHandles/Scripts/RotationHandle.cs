@@ -133,12 +133,12 @@ namespace Battlehub.RTHandles
         {
             float hit1Distance;
             float hit2Distance;
-            Ray ray = SceneCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);
             float scale = RuntimeHandles.GetScreenScale(Target.position, SceneCamera) * RuntimeHandles.HandleScale;
             if (Intersect(ray, Target.position, outerRadius * scale, out hit1Distance, out hit2Distance))
             {
                 Vector3 dpHitPoint;
-                GetPointOnDragPlane(GetDragPlane(), Input.mousePosition, out dpHitPoint);
+                GetPointOnDragPlane(GetDragPlane(), InputController._MousePosition, out dpHitPoint);
 
                 RuntimeHandleAxis axis = HitAxis();
                 if (axis != RuntimeHandleAxis.None)
@@ -255,7 +255,7 @@ namespace Battlehub.RTHandles
             if (SelectedAxis == RuntimeHandleAxis.Screen)
             {
                 Vector2 center = SceneCamera.WorldToScreenPoint(Target.position);
-                Vector2 point = Input.mousePosition;
+                Vector2 point = InputController._MousePosition;
 
                 float angle = Mathf.Atan2(point.y - center.y, point.x - center.x);
                 m_targetInverse = Quaternion.Inverse(Quaternion.AngleAxis(Mathf.Rad2Deg * angle, Vector3.forward));
@@ -284,8 +284,8 @@ namespace Battlehub.RTHandles
 
         protected override void OnDrag()
         {
-            float deltaX = Input.GetAxis("Mouse X");
-            float deltaY = Input.GetAxis("Mouse Y");
+            float deltaX = InputController._GetAxis("Mouse X");
+            float deltaY = InputController._GetAxis("Mouse Y");
 
             deltaX = deltaX * XSpeed;
             deltaY = deltaY * YSpeed;

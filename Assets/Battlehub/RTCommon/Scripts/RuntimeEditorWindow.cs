@@ -86,8 +86,12 @@ namespace Battlehub.RTCommon
             {
                 if (m_isPointerOver)
                 {
-                    if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2) ||
-                        Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+                    if (InputController._GetMouseButtonUp(0) ||
+                        InputController._GetMouseButtonUp(1) ||
+                        InputController._GetMouseButtonUp(2) ||
+                        InputController._GetMouseButtonDown(0) || 
+                        InputController._GetMouseButtonDown(1) || 
+                        InputController._GetMouseButtonDown(2))
                     {
                         RuntimeEditorApplication.ActivateWindow(this);
                     }
@@ -175,7 +179,7 @@ namespace Battlehub.RTCommon
 
         private void UpdateState(Rect cameraRect, bool isGameView)
         {
-            bool isPointerOver = cameraRect.Contains(Input.mousePosition) && !RuntimeTools.IsPointerOverGameObject();
+            bool isPointerOver = cameraRect.Contains(InputController._MousePosition) && !RuntimeTools.IsPointerOverGameObject();
             if (RuntimeEditorApplication.IsPointerOverWindow(this))
             {
                 if (!isPointerOver)
@@ -193,8 +197,12 @@ namespace Battlehub.RTCommon
 
             if (isPointerOver)
             {
-                if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2) ||
-                    Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+                if (InputController._GetMouseButtonUp(0) ||
+                    InputController._GetMouseButtonUp(1) ||
+                    InputController._GetMouseButtonUp(2) ||
+                    InputController._GetMouseButtonDown(0) ||
+                    InputController._GetMouseButtonDown(1) ||
+                    InputController._GetMouseButtonDown(2))
                 {
                     if (!isGameView || isGameView && RuntimeEditorApplication.IsPlaying)
                     {

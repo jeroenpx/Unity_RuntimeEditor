@@ -188,16 +188,16 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (KeyCode == KeyCode.None || InputController.GetKeyDown(KeyCode))
+            if (KeyCode == KeyCode.None || InputController._GetKeyDown(KeyCode))
             {
                m_active = true; 
             }
 
             if (m_active)
             {
-                if (Input.GetMouseButtonDown(MouseButton))
+                if (InputController._GetMouseButtonDown(MouseButton))
                 {
-                    m_startMousePosition = Input.mousePosition;
+                    m_startMousePosition = InputController._MousePosition;
                     m_isDragging = GetPoint(out m_startPt) && 
                         (!RuntimeEditorApplication.IsOpened || RuntimeEditorApplication.IsPointerOverWindow(RuntimeWindowType.SceneView) && !RuntimeTools.IsPointerOverGameObject());
                     if (m_isDragging)
@@ -212,7 +212,7 @@ namespace Battlehub.RTHandles
                         RuntimeTools.ActiveTool = null;
                     }
                 }
-                else if (Input.GetMouseButtonUp(MouseButton))
+                else if (InputController._GetMouseButtonUp(MouseButton))
                 {
                     if (m_isDragging)
                     {
@@ -249,7 +249,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            Vector3 center = (m_startMousePosition + Input.mousePosition) / 2;
+            Vector3 center = (m_startMousePosition + InputController._MousePosition) / 2;
             center.z = 0.0f;
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
 
@@ -377,7 +377,7 @@ namespace Battlehub.RTHandles
                 cam = m_canvas.worldCamera;
             }
 
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), Input.mousePosition, cam, out localPoint);
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), InputController._MousePosition, cam, out localPoint);
         }
     }
 

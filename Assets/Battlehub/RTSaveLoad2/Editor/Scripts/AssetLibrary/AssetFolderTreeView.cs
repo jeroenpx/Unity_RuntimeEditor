@@ -1,18 +1,23 @@
 ﻿using Battlehub.RTCommon.EditorTreeView;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
+
+
     internal class AssetFolderTreeView : TreeViewWithTreeModel<AssetFolderInfo>
     {
         private const float kRowHeights = 20f;
         private const float kIconWidth = 18f;
-        public bool showControls = true;
-
+     
         private static Texture2D[] s_icons =
         {
             EditorGUIUtility.FindTexture ("Folder Icon")
@@ -24,17 +29,31 @@ namespace Battlehub.RTSaveLoad2
             ExposeToEditor,
         }
 
-        public AssetFolderTreeView(TreeViewState state, MultiColumnHeader multiColumnHeader, TreeModel<AssetFolderInfo> model) : base(state, multiColumnHeader, model)
+        private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropInside;
+        private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropOutside;
+
+        public AssetFolderTreeView(
+            TreeViewState state, 
+            MultiColumnHeader multiColumnHeader, 
+            TreeModel<AssetFolderInfo> model,
+            Func<TreeViewItem, int, bool, DragAndDropVisualMode> externalDropInside,
+            Func<TreeViewItem, int, bool, DragAndDropVisualMode> externalDropOutside) : base(state, multiColumnHeader, model)
         {
+            m_externalDropInside = externalDropInside;
+            m_externalDropOutside = externalDropOutside;
+
             rowHeight = kRowHeights;
             columnIndexForTreeFoldouts = 0;
             showAlternatingRowBackgrounds = true;
             showBorder = true;
+            
             customFoldoutYOffset = (kRowHeights - EditorGUIUtility.singleLineHeight) * 0.5f; // center foldout in the row since we also center content. See RowGUI
             extraSpaceBeforeIconAndLabel = kIconWidth;
+          
 
             Reload();
         }
+
 
         protected override void RowGUI(RowGUIArgs args)
         {
@@ -85,13 +104,82 @@ namespace Battlehub.RTSaveLoad2
             return renameRect.width > 30;
         }
 
+        public bool BeginRename(int id)
+        {
+            TreeViewItem item = FindItem(id, rootItem);
+            if(item == null)
+            {
+                return false;
+            }
+            return BeginRename(item);
+        }
+
+        public TreeViewItem FindItem(int id)
+        {
+            return FindItem(id, rootItem);
+        }
+
+        public string GetUniqueName(string desiredName, TreeElement parent, TreeElement except)
+        {
+            if(!parent.hasChildren)
+            {
+                return desiredName;
+            }
+
+            var childen = parent.children.Where(c => c.id != except.id);
+
+            var names = childen.Select(c => c.name);
+
+            if(names.Contains(desiredName))
+            {
+                string[] parts = desiredName.Split(' ');
+                if(parts.Length > 1)
+                {
+                    int val;
+                    if(int.TryParse(parts.Last(), out val))
+                    {
+                        desiredName = string.Join(" ", parts, 0, parts.Length - 1);
+                    }
+                }
+
+                for(int i = 0; i < int.MaxValue; ++i)
+                {
+                    bool unique = true;
+                    foreach(string name in names)
+                    {
+                        parts = name.Split(' ');
+                        if (parts.Length > 1)
+                        {
+                            int val;
+                            if (int.TryParse(parts.Last(), out val))
+                            {
+                                if(val == i)
+                                {
+                                    unique = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if(unique)
+                    {
+                        desiredName += " " + i;
+                        break;
+                    }
+                }
+            }
+
+            return desiredName;
+        }
+
         protected override void RenameEnded(RenameEndedArgs args)
         {
             // Set the backend name and reload the tree to reflect the new model
             if (args.acceptedRename)
             {
                 var element = treeModel.Find(args.itemID);
-                element.name = args.newName;
+                element.name = GetUniqueName(args.newName, element.parent, element);
                 Reload();
             }
         }
@@ -106,6 +194,35 @@ namespace Battlehub.RTSaveLoad2
         protected override bool CanMultiSelect(TreeViewItem item)
         {
             return true;
+        }
+
+        
+
+        protected override DragAndDropVisualMode OnExternalDragDropBetweenItems(DragAndDropArgs args)
+        {
+            return m_externalDropInside(args.parentItem, args.insertAtIndex, args.performDrop);
+        }
+
+        protected override DragAndDropVisualMode OnExternalDragDropOutsideItems(DragAndDropArgs args)
+        {
+            return m_externalDropOutside(args.parentItem, args.insertAtIndex, args.performDrop);
+        }
+
+        protected override bool ValidDrag(TreeViewItem parent, List<TreeViewItem> draggedItems)
+        {
+            if(base.ValidDrag(parent, draggedItems))
+            {
+                if(parent.hasChildren)
+                {
+                    var names = parent.children.OfType<TreeViewItem<AssetFolderInfo>>().Select(c => c.data.name);
+                    if(draggedItems.OfType<TreeViewItem<AssetFolderInfo>>().Any(item => names.Contains(item.data.name)))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
         public static MultiColumnHeaderState CreateDefaultMultiColumnHeaderState(float treeViewWidth)

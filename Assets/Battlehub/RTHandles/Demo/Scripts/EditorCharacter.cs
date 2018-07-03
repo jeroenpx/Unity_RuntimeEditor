@@ -18,14 +18,14 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if (InputController.GetKeyDown(KeyCode.V))
+            if (InputController._GetKeyDown(KeyCode.V))
             {
                 m_isKinematic = m_rigidBody.isKinematic;
                 m_rigidBody.isKinematic = true;
                 m_isEnabled = m_character.Enabled;
                 m_character.Enabled = false;
             }
-            else if (InputController.GetKeyUp(KeyCode.V))
+            else if (InputController._GetKeyUp(KeyCode.V))
             {
                 m_rigidBody.isKinematic = m_isKinematic;
                 m_character.Enabled = m_isEnabled;

@@ -17,7 +17,7 @@ namespace Battlehub.RTSaveLoad2
 		void Awake ()
 		{
 			if (m_TreeElements.Count == 0)
-				m_TreeElements = MyTreeElementGenerator.GenerateRandomTree(19160);
+				m_TreeElements = MyTreeElementGenerator.GenerateRandomTree(191);
 		}
 	}
 }

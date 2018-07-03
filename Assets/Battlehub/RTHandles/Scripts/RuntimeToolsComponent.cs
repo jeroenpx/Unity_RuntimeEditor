@@ -42,24 +42,24 @@ namespace Battlehub.RTHandles
             bool isLocked = RuntimeTools.IsViewing || isGameViewActive;
             if (!isLocked)
             {
-                if (InputController.GetKeyDown(ViewToolKey))
+                if (InputController._GetKeyDown(ViewToolKey))
                 {
                     RuntimeTools.Current = RuntimeTool.View;
                 }
-                else if (InputController.GetKeyDown(MoveToolKey))
+                else if (InputController._GetKeyDown(MoveToolKey))
                 {
                     RuntimeTools.Current = RuntimeTool.Move;
                 }
-                else if (InputController.GetKeyDown(RotateToolKey))
+                else if (InputController._GetKeyDown(RotateToolKey))
                 {
                     RuntimeTools.Current = RuntimeTool.Rotate;
                 }
-                else if (InputController.GetKeyDown(ScaleToolKey))
+                else if (InputController._GetKeyDown(ScaleToolKey))
                 {
                     RuntimeTools.Current = RuntimeTool.Scale;
                 }
 
-                if (InputController.GetKeyDown(PivotRotationKey))
+                if (InputController._GetKeyDown(PivotRotationKey))
                 {
                     if (RuntimeTools.PivotRotation == RuntimePivotRotation.Local)
                     {
@@ -70,8 +70,8 @@ namespace Battlehub.RTHandles
                         RuntimeTools.PivotRotation = RuntimePivotRotation.Local;
                     }
                 }
-                if (InputController.GetKeyDown(PivotModeKey) && 
-                    !(InputController.GetKey(KeyCode.LeftControl) || InputController.GetKey(KeyCode.LeftShift)))
+                if (InputController._GetKeyDown(PivotModeKey) && 
+                    !(InputController._GetKey(KeyCode.LeftControl) || InputController._GetKey(KeyCode.LeftShift)))
                 {
                     
 
