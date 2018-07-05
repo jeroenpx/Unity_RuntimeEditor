@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -18,17 +19,26 @@ namespace Battlehub.RTSaveLoad2
         [SerializeField]
         private MultiColumnHeaderState m_MultiColumnHeaderState;
         private SearchField m_SearchField;
-        private AssetFolderTreeView m_TreeView;
         private AssetLibraryAsset m_asset;
         private const string kSessionStateKeyPrefix = "AssetLibraryTVS";
 
-        public AssetLibraryProjectGUI()
+        public event EventHandler SelectedFoldersChanged;
+
+        public AssetFolderInfo[] SelectedFolders
         {
+            get;
+            private set;
         }
-            
         internal AssetFolderTreeView TreeView
         {
-            get { return m_TreeView; }
+            get;
+            private set;
+        }
+
+        private AssetLibraryAssetsGUI m_assetsGUI;
+        public AssetLibraryProjectGUI(AssetLibraryAssetsGUI assetsGUI)
+        {
+            m_assetsGUI = assetsGUI;
         }
 
         public void SetTreeAsset(AssetLibraryAsset asset)
@@ -36,7 +46,6 @@ namespace Battlehub.RTSaveLoad2
             m_asset = asset;
             m_Initialized = false;
         }
-
 
         private void InitIfNeeded()
         {
@@ -62,16 +71,23 @@ namespace Battlehub.RTSaveLoad2
 
                 var treeModel = new TreeModel<AssetFolderInfo>(GetData());
 
-                m_TreeView = new AssetFolderTreeView(
+                TreeView = new AssetFolderTreeView(
                     m_TreeViewState, 
                     multiColumnHeader, 
                     treeModel,
-                    ExternalDropInside,
-                    ExternalDropOutside);
-               // m_TreeView.Reload();
+                    OnExternalDropInside,
+                    OnExternalDropOutside,
+                    OnSelectionChanged);
+                // m_TreeView.Reload();
+
+                SelectedFolders = TreeView.Selection;
+                if(SelectedFoldersChanged != null)
+                {
+                    OnSelectionChanged(SelectedFolders);
+                }
 
                 m_SearchField = new SearchField();
-                m_SearchField.downOrUpArrowKeyPressed += m_TreeView.SetFocusAndEnsureSelectedItem;
+                m_SearchField.downOrUpArrowKeyPressed += TreeView.SetFocusAndEnsureSelectedItem;
 
                 m_Initialized = true;
             }
@@ -85,44 +101,128 @@ namespace Battlehub.RTSaveLoad2
         public void OnDisable()
         {
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
-
-            SessionState.SetString(kSessionStateKeyPrefix + m_asset.GetInstanceID(), JsonUtility.ToJson(m_TreeView.state));
+            SessionState.SetString(kSessionStateKeyPrefix + m_asset.GetInstanceID(), JsonUtility.ToJson(TreeView.state));
         }
 
         private void OnUndoRedoPerformed()
         {
-            if (m_TreeView != null)
+            if (TreeView != null)
             {
-                m_TreeView.treeModel.SetData(GetData());
-                m_TreeView.Reload();
+                TreeView.treeModel.SetData(GetData());
+                TreeView.Reload();
             }
         }
 
-        private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex)
+        private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex, bool outside)
         {
-            return DragAndDropVisualMode.Copy;
-        }
-
-        private DragAndDropVisualMode PerformDrop(TreeViewItem parent, int insertIndex)
-        {
-            DragAndDrop.AcceptDrag();
-
-            foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
+            AssetFolderInfo parentFolder;
+            if(parent == null)
             {
-                string path = AssetDatabase.GetAssetPath(dragged_object);
-                if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                parentFolder = TreeView.treeModel.root;
+            }
+            else
+            {
+                parentFolder = ((TreeViewItem<AssetFolderInfo>)parent).data;
+            }
+
+            if (parentFolder.hasChildren)
+            {
+                var names = parentFolder.children.Select(c => c.name);
+
+                var draggedRows = DragAndDrop.GetGenericData(AssetTreeView.k_GenericDragID) as List<TreeViewItem>;
+                if (draggedRows != null)
                 {
-                    path = Path.GetDirectoryName(path);
+                    if(draggedRows.Any(item => names.Contains(((TreeViewItem<AssetInfo>)item).data.name)))
+                    {
+                        return DragAndDropVisualMode.None;
+                    }
                 }
                 else
                 {
-                    CopyFolder(path, parent, insertIndex);
+                    if (DragAndDrop.objectReferences.Any(item => names.Contains(item.name)))
+                    {
+                        return DragAndDropVisualMode.None;
+                    }
                 }
-
-                Debug.Log(path);
-                
-                // Do On Drag Stuff here
             }
+
+            if(parentFolder.Assets != null)
+            {
+                var names = parentFolder.Assets.Select(c => c.name);
+                var draggedRows = DragAndDrop.GetGenericData(AssetTreeView.k_GenericDragID) as List<TreeViewItem>;
+                if (draggedRows != null)
+                {
+                    if (draggedRows.Any(item => names.Contains(((TreeViewItem<AssetInfo>)item).data.name)))
+                    {
+                        return DragAndDropVisualMode.None;
+                    }
+                }
+                else
+                {
+                    if (DragAndDrop.objectReferences.Any(item => names.Contains(item.name)))
+                    {
+                        return DragAndDropVisualMode.None;
+                    }
+                }
+            }
+
+            if (outside)
+            {
+                var draggedRows = DragAndDrop.GetGenericData(AssetTreeView.k_GenericDragID) as List<TreeViewItem>;
+                if (draggedRows != null)
+                {
+                    return DragAndDropVisualMode.None;
+                } 
+                else
+                {
+                    var allPath = DragAndDrop.objectReferences.Select(o => AssetDatabase.GetAssetPath(o));
+                    if (allPath.All(path => !string.IsNullOrEmpty(path) && File.Exists(path)))
+                    {
+                        return DragAndDropVisualMode.None;
+                    }
+                }
+            }
+
+            return DragAndDropVisualMode.Copy;
+        }
+
+        private DragAndDropVisualMode PerformDrop(TreeViewItem parent, int insertIndex, bool outside)
+        {
+            DragAndDrop.AcceptDrag();
+
+            var draggedRows = DragAndDrop.GetGenericData(AssetTreeView.k_GenericDragID) as List<TreeViewItem>;
+            if (draggedRows != null)
+            {
+                foreach (TreeViewItem<AssetInfo> dragged_object in draggedRows)
+                {
+                    if (!outside)
+                    {
+                        AssetFolderInfo folder = GetAssetFolderInfo(parent);
+                        m_assetsGUI.AddAssetToFolder(dragged_object.data, folder);
+                    }
+                }
+            }
+            else
+            {
+                foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
+                {
+                    string path = AssetDatabase.GetAssetPath(dragged_object);
+                    if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                    {
+                        if (!outside)
+                        {
+                            AssetFolderInfo folder = GetAssetFolderInfo(parent);
+                            m_assetsGUI.AddAssetToFolder(dragged_object, folder);
+                        }
+                    }
+                    else
+                    {
+                        CopyFolder(path, parent, insertIndex);
+                    }
+                    // Do On Drag Stuff here
+                }
+            }
+           
             return DragAndDropVisualMode.Copy;
         }
 
@@ -137,7 +237,7 @@ namespace Battlehub.RTSaveLoad2
                         : 0
                     : insertIndex);
 
-            TreeViewItem folderTreeViewItem = m_TreeView.FindItem(folder.id);
+            TreeViewItem folderTreeViewItem = TreeView.FindItem(folder.id);
             string[] subfolders = AssetDatabase.GetSubFolders(path);
             for (int i = 0; i < subfolders.Length; ++i)
             {
@@ -147,25 +247,34 @@ namespace Battlehub.RTSaveLoad2
 
         private AssetFolderInfo GetAssetFolderInfo(TreeViewItem treeViewItem)
         {
-            return treeViewItem != null ? ((TreeViewItem<AssetFolderInfo>)treeViewItem).data : m_TreeView.treeModel.root;
+            return treeViewItem != null ? ((TreeViewItem<AssetFolderInfo>)treeViewItem).data : TreeView.treeModel.root;
         }
 
-        private DragAndDropVisualMode ExternalDropInside(TreeViewItem parent, int insertIndex, bool performDrop)
+        private DragAndDropVisualMode OnExternalDropInside(TreeViewItem parent, int insertIndex, bool performDrop)
         {
             if(performDrop)
             {
-                return PerformDrop(parent, insertIndex);
+                return PerformDrop(parent, insertIndex, false);
             }
-            return CanDrop(parent, insertIndex);
+            return CanDrop(parent, insertIndex, false);
         }
 
-        private DragAndDropVisualMode ExternalDropOutside(TreeViewItem parent, int insertIndex, bool performDrop)
+        private DragAndDropVisualMode OnExternalDropOutside(TreeViewItem parent, int insertIndex, bool performDrop)
         {
             if (performDrop)
             {
-                return PerformDrop(parent, insertIndex);
+                return PerformDrop(parent, insertIndex, true);
             }
-            return CanDrop(parent, insertIndex);
+            return CanDrop(parent, insertIndex, true);
+        }
+
+        private void OnSelectionChanged(AssetFolderInfo[] selection)
+        {
+            SelectedFolders = selection;
+            if(SelectedFoldersChanged != null)
+            {
+                SelectedFoldersChanged(this, EventArgs.Empty);
+            }
         }
 
         private IList<AssetFolderInfo> GetData()
@@ -189,13 +298,13 @@ namespace Battlehub.RTSaveLoad2
         private void SearchBar()
         {
             Rect rect = EditorGUILayout.GetControlRect();
-            m_TreeView.searchString = m_SearchField.OnGUI(rect, TreeView.searchString);
+            TreeView.searchString = m_SearchField.OnGUI(rect, TreeView.searchString);
         }
 
         private void DoTreeView()
         {
             Rect rect = GUILayoutUtility.GetRect(0, 10000, 0, Mathf.Max(10000, TreeView.totalHeight));
-            m_TreeView.OnGUI(rect);
+            TreeView.OnGUI(rect);
         }
 
         private void DoCommands()
@@ -207,7 +316,7 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (Event.current.keyCode == KeyCode.Delete)
                         {
-                            if(m_TreeView.HasFocus())
+                            if(TreeView.HasFocus())
                             {
                                 RemoveFolder();
                             }
@@ -236,52 +345,51 @@ namespace Battlehub.RTSaveLoad2
         {
             Undo.RecordObject(m_asset, "Create Asset Folder");
 
-            m_TreeView.EndRename();
-            var selection = m_TreeView.GetSelection();
-            TreeElement parent = (selection.Count == 1 ? m_TreeView.treeModel.Find(selection[0]) : null) ?? m_TreeView.treeModel.root;
+            TreeView.EndRename();
+            var selection = TreeView.GetSelection();
+            TreeElement parent = (selection.Count == 1 ? TreeView.treeModel.Find(selection[0]) : null) ?? TreeView.treeModel.root;
             AssetFolderInfo folder = CreateFolder("Folder", parent, 0);
-            m_TreeView.BeginRename(folder.id);
+            TreeView.BeginRename(folder.id);
         }
 
         private AssetFolderInfo CreateFolder(string name, TreeElement parent, int insertPosition)
         {
             int depth = parent != null ? parent.depth + 1 : 0;
-            int id = m_TreeView.treeModel.GenerateUniqueID();
+            int id = TreeView.treeModel.GenerateUniqueID();
             var element = new AssetFolderInfo(name, depth, id);
-            m_TreeView.treeModel.AddElement(element, parent, insertPosition);
+            TreeView.treeModel.AddElement(element, parent, insertPosition);
 
             // Select newly created element
-            m_TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+            TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
             return element;
         }
 
         private void RenameFolder()
         {
-            var selection = m_TreeView.GetSelection();
+            var selection = TreeView.GetSelection();
             if (selection != null && selection.Count > 0)
             {
-                m_TreeView.BeginRename(selection[0]);
+                TreeView.BeginRename(selection[0]);
             }
         }
 
         private void RemoveFolder()
         {
             Undo.RecordObject(m_asset, "Remove Asset Folder");
-            var selection = m_TreeView.GetSelection();
-            m_TreeView.treeModel.RemoveElements(selection);
+            var selection = TreeView.GetSelection();
+            TreeView.treeModel.RemoveElements(selection);
         }
 
         public void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-
             InitIfNeeded();
-
+            EditorGUILayout.Space();
             SearchBar();
             EditorGUILayout.Space();
-            DoCommands();
-            EditorGUILayout.Space();
             DoTreeView();
+            EditorGUILayout.Space();
+            DoCommands();
             EditorGUILayout.EndVertical();
         }
     }

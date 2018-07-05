@@ -7,13 +7,14 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+
 namespace Battlehub.RTSaveLoad2
 {
-    internal class AssetFolderTreeView : TreeViewWithTreeModel<AssetFolderInfo>
+    internal class AssetTreeView : TreeViewWithTreeModel<AssetInfo>
     {
         private const float kRowHeights = 20f;
         private const float kIconWidth = 18f;
-     
+
         private static Texture2D[] s_icons =
         {
             EditorGUIUtility.FindTexture ("Folder Icon")
@@ -27,55 +28,33 @@ namespace Battlehub.RTSaveLoad2
 
         private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropInside;
         private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropOutside;
-        private Action<AssetFolderInfo[]> m_selectionChanged;
 
-        public AssetFolderInfo[] Selection
-        {
-            get;
-            private set;
-        }
-
-        public AssetFolderTreeView(
-            TreeViewState state, 
-            MultiColumnHeader multiColumnHeader, 
-            TreeModel<AssetFolderInfo> model,
+        public AssetTreeView(
+            TreeViewState state,
+            MultiColumnHeader multiColumnHeader,
+            TreeModel<AssetInfo> model,
             Func<TreeViewItem, int, bool, DragAndDropVisualMode> externalDropInside,
-            Func<TreeViewItem, int, bool, DragAndDropVisualMode> externalDropOutside,
-            Action<AssetFolderInfo[]> selectionChanged) : base(state, multiColumnHeader, model)
+            Func<TreeViewItem, int, bool, DragAndDropVisualMode> externalDropOutside) : base(state, multiColumnHeader, model)
         {
             m_externalDropInside = externalDropInside;
             m_externalDropOutside = externalDropOutside;
-            m_selectionChanged = selectionChanged;
 
             rowHeight = kRowHeights;
             columnIndexForTreeFoldouts = 0;
             showAlternatingRowBackgrounds = true;
             showBorder = true;
-            
+
             customFoldoutYOffset = (kRowHeights - EditorGUIUtility.singleLineHeight) * 0.5f; // center foldout in the row since we also center content. See RowGUI
             extraSpaceBeforeIconAndLabel = kIconWidth;
-          
+
+
             Reload();
-
-            Selection = GetSelection(GetSelection());
         }
 
-        protected override TreeViewItem BuildRoot()
-        {
-            Selection = GetSelection(GetSelection());
-            m_selectionChanged(Selection);
-            return base.BuildRoot();
-            
-        }
-
-        protected override IList<TreeViewItem> BuildRows(TreeViewItem root)
-        {
-            return base.BuildRows(root);
-        }
-
+        
         protected override void RowGUI(RowGUIArgs args)
         {
-            var item = (TreeViewItem<AssetFolderInfo>)args.item;
+            var item = (TreeViewItem<AssetInfo>)args.item;
 
             for (int i = 0; i < args.GetNumVisibleColumns(); ++i)
             {
@@ -83,14 +62,14 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        private void CellGUI(Rect cellRect, TreeViewItem<AssetFolderInfo> item, Columns column, ref RowGUIArgs args)
+        private void CellGUI(Rect cellRect, TreeViewItem<AssetInfo> item, Columns column, ref RowGUIArgs args)
         {
             // Center cell rect vertically (makes it easier to place controls, icons etc in the cells)
             CenterRectUsingSingleLineHeight(ref cellRect);
 
             switch (column)
             {
-          
+
                 case Columns.Name:
                     {
                         // Do toggle
@@ -99,14 +78,17 @@ namespace Battlehub.RTSaveLoad2
                         iconRect.width = kIconWidth;
                         if (iconRect.xMax < cellRect.xMax)
                         {
-                            GUI.DrawTexture(iconRect, s_icons[0], ScaleMode.ScaleToFit);
+                            if(item.data.Object != null)
+                            {
+                                GUI.DrawTexture(iconRect, AssetPreview.GetMiniThumbnail(item.data.Object), ScaleMode.ScaleToFit);
+                            }
                         }
 
                         // Default icon and label
                         args.rowRect = cellRect;
                         base.RowGUI(args);
                     }
-                    break; 
+                    break;
                 case Columns.ExposeToEditor:
                     {
                         item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
@@ -125,7 +107,7 @@ namespace Battlehub.RTSaveLoad2
         public bool BeginRename(int id)
         {
             TreeViewItem item = FindItem(id, rootItem);
-            if(item == null)
+            if (item == null)
             {
                 return false;
             }
@@ -139,7 +121,7 @@ namespace Battlehub.RTSaveLoad2
 
         public string GetUniqueName(string desiredName, TreeElement parent, TreeElement except)
         {
-            if(!parent.hasChildren)
+            if (!parent.hasChildren)
             {
                 return desiredName;
             }
@@ -148,22 +130,22 @@ namespace Battlehub.RTSaveLoad2
 
             var names = childen.Select(c => c.name);
 
-            if(names.Contains(desiredName))
+            if (names.Contains(desiredName))
             {
                 string[] parts = desiredName.Split(' ');
-                if(parts.Length > 1)
+                if (parts.Length > 1)
                 {
                     int val;
-                    if(int.TryParse(parts.Last(), out val))
+                    if (int.TryParse(parts.Last(), out val))
                     {
                         desiredName = string.Join(" ", parts, 0, parts.Length - 1);
                     }
                 }
 
-                for(int i = 0; i < int.MaxValue; ++i)
+                for (int i = 0; i < int.MaxValue; ++i)
                 {
                     bool unique = true;
-                    foreach(string name in names)
+                    foreach (string name in names)
                     {
                         parts = name.Split(' ');
                         if (parts.Length > 1)
@@ -171,7 +153,7 @@ namespace Battlehub.RTSaveLoad2
                             int val;
                             if (int.TryParse(parts.Last(), out val))
                             {
-                                if(val == i)
+                                if (val == i)
                                 {
                                     unique = false;
                                     break;
@@ -180,7 +162,7 @@ namespace Battlehub.RTSaveLoad2
                         }
                     }
 
-                    if(unique)
+                    if (unique)
                     {
                         desiredName += " " + i;
                         break;
@@ -226,12 +208,12 @@ namespace Battlehub.RTSaveLoad2
 
         protected override bool ValidDrag(TreeViewItem parent, List<TreeViewItem> draggedItems)
         {
-            if(base.ValidDrag(parent, draggedItems))
+            if (base.ValidDrag(parent, draggedItems))
             {
-                if(parent.hasChildren)
+                if (parent.hasChildren)
                 {
-                    var names = parent.children.OfType<TreeViewItem<AssetFolderInfo>>().Select(c => c.data.name);
-                    if(draggedItems.OfType<TreeViewItem<AssetFolderInfo>>().Any(item => names.Contains(item.data.name)))
+                    var names = parent.children.OfType<TreeViewItem<AssetInfo>>().Select(c => c.data.name);
+                    if (draggedItems.OfType<TreeViewItem<AssetInfo>>().Any(item => names.Contains(item.data.name)))
                     {
                         return false;
                     }
@@ -241,36 +223,14 @@ namespace Battlehub.RTSaveLoad2
             return false;
         }
 
-
-        protected override void SelectionChanged(IList<int> selectedIds)
-        {
-            base.SelectionChanged(selectedIds);
-            Selection = GetSelection(selectedIds);
-            m_selectionChanged(Selection);
-        }
-
-        private AssetFolderInfo[] GetSelection(IList<int> selectedIds)
-        {
-            List<AssetFolderInfo> folders = new List<AssetFolderInfo>(selectedIds.Count);
-            for (int i = 0; i < selectedIds.Count; ++i)
-            {
-                AssetFolderInfo folder =  treeModel.Find(selectedIds[i]);
-                if(folder != null)
-                {
-                    folders.Add(folder);
-                }
-            }
-            return folders.ToArray();
-        }
-
         public static MultiColumnHeaderState CreateDefaultMultiColumnHeaderState(float treeViewWidth)
         {
             var columns = new[]
             {
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("Folder", ""),
-                    contextMenuText = "Folder",
+                    headerContent = new GUIContent("Asset", ""),
+                    contextMenuText = "Asset",
                     headerTextAlignment = TextAlignment.Left,
                     canSort = false,
                     sortingArrowAlignment = TextAlignment.Center,
@@ -279,7 +239,7 @@ namespace Battlehub.RTSaveLoad2
                     autoResize = true,
                     allowToggleVisibility = false
                 },
-            
+
                 new MultiColumnHeaderState.Column
                 {
                     headerContent = new GUIContent("Is Enabled"),
@@ -291,7 +251,7 @@ namespace Battlehub.RTSaveLoad2
                     autoResize = false,
                     allowToggleVisibility = false
                 },
-               
+
             };
 
             Assert.AreEqual(columns.Length, Enum.GetValues(typeof(Columns)).Length, "Number of columns should match number of enum values: You probably forgot to update one of them.");
@@ -301,4 +261,3 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 }
-

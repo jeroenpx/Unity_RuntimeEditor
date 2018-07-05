@@ -17,21 +17,25 @@ namespace Battlehub.RTSaveLoad2
 
         private void Awake()
         {
-            AssetFolderInfo assetsFolder = new AssetFolderInfo
+            if (m_assetLibrary == null || m_assetLibrary.Folders.Count == 0)
             {
-                name = "Assets",
-                depth = -1,
-            };
-
-            m_assetLibrary = new AssetLibraryInfo
-            {
-                name = "Root",
-                depth = -1,
-                Folders = new List<AssetFolderInfo>
+                AssetFolderInfo assetsFolder = new AssetFolderInfo
                 {
-                    assetsFolder
-                }
-            };
+                    name = "Assets",
+                    depth = -1,
+                };
+
+                m_assetLibrary = new AssetLibraryInfo
+                {
+                    name = "Root",
+                    depth = -1,
+                    Folders = new List<AssetFolderInfo>
+                    {
+                        assetsFolder
+                    }
+                };
+            }
+          
         }
     }
 }

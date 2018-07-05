@@ -154,7 +154,7 @@ namespace Battlehub.RTCommon.EditorTreeView
 		// Dragging
 		//-----------
 	
-		const string k_GenericDragID = "GenericDragColumnDragging";
+		public const string k_GenericDragID = "GenericDragColumnDragging";
 
 		protected override bool CanStartDrag (CanStartDragArgs args)
 		{
@@ -200,6 +200,13 @@ namespace Battlehub.RTCommon.EditorTreeView
                 else
                 {
                     return DragAndDropVisualMode.None;
+                }
+            }
+            else if(draggedRows.Count > 0)
+            {
+                if(!(draggedRows[0] is TreeViewItem<T>))
+                {
+                    external = true;
                 }
             }
 

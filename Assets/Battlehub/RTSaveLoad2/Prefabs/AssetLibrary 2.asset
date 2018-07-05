@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
-  m_Name: AssetLibrary
+  m_Name: AssetLibrary 2
   m_EditorClassIdentifier: 
   m_assetLibrary:
     m_ID: 0
@@ -24,25 +24,5 @@ MonoBehaviour:
     - m_ID: 1
       m_Name: Folder
       m_Depth: 0
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 6
-      m_Name: Folder 1
-      m_Depth: 1
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 3
-      m_Name: Folder 0
-      m_Depth: 1
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 2
-      m_Name: Folder
-      m_Depth: 2
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 5
-      m_Name: Folder 1
-      m_Depth: 2
       Assets: []
       IsEnabled: 0
