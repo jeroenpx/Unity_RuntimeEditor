@@ -34,13 +34,18 @@ namespace Battlehub.RTSaveLoad2
             m_Initialized = false;
         }
 
-        public void SetFolders(AssetFolderInfo[] folders)
+        public bool IsFolderSelected(AssetFolderInfo folder)
+        {
+            return m_folders != null && m_folders.Contains(folder);
+        }
+
+        public void SetSelectedFolders(AssetFolderInfo[] folders)
         {
             m_folders = folders;
             m_Initialized = false;
         }
 
-        private void InitIfNeeded()
+        public void InitIfNeeded()
         {
             if (!m_Initialized)
             {
@@ -102,6 +107,11 @@ namespace Battlehub.RTSaveLoad2
 
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex)
         {
+            if(m_folders == null || m_folders.Length != 1)
+            {
+                return DragAndDropVisualMode.None;
+            }
+
             AssetInfo parentAssetInfo = GetAssetInfo(parent);
             if (parentAssetInfo != TreeView.treeModel.root)
             {
@@ -114,6 +124,7 @@ namespace Battlehub.RTSaveLoad2
             }
 
             bool allFolders = true;
+            bool allUnityEditor = DragAndDrop.objectReferences.All(o => o != null && o.GetType().Assembly.FullName.Contains("UnityEditor"));
             foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
             {
                 string path = AssetDatabase.GetAssetPath(dragged_object);
@@ -124,7 +135,7 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            if(allFolders)
+            if(allFolders || allUnityEditor)
             {
                 return DragAndDropVisualMode.None;
             }
@@ -154,32 +165,68 @@ namespace Battlehub.RTSaveLoad2
         {
             DragAndDrop.AcceptDrag();
 
+            List<UnityObject> assets = new List<UnityObject>();
             foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
             {
                 string path = AssetDatabase.GetAssetPath(dragged_object);
                 if (!string.IsNullOrEmpty(path) && File.Exists(path))
                 {
-                    AssetFolderInfo folder = m_folders[0];
-                    AddAssetToFolder(parent, insertIndex, dragged_object, folder);
+                    assets.Add(dragged_object);
                 }
             }
+
+
+            AssetFolderInfo folder = m_folders[0];
+            UnityObject[] assetsArray = assets.ToArray();
+            bool moveToNewLocation = MoveToNewLocationDialog(assetsArray, folder);
+
+            AddAssetToFolder(parent, insertIndex, assetsArray, folder, moveToNewLocation);
             return DragAndDropVisualMode.Copy;
         }
 
-        public void AddAssetToFolder(UnityObject obj, AssetFolderInfo folder)
+        public void AddAssetToFolder(UnityObject[] objects, AssetFolderInfo folder, bool moveToNewLocation)
         {
-            AddAssetToFolder(null, -1, obj, folder);
+            AddAssetToFolder(null, -1, objects, folder, moveToNewLocation);
         }
 
-        private void AddAssetToFolder(TreeViewItem parent, int insertIndex, UnityObject obj, AssetFolderInfo folder)
+        private void AddAssetToFolder(TreeViewItem parent, int insertIndex, UnityObject[] objects, AssetFolderInfo folder, bool moveToNewLocation)
         {
-            AssetInfo parentAssetInfo = GetAssetInfo(parent);
-            AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex);
+            for (int i = 0; i < objects.Length; ++i)
+            {
+                UnityObject obj = objects[i];
+                if (obj == null || obj.GetType().Assembly.FullName.Contains("UnityEditor"))
+                {
+                    continue;
+                }
 
-            assetInfo.Object = obj;
+                AssetInfo parentAssetInfo = GetAssetInfo(parent);
+                AssetInfo assetInfo;
+                AssetFolderInfo existingFolder;
+                AssetInfo existingAsset;
+                if(m_asset.AssetLibrary.TryGetAssetInfo(obj, out existingFolder, out existingAsset))
+                {
+                    assetInfo = existingAsset;
+                    if(!moveToNewLocation)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if(m_asset.AssetLibrary.Identity >= AssetLibraryInfo.MAX_ASSETS)
+                    {
+                        EditorUtility.DisplayDialog("Unable to add asset", string.Format("Max 'Indentity' value reached. 'Identity' ==  {0}", AssetLibraryInfo.MAX_ASSETS), "OK");
+                        return;
+                    }
 
-            AddAssetToFolder(assetInfo, folder);
-            //assetInfo.PersistentId = ?
+                    assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
+                    assetInfo.PersistentId = m_asset.AssetLibrary.Identity;
+                    m_asset.AssetLibrary.Identity++;
+                    assetInfo.Object = obj; 
+                }
+
+                AddAssetToFolder(assetInfo, folder);
+            }
         }
 
         public void AddAssetToFolder(AssetInfo assetInfo, AssetFolderInfo folder)
@@ -191,28 +238,41 @@ namespace Battlehub.RTSaveLoad2
 
             if(assetInfo.Folder != null)
             {
-                TreeView.treeModel.RemoveElements(new[] { assetInfo.id });
+                if(!m_folders.Contains(folder))
+                {
+                    TreeView.treeModel.RemoveElements(new[] { assetInfo.id });
+                }
+                else if(TreeView.treeModel.Find(assetInfo.id) == null)
+                {
+                    TreeView.treeModel.AddElement(assetInfo, TreeView.treeModel.root, TreeView.treeModel.root.hasChildren ? TreeView.treeModel.root.children.Count : 0);
+                }
                 assetInfo.Folder.Assets.Remove(assetInfo);
             }
 
             assetInfo.Folder = folder;
             folder.Assets.Add(assetInfo);
+
         }
 
-        private  AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex)
+        private  AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex, AssetFolderInfo folder)
         {
             int depth = parent != null ? parent.depth + 1 : 0;
             int id = TreeView.treeModel.GenerateUniqueID();
-            var element = new AssetInfo(name, depth, id);
-            TreeView.treeModel.AddElement(element, parent, insertIndex == -1 ?
+            var assetInfo = new AssetInfo(name, depth, id);
+
+            if(IsFolderSelected(folder))
+            {
+                TreeView.treeModel.AddElement(assetInfo, parent, insertIndex == -1 ?
                     parent.hasChildren ?
-                        parent.children.Count
-                        : 0
+                    parent.children.Count
+                    : 0
                     : insertIndex);
 
-            // Select newly created element
-            TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
-            return element;
+                // Select newly created element
+                TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+            }
+      
+            return assetInfo;
         }
 
         private AssetInfo GetAssetInfo(TreeViewItem treeViewItem)
@@ -304,11 +364,14 @@ namespace Battlehub.RTSaveLoad2
             }
             EditorGUILayout.BeginHorizontal();
 
-            if(GUILayout.Button("Pick Asset"))
+            if(m_folders != null && m_folders.Length == 1)
             {
-                PickObject();
+                if (GUILayout.Button("Pick Asset"))
+                {
+                    PickObject();
+                }
             }
- 
+
             if (GUILayout.Button("Rename Asset"))
             {
                 RenameAsset();
@@ -319,7 +382,6 @@ namespace Battlehub.RTSaveLoad2
             }
             EditorGUILayout.EndHorizontal();
 
-            Debug.Log(Event.current.commandName);
             if (Event.current.commandName == "ObjectSelectorUpdated" && EditorGUIUtility.GetObjectPickerControlID() == m_currentPickerWindow)
             {
                 m_pickedObject = EditorGUIUtility.GetObjectPickerObject();
@@ -333,12 +395,48 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (m_folders[0].Assets == null || !m_folders[0].Assets.Any(a => a.Object == m_pickedObject))
                         {
-                            AddAssetToFolder(m_pickedObject, m_folders[0]);
+                            if (m_pickedObject == null || m_pickedObject.GetType().Assembly.FullName.Contains("UnityEditor"))
+                            {
+                                EditorUtility.DisplayDialog("Unable to add asset",
+                                   string.Format("Unable to add asset {0} from assembly {1}", m_pickedObject.GetType().Name, m_pickedObject.GetType().Assembly.GetName()), "OK");
+                            }
+                            else
+                            {
+                                bool moveToNewLocation = MoveToNewLocationDialog(new[] { m_pickedObject }, m_folders[0]);
+                                AddAssetToFolder(new[] { m_pickedObject }, m_folders[0], moveToNewLocation);
+                            }
                         }
                         m_pickedObject = null;
                     }
                 }
             }
+        }
+
+
+        private bool MoveToNewLocationDialog(UnityObject[] assets, AssetFolderInfo folder)
+        {
+            bool moveToNewLocation = true;
+            bool moveDialogDisplayed = false;
+            foreach (UnityObject asset in assets)
+            {
+                if (!moveDialogDisplayed)
+                {
+                    AssetFolderInfo existingFolder;
+                    AssetInfo existingAsset;
+                    if (m_asset.AssetLibrary.TryGetAssetInfo(asset, out existingFolder, out existingAsset))
+                    {
+                        if(existingFolder != folder)
+                        {
+                            moveToNewLocation = EditorUtility.DisplayDialog(
+                                                       "Same asset already added",
+                                                       "Same asset already added to asset library. Do you want to move it to new location?", "Yes", "No");
+                            moveDialogDisplayed = true;
+                        }  
+                    }
+                }
+            }
+
+            return moveToNewLocation;
         }
 
         private UnityObject m_pickedObject;
@@ -362,17 +460,39 @@ namespace Battlehub.RTSaveLoad2
         {
             Undo.RecordObject(m_asset, "Remove Asset");
             IList<int> selection = TreeView.GetSelection();
+          
             foreach(int selectedId in selection)
             {
                 AssetInfo assetInfo = TreeView.treeModel.Find(selectedId);
                 if(assetInfo != null)
                 {
+                    TreeElement parent = assetInfo.parent;
+
+                    int index = parent.children.IndexOf(assetInfo);
                     assetInfo.Folder.Assets.Remove(assetInfo);
                     assetInfo.Folder = null;
-                }
+                    
+                    TreeView.treeModel.RemoveElements(new[] { assetInfo });
+                    
+                    if(index >= parent.children.Count)
+                    {
+                        index--;
+                    }
+
+                    if(index >= 0)
+                    {
+                        TreeView.SetSelection(new int[] { parent.children[index].id }, TreeViewSelectionOptions.FireSelectionChanged);
+                    }
+                    else
+                    {
+                        TreeView.SetSelection(new int[0], TreeViewSelectionOptions.FireSelectionChanged);
+                    }
+                    
+                }   
             }
-           
-            TreeView.treeModel.RemoveElements(selection);
+
+            
+            TreeView.Reload();
         }
 
         public void OnGUI()

@@ -21,28 +21,8 @@ MonoBehaviour:
       m_Depth: -1
       Assets: []
       IsEnabled: 0
-    - m_ID: 1
+    - m_ID: 7
       m_Name: Folder
       m_Depth: 0
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 6
-      m_Name: Folder 1
-      m_Depth: 1
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 3
-      m_Name: Folder 0
-      m_Depth: 1
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 2
-      m_Name: Folder
-      m_Depth: 2
-      Assets: []
-      IsEnabled: 0
-    - m_ID: 5
-      m_Name: Folder 1
-      m_Depth: 2
       Assets: []
       IsEnabled: 0

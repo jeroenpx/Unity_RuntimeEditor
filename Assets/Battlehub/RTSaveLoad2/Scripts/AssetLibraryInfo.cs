@@ -64,6 +64,65 @@ namespace Battlehub.RTSaveLoad2
     [Serializable]
     public class AssetLibraryInfo : TreeElement
     {
+        public const int MAX_ASSETS = 0xFFFF;
+
+        public int Identity = 0;
+
         public List<AssetFolderInfo> Folders;
+
+        public bool Contains(UnityObject obj)
+        {
+            AssetFolderInfo folder;
+            AssetInfo asset;
+            return TryGetAssetInfo(obj, out folder, out asset);
+        }
+
+        public bool TryGetAssetInfo(UnityObject obj, out AssetFolderInfo resultFolder, out AssetInfo resultAsset)
+        {
+            for(int i = 0; i < Folders.Count; ++i)
+            {
+                AssetFolderInfo folder = Folders[i];
+                if(folder != null && TryGetAssetInfo(folder, obj, out resultFolder, out resultAsset))
+                {
+                    return true;
+                }
+            }
+            resultAsset = null;
+            resultFolder = null;
+            return false;
+        }
+
+        private bool TryGetAssetInfo(AssetFolderInfo folder, UnityObject obj, out AssetFolderInfo resultFolder, out AssetInfo resultAsset)
+        {
+            if(folder.Assets != null)
+            {
+                for(int i = 0; i < folder.Assets.Count; ++i)
+                {
+                    AssetInfo asset = folder.Assets[i];
+                    if(asset.Object == obj)
+                    {
+                        resultFolder = folder;
+                        resultAsset = asset;
+                        return true;
+                    }
+                }
+            }
+
+            if(folder.hasChildren)
+            {
+                for(int i = 0; i < folder.children.Count; ++i)
+                {
+                    AssetFolderInfo subfolder = (AssetFolderInfo)folder.children[i];
+                    if(TryGetAssetInfo(subfolder, obj, out resultFolder, out resultAsset))
+                    {
+                        return true;
+                    }   
+                }
+            }
+
+            resultAsset = null;
+            resultFolder = null;
+            return false;
+        }
     }
 }

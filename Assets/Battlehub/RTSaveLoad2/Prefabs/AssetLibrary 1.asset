@@ -24,31 +24,7 @@ MonoBehaviour:
     - m_ID: 1
       m_Name: Folder
       m_Depth: 0
-      Assets:
-      - m_ID: 3
-        m_Name: SaveLoadConfigAuto
-        m_Depth: 0
-        Object: {fileID: 11500000, guid: 0013d6274d947a44b8a01334a9210d09, type: 3}
-        PersistentId: 0
-        IsEnabled: 0
-      - m_ID: 4
-        m_Name: AddPrefab
-        m_Depth: 0
-        Object: {fileID: 2800000, guid: 5aa9a02297bbbef49a0e4e0ca6b61d26, type: 3}
-        PersistentId: 0
-        IsEnabled: 0
-      - m_ID: 5
-        m_Name: Arrows2
-        m_Depth: 0
-        Object: {fileID: 4300026, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
-        PersistentId: 0
-        IsEnabled: 0
-      - m_ID: 6
-        m_Name: Arrows5
-        m_Depth: 0
-        Object: {fileID: 4300020, guid: 237758c99c21ca84d9c5871dd6e8adcb, type: 3}
-        PersistentId: 0
-        IsEnabled: 0
+      Assets: []
       IsEnabled: 0
     - m_ID: 2
       m_Name: zzzz
@@ -59,6 +35,12 @@ MonoBehaviour:
         m_Depth: 0
         Object: {fileID: 1934264629928522, guid: ba88d180fe4fd504e9b519fa61186f70,
           type: 2}
+        PersistentId: 0
+        IsEnabled: 0
+      - m_ID: 3
+        m_Name: AudioSourceGizmo
+        m_Depth: 0
+        Object: {fileID: 2800000, guid: 373a62885661ab24b9ba639680a9f53a, type: 3}
         PersistentId: 0
         IsEnabled: 0
       IsEnabled: 0
@@ -76,12 +58,6 @@ MonoBehaviour:
         m_Name: AssetLibrary 1
         m_Depth: 0
         Object: {fileID: 11400000}
-        PersistentId: 0
-        IsEnabled: 0
-      - m_ID: 7
-        m_Name: Black
-        m_Depth: 0
-        Object: {fileID: 2100000, guid: 5476979c1fc13da43b4545049c2250ca, type: 2}
         PersistentId: 0
         IsEnabled: 0
       IsEnabled: 0

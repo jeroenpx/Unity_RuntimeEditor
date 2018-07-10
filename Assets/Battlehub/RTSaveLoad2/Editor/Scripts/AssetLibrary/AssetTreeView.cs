@@ -15,10 +15,10 @@ namespace Battlehub.RTSaveLoad2
         private const float kRowHeights = 20f;
         private const float kIconWidth = 18f;
 
-        private static Texture2D[] s_icons =
-        {
-            EditorGUIUtility.FindTexture ("Folder Icon")
-        };
+        //private static Texture2D[] s_icons =
+        //{
+        //    EditorGUIUtility.FindTexture ("Folder Icon")
+        //};
 
         private enum Columns
         {

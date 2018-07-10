@@ -33,16 +33,19 @@ namespace Battlehub.RTSaveLoad2
                 m_projectGUI.SelectedFoldersChanged += OnSelectedFoldersChanged;
             }
 
-            m_assetsGUI.SetFolders(m_projectGUI.SelectedFolders);
+            m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
             m_projectGUI.OnEnable();
             m_assetsGUI.OnEnable();
         }
 
         private void OnDisable()
         {
-            EditorUtility.SetDirty(Asset);
-            AssetDatabase.SaveAssets();
-
+            if(Asset != null)
+            {
+                EditorUtility.SetDirty(Asset);
+                AssetDatabase.SaveAssets();
+            }
+          
             m_projectGUI.SelectedFoldersChanged -= OnSelectedFoldersChanged;
             m_projectGUI.OnDisable();
             m_assetsGUI.OnDisable();
@@ -62,7 +65,7 @@ namespace Battlehub.RTSaveLoad2
         private void OnSelectedFoldersChanged(object sender, EventArgs e)
         {
             m_canRenderAssetsGUI = m_projectGUI.SelectedFolders != null && m_projectGUI.SelectedFolders.Length > 0;
-            m_assetsGUI.SetFolders(m_projectGUI.SelectedFolders);
+            m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
         }
 
 

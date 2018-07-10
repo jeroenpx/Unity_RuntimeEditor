@@ -101,7 +101,12 @@ namespace Battlehub.RTSaveLoad2
         public void OnDisable()
         {
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
-            SessionState.SetString(kSessionStateKeyPrefix + m_asset.GetInstanceID(), JsonUtility.ToJson(TreeView.state));
+
+            if(m_asset != null && TreeView != null && TreeView.state != null)
+            {
+                SessionState.SetString(kSessionStateKeyPrefix + m_asset.GetInstanceID(), JsonUtility.ToJson(TreeView.state));
+            }
+            
         }
 
         private void OnUndoRedoPerformed()
@@ -123,6 +128,11 @@ namespace Battlehub.RTSaveLoad2
             else
             {
                 parentFolder = ((TreeViewItem<AssetFolderInfo>)parent).data;
+            }
+
+            if(DragAndDrop.objectReferences != null && DragAndDrop.objectReferences.Length > 0 && DragAndDrop.objectReferences.All(o => o == null || o != null && File.Exists(AssetDatabase.GetAssetPath(o)) && o.GetType().Assembly.FullName.Contains("UnityEditor")))
+            {
+                return DragAndDropVisualMode.None;
             }
 
             if (parentFolder.hasChildren)
@@ -204,6 +214,10 @@ namespace Battlehub.RTSaveLoad2
             }
             else
             {
+                m_moveDialogDisplayed = false;
+                m_moveToNewLocation = true;
+
+                List<UnityObject> assets = new List<UnityObject>();
                 foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
                 {
                     string path = AssetDatabase.GetAssetPath(dragged_object);
@@ -211,22 +225,39 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (!outside)
                         {
-                            AssetFolderInfo folder = GetAssetFolderInfo(parent);
-                            m_assetsGUI.AddAssetToFolder(dragged_object, folder);
+                            assets.Add(dragged_object);
                         }
                     }
                     else
                     {
-                        CopyFolder(path, parent, insertIndex);
+                        m_assetsGUI.InitIfNeeded();
+
+                        AssetFolderInfo folder = CopyFolder(path, parent, insertIndex);
+
+                        TreeView.SetSelection(new[] { folder.id }, TreeViewSelectionOptions.RevealAndFrame);
+
+                        SelectedFolders = new[] { folder };
+                        if(SelectedFoldersChanged != null)
+                        {
+                            SelectedFoldersChanged(this, EventArgs.Empty);
+                        }  
                     }
-                    // Do On Drag Stuff here
+                }
+
+                UnityObject[] assetsArray = assets.ToArray();
+                if(assetsArray.Length > 0)
+                {
+                    MoveToNewLocationDialog(assetsArray);
+                    AssetFolderInfo folder = GetAssetFolderInfo(parent);
+                    m_assetsGUI.AddAssetToFolder(assetsArray, folder, m_moveToNewLocation);
                 }
             }
-           
+
             return DragAndDropVisualMode.Copy;
         }
 
-        private void CopyFolder(string path, TreeViewItem parent, int insertIndex)
+     
+        private AssetFolderInfo CopyFolder(string path, TreeViewItem parent, int insertIndex)
         {
             string lastFolderName = Path.GetFileName(path);
             AssetFolderInfo parentData = GetAssetFolderInfo(parent);
@@ -239,9 +270,52 @@ namespace Battlehub.RTSaveLoad2
 
             TreeViewItem folderTreeViewItem = TreeView.FindItem(folder.id);
             string[] subfolders = AssetDatabase.GetSubFolders(path);
+
+            string[] assetGuids = AssetDatabase.FindAssets("", new[] { path }).Distinct().ToArray();
+
+            List<UnityObject> assets = new List<UnityObject>();
+
+            foreach (string assetGuid in assetGuids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(assetGuid);
+                if (path == Path.GetDirectoryName(assetPath))
+                {
+                    UnityObject asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityObject));
+                    assets.Add(asset);
+                }
+            }
+
+            UnityObject[] assetsArray = assets.ToArray();
+            if(assetsArray.Length > 0)
+            {
+                MoveToNewLocationDialog(assetsArray);
+                m_assetsGUI.AddAssetToFolder(assetsArray, folder, m_moveToNewLocation);
+            }
+    
             for (int i = 0; i < subfolders.Length; ++i)
             {
                 CopyFolder(subfolders[i], folderTreeViewItem, i);
+            }
+
+            return folder;
+        }
+
+        private bool m_moveDialogDisplayed = false;
+        private bool m_moveToNewLocation = true;
+        private void MoveToNewLocationDialog(UnityObject[] assets)
+        {
+            foreach (UnityObject asset in assets)
+            {
+                if (!m_moveDialogDisplayed)
+                {
+                    if (m_asset.AssetLibrary.Contains(asset))
+                    {
+                        m_moveToNewLocation = EditorUtility.DisplayDialog(
+                            "Same asset(s) already added",
+                            "Same asset(s) already added to asset library. Do you want to move them to new location?", "Yes", "No");
+                        m_moveDialogDisplayed = true;
+                    }
+                }
             }
         }
 
@@ -349,6 +423,8 @@ namespace Battlehub.RTSaveLoad2
             var selection = TreeView.GetSelection();
             TreeElement parent = (selection.Count == 1 ? TreeView.treeModel.Find(selection[0]) : null) ?? TreeView.treeModel.root;
             AssetFolderInfo folder = CreateFolder("Folder", parent, 0);
+            // Select newly created element
+            TreeView.SetSelection(new[] { folder.id }, TreeViewSelectionOptions.RevealAndFrame);
             TreeView.BeginRename(folder.id);
         }
 
@@ -359,8 +435,8 @@ namespace Battlehub.RTSaveLoad2
             var element = new AssetFolderInfo(name, depth, id);
             TreeView.treeModel.AddElement(element, parent, insertPosition);
 
-            // Select newly created element
-            TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+            TreeView.SetSelection(new[] { element.id }, TreeViewSelectionOptions.RevealAndFrame);
+
             return element;
         }
 
