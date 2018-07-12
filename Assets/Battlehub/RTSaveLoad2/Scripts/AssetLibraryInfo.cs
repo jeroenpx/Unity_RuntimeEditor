@@ -15,7 +15,7 @@ namespace Battlehub.RTSaveLoad2
         public AssetFolderInfo Folder;
         public UnityObject Object;
         [ReadOnly]
-        public int PersistentId;
+        public int PersistentID;
         public bool IsEnabled;
 
         public AssetInfo()
@@ -64,7 +64,8 @@ namespace Battlehub.RTSaveLoad2
     [Serializable]
     public class AssetLibraryInfo : TreeElement
     {
-        public const int MAX_ASSETS = 0xFFFF;
+        public const int ORDINAL_OFFSET = 16;
+        public const int MAX_ASSETS = 1 << ORDINAL_OFFSET;
 
         public int Identity = 0;
 

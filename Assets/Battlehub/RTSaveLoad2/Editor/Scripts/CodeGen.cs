@@ -721,13 +721,13 @@ namespace Battlehub.RTSaveLoad2
                 Type elementType = type.GetElementType();
                 if(elementType.IsSubclassOf(typeof(UnityObject)))
                 {
-                    return typeof(int[]);
+                    return typeof(long[]);
                 }
             }
 
             if(type.IsSubclassOf(typeof(UnityObject)))
             {
-                return typeof(int);
+                return typeof(long);
             }
             return null;
         }

@@ -220,7 +220,7 @@ namespace Battlehub.RTSaveLoad2
                     }
 
                     assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
-                    assetInfo.PersistentId = m_asset.AssetLibrary.Identity;
+                    assetInfo.PersistentID = m_asset.AssetLibrary.Identity;
                     m_asset.AssetLibrary.Identity++;
                     assetInfo.Object = obj; 
                 }

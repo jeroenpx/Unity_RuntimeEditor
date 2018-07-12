@@ -17,7 +17,7 @@ namespace Battlehub.RTSaveLoad2
 
     public class GetDepsContext
     {
-        public readonly HashSet<int> Dependencies = new HashSet<int>();
+        public readonly HashSet<long> Dependencies = new HashSet<long>();
         public readonly HashSet<object> VisitedObjects = new HashSet<object>();
 
         public void Clear()
@@ -42,6 +42,12 @@ namespace Battlehub.RTSaveLoad2
 
     public abstract class PersistentSurrogate : IPersistentSurrogate
     {
+        private IIDMap m_idMap;
+        protected PersistentSurrogate()
+        {
+            m_idMap = RTSL2Deps.Get.IDMap;
+        }
+
         public virtual void ReadFrom(object obj) { }
         public virtual object WriteTo(object obj) { return obj; }
         protected virtual void GetDepsImpl(GetDepsContext context) { }
@@ -67,7 +73,7 @@ namespace Battlehub.RTSaveLoad2
             GetDepsFromImpl(obj, context);
         }
 
-        protected void AddDep(int depenency, GetDepsContext context)
+        protected void AddDep(long depenency, GetDepsContext context)
         {
             if (depenency > 0 && !context.Dependencies.Contains(depenency))
             {
@@ -75,7 +81,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        protected void AddDep(int[] depenencies, GetDepsContext context)
+        protected void AddDep(long[] depenencies, GetDepsContext context)
         {
             for (int i = 0; i < depenencies.Length; ++i)
             {
@@ -135,24 +141,24 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        protected int ToId(UnityObject uo)
+        protected long ToID(UnityObject uo)
         {
-            throw new System.NotImplementedException();
+            return m_idMap.ToID(uo);
         }
 
-        protected int[] ToId(UnityObject[] uo)
+        protected long[] ToID(UnityObject[] uo)
         {
-            throw new System.NotImplementedException();
+            return m_idMap.ToID(uo);
         }
 
-        public T FromId<T>(int id) where T : UnityObject
+        public T FormID<T>(long id) where T : UnityObject
         {
-            throw new System.NotImplementedException();
+            return m_idMap.FromID<T>(id);
         }
 
-        public T[] FromId<T>(int[] id) where T : UnityObject
+        public T[] FromID<T>(long[] id) where T : UnityObject
         {
-            throw new System.NotImplementedException();
+            return m_idMap.FromID<T>(id);
         }
     }
 }

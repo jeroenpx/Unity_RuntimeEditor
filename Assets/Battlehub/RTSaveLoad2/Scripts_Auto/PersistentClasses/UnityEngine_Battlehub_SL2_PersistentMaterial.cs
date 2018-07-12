@@ -15,13 +15,13 @@ namespace UnityEngine.Battlehub.SL2
         public string[] shaderKeywords;
 
         [ProtoMember(257)]
-        public int shader;
+        public long shader;
 
         [ProtoMember(258)]
         public Color color;
 
         [ProtoMember(259)]
-        public int mainTexture;
+        public long mainTexture;
 
         [ProtoMember(260)]
         public Vector2 mainTextureOffset;
@@ -46,9 +46,9 @@ namespace UnityEngine.Battlehub.SL2
             base.ReadFrom(obj);
             Material uo = (Material)obj;
             shaderKeywords = uo.shaderKeywords;
-            shader = ToId(uo.shader);
+            shader = ToID(uo.shader);
             color = uo.color;
-            mainTexture = ToId(uo.mainTexture);
+            mainTexture = ToID(uo.mainTexture);
             mainTextureOffset = uo.mainTextureOffset;
             mainTextureScale = uo.mainTextureScale;
             renderQueue = uo.renderQueue;
@@ -62,9 +62,9 @@ namespace UnityEngine.Battlehub.SL2
             obj = base.WriteTo(obj);
             Material uo = (Material)obj;
             uo.shaderKeywords = shaderKeywords;
-            uo.shader = FromId<Shader>(shader);
+            uo.shader = FormID<Shader>(shader);
             uo.color = color;
-            uo.mainTexture = FromId<Texture>(mainTexture);
+            uo.mainTexture = FormID<Texture>(mainTexture);
             uo.mainTextureOffset = mainTextureOffset;
             uo.mainTextureScale = mainTextureScale;
             uo.renderQueue = renderQueue;
