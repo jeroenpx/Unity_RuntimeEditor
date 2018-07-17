@@ -151,7 +151,7 @@ namespace Battlehub.RTSaveLoad2
             return m_idMap.ToID(uo);
         }
 
-        public T FormID<T>(long id) where T : UnityObject
+        public T FromID<T>(long id) where T : UnityObject
         {
             return m_idMap.FromID<T>(id);
         }

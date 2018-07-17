@@ -1417,6 +1417,10 @@ namespace Battlehub.RTSaveLoad2
                 string typeModelCreatorCode = codeGen.CreateTypeModelCreator(uoMappings.Union(surrogateMappings).ToArray());
                 File.WriteAllText(scriptsAutoPath + "/TypeModelCreator.cs", typeModelCreatorCode);
 
+                string typeMapCode = codeGen.CreateTypeMap(uoMappings.Union(surrogateMappings).ToArray());
+                File.WriteAllText(scriptsAutoPath + "/TypeMap.cs", typeMapCode);
+
+
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             }
       

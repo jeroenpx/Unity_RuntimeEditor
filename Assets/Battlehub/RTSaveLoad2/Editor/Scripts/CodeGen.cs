@@ -129,6 +129,26 @@ namespace Battlehub.RTSaveLoad2
         private static readonly string SetSerializationSurrogate =
             ".SetSurrogate(typeof({0}))";
 
+        private static readonly string TypeMapTemplate =
+            "{0}" + BR +
+            "using UnityObject = UnityEngine.Object;" + BR +
+            "namespace Battlehub.RTSaveLoad2" + BR +
+            "{{" + BR +
+            "    public partial class TypeMap" + BR +
+            "    {{" + BR +
+            "        public TypeMap()" + BR +
+            "        {{" + BR +
+            "            {1}" +
+            "        }}" + BR +
+            "    }}" + BR +
+            "}}" + END;
+
+        private static readonly string AddToPersistentTypeTemplate = 
+             "m_toPeristentType.Add(typeof({0}), typeof({1}));" + BR;
+        private static readonly string AddToUnityTypeTemplate =
+             "m_toUnityType.Add(typeof({0}), typeof({1}));" + BR;
+
+
         /// <summary>
         /// Short names for primitive types
         /// </summary>
@@ -307,6 +327,52 @@ namespace Battlehub.RTSaveLoad2
         public string PrepareMappedTypeName(string typeName)
         {
             return typeName.Replace("+", ".");
+        }
+
+        //Generate C# code of TypeMap for selected mappings
+        public string CreateTypeMap(PersistentClassMapping[] mappings)
+        {
+            string usings = CreateUsings(mappings);
+            string body = CreateTypeMapBody(mappings);
+
+            return string.Format(TypeMapTemplate, usings, body);
+        }
+
+        private string CreateTypeMapBody(PersistentClassMapping[] mappings)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int m = 0; m < mappings.Length; ++m)
+            {
+                PersistentClassMapping mapping = mappings[m];
+                if (mapping == null)
+                {
+                    continue;
+                }
+
+                if (!mapping.IsEnabled)
+                {
+                    continue;
+                }
+
+                Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
+                if(mappingType == null)
+                {
+                    Debug.LogWarning("Type " + mapping.MappedAssemblyQualifiedName + " was not found");
+                    continue;
+                }
+
+                string mappedTypeName = mappingType.Name;
+                if (mappedTypeName == "Object")
+                {
+                    mappedTypeName = "UnityObject";
+                }
+                sb.AppendFormat(AddToPersistentTypeTemplate, mappedTypeName, mapping.PersistentTypeName);
+                sb.Append(TAB3);
+                sb.AppendFormat(AddToUnityTypeTemplate, mapping.PersistentTypeName, mappedTypeName);
+                sb.Append(TAB3);
+            }
+            sb.Append(BR);
+            return sb.ToString();
         }
 
         //Generate C# code of TypeModelCreator for selected mappings
@@ -523,7 +589,7 @@ namespace Battlehub.RTSaveLoad2
                 if(prop.MappedType.IsSubclassOf(typeof(UnityObject)) || prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)))
                 {
                     //generate code which will convert unity object to identifier
-                    sb.AppendFormat("{0} = ToId(uo.{1});", prop.PersistentName, prop.MappedName);
+                    sb.AppendFormat("{0} = ToID(uo.{1});", prop.PersistentName, prop.MappedName);
                 }
                 else
                 {
@@ -555,7 +621,7 @@ namespace Battlehub.RTSaveLoad2
                     //generate code which will convert identifier to unity object
 
                     Type mappedType = prop.MappedType.IsArray ? prop.MappedType.GetElementType() : prop.MappedType;
-                    sb.AppendFormat("uo.{0} = FromId<{2}>({1});", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(mappedType.Name));
+                    sb.AppendFormat("uo.{0} = FromID<{2}>({1});", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(mappedType.Name));
                 }
                 else
                 {

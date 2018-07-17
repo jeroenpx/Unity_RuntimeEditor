@@ -9,7 +9,7 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentMaterial : PersistentSurrogate
+    public class PersistentMaterial : PersistentObject
     {
         [ProtoMember(256)]
         public string[] shaderKeywords;
@@ -62,9 +62,9 @@ namespace UnityEngine.Battlehub.SL2
             obj = base.WriteTo(obj);
             Material uo = (Material)obj;
             uo.shaderKeywords = shaderKeywords;
-            uo.shader = FormID<Shader>(shader);
+            uo.shader = FromID<Shader>(shader);
             uo.color = color;
-            uo.mainTexture = FormID<Texture>(mainTexture);
+            uo.mainTexture = FromID<Texture>(mainTexture);
             uo.mainTextureOffset = mainTextureOffset;
             uo.mainTextureScale = mainTextureScale;
             uo.renderQueue = renderQueue;

@@ -10,8 +10,9 @@ namespace Battlehub.RTSaveLoad
         }
         public static IStorage Storage
         {
-            get { return new FileSystemStorage(Application.persistentDataPath); }
+            get { return new FileSystemStorage(@"E:\Development\Test"); }// Application.persistentDataPath); }
         }
+
         public static IProject Project
         {
             get { return new Project(); }

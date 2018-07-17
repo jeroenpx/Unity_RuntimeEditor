@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentTexture : PersistentSurrogate
+    public class PersistentTexture : PersistentObject
     {
             }
 }

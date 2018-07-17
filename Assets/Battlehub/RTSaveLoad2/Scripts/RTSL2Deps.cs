@@ -13,6 +13,16 @@ namespace Battlehub.RTSaveLoad2
         {
             get;
         }
+
+        ITypeMap TypeMap
+        {
+            get;
+        }
+
+        IUnityObjectFactory UnityObjFactory
+        {
+            get;
+        }
     }
 
     [DefaultExecutionOrder(-1)]
@@ -34,7 +44,19 @@ namespace Battlehub.RTSaveLoad2
         {
             get { return m_assetDB; }
         }
-      
+
+        private ITypeMap m_typeMap;
+        public ITypeMap TypeMap
+        {
+            get { return m_typeMap; }
+        }
+
+        private IUnityObjectFactory m_unityObjFactory;
+        public IUnityObjectFactory UnityObjFactory
+        {
+            get { return m_unityObjFactory; }
+        }
+
         protected virtual void Awake()
         {
             if(Get != null)
@@ -44,6 +66,8 @@ namespace Battlehub.RTSaveLoad2
             }
             Get = this;
             m_assetDB = new AssetDB();
+            m_typeMap = new TypeMap();
+            m_unityObjFactory = new UnityObjectFactory();
         }
 
         protected virtual void OnDestroy()
@@ -52,6 +76,8 @@ namespace Battlehub.RTSaveLoad2
             {
                 Get = null;
                 m_assetDB = null;
+                m_typeMap = null;
+                m_unityObjFactory = null;
             }
         }
 
