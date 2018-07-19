@@ -219,14 +219,43 @@ namespace Battlehub.RTSaveLoad2
                         return;
                     }
 
-                    assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
-                    assetInfo.PersistentID = m_asset.AssetLibrary.Identity;
-                    m_asset.AssetLibrary.Identity++;
-                    assetInfo.Object = obj; 
+                    assetInfo = CreateAsset(obj, parentAssetInfo, insertIndex, folder);
                 }
 
                 AddAssetToFolder(assetInfo, folder);
             }
+        }
+
+        private AssetInfo CreateAsset(UnityObject obj, AssetInfo parentAssetInfo, int insertIndex = -1, AssetFolderInfo folder = null)
+        {
+            AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
+            assetInfo.PersistentID = m_asset.AssetLibrary.Identity;
+            m_asset.AssetLibrary.Identity++;
+            assetInfo.Object = obj;
+
+            if(obj is GameObject)
+            {
+                GameObject go = (GameObject)obj;
+                Component[] components = go.GetComponents<Component>();
+                foreach(Component component in components)
+                {
+                    AssetInfo componentAssetInfo = CreateAsset(component.name, assetInfo);
+                    componentAssetInfo.PersistentID = m_asset.AssetLibrary.Identity;
+                    m_asset.AssetLibrary.Identity++;
+                    componentAssetInfo.Object = component;
+                }
+
+                if (go.transform.childCount > 0)
+                {
+                    foreach(Transform child in go.transform)
+                    {
+                        CreateAsset(child.gameObject, assetInfo);
+                    }
+                }
+            }
+           
+
+            return assetInfo;
         }
 
         public void AddAssetToFolder(AssetInfo assetInfo, AssetFolderInfo folder)
@@ -254,24 +283,28 @@ namespace Battlehub.RTSaveLoad2
 
         }
 
-        private  AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex, AssetFolderInfo folder)
+        private  AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex = -1, AssetFolderInfo folder = null)
         {
             int depth = parent != null ? parent.depth + 1 : 0;
             int id = TreeView.treeModel.GenerateUniqueID();
             var assetInfo = new AssetInfo(name, depth, id);
 
-            if(IsFolderSelected(folder))
-            {
-                TreeView.treeModel.AddElement(assetInfo, parent, insertIndex == -1 ?
-                    parent.hasChildren ?
-                    parent.children.Count
-                    : 0
-                    : insertIndex);
 
-                // Select newly created element
-                TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+            if(folder != null)
+            {
+                if (IsFolderSelected(folder))
+                {
+                    TreeView.treeModel.AddElement(assetInfo, parent, insertIndex == -1 ?
+                        parent.hasChildren ?
+                        parent.children.Count
+                        : 0
+                        : insertIndex);
+
+                    // Select newly created element
+                    TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+                }
             }
-      
+            
             return assetInfo;
         }
 

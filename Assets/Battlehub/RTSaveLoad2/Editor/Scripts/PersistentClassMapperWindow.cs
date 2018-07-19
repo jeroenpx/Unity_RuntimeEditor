@@ -11,6 +11,15 @@ namespace Battlehub.RTSaveLoad2
 {
     public class PersistentClassMapperGUI
     {
+        public static readonly HashSet<Type> HideMustHaveTypes = new HashSet<Type>
+        {
+            typeof(UnityObject),
+            typeof(Transform),
+            typeof(GameObject),
+            typeof(Vector3),
+            typeof(Quaternion)
+        };
+
         public event Action<Type> TypeLocked;
         public event Action<Type> TypeUnlocked;
 
@@ -440,13 +449,17 @@ namespace Battlehub.RTSaveLoad2
             for (int typeIndex = 0; typeIndex < m_mappings.Length; ++typeIndex)
             {
                 ClassMappingInfo mapping = m_mappings[typeIndex];
+                Type type = m_types[typeIndex];
+                if(HideMustHaveTypes.Contains(type))
+                {
+                    mapping.IsEnabled = true;
+                }
+
                 if (!mapping.IsEnabled)
                 {
                     continue;
                 }
 
-
-                Type type = m_types[typeIndex];
                 Type baseType = GetEnabledBaseType(typeIndex);
                 if (baseType == null)
                 {
@@ -558,7 +571,6 @@ namespace Battlehub.RTSaveLoad2
                     classMapping.PersistentBaseNamespace = PersistentClassMapping.ToPersistentNamespace(baseType.Namespace);
                     classMapping.PersistentBaseTypeName = PersistentClassMapping.ToPersistentName(m_codeGen.TypeName(baseType));
                 }
-
             }
 
             PrefabUtility.CreatePrefab(m_mappingStoragePath, storageGO);
@@ -612,7 +624,7 @@ namespace Battlehub.RTSaveLoad2
         private void DrawTypeEditor(int rootTypeIndex, int typeIndex, int indent = 1)
         {
             Type type = m_types[typeIndex];
-            if (type == m_baseType)
+            if (type == m_baseType || HideMustHaveTypes.Contains(type))
             {
                 return;
             }
@@ -1370,6 +1382,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 m_uoMapperGUI.SaveMappings();
                 m_surrogatesMapperGUI.SaveMappings();
+
                 PersistentClassMapping[] uoMappings = m_uoMapperGUI.GetMappings();
                 PersistentClassMapping[] surrogateMappings = m_surrogatesMapperGUI.GetMappings();
 
@@ -1382,7 +1395,8 @@ namespace Battlehub.RTSaveLoad2
                 Directory.CreateDirectory(scriptsAutoPath);
                 string persistentClassesPath = scriptsAutoPath + "/" + PersistentClassesFolder;
                 Directory.CreateDirectory(persistentClassesPath);
-                
+
+                HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => t.FullName));
                 CodeGen codeGen = new CodeGen();
                 for(int i = 0; i < uoMappings.Length; ++i)
                 {
@@ -1394,6 +1408,10 @@ namespace Battlehub.RTSaveLoad2
                             continue;
                         }
 
+                        if(hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
+                        {
+                            continue;
+                        }
                         string code = codeGen.CreatePersistentClass(mapping);
                         CreateCSFile(persistentClassesPath, mapping, code);
                     }

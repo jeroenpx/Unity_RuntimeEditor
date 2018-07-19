@@ -18,6 +18,8 @@ namespace Battlehub.RTSaveLoad2
         public int PersistentID;
         public bool IsEnabled;
 
+        public AssetInfo[] Children;
+
         public AssetInfo()
         {
 

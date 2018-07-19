@@ -11,8 +11,11 @@ namespace Battlehub.RTSaveLoad2
         bool IsNullID(long id);
         bool IsInstanceID(long id);
         bool IsResourceID(long id);
+        int ToInt32(long id);
+
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
+        
         T FromID<T>(long id) where T : UnityObject;
         T[] FromID<T>(long[] id) where T : UnityObject;
     }
@@ -26,6 +29,9 @@ namespace Battlehub.RTSaveLoad2
 
     public interface IAssetDB : IIDMapManager
     {
+        void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj);
+        void UnregisterSceneObjects();
+
         bool LoadLibrary(string assetLibrary, int ordinal);
         void UnloadLibrary(int ordinal);
         AsyncOperation UnloadUnusedAssets(Action<AsyncOperation> completedCallback = null);   
@@ -36,7 +42,26 @@ namespace Battlehub.RTSaveLoad2
         private readonly HashSet<AssetLibraryAsset> m_loadedLibraries = new HashSet<AssetLibraryAsset>();
         private readonly Dictionary<int, AssetLibraryAsset> m_ordinalToLib = new Dictionary<int, AssetLibraryAsset>();
         private MappingInfo m_mapping = new MappingInfo();
-        
+
+        private Dictionary<int, UnityObject> m_persistentIDToSceneObject;
+        private Dictionary<int, int> m_idToPersistentID;
+
+        public void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj)
+        {
+            if(m_persistentIDToSceneObject != null)
+            {
+                Debug.LogWarning("scene objects were not unregistered");
+            }
+            m_persistentIDToSceneObject = idToObj;
+            m_idToPersistentID = m_persistentIDToSceneObject.ToDictionary(kvp => kvp.Value.GetInstanceID(), kvp => kvp.Key);
+        }
+
+        public void UnregisterSceneObjects()
+        {
+            m_persistentIDToSceneObject = null;
+            m_idToPersistentID = null;
+        }
+
         public bool LoadLibrary(string assetLibrary, int ordinal)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
@@ -143,17 +168,25 @@ namespace Battlehub.RTSaveLoad2
         private const long m_nullID = 1L << 32;
         private const long m_instanceIDMask = 1L << 33;
         private const long m_persistentIDMask = 1L << 34;
+
         public bool IsNullID(long id)
         {
             return (id & m_nullID) != 0;
         }
+
         public bool IsInstanceID(long id)
         {
             return (id & m_instanceIDMask) != 0;
         }
+
         public bool IsResourceID(long id)
         {
             return (id & m_persistentIDMask) != 0;
+        }
+
+        public int ToInt32(long id)
+        {
+            return (int)(0x0000FFFFL & id);
         }
 
         public long ToID(UnityObject uo)
@@ -168,6 +201,11 @@ namespace Battlehub.RTSaveLoad2
             if(m_mapping.InstanceIDtoPID.TryGetValue(instanceID, out persistentID))
             {
                 return m_persistentIDMask | (0x0000FFFFL & persistentID);
+            }
+            
+            if(m_idToPersistentID.TryGetValue(instanceID, out persistentID))
+            {
+                return m_instanceIDMask | (0x0000FFFFL & persistentID);
             }
 
             return m_instanceIDMask | (0x0000FFFFL & instanceID);
@@ -197,11 +235,15 @@ namespace Battlehub.RTSaveLoad2
             if(IsResourceID(id))
             {
                 UnityObject obj;
-                int persistentID = (int)(0x0000FFFFL & id);
+                int persistentID = ToInt32(id);
                 if (m_mapping.PersistentIDtoObj.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
                 }
+            }
+            else if(IsInstanceID(id))
+            {
+
             }
             return null;
         }
@@ -220,17 +262,5 @@ namespace Battlehub.RTSaveLoad2
             }
             return objs;
         }
-
-        //private void Update()
-        //{
-        //    if(Input.GetKeyDown(KeyCode.Space))
-        //    {
-        //        LoadLibrary("TestLib", 0);
-        //    }
-        //    else if(Input.GetKey(KeyCode.X))
-        //    {
-        //        UnloadLibrary(0);
-        //    }
-        //}
     }
 }

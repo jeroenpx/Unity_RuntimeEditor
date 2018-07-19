@@ -66,10 +66,7 @@ namespace Battlehub.RTSaveLoad2
                 string newObjStr = obj != null ? obj.GetType().Name + ", name: " + obj.name + ", InstanceID: " + obj.GetInstanceID() : "null";
                 Debug.LogWarningFormat("An element with mappedId = {0} already exists. existing obj = {1}; new obj = {2}", persistentID, existingObjStr, newObjStr);
                 throw;
-            }
-
-           
-        }
+            }        }
     }
 
     [CreateAssetMenu(fileName = "AssetLibrary", menuName = "RT Asset Library", order = 1)]
@@ -160,22 +157,7 @@ namespace Battlehub.RTSaveLoad2
                 for(int i = 0; i < folder.Assets.Count; ++i)
                 {
                     AssetInfo asset = folder.Assets[i];
-                    if(asset.Object != null)
-                    {
-                        if(IIDtoPID)
-                        {
-                            int instanceID = asset.Object.GetInstanceID();
-                            mapping.Add(instanceID, m_offset + asset.PersistentID);
-                            instanceIDs.Add(instanceID);
-                        }
-
-                        if(PIDtoObj)
-                        {
-                            int persistentID = m_offset + asset.PersistentID;
-                            mapping.Add(persistentID, asset.Object);
-                            persistentIDs.Add(persistentID);
-                        }
-                    }
+                    LoadIDMappingTo(asset, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
                 }
             }
 
@@ -188,6 +170,41 @@ namespace Battlehub.RTSaveLoad2
                     {
                         LoadIDMappingTo(subfolder, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
                     }   
+                }
+            }
+        }
+
+#warning This implies that prefab's AssetInfo should be updated each time prefab is modified..
+
+        private void LoadIDMappingTo(AssetInfo asset,
+            MappingInfo mapping,
+            List<int> instanceIDs,
+            List<int> persistentIDs,
+            bool IIDtoPID, bool PIDtoObj)
+        {
+            if (asset.Object != null)
+            {
+                if (IIDtoPID)
+                {
+                    int instanceID = asset.Object.GetInstanceID();
+                    mapping.Add(instanceID, m_offset + asset.PersistentID);
+                    instanceIDs.Add(instanceID);
+                }
+
+                if (PIDtoObj)
+                {
+                    int persistentID = m_offset + asset.PersistentID;
+                    mapping.Add(persistentID, asset.Object);
+                    persistentIDs.Add(persistentID);
+                }
+
+                if (asset.Children != null)
+                {
+                    for(int i = 0; i < asset.Children.Length; ++i)
+                    {
+                        AssetInfo child = asset.Children[i];
+                        LoadIDMappingTo(child, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
+                    }
                 }
             }
         }

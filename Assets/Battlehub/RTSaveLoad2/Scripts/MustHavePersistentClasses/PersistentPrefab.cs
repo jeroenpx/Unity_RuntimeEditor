@@ -3,14 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 using UnityObject = UnityEngine.Object;
-
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentScene : PersistentObject
+    [ProtoContract]
+    public class PersistentPrefab : PersistentObject
     {
         [ProtoMember(1)]
         public PersistentDescriptor[] m_descriptors;
@@ -18,74 +16,45 @@ namespace Battlehub.RTSaveLoad2
         public PersistentObject[] m_data;
         [ProtoMember(3)]
         public long[] m_identifiers;
-        
-        private readonly ITypeMap m_typeMap;
-        private readonly IAssetDB m_assetDB;
-        protected PersistentScene()
+
+        protected readonly ITypeMap m_typeMap;
+        protected readonly IAssetDB m_assetDB;
+        public PersistentPrefab()
         {
-            m_typeMap = RTSL2Deps.Get.TypeMap;
             m_assetDB = RTSL2Deps.Get.AssetDB;
         }
 
-        public override void ReadFrom(object obj)
+        protected override void ReadFromImpl(object obj)
         {
-            Scene scene = (Scene)obj;
-            GameObject[] rootGameObjects = scene.GetRootGameObjects();
+            base.ReadFromImpl(obj);
+            GameObject go = (GameObject)obj;
 
             List<PersistentObject> data = new List<PersistentObject>();
-            List<long> identifiers = new List<long>(); 
+            List<long> identifiers = new List<long>();
 
-            m_descriptors = new PersistentDescriptor[rootGameObjects.Length];
-            for(int i = 0; i < m_descriptors.Length; ++i)
-            {
-                GameObject rootGO = rootGameObjects[i];
-                m_descriptors[i] = CreateDescriptorAndData(rootGO, data, identifiers);
-            }
-
+            m_descriptors = new PersistentDescriptor[1];
+            m_descriptors[0] = CreateDescriptorAndData(go, data, identifiers);
+     
             m_identifiers = identifiers.ToArray();
             m_data = data.ToArray();
         }
 
-        public override object WriteTo(object obj)
+        protected override object WriteToImpl(object obj)
         {
-            if (m_descriptors == null && m_data == null)
+            obj = base.WriteToImpl(obj);
+            for(int i = 0; i < m_data.Length; ++i)
             {
-                return obj;
+                PersistentObject data = m_data[i];
+                long id = m_identifiers[i];
+ 
+                UnityObject unityObj = m_assetDB.FromID<UnityObject>(id);
+                data.WriteTo(unityObj);
             }
 
-            if (m_descriptors == null && m_data != null || m_data != null && m_descriptors == null)
-            {
-                throw new ArgumentException("data is corrupted", "scene");
-            }
-
-            if (m_descriptors.Length == 0)
-            {
-                return obj;
-            }
-
-            if(m_identifiers == null || m_identifiers.Length != m_data.Length)
-            {
-                throw new ArgumentException("data is corrupted", "scene");
-            }
-
-            
-            Scene scene = (Scene)obj;
-            GameObject[] rootGameObjects = scene.GetRootGameObjects();
-            for (int i = 0; i < rootGameObjects.Length; ++i)
-            {
-                GameObject rootGO = rootGameObjects[i];
-                if (rootGO.GetComponent<PersistentIgnore>())
-                {
-                    continue;
-                }
-
-                UnityObject.Destroy(rootGO);
-            }
-
-            return scene;
+            return obj;
         }
 
-        private PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, PersistentDescriptor parentDescriptor = null)
+        protected PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, PersistentDescriptor parentDescriptor = null)
         {
             if (go.GetComponent<PersistentIgnore>())
             {
@@ -93,7 +62,7 @@ namespace Battlehub.RTSaveLoad2
                 return null;
             }
             Type persistentType = m_typeMap.ToPersistentType(go.GetType());
-            if(persistentType == null)
+            if (persistentType == null)
             {
                 return null;
             }
@@ -115,7 +84,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     Component component = components[i];
                     Type persistentComponentType = m_typeMap.ToPersistentType(component.GetType());
-                    if(persistentComponentType == null)
+                    if (persistentComponentType == null)
                     {
                         continue;
                     }
@@ -131,10 +100,10 @@ namespace Battlehub.RTSaveLoad2
                     persistentIdentifiers.Add(componentID);
                 }
 
-                if(componentDescriptors.Count > 0)
+                if (componentDescriptors.Count > 0)
                 {
                     descriptor.Components = componentDescriptors.ToArray();
-                }   
+                }
             }
 
             Transform transform = go.transform;
@@ -156,7 +125,6 @@ namespace Battlehub.RTSaveLoad2
             return descriptor;
         }
     }
-
 }
 
 

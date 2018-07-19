@@ -39,7 +39,6 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 
-
     public abstract class PersistentSurrogate : IPersistentSurrogate
     {
         private IIDMap m_idMap;
@@ -48,10 +47,26 @@ namespace Battlehub.RTSaveLoad2
             m_idMap = RTSL2Deps.Get.IDMap;
         }
 
-        public virtual void ReadFrom(object obj) { }
-        public virtual object WriteTo(object obj) { return obj; }
+        protected virtual void ReadFromImpl(object obj) { }
+        protected virtual void OnAfterReadFrom(object obj) {  }
+        protected virtual object WriteToImpl(object obj) { return obj; }
+        protected virtual object OnAfterWriteTo(object obj) { return obj; }
         protected virtual void GetDepsImpl(GetDepsContext context) { }
+        protected virtual void OnAfterGetDeps(GetDepsContext context) { }
         protected virtual void GetDepsFromImpl(object obj, GetDepsFromContext context) { }
+        protected virtual void OnAfterGetDepsFrom(object obj, GetDepsFromContext context) { }
+
+        public void ReadFrom(object obj)
+        {
+            ReadFromImpl(obj);
+            OnAfterReadFrom(obj);
+        }
+
+        public object WriteTo(object obj)
+        {
+            obj = WriteToImpl(obj);
+            return OnAfterWriteTo(obj);
+        }
 
         public void GetDeps(GetDepsContext context)
         {
@@ -61,6 +76,7 @@ namespace Battlehub.RTSaveLoad2
             }
             context.VisitedObjects.Add(this);
             GetDepsImpl(context);
+            OnAfterGetDeps(context);
         }
 
         public void GetDepsFrom(object obj, GetDepsFromContext context)
@@ -71,6 +87,7 @@ namespace Battlehub.RTSaveLoad2
             }
             context.VisitedObjects.Add(this);
             GetDepsFromImpl(obj, context);
+            OnAfterGetDepsFrom(obj, context);
         }
 
         protected void AddDep(long depenency, GetDepsContext context)

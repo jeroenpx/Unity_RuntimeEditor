@@ -63,17 +63,17 @@ namespace Battlehub.RTSaveLoad2
             "public {1} {2};" + END + TAB2;
 
         private static readonly string ReadFromMethodTemplate =
-            "public override void ReadFrom(object obj)" + BR + TAB2 +
+            "protected override void ReadFromImpl(object obj)" + BR + TAB2 +
             "{{" + BR + TAB2 +
-            "    base.ReadFrom(obj);" + BR + TAB2 +
+            "    base.ReadFromImpl(obj);" + BR + TAB2 +
             "    {1} uo = ({1})obj;" + BR + TAB2 +
             "{0}" +
             "}}" + BR;
 
         private static readonly string WriteToMethodTemplate =
-            "public override object WriteTo(object obj)" + BR + TAB2 +
+            "protected override object WriteToImpl(object obj)" + BR + TAB2 +
             "{{" + BR + TAB2 +
-            "    obj = base.WriteTo(obj);" + BR + TAB2 +
+            "    obj = base.WriteToImpl(obj);" + BR + TAB2 +
             "    {1} uo = ({1})obj;" + BR + TAB2 +
             "{0}" +
             "    return obj;" + BR + TAB2 +
@@ -91,6 +91,7 @@ namespace Battlehub.RTSaveLoad2
             "    {1} uo = ({1})obj;" + BR + TAB2 +
             "{0}" +
             "}}" + BR;
+
 
         private static readonly string ImplicitOperatorsTemplate =
             "public static implicit operator {0}({1} surrogate)" + BR + TAB2 +
@@ -448,7 +449,6 @@ namespace Battlehub.RTSaveLoad2
                     sb.Append(BR + TAB3 + TAB);
                     sb.AppendFormat(AddSubtypeTemplate, subclass.TypeName, subclass.PersistentTag + SubclassOffset);
                 }
-              
             }
 
             if (subclasses.Length > 0)
@@ -545,11 +545,13 @@ namespace Battlehub.RTSaveLoad2
             {
                 sb.AppendFormat(ReadFromMethodTemplate, readMethodBody, mappedTypeName);
             }
+        
             if (!string.IsNullOrEmpty(writeMethodBody))
             {
                 sb.Append(BR + TAB2);
                 sb.AppendFormat(WriteToMethodTemplate, writeMethodBody, mappedTypeName);
             }
+
             if (!string.IsNullOrEmpty(getDepsMethodBody))
             {
                 sb.Append(BR + TAB2);
@@ -560,6 +562,7 @@ namespace Battlehub.RTSaveLoad2
                 sb.Append(BR + TAB2);
                 sb.AppendFormat(GetDepsFromMethodTemplate, getDepsFromMethodBody, mappedTypeName);
             }
+
 
             Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
             if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)

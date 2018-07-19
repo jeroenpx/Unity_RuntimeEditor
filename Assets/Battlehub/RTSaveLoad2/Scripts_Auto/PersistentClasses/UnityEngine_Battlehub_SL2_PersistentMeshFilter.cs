@@ -9,45 +9,45 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentMeshRenderer : PersistentObject
+    public class PersistentMeshFilter : PersistentObject
     {
         [ProtoMember(256)]
-        public long additionalVertexStreams;
+        public long sharedMesh;
 
         protected override void ReadFromImpl(object obj)
         {
             base.ReadFromImpl(obj);
-            MeshRenderer uo = (MeshRenderer)obj;
-            additionalVertexStreams = ToID(uo.additionalVertexStreams);
+            MeshFilter uo = (MeshFilter)obj;
+            sharedMesh = ToID(uo.sharedMesh);
         }
 
         protected override object WriteToImpl(object obj)
         {
             obj = base.WriteToImpl(obj);
-            MeshRenderer uo = (MeshRenderer)obj;
-            uo.additionalVertexStreams = FromID<Mesh>(additionalVertexStreams);
+            MeshFilter uo = (MeshFilter)obj;
+            uo.sharedMesh = FromID<Mesh>(sharedMesh);
             return obj;
         }
 
         protected override void GetDepsImpl(GetDepsContext context)
         {
-            AddDep(additionalVertexStreams, context);
+            AddDep(sharedMesh, context);
         }
 
         protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
         {
-            MeshRenderer uo = (MeshRenderer)obj;
-            AddDep(uo.additionalVertexStreams, context);
+            MeshFilter uo = (MeshFilter)obj;
+            AddDep(uo.sharedMesh, context);
         }
 
-        public static implicit operator MeshRenderer(PersistentMeshRenderer surrogate)
+        public static implicit operator MeshFilter(PersistentMeshFilter surrogate)
         {
-            return (MeshRenderer)surrogate.WriteTo(new MeshRenderer());
+            return (MeshFilter)surrogate.WriteTo(new MeshFilter());
         }
         
-        public static implicit operator PersistentMeshRenderer(MeshRenderer obj)
+        public static implicit operator PersistentMeshFilter(MeshFilter obj)
         {
-            PersistentMeshRenderer surrogate = new PersistentMeshRenderer();
+            PersistentMeshFilter surrogate = new PersistentMeshFilter();
             surrogate.ReadFrom(obj);
             return surrogate;
         }

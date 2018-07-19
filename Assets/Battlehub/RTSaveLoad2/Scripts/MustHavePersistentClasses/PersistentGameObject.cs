@@ -1,12 +1,7 @@
-using System.Collections.Generic;
 using ProtoBuf;
-using Battlehub.RTSaveLoad2;
 using UnityEngine;
-using UnityEngine.Battlehub.SL2;
-using System;
 
-using UnityObject = UnityEngine.Object;
-namespace UnityEngine.Battlehub.SL2
+namespace Battlehub.RTSaveLoad2
 {
     [ProtoContract(AsReferenceDefault = true)]
     public class PersistentGameObject : PersistentObject
@@ -20,18 +15,22 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(259)]
         public string tag;
 
-        public override void ReadFrom(object obj)
+        [ProtoMember(1)]
+        public bool ActiveSelf;
+
+        protected override void ReadFromImpl(object obj)
         {
-            base.ReadFrom(obj);
+            base.ReadFromImpl(obj);
             GameObject uo = (GameObject)obj;
             layer = uo.layer;
             isStatic = uo.isStatic;
             tag = uo.tag;
+            ActiveSelf = uo.activeSelf;
         }
 
-        public override object WriteTo(object obj)
+        protected override object WriteToImpl(object obj)
         {
-            obj = base.WriteTo(obj);
+            obj = base.WriteToImpl(obj);
             GameObject uo = (GameObject)obj;
             uo.layer = layer;
             uo.isStatic = isStatic;
