@@ -203,7 +203,7 @@ namespace Battlehub.RTSaveLoad2
                 return m_persistentIDMask | (0x0000FFFFL & persistentID);
             }
             
-            if(m_idToPersistentID.TryGetValue(instanceID, out persistentID))
+            if(m_idToPersistentID != null && m_idToPersistentID.TryGetValue(instanceID, out persistentID))
             {
                 return m_instanceIDMask | (0x0000FFFFL & persistentID);
             }

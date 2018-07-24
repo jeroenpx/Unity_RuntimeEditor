@@ -28,6 +28,8 @@ namespace Battlehub.RTSaveLoad2
             m_toUnityType.Add(typeof(PersistentVector3), typeof(Vector3));
             m_toPeristentType.Add(typeof(Quaternion), typeof(PersistentQuaternion));
             m_toUnityType.Add(typeof(PersistentQuaternion), typeof(Quaternion));
+            m_toPeristentType.Add(typeof(Vector4), typeof(PersistentVector4));
+            m_toUnityType.Add(typeof(PersistentVector4), typeof(Vector4));
             
         }
     }

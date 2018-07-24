@@ -31,3 +31,5 @@ obj/Debug/Assembly-CSharp.dll
 obj/Debug/Assembly-CSharp.pdb
 obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 obj/Debug/build.force
+obj/Debug/Tests.csproj.CoreCompileInputs.cache
+obj/Debug/Tests.csprojAssemblyReference.cache

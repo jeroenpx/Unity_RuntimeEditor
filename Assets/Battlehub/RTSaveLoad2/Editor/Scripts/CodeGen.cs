@@ -52,11 +52,46 @@ namespace Battlehub.RTSaveLoad2
             "namespace {1}" + BR +
             "{{" + BR +
             "    [ProtoContract(AsReferenceDefault = true)]" + BR +
-            "    public class {2} : {3}" + BR +
+            "    public partial class {2} : {3}" + BR +
             "    {{" + BR +
             "        {4}" +
             "    }}" + BR +
             "}}" + END;
+
+        private static readonly string UserDefinedPartialClassTemplate =
+            "#if !INGORE_USERDEFINED" + BR +
+            "{0}" + BR +
+            "namespace {1}" + BR +
+            "{{" + BR +
+            "    public partial class PersistentMesh" + BR +
+            "    {{" + BR +
+            "        partial void OnBeforeReadFrom(object obj)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnAfterReadFrom(object obj)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnBeforeWriteTo(ref object inout)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnAfterWriteTo(ref object inout)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnBeforeGetDeps(GetDepsContext context)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnAfterGetDeps(GetDepsContext context)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnBeforeGetDepsFrom(object obj, GetDepsFromContext context)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "        partial void OnAfterGetDepsFrom(object obj, GetDepsFromContext context)" + BR +
+            "        {{" + BR +
+            "        }}" + BR + BR +
+            "    }}" + BR +
+            "}}" + BR +
+            "#endif" + END;
 
         private static readonly string FieldTemplate =
             "[ProtoMember({0})]" + BR + TAB2 +
@@ -92,6 +127,46 @@ namespace Battlehub.RTSaveLoad2
             "{0}" +
             "}}" + BR;
 
+        private static readonly string ReadFromPartialTemplate =
+            "partial void OnBeforeReadFrom(object obj);" + BR + TAB2 +
+            "partial void OnAfterReadFrom(object obj);" + BR + TAB2 +
+            "public override void ReadFrom(object obj)" + BR + TAB2 +
+            "{" + BR + TAB2 +
+            "    OnBeforeReadFrom(obj);" + BR + TAB2 +
+            "    ReadFrom(obj);" + BR + TAB2 +
+            "    OnAfterReadFrom(obj);" + BR + TAB2 +
+            "}" + BR;
+
+        private static readonly string WriteToPartialTemplate =
+            "partial void OnBeforeWriteTo(ref object input);" + BR + TAB2 +
+            "partial void OnAfterWriteTo(ref object input);" + BR + TAB2 +
+            "public override object WriteTo(object obj)" + BR + TAB2 +
+            "{" + BR + TAB2 +
+            "   OnBeforeWriteTo(ref obj);" + BR + TAB2 +
+            "   obj = WriteTo(obj);" + BR + TAB2 +
+            "   OnAfterWriteTo(ref obj);" + BR + TAB2 +
+            "   return obj;" + BR + TAB2 +
+            "}" + BR;
+
+        private static readonly string GetDepsPartialTemplate =
+            "partial void OnBeforeGetDeps(GetDepsContext context);" + BR + TAB2 +
+            "partial void OnAfterGetDeps(GetDepsContext context);" + BR + TAB2 +
+            "public override void GetDeps(GetDepsContext context)" + BR + TAB2 +
+            "{" + BR + TAB2 +
+            "   OnBeforeGetDeps(context);" + BR + TAB2 +
+            "   GetDepsImpl(context);" + BR + TAB2 +
+            "   OnAfterGetDeps(context);" + BR + TAB2 +
+            "}" + BR;
+
+        private static readonly string GetDepsFromPartialTemplate =
+            "partial void OnBeforeGetDepsFrom(object obj, GetDepsFromContext context);" + BR + TAB2 +
+            "partial void OnAfterGetDepsFrom(object obj, GetDepsFromContext context);" + BR + TAB2 +
+            "public override void GetDepsFrom(object obj, GetDepsFromContext context)" + BR + TAB2 +
+            "{" + BR + TAB2 +
+            "   OnBeforeGetDepsFrom(obj, context);" + BR + TAB2 +
+            "   GetDepsFromImpl(obj, context);" + BR + TAB2 +
+            "   OnAfterGetDepsFrom(obj, context);" + BR + TAB2 +
+            "}" + BR;
 
         private static readonly string ImplicitOperatorsTemplate =
             "public static implicit operator {0}({1} surrogate)" + BR + TAB2 +
@@ -563,6 +638,14 @@ namespace Battlehub.RTSaveLoad2
                 sb.AppendFormat(GetDepsFromMethodTemplate, getDepsFromMethodBody, mappedTypeName);
             }
 
+            sb.Append(BR + TAB2);
+            sb.Append(ReadFromPartialTemplate);
+            sb.Append(BR + TAB2);
+            sb.Append(WriteToPartialTemplate);
+            sb.Append(BR + TAB2);
+            sb.Append(GetDepsPartialTemplate);
+            sb.Append(BR + TAB2);
+            sb.Append(GetDepsFromPartialTemplate);
 
             Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
             if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)

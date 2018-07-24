@@ -21,6 +21,7 @@ namespace Battlehub.RTSaveLoad2
         protected readonly IAssetDB m_assetDB;
         public PersistentPrefab()
         {
+            m_typeMap = RTSL2Deps.Get.TypeMap;
             m_assetDB = RTSL2Deps.Get.AssetDB;
         }
 

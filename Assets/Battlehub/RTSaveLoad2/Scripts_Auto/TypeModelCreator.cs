@@ -26,6 +26,7 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentTransform), true);
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
             model.Add(typeof(Quaternion), false).SetSurrogate(typeof(PersistentQuaternion));
+            model.Add(typeof(Vector4), false).SetSurrogate(typeof(PersistentVector4));
             
        }
    }

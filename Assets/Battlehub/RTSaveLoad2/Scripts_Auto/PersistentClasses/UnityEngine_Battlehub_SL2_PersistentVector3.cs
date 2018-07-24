@@ -9,7 +9,7 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentVector3 : PersistentSurrogate
+    public partial class PersistentVector3 : PersistentSurrogate
     {
         [ProtoMember(256)]
         public float x;
@@ -37,6 +37,43 @@ namespace UnityEngine.Battlehub.SL2
             uo.y = y;
             uo.z = z;
             return obj;
+        }
+
+        partial void OnBeforeReadFrom(object obj);
+        partial void OnAfterReadFrom(object obj);
+        public override void ReadFrom(object obj)
+        {
+            OnBeforeReadFrom(obj);
+            ReadFrom(obj);
+            OnAfterReadFrom(obj);
+        }
+
+        partial void OnBeforeWriteTo(ref object input);
+        partial void OnAfterWriteTo(ref object input);
+        public override object WriteTo(object obj)
+        {
+           OnBeforeWriteTo(ref obj);
+           obj = WriteTo(obj);
+           OnAfterWriteTo(ref obj);
+           return obj;
+        }
+
+        partial void OnBeforeGetDeps(GetDepsContext context);
+        partial void OnAfterGetDeps(GetDepsContext context);
+        public override void GetDeps(GetDepsContext context)
+        {
+           OnBeforeGetDeps(context);
+           GetDepsImpl(context);
+           OnAfterGetDeps(context);
+        }
+
+        partial void OnBeforeGetDepsFrom(object obj, GetDepsFromContext context);
+        partial void OnAfterGetDepsFrom(object obj, GetDepsFromContext context);
+        public override void GetDepsFrom(object obj, GetDepsFromContext context)
+        {
+           OnBeforeGetDepsFrom(obj, context);
+           GetDepsFromImpl(obj, context);
+           OnAfterGetDepsFrom(obj, context);
         }
 
         public static implicit operator Vector3(PersistentVector3 surrogate)

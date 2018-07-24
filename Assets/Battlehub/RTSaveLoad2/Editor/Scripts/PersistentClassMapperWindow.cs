@@ -739,6 +739,14 @@ namespace Battlehub.RTSaveLoad2
                 EditorGUILayout.EndHorizontal();
                 EditorGUILayout.BeginVertical();
                 {
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Space(5 + 18 * indent);
+                        EditorGUILayout.Toggle(false, GUILayout.MaxWidth(20));
+                        EditorGUILayout.LabelField("Use Template", GUILayout.MaxWidth(230));
+                    }
+                    EditorGUILayout.EndHorizontal();
+
                     EditorGUI.BeginChangeCheck();
                     EditorGUILayout.BeginHorizontal();
                     {
@@ -851,16 +859,20 @@ namespace Battlehub.RTSaveLoad2
                         EditorGUILayout.EndHorizontal();
                     }
 
+
                     EditorGUILayout.BeginHorizontal();
                     {
                         GUILayout.Space(5 + 18 * indent);
-                        GUILayout.Button("Edit", GUILayout.Width(100));
+                        if (GUILayout.Button("Create Partial Class", GUILayout.Width(200)))
+                        {
+                            string path = EditorUtility.SaveFilePanelInProject("Save", "Persistent" + type.Name, "cs", "Please enter a file name to save partial class to");
+                            if (path.Length != 0)
+                            {
+                                Debug.Log(path);
+                            }
+                        }
 
                     }
-                    EditorGUILayout.EndHorizontal();
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Space(5 + 18 * indent);
-                    EditorGUILayout.HelpBox("Template for this script compiled with errors. Please submit bug report to Battlehub@outlook.com" + Environment.NewLine + "Unity3d " + Application.unityVersion + "; RTSL Version " + RTSL2Version.Version, MessageType.Error);
                     EditorGUILayout.EndHorizontal();
 
                     if (type.BaseType != m_baseType)

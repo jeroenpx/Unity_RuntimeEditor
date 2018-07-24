@@ -23,6 +23,11 @@ namespace Battlehub.RTSaveLoad2
         {
             get;
         }
+
+        ISerializer Serializer
+        {
+            get;
+        }
     }
 
     [DefaultExecutionOrder(-1)]
@@ -57,6 +62,12 @@ namespace Battlehub.RTSaveLoad2
             get { return m_unityObjFactory; }
         }
 
+        private ISerializer m_serializer;
+        public ISerializer Serializer
+        {
+            get { return m_serializer; }
+        }
+
         protected virtual void Awake()
         {
             if(Get != null)
@@ -68,6 +79,7 @@ namespace Battlehub.RTSaveLoad2
             m_assetDB = new AssetDB();
             m_typeMap = new TypeMap();
             m_unityObjFactory = new UnityObjectFactory();
+            m_serializer = new ProtobufSerializer();
         }
 
         protected virtual void OnDestroy()
@@ -78,6 +90,7 @@ namespace Battlehub.RTSaveLoad2
                 m_assetDB = null;
                 m_typeMap = null;
                 m_unityObjFactory = null;
+                m_serializer = null;
             }
         }
 
