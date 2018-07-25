@@ -24,6 +24,8 @@ namespace Battlehub.RTSaveLoad2
             m_toUnityType.Add(typeof(PersistentMesh), typeof(Mesh));
             m_toPeristentType.Add(typeof(Transform), typeof(PersistentTransform));
             m_toUnityType.Add(typeof(PersistentTransform), typeof(Transform));
+            m_toPeristentType.Add(typeof(BoxCollider), typeof(PersistentBoxCollider));
+            m_toUnityType.Add(typeof(PersistentBoxCollider), typeof(BoxCollider));
             m_toPeristentType.Add(typeof(Vector3), typeof(PersistentVector3));
             m_toUnityType.Add(typeof(PersistentVector3), typeof(Vector3));
             m_toPeristentType.Add(typeof(Quaternion), typeof(PersistentQuaternion));

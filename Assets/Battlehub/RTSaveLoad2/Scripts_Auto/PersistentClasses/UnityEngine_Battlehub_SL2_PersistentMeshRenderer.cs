@@ -40,43 +40,6 @@ namespace UnityEngine.Battlehub.SL2
             AddDep(uo.additionalVertexStreams, context);
         }
 
-        partial void OnBeforeReadFrom(object obj);
-        partial void OnAfterReadFrom(object obj);
-        public override void ReadFrom(object obj)
-        {
-            OnBeforeReadFrom(obj);
-            ReadFrom(obj);
-            OnAfterReadFrom(obj);
-        }
-
-        partial void OnBeforeWriteTo(ref object input);
-        partial void OnAfterWriteTo(ref object input);
-        public override object WriteTo(object obj)
-        {
-           OnBeforeWriteTo(ref obj);
-           obj = WriteTo(obj);
-           OnAfterWriteTo(ref obj);
-           return obj;
-        }
-
-        partial void OnBeforeGetDeps(GetDepsContext context);
-        partial void OnAfterGetDeps(GetDepsContext context);
-        public override void GetDeps(GetDepsContext context)
-        {
-           OnBeforeGetDeps(context);
-           GetDepsImpl(context);
-           OnAfterGetDeps(context);
-        }
-
-        partial void OnBeforeGetDepsFrom(object obj, GetDepsFromContext context);
-        partial void OnAfterGetDepsFrom(object obj, GetDepsFromContext context);
-        public override void GetDepsFrom(object obj, GetDepsFromContext context)
-        {
-           OnBeforeGetDepsFrom(obj, context);
-           GetDepsFromImpl(obj, context);
-           OnAfterGetDepsFrom(obj, context);
-        }
-
         public static implicit operator MeshRenderer(PersistentMeshRenderer surrogate)
         {
             return (MeshRenderer)surrogate.WriteTo(new MeshRenderer());

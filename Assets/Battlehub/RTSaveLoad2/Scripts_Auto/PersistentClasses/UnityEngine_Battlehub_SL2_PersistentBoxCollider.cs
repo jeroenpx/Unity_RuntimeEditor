@@ -8,17 +8,17 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public partial class PersistentVector4 : PersistentSurrogate
+    public partial class PersistentBoxCollider : PersistentObject
     {
         
-        public static implicit operator Vector4(PersistentVector4 surrogate)
+        public static implicit operator BoxCollider(PersistentBoxCollider surrogate)
         {
-            return (Vector4)surrogate.WriteTo(new Vector4());
+            return (BoxCollider)surrogate.WriteTo(new BoxCollider());
         }
         
-        public static implicit operator PersistentVector4(Vector4 obj)
+        public static implicit operator PersistentBoxCollider(BoxCollider obj)
         {
-            PersistentVector4 surrogate = new PersistentVector4();
+            PersistentBoxCollider surrogate = new PersistentBoxCollider();
             surrogate.ReadFrom(obj);
             return surrogate;
         }

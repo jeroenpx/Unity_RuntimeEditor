@@ -58,37 +58,31 @@ namespace Battlehub.RTSaveLoad2
             "    }}" + BR +
             "}}" + END;
 
-        private static readonly string UserDefinedPartialClassTemplate =
-            "#if !INGORE_USERDEFINED" + BR +
+            private static readonly string UserDefinedPartialClassTemplate =
+            "#if !RTSL2_MAINTENANCE" + BR +
             "{0}" + BR +
             "namespace {1}" + BR +
             "{{" + BR +
-            "    public partial class PersistentMesh" + BR +
+            "    public partial class {2}" + BR +
             "    {{" + BR +
-            "        partial void OnBeforeReadFrom(object obj)" + BR +
+            "        /*" + BR +
+            "        public override void ReadFrom(object obj)" + BR +
             "        {{" + BR +
+            "            base.ReadFrom(obj);" + BR +
             "        }}" + BR + BR +
-            "        partial void OnAfterReadFrom(object obj)" + BR +
+            "        public override object WriteTo(object obj)" + BR +
             "        {{" + BR +
+            "            return base.WriteTo(obj);" + BR +
             "        }}" + BR + BR +
-            "        partial void OnBeforeWriteTo(ref object inout)" + BR +
+            "        public override void GetDeps(GetDepsContext context)" + BR +
             "        {{" + BR +
+            "            base.GetDeps(context);" + BR +
             "        }}" + BR + BR +
-            "        partial void OnAfterWriteTo(ref object inout)" + BR +
+            "        public override void GetDepsFrom(object obj, GetDepsFromContext context)" + BR +
             "        {{" + BR +
-            "        }}" + BR + BR +
-            "        partial void OnBeforeGetDeps(GetDepsContext context)" + BR +
-            "        {{" + BR +
-            "        }}" + BR + BR +
-            "        partial void OnAfterGetDeps(GetDepsContext context)" + BR +
-            "        {{" + BR +
-            "        }}" + BR + BR +
-            "        partial void OnBeforeGetDepsFrom(object obj, GetDepsFromContext context)" + BR +
-            "        {{" + BR +
-            "        }}" + BR + BR +
-            "        partial void OnAfterGetDepsFrom(object obj, GetDepsFromContext context)" + BR +
-            "        {{" + BR +
-            "        }}" + BR + BR +
+            "            base.GetDepsFrom(obj, context);" + BR +
+            "        }}" + BR +
+            "        */" + BR +
             "    }}" + BR +
             "}}" + BR +
             "#endif" + END;
@@ -127,53 +121,13 @@ namespace Battlehub.RTSaveLoad2
             "{0}" +
             "}}" + BR;
 
-        private static readonly string ReadFromPartialTemplate =
-            "partial void OnBeforeReadFrom(object obj);" + BR + TAB2 +
-            "partial void OnAfterReadFrom(object obj);" + BR + TAB2 +
-            "public override void ReadFrom(object obj)" + BR + TAB2 +
-            "{" + BR + TAB2 +
-            "    OnBeforeReadFrom(obj);" + BR + TAB2 +
-            "    ReadFrom(obj);" + BR + TAB2 +
-            "    OnAfterReadFrom(obj);" + BR + TAB2 +
-            "}" + BR;
-
-        private static readonly string WriteToPartialTemplate =
-            "partial void OnBeforeWriteTo(ref object input);" + BR + TAB2 +
-            "partial void OnAfterWriteTo(ref object input);" + BR + TAB2 +
-            "public override object WriteTo(object obj)" + BR + TAB2 +
-            "{" + BR + TAB2 +
-            "   OnBeforeWriteTo(ref obj);" + BR + TAB2 +
-            "   obj = WriteTo(obj);" + BR + TAB2 +
-            "   OnAfterWriteTo(ref obj);" + BR + TAB2 +
-            "   return obj;" + BR + TAB2 +
-            "}" + BR;
-
-        private static readonly string GetDepsPartialTemplate =
-            "partial void OnBeforeGetDeps(GetDepsContext context);" + BR + TAB2 +
-            "partial void OnAfterGetDeps(GetDepsContext context);" + BR + TAB2 +
-            "public override void GetDeps(GetDepsContext context)" + BR + TAB2 +
-            "{" + BR + TAB2 +
-            "   OnBeforeGetDeps(context);" + BR + TAB2 +
-            "   GetDepsImpl(context);" + BR + TAB2 +
-            "   OnAfterGetDeps(context);" + BR + TAB2 +
-            "}" + BR;
-
-        private static readonly string GetDepsFromPartialTemplate =
-            "partial void OnBeforeGetDepsFrom(object obj, GetDepsFromContext context);" + BR + TAB2 +
-            "partial void OnAfterGetDepsFrom(object obj, GetDepsFromContext context);" + BR + TAB2 +
-            "public override void GetDepsFrom(object obj, GetDepsFromContext context)" + BR + TAB2 +
-            "{" + BR + TAB2 +
-            "   OnBeforeGetDepsFrom(obj, context);" + BR + TAB2 +
-            "   GetDepsFromImpl(obj, context);" + BR + TAB2 +
-            "   OnAfterGetDepsFrom(obj, context);" + BR + TAB2 +
-            "}" + BR;
 
         private static readonly string ImplicitOperatorsTemplate =
             "public static implicit operator {0}({1} surrogate)" + BR + TAB2 +
             "{{" + BR + TAB2 +
             "    return ({0})surrogate.WriteTo(new {0}());" + BR + TAB2 +
             "}}" + BR + TAB2 +
-                                                                                                  BR + TAB2 +
+            BR + TAB2 +
             "public static implicit operator {1}({0} obj)" + BR + TAB2 +
             "{{" + BR + TAB2 +
             "    {1} surrogate = new {1}();" + BR + TAB2 +
@@ -539,6 +493,14 @@ namespace Battlehub.RTSaveLoad2
             return sb.ToString();
         }
 
+        public string CreatePersistentPartialClass(string ns, string persistentTypeName)
+        {
+            string usings = "using Battlehub.RTSaveLoad2;";
+            string className = PreparePersistentTypeName(persistentTypeName);
+
+            return string.Format(UserDefinedPartialClassTemplate, usings, ns, className);
+        }
+
 
         /// <summary>
         /// Generate C# code of persistent class using persistent class mapping
@@ -637,15 +599,6 @@ namespace Battlehub.RTSaveLoad2
                 sb.Append(BR + TAB2);
                 sb.AppendFormat(GetDepsFromMethodTemplate, getDepsFromMethodBody, mappedTypeName);
             }
-
-            sb.Append(BR + TAB2);
-            sb.Append(ReadFromPartialTemplate);
-            sb.Append(BR + TAB2);
-            sb.Append(WriteToPartialTemplate);
-            sb.Append(BR + TAB2);
-            sb.Append(GetDepsPartialTemplate);
-            sb.Append(BR + TAB2);
-            sb.Append(GetDepsFromPartialTemplate);
 
             Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
             if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)

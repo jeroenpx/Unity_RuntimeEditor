@@ -865,10 +865,14 @@ namespace Battlehub.RTSaveLoad2
                         GUILayout.Space(5 + 18 * indent);
                         if (GUILayout.Button("Create Partial Class", GUILayout.Width(200)))
                         {
-                            string path = EditorUtility.SaveFilePanelInProject("Save", "Persistent" + type.Name, "cs", "Please enter a file name to save partial class to");
+                            string path = EditorUtility.SaveFilePanelInProject("Save", "Persistent" + type.Name, "cs", "Please enter a file name to save partial class to", @"Assets\Battlehub\RTSaveLoad2\Scripts\MyPersistentClasses");
                             if (path.Length != 0)
                             {
-                                Debug.Log(path);
+                                string ns = PersistentClassMapping.ToPersistentNamespace(m_types[typeIndex].Namespace);
+                                string typeName = PersistentClassMapping.ToPersistentName(m_types[typeIndex].Name);
+                                string cs = m_codeGen.CreatePersistentPartialClass(ns, typeName);
+                                File.WriteAllText(path, cs);
+                                AssetDatabase.Refresh();
                             }
                         }
 
