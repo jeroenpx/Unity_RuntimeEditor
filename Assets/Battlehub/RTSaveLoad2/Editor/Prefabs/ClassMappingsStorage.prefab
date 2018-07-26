@@ -9,96 +9,16 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1767166739664280}
+  m_RootGameObject: {fileID: 1112976077547238}
   m_IsPrefabParent: 1
---- !u!1 &1112257829582870
+--- !u!1 &1112976077547238
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4702175495059406}
-  - component: {fileID: 114994726470420732}
-  m_Layer: 0
-  m_Name: UnityEngine.BoxCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1194963205880592
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4734465264926666}
-  - component: {fileID: 114744797103959724}
-  m_Layer: 0
-  m_Name: UnityEngine.Object
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1201815280545142
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4381370286735934}
-  - component: {fileID: 114457295818455104}
-  m_Layer: 0
-  m_Name: UnityEngine.MeshFilter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1550529938328210
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4196505656325936}
-  - component: {fileID: 114920747464463782}
-  m_Layer: 0
-  m_Name: UnityEngine.GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1623387181357352
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4188825206210010}
-  - component: {fileID: 114131182126130170}
-  m_Layer: 0
-  m_Name: UnityEngine.Mesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &1767166739664280
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4193252781739908}
+  - component: {fileID: 4642563940183600}
   m_Layer: 0
   m_Name: ClassMappingsStorage
   m_TagString: Untagged
@@ -106,155 +26,146 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1820828192325306
+--- !u!1 &1344458679330154
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4046358950856586}
-  - component: {fileID: 114256635245898382}
+  - component: {fileID: 4820125303180910}
+  - component: {fileID: 114775975423758980}
   m_Layer: 0
-  m_Name: UnityEngine.Transform
+  m_Name: UnityEngine.Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1904880938401224
+--- !u!1 &1346416376403050
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4521546670697936}
-  - component: {fileID: 114407008507506544}
+  - component: {fileID: 4076440932856810}
+  - component: {fileID: 114597594101737534}
   m_Layer: 0
-  m_Name: UnityEngine.MeshRenderer
+  m_Name: UnityEngine.Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4046358950856586
+--- !u!4 &4076440932856810
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1820828192325306}
+  m_GameObject: {fileID: 1346416376403050}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4193252781739908}
-  m_RootOrder: 5
+  m_Father: {fileID: 4642563940183600}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4188825206210010
+--- !u!4 &4642563940183600
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1623387181357352}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4193252781739908}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4193252781739908
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1767166739664280}
+  m_GameObject: {fileID: 1112976077547238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4734465264926666}
-  - {fileID: 4196505656325936}
-  - {fileID: 4521546670697936}
-  - {fileID: 4381370286735934}
-  - {fileID: 4188825206210010}
-  - {fileID: 4046358950856586}
-  - {fileID: 4702175495059406}
+  - {fileID: 4076440932856810}
+  - {fileID: 4820125303180910}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4196505656325936
+--- !u!4 &4820125303180910
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1550529938328210}
+  m_GameObject: {fileID: 1344458679330154}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4193252781739908}
+  m_Father: {fileID: 4642563940183600}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4381370286735934
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1201815280545142}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4193252781739908}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4521546670697936
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1904880938401224}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4193252781739908}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4702175495059406
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1112257829582870}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4193252781739908}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4734465264926666
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1194963205880592}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4193252781739908}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114131182126130170
+--- !u!114 &114597594101737534
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1623387181357352}
+  m_GameObject: {fileID: 1346416376403050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsEnabled: 1
+  PersistentPropertyTag: 2
+  PersistentSubclassTag: 3
+  MappedAssemblyName: UnityEngine.CoreModule
+  MappedNamespace: UnityEngine
+  MappedTypeName: Object
+  PersistentNamespace: UnityEngine.Battlehub.SL2
+  PersistentTypeName: PersistentObject
+  PersistentBaseNamespace: Battlehub.RTSaveLoad2
+  PersistentBaseTypeName: PersistentSurrogate
+  CreateCustomImplementation: 0
+  UseTemplate: 1
+  Subclasses:
+  - PersistentTag: 1
+    Namespace: UnityEngine.Battlehub.SL2
+    TypeName: PersistentGameObject
+    IsEnabled: 1
+  - PersistentTag: 2
+    Namespace: UnityEngine.Battlehub.SL2
+    TypeName: PersistentTransform
+    IsEnabled: 1
+  - PersistentTag: 3
+    Namespace: UnityEngine.Battlehub.SL2
+    TypeName: PersistentMesh
+    IsEnabled: 1
+  PropertyMappings:
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 1
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: String
+    PersistentName: name
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: String
+    MappedName: name
+    UseSurrogate: 0
+    HasDependenciesOrIsDependencyItself: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 2
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: HideFlags
+    PersistentName: hideFlags
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: HideFlags
+    MappedName: hideFlags
+    UseSurrogate: 0
+    HasDependenciesOrIsDependencyItself: 0
+--- !u!114 &114775975423758980
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1344458679330154}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
@@ -270,6 +181,8 @@ MonoBehaviour:
   PersistentTypeName: PersistentMesh
   PersistentBaseNamespace: UnityEngine.Battlehub.SL2
   PersistentBaseTypeName: PersistentObject
+  CreateCustomImplementation: 1
+  UseTemplate: 1
   Subclasses: []
   PropertyMappings:
   - IsEnabled: 0
@@ -322,18 +235,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
   - IsEnabled: 0
     IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: subMeshCount
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: subMeshCount
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
     PersistentTag: 6
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: Bounds
@@ -344,19 +245,7 @@ MonoBehaviour:
     MappedName: bounds
     UseSurrogate: 1
     HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3[]
-    PersistentName: vertices
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3[]
-    MappedName: vertices
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 8
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -368,7 +257,7 @@ MonoBehaviour:
     MappedName: normals
     UseSurrogate: 1
     HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 9
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -463,466 +352,4 @@ MonoBehaviour:
     MappedTypeName: Int32[]
     MappedName: triangles
     UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
---- !u!114 &114256635245898382
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1820828192325306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsEnabled: 1
-  PersistentPropertyTag: 13
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.CoreModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: Transform
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentTransform
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentObject
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: position
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: position
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: localPosition
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: localPosition
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: eulerAngles
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: eulerAngles
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: localEulerAngles
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: localEulerAngles
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: right
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: right
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: up
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: up
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: forward
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: forward
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 8
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Quaternion
-    PersistentName: rotation
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Quaternion
-    MappedName: rotation
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 9
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Quaternion
-    PersistentName: localRotation
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Quaternion
-    MappedName: localRotation
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 10
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: localScale
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: localScale
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 11
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Transform
-    PersistentName: parent
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Transform
-    MappedName: parent
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 1
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 12
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: hasChanged
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: hasChanged
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 13
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: hierarchyCapacity
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: hierarchyCapacity
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
---- !u!114 &114407008507506544
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1904880938401224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsEnabled: 1
-  PersistentPropertyTag: 1
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.CoreModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: MeshRenderer
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentMeshRenderer
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentObject
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Mesh
-    PersistentName: additionalVertexStreams
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Mesh
-    MappedName: additionalVertexStreams
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 1
---- !u!114 &114457295818455104
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1201815280545142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsEnabled: 1
-  PersistentPropertyTag: 2
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.CoreModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: MeshFilter
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentMeshFilter
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentObject
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Mesh
-    PersistentName: sharedMesh
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Mesh
-    MappedName: sharedMesh
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 1
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Mesh
-    PersistentName: mesh
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Mesh
-    MappedName: mesh
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 1
---- !u!114 &114744797103959724
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1194963205880592}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsEnabled: 1
-  PersistentPropertyTag: 2
-  PersistentSubclassTag: 6
-  MappedAssemblyName: UnityEngine.CoreModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: Object
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentObject
-  PersistentBaseNamespace: Battlehub.RTSaveLoad2
-  PersistentBaseTypeName: PersistentSurrogate
-  Subclasses:
-  - PersistentTag: 1
-    Namespace: UnityEngine.Battlehub.SL2
-    TypeName: PersistentGameObject
-    IsEnabled: 1
-  - PersistentTag: 2
-    Namespace: UnityEngine.Battlehub.SL2
-    TypeName: PersistentMeshRenderer
-    IsEnabled: 1
-  - PersistentTag: 3
-    Namespace: UnityEngine.Battlehub.SL2
-    TypeName: PersistentMeshFilter
-    IsEnabled: 1
-  - PersistentTag: 4
-    Namespace: UnityEngine.Battlehub.SL2
-    TypeName: PersistentMesh
-    IsEnabled: 1
-  - PersistentTag: 5
-    Namespace: UnityEngine.Battlehub.SL2
-    TypeName: PersistentTransform
-    IsEnabled: 1
-  - PersistentTag: 6
-    Namespace: UnityEngine.Battlehub.SL2
-    TypeName: PersistentBoxCollider
-    IsEnabled: 1
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: name
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: name
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: HideFlags
-    PersistentName: hideFlags
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: HideFlags
-    MappedName: hideFlags
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
---- !u!114 &114920747464463782
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1550529938328210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsEnabled: 1
-  PersistentPropertyTag: 4
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.CoreModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: GameObject
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentGameObject
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentObject
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: layer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: layer
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: active
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: active
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: isStatic
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: isStatic
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: tag
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: tag
-    UseSurrogate: 0
-    HasDependenciesOrIsDependencyItself: 0
---- !u!114 &114994726470420732
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1112257829582870}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsEnabled: 1
-  PersistentPropertyTag: 3
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.PhysicsModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: BoxCollider
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentBoxCollider
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentObject
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: center
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: center
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: size
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: size
-    UseSurrogate: 1
-    HasDependenciesOrIsDependencyItself: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: extents
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: extents
-    UseSurrogate: 1
     HasDependenciesOrIsDependencyItself: 0

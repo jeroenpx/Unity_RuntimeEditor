@@ -58,11 +58,25 @@ namespace Battlehub.RTSaveLoad2
             "    }}" + BR +
             "}}" + END;
 
-            private static readonly string UserDefinedPartialClassTemplate =
+        private static readonly string UserDefinedClassTemplate =
+           "#if !RTSL2_MAINTENANCE" + BR +
+           "{0}" + BR +
+           "namespace {1}" + BR +
+           "{{" + BR +
+           "    [CustomImplementation]" + BR +
+           "    public partial class {2}" + BR +
+           "    {{" + BR +
+           "        {3}" +
+           "    }}" + BR +
+           "}}" + BR +
+           "#endif" + END;
+
+        private static readonly string UserDefinedEmptyClassTemplate =
             "#if !RTSL2_MAINTENANCE" + BR +
             "{0}" + BR +
             "namespace {1}" + BR +
             "{{" + BR +
+            "    [CustomImplementation]" + BR +
             "    public partial class {2}" + BR +
             "    {{" + BR +
             "        /*" + BR +
@@ -268,6 +282,15 @@ namespace Battlehub.RTSaveLoad2
             }
             return null;
         }
+
+        public Type GetPersistentType(string fullTypeName)
+        {
+            string assemblyName = typeof(PersistentSurrogate).Assembly.FullName;
+            string assemblyQualifiedName = Assembly.CreateQualifiedName(assemblyName, fullTypeName);
+            Type persistentType = Type.GetType(assemblyQualifiedName);
+            return persistentType;
+        }
+
 
         /// <summary>
         /// Returns true if type has fields or properties referencing UnityObjects. Search is done recursively.
@@ -493,12 +516,59 @@ namespace Battlehub.RTSaveLoad2
             return sb.ToString();
         }
 
-        public string CreatePersistentPartialClass(string ns, string persistentTypeName)
+        public bool TryGetTemplateUsings(string template, out string result)
+        {
+            result = string.Empty;
+
+            int startIndex = template.IndexOf("//<TEMPLATE_USINGS_START>");
+            int endIndex = template.IndexOf("//<TEMPLATE_USINGS_END>");
+
+            if (startIndex < 0 || endIndex < 0 || startIndex >= endIndex)
+            {
+                return false;
+            }
+
+            template = template.Replace("//<TEMPLATE_USINGS_START>", string.Empty);
+            template = template.Substring(startIndex, endIndex - startIndex);
+            template = template.Replace("//<TEMPLATE_USINGS_END>", string.Empty);
+
+            result = template;
+            return true;
+        }
+
+        public bool TryGetTemplateBody(string template, out string result)
+        {
+            result = string.Empty;
+
+            int startIndex = template.IndexOf("//<TEMPLATE_BODY_START>");
+            int endIndex = template.IndexOf("//<TEMPLATE_BODY_END>");
+
+            if(startIndex < 0 || endIndex < 0 || startIndex >= endIndex)
+            {
+                return false;
+            }
+
+            template = template.Replace("//<TEMPLATE_BODY_START>", string.Empty);
+            template = template.Substring(startIndex, endIndex - startIndex);
+            template = template.Replace("//<TEMPLATE_BODY_END>", string.Empty);
+            template = template.Replace("#if RTSL2_COMPILE_TEMPLATES", string.Empty);
+            template = template.Replace("#endif", string.Empty);
+
+            result = template;
+            return true;
+        }
+
+        public string CreatePersistentClassCustomImplementation(string ns, string persistentTypeName, PersistentTemplateInfo template = null)
         {
             string usings = "using Battlehub.RTSaveLoad2;";
             string className = PreparePersistentTypeName(persistentTypeName);
-
-            return string.Format(UserDefinedPartialClassTemplate, usings, ns, className);
+            if(template != null)
+            {
+                usings += BR + template.Usings; 
+                return string.Format(UserDefinedClassTemplate, usings, ns, className, template.Body);
+            }
+         
+            return string.Format(UserDefinedEmptyClassTemplate, usings, ns, className);
         }
 
 

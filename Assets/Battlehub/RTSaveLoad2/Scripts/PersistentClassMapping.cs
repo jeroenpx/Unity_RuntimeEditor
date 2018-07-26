@@ -89,7 +89,8 @@ namespace Battlehub.RTSaveLoad2
         public string PersistentTypeName;
         public string PersistentBaseNamespace;
         public string PersistentBaseTypeName;
-
+        public bool CreateCustomImplementation;
+        public bool UseTemplate;
         /// <summary>
         /// Array of subclasses which is used by CodeGen to generate code of TypeModelCreator
         /// </summary>
@@ -109,6 +110,11 @@ namespace Battlehub.RTSaveLoad2
         public static string ToPersistentName(string typeName)
         {
             return "Persistent" + typeName;
+        }
+
+        public static string ToPersistentFullName(string ns, string typeName)
+        {
+            return ToPersistentNamespace(ns) + "." + ToPersistentName(typeName);
         }
     }
 

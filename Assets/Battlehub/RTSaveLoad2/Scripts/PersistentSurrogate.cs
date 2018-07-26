@@ -1,9 +1,20 @@
-﻿using ProtoBuf;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityObject = UnityEngine.Object;
+
+namespace UnityEngine.Battlehub.SL2
+{ }
 namespace Battlehub.RTSaveLoad2
 {
+    public class CustomImplementationAttribute : Attribute
+    {
+    }
+
+    public class IntArray
+    {
+        public int[] Array;
+    }
+
     public interface IPersistentSurrogate
     {
         void ReadFrom(object obj);
