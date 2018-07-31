@@ -1,16 +1,13 @@
 #if !RTSL2_MAINTENANCE
 using Battlehub.RTSaveLoad2;
-
 using ProtoBuf;
 using UnityEngine;
-
 
 namespace UnityEngine.Battlehub.SL2
 {
     [CustomImplementation]
     public partial class PersistentMesh
-    {
-        
+    {        
         [ProtoMember(1)]
         public Vector3[] vertices;
 
@@ -57,7 +54,6 @@ namespace UnityEngine.Battlehub.SL2
                 m_tris[i].Array = o.GetTriangles(i);
             }
         }
-        
     }
 }
 #endif

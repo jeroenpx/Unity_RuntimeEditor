@@ -53,10 +53,10 @@ namespace Battlehub.RTSaveLoad2
                 if (m_TreeViewState == null)
                     m_TreeViewState = new TreeViewState();
 
-                //var jsonState = SessionState.GetString(kSessionStateKeyPrefix + m_asset.GetInstanceID().ToString() + m_folder.id, "");
+                //var jsonState = SessionState.GetString(kSessionStateKeyPrefix + m_asset.GetInstanceID().ToString(), "");
                 //if (!string.IsNullOrEmpty(jsonState))
                 //    JsonUtility.FromJsonOverwrite(jsonState, m_TreeViewState);
-
+              
                 bool firstInit = m_MultiColumnHeaderState == null;
                 var headerState = AssetTreeView.CreateDefaultMultiColumnHeaderState(0);
                 if (MultiColumnHeaderState.CanOverwriteSerializedFields(m_MultiColumnHeaderState, headerState))
@@ -93,7 +93,11 @@ namespace Battlehub.RTSaveLoad2
         {
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
 
-            //SessionState.SetString(kSessionStateKeyPrefix + m_asset.GetInstanceID().ToString() + m_folder.id, JsonUtility.ToJson(m_TreeView.state));
+            if(TreeView != null && m_asset != null && TreeView.state != null)
+            {
+               // SessionState.SetString(kSessionStateKeyPrefix + m_asset.GetInstanceID().ToString(), JsonUtility.ToJson(TreeView.state));
+            }
+            
         }
 
         private void OnUndoRedoPerformed()
@@ -103,6 +107,20 @@ namespace Battlehub.RTSaveLoad2
                 TreeView.treeModel.SetData(GetData());
                 TreeView.Reload();
             }
+        }
+
+        private bool CanDrop(UnityObject obj)
+        {
+            if (obj is GameObject)
+            {
+                GameObject go = (GameObject)obj;
+                if (go.transform.parent != null || !File.Exists(AssetDatabase.GetAssetPath(go)))
+                {
+                    return false;
+                }
+            }
+
+            return obj != null && (!File.Exists(AssetDatabase.GetAssetPath(obj)) || File.Exists(AssetDatabase.GetAssetPath(obj)) && !obj.GetType().Assembly.FullName.Contains("UnityEditor"));
         }
 
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex)
@@ -124,7 +142,7 @@ namespace Battlehub.RTSaveLoad2
             }
 
             bool allFolders = true;
-            bool allUnityEditor = DragAndDrop.objectReferences.All(o => o != null && o.GetType().Assembly.FullName.Contains("UnityEditor"));
+            bool cantDropAnything = DragAndDrop.objectReferences.All(o => !CanDrop(o));
             foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
             {
                 string path = AssetDatabase.GetAssetPath(dragged_object);
@@ -135,7 +153,7 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            if(allFolders || allUnityEditor)
+            if(allFolders || cantDropAnything)
             {
                 return DragAndDropVisualMode.None;
             }
@@ -198,7 +216,6 @@ namespace Battlehub.RTSaveLoad2
                 {
                     continue;
                 }
-
                 AssetInfo parentAssetInfo = GetAssetInfo(parent);
                 AssetInfo assetInfo;
                 AssetFolderInfo existingFolder;
@@ -210,6 +227,17 @@ namespace Battlehub.RTSaveLoad2
                     {
                         continue;
                     }
+
+                    List<AssetInfo> assets = new List<AssetInfo>();
+                    FlattenItems(assetInfo, assets);
+                    assets.Reverse();
+                    for(int j = 0; j < assets.Count; ++j)
+                    {
+                        AddAssetToFolder(assets[j], folder);
+                    }
+
+                    TreeView.treeModel.SetData(GetData());
+                    TreeView.Reload();
                 }
                 else
                 {
@@ -219,43 +247,40 @@ namespace Battlehub.RTSaveLoad2
                         return;
                     }
 
-                    assetInfo = CreateAsset(obj, parentAssetInfo, insertIndex, folder);
+                    CreateAsset(obj, parentAssetInfo, insertIndex, folder);
                 }
-
-                AddAssetToFolder(assetInfo, folder);
             }
         }
 
-        private AssetInfo CreateAsset(UnityObject obj, AssetInfo parentAssetInfo, int insertIndex = -1, AssetFolderInfo folder = null)
+        private void CreateAsset(UnityObject obj, AssetInfo parentAssetInfo, int insertIndex = -1, AssetFolderInfo folder = null)
         {
             AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
             assetInfo.PersistentID = m_asset.AssetLibrary.Identity;
             m_asset.AssetLibrary.Identity++;
             assetInfo.Object = obj;
+            AddAssetToFolder(assetInfo, folder);
 
-            if(obj is GameObject)
+            if (obj is GameObject)
             {
                 GameObject go = (GameObject)obj;
                 Component[] components = go.GetComponents<Component>();
                 foreach(Component component in components)
                 {
-                    AssetInfo componentAssetInfo = CreateAsset(component.name, assetInfo);
+                    AssetInfo componentAssetInfo = CreateAsset(component.name, assetInfo, -1, folder);
                     componentAssetInfo.PersistentID = m_asset.AssetLibrary.Identity;
                     m_asset.AssetLibrary.Identity++;
                     componentAssetInfo.Object = component;
+                    AddAssetToFolder(componentAssetInfo, folder);
                 }
 
                 if (go.transform.childCount > 0)
                 {
                     foreach(Transform child in go.transform)
                     {
-                        CreateAsset(child.gameObject, assetInfo);
+                        CreateAsset(child.gameObject, assetInfo, -1, folder);
                     }
                 }
-            }
-           
-
-            return assetInfo;
+            }            
         }
 
         public void AddAssetToFolder(AssetInfo assetInfo, AssetFolderInfo folder)
@@ -273,14 +298,19 @@ namespace Battlehub.RTSaveLoad2
                 }
                 else if(TreeView.treeModel.Find(assetInfo.id) == null)
                 {
-                    TreeView.treeModel.AddElement(assetInfo, TreeView.treeModel.root, TreeView.treeModel.root.hasChildren ? TreeView.treeModel.root.children.Count : 0);
+                    AssetInfo parent = (AssetInfo)assetInfo.parent;
+                    if(parent == null)
+                    {
+                        parent = TreeView.treeModel.root;
+                    }
+
+                    TreeView.treeModel.AddElement(assetInfo, parent, parent.hasChildren ? parent.children.Count : 0);
                 }
                 assetInfo.Folder.Assets.Remove(assetInfo);
             }
 
             assetInfo.Folder = folder;
             folder.Assets.Add(assetInfo);
-
         }
 
         private  AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex = -1, AssetFolderInfo folder = null)
@@ -301,7 +331,11 @@ namespace Battlehub.RTSaveLoad2
                         : insertIndex);
 
                     // Select newly created element
-                    TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+
+                    if(depth == 0)
+                    {
+                        TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
+                    }
                 }
             }
             
@@ -489,6 +523,68 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        private void FlattenItems(AssetInfo assetInfo, List<AssetInfo> assets)
+        {
+            if (assetInfo == null)
+            {
+                return;
+            }
+
+            if (assetInfo.children != null)
+            {
+                for (int i = 0; i < assetInfo.children.Count; ++i)
+                {
+                    FlattenItems((AssetInfo)assetInfo.children[i], assets);
+                }
+            }
+
+            assets.Add(assetInfo);
+        }
+
+        private void RemoveFromFolder(AssetInfo assetInfo, AssetFolderInfo folder)
+        {
+            List<AssetInfo> assetsToRemove = new List<AssetInfo>();
+            FlattenItems(assetInfo, assetsToRemove);
+            DoRemove(assetsToRemove.ToArray());
+        }
+
+        private void DoRemove(AssetInfo[] assetInfo)
+        {
+            for(int i = 0; i < assetInfo.Length; ++i)
+            {
+                assetInfo[i].Folder.Assets.Remove(assetInfo[i]);
+                assetInfo[i].Folder = null;
+            }
+
+            TreeElement parent = assetInfo[0].parent;
+            int index = parent.children.IndexOf(assetInfo[0]);
+
+            TreeView.treeModel.RemoveElements(assetInfo);
+
+#warning Fix this method
+            if (index >= parent.children.Count)
+            {
+                index = parent.children.Count - 1;
+            }
+
+            if (index >= 0)
+            {
+                TreeView.SetSelection(new int[] { parent.children[index].id }, TreeViewSelectionOptions.FireSelectionChanged);
+            }
+            else
+            {
+                if (parent != null)
+                {
+                    TreeView.SetSelection(new int[] { parent.id }, TreeViewSelectionOptions.FireSelectionChanged);
+                }
+                else
+                {
+                    TreeView.SetSelection(new int[0], TreeViewSelectionOptions.FireSelectionChanged);
+                }
+
+            }
+        }
+
         private void RemoveAsset()
         {
             Undo.RecordObject(m_asset, "Remove Asset");
@@ -499,28 +595,10 @@ namespace Battlehub.RTSaveLoad2
                 AssetInfo assetInfo = TreeView.treeModel.Find(selectedId);
                 if(assetInfo != null)
                 {
-                    TreeElement parent = assetInfo.parent;
-
-                    int index = parent.children.IndexOf(assetInfo);
-                    assetInfo.Folder.Assets.Remove(assetInfo);
-                    assetInfo.Folder = null;
-                    
-                    TreeView.treeModel.RemoveElements(new[] { assetInfo });
-                    
-                    if(index >= parent.children.Count)
+                    if(assetInfo.Folder != null)
                     {
-                        index--;
+                        RemoveFromFolder(assetInfo, assetInfo.Folder);
                     }
-
-                    if(index >= 0)
-                    {
-                        TreeView.SetSelection(new int[] { parent.children[index].id }, TreeViewSelectionOptions.FireSelectionChanged);
-                    }
-                    else
-                    {
-                        TreeView.SetSelection(new int[0], TreeViewSelectionOptions.FireSelectionChanged);
-                    }
-                    
                 }   
             }
 

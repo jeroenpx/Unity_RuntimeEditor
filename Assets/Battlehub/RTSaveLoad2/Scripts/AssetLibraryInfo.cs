@@ -7,6 +7,12 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
 {
+    public class PrefabPartInfo : TreeElement
+    {
+        public int PersistentID;
+        public UnityObject Object;
+    }
+
     [Serializable]
     public class AssetInfo : TreeElement
     {
@@ -18,7 +24,7 @@ namespace Battlehub.RTSaveLoad2
         public int PersistentID;
         public bool IsEnabled;
 
-        public AssetInfo[] Children;
+        public PrefabPartInfo[] PerfabParts;
 
         public AssetInfo()
         {
@@ -69,7 +75,7 @@ namespace Battlehub.RTSaveLoad2
         public const int ORDINAL_OFFSET = 16;
         public const int MAX_ASSETS = 1 << ORDINAL_OFFSET;
 
-        public int Identity = 0;
+        public int Identity = 1;
 
         public List<AssetFolderInfo> Folders;
 

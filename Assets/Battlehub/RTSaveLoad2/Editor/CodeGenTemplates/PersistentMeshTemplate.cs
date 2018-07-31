@@ -61,7 +61,6 @@ namespace Battlehub.RTSaveLoad2.Internal
         }
         //<TEMPLATE_BODY_END>
 #endif
-
     }
 }
 

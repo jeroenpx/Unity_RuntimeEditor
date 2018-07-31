@@ -198,11 +198,11 @@ namespace Battlehub.RTSaveLoad2
                     persistentIDs.Add(persistentID);
                 }
 
-                if (asset.Children != null)
+                if (asset.children != null)
                 {
-                    for(int i = 0; i < asset.Children.Length; ++i)
+                    for (int i = 0; i < asset.children.Count; ++i)
                     {
-                        AssetInfo child = asset.Children[i];
+                        AssetInfo child = (AssetInfo)asset.children[i];
                         LoadIDMappingTo(child, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
                     }
                 }

@@ -15,8 +15,14 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentObject), true)
                 .AddSubType(1025, typeof(PersistentGameObject))
                 .AddSubType(1026, typeof(PersistentTransform))
-                .AddSubType(1027, typeof(PersistentMesh));
+                .AddSubType(1027, typeof(PersistentMesh))
+                .AddSubType(1028, typeof(PersistentMeshFilter));
             model.Add(typeof(PersistentMesh), true);
+            model.Add(typeof(PersistentGameObject), true);
+            model.Add(typeof(PersistentMeshFilter), true);
+            model.Add(typeof(PersistentTransform), true);
+            model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
+            model.Add(typeof(Quaternion), false).SetSurrogate(typeof(PersistentQuaternion));
             
        }
    }

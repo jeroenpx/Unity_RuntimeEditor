@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
+  m_Name: AssetLibrary
+  m_EditorClassIdentifier: 
+  m_assetLibrary:
+    m_ID: 0
+    m_Name: Root
+    m_Depth: -1
+    Identity: 11
+    Folders:
+    - m_ID: 0
+      m_Name: Assets
+      m_Depth: -1
+      Assets: []
+      IsEnabled: 0
+    - m_ID: 1
+      m_Name: Folder
+      m_Depth: 0
+      Assets:
+      - m_ID: 1
+        m_Name: zzzz
+        m_Depth: 0
+        Object: {fileID: 1012648645296444, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 1
+        IsEnabled: 0
+      - m_ID: 2
+        m_Name: zzzz
+        m_Depth: 1
+        Object: {fileID: 4926543894975826, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 2
+        IsEnabled: 0
+      - m_ID: 3
+        m_Name: zzzz
+        m_Depth: 1
+        Object: {fileID: 33687948333775482, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 3
+        IsEnabled: 0
+      - m_ID: 4
+        m_Name: zzzz
+        m_Depth: 1
+        Object: {fileID: 23993892590884876, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 4
+        IsEnabled: 0
+      - m_ID: 5
+        m_Name: zzzz
+        m_Depth: 1
+        Object: {fileID: 65594397924818610, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 5
+        IsEnabled: 0
+      - m_ID: 6
+        m_Name: xxzz
+        m_Depth: 1
+        Object: {fileID: 1689324082340042, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 6
+        IsEnabled: 0
+      - m_ID: 7
+        m_Name: xxzz
+        m_Depth: 2
+        Object: {fileID: 4924797126655300, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 7
+        IsEnabled: 0
+      - m_ID: 8
+        m_Name: xxzz
+        m_Depth: 2
+        Object: {fileID: 33443021783191430, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 8
+        IsEnabled: 0
+      - m_ID: 9
+        m_Name: xxzz
+        m_Depth: 2
+        Object: {fileID: 23043443018482290, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 9
+        IsEnabled: 0
+      - m_ID: 10
+        m_Name: xxzz
+        m_Depth: 2
+        Object: {fileID: 65467765576929876, guid: c279115c8995fe24dbeec840e453cecc,
+          type: 2}
+        PersistentID: 10
+        IsEnabled: 0
+      IsEnabled: 0

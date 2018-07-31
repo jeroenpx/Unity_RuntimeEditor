@@ -23,6 +23,7 @@ namespace Battlehub.RTSaveLoad2
         private enum Columns
         {
             Name,
+            Id,
             ExposeToEditor,
         }
 
@@ -87,6 +88,11 @@ namespace Battlehub.RTSaveLoad2
                         // Default icon and label
                         args.rowRect = cellRect;
                         base.RowGUI(args);
+                    }
+                    break;
+                case Columns.Id:
+                    {
+                        EditorGUI.LabelField(cellRect, item.data.PersistentID.ToString());
                     }
                     break;
                 case Columns.ExposeToEditor:
@@ -196,6 +202,16 @@ namespace Battlehub.RTSaveLoad2
             return true;
         }
 
+        protected override bool CanStartDrag(CanStartDragArgs args)
+        {
+            AssetInfo assetInfo = ((TreeViewItem<AssetInfo>)args.draggedItem).data;
+            if(assetInfo.parent != treeModel.root)
+            {
+                return false;
+            }
+            return base.CanStartDrag(args);
+        }
+
         protected override DragAndDropVisualMode OnExternalDragDropBetweenItems(DragAndDropArgs args)
         {
             return m_externalDropInside(args.parentItem, args.insertAtIndex, args.performDrop);
@@ -239,7 +255,17 @@ namespace Battlehub.RTSaveLoad2
                     autoResize = true,
                     allowToggleVisibility = false
                 },
-
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("PersistentID", ""),
+                    headerTextAlignment = TextAlignment.Left,
+                    canSort = false,
+                    sortingArrowAlignment = TextAlignment.Center,
+                    width = 70,
+                    minWidth = 70,
+                    autoResize = false,
+                    allowToggleVisibility = false
+                },
                 new MultiColumnHeaderState.Column
                 {
                     headerContent = new GUIContent("Is Enabled"),

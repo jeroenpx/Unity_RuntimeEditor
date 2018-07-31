@@ -65,8 +65,8 @@ namespace Battlehub.RTSaveLoad2
            "{{" + BR +
            "    [CustomImplementation]" + BR +
            "    public partial class {2}" + BR +
-           "    {{" + BR +
-           "        {3}" +
+           "    {{" +
+           "        {3}" + BR +
            "    }}" + BR +
            "}}" + BR +
            "#endif" + END;
@@ -528,9 +528,8 @@ namespace Battlehub.RTSaveLoad2
                 return false;
             }
 
-            template = template.Replace("//<TEMPLATE_USINGS_START>", string.Empty);
             template = template.Substring(startIndex, endIndex - startIndex);
-            template = template.Replace("//<TEMPLATE_USINGS_END>", string.Empty);
+            template = template.Replace("//<TEMPLATE_USINGS_START>", string.Empty);
 
             result = template;
             return true;
@@ -548,9 +547,8 @@ namespace Battlehub.RTSaveLoad2
                 return false;
             }
 
-            template = template.Replace("//<TEMPLATE_BODY_START>", string.Empty);
             template = template.Substring(startIndex, endIndex - startIndex);
-            template = template.Replace("//<TEMPLATE_BODY_END>", string.Empty);
+            template = template.Replace("//<TEMPLATE_BODY_START>", string.Empty);
             template = template.Replace("#if RTSL2_COMPILE_TEMPLATES", string.Empty);
             template = template.Replace("#endif", string.Empty);
 
@@ -564,8 +562,8 @@ namespace Battlehub.RTSaveLoad2
             string className = PreparePersistentTypeName(persistentTypeName);
             if(template != null)
             {
-                usings += BR + template.Usings; 
-                return string.Format(UserDefinedClassTemplate, usings, ns, className, template.Body);
+                usings += template.Usings; 
+                return string.Format(UserDefinedClassTemplate, usings, ns, className, template.Body.TrimEnd());
             }
          
             return string.Format(UserDefinedEmptyClassTemplate, usings, ns, className);
@@ -816,6 +814,10 @@ namespace Battlehub.RTSaveLoad2
         {
             StringBuilder sb = new StringBuilder();
             HashSet<string> namespaces = new HashSet<string>();
+            for (int i = 0; i < DefaultNamespaces.Length; ++i)
+            {
+                namespaces.Add(DefaultNamespaces[i]);
+            }
 
             for (int m = 0; m < mappings.Length; ++m)
             {
@@ -825,28 +827,23 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
-                for (int i = 0; i < DefaultNamespaces.Length; ++i)
-                {
-                    namespaces.Add(DefaultNamespaces[i]);
-                }
-
-                if (!namespaces.Contains(mapping.MappedNamespace))
-                {
-                    namespaces.Add(mapping.MappedNamespace);
-                }
-
-                if (!namespaces.Contains(mapping.PersistentNamespace))
-                {
-                    namespaces.Add(mapping.PersistentNamespace);
-                }
-
-                if (!namespaces.Contains(mapping.PersistentBaseNamespace))
-                {
-                    namespaces.Add(mapping.PersistentBaseNamespace);
-                }
-
                 if(mapping.IsEnabled)
                 {
+                    if (!namespaces.Contains(mapping.MappedNamespace))
+                    {
+                        namespaces.Add(mapping.MappedNamespace);
+                    }
+
+                    if (!namespaces.Contains(mapping.PersistentNamespace))
+                    {
+                        namespaces.Add(mapping.PersistentNamespace);
+                    }
+
+                    if (!namespaces.Contains(mapping.PersistentBaseNamespace))
+                    {
+                        namespaces.Add(mapping.PersistentBaseNamespace);
+                    }
+
                     for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
                     {
                         PersistentPropertyMapping propertyMapping = mapping.PropertyMappings[i];

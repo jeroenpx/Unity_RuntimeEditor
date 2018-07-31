@@ -118,6 +118,20 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        private bool CanDrop(UnityObject obj)
+        {
+            if (obj is GameObject)
+            {
+                GameObject go = (GameObject)obj;
+                if (go.transform.parent != null || !File.Exists(AssetDatabase.GetAssetPath(go)))
+                {
+                    return false;
+                }
+            }
+
+            return obj != null && (!File.Exists(AssetDatabase.GetAssetPath(obj)) || File.Exists(AssetDatabase.GetAssetPath(obj)) && !obj.GetType().Assembly.FullName.Contains("UnityEditor"));
+        }
+
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex, bool outside)
         {
             AssetFolderInfo parentFolder;
@@ -130,7 +144,7 @@ namespace Battlehub.RTSaveLoad2
                 parentFolder = ((TreeViewItem<AssetFolderInfo>)parent).data;
             }
 
-            if(DragAndDrop.objectReferences != null && DragAndDrop.objectReferences.Length > 0 && DragAndDrop.objectReferences.All(o => o == null || o != null && File.Exists(AssetDatabase.GetAssetPath(o)) && o.GetType().Assembly.FullName.Contains("UnityEditor")))
+            if (DragAndDrop.objectReferences != null && DragAndDrop.objectReferences.Length > 0 && DragAndDrop.objectReferences.All(o => !CanDrop(o))) 
             {
                 return DragAndDropVisualMode.None;
             }
@@ -208,6 +222,7 @@ namespace Battlehub.RTSaveLoad2
                     if (!outside)
                     {
                         AssetFolderInfo folder = GetAssetFolderInfo(parent);
+                        m_assetsGUI.InitIfNeeded();
                         m_assetsGUI.AddAssetToFolder(dragged_object.data, folder);
                     }
                 }
@@ -220,6 +235,7 @@ namespace Battlehub.RTSaveLoad2
                 List<UnityObject> assets = new List<UnityObject>();
                 foreach (UnityObject dragged_object in DragAndDrop.objectReferences)
                 {
+              
                     string path = AssetDatabase.GetAssetPath(dragged_object);
                     if (!string.IsNullOrEmpty(path) && File.Exists(path))
                     {
@@ -230,6 +246,11 @@ namespace Battlehub.RTSaveLoad2
                     }
                     else
                     {
+                        if (!CanDrop(dragged_object))
+                        {
+                            continue;
+                        }
+
                         m_assetsGUI.InitIfNeeded();
 
                         AssetFolderInfo folder = CopyFolder(path, parent, insertIndex);
@@ -249,6 +270,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     MoveToNewLocationDialog(assetsArray);
                     AssetFolderInfo folder = GetAssetFolderInfo(parent);
+                    m_assetsGUI.InitIfNeeded();
                     m_assetsGUI.AddAssetToFolder(assetsArray, folder, m_moveToNewLocation);
                 }
             }
@@ -289,6 +311,7 @@ namespace Battlehub.RTSaveLoad2
             if(assetsArray.Length > 0)
             {
                 MoveToNewLocationDialog(assetsArray);
+                m_assetsGUI.InitIfNeeded();
                 m_assetsGUI.AddAssetToFolder(assetsArray, folder, m_moveToNewLocation);
             }
     
