@@ -248,6 +248,7 @@ namespace Battlehub.RTSaveLoad2
                     }
 
                     CreateAsset(obj, parentAssetInfo, insertIndex, folder);
+                  
                 }
             }
         }
@@ -259,28 +260,42 @@ namespace Battlehub.RTSaveLoad2
             m_asset.AssetLibrary.Identity++;
             assetInfo.Object = obj;
             AddAssetToFolder(assetInfo, folder);
-
             if (obj is GameObject)
             {
                 GameObject go = (GameObject)obj;
-                Component[] components = go.GetComponents<Component>();
-                foreach(Component component in components)
-                {
-                    AssetInfo componentAssetInfo = CreateAsset(component.name, assetInfo, -1, folder);
-                    componentAssetInfo.PersistentID = m_asset.AssetLibrary.Identity;
-                    m_asset.AssetLibrary.Identity++;
-                    componentAssetInfo.Object = component;
-                    AddAssetToFolder(componentAssetInfo, folder);
-                }
+                assetInfo.PerfabParts = new List<PrefabPartInfo>();
+                CreatePefabParts(assetInfo, go);
+            } 
+        }
 
-                if (go.transform.childCount > 0)
+        private void CreatePefabParts(AssetInfo assetInfo, GameObject go)
+        {
+            Component[] components = go.GetComponents<Component>();
+            foreach (Component component in components)
+            {
+                PrefabPartInfo componentPart = new PrefabPartInfo();
+                componentPart.PersistentID = m_asset.AssetLibrary.Identity;
+                componentPart.Object = component;
+
+                m_asset.AssetLibrary.Identity++;
+                assetInfo.PerfabParts.Add(componentPart);
+            }
+
+            if (go.transform.childCount > 0)
+            {
+                foreach (Transform child in go.transform)
                 {
-                    foreach(Transform child in go.transform)
-                    {
-                        CreateAsset(child.gameObject, assetInfo, -1, folder);
-                    }
+                    PrefabPartInfo childPart = new PrefabPartInfo();
+                    childPart.PersistentID = m_asset.AssetLibrary.Identity;
+                    childPart.Object = child.gameObject;
+
+                    m_asset.AssetLibrary.Identity++;
+                    assetInfo.PerfabParts.Add(childPart);
+
+                    CreatePefabParts(assetInfo, child.gameObject);
                 }
-            }            
+            }
+
         }
 
         public void AddAssetToFolder(AssetInfo assetInfo, AssetFolderInfo folder)
@@ -561,7 +576,6 @@ namespace Battlehub.RTSaveLoad2
 
             TreeView.treeModel.RemoveElements(assetInfo);
 
-#warning Fix this method
             if (index >= parent.children.Count)
             {
                 index = parent.children.Count - 1;

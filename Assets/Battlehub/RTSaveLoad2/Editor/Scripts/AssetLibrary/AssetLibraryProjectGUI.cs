@@ -129,11 +129,17 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            return obj != null && (!File.Exists(AssetDatabase.GetAssetPath(obj)) || File.Exists(AssetDatabase.GetAssetPath(obj)) && !obj.GetType().Assembly.FullName.Contains("UnityEditor"));
+            return obj != null && (IsFolder(obj) || File.Exists(AssetDatabase.GetAssetPath(obj)) && !obj.GetType().Assembly.FullName.Contains("UnityEditor"));
+        }
+
+        private static bool IsFolder(UnityObject obj)
+        {
+            return !File.Exists(AssetDatabase.GetAssetPath(obj));
         }
 
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex, bool outside)
         {
+            Debug.Log(insertIndex);
             AssetFolderInfo parentFolder;
             if(parent == null)
             {
@@ -147,6 +153,14 @@ namespace Battlehub.RTSaveLoad2
             if (DragAndDrop.objectReferences != null && DragAndDrop.objectReferences.Length > 0 && DragAndDrop.objectReferences.All(o => !CanDrop(o))) 
             {
                 return DragAndDropVisualMode.None;
+            }
+
+            if(DragAndDrop.objectReferences != null && DragAndDrop.objectReferences.Length > 0 && DragAndDrop.objectReferences.Any(o => !IsFolder(o)))
+            {
+                if(insertIndex > -1)
+                {
+                    return DragAndDropVisualMode.None;
+                }
             }
 
             if (parentFolder.hasChildren)

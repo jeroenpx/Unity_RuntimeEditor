@@ -23,7 +23,6 @@ namespace Battlehub.RTSaveLoad2
         private enum Columns
         {
             Name,
-            Id,
             ExposeToEditor,
         }
 
@@ -90,11 +89,7 @@ namespace Battlehub.RTSaveLoad2
                         base.RowGUI(args);
                     }
                     break;
-                case Columns.Id:
-                    {
-                        EditorGUI.LabelField(cellRect, item.data.PersistentID.ToString());
-                    }
-                    break;
+
                 case Columns.ExposeToEditor:
                     {
                         item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
@@ -255,17 +250,7 @@ namespace Battlehub.RTSaveLoad2
                     autoResize = true,
                     allowToggleVisibility = false
                 },
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("PersistentID", ""),
-                    headerTextAlignment = TextAlignment.Left,
-                    canSort = false,
-                    sortingArrowAlignment = TextAlignment.Center,
-                    width = 70,
-                    minWidth = 70,
-                    autoResize = false,
-                    allowToggleVisibility = false
-                },
+        
                 new MultiColumnHeaderState.Column
                 {
                     headerContent = new GUIContent("Is Enabled"),

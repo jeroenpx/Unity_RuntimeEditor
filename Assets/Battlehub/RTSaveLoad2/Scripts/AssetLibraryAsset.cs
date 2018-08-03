@@ -66,7 +66,8 @@ namespace Battlehub.RTSaveLoad2
                 string newObjStr = obj != null ? obj.GetType().Name + ", name: " + obj.name + ", InstanceID: " + obj.GetInstanceID() : "null";
                 Debug.LogWarningFormat("An element with mappedId = {0} already exists. existing obj = {1}; new obj = {2}", persistentID, existingObjStr, newObjStr);
                 throw;
-            }        }
+            }
+        }
     }
 
     [CreateAssetMenu(fileName = "AssetLibrary", menuName = "RT Asset Library", order = 1)]

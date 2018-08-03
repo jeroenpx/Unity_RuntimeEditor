@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
 {
-    public class PrefabPartInfo : TreeElement
+    [Serializable]
+    public class PrefabPartInfo 
     {
         public int PersistentID;
         public UnityObject Object;
@@ -24,7 +25,7 @@ namespace Battlehub.RTSaveLoad2
         public int PersistentID;
         public bool IsEnabled;
 
-        public PrefabPartInfo[] PerfabParts;
+        public List<PrefabPartInfo> PerfabParts;
 
         public AssetInfo()
         {
@@ -65,7 +66,7 @@ namespace Battlehub.RTSaveLoad2
 
         public void OnBeforeSerialize()
         {
-            
+           
         }
     }
 
