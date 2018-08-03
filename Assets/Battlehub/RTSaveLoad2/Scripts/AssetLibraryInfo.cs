@@ -21,8 +21,11 @@ namespace Battlehub.RTSaveLoad2
         [HideInInspector]
         public AssetFolderInfo Folder;
         public UnityObject Object;
-        [ReadOnly]
-        public int PersistentID;
+        
+        public int PersistentID
+        {
+            get { return id; }
+        }
         public bool IsEnabled;
 
         public List<PrefabPartInfo> PerfabParts;

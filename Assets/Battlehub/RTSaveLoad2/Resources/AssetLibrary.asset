@@ -15,7 +15,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 11
+    Identity: 46
     Folders:
     - m_ID: 0
       m_Name: Assets
@@ -25,75 +25,57 @@ MonoBehaviour:
     - m_ID: 1
       m_Name: Folder
       m_Depth: 0
+      Assets: []
+      IsEnabled: 0
+    - m_ID: 2
+      m_Name: Folder
+      m_Depth: 1
       Assets:
-      - m_ID: 1
-        m_Name: zzzz
+      - m_ID: 33
+        m_Name: Main Camera
         m_Depth: 0
-        Object: {fileID: 1012648645296444, guid: c279115c8995fe24dbeec840e453cecc,
+        Object: {fileID: 1531982622088650, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
           type: 2}
-        PersistentID: 1
         IsEnabled: 0
-      - m_ID: 2
-        m_Name: zzzz
-        m_Depth: 1
-        Object: {fileID: 4926543894975826, guid: c279115c8995fe24dbeec840e453cecc,
+        PerfabParts:
+        - PersistentID: 34
+          Object: {fileID: 4706384361966496, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
+            type: 2}
+        - PersistentID: 35
+          Object: {fileID: 20260155268986974, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
+            type: 2}
+        - PersistentID: 36
+          Object: {fileID: 124990639316001042, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
+            type: 2}
+        - PersistentID: 37
+          Object: {fileID: 81612334398246998, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
+            type: 2}
+      - m_ID: 38
+        m_Name: Main Camera 1
+        m_Depth: 0
+        Object: {fileID: 1000964464904936, guid: 3c2823c5efbf5ae4c8183026649a54ab,
           type: 2}
-        PersistentID: 2
         IsEnabled: 0
-      - m_ID: 3
-        m_Name: zzzz
-        m_Depth: 1
-        Object: {fileID: 33687948333775482, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 3
-        IsEnabled: 0
-      - m_ID: 4
-        m_Name: zzzz
-        m_Depth: 1
-        Object: {fileID: 23993892590884876, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 4
-        IsEnabled: 0
-      - m_ID: 5
-        m_Name: zzzz
-        m_Depth: 1
-        Object: {fileID: 65594397924818610, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 5
-        IsEnabled: 0
-      - m_ID: 6
-        m_Name: xxzz
-        m_Depth: 1
-        Object: {fileID: 1689324082340042, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 6
-        IsEnabled: 0
-      - m_ID: 7
-        m_Name: xxzz
-        m_Depth: 2
-        Object: {fileID: 4924797126655300, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 7
-        IsEnabled: 0
-      - m_ID: 8
-        m_Name: xxzz
-        m_Depth: 2
-        Object: {fileID: 33443021783191430, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 8
-        IsEnabled: 0
-      - m_ID: 9
-        m_Name: xxzz
-        m_Depth: 2
-        Object: {fileID: 23043443018482290, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 9
-        IsEnabled: 0
-      - m_ID: 10
-        m_Name: xxzz
-        m_Depth: 2
-        Object: {fileID: 65467765576929876, guid: c279115c8995fe24dbeec840e453cecc,
-          type: 2}
-        PersistentID: 10
-        IsEnabled: 0
+        PerfabParts:
+        - PersistentID: 39
+          Object: {fileID: 4081478448198520, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+        - PersistentID: 40
+          Object: {fileID: 20674525734200896, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+        - PersistentID: 41
+          Object: {fileID: 124612117325186914, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+        - PersistentID: 42
+          Object: {fileID: 81605565872201766, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+        - PersistentID: 43
+          Object: {fileID: 1436785996680820, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+        - PersistentID: 44
+          Object: {fileID: 4327367251358664, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+        - PersistentID: 45
+          Object: {fileID: 108306831157321470, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
       IsEnabled: 0

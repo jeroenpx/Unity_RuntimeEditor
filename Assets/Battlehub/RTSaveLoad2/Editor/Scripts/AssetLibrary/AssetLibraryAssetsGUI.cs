@@ -13,9 +13,9 @@ namespace Battlehub.RTSaveLoad2
     {
         [NonSerialized]
         private bool m_Initialized;
-        [SerializeField]
+        //[SerializeField]
         private TreeViewState m_TreeViewState; // Serialized in the window layout file so it survives assembly reloading
-        [SerializeField]
+        //[SerializeField]
         private MultiColumnHeaderState m_MultiColumnHeaderState;
         private SearchField m_SearchField;
         private AssetFolderInfo[] m_folders;
@@ -75,7 +75,7 @@ namespace Battlehub.RTSaveLoad2
                     treeModel,
                     ExternalDropInside,
                     ExternalDropOutside);
-                // m_TreeView.Reload();
+                TreeView.Reload();
 
                 m_SearchField = new SearchField();
                 m_SearchField.downOrUpArrowKeyPressed += TreeView.SetFocusAndEnsureSelectedItem;
@@ -256,8 +256,6 @@ namespace Battlehub.RTSaveLoad2
         private void CreateAsset(UnityObject obj, AssetInfo parentAssetInfo, int insertIndex = -1, AssetFolderInfo folder = null)
         {
             AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
-            assetInfo.PersistentID = m_asset.AssetLibrary.Identity;
-            m_asset.AssetLibrary.Identity++;
             assetInfo.Object = obj;
             AddAssetToFolder(assetInfo, folder);
             if (obj is GameObject)
@@ -295,7 +293,6 @@ namespace Battlehub.RTSaveLoad2
                     CreatePefabParts(assetInfo, child.gameObject);
                 }
             }
-
         }
 
         public void AddAssetToFolder(AssetInfo assetInfo, AssetFolderInfo folder)
@@ -328,13 +325,12 @@ namespace Battlehub.RTSaveLoad2
             folder.Assets.Add(assetInfo);
         }
 
-        private  AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex = -1, AssetFolderInfo folder = null)
+        private  AssetInfo CreateAsset( string name, TreeElement parent, int insertIndex = -1, AssetFolderInfo folder = null)
         {
             int depth = parent != null ? parent.depth + 1 : 0;
-            int id = TreeView.treeModel.GenerateUniqueID();
+            int id = m_asset.AssetLibrary.Identity;
+            m_asset.AssetLibrary.Identity++;
             var assetInfo = new AssetInfo(name, depth, id);
-
-
             if(folder != null)
             {
                 if (IsFolderSelected(folder))
@@ -574,7 +570,7 @@ namespace Battlehub.RTSaveLoad2
             TreeElement parent = assetInfo[0].parent;
             int index = parent.children.IndexOf(assetInfo[0]);
 
-            TreeView.treeModel.RemoveElements(assetInfo);
+            TreeView.treeModel.RemoveElements(assetInfo.Select( a => a.id).ToArray());
 
             if (index >= parent.children.Count)
             {

@@ -62,6 +62,17 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        protected override void SelectionChanged(IList<int> selectedIds)
+        {
+            base.SelectionChanged(selectedIds);
+
+            Debug.Log("Selection changed");
+            for(int i = 0; i < selectedIds.Count; ++i)
+            {
+                Debug.Log("selected id: " + selectedIds[i]);
+            }
+        }
+
         private void CellGUI(Rect cellRect, TreeViewItem<AssetInfo> item, Columns column, ref RowGUIArgs args)
         {
             // Center cell rect vertically (makes it easier to place controls, icons etc in the cells)
