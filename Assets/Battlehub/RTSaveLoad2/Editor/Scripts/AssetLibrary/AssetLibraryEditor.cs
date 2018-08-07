@@ -17,13 +17,14 @@ namespace Battlehub.RTSaveLoad2
         }
 
         private bool m_canRenderAssetsGUI;
+        private bool m_isSyncRequired;
 
         private void OnEnable()
         {
             if (m_assetsGUI == null)
             {
                 m_assetsGUI = new AssetLibraryAssetsGUI();
-                m_assetsGUI.SetTreeAsset(Asset);
+                m_assetsGUI.SetTreeAsset(Asset);      
             }
 
             if (m_projectGUI == null)
@@ -31,6 +32,8 @@ namespace Battlehub.RTSaveLoad2
                 m_projectGUI = new AssetLibraryProjectGUI(m_assetsGUI);
                 m_projectGUI.SetTreeAsset(Asset);
                 m_projectGUI.SelectedFoldersChanged += OnSelectedFoldersChanged;
+
+                m_isSyncRequired = Asset.IsSyncRequired();
             }
 
             m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
@@ -54,6 +57,22 @@ namespace Battlehub.RTSaveLoad2
         public override void OnInspectorGUI()
         {
             EditorGUILayout.BeginVertical();
+            if(m_isSyncRequired)
+            {
+                EditorGUILayout.HelpBox("One or more prefabs have been changed. AssetLibrary need to be synchronized.", MessageType.Warning);
+                if (GUILayout.Button("Synchronize"))
+                {
+                    Asset.Sync();
+                    m_assetsGUI = new AssetLibraryAssetsGUI();
+                    m_assetsGUI.InitIfNeeded();
+                    m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
+                    m_assetsGUI.OnEnable();
+                    m_isSyncRequired = false;
+                    EditorUtility.SetDirty(Asset);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+            
             m_projectGUI.OnGUI();
             if(m_canRenderAssetsGUI)
             {
@@ -68,48 +87,9 @@ namespace Battlehub.RTSaveLoad2
             m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
         }
 
-
-        //public void DropAreaGUI()
-        //{
-        //    Event evt = Event.current;
-        //    Rect drop_area = GUILayoutUtility.GetRect(0.0f, 50.0f, GUILayout.ExpandWidth(true));
-        //    GUI.Box(drop_area, "Add Trigger");
-
-        //    switch (evt.type)
-        //    {
-        //        case EventType.DragUpdated:
-        //        case EventType.DragPerform:
-        //            if (!drop_area.Contains(evt.mousePosition))
-        //                return;
-
-        //            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-
-        //            if (evt.type == EventType.DragPerform)
-        //            {
-        //                DragAndDrop.AcceptDrag();
-
-        //                foreach (Object dragged_object in DragAndDrop.objectReferences)
-        //                {
-
-        //                    string path = "Assets";
+    
 
 
-        //                        path = AssetDatabase.GetAssetPath(dragged_object);
-        //                        if (!string.IsNullOrEmpty(path) && File.Exists(path))
-        //                        {
-        //                            path = Path.GetDirectoryName(path);
-        //                            //break;
-        //                        }
-
-
-        //                    Debug.Log(path);
-        //                    // Do On Drag Stuff here
-        //                }
-        //            }
-        //            break;
-        //    }
-        //}
-
-
+       
     }
 }

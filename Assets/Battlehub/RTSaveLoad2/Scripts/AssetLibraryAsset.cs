@@ -175,8 +175,6 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-#warning This implies that prefab's AssetInfo should be updated each time prefab is modified..
-
         private void LoadIDMappingTo(AssetInfo asset,
             MappingInfo mapping,
             List<int> instanceIDs,
@@ -209,6 +207,79 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
         }
+
+        public bool IsSyncRequired()
+        {
+            bool syncIsNotRequired = Foreach(assetInfo =>
+            {
+                return !assetInfo.IsSyncRequired();
+            });
+
+            return !syncIsNotRequired;
+        }
+
+        public void Sync()
+        {
+            Foreach(assetInfo =>
+            {
+                assetInfo.Sync(m_assetLibrary);
+                return true;
+            });
+        }
+
+        public bool Foreach(Func<AssetInfo, bool> callback)
+        {
+            if(m_assetLibrary.Folders != null)
+            {
+                for(int i = 0; i < m_assetLibrary.Folders.Count; ++i)
+                {
+                    AssetFolderInfo folder = m_assetLibrary.Folders[i];
+                    if(!Foreach(folder, callback))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool Foreach(AssetFolderInfo folder, Func<AssetInfo, bool> callback)
+        {
+            if(folder.Assets != null)
+            {
+                for(int i = 0; i < folder.Assets.Count; ++i)
+                {
+                    AssetInfo assetInfo = folder.Assets[i];
+                    if(assetInfo != null)
+                    {
+                        if(!callback(assetInfo))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            if(folder.hasChildren)
+            {
+                for(int i = 0; i < folder.children.Count; ++i)
+                {
+                    AssetFolderInfo childFolder = folder.children[i] as AssetFolderInfo;
+                    if(childFolder != null)
+                    {
+                        if(!Foreach(childFolder, callback))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+
 
         private void Awake()
         {

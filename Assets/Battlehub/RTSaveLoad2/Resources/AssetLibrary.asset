@@ -15,67 +15,87 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 46
+    Identity: 122
     Folders:
     - m_ID: 0
       m_Name: Assets
       m_Depth: -1
       Assets: []
       IsEnabled: 0
-    - m_ID: 1
-      m_Name: Folder
+    - m_ID: 4
+      m_Name: Folder 0
       m_Depth: 0
       Assets: []
       IsEnabled: 0
-    - m_ID: 2
+    - m_ID: 1
       m_Name: Folder
       m_Depth: 1
       Assets:
-      - m_ID: 33
-        m_Name: Main Camera
-        m_Depth: 0
-        Object: {fileID: 1531982622088650, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
-          type: 2}
-        IsEnabled: 0
-        PerfabParts:
-        - PersistentID: 34
-          Object: {fileID: 4706384361966496, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
-            type: 2}
-        - PersistentID: 35
-          Object: {fileID: 20260155268986974, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
-            type: 2}
-        - PersistentID: 36
-          Object: {fileID: 124990639316001042, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
-            type: 2}
-        - PersistentID: 37
-          Object: {fileID: 81612334398246998, guid: 6bb1cacf66e44e747bd5e3e607d1dca1,
-            type: 2}
-      - m_ID: 38
+      - m_ID: 107
         m_Name: Main Camera 1
         m_Depth: 0
         Object: {fileID: 1000964464904936, guid: 3c2823c5efbf5ae4c8183026649a54ab,
           type: 2}
         IsEnabled: 0
-        PerfabParts:
-        - PersistentID: 39
+        PrefabParts:
+        - ParentPersistentID: -1
+          PersistentID: 108
           Object: {fileID: 4081478448198520, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
-        - PersistentID: 40
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 109
           Object: {fileID: 20674525734200896, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
-        - PersistentID: 41
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 110
           Object: {fileID: 124612117325186914, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
-        - PersistentID: 42
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 111
           Object: {fileID: 81605565872201766, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
-        - PersistentID: 43
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 116
+          Object: {fileID: 33773804643757526, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 119
+          Object: {fileID: 114322234713204062, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 112
           Object: {fileID: 1436785996680820, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
-        - PersistentID: 44
-          Object: {fileID: 4327367251358664, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+          Depth: 0
+        - ParentPersistentID: 112
+          PersistentID: 113
+          Object: {fileID: 224512716390430218, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
-        - PersistentID: 45
+          Depth: 1
+        - ParentPersistentID: 112
+          PersistentID: 114
           Object: {fileID: 108306831157321470, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
+          Depth: 1
+        - ParentPersistentID: 112
+          PersistentID: 118
+          Object: {fileID: 23446624191019420, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+          Depth: 1
+        - ParentPersistentID: 112
+          PersistentID: 120
+          Object: {fileID: 114018109797538304, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+          Depth: 1
+        - ParentPersistentID: 112
+          PersistentID: 121
+          Object: {fileID: 218862457465945236, guid: 3c2823c5efbf5ae4c8183026649a54ab,
+            type: 2}
+          Depth: 1
       IsEnabled: 0

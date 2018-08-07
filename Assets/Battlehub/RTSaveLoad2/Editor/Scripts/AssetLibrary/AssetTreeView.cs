@@ -23,12 +23,26 @@ namespace Battlehub.RTSaveLoad2
         private enum Columns
         {
             Name,
+            PersistentID,
             ExposeToEditor,
         }
 
         private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropInside;
         private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropOutside;
 
+        private readonly Dictionary<int, AssetInfo> m_selection = new Dictionary<int, AssetInfo>();
+        private readonly Dictionary<int, AssetInfo> m_selectedRootItems = new Dictionary<int, AssetInfo>();
+      
+        public bool HasSelectedRootItems
+        {
+            get { return m_selectedRootItems.Count > 0; }
+        }
+
+        public int SelectedRootItemsCount
+        {
+            get { return m_selectedRootItems.Count; }
+        }
+        
         public AssetTreeView(
             TreeViewState state,
             MultiColumnHeader multiColumnHeader,
@@ -47,7 +61,6 @@ namespace Battlehub.RTSaveLoad2
             customFoldoutYOffset = (kRowHeights - EditorGUIUtility.singleLineHeight) * 0.5f; // center foldout in the row since we also center content. See RowGUI
             extraSpaceBeforeIconAndLabel = kIconWidth;
 
-
             Reload();
         }
 
@@ -62,15 +75,51 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+
         protected override void SelectionChanged(IList<int> selectedIds)
         {
             base.SelectionChanged(selectedIds);
 
-            Debug.Log("Selection changed");
-            for(int i = 0; i < selectedIds.Count; ++i)
+            HandleSelectionChanged(selectedIds);
+        }
+
+        private void HandleSelectionChanged(IList<int> selectedIds)
+        {
+            HashSet<int> idsHs = new HashSet<int>(selectedIds);
+            foreach (int id in m_selection.Keys.ToArray())
             {
-                Debug.Log("selected id: " + selectedIds[i]);
+                if (!idsHs.Contains(id))
+                {
+                    m_selection.Remove(id);
+                    m_selectedRootItems.Remove(id);
+                }
             }
+
+            for (int i = 0; i < selectedIds.Count; ++i)
+            {
+                int id = selectedIds[i];
+                if (!m_selection.ContainsKey(id))
+                {
+                    AssetInfo assetInfo = treeModel.Find(id);
+                    if(assetInfo != null)
+                    {
+                        m_selection.Add(id, assetInfo);
+                        if (assetInfo.depth == 0)
+                        {
+                            m_selectedRootItems.Add(id, assetInfo);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected override TreeViewItem BuildRoot()
+        {
+            TreeViewItem buildRoot =  base.BuildRoot();
+
+            HandleSelectionChanged(GetSelection());
+
+            return buildRoot;
         }
 
         private void CellGUI(Rect cellRect, TreeViewItem<AssetInfo> item, Columns column, ref RowGUIArgs args)
@@ -100,21 +149,35 @@ namespace Battlehub.RTSaveLoad2
                         base.RowGUI(args);
                     }
                     break;
-
+                case Columns.PersistentID:
+                    {
+                        EditorGUI.LabelField(cellRect, item.data.PersistentID.ToString());
+                    }
+                    break;
                 case Columns.ExposeToEditor:
                     {
-                        item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
+                        if(item.data.depth == 0)
+                        {
+                            item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
+                        }
                     }
                     break;
             }
         }
 
+
         protected override bool CanRename(TreeViewItem item)
         {
+            if(item.depth != 0)
+            {
+                return false;
+            }
+
             // Only allow rename if we can show the rename overlay with a certain width (label might be clipped by other columns)
             Rect renameRect = GetRenameRect(treeViewRect, 0, item);
             return renameRect.width > 30;
         }
+
 
         public bool BeginRename(int id)
         {
@@ -232,15 +295,15 @@ namespace Battlehub.RTSaveLoad2
         {
             if (base.ValidDrag(parent, draggedItems))
             {
-                if (parent.hasChildren)
-                {
-                    var names = parent.children.OfType<TreeViewItem<AssetInfo>>().Select(c => c.data.name);
-                    if (draggedItems.OfType<TreeViewItem<AssetInfo>>().Any(item => names.Contains(item.data.name)))
-                    {
-                        return false;
-                    }
-                }
-                return true;
+                //if (parent.hasChildren)
+                //{
+                //    var names = parent.children.OfType<TreeViewItem<AssetInfo>>().Select(c => c.data.name);
+                //    if (draggedItems.OfType<TreeViewItem<AssetInfo>>().Any(item => names.Contains(item.data.name)))
+                //    {
+                //        return false;
+                //    }
+                //}
+                //return true;
             }
             return false;
         }
@@ -261,10 +324,23 @@ namespace Battlehub.RTSaveLoad2
                     autoResize = true,
                     allowToggleVisibility = false
                 },
-        
+
+
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("Is Enabled"),
+                    headerContent = new GUIContent("Persistent ID"),
+                    headerTextAlignment = TextAlignment.Left,
+                    sortedAscending = true,
+                    sortingArrowAlignment = TextAlignment.Center,
+                    width = 85,
+                    minWidth = 85,
+                    autoResize = false,
+                    allowToggleVisibility = false
+                },
+
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("Visible"),
                     headerTextAlignment = TextAlignment.Left,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Center,
