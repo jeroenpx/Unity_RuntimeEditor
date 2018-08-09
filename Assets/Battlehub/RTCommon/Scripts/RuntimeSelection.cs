@@ -4,25 +4,7 @@ using System.Collections.Generic;
 
 namespace Battlehub.RTCommon
 {
-    public class Test : MonoBehaviour
-    {
-        private void Awake()
-        {
-            RuntimeSelection.SelectionChanged += OnSelectionChanged;
-        }
-
-        private void OnDestroy()
-        {
-            RuntimeSelection.SelectionChanged -= OnSelectionChanged;
-        }
-
-        private void OnSelectionChanged(Object[] unselectedObjects)
-        {
-            Object[] selectedObjects = RuntimeSelection.objects;
-        }
-    }
-
-    public delegate void RuntimeSelectionChanged(Object[] unselectedObjects);
+   public delegate void RuntimeSelectionChanged(Object[] unselectedObjects);
 
     /// <summary>
     /// Runtime selection (rough equivalent of UnityEditor.Selection class) 
@@ -30,6 +12,20 @@ namespace Battlehub.RTCommon
     public class RuntimeSelection
     {
         public static event RuntimeSelectionChanged SelectionChanged;
+
+        private static bool m_isEnabled = true;
+        public static bool Enabled
+        {
+            get { return m_isEnabled; }
+            set
+            {
+                m_isEnabled = value;
+                if(!m_isEnabled)
+                {
+                    objects = null;
+                }
+            }
+        }
 
         private static HashSet<Object> m_selectionHS;
 
@@ -55,6 +51,10 @@ namespace Battlehub.RTCommon
             {
                 if (m_activeObject != value || value != null && m_objects != null && m_objects.Length > 1)
                 {
+                    if(!m_isEnabled)
+                    {
+                        return;
+                    }
 
                     RuntimeUndo.RecordSelection();
                     m_activeObject = value;
@@ -80,9 +80,13 @@ namespace Battlehub.RTCommon
             get { return m_objects; }
             set
             {
-                if(IsSelectionChanged(value))
+                if (!m_isEnabled)
                 {
-                   
+                    return;
+                }
+
+                if (IsSelectionChanged(value))
+                {
                     RuntimeUndo.RecordSelection();
                     SetObjects(value);  
                     RuntimeUndo.RecordSelection();

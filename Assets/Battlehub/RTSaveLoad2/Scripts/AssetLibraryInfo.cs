@@ -252,6 +252,7 @@ namespace Battlehub.RTSaveLoad2
     {
         public const int ORDINAL_OFFSET = 16;
         public const int MAX_ASSETS = 1 << ORDINAL_OFFSET;
+        public const int ORDINAL_MASK = 0x0000FFFF;
 
         public int Identity = 2;
 

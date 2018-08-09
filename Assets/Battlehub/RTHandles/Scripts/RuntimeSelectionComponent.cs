@@ -140,7 +140,12 @@ namespace Battlehub.RTHandles
                 {
                     return;
                 }
-          
+
+                if (!RuntimeSelection.Enabled)
+                {
+                    return;
+                }
+
                 bool rangeSelect = InputController._GetKey(RangeSelectKey);
                 bool multiselect = InputController._GetKey(MultiselectKey) || InputController._GetKey(MultiselectKey2) || rangeSelect;
                 Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);

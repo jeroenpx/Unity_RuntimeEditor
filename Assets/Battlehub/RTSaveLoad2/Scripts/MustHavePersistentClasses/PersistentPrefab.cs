@@ -11,11 +11,19 @@ namespace Battlehub.RTSaveLoad2
     public class PersistentPrefab : PersistentObject
     {
         [ProtoMember(1)]
-        public PersistentDescriptor[] m_descriptors;
+        public PersistentDescriptor[] Descriptors;
         [ProtoMember(2)]
-        public PersistentObject[] m_data;
+        public PersistentObject[] Data;
         [ProtoMember(3)]
-        public long[] m_identifiers;
+        public long[] Identifiers;
+
+        //Asset library ordinals
+        [ProtoMember(4)]
+        public int[] Usings;
+
+        //Identifiers of assets PersistentPrefab depends on
+        [ProtoMember(5)]
+        public long[] Dependencies;
 
         protected readonly ITypeMap m_typeMap;
         protected readonly IAssetDB m_assetDB;
@@ -32,21 +40,42 @@ namespace Battlehub.RTSaveLoad2
 
             List<PersistentObject> data = new List<PersistentObject>();
             List<long> identifiers = new List<long>();
+            HashSet<int> usings = new HashSet<int>();
+            GetDepsContext getDepsCtx = new GetDepsContext();
+            Descriptors = new PersistentDescriptor[1];
+            Descriptors[0] = CreateDescriptorAndData(go, data, identifiers, usings, getDepsCtx);
 
-            m_descriptors = new PersistentDescriptor[1];
-            m_descriptors[0] = CreateDescriptorAndData(go, data, identifiers);
-     
-            m_identifiers = identifiers.ToArray();
-            m_data = data.ToArray();
+            Identifiers = identifiers.ToArray();
+            Data = data.ToArray();
+
+            Dependencies = getDepsCtx.Dependencies.ToArray();
+            DependenciesToUsings(Dependencies, usings);
+            Usings = usings.ToArray();
+        }
+
+        protected void DependenciesToUsings(long[] dependencies, HashSet<int> usings)
+        {
+            for (int i = 0; i < dependencies.Length; ++i)
+            {
+                long dependency = dependencies[i];
+                if (m_assetDB.IsResourceID(dependency))
+                {
+                    int ordinal = m_assetDB.ToOrdinal(dependency);
+                    if (!usings.Contains(ordinal))
+                    {
+                        usings.Add(ordinal);
+                    }
+                }
+            }
         }
 
         protected override object WriteToImpl(object obj)
         {
             obj = base.WriteToImpl(obj);
-            for(int i = 0; i < m_data.Length; ++i)
+            for(int i = 0; i < Data.Length; ++i)
             {
-                PersistentObject data = m_data[i];
-                long id = m_identifiers[i];
+                PersistentObject data = Data[i];
+                long id = Identifiers[i];
  
                 UnityObject unityObj = m_assetDB.FromID<UnityObject>(id);
                 data.WriteTo(unityObj);
@@ -55,7 +84,7 @@ namespace Battlehub.RTSaveLoad2
             return obj;
         }
 
-        protected PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, PersistentDescriptor parentDescriptor = null)
+        protected PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, HashSet<int> usings, GetDepsContext getDepsCtx, PersistentDescriptor parentDescriptor = null)
         {
             if (go.GetComponent<PersistentIgnore>())
             {
@@ -69,11 +98,18 @@ namespace Battlehub.RTSaveLoad2
             }
 
             long persistentID = ToID(go);
+            if(m_assetDB.IsResourceID(persistentID))
+            {
+                int ordinal = m_assetDB.ToOrdinal(persistentID);
+                usings.Add(ordinal);
+            }
+            
             PersistentDescriptor descriptor = new PersistentDescriptor(persistentType, persistentID);
             descriptor.Parent = parentDescriptor;
 
             PersistentObject goData = (PersistentObject)Activator.CreateInstance(persistentType);
             goData.ReadFrom(go);
+            goData.GetDeps(getDepsCtx);
             persistentData.Add(goData);
             persistentIdentifiers.Add(persistentID);
 
@@ -91,12 +127,18 @@ namespace Battlehub.RTSaveLoad2
                     }
 
                     long componentID = ToID(component);
+                    if (m_assetDB.IsResourceID(componentID))
+                    {
+                        int ordinal = m_assetDB.ToOrdinal(componentID);
+                        usings.Add(ordinal);
+                    }
                     PersistentDescriptor componentDescriptor = new PersistentDescriptor(persistentComponentType, componentID);
                     componentDescriptor.Parent = descriptor;
                     componentDescriptors.Add(componentDescriptor);
 
                     PersistentObject componentData = (PersistentObject)Activator.CreateInstance(persistentComponentType);
                     componentData.ReadFrom(component);
+                    componentData.GetDeps(getDepsCtx);
                     persistentData.Add(componentData);
                     persistentIdentifiers.Add(componentID);
                 }
@@ -113,7 +155,7 @@ namespace Battlehub.RTSaveLoad2
                 List<PersistentDescriptor> children = new List<PersistentDescriptor>();
                 foreach (Transform child in transform)
                 {
-                    PersistentDescriptor childDescriptor = CreateDescriptorAndData(child.gameObject, persistentData, persistentIdentifiers, descriptor);
+                    PersistentDescriptor childDescriptor = CreateDescriptorAndData(child.gameObject, persistentData, persistentIdentifiers, usings, getDepsCtx, descriptor);
                     if (childDescriptor != null)
                     {
                         children.Add(childDescriptor);

@@ -10,8 +10,13 @@ namespace Battlehub.RTSaveLoad2
     {
         bool IsNullID(long id);
         bool IsInstanceID(long id);
+        bool IsExposedResourceID(long id);
+        bool IsRuntimeResourceID(long id);
         bool IsResourceID(long id);
         int ToInt32(long id);
+
+        int ToOrdinal(long id);
+        int ToOrdinal(int id);
 
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
@@ -83,6 +88,7 @@ namespace Battlehub.RTSaveLoad2
                 return false;
             }
 
+            assetLib.Ordinal = ordinal;
             m_loadedLibraries.Add(assetLib);
             m_ordinalToLib.Add(ordinal, assetLib);
 
@@ -167,7 +173,8 @@ namespace Battlehub.RTSaveLoad2
 
         private const long m_nullID = 1L << 32;
         private const long m_instanceIDMask = 1L << 33;
-        private const long m_persistentIDMask = 1L << 34;
+        private const long m_exposedResourceIDMask = 1L << 34;
+        private const long m_runtimeResourceIDMask = 1L << 35;
 
         public bool IsNullID(long id)
         {
@@ -179,14 +186,35 @@ namespace Battlehub.RTSaveLoad2
             return (id & m_instanceIDMask) != 0;
         }
 
+        public bool IsExposedResourceID(long id)
+        {
+            return (id & m_exposedResourceIDMask) != 0;
+        }
+
+        public bool IsRuntimeResourceID(long id)
+        {
+            return (id & m_runtimeResourceIDMask) != 0;
+        }
+
         public bool IsResourceID(long id)
         {
-            return (id & m_persistentIDMask) != 0;
+            return IsExposedResourceID(id) || IsRuntimeResourceID(id);
         }
 
         public int ToInt32(long id)
         {
-            return (int)(0x0000FFFFL & id);
+            return (int)(0x00000000FFFFFFFFL & id);
+        }
+
+        public int ToOrdinal(long id)
+        {
+            int intId = (int)(0x00000000FFFFFFFFL & id);
+            return (intId >> AssetLibraryInfo.ORDINAL_OFFSET) & AssetLibraryInfo.ORDINAL_MASK;
+            
+        }
+        public int ToOrdinal(int id)
+        {
+            return (id >> AssetLibraryInfo.ORDINAL_OFFSET) & AssetLibraryInfo.ORDINAL_MASK;
         }
 
         public long ToID(UnityObject uo)
@@ -200,15 +228,15 @@ namespace Battlehub.RTSaveLoad2
             int persistentID;
             if(m_mapping.InstanceIDtoPID.TryGetValue(instanceID, out persistentID))
             {
-                return m_persistentIDMask | (0x0000FFFFL & persistentID);
+                return m_exposedResourceIDMask | (0x00000000FFFFFFFFL & persistentID);
             }
             
             if(m_idToPersistentID != null && m_idToPersistentID.TryGetValue(instanceID, out persistentID))
             {
-                return m_instanceIDMask | (0x0000FFFFL & persistentID);
+                return m_instanceIDMask | (0x00000000FFFFFFFFL & persistentID);
             }
 
-            return m_instanceIDMask | (0x0000FFFFL & instanceID);
+            return m_instanceIDMask | (0x00000000FFFFFFFFL & instanceID);
         }
 
         public long[] ToID(UnityObject[] uo)
@@ -232,7 +260,7 @@ namespace Battlehub.RTSaveLoad2
                 return null;
             }
 
-            if(IsResourceID(id))
+            if(IsExposedResourceID(id))
             {
                 UnityObject obj;
                 int persistentID = ToInt32(id);
@@ -242,6 +270,15 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
             else if(IsInstanceID(id))
+            {
+                UnityObject obj;
+                int persistentID = ToInt32(id);
+                if(m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
+                {
+                    return obj as T;
+                }
+            }
+            else if(IsRuntimeResourceID(id))
             {
 
             }

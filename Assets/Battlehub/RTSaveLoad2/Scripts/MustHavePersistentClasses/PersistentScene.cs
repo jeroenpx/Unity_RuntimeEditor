@@ -9,6 +9,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
+    
     [ProtoContract(AsReferenceDefault = true)]
     public class PersistentScene : PersistentPrefab
     {
@@ -20,39 +21,45 @@ namespace Battlehub.RTSaveLoad2
             List<PersistentObject> data = new List<PersistentObject>();
             List<long> identifiers = new List<long>();    
             List<PersistentDescriptor> descriptors = new List<PersistentDescriptor>(rootGameObjects.Length);
+            GetDepsContext getDepsCtx = new GetDepsContext();
+            HashSet<int> usings = new HashSet<int>();
             for(int i = 0; i < rootGameObjects.Length; ++i)
             {
                 GameObject rootGO = rootGameObjects[i];
-                PersistentDescriptor descriptor = CreateDescriptorAndData(rootGO, data, identifiers);
+                PersistentDescriptor descriptor = CreateDescriptorAndData(rootGO, data, identifiers, usings, getDepsCtx);
                 if(descriptor != null)
                 {
                     descriptors.Add(descriptor);
                 }
             }
 
-            m_descriptors = descriptors.ToArray();
-            m_identifiers = identifiers.ToArray();
-            m_data = data.ToArray();
+            Descriptors = descriptors.ToArray();
+            Identifiers = identifiers.ToArray();
+            Data = data.ToArray();
+
+            Dependencies = getDepsCtx.Dependencies.ToArray();
+            DependenciesToUsings(Dependencies, usings);
+            Usings = usings.ToArray();
         }
 
         protected override object WriteToImpl(object obj)
         {
-            if (m_descriptors == null && m_data == null)
+            if (Descriptors == null && Data == null)
             {
                 return obj;
             }
 
-            if (m_descriptors == null && m_data != null || m_data != null && m_descriptors == null)
+            if (Descriptors == null && Data != null || Data != null && Descriptors == null)
             {
                 throw new ArgumentException("data is corrupted", "scene");
             }
 
-            if (m_descriptors.Length == 0)
+            if (Descriptors.Length == 0)
             {
                 return obj;
             }
 
-            if(m_identifiers == null || m_identifiers.Length != m_data.Length)
+            if(Identifiers == null || Identifiers.Length != Data.Length)
             {
                 throw new ArgumentException("data is corrupted", "scene");
             }
@@ -71,9 +78,9 @@ namespace Battlehub.RTSaveLoad2
             }
 
             Dictionary<int, UnityObject> idToUnityObj = new Dictionary<int, UnityObject>();
-            for (int i = 0; i < m_descriptors.Length; ++i)
+            for (int i = 0; i < Descriptors.Length; ++i)
             {
-                PersistentDescriptor descriptor = m_descriptors[i];
+                PersistentDescriptor descriptor = Descriptors[i];
                 if(descriptor != null)
                 {
                     CreateGameObjectWithComponents(m_typeMap, descriptor, idToUnityObj);
@@ -203,7 +210,7 @@ namespace Battlehub.RTSaveLoad2
         /// Add  dependencies here to let AddComponent method to figure out which components automatically added
         /// for example ParticleSystemRenderer should be added automatically if ParticleSystem component exists 
         /// </summary>
-        public readonly static Dictionary<Type, HashSet<Type>> m_dependencies = new Dictionary<Type, HashSet<Type>>
+        public readonly static Dictionary<Type, HashSet<Type>> ComponentDependencies = new Dictionary<Type, HashSet<Type>>
             {
                 //type depends on <- { types }
                 { typeof(ParticleSystemRenderer), new HashSet<Type> { typeof(ParticleSystem) } }
@@ -218,7 +225,7 @@ namespace Battlehub.RTSaveLoad2
                 componentType.IsSubclassOf(typeof(Transform)) ||
                 componentType == typeof(Transform) ||
                 componentType.IsDefined(typeof(DisallowMultipleComponent), true) ||
-                m_dependencies.ContainsKey(componentType) && m_dependencies[componentType].Any(d => go.GetComponent(d) != null);
+                ComponentDependencies.ContainsKey(componentType) && ComponentDependencies[componentType].Any(d => go.GetComponent(d) != null);
 
             if (maybeComponentAlreadyAdded)
             {
@@ -280,10 +287,10 @@ namespace Battlehub.RTSaveLoad2
             List<GameObject> goList = new List<GameObject>();
             List<bool> goActivationList = new List<bool>();
             
-            for (int i = 0; i < m_data.Length; ++i)
+            for (int i = 0; i < Data.Length; ++i)
             {
-                PersistentObject data = m_data[i];
-                long id = m_identifiers[i];
+                PersistentObject data = Data[i];
+                long id = Identifiers[i];
 
                 UnityObject obj = FromID<UnityObject>(id);
                 if (obj == null)

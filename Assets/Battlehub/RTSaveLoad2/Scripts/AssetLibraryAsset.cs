@@ -7,8 +7,6 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
-    
-
     public class MappingInfo
     {
         public class IDLists
