@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 
@@ -10,8 +11,10 @@ namespace Battlehub.RTSaveLoad2
     {
     }
 
+    [ProtoContract]
     public class IntArray
     {
+        [ProtoMember(1)]
         public int[] Array;
     }
 

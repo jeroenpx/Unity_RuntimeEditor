@@ -82,8 +82,17 @@ namespace Battlehub.RTSaveLoad2
                 m_offset = m_ordinal << AssetLibraryInfo.ORDINAL_OFFSET;
             }
         }
+
+        [SerializeField]
+        private bool m_keepRuntimeProjectInSync = true;
+        public bool KeepRuntimeProjectInSync
+        {
+            get { return m_keepRuntimeProjectInSync; }
+            set { m_keepRuntimeProjectInSync = value; }
+        }
         
-        [SerializeField] AssetLibraryInfo m_assetLibrary;
+        [SerializeField]
+        private AssetLibraryInfo m_assetLibrary;
 
         public AssetLibraryInfo AssetLibrary
         {
@@ -276,8 +285,6 @@ namespace Battlehub.RTSaveLoad2
 
             return true;
         }
-
-
 
         private void Awake()
         {

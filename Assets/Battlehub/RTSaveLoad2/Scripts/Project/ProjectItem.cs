@@ -23,6 +23,9 @@ namespace Battlehub.RTSaveLoad2
 
         [ProtoMember(2)]
         public AssetLibraryReference[] References;
+
+        [ProtoMember(3)]
+        public int IdentityCounter;
     }
 
     [ProtoContract]

@@ -178,6 +178,11 @@ namespace Battlehub.RTHandles
 
         private void LateUpdate()
         {
+            if (!RuntimeSelection.Enabled)
+            {
+                return;
+            }
+
             if (RuntimeTools.ActiveTool  != null && RuntimeTools.ActiveTool != this)
             {
                 return;

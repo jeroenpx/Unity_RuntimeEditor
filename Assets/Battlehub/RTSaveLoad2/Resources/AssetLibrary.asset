@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
   m_Name: AssetLibrary
   m_EditorClassIdentifier: 
+  m_keepRuntimeProjectInSync: 1
   m_assetLibrary:
     m_ID: 0
     m_Name: Root

@@ -10,6 +10,7 @@ namespace Battlehub.RTSaveLoad2
     {
         private AssetLibraryProjectGUI m_projectGUI;
         private AssetLibraryAssetsGUI m_assetsGUI;
+        private AssetLibraryAsset m_minAsset;
 
         private AssetLibraryAsset Asset
         {
@@ -78,6 +79,23 @@ namespace Battlehub.RTSaveLoad2
             {
                 m_assetsGUI.OnGUI();
             }
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            Asset.KeepRuntimeProjectInSync = EditorGUILayout.Toggle("Keep in sync",Asset.KeepRuntimeProjectInSync);
+            EditorGUILayout.EndHorizontal();
+            if (Asset.KeepRuntimeProjectInSync)
+            {
+                EditorGUILayout.HelpBox("Runtime project tree will be updated each time you launch runtime editor and will reflect all changes in this asset library", MessageType.Info);
+            }
+           
+            if(EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(Asset);
+                AssetDatabase.SaveAssets();
+            }
+
             EditorGUILayout.EndVertical();
         }
 

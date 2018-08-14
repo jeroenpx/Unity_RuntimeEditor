@@ -1,0 +1,1 @@
+{"dummy":0,"Name":"Battlehub/RTHandles/Models/SSCircleShader","InstanceId":8589942847,"PropertyCount":2,"PropertyDescriptions":["Color","ZTest"],"PropertyNames":["_Color","_ZTest"],"PropertyTypes":[0,2],"PropertyRangeLimits":[{"Def":1.0,"Min":1.0,"Max":1.0},{"Def":0.0,"Min":0.0,"Max":0.0}],"PropertyTexDims":[1,1],"IsHidden":[false,false]}

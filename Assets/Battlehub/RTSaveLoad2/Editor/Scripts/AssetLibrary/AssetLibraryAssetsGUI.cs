@@ -526,7 +526,7 @@ namespace Battlehub.RTSaveLoad2
             EditorGUILayout.BeginHorizontal();
             if(m_folders != null && m_folders.Length == 1)
             {
-                if (GUILayout.Button("Pick Asset"))
+                if (GUILayout.Button("Add Asset"))
                 {
                     PickObject();
                 }
