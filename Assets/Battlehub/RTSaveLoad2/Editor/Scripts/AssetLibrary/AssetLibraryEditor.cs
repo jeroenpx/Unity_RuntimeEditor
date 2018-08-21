@@ -46,13 +46,31 @@ namespace Battlehub.RTSaveLoad2
         {
             if(Asset != null)
             {
-                EditorUtility.SetDirty(Asset);
-                AssetDatabase.SaveAssets();
+                SaveAsset();
             }
-          
+
             m_projectGUI.SelectedFoldersChanged -= OnSelectedFoldersChanged;
             m_projectGUI.OnDisable();
             m_assetsGUI.OnDisable();
+        }
+
+        private void SaveAsset()
+        {
+            AssetLibraryInfo assetLibrary = Asset.AssetLibrary;
+
+            AssetLibraryVisible proxy = CreateInstance<AssetLibraryVisible>();
+            proxy.AssetLibrary = assetLibrary.CloneVisible();
+            proxy.AssetLibraryPath = AssetDatabase.GetAssetPath(Asset);
+            proxy.KeepRuntimeProjectInSync = Asset.KeepRuntimeProjectInSync;
+
+            int assetExtIndex = proxy.AssetLibraryPath.LastIndexOf(".asset");
+            string proxyPath = proxy.AssetLibraryPath.Remove(assetExtIndex) + "_Visible.asset";
+            
+            AssetDatabase.DeleteAsset(proxyPath);
+            AssetDatabase.CreateAsset(proxy, proxyPath);
+
+            EditorUtility.SetDirty(Asset);
+            AssetDatabase.SaveAssets();
         }
 
         public override void OnInspectorGUI()
@@ -69,8 +87,7 @@ namespace Battlehub.RTSaveLoad2
                     m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
                     m_assetsGUI.OnEnable();
                     m_isSyncRequired = false;
-                    EditorUtility.SetDirty(Asset);
-                    AssetDatabase.SaveAssets();
+                    SaveAsset();
                 }
             }
             
@@ -92,8 +109,7 @@ namespace Battlehub.RTSaveLoad2
            
             if(EditorGUI.EndChangeCheck())
             {
-                EditorUtility.SetDirty(Asset);
-                AssetDatabase.SaveAssets();
+                SaveAsset();
             }
 
             EditorGUILayout.EndVertical();

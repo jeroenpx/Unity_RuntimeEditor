@@ -11,12 +11,18 @@ namespace Battlehub.RTSaveLoad2
         bool IsNullID(long id);
         bool IsInstanceID(long id);
         bool IsExposedResourceID(long id);
+        bool IsExposedFolderID(long id);
         bool IsRuntimeResourceID(long id);
+        bool IsRuntimeFolderID(long id);
         bool IsResourceID(long id);
         int ToInt32(long id);
 
         int ToOrdinal(long id);
         int ToOrdinal(int id);
+
+        long ToExposedFolderID(int ordinal, int id);
+        long ToRuntimeResourceID(int ordinal, int id);
+        long ToRuntimeFolderID(int ordinal, int id);
 
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
@@ -174,7 +180,9 @@ namespace Battlehub.RTSaveLoad2
         private const long m_nullID = 1L << 32;
         private const long m_instanceIDMask = 1L << 33;
         private const long m_exposedResourceIDMask = 1L << 34;
-        private const long m_runtimeResourceIDMask = 1L << 35;
+        private const long m_exposedFolderIDMask = 1L << 35;
+        private const long m_runtimeResourceIDMask = 1L << 36;
+        private const long m_runtimeFolderIDMask = 1L << 37;
 
         public bool IsNullID(long id)
         {
@@ -191,14 +199,51 @@ namespace Battlehub.RTSaveLoad2
             return (id & m_exposedResourceIDMask) != 0;
         }
 
+        public bool IsExposedFolderID(long id)
+        {
+            return (id & m_exposedFolderIDMask) != 0;
+        }
+        
         public bool IsRuntimeResourceID(long id)
         {
             return (id & m_runtimeResourceIDMask) != 0;
         }
 
+        public bool IsRuntimeFolderID(long id)
+        {
+            return (id & m_runtimeFolderIDMask) != 0;
+        }
+
         public bool IsResourceID(long id)
         {
             return IsExposedResourceID(id) || IsRuntimeResourceID(id);
+        }
+
+        public long ToExposedFolderID(int ordinal, int id)
+        {
+            return ToID(ordinal, id, m_exposedFolderIDMask);
+        }
+
+    
+        public long ToRuntimeResourceID(int ordinal, int id)
+        {
+            return ToID(ordinal, id, m_runtimeResourceIDMask);
+        }
+
+        public long ToRuntimeFolderID(int ordinal, int id)
+        {
+            return ToID(ordinal, id, m_runtimeFolderIDMask);
+        }
+
+        private static long ToID(int ordinal, int id, long mask)
+        {
+            if (id > AssetLibraryInfo.ORDINAL_MASK)
+            {
+                throw new ArgumentException("id > AssetLibraryInfo.ORDINAL_MASK");
+            }
+
+            id = (ordinal << AssetLibraryInfo.ORDINAL_OFFSET) | (AssetLibraryInfo.ORDINAL_MASK & id);
+            return mask | (0x00000000FFFFFFFFL & id);
         }
 
         public int ToInt32(long id)

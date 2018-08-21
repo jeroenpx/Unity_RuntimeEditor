@@ -282,7 +282,7 @@ namespace Battlehub.RTSaveLoad2
             
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("Is Enabled"),
+                    headerContent = new GUIContent("Visible"),
                     headerTextAlignment = TextAlignment.Left,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Center,

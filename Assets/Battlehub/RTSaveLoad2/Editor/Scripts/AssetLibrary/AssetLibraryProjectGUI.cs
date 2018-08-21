@@ -268,6 +268,10 @@ namespace Battlehub.RTSaveLoad2
                         m_assetsGUI.InitIfNeeded();
 
                         AssetFolderInfo folder = CopyFolder(path, parent, insertIndex);
+                        if(folder == null)
+                        {
+                            return DragAndDropVisualMode.Rejected;
+                        }
 
                         TreeView.SetSelection(new[] { folder.id }, TreeViewSelectionOptions.RevealAndFrame);
 
@@ -303,6 +307,10 @@ namespace Battlehub.RTSaveLoad2
                         parentData.children.Count
                         : 0
                     : insertIndex);
+            if(folder == null)
+            {
+                return null;
+            }
 
             TreeViewItem folderTreeViewItem = TreeView.FindItem(folder.id);
             string[] subfolders = AssetDatabase.GetSubFolders(path);
@@ -460,6 +468,10 @@ namespace Battlehub.RTSaveLoad2
             var selection = TreeView.GetSelection();
             TreeElement parent = (selection.Count == 1 ? TreeView.treeModel.Find(selection[0]) : null) ?? TreeView.treeModel.root;
             AssetFolderInfo folder = CreateFolder("Folder", parent, 0);
+            if(folder == null)
+            {
+                return;
+            }
             // Select newly created element
             TreeView.SetSelection(new[] { folder.id }, TreeViewSelectionOptions.RevealAndFrame);
             TreeView.BeginRename(folder.id);
@@ -468,7 +480,12 @@ namespace Battlehub.RTSaveLoad2
         private AssetFolderInfo CreateFolder(string name, TreeElement parent, int insertPosition)
         {
             int depth = parent != null ? parent.depth + 1 : 0;
-            int id = TreeView.treeModel.GenerateUniqueID();
+            if (m_asset.AssetLibrary.FolderIdentity >= AssetLibraryInfo.MAX_FOLDERS)
+            {
+                EditorUtility.DisplayDialog("Unable to add folder", string.Format("Max 'FolderIndentity' value reached. 'FolderIndentity' ==  {0}", AssetLibraryInfo.MAX_FOLDERS), "OK");
+                return null;
+            }
+            int id = m_asset.AssetLibrary.FolderIdentity++;
             var element = new AssetFolderInfo(name, depth, id);
             TreeView.treeModel.AddElement(element, parent, insertPosition);
 

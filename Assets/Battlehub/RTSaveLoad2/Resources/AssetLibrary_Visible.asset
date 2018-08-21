@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8adb584bb995a6445a2ecb3e9ab54ae9, type: 3}
+  m_Name: AssetLibrary_Visible
+  m_EditorClassIdentifier: 
+  m_keepRuntimeProjectInSync: 1
+  m_assetLibrary:
+    m_ID: 0
+    m_Name: 
+    m_Depth: 0
+    Identity: 2
+    Folders:
+    - m_ID: 0
+      m_Name: Assets
+      m_Depth: -1
+      Assets: []
+      IsEnabled: 1
+    - m_ID: 1
+      m_Name: Folder
+      m_Depth: 1
+      Assets: []
+      IsEnabled: 1
+    - m_ID: 5
+      m_Name: Folder
+      m_Depth: 2
+      Assets: []
+      IsEnabled: 1
+  AssetLibraryPath: Assets/Battlehub/RTSaveLoad2/Resources/AssetLibrary.asset

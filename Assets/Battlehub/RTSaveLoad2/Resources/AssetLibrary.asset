@@ -16,7 +16,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 122
+    Identity: 123
     Folders:
     - m_ID: 0
       m_Name: Assets
@@ -99,4 +99,15 @@ MonoBehaviour:
           Object: {fileID: 218862457465945236, guid: 3c2823c5efbf5ae4c8183026649a54ab,
             type: 2}
           Depth: 1
-      IsEnabled: 0
+      IsEnabled: 1
+    - m_ID: 5
+      m_Name: Folder
+      m_Depth: 2
+      Assets:
+      - m_ID: 122
+        m_Name: AddFolder
+        m_Depth: 0
+        Object: {fileID: 2800000, guid: 409078497cbd6424c8662c959a51cc89, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      IsEnabled: 1

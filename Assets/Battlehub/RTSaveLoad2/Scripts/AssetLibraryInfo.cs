@@ -253,10 +253,79 @@ namespace Battlehub.RTSaveLoad2
         public const int ORDINAL_OFFSET = 16;
         public const int MAX_ASSETS = 1 << ORDINAL_OFFSET;
         public const int ORDINAL_MASK = 0x0000FFFF;
+        public const int MAX_FOLDERS = 1 << ORDINAL_OFFSET;
 
         public int Identity = 2;
+        public int FolderIdentity = 2;
 
         public List<AssetFolderInfo> Folders;
+
+        public AssetLibraryInfo CloneVisible()
+        {
+            AssetLibraryInfo proxy = new AssetLibraryInfo();
+            if (Folders == null)
+            {
+                return proxy;
+            }
+            proxy.Folders = new List<AssetFolderInfo>();
+            for(int i = 0; i < Folders.Count; ++i)
+            {
+                AssetFolderInfo folder = Folders[i];
+                if(folder.IsEnabled || folder.depth == -1)
+                {
+                    AssetFolderInfo proxyFolder = new AssetFolderInfo();
+                    proxyFolder.IsEnabled = true;
+                    CopyFolder(folder, proxyFolder);
+                    proxy.Folders.Add(proxyFolder);
+                }
+            }
+            return proxy;
+        }
+
+        private void CopyFolder(AssetFolderInfo sourceFolder, AssetFolderInfo targetFolder)
+        {
+            targetFolder.id = sourceFolder.id;
+            targetFolder.name = sourceFolder.name;
+            targetFolder.depth = sourceFolder.depth;
+
+            if(sourceFolder.Assets != null)
+            {
+                targetFolder.Assets = new List<AssetInfo>();
+                for(int i = 0; i < sourceFolder.Assets.Count; ++i)
+                {
+                    AssetInfo sourceAsset = sourceFolder.Assets[i];
+                    if(sourceAsset.IsEnabled)
+                    {
+                        AssetInfo targetAsset = new AssetInfo();
+                        targetAsset.depth = sourceAsset.depth;
+                        targetAsset.id = sourceAsset.id;
+                        targetAsset.name = sourceAsset.name;
+
+                        targetAsset.IsEnabled = sourceAsset.IsEnabled;
+                        targetAsset.Object = sourceAsset.Object;
+
+                        if (sourceAsset.PrefabParts != null)
+                        {
+                            targetAsset.PrefabParts = new List<PrefabPartInfo>();
+                            for (int j = 0; j < sourceAsset.PrefabParts.Count; ++j)
+                            {
+                                PrefabPartInfo sourcePart = sourceAsset.PrefabParts[j];
+
+                                PrefabPartInfo targetPart = new PrefabPartInfo();
+                                targetPart.Depth = sourcePart.Depth;
+                                targetPart.Object = sourcePart.Object;
+                                targetPart.ParentPersistentID = sourcePart.ParentPersistentID;
+                                targetPart.PersistentID = sourcePart.PersistentID;
+                                targetAsset.PrefabParts.Add(targetPart);
+                            }
+                        }
+
+                        targetFolder.Assets.Add(targetAsset);
+                    }
+                }
+            }
+
+        }
 
         public bool Contains(UnityObject obj)
         {
@@ -312,5 +381,7 @@ namespace Battlehub.RTSaveLoad2
             resultFolder = null;
             return false;
         }
+
+
     }
 }

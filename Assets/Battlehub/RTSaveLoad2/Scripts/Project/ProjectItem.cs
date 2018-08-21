@@ -8,24 +8,20 @@ namespace Battlehub.RTSaveLoad2
     public class AssetLibraryReference
     {
         [ProtoMember(1)]
-        public string Path;
+        public string AssetLibrary;
 
         [ProtoMember(2)]
         public int Ordinal;
-
     }
 
     [ProtoContract]
     public class ProjectInfo
     {
         [ProtoMember(1)]
-        public string Description;
+        public int IdentitiyCounter;
 
         [ProtoMember(2)]
         public AssetLibraryReference[] References;
-
-        [ProtoMember(3)]
-        public int IdentityCounter;
     }
 
     [ProtoContract]
