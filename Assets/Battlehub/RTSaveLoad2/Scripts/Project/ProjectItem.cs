@@ -45,9 +45,6 @@ namespace Battlehub.RTSaveLoad2
     {
         [ProtoMember(1)]
         public byte[] PreviewData;
-
-        [ProtoMember(2)]
-        public long PersistentID;
     }
 
 }

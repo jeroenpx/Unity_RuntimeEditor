@@ -20,6 +20,7 @@ namespace Battlehub.RTSaveLoad2
         int ToOrdinal(long id);
         int ToOrdinal(int id);
 
+        long ToExposedResourceID(int ordinal, int id);
         long ToExposedFolderID(int ordinal, int id);
         long ToRuntimeResourceID(int ordinal, int id);
         long ToRuntimeFolderID(int ordinal, int id);
@@ -219,12 +220,16 @@ namespace Battlehub.RTSaveLoad2
             return IsExposedResourceID(id) || IsRuntimeResourceID(id);
         }
 
+        public long ToExposedResourceID(int ordinal, int id)
+        {
+            return ToID(ordinal, id, m_exposedResourceIDMask);
+        }
+
         public long ToExposedFolderID(int ordinal, int id)
         {
             return ToID(ordinal, id, m_exposedFolderIDMask);
         }
 
-    
         public long ToRuntimeResourceID(int ordinal, int id)
         {
             return ToID(ordinal, id, m_runtimeResourceIDMask);

@@ -17,6 +17,7 @@ MonoBehaviour:
     m_Name: 
     m_Depth: 0
     Identity: 2
+    FolderIdentity: 2
     Folders:
     - m_ID: 0
       m_Name: Assets

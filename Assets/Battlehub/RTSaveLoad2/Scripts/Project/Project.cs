@@ -46,8 +46,6 @@ namespace Battlehub.RTSaveLoad2
             m_assetDB = RTSL2Deps.Get.AssetDB;
         }
 
-
-
 #warning Project does not require any of AssetLibraries loaded. Editor window could use PersistentObject for editing. Only Scene will load required asset libraries and unload when done.
         //Editing of prefabs or objects which does not have constructor and cannot be instantiated will cause asset library lazy loading. Will be unloaded if will not be used during several minutes (or as result cleanup unuse resources call)
 
@@ -106,7 +104,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        public void MergeAssetLibrary(AssetLibraryVisible asset)
+        public void Merge(AssetLibraryVisible asset, int ordinal)
         {
             if(!asset.KeepRuntimeProjectInSync)
             {
@@ -120,13 +118,17 @@ namespace Battlehub.RTSaveLoad2
             }
 
             AssetFolderInfo rootFolder = assetLibrary.Folders.Where(folder => folder.depth == -1).First();
-            //MergeAssetLibrary(rootFolder, m_root);
+            MergeFolders(rootFolder, m_root, ordinal);
         }
 
-      
-
-        private void MergeAssetLibrary(int ordinal, AssetFolderInfo from, ProjectItem to)
+        private void MergeFolders(AssetFolderInfo from, ProjectItem to, int ordinal)
         {
+            if(!from.hasChildren)
+            {
+                return;
+            }
+
+
             for(int i = 0; i < from.children.Count; ++i)
             {
                 AssetFolderInfo childFrom = (AssetFolderInfo)from.children[i];
@@ -136,40 +138,48 @@ namespace Battlehub.RTSaveLoad2
                     to.Children = new List<ProjectItem>();
                 }
 
-                long exposedFolderID = m_assetDB.ToExposedFolderID(ordinal, childFrom.id);
-                ProjectItem childTo = to.Children.Where(item => item.ItemID == exposedFolderID).FirstOrDefault();
+                
+                ProjectItem childTo = to.Children.Where(item => item.Name == childFrom.name && !(item is AssetItem)).FirstOrDefault();
                 if (childTo == null)
                 {
-                    childTo = new ProjectItem();
-                    childTo.ItemID = exposedFolderID;
+                    childTo = new ProjectItem();   
                     to.Children.Add(childTo);
                 }
-
                 childTo.Name = childFrom.name;
-                childTo.ItemID = m_projectInfo.IdentitiyCounter++;
+                childTo.ItemID = m_assetDB.ToExposedFolderID(ordinal, childFrom.id); 
                 childTo.ParentItemID = to.ItemID;
                 childTo.Parent = to;
+
+                MergeFolders(childFrom, childTo, ordinal);
             }
+
+            MergeAssets(from, to, ordinal);
         }
 
-        public void Open(string project, ProjectEventHandler callback)
+        private void MergeAssets(AssetFolderInfo from, ProjectItem to, int ordinal)
         {
-            m_storage.GetProject(project, (error, projectInfo) =>
+            List<AssetInfo> fromAssets = from.Assets;
+            if(fromAssets == null)
             {
-                if (error.HasError)
+                return;
+            }
+
+            for(int i = 0; i < fromAssets.Count; ++i)
+            {
+                AssetInfo assetFrom = fromAssets[i];
+                AssetItem assetTo = to.Children.OfType<AssetItem>().Where(item => item.Name == assetFrom.name).FirstOrDefault();
+                if(assetTo == null)
                 {
-                    callback(error);
-                    return;
+                    assetTo = new AssetItem();
+                    to.Children.Add(assetTo);
                 }
 
-                if(projectInfo == null)
-                {
-                    projectInfo = new ProjectInfo();
-                }
-
-                m_projectInfo = projectInfo;
-                GetFolders(project, callback);
-            });
+                assetTo.Name = assetFrom.name;
+                assetTo.ItemID = m_assetDB.ToExposedResourceID(ordinal, assetFrom.id);
+                assetTo.ParentItemID = to.ItemID;
+                assetTo.Parent = to;
+                assetTo.PreviewData = null; //must rebuild preview
+            }
         }
 
         private void GetFolders(string project, ProjectEventHandler callback)
@@ -195,33 +205,29 @@ namespace Battlehub.RTSaveLoad2
                     AssetLibraryVisible assetLibrary = m_references[i];
                     assetLibrary.Ordinal = i;
                     CleanupTree(m_root, i);
-                    MergeAssetLibrary(assetLibrary);
+                    Merge(assetLibrary, i);
                 }
             });
         }
 
-     
-     
-        public void Exists(string project, ProjectEventHandler<bool> callback)
+        public void Open(string project, ProjectEventHandler callback)
         {
-            throw new NotImplementedException();
-        }
+            m_storage.GetProject(project, (error, projectInfo) =>
+            {
+                if (error.HasError)
+                {
+                    callback(error);
+                    return;
+                }
 
-        public void Create(string project, Action callback)
-        {
-            throw new NotImplementedException();
-        }
+                if(projectInfo == null)
+                {
+                    projectInfo = new ProjectInfo();
+                }
 
-        public void Create(string project, string description, Action callback)
-        {
-            throw new NotImplementedException();
-        }
-
-      
-
-        public void Load(ProjectItem project, Action<object> callback)
-        {
-            throw new NotImplementedException();
+                m_projectInfo = projectInfo;
+                GetFolders(project, callback);
+            });
         }
     }
 }
