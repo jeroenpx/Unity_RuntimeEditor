@@ -6,6 +6,50 @@ using UnityEngine;
 
 namespace Battlehub.UIControls
 {
+    /// <summary>
+    /// Data Item Expanding event arguments
+    /// </summary>
+    public class VirtualizingItemExpandingArgs : EventArgs
+    {
+        /// <summary>
+        /// Data Item
+        /// </summary>
+        public object Item
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Specify item's children using this property
+        /// </summary>
+        public IEnumerable Children
+        {
+            get;
+            set;
+        }
+
+        public VirtualizingItemExpandingArgs(object item)
+        {
+            Item = item;
+        }
+    }
+
+    /// <summary>
+    /// TreeView data binding event arguments
+    /// </summary>
+    public class VirtualizingTreeViewItemDataBindingArgs : ItemDataBindingArgs
+    {
+        /// <summary>
+        /// Set to true if data bound item has children
+        /// </summary>
+        public bool HasChildren
+        {
+            get;
+            set;
+        }
+    }
+
     public class VirtualizingParentChangedEventArgs : EventArgs
     {
         public TreeViewItemContainerData OldParent
@@ -243,12 +287,12 @@ namespace Battlehub.UIControls
         }
     }
 
-    public class VirtualizingTreeView : VirtualizingItemsControl<TreeViewItemDataBindingArgs>
+    public class VirtualizingTreeView : VirtualizingItemsControl<VirtualizingTreeViewItemDataBindingArgs>
     {
         /// <summary>
         /// Raised on item expanding
         /// </summary>
-        public event EventHandler<ItemExpandingArgs> ItemExpanding;
+        public event EventHandler<VirtualizingItemExpandingArgs> ItemExpanding;
 
         /// <summary>
         /// Indent between parent and children
@@ -390,12 +434,18 @@ namespace Battlehub.UIControls
             }
 
             ItemContainerData dropTarget = GetItemContainerData(parent);
+            if (dropTarget == null)
+            {
+                DestroyItems(new[] { item }, false);
+                return;
+            }
             ItemContainerData[] dragItems = new[] { dragItem };
             if (CanDrop(dragItems, dropTarget))
             {
                 Drop(dragItems, dropTarget, ItemDropAction.SetLastChild);
             }
         }
+
 
 
 
@@ -420,6 +470,17 @@ namespace Battlehub.UIControls
         private bool m_expandSilently;
         public void Expand(object item)
         {
+            TreeViewItemContainerData treeViewItemData = (TreeViewItemContainerData)GetItemContainerData(item);
+            if(treeViewItemData == null)
+            {
+                throw new ArgumentException("TreeViewItemContainerData not found", "item");
+            }
+            if(treeViewItemData.IsExpanded)
+            {
+                return;
+            }
+            treeViewItemData.IsExpanded = true;
+
             if (m_expandSilently)
             {
                 return;
@@ -427,9 +488,8 @@ namespace Battlehub.UIControls
 
             if (ItemExpanding != null)
             {
-                TreeViewItemContainerData treeViewItemData = (TreeViewItemContainerData)GetItemContainerData(item);
-
-                ItemExpandingArgs args = new ItemExpandingArgs(treeViewItemData.Item);
+                
+                VirtualizingItemExpandingArgs args = new VirtualizingItemExpandingArgs(treeViewItemData.Item);
                 ItemExpanding(this, args);
 
                 IEnumerable children = args.Children.OfType<object>().ToArray();
@@ -471,6 +531,15 @@ namespace Battlehub.UIControls
         public void Collapse(object item)
         {
             TreeViewItemContainerData treeViewItemData = (TreeViewItemContainerData)GetItemContainerData(item);
+            if (treeViewItemData == null)
+            {
+                throw new ArgumentException("TreeViewItemContainerData not found", "item");
+            }
+            if (!treeViewItemData.IsExpanded)
+            {
+                return;
+            }
+            treeViewItemData.IsExpanded = false;
 
             int itemIndex = IndexOf(treeViewItemData.Item);
             List<object> itemsToDestroy = new List<object>();
@@ -524,7 +593,7 @@ namespace Battlehub.UIControls
         {
             itemContainer.Clear();
 
-            TreeViewItemDataBindingArgs args = new TreeViewItemDataBindingArgs();
+            VirtualizingTreeViewItemDataBindingArgs args = new VirtualizingTreeViewItemDataBindingArgs();
             args.Item = item;
             args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
             args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
@@ -598,7 +667,7 @@ namespace Battlehub.UIControls
 
             TreeViewItemContainerData dragItemChild = tvItem.FirstChild(this);
             TreeViewItemContainerData lastChild = null;
-            if (tvDropTarget != null)
+            if (tvDropTargetData != null)
             {
                 lastChild = tvDropTargetData.LastChild(this);
                 if (lastChild == null)

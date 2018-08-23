@@ -86,7 +86,7 @@ namespace Battlehub.RTSaveLoad2
 
         protected PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, HashSet<int> usings, GetDepsContext getDepsCtx, PersistentDescriptor parentDescriptor = null)
         {
-            if (go.GetComponent<PersistentIgnore>())
+            if (go.GetComponent<RTSL2Ignore>())
             {
                 //Do not save persistent ignore objects
                 return null;

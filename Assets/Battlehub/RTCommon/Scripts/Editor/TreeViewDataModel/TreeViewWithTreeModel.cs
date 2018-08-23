@@ -248,10 +248,13 @@ namespace Battlehub.RTCommon.EditorTreeView
 
                     case DragAndDropPosition.OutsideItems:
                         {
-                            if (args.performDrop)
+                            bool validDrag = ValidDrag(rootItem, draggedRows);
+                            if (args.performDrop && validDrag)
+                            {
                                 OnDropDraggedElementsAtIndex(draggedRows, m_TreeModel.root, m_TreeModel.root.children.Count);
+                            }
 
-                            return DragAndDropVisualMode.Move;
+                            return validDrag ? DragAndDropVisualMode.Move : DragAndDropVisualMode.None;
                         }
                     default:
                         Debug.LogError("Unhandled enum " + args.dragAndDropPosition);

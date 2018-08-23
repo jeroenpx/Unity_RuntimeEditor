@@ -16,99 +16,52 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 124
-    FolderIdentity: 2
+    Identity: 126
+    FolderIdentity: 12
     Folders:
     - m_ID: 0
       m_Name: Assets
       m_Depth: -1
       Assets: []
       IsEnabled: 0
-    - m_ID: 4
-      m_Name: Folder 0
+    - m_ID: 5
+      m_Name: F1
+      m_Depth: 0
+      Assets: []
+      IsEnabled: 1
+    - m_ID: 7
+      m_Name: F1
+      m_Depth: 1
+      Assets: []
+      IsEnabled: 1
+    - m_ID: 9
+      m_Name: F3
+      m_Depth: 1
+      Assets: []
+      IsEnabled: 1
+    - m_ID: 8
+      m_Name: F2
+      m_Depth: 1
+      Assets: []
+      IsEnabled: 0
+    - m_ID: 10
+      m_Name: Folder
+      m_Depth: 1
+      Assets: []
+      IsEnabled: 0
+    - m_ID: 6
+      m_Name: Folder
       m_Depth: 0
       Assets: []
       IsEnabled: 0
-    - m_ID: 1
-      m_Name: Folder
-      m_Depth: 1
+    - m_ID: 11
+      m_Name: F3
+      m_Depth: 0
       Assets:
-      - m_ID: 107
-        m_Name: Main Camera 1
-        m_Depth: 0
-        Object: {fileID: 1000964464904936, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-          type: 2}
-        IsEnabled: 0
-        PrefabParts:
-        - ParentPersistentID: -1
-          PersistentID: 108
-          Object: {fileID: 4081478448198520, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: -1
-          PersistentID: 109
-          Object: {fileID: 20674525734200896, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: -1
-          PersistentID: 110
-          Object: {fileID: 124612117325186914, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: -1
-          PersistentID: 111
-          Object: {fileID: 81605565872201766, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: -1
-          PersistentID: 116
-          Object: {fileID: 33773804643757526, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: -1
-          PersistentID: 119
-          Object: {fileID: 114322234713204062, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: -1
-          PersistentID: 112
-          Object: {fileID: 1436785996680820, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 0
-        - ParentPersistentID: 112
-          PersistentID: 113
-          Object: {fileID: 224512716390430218, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 1
-        - ParentPersistentID: 112
-          PersistentID: 114
-          Object: {fileID: 108306831157321470, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 1
-        - ParentPersistentID: 112
-          PersistentID: 118
-          Object: {fileID: 23446624191019420, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 1
-        - ParentPersistentID: 112
-          PersistentID: 120
-          Object: {fileID: 114018109797538304, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 1
-        - ParentPersistentID: 112
-          PersistentID: 121
-          Object: {fileID: 218862457465945236, guid: 3c2823c5efbf5ae4c8183026649a54ab,
-            type: 2}
-          Depth: 1
-      IsEnabled: 1
-    - m_ID: 5
-      m_Name: Folder
-      m_Depth: 2
-      Assets:
-      - m_ID: 122
+      - m_ID: 125
         m_Name: AddFolder
         m_Depth: 0
-        Object: {fileID: 2800000, guid: 409078497cbd6424c8662c959a51cc89, type: 3}
-        IsEnabled: 0
+        Object: {fileID: 21300000, guid: 409078497cbd6424c8662c959a51cc89, type: 3}
+        IsEnabled: 1
         PrefabParts: []
       IsEnabled: 1

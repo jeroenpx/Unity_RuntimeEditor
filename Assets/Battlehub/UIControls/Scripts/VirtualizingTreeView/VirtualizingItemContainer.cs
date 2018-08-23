@@ -117,7 +117,7 @@ namespace Battlehub.UIControls
         }
 
         private VirtualizingItemsControl m_itemsControl;
-        private VirtualizingItemsControl ItemsControl
+        protected VirtualizingItemsControl ItemsControl
         {
             get
             {
@@ -322,6 +322,5 @@ namespace Battlehub.UIControls
                 PointerExit(this, eventData);
             }
         }
-
     }
 }

@@ -104,8 +104,7 @@ namespace Battlehub.UIControls
         }
     }
 
-
-    public class VirtualizingItemsControl : MonoBehaviour, IPointerDownHandler, IDropHandler
+    public class VirtualizingItemsControl : Selectable,  IDropHandler, IUpdateSelectedHandler, IUpdateFocusedHandler
     {
         /// <summary>
         /// Raised on begin drag
@@ -148,28 +147,20 @@ namespace Battlehub.UIControls
         public event EventHandler<ItemsRemovedArgs> ItemsRemoved;
 
         /// <summary>
-        /// Multiselect operation key
+        /// Raised when IsFocused value changed
         /// </summary>
-        public KeyCode MultiselectKey = KeyCode.LeftControl;
+        public event EventHandler IsFocusedChanged;
+        public event EventHandler Submit;
+        public event EventHandler Cancel;
 
-        /// <summary>
-        /// Rangeselect operation key
-        /// </summary>
-        public KeyCode RangeselectKey = KeyCode.LeftShift;
+        [SerializeField]
+        public EventSystem m_eventSystem;
 
-        /// <summary>
-        /// Select All
-        /// </summary>
-        public KeyCode SelectAllKey = KeyCode.A;
-
-        /// <summary>
-        /// Remove key 
-        /// </summary>
-        public KeyCode RemoveKey = KeyCode.Delete;
-
+        public InputProvider InputProvider;
         public bool SelectOnPointerUp = false;
         public bool CanUnselectAll = true;
         public bool CanEdit = true;
+        public bool CanRemove = true;
         private bool m_prevCanDrag;
         public bool CanDrag = true;
         public bool CanReorder = true;
@@ -188,6 +179,66 @@ namespace Battlehub.UIControls
         protected bool IsDropInProgress
         {
             get { return m_isDropInProgress; }
+        }
+
+
+        private List<object> m_selectionBackup;
+        /// <summary>
+        /// Navigate VirtualizingItems if is focused
+        /// </summary>
+        private bool m_isFocused;
+        
+        public bool IsFocused
+        {
+            get { return m_isFocused; }
+            set
+            {
+                if(m_isFocused != value)
+                {
+                    m_isFocused = value;
+
+                    if(IsFocusedChanged != null)
+                    {
+                        IsFocusedChanged(this, EventArgs.Empty);
+                    }
+                    
+                    if(m_isFocused)
+                    {
+                        if (SelectedIndex == -1 && m_scrollRect.ItemsCount > 0)
+                        {
+                            SelectedIndex = 0;
+                        }
+                    }
+                }   
+            }
+        }
+
+        private bool m_isSelected;
+
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            private set
+            {
+                if(m_isSelected != value)
+                {
+                    m_isSelected = value;
+                
+                    if (m_isSelected)
+                    {
+                        m_selectionBackup = m_selectedItems;
+                    }
+                    else
+                    {
+                        m_selectionBackup = null;
+                    }
+
+                    if (!m_isSelected)
+                    {
+                        IsFocused = false;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -499,7 +550,7 @@ namespace Battlehub.UIControls
             }
         }
 
-        private Dictionary<object, ItemContainerData> m_itemContainerData;
+        private Dictionary<object, ItemContainerData> m_itemContainerData = new Dictionary<object, ItemContainerData>();
 
         public IEnumerable Items
         {
@@ -508,6 +559,8 @@ namespace Battlehub.UIControls
             {
                 if (value == null)
                 {
+                    SelectedItems = null;
+
                     m_scrollRect.Items = null;
                     m_scrollRect.verticalNormalizedPosition = 1;
                     m_scrollRect.horizontalNormalizedPosition = 0;
@@ -515,7 +568,14 @@ namespace Battlehub.UIControls
                 }
                 else
                 {
+                    
                     List<object> items = value.OfType<object>().ToList();
+
+                    if(m_selectedItemsHS != null)
+                    {
+                        SelectedItems = items.Where(item => m_selectedItemsHS.Contains(item)).ToArray();
+                    }
+
                     m_itemContainerData = new Dictionary<object, ItemContainerData>();
                     for(int i = 0; i < items.Count; ++i)
                     {
@@ -524,7 +584,10 @@ namespace Battlehub.UIControls
 
                     m_scrollRect.Items = items;
 
-                    
+                    if (IsFocused && SelectedIndex == -1)
+                    {
+                        SelectedIndex = 0;
+                    }
                 }
             }
         }
@@ -537,8 +600,10 @@ namespace Battlehub.UIControls
         }
 
         private VirtualizingScrollRect m_scrollRect;
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             m_scrollRect = GetComponent<VirtualizingScrollRect>();
             if(m_scrollRect == null)
             {
@@ -561,15 +626,36 @@ namespace Battlehub.UIControls
             m_prevCanDrag = CanDrag;
             OnCanDragChanged();
 
+           
             AwakeOverride();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+            if (m_eventSystem == null)
+            {
+                m_eventSystem = EventSystem.current;
+            }
+
+            if (InputProvider == null)
+            {
+                InputProvider = GetComponent<InputProvider>();
+                if(InputProvider == null)
+                {
+                    InputProvider = CreateInputProviderOverride();
+                }
+            }
             m_canvas = GetComponentInParent<Canvas>();
             StartOverride();
         }
 
+        protected virtual InputProvider CreateInputProviderOverride()
+        {
+            return gameObject.AddComponent<VirtualizingItemsControlInputProvider>();
+        }
+
+        private Repeater m_repeater;
         private void Update()
         {
             if (m_scrollDir != ScrollDir.None)
@@ -627,14 +713,87 @@ namespace Battlehub.UIControls
                 }
             }
 
-            if (Input.GetKeyDown(RemoveKey))
+            if(InputProvider != null && IsSelected)
             {
-                RemoveSelectedItems();
-            }
+                if (InputProvider.IsDeleteButtonDown && CanRemove)
+                {
+                    RemoveSelectedItems();
+                }
 
-            if (Input.GetKeyDown(SelectAllKey) && Input.GetKey(RangeselectKey))
-            {
-                SelectedItems = m_scrollRect.Items;
+                else if (InputProvider.IsSelectAllButtonDown && InputProvider.IsFunctionalButtonPressed)
+                {
+                    SelectedItems = m_scrollRect.Items;
+                }
+                else if(InputProvider.IsSubmitButtonDown)
+                {
+                    IsFocused = !IsFocused;
+                    if(!IsFocused)
+                    {
+                        if(Submit != null)
+                        {
+                            Submit(this, EventArgs.Empty);
+                        }
+                    }
+                }
+                else if(InputProvider.IsCancelButtonDown)
+                {
+                    SelectedItems = m_selectionBackup;
+                    IsFocused = false;
+                    if(Cancel != null)
+                    {
+                        Cancel(this, EventArgs.Empty);
+                    }
+                }
+
+                if(IsFocused)
+                {
+                    if(!Mathf.Approximately(InputProvider.VerticalAxis, 0))
+                    {
+                        if(InputProvider.IsVerticalButtonDown)
+                        {
+                            m_repeater = new Repeater(Time.time, 0, 0.4f, 0.05f, () =>
+                            {
+                                float ver = InputProvider.VerticalAxis;
+                                if (ver < 0)
+                                {
+                                    if (m_scrollRect.Index + m_scrollRect.VisibleItemsCount > SelectedIndex + 1)
+                                    {
+                                        SelectedIndex++;
+                                    }
+                                    else
+                                    {
+                                        m_scrollRect.Index++;
+                                        if(m_scrollRect.Index + m_scrollRect.VisibleItemsCount > SelectedIndex + 1)
+                                        {
+                                            SelectedIndex++;
+                                        }
+                                    }
+                                }
+                                else if (ver > 0)
+                                {
+                                    if (m_scrollRect.Index < SelectedIndex)
+                                    {
+                                        SelectedIndex--;
+                                    }
+                                    else
+                                    {
+                                        m_scrollRect.Index--;
+                                        if(m_scrollRect.Index < SelectedIndex)
+                                        {
+                                            SelectedIndex--;
+                                        }   
+                                    }
+                                }
+                            });
+                        }
+                        m_repeater.Repeat(Time.time);
+                    }
+                    else
+                    {
+                        m_repeater = null;
+                    }
+                }
+                
             }
 
             if (m_prevCanDrag != CanDrag)
@@ -646,8 +805,9 @@ namespace Battlehub.UIControls
             UpdateOverride();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             VirtualizingItemContainer.Selected += OnItemSelected;
             VirtualizingItemContainer.Unselected += OnItemUnselected;
             VirtualizingItemContainer.PointerUp += OnItemPointerUp;
@@ -665,8 +825,9 @@ namespace Battlehub.UIControls
             OnEnableOverride();
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             VirtualizingItemContainer.Selected -= OnItemSelected;
             VirtualizingItemContainer.Unselected -= OnItemUnselected;
             VirtualizingItemContainer.PointerUp -= OnItemPointerUp;
@@ -681,11 +842,14 @@ namespace Battlehub.UIControls
             VirtualizingItemContainer.Drop -= OnItemDrop;
             VirtualizingItemContainer.EndDrag -= OnItemEndDrag;
 
+            IsFocused = false;
+            
             OnDisableOverride();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             if(m_scrollRect != null)
             {
                 m_scrollRect.ItemDataBinding -= OnScrollRectItemDataBinding;
@@ -748,13 +912,13 @@ namespace Battlehub.UIControls
             }
 
             VirtualizingItemContainer.Unselected -= OnItemUnselected;
-            if (Input.GetKey(MultiselectKey))
+            if (InputProvider.IsFunctional2ButtonPressed)
             {
                 IList selectedItems = m_selectedItems != null ? m_selectedItems.ToList() : new List<object>();
                 selectedItems.Add(((VirtualizingItemContainer)sender).Item);
                 SelectedItems = selectedItems;
             }
-            else if (Input.GetKey(RangeselectKey))
+            else if (InputProvider.IsFunctionalButtonPressed)
             {
                 SelectRange((VirtualizingItemContainer)sender);
             }
@@ -837,11 +1001,11 @@ namespace Battlehub.UIControls
 
             if (!SelectOnPointerUp)
             {
-                if (Input.GetKey(RangeselectKey))
+                if (InputProvider.IsFunctional2ButtonPressed)
                 {
                     SelectRange(sender);
                 }
-                else if (Input.GetKey(MultiselectKey))
+                else if (InputProvider.IsFunctionalButtonPressed)
                 {
                     sender.IsSelected = !sender.IsSelected;
                 }
@@ -849,6 +1013,9 @@ namespace Battlehub.UIControls
                 {
                     sender.IsSelected = true;
                 }
+
+                m_eventSystem.SetSelectedGameObject(gameObject);
+                IsFocused = true;
             }
         }
 
@@ -873,11 +1040,11 @@ namespace Battlehub.UIControls
             {
                 if (!m_isDropInProgress)
                 {
-                    if (Input.GetKey(RangeselectKey))
+                    if (InputProvider.IsFunctional2ButtonPressed)
                     {
                         SelectRange(sender);
                     }
-                    else if (Input.GetKey(MultiselectKey))
+                    else if (InputProvider.IsFunctionalButtonPressed)
                     {
                         sender.IsSelected = !sender.IsSelected;
                     }
@@ -885,11 +1052,14 @@ namespace Battlehub.UIControls
                     {
                         sender.IsSelected = true;
                     }
+
+                    m_eventSystem.SetSelectedGameObject(gameObject);
+                    IsFocused = true;
                 }
             }
             else
             {
-                if (!Input.GetKey(MultiselectKey) && !Input.GetKey(RangeselectKey))
+                if (!InputProvider.IsFunctional2ButtonPressed && !InputProvider.IsFunctionalButtonPressed)
                 {
                     if (m_selectedItems != null && m_selectedItems.Count > 1)
                     {
@@ -1123,8 +1293,6 @@ namespace Battlehub.UIControls
             }
         }
 
-        
-
         private void SetContainersSize()
         {
             m_scrollRect.ForEachContainer(c =>
@@ -1237,12 +1405,16 @@ namespace Battlehub.UIControls
             }
         }
 
-        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+        public override void OnPointerDown(PointerEventData eventData)
         {
+            base.OnPointerDown(eventData);
             if (CanUnselectAll)
             {
                 SelectedIndex = -1;
             }
+
+            m_eventSystem.SetSelectedGameObject(gameObject);
+            IsFocused = true;
         }
 
         /// <summary>
@@ -1659,6 +1831,38 @@ namespace Battlehub.UIControls
             return m_scrollRect.Items[index];
         }
 
+        public override void OnSelect(BaseEventData eventData)
+        {
+            Debug.Log("OnSelect");
+            base.OnSelect(eventData);
+            IsSelected = true;
+        }
 
+        public override void OnDeselect(BaseEventData eventData)
+        {
+            Debug.Log("OnDeselect");
+            base.OnDeselect(eventData);
+            IsSelected = false;
+        }
+
+        public void OnUpdateSelected(BaseEventData eventData)
+        {
+            if(!IsFocused)
+            {
+                return;
+            }
+            
+            eventData.Use();
+        }
+
+        public void OnUpdateFocused(BaseEventData eventData)
+        {
+            if (!IsFocused)
+            {
+                return;
+            }
+
+            eventData.Use();
+        }
     }
 }

@@ -826,11 +826,11 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            if(index == m_selectedIndex)
+            if (index == m_selectedIndex)
             {
                 m_selectedIndex = newIndex;
             }
-            
+
             m_items.RemoveAt(index);
             m_items.Insert(newIndex, obj);
 
@@ -840,6 +840,7 @@ namespace Battlehub.UIControls
 
             container.transform.SetSiblingIndex(newIndex);
         }
+
 
         /// <summary>
         /// Get ItemContainer for data item
@@ -1000,7 +1001,6 @@ namespace Battlehub.UIControls
             Drop(new[] { nextSiblingItemContainer }, itemContainer, ItemDropAction.SetNextSibling);
         }
 
-
         /// <summary>
         /// Set previous sibling
         /// </summary>
@@ -1022,7 +1022,6 @@ namespace Battlehub.UIControls
 
             Drop(new[] { prevSiblingItemContainer }, itemContainer, ItemDropAction.SetPrevSibling);
         }
-        
 
         /// <summary>
         /// Remove data item

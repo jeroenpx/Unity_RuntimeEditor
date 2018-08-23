@@ -14,6 +14,8 @@ namespace Battlehub.UIControls
     {
         public VirtualizingTreeView TreeView;
 
+        public int GameObjectNum = 1000;
+
         public static bool IsPrefab(Transform This)
         {
             if (Application.isEditor && !Application.isPlaying)
@@ -23,29 +25,13 @@ namespace Battlehub.UIControls
             return This.gameObject.scene.buildIndex < 0;
         }
 
-        private GameObject[] m_dataItems;
-        private void Start()
+        private void Awake()
         {
-            if (!TreeView)
+            for (int i = 0; i < GameObjectNum; ++i)
             {
-                Debug.LogError("Set TreeView field");
-                return;
+                GameObject go = new GameObject();
+                go.name = "Instantiated GameObject" + i;
             }
-
-
-            //subscribe to events
-            TreeView.ItemDataBinding += OnItemDataBinding;
-            TreeView.SelectionChanged += OnSelectionChanged;
-            TreeView.ItemsRemoved += OnItemsRemoved;
-            TreeView.ItemExpanding += OnItemExpanding;
-            TreeView.ItemBeginDrag += OnItemBeginDrag;
-
-            TreeView.ItemDrop += OnItemDrop;
-            TreeView.ItemBeginDrop += OnItemBeginDrop;
-            TreeView.ItemEndDrag += OnItemEndDrag;
-
-            //Bind data items
-            TreeView.Items = Resources.FindObjectsOfTypeAll<GameObject>().Where(go => !IsPrefab(go.transform) && go.transform.parent == null && go.name != "VirtualizingTreeViewDemo").OrderBy(t => t.transform.GetSiblingIndex()).ToArray();
         }
 
 
@@ -56,17 +42,28 @@ namespace Battlehub.UIControls
             //{
             //    e.Cancel = true;
             //}
+
+        }
+
+        private void Start()
+        {
+            TreeView.ItemDataBinding += OnItemDataBinding;
+            TreeView.SelectionChanged += OnSelectionChanged;
+            TreeView.ItemsRemoved += OnItemsRemoved;
+            TreeView.ItemExpanding += OnItemExpanding;
+            TreeView.ItemBeginDrag += OnItemBeginDrag;
+
+            TreeView.ItemDrop += OnItemDrop;
+            TreeView.ItemBeginDrop += OnItemBeginDrop;
+            TreeView.ItemEndDrag += OnItemEndDrag;
+
+            var items = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+
+            TreeView.Items = items;
         }
 
         private void OnDestroy()
         {
-            if (!TreeView)
-            {
-                return;
-            }
-
-
-            //unsubscribe
             TreeView.ItemDataBinding -= OnItemDataBinding;
             TreeView.SelectionChanged -= OnSelectionChanged;
             TreeView.ItemsRemoved -= OnItemsRemoved;
@@ -77,7 +74,7 @@ namespace Battlehub.UIControls
             TreeView.ItemEndDrag -= OnItemEndDrag;
         }
 
-        private void OnItemExpanding(object sender, ItemExpandingArgs e)
+        private void OnItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
             //get parent data item (game object in our case)
             GameObject gameObject = (GameObject)e.Item;
@@ -125,7 +122,7 @@ namespace Battlehub.UIControls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnItemDataBinding(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             GameObject dataItem = e.Item as GameObject;
             if (dataItem != null)
@@ -236,5 +233,20 @@ namespace Battlehub.UIControls
             TreeView.Add(go);
         }
 
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                object dataItem = TreeView.Items.OfType<object>().First();
+                if (TreeView.IsExpanded(dataItem))
+                {
+                    TreeView.Collapse(dataItem);
+                }
+                else
+                {
+                    TreeView.Expand(dataItem);
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using ProtoBuf;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System.Text;
+using System.IO;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -18,7 +20,7 @@ namespace Battlehub.RTSaveLoad2
     public class ProjectInfo
     {
         [ProtoMember(1)]
-        public int IdentitiyCounter;
+        public int IdentitiyCounter = 1;
 
         [ProtoMember(2)]
         public AssetLibraryReference[] References;
@@ -30,14 +32,116 @@ namespace Battlehub.RTSaveLoad2
         [ProtoMember(1)]
         public long ItemID;
 
-        [ProtoMember(2)]
-        public long ParentItemID;
-
-        [ProtoMember(3)]
         public string Name;
+        public string Ext;
 
         public ProjectItem Parent;
-        public List<ProjectItem> Children; 
+        public List<ProjectItem> Children;
+
+        public string NameExt
+        {
+            get { return Name + Ext; }
+        }
+
+        public virtual bool IsFolder
+        {
+            get { return true; }
+        }
+
+        public static bool IsValidName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return true;
+            }
+            return Path.GetInvalidFileNameChars().All(c => !name.Contains(c));
+        }
+
+        public void AddChild(ProjectItem item)
+        {
+            if (Children == null)
+            {
+                Children = new List<ProjectItem>();
+            }
+
+            if (item.Parent != null)
+            {
+                item.Parent.RemoveChild(item);
+            }
+            Children.Add(item);
+            item.Parent = this;
+        }
+
+        public void RemoveChild(ProjectItem item)
+        {
+            if (Children == null)
+            {
+                return;
+            }
+            Children.Remove(item);
+            item.Parent = null;
+        }
+
+        public int GetSiblingIndex()
+        {
+            return Parent.Children.IndexOf(this);
+        }
+
+        public void SetSiblingIndex(int index)
+        {
+            Parent.Children.Remove(this);
+            Parent.Children.Insert(index, this);
+        }
+
+        public ProjectItem Get(string path)
+        {
+            path = path.Trim('/');
+            string[] pathParts = path.Split('/');
+
+            ProjectItem item = this;
+            for (int i = 1; i < pathParts.Length; ++i)
+            {
+                string pathPart = pathParts[i];
+                if (item.Children == null)
+                {
+                    return item;
+                }
+
+                if (i == pathParts.Length - 1)
+                {
+                    item = item.Children.Where(child => child.NameExt == pathPart).FirstOrDefault();
+                }
+                else
+                {
+                    item = item.Children.Where(child => child.Name == pathPart).FirstOrDefault();
+                }
+
+                if (item == null)
+                {
+                    break;
+                }
+            }
+            return item;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            ProjectItem parent = this;
+            while (parent != null)
+            {
+                sb.Insert(0, parent.Name);
+                sb.Insert(0, "/");
+                parent = parent.Parent;
+            }
+
+            string ext = Ext;
+            if (string.IsNullOrEmpty(ext))
+            {
+                return sb.ToString();
+            }
+            return string.Format("{0}.{1}", sb.ToString(), Ext);
+        }
     }
 
     [ProtoContract]
@@ -45,6 +149,11 @@ namespace Battlehub.RTSaveLoad2
     {
         [ProtoMember(1)]
         public byte[] PreviewData;
+
+        public override bool IsFolder
+        {
+            get { return false; }
+        }
     }
 
 }

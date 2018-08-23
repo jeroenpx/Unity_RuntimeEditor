@@ -8,7 +8,11 @@ namespace Battlehub.RTSaveLoad2
     {
         TData DeepClone<TData>(TData data);
 
+        TData Deserialize<TData>(Stream stream);
+
         TData Deserialize<TData>(byte[] b);
+
+        void Serialize<TData>(TData data, Stream stream);
 
         byte[] Serialize<TData>(TData data);
     }
@@ -48,6 +52,12 @@ namespace Battlehub.RTSaveLoad2
             return (TData)model.DeepClone(data);
         }
 
+        public TData Deserialize<TData>(Stream stream)
+        {
+            TData deserialized = (TData)model.Deserialize(stream, null, typeof(TData));
+            return deserialized;
+        }
+
         public TData Deserialize<TData>(byte[] b)
         {
             using (var stream = new MemoryStream(b))
@@ -55,6 +65,11 @@ namespace Battlehub.RTSaveLoad2
                 TData deserialized = (TData)model.Deserialize(stream, null, typeof(TData));
                 return deserialized;
             }
+        }
+
+        public void Serialize<TData>(TData data, Stream stream)
+        {
+            model.Serialize(stream, data);
         }
 
         public byte[] Serialize<TData>(TData data)

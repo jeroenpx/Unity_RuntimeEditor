@@ -69,7 +69,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {
                 GameObject rootGO = rootGameObjects[i];
-                if (rootGO.GetComponent<PersistentIgnore>())
+                if (rootGO.GetComponent<RTSL2Ignore>())
                 {
                     continue;
                 }

@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
-using Battlehub.RTSaveLoad;
+using Battlehub.RTSaveLoad2;
 
 namespace Battlehub.RTEditor
 {
@@ -74,31 +74,6 @@ namespace Battlehub.RTEditor
             get;
             private set;
         }
-
-        //public T[] Diff()
-        //{
-        //    if(NewItems == null || NewItems.Length == 0)
-        //    {
-        //        return NewItems;
-        //    }
-
-        //    if(OldItems == null || OldItems.Length == 0)
-        //    {
-        //        return NewItems;
-        //    }
-
-        //    HashSet<T> oldItemsHs = new HashSet<T>(OldItems);
-        //    List<T> newItems = new List<T>();
-        //    for(int i = 0; i < NewItems.Length; ++i)
-        //    {
-        //        if (!oldItemsHs.Contains(NewItems[i]))
-        //        {
-        //            newItems.Add(NewItems[i]);
-        //        }
-        //    }
-
-        //    return newItems.ToArray();
-        //}
 
         public SelectionChangedArgs(T[] oldItems, T[] newItems, bool isUserAction)
         {
@@ -189,6 +164,8 @@ namespace Battlehub.RTEditor
         public event EventHandler<ProjectTreeEventArgs> Deleted;
         public event EventHandler<ItemDropArgs> Drop;
 
+        private IProject m_project;
+
         [SerializeField]
         private GameObject TreeViewPrefab;
         [SerializeField]
@@ -196,7 +173,6 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private Sprite ExposedFolderIcon;
-
         private TreeView m_treeView;
 
         [NonSerialized]
@@ -207,6 +183,7 @@ namespace Battlehub.RTEditor
 
         [NonSerialized]
         private ProjectItem m_root;
+
 
         public ProjectItem SelectedFolder
         {
@@ -270,6 +247,9 @@ namespace Battlehub.RTEditor
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+
+            m_project = RTSL2Deps.Get.Project;
+
             m_treeView = Instantiate(TreeViewPrefab).GetComponent<TreeView>();
             m_treeView.CanReorder = false;
             m_treeView.CanReparent = ShowRootFolder;
@@ -530,7 +510,7 @@ namespace Battlehub.RTEditor
                 inputField.Select();
 
                 Image image = e.EditorPresenter.GetComponentInChildren<Image>(true);
-                if(item.IsExposedFromEditor)
+                if(m_project.IsReadOnly(item))
                 {
                     image.sprite = ExposedFolderIcon;
                 }
@@ -538,6 +518,7 @@ namespace Battlehub.RTEditor
                 {
                     image.sprite = FolderIcon;
                 }
+                image.sprite = FolderIcon;
                 image.gameObject.SetActive(true);
 
                 LayoutElement layout = inputField.GetComponent<LayoutElement>();
@@ -597,7 +578,7 @@ namespace Battlehub.RTEditor
             for (int i = e.Items.Count - 1; i >= 0; i--)
             {
                 ProjectItem item = (ProjectItem)e.Items[i];
-                if (item.IsExposedFromEditor)
+                if (m_project.IsReadOnly(item))
                 {
                     e.Items.Remove(item);
                 }
@@ -639,7 +620,7 @@ namespace Battlehub.RTEditor
                 text.text = item.Name;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);
-                if (item.IsExposedFromEditor)
+                if (m_project.IsReadOnly(item))
                 {
                     image.sprite = ExposedFolderIcon;
                 }
@@ -648,8 +629,8 @@ namespace Battlehub.RTEditor
                     image.sprite = FolderIcon;
                 }
                 image.gameObject.SetActive(true);
-                e.CanEdit = !item.IsExposedFromEditor && item.Parent != null;
-                e.CanDrag = !item.IsExposedFromEditor && item.Parent != null;
+                e.CanEdit = !m_project.IsReadOnly(item) && item.Parent != null;
+                e.CanDrag = !m_project.IsReadOnly(item) && item.Parent != null;
                 e.HasChildren = item.Children != null && item.Children.Count(projectItem => CanDisplayFolder(projectItem)) > 0;
             }
         }

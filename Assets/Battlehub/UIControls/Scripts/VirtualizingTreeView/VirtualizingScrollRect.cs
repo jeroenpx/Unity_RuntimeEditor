@@ -113,7 +113,7 @@ namespace Battlehub.UIControls
         /// <summary>
         /// index of first visible item
         /// </summary>
-        private int Index
+        public int Index
         {
             get
             {
@@ -133,6 +133,14 @@ namespace Battlehub.UIControls
 
              
                 NormalizedIndex = EvalNormalizedIndex(value);
+                if(m_mode == VirtualizingMode.Vertical)
+                {
+                    verticalNormalizedPosition = 1 - NormalizedIndex;
+                }
+                else
+                {
+                    horizontalNormalizedPosition = NormalizedIndex;
+                }
             }
         }
 
@@ -156,7 +164,7 @@ namespace Battlehub.UIControls
         /// <summary>
         /// visible items count
         /// </summary>
-        private int VisibleItemsCount
+        public int VisibleItemsCount
         {
             get
             {
@@ -280,7 +288,7 @@ namespace Battlehub.UIControls
             }
 
             // Set ScrollSensitivity to be exactly the same as ContainerSize
-
+            
             scrollSensitivity = ContainerSize;
         }
 
@@ -300,6 +308,12 @@ namespace Battlehub.UIControls
 
         private void OnVirtualContentTransformChaged()
         {
+            if (m_containers.Count == 0)
+            {
+                DataBind(Index);
+                UpdateContentSize();
+            }
+
             if (m_mode == VirtualizingMode.Horizontal)
             {
                 content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_virtualContent.rect.height);
@@ -308,6 +322,8 @@ namespace Battlehub.UIControls
             {
                 content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_virtualContent.rect.width);
             }
+
+            
         }
 
         protected override void SetNormalizedPosition(float value, int axis)
@@ -344,8 +360,10 @@ namespace Battlehub.UIControls
             base.OnRectTransformDimensionsChange();
 
             //Databind if there should be more(or less) visible items than instantiated ui containers
-
-            StartCoroutine(CoRectTransformDimensionsChange());
+            if(isActiveAndEnabled)
+            {
+                StartCoroutine(CoRectTransformDimensionsChange());
+            }
         }
 
         IEnumerator CoRectTransformDimensionsChange()
@@ -378,7 +396,7 @@ namespace Battlehub.UIControls
         }
 
         /// <summary>
-        /// Update content size according to amout of space occupied by all data items if they were all visible. 
+        /// Update content size according to amount of space occupied by all data items if they were all visible. 
         /// This is required to force default behavior of ScrollRect while rendering only required portion of data items.
         /// </summary>
         private void UpdateContentSize()
@@ -773,8 +791,8 @@ namespace Battlehub.UIControls
             if(m_items == null)
             {
                 return null;
-            }
-
+            }            
+            
             int index = m_items.IndexOf(obj);
             if(index < 0)
             {
@@ -835,9 +853,6 @@ namespace Battlehub.UIControls
                 horizontalNormalizedPosition = m_normalizedIndex;
             }
         }
-
     }
-
-    
 }
 

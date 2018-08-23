@@ -263,6 +263,9 @@ namespace Battlehub.RTSaveLoad2
         public AssetLibraryInfo CloneVisible()
         {
             AssetLibraryInfo proxy = new AssetLibraryInfo();
+            proxy.Identity = Identity;
+            proxy.FolderIdentity = FolderIdentity;
+            proxy.name = name;
             if (Folders == null)
             {
                 return proxy;
@@ -271,7 +274,30 @@ namespace Battlehub.RTSaveLoad2
             for(int i = 0; i < Folders.Count; ++i)
             {
                 AssetFolderInfo folder = Folders[i];
-                if(folder.IsEnabled || folder.depth == -1)
+                bool include = false;
+                if(folder != null)
+                {
+                    if(folder.depth == -1)
+                    {
+                        include = true;
+                    }
+                    else
+                    {
+                        if(folder.IsEnabled)
+                        {
+                            AssetFolderInfo parent = (AssetFolderInfo)folder.parent;
+                            if(parent != null)
+                            {
+                                if(parent.IsEnabled || parent.depth == -1)
+                                {
+                                    include = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(include)
                 {
                     AssetFolderInfo proxyFolder = new AssetFolderInfo();
                     proxyFolder.IsEnabled = true;
@@ -382,6 +408,51 @@ namespace Battlehub.RTSaveLoad2
             return false;
         }
 
+        public void BuildTree()
+        {
+            if(Folders == null || Folders.Count == 0)
+            {
+                return;
+            }
+            AssetFolderInfo root = Folders[0];
+            if(root.depth != -1)
+            {
+                throw new InvalidOperationException("Unable to build AssetLibraryInfo tree -> root.depth != -1");
+            }
+            BuildSubtree(root, 1);
+        }
+
+        private int BuildSubtree(AssetFolderInfo parent, int startIndex)
+        {
+            parent.children = new List<TreeElement>();
+            for (int i = startIndex; i < Folders.Count; ++i)
+            {
+                AssetFolderInfo folder = Folders[i];
+                if (folder == null)
+                {
+                    continue;
+                }
+
+                if(folder.depth == parent.depth + 1)
+                {
+                    parent.children.Add(folder);
+                }
+                else if(folder.depth == parent.depth + 2)
+                {
+                    i = BuildSubtree(Folders[i - 1], i);
+                }
+                else if(folder.depth > parent.depth + 2)
+                {
+                    throw new InvalidOperationException("Unable to build AssetLibraryInfo tree -> folder.depth > parent.depth + 2");
+                }
+                else
+                {
+                    return i - 1;
+                }
+            }
+
+            return Folders.Count;
+        }
 
     }
 }

@@ -230,7 +230,12 @@ namespace Battlehub.RTSaveLoad2
             {
                 if(parent.hasChildren)
                 {
-                    var names = parent.children.OfType<TreeViewItem<AssetFolderInfo>>().Select(c => c.data.name);
+                    IEnumerable<TreeViewItem> children = parent.children.Except(draggedItems);
+                    if(!children.Any())
+                    {
+                        return true;
+                    }
+                    var names = children.OfType<TreeViewItem<AssetFolderInfo>>().Select(c => c.data.name);
                     if(draggedItems.OfType<TreeViewItem<AssetFolderInfo>>().Any(item => names.Contains(item.data.name)))
                     {
                         return false;

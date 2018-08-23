@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTEditor
 {
+    /*
     public class ProjectResourcesEventArgs : EventArgs
     {
         public ProjectItemObjectPair[] ItemObjectPairs
@@ -65,9 +66,11 @@ namespace Battlehub.RTEditor
             OldNames = oldNames;
         }
     }
+    */
 
     public class ProjectResourcesWindow : RuntimeEditorWindow
     {
+        /*
         public event EventHandler<SelectionChangedArgs<ProjectItemObjectPair>> SelectionChanged;
         public event EventHandler<ProjectResourcesEventArgs> DoubleClick;
         public event EventHandler<ProjectResourcesRenamedEventArgs> Renamed;
@@ -117,7 +120,7 @@ namespace Battlehub.RTEditor
           
             m_lockSelection = false;
         }
-
+        */
         [SerializeField]
         private Texture2D DragIcon;
         [SerializeField]
@@ -140,6 +143,7 @@ namespace Battlehub.RTEditor
             }
         }
 
+        /*
         private void DataBind(bool clearItems)
         {
             if (m_objects == null)
@@ -736,6 +740,6 @@ namespace Battlehub.RTEditor
         }
 
         
-
+        */
     }
 }

@@ -33,6 +33,11 @@ namespace Battlehub.RTSaveLoad2
         {
             get;
         }
+
+        IProject Project
+        {
+            get;
+        }
     }
 
     [DefaultExecutionOrder(-1)]
@@ -79,6 +84,12 @@ namespace Battlehub.RTSaveLoad2
             get { return m_storage; }
         }
 
+        private IProject m_project;
+        public IProject Project
+        {
+            get { return m_project; }
+        }
+
         protected virtual void Awake()
         {
             if(Get != null)
@@ -92,6 +103,7 @@ namespace Battlehub.RTSaveLoad2
             m_unityObjFactory = new UnityObjectFactory();
             m_serializer = new ProtobufSerializer();
             m_storage = new FileSystemStorage();
+            m_project = FindObjectOfType<Project>();
         }
 
         protected virtual void OnDestroy()
@@ -104,6 +116,7 @@ namespace Battlehub.RTSaveLoad2
                 m_unityObjFactory = null;
                 m_serializer = null;
                 m_storage = null;
+                m_project = null;
             }
         }
 

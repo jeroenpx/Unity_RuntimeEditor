@@ -66,14 +66,29 @@ namespace Battlehub.UIControls
             get { return m_parent; }
             set
             {
-                if (m_parent == value)
+                if(m_parent == value)
                 {
                     return;
                 }
 
                 TreeViewItem oldParent = m_parent;
                 m_parent = value;
-                UpdateIndent();
+                if(m_parent != null && TreeView != null && m_itemLayout != null)
+                {
+                    m_indent = m_parent.m_indent + TreeView.Indent;
+                    m_itemLayout.padding = new RectOffset(
+                        m_indent,
+                        m_itemLayout.padding.right,
+                        m_itemLayout.padding.top,
+                        m_itemLayout.padding.bottom);
+
+                    int siblingIndex = transform.GetSiblingIndex();
+                    SetIndent(this, ref siblingIndex);
+                }
+                else
+                {
+                    ZeroIndent();
+                }
 
                 if (TreeView != null)
                 {
@@ -81,7 +96,7 @@ namespace Battlehub.UIControls
                     {
                         ParentChanged(this, new ParentChangedEventArgs(oldParent, m_parent));
                     }
-                }
+                } 
             }
         }
 

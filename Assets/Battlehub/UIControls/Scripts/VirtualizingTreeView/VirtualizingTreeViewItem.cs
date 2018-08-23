@@ -10,19 +10,10 @@ namespace Battlehub.UIControls
         private HorizontalLayoutGroup m_itemLayout;
 
         private Toggle m_toggle;
-        private VirtualizingTreeView m_treeView;
-
+       
         private VirtualizingTreeView TreeView
         {
-            get
-            {
-                if (m_treeView == null)
-                {
-                    m_treeView = GetComponentInParent<VirtualizingTreeView>();
-                }
-
-                return m_treeView;
-            }
+            get { return ItemsControl as VirtualizingTreeView; }
         }
 
         public float Indent
@@ -209,14 +200,13 @@ namespace Battlehub.UIControls
 
                 if (m_treeViewItemData.IsExpanded != value)
                 {
-                    m_treeViewItemData.IsExpanded = value && CanExpand;
                     if (m_expander != null)
                     {
                         m_expander.IsOn = value && CanExpand;
                     }
                     if (TreeView != null)
                     {
-                        if (m_treeViewItemData.IsExpanded)
+                        if (value && CanExpand)
                         {
                             TreeView.Expand(m_treeViewItemData.Item);
                         }

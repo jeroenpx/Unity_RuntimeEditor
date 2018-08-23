@@ -29,6 +29,11 @@ namespace Battlehub.RTSaveLoad2
         {
             ErrorCode = errorCode;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Error({0}): {1}", ErrorCode, ErrorText);
+        }
     }
 }
 

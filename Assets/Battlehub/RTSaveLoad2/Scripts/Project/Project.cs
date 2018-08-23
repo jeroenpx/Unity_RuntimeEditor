@@ -13,7 +13,11 @@ namespace Battlehub.RTSaveLoad2
         {
             get;
         }
+
+        void Open(string project, ProjectEventHandler callback);
+        bool IsReadOnly(ProjectItem projectItem);
     }
+      
 
     public delegate void ProjectEventHandler(Error error);
     public delegate void ProjectEventHandler<T>(Error error, T result);
@@ -30,7 +34,8 @@ namespace Battlehub.RTSaveLoad2
         /// Append new references to the end of m_references array.
         /// </summary>
         [SerializeField]
-        private AssetLibraryVisible[] m_references;
+        public AssetLibraryVisible[] m_references;
+        
 
         private ProjectInfo m_projectInfo;
 
@@ -46,40 +51,18 @@ namespace Battlehub.RTSaveLoad2
             m_assetDB = RTSL2Deps.Get.AssetDB;
         }
 
-#warning Project does not require any of AssetLibraries loaded. Editor window could use PersistentObject for editing. Only Scene will load required asset libraries and unload when done.
-        //Editing of prefabs or objects which does not have constructor and cannot be instantiated will cause asset library lazy loading. Will be unloaded if will not be used during several minutes (or as result cleanup unuse resources call)
-
-        private void BuildTree(ProjectItem[] items)
+        private bool GetOrdinalAndId(out int ordinal, out int id)
         {
-            Dictionary<long, ProjectItem> idToProjectItem = new Dictionary<long, ProjectItem>();
-            for (int i = 0; i < items.Length; ++i)
+            ordinal = AssetLibraryInfo.ORDINAL_MASK / 2 + m_assetDB.ToOrdinal(m_projectInfo.IdentitiyCounter);
+            if (ordinal > AssetLibraryInfo.ORDINAL_MASK)
             {
-                ProjectItem projectItem = items[i];
-                if (!idToProjectItem.ContainsKey(projectItem.ItemID))
-                {
-                    idToProjectItem.Add(projectItem.ItemID, projectItem);
-                }
-                else
-                {
-                    Debug.LogErrorFormat("Duplicate Item {0} with ItemID {1} found", projectItem.Name, projectItem.ItemID);
-                }
+                Debug.LogError("Unable to generate identifier. Allotted Identifiers range was exhausted");
+                id = 0;
+                return false;
             }
 
-            for (int i = 0; i < items.Length; ++i)
-            {
-                ProjectItem projectItem = items[i];
-
-                ProjectItem parentItem;
-                if (idToProjectItem.TryGetValue(projectItem.ParentItemID, out parentItem))
-                {
-                    if (parentItem.Children == null)
-                    {
-                        parentItem.Children = new List<ProjectItem>();
-                    }
-                    parentItem.Children.Add(projectItem);
-                    projectItem.Parent = parentItem;
-                }
-            }
+            id = m_projectInfo.IdentitiyCounter & AssetLibraryInfo.ORDINAL_MASK;
+            return true;
         }
 
         private void CleanupTree(ProjectItem item, int ordinal)
@@ -92,19 +75,18 @@ namespace Battlehub.RTSaveLoad2
             for(int i = item.Children.Count - 1; i >= 0; --i)
             {
                 ProjectItem childItem = item.Children[i];
+
                 int id = m_assetDB.ToInt32(childItem.ItemID);
-                if(ordinal == m_assetDB.ToOrdinal(id))
+                if (childItem.ItemID != 0 && ordinal == m_assetDB.ToOrdinal(id))
                 {
                     item.Children.RemoveAt(i);
                 }
-                else
-                {
-                    CleanupTree(childItem, ordinal);
-                }
+
+                CleanupTree(childItem, ordinal);
             }
         }
 
-        public void Merge(AssetLibraryVisible asset, int ordinal)
+        private void Merge(AssetLibraryVisible asset, int ordinal)
         {
             if(!asset.KeepRuntimeProjectInSync)
             {
@@ -116,6 +98,8 @@ namespace Battlehub.RTSaveLoad2
             {
                 return;
             }
+
+            assetLibrary.BuildTree();
 
             AssetFolderInfo rootFolder = assetLibrary.Folders.Where(folder => folder.depth == -1).First();
             MergeFolders(rootFolder, m_root, ordinal);
@@ -147,7 +131,6 @@ namespace Battlehub.RTSaveLoad2
                 }
                 childTo.Name = childFrom.name;
                 childTo.ItemID = m_assetDB.ToExposedFolderID(ordinal, childFrom.id); 
-                childTo.ParentItemID = to.ItemID;
                 childTo.Parent = to;
 
                 MergeFolders(childFrom, childTo, ordinal);
@@ -176,15 +159,63 @@ namespace Battlehub.RTSaveLoad2
 
                 assetTo.Name = assetFrom.name;
                 assetTo.ItemID = m_assetDB.ToExposedResourceID(ordinal, assetFrom.id);
-                assetTo.ParentItemID = to.ItemID;
                 assetTo.Parent = to;
                 assetTo.PreviewData = null; //must rebuild preview
             }
         }
 
+        private void SetIdForFoldersWithNoId(ProjectItem projectItem)
+        {
+            if(projectItem.ItemID == 0)
+            {
+                if(projectItem.IsFolder)
+                {
+                    int ordinal, id;
+                    if(!GetOrdinalAndId(out ordinal, out id))
+                    {
+                        if(projectItem.Parent != null)
+                        {
+                            projectItem.Parent.RemoveChild(projectItem);
+                        }  
+                        return;
+                    }
+
+                    projectItem.ItemID = m_assetDB.ToRuntimeFolderID(ordinal, id);
+                    m_projectInfo.IdentitiyCounter++;
+
+                    if(projectItem.Children != null)
+                    {
+                        for(int i = 0; i < projectItem.Children.Count; ++i)
+                        {
+                            SetIdForFoldersWithNoId(projectItem);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnGetFoldersCompleted(Error error, ProjectItem rootFolder, ProjectEventHandler callback)
+        {
+            m_root = rootFolder;
+            for (int i = 0; i < m_references.Length; ++i)
+            {
+                AssetLibraryVisible assetLibrary = m_references[i];
+                if (assetLibrary == null)
+                {
+                    continue;
+                }
+                assetLibrary.Ordinal = i;
+                CleanupTree(m_root, i);
+                Merge(assetLibrary, i);
+            }
+            
+            SetIdForFoldersWithNoId(m_root);
+            callback(error);
+        }
+
         private void GetFolders(string project, ProjectEventHandler callback)
         {
-            m_storage.GetFolders(project, (error, folders) =>
+            m_storage.GetFolders(project, (error, rootFolder) =>
             {
                 if (error.HasError)
                 {
@@ -192,21 +223,7 @@ namespace Battlehub.RTSaveLoad2
                     return;
                 }
 
-                BuildTree(folders);
-                IEnumerable<ProjectItem> rootItems = folders.Where(f => f.Parent == null);
-                int rootItemsCount = rootItems.Count();
-                if (rootItemsCount == 0)
-                {
-                    throw new InvalidOperationException("Unable to open project. Root items count = " + rootItemsCount);
-                }
-                m_root = rootItems.First();
-                for (int i = 0; i < m_references.Length; ++i)
-                {
-                    AssetLibraryVisible assetLibrary = m_references[i];
-                    assetLibrary.Ordinal = i;
-                    CleanupTree(m_root, i);
-                    Merge(assetLibrary, i);
-                }
+                OnGetFoldersCompleted(error, rootFolder, callback);
             });
         }
 
@@ -228,6 +245,11 @@ namespace Battlehub.RTSaveLoad2
                 m_projectInfo = projectInfo;
                 GetFolders(project, callback);
             });
+        }
+
+        public bool IsReadOnly(ProjectItem projectItem)
+        {
+            return  m_assetDB.IsExposedFolderID(projectItem.ItemID) || m_assetDB.IsExposedResourceID(projectItem.ItemID);
         }
     }
 }
