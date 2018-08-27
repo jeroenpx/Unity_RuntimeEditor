@@ -13,20 +13,14 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 	[System.Serializable]
 	public class PersistentMovieTexture : Battlehub.RTSaveLoad.PersistentObjects.PersistentTexture
 	{
-		public override object WriteTo(object obj, System.Collections.Generic.Dictionary<long, UnityEngine.Object> objects)
-		{
-			obj = base.WriteTo(obj, objects);
-			if(obj == null)
-			{
-				return null;
-			}
-#if !UNITY_ANDROID && !UNITY_IOS && !UNITY_WEBGL
-            UnityEngine.MovieTexture o = (UnityEngine.MovieTexture)obj;
-			o.loop = loop;
-			return o;
-#else
+        public override object WriteTo(object obj, System.Collections.Generic.Dictionary<long, UnityEngine.Object> objects)
+        {
+            obj = base.WriteTo(obj, objects);
+            if (obj == null)
+            {
+                return null;
+            }
             return obj;
-#endif
         }
 
         public override void ReadFrom(object obj)
@@ -36,10 +30,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 			{
 				return;
 			}
-#if !UNITY_ANDROID && !UNITY_IOS && !UNITY_WEBGL
-			UnityEngine.MovieTexture o = (UnityEngine.MovieTexture)obj;
-			loop = o.loop;
-#endif
+
 		}
 
 		public override void FindDependencies<T>(System.Collections.Generic.Dictionary<long, T> dependencies, System.Collections.Generic.Dictionary<long, T> objects, bool allowNulls)

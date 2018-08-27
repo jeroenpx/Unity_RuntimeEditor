@@ -13,9 +13,9 @@ namespace Battlehub.RTSaveLoad2
 
     public interface IStorage
     {
-        void GetProject(string path, StorageEventHandler<ProjectInfo> callback);
-        void GetFolders(string path, StorageEventHandler<ProjectItem> callback);
-        
+        void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
+        void GetFolderTree(string projectPath, StorageEventHandler<ProjectItem> callback);
+        void GetAssets(string projectPath, string[] folderPath, StorageEventHandler<ProjectItem[][]> callback);
     }
 
     public class FileSystemStorage : IStorage
@@ -30,13 +30,18 @@ namespace Battlehub.RTSaveLoad2
             return Path.Combine(RootPath, path);
         }
 
-        public void GetProject(string path, StorageEventHandler<ProjectInfo> callback)
+        private string AssetsFolderPath(string path)
         {
-            path = Path.Combine(FullPath(path), "Project.rtmeta");
+            return Path.Combine(Path.Combine(RootPath, path), "Assets");
+        }
+
+        public void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback)
+        {
+            projectPath = Path.Combine(FullPath(projectPath), "Project.rtmeta");
             ProjectInfo projectInfo;
             Error error = new Error();
             ISerializer serializer = RTSL2Deps.Get.Serializer;
-            if (!File.Exists(path))
+            if (!File.Exists(projectPath))
             {
                 projectInfo = new ProjectInfo();
             }
@@ -44,7 +49,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 try
                 {
-                    using (FileStream fs = File.OpenRead(path))
+                    using (FileStream fs = File.OpenRead(projectPath))
                     {
                         projectInfo = serializer.Deserialize<ProjectInfo>(fs);
                     }       
@@ -59,18 +64,46 @@ namespace Battlehub.RTSaveLoad2
             callback(error, projectInfo);
         }
 
-        public void GetFolders(string path, StorageEventHandler<ProjectItem> callback)
+        public void GetFolderTree(string projectPath, StorageEventHandler<ProjectItem> callback)
         {
-            path = FullPath(path);
-            path = Path.Combine(path, "Assets");
+            projectPath = AssetsFolderPath(projectPath);
+
             ProjectItem assets = new ProjectItem();
             assets.ItemID = 0;
             assets.Children = new List<ProjectItem>();
             assets.Name = "Assets";
 
-            GetFolders(path, assets);
+            GetFolders(projectPath, assets);
 
             callback(new Error(), assets);
+        }
+
+        private static T GetItem<T>(ISerializer serializer, string path) where T : ProjectItem, new()
+        {
+            string metaFile = path + ".rtmeta";
+            T item;
+            if (File.Exists(metaFile))
+            {
+                try
+                {
+                    using (FileStream fs = File.OpenRead(metaFile))
+                    {
+                        item = serializer.Deserialize<T>(fs);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogErrorFormat("Unable to read meta file: {0} -> got exception: {1} ", metaFile, e.ToString());
+                    item = new T();
+                }
+            }
+            else
+            {
+                item = new T();
+            }
+            item.Name = Path.GetFileNameWithoutExtension(path);
+            item.Ext = Path.GetExtension(path);
+            return item;
         }
 
         private void GetFolders(string path, ProjectItem parent)
@@ -85,35 +118,41 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < dirs.Length; ++i)
             {
                 string dir = dirs[i];
-                string metaFile = dir + ".rtmeta";
-                ProjectItem projectItem;
-                if (File.Exists(metaFile))
-                {
-                    try
-                    {
-                        using (FileStream fs = File.OpenRead(metaFile))
-                        {
-                            projectItem = serializer.Deserialize<ProjectItem>(fs);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.LogErrorFormat("Unable to read meta file: {0} -> got exception: {1} ", metaFile, e.ToString());
-                        projectItem = new ProjectItem();
-                    }
-                }
-                else
-                {
-                    projectItem = new ProjectItem();
-                }
+                ProjectItem projectItem = GetItem<ProjectItem>(serializer, dir);
 
                 projectItem.Parent = parent;
                 projectItem.Children = new List<ProjectItem>();
-                projectItem.Name = Path.GetFileName(dir);
                 parent.Children.Add(projectItem);
 
                 GetFolders(dir, projectItem);
             }
+        }
+
+        public void GetAssets(string projectPath, string[] folderPath, StorageEventHandler<ProjectItem[][]> callback)
+        {
+            projectPath = AssetsFolderPath(projectPath);
+
+            ISerializer serializer = RTSL2Deps.Get.Serializer;
+            ProjectItem[][] result = new ProjectItem[folderPath.Length][];
+            for (int i = 0; i < folderPath.Length; ++i)
+            {
+                string path = Path.Combine(projectPath, folderPath[i]);
+                if (!Directory.Exists(path))
+                {
+                    continue;
+                }
+
+                string[] files = Directory.GetFiles(path);
+                ProjectItem[] items = new ProjectItem[files.Length];
+                for(int j = 0; j < files.Length; ++j)
+                {
+                    items[j] = GetItem<AssetItem>(serializer, files[j]);
+                }
+
+                result[i] = items;
+            }
+
+            callback(new Error(), result);
         }
     }
 }

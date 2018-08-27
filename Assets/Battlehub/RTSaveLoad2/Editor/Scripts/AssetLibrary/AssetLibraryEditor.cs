@@ -79,6 +79,11 @@ namespace Battlehub.RTSaveLoad2
 
         public override void OnInspectorGUI()
         {
+            //if(!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode)
+            //{
+            //    return;
+            //}
+
             EditorGUILayout.BeginVertical();
             if(m_isSyncRequired)
             {
@@ -94,9 +99,10 @@ namespace Battlehub.RTSaveLoad2
                     SaveAsset();
                 }
             }
-            
+
+            bool canRenderAssetsGUI = m_canRenderAssetsGUI;
             m_projectGUI.OnGUI();
-            if(m_canRenderAssetsGUI)
+            if(canRenderAssetsGUI)
             {
                 m_assetsGUI.OnGUI();
             }

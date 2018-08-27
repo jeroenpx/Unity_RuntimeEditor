@@ -31,10 +31,7 @@ namespace Battlehub.RTSaveLoad
 			m_surrogates.Add(typeof(UnityEngine.SceneManagement.Scene), new Battlehub.RTSaveLoad.UnityEngineNS.SceneManagementNS.SceneSurrogate());
 			m_surrogates.Add(typeof(UnityEngine.Bounds), new Battlehub.RTSaveLoad.UnityEngineNS.BoundsSurrogate());
 			m_surrogates.Add(typeof(UnityEngine.Vector4), new Battlehub.RTSaveLoad.UnityEngineNS.Vector4Surrogate());
-#if !UNITY_WINRT && !UNITY_WEBGL
-            m_surrogates.Add(typeof(UnityEngine.NetworkViewID), new Battlehub.RTSaveLoad.UnityEngineNS.NetworkViewIDSurrogate());
-			m_surrogates.Add(typeof(UnityEngine.NetworkPlayer), new Battlehub.RTSaveLoad.UnityEngineNS.NetworkPlayerSurrogate());
-#endif
+
             m_surrogates.Add(typeof(UnityEngine.Vector2), new Battlehub.RTSaveLoad.UnityEngineNS.Vector2Surrogate());
 			m_surrogates.Add(typeof(UnityEngine.RenderBuffer), new Battlehub.RTSaveLoad.UnityEngineNS.RenderBufferSurrogate());
 			m_surrogates.Add(typeof(UnityEngine.Quaternion), new Battlehub.RTSaveLoad.UnityEngineNS.QuaternionSurrogate());
@@ -1121,17 +1118,6 @@ namespace Battlehub.RTSaveLoad.UnityEngineNS
 #endif
 	{
 #if !UNITY_WINRT && !UNITY_WEBGL
-        public static implicit operator UnityEngine.NetworkViewID(NetworkViewIDSurrogate v)
-        {
-            UnityEngine.NetworkViewID o = new UnityEngine.NetworkViewID();
-            return o;
-        }
-        public static implicit operator NetworkViewIDSurrogate(UnityEngine.NetworkViewID v)
-        {
-            NetworkViewIDSurrogate o = new NetworkViewIDSurrogate();
-            return o;
-        }
-
 
         public void GetObjectData(object obj, SerializationInfo info, StreamingContext context) { }
 		public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) { return obj; }
@@ -1151,17 +1137,7 @@ namespace Battlehub.RTSaveLoad.UnityEngineNS
 #endif
 	{
 #if !UNITY_WINRT && !UNITY_WEBGL
-        public static implicit operator UnityEngine.NetworkPlayer(NetworkPlayerSurrogate v)
-        {
-            UnityEngine.NetworkPlayer o = new UnityEngine.NetworkPlayer();
-            return o;
-        }
-        public static implicit operator NetworkPlayerSurrogate(UnityEngine.NetworkPlayer v)
-        {
-            NetworkPlayerSurrogate o = new NetworkPlayerSurrogate();
-            return o;
-        }
-
+ 
 
         public void GetObjectData(object obj, SerializationInfo info, StreamingContext context) { }
 		public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) { return obj; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -150,10 +151,14 @@ namespace Battlehub.RTSaveLoad2
         [ProtoMember(1)]
         public byte[] PreviewData;
 
+        [ProtoMember(2)]
+        public Guid TypeGuid;
+
         public override bool IsFolder
         {
             get { return false; }
         }
+
     }
 
 }

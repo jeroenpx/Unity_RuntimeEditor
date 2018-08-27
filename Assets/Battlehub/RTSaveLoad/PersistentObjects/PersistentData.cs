@@ -133,7 +133,7 @@ namespace Battlehub.RTSaveLoad
 			m_objToData.Add(typeof(UnityEngine.Audio.AudioMixerSnapshot), typeof(Battlehub.RTSaveLoad.PersistentObjects.Audio.PersistentAudioMixerSnapshot));
 			m_objToData.Add(typeof(UnityEngine.Audio.AudioMixerGroup), typeof(Battlehub.RTSaveLoad.PersistentObjects.Audio.PersistentAudioMixerGroup));
 #if !UNITY_ANDROID && !UNITY_IOS && !UNITY_WEBGL
-            m_objToData.Add(typeof(UnityEngine.MovieTexture), typeof(Battlehub.RTSaveLoad.PersistentObjects.PersistentMovieTexture));
+           // m_objToData.Add(typeof(UnityEngine.MovieTexture), typeof(Battlehub.RTSaveLoad.PersistentObjects.PersistentMovieTexture));
 #endif
 			m_objToData.Add(typeof(UnityEngine.WebCamTexture), typeof(Battlehub.RTSaveLoad.PersistentObjects.PersistentWebCamTexture));
 			m_objToData.Add(typeof(UnityEngine.Animator), typeof(Battlehub.RTSaveLoad.PersistentObjects.PersistentAnimator));

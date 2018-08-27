@@ -188,9 +188,13 @@ namespace Battlehub.RTSaveLoad2
             "}}" + END;
 
         private static readonly string AddToPersistentTypeTemplate = 
-             "m_toPeristentType.Add(typeof({0}), typeof({1}));" + BR;
+            "m_toPeristentType.Add(typeof({0}), typeof({1}));" + BR;
         private static readonly string AddToUnityTypeTemplate =
-             "m_toUnityType.Add(typeof({0}), typeof({1}));" + BR;
+            "m_toUnityType.Add(typeof({0}), typeof({1}));" + BR;
+        private static readonly string AddToTypeTemplate =
+            "m_toType.Add(new System.Guid(\"{0}\"), typeof({1}));" + BR;
+        private static readonly string AddToGuidTemplate =
+            "m_toGuid.Add(typeof({0}), new System.Guid(\"{1}\"));" + BR;
 
 
         /// <summary>
@@ -422,6 +426,14 @@ namespace Battlehub.RTSaveLoad2
                 sb.AppendFormat(AddToPersistentTypeTemplate, mappedTypeName, mapping.PersistentTypeName);
                 sb.Append(TAB3);
                 sb.AppendFormat(AddToUnityTypeTemplate, mapping.PersistentTypeName, mappedTypeName);
+                sb.Append(TAB3);
+                sb.AppendFormat(AddToGuidTemplate, mapping.PersistentTypeName, mapping.PersistentTypeGUID);
+                sb.Append(TAB3);
+                sb.AppendFormat(AddToGuidTemplate, mappedTypeName, mapping.MappedTypeGUID);
+                sb.Append(TAB3);
+                sb.AppendFormat(AddToTypeTemplate, mapping.PersistentTypeGUID, mapping.PersistentTypeName);
+                sb.Append(TAB3);
+                sb.AppendFormat(AddToTypeTemplate, mapping.MappedTypeGUID, mappedTypeName);
                 sb.Append(TAB3);
             }
             sb.Append(BR);

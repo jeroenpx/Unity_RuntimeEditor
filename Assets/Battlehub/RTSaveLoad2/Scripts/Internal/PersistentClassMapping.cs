@@ -33,14 +33,15 @@ namespace Battlehub.RTSaveLoad2
 
         //Namespace, typename and persistent field name
         public string PersistentNamespace;
-        public string PersistentTypeName; 
-        public string PersistentName;
+        public string PersistentTypeName;
+        public string PersistentName;        
 
         //Namespace, typename and name of the property (name of the field) which is member of mapped type
         public string MappedAssemblyName;
         public string MappedNamespace;
         public string MappedTypeName;
         public string MappedName;
+        
 
         //True if property (or field) is non-unityobject persistent class
         public bool UseSurrogate; 
@@ -85,10 +86,15 @@ namespace Battlehub.RTSaveLoad2
         public string MappedAssemblyName;
         public string MappedNamespace;
         public string MappedTypeName;
+        public string MappedTypeGUID;
+
         public string PersistentNamespace;
         public string PersistentTypeName;
+        public string PersistentTypeGUID;
+
         public string PersistentBaseNamespace;
         public string PersistentBaseTypeName;
+
         public bool CreateCustomImplementation;
         public bool UseTemplate;
         /// <summary>

@@ -438,6 +438,7 @@ namespace Battlehub.RTSaveLoad2
                             if(TreeView.HasFocus())
                             {
                                 RemoveFolder();
+                                GUIUtility.ExitGUI();
                             }
                         }
                         break;

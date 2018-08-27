@@ -1,6 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
-using Battlehub.RTSaveLoad;
+using Battlehub.RTSaveLoad2;
 using Battlehub.UIControls;
 using Battlehub.Utils;
 using System;
@@ -70,6 +70,13 @@ namespace Battlehub.RTEditor
 
     public class ProjectResourcesWindow : RuntimeEditorWindow
     {
+        private ITypeMap m_typeMap;
+        private IAssetDB m_assetDB;
+        private IProject m_project;
+
+        public Type TypeFilter;
+        
+
         /*
         public event EventHandler<SelectionChangedArgs<ProjectItemObjectPair>> SelectionChanged;
         public event EventHandler<ProjectResourcesEventArgs> DoubleClick;
@@ -80,8 +87,9 @@ namespace Battlehub.RTEditor
 
         private IProjectManager m_projectManager;
         private Dictionary<ID, UnityObject> m_sceneObjectDictionary;
-        public Type TypeFilter;
+        */
 
+        /*
         [NonSerialized]
         private UnityObject[] m_selectedItems;
         public UnityObject[] SelectedItems
@@ -121,6 +129,13 @@ namespace Battlehub.RTEditor
             m_lockSelection = false;
         }
         */
+        private ProjectItem[] m_items;
+        public void SetItems(ProjectItem[] items, bool reload)
+        {
+            m_items = items;
+            DataBind(true);
+        }
+
         [SerializeField]
         private Texture2D DragIcon;
         [SerializeField]
@@ -143,10 +158,10 @@ namespace Battlehub.RTEditor
             }
         }
 
-        /*
+        
         private void DataBind(bool clearItems)
         {
-            if (m_objects == null)
+            if (m_items == null)
             {
                 m_listBox.SelectedItems = null;
                 m_listBox.Items = null;
@@ -164,19 +179,30 @@ namespace Battlehub.RTEditor
 
                 m_listBox.SelectedItems = null;
 
-                List<ProjectItemObjectPair> objectsList = m_objects.ToList();
+                List<ProjectItem> itemsList = m_items.ToList();
                 if (TypeFilter != null)
                 {
-                    for (int i = objectsList.Count - 1; i >= 0; i--)
+                    for (int i = itemsList.Count - 1; i >= 0; i--)
                     {
-                        UnityObject obj = objectsList[i].Object;
-                        if (!TypeFilter.IsAssignableFrom(obj.GetType()))       
+                        ProjectItem item = itemsList[i];
+                        if(item.IsFolder)
                         {
-                            objectsList.RemoveAt(i);
+                            itemsList.Remove(item);
+                        }
+                        else
+                        {
+                            AssetItem assetItem = (AssetItem)item;
+                            Type type = m_typeMap.ToType(assetItem.TypeGuid);
+                            if(type == null)
+                            {
+                                itemsList.RemoveAt(i);
+                            }
+                            else if (!TypeFilter.IsAssignableFrom(type))
+                            {
+                                itemsList.RemoveAt(i);
+                            }
                         }
                     }
-
-                    m_sceneObjectDictionary.Clear();
 
                     if (typeof(GameObject) == TypeFilter)
                     {
@@ -186,8 +212,12 @@ namespace Battlehub.RTEditor
 
                         foreach (GameObject go in sceneObjects)
                         {
-                            m_sceneObjectDictionary.Add(m_projectManager.GetID(go), go);
-                            objectsList.Add(new ProjectItemObjectPair(null, go));
+                            AssetItem sceneItem = new AssetItem();
+                            sceneItem.ItemID = m_assetDB.ToID(go);
+                            sceneItem.Name = go.name;
+                            sceneItem.Ext = m_project.GetExt(go);
+                            sceneItem.TypeGuid = m_typeMap.ToGuid(typeof(GameObject));
+                            itemsList.Add(sceneItem);
                         }
                     }
                     else if (typeof(Component).IsAssignableFrom(TypeFilter))
@@ -199,42 +229,52 @@ namespace Battlehub.RTEditor
                         foreach (GameObject go in sceneObjects)
                         {
                             Component component = go.GetComponent(TypeFilter);
-                            if (component != null)
+                            Guid typeGuid = m_typeMap.ToGuid(component.GetType());
+                            if (component != null && typeGuid != Guid.Empty)
                             {
-                                m_sceneObjectDictionary.Add(m_projectManager.GetID(component), component);
-                                objectsList.Add(new ProjectItemObjectPair(null, component));
+                                AssetItem sceneItem = new AssetItem();
+                                sceneItem.ItemID = m_assetDB.ToID(go);
+                                sceneItem.Name = go.name;
+                                sceneItem.Ext = m_project.GetExt(go);
+                                sceneItem.TypeGuid = typeGuid;
+
+                                itemsList.Add(sceneItem);
                             }
                         }
                     }
 
-                    ProjectItemObjectPair none = new ProjectItemObjectPair(null, ScriptableObject.CreateInstance<NoneItem>() );
-                    objectsList.Insert(0, none);
-                    m_listBox.Items = objectsList;
+                    //itemsList.Insert(0, none);
+                    m_listBox.Items = itemsList;
 
                 }
                 else
                 {
-                    m_listBox.Items = objectsList;
+                    m_listBox.Items = itemsList;
                 }
 
 
-                if (m_selectedItems != null)
-                {
-                    m_listBox.SelectedItems = SelectionToProjectItemObjectPair(m_selectedItems);
-                }
+                //if (m_selectedItems != null)
+                //{
+                //    m_listBox.SelectedItems = SelectionToProjectItemObjectPair(m_selectedItems);
+                //}
             }
         }
 
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+
+            m_typeMap = RTSL2Deps.Get.TypeMap;
+            m_assetDB = RTSL2Deps.Get.AssetDB;
+            m_project = RTSL2Deps.Get.Project;
+
             if (!ListBoxPrefab)
             {
                 Debug.LogError("Set ListBoxPrefab field");
                 return;
             }
 
-         
+
             m_listBox = GetComponentInChildren<ListBox>();
             if (m_listBox == null)
             {
@@ -247,13 +287,107 @@ namespace Battlehub.RTEditor
                 m_listBox.transform.SetParent(transform, false);
             }
 
-            m_projectManager = Dependencies.ProjectManager;
-            if (m_projectManager == null)
-            {
-                return;
-            }
-
             m_listBox.ItemDataBinding += OnItemDataBinding;
+        }
+
+        protected override void OnDestroyOverride()
+        {
+            base.OnDestroyOverride();
+
+            if(m_listBox != null)
+            {
+                m_listBox.ItemDataBinding -= OnItemDataBinding;
+            }
+        }
+
+        private void OnItemDataBinding(object sender, ItemDataBindingArgs e)
+        {
+            ProjectItem projectItem = e.Item as ProjectItem;
+            if (projectItem != null)
+            {
+                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                text.text = projectItem.Name;
+                ResourcePreview rtResource = e.ItemPresenter.GetComponentInChildren<ResourcePreview>(true);
+                rtResource.Set(ProjectItemType.Scene, null);
+                //if (pair.IsFolder || pair.IsScene)
+                //{
+                //    UnityObject obj = pair.Object;
+                //    ProjectItemType itemType = ProjectItemType.None;
+                //    if (pair.IsFolder)
+                //    {
+                //        if (pair.ProjectItem.IsExposedFromEditor)
+                //        {
+                //            itemType = ProjectItemType.ExposedFolder;
+                //        }
+                //        else
+                //        {
+                //            itemType = ProjectItemType.Folder;
+                //        }
+
+                //    }
+                //    else if (pair.IsScene)
+                //    {
+                //        itemType = ProjectItemType.Scene;
+                //    }
+
+                //    rtResource.Set(itemType, null);
+                //    text.text = pair.ProjectItem.Name;
+                //}
+                //else
+                //{
+                //    if (pair.ProjectItem != null && pair.ProjectItem.IsExposedFromEditor)
+                //    {
+                //        rtResource.Set(ProjectItemType.ExposedResource, pair.Object);
+                //    }
+                //    else
+                //    {
+                //        if (pair.Object is NoneItem)
+                //        {
+                //            rtResource.Set(ProjectItemType.None, pair.Object);
+                //        }
+                //        else
+                //        {
+                //            rtResource.Set(ProjectItemType.Resource, pair.Object);
+                //        }
+
+                //    }
+
+                //    if (pair.ProjectItem != null)
+                //    {
+                //        text.text = pair.ProjectItem.Name;
+                //    }
+                //    else
+                //    {
+                //        text.text = pair.Object.name;
+                //    }
+                //}
+
+                //if (pair.ProjectItem != null)
+                //{
+                //    ProjectItem item = pair.ProjectItem;
+                //    e.CanEdit = !item.IsExposedFromEditor;
+                //    if (item.IsFolder && item.IsScene)
+                //    {
+                //        e.CanDrag = !item.IsExposedFromEditor;
+                //    }
+                //    else
+                //    {
+                //        e.CanDrag = true;
+                //    }
+                //}
+                //else
+                //{
+                //    e.CanDrag = false;
+                //    e.CanEdit = false;
+                //}
+            }
+        }
+
+
+        /*
+              
+
+
             m_listBox.SelectionChanged += OnSelectionChanged;
             m_listBox.ItemDoubleClick += OnItemDoubleClick;
             m_listBox.ItemBeginDrag += OnItemBeginDrag;
@@ -269,477 +403,478 @@ namespace Battlehub.RTEditor
             ExposeToEditor.Destroyed += OnObjectDestroyed;
             ExposeToEditor.MarkAsDestroyedChanged += OnObjectMarkAsDestroyedChanged;
 
-          
+
             m_sceneObjectDictionary = new Dictionary<ID, UnityObject>();
-        }
-
-        private void Start()
-        {
-           
-        }
-
-        private void OnEnable()
-        {
-
-        }
-
-        private void OnDisable()
-        {
-            m_selectedItems = null;
-            m_listBox.SelectedItem = null;
-        }
-
-        protected override void OnDestroyOverride()
-        {
-            base.OnDestroyOverride();
-            Unsubscribe();
-        }
-
-        private void OnApplicationQuit()
-        {
-            Unsubscribe();
-        }
-
-  
-        protected override void UpdateOverride()
-        {
-            base.UpdateOverride();
-            if (!RuntimeEditorApplication.IsActiveWindow(this) && !RuntimeEditorApplication.IsActiveWindow(RuntimeWindowType.SceneView))
+            */
+    }
+    /*
+            private void Start()
             {
-                return;
+
             }
 
-            if (InputController._GetKeyDown(RemoveKey))
+            private void OnEnable()
             {
-                if (m_listBox.SelectedItem != null)
-                {
-                    PopupWindow.Show("Remove Selected assets", "You can not undo this action", "Delete", args =>
-                    {
-                        m_listBox.RemoveSelectedItems();
-                    }, "Cancel");
-                }
-            }
-        }
 
-        private void Unsubscribe()
-        {
-            if (m_listBox)
-            {
-                m_listBox.ItemDataBinding -= OnItemDataBinding;
-                m_listBox.SelectionChanged -= OnSelectionChanged;
-                m_listBox.ItemDoubleClick -= OnItemDoubleClick;
-                m_listBox.ItemBeginDrag -= OnItemBeginDrag;
-                m_listBox.ItemEndDrag -= OnItemEndDrag;
-                m_listBox.ItemBeginDrop -= OnItemBeginDrop;
-                m_listBox.ItemDrop -= OnItemDrop;
-                m_listBox.ItemsRemoving -= OnItemsRemoving;
-                m_listBox.ItemsRemoved -= OnItemsRemoved;
-                m_listBox.ItemBeginEdit -= OnItemBeginEdit;
-                m_listBox.ItemEndEdit -= OnItemEndEdit;
             }
 
-            RuntimeSelection.SelectionChanged -= OnRuntimeSelectionChanged;
-            ExposeToEditor.Destroyed -= OnObjectDestroyed;
-            ExposeToEditor.MarkAsDestroyedChanged -= OnObjectMarkAsDestroyedChanged;
-        }
-
-        public void UpdateProjectItem(ProjectItem projectItem)
-        {
-            ItemContainer itemContainer = m_listBox.GetItemContainer(projectItem);
-            if (itemContainer != null)
-            {
-                m_listBox.DataBindItem(projectItem, itemContainer);
-            }
-        }
-
-        public void RemoveProjectItem(ProjectItem item)
-        {
-            ProjectItemObjectPair foundItemObjectPair = m_listBox.Items.OfType<ProjectItemObjectPair>().Where(itemObjectPair => itemObjectPair.ProjectItem.ToString() == item.ToString()).FirstOrDefault();
-            if(foundItemObjectPair != null)
-            {
-                m_listBox.Remove(foundItemObjectPair);
-            }
-        }
-
-        public void RemoveProjectItem(ProjectItemObjectPair item)
-        {
-            m_listBox.Remove(item);
-        }
-
-        private void OnItemDoubleClick(object sender, ItemArgs e)
-        {
-            if(DoubleClick != null)
-            {
-                DoubleClick(this, new ProjectResourcesEventArgs(e.Items.OfType<ProjectItemObjectPair>().ToArray()));
-            }
-        }
-
-        private void OnItemBeginDrag(object sender, ItemArgs e)
-        {
-            CursorHelper.SetCursor(this, DragIcon, new Vector2(DragIcon.width / 2, DragIcon.height / 2), CursorMode.Auto);
-
-            ItemContainer itemContainer = m_listBox.GetItemContainer(e.Items[0]);
-            if (itemContainer != null)
-            {
-                ResourcePreview runtimeResource = itemContainer.GetComponentInChildren<ResourcePreview>();
-                runtimeResource.BeginSpawn();
-            }
-
-            ProjectItemObjectPair objectItemPair = (ProjectItemObjectPair)e.Items[0];
-            if (BeginDrag != null)
-            {
-                BeginDrag(this, new ProjectResourcesEventArgs(new[] { objectItemPair }));
-            }
-
-            if (objectItemPair.IsResource)
-            {
-                DragDrop.RaiseBeginDrag(new[] { objectItemPair.Object });
-            }
-        }
-
-
-        private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
-        {
-
-        }
-
-        private void OnItemDrop(object sender, ItemDropArgs e)
-        {
-            if(e.IsExternal)
-            {
-                return;
-            }
-            CursorHelper.ResetCursor(this);
-
-            ProjectItemObjectPair objectItemPair = (ProjectItemObjectPair)e.DragItems[0];
-            CompleteSpawn(objectItemPair);
-
-            if (objectItemPair.IsResource)
-            {
-                DragDrop.RaiseDrop();
-            }
-        }
-
-        private void OnItemEndDrag(object sender, ItemArgs e)
-        {
-        
-            CursorHelper.ResetCursor(this);
-
-            ProjectItemObjectPair objectItemPair = (ProjectItemObjectPair)e.Items[0];
-            CompleteSpawn(objectItemPair);
-
-            if (objectItemPair.IsResource)
-            {
-                DragDrop.RaiseDrop();
-            }
-        }
-
-        private void CompleteSpawn(object item)
-        {
-            ItemContainer itemContainer = m_listBox.GetItemContainer(item);
-            if (itemContainer != null)
-            {
-                ResourcePreview resource = itemContainer.GetComponentInChildren<ResourcePreview>();
-                resource.CompleteSpawn();
-            }
-
-            if (RuntimeEditorApplication.IsPointerOverWindow(RuntimeWindowType.Resources))
-            {
-                RuntimeTools.SpawnPrefab = null;
-            }
-
-            if (Drop != null)
-            {
-                Drop(this, new ProjectResourcesEventArgs(new [] { (ProjectItemObjectPair)item }));
-            }
-        }
-
-        private void OnRuntimeSelectionChanged(UnityObject[] unselected)
-        {
-            if (m_lockSelection)
-            {
-                return;
-            }
-
-            m_lockSelection = true;
-
-            if (RuntimeSelection.objects != null && m_listBox.Items != null)
-            {
-                ProjectItemObjectPair[] selection = SelectionToProjectItemObjectPair(RuntimeSelection.objects);
-
-                m_selectedItems = RuntimeSelection.objects.ToArray();
-                if (SelectionChanged != null)
-                {
-                    ProjectItemObjectPair[] oldSelection = m_listBox.SelectedItems != null ? m_listBox.SelectedItems.OfType<ProjectItemObjectPair>().ToArray() : null;
-                    m_listBox.SelectedItems = selection;
-                    SelectionChanged(this, new SelectionChangedArgs<ProjectItemObjectPair>(oldSelection, selection.ToArray(), false));
-                }
-            }
-            else
+            private void OnDisable()
             {
                 m_selectedItems = null;
-                if (SelectionChanged != null)
+                m_listBox.SelectedItem = null;
+            }
+
+            protected override void OnDestroyOverride()
+            {
+                base.OnDestroyOverride();
+                Unsubscribe();
+            }
+
+            private void OnApplicationQuit()
+            {
+                Unsubscribe();
+            }
+
+
+            protected override void UpdateOverride()
+            {
+                base.UpdateOverride();
+                if (!RuntimeEditorApplication.IsActiveWindow(this) && !RuntimeEditorApplication.IsActiveWindow(RuntimeWindowType.SceneView))
                 {
-                    ProjectItemObjectPair[] oldSelection = m_listBox.SelectedItems != null ? m_listBox.SelectedItems.OfType<ProjectItemObjectPair>().ToArray() : null;
-                    m_listBox.SelectedItems = null;
-                    SelectionChanged(this, new SelectionChangedArgs<ProjectItemObjectPair>(oldSelection, null, false));
+                    return;
+                }
+
+                if (InputController._GetKeyDown(RemoveKey))
+                {
+                    if (m_listBox.SelectedItem != null)
+                    {
+                        PopupWindow.Show("Remove Selected assets", "You can not undo this action", "Delete", args =>
+                        {
+                            m_listBox.RemoveSelectedItems();
+                        }, "Cancel");
+                    }
                 }
             }
 
-            m_lockSelection = false;
-        }
-
-        public ProjectItemObjectPair[] SelectionToProjectItemObjectPair(UnityObject[] selectedObjects)
-        {
-            if(selectedObjects == null)
+            private void Unsubscribe()
             {
-                return null;
-            }
-
-            
-            ProjectItemObjectPair[] itemObjectPairs = m_listBox.Items.OfType<ProjectItemObjectPair>().ToArray();
-            HashSet<ID> selectedIdentifiers = new HashSet<ID>(selectedObjects.Where(o => !(o is ProjectItemWrapper)).Select(o => m_projectManager.GetID(o)));
-            HashSet<string> selectedPaths = new HashSet<string>(selectedObjects.OfType<ProjectItemWrapper>().Select(p => p.ProjectItem.ToString()));
-            List<ProjectItemObjectPair> selection = new List<ProjectItemObjectPair>();
-            for (int i = 0; i < itemObjectPairs.Length; ++i)
-            {
-                ProjectItemObjectPair itemObjectPair = itemObjectPairs[i];
-                if (selectedIdentifiers.Contains(m_projectManager.GetID(itemObjectPair.Object)))
+                if (m_listBox)
                 {
-                    selection.Add(itemObjectPair);
+                    m_listBox.ItemDataBinding -= OnItemDataBinding;
+                    m_listBox.SelectionChanged -= OnSelectionChanged;
+                    m_listBox.ItemDoubleClick -= OnItemDoubleClick;
+                    m_listBox.ItemBeginDrag -= OnItemBeginDrag;
+                    m_listBox.ItemEndDrag -= OnItemEndDrag;
+                    m_listBox.ItemBeginDrop -= OnItemBeginDrop;
+                    m_listBox.ItemDrop -= OnItemDrop;
+                    m_listBox.ItemsRemoving -= OnItemsRemoving;
+                    m_listBox.ItemsRemoved -= OnItemsRemoved;
+                    m_listBox.ItemBeginEdit -= OnItemBeginEdit;
+                    m_listBox.ItemEndEdit -= OnItemEndEdit;
                 }
-                else if(itemObjectPair.IsFolder || itemObjectPair.IsScene)
+
+                RuntimeSelection.SelectionChanged -= OnRuntimeSelectionChanged;
+                ExposeToEditor.Destroyed -= OnObjectDestroyed;
+                ExposeToEditor.MarkAsDestroyedChanged -= OnObjectMarkAsDestroyedChanged;
+            }
+
+            public void UpdateProjectItem(ProjectItem projectItem)
+            {
+                ItemContainer itemContainer = m_listBox.GetItemContainer(projectItem);
+                if (itemContainer != null)
                 {
-                    if (selectedPaths.Contains(itemObjectPair.ProjectItem.ToString()))
-                    {
-                        selection.Add(itemObjectPair);
-                    }
-                }    
+                    m_listBox.DataBindItem(projectItem, itemContainer);
+                }
             }
 
-            return selection.ToArray();
-        }
-
-        private void OnSelectionChanged(object sender, SelectionChangedArgs e)
-        {
-            if (m_lockSelection)
+            public void RemoveProjectItem(ProjectItem item)
             {
-                return;
-            }
-
-            m_lockSelection = true;
-
-            object[] newItems = e.NewItems;
-            object[] oldItems = e.OldItems;
-
-            if (newItems == null)
-            {
-                newItems = new ProjectItemObjectPair[0];
-            }
-
-            if (oldItems == null)
-            {
-                oldItems = new ProjectItemObjectPair[0];
-            }
-
-            ProjectItemObjectPair[] oldSelection = oldItems.OfType<ProjectItemObjectPair>().ToArray();
-            ProjectItemObjectPair[] selection = newItems.OfType<ProjectItemObjectPair>().ToArray();
-            if (SelectionChanged != null)
-            {
-                SelectionChanged(this, new SelectionChangedArgs<ProjectItemObjectPair>(oldSelection, selection, true));
-            }
-
-            m_selectedItems = selection.Select(s => s.Object).ToArray();
-            m_lockSelection = false;
-        }
-
-        private void OnItemDataBinding(object sender, ItemDataBindingArgs e)
-        {
-            ProjectItemObjectPair pair = e.Item as ProjectItemObjectPair;
-            if (pair != null)
-            {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
-                ResourcePreview rtResource = e.ItemPresenter.GetComponentInChildren<ResourcePreview>(true);
-
-                if (pair.IsFolder || pair.IsScene)
+                ProjectItemObjectPair foundItemObjectPair = m_listBox.Items.OfType<ProjectItemObjectPair>().Where(itemObjectPair => itemObjectPair.ProjectItem.ToString() == item.ToString()).FirstOrDefault();
+                if(foundItemObjectPair != null)
                 {
-                    UnityObject obj = pair.Object;
-                    ProjectItemType itemType = ProjectItemType.None;
-                    if(pair.IsFolder)
-                    {
-                        if(pair.ProjectItem.IsExposedFromEditor)
-                        {
-                            itemType = ProjectItemType.ExposedFolder;
-                        }
-                        else
-                        {
-                            itemType = ProjectItemType.Folder;
-                        }
-                        
-                    }
-                    else if(pair.IsScene)
-                    {
-                        itemType = ProjectItemType.Scene;
-                    }
+                    m_listBox.Remove(foundItemObjectPair);
+                }
+            }
 
-                    rtResource.Set(itemType, null);
-                    text.text = pair.ProjectItem.Name;
+            public void RemoveProjectItem(ProjectItemObjectPair item)
+            {
+                m_listBox.Remove(item);
+            }
+
+            private void OnItemDoubleClick(object sender, ItemArgs e)
+            {
+                if(DoubleClick != null)
+                {
+                    DoubleClick(this, new ProjectResourcesEventArgs(e.Items.OfType<ProjectItemObjectPair>().ToArray()));
+                }
+            }
+
+            private void OnItemBeginDrag(object sender, ItemArgs e)
+            {
+                CursorHelper.SetCursor(this, DragIcon, new Vector2(DragIcon.width / 2, DragIcon.height / 2), CursorMode.Auto);
+
+                ItemContainer itemContainer = m_listBox.GetItemContainer(e.Items[0]);
+                if (itemContainer != null)
+                {
+                    ResourcePreview runtimeResource = itemContainer.GetComponentInChildren<ResourcePreview>();
+                    runtimeResource.BeginSpawn();
+                }
+
+                ProjectItemObjectPair objectItemPair = (ProjectItemObjectPair)e.Items[0];
+                if (BeginDrag != null)
+                {
+                    BeginDrag(this, new ProjectResourcesEventArgs(new[] { objectItemPair }));
+                }
+
+                if (objectItemPair.IsResource)
+                {
+                    DragDrop.RaiseBeginDrag(new[] { objectItemPair.Object });
+                }
+            }
+
+
+            private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
+            {
+
+            }
+
+            private void OnItemDrop(object sender, ItemDropArgs e)
+            {
+                if(e.IsExternal)
+                {
+                    return;
+                }
+                CursorHelper.ResetCursor(this);
+
+                ProjectItemObjectPair objectItemPair = (ProjectItemObjectPair)e.DragItems[0];
+                CompleteSpawn(objectItemPair);
+
+                if (objectItemPair.IsResource)
+                {
+                    DragDrop.RaiseDrop();
+                }
+            }
+
+            private void OnItemEndDrag(object sender, ItemArgs e)
+            {
+
+                CursorHelper.ResetCursor(this);
+
+                ProjectItemObjectPair objectItemPair = (ProjectItemObjectPair)e.Items[0];
+                CompleteSpawn(objectItemPair);
+
+                if (objectItemPair.IsResource)
+                {
+                    DragDrop.RaiseDrop();
+                }
+            }
+
+            private void CompleteSpawn(object item)
+            {
+                ItemContainer itemContainer = m_listBox.GetItemContainer(item);
+                if (itemContainer != null)
+                {
+                    ResourcePreview resource = itemContainer.GetComponentInChildren<ResourcePreview>();
+                    resource.CompleteSpawn();
+                }
+
+                if (RuntimeEditorApplication.IsPointerOverWindow(RuntimeWindowType.Resources))
+                {
+                    RuntimeTools.SpawnPrefab = null;
+                }
+
+                if (Drop != null)
+                {
+                    Drop(this, new ProjectResourcesEventArgs(new [] { (ProjectItemObjectPair)item }));
+                }
+            }
+
+            private void OnRuntimeSelectionChanged(UnityObject[] unselected)
+            {
+                if (m_lockSelection)
+                {
+                    return;
+                }
+
+                m_lockSelection = true;
+
+                if (RuntimeSelection.objects != null && m_listBox.Items != null)
+                {
+                    ProjectItemObjectPair[] selection = SelectionToProjectItemObjectPair(RuntimeSelection.objects);
+
+                    m_selectedItems = RuntimeSelection.objects.ToArray();
+                    if (SelectionChanged != null)
+                    {
+                        ProjectItemObjectPair[] oldSelection = m_listBox.SelectedItems != null ? m_listBox.SelectedItems.OfType<ProjectItemObjectPair>().ToArray() : null;
+                        m_listBox.SelectedItems = selection;
+                        SelectionChanged(this, new SelectionChangedArgs<ProjectItemObjectPair>(oldSelection, selection.ToArray(), false));
+                    }
                 }
                 else
                 {
-                    if (pair.ProjectItem != null &&  pair.ProjectItem.IsExposedFromEditor)
+                    m_selectedItems = null;
+                    if (SelectionChanged != null)
                     {
-                        rtResource.Set(ProjectItemType.ExposedResource, pair.Object);
+                        ProjectItemObjectPair[] oldSelection = m_listBox.SelectedItems != null ? m_listBox.SelectedItems.OfType<ProjectItemObjectPair>().ToArray() : null;
+                        m_listBox.SelectedItems = null;
+                        SelectionChanged(this, new SelectionChangedArgs<ProjectItemObjectPair>(oldSelection, null, false));
                     }
-                    else
+                }
+
+                m_lockSelection = false;
+            }
+
+            public ProjectItemObjectPair[] SelectionToProjectItemObjectPair(UnityObject[] selectedObjects)
+            {
+                if(selectedObjects == null)
+                {
+                    return null;
+                }
+
+
+                ProjectItemObjectPair[] itemObjectPairs = m_listBox.Items.OfType<ProjectItemObjectPair>().ToArray();
+                HashSet<ID> selectedIdentifiers = new HashSet<ID>(selectedObjects.Where(o => !(o is ProjectItemWrapper)).Select(o => m_projectManager.GetID(o)));
+                HashSet<string> selectedPaths = new HashSet<string>(selectedObjects.OfType<ProjectItemWrapper>().Select(p => p.ProjectItem.ToString()));
+                List<ProjectItemObjectPair> selection = new List<ProjectItemObjectPair>();
+                for (int i = 0; i < itemObjectPairs.Length; ++i)
+                {
+                    ProjectItemObjectPair itemObjectPair = itemObjectPairs[i];
+                    if (selectedIdentifiers.Contains(m_projectManager.GetID(itemObjectPair.Object)))
                     {
-                        if(pair.Object is NoneItem)
-                        {
-                            rtResource.Set(ProjectItemType.None, pair.Object);
-                        }
-                        else
-                        {
-                            rtResource.Set(ProjectItemType.Resource, pair.Object);
-                        }
-                        
+                        selection.Add(itemObjectPair);
                     }
-                    
-                    if(pair.ProjectItem != null)
+                    else if(itemObjectPair.IsFolder || itemObjectPair.IsScene)
                     {
+                        if (selectedPaths.Contains(itemObjectPair.ProjectItem.ToString()))
+                        {
+                            selection.Add(itemObjectPair);
+                        }
+                    }    
+                }
+
+                return selection.ToArray();
+            }
+
+            private void OnSelectionChanged(object sender, SelectionChangedArgs e)
+            {
+                if (m_lockSelection)
+                {
+                    return;
+                }
+
+                m_lockSelection = true;
+
+                object[] newItems = e.NewItems;
+                object[] oldItems = e.OldItems;
+
+                if (newItems == null)
+                {
+                    newItems = new ProjectItemObjectPair[0];
+                }
+
+                if (oldItems == null)
+                {
+                    oldItems = new ProjectItemObjectPair[0];
+                }
+
+                ProjectItemObjectPair[] oldSelection = oldItems.OfType<ProjectItemObjectPair>().ToArray();
+                ProjectItemObjectPair[] selection = newItems.OfType<ProjectItemObjectPair>().ToArray();
+                if (SelectionChanged != null)
+                {
+                    SelectionChanged(this, new SelectionChangedArgs<ProjectItemObjectPair>(oldSelection, selection, true));
+                }
+
+                m_selectedItems = selection.Select(s => s.Object).ToArray();
+                m_lockSelection = false;
+            }
+
+            private void OnItemDataBinding(object sender, ItemDataBindingArgs e)
+            {
+                ProjectItemObjectPair pair = e.Item as ProjectItemObjectPair;
+                if (pair != null)
+                {
+                    Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                    ResourcePreview rtResource = e.ItemPresenter.GetComponentInChildren<ResourcePreview>(true);
+
+                    if (pair.IsFolder || pair.IsScene)
+                    {
+                        UnityObject obj = pair.Object;
+                        ProjectItemType itemType = ProjectItemType.None;
+                        if(pair.IsFolder)
+                        {
+                            if(pair.ProjectItem.IsExposedFromEditor)
+                            {
+                                itemType = ProjectItemType.ExposedFolder;
+                            }
+                            else
+                            {
+                                itemType = ProjectItemType.Folder;
+                            }
+
+                        }
+                        else if(pair.IsScene)
+                        {
+                            itemType = ProjectItemType.Scene;
+                        }
+
+                        rtResource.Set(itemType, null);
                         text.text = pair.ProjectItem.Name;
                     }
                     else
                     {
-                        text.text = pair.Object.name;
-                    } 
-                }
+                        if (pair.ProjectItem != null &&  pair.ProjectItem.IsExposedFromEditor)
+                        {
+                            rtResource.Set(ProjectItemType.ExposedResource, pair.Object);
+                        }
+                        else
+                        {
+                            if(pair.Object is NoneItem)
+                            {
+                                rtResource.Set(ProjectItemType.None, pair.Object);
+                            }
+                            else
+                            {
+                                rtResource.Set(ProjectItemType.Resource, pair.Object);
+                            }
 
-                if(pair.ProjectItem != null)
-                {
-                    ProjectItem item = pair.ProjectItem;
-                    e.CanEdit = !item.IsExposedFromEditor;
-                    if (item.IsFolder && item.IsScene)
+                        }
+
+                        if(pair.ProjectItem != null)
+                        {
+                            text.text = pair.ProjectItem.Name;
+                        }
+                        else
+                        {
+                            text.text = pair.Object.name;
+                        } 
+                    }
+
+                    if(pair.ProjectItem != null)
                     {
-                        e.CanDrag = !item.IsExposedFromEditor;
+                        ProjectItem item = pair.ProjectItem;
+                        e.CanEdit = !item.IsExposedFromEditor;
+                        if (item.IsFolder && item.IsScene)
+                        {
+                            e.CanDrag = !item.IsExposedFromEditor;
+                        }
+                        else
+                        {
+                            e.CanDrag = true;
+                        }
                     }
                     else
                     {
-                        e.CanDrag = true;
+                        e.CanDrag = false;
+                        e.CanEdit = false;
                     }
                 }
-                else
+            }
+
+            private void OnItemsRemoving(object sender, ItemsCancelArgs e)
+            {
+                if (e.Items == null)
                 {
-                    e.CanDrag = false;
-                    e.CanEdit = false;
+                    return;
+                }
+
+                //if (!RuntimeEditorApplication.IsActiveWindow(this) && !Ru)
+                //{
+                //    e.Items.Clear();
+                //    return;
+                //}
+
+                for (int i = e.Items.Count - 1; i >= 0; i--)
+                {
+                    ProjectItemObjectPair item = (ProjectItemObjectPair)e.Items[i];
+                    if (item.ProjectItem.IsExposedFromEditor)
+                    {
+                        e.Items.Remove(item);
+                    }
+                }
+
+                if (e.Items.Count == 0)
+                {
+                    PopupWindow.Show("Can't remove item", "Unable to remove folders & resources exposed from editor", "OK");
                 }
             }
-        }
 
-        private void OnItemsRemoving(object sender, ItemsCancelArgs e)
-        {
-            if (e.Items == null)
+            private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
             {
-                return;
-            }
-
-            //if (!RuntimeEditorApplication.IsActiveWindow(this) && !Ru)
-            //{
-            //    e.Items.Clear();
-            //    return;
-            //}
-
-            for (int i = e.Items.Count - 1; i >= 0; i--)
-            {
-                ProjectItemObjectPair item = (ProjectItemObjectPair)e.Items[i];
-                if (item.ProjectItem.IsExposedFromEditor)
+                ProjectItemObjectPair[] itemObjectPairs = e.Items.OfType<ProjectItemObjectPair>().ToArray();
+                if (Deleted != null)
                 {
-                    e.Items.Remove(item);
+                    Deleted(this, new ProjectResourcesEventArgs(itemObjectPairs));
+                }
+                for(int i = 0; i < itemObjectPairs.Length; ++i)
+                {
+                    ProjectItemObjectPair itemObjectPair = itemObjectPairs[i];
+                    if(itemObjectPair.ProjectItem.Parent != null)
+                    {
+                        itemObjectPair.ProjectItem.Parent.RemoveChild(itemObjectPair.ProjectItem);
+                    }
                 }
             }
 
-            if (e.Items.Count == 0)
+            private void OnItemBeginEdit(object sender, ItemDataBindingArgs e)
             {
-                PopupWindow.Show("Can't remove item", "Unable to remove folders & resources exposed from editor", "OK");
-            }
-        }
+                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                Image[] images = e.ItemPresenter.GetComponentsInChildren<Image>(true);
 
-        private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
-        {
-            ProjectItemObjectPair[] itemObjectPairs = e.Items.OfType<ProjectItemObjectPair>().ToArray();
-            if (Deleted != null)
-            {
-                Deleted(this, new ProjectResourcesEventArgs(itemObjectPairs));
+                InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
+                inputField.ActivateInputField();
+                inputField.text = text.text;
+
+                Image[] editorImages = e.EditorPresenter.GetComponentsInChildren<Image>(true);
+                for (int i = 0; i < images.Length; ++i)
+                {
+                    editorImages[i].sprite = images[i].sprite;
+                    editorImages[i].gameObject.SetActive(true);
+                }
             }
-            for(int i = 0; i < itemObjectPairs.Length; ++i)
+
+            private void OnItemEndEdit(object sender, ItemDataBindingArgs e)
             {
-                ProjectItemObjectPair itemObjectPair = itemObjectPairs[i];
+                InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
+                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+
+                ProjectItemObjectPair itemObjectPair = (ProjectItemObjectPair)e.Item;
+                string oldName = itemObjectPair.ProjectItem.Name;
                 if(itemObjectPair.ProjectItem.Parent != null)
                 {
-                    itemObjectPair.ProjectItem.Parent.RemoveChild(itemObjectPair.ProjectItem);
+                    ProjectItem parentItem = itemObjectPair.ProjectItem.Parent;
+                    string newNameExt = inputField.text.Trim() + "." + itemObjectPair.ProjectItem.Ext;
+                    if (!string.IsNullOrEmpty(inputField.text.Trim()) && ProjectItem.IsValidName(inputField.text.Trim()) && !parentItem.Children.Any(p => p.NameExt == newNameExt))
+                    {
+                        string newName = inputField.text.Trim();
+                        itemObjectPair.ProjectItem.Name = newName;
+                        itemObjectPair.Object.name = newName;
+                        text.text = newName;
+                    }
                 }
-            }
-        }
 
-        private void OnItemBeginEdit(object sender, ItemDataBindingArgs e)
-        {
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
-            Image[] images = e.ItemPresenter.GetComponentsInChildren<Image>(true);
-
-            InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
-            inputField.ActivateInputField();
-            inputField.text = text.text;
-
-            Image[] editorImages = e.EditorPresenter.GetComponentsInChildren<Image>(true);
-            for (int i = 0; i < images.Length; ++i)
-            {
-                editorImages[i].sprite = images[i].sprite;
-                editorImages[i].gameObject.SetActive(true);
-            }
-        }
-
-        private void OnItemEndEdit(object sender, ItemDataBindingArgs e)
-        {
-            InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
-
-            ProjectItemObjectPair itemObjectPair = (ProjectItemObjectPair)e.Item;
-            string oldName = itemObjectPair.ProjectItem.Name;
-            if(itemObjectPair.ProjectItem.Parent != null)
-            {
-                ProjectItem parentItem = itemObjectPair.ProjectItem.Parent;
-                string newNameExt = inputField.text.Trim() + "." + itemObjectPair.ProjectItem.Ext;
-                if (!string.IsNullOrEmpty(inputField.text.Trim()) && ProjectItem.IsValidName(inputField.text.Trim()) && !parentItem.Children.Any(p => p.NameExt == newNameExt))
+                if (Renamed != null)
                 {
-                    string newName = inputField.text.Trim();
-                    itemObjectPair.ProjectItem.Name = newName;
-                    itemObjectPair.Object.name = newName;
-                    text.text = newName;
+                    Renamed(this, new ProjectResourcesRenamedEventArgs(new[] { itemObjectPair }, new[] { oldName }));
+                }
+
+                //Following code is required to unfocus inputfield if focused and release InputManager
+                if (EventSystem.current != null && !EventSystem.current.alreadySelecting)
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
                 }
             }
 
-            if (Renamed != null)
+            private void OnObjectDestroyed(ExposeToEditor obj)
             {
-                Renamed(this, new ProjectResourcesRenamedEventArgs(new[] { itemObjectPair }, new[] { oldName }));
+                m_listBox.Remove(obj.gameObject);
             }
 
-            //Following code is required to unfocus inputfield if focused and release InputManager
-            if (EventSystem.current != null && !EventSystem.current.alreadySelecting)
+            private void OnObjectMarkAsDestroyedChanged(ExposeToEditor obj)
             {
-                EventSystem.current.SetSelectedGameObject(null);
+
             }
-        }
 
-        private void OnObjectDestroyed(ExposeToEditor obj)
-        {
-            m_listBox.Remove(obj.gameObject);
-        }
 
-        private void OnObjectMarkAsDestroyedChanged(ExposeToEditor obj)
-        {
+            */
 
-        }
-
-        
-        */
-    }
 }

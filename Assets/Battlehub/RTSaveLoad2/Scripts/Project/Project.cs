@@ -14,8 +14,12 @@ namespace Battlehub.RTSaveLoad2
             get;
         }
 
-        void Open(string project, ProjectEventHandler callback);
         bool IsReadOnly(ProjectItem projectItem);
+        string GetExt(UnityObject obj);
+        string GetExt(Type type);
+        
+        void Open(string project, ProjectEventHandler callback);
+        void GetAssets(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback);   
     }
       
 
@@ -26,6 +30,7 @@ namespace Battlehub.RTSaveLoad2
     {
         private IStorage m_storage;
         private IAssetDB m_assetDB;
+        private ITypeMap m_typeMap;
 
         /// <summary>
         /// Important!!!
@@ -35,9 +40,9 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         [SerializeField]
         public AssetLibraryVisible[] m_references;
-        
 
         private ProjectInfo m_projectInfo;
+        private string m_projectPath;
 
         private ProjectItem m_root;
         public ProjectItem Root
@@ -49,6 +54,12 @@ namespace Battlehub.RTSaveLoad2
         {
             m_storage = RTSL2Deps.Get.Storage;
             m_assetDB = RTSL2Deps.Get.AssetDB;
+            m_typeMap = RTSL2Deps.Get.TypeMap;
+        }
+
+        private bool IsRuntimeOrdinal(int ordinal)
+        {
+            return ordinal >= AssetLibraryInfo.ORDINAL_MASK / 2;
         }
 
         private bool GetOrdinalAndId(out int ordinal, out int id)
@@ -86,7 +97,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        private void Merge(AssetLibraryVisible asset, int ordinal)
+        private void MergeAssetLibrary(AssetLibraryVisible asset, int ordinal)
         {
             if(!asset.KeepRuntimeProjectInSync)
             {
@@ -107,33 +118,30 @@ namespace Battlehub.RTSaveLoad2
 
         private void MergeFolders(AssetFolderInfo from, ProjectItem to, int ordinal)
         {
-            if(!from.hasChildren)
+            if(from.hasChildren)
             {
-                return;
-            }
-
-
-            for(int i = 0; i < from.children.Count; ++i)
-            {
-                AssetFolderInfo childFrom = (AssetFolderInfo)from.children[i];
-                
-                if(to.Children == null)
+                for (int i = 0; i < from.children.Count; ++i)
                 {
-                    to.Children = new List<ProjectItem>();
-                }
+                    AssetFolderInfo childFrom = (AssetFolderInfo)from.children[i];
 
-                
-                ProjectItem childTo = to.Children.Where(item => item.Name == childFrom.name && !(item is AssetItem)).FirstOrDefault();
-                if (childTo == null)
-                {
-                    childTo = new ProjectItem();   
-                    to.Children.Add(childTo);
-                }
-                childTo.Name = childFrom.name;
-                childTo.ItemID = m_assetDB.ToExposedFolderID(ordinal, childFrom.id); 
-                childTo.Parent = to;
+                    if (to.Children == null)
+                    {
+                        to.Children = new List<ProjectItem>();
+                    }
 
-                MergeFolders(childFrom, childTo, ordinal);
+
+                    ProjectItem childTo = to.Children.Where(item => item.Name == childFrom.name && !(item is AssetItem)).FirstOrDefault();
+                    if (childTo == null)
+                    {
+                        childTo = new ProjectItem();
+                        to.Children.Add(childTo);
+                    }
+                    childTo.Name = childFrom.name;
+                    childTo.ItemID = m_assetDB.ToExposedFolderID(ordinal, childFrom.id);
+                    childTo.Parent = to;
+
+                    MergeFolders(childFrom, childTo, ordinal);
+                }
             }
 
             MergeAssets(from, to, ordinal);
@@ -147,9 +155,18 @@ namespace Battlehub.RTSaveLoad2
                 return;
             }
 
+            if(to.Children == null)
+            {
+                to.Children = new List<ProjectItem>();
+            }
+
             for(int i = 0; i < fromAssets.Count; ++i)
             {
                 AssetInfo assetFrom = fromAssets[i];
+                if(assetFrom.Object == null)
+                {
+                    continue;
+                }
                 AssetItem assetTo = to.Children.OfType<AssetItem>().Where(item => item.Name == assetFrom.name).FirstOrDefault();
                 if(assetTo == null)
                 {
@@ -158,8 +175,9 @@ namespace Battlehub.RTSaveLoad2
                 }
 
                 assetTo.Name = assetFrom.name;
-                assetTo.ItemID = m_assetDB.ToExposedResourceID(ordinal, assetFrom.id);
+                assetTo.ItemID = m_assetDB.ToExposedResourceID(ordinal, assetFrom.PersistentID);
                 assetTo.Parent = to;
+                assetTo.TypeGuid = m_typeMap.ToGuid(assetFrom.Object.GetType());
                 assetTo.PreviewData = null; //must rebuild preview
             }
         }
@@ -194,6 +212,20 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        private void GetFolderTree(string project, ProjectEventHandler callback)
+        {
+            m_storage.GetFolderTree(project, (error, rootFolder) =>
+            {
+                if (error.HasError)
+                {
+                    callback(error);
+                    return;
+                }
+
+                OnGetFoldersCompleted(error, rootFolder, callback);
+            });
+        }
+
         private void OnGetFoldersCompleted(Error error, ProjectItem rootFolder, ProjectEventHandler callback)
         {
             m_root = rootFolder;
@@ -206,50 +238,103 @@ namespace Battlehub.RTSaveLoad2
                 }
                 assetLibrary.Ordinal = i;
                 CleanupTree(m_root, i);
-                Merge(assetLibrary, i);
+                MergeAssetLibrary(assetLibrary, i);
             }
-            
+
             SetIdForFoldersWithNoId(m_root);
+
             callback(error);
-        }
-
-        private void GetFolders(string project, ProjectEventHandler callback)
-        {
-            m_storage.GetFolders(project, (error, rootFolder) =>
-            {
-                if (error.HasError)
-                {
-                    callback(error);
-                    return;
-                }
-
-                OnGetFoldersCompleted(error, rootFolder, callback);
-            });
-        }
-
-        public void Open(string project, ProjectEventHandler callback)
-        {
-            m_storage.GetProject(project, (error, projectInfo) =>
-            {
-                if (error.HasError)
-                {
-                    callback(error);
-                    return;
-                }
-
-                if(projectInfo == null)
-                {
-                    projectInfo = new ProjectInfo();
-                }
-
-                m_projectInfo = projectInfo;
-                GetFolders(project, callback);
-            });
         }
 
         public bool IsReadOnly(ProjectItem projectItem)
         {
-            return  m_assetDB.IsExposedFolderID(projectItem.ItemID) || m_assetDB.IsExposedResourceID(projectItem.ItemID);
+            return m_assetDB.IsExposedFolderID(projectItem.ItemID) || m_assetDB.IsExposedResourceID(projectItem.ItemID);
+        }
+
+        public string GetExt(UnityObject obj)
+        {
+            return ".rto";
+        }
+
+        public string GetExt(Type type)
+        {
+            return ".rto";
+        }
+
+        public void Open(string project, ProjectEventHandler callback)
+        {
+            m_projectPath = project;
+
+            m_storage.GetProject(m_projectPath, (error, projectInfo) =>
+            {
+                if (error.HasError)
+                {
+                    callback(error);
+                    return;
+                }
+
+                OnOpened(project, callback, projectInfo);
+            });
+        }
+
+        private void OnOpened(string project, ProjectEventHandler callback, ProjectInfo projectInfo)
+        {
+            if (projectInfo == null)
+            {
+                projectInfo = new ProjectInfo();
+            }
+
+            m_projectInfo = projectInfo;
+            GetFolderTree(project, callback);
+        }
+
+        public void GetAssets(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback)
+        {
+            m_storage.GetAssets(m_projectPath, folders.Select(f => f.ToString()).ToArray(), (error, result) =>
+            {
+                if (error.HasError)
+                {
+                    callback(error, new ProjectItem[0]);
+                    return;
+                }
+                OnGetAssetsCompleted(folders, callback, error, result);
+            });
+        }
+
+        private void OnGetAssetsCompleted(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback, Error error, ProjectItem[][] result)
+        {
+            for (int i = 0; i < result.Length; ++i)
+            {
+                ProjectItem folder = folders[i];
+                ProjectItem[] items = result[i];
+                if (items != null && items.Length > 0)
+                {
+                    if(folder.Children == null)
+                    {
+                        folder.Children = new List<ProjectItem>();
+                    }
+                    
+                    for (int j = 0; j < items.Length; ++j)
+                    {
+                        ProjectItem item = items[j];
+                        if(item.ItemID == 0)
+                        {
+                            items[j] = null;
+                            continue;
+                        }
+                        
+                        if (!folder.Children.Any(child => child.ItemID == item.ItemID))
+                        {
+                            item.Parent = folder;
+                            folder.Children.Add(item);
+                        }
+                    }
+                }
+            }
+
+            callback(error, folders.Where(f => f.Children != null).SelectMany(f => f.Children).ToArray());
+
+           // callback(error, result.Where(items => items != null).SelectMany(item => item).Where(item => item != null).ToArray());
         }
     }
 }

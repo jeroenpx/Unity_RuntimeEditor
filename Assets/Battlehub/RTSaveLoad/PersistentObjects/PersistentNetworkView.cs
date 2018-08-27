@@ -77,9 +77,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 
 		public uint stateSynchronization;
 
-#if !UNITY_WINRT && !UNITY_WEBGL
-        public UnityEngine.NetworkViewID viewID;
-#endif
+
 		public int group;
 
 	}

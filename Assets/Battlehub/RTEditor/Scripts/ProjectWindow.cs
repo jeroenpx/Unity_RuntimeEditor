@@ -400,8 +400,20 @@ namespace Battlehub.RTEditor
                 m_btnAddFolder.gameObject.SetActive(e.NewItem != null);
             }
 
-          //  ShowProgress = true;
+            ShowProgress = true;
+            m_project.GetAssets(e.NewItems, (error, assets) =>
+            {
+                ShowProgress = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Can't GetAssets", error.ToString(), "OK");
+                    return;
+                }
+                
+                m_projectResources.SetItems(assets, true);
+            });
 
+         
            // m_project.GetAssets()
 
             /*
