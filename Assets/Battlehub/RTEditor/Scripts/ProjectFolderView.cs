@@ -68,7 +68,7 @@ namespace Battlehub.RTEditor
     }
     */
 
-    public class ProjectResourcesWindow : RuntimeEditorWindow
+    public class ProjectFolderView : RuntimeEditorWindow
     {
         private ITypeMap m_typeMap;
         private IAssetDB m_assetDB;
@@ -140,7 +140,7 @@ namespace Battlehub.RTEditor
         private Texture2D DragIcon;
         [SerializeField]
         private GameObject ListBoxPrefab;
-        private ListBox m_listBox;
+        private VirtualizingTreeView m_listBox;
         private bool m_lockSelection;
 
         public KeyCode RemoveKey = KeyCode.Delete;
@@ -275,15 +275,15 @@ namespace Battlehub.RTEditor
             }
 
 
-            m_listBox = GetComponentInChildren<ListBox>();
+            m_listBox = GetComponentInChildren<VirtualizingTreeView>();
             if (m_listBox == null)
             {
-                m_listBox = Instantiate(ListBoxPrefab).GetComponent<ListBox>();
+                m_listBox = Instantiate(ListBoxPrefab).GetComponent<VirtualizingTreeView>();
                 m_listBox.CanDrag = true;
                 m_listBox.CanReorder = false;
-                m_listBox.MultiselectKey = KeyCode.None;
-                m_listBox.RangeselectKey = KeyCode.None;
-                m_listBox.RemoveKey = KeyCode.None;
+                //m_listBox.MultiselectKey = KeyCode.None;
+               // m_listBox.RangeselectKey = KeyCode.None;
+                //m_listBox.RemoveKey = KeyCode.None;
                 m_listBox.transform.SetParent(transform, false);
             }
 
@@ -307,8 +307,28 @@ namespace Battlehub.RTEditor
             {
                 Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
                 text.text = projectItem.Name;
-                ResourcePreview rtResource = e.ItemPresenter.GetComponentInChildren<ResourcePreview>(true);
-                rtResource.Set(ProjectItemType.Scene, null);
+                ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
+
+                AssetItem assetItem = projectItem as AssetItem;
+                if(assetItem != null)
+                {
+                    if (assetItem.PreviewData != null)
+                    {
+                        Texture2D texture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
+                        texture.LoadImage(assetItem.PreviewData); //..this will auto-resize the texture dimensions.
+                        itemView.Preview = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                    }
+                    else
+                    {
+                        itemView.Preview = Resources.Load<Sprite>("FolderLarge");
+                        assetItem.PreviewData = itemView.Preview.texture.EncodeToPNG();
+                    }
+                }
+
+                
+                
+
+                //projectItemView.Set(ProjectItemType.Scene, null);
                 //if (pair.IsFolder || pair.IsScene)
                 //{
                 //    UnityObject obj = pair.Object;

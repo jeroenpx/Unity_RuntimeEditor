@@ -9,7 +9,7 @@ using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
 {
-    public class ProjectWindow : RuntimeEditorWindow
+    public class ProjectView : RuntimeEditorWindow
     {
         private IProject m_project;
 
@@ -17,9 +17,9 @@ namespace Battlehub.RTEditor
         private Text m_loadingProgressText;
 
         [SerializeField]
-        private ProjectTreeWindow m_projectTree;
+        private ProjectTreeView m_projectTree;
         [SerializeField]
-        private ProjectResourcesWindow m_projectResources;
+        private ProjectFolderView m_projectResources;
         [SerializeField]
         private Button m_btnDuplicate;
         [SerializeField]

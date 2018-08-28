@@ -100,9 +100,10 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            bool canRenderAssetsGUI = m_canRenderAssetsGUI;
+
+            //bool canRenderAssetsGUI =  m_canRenderAssetsGUI;
             m_projectGUI.OnGUI();
-            if(canRenderAssetsGUI)
+            //if(canRenderAssetsGUI)
             {
                 m_assetsGUI.OnGUI();
             }

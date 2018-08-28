@@ -12,7 +12,7 @@ using Battlehub.RTSaveLoad;
 
 namespace Battlehub.RTEditor
 {
-    public class HierarchyWindow : RuntimeEditorWindow
+    public class HierarchyView : RuntimeEditorWindow
     {
         public GameObject TreeViewPrefab;
         private TreeView m_treeView;

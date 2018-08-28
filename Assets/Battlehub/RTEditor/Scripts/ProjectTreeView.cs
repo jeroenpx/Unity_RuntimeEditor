@@ -157,7 +157,7 @@ namespace Battlehub.RTEditor
         }
     }
 
-    public class ProjectTreeWindow : RuntimeEditorWindow
+    public class ProjectTreeView : RuntimeEditorWindow
     {
         public event EventHandler<SelectionChangedArgs<ProjectItem>> SelectionChanged;
         public event EventHandler<ProjectTreeRenamedEventArgs> Renamed;
@@ -173,7 +173,7 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private Sprite ExposedFolderIcon;
-        private TreeView m_treeView;
+        private VirtualizingTreeView m_treeView;
 
         [NonSerialized]
         private ProjectItem m_dragProjectItem;
@@ -196,33 +196,41 @@ namespace Battlehub.RTEditor
                 ProjectItem folder = value;
                 string path = folder.ToString();
                 folder = m_root.Get(path);
-                TreeViewItem treeViewItem = Expand(folder);
-                if (treeViewItem != null)
+                m_treeView.Expand(folder);
+                if(m_treeView.IndexOf(folder) >= 0)
                 {
-                    SnapTo(treeViewItem.GetComponent<RectTransform>());
+                    m_treeView.ScrollIntoView(folder);
                     m_treeView.SelectedItem = folder;
                 }
             }
         }
 
-        private TreeViewItem Expand(ProjectItem projectItem)
-        {
-            TreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
-            if (treeViewItem == null)
-            {
-                Expand(projectItem.Parent);
-                treeViewItem = m_treeView.GetTreeViewItem(projectItem);
-            }
-            else
-            {
-                treeViewItem.IsExpanded = true;
-            }
-            return treeViewItem;
-        }
+        //private VirtualizingTreeViewItem Expand(ProjectItem projectItem)
+        //{
+           
+        //    //VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
+        //    //if (treeViewItem == null)
+        //    //{
+        //    //    if(projectItem.Parent == null)
+        //    //    {
+
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        Expand(projectItem.Parent);
+        //    //        treeViewItem = m_treeView.GetTreeViewItem(projectItem);
+        //    //    }
+        //    //}
+        //    //else
+        //    //{
+        //    //    treeViewItem.IsExpanded = true;
+        //    //}
+        //    //return treeViewItem;
+        //}
 
         private void Toggle(ProjectItem projectItem)
         {
-            TreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
+            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
             if (treeViewItem == null)
             {
                 Toggle(projectItem.Parent);
@@ -234,28 +242,18 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void SnapTo(RectTransform target)
-        {
-            m_treeView.FixScrollRect();
-            ScrollRect scrollRect = m_treeView.GetComponentInChildren<ScrollRect>();
-            RectTransform contentPanel = scrollRect.content;
-            contentPanel.anchoredPosition =
-                (Vector2)scrollRect.transform.InverseTransformPoint(contentPanel.position)
-                - (Vector2)scrollRect.transform.InverseTransformPoint(target.position);
-        }
-
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
 
             m_project = RTSL2Deps.Get.Project;
 
-            m_treeView = Instantiate(TreeViewPrefab).GetComponent<TreeView>();
+            m_treeView = Instantiate(TreeViewPrefab).GetComponent<VirtualizingTreeView>();
             m_treeView.CanReorder = false;
             m_treeView.CanReparent = ShowRootFolder;
             m_treeView.CanUnselectAll = false;
             m_treeView.CanDrag = ShowRootFolder;
-            m_treeView.RemoveKey = KeyCode.None;
+            m_treeView.CanRemove = false;
 
             m_treeView.transform.SetParent(transform, false);
             m_treeView.SelectionChanged += OnSelectionChanged;
@@ -343,7 +341,7 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            TreeViewItem rootTreeViewItem = m_treeView.GetTreeViewItem(0);
+            VirtualizingTreeViewItem rootTreeViewItem = m_treeView.GetTreeViewItem(0);
             if (rootTreeViewItem != null)
             {
                 rootTreeViewItem.IsExpanded = true;
@@ -396,7 +394,7 @@ namespace Battlehub.RTEditor
 
             m_treeView.RemoveChild(parent, item, parent.Children.Count == 1);
 
-            TreeViewItem treeViewItem = m_treeView.GetTreeViewItem(item);
+            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(item);
             if(treeViewItem == null)
             {
                 m_treeView.AddChild(parent, item);
@@ -426,10 +424,11 @@ namespace Battlehub.RTEditor
 
         public void UpdateProjectItem(ProjectItem projectItem)
         {
-            TreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
-            if(treeViewItem != null)
+            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
+            ItemContainerData containerData = m_treeView.GetItemContainerData(projectItem);
+            if (treeViewItem != null && containerData != null)
             {
-                m_treeView.DataBindItem(projectItem, treeViewItem);
+                m_treeView.DataBindItem(projectItem, containerData, treeViewItem);
             }
         }
 
@@ -462,7 +461,7 @@ namespace Battlehub.RTEditor
             if (!e.IsExternal)
             {
                 ProjectItem dropFolder = (ProjectItem)e.DropTarget;
-                Expand(dropFolder);
+               // m_treeView.Expand(dropFolder);//
 
                 if (dropFolder.Children == null)
                 {
@@ -496,10 +495,9 @@ namespace Battlehub.RTEditor
                     Drop(this, e);
                 }
             }
-
         }
 
-        private void OnItemBeginEdit(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemBeginEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
@@ -531,7 +529,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnItemEndEdit(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemEndEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
             Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
@@ -598,7 +596,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnItemExpanding(object sender, ItemExpandingArgs e)
+        private void OnItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
@@ -611,7 +609,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnItemDataBinding(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)

@@ -29,14 +29,14 @@ namespace Battlehub.RTEditor
         }
 
         private PopupWindow m_parentPopup;
-        private ProjectResourcesWindow m_resources;
+        private ProjectFolderView m_resources;
         private void Start()
         {
             m_parentPopup = GetComponentInParent<PopupWindow>();
             m_parentPopup.OK.AddListener(OnOK);
 
             RuntimeEditor runtimeEditor = FindObjectOfType<RuntimeEditor>();
-            ProjectResourcesWindow resources = runtimeEditor.GetComponentInChildren<ProjectResourcesWindow>(true);
+            ProjectFolderView resources = runtimeEditor.GetComponentInChildren<ProjectFolderView>(true);
             IProjectManager manager = Dependencies.ProjectManager;
             if(manager != null)
             {

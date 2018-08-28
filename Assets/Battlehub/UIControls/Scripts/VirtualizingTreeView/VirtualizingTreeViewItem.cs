@@ -40,8 +40,11 @@ namespace Battlehub.UIControls
                     {
                         
                         UpdateIndent();
-                        m_expander.CanExpand = m_treeViewItemData.CanExpand;
-                        m_expander.IsOn = m_treeViewItemData.IsExpanded && m_treeViewItemData.CanExpand;
+                        if(m_expander != null)
+                        {
+                            m_expander.CanExpand = m_treeViewItemData.CanExpand;
+                            m_expander.IsOn = m_treeViewItemData.IsExpanded && m_treeViewItemData.CanExpand;
+                        }
 
                         name = base.Item.ToString() + " " + m_treeViewItemData.ToString();
                     }

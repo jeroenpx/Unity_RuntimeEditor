@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTEditor
 {
-    public class InspectorWindow : RuntimeEditorWindow
+    public class InspectorView : RuntimeEditorWindow
     {
         public GameObject GameObjectEditor;
         public GameObject MaterialEditor;

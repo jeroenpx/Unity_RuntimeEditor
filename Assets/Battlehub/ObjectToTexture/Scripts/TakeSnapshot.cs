@@ -13,7 +13,6 @@ namespace Battlehub.Utils
         public Image TargetImage;
         private Texture2D m_texture = null;
 
-
         private void Start()
         {
             if (TargetPrefab == null)
