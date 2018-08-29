@@ -73,7 +73,7 @@ namespace Battlehub.RTEditor
         private ITypeMap m_typeMap;
         private IAssetDB m_assetDB;
         private IProject m_project;
-
+   
         public Type TypeFilter;
         
 
@@ -308,22 +308,8 @@ namespace Battlehub.RTEditor
                 Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
                 text.text = projectItem.Name;
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
-
-                AssetItem assetItem = projectItem as AssetItem;
-                if(assetItem != null)
-                {
-                    if (assetItem.PreviewData != null)
-                    {
-                        Texture2D texture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
-                        texture.LoadImage(assetItem.PreviewData); //..this will auto-resize the texture dimensions.
-                        itemView.Preview = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                    }
-                    else
-                    {
-                        itemView.Preview = Resources.Load<Sprite>("FolderLarge");
-                        assetItem.PreviewData = itemView.Preview.texture.EncodeToPNG();
-                    }
-                }
+                itemView.ProjectItem = projectItem;
+                
 
                 
                 

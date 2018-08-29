@@ -514,6 +514,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_imgPreview: {fileID: 114263028109416836}
+  m_folder: {fileID: 21300000, guid: ebfe9cdb856f7b1409d42f180b249230, type: 3}
+  m_readonlyFolder: {fileID: 21300000, guid: c496b60be2e8cf345ba432998f80c12e, type: 3}
+  m_scene: {fileID: 21300000, guid: 5ef4477f9f2c0f649a6af1d0c5c9f3e2, type: 3}
+  m_defaultPrefab: {fileID: 21300000, guid: 6324110ea1efba34faee4869655308d5, type: 3}
+  m_none: {fileID: 21300000, guid: a8bbb5491ce0cfa449afd696461f1e94, type: 3}
 --- !u!114 &114477306527578240
 MonoBehaviour:
   m_ObjectHideFlags: 1

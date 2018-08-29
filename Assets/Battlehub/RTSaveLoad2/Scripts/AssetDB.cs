@@ -15,7 +15,6 @@ namespace Battlehub.RTSaveLoad2
         bool IsRuntimeResourceID(long id);
         bool IsRuntimeFolderID(long id);
         bool IsResourceID(long id);
-        int ToInt32(long id);
 
         int ToOrdinal(long id);
         int ToOrdinal(int id);
@@ -251,11 +250,6 @@ namespace Battlehub.RTSaveLoad2
             return mask | (0x00000000FFFFFFFFL & id);
         }
 
-        public int ToInt32(long id)
-        {
-            return (int)(0x00000000FFFFFFFFL & id);
-        }
-
         public int ToOrdinal(long id)
         {
             int intId = (int)(0x00000000FFFFFFFFL & id);
@@ -313,7 +307,7 @@ namespace Battlehub.RTSaveLoad2
             if(IsExposedResourceID(id))
             {
                 UnityObject obj;
-                int persistentID = ToInt32(id);
+                int persistentID = unchecked((int)id);
                 if (m_mapping.PersistentIDtoObj.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
@@ -322,7 +316,7 @@ namespace Battlehub.RTSaveLoad2
             else if(IsInstanceID(id))
             {
                 UnityObject obj;
-                int persistentID = ToInt32(id);
+                int persistentID = unchecked((int)id);
                 if(m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;

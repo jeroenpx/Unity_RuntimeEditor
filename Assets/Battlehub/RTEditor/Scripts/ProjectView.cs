@@ -5,13 +5,17 @@ using System.Linq;
 using Battlehub.UIControls;
 using Battlehub.RTSaveLoad2;
 using Battlehub.Utils;
+using System.Collections;
+using System.Collections.Generic;
 
+using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTEditor
 {
     public class ProjectView : RuntimeEditorWindow
     {
         private IProject m_project;
+        private IResourcePreviewUtility m_resourcePreview;
 
         [SerializeField]
         private Text m_loadingProgressText;
@@ -73,8 +77,13 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            m_resourcePreview = RTEDeps.Get.ResourcePreview;
+            if(m_resourcePreview == null)
+            {
+                Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
+            }
             //RuntimeEditorApplication.SaveSelectedObjectsRequired += OnSaveSelectedObjectsRequest;
-                 
+
             //m_projectResources.SelectionChanged += OnProjectResourcesSelectionChanged;
             //m_projectResources.DoubleClick += OnProjectResourcesDoubleClick;
             //m_projectResources.Renamed += OnProjectResourcesRenamed;
@@ -102,6 +111,8 @@ namespace Battlehub.RTEditor
                 m_projectTree.LoadProject(m_project.Root);
 
                 m_projectTree.SelectedFolder = m_project.Root;
+
+                StartCoroutine(CreatePreviewForStaticResources(m_project.Root));
             });
 
             //m_projectManager.DynamicResourcesAdded += OnDynamicResourcesAdded;
@@ -174,6 +185,53 @@ namespace Battlehub.RTEditor
             //        DuplicateProjectResources();
             //    }
             //}
+        }
+
+        private IEnumerator CreatePreviewForStaticResources(ProjectItem rootItem)
+        {
+            Queue<ProjectItem> queue = new Queue<ProjectItem>();
+            queue.Enqueue(rootItem);
+
+            MappingInfo mapping = new MappingInfo();
+            for (int i = 0; i < m_project.StaticReferences.Length; ++i)
+            {
+                AssetLibraryReference reference = m_project.StaticReferences[i];
+                if(reference != null)
+                {
+                    reference.LoadIDMappingTo(mapping, false, true);
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                ProjectItem projectItem = queue.Dequeue();
+                if(projectItem is AssetItem && m_project.IsStatic(projectItem))
+                {
+                    AssetItem assetItem = (AssetItem)projectItem;
+                    UnityObject obj;
+                    if(mapping.PersistentIDtoObj.TryGetValue(unchecked((int)assetItem.ItemID), out obj))
+                    {
+                        if(assetItem.PreviewData == null && m_resourcePreview != null)
+                        {
+                            assetItem.PreviewData = m_resourcePreview.CreatePreviewData(obj);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarningFormat("Unable to create PreviewData for AssetItem {0}. Object with PersistentID {1} was not found.", assetItem.ToString(), assetItem.ItemID);
+                    }
+                }
+
+                if(projectItem.Children != null)
+                {
+                    for(int i = 0; i < projectItem.Children.Count; ++i)
+                    {
+                        ProjectItem childItem = projectItem.Children[i];
+                        queue.Enqueue(childItem);
+                    }
+                }
+                yield return new WaitForSeconds(0.01f);
+            }
         }
 
         private void AddFolder()

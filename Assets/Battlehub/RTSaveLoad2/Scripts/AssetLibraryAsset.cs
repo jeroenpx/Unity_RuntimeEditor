@@ -141,47 +141,20 @@ namespace Battlehub.RTSaveLoad2
                 AssetFolderInfo folder = m_assetLibrary.Folders[i];
                 if(folder != null)
                 {
-                    LoadIDMappingTo(folder, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
+                    if (folder.Assets != null && folder.Assets.Count > 0)
+                    {
+                        for (int j = 0; j < folder.Assets.Count; ++j)
+                        {
+                            AssetInfo asset = folder.Assets[j];
+                            LoadIDMappingTo(asset, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
+                        }
+                    }
                 }
             }
 
             mapping.Add(this, instanceIDs, persistentIDs);
         }
          
-        private void LoadIDMappingTo(
-            AssetFolderInfo folder, 
-            MappingInfo mapping,
-            List<int> instanceIDs,
-            List<int> persistentIDs,
-            bool IIDtoPID, bool PIDtoObj)
-        {
-            if(folder == null)
-            {
-                return;
-            }
-
-            if(folder.Assets != null && folder.Assets.Count > 0)
-            {
-                for(int i = 0; i < folder.Assets.Count; ++i)
-                {
-                    AssetInfo asset = folder.Assets[i];
-                    LoadIDMappingTo(asset, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
-                }
-            }
-
-            if(folder.hasChildren)
-            {
-                for(int i = 0; i < folder.children.Count; ++i)
-                {
-                    AssetFolderInfo subfolder = (AssetFolderInfo)folder.children[i];
-                    if(subfolder != null)
-                    {
-                        LoadIDMappingTo(subfolder, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
-                    }   
-                }
-            }
-        }
-
         private void LoadIDMappingTo(AssetInfo asset,
             MappingInfo mapping,
             List<int> instanceIDs,

@@ -14,7 +14,13 @@ namespace Battlehub.RTSaveLoad2
             get;
         }
 
-        bool IsReadOnly(ProjectItem projectItem);
+        AssetLibraryReference[] StaticReferences
+        {
+            get;
+        }
+
+        bool IsStatic(ProjectItem projectItem);
+
         string GetExt(UnityObject obj);
         string GetExt(Type type);
         
@@ -39,7 +45,11 @@ namespace Battlehub.RTSaveLoad2
         /// Append new references to the end of m_references array.
         /// </summary>
         [SerializeField]
-        public AssetLibraryVisible[] m_references;
+        private AssetLibraryReference[] m_staticReferences;
+        public AssetLibraryReference[] StaticReferences
+        {
+            get { return m_staticReferences; }
+        }
 
         private ProjectInfo m_projectInfo;
         private string m_projectPath;
@@ -87,7 +97,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 ProjectItem childItem = item.Children[i];
 
-                int id = m_assetDB.ToInt32(childItem.ItemID);
+                int id = unchecked((int)childItem.ItemID);
                 if (childItem.ItemID != 0 && ordinal == m_assetDB.ToOrdinal(id))
                 {
                     item.Children.RemoveAt(i);
@@ -97,7 +107,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        private void MergeAssetLibrary(AssetLibraryVisible asset, int ordinal)
+        private void MergeAssetLibrary(AssetLibraryReference asset, int ordinal)
         {
             if(!asset.KeepRuntimeProjectInSync)
             {
@@ -229,9 +239,9 @@ namespace Battlehub.RTSaveLoad2
         private void OnGetFoldersCompleted(Error error, ProjectItem rootFolder, ProjectEventHandler callback)
         {
             m_root = rootFolder;
-            for (int i = 0; i < m_references.Length; ++i)
+            for (int i = 0; i < m_staticReferences.Length; ++i)
             {
-                AssetLibraryVisible assetLibrary = m_references[i];
+                AssetLibraryReference assetLibrary = m_staticReferences[i];
                 if (assetLibrary == null)
                 {
                     continue;
@@ -246,7 +256,7 @@ namespace Battlehub.RTSaveLoad2
             callback(error);
         }
 
-        public bool IsReadOnly(ProjectItem projectItem)
+        public bool IsStatic(ProjectItem projectItem)
         {
             return m_assetDB.IsExposedFolderID(projectItem.ItemID) || m_assetDB.IsExposedResourceID(projectItem.ItemID);
         }

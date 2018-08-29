@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Battlehub.Utils
 {
@@ -26,51 +25,49 @@ namespace Battlehub.Utils
             {
                 Camera = GetComponent<Camera>();
             }
+            Camera.enabled = false;
         }
 
-        void Start()
-        {
-        }
-
-        void SetLayerRecursively(GameObject o, int layer)
+        private void SetLayerRecursively(GameObject o, int layer)
         {
             foreach (Transform t in o.GetComponentsInChildren<Transform>(true))
+            {
                 t.gameObject.layer = layer;
+            }
         }
-
-      
 
         public Texture2D TakeObjectSnapshot(GameObject prefab, GameObject fallback)
         {
             return TakeObjectSnapshot(prefab, fallback, defaultPosition, Quaternion.Euler(defaultRotation), defaultScale);
         }
 
-
         public Texture2D TakeObjectSnapshot(GameObject prefab, GameObject fallback, Vector3 position)
         {
             return TakeObjectSnapshot(prefab, fallback, position, Quaternion.Euler(defaultRotation), defaultScale);
         }
 
-
         public Texture2D TakeObjectSnapshot(GameObject prefab, GameObject fallback, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             // validate properties
             if (Camera == null)
+            {
                 throw new System.InvalidOperationException("Object Image Camera must be set");
-
+            }
+                
             if (objectImageLayer < 0 || objectImageLayer > 31)
+            {
                 throw new System.InvalidOperationException("Object Image Layer must specify a valid layer between 0 and 31");
+            }
 
-
-            // clone the specified game object so we can change its properties at will, and
-            // position the object accordingly
+   
+            // clone the specified game object so we can change its properties at will, and position the object accordingly
             bool isActive = prefab.activeSelf;
             prefab.SetActive(false);
 
-            GameObject gameObject = Instantiate(prefab, position, rotation * Quaternion.Inverse(prefab.transform.rotation)) as GameObject;
+            GameObject go = Instantiate(prefab, position, rotation * Quaternion.Inverse(prefab.transform.rotation)) as GameObject;
             if(DestroyScripts)
             {
-                MonoBehaviour[] scripts = gameObject.GetComponentsInChildren<MonoBehaviour>(true);
+                MonoBehaviour[] scripts = go.GetComponentsInChildren<MonoBehaviour>(true);
                 for (int i = 0; i < scripts.Length; ++i)
                 {
                     DestroyImmediate(scripts[i]);
@@ -78,23 +75,20 @@ namespace Battlehub.Utils
             }
 
             prefab.SetActive(isActive);
-            Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-            if(renderers.Length == 0 && fallback)
+            Renderer[] renderers = go.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length == 0 && fallback != null)
             {
-                DestroyImmediate(gameObject);
-                gameObject = Instantiate(fallback, position, rotation) as GameObject;
+                DestroyImmediate(go);
+                go = Instantiate(fallback, position, rotation) as GameObject;
                 renderers = new[] { fallback.GetComponentInChildren<Renderer>(true) };
             }
 
-            
-            //gameObject.transform.localScale = Vector3.one;
-
-            Bounds bounds = gameObject.CalculateBounds();
+            Bounds bounds = go.CalculateBounds();
             float fov = Camera.fieldOfView * Mathf.Deg2Rad;
             float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z);
             float distance = Mathf.Abs(objSize / Mathf.Sin(fov / 2.0f));
 
-            gameObject.SetActive(true);
+            go.SetActive(true);
             for(int i = 0; i < renderers.Length; ++i)
             {
                 renderers[i].gameObject.SetActive(true);
@@ -104,16 +98,15 @@ namespace Battlehub.Utils
 
             Camera.transform.position = position - distance * Camera.transform.forward;
             Camera.orthographicSize = objSize;
-            //gameObject.transform.localScale = scale;
-
+            
             // set the layer so the render to texture camera will see the object 
-            SetLayerRecursively(gameObject, objectImageLayer);
-
+            SetLayerRecursively(go, objectImageLayer);
 
             // get a temporary render texture and render the camera
             Camera.targetTexture = RenderTexture.GetTemporary(snapshotTextureWidth, snapshotTextureHeight, 24);
+            Camera.enabled = true;
             Camera.Render();
-
+            Camera.enabled = false;
             // activate the render texture and extract the image into a new texture
             RenderTexture saveActive = RenderTexture.active;
             RenderTexture.active = Camera.targetTexture;
@@ -125,7 +118,7 @@ namespace Battlehub.Utils
 
             // clean up after ourselves
             RenderTexture.ReleaseTemporary(Camera.targetTexture);
-            DestroyImmediate(gameObject);
+            DestroyImmediate(go);
 
             return texture;
         }

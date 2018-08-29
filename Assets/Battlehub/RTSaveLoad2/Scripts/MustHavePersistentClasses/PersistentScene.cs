@@ -107,14 +107,14 @@ namespace Battlehub.RTSaveLoad2
         {
             UnityObject objGo;
             GameObject go;
-            if (idToObj.TryGetValue(m_assetDB.ToInt32(descriptor.PersistentID), out objGo))
+            if (idToObj.TryGetValue(unchecked((int)descriptor.PersistentID), out objGo))
             {
                 throw new ArgumentException(string.Format("duplicate object descriptor found in descriptors hierarchy. {0}", descriptor.ToString()), "descriptor");
             }
             else
             {
                 go = new GameObject();
-                idToObj.Add(m_assetDB.ToInt32(descriptor.PersistentID), go);
+                idToObj.Add(unchecked((int)descriptor.PersistentID), go);
             }
 
             if (decomposition != null)
@@ -135,7 +135,7 @@ namespace Battlehub.RTSaveLoad2
             if (descriptor.Parent != null)
             {
                 UnityObject parentGO;
-                if (!idToObj.TryGetValue(m_assetDB.ToInt32(descriptor.Parent.PersistentID), out parentGO))
+                if (!idToObj.TryGetValue(unchecked((int)descriptor.Parent.PersistentID), out parentGO))
                 {
                     throw new ArgumentException(string.Format("objects dictionary is supposed to have object with PersistentID {0} at this stage. Descriptor {1}", descriptor.Parent.PersistentID, descriptor, "descriptor"));
                 }
@@ -174,7 +174,7 @@ namespace Battlehub.RTSaveLoad2
                     }
 
                     UnityObject obj;
-                    if (idToObj.TryGetValue(m_assetDB.ToInt32(componentDescriptor.PersistentID), out obj))
+                    if (idToObj.TryGetValue(unchecked((int)componentDescriptor.PersistentID), out obj))
                     {
                         if (obj != null && !(obj is Component))
                         {
@@ -276,7 +276,7 @@ namespace Battlehub.RTSaveLoad2
                         }
                     }
                 }
-                idToObj.Add(m_assetDB.ToInt32(componentDescriptor.PersistentID), component);
+                idToObj.Add(unchecked((int)componentDescriptor.PersistentID), component);
             }
 
             return component;

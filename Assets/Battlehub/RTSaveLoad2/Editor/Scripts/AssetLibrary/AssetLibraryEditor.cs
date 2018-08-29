@@ -59,20 +59,20 @@ namespace Battlehub.RTSaveLoad2
             AssetLibraryInfo assetLibrary = Asset.AssetLibrary;
             string assetLibraryPath = AssetDatabase.GetAssetPath(Asset);
             int assetExtIndex = assetLibraryPath.LastIndexOf(".asset");
-            string proxyPath = assetLibraryPath.Remove(assetExtIndex) + "_Visible.asset";
+            string proxyPath = assetLibraryPath.Remove(assetExtIndex) + "_Ref.asset";
 
-            AssetLibraryVisible proxy = AssetDatabase.LoadAssetAtPath<AssetLibraryVisible>(proxyPath);
-            if(proxy == null)
+            AssetLibraryReference reference = AssetDatabase.LoadAssetAtPath<AssetLibraryReference>(proxyPath);
+            if(reference == null)
             {
-                proxy = CreateInstance<AssetLibraryVisible>();
-                AssetDatabase.CreateAsset(proxy, proxyPath);
+                reference = CreateInstance<AssetLibraryReference>();
+                AssetDatabase.CreateAsset(reference, proxyPath);
             }
 
-            proxy.AssetLibrary = assetLibrary.CloneVisible();
-            proxy.AssetLibraryPath = assetLibraryPath;
-            proxy.KeepRuntimeProjectInSync = Asset.KeepRuntimeProjectInSync;
+            reference.AssetLibrary = assetLibrary.CloneVisible();
+            reference.AssetLibraryPath = assetLibraryPath;
+            reference.KeepRuntimeProjectInSync = Asset.KeepRuntimeProjectInSync;
 
-            EditorUtility.SetDirty(proxy);
+            EditorUtility.SetDirty(reference);
             EditorUtility.SetDirty(Asset);
             AssetDatabase.SaveAssets();
         }

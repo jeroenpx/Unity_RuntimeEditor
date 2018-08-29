@@ -8,7 +8,7 @@ using System;
 namespace Battlehub.RTSaveLoad2
 {
     [ProtoContract]
-    public class AssetLibraryReference
+    public class AssetLibraryReferenceInfo
     {
         [ProtoMember(1)]
         public string AssetLibrary;
@@ -24,7 +24,7 @@ namespace Battlehub.RTSaveLoad2
         public int IdentitiyCounter = 1;
 
         [ProtoMember(2)]
-        public AssetLibraryReference[] References;
+        public AssetLibraryReferenceInfo[] References;
     }
 
     [ProtoContract]
@@ -148,8 +148,26 @@ namespace Battlehub.RTSaveLoad2
     [ProtoContract]
     public class AssetItem : ProjectItem
     {
+        public event EventHandler PreviewDataChanged;
+
         [ProtoMember(1)]
-        public byte[] PreviewData;
+        public byte[] m_previewData;
+        public byte[] PreviewData
+        {
+            get { return m_previewData; }
+            set
+            {
+                if(m_previewData != value)
+                {
+                    m_previewData = value;
+                    if (PreviewDataChanged != null)
+                    {
+                        PreviewDataChanged(this, EventArgs.Empty);
+                    }
+                }
+                
+            }
+        }
 
         [ProtoMember(2)]
         public Guid TypeGuid;

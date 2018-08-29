@@ -508,7 +508,7 @@ namespace Battlehub.RTEditor
                 inputField.Select();
 
                 Image image = e.EditorPresenter.GetComponentInChildren<Image>(true);
-                if(m_project.IsReadOnly(item))
+                if(m_project.IsStatic(item))
                 {
                     image.sprite = ExposedFolderIcon;
                 }
@@ -576,7 +576,7 @@ namespace Battlehub.RTEditor
             for (int i = e.Items.Count - 1; i >= 0; i--)
             {
                 ProjectItem item = (ProjectItem)e.Items[i];
-                if (m_project.IsReadOnly(item))
+                if (m_project.IsStatic(item))
                 {
                     e.Items.Remove(item);
                 }
@@ -618,7 +618,7 @@ namespace Battlehub.RTEditor
                 text.text = item.Name;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);
-                if (m_project.IsReadOnly(item))
+                if (m_project.IsStatic(item))
                 {
                     image.sprite = ExposedFolderIcon;
                 }
@@ -627,8 +627,8 @@ namespace Battlehub.RTEditor
                     image.sprite = FolderIcon;
                 }
                 image.gameObject.SetActive(true);
-                e.CanEdit = !m_project.IsReadOnly(item) && item.Parent != null;
-                e.CanDrag = !m_project.IsReadOnly(item) && item.Parent != null;
+                e.CanEdit = !m_project.IsStatic(item) && item.Parent != null;
+                e.CanDrag = !m_project.IsStatic(item) && item.Parent != null;
                 e.HasChildren = item.Children != null && item.Children.Count(projectItem => CanDisplayFolder(projectItem)) > 0;
             }
         }

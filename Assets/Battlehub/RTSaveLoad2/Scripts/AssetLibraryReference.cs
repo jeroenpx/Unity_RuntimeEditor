@@ -2,7 +2,7 @@
 
 namespace Battlehub.RTSaveLoad2
 {
-    public class AssetLibraryVisible : AssetLibraryAsset
+    public class AssetLibraryReference : AssetLibraryAsset
     {
         [SerializeField]
         public string AssetLibraryPath;
