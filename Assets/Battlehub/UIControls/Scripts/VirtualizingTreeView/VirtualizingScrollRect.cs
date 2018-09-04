@@ -520,6 +520,7 @@ namespace Battlehub.UIControls
                     m_containers.AddLast(container);
                 }
             }
+
             if (ItemDataBinding != null && Items != null)
             {
                 int i = 0;
@@ -531,8 +532,6 @@ namespace Battlehub.UIControls
                 }
             }
         }
-
-      
        
         public bool IsParentOf(Transform child)
         {

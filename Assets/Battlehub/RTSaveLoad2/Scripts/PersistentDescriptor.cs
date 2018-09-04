@@ -24,12 +24,16 @@ namespace Battlehub.RTSaveLoad2
         public long PersistentID;
 
         [ProtoMember(4)]
-        public string AssemblyQualifiedName;
+        public Guid PersistentTypeGuid;
 
-        public PersistentDescriptor(Type persistentType, long persistentID)
+        [ProtoMember(5)]
+        public string Name;
+
+        public PersistentDescriptor(Guid persistentTypeGuid, long persistentID, string name)
         {
             PersistentID = persistentID;
-            AssemblyQualifiedName = persistentType.AssemblyQualifiedName;
+            PersistentTypeGuid = persistentTypeGuid;
+            Name = name;
 
             Children = new PersistentDescriptor[0];
             Components = new PersistentDescriptor[0];
@@ -71,7 +75,7 @@ namespace Battlehub.RTSaveLoad2
                     descriptor = descriptor.Parent;
                 }
             }
-            return string.Format("Descriptor InstanceId = {0}, Type = {1}, Path = {2}, Children = {3} Components = {4}", PersistentID, AssemblyQualifiedName, pathToDesriptor, Children != null ? Children.Length : 0, Components != null ? Components.Length : 0);
+            return string.Format("Descriptor InstanceId = {0}, Type = {1}, Path = {2}, Children = {3} Components = {4}", PersistentID, PersistentTypeGuid, pathToDesriptor, Children != null ? Children.Length : 0, Components != null ? Components.Length : 0);
         }
     }
 }

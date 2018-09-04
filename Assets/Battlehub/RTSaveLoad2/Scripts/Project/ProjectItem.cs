@@ -21,9 +21,12 @@ namespace Battlehub.RTSaveLoad2
     public class ProjectInfo
     {
         [ProtoMember(1)]
-        public int IdentitiyCounter = 1;
+        public int FolderIdentifier = 1;
 
         [ProtoMember(2)]
+        public int AssetIdentifier = 1;
+
+        [ProtoMember(3)]
         public AssetLibraryReferenceInfo[] References;
     }
 
@@ -146,6 +149,22 @@ namespace Battlehub.RTSaveLoad2
     }
 
     [ProtoContract]
+    public class PrefabPartItem
+    {
+        [ProtoMember(1)]
+        public long PartID;
+
+        [ProtoMember(2)]
+        public long ParentID;
+
+        [ProtoMember(3)]
+        public string Name;
+
+        [ProtoMember(4)]
+        public Guid TypeGuid;
+    }
+
+    [ProtoContract]
     public class AssetItem : ProjectItem
     {
         public event EventHandler PreviewDataChanged;
@@ -171,6 +190,9 @@ namespace Battlehub.RTSaveLoad2
 
         [ProtoMember(2)]
         public Guid TypeGuid;
+
+        [ProtoMember(3)]
+        public PrefabPartItem[] Parts;
 
         public override bool IsFolder
         {

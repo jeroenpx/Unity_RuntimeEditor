@@ -38,8 +38,6 @@ namespace Battlehub.RTSaveLoad2
             Data = data.ToArray();
 
             Dependencies = getDepsCtx.Dependencies.ToArray();
-            DependenciesToUsings(Dependencies, usings);
-            Usings = usings.ToArray();
         }
 
         protected override object WriteToImpl(object obj)
@@ -153,23 +151,26 @@ namespace Battlehub.RTSaveLoad2
                 for (int i = 0; i < descriptor.Components.Length; ++i)
                 {
                     PersistentDescriptor componentDescriptor = descriptor.Components[i];
-                    
-                    Type persistentComponentType = Type.GetType(componentDescriptor.AssemblyQualifiedName);
+
+                    Type persistentComponentType = m_typeMap.ToType(componentDescriptor.PersistentTypeGuid);
                     if (persistentComponentType == null)
                     {
-                        Debug.LogWarningFormat("Unknown type {0} associated with component Descriptor {1}", componentDescriptor.AssemblyQualifiedName, componentDescriptor.ToString());
+                        Debug.LogWarningFormat("Unknown type {0} associated with component Descriptor {1}", componentDescriptor.PersistentTypeGuid, componentDescriptor.ToString());
+                        idToObj.Add(unchecked((int)componentDescriptor.PersistentID), null);
                         continue;
                     }
                     Type componentType = typeMap.ToUnityType(persistentComponentType);
                     if(componentType == null)
                     {
                         Debug.LogWarningFormat("There is no mapped type for " + persistentComponentType.FullName + " in TypeMap");
+                        idToObj.Add(unchecked((int)componentDescriptor.PersistentID), null);
                         continue;
                     }
 
                     if (!componentType.IsSubclassOf(typeof(Component)))
                     {
                         Debug.LogErrorFormat("{0} is not subclass of {1}", componentType.FullName, typeof(Component).FullName);
+                        idToObj.Add(unchecked((int)componentDescriptor.PersistentID), null);
                         continue;
                     }
 
@@ -178,7 +179,7 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (obj != null && !(obj is Component))
                         {
-                            Debug.LogError("Invalid Type. Component " + obj.name + " " + obj.GetType() + " " + obj.GetInstanceID() + " " + descriptor.AssemblyQualifiedName + " " + componentDescriptor.AssemblyQualifiedName);
+                            Debug.LogError("Invalid Type. Component " + obj.name + " " + obj.GetType() + " " + obj.GetInstanceID() + " " + descriptor.PersistentTypeGuid + " " + componentDescriptor.PersistentTypeGuid);
                         }
                     }
                     else

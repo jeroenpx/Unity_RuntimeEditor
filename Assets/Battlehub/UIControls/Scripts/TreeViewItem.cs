@@ -100,6 +100,7 @@ namespace Battlehub.UIControls
             }
         }
 
+
         public void UpdateIndent()
         {
             if (m_parent != null && TreeView != null && m_itemLayout != null)

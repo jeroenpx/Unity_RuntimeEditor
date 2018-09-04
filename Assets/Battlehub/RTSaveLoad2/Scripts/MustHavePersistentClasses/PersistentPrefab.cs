@@ -17,12 +17,8 @@ namespace Battlehub.RTSaveLoad2
         [ProtoMember(3)]
         public long[] Identifiers;
 
-        //Asset library ordinals
-        [ProtoMember(4)]
-        public int[] Usings;
-
         //Identifiers of assets PersistentPrefab depends on
-        [ProtoMember(5)]
+        [ProtoMember(4)]
         public long[] Dependencies;
 
         protected readonly ITypeMap m_typeMap;
@@ -49,25 +45,8 @@ namespace Battlehub.RTSaveLoad2
             Data = data.ToArray();
 
             Dependencies = getDepsCtx.Dependencies.ToArray();
-            DependenciesToUsings(Dependencies, usings);
-            Usings = usings.ToArray();
         }
 
-        protected void DependenciesToUsings(long[] dependencies, HashSet<int> usings)
-        {
-            for (int i = 0; i < dependencies.Length; ++i)
-            {
-                long dependency = dependencies[i];
-                if (m_assetDB.IsResourceID(dependency))
-                {
-                    int ordinal = m_assetDB.ToOrdinal(dependency);
-                    if (!usings.Contains(ordinal))
-                    {
-                        usings.Add(ordinal);
-                    }
-                }
-            }
-        }
 
         protected override object WriteToImpl(object obj)
         {
@@ -104,7 +83,7 @@ namespace Battlehub.RTSaveLoad2
                 usings.Add(ordinal);
             }
             
-            PersistentDescriptor descriptor = new PersistentDescriptor(persistentType, persistentID);
+            PersistentDescriptor descriptor = new PersistentDescriptor(m_typeMap.ToGuid(persistentType), persistentID, go.name);
             descriptor.Parent = parentDescriptor;
 
             PersistentObject goData = (PersistentObject)Activator.CreateInstance(persistentType);
@@ -132,7 +111,7 @@ namespace Battlehub.RTSaveLoad2
                         int ordinal = m_assetDB.ToOrdinal(componentID);
                         usings.Add(ordinal);
                     }
-                    PersistentDescriptor componentDescriptor = new PersistentDescriptor(persistentComponentType, componentID);
+                    PersistentDescriptor componentDescriptor = new PersistentDescriptor(m_typeMap.ToGuid(persistentComponentType), componentID, component.name);
                     componentDescriptor.Parent = descriptor;
                     componentDescriptors.Add(componentDescriptor);
 

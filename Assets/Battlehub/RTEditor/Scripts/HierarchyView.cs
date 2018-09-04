@@ -15,7 +15,7 @@ namespace Battlehub.RTEditor
     public class HierarchyView : RuntimeEditorWindow
     {
         public GameObject TreeViewPrefab;
-        private TreeView m_treeView;
+        private VirtualizingTreeView m_treeView;
         public Color DisabledItemColor = new Color(0.5f, 0.5f, 0.5f);
         public Color EnabledItemColor = new Color(0.2f, 0.2f, 0.2f);
         public UnityEvent ItemDoubleClick;
@@ -48,9 +48,9 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_treeView = Instantiate(TreeViewPrefab).GetComponent<TreeView>();
+            m_treeView = Instantiate(TreeViewPrefab).GetComponent<VirtualizingTreeView>();
             m_treeView.transform.SetParent(transform, false);
-            m_treeView.RemoveKey = KeyCode.None;
+            //m_treeView.RemoveKey = KeyCode.None;
             
             m_treeView.ItemDataBinding += OnItemDataBinding;
             m_treeView.SelectionChanged += OnSelectionChanged;
@@ -280,7 +280,7 @@ namespace Battlehub.RTEditor
             }  
         }
 
-        private void OnItemExpanding(object sender, ItemExpandingArgs e)
+        private void OnItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
             GameObject gameObject = (GameObject)e.Item;
             ExposeToEditor exposeToEditor = gameObject.GetComponent<ExposeToEditor>();
@@ -351,7 +351,7 @@ namespace Battlehub.RTEditor
             //Removal handled in RuntimeEditor class
         }
 
-        private void OnItemDataBinding(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             GameObject dataItem = e.Item as GameObject;
             if (dataItem != null)
@@ -382,7 +382,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnItemBeginEdit(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemBeginEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             GameObject dataItem = e.Item as GameObject;
             if (dataItem != null)
@@ -401,7 +401,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnItemEndEdit(object sender, TreeViewItemDataBindingArgs e)
+        private void OnItemEndEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             GameObject dataItem = e.Item as GameObject;
             if (dataItem != null)
@@ -559,7 +559,7 @@ namespace Battlehub.RTEditor
             {
                 if (m_isSpawningPrefab && m_treeView.DropAction != ItemDropAction.None)
                 {
-                    TreeViewItem treeViewItem = (TreeViewItem)m_treeView.GetItemContainer(m_treeView.DropTarget);
+                    VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(m_treeView.DropTarget);
                     GameObject dropTarget = (GameObject)m_treeView.DropTarget;
                     if (m_treeView.DropAction == ItemDropAction.SetLastChild)
                     {
@@ -586,8 +586,13 @@ namespace Battlehub.RTEditor
                         o.transform.SetParent(dropTarget.transform.parent);
                         o.transform.SetSiblingIndex(index);
 
-                        TreeViewItem newTreeViewItem = (TreeViewItem)m_treeView.Insert(index, o.gameObject);
-                        newTreeViewItem.Parent = treeViewItem.Parent;
+                        TreeViewItemContainerData itemContainerData = (TreeViewItemContainerData)m_treeView.Insert(index, o.gameObject);
+                        itemContainerData.Parent = treeViewItem.Parent;
+
+                        
+
+                        //TreeViewItem newTreeViewItem = (TreeViewItem)m_treeView.Insert(index, o.gameObject);
+                        //newTreeViewItem.Parent = treeViewItem.Parent;
                     }
                 }
                 else
@@ -616,7 +621,7 @@ namespace Battlehub.RTEditor
 
         private void OnObjectEnabled(ExposeToEditor obj)
         {
-            TreeViewItem tvItem = (TreeViewItem)m_treeView.GetItemContainer(obj.gameObject);
+            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj.gameObject);
             if (tvItem == null)
             {
                 return;
@@ -627,7 +632,7 @@ namespace Battlehub.RTEditor
 
         private void OnObjectDisabled(ExposeToEditor obj)
         {
-            TreeViewItem tvItem = (TreeViewItem)m_treeView.GetItemContainer(obj.gameObject);
+            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj.gameObject);
             if (tvItem == null)
             {
                 return;
@@ -724,7 +729,7 @@ namespace Battlehub.RTEditor
                 {
                     if (isLastChild)
                     {
-                        TreeViewItem oldParentContainer = m_treeView.GetTreeViewItem(oldParentGO);
+                        VirtualizingTreeViewItem oldParentContainer = m_treeView.GetTreeViewItem(oldParentGO);
                         if (oldParentContainer)
                         {
                             oldParentContainer.CanExpand = false;
@@ -736,7 +741,7 @@ namespace Battlehub.RTEditor
             {   
                 if(newParentGO != null)
                 {
-                    TreeViewItem newParentTreeViewItem = (TreeViewItem)m_treeView.GetItemContainer(newParentGO);
+                    VirtualizingTreeViewItem newParentTreeViewItem = m_treeView.GetTreeViewItem(newParentGO);
                     if(newParentTreeViewItem != null)
                     {
                         newParentTreeViewItem.CanExpand = true;
@@ -752,7 +757,7 @@ namespace Battlehub.RTEditor
 
         private void OnNameChanged(ExposeToEditor obj)
         {
-            TreeViewItem tvItem = (TreeViewItem)m_treeView.GetItemContainer(obj.gameObject);
+            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj.gameObject);
             if (tvItem == null)
             {
                 return;

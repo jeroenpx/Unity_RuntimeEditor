@@ -464,11 +464,25 @@ namespace Battlehub.UIControls
             return itemContainerData.IsExpanded;
         }
 
+        public void Expand(object item)
+        {
+            VirtualizingTreeViewItem tvi = GetTreeViewItem(item);
+            if (tvi != null)
+            {
+                tvi.IsExpanded = true;
+            }
+            else
+            {
+                TreeViewItemContainerData containerData = (TreeViewItemContainerData)GetItemContainerData(item);
+                containerData.IsExpanded = true;
+            }
+        }
+
         /// <summary>
         /// To prevent Expand method call during drag drop operation 
         /// </summary>
         private bool m_expandSilently;
-        public void Expand(object item)
+        public void Internal_Expand(object item)
         {
             TreeViewItemContainerData treeViewItemData = (TreeViewItemContainerData)GetItemContainerData(item);
             if(treeViewItemData == null)
@@ -530,6 +544,20 @@ namespace Battlehub.UIControls
 
         public void Collapse(object item)
         {
+            VirtualizingTreeViewItem tvi = GetTreeViewItem(item);
+            if(tvi != null)
+            {
+                tvi.IsExpanded = false;
+            }
+            else
+            {
+                TreeViewItemContainerData containerData = (TreeViewItemContainerData)GetItemContainerData(item);
+                containerData.IsExpanded = false;
+            }
+        }
+
+        public void Internal_Collapse(object item)
+        {
             TreeViewItemContainerData treeViewItemData = (TreeViewItemContainerData)GetItemContainerData(item);
             if (treeViewItemData == null)
             {
@@ -549,7 +577,9 @@ namespace Battlehub.UIControls
             {
                 bool unselect = false;
                 base.DestroyItems(itemsToDestroy.ToArray(), unselect);
-            }            
+            }
+
+            SelectedIndex = IndexOf(SelectedItem);
         }
 
         private void Collapse(object[] items)
@@ -609,11 +639,12 @@ namespace Battlehub.UIControls
 
         private void OnTreeViewItemParentChanged(object sender, VirtualizingParentChangedEventArgs e)
         {
-            if (!CanHandleEvent(sender))
+            if(!CanHandleEvent(sender))
             {
                 return;
             }
             TreeViewItemContainerData tvItem = (TreeViewItemContainerData)sender;
+         
             TreeViewItemContainerData oldParent = e.OldParent;
             if (DropMarker.Action != ItemDropAction.SetLastChild && DropMarker.Action != ItemDropAction.None)
             {
@@ -908,6 +939,7 @@ namespace Battlehub.UIControls
         {
             return GetItemContainer(item) as VirtualizingTreeViewItem;
         }
+
 
         public void ScrollIntoView(object obj)
         {

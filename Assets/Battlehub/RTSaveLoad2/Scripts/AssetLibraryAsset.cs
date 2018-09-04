@@ -154,36 +154,34 @@ namespace Battlehub.RTSaveLoad2
 
             mapping.Add(this, instanceIDs, persistentIDs);
         }
-         
+
         private void LoadIDMappingTo(AssetInfo asset,
             MappingInfo mapping,
             List<int> instanceIDs,
             List<int> persistentIDs,
             bool IIDtoPID, bool PIDtoObj)
         {
-            if (asset.Object != null)
+
+            if (IIDtoPID)
             {
-                if (IIDtoPID)
-                {
-                    int instanceID = asset.Object.GetInstanceID();
-                    mapping.Add(instanceID, m_offset + asset.PersistentID);
-                    instanceIDs.Add(instanceID);
-                }
+                int instanceID = asset.Object.GetInstanceID();
+                mapping.Add(instanceID, m_offset + asset.PersistentID);
+                instanceIDs.Add(instanceID);
+            }
 
-                if (PIDtoObj)
-                {
-                    int persistentID = m_offset + asset.PersistentID;
-                    mapping.Add(persistentID, asset.Object);
-                    persistentIDs.Add(persistentID);
-                }
+            if (PIDtoObj)
+            {
+                int persistentID = m_offset + asset.PersistentID;
+                mapping.Add(persistentID, asset.Object);
+                persistentIDs.Add(persistentID);
+            }
 
-                if (asset.children != null)
+            if (asset.children != null)
+            {
+                for (int i = 0; i < asset.children.Count; ++i)
                 {
-                    for (int i = 0; i < asset.children.Count; ++i)
-                    {
-                        AssetInfo child = (AssetInfo)asset.children[i];
-                        LoadIDMappingTo(child, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
-                    }
+                    AssetInfo child = (AssetInfo)asset.children[i];
+                    LoadIDMappingTo(child, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
                 }
             }
         }

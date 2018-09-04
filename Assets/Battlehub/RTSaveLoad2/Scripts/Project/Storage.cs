@@ -16,10 +16,14 @@ namespace Battlehub.RTSaveLoad2
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
         void GetFolderTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetAssets(string projectPath, string[] folderPath, StorageEventHandler<ProjectItem[][]> callback);
+        void Save(string projectPath, string folderPath, AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback);
+        void Load(string projectPath, string assetPath, Type type, StorageEventHandler<PersistentObject> callback);
     }
 
     public class FileSystemStorage : IStorage
     {
+        private const string MetaExt = ".rtmeta";
+
         private string RootPath
         {
             get { return Application.persistentDataPath; }
@@ -80,7 +84,7 @@ namespace Battlehub.RTSaveLoad2
 
         private static T GetItem<T>(ISerializer serializer, string path) where T : ProjectItem, new()
         {
-            string metaFile = path + ".rtmeta";
+            string metaFile = path + MetaExt;
             T item;
             if (File.Exists(metaFile))
             {
@@ -153,6 +157,69 @@ namespace Battlehub.RTSaveLoad2
             }
 
             callback(new Error(), result);
+        }
+
+        public void Save(string projectPath, string folderPath,  AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback)
+        {
+            string projectInfoPath = Path.Combine(FullPath(projectPath), "Project.rtmeta");
+            projectPath = AssetsFolderPath(projectPath);
+            ISerializer serializer = RTSL2Deps.Get.Serializer;
+            Error error = new Error(Error.OK);
+            try
+            {
+                string path = Path.Combine(projectPath, folderPath);
+                using (FileStream fs = File.OpenWrite(Path.Combine(path, assetItem.NameExt + MetaExt)))
+                {
+                    serializer.Serialize(assetItem, fs);
+                }
+                using (FileStream fs = File.OpenWrite(Path.Combine(path, assetItem.NameExt)))
+                {
+                    serializer.Serialize(persistentObject, fs);
+                }
+                using (FileStream fs = File.OpenWrite(projectInfoPath))
+                {
+                    serializer.Serialize(projectInfo, fs);
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.LogErrorFormat("Unable to create asset: {0} -> got exception: {1} ", assetItem.NameExt, e.ToString());
+                error.ErrorCode = Error.E_Exception;
+                error.ErrorText = e.ToString();
+            }
+
+            callback(error);
+        }
+
+        public void Load(string projectPath, string assetPath, Type type, StorageEventHandler<PersistentObject> callback)
+        {
+            assetPath = Path.Combine(FullPath(projectPath), assetPath);
+            ISerializer serializer = RTSL2Deps.Get.Serializer;
+            Error error = new Error(Error.OK);
+            PersistentObject result = null;
+            try
+            {
+                if(File.Exists(assetPath))
+                {
+                    using (FileStream fs = File.OpenRead(assetPath))
+                    {
+                        result = (PersistentObject)serializer.Deserialize(fs, type);
+                    }
+                }
+                else
+                {
+                    error.ErrorCode = Error.E_NotFound;
+                }
+
+            }
+            catch(Exception e)
+            {
+                Debug.LogErrorFormat("Unable to load asset: {0} -> got exception: {1} ", assetPath, e.ToString());
+                error.ErrorCode = Error.E_Exception;
+                error.ErrorText = e.ToString();
+            }
+
+            callback(error, result);
         }
     }
 }

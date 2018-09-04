@@ -20,7 +20,7 @@ namespace Battlehub.UIControls
                 UpdateState();
             }
         }
-        
+
         public bool IsOn
         {
             get { return m_toggle.isOn; }
@@ -33,7 +33,7 @@ namespace Battlehub.UIControls
         private bool m_started;
         private void UpdateState()
         {
-            if(m_started)
+            if (m_started)
             {
                 DoUpdateState();
             }
@@ -91,7 +91,7 @@ namespace Battlehub.UIControls
                 OffGraphic.enabled = false;
             }
             UpdateState();
-            
+
             m_toggle.onValueChanged.AddListener(OnValueChanged);
         }
 
@@ -102,16 +102,16 @@ namespace Battlehub.UIControls
 
         private void OnEnable()
         {
-            if(m_toggle != null)
+            if (m_toggle != null)
             {
                 UpdateState();
             }
-           
+
         }
 
         private void OnDestroy()
         {
-            if(m_toggle != null)
+            if (m_toggle != null)
             {
                 m_toggle.onValueChanged.RemoveListener(OnValueChanged);
             }
@@ -119,7 +119,7 @@ namespace Battlehub.UIControls
 
         private void OnValueChanged(bool value)
         {
-            UpdateState(); 
+            UpdateState();
         }
     }
 }

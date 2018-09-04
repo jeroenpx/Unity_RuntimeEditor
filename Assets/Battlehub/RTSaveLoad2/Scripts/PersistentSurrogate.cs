@@ -176,12 +176,12 @@ namespace Battlehub.RTSaveLoad2
             return m_idMap.ToID(uo);
         }
 
-        public T FromID<T>(long id) where T : UnityObject
+        protected T FromID<T>(long id) where T : UnityObject
         {
             return m_idMap.FromID<T>(id);
         }
 
-        public T[] FromID<T>(long[] id) where T : UnityObject
+        protected T[] FromID<T>(long[] id) where T : UnityObject
         {
             return m_idMap.FromID<T>(id);
         }

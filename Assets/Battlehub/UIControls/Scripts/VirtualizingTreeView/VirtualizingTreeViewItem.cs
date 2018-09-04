@@ -45,7 +45,7 @@ namespace Battlehub.UIControls
                             m_expander.CanExpand = m_treeViewItemData.CanExpand;
                             m_expander.IsOn = m_treeViewItemData.IsExpanded && m_treeViewItemData.CanExpand;
                         }
-
+                        
                         name = base.Item.ToString() + " " + m_treeViewItemData.ToString();
                     }
                     
@@ -211,11 +211,11 @@ namespace Battlehub.UIControls
                     {
                         if (value && CanExpand)
                         {
-                            TreeView.Expand(m_treeViewItemData.Item);
+                            TreeView.Internal_Expand(m_treeViewItemData.Item);
                         }
                         else
                         {
-                            TreeView.Collapse(m_treeViewItemData.Item);
+                            TreeView.Internal_Collapse(m_treeViewItemData.Item);
                         }
                     }
                 }

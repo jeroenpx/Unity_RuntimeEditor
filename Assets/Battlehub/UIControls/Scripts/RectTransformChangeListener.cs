@@ -17,7 +17,6 @@ namespace Battlehub.UIControls
                 RectTransformChanged();
             }
         }
-      
     }
 
 }

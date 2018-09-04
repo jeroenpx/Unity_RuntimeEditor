@@ -12,6 +12,8 @@ namespace Battlehub.RTSaveLoad2
 
         TData Deserialize<TData>(byte[] b);
 
+        object Deserialize(Stream stream, Type type);
+
         void Serialize<TData>(TData data, Stream stream);
 
         byte[] Serialize<TData>(TData data);
@@ -56,6 +58,11 @@ namespace Battlehub.RTSaveLoad2
         {
             TData deserialized = (TData)model.Deserialize(stream, null, typeof(TData));
             return deserialized;
+        }
+
+        public object Deserialize(Stream stream, Type type)
+        {
+            return model.Deserialize(stream, null, type);
         }
 
         public TData Deserialize<TData>(byte[] b)
