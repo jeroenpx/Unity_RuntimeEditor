@@ -30,8 +30,7 @@ namespace Battlehub.RTSaveLoad2
                 return texture;
             }
 
-            UnityObject obj = (UnityObject)Activator.CreateInstance(type);
-            return obj;
+            return (UnityObject)Activator.CreateInstance(type);
         }
     }
 

@@ -14,8 +14,10 @@ namespace Battlehub.RTEditor
 {
     public class ProjectView : RuntimeEditorWindow
     {
+        private IAssetDB m_assetDB;
         private IProject m_project;
         private IResourcePreviewUtility m_resourcePreview;
+        private MappingInfo m_staticReferencesMapping;
 
         [SerializeField]
         private Text m_loadingProgressText;
@@ -69,6 +71,7 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
+           
             m_project = RTSL2Deps.Get.Project;
             if(m_project == null)
             {
@@ -81,6 +84,12 @@ namespace Battlehub.RTEditor
             if(m_resourcePreview == null)
             {
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
+            }
+
+            m_assetDB = RTSL2Deps.Get.AssetDB;
+            if (m_assetDB == null)
+            {
+                Debug.LogWarning("RTSL2Deps.Get.AssetDB is null");
             }
             //RuntimeEditorApplication.SaveSelectedObjectsRequired += OnSaveSelectedObjectsRequest;
 
@@ -98,6 +107,16 @@ namespace Battlehub.RTEditor
 
             ShowProgress = true;
 
+            m_staticReferencesMapping = new MappingInfo();
+            for (int i = 0; i < m_project.StaticReferences.Length; ++i)
+            {
+                AssetLibraryReference reference = m_project.StaticReferences[i];
+                if (reference != null)
+                {
+                    reference.LoadIDMappingTo(m_staticReferencesMapping, false, true);
+                }
+            }
+
             m_project.Open(ProjectName, error =>
             {
                 if(error.HasError)
@@ -112,7 +131,9 @@ namespace Battlehub.RTEditor
 
                 m_projectTree.SelectedFolder = m_project.Root;
 
-                StartCoroutine(CreatePreviewForStaticResources(m_project.Root));
+          
+
+                //StartCoroutine(CreatePreviewForStaticResources(m_project.Root));
             });
 
             //m_projectManager.DynamicResourcesAdded += OnDynamicResourcesAdded;
@@ -187,50 +208,51 @@ namespace Battlehub.RTEditor
             //}
         }
 
-        private IEnumerator CreatePreviewForStaticResources(ProjectItem rootItem)
+        private IEnumerator CreatePreviewForLoadedResources(ProjectItem[] items)
         {
-            Queue<ProjectItem> queue = new Queue<ProjectItem>();
-            queue.Enqueue(rootItem);
-
-            MappingInfo mapping = new MappingInfo();
-            for (int i = 0; i < m_project.StaticReferences.Length; ++i)
+            if(m_resourcePreview == null)
             {
-                AssetLibraryReference reference = m_project.StaticReferences[i];
-                if(reference != null)
-                {
-                    reference.LoadIDMappingTo(mapping, false, true);
-                }
+                yield break;
             }
-
-            while (queue.Count > 0)
+      
+            for(int i = 0; i < items.Length; ++i)
             {
-                ProjectItem projectItem = queue.Dequeue();
-                if(projectItem is AssetItem && m_project.IsStatic(projectItem))
+                ProjectItem projectItem = items[i];
+                if(projectItem is AssetItem)
                 {
                     AssetItem assetItem = (AssetItem)projectItem;
                     UnityObject obj;
-                    if(mapping.PersistentIDtoObj.TryGetValue(unchecked((int)assetItem.ItemID), out obj))
+                    if(m_project.IsStatic(projectItem))
                     {
-                        if(assetItem.PreviewData == null && m_resourcePreview != null)
+                        if(!m_staticReferencesMapping.PersistentIDtoObj.TryGetValue(unchecked((int)assetItem.ItemID), out obj))
                         {
-                            assetItem.PreviewData = m_resourcePreview.CreatePreviewData(obj);
+                            obj = null;
                         }
                     }
                     else
                     {
-                        Debug.LogWarningFormat("Unable to create PreviewData for AssetItem {0}. Object with PersistentID {1} was not found.", assetItem.ToString(), assetItem.ItemID);
+                        if (assetItem.Preview == null && m_assetDB != null)
+                        {
+                            obj = m_assetDB.FromID<UnityObject>(assetItem.ItemID);
+                        }
+                        else
+                        {
+                            obj = null;
+                        }
                     }
-                }
 
-                if(projectItem.Children != null)
-                {
-                    for(int i = 0; i < projectItem.Children.Count; ++i)
+
+                    if(obj != null)
                     {
-                        ProjectItem childItem = projectItem.Children[i];
-                        queue.Enqueue(childItem);
+                        assetItem.Preview = new Preview
+                        {
+                            ItemID = assetItem.ItemID,
+                            PreviewData = m_resourcePreview.CreatePreviewData(obj)
+                        };
                     }
-                }
-                yield return new WaitForSeconds(0.01f);
+
+                    yield return new WaitForSeconds(0.01f);
+                } 
             }
         }
 
@@ -459,7 +481,7 @@ namespace Battlehub.RTEditor
             }
 
             ShowProgress = true;
-            m_project.GetAssets(e.NewItems, (error, assets) =>
+            m_project.GetAssetItems(e.NewItems, (error, assets) =>
             {
                 ShowProgress = false;
                 if (error.HasError)
@@ -467,7 +489,8 @@ namespace Battlehub.RTEditor
                     PopupWindow.Show("Can't GetAssets", error.ToString(), "OK");
                     return;
                 }
-                
+
+                StartCoroutine(CreatePreviewForLoadedResources(assets));
                 m_projectResources.SetItems(assets, true);
             });
 

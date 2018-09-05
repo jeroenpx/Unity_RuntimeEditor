@@ -17,7 +17,7 @@ namespace Battlehub.RTSaveLoad2
             get { return (AssetLibraryAsset)target; }
         }
 
-        private bool m_canRenderAssetsGUI;
+        //private bool m_canRenderAssetsGUI;
         private bool m_isSyncRequired;
 
         private void OnEnable()
@@ -128,7 +128,7 @@ namespace Battlehub.RTSaveLoad2
 
         private void OnSelectedFoldersChanged(object sender, EventArgs e)
         {
-            m_canRenderAssetsGUI = m_projectGUI.SelectedFolders != null && m_projectGUI.SelectedFolders.Length > 0;
+            //m_canRenderAssetsGUI = m_projectGUI.SelectedFolders != null && m_projectGUI.SelectedFolders.Length > 0;
             m_assetsGUI.SetSelectedFolders(m_projectGUI.SelectedFolders);
         }
 

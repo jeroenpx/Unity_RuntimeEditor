@@ -104662,7 +104662,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WindowType: 3
-  TreeViewPrefab: {fileID: 110726, guid: 741f31daca5ff07498d227214325f62e, type: 2}
+  TreeViewPrefab: {fileID: 1733655225862514, guid: 370f94e0ffbc8b645974abea347d3405,
+    type: 2}
   DisabledItemColor: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
   EnabledItemColor: {r: 1, g: 1, b: 1, a: 1}
   ItemDoubleClick:

@@ -1,6 +1,7 @@
 ﻿using ProtoBuf;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 namespace UnityEngine.Battlehub.SL2
@@ -55,10 +56,10 @@ namespace Battlehub.RTSaveLoad2
 
     public abstract class PersistentSurrogate : IPersistentSurrogate
     {
-        private IIDMap m_idMap;
+        protected readonly IAssetDB m_assetDB;
         protected PersistentSurrogate()
         {
-            m_idMap = RTSL2Deps.Get.IDMap;
+            m_assetDB = RTSL2Deps.Get.AssetDB;
         }
 
         protected virtual void ReadFromImpl(object obj) { }
@@ -168,22 +169,22 @@ namespace Battlehub.RTSaveLoad2
 
         protected long ToID(UnityObject uo)
         {
-            return m_idMap.ToID(uo);
+            return m_assetDB.ToID(uo);
         }
 
         protected long[] ToID(UnityObject[] uo)
         {
-            return m_idMap.ToID(uo);
+            return m_assetDB.ToID(uo);
         }
 
         protected T FromID<T>(long id) where T : UnityObject
         {
-            return m_idMap.FromID<T>(id);
+            return m_assetDB.FromID<T>(id);
         }
 
         protected T[] FromID<T>(long[] id) where T : UnityObject
         {
-            return m_idMap.FromID<T>(id);
+            return m_assetDB.FromID<T>(id);
         }
     }
 }

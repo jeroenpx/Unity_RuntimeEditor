@@ -29,28 +29,34 @@ namespace Battlehub.RTSaveLoad2
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
 
-        bool IsLoaded(long id);
+        bool IsMapped(long id);
         T FromID<T>(long id) where T : UnityObject;
         T[] FromID<T>(long[] id) where T : UnityObject;
     }
 
-    public interface IIDMapManager : IIDMap
-    {
-        void LoadMapping(int ordinal, bool IIDtoPID, bool PIDtoObj);
-        void UnloadMapping(int ordinal);
-        void LoadMapping(bool IIDtoPID, bool PIDtoObj);
-    }
+    //public interface IIDMapManager : IIDMap
+    //{
+    //    void LoadMapping(int ordinal, bool IIDtoPID, bool PIDtoObj);
+    //    void UnloadMapping(int ordinal);
+    //    void LoadMapping(bool IIDtoPID, bool PIDtoObj);
+    //}
 
-    public interface IAssetDB : IIDMapManager
+    public interface IAssetDB : IIDMap
     {
         void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj);
         void UnregisterSceneObjects();
 
-        //void RegisterRuntimeResource(Dictionary<int, UnityObject> idToObj);
-
+        void RegisterDynamicResource(int persistentID, UnityObject obj);
+        void RegisterDynamicResources(Dictionary<int, UnityObject> idToObj);
+        void UnregisterDynamicResources();
+        
+        bool IsLibraryRefLoaded(int ordinal);
         bool IsLibraryLoaded(int ordinal);
+        bool AddLibrary(AssetLibraryAsset library, int ordinal);
+        void RemoveLibrary(int ordinal);
         bool LoadLibrary(string assetLibrary, int ordinal);
-        void UnloadLibrary(int ordinal);
+        void UnloadLibraries();
+        
         AsyncOperation UnloadUnusedAssets(Action<AsyncOperation> completedCallback = null);   
     }
 
@@ -61,7 +67,10 @@ namespace Battlehub.RTSaveLoad2
         private MappingInfo m_mapping = new MappingInfo();
 
         private Dictionary<int, UnityObject> m_persistentIDToSceneObject;
-        private Dictionary<int, int> m_idToPersistentID;
+        private Dictionary<int, int> m_sceneObjectIDToPersistentID;
+
+        private readonly Dictionary<int, UnityObject> m_persistentIDToDynamicResource = new Dictionary<int, UnityObject>();
+        private readonly Dictionary<int, int> m_dynamicResourceIDToPersistentID = new Dictionary<int, int>();
 
         public void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj)
         {
@@ -70,18 +79,79 @@ namespace Battlehub.RTSaveLoad2
                 Debug.LogWarning("scene objects were not unregistered");
             }
             m_persistentIDToSceneObject = idToObj;
-            m_idToPersistentID = m_persistentIDToSceneObject.ToDictionary(kvp => kvp.Value.GetInstanceID(), kvp => kvp.Key);
+            m_sceneObjectIDToPersistentID = m_persistentIDToSceneObject.ToDictionary(kvp => kvp.Value.GetInstanceID(), kvp => kvp.Key);
         }
 
         public void UnregisterSceneObjects()
         {
             m_persistentIDToSceneObject = null;
-            m_idToPersistentID = null;
+            m_sceneObjectIDToPersistentID = null;
+        }
+
+        public void RegisterDynamicResource(int persistentID, UnityObject obj)
+        {
+            m_persistentIDToDynamicResource[persistentID] = obj;
+            if (obj != null)
+            {
+                m_dynamicResourceIDToPersistentID[obj.GetInstanceID()] = persistentID;
+            }
+
+        }
+        public void RegisterDynamicResources(Dictionary<int, UnityObject> idToObj)
+        {
+            foreach(KeyValuePair<int, UnityObject> kvp in idToObj)
+            {
+                m_persistentIDToDynamicResource[kvp.Key] = kvp.Value;
+                if (kvp.Value != null)
+                {
+                    m_dynamicResourceIDToPersistentID[kvp.Value.GetInstanceID()] = kvp.Key;
+                }
+            }
+        }
+
+        public void UnregisterDynamicResources()
+        {
+            m_persistentIDToDynamicResource.Clear();
+            m_dynamicResourceIDToPersistentID.Clear();
         }
 
         public bool IsLibraryLoaded(int ordinal)
         {
             return m_ordinalToLib.ContainsKey(ordinal);
+        }
+
+        public bool IsLibraryRefLoaded(int ordinal)
+        {
+            AssetLibraryAsset assetLib;
+            if(m_ordinalToLib.TryGetValue(ordinal, out assetLib))
+            {
+                return assetLib is AssetLibraryReference;
+            }
+
+            return false;
+        }
+
+
+        public bool AddLibrary(AssetLibraryAsset assetLib, int ordinal)
+        {
+            if (m_ordinalToLib.ContainsKey(ordinal))
+            {
+                Debug.LogWarningFormat("Asset Library with ordinal {0} already loadeded", assetLib.Ordinal);
+                return false;
+            }
+
+            if (m_loadedLibraries.Contains(assetLib))
+            {
+                Debug.LogWarning("Asset Library already added");
+                return false;
+            }
+
+            assetLib.Ordinal = ordinal;
+            m_loadedLibraries.Add(assetLib);
+            m_ordinalToLib.Add(ordinal, assetLib);
+            LoadMapping(ordinal, true, true);
+
+            return true;
         }
 
         public bool LoadLibrary(string assetLibrary, int ordinal)
@@ -93,34 +163,37 @@ namespace Battlehub.RTSaveLoad2
             }
 
             AssetLibraryAsset assetLib = Resources.Load<AssetLibraryAsset>(assetLibrary);
-            if(assetLib == null)
+            if (assetLib == null)
             {
-                Debug.LogWarningFormat("Asset Library {0} not found", assetLibrary);
+                Debug.LogWarningFormat("Asset Library not found", assetLibrary);
                 return false;
             }
+            return AddLibrary(assetLib, ordinal);
+        }     
 
-            if (m_loadedLibraries.Contains(assetLib))
+        public void RemoveLibrary(int ordinal)
+        {
+            AssetLibraryAsset assetLib;
+            if(m_ordinalToLib.TryGetValue(ordinal, out assetLib))
             {
-                Debug.LogWarningFormat("Asset Library {0} already loadeded", assetLibrary);
-                return false;
+                m_loadedLibraries.Remove(assetLib);
+                m_ordinalToLib.Remove(ordinal);
+                UnloadMapping(ordinal);
             }
-
-            assetLib.Ordinal = ordinal;
-            m_loadedLibraries.Add(assetLib);
-            m_ordinalToLib.Add(ordinal, assetLib);
-
-            return true;
         }
 
-        public void UnloadLibrary(int ordinal)
+        public void UnloadLibraries()
         {
-            AssetLibraryAsset assetLibrary;
-            if(m_ordinalToLib.TryGetValue(ordinal, out assetLibrary))
+            foreach (AssetLibraryAsset assetLibrary in m_loadedLibraries)
             {
-                m_ordinalToLib.Remove(ordinal);
-                m_loadedLibraries.Remove(assetLibrary);
-                Resources.UnloadAsset(assetLibrary);
+                if(!(assetLibrary is AssetLibraryReference))
+                {
+                    Resources.UnloadAsset(assetLibrary);
+                }
             }
+            m_ordinalToLib.Clear();
+            m_loadedLibraries.Clear();
+            UnloadMappings();
         }
 
         public AsyncOperation UnloadUnusedAssets(Action<AsyncOperation> completedCallback = null)
@@ -148,7 +221,7 @@ namespace Battlehub.RTSaveLoad2
             return operation;
         }
 
-        public void LoadMapping(int ordinal, bool IIDtoPID, bool PIDtoObj)
+        private void LoadMapping(int ordinal, bool IIDtoPID, bool PIDtoObj)
         {
             AssetLibraryAsset assetLib;
             if(m_ordinalToLib.TryGetValue(ordinal, out assetLib))
@@ -161,7 +234,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        public void UnloadMapping(int ordinal)
+        private void UnloadMapping(int ordinal)
         {
             AssetLibraryAsset assetLib;
             if (m_ordinalToLib.TryGetValue(ordinal, out assetLib))
@@ -174,23 +247,15 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        public void LoadMapping(bool IIDtoPID, bool PIDtoObj)
-        {
-            m_mapping = new MappingInfo();
-            foreach(AssetLibraryAsset assetLib in m_loadedLibraries)
-            {
-                assetLib.LoadIDMappingTo(m_mapping, IIDtoPID, PIDtoObj);
-            }
-        }
 
-        public void UnloadMappings()
+        private void UnloadMappings()
         {
             m_mapping = new MappingInfo();
         }
 
         private const long m_nullID = 1L << 32;
         private const long m_instanceIDMask = 1L << 33;
-        private const long staticResourceIDMask = 1L << 34;
+        private const long m_staticResourceIDMask = 1L << 34;
         private const long m_staticFolderIDMask = 1L << 35;
         private const long m_dynamicResourceIDMask = 1L << 36;
         private const long m_dynamicFolderIDMask = 1L << 37;
@@ -209,7 +274,7 @@ namespace Battlehub.RTSaveLoad2
 
         public bool IsStaticResourceID(long id)
         {
-            return (id & staticResourceIDMask) != 0;
+            return (id & m_staticResourceIDMask) != 0;
         }
 
         public bool IsStaticFolderID(long id)
@@ -234,7 +299,7 @@ namespace Battlehub.RTSaveLoad2
 
         public long ToExposedResourceID(int ordinal, int id)
         {
-            return ToID(ordinal, id, staticResourceIDMask);
+            return ToID(ordinal, id, m_staticResourceIDMask);
         }
 
         public long ToExposedFolderID(int ordinal, int id)
@@ -285,12 +350,17 @@ namespace Battlehub.RTSaveLoad2
             int persistentID;
             if(m_mapping.InstanceIDtoPID.TryGetValue(instanceID, out persistentID))
             {
-                return staticResourceIDMask | (0x00000000FFFFFFFFL & persistentID);
+                return m_staticResourceIDMask | (0x00000000FFFFFFFFL & persistentID);
             }
             
-            if(m_idToPersistentID != null && m_idToPersistentID.TryGetValue(instanceID, out persistentID))
+            if(m_sceneObjectIDToPersistentID != null && m_sceneObjectIDToPersistentID.TryGetValue(instanceID, out persistentID))
             {
                 return m_instanceIDMask | (0x00000000FFFFFFFFL & persistentID);
+            }
+
+            if(m_dynamicResourceIDToPersistentID.TryGetValue(instanceID, out persistentID))
+            {
+                return m_dynamicResourceIDMask | (0x00000000FFFFFFFFL & persistentID);
             }
 
             return m_instanceIDMask | (0x00000000FFFFFFFFL & instanceID);
@@ -310,7 +380,7 @@ namespace Battlehub.RTSaveLoad2
             return ids;
         }
 
-        public bool IsLoaded(long id)
+        public bool IsMapped(long id)
         {
             if (IsNullID(id))
             {
@@ -336,8 +406,8 @@ namespace Battlehub.RTSaveLoad2
             }
             if(IsDynamicResourceID(id))
             {
-                //int persistentID = unchecked((int)id);
-                //return
+                int persistentID = unchecked((int)id);
+                return m_persistentIDToDynamicResource.ContainsKey(persistentID);
             }
             return false;
         }
@@ -369,7 +439,12 @@ namespace Battlehub.RTSaveLoad2
             }
             else if(IsDynamicResourceID(id))
             {
-
+                UnityObject obj;
+                int persistentID = unchecked((int)id);
+                if(m_persistentIDToDynamicResource.TryGetValue(persistentID, out obj))
+                {
+                    return obj as T;
+                }
             }
             return null;
         }

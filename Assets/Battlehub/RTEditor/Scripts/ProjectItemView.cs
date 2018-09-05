@@ -76,18 +76,18 @@ namespace Battlehub.RTEditor
             else if (m_projectItem is AssetItem)
             {
                 AssetItem assetItem = (AssetItem)m_projectItem;
-                if(assetItem.PreviewData == null)
+                if(assetItem.Preview == null || assetItem.Preview.PreviewData == null)
                 {
                     m_imgPreview.sprite = m_none;
                 }
-                else if(assetItem.PreviewData.Length == 0)
+                else if(assetItem.Preview.PreviewData.Length == 0)
                 {
                     m_imgPreview.sprite = m_defaultPrefab;
                 }
                 else
                 {
                     m_texture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
-                    m_texture.LoadImage(assetItem.PreviewData);
+                    m_texture.LoadImage(assetItem.Preview.PreviewData);
                     m_imgPreview.sprite = Sprite.Create(m_texture, new Rect(0, 0, m_texture.width, m_texture.height), new Vector2(0.5f, 0.5f));
                 }
             }

@@ -97,6 +97,40 @@ namespace Battlehub.RTSaveLoad2
             Parent.Children.Insert(index, this);
         }
 
+        public ProjectItem[] Flatten(bool excludeFolders)
+        {
+            List<ProjectItem> items = new List<ProjectItem>();
+            Foreach(this, projectItem =>
+            {
+                if (excludeFolders && projectItem.IsFolder)
+                {
+                    return;
+                }
+
+                items.Add(projectItem);
+            });
+            return items.ToArray();
+        }
+
+        public void Foreach(ProjectItem item, Action<ProjectItem> callback)
+        {
+            if(item == null)
+            {
+                return;
+            }
+
+            callback(item);
+
+            if(item.Children != null)
+            {
+                for(int i = 0; i < item.Children.Count; ++i)
+                {
+                    ProjectItem child = item.Children[i];
+                    Foreach(child, callback);
+                }
+            }
+        }
+
         public ProjectItem Get(string path)
         {
             path = path.Trim('/');
@@ -149,7 +183,7 @@ namespace Battlehub.RTSaveLoad2
     }
 
     [ProtoContract]
-    public class PrefabPartItem
+    public class PrefabPart
     {
         [ProtoMember(1)]
         public long PartID;
@@ -165,34 +199,45 @@ namespace Battlehub.RTSaveLoad2
     }
 
     [ProtoContract]
+    public class Preview
+    {
+        [ProtoMember(1)]
+        public long ItemID;
+
+        [ProtoMember(2)]
+        public byte[] PreviewData;
+    }
+
+    [ProtoContract]
     public class AssetItem : ProjectItem
     {
         public event EventHandler PreviewDataChanged;
 
-        [ProtoMember(1)]
-        public byte[] m_previewData;
-        public byte[] PreviewData
+        private Preview m_preview;
+        public Preview Preview
         {
-            get { return m_previewData; }
+            get { return m_preview; }
             set
             {
-                if(m_previewData != value)
+                if(m_preview != value)
                 {
-                    m_previewData = value;
+                    m_preview = value;
                     if (PreviewDataChanged != null)
                     {
                         PreviewDataChanged(this, EventArgs.Empty);
                     }
                 }
-                
             }
         }
 
-        [ProtoMember(2)]
+        [ProtoMember(1)]
         public Guid TypeGuid;
 
+        [ProtoMember(2)]
+        public PrefabPart[] Parts;
+
         [ProtoMember(3)]
-        public PrefabPartItem[] Parts;
+        public long[] Dependencies;
 
         public override bool IsFolder
         {

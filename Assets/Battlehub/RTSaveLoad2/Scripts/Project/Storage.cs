@@ -14,15 +14,16 @@ namespace Battlehub.RTSaveLoad2
     public interface IStorage
     {
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
-        void GetFolderTree(string projectPath, StorageEventHandler<ProjectItem> callback);
-        void GetAssets(string projectPath, string[] folderPath, StorageEventHandler<ProjectItem[][]> callback);
+        void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
+        void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
         void Save(string projectPath, string folderPath, AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback);
-        void Load(string projectPath, string assetPath, Type type, StorageEventHandler<PersistentObject> callback);
+        void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback);
     }
 
     public class FileSystemStorage : IStorage
     {
         private const string MetaExt = ".rtmeta";
+        private const string PreviewExt = ".rtview";
 
         private string RootPath
         {
@@ -68,7 +69,7 @@ namespace Battlehub.RTSaveLoad2
             callback(error, projectInfo);
         }
 
-        public void GetFolderTree(string projectPath, StorageEventHandler<ProjectItem> callback)
+        public void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback)
         {
             projectPath = AssetsFolderPath(projectPath);
 
@@ -77,12 +78,20 @@ namespace Battlehub.RTSaveLoad2
             assets.Children = new List<ProjectItem>();
             assets.Name = "Assets";
 
-            GetFolders(projectPath, assets);
+            GetProjectTree(projectPath, assets);
 
             callback(new Error(), assets);
         }
 
-        private static T GetItem<T>(ISerializer serializer, string path) where T : ProjectItem, new()
+        private static T LoadItem<T>(ISerializer serializer, string path) where T : ProjectItem, new()
+        {
+            T item = Load<T>(serializer, path);
+            item.Name = Path.GetFileNameWithoutExtension(path);
+            item.Ext = Path.GetExtension(path);
+            return item;
+        }
+       
+        private static T Load<T>(ISerializer serializer, string path) where T : new()
         {
             string metaFile = path + MetaExt;
             T item;
@@ -105,12 +114,11 @@ namespace Battlehub.RTSaveLoad2
             {
                 item = new T();
             }
-            item.Name = Path.GetFileNameWithoutExtension(path);
-            item.Ext = Path.GetExtension(path);
+         
             return item;
         }
 
-        private void GetFolders(string path, ProjectItem parent)
+        private void GetProjectTree(string path, ProjectItem parent)
         {
             if(!Directory.Exists(path))
             {
@@ -122,22 +130,32 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < dirs.Length; ++i)
             {
                 string dir = dirs[i];
-                ProjectItem projectItem = GetItem<ProjectItem>(serializer, dir);
+                ProjectItem projectItem = LoadItem<ProjectItem>(serializer, dir);
 
                 projectItem.Parent = parent;
                 projectItem.Children = new List<ProjectItem>();
                 parent.Children.Add(projectItem);
 
-                GetFolders(dir, projectItem);
+                GetProjectTree(dir, projectItem);
+            }
+
+            string[] files = Directory.GetFiles(path, "*" + MetaExt);
+            for(int i = 0; i < files.Length; ++i)
+            {
+                string file = files[i];
+                AssetItem assetItem =  LoadItem<AssetItem>(serializer, file);
+
+                assetItem.Parent = parent;
+                parent.Children.Add(assetItem);
             }
         }
 
-        public void GetAssets(string projectPath, string[] folderPath, StorageEventHandler<ProjectItem[][]> callback)
+        public void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback)
         {
             projectPath = AssetsFolderPath(projectPath);
 
             ISerializer serializer = RTSL2Deps.Get.Serializer;
-            ProjectItem[][] result = new ProjectItem[folderPath.Length][];
+            Preview[][] result = new Preview[folderPath.Length][];
             for (int i = 0; i < folderPath.Length; ++i)
             {
                 string path = Path.Combine(projectPath, folderPath[i]);
@@ -146,20 +164,20 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
-                string[] files = Directory.GetFiles(path);
-                ProjectItem[] items = new ProjectItem[files.Length];
+                string[] files = Directory.GetFiles(path, "*" + PreviewExt);
+                Preview[] previews = new Preview[files.Length];
                 for(int j = 0; j < files.Length; ++j)
                 {
-                    items[j] = GetItem<AssetItem>(serializer, files[j]);
+                    previews[j] = Load<Preview>(serializer, files[j]);
                 }
 
-                result[i] = items;
+                result[i] = previews;
             }
 
             callback(new Error(), result);
         }
 
-        public void Save(string projectPath, string folderPath,  AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback)
+        public void Save(string projectPath, string folderPath, AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback)
         {
             string projectInfoPath = Path.Combine(FullPath(projectPath), "Project.rtmeta");
             projectPath = AssetsFolderPath(projectPath);
@@ -168,6 +186,19 @@ namespace Battlehub.RTSaveLoad2
             try
             {
                 string path = Path.Combine(projectPath, folderPath);
+                string previewPath = Path.Combine(path, assetItem.NameExt + PreviewExt);
+                if (assetItem.Preview == null)
+                {
+                    File.Delete(previewPath);
+                }
+                else
+                {
+                    using (FileStream fs = File.OpenWrite(previewPath))
+                    {
+                        serializer.Serialize(assetItem.Preview, fs);
+                    }
+                }
+
                 using (FileStream fs = File.OpenWrite(Path.Combine(path, assetItem.NameExt + MetaExt)))
                 {
                     serializer.Serialize(assetItem, fs);
@@ -191,35 +222,39 @@ namespace Battlehub.RTSaveLoad2
             callback(error);
         }
 
-        public void Load(string projectPath, string assetPath, Type type, StorageEventHandler<PersistentObject> callback)
+        public void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback)
         {
-            assetPath = Path.Combine(FullPath(projectPath), assetPath);
-            ISerializer serializer = RTSL2Deps.Get.Serializer;
-            Error error = new Error(Error.OK);
-            PersistentObject result = null;
-            try
+            PersistentObject[] result = new PersistentObject[assetPaths.Length];
+            for(int i = 0; i < assetPaths.Length; ++i)
             {
-                if(File.Exists(assetPath))
+                string assetPath = assetPaths[i];
+                assetPath = Path.Combine(FullPath(projectPath), assetPath);
+                ISerializer serializer = RTSL2Deps.Get.Serializer;
+                try
                 {
-                    using (FileStream fs = File.OpenRead(assetPath))
+                    if (File.Exists(assetPath))
                     {
-                        result = (PersistentObject)serializer.Deserialize(fs, type);
+                        using (FileStream fs = File.OpenRead(assetPath))
+                        {
+                            result[i] = (PersistentObject)serializer.Deserialize(fs, types[i]);
+                        }
                     }
+                    else
+                    {
+                        callback(new Error(Error.E_NotFound), new PersistentObject[0]);
+                        return;
+                    }
+
                 }
-                else
+                catch (Exception e)
                 {
-                    error.ErrorCode = Error.E_NotFound;
+                    Debug.LogErrorFormat("Unable to load asset: {0} -> got exception: {1} ", assetPath, e.ToString());
+                    callback(new Error(Error.E_Exception) { ErrorText = e.ToString() }, new PersistentObject[0]);
+                    return;
                 }
-
-            }
-            catch(Exception e)
-            {
-                Debug.LogErrorFormat("Unable to load asset: {0} -> got exception: {1} ", assetPath, e.ToString());
-                error.ErrorCode = Error.E_Exception;
-                error.ErrorText = e.ToString();
             }
 
-            callback(error, result);
+            callback(new Error(Error.OK), result);
         }
     }
 }

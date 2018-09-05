@@ -26,7 +26,8 @@ namespace Battlehub.RTSaveLoad2
             uo.name = name;
             uo.hideFlags = (HideFlags)hideFlags;
             return obj;
-        }       
+        }  
+        
     }
 
 }
