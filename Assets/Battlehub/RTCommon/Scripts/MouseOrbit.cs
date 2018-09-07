@@ -6,7 +6,7 @@ namespace Battlehub.RTCommon
     [AddComponentMenu("Camera-Control/Mouse Orbit with zoom")]
     public class MouseOrbit : MonoBehaviour
     {
-        private Camera m_camera;
+        protected Camera m_camera;
         public Transform Target;
         public float Distance = 5.0f;
         public float XSpeed = 5.0f;
@@ -18,8 +18,8 @@ namespace Battlehub.RTCommon
         public float DistanceMin = 0.5f;
         public float DistanceMax = 5000f;
 
-        private float m_x = 0.0f;
-        private float m_y = 0.0f;
+        protected float m_x = 0.0f;
+        protected float m_y = 0.0f;
 
         private void Awake()
         {
@@ -31,7 +31,7 @@ namespace Battlehub.RTCommon
             SyncAngles();
         }
 
-        public void SyncAngles()
+        public virtual void SyncAngles()
         {
             Vector3 angles = transform.eulerAngles;
             m_x = angles.y;
@@ -48,12 +48,12 @@ namespace Battlehub.RTCommon
             
             m_x += deltaX;
             m_y -= deltaY;
-            m_y = ClampAngle(m_y, YMinLimit, YMaxLimit);
+            m_y = Mathf.Clamp(m_y % 360, YMinLimit, YMaxLimit);
 
             Zoom();
         }
 
-        public void Zoom()
+        public virtual void Zoom()
         {
             Quaternion rotation = Quaternion.Euler(m_y, m_x, 0);
             transform.rotation = rotation;
@@ -73,19 +73,6 @@ namespace Battlehub.RTCommon
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -Distance);
             Vector3 position = rotation * negDistance + Target.position;
             transform.position = position;
-        }
-
-        private static float ClampAngle(float angle, float min, float max)
-        {
-            if (angle < -360F)
-            {
-                angle += 360F;
-            }
-            if (angle > 360F)
-            {
-                angle -= 360F;
-            }
-            return Mathf.Clamp(angle, min, max);
         }
     }
 }
