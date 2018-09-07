@@ -14,6 +14,7 @@ namespace Battlehub.RTHandles
         public Button BtnProjection;
         public Transform Pivot;
         public Vector2 Size = new Vector2(96, 96);
+        public Vector3 Up = Vector3.up;
 
         public UnityEvent OrientationChanging;
         public UnityEvent OrientationChanged;
@@ -314,7 +315,7 @@ namespace Battlehub.RTHandles
 
                             Vector3 pivot = Pivot.transform.position;
                             Vector3 radiusVector = Vector3.back * (SceneCamera.transform.position - pivot).magnitude;
-                            Quaternion targetRotation = Quaternion.LookRotation(-m_selectedAxis, Vector3.up);
+                            Quaternion targetRotation = Quaternion.LookRotation(-m_selectedAxis, Up);
                             m_rotateAnimation = new QuaternionAnimationInfo(SceneCamera.transform.rotation, targetRotation, 0.4f, QuaternionAnimationInfo.EaseOutCubic,
                                 (target, value, t, completed) =>
                                 {
