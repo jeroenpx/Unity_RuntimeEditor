@@ -609,7 +609,7 @@ namespace Battlehub.RTHandles
         private RuntimeHandleAxis Hit()
         {
             float scale = RuntimeHandles.GetScreenScale(HandlePosition, SceneCamera);
-            m_matrix = Matrix4x4.TRS(HandlePosition, Rotation, Vector3.one);// transform.localScale);
+            m_matrix = Matrix4x4.TRS(HandlePosition, Rotation, RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
             Matrix4x4 matrix = Matrix4x4.TRS(HandlePosition, Rotation, new Vector3(scale, scale, scale));
@@ -634,7 +634,7 @@ namespace Battlehub.RTHandles
             float distToZAxis;
             float distToXAxis;
             bool hit = HitAxis(Vector3.up * RuntimeHandles.HandleScale, matrix, out distToYAxis);
-            hit |= HitAxis(Vector3.forward * RuntimeHandles.HandleScale, matrix, out distToZAxis);
+            hit |= HitAxis(RuntimeHandles.Forward * RuntimeHandles.HandleScale, matrix, out distToZAxis);
             hit |= HitAxis(Vector3.right * RuntimeHandles.HandleScale, matrix, out distToXAxis);
 
             if (hit)

@@ -235,51 +235,62 @@ namespace Battlehub.RTEditor
 
         private void PrepareCameras()
         {
-            m_gameViewViewportFitter = GameView.GetComponentInChildren<ViewportFitter>();
-            RuntimeEditorApplication.GameCameras = FindObjectsOfType<Camera>()
-                .Where(c => (Grid == null || c.gameObject != Grid.gameObject) && 
-                            (RuntimeEditorApplication.ActiveSceneCamera == null || c.gameObject != RuntimeEditorApplication.ActiveSceneCamera.gameObject) && 
-                            (SceneGizmo == null || c.gameObject != SceneGizmo.gameObject))
-                .OrderBy(c => c != Camera.main).ToArray();
-            for (int i = 0; i < RuntimeEditorApplication.GameCameras.Length; ++i)
+            if (GameView)
             {
-                Camera camera = RuntimeEditorApplication.GameCameras[i];
-                if (!camera.GetComponent<GameCamera>())
+                m_gameViewViewportFitter = GameView.GetComponentInChildren<ViewportFitter>();
+                RuntimeEditorApplication.GameCameras = FindObjectsOfType<Camera>().Where(
+                        c => (Grid == null || c.gameObject != Grid.gameObject) &&
+                        (RuntimeEditorApplication.ActiveSceneCamera == null || c.gameObject != RuntimeEditorApplication.ActiveSceneCamera.gameObject) &&
+                        (SceneGizmo == null || c.gameObject != SceneGizmo.gameObject)).OrderBy(c => c != Camera.main).ToArray();
+
+                for (int i = 0; i < RuntimeEditorApplication.GameCameras.Length; ++i)
                 {
-                    camera.gameObject.AddComponent<GameCamera>();
+                    Camera camera = RuntimeEditorApplication.GameCameras[i];
+                    if (!camera.GetComponent<GameCamera>())
+                    {
+                        camera.gameObject.AddComponent<GameCamera>();
+                    }
                 }
-            }
-            if (RuntimeEditorApplication.GameCameras.Length == 0 && RuntimeEditorApplication.ActiveSceneCamera == null)
-            {
-                Debug.LogError("No cameras found");
-                return;
-            }
-
-            if (RuntimeEditorApplication.SceneCameras == null || RuntimeEditorApplication.SceneCameras.Length == 0)
-            {
-                RuntimeEditorApplication.SceneCameras = new Camera[1];
-            }
-
-            for (int i = 0; i < RuntimeEditorApplication.SceneCameras.Length; ++i)
-            {
-                if (RuntimeEditorApplication.SceneCameras[i] == null)
+                if (RuntimeEditorApplication.GameCameras.Length == 0 && RuntimeEditorApplication.ActiveSceneCamera == null)
                 {
-                    GameObject editorCameraGO = new GameObject();
-                    
-                    RuntimeEditorApplication.SceneCameras[i] = editorCameraGO.AddComponent<Camera>();
-                    editorCameraGO.transform.SetParent(transform);
-                    RuntimeEditorApplication.SceneCameras[i].transform.position = RuntimeEditorApplication.GameCameras[0].transform.position;
-                    RuntimeEditorApplication.SceneCameras[i].transform.rotation = RuntimeEditorApplication.GameCameras[0].transform.rotation;
-                    RuntimeEditorApplication.SceneCameras[i].transform.localScale = RuntimeEditorApplication.GameCameras[0].transform.localScale;
-                    RuntimeEditorApplication.SceneCameras[i].tag = "Untagged";
-                    RuntimeEditorApplication.SceneCameras[i].name = "Editor Camera";
+                    Debug.LogError("No cameras found");
+                    return;
                 }
 
-                if (!RuntimeEditorApplication.SceneCameras[i].GetComponent<GLCamera>())
+                if (RuntimeEditorApplication.SceneCameras == null || RuntimeEditorApplication.SceneCameras.Length == 0)
                 {
-                    RuntimeEditorApplication.SceneCameras[i].gameObject.AddComponent<GLCamera>();
+                    RuntimeEditorApplication.SceneCameras = new Camera[1];
+                }
+
+                for (int i = 0; i < RuntimeEditorApplication.SceneCameras.Length; ++i)
+                {
+                    if (RuntimeEditorApplication.SceneCameras[i] == null)
+                    {
+                        GameObject editorCameraGO = new GameObject();
+
+                        RuntimeEditorApplication.SceneCameras[i] = editorCameraGO.AddComponent<Camera>();
+                        editorCameraGO.transform.SetParent(transform);
+                        RuntimeEditorApplication.SceneCameras[i].transform.position = RuntimeEditorApplication.GameCameras[0].transform.position;
+                        RuntimeEditorApplication.SceneCameras[i].transform.rotation = RuntimeEditorApplication.GameCameras[0].transform.rotation;
+                        RuntimeEditorApplication.SceneCameras[i].transform.localScale = RuntimeEditorApplication.GameCameras[0].transform.localScale;
+                        RuntimeEditorApplication.SceneCameras[i].tag = "Untagged";
+                        RuntimeEditorApplication.SceneCameras[i].name = "Editor Camera";
+                    }
+
+                    if (!RuntimeEditorApplication.SceneCameras[i].GetComponent<GLCamera>())
+                    {
+                        RuntimeEditorApplication.SceneCameras[i].gameObject.AddComponent<GLCamera>();
+                    }
                 }
             }
+            else
+            {
+                if (RuntimeEditorApplication.SceneCameras == null || RuntimeEditorApplication.SceneCameras.Length == 0)
+                {
+                    RuntimeEditorApplication.SceneCameras = new[] { Camera.main };
+                }
+            }
+            
 
             SceneView.SceneCamera = RuntimeEditorApplication.ActiveSceneCamera;// SetSceneCamera(RuntimeEditorApplication.ActiveSceneCamera);
             ViewportFitter fitter = SceneView.GetComponent<ViewportFitter>();
@@ -290,6 +301,11 @@ namespace Battlehub.RTEditor
 
         private void InitGameView()
         {
+            if(!GameView)
+            {
+                RuntimeEditorApplication.GameCameras = new Camera[0];
+                return;
+            }
             GameCamera[] cameras = FindObjectsOfType<GameCamera>();
             GameView.SetActive(cameras.Length > 0);
 
@@ -433,8 +449,8 @@ namespace Battlehub.RTEditor
             {
                 StartCoroutine(CoActivateSceneCamera());
             }
-            EditButton.SetActive(false);
-            EditorRoot.SetActive(true);
+            if(EditButton) EditButton.SetActive(false);
+            if (EditorRoot) EditorRoot.SetActive(true);
 
             InitEditorComponents();
             Opened.Invoke();
@@ -498,8 +514,8 @@ namespace Battlehub.RTEditor
             {
                 Grid.gameObject.SetActive(false);
             }
-            EditButton.SetActive(true);
-            EditorRoot.SetActive(false);
+            if(EditButton) EditButton.SetActive(true);
+            if(EditorRoot) EditorRoot.SetActive(false);
 
             if (RuntimeEditorApplication.ActiveSceneCamera != null)
             {

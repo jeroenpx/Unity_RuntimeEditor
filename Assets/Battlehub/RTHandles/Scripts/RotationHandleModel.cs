@@ -222,7 +222,7 @@ namespace Battlehub.RTHandles
 
         private void UpdateCircle(Mesh mesh, Mesh originalMesh, Transform circleTransform, float majorRadius, float minorRadius)
         {
-            circleTransform.localScale = Vector3.one * majorRadius;
+            circleTransform.localScale = RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) * majorRadius : Vector3.one * majorRadius;
             minorRadius /= Mathf.Max(0.01f, majorRadius);
 
             Vector3[] verts = originalMesh.vertices;

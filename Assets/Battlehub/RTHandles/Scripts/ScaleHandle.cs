@@ -55,7 +55,7 @@ namespace Battlehub.RTHandles
         private RuntimeHandleAxis Hit()
         {
             m_screenScale = RuntimeHandles.GetScreenScale(transform.position, SceneCamera) * RuntimeHandles.HandleScale;
-            m_matrix = Matrix4x4.TRS(transform.position, Rotation, Vector3.one);
+            m_matrix = Matrix4x4.TRS(transform.position, Rotation, RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
             Matrix4x4 matrix = Matrix4x4.TRS(transform.position, Rotation, new Vector3(m_screenScale, m_screenScale, m_screenScale));
@@ -68,7 +68,7 @@ namespace Battlehub.RTHandles
             float distToZAxis;
             float distToXAxis;
             bool hit = HitAxis(Vector3.up, matrix, out distToYAxis);
-            hit |= HitAxis(Vector3.forward, matrix, out distToZAxis);
+            hit |= HitAxis(RuntimeHandles.Forward, matrix, out distToZAxis);
             hit |= HitAxis(Vector3.right, matrix, out distToXAxis);
 
             if (hit)

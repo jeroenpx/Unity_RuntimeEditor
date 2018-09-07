@@ -65,7 +65,7 @@ namespace Battlehub.RTHandles
                     {
                         if (value)
                         {
-                            txt.text = "Iso";
+                            txt.text = "Ortho";
                         }
                         else
                         {
@@ -177,7 +177,7 @@ namespace Battlehub.RTHandles
             }
             if (SceneCamera.orthographic)
             {
-                if (GUI.Button(m_buttonRect, "Iso", m_buttonStyle))
+                if (GUI.Button(m_buttonRect, "Ortho", m_buttonStyle))
                 {
                     IsOrthographic = false;
                 }

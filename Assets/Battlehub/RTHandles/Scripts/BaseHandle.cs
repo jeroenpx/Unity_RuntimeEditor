@@ -602,7 +602,7 @@ namespace Battlehub.RTHandles
             Model.transform.rotation = Rotation;
 
             float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
-            Model.transform.localScale = Vector3.one * screenScale;
+            Model.transform.localScale = RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
         }
 
         private void TryCancelDrag()

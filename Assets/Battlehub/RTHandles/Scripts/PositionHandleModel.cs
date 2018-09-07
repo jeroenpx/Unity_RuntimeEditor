@@ -391,17 +391,30 @@ namespace Battlehub.RTHandles
         {
             Vector3 toCam = (pos - transform.position).normalized;
             toCam = transform.InverseTransformDirection(toCam);
-            float[] dots = new[]
-            {
-                Vector3.Dot(new Vector3( 1,  1,  1).normalized, toCam),
-                Vector3.Dot(new Vector3(-1,  1,  1).normalized, toCam),
-                Vector3.Dot(new Vector3(-1, -1,  1).normalized, toCam),
-                Vector3.Dot(new Vector3( 1, -1,  1).normalized, toCam),
-                Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
-                Vector3.Dot(new Vector3(-1,  1, -1).normalized, toCam),
-                Vector3.Dot(new Vector3(-1, -1, -1).normalized, toCam),
-                Vector3.Dot(new Vector3( 1, -1, -1).normalized, toCam),
-            };
+            float[] dots =
+                RuntimeHandles.InvertZAxis ?
+                new[]
+                {
+                    Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1,  1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1, -1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3( 1, -1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3( 1,  1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1,  1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1, -1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3( 1, -1,  1).normalized, toCam),
+                } :
+                new[]
+                {
+                    Vector3.Dot(new Vector3( 1,  1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1,  1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1, -1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3( 1, -1,  1).normalized, toCam),
+                    Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1,  1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3(-1, -1, -1).normalized, toCam),
+                    Vector3.Dot(new Vector3( 1, -1, -1).normalized, toCam),
+                };
 
             float maxDot = float.MinValue;
             int maxIndex = -1;

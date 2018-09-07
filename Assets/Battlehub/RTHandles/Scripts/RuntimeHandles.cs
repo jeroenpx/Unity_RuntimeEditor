@@ -43,8 +43,12 @@ namespace Battlehub.RTHandles
     /// </summary>
     public static class RuntimeHandles 
     {
-        public const float HandleScale = 1.0f;
-
+        public static readonly float HandleScale = 1.0f;
+        public static readonly bool InvertZAxis = false;
+        public static Vector3 Forward
+        {
+            get { return InvertZAxis ? Vector3.back : Vector3.forward; }
+        }
 
         private static readonly Mesh Arrows;
         private static readonly Mesh ArrowY;
@@ -202,22 +206,23 @@ namespace Battlehub.RTHandles
             ArrowX.CombineMeshes(new[] { xArrow }, true);
             ArrowX.RecalculateNormals();
 
-
+            Vector3 zAxis = Forward * HandleScale;
+            Quaternion zRotation = InvertZAxis ? Quaternion.AngleAxis(-90, Vector3.right) : Quaternion.AngleAxis(90, Vector3.right);
             CombineInstance zArrow = new CombineInstance();
             zArrow.mesh = selectionArrowMesh;
-            zArrow.transform = Matrix4x4.TRS(Vector3.forward * HandleScale, Quaternion.AngleAxis(90, Vector3.right), Vector3.one);
+            zArrow.transform = Matrix4x4.TRS(zAxis, zRotation, Vector3.one);
             SelectionArrowZ = new Mesh();
             SelectionArrowZ.CombineMeshes(new[] { zArrow }, true);
             SelectionArrowZ.RecalculateNormals();
 
             zArrow.mesh = disableArrowMesh;
-            zArrow.transform = Matrix4x4.TRS(Vector3.forward * HandleScale, Quaternion.AngleAxis(90, Vector3.right), Vector3.one);
+            zArrow.transform = Matrix4x4.TRS(zAxis, zRotation, Vector3.one);
             DisabledArrowZ = new Mesh();
             DisabledArrowZ.CombineMeshes(new[] { zArrow }, true);
             DisabledArrowZ.RecalculateNormals();
 
             zArrow.mesh = CreateConeMesh(RTHColors.ZColor, HandleScale);
-            zArrow.transform = Matrix4x4.TRS(Vector3.forward * HandleScale, Quaternion.AngleAxis(90, Vector3.right), Vector3.one);
+            zArrow.transform = Matrix4x4.TRS(zAxis, zRotation, Vector3.one);
             ArrowZ = new Mesh();
             ArrowZ.CombineMeshes(new[] { zArrow }, true);
             ArrowZ.RecalculateNormals();
@@ -239,7 +244,7 @@ namespace Battlehub.RTHandles
             SceneGizmoSelectedAxis = CreateSceneGizmoHalfAxis(RTHColors.SelectionColor, Quaternion.AngleAxis(90, Vector3.right));
             SceneGizmoXAxis = CreateSceneGizmoAxis(RTHColors.XColor, RTHColors.AltColor, Quaternion.AngleAxis(-90, Vector3.forward));
             SceneGizmoYAxis = CreateSceneGizmoAxis(RTHColors.YColor, RTHColors.AltColor, Quaternion.identity);
-            SceneGizmoZAxis = CreateSceneGizmoAxis(RTHColors.ZColor, RTHColors.AltColor, Quaternion.AngleAxis(90, Vector3.right));
+            SceneGizmoZAxis = CreateSceneGizmoAxis(RTHColors.ZColor, RTHColors.AltColor, zRotation);
             SceneGizmoCube = RuntimeGraphics.CreateCubeMesh(RTHColors.AltColor, Vector3.zero, 1);
             SceneGizmoSelectedCube = RuntimeGraphics.CreateCubeMesh(RTHColors.SelectionColor, Vector3.zero, 1);
             SceneGizmoQuad = RuntimeGraphics.CreateQuadMesh();
@@ -364,7 +369,7 @@ namespace Battlehub.RTHandles
         {
             Vector3 x = Vector3.right * HandleScale;
             Vector3 y = Vector3.up * HandleScale;
-            Vector3 z = Vector3.forward * HandleScale;
+            Vector3 z = Forward * HandleScale;
 
             x = transform.MultiplyVector(x);
             y = transform.MultiplyVector(y);
@@ -717,7 +722,7 @@ namespace Battlehub.RTHandles
             Vector3 screenScale = new Vector3(sScale, sScale, sScale);
             Vector3 xOffset = rotM.MultiplyVector(Vector3.right) * sScale * HandleScale;
             Vector3 yOffset = rotM.MultiplyVector(Vector3.up) * sScale * HandleScale;
-            Vector3 zOffset = rotM.MultiplyVector(Vector3.forward) * sScale * HandleScale;
+            Vector3 zOffset = rotM.MultiplyPoint(Forward) * sScale * HandleScale;
             if (selectedAxis == RuntimeHandleAxis.X)
             {  
                 Graphics.DrawMeshNow(xLocked ? DisabledCube : SelectionCube, Matrix4x4.TRS(position + xOffset, rotation, screenScale));
@@ -850,7 +855,7 @@ namespace Battlehub.RTHandles
 
             ZMaterial.SetPass(0);
             ZMaterial.color = new Color(1, 1, 1, zAlpha);
-            DragSceneGizmoAxis(position, rotation, Vector3.forward, gizmoScale, billboardScale, billboardOffset, sScale);
+            DragSceneGizmoAxis(position, rotation, Forward, gizmoScale, billboardScale, billboardOffset, sScale);
         }
 
         private static void DragSceneGizmoAxis(Vector3 position, Quaternion rotation, Vector3 axis, float gizmoScale, float billboardScale, float billboardOffset, float sScale)

@@ -93111,9 +93111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302b7c7acc0328f499e38885f86c1aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_staticReferences:
-  - {fileID: 11400000, guid: 963c48c80ca3c264eb3640e77ed7065f, type: 2}
-  - {fileID: 11400000, guid: 21ef802bdb5d7cd4aa5790daa843b4b7, type: 2}
 --- !u!114 &250942896
 MonoBehaviour:
   m_ObjectHideFlags: 0

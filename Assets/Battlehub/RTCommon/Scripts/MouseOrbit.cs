@@ -75,7 +75,7 @@ namespace Battlehub.RTCommon
             transform.position = position;
         }
 
-        public static float ClampAngle(float angle, float min, float max)
+        private static float ClampAngle(float angle, float min, float max)
         {
             if (angle < -360F)
             {
