@@ -16,6 +16,7 @@ namespace Battlehub.RTSaveLoad2
         bool IsStaticFolderID(long id);
         bool IsDynamicResourceID(long id);
         bool IsDynamicFolderID(long id);
+        bool IsSceneID(long id);
         bool IsResourceID(long id);
 
         int ToOrdinal(long id);
@@ -25,6 +26,7 @@ namespace Battlehub.RTSaveLoad2
         long ToExposedFolderID(int ordinal, int id);
         long ToRuntimeResourceID(int ordinal, int id);
         long ToRuntimeFolderID(int ordinal, int id);
+        long ToSceneID(int ordinal, int id);
 
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
@@ -259,6 +261,7 @@ namespace Battlehub.RTSaveLoad2
         private const long m_staticFolderIDMask = 1L << 35;
         private const long m_dynamicResourceIDMask = 1L << 36;
         private const long m_dynamicFolderIDMask = 1L << 37;
+        private const long m_sceneIDMask = 1L << 38;
 
         public long NullID { get { return m_nullID; } }
 
@@ -292,6 +295,11 @@ namespace Battlehub.RTSaveLoad2
             return (id & m_dynamicFolderIDMask) != 0;
         }
 
+        public bool IsSceneID(long id)
+        {
+            return (id & m_sceneIDMask) != 0;
+        }
+
         public bool IsResourceID(long id)
         {
             return IsStaticResourceID(id) || IsDynamicResourceID(id);
@@ -315,6 +323,11 @@ namespace Battlehub.RTSaveLoad2
         public long ToRuntimeFolderID(int ordinal, int id)
         {
             return ToID(ordinal, id, m_dynamicFolderIDMask);
+        }
+
+        public long ToSceneID(int ordinal, int id)
+        {
+            return ToID(ordinal, id, m_sceneIDMask);
         }
 
         private static long ToID(int ordinal, int id, long mask)

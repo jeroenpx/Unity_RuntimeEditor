@@ -243,7 +243,6 @@ namespace Battlehub.RTSaveLoad2
         {
             get { return false; }
         }
-
     }
 
 }

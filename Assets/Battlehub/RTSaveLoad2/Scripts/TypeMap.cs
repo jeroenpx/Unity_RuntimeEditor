@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -14,11 +15,25 @@ namespace Battlehub.RTSaveLoad2
 
     public partial class TypeMap : ITypeMap
     {
-        protected Dictionary<Type, Type> m_toPeristentType = new Dictionary<Type, Type>();
-        protected Dictionary<Type, Type> m_toUnityType = new Dictionary<Type, Type>();
+        protected readonly Dictionary<Type, Type> m_toPeristentType = new Dictionary<Type, Type>()
+        {
+            { typeof(Scene), typeof(PersistentScene) }
+        };
 
-        protected Dictionary<Type, Guid> m_toGuid = new Dictionary<Type, Guid>();
-        protected Dictionary<Guid, Type> m_toType = new Dictionary<Guid, Type>();
+        protected readonly Dictionary<Type, Type> m_toUnityType = new Dictionary<Type, Type>()
+        {
+            { typeof(PersistentScene), typeof(Scene) }
+        };
+
+        protected readonly Dictionary<Type, Guid> m_toGuid = new Dictionary<Type, Guid>()
+        {
+            { typeof(Scene), new Guid("bbeecea0-be52-404b-8aa3-a44134772736") }
+        };
+
+        protected readonly Dictionary<Guid, Type> m_toType = new Dictionary<Guid, Type>()
+        {
+            { new Guid("bbeecea0-be52-404b-8aa3-a44134772736"), typeof(Scene) }
+        };
 
         public Type ToPersistentType(Type unityType)
         {
