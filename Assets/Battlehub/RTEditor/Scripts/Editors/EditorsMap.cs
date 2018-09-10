@@ -87,6 +87,10 @@ namespace Battlehub.RTEditor
                 Debug.LogError("Editors map is null");
             }
         }
+        
+        public static void AddMapping(Type type, int index, bool enabled, bool isPropertyEditor) {
+            m_map.Add(type, new EditorDescriptor(index, enabled, isPropertyEditor));
+        }
 
         public static bool IsObjectEditorEnabled(Type type)
         {
