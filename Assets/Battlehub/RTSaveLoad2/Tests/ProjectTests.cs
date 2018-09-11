@@ -1,12 +1,20 @@
 ﻿using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace Battlehub.RTSaveLoad2
 {
     public class ProjectTests
     {
+        [TearDown]
+        public void Cleanup()
+        {
+            Object.DestroyImmediate(Object.FindObjectOfType<RTSL2Deps>().gameObject);
+            Object.DestroyImmediate(Object.FindObjectOfType<Project>().gameObject);
+        }
+     
         [UnityTest]
         public IEnumerator OpenProjectTest()
         {
@@ -28,6 +36,8 @@ namespace Battlehub.RTSaveLoad2
             {
                 yield return null;
             }
+
+            
         }
 
         [Test]

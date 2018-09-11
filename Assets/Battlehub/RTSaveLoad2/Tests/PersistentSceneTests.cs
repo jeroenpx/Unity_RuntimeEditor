@@ -9,6 +9,16 @@ namespace Battlehub.RTSaveLoad2
 {
     public class PersistentSceneTests
     {
+        [TearDown]
+        public void Cleanup()
+        {
+            var rtsl2Deps = Object.FindObjectOfType<RTSL2Deps>();
+            if(rtsl2Deps != null)
+            {
+                Object.DestroyImmediate(rtsl2Deps.gameObject);
+            }
+        }
+
         [UnityTest]
         public IEnumerator PersistentTransformTest()
         {
