@@ -10,6 +10,7 @@ namespace Battlehub.RTSaveLoad2
         public const int E_Exception = 1;
         public const int E_NotFound = 2;
         public const int E_AlreadyExist = 3;
+        public const int E_InvalidOperation = 4;
 
         public int ErrorCode;
 

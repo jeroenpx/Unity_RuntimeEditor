@@ -10,7 +10,24 @@ namespace UnityEngine.Battlehub.SL2
     [ProtoContract(AsReferenceDefault = true)]
     public partial class PersistentMesh : PersistentObject
     {
-        
+        [ProtoMember(263)]
+        public Vector3[] normals;
+
+        protected override void ReadFromImpl(object obj)
+        {
+            base.ReadFromImpl(obj);
+            Mesh uo = (Mesh)obj;
+            normals = uo.normals;
+        }
+
+        protected override object WriteToImpl(object obj)
+        {
+            obj = base.WriteToImpl(obj);
+            Mesh uo = (Mesh)obj;
+            uo.normals = normals;
+            return uo;
+        }
+
         public static implicit operator Mesh(PersistentMesh surrogate)
         {
             return (Mesh)surrogate.WriteTo(new Mesh());

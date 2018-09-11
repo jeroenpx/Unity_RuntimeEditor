@@ -9,9 +9,8 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
-    
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentScene : PersistentPrefab
+    public class PersistentRuntimeScene : PersistentRuntimePrefab
     {
         protected override void ReadFromImpl(object obj)
         {

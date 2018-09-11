@@ -31,7 +31,7 @@ namespace Battlehub.RTSaveLoad2
             uo.x = x;
             uo.y = y;
             uo.z = z;
-            return obj;
+            return uo;
         }
 
    

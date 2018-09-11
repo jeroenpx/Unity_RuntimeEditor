@@ -8,6 +8,7 @@ using UnityObject = UnityEngine.Object;
 using System.IO;
 using Battlehub.RTSaveLoad2.Internal;
 
+
 namespace Battlehub.RTSaveLoad2
 {
     public class PersistentTemplateInfo
@@ -17,6 +18,7 @@ namespace Battlehub.RTSaveLoad2
         public HashSet<string> FieldNames;
         public string Path;
     }
+
 
     public class PersistentClassMapperGUI
     {
@@ -29,7 +31,9 @@ namespace Battlehub.RTSaveLoad2
             typeof(Transform),
             typeof(GameObject),
             typeof(Vector3),
-            typeof(Quaternion)
+            typeof(Quaternion),
+            typeof(RuntimePrefab),
+            typeof(RuntimeScene),
         };
 
         public event Action<Type> TypeLocked;
@@ -1586,7 +1590,7 @@ namespace Battlehub.RTSaveLoad2
                     ClassMappingsStoragePath,
                     m_filePathStorage,
                     typeof(object), 
-                    m_uoTypes, 
+                    m_uoTypes.Union(new[] { typeof(RuntimePrefab), typeof(RuntimeScene) }).ToArray(), 
                     assemblies.Select(a => a == null ? "All" : a.GetName().Name).ToArray(),
                     "Assembly",
                     (type, groupName) => type.Assembly.GetName().Name == groupName);

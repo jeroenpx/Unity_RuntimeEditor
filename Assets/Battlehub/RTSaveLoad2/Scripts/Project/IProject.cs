@@ -20,18 +20,43 @@ namespace Battlehub.RTSaveLoad2
         string GetExt(object obj);
         string GetExt(Type type);
 
-        void Open(string project, ProjectEventHandler callback);
-        void GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback);
+        ProjectAsyncOperation Open(string project, ProjectEventHandler callback = null);
+        ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null);
 
         bool CanSave(ProjectItem parent, UnityObject obj);
-        void Save(ProjectItem parent, byte[] previewData, object obj, ProjectEventHandler<ProjectItem> callback);
-        void Save(AssetItem assetItem, object obj, ProjectEventHandler callback);
-        void Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback);
-        AsyncOperation Unload(Action<AsyncOperation> completedCallback = null);
+        ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, ProjectEventHandler<AssetItem> callback = null);
+        ProjectAsyncOperation Save(AssetItem assetItem, object obj, ProjectEventHandler callback = null);
+        ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
+        AsyncOperation Unload(ProjectEventHandler completedCallback = null);
     }
-
 
     public delegate void ProjectEventHandler(Error error);
     public delegate void ProjectEventHandler<T>(Error error, T result);
-    public delegate void ProjectEventHandler<T, V>(Error error, T result, V result2);
+    
+    public class ProjectAsyncOperation : CustomYieldInstruction
+    {
+        public Error Error
+        {
+            get;
+            set;
+        }
+        public bool IsCompleted
+        {
+            get;
+            set;
+        }
+        public override bool keepWaiting
+        {
+            get { return !IsCompleted; }
+        }
+    }
+
+    public class ProjectAsyncOperation<T> : ProjectAsyncOperation
+    {
+        public T Result
+        {
+            get;
+            set;
+        }
+    }
 }

@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
 {
     [ProtoContract]
-    public class PersistentPrefab : PersistentObject
+    public class PersistentRuntimePrefab : PersistentObject
     {
         [ProtoMember(1)]
         public PersistentDescriptor[] Descriptors;
@@ -26,7 +26,7 @@ namespace Battlehub.RTSaveLoad2
 
         protected readonly ITypeMap m_typeMap;
 
-        public PersistentPrefab()
+        public PersistentRuntimePrefab()
         {
             m_typeMap = RTSL2Deps.Get.TypeMap;
         }

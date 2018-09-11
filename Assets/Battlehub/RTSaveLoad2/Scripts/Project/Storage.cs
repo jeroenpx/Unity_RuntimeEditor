@@ -27,22 +27,22 @@ namespace Battlehub.RTSaveLoad2
 
         private string RootPath
         {
-            get { return Application.persistentDataPath; }
+            get { return Application.persistentDataPath + "/"; }
         }
 
         private string FullPath(string path)
         {
-            return Path.Combine(RootPath, path);
+            return RootPath + path;
         }
 
         private string AssetsFolderPath(string path)
         {
-            return Path.Combine(Path.Combine(RootPath, path), "Assets");
+            return RootPath + path + "/Assets";
         }
 
         public void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback)
         {
-            projectPath = Path.Combine(FullPath(projectPath), "Project.rtmeta");
+            projectPath = FullPath(projectPath) + "/Project.rtmeta";
             ProjectInfo projectInfo;
             Error error = new Error();
             ISerializer serializer = RTSL2Deps.Get.Serializer;
@@ -72,7 +72,10 @@ namespace Battlehub.RTSaveLoad2
         public void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback)
         {
             projectPath = AssetsFolderPath(projectPath);
-
+            if(!Directory.Exists(projectPath))
+            {
+                Directory.CreateDirectory(projectPath);
+            }
             ProjectItem assets = new ProjectItem();
             assets.ItemID = 0;
             assets.Children = new List<ProjectItem>();
@@ -158,7 +161,7 @@ namespace Battlehub.RTSaveLoad2
             Preview[][] result = new Preview[folderPath.Length][];
             for (int i = 0; i < folderPath.Length; ++i)
             {
-                string path = Path.Combine(projectPath, folderPath[i]);
+                string path = projectPath + folderPath[i];
                 if (!Directory.Exists(path))
                 {
                     continue;
@@ -179,14 +182,14 @@ namespace Battlehub.RTSaveLoad2
 
         public void Save(string projectPath, string folderPath, AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback)
         {
-            string projectInfoPath = Path.Combine(FullPath(projectPath), "Project.rtmeta");
-            projectPath = AssetsFolderPath(projectPath);
+            projectPath = FullPath(projectPath);
+            string projectInfoPath = projectPath + "/Project.rtmeta";
             ISerializer serializer = RTSL2Deps.Get.Serializer;
             Error error = new Error(Error.OK);
             try
             {
-                string path = Path.Combine(projectPath, folderPath);
-                string previewPath = Path.Combine(path, assetItem.NameExt + PreviewExt);
+                string path = projectPath + folderPath;
+                string previewPath = path + "/" + assetItem.NameExt + PreviewExt;
                 if (assetItem.Preview == null)
                 {
                     File.Delete(previewPath);
@@ -199,11 +202,11 @@ namespace Battlehub.RTSaveLoad2
                     }
                 }
 
-                using (FileStream fs = File.OpenWrite(Path.Combine(path, assetItem.NameExt + MetaExt)))
+                using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt + MetaExt))
                 {
                     serializer.Serialize(assetItem, fs);
                 }
-                using (FileStream fs = File.OpenWrite(Path.Combine(path, assetItem.NameExt)))
+                using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt))
                 {
                     serializer.Serialize(persistentObject, fs);
                 }
@@ -228,7 +231,7 @@ namespace Battlehub.RTSaveLoad2
             for(int i = 0; i < assetPaths.Length; ++i)
             {
                 string assetPath = assetPaths[i];
-                assetPath = Path.Combine(FullPath(projectPath), assetPath);
+                assetPath = FullPath(projectPath) + assetPath;
                 ISerializer serializer = RTSL2Deps.Get.Serializer;
                 try
                 {

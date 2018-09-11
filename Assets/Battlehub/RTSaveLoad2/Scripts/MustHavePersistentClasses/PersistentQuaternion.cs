@@ -36,7 +36,7 @@ namespace Battlehub.RTSaveLoad2
             uo.y = y;
             uo.z = z;
             uo.w = w;
-            return obj;
+            return uo;
         }
 
         public static implicit operator Quaternion(PersistentQuaternion surrogate)

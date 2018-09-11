@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Battlehub.RTEditor
 {
@@ -87,8 +88,27 @@ namespace Battlehub.RTEditor
                 Debug.LogError("Editors map is null");
             }
         }
-        
-        public static void AddMapping(Type type, int index, bool enabled, bool isPropertyEditor) {
+
+        public static void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor)
+        {
+            GameObject editor = m_editors.Where(ed => ed.GetComponents<Component>().Any(c => c.GetType() == editorType)).FirstOrDefault();
+            if (editor == null)
+            {
+                throw new ArgumentException("editorType");
+            }
+
+            AddMapping(type, editor, enabled, isPropertyEditor);
+        }
+
+        public static void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor)
+        {
+            int index = Array.IndexOf(m_editors, editor);
+            if(index < 0)
+            {
+                Array.Resize(ref m_editors, m_editors.Length + 1);
+                index = m_editors.Length - 1;
+                m_editors[index] = editor;
+            }
             m_map.Add(type, new EditorDescriptor(index, enabled, isPropertyEditor));
         }
 

@@ -15,25 +15,20 @@ namespace Battlehub.RTSaveLoad2
 
     public partial class TypeMap : ITypeMap
     {
-        protected readonly Dictionary<Type, Type> m_toPeristentType = new Dictionary<Type, Type>()
-        {
-            { typeof(Scene), typeof(PersistentScene) }
-        };
+        protected readonly Dictionary<Type, Type> m_toPeristentType = new Dictionary<Type, Type>();
+        protected readonly Dictionary<Type, Type> m_toUnityType = new Dictionary<Type, Type>();
+        protected readonly Dictionary<Type, Guid> m_toGuid = new Dictionary<Type, Guid>();
+        protected readonly Dictionary<Guid, Type> m_toType = new Dictionary<Guid, Type>();
 
-        protected readonly Dictionary<Type, Type> m_toUnityType = new Dictionary<Type, Type>()
+        protected void OnConstructed()
         {
-            { typeof(PersistentScene), typeof(Scene) }
-        };
+            m_toPeristentType[typeof(Scene)] = typeof(PersistentRuntimeScene);
+            m_toUnityType[typeof(PersistentRuntimeScene)] = typeof(Scene);
 
-        protected readonly Dictionary<Type, Guid> m_toGuid = new Dictionary<Type, Guid>()
-        {
-            { typeof(Scene), new Guid("bbeecea0-be52-404b-8aa3-a44134772736") }
-        };
-
-        protected readonly Dictionary<Guid, Type> m_toType = new Dictionary<Guid, Type>()
-        {
-            { new Guid("bbeecea0-be52-404b-8aa3-a44134772736"), typeof(Scene) }
-        };
+            Guid sceneGuid = new Guid("d144fbe0-d2c0-4bcf-aa9f-251376262202");
+            m_toGuid[typeof(Scene)] = sceneGuid;
+            m_toType[sceneGuid] = typeof(Scene);
+        }
 
         public Type ToPersistentType(Type unityType)
         {

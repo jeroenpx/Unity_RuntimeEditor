@@ -1,8 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
+namespace Battlehub.RTSaveLoad2.Battlehub.SL2
+{
+}
 namespace Battlehub.RTSaveLoad2
 {
+    public class RuntimePrefab : UnityEngine.Object
+    { }
+    public class RuntimeScene : RuntimePrefab
+    { }
+}
+
+namespace Battlehub.RTSaveLoad2
+{
+
     [Serializable]
     public class PersistentPropertyMapping
     {

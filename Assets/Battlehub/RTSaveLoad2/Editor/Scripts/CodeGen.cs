@@ -119,7 +119,7 @@ namespace Battlehub.RTSaveLoad2
             "    obj = base.WriteToImpl(obj);" + BR + TAB2 +
             "    {1} uo = ({1})obj;" + BR + TAB2 +
             "{0}" +
-            "    return obj;" + BR + TAB2 +
+            "    return uo;" + BR + TAB2 +
             "}}" + BR;
 
         private static readonly string GetDepsMethodTemplate =
@@ -183,6 +183,7 @@ namespace Battlehub.RTSaveLoad2
             "        public TypeMap()" + BR +
             "        {{" + BR +
             "            {1}" +
+            "            OnConstructed();" + BR +
             "        }}" + BR +
             "    }}" + BR +
             "}}" + END;
@@ -491,11 +492,13 @@ namespace Battlehub.RTSaveLoad2
                 {
                     sb.AppendFormat(AddTypeTemplate, PrepareMappedTypeName(mapping.MappedTypeName), "false", endOfLine);
                 }
-                else if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject))
+                else if(mappingType != null)
                 {
-                    sb.AppendFormat(AddTypeTemplate, PreparePersistentTypeName(mapping.PersistentTypeName), "true", endOfLine);
-                }
-
+                    if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject))
+                    {
+                        sb.AppendFormat(AddTypeTemplate, PreparePersistentTypeName(mapping.PersistentTypeName), "true", endOfLine);
+                    }
+                } 
             }
 
             return sb.ToString();
@@ -681,12 +684,15 @@ namespace Battlehub.RTSaveLoad2
             }
 
             Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
-            if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)
+            if(mappingType != null)
             {
-                sb.Append(BR + TAB2);
-                sb.AppendFormat(ImplicitOperatorsTemplate, mappedTypeName, PreparePersistentTypeName(mapping.PersistentTypeName));
+                if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)
+                {
+                    sb.Append(BR + TAB2);
+                    sb.AppendFormat(ImplicitOperatorsTemplate, mappedTypeName, PreparePersistentTypeName(mapping.PersistentTypeName));
+                }
             }
-           
+          
             return sb.ToString();
         }
 

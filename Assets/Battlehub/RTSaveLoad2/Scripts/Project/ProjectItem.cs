@@ -178,7 +178,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 return sb.ToString();
             }
-            return string.Format("{0}.{1}", sb.ToString(), Ext);
+            return string.Format("{0}{1}", sb.ToString(), Ext);
         }
     }
 

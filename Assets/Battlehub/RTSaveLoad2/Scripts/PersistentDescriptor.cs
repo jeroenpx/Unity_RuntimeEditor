@@ -29,6 +29,10 @@ namespace Battlehub.RTSaveLoad2
         [ProtoMember(5)]
         public string Name;
 
+        public PersistentDescriptor()
+        {
+        }
+
         public PersistentDescriptor(Guid persistentTypeGuid, long persistentID, string name)
         {
             PersistentID = persistentID;
