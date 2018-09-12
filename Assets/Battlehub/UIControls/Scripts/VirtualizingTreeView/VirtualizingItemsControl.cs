@@ -130,6 +130,8 @@ namespace Battlehub.UIControls
         /// </summary>
         public event EventHandler<ItemDropCancelArgs> ItemDragEnter;
 
+        public event EventHandler ItemDragExit;
+
         /// <summary>
         /// Raised on after item dropped
         /// </summary>
@@ -1152,11 +1154,10 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            bool dropTargetChanged = m_dropTarget != sender;
             m_dropTarget = sender;
 
             ItemDropCancelArgs args = null;
-            if (m_isDropInProgress)
+            if (m_dragItems != null && m_dragItems.Length > 0)
             {
                 args = new ItemDropCancelArgs(m_dragItems.Select(di => di.Item).ToArray(), m_dropTarget.Item, m_dropMarker.Action, m_externalDragOperation);
                 if (ItemDragEnter != null)
@@ -1192,6 +1193,14 @@ namespace Battlehub.UIControls
             {
                 m_dropMarker.SetTraget(null);
             }
+
+            if(m_dragItems != null)
+            {
+                if (ItemDragExit != null)
+                {
+                    ItemDragExit(this, EventArgs.Empty);
+                }
+            }
         }
 
         private void OnItemDoubleClick(VirtualizingItemContainer sender, PointerEventData eventData)
@@ -1221,6 +1230,11 @@ namespace Battlehub.UIControls
                 m_dragItems = new[] { m_itemContainerData[sender.Item] };
             }
 
+            if (ItemBeginDrag != null)
+            {
+                ItemBeginDrag(this, new ItemArgs(m_dragItems.Select(di => di.Item).ToArray()));
+            }
+
             ItemDropCancelArgs args = new ItemDropCancelArgs(m_dragItems.Select(di => di.Item).ToArray(), m_dropTarget.Item, m_dropMarker.Action, m_externalDragOperation);
             if (ItemDragEnter != null)
             {
@@ -1237,10 +1251,6 @@ namespace Battlehub.UIControls
                 m_dropMarker.SetTraget(null);
             }
 
-            if (ItemBeginDrag != null)
-            {
-                ItemBeginDrag(this, new ItemArgs(m_dragItems.Select(di => di.Item).ToArray()));
-            }
         }
 
         private void OnItemDrag(VirtualizingItemContainer sender, PointerEventData eventData)
@@ -1309,7 +1319,7 @@ namespace Battlehub.UIControls
             m_isDropInProgress = true; //Prevent ChangeParent operation
             try
             {
-                if (CanDrop(m_dragItems, GetItemContainerData(m_dropTarget.Item)))
+                if (m_dropTarget != null && CanDrop(m_dragItems, GetItemContainerData(m_dropTarget.Item)))
                 {
                     bool cancel = false;
                     if (ItemBeginDrop != null)
@@ -1770,6 +1780,10 @@ namespace Battlehub.UIControls
                 if (m_scrollDir == ScrollDir.None && !args.Cancel)
                 {
                     m_dropMarker.SetTraget(m_dropTarget);
+                }
+                else
+                {
+                    m_dropMarker.SetTraget(null);
                 }
             }
         }

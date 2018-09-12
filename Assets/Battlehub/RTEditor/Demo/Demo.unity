@@ -94461,155 +94461,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!1001 &432864421
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1513608580}
-    m_Modifications:
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 71.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: -89.00001
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_SizeDelta.x
-      value: 143.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_SizeDelta.y
-      value: 178.00002
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: Camera
-      value: 
-      objectReference: {fileID: 454}
-    - target: {fileID: 114335338017863850, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_gridSpacing.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114335338017863850, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 2}
-      propertyPath: m_gridSpacing.y
-      value: 20
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114814692444607802, guid: f4d9b253bcb78574fb946d44b6934649, type: 2}
-  m_SourcePrefab: {fileID: 100100000, guid: f4d9b253bcb78574fb946d44b6934649, type: 2}
-  m_IsPrefabAsset: 0
---- !u!224 &432864422 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
-    type: 2}
-  m_PrefabInternal: {fileID: 432864421}
---- !u!1 &432864423 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1751895011238774, guid: f4d9b253bcb78574fb946d44b6934649,
-    type: 2}
-  m_PrefabInternal: {fileID: 432864421}
---- !u!114 &432864424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 432864423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -2095666955, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 80, y: 80}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 1
-  m_ConstraintCount: 2
 --- !u!1 &461491244
 GameObject:
   m_ObjectHideFlags: 0
@@ -100446,8 +100297,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 432864422}
+  m_Children: []
   m_Father: {fileID: 895040392}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -100475,6 +100325,8 @@ MonoBehaviour:
   RemoveKey: 127
   RuntimeModifierKey: 306
   EditorModifierKey: 304
+  TestTex: {fileID: 2800000, guid: 5aa9a02297bbbef49a0e4e0ca6b61d26, type: 3}
+  TestTex2: {fileID: 2800000, guid: 3ee856f0ce0cd454da07019841e92b0c, type: 3}
 --- !u!114 &1513608582
 MonoBehaviour:
   m_ObjectHideFlags: 0

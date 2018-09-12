@@ -289,6 +289,7 @@ namespace Battlehub.RTEditor
 
             m_listBox.ItemDataBinding += OnItemDataBinding;
             m_listBox.ItemDragEnter += OnItemDragEnter;
+            m_listBox.ItemDragExit += OnItemDragExit;
             m_listBox.ItemBeginDrag += OnItemBeginDrag;
             m_listBox.ItemDrop += OnItemDrop;
             m_listBox.ItemEndDrag += OnItemEndDrag;
@@ -303,32 +304,51 @@ namespace Battlehub.RTEditor
                 m_listBox.ItemDataBinding -= OnItemDataBinding;
                 m_listBox.ItemBeginDrag -= OnItemBeginDrag;
                 m_listBox.ItemDragEnter -= OnItemDragEnter;
+                m_listBox.ItemDragExit -= OnItemDragExit;
                 m_listBox.ItemDrop -= OnItemDrop;
                 m_listBox.ItemEndDrag -= OnItemEndDrag;
             }
         }
 
+
+        [SerializeField]
+        private Texture2D TestTex;
+
+        [SerializeField]
+        private Texture2D TestTex2;
+
         private void OnItemBeginDrag(object sender, ItemArgs e)
         {
-
+            CursorHelper.SetCursor(this, TestTex, Vector2.zero, CursorMode.Auto);
         }
 
         private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
         {
-            if(e.DropTarget is AssetItem)
+            if (e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget))
             {
+                CursorHelper.SetCursor(this, TestTex2, Vector2.zero, CursorMode.Auto);
                 e.Cancel = true;
             }
+            else
+            {
+                CursorHelper.SetCursor(this, TestTex, Vector2.zero, CursorMode.Auto);
+            }
+        }
+
+
+        private void OnItemDragExit(object sender, EventArgs e)
+        {
+            CursorHelper.SetCursor(this, TestTex2, Vector2.zero, CursorMode.Auto);
         }
 
         private void OnItemDrop(object sender, ItemDropArgs e)
         {
-            
+            CursorHelper.SetCursor(this, null, Vector2.zero, CursorMode.Auto);
         }
 
         private void OnItemEndDrag(object sender, ItemArgs e)
         {
-            
+            CursorHelper.SetCursor(this, null, Vector2.zero, CursorMode.Auto);
         } 
 
         private void OnItemDataBinding(object sender, ItemDataBindingArgs e)
