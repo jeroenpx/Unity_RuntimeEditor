@@ -4,6 +4,7 @@ namespace Battlehub.UIControls
     [RequireComponent(typeof(RectTransform))]
     public class VirtualizingTreeViewDropMarker : VirtualizingItemDropMarker
     {
+        private bool m_useGrid;
         private VirtualizingTreeView m_treeView;
         private RectTransform m_siblingGraphicsRectTransform;
         public GameObject ChildGraphics;
@@ -23,6 +24,20 @@ namespace Battlehub.UIControls
             base.AwakeOverride();
             m_treeView = GetComponentInParent<VirtualizingTreeView>();
             m_siblingGraphicsRectTransform = SiblingGraphics.GetComponent<RectTransform>();
+
+            RectTransform rectTransform = (RectTransform)transform;
+            VirtualizingScrollRect scrollRect = m_treeView.GetComponentInChildren<VirtualizingScrollRect>();
+            if(scrollRect != null && scrollRect.UseGrid)
+            {
+                m_useGrid = true;
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.anchorMax = Vector2.zero;
+            }
+            else
+            {
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.anchorMax = new Vector2(1, 0);
+            }
         }
 
         public override void SetTraget(VirtualizingItemContainer item)
@@ -46,6 +61,7 @@ namespace Battlehub.UIControls
 
         public override void SetPosition(Vector2 position)
         {
+            Debug.Log("SetPosition");
             if(Item == null)
             {
                 return;
@@ -62,10 +78,13 @@ namespace Battlehub.UIControls
 
             Vector2 sizeDelta = m_rectTransform.sizeDelta;
             sizeDelta.y = rt.rect.height;
+            if(m_useGrid)
+            {
+                sizeDelta.x = rt.rect.width;
+            }
             m_rectTransform.sizeDelta = sizeDelta;
 
             Vector2 localPoint;
-
             Camera camera = null;
             if(ParentCanvas.renderMode == RenderMode.WorldSpace || ParentCanvas.renderMode == RenderMode.ScreenSpaceCamera)
             {

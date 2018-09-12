@@ -174,9 +174,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224607099563474646}
-  - component: {fileID: 114814692444607802}
   - component: {fileID: 114727587231895732}
   - component: {fileID: 114448858216359232}
+  - component: {fileID: 114291612124458616}
   m_Layer: 5
   m_Name: VirtualContent
   m_TagString: Untagged
@@ -363,7 +363,7 @@ MonoBehaviour:
   CanEdit: 1
   CanRemove: 1
   CanDrag: 1
-  CanReorder: 1
+  CanReorder: 0
   ExpandChildrenWidth: 1
   ExpandChildrenHeight: 0
   Camera: {fileID: 0}
@@ -371,6 +371,29 @@ MonoBehaviour:
   Indent: 20
   CanReparent: 1
   AutoExpand: 0
+--- !u!114 &114291612124458616
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1751895011238774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -2095666955, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 80, y: 80}
+  m_Spacing: {x: 0, y: 20}
+  m_Constraint: 1
+  m_ConstraintCount: 2
 --- !u!114 &114302295969258404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -405,7 +428,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 80
+  m_ScrollSensitivity: 100
   m_Viewport: {fileID: 224209891637456902}
   m_HorizontalScrollbar: {fileID: 114712616192744262}
   m_VerticalScrollbar: {fileID: 114040282144578182}
@@ -422,6 +445,8 @@ MonoBehaviour:
     type: 2}
   m_virtualContent: {fileID: 224607099563474646}
   m_mode: 1
+  m_useGrid: 1
+  m_gridSpacing: {x: 0, y: 20}
 --- !u!114 &114448858216359232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -704,28 +729,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 581a173c325541d4dabf70d58c723b75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114814692444607802
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1751895011238774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 2
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 0
 --- !u!114 &114962884857687608
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -970,8 +973,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 71.9, y: -89.00001}
-  m_SizeDelta: {x: 143.8, y: 178.00002}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224826685575019958
 RectTransform:

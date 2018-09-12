@@ -288,6 +288,10 @@ namespace Battlehub.RTEditor
             }
 
             m_listBox.ItemDataBinding += OnItemDataBinding;
+            m_listBox.ItemDragEnter += OnItemDragEnter;
+            m_listBox.ItemBeginDrag += OnItemBeginDrag;
+            m_listBox.ItemDrop += OnItemDrop;
+            m_listBox.ItemEndDrag += OnItemEndDrag;
         }
 
         protected override void OnDestroyOverride()
@@ -297,13 +301,47 @@ namespace Battlehub.RTEditor
             if(m_listBox != null)
             {
                 m_listBox.ItemDataBinding -= OnItemDataBinding;
+                m_listBox.ItemBeginDrag -= OnItemBeginDrag;
+                m_listBox.ItemDragEnter -= OnItemDragEnter;
+                m_listBox.ItemDrop -= OnItemDrop;
+                m_listBox.ItemEndDrag -= OnItemEndDrag;
             }
         }
+
+        private void OnItemBeginDrag(object sender, ItemArgs e)
+        {
+
+        }
+
+        private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
+        {
+            if(e.DropTarget is AssetItem)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void OnItemDrop(object sender, ItemDropArgs e)
+        {
+            
+        }
+
+        private void OnItemEndDrag(object sender, ItemArgs e)
+        {
+            
+        } 
 
         private void OnItemDataBinding(object sender, ItemDataBindingArgs e)
         {
             ProjectItem projectItem = e.Item as ProjectItem;
-            if (projectItem != null)
+            if(projectItem == null)
+            {
+                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                text.text = null; 
+                ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
+                itemView.ProjectItem = null;
+            }
+            else
             {
                 Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
                 text.text = projectItem.Name;

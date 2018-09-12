@@ -619,22 +619,33 @@ namespace Battlehub.UIControls
             }
         }
 
-        public override void DataBindItem(object item, ItemContainerData containerData, VirtualizingItemContainer itemContainer)
+        public override void DataBindItem(object item, VirtualizingItemContainer itemContainer)
         {
             itemContainer.Clear();
 
-            VirtualizingTreeViewItemDataBindingArgs args = new VirtualizingTreeViewItemDataBindingArgs();
-            args.Item = item;
-            args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
-            args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
-          
-            RaiseItemDataBinding(args);
+            if (item != null)
+            {
+                VirtualizingTreeViewItemDataBindingArgs args = new VirtualizingTreeViewItemDataBindingArgs();
+                args.Item = item;
+                args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
+                args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
 
-            VirtualizingTreeViewItem treeViewItem = (VirtualizingTreeViewItem)itemContainer;
-            treeViewItem.CanExpand = args.HasChildren;
-            treeViewItem.CanEdit = args.CanEdit;
-            treeViewItem.CanDrag = args.CanDrag;
-            treeViewItem.UpdateIndent();
+                RaiseItemDataBinding(args);
+
+                VirtualizingTreeViewItem treeViewItem = (VirtualizingTreeViewItem)itemContainer;
+                treeViewItem.CanExpand = args.HasChildren;
+                treeViewItem.CanEdit = args.CanEdit;
+                treeViewItem.CanDrag = args.CanDrag;
+                treeViewItem.UpdateIndent();
+            }
+            else
+            {
+                VirtualizingTreeViewItem treeViewItem = (VirtualizingTreeViewItem)itemContainer;
+                treeViewItem.CanExpand = false;
+                treeViewItem.CanEdit = false;
+                treeViewItem.CanDrag = false;
+                treeViewItem.UpdateIndent();
+            }
         }
 
         private void OnTreeViewItemParentChanged(object sender, VirtualizingParentChangedEventArgs e)

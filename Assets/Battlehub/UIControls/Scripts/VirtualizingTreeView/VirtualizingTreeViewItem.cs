@@ -33,6 +33,7 @@ namespace Battlehub.UIControls
                     m_treeViewItemData = (TreeViewItemContainerData)TreeView.GetItemContainerData(value);
                     if(m_treeViewItemData == null)
                     {
+                        m_treeViewItemData = new TreeViewItemContainerData();
                         name = "Null";
                         return;
                     }
@@ -64,7 +65,7 @@ namespace Battlehub.UIControls
         /// </summary>
         public TreeViewItemContainerData Parent
         {
-            get { return m_treeViewItemData.Parent; }
+            get { return m_treeViewItemData != null ? m_treeViewItemData.Parent : null; }
             set
             {
                 if(m_treeViewItemData == null)
@@ -109,11 +110,15 @@ namespace Battlehub.UIControls
 
         private void ZeroIndent()
         {
-            m_treeViewItemData.Indent = 0;
+            if(m_treeViewItemData != null)
+            {
+                m_treeViewItemData.Indent = 0;
+            }
+
             if (m_itemLayout != null)
             {
                 m_itemLayout.padding = new RectOffset(
-                    m_treeViewItemData.Indent,
+                    0,
                     m_itemLayout.padding.right,
                     m_itemLayout.padding.top,
                     m_itemLayout.padding.bottom);
@@ -173,6 +178,10 @@ namespace Battlehub.UIControls
             get { return m_treeViewItemData == null ? false : m_treeViewItemData.CanExpand; }
             set
             {
+                if(m_treeViewItemData == null)
+                {
+                    return;
+                }
                 if (m_treeViewItemData.CanExpand != value)
                 {
                     m_treeViewItemData.CanExpand = value;
@@ -226,6 +235,10 @@ namespace Battlehub.UIControls
         {
             get
             {
+                if (m_treeViewItemData == null)
+                {
+                    return false;
+                }
                 return m_treeViewItemData.HasChildren(TreeView);
             }
         }

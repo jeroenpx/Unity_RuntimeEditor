@@ -425,10 +425,9 @@ namespace Battlehub.RTEditor
         public void UpdateProjectItem(ProjectItem projectItem)
         {
             VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
-            ItemContainerData containerData = m_treeView.GetItemContainerData(projectItem);
-            if (treeViewItem != null && containerData != null)
+            if (treeViewItem != null)
             {
-                m_treeView.DataBindItem(projectItem, containerData, treeViewItem);
+                m_treeView.DataBindItem(projectItem, treeViewItem);
             }
         }
 
