@@ -1,34 +1,12 @@
 ﻿using UnityEngine;
 using System.Reflection;
-using System;
 using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
 {
-    public class MeshColliderComponentDescriptor : IComponentDescriptor
+    public class MeshColliderComponentDescriptor : ComponentDescriptorBase<MeshCollider>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(MeshCollider); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             PropertyEditorCallback valueChanged = () => editor.BuildEditor();
 

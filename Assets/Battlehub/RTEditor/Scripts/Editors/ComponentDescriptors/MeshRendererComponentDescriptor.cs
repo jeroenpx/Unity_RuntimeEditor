@@ -11,19 +11,9 @@ namespace Battlehub.RTEditor
 {
 #if SIMPLIFIED_MESHRENDERER
 
-    public class MeshRendererComponentDescriptor : IComponentDescriptor
+    public class MeshRendererComponentDescriptor : ComponentDescriptorBase<MeshRenderer>
     {
-        public Type ComponentType
-        {
-            get { return typeof(MeshRenderer); }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo materials = Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials");
             return new[]
@@ -33,29 +23,9 @@ namespace Battlehub.RTEditor
         }
     }
 #else
-    public class MeshRendererComponentDescriptor : IComponentDescriptor
+    public class MeshRendererComponentDescriptor : ComponentDescriptorBase<MeshRenderer>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(MeshRenderer); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo shadowCastingMode = Strong.PropertyInfo((MeshRenderer x) => x.shadowCastingMode, "shadowCastingMode");
             MemberInfo receiveShadows = Strong.PropertyInfo((MeshRenderer x) => x.receiveShadows, "receiveShadows");

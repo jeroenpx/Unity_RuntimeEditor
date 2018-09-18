@@ -90,19 +90,7 @@ namespace Battlehub.RTEditor
         }
     }
 
-    public interface IComponentDescriptor
-    {
-        string DisplayName { get; }
-
-        Type ComponentType { get; }
-
-        Type GizmoType { get; }
-
-        object CreateConverter(ComponentEditor editor);
-
-        PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter);
-    }
-
+  
     public class ComponentEditor : MonoBehaviour
     {
         private static Dictionary<Type, IComponentDescriptor> m_componentDescriptors;
@@ -113,7 +101,7 @@ namespace Battlehub.RTEditor
 #if !UNITY_WSA || UNITY_EDITOR
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p) && p.IsClass);
+                .Where(p => type.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract);
 #else
             var types = type.GetTypeInfo().Assembly.GetTypes().
                 Where(p => type.IsAssignableFrom(p) && p.GetTypeInfo().IsClass);
@@ -222,16 +210,18 @@ namespace Battlehub.RTEditor
 
                 if(componentDescriptor != null)
                 {
-                    Header.text = componentDescriptor.DisplayName;
+                    Header.text = componentDescriptor.HeaderDescriptor.DisplayName;
                 }
                 else
                 {
                     Header.text = Component.GetType().Name;
                 }
                 
-
-                Expander.isOn = IsComponentExpanded;
-
+                if(Expander != null)
+                {
+                    Expander.isOn = IsComponentExpanded;
+                }
+                
                 BuildEditor();
 
             }
@@ -294,9 +284,16 @@ namespace Battlehub.RTEditor
             }
 
             
-
-            Expander.onValueChanged.AddListener(OnExpanded);
-            ResetButton.onClick.AddListener(OnResetClick);
+            if(Expander != null)
+            {
+                Expander.onValueChanged.AddListener(OnExpanded);
+            }
+            
+            if(ResetButton != null)
+            {
+                ResetButton.onClick.AddListener(OnResetClick);
+            }
+            
             RuntimeUndo.UndoCompleted += OnUndoCompleted;
             RuntimeUndo.RedoCompleted += OnRedoCompleted;
 
@@ -322,7 +319,6 @@ namespace Battlehub.RTEditor
             {
                 ResetButton.onClick.RemoveListener(OnResetClick);
             }
-
 
             if (m_gizmo != null)
             {
@@ -382,14 +378,43 @@ namespace Battlehub.RTEditor
             PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
             if (descriptors == null || descriptors.Length == 0)
             {
-                ExpanderGraphics.SetActive(false);
+                if(ExpanderGraphics != null)
+                {
+                    ExpanderGraphics.SetActive(false);
+                }
+                
                 return;
             }
-            if (Expander.isOn)
+
+            if(ResetButton != null)
             {
-                ExpanderGraphics.SetActive(true);
+                ResetButton.gameObject.SetActive(componentDescriptor != null ?
+                    componentDescriptor.HeaderDescriptor.ShowResetButton :
+                    RuntimeEditorApplication.ComponentEditorSettings.ShowResetButton);
+            }
+
+            if (Expander == null)
+            {
                 BuildEditor(componentDescriptor, descriptors);
             }
+            else
+            {
+                if (componentDescriptor != null ? !componentDescriptor.HeaderDescriptor.ShowExpander : !RuntimeEditorApplication.ComponentEditorSettings.ShowExpander)
+                {
+                    Expander.isOn = true;
+                    Expander.enabled = false;
+                }
+                
+                if (Expander.isOn)
+                {
+                    if (ExpanderGraphics != null)
+                    {
+                        ExpanderGraphics.SetActive(componentDescriptor != null ? componentDescriptor.HeaderDescriptor.ShowExpander : RuntimeEditorApplication.ComponentEditorSettings.ShowExpander);
+                    }
+                    BuildEditor(componentDescriptor, descriptors);
+                }
+            }
+            
         }
 
         protected virtual void BuildEditor(IComponentDescriptor componentDescriptor, PropertyDescriptor[] descriptors)
@@ -507,7 +532,11 @@ namespace Battlehub.RTEditor
             {
                 IComponentDescriptor componentDescriptor = GetComponentDescriptor();
                 PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
-                ExpanderGraphics.SetActive(true);
+                if(ExpanderGraphics != null)
+                {
+                    ExpanderGraphics.SetActive(true);
+                }
+                
                 BuildEditor(componentDescriptor, descriptors);
             }
             else

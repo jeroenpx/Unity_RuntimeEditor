@@ -43,31 +43,16 @@ namespace Battlehub.RTEditor
         }
     }
 
-    public class CapsuleColliderComponentDescriptor : IComponentDescriptor
+    public class CapsuleColliderComponentDescriptor : ComponentDescriptorBase<CapsuleCollider, CapsuleColliderGizmo>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(CapsuleCollider); }
-        }
-
-        public Type GizmoType
-        {
-            get { return typeof(CapsuleColliderGizmo); }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
+        public override object CreateConverter(ComponentEditor editor)
         {
             CapsuleColliderPropertyConverter converter = new CapsuleColliderPropertyConverter();
             converter.Component = (CapsuleCollider)editor.Component;
             return converter;
         }
 
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
         {
             CapsuleColliderPropertyConverter converter = (CapsuleColliderPropertyConverter)converterObj;
 

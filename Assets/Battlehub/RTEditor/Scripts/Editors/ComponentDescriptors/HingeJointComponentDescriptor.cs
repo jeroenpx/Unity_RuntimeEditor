@@ -5,29 +5,9 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class HingeJointComponentDescriptor : IComponentDescriptor
+    public class HingeJointComponentDescriptor : ComponentDescriptorBase<HingeJoint>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(HingeJoint); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo connectedBodyInfo = Strong.PropertyInfo((HingeJoint x) => x.connectedBody, "connectedBody");
             MemberInfo anchorInfo = Strong.PropertyInfo((HingeJoint x) => x.anchor, "anchor");

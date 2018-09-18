@@ -1,34 +1,13 @@
 ﻿using UnityEngine;
 using System.Reflection;
-using System;
 using Battlehub.Utils;
 using Battlehub.RTGizmos;
 
 namespace Battlehub.RTEditor
 {
-    public class SphereColliderComponentDescriptor : IComponentDescriptor
+    public class SphereColliderComponentDescriptor : ComponentDescriptorBase<SphereCollider, SphereColliderGizmo>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(SphereCollider); }
-        }
-
-        public Type GizmoType
-        {
-            get { return typeof(SphereColliderGizmo); }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo isTriggerInfo = Strong.PropertyInfo((SphereCollider x) => x.isTrigger, "isTrigger");
             MemberInfo materialInfo = Strong.PropertyInfo((SphereCollider x) => x.sharedMaterial, "sharedMaterial");

@@ -9,23 +9,9 @@ using Battlehub.RTGizmos;
 namespace Battlehub.RTEditor
 {
 #if SIMPLIFIED_MESHRENDERER
-    public class SkinnedMeshRendererComponentDescriptor : IComponentDescriptor
+    public class SkinnedMeshRendererComponentDescriptor : ComponentDescriptorBase<SkinnedMeshRenderer, SkinnedMeshRendererGizmo>
     {
-        public Type ComponentType
-        {
-            get { return typeof(SkinnedMeshRenderer); }
-        }
-
-         public Type GizmoType
-        {
-            get { return typeof(SkinnedMeshRendererGizmo); }
-        }
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo materialsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials");
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
@@ -34,30 +20,9 @@ namespace Battlehub.RTEditor
         }
     }
 #else
-    public class SkinnedMeshRendererComponentDescriptor : IComponentDescriptor
+    public class SkinnedMeshRendererComponentDescriptor : ComponentDescriptorBase<SkinnedMeshRenderer, SkinnedMeshRendererGizmo>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(SkinnedMeshRenderer); }
-        }
-
-
-        public Type GizmoType
-        {
-            get { return typeof(SkinnedMeshRendererGizmo); }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo castShadowsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.shadowCastingMode, "shadowCastingMode");
             MemberInfo receiveShadowsInfo = Strong.PropertyInfo((SkinnedMeshRenderer x) => x.receiveShadows, "receiveShadows");

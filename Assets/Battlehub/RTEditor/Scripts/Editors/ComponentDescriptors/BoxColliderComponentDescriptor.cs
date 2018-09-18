@@ -6,29 +6,9 @@ using Battlehub.RTGizmos;
 
 namespace Battlehub.RTEditor
 {
-    public class BoxColliderComponentDescriptor : IComponentDescriptor
+    public class BoxColliderComponentDescriptor : ComponentDescriptorBase<BoxCollider, BoxColliderGizmo>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(BoxCollider); }
-        }
-
-        public Type GizmoType
-        {
-            get { return typeof(BoxColliderGizmo); }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo isTriggerInfo = Strong.PropertyInfo((BoxCollider x) => x.isTrigger, "isTrigger");
             MemberInfo materialInfo = Strong.PropertyInfo((BoxCollider x) => x.sharedMaterial, "sharedMaterial");

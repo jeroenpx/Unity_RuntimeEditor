@@ -5,29 +5,9 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class FixedJointComponentDescriptor : IComponentDescriptor
+    public class FixedJointComponentDescriptor : ComponentDescriptorBase<FixedJoint>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(FixedJoint); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo connectedBodyInfo = Strong.PropertyInfo((FixedJoint x) => x.connectedBody, "connectedBody");
             MemberInfo breakForceInfo = Strong.PropertyInfo((FixedJoint x) => x.breakForce, "breakForce");

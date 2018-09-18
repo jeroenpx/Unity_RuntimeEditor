@@ -2,35 +2,19 @@
 using System.Reflection;
 using System;
 using Battlehub.Utils;
-using System.Collections.Generic;
 
 namespace Battlehub.RTEditor
 {
-    public class TransformComponentDescriptor : IComponentDescriptor
+    public class TransformComponentDescriptor : ComponentDescriptorBase<Transform>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(Transform); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
+        public override object CreateConverter(ComponentEditor editor)
         {
             TransformPropertyConverter converter = new TransformPropertyConverter();
             converter.Component = (Transform)editor.Component;
             return converter;
         }
 
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
         {
             TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
 

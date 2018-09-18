@@ -4,6 +4,18 @@ using UnityEngine;
 
 namespace Battlehub.RTCommon
 {
+    public struct ComponentEditorSettings
+    {
+        public readonly bool ShowResetButton;
+        public readonly bool ShowExpander;
+
+        public ComponentEditorSettings(bool showExpander, bool showResetButton)
+        {
+            ShowResetButton = showResetButton;
+            ShowExpander = showExpander;
+        }
+    }
+
     public delegate void RuntimeEditorEvent();
     public static class RuntimeEditorApplication
     {
@@ -27,8 +39,11 @@ namespace Battlehub.RTCommon
         private static RuntimeEditorWindow m_pointerOverWindow;
         private static RuntimeEditorWindow m_activeWindow;
 
+        public static readonly ComponentEditorSettings ComponentEditorSettings;
+
         static RuntimeEditorApplication()
         {
+            ComponentEditorSettings = new ComponentEditorSettings(true, true);
             Reset();
         }
 

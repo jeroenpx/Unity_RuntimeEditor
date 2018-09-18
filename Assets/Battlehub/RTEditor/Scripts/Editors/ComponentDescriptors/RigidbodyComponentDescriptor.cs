@@ -1,33 +1,12 @@
 ﻿using UnityEngine;
 using System.Reflection;
-using System;
 using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
 {
-    public class RigidbodyComponentDescriptor : IComponentDescriptor
+    public class RigidbodyComponentDescriptor : ComponentDescriptorBase<Rigidbody>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(Rigidbody); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo massInfo = Strong.PropertyInfo((Rigidbody x) => x.mass, "mass");
             MemberInfo dragInfo = Strong.PropertyInfo((Rigidbody x) => x.drag, "drag");

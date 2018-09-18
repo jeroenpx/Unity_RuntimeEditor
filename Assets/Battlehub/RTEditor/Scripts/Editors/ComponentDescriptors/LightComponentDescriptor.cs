@@ -7,30 +7,9 @@ using Battlehub.RTGizmos;
 
 namespace Battlehub.RTEditor
 {
-    public class LightComponentDescriptor : IComponentDescriptor
+    public class LightComponentDescriptor : ComponentDescriptorBase<Light, LightGizmo>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(Light); }
-        }
-
-        public Type GizmoType
-        {
-            get { return typeof(LightGizmo); }
-        }
-
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             Light light = (Light)editor.Component;
 

@@ -5,31 +5,10 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class SpringJointComponentDescriptor : IComponentDescriptor
+    public class SpringJointComponentDescriptor : ComponentDescriptorBase<SpringJoint>
     {
-        public string DisplayName
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(SpringJoint); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
-        {
-           
             MemberInfo connectedBodyInfo = Strong.PropertyInfo((SpringJoint x) => x.connectedBody, "connectedBody");
             MemberInfo anchorInfo = Strong.PropertyInfo((SpringJoint x) => x.anchor, "anchor");
             MemberInfo autoConfigAnchorInfo = Strong.PropertyInfo((SpringJoint x) => x.autoConfigureConnectedAnchor, "autoConfigureConnectedAnchor");

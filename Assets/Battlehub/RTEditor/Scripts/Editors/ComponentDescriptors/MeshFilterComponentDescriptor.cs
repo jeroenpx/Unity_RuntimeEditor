@@ -5,29 +5,9 @@ using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
 {
-    public class MeshFilterComponentDescriptor : IComponentDescriptor
+    public class MeshFilterComponentDescriptor : ComponentDescriptorBase<MeshFilter>
     {
-        public string DisplayName
-        {
-            get { return ComponentType.Name; }
-        }
-
-        public Type ComponentType
-        {
-            get { return typeof(MeshFilter); }
-        }
-
-        public Type GizmoType
-        {
-            get { return null; }
-        }
-
-        public object CreateConverter(ComponentEditor editor)
-        {
-            return null;
-        }
-
-        public PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
             MemberInfo sharedMeshInfo = Strong.PropertyInfo((MeshFilter x) => x.sharedMesh, "sharedMesh");
             return new[]
