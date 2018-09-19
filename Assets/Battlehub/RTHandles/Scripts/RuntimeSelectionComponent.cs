@@ -158,6 +158,7 @@ namespace Battlehub.RTHandles
                     bool canSelect = CanSelect(hitGO);
                     if (canSelect)
                     {
+                        hitGO = hitGO.GetComponentInParent<ExposeToEditor>().gameObject;
                         if (multiselect)
                         {
                             List<Object> selection;
@@ -461,7 +462,7 @@ namespace Battlehub.RTHandles
 
         protected virtual bool CanSelect(GameObject go)
         {
-            return go.GetComponent<ExposeToEditor>();
+            return go.GetComponentInParent<ExposeToEditor>();
         }
 
         protected virtual Transform[] GetTargets()

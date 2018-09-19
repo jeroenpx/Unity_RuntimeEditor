@@ -443,7 +443,7 @@ namespace Battlehub.RTCommon
             if (m_colliders == null || m_colliders.Length == 0)
             {
                 List<Collider> colliders = new List<Collider>();
-                Rigidbody rigidBody = gameObject.GetComponent<Rigidbody>();
+                Rigidbody rigidBody = BoundsObject.GetComponent<Rigidbody>();
 
                 bool isRigidBody = rigidBody != null;
                 if (m_effectiveBoundsType == BoundsType.Any)
@@ -452,7 +452,7 @@ namespace Battlehub.RTCommon
                     {
                         if (AddColliders && !isRigidBody)
                         {
-                            MeshCollider collider = gameObject.AddComponent<MeshCollider>();
+                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
                             collider.convex = isRigidBody;
                             collider.sharedMesh = m_filter.sharedMesh;
                             colliders.Add(collider);
@@ -462,7 +462,7 @@ namespace Battlehub.RTCommon
                     {
                         if (AddColliders && !isRigidBody)
                         {
-                            MeshCollider collider = gameObject.AddComponent<MeshCollider>();
+                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
                             collider.convex = isRigidBody;
                             collider.sharedMesh = m_skinned.sharedMesh;
                             colliders.Add(collider);
@@ -472,7 +472,7 @@ namespace Battlehub.RTCommon
                     {
                         if(AddColliders && !isRigidBody)
                         {
-                            BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+                            BoxCollider collider = BoundsObject.AddComponent<BoxCollider>();
                             collider.size = m_spriteRenderer.sprite.bounds.size;
                             colliders.Add(collider);
                         }
@@ -484,7 +484,7 @@ namespace Battlehub.RTCommon
                     {
                         if (AddColliders && !isRigidBody)
                         {
-                            MeshCollider collider = gameObject.AddComponent<MeshCollider>();
+                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
                             collider.convex = isRigidBody;
                             collider.sharedMesh = m_filter.sharedMesh;
                             colliders.Add(collider);
@@ -497,7 +497,7 @@ namespace Battlehub.RTCommon
                     {
                         if (AddColliders && !isRigidBody)
                         {
-                            MeshCollider collider = gameObject.AddComponent<MeshCollider>();
+                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
                             collider.convex = isRigidBody;
                             collider.sharedMesh = m_skinned.sharedMesh;
                             colliders.Add(collider);
@@ -510,7 +510,7 @@ namespace Battlehub.RTCommon
                     {
                         if (AddColliders && !isRigidBody)
                         {
-                            BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+                            BoxCollider collider = BoundsObject.AddComponent<BoxCollider>();
                             collider.size = m_spriteRenderer.sprite.bounds.size;
                             colliders.Add(collider);
                         }
@@ -522,7 +522,7 @@ namespace Battlehub.RTCommon
                     {
                         Mesh box = RuntimeGraphics.CreateCubeMesh(Color.black, CustomBounds.center, CustomBounds.extents.x * 2, CustomBounds.extents.y * 2, CustomBounds.extents.z * 2);
 
-                        MeshCollider collider = gameObject.AddComponent<MeshCollider>();
+                        MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
                         collider.convex = isRigidBody;
 
                         collider.sharedMesh = box;

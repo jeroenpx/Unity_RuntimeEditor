@@ -331,7 +331,7 @@ namespace Battlehub.RTHandles
 
         protected override bool CanSelect(GameObject go)
         {
-            ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
+            ExposeToEditor exposeToEditor = go.GetComponentInParent<ExposeToEditor>();
             return exposeToEditor != null && exposeToEditor.CanSelect;
         }
 
