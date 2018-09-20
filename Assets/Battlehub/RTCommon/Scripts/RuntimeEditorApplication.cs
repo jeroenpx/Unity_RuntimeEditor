@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.Utils;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -61,6 +62,7 @@ namespace Battlehub.RTCommon
             RuntimeSelection.objects = null;
             RuntimeUndo.Reset();
             RuntimeTools.Reset();
+            CursorHelper.Reset();
         }
 
         public static RuntimeEditorWindow PointerOverWindow

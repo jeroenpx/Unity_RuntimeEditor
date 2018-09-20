@@ -126,7 +126,7 @@ namespace Battlehub.UIControls
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             m_pointerInside = true;
-            CursorHelper.SetCursor(this, CursorTexture, new Vector2(CursorTexture.width / 2, CursorTexture.height / 2), CursorMode.Auto);
+            CursorHelper.SetCursor(this, CursorTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)

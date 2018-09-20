@@ -40,9 +40,9 @@ namespace Battlehub.UIControls
             }
         }
 
-        public override void SetTraget(VirtualizingItemContainer item)
+        public override void SetTarget(VirtualizingItemContainer item)
         {
-            base.SetTraget(item);
+            base.SetTarget(item);
             if(item == null)
             {
                 return;
@@ -61,7 +61,6 @@ namespace Battlehub.UIControls
 
         public override void SetPosition(Vector2 position)
         {
-            Debug.Log("SetPosition");
             if(Item == null)
             {
                 return;

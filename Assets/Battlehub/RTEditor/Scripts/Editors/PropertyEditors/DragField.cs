@@ -57,7 +57,7 @@ namespace Battlehub.RTEditor
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            CursorHelper.SetCursor(this, DragCursor, new Vector2(24, 24), CursorMode.Auto);
+            CursorHelper.SetCursor(this, DragCursor, new Vector2(0.5f, 0.5f), CursorMode.Auto);
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)

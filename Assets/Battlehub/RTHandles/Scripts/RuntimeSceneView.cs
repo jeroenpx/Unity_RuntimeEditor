@@ -113,22 +113,22 @@ namespace Battlehub.RTHandles
             {
                 if (m_rotate && RuntimeTools.Current == RuntimeTool.View)
                 {
-                    CursorHelper.SetCursor(this, ViewTexture, ViewTexture != null ? new Vector2(ViewTexture.width / 2, ViewTexture.height / 2) : Vector2.zero, CursorMode.Auto);
+                    CursorHelper.SetCursor(this, ViewTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
                 }
                 else
                 {
-                    CursorHelper.SetCursor(this, MoveTexture, MoveTexture != null ? new Vector2(MoveTexture.width / 2, MoveTexture.height / 2) : Vector2.zero, CursorMode.Auto);
+                    CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
                 }
             }
             else if (m_rotate)
             {
-                CursorHelper.SetCursor(this, ViewTexture, ViewTexture != null ? new Vector2(ViewTexture.width / 2, ViewTexture.height / 2) : Vector2.zero, CursorMode.Auto);
+                CursorHelper.SetCursor(this, ViewTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
             }
             else
             {
                 if (RuntimeTools.Current == RuntimeTool.View)
                 {
-                    CursorHelper.SetCursor(this, MoveTexture, MoveTexture != null ? new Vector2(MoveTexture.width / 2, MoveTexture.height / 2) : Vector2.zero, CursorMode.Auto);
+                    CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
                 }
                 else
                 {

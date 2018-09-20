@@ -16,27 +16,25 @@ namespace Battlehub.RTCommon
         Other
     }
 
-    public class RuntimeEditorWindow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+    public class RuntimeEditorWindow : DragDropTarget, IPointerDownHandler, IPointerUpHandler
     {
         public RuntimeWindowType WindowType;
 
         private bool m_isPointerOver;
 
-        private void Awake()
+        protected override void AwakeOverride()
         {
+            base.AwakeOverride();
             RuntimeEditorApplication.AddWindow(this);
-            AwakeOverride();
         }
 
-
-    
-
-        private void OnDestroy()
+        protected override void OnDestroyOverride()
         {
+            base.OnDestroyOverride();
+        
             RuntimeEditorApplication.ActivateWindow(null);
             RuntimeEditorApplication.PointerExit(this);
             RuntimeEditorApplication.RemoveWindow(this);
-            OnDestroyOverride();
         }
 
         private void Update()
@@ -101,7 +99,6 @@ namespace Battlehub.RTCommon
             UpdateOverride();
         }
 
-
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
             if (WindowType == RuntimeWindowType.SceneView || WindowType == RuntimeWindowType.GameView)
@@ -113,8 +110,15 @@ namespace Battlehub.RTCommon
             OnPointerDownOverride(eventData);
         }
 
-        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
+            OnPointerUpOverride(eventData);
+        }
+    
+
+        protected override void OnPointerEnterOverride(PointerEventData eventData)
+        {
+            base.OnPointerEnterOverride(eventData);
             if (WindowType == RuntimeWindowType.SceneView || WindowType == RuntimeWindowType.GameView)
             {
                 return;
@@ -122,39 +126,17 @@ namespace Battlehub.RTCommon
 
             m_isPointerOver = true;
             RuntimeEditorApplication.PointerEnter(this);
-            OnPointerEnterOverride(eventData);
         }
 
-        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+        protected override void OnPointerExitOverride(PointerEventData eventData)
         {
+            base.OnPointerExitOverride(eventData);
             if (WindowType == RuntimeWindowType.SceneView || WindowType == RuntimeWindowType.GameView)
             {
                 return;
             }
             m_isPointerOver = false;
             RuntimeEditorApplication.PointerExit(this);
-            OnPointerExitOverride(eventData);
-        }
-
-        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
-        {
-            OnPointerUpOverride(eventData);
-        }
-
-        protected virtual void AwakeOverride()
-        {
-
-        }
-
-   
-        protected virtual void OnDestroyOverride()
-        {
-
-        }
-
-        protected virtual void UpdateOverride()
-        {
-
         }
 
         protected virtual void OnPointerDownOverride(PointerEventData eventData)
@@ -167,16 +149,11 @@ namespace Battlehub.RTCommon
 
         }
 
-        protected virtual void OnPointerEnterOverride(PointerEventData eventData)
+        protected virtual void UpdateOverride()
         {
 
         }
-
-        protected virtual void OnPointerExitOverride(PointerEventData eventData)
-        {
-
-        }
-
+      
         private void UpdateState(Rect cameraRect, bool isGameView)
         {
             bool isPointerOver = cameraRect.Contains(InputController._MousePosition) && !RuntimeTools.IsPointerOverGameObject();
@@ -212,7 +189,10 @@ namespace Battlehub.RTCommon
             }
         }
 
-        
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

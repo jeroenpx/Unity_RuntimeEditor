@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
+using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTCommon
 {
     public enum RuntimeTool
@@ -42,6 +44,7 @@ namespace Battlehub.RTCommon
         public static event RuntimeToolsEvent ToolChanged;
         public static event RuntimeToolsEvent PivotRotationChanged;
         public static event RuntimeToolsEvent PivotModeChanged;
+        [Obsolete]
         public static event SpawnPrefabChanged SpawnPrefabChanged;
         
         public static event RuntimeToolsEvent IsViewingChanged;
@@ -180,7 +183,9 @@ namespace Battlehub.RTCommon
             }
         }
 
+        [Obsolete]
         private static GameObject m_spawnPrefab;
+        [Obsolete]
         public static GameObject SpawnPrefab
         {
             get { return m_spawnPrefab; }
@@ -198,7 +203,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static Object ActiveTool
+        public static UnityObject ActiveTool
         {
             get;
             set;

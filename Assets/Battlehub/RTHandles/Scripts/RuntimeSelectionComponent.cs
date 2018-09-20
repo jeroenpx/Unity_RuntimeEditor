@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Battlehub.Utils;
 using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad2;
+
 namespace Battlehub.RTHandles
 {
     public delegate void UnityEditorToolChanged();
@@ -52,11 +54,11 @@ namespace Battlehub.RTHandles
         {
             get
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 return EditorModifierKey;
-                #else
+#else
                 return RuntimeModifierKey;
-                #endif
+#endif
             }
         }
 
@@ -126,11 +128,11 @@ namespace Battlehub.RTHandles
         {
             if (InputController._GetMouseButtonDown(0))
             {
-                if(RuntimeTools.ActiveTool != null && RuntimeTools.ActiveTool != BoxSelection.Current)
+                if (RuntimeTools.ActiveTool != null && RuntimeTools.ActiveTool != BoxSelection.Current)
                 {
                     return;
                 }
-                
+
                 if (!IPointerOverEditorArea)
                 {
                     return;
@@ -345,7 +347,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             switch (RuntimeTools.Current)
             {
                 case RuntimeTool.None:
@@ -364,10 +366,10 @@ namespace Battlehub.RTHandles
                     UnityEditor.Tools.current = UnityEditor.Tool.View;
                     break;
             }
-            #endif
+#endif
         }
 
-      
+
 
         private void OnBoxSelectionFiltering(object sender, FilteringArgs e)
         {
@@ -385,15 +387,15 @@ namespace Battlehub.RTHandles
 
         private void OnRuntimeSelectionChanged(Object[] unselected)
         {
-            if(unselected != null)
+            if (unselected != null)
             {
-                for(int i = 0; i < unselected.Length; ++i)
+                for (int i = 0; i < unselected.Length; ++i)
                 {
                     GameObject unselectedObj = unselected[i] as GameObject;
-                    if(unselectedObj != null)
+                    if (unselectedObj != null)
                     {
                         SelectionGizmo selectionGizmo = unselectedObj.GetComponent<SelectionGizmo>();
-                        if(selectionGizmo != null)
+                        if (selectionGizmo != null)
                         {
                             DestroyImmediate(selectionGizmo);
                         }
@@ -411,9 +413,9 @@ namespace Battlehub.RTHandles
             }
 
             GameObject[] selected = RuntimeSelection.gameObjects;
-            if(selected != null)
+            if (selected != null)
             {
-                for(int i = 0; i < selected.Length; ++i)
+                for (int i = 0; i < selected.Length; ++i)
                 {
                     GameObject selectedObj = selected[i];
                     ExposeToEditor exposeToEditor = selectedObj.GetComponent<ExposeToEditor>();
@@ -426,7 +428,7 @@ namespace Battlehub.RTHandles
                         }
                         selectionGizmo.SceneCamera = SceneCamera;
 
-                        if(exposeToEditor.Selected != null)
+                        if (exposeToEditor.Selected != null)
                         {
                             exposeToEditor.Selected.Invoke(exposeToEditor);
                         }
@@ -474,15 +476,15 @@ namespace Battlehub.RTHandles
         public virtual void SetSceneCamera(Camera camera)
         {
             SceneCamera = camera;
-            if(m_positionHandle != null)
+            if (m_positionHandle != null)
             {
                 m_positionHandle.SceneCamera = camera;
             }
-            if(m_rotationHandle != null)
+            if (m_rotationHandle != null)
             {
                 m_rotationHandle.SceneCamera = camera;
             }
-            if(m_scaleHandle != null)
+            if (m_scaleHandle != null)
             {
                 m_scaleHandle.SceneCamera = camera;
             }
@@ -497,22 +499,19 @@ namespace Battlehub.RTHandles
                     if (exposeToEditor && exposeToEditor.CanSelect && !selectedObj.IsPrefab() && !selectedObj.isStatic)
                     {
                         SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
-                        if(selectionGizmo != null)
+                        if (selectionGizmo != null)
                         {
                             Destroy(selectionGizmo);
                             selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
                         }
-                        if(selectionGizmo != null)
+                        if (selectionGizmo != null)
                         {
                             selectionGizmo.SceneCamera = SceneCamera;
                         }
-                        
+
                     }
                 }
             }
         }
     }
-
-
-
 }

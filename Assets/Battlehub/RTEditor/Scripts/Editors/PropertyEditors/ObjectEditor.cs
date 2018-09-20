@@ -38,8 +38,8 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
             BtnSelect.onClick.AddListener(OnSelect);
-            DragDrop.BeginDrag += OnGlobalBeginDrag;
-            DragDrop.Drop += OnGlobalDrop;
+           // DragDrop.BeginDrag += OnGlobalBeginDrag;
+            //DragDrop.Drop += OnGlobalDrop;
         }
 
         protected override void OnDestroyOverride()
@@ -49,8 +49,8 @@ namespace Battlehub.RTEditor
             {
                 BtnSelect.onClick.RemoveListener(OnSelect);
             }
-            DragDrop.BeginDrag -= OnGlobalBeginDrag;
-            DragDrop.Drop -= OnGlobalDrop;
+           // DragDrop.BeginDrag -= OnGlobalBeginDrag;
+           // DragDrop.Drop -= OnGlobalDrop;
         }
 
         private void OnSelect()
@@ -78,35 +78,36 @@ namespace Battlehub.RTEditor
                 "Cancel");
         }
 
-        private void OnGlobalBeginDrag()
-        {
-            if(m_isPointerOver)
-            {
-                if (DragDrop.DragItem != null && MemberInfoType.IsAssignableFrom(DragDrop.DragItem.GetType()))
-                {
-                    ShowDragHighlight();
-                }
-            }
-        }
+#warning Commented Out. TODO: Re-implement using DragDropTarget
+        //private void OnGlobalBeginDrag()
+        //{
+        //    if(m_isPointerOver)
+        //    {
+        //        if (DragDrop.DragObject != null && MemberInfoType.IsAssignableFrom(DragDrop.DragObject.GetType()))
+        //        {
+        //            ShowDragHighlight();
+        //        }
+        //    }
+        //}
 
-        private void OnGlobalDrop()
-        {
-            if (m_isPointerOver)
-            {
-                if (DragDrop.DragItem != null && MemberInfoType.IsAssignableFrom(DragDrop.DragItem.GetType()))
-                {
-                    SetValue(DragDrop.DragItem);
-                    EndEdit();
-                    SetInputField(DragDrop.DragItem);
-                    HideDragHighlight();
-                }
-            }
-        }
+        //private void OnGlobalDrop()
+        //{
+        //    if (m_isPointerOver)
+        //    {
+        //        if (DragDrop.DragObject != null && MemberInfoType.IsAssignableFrom(DragDrop.DragObject.GetType()))
+        //        {
+        //            SetValue(DragDrop.DragObject);
+        //            EndEdit();
+        //            SetInputField(DragDrop.DragObject);
+        //            HideDragHighlight();
+        //        }
+        //    }
+        //}
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             m_isPointerOver = true;
-            if (DragDrop.DragItem != null && MemberInfoType.IsAssignableFrom(DragDrop.DragItem.GetType()))
+            if (DragDrop.DragObject != null && MemberInfoType.IsAssignableFrom(DragDrop.DragObject.GetType()))
             {
                 ShowDragHighlight();
             }
@@ -115,7 +116,7 @@ namespace Battlehub.RTEditor
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             m_isPointerOver = false;
-            if(DragDrop.DragItem != null)
+            if(DragDrop.DragObject != null)
             {
                 HideDragHighlight();
             }

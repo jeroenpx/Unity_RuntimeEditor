@@ -229,7 +229,7 @@ namespace Battlehub.RTEditor
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            if (DragDrop.DragItem != null)
+            if (DragDrop.DragObject != null)
             {
                 if (Expander != null)
                 {

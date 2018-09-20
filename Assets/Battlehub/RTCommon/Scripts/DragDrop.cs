@@ -1,15 +1,19 @@
-﻿namespace Battlehub.RTCommon
-{
+﻿using Battlehub.Utils;
+using UnityEngine.EventSystems;
 
-    public delegate void BeginDragEventHandler();
-    public delegate void DropEventHandler();
+namespace Battlehub.RTCommon
+{
+    public delegate void DragDropEventHander(PointerEventData pointerEventData);
 
     public static class DragDrop 
     {
-        public static event BeginDragEventHandler BeginDrag;
-        public static event DropEventHandler Drop;
+        private static object m_cursorLocker = new object();
 
-        public static UnityEngine.Object[] DragItems
+        public static event DragDropEventHander BeginDrag;
+        public static event DragDropEventHander Drag;
+        public static event DragDropEventHander Drop;
+
+        public static object[] DragObjects
         {
             get;
             private set;
@@ -17,40 +21,65 @@
 
         public static void Reset()
         {
-            DragItems = null;
+            DragObjects = null;
         }
 
-        public static UnityEngine.Object DragItem
+        public static object DragObject
         {
             get
             {
-                if (DragItems == null || DragItems.Length == 0)
+                if (DragObjects == null || DragObjects.Length == 0)
                 {
                     return null;
                 }
 
-                return DragItems[0];
+                return DragObjects[0];
             }
         }
 
-
-        public static void RaiseBeginDrag(UnityEngine.Object[] dragItems)
+        public static void SetCursor(KnownCursor cursorType)
         {
-            DragItems = dragItems;
+            CursorHelper.SetCursor(m_cursorLocker, cursorType);
+        }
 
+        public static void ResetCursor()
+        {
+            CursorHelper.ResetCursor(m_cursorLocker);
+        }
+
+        public static void RaiseBeginDrag(object[] dragItems, PointerEventData pointerEventData)
+        {
+            DragObjects = dragItems;
+            SetCursor(KnownCursor.DropNowAllowed);
             if (BeginDrag != null)
             {
-                BeginDrag();
+                BeginDrag(pointerEventData);
             }
         }
 
-        public static void RaiseDrop()
+        public static void RaiseDrag(PointerEventData eventData)
         {
-            if(Drop != null)
+            if(DragObjects != null)
             {
-                Drop();
+                if (Drag != null)
+                {
+                    Drag(eventData);
+                }
             }
-            DragItems = null;
+        }
+
+        public static void RaiseDrop(PointerEventData pointerEventData)
+        {
+            if(DragObjects != null)
+            {
+                if (Drop != null)
+                {
+                    Drop(pointerEventData);
+                }
+
+                ResetCursor();
+                DragObjects = null;
+            }
         }
     }
 

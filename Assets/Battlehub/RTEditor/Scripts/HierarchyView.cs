@@ -8,7 +8,8 @@ using UnityEngine.EventSystems;
 
 using Battlehub.UIControls;
 using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
+using Battlehub.RTSaveLoad2;
+using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
 {
@@ -21,7 +22,8 @@ namespace Battlehub.RTEditor
         public UnityEvent ItemDoubleClick;
         private bool m_lockSelection;
         private bool m_isSpawningPrefab;
-        private IProjectManager m_projectManager;
+        private IProject m_project;
+        private ITypeMap m_typeMap;
         private bool m_isStarted;
 
         public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
@@ -64,7 +66,8 @@ namespace Battlehub.RTEditor
             m_treeView.ItemBeginEdit += OnItemBeginEdit;
             m_treeView.ItemEndEdit += OnItemEndEdit;
 
-            m_projectManager = Dependencies.ProjectManager;
+            m_project = RTSL2Deps.Get.Project;
+            m_typeMap = RTSL2Deps.Get.TypeMap;
         }
 
         private void Start()
@@ -74,11 +77,11 @@ namespace Battlehub.RTEditor
 
         private void OnEnable()
         {
-            if(m_projectManager != null)
+            if(m_project != null)
             {
-                m_projectManager.SceneLoading += OnSceneLoading;
-                m_projectManager.SceneLoaded += OnSceneLoaded;
-                m_projectManager.SceneCreated += OnSceneCreated;
+                //m_project.SceneLoading += OnSceneLoading;
+                //m_project.SceneLoaded += OnSceneLoaded;
+                //m_project.SceneCreated += OnSceneCreated;
             }
 
             
@@ -87,11 +90,11 @@ namespace Battlehub.RTEditor
 
         private void OnDisable()
         {
-            if (m_projectManager != null)
+            if (m_project != null)
             {
-                m_projectManager.SceneLoading -= OnSceneLoading;
-                m_projectManager.SceneLoaded -= OnSceneLoaded;
-                m_projectManager.SceneCreated -= OnSceneCreated;
+               // m_project.SceneLoading -= OnSceneLoading;
+                //m_project.SceneLoaded -= OnSceneLoaded;
+                //m_project.SceneCreated -= OnSceneCreated;
             }
 
             DisableHierarchy();
@@ -129,13 +132,13 @@ namespace Battlehub.RTEditor
             ExposeToEditor.ParentChanged -= OnParentChanged;
             ExposeToEditor.NameChanged -= OnNameChanged;
             RuntimeEditorApplication.PlaymodeStateChanged -= OnPlaymodeStateChanged;
-            RuntimeTools.SpawnPrefabChanged -= OnSpawnPrefabChanged;
+            //RuntimeTools.SpawnPrefabChanged -= OnSpawnPrefabChanged;
 
-            if(m_projectManager != null)
+            if(m_project != null)
             {
-                m_projectManager.SceneLoading -= OnSceneLoading;
-                m_projectManager.SceneLoaded -= OnSceneLoaded;
-                m_projectManager.SceneCreated -= OnSceneCreated;
+              //  m_project.SceneLoading -= OnSceneLoading;
+               // m_project.SceneLoaded -= OnSceneLoaded;
+               // m_project.SceneCreated -= OnSceneCreated;
             }
             
         }
@@ -159,43 +162,41 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            if (RuntimeTools.SpawnPrefab == null)
-            {
-                return;
-            }
+            //if (RuntimeTools.SpawnPrefab == null)
+            //{
+            //    return;
+            //}
 
-            m_treeView.ExternalItemDrag(InputController._MousePosition);
+            //m_treeView.ExternalItemDrag(InputController._MousePosition);
 
-            if (InputController._GetMouseButtonUp(0))
-            {
-                m_isSpawningPrefab = true;
-                GameObject prefabInstance = RuntimeTools.SpawnPrefab.InstantiatePrefab(Vector3.zero, Quaternion.identity);
-                prefabInstance.SetActive(true);
+            //if (InputController._GetMouseButtonUp(0))
+            //{
+            //    m_isSpawningPrefab = true;
+            //    GameObject prefabInstance = RuntimeTools.SpawnPrefab.InstantiatePrefab(Vector3.zero, Quaternion.identity);
+            //    prefabInstance.SetActive(true);
 
-                ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
-                if (exposeToEditor == null)
-                {
-                    exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
-                }
+            //    ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
+            //    if (exposeToEditor == null)
+            //    {
+            //        exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
+            //    }
 
-                exposeToEditor.SetName(RuntimeTools.SpawnPrefab.name);
-                RuntimeUndo.BeginRecord();
-                RuntimeUndo.RecordSelection();
-                RuntimeUndo.BeginRegisterCreateObject(prefabInstance);
-                RuntimeUndo.EndRecord();
+            //    exposeToEditor.SetName(RuntimeTools.SpawnPrefab.name);
+            //    RuntimeUndo.BeginRecord();
+            //    RuntimeUndo.RecordSelection();
+            //    RuntimeUndo.BeginRegisterCreateObject(prefabInstance);
+            //    RuntimeUndo.EndRecord();
 
-                bool isEnabled = RuntimeUndo.Enabled;
-                RuntimeUndo.Enabled = false;
-                RuntimeSelection.activeGameObject = prefabInstance;
-                RuntimeUndo.Enabled = isEnabled;
+            //    bool isEnabled = RuntimeUndo.Enabled;
+            //    RuntimeUndo.Enabled = false;
+            //    RuntimeSelection.activeGameObject = prefabInstance;
+            //    RuntimeUndo.Enabled = isEnabled;
 
-                RuntimeUndo.BeginRecord();
-                RuntimeUndo.RegisterCreatedObject(prefabInstance);
-                RuntimeUndo.RecordSelection();
-                RuntimeUndo.EndRecord();
-
-                RuntimeTools.SpawnPrefab = null;
-            }
+            //    RuntimeUndo.BeginRecord();
+            //    RuntimeUndo.RegisterCreatedObject(prefabInstance);
+            //    RuntimeUndo.RecordSelection();
+            //    RuntimeUndo.EndRecord();
+            //}
         }
 
         private void EnableHierarchy()
@@ -216,7 +217,6 @@ namespace Battlehub.RTEditor
             ExposeToEditor.ParentChanged += OnParentChanged;
             ExposeToEditor.NameChanged += OnNameChanged;
             RuntimeEditorApplication.PlaymodeStateChanged += OnPlaymodeStateChanged;
-            RuntimeTools.SpawnPrefabChanged += OnSpawnPrefabChanged;
         }
 
         private void DisableHierarchy()
@@ -232,24 +232,25 @@ namespace Battlehub.RTEditor
             ExposeToEditor.ParentChanged -= OnParentChanged;
             ExposeToEditor.NameChanged -= OnNameChanged;
             RuntimeEditorApplication.PlaymodeStateChanged -= OnPlaymodeStateChanged;
-            RuntimeTools.SpawnPrefabChanged -= OnSpawnPrefabChanged;
         }
 
-        private void OnSceneCreated(object sender, ProjectManagerEventArgs args)
-        {
-            DisableHierarchy();
-            EnableHierarchy();
-        }
+#warning SceneCreated/SceneLoadeing/SceneLoaded commented out
 
-        private void OnSceneLoading(object sender, ProjectManagerEventArgs args)
-        {
-            DisableHierarchy();
-        }
+        //private void OnSceneCreated(object sender, ProjectManagerEventArgs args)
+        //{
+        //    DisableHierarchy();
+        //    EnableHierarchy();
+        //}
 
-        private void OnSceneLoaded(object sender, ProjectManagerEventArgs args)
-        {
-            EnableHierarchy();
-        }
+        //private void OnSceneLoading(object sender, ProjectManagerEventArgs args)
+        //{
+        //    DisableHierarchy();
+        //}
+
+        //private void OnSceneLoaded(object sender, ProjectManagerEventArgs args)
+        //{
+        //    EnableHierarchy();
+        //}
 
         private void BindGameObjects()
         {
@@ -296,6 +297,10 @@ namespace Battlehub.RTEditor
                 //This line is required to syncronize selection, runtime selection and treeview selection
                 OnTreeViewSelectionChanged(m_treeView.SelectedItems, m_treeView.SelectedItems);
             }
+            else
+            {
+                e.Children = new GameObject[0];
+            }
         }
 
         private void OnRuntimeSelectionChanged(Object[] unselected)
@@ -315,7 +320,6 @@ namespace Battlehub.RTEditor
                 m_treeView.SelectedItems = RuntimeSelection.gameObjects;
             }
             
-      
             m_lockSelection = false;
         }
 
@@ -750,9 +754,6 @@ namespace Battlehub.RTEditor
 
                 m_treeView.RemoveChild(oldParentGO, obj.gameObject, isLastChild);
             }
-
-            
-
         }
 
         private void OnNameChanged(ExposeToEditor obj)
@@ -766,32 +767,133 @@ namespace Battlehub.RTEditor
             text.text = obj.gameObject.name;
         }
 
-        protected override void OnPointerEnterOverride(PointerEventData eventData)
+        private bool CanDrop(object[] dragObjects)
         {
-            base.OnPointerEnterOverride(eventData);
-            if (RuntimeTools.SpawnPrefab != null)
+            if(m_treeView.DropTarget == null)
             {
-                m_treeView.ExternalBeginDrag(eventData.position);
+                return false;
+            }
+
+            return dragObjects.OfType<AssetItem>().Count() > 0;
+        }
+
+        public override void DragEnter(object[] dragObjects, PointerEventData pointerEventData)
+        {
+            base.DragEnter(dragObjects, pointerEventData);
+            m_treeView.ExternalBeginDrag(pointerEventData.position);
+        }
+
+        public override void DragLeave(PointerEventData pointerEventData)
+        {
+            base.DragLeave(pointerEventData);
+            m_treeView.ExternalItemDrop();
+            DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+        }
+
+        public override void Drag(object[] dragObjects, PointerEventData pointerEventData)
+        {
+            base.Drag(dragObjects, pointerEventData);
+            m_treeView.ExternalItemDrag(pointerEventData.position);
+            if (CanDrop(dragObjects))
+            {
+                DragDrop.SetCursor(KnownCursor.DropAllowed);
+            }
+            else
+            {
+                DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                m_treeView.ClearTarget();
             }
         }
 
-        protected override void OnPointerExitOverride(PointerEventData eventData)
+        public override void Drop(object[] dragObjects, PointerEventData pointerEventData)
         {
-            base.OnPointerExitOverride(eventData);
-            if(RuntimeTools.SpawnPrefab != null)
+            base.Drop(dragObjects, pointerEventData);
+         
+            m_isSpawningPrefab = true;
+            if(CanDrop(dragObjects))
             {
+                for (int i = 0; i < dragObjects.Length; ++i)
+                {
+                    object dragObject = dragObjects[i];
+                    AssetItem assetItem = dragObject as AssetItem;
+                    
+                    if(assetItem != null)
+                    {
+                        m_project.Load(assetItem, (error, obj) =>
+                        {
+                            if(obj is GameObject)
+                            {
+                                GameObject prefab = (GameObject)obj;
+                                bool wasPrefabEnabled = prefab.activeSelf;
+                                prefab.SetActive(false);
+
+                                GameObject prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity, ((GameObject)m_treeView.DropTarget).transform);
+
+                                prefab.SetActive(wasPrefabEnabled);
+
+                                ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
+                                if (exposeToEditor == null)
+                                {
+                                    exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
+                                }
+
+                                exposeToEditor.SetName(obj.name);
+                                exposeToEditor.Parent = ((GameObject)m_treeView.DropTarget).GetComponent<ExposeToEditor>();
+                                prefabInstance.SetActive(true);
+
+                                RuntimeUndo.BeginRecord();
+                                RuntimeUndo.RecordSelection();
+                                RuntimeUndo.BeginRegisterCreateObject(prefabInstance);
+                                RuntimeUndo.EndRecord();
+
+                                bool isEnabled = RuntimeUndo.Enabled;
+                                RuntimeUndo.Enabled = false;
+                                RuntimeSelection.activeGameObject = prefabInstance;
+                                RuntimeUndo.Enabled = isEnabled;
+
+                                RuntimeUndo.BeginRecord();
+                                RuntimeUndo.RegisterCreatedObject(prefabInstance);
+                                RuntimeUndo.RecordSelection();
+                                RuntimeUndo.EndRecord();
+
+                                m_isSpawningPrefab = false;
+                            }
+                        });
+                    }
+                }
                 m_treeView.ExternalItemDrop();
             }
-        }
 
 
-        private void OnSpawnPrefabChanged(GameObject oldPrefab)
-        {
-            if (RuntimeTools.SpawnPrefab == null)
-            {
-                m_treeView.ExternalItemDrop();
-            }
         }
+
+        //protected override void OnPointerEnterOverride(PointerEventData eventData)
+        //{
+        //    base.OnPointerEnterOverride(eventData);
+        //    if (RuntimeTools.SpawnPrefab != null)
+        //    {
+        //        m_treeView.ExternalBeginDrag(eventData.position);
+        //    }
+        //}
+
+        //protected override void OnPointerExitOverride(PointerEventData eventData)
+        //{
+        //    base.OnPointerExitOverride(eventData);
+        //    if(RuntimeTools.SpawnPrefab != null)
+        //    {
+        //        m_treeView.ExternalItemDrop();
+        //    }
+        //}
+
+
+        //private void OnSpawnPrefabChanged(GameObject oldPrefab)
+        //{
+        //    if (RuntimeTools.SpawnPrefab == null)
+        //    {
+        //        m_treeView.ExternalItemDrop();
+        //    }
+        //}
+
     }
 }
 
