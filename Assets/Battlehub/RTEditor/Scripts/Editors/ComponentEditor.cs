@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Reflection;
 using System.Collections.Generic;
@@ -180,7 +180,7 @@ namespace Battlehub.RTEditor
                 IComponentDescriptor componentDescriptor = GetComponentDescriptor();
 
                 PropertyInfo enabledProperty = EnabledProperty;
-                if (enabledProperty != null)
+                if (enabledProperty != null && componentDescriptor.HeaderDescriptor.ShowEnableButton)
                 {
                     EnabledEditor.gameObject.SetActive(true);
                     EnabledEditor.Init(Component, enabledProperty, string.Empty, () => { },
@@ -393,6 +393,13 @@ namespace Battlehub.RTEditor
                     RuntimeEditorApplication.ComponentEditorSettings.ShowResetButton);
             }
 
+            if (EnabledEditor != null)
+            {
+               EnabledEditor.gameObject.SetActive(componentDescriptor != null ?
+                    componentDescriptor.HeaderDescriptor.ShowEnableButton :
+                    RuntimeEditorApplication.ComponentEditorSettings.ShowEnableButton);
+            }
+
             if (Expander == null)
             {
                 BuildEditor(componentDescriptor, descriptors);
@@ -414,7 +421,6 @@ namespace Battlehub.RTEditor
                     BuildEditor(componentDescriptor, descriptors);
                 }
             }
-            
         }
 
         protected virtual void BuildEditor(IComponentDescriptor componentDescriptor, PropertyDescriptor[] descriptors)
