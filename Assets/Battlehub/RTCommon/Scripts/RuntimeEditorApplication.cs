@@ -1,4 +1,4 @@
-﻿using Battlehub.Utils;
+using Battlehub.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,11 +9,13 @@ namespace Battlehub.RTCommon
     {
         public readonly bool ShowResetButton;
         public readonly bool ShowExpander;
-
-        public ComponentEditorSettings(bool showExpander, bool showResetButton)
+        public readonly bool ShowEnableButton;
+      
+        public ComponentEditorSettings(bool showExpander, bool showResetButton, bool showEnableButton)
         {
             ShowResetButton = showResetButton;
             ShowExpander = showExpander;
+            ShowEnableButton = showEnableButton;
         }
     }
 
@@ -44,7 +46,7 @@ namespace Battlehub.RTCommon
 
         static RuntimeEditorApplication()
         {
-            ComponentEditorSettings = new ComponentEditorSettings(true, true);
+            ComponentEditorSettings = new ComponentEditorSettings(false, false, false);
             Reset();
         }
 
@@ -278,5 +280,4 @@ namespace Battlehub.RTCommon
             }
         }
     }
-
 }
