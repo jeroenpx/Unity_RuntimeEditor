@@ -17,15 +17,15 @@ namespace Battlehub.RTSaveLoad2
     {
         public FilePathRecord[] PathRecords;
 
-        public string FromType(Type type)
-        {
-            FilePathRecord pathRecord = PathRecords.Where(r => r.PeristentTypeName == type.FullName).FirstOrDefault();
-            if(pathRecord != null && pathRecord.File != null)
-            {
-                return AssetDatabase.GetAssetPath(pathRecord.File);
-            }
-            return null;
-        }
+        //public string FromType(Type type)
+        //{
+        //    FilePathRecord pathRecord = PathRecords.Where(r => r.PeristentTypeName == type.FullName).FirstOrDefault();
+        //    if(pathRecord != null && pathRecord.File != null)
+        //    {
+        //        return AssetDatabase.GetAssetPath(pathRecord.File);
+        //    }
+        //    return null;
+        //}
     }
 
 }
