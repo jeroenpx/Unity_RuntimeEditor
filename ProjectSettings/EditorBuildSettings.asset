@@ -11,7 +11,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Battlehub/RTHandles/Demo/Demo_SceneGizmo.unity
     guid: eba8cea80b25e5246b1b4f54a1a60b67
-  - enabled: 1
-    path: Assets/Battlehub/RTHandles/Demo/Test.unity
+  - enabled: 0
+    path: Assets/Battlehub/RTHandles/Demo/ExampleScenes/1_Basic.unity
     guid: 93e62bff23a514c48994b77b443c1756
+  - enabled: 0
+    path: Assets/Battlehub/RTHandles/Demo/ExampleScenes/3_BasicWithSceneComponent.unity
+    guid: 1166cf6d1dad1464ebbf7b8c32c1f3bd
+  - enabled: 1
+    path: Assets/Battlehub/RTHandles/Demo/ExampleScenes/VR3_Navigation.unity
+    guid: 4b00d2141c3606647a8b70ced374da33
   m_configObjects: {}

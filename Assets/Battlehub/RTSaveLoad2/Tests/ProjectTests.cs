@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
+using Battlehub.RTSaveLoad2.Interface;
 namespace Battlehub.RTSaveLoad2
 {
     public class ProjectTests
@@ -11,7 +12,7 @@ namespace Battlehub.RTSaveLoad2
         [TearDown]
         public void Cleanup()
         {
-            Object.DestroyImmediate(Object.FindObjectOfType<RTSL2Deps>().gameObject);
+            Object.DestroyImmediate(Object.FindObjectOfType<RTSL2InternalDeps>().gameObject);
             Object.DestroyImmediate(Object.FindObjectOfType<Project>().gameObject);
         }
      
@@ -21,7 +22,7 @@ namespace Battlehub.RTSaveLoad2
             GameObject projectGo = new GameObject();
             projectGo.AddComponent<Project>();
             
-            IProject project = RTSL2Deps.Get.Project;
+            IProject project = RTSL2InternalDeps.Get.Project;
             Assert.IsNull(project.Root);
 
             bool done = false;
@@ -46,7 +47,7 @@ namespace Battlehub.RTSaveLoad2
             GameObject projectGo = new GameObject();
             projectGo.AddComponent<Project>();
 
-            IProject project = RTSL2Deps.Get.Project;
+            IProject project = RTSL2InternalDeps.Get.Project;
             Assert.Throws<System.InvalidOperationException>(() =>
             {
                 project.Save(null, null, null);
@@ -60,7 +61,7 @@ namespace Battlehub.RTSaveLoad2
             GameObject projectGo = new GameObject();
             projectGo.AddComponent<Project>();
 
-            IProject project = RTSL2Deps.Get.Project;
+            IProject project = RTSL2InternalDeps.Get.Project;
             Assert.Throws<System.InvalidOperationException>(() =>
             {
                 project.Save(null, null, null, null);
@@ -85,7 +86,7 @@ namespace Battlehub.RTSaveLoad2
             dummyChild.transform.SetParent(dummyGo.transform, false);
             dummyChild.transform.position = new Vector3(2, 3, 4);
   
-            IProject project = RTSL2Deps.Get.Project;
+            IProject project = RTSL2InternalDeps.Get.Project;
 
             bool done = false;
             project.Open("TestProject", openError =>
@@ -156,7 +157,7 @@ namespace Battlehub.RTSaveLoad2
             dummyChild.transform.SetParent(dummyGo.transform, false);
             dummyChild.transform.position = new Vector3(2, 3, 4);
 
-            IProject project = RTSL2Deps.Get.Project;
+            IProject project = RTSL2InternalDeps.Get.Project;
 
             var openResult = project.Open("TestProject");
             yield return openResult;

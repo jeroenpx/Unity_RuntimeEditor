@@ -44,12 +44,10 @@ namespace Battlehub.RTGizmos
             get { return m_isDragging; }
         }
 
-
         protected abstract Matrix4x4 HandlesTransform
         {
             get;
         }
-
 
         private Vector3[] m_handlesNormals;
         private Vector3[] m_handlesPositions;
@@ -66,6 +64,14 @@ namespace Battlehub.RTGizmos
         private Matrix4x4 m_handlesTransform;
         private Matrix4x4 m_handlesInverseTransform;
 
+
+        [SerializeField]
+        private RuntimeWindow m_window;
+        public RuntimeWindow Window
+        {
+            get { return m_window; }
+        }
+
         private void Awake()
         {
             AwakeOverride();
@@ -75,7 +81,7 @@ namespace Battlehub.RTGizmos
         {
             if(SceneCamera == null)
             {
-                SceneCamera = RuntimeEditorApplication.ActiveSceneCamera;
+                SceneCamera = Window.Camera;
             }
 
             if (SceneCamera == null)
@@ -90,11 +96,11 @@ namespace Battlehub.RTGizmos
 
             if (EnableUndo)
             {
-                if (!RuntimeUndoComponent.IsInitialized)
+                if (!RuntimeUndoInput.IsInitialized)
                 {
                     GameObject runtimeUndo = new GameObject();
                     runtimeUndo.name = "RuntimeUndo";
-                    runtimeUndo.AddComponent<RuntimeUndoComponent>();
+                    runtimeUndo.AddComponent<RuntimeUndoInput>();
                 }
             }
 
@@ -148,9 +154,9 @@ namespace Battlehub.RTGizmos
                 GLRenderer.Instance.Remove(this);
             }
 
-            if (RuntimeTools.ActiveTool == this)
+            if (Window.Editor.Tools.ActiveTool == this)
             {
-                RuntimeTools.ActiveTool = null;
+                Window.Editor.Tools.ActiveTool = null;
             }
 
             OnDestroyOverride();
@@ -158,12 +164,12 @@ namespace Battlehub.RTGizmos
 
         private void Update()
         {
-            if (InputController._GetMouseButtonDown(0))
+            if (Window.Editor.Input.GetPointerDown(0))
             {
-                if (RuntimeTools.IsPointerOverGameObject())
-                {
-                    return;
-                }
+                //if (RuntimeTools.IsPointerOverGameObject())
+                //{
+                //    return;
+                //}
 
                 if (SceneCamera == null)
                 {
@@ -171,66 +177,66 @@ namespace Battlehub.RTGizmos
                     return;
                 }
 
-                if(RuntimeTools.IsViewing)
+                if(Window.Editor.Tools.IsViewing)
                 {
                     return;
                 }
 
-                if(RuntimeTools.ActiveTool != null)
+                if(Window.Editor.Tools.ActiveTool != null)
                 {
                     return;
                 }
 
-                if (RuntimeEditorApplication.ActiveSceneCamera != null && !RuntimeEditorApplication.IsPointerOverWindow(RuntimeWindowType.SceneView))
+                if (Window.Camera != null && (!Window.IsPointerOver || Window.WindowType != RuntimeWindowType.SceneView))
                 {
                     return;
                 }
 
-                Vector2 pointer = InputController._MousePosition;
+                Vector2 pointer = Window.Editor.Input.GetPointerXY(0);
                 m_dragIndex = Hit(pointer, HandlesPositions, HandlesNormals);
                 if (m_dragIndex >= 0 && OnBeginDrag(m_dragIndex))
                 {
                     m_handlesTransform = HandlesTransform;
                     m_handlesInverseTransform =   Matrix4x4.TRS(Target.position, Target.rotation, Target.localScale).inverse;// m_handlesTransform.inverse;
                     m_dragPlane = GetDragPlane();
-                    m_isDragging = GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
+                    m_isDragging = GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out m_prevPoint);
                     m_normal = HandlesNormals[m_dragIndex].normalized;
                     if(m_isDragging)
                     {
-                        RuntimeTools.ActiveTool = this;
+                        Window.Editor.Tools.ActiveTool = this;
                     }
                     if (EnableUndo)
                     {
-                        bool isRecording = RuntimeUndo.IsRecording;
+                        bool isRecording = Window.Editor.Undo.IsRecording;
                         if (!isRecording)
                         {
-                            RuntimeUndo.BeginRecord();
+                            Window.Editor.Undo.BeginRecord();
                         }
                         RecordOverride();
                         if (!isRecording)
                         {
-                            RuntimeUndo.EndRecord();
+                            Window.Editor.Undo.EndRecord();
                         }
                     }
                 }
             }
-            else if (InputController._GetMouseButtonUp(0))
+            else if (Window.Editor.Input.GetPointerUp(0))
             {
                 if (m_isDragging)
                 {
                     OnDrop();
-                    bool isRecording = RuntimeUndo.IsRecording;
+                    bool isRecording = Window.Editor.Undo.IsRecording;
                     if (!isRecording)
                     {
-                        RuntimeUndo.BeginRecord();
+                        Window.Editor.Undo.BeginRecord();
                     }
                     RecordOverride();
                     if (!isRecording)
                     {
-                        RuntimeUndo.EndRecord();
+                        Window.Editor.Undo.EndRecord();
                     }
                     m_isDragging = false;
-                    RuntimeTools.ActiveTool = null;
+                    Window.Editor.Tools.ActiveTool = null;
                 }
             }
             else
@@ -238,11 +244,11 @@ namespace Battlehub.RTGizmos
                 if (m_isDragging)
                 {
                     Vector3 point;
-                    if(GetPointOnDragPlane(InputController._MousePosition, out point))
+                    if(GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out point))
                     {
                         Vector3 offset = m_handlesInverseTransform.MultiplyVector(point - m_prevPoint);
                         offset = Vector3.Project(offset, m_normal);
-                        if (InputController._GetKey(UnitSnapKey) || RuntimeTools.UnitSnapping)
+                        if (Window.Editor.Input.GetKey(UnitSnapKey) || Window.Editor.Tools.UnitSnapping)
                         {
                             Vector3 gridOffset = Vector3.zero;
                             if (Mathf.Abs(offset.x * 1.5f) >= GridSize)

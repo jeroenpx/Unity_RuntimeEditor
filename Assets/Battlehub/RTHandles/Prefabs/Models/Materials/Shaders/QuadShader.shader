@@ -12,6 +12,7 @@
 		Pass
 		{
 			Blend SrcAlpha OneMinusSrcAlpha
+			ZTest Always
 			
 			CGPROGRAM
 			#pragma vertex vert

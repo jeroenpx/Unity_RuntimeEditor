@@ -180,7 +180,7 @@ namespace Battlehub.RTEditor
                 IComponentDescriptor componentDescriptor = GetComponentDescriptor();
 
                 PropertyInfo enabledProperty = EnabledProperty;
-                if (enabledProperty != null && componentDescriptor.HeaderDescriptor.ShowEnableButton)
+                if (enabledProperty != null && (componentDescriptor == null || componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton))
                 {
                     EnabledEditor.gameObject.SetActive(true);
                     EnabledEditor.Init(Component, enabledProperty, string.Empty, () => { },
@@ -210,7 +210,7 @@ namespace Battlehub.RTEditor
 
                 if(componentDescriptor != null)
                 {
-                    Header.text = componentDescriptor.HeaderDescriptor.DisplayName;
+                    Header.text = componentDescriptor.GetHeaderDescriptor(m_editor).DisplayName;
                 }
                 else
                 {
@@ -266,8 +266,14 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private IRTE m_editor;
+        public IRTE Editor
+        {
+            get { return m_editor; }
+        }
         private void Awake()
         {
+            m_editor = RTE.Get;
             AwakeOverride();
         }
 
@@ -294,8 +300,8 @@ namespace Battlehub.RTEditor
                 ResetButton.onClick.AddListener(OnResetClick);
             }
             
-            RuntimeUndo.UndoCompleted += OnUndoCompleted;
-            RuntimeUndo.RedoCompleted += OnRedoCompleted;
+            m_editor.Undo.UndoCompleted += OnUndoCompleted;
+            m_editor.Undo.RedoCompleted += OnRedoCompleted;
 
             StartOverride();
         }
@@ -307,9 +313,12 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            RuntimeUndo.UndoCompleted -= OnUndoCompleted;
-            RuntimeUndo.RedoCompleted -= OnRedoCompleted;
-
+            if(m_editor != null)
+            {
+                m_editor.Undo.UndoCompleted -= OnUndoCompleted;
+                m_editor.Undo.RedoCompleted -= OnRedoCompleted;
+            }
+            
             if (Expander != null)
             {
                 Expander.onValueChanged.RemoveListener(OnExpanded);
@@ -389,15 +398,15 @@ namespace Battlehub.RTEditor
             if(ResetButton != null)
             {
                 ResetButton.gameObject.SetActive(componentDescriptor != null ?
-                    componentDescriptor.HeaderDescriptor.ShowResetButton :
-                    RuntimeEditorApplication.ComponentEditorSettings.ShowResetButton);
+                    componentDescriptor.GetHeaderDescriptor(m_editor).ShowResetButton :
+                    m_editor.ComponentEditorSettings.ShowResetButton);
             }
 
             if (EnabledEditor != null)
             {
-               EnabledEditor.gameObject.SetActive(componentDescriptor != null ?
-                    componentDescriptor.HeaderDescriptor.ShowEnableButton :
-                    RuntimeEditorApplication.ComponentEditorSettings.ShowEnableButton);
+                EnabledEditor.gameObject.SetActive(componentDescriptor != null ?
+                    componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton :
+                    m_editor.ComponentEditorSettings.ShowEnableButton);
             }
 
             if (Expander == null)
@@ -406,7 +415,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if (componentDescriptor != null ? !componentDescriptor.HeaderDescriptor.ShowExpander : !RuntimeEditorApplication.ComponentEditorSettings.ShowExpander)
+                if (componentDescriptor != null ? !componentDescriptor.GetHeaderDescriptor(m_editor).ShowExpander : !m_editor.ComponentEditorSettings.ShowExpander)
                 {
                     Expander.isOn = true;
                     Expander.enabled = false;
@@ -416,7 +425,7 @@ namespace Battlehub.RTEditor
                 {
                     if (ExpanderGraphics != null)
                     {
-                        ExpanderGraphics.SetActive(componentDescriptor != null ? componentDescriptor.HeaderDescriptor.ShowExpander : RuntimeEditorApplication.ComponentEditorSettings.ShowExpander);
+                        ExpanderGraphics.SetActive(componentDescriptor != null ? componentDescriptor.GetHeaderDescriptor(m_editor).ShowExpander : m_editor.ComponentEditorSettings.ShowExpander);
                     }
                     BuildEditor(componentDescriptor, descriptors);
                 }
@@ -588,7 +597,7 @@ namespace Battlehub.RTEditor
 
         private void OnResetClick()
         {
-            RuntimeUndo.BeginRecord();
+            m_editor.Undo.BeginRecord();
 
             GameObject go = new GameObject();
             go.SetActive(false);
@@ -610,7 +619,7 @@ namespace Battlehub.RTEditor
                 {
                     PropertyInfo p = (PropertyInfo)memberInfo;
                     object defaultValue = p.GetValue(component, null);
-                    RuntimeUndo.RecordValue(Component, memberInfo);
+                    m_editor.Undo.RecordValue(Component, memberInfo);
                     p.SetValue(Component, defaultValue, null);
                 }
                 else
@@ -621,7 +630,7 @@ namespace Battlehub.RTEditor
                         {
                             FieldInfo f = (FieldInfo)memberInfo;
                             object defaultValue = f.GetValue(component);
-                            RuntimeUndo.RecordValue(Component, memberInfo);
+                            m_editor.Undo.RecordValue(Component, memberInfo);
                             f.SetValue(Component, defaultValue);
                         }
                     }
@@ -642,9 +651,9 @@ namespace Battlehub.RTEditor
 
             Destroy(go);
 
-            RuntimeUndo.EndRecord();
+            m_editor.Undo.EndRecord();
 
-            RuntimeUndo.BeginRecord();
+            m_editor.Undo.BeginRecord();
 
             for (int i = 0; i < descriptors.Length; ++i)
             {
@@ -652,18 +661,18 @@ namespace Battlehub.RTEditor
                 MemberInfo memberInfo = descriptor.ComponentMemberInfo;
                 if (memberInfo is PropertyInfo)
                 {
-                    RuntimeUndo.RecordValue(Component, memberInfo);
+                    m_editor.Undo.RecordValue(Component, memberInfo);
                 }
                 else
                 {
                     if(isMonoBehavior)
                     {
-                        RuntimeUndo.RecordValue(Component, memberInfo);
+                        m_editor.Undo.RecordValue(Component, memberInfo);
                     }
                 }
             }
 
-            RuntimeUndo.EndRecord();
+            m_editor.Undo.EndRecord();
         }
     }
 

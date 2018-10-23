@@ -4,8 +4,6 @@ namespace Battlehub.RTCommon
 {
     public static class RuntimeGraphics
     {
-        public const int RuntimeHandlesLayer = 24;
-
         private static Mesh m_quadMesh;
 
         static RuntimeGraphics()
@@ -22,7 +20,10 @@ namespace Battlehub.RTCommon
             }
 
             Transform transform = camera.transform;
-            float distance = Vector3.Dot(position - transform.position, transform.forward);
+            float distance = camera.stereoEnabled ?
+                (position - transform.position).magnitude :
+                Vector3.Dot(position - transform.position, transform.forward);
+
             float scale = 2.0f * distance * Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
             return scale / h * 90;
         }
@@ -119,8 +120,6 @@ namespace Battlehub.RTCommon
                 new Vector2(0, 0),
                 new Vector2(0, 1),
                 new Vector2(1, 1),
-
-
             };
 
             Mesh quadMesh = new Mesh();
@@ -168,7 +167,6 @@ namespace Battlehub.RTCommon
             float deltaAngle = toAngle - fromAngle;
             float z = 0.0f;
 
-    
             for (int i = 0; i < pointsCount; i++)
             {
                 float x = radius * Mathf.Cos(currentAngle);
@@ -190,6 +188,58 @@ namespace Battlehub.RTCommon
             GL.Vertex(transform.MultiplyPoint(new Vector3(radius, -height / 2, 0)));
             GL.Vertex(transform.MultiplyPoint(new Vector3(-radius, height / 2, 0)));
             GL.Vertex(transform.MultiplyPoint(new Vector3(-radius, -height / 2, 0)));
+        }
+
+        public static Mesh CreateConeMesh(Color color, float scale)
+        {
+            int segmentsCount = 12;
+            float size = 1.0f / 5;
+            size *= scale;
+
+            Vector3[] vertices = new Vector3[segmentsCount * 3 + 1];
+            int[] triangles = new int[segmentsCount * 6];
+            Color[] colors = new Color[vertices.Length];
+            for (int i = 0; i < colors.Length; ++i)
+            {
+                colors[i] = color;
+            }
+
+            float radius = size / 2.6f;
+            float height = size;
+            float deltaAngle = Mathf.PI * 2.0f / segmentsCount;
+
+            float y = -height;
+
+            vertices[vertices.Length - 1] = new Vector3(0, -height, 0);
+            for (int i = 0; i < segmentsCount; i++)
+            {
+                float angle = i * deltaAngle;
+                float x = Mathf.Cos(angle) * radius;
+                float z = Mathf.Sin(angle) * radius;
+
+                vertices[i] = new Vector3(x, y, z);
+                vertices[segmentsCount + i] = new Vector3(0, 0.01f, 0);
+                vertices[2 * segmentsCount + i] = vertices[i];
+            }
+
+            for (int i = 0; i < segmentsCount; i++)
+            {
+                triangles[i * 6] = i;
+                triangles[i * 6 + 1] = segmentsCount + i;
+                triangles[i * 6 + 2] = (i + 1) % segmentsCount;
+
+                triangles[i * 6 + 3] = vertices.Length - 1;
+                triangles[i * 6 + 4] = 2 * segmentsCount + i;
+                triangles[i * 6 + 5] = 2 * segmentsCount + (i + 1) % segmentsCount;
+            }
+
+            Mesh cone = new Mesh();
+            cone.name = "Cone";
+            cone.vertices = vertices;
+            cone.triangles = triangles;
+            cone.colors = colors;
+
+            return cone;
         }
 
 

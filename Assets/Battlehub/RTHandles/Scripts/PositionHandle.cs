@@ -30,17 +30,44 @@ namespace Battlehub.RTHandles
         private Bounds[] m_snapTargetsBounds;
         private ExposeToEditor[] m_allExposedToEditor;
 
-       
-        public bool SnapToGround;
-        public KeyCode SnapToGroundKey = KeyCode.G;
-
-        public KeyCode SnappingKey = KeyCode.V;
-        public KeyCode SnappingToggle = KeyCode.LeftShift;
-
-        private bool m_isInSnappingMode = false;
-        private bool IsInSnappingMode
+        public bool SnapToGround
         {
-            get { return m_isInSnappingMode || RuntimeTools.IsSnapping; }
+            get;
+            set;
+        }
+
+        private bool m_isInVertexSnappingMode = false;
+        public bool IsInVertexSnappingMode
+        {
+            get { return m_isInVertexSnappingMode; }
+            set
+            {
+                m_isInVertexSnappingMode = value;
+
+                if(m_isInVertexSnappingMode)
+                {
+                    if (LockObject == null || !LockObject.IsPositionLocked)
+                    {
+                        if (ActiveWindow.Pointer.XY(HandlePosition, out m_prevMousePosition))
+                        {
+                            BeginSnap();
+                        }
+                    }
+                }
+                else
+                {
+                    SelectedAxis = RuntimeHandleAxis.None;
+                    if (!(IsInVertexSnappingMode || Editor.Tools.IsSnapping))
+                    {
+                        m_handleOffset = Vector3.zero;
+                    }
+                }
+
+                if (Model != null && Model is PositionHandleModel)
+                {
+                    ((PositionHandleModel)Model).IsVertexSnapping = value;
+                }
+            }
         }
 
         private Vector3[] m_boundingBoxCorners = new Vector3[8];
@@ -54,7 +81,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override RuntimeTool Tool
+        public override RuntimeTool Tool
         {
             get { return RuntimeTool.Move; }
         }
@@ -64,47 +91,66 @@ namespace Battlehub.RTHandles
             get { return GridSize; }
         }
 
+        protected override void AwakeOverride()
+        {
+            base.AwakeOverride();
+            if (GetComponent<BaseHandleInput>() == null)
+            {
+                gameObject.AddComponent<PositionHandleInput>();
+            }
+        }
+
         protected override void OnEnableOverride()
         {
             base.OnEnableOverride();
-            m_isInSnappingMode = false;
-            RuntimeTools.IsSnapping = false;
+        
+            m_isInVertexSnappingMode = false;
+            Editor.Tools.IsSnapping = false;
             m_handleOffset = Vector3.zero;
             m_targetLayers = null;
             m_snapTargets = null;
             m_snapTargetsBounds = null;
             m_allExposedToEditor = null;
 
-            RuntimeTools.IsSnappingChanged += OnSnappingChanged;
+            Editor.Tools.IsSnappingChanged += OnSnappingChanged;
             OnSnappingChanged();
         }
 
         protected override void OnDisableOverride()
         {
             base.OnDisableOverride();
-            RuntimeTools.IsSnapping = false;
+        
+            if(ActiveWindow != null && Editor != null)
+            {
+                Editor.Tools.IsSnapping = false;
+                Editor.Tools.IsSnappingChanged -= OnSnappingChanged;
+            }
+            
             m_targetLayers = null;
             m_snapTargets = null;
             m_snapTargetsBounds = null;
             m_allExposedToEditor = null;
-
-            RuntimeTools.IsSnappingChanged -= OnSnappingChanged;
         }
 
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
-
-            if (RuntimeTools.IsPointerOverGameObject())
+            if (Editor.Tools.IsViewing)
             {
+                SelectedAxis = RuntimeHandleAxis.None;
                 return;
             }
 
+            if (!IsInActiveWindow || !ActiveWindow.IsPointerOver)
+            {
+                return;
+            }
+            IRTE editor = Editor;
             if (IsDragging)
             {
-                if ((SnapToGround || InputController._GetKey(SnapToGroundKey)) && SelectedAxis != RuntimeHandleAxis.Y)
+                if (SnapToGround && SelectedAxis != RuntimeHandleAxis.Y)
                 {
-                    SnapActiveTargetsToGround(ActiveTargets, SceneCamera, true);
+                    SnapActiveTargetsToGround(ActiveTargets, ActiveWindow.Camera, true);
                     transform.position = Targets[0].position;
                 }
             }
@@ -113,140 +159,58 @@ namespace Battlehub.RTHandles
             {
                 SelectedAxis = Hit();
             }
-            
-            if (InputController._GetKeyDown(SnappingKey))
+        
+            if (IsInVertexSnappingMode || Editor.Tools.IsSnapping)
             {
-                if(LockObject == null || !LockObject.IsPositionLocked)
+                Vector2 mousePosition;
+                if(ActiveWindow.Pointer.XY(HandlePosition, out mousePosition))
                 {
-                    m_isInSnappingMode = true;
-                    if (InputController._GetKey(SnappingToggle))
+                    if (editor.Tools.SnappingMode == SnappingMode.BoundingBox)
                     {
-                        RuntimeTools.IsSnapping = !RuntimeTools.IsSnapping;
-                    }
-
-                    BeginSnap();
-                    m_prevMousePosition = InputController._MousePosition;
-                }                
-            }
-            else if (InputController._GetKeyUp(SnappingKey))
-            {
-                SelectedAxis = RuntimeHandleAxis.None;
-                m_isInSnappingMode = false;
-                if (!IsInSnappingMode)
-                {
-                    m_handleOffset = Vector3.zero;
-                }
-
-                if (Model != null && Model is PositionHandleModel)
-                {
-                    ((PositionHandleModel)Model).IsVertexSnapping = false;
-                }
-            }
-
-            if (IsInSnappingMode)
-            {
-                Vector2 mousePosition = InputController._MousePosition;
-                if (RuntimeTools.SnappingMode == SnappingMode.BoundingBox)
-                {
-                    if (IsDragging)
-                    {
-                        SelectedAxis = RuntimeHandleAxis.Snap;
-                        if (m_prevMousePosition != mousePosition)
+                        if (IsDragging)
                         {
-                            m_prevMousePosition = mousePosition;
-                            float minDistance = float.MaxValue;
-                            Vector3 minPoint = Vector3.zero;
-                            bool minPointFound = false;
-                            for (int i = 0; i < m_allExposedToEditor.Length; ++i)
+                            SelectedAxis = RuntimeHandleAxis.Snap;
+                            if (m_prevMousePosition != mousePosition)
                             {
-                                ExposeToEditor exposeToEditor = m_allExposedToEditor[i];
-                                Bounds bounds = exposeToEditor.Bounds;
-                                m_boundingBoxCorners[0] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[1] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
-                                m_boundingBoxCorners[2] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[3] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
-                                m_boundingBoxCorners[4] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[5] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, -bounds.extents.z);
-                                m_boundingBoxCorners[6] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[7] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
-                                GetMinPoint(ref minDistance, ref minPoint, ref minPointFound, exposeToEditor.BoundsObject.transform);
-                            }
-
-                            if (minPointFound)
-                            {
-                                HandlePosition = minPoint;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        SelectedAxis = RuntimeHandleAxis.None;
-                        if (m_prevMousePosition != mousePosition)
-                        {
-                            m_prevMousePosition = mousePosition;
-
-                            float minDistance = float.MaxValue;
-                            Vector3 minPoint = Vector3.zero;
-                            bool minPointFound = false;
-                            for (int i = 0; i < m_snapTargets.Length; ++i)
-                            {
-                                Transform snapTarget = m_snapTargets[i];
-                                Bounds bounds = m_snapTargetsBounds[i];
-
-                                m_boundingBoxCorners[0] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[1] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
-                                m_boundingBoxCorners[2] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[3] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
-                                m_boundingBoxCorners[4] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[5] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, -bounds.extents.z);
-                                m_boundingBoxCorners[6] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z);
-                                m_boundingBoxCorners[7] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
-                                if (Targets[i] != null)
-                                {
-                                    GetMinPoint(ref minDistance, ref minPoint, ref minPointFound, snapTarget);
-                                }
-                            }
-
-                            if (minPointFound)
-                            {
-                                m_handleOffset = minPoint - transform.position;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if(IsDragging)
-                    {
-                        SelectedAxis = RuntimeHandleAxis.Snap;
-                        if (m_prevMousePosition != mousePosition)
-                        {
-                            m_prevMousePosition = mousePosition;
-
-                            Ray ray = SceneCamera.ScreenPointToRay(mousePosition);
-                            RaycastHit hitInfo;
-
-                            LayerMask layerMask = (1 << Physics.IgnoreRaycastLayer);
-                            layerMask = ~layerMask;
-
-                            for (int i = 0; i < m_snapTargets.Length; ++i)
-                            {
-                                m_targetLayers[i] = m_snapTargets[i].gameObject.layer;
-                                m_snapTargets[i].gameObject.layer = Physics.IgnoreRaycastLayer;
-                            }
-
-                            GameObject closestObject = null;
-                            if (Physics.Raycast(ray, out hitInfo, float.PositiveInfinity, layerMask))
-                            {
-                                closestObject = hitInfo.collider.gameObject;
-                            }
-                            else
-                            {
+                                m_prevMousePosition = mousePosition;
                                 float minDistance = float.MaxValue;
+                                Vector3 minPoint = Vector3.zero;
+                                bool minPointFound = false;
                                 for (int i = 0; i < m_allExposedToEditor.Length; ++i)
                                 {
-                                    ExposeToEditor exposedToEditor = m_allExposedToEditor[i];
-                                    Bounds bounds = exposedToEditor.Bounds;
+                                    ExposeToEditor exposeToEditor = m_allExposedToEditor[i];
+                                    Bounds bounds = exposeToEditor.Bounds;
+                                    m_boundingBoxCorners[0] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
+                                    m_boundingBoxCorners[1] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
+                                    m_boundingBoxCorners[2] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z);
+                                    m_boundingBoxCorners[3] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
+                                    m_boundingBoxCorners[4] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, bounds.extents.z);
+                                    m_boundingBoxCorners[5] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, -bounds.extents.z);
+                                    m_boundingBoxCorners[6] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z);
+                                    m_boundingBoxCorners[7] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
+                                    GetMinPoint(ref minDistance, ref minPoint, ref minPointFound, exposeToEditor.BoundsObject.transform);
+                                }
+
+                                if (minPointFound)
+                                {
+                                    HandlePosition = minPoint;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            SelectedAxis = RuntimeHandleAxis.None;
+                            if (m_prevMousePosition != mousePosition)
+                            {
+                                m_prevMousePosition = mousePosition;
+
+                                float minDistance = float.MaxValue;
+                                Vector3 minPoint = Vector3.zero;
+                                bool minPointFound = false;
+                                for (int i = 0; i < m_snapTargets.Length; ++i)
+                                {
+                                    Transform snapTarget = m_snapTargets[i];
+                                    Bounds bounds = m_snapTargetsBounds[i];
 
                                     m_boundingBoxCorners[0] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
                                     m_boundingBoxCorners[1] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
@@ -256,63 +220,123 @@ namespace Battlehub.RTHandles
                                     m_boundingBoxCorners[5] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, -bounds.extents.z);
                                     m_boundingBoxCorners[6] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z);
                                     m_boundingBoxCorners[7] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
-
-                                    for(int j = 0; j < m_boundingBoxCorners.Length; ++j)
+                                    if (Targets[i] != null)
                                     {
-                                        Vector2 screenPoint = SceneCamera.WorldToScreenPoint(exposedToEditor.BoundsObject.transform.TransformPoint(m_boundingBoxCorners[j]));
-                                        float distance = (screenPoint - mousePosition).magnitude;
-                                        
-                                        if (distance < minDistance)
-                                        {
-                                            closestObject = exposedToEditor.gameObject;
-                                            minDistance = distance;
-                                        }
+                                        GetMinPoint(ref minDistance, ref minPoint, ref minPointFound, snapTarget);
                                     }
                                 }
-                            }
-
-                            if(closestObject != null)
-                            {
-                                float minDistance = float.MaxValue;
-                                Vector3 minPoint = Vector3.zero;
-                                bool minPointFound = false;
-                                Transform meshTransform;
-                                Mesh mesh = GetMesh(closestObject, out meshTransform);
-                                GetMinPoint(meshTransform, ref minDistance, ref minPoint, ref minPointFound, mesh);
 
                                 if (minPointFound)
                                 {
-                                    HandlePosition = minPoint;
+                                    m_handleOffset = minPoint - transform.position;
                                 }
-
-                            }
-
-                            for (int i = 0; i < m_snapTargets.Length; ++i)
-                            {
-                                m_snapTargets[i].gameObject.layer = m_targetLayers[i];
                             }
                         }
                     }
                     else
                     {
-                        SelectedAxis = RuntimeHandleAxis.None;
-                        if (m_prevMousePosition != mousePosition)
+                        if (IsDragging)
                         {
-                            m_prevMousePosition = mousePosition;
+                            SelectedAxis = RuntimeHandleAxis.Snap;
+                            if (m_prevMousePosition != mousePosition)
+                            {
+                                m_prevMousePosition = mousePosition;
 
-                            float minDistance = float.MaxValue;
-                            Vector3 minPoint = Vector3.zero;
-                            bool minPointFound = false;
-                            for (int i = 0; i < RealTargets.Length; ++i)
-                            {
-                                Transform snapTarget = RealTargets[i];
-                                Transform meshTranform;
-                                Mesh mesh = GetMesh(snapTarget.gameObject, out meshTranform);
-                                GetMinPoint(meshTranform, ref minDistance, ref minPoint, ref minPointFound, mesh);   
+                                //Ray ray = Window.Camera.ScreenPointToRay(mousePosition);
+                                Ray ray = ActiveWindow.Pointer;
+                                RaycastHit hitInfo;
+
+                                LayerMask layerMask = (1 << Physics.IgnoreRaycastLayer);
+                                layerMask = ~layerMask;
+
+                                for (int i = 0; i < m_snapTargets.Length; ++i)
+                                {
+                                    m_targetLayers[i] = m_snapTargets[i].gameObject.layer;
+                                    m_snapTargets[i].gameObject.layer = Physics.IgnoreRaycastLayer;
+                                }
+
+                                GameObject closestObject = null;
+                                if (Physics.Raycast(ray, out hitInfo, float.PositiveInfinity, layerMask))
+                                {
+                                    closestObject = hitInfo.collider.gameObject;
+                                }
+                                else
+                                {
+                                    float minDistance = float.MaxValue;
+                                    for (int i = 0; i < m_allExposedToEditor.Length; ++i)
+                                    {
+                                        ExposeToEditor exposedToEditor = m_allExposedToEditor[i];
+                                        Bounds bounds = exposedToEditor.Bounds;
+
+                                        m_boundingBoxCorners[0] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
+                                        m_boundingBoxCorners[1] = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
+                                        m_boundingBoxCorners[2] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z);
+                                        m_boundingBoxCorners[3] = bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
+                                        m_boundingBoxCorners[4] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, bounds.extents.z);
+                                        m_boundingBoxCorners[5] = bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y, -bounds.extents.z);
+                                        m_boundingBoxCorners[6] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z);
+                                        m_boundingBoxCorners[7] = bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y, -bounds.extents.z);
+
+                                        for (int j = 0; j < m_boundingBoxCorners.Length; ++j)
+                                        {
+                                            //Vector2 screenPoint = Window.Camera.WorldToScreenPoint(exposedToEditor.BoundsObject.transform.TransformPoint(m_boundingBoxCorners[j]));
+                                            Vector2 screenPoint;
+                                            if(ActiveWindow.Pointer.WorldToScreenPoint(HandlePosition, exposedToEditor.BoundsObject.transform.TransformPoint(m_boundingBoxCorners[j]), out screenPoint))
+                                            {
+                                                float distance = (screenPoint - mousePosition).magnitude;
+                                                if (distance < minDistance)
+                                                {
+                                                    closestObject = exposedToEditor.gameObject;
+                                                    minDistance = distance;
+                                                }
+                                            }   
+                                        }
+                                    }
+                                }
+
+                                if (closestObject != null)
+                                {
+                                    float minDistance = float.MaxValue;
+                                    Vector3 minPoint = Vector3.zero;
+                                    bool minPointFound = false;
+                                    Transform meshTransform;
+                                    Mesh mesh = GetMesh(closestObject, out meshTransform);
+                                    GetMinPoint(meshTransform, ref minDistance, ref minPoint, ref minPointFound, mesh);
+
+                                    if (minPointFound)
+                                    {
+                                        HandlePosition = minPoint;
+                                    }
+
+                                }
+
+                                for (int i = 0; i < m_snapTargets.Length; ++i)
+                                {
+                                    m_snapTargets[i].gameObject.layer = m_targetLayers[i];
+                                }
                             }
-                            if (minPointFound)
+                        }
+                        else
+                        {
+                            SelectedAxis = RuntimeHandleAxis.None;
+                            if (m_prevMousePosition != mousePosition)
                             {
-                                m_handleOffset = minPoint - transform.position;
+                                m_prevMousePosition = mousePosition;
+
+                                float minDistance = float.MaxValue;
+                                Vector3 minPoint = Vector3.zero;
+                                bool minPointFound = false;
+                                for (int i = 0; i < RealTargets.Length; ++i)
+                                {
+                                    Transform snapTarget = RealTargets[i];
+                                    Transform meshTranform;
+                                    Mesh mesh = GetMesh(snapTarget.gameObject, out meshTranform);
+                                    GetMinPoint(meshTranform, ref minDistance, ref minPoint, ref minPointFound, mesh);
+                                }
+                                if (minPointFound)
+                                {
+                                    m_handleOffset = minPoint - transform.position;
+                                }
                             }
                         }
                     }
@@ -324,22 +348,27 @@ namespace Battlehub.RTHandles
         {
             if (mesh != null && mesh.isReadable)
             {
+                IRTE editor = Editor;
                 Vector3[] vertices = mesh.vertices;
                 for (int i = 0; i < vertices.Length; ++i)
                 {
                     Vector3 vert = vertices[i];
                     vert = meshTransform.TransformPoint(vert);
 
-                    Vector3 screenPoint = SceneCamera.WorldToScreenPoint(vert);
-                    screenPoint.z = 0;
-                    Vector3 mousePoint = InputController._MousePosition;
-                    mousePoint.z = 0;
-                    float distance = (screenPoint - mousePoint).magnitude;
-                    if (distance < minDistance)
+                    Vector2 screenPoint;
+                    if(ActiveWindow.Pointer.WorldToScreenPoint(HandlePosition, vert, out screenPoint))
                     {
-                        minPointFound = true;
-                        minDistance = distance;
-                        minPoint = vert;
+                        Vector2 mousePoint;
+                        if (ActiveWindow.Pointer.XY(HandlePosition, out mousePoint))
+                        {
+                            float distance = (screenPoint - mousePoint).magnitude;
+                            if (distance < minDistance)
+                            {
+                                minPointFound = true;
+                                minDistance = distance;
+                                minPoint = vert;
+                            }
+                        }
                     }
                 }
             }
@@ -381,9 +410,9 @@ namespace Battlehub.RTHandles
         {
             base.OnDrop();
        
-            if (SnapToGround || InputController._GetKey(SnapToGroundKey))
+            if (SnapToGround)
             {
-                SnapActiveTargetsToGround(ActiveTargets, SceneCamera, true);
+                SnapActiveTargetsToGround(ActiveTargets, ActiveWindow.Camera, true);
                 transform.position = Targets[0].position;
             }
         }
@@ -443,7 +472,7 @@ namespace Battlehub.RTHandles
 
         private void OnSnappingChanged()
         {
-            if (RuntimeTools.IsSnapping)
+            if (Editor.Tools.IsSnapping)
             {
                 BeginSnap();
             }
@@ -459,7 +488,7 @@ namespace Battlehub.RTHandles
 
         private void BeginSnap()
         {
-            if(SceneCamera == null)
+            if(ActiveWindow.Camera == null)
             {
                 return;
             }
@@ -519,7 +548,7 @@ namespace Battlehub.RTHandles
             m_snapTargetsBounds = snapTargetBounds.ToArray();
 
 
-            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(SceneCamera);
+            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(ActiveWindow.Camera);
             ExposeToEditor[] exposeToEditorObjects = FindObjectsOfType<ExposeToEditor>();
             List<ExposeToEditor> insideOfFrustum = new List<ExposeToEditor>();
             for (int i = 0; i < exposeToEditorObjects.Length; ++i)
@@ -542,37 +571,51 @@ namespace Battlehub.RTHandles
 
         private void GetMinPoint(ref float minDistance, ref Vector3 minPoint, ref bool minPointFound, Transform tr)
         {
+            IRTE editor = Editor;
             for (int j = 0; j < m_boundingBoxCorners.Length; ++j)
             {
                 Vector3 worldPoint = tr.TransformPoint(m_boundingBoxCorners[j]);
-                Vector3 screenPoint = SceneCamera.WorldToScreenPoint(worldPoint);
-                screenPoint.z = 0;
-                Vector3 mousePoint = InputController._MousePosition;
-                mousePoint.z = 0;
-                float distance = (screenPoint - mousePoint).magnitude;
-                if (distance < minDistance)
+                Vector2 screenPoint;
+
+                if(ActiveWindow.Pointer.WorldToScreenPoint(HandlePosition, worldPoint, out screenPoint))
                 {
-                    minPointFound = true;
-                    minDistance = distance;
-                    minPoint = worldPoint;
+                    Vector2 mousePoint;
+                    if (ActiveWindow.Pointer.XY(HandlePosition, out mousePoint))
+                    {
+                        float distance = (screenPoint - mousePoint).magnitude;
+                        if (distance < minDistance)
+                        {
+                            minPointFound = true;
+                            minDistance = distance;
+                            minPoint = worldPoint;
+                        }
+                    }
                 }
             }
         }
 
         private bool HitSnapHandle()
         {
-            Vector3 sp = SceneCamera.WorldToScreenPoint(HandlePosition);
-            Vector3 mp = InputController._MousePosition;
+            Vector2 sp;
 
-            const float pixelSize = 10;
+            if(ActiveWindow.Pointer.WorldToScreenPoint(HandlePosition, HandlePosition, out sp))
+            {
+                Vector2 mp;
+                if (ActiveWindow.Pointer.XY(HandlePosition, out mp))
+                {
+                    const float pixelSize = 10;
 
-            return sp.x - pixelSize <= mp.x && mp.x <= sp.x + pixelSize  &&
-                   sp.y - pixelSize  <= mp.y && mp.y <= sp.y + pixelSize;
+                    return sp.x - pixelSize <= mp.x && mp.x <= sp.x + pixelSize &&
+                           sp.y - pixelSize <= mp.y && mp.y <= sp.y + pixelSize;
+                }
+            }
+            
+            return false;
         }
 
         private bool HitQuad(Vector3 axis, Matrix4x4 matrix, float size)
         {
-            Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);
+            Ray ray = ActiveWindow.Pointer;
             Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));
 
             float distance;
@@ -584,7 +627,7 @@ namespace Battlehub.RTHandles
             Vector3 point = ray.GetPoint(distance);
             point = matrix.inverse.MultiplyPoint(point);
 
-            Vector3 toCam = matrix.inverse.MultiplyVector(SceneCamera.transform.position - HandlePosition);
+            Vector3 toCam = matrix.inverse.MultiplyVector(ActiveWindow.Camera.transform.position - HandlePosition);
 
             float fx = Mathf.Sign(Vector3.Dot(toCam, Vector3.right));
             float fy = Mathf.Sign(Vector3.Dot(toCam, Vector3.up));
@@ -608,24 +651,29 @@ namespace Battlehub.RTHandles
 
         private RuntimeHandleAxis Hit()
         {
-            float scale = RuntimeHandles.GetScreenScale(HandlePosition, SceneCamera);
-            m_matrix = Matrix4x4.TRS(HandlePosition, Rotation, RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
+            m_matrix = Matrix4x4.TRS(HandlePosition, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
-            Matrix4x4 matrix = Matrix4x4.TRS(HandlePosition, Rotation, new Vector3(scale, scale, scale));
-            float s = 0.3f * scale;
+            if (Model != null)
+            {
+                return Model.HitTest(ActiveWindow.Pointer);
+            }
 
-            if (HitQuad(Vector3.up * RuntimeHandles.HandleScale, m_matrix, s))
+            float scale = RuntimeHandlesComponent.GetScreenScale(HandlePosition, ActiveWindow.Camera);
+            Matrix4x4 matrix = Matrix4x4.TRS(HandlePosition, Rotation, new Vector3(scale, scale, scale));
+            float s = 0.23f * scale;
+
+            if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale))
             {
                 return RuntimeHandleAxis.XZ;
             }
 
-            if (HitQuad(Vector3.right * RuntimeHandles.HandleScale, m_matrix, s))
+            if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale))
             {
                 return RuntimeHandleAxis.YZ;
             }
 
-            if (HitQuad(Vector3.forward * RuntimeHandles.HandleScale, m_matrix, s))
+            if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale))
             {
                 return RuntimeHandleAxis.XY;
             }
@@ -633,9 +681,9 @@ namespace Battlehub.RTHandles
             float distToYAxis;
             float distToZAxis;
             float distToXAxis;
-            bool hit = HitAxis(Vector3.up * RuntimeHandles.HandleScale, matrix, out distToYAxis);
-            hit |= HitAxis(RuntimeHandles.Forward * RuntimeHandles.HandleScale, matrix, out distToZAxis);
-            hit |= HitAxis(Vector3.right * RuntimeHandles.HandleScale, matrix, out distToXAxis);
+            bool hit = HitAxis(Vector3.up * Appearance.HandleScale, matrix, out distToYAxis);
+            hit |= HitAxis(Appearance.Forward * Appearance.HandleScale, matrix, out distToZAxis);
+            hit |= HitAxis(Vector3.right * Appearance.HandleScale, matrix, out distToXAxis);
 
             if (hit)
             {
@@ -662,30 +710,33 @@ namespace Battlehub.RTHandles
             m_currentPosition = HandlePosition;
             m_cursorPosition = HandlePosition;
 
-            if (IsInSnappingMode)
+            if ((IsInVertexSnappingMode || Editor.Tools.IsSnapping) && SelectedAxis != RuntimeHandleAxis.Snap)
             {
                 return HitSnapHandle();
             }
 
             if (SelectedAxis == RuntimeHandleAxis.XZ)
             {
-                return GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
+                DragPlane = GetDragPlane(m_matrix, Vector3.up);
+                return GetPointOnDragPlane(ActiveWindow.Pointer, out m_prevPoint);
             }
 
             if (SelectedAxis == RuntimeHandleAxis.YZ)
             {
-                return GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
+                DragPlane = GetDragPlane(m_matrix, Vector3.right);
+                return GetPointOnDragPlane(ActiveWindow.Pointer, out m_prevPoint);
             }
 
             if (SelectedAxis == RuntimeHandleAxis.XY)
             {
-                return GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
+                DragPlane = GetDragPlane(m_matrix, Vector3.forward);
+                return GetPointOnDragPlane(ActiveWindow.Pointer, out m_prevPoint);
             }
 
             if (SelectedAxis != RuntimeHandleAxis.None)
             {
                 DragPlane = GetDragPlane();
-                bool result = GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
+                bool result = GetPointOnDragPlane(ActiveWindow.Pointer, out m_prevPoint);
                 if(!result)
                 {
                     SelectedAxis = RuntimeHandleAxis.None;
@@ -698,13 +749,13 @@ namespace Battlehub.RTHandles
 
         protected override void OnDrag()
         {
-            if (IsInSnappingMode)
+            if (IsInVertexSnappingMode || Editor.Tools.IsSnapping)
             {
                 return;
             }
 
             Vector3 point;
-            if (GetPointOnDragPlane(InputController._MousePosition, out point))
+            if (GetPointOnDragPlane(ActiveWindow.Pointer, out point))
             {
                 Vector3 offset = m_inverse.MultiplyVector(point - m_prevPoint);
                 float mag = offset.magnitude;
@@ -737,11 +788,12 @@ namespace Battlehub.RTHandles
                     }
                 }
 
+                Vector3 prevPosition = HandlePosition;
+                Vector3 prevCurrentPosition = m_currentPosition;
                 if (EffectiveGridUnitSize == 0.0)
                 {
                     offset = m_matrix.MultiplyVector(offset).normalized * mag;
-                    transform.position += offset;
-                    m_prevPoint = point;
+                    transform.position += offset;   
                 }
                 else
                 {
@@ -767,6 +819,17 @@ namespace Battlehub.RTHandles
                   
                     m_currentPosition += gridOffset;
                     HandlePosition = m_currentPosition;
+                }
+
+                float allowedRadius = ActiveWindow.Camera.farClipPlane * 0.95f;
+                Vector3 toHandle = HandlePosition - ActiveWindow.Camera.transform.position;
+                if(toHandle.magnitude > allowedRadius)
+                {
+                    HandlePosition = prevPosition;
+                    m_currentPosition = prevCurrentPosition;
+                }
+                else
+                {
                     m_prevPoint = point;
                 }
             }
@@ -774,7 +837,7 @@ namespace Battlehub.RTHandles
 
         protected override void DrawOverride()
         {
-            RuntimeHandles.DoPositionHandle(HandlePosition, Rotation, SelectedAxis, IsInSnappingMode, LockObject);
+            Appearance.DoPositionHandle(HandlePosition, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
         }
     }
 

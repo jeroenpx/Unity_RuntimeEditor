@@ -22,7 +22,14 @@ namespace Battlehub.RTHandles
         private MeshFilter m_innerCircle;
         [SerializeField]
         private MeshFilter m_outerCircle;
-      
+        [SerializeField]
+        private MeshFilter m_innerCircleVR;
+        [SerializeField]
+        private MeshFilter m_outerCircleVR;
+
+        private MeshFilter m_inner;
+        private MeshFilter m_outer;
+
         private Mesh m_xyzMesh;
         private Mesh m_innerCircleMesh;
         private Mesh m_outerCircleMesh;
@@ -42,34 +49,105 @@ namespace Battlehub.RTHandles
         private Material[] m_innerCircleMaterials;
         private Material m_outerCircleMaterial;
 
-        protected override void Awake()
+        private readonly bool m_useColliders = true;
+        [SerializeField]
+        private Mesh m_axisColliderMesh;
+        [SerializeField]
+        private Mesh m_ssMesh;
+
+        private SphereCollider m_graphicsBlockingCollider;
+        private MeshCollider m_xCollider;
+        private MeshCollider m_yCollider;
+        private MeshCollider m_zCollider;
+        private MeshCollider m_innerCollider;
+        private MeshCollider m_outerCollider;
+        private Collider[] m_colliders;
+
+        protected override void AwakeOverride()
         {
-            base.Awake();
+            base.AwakeOverride();
 
             m_xyzMesh = m_xyz.sharedMesh;
-            m_innerCircleMesh = m_innerCircle.sharedMesh;
-            m_outerCircleMesh = m_outerCircle.sharedMesh;
+
+            
+            if(Editor.IsVR)
+            {
+                Destroy(m_innerCircle.gameObject);
+                Destroy(m_outerCircle.gameObject);
+
+                m_inner = m_innerCircleVR;
+                m_outer = m_outerCircleVR;
+            }
+            else
+            {
+                Destroy(m_innerCircleVR.gameObject);
+                Destroy(m_outerCircleVR.gameObject);
+
+                m_inner = m_innerCircle;
+                m_outer = m_outerCircle;
+            }
+
+            m_innerCircleMesh = m_inner.sharedMesh;
+            m_outerCircleMesh = m_outer.sharedMesh;
 
             Renderer renderer = m_xyz.GetComponent<Renderer>();
             renderer.sharedMaterials = renderer.materials;
             m_xyzMaterials = renderer.sharedMaterials;
 
-            renderer = m_innerCircle.GetComponent<Renderer>();
+            renderer = m_inner.GetComponent<Renderer>();
             renderer.sharedMaterials = renderer.materials;
             m_innerCircleMaterials = renderer.sharedMaterials;
 
-            renderer = m_outerCircle.GetComponent<Renderer>();
+            renderer = m_outer.GetComponent<Renderer>();
             renderer.sharedMaterials = renderer.materials;
             m_outerCircleMaterial = renderer.sharedMaterial;
 
             Mesh mesh = m_xyz.mesh;
             m_xyz.sharedMesh = mesh;
 
-            mesh = m_innerCircle.mesh;
-            m_innerCircle.sharedMesh = mesh;
+            mesh = m_inner.mesh;
+            m_inner.sharedMesh = mesh;
 
-            mesh = m_outerCircle.mesh;
-            m_outerCircle.sharedMesh = mesh;
+            mesh = m_outer.mesh;
+            m_outer.sharedMesh = mesh;
+
+            if (m_useColliders)
+            {
+                GameObject colliders = new GameObject("Colliders");
+                colliders.transform.SetParent(transform, false);
+                colliders.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+                m_graphicsBlockingCollider = colliders.AddComponent<SphereCollider>();
+                m_graphicsBlockingCollider.isTrigger = true;
+
+                GameObject xCollider = new GameObject("XAxis");
+                xCollider.transform.SetParent(colliders.transform, false);
+                xCollider.transform.localRotation = Quaternion.Euler(0, 90, 0);
+                m_xCollider = xCollider.AddComponent<MeshCollider>();
+                
+                GameObject yCollider = new GameObject("YAxis");
+                yCollider.transform.SetParent(colliders.transform, false);
+                yCollider.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                m_yCollider = yCollider.AddComponent<MeshCollider>();
+                
+                GameObject zCollider = new GameObject("ZAxis");
+                zCollider.transform.SetParent(colliders.transform, false);
+                m_zCollider = zCollider.AddComponent<MeshCollider>();
+
+                GameObject innerCollider = new GameObject("InnerAxis");
+                innerCollider.transform.SetParent(colliders.transform, false);
+                m_innerCollider = innerCollider.AddComponent<MeshCollider>();
+
+                GameObject outerCollider = new GameObject("OuterCollider");
+                outerCollider.transform.SetParent(colliders.transform, false);
+                m_outerCollider = outerCollider.AddComponent<MeshCollider>();
+
+                m_colliders = new[] { m_xCollider, m_yCollider, m_zCollider, m_innerCollider, m_outerCollider };
+                foreach(Collider collider in m_colliders)
+                {
+                    collider.gameObject.SetActive(false);
+                    collider.gameObject.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+                }
+            }
         }
 
         protected override void Start()
@@ -77,8 +155,9 @@ namespace Battlehub.RTHandles
             base.Start();
 
             UpdateXYZ(m_xyz.sharedMesh, m_majorRadius, m_minorRadius);
-            UpdateCircle(m_innerCircle.sharedMesh, m_innerCircleMesh, m_innerCircle.transform, m_majorRadius, m_minorRadius);
-            UpdateCircle(m_outerCircle.sharedMesh, m_outerCircleMesh, m_outerCircle.transform, m_outerRadius, m_minorRadius);
+            UpdateCircle(m_inner.sharedMesh, m_innerCircleMesh, m_inner.transform, m_majorRadius, m_minorRadius);
+            UpdateCircle(m_outer.sharedMesh, m_outerCircleMesh, m_outer.transform, m_outerRadius, m_minorRadius);
+            UpdateColliders();
 
             SetColors();
         }
@@ -99,48 +178,48 @@ namespace Battlehub.RTHandles
         {
             if (m_lockObj.RotationX)
             {
-                m_xyzMaterials[m_xMatIndex].color = m_disabledColor;
+                m_xyzMaterials[m_xMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_xyzMaterials[m_xMatIndex].color = m_xColor;
+                m_xyzMaterials[m_xMatIndex].color = Colors.XColor;
             }
 
             if (m_lockObj.RotationY)
             {
-                m_xyzMaterials[m_yMatIndex].color = m_disabledColor;
+                m_xyzMaterials[m_yMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_xyzMaterials[m_yMatIndex].color = m_yColor;
+                m_xyzMaterials[m_yMatIndex].color = Colors.YColor;
             }
 
             if (m_lockObj.RotationZ)
             {
-                m_xyzMaterials[m_zMatIndex].color = m_disabledColor;
+                m_xyzMaterials[m_zMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_xyzMaterials[m_zMatIndex].color = m_zColor;
+                m_xyzMaterials[m_zMatIndex].color = Colors.ZColor;
             }
 
             if(m_lockObj.RotationScreen)
             {
-                m_outerCircleMaterial.color = m_disabledColor;
+                m_outerCircleMaterial.color = Colors.DisabledColor;
             }
             else
             {
-                m_outerCircleMaterial.color = m_altColor;
+                m_outerCircleMaterial.color = Colors.AltColor;
             }
             m_outerCircleMaterial.SetInt("_ZTest", 2);
 
             if (m_lockObj.IsPositionLocked)
             {
-                m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = m_disabledColor;
+                m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = m_altColor2;
+                m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.AltColor2;
             }
 
             m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0);
@@ -154,19 +233,19 @@ namespace Battlehub.RTHandles
                 case RuntimeHandleAxis.X:
                     if (!m_lockObj.PositionX)
                     {
-                        m_xyzMaterials[m_xMatIndex].color = m_selectionColor;
+                        m_xyzMaterials[m_xMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Y:
                     if (!m_lockObj.PositionY)
                     {
-                        m_xyzMaterials[m_yMatIndex].color = m_selectionColor;
+                        m_xyzMaterials[m_yMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Z:
                     if (!m_lockObj.PositionZ)
                     {
-                        m_xyzMaterials[m_zMatIndex].color = m_selectionColor;
+                        m_xyzMaterials[m_zMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Free:
@@ -178,7 +257,7 @@ namespace Battlehub.RTHandles
                 case RuntimeHandleAxis.Screen:
                     if(!m_lockObj.RotationScreen)
                     {
-                        m_outerCircleMaterial.color = m_selectionColor;
+                        m_outerCircleMaterial.color = Colors.SelectionColor;
                         m_outerCircleMaterial.SetInt("_ZTest", 0);
                     }
                     break;
@@ -222,7 +301,7 @@ namespace Battlehub.RTHandles
 
         private void UpdateCircle(Mesh mesh, Mesh originalMesh, Transform circleTransform, float majorRadius, float minorRadius)
         {
-            circleTransform.localScale = RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) * majorRadius : Vector3.one * majorRadius;
+            circleTransform.localScale = transform.localScale.z < 0 ? new Vector3(1, 1, -1) * majorRadius : Vector3.one * majorRadius;
             minorRadius /= Mathf.Max(0.01f, majorRadius);
 
             Vector3[] verts = originalMesh.vertices;
@@ -239,17 +318,124 @@ namespace Battlehub.RTHandles
                 verts[tri] = c + (v - c).normalized * minorRadius;
             }
 
-            tris = mesh.GetTriangles(1);
-            for (int t = 0; t < tris.Length; ++t)
+            if(mesh.subMeshCount > 1)
             {
-                int tri = tris[t];
-                Vector3 v = verts[tri];
-                v.Normalize();
+                tris = mesh.GetTriangles(1);
+                for (int t = 0; t < tris.Length; ++t)
+                {
+                    int tri = tris[t];
+                    Vector3 v = verts[tri];
+                    v.Normalize();
 
-                verts[tri] = v * (1 - minorRadius);
+                    verts[tri] = v * (1 - minorRadius);
+                }
+            }
+            
+            mesh.vertices = verts;
+        }
+
+
+        private void UpdateColliders()
+        {
+            if (!m_useColliders)
+            {
+                return;
             }
 
-            mesh.vertices = verts;
+            float majorRadius =  m_majorRadius * ModelScale * SelectionMargin;
+            float minorRadius =  (m_minorRadius + 0.07f) * ModelScale * SelectionMargin;
+            float outerRadius =  m_outerRadius * ModelScale * SelectionMargin;
+
+            Mesh axisMesh = Instantiate(m_axisColliderMesh);
+            UpdateCircle(axisMesh, m_axisColliderMesh, m_xCollider.transform, majorRadius, minorRadius);
+            m_xCollider.sharedMesh = null;
+            m_xCollider.sharedMesh = axisMesh;
+            UpdateCircle(axisMesh, m_axisColliderMesh, m_yCollider.transform, majorRadius, minorRadius);
+            m_yCollider.sharedMesh = null;
+            m_yCollider.sharedMesh = axisMesh;
+            UpdateCircle(axisMesh, m_axisColliderMesh, m_zCollider.transform, majorRadius, minorRadius);
+            m_zCollider.sharedMesh = null;
+            m_zCollider.sharedMesh = axisMesh;
+
+            Mesh innerMesh = Instantiate(m_ssMesh);
+            UpdateCircle(innerMesh, m_ssMesh, m_innerCollider.transform, majorRadius, minorRadius);
+            m_innerCollider.sharedMesh = null;
+            m_innerCollider.sharedMesh = innerMesh;
+
+            Mesh outerMesh = Instantiate(m_axisColliderMesh);
+            UpdateCircle(outerMesh, m_ssMesh, m_outerCollider.transform, outerRadius, minorRadius);
+            m_outerCollider.sharedMesh = null;
+            m_outerCollider.sharedMesh = outerMesh;
+
+            m_graphicsBlockingCollider.radius = outerRadius;
+        }
+
+        public override RuntimeHandleAxis HitTest(Ray ray)
+        {
+            if (!m_useColliders)
+            {
+                return RuntimeHandleAxis.None;
+            }
+
+            Collider collider = null;
+            float minDistance = float.MaxValue;
+
+            Camera camera = Editor.ActiveWindow.Camera;
+            if (Editor.IsVR)
+            {
+                
+                m_innerCollider.transform.LookAt(m_innerCollider.transform.position - (camera.transform.position - m_innerCollider.transform.position), Vector3.up);
+                m_outerCollider.transform.LookAt(m_outerCollider.transform.position - (camera.transform.position - m_outerCollider.transform.position), Vector3.up);
+            }
+            else
+            {
+                m_innerCollider.transform.LookAt(m_innerCollider.transform.position + camera.transform.rotation * Vector3.forward,
+                    camera.transform.rotation * Vector3.up);
+                m_outerCollider.transform.LookAt(m_outerCollider.transform.position + camera.transform.rotation * Vector3.forward,
+                    camera.transform.rotation * Vector3.up);
+            }
+
+            for (int i = 0; i < m_colliders.Length; ++i)
+            {
+                m_colliders[i].gameObject.SetActive(true);
+                RaycastHit hit;
+                if (m_colliders[i].Raycast(ray, out hit, camera.farClipPlane))
+                {
+                    if (hit.distance < minDistance)
+                    {
+                        collider = hit.collider;
+                        minDistance = hit.distance;
+                    }
+                }
+                m_colliders[i].gameObject.SetActive(false);
+            }
+            
+            if (collider == m_xCollider)
+            {
+                return RuntimeHandleAxis.X;
+            }
+
+            if (collider == m_yCollider)
+            {
+                return RuntimeHandleAxis.Y;
+            }
+
+            if (collider == m_zCollider)
+            {
+                return RuntimeHandleAxis.Z;
+            }
+
+            if (collider == m_innerCollider)
+            {
+                return RuntimeHandleAxis.Free;
+            }
+
+            if(collider == m_outerCollider)
+            {
+                return RuntimeHandleAxis.Screen;
+            }
+
+            return RuntimeHandleAxis.None;
         }
 
         private float m_prevMinorRadius = DefaultMinorRadius;
@@ -262,10 +448,19 @@ namespace Battlehub.RTHandles
                 m_prevMinorRadius = m_minorRadius;
                 m_prevMajorRadius = m_majorRadius;
                 m_prevOuterRadius = m_outerRadius;
-                UpdateXYZ(m_xyz.sharedMesh, m_majorRadius, m_minorRadius);
-                UpdateCircle(m_innerCircle.sharedMesh, m_innerCircleMesh, m_innerCircle.transform, m_majorRadius, m_minorRadius);
-                UpdateCircle(m_outerCircle.sharedMesh, m_outerCircleMesh, m_outerCircle.transform, m_outerRadius, m_minorRadius);
+                UpdateModel();       
             }
+        }
+
+        protected override void UpdateModel()
+        {
+            float majorRadius = m_majorRadius * ModelScale;
+            float minorRadius = m_minorRadius * ModelScale;
+            float outerRadius = m_outerRadius * ModelScale;
+            UpdateXYZ(m_xyz.sharedMesh, majorRadius, minorRadius);
+            UpdateCircle(m_inner.sharedMesh, m_innerCircleMesh, m_inner.transform, majorRadius, minorRadius);
+            UpdateCircle(m_outer.sharedMesh, m_outerCircleMesh, m_outer.transform, outerRadius, minorRadius);
+            UpdateColliders();
         }
     }
 

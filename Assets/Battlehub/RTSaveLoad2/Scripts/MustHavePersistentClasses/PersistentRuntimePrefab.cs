@@ -28,7 +28,7 @@ namespace Battlehub.RTSaveLoad2
 
         public PersistentRuntimePrefab()
         {
-            m_typeMap = RTSL2Deps.Get.TypeMap;
+            m_typeMap = RTSL2InternalDeps.Get.TypeMap;
         }
 
         protected override void ReadFromImpl(object obj)

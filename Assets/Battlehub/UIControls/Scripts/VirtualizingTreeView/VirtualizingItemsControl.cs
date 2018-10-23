@@ -274,6 +274,7 @@ namespace Battlehub.UIControls
         /// ScrollView scroll speed during drag drop operaiton
         /// </summary>
         public float ScrollSpeed = 100;
+        public Vector4 ScrollMargin = new Vector4(float.MaxValue, float.MaxValue, float.MaxValue, float.MaxValue);
         private enum ScrollDir
         {
             None,
@@ -283,6 +284,7 @@ namespace Battlehub.UIControls
             Right
         }
         private ScrollDir m_scrollDir;
+        
         /// <summary>
         /// ScrollView RectTransformChange listener
         /// </summary>
@@ -299,6 +301,7 @@ namespace Battlehub.UIControls
         private float m_height;
 
         private VirtualizingItemDropMarker m_dropMarker;
+        private Repeater m_repeater;
 
         private bool m_externalDragOperation;
 
@@ -678,7 +681,6 @@ namespace Battlehub.UIControls
             return gameObject.AddComponent<VirtualizingItemsControlInputProvider>();
         }
 
-        private Repeater m_repeater;
         private void Update()
         {
             if (m_scrollDir != ScrollDir.None)
@@ -1293,21 +1295,21 @@ namespace Battlehub.UIControls
                 Vector2 localPoint;
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_scrollRect.viewport, eventData.position, camera, out localPoint))
                 {
-                    if (localPoint.y >= 0)
+                    if (localPoint.y > 0 && localPoint.y < ScrollMargin.y)
                     {
                         m_scrollDir = ScrollDir.Up;
                         m_dropMarker.SetTarget(null);
                     }
-                    else if (localPoint.y < -viewportHeight)
+                    else if (localPoint.y < -viewportHeight && localPoint.y > -(viewportHeight + ScrollMargin.w))
                     {
                         m_scrollDir = ScrollDir.Down;
                         m_dropMarker.SetTarget(null);
                     }
-                    else if (localPoint.x <= 0)
+                    else if (localPoint.x < 0 && localPoint.x >= -ScrollMargin.x)
                     {
                         m_scrollDir = ScrollDir.Left;
                     }
-                    else if (localPoint.x >= viewportWidth)
+                    else if (localPoint.x >= viewportWidth && localPoint.x < viewportWidth + ScrollMargin.z)
                     {
                         m_scrollDir = ScrollDir.Right;
                     }

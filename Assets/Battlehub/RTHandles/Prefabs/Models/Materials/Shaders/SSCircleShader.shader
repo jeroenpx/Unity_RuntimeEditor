@@ -1,4 +1,6 @@
-﻿Shader "Battlehub/RTHandles/Models/SSCircleShader"
+﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Battlehub/RTHandles/Models/SSCircleShader"
 {
 	Properties
 	{
@@ -37,11 +39,13 @@
 			v2f vert(appdata v)
 			{
 				v2f o;
+
 				float scaleX = length(mul(unity_ObjectToWorld, float4(1.0, 0.0, 0.0, 0.0)));
 				float scaleY = length(mul(unity_ObjectToWorld, float4(0.0, 1.0, 0.0, 0.0)));
 				o.vertex = mul(UNITY_MATRIX_P,
 					float4(UnityObjectToViewPos(float3(0.0, 0.0, 0.0)), 1.0)
 					- float4(v.vertex.x * scaleX, v.vertex.y * scaleY, 0.0, 0.0));
+
 				return o;
 			}
 

@@ -3,22 +3,18 @@ using UnityEngine.UI;
 using Battlehub.RTCommon;
 using System.Linq;
 using Battlehub.UIControls;
-using Battlehub.RTSaveLoad2;
-using Battlehub.Utils;
+using Battlehub.RTSaveLoad2.Interface;
 using System.Collections;
-using System.Collections.Generic;
 
 using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTEditor
 {
-    public class ProjectView : RuntimeEditorWindow
+    public class ProjectView : RuntimeWindow
     {
-        private IAssetDB m_assetDB;
         private IProject m_project;
         private IResourcePreviewUtility m_resourcePreview;
-        private MappingInfo m_staticReferencesMapping;
-
+       
         [SerializeField]
         private Text m_loadingProgressText;
 
@@ -71,7 +67,6 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-           
             m_project = RTSL2Deps.Get.Project;
             if(m_project == null)
             {
@@ -86,11 +81,6 @@ namespace Battlehub.RTEditor
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
             }
 
-            m_assetDB = RTSL2Deps.Get.AssetDB;
-            if (m_assetDB == null)
-            {
-                Debug.LogWarning("RTSL2Deps.Get.AssetDB is null");
-            }
             //RuntimeEditorApplication.SaveSelectedObjectsRequired += OnSaveSelectedObjectsRequest;
 
             //m_projectResources.SelectionChanged += OnProjectResourcesSelectionChanged;
@@ -107,15 +97,7 @@ namespace Battlehub.RTEditor
 
             ShowProgress = true;
 
-            m_staticReferencesMapping = new MappingInfo();
-            for (int i = 0; i < m_project.StaticReferences.Length; ++i)
-            {
-                AssetLibraryReference reference = m_project.StaticReferences[i];
-                if (reference != null)
-                {
-                    reference.LoadIDMappingTo(m_staticReferencesMapping, false, true);
-                }
-            }
+         
 
             m_project.Open(ProjectName, error =>
             {
@@ -224,16 +206,16 @@ namespace Battlehub.RTEditor
                     UnityObject obj;
                     if(m_project.IsStatic(projectItem))
                     {
-                        if(!m_staticReferencesMapping.PersistentIDtoObj.TryGetValue(unchecked((int)assetItem.ItemID), out obj))
+                        if(!m_project.TryGetFromStaticReferences(assetItem, out obj))
                         {
                             obj = null;
                         }
                     }
                     else
                     {
-                        if (assetItem.Preview == null && m_assetDB != null)
+                        if (assetItem.Preview == null)
                         {
-                            obj = m_assetDB.FromID<UnityObject>(assetItem.ItemID);
+                            obj = m_project.FromID<UnityObject>(assetItem.ItemID);
                         }
                         else
                         {
@@ -491,7 +473,7 @@ namespace Battlehub.RTEditor
                 }
 
                 StartCoroutine(CreatePreviewForLoadedResources(assets));
-                m_projectResources.SetItems(assets, true);
+                m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
             });
 
          

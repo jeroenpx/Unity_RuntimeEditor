@@ -10,7 +10,7 @@ namespace Battlehub.RTEditor
         }
     }
 
-    [DefaultExecutionOrder(-1)]
+    [DefaultExecutionOrder(-100)]
     public class RTEDeps : MonoBehaviour, IRTSL2Deps
     {
         public static IRTSL2Deps Get

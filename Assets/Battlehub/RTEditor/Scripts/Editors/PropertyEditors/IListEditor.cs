@@ -308,7 +308,7 @@ namespace Battlehub.RTEditor
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            if (DragDrop.DragObject != null)
+            if (Editor.DragDrop.InProgress)
             {
                 if (Expander != null)
                 {

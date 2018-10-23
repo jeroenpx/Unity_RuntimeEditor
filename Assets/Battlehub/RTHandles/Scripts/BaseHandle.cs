@@ -11,8 +11,10 @@ namespace Battlehub.RTHandles
     /// <summary>
     /// Base class for all handles (Position, Rotation and Scale)
     /// </summary>
-    public abstract class BaseHandle : MonoBehaviour, IGL
+    public abstract class BaseHandle : RTEBehaviour, IGL
     {
+        private const float SelectionMarginPixels = 10;
+
         /// <summary>
         /// current size of grid 
         /// </summary>
@@ -22,41 +24,21 @@ namespace Battlehub.RTHandles
             private set;
         }
 
-
-        /// <summary>
-        /// Use RuntimeUndo subsystem
-        /// </summary>
-        public bool EnableUndo = true;
-
         /// <summary>
         /// HighlightOnHover
         /// </summary>
         public bool HightlightOnHover = true;
 
-        /// <summary>
-        /// Key which activates Unit Snapping
-        /// </summary>
-        public KeyCode UnitSnapKey = KeyCode.LeftControl;
-
-        /// <summary>
-        /// Raycasting camera
-        /// </summary>
-        public Camera SceneCamera;
-
+        public RuntimeHandlesComponent Appearance;
         /// <summary>
         /// Configurable model
         /// </summary>
         public BaseHandleModel Model;
-
-        /// <summary>
-        /// Screen space selection margin in pixesl
-        /// </summary>
-        public float SelectionMargin = 10;
-
+        
         protected LockObject LockObject
         {
-            get { return RuntimeTools.LockAxes; }
-            set { RuntimeTools.LockAxes = value; }
+            get { return Editor.Tools.LockAxes; }
+            set { Editor.Tools.LockAxes = value; }
         }
 
         protected virtual Vector3 HandlePosition
@@ -160,7 +142,7 @@ namespace Battlehub.RTHandles
                     return;
                 }
 
-                if (RuntimeTools.PivotMode == RuntimePivotMode.Center && ActiveTargets.Length > 1)
+                if (Editor.Tools.PivotMode == RuntimePivotMode.Center && ActiveTargets.Length > 1)
                 {
                     Vector3 centerPosition = Targets_Internal[0].position;
                     for (int i = 1; i < Targets_Internal.Length; ++i)
@@ -296,7 +278,7 @@ namespace Battlehub.RTHandles
         /// <summary>
         /// Tool type
         /// </summary>
-        protected abstract RuntimeTool Tool
+        public abstract RuntimeTool Tool
         {
             get;
         }
@@ -313,7 +295,7 @@ namespace Battlehub.RTHandles
                     return Quaternion.identity;
                 }
 
-                return RuntimeTools.PivotRotation == RuntimePivotRotation.Local ? Target.rotation : Quaternion.identity;
+                return Editor.Tools.PivotRotation == RuntimePivotRotation.Local ? Target.rotation : Quaternion.identity;
             }
         }
 
@@ -341,38 +323,26 @@ namespace Battlehub.RTHandles
             get;
         }
 
-        /// Lifecycle methods
-        private void Awake()
+        private bool m_unitSnapping;
+        public bool UnitSnapping
         {
-            if(m_targets != null && m_targets.Length > 0)
+            get { return m_unitSnapping; }
+            set { m_unitSnapping = value; }
+        }
+
+        protected override void AwakeOverride()
+        {
+            base.AwakeOverride();
+
+            RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
+            if (m_targets != null && m_targets.Length > 0)
             {
                 Targets = m_targets;
             }
 
-            RuntimeTools.PivotModeChanged += OnPivotModeChanged;
-            RuntimeTools.ToolChanged += OnRuntimeToolChanged;
-            RuntimeTools.LockAxesChanged += OnLockAxesChanged;
-            
-            AwakeOverride();
-        }
-
-    
-
-        private void Start()
-        {
-            if (SceneCamera == null)
+            if (Targets == null || Targets.Length == 0)
             {
-                SceneCamera = Camera.main;
-            }
-
-            if (EnableUndo)
-            {
-                if (!RuntimeUndoComponent.IsInitialized)
-                {
-                    GameObject runtimeUndo = new GameObject();
-                    runtimeUndo.name = "RuntimeUndo";
-                    runtimeUndo.AddComponent<RuntimeUndoComponent>();
-                }
+                Targets = new[] { transform };
             }
 
             if (GLRenderer.Instance == null)
@@ -380,19 +350,6 @@ namespace Battlehub.RTHandles
                 GameObject glRenderer = new GameObject();
                 glRenderer.name = "GLRenderer";
                 glRenderer.AddComponent<GLRenderer>();
-            }
-
-            if (SceneCamera != null)
-            {
-                if (!SceneCamera.GetComponent<GLCamera>())
-                {
-                    SceneCamera.gameObject.AddComponent<GLCamera>();
-                }
-            }
-
-            if (Targets == null || Targets.Length == 0)
-            {
-                Targets = new[] { transform };
             }
 
             if (GLRenderer.Instance != null)
@@ -407,23 +364,53 @@ namespace Battlehub.RTHandles
 
             if (Model != null)
             {
+                bool activeSelf = Model.gameObject.activeSelf;
+                Model.gameObject.SetActive(false);
                 BaseHandleModel model = Instantiate(Model, transform.parent);
+
                 model.name = Model.name;
+                model.Appearance = Appearance;
+                
+                Model.gameObject.SetActive(activeSelf);
+                model.gameObject.SetActive(true);
+
                 Model = model;
                 Model.SetLock(LockObject);
             }
+        }
 
-            StartOverride();
+        private void Start()
+        {
+            if(GetComponent<BaseHandleInput>() == null)
+            {
+                gameObject.AddComponent<BaseHandleInput>();
+            }
+            OnStartOverride();
+        }
+
+        protected virtual void OnStartOverride()
+        {
+
         }
 
         private void OnEnable()
         {
+            Editor.Tools.PivotModeChanged += OnPivotModeChanged;
+            Editor.Tools.ToolChanged += OnRuntimeToolChanged;
+            Editor.Tools.LockAxesChanged += OnLockAxesChanged;
+            Editor.Undo.UndoCompleted += OnUndoCompleted;
+            Editor.Undo.RedoCompleted += OnRedoCompleted;
+
             OnEnableOverride();
 
             if (Model != null)
             {
+                if (ActiveWindow != null)
+                {
+                    SyncModelTransform();
+                }
+                
                 Model.gameObject.SetActive(true);
-                SyncModelTransform();
             }
             else
             {
@@ -432,9 +419,11 @@ namespace Battlehub.RTHandles
                     GLRenderer.Instance.Add(this);
                 }
             }
+        }
 
-            RuntimeUndo.UndoCompleted += OnUndoCompleted;
-            RuntimeUndo.RedoCompleted += OnRedoCompleted;
+        protected virtual void OnEnableOverride()
+        {
+
         }
 
         private void OnDisable()
@@ -442,6 +431,16 @@ namespace Battlehub.RTHandles
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
+            }
+
+
+            if (Editor != null)
+            {
+                Editor.Tools.PivotModeChanged -= OnPivotModeChanged;
+                Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
+                Editor.Tools.LockAxesChanged -= OnLockAxesChanged;
+                Editor.Undo.UndoCompleted -= OnUndoCompleted;
+                Editor.Undo.RedoCompleted -= OnRedoCompleted;
             }
 
             DestroyCommonCenter();
@@ -452,25 +451,20 @@ namespace Battlehub.RTHandles
             }
 
             OnDisableOverride();
-
-            RuntimeUndo.UndoCompleted -= OnUndoCompleted;
-            RuntimeUndo.RedoCompleted -= OnRedoCompleted;
         }
 
-        private void OnDestroy()
+        protected virtual void OnDisableOverride()
         {
-            RuntimeTools.ToolChanged -= OnRuntimeToolChanged;
-            RuntimeTools.PivotModeChanged -= OnPivotModeChanged;
-            RuntimeTools.LockAxesChanged -= OnLockAxesChanged;
+
+        }
+
+        protected override void OnDestroyOverride()
+        {
+            base.OnDestroyOverride();
 
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
-            }
-
-            if (RuntimeTools.ActiveTool == this)
-            {
-                RuntimeTools.ActiveTool = null;
             }
 
             DestroyCommonCenter();
@@ -482,7 +476,18 @@ namespace Battlehub.RTHandles
                     Destroy(Model);
                 }
             }
-            OnDestroyOverride();
+        }
+
+        protected override void OnWindowDeactivated()
+        {
+            base.OnWindowDeactivated();
+            if (Editor != null)
+            {
+                if (Editor.Tools.ActiveTool == this)
+                {
+                    Editor.Tools.ActiveTool = null;
+                }
+            }
         }
 
         private void DestroyCommonCenter()
@@ -509,55 +514,21 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if (InputController._GetMouseButtonDown(0))
+            if(Model != null)
             {
-                if (RuntimeTools.Current != Tool && RuntimeTools.Current != RuntimeTool.None || RuntimeTools.IsViewing)
-                {
-                    return;
-                }
+                Model.ModelScale = Appearance.HandleScale;
+                Model.SelectionMargin = Appearance.SelectionMargin;
+            }
 
-                if (RuntimeTools.IsPointerOverGameObject())
+            if (m_isDragging)
+            {
+                if (Editor.Tools.IsViewing)
                 {
-                    return;
-                }
-
-                if (SceneCamera == null)
-                {
-                    Debug.LogError("Camera is null");
-                    return;
-                }
-
-                if (RuntimeTools.ActiveTool != null)
-                {
-                    return;
-                }
-
-                if (RuntimeEditorApplication.ActiveSceneCamera != null && !RuntimeEditorApplication.IsPointerOverWindow(RuntimeWindowType.SceneView))
-                {
-                    return;
-                }
-
-                m_isDragging = OnBeginDrag();
-                if (m_isDragging)
-                {
-                    RuntimeTools.ActiveTool = this;
-                    RecordTransform();
+                    m_isDragging = false;
                 }
                 else
                 {
-                    RuntimeTools.ActiveTool = null;
-                }
-
-            }
-            else if (InputController._GetMouseButtonUp(0))
-            {
-                TryCancelDrag();
-            }
-            else
-            {
-                if (m_isDragging)
-                {
-                    if (InputController._GetKey(UnitSnapKey) || RuntimeTools.UnitSnapping)
+                    if (m_unitSnapping)
                     {
                         EffectiveGridUnitSize = CurrentGridUnitSize;
                     }
@@ -569,18 +540,19 @@ namespace Battlehub.RTHandles
                     OnDrag();
                 }
             }
-
+            else
+            {
+                if (!Editor.ActiveWindow.IsPointerOver)
+                {
+                    SelectedAxis = RuntimeHandleAxis.None;
+                }
+            }
             
             UpdateOverride();
 
-            if (Model != null)
-            {
-                SyncModelTransform();
-            }
-
             if (m_isDragging)
             {
-                if (RuntimeTools.PivotMode == RuntimePivotMode.Center && m_commonCenterTarget != null && m_realTargets != null && m_realTargets.Length > 1)
+                if (Editor.Tools.PivotMode == RuntimePivotMode.Center && m_commonCenterTarget != null && m_realTargets != null && m_realTargets.Length > 1)
                 {
                     for (int i = 0; i < m_commonCenterTarget.Length; ++i)
                     {
@@ -594,54 +566,6 @@ namespace Battlehub.RTHandles
                 }
             }
         }
-
-        private void SyncModelTransform()
-        {
-            Vector3 position = HandlePosition;
-            Model.transform.position = position;
-            Model.transform.rotation = Rotation;
-
-            float screenScale = RuntimeHandles.GetScreenScale(position, SceneCamera);
-            Model.transform.localScale = RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
-        }
-
-        private void TryCancelDrag()
-        {
-            if (m_isDragging)
-            {
-                OnDrop();
-                RecordTransform();
-                m_isDragging = false;
-                RuntimeTools.ActiveTool = null;
-            }
-        }
-
-        /// Lifecycle method overrides
-        protected virtual void AwakeOverride()
-        {
-
-        }
-
-        protected virtual void StartOverride()
-        {
-            
-        }
-
-        protected virtual void OnEnableOverride()
-        {
-
-        }
-
-        protected virtual void OnDisableOverride()
-        {
-
-        }
-
-        protected virtual void OnDestroyOverride()
-        {
-          
-        }
-
 
         protected virtual void UpdateOverride()
         {
@@ -667,10 +591,57 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private void LateUpdate()
+        {
+            if (Model != null && ActiveWindow != null)
+            {
+                SyncModelTransform();
+            }
+        }
+
+        protected virtual void SyncModelTransform()
+        {
+            Vector3 position = HandlePosition;
+            Model.transform.position = position;
+            Model.transform.rotation = Rotation;
+            float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, ActiveWindow.Camera);
+            Model.transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
+        }
+
+        public void BeginDrag()
+        {
+            m_isDragging = OnBeginDrag();
+            if (m_isDragging)
+            {
+                Editor.Tools.ActiveTool = this;
+                RecordTransform();
+            }
+            else
+            {
+                Editor.Tools.ActiveTool = null;
+            }
+        }
+
+        public void EndDrag()
+        {
+            if (m_isDragging)
+            {
+                OnDrop();
+                RecordTransform();
+                m_isDragging = false;
+                Editor.Tools.ActiveTool = null;
+            }
+        }
+
         /// Drag And Drop virtual methods
         protected virtual bool OnBeginDrag()
         {
-            return false;
+            if(ActiveWindow == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         protected virtual void OnDrag()
@@ -685,7 +656,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void OnRuntimeToolChanged()
         {
-            TryCancelDrag();
+            EndDrag();
         }
 
         protected virtual void OnPivotModeChanged()
@@ -695,7 +666,7 @@ namespace Battlehub.RTHandles
                 Targets = RealTargets;
             }
 
-            if (RuntimeTools.PivotMode != RuntimePivotMode.Center)
+            if (Editor.Tools.PivotMode != RuntimePivotMode.Center)
             {
                 m_realTargets = null;   
             }
@@ -719,20 +690,17 @@ namespace Battlehub.RTHandles
 
         protected virtual void RecordTransform()
         {
-            if (EnableUndo)
+            Editor.Undo.BeginRecord();
+            for (int i = 0; i < m_activeRealTargets.Length; ++i)
             {
-                RuntimeUndo.BeginRecord();
-                for (int i = 0; i < m_activeRealTargets.Length; ++i)
-                {
-                    RuntimeUndo.RecordTransform(m_activeRealTargets[i]);
-                }
-                RuntimeUndo.EndRecord();
+                Editor.Undo.RecordTransform(m_activeRealTargets[i]);
             }
+            Editor.Undo.EndRecord();
         }
 
         private void OnRedoCompleted()
         {
-            if (RuntimeTools.PivotMode == RuntimePivotMode.Center)
+            if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
             {
                 if(m_realTargets != null)
                 {
@@ -744,7 +712,7 @@ namespace Battlehub.RTHandles
 
         private void OnUndoCompleted()
         {
-            if (RuntimeTools.PivotMode == RuntimePivotMode.Center)
+            if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
             {
                 if (m_realTargets != null)
                 {
@@ -757,17 +725,17 @@ namespace Battlehub.RTHandles
         /// Hit testing methods      
         protected virtual bool HitCenter()
         {
-            Vector2 screenCenter = SceneCamera.WorldToScreenPoint(transform.position);
-            Vector2 mouse = InputController._MousePosition;
+            Vector2 screenCenter = ActiveWindow.Camera.WorldToScreenPoint(transform.position);
+            Vector2 mouse = ActiveWindow.Pointer.ScreenPoint;
 
-            return (mouse - screenCenter).magnitude <= SelectionMargin;
+            return (mouse - screenCenter).magnitude <= Appearance.SelectionMargin * SelectionMarginPixels;
         }
 
         protected virtual bool HitAxis(Vector3 axis, Matrix4x4 matrix, out float distanceToAxis)
         {
             axis = matrix.MultiplyVector(axis);
-            Vector2 screenVectorBegin = SceneCamera.WorldToScreenPoint(transform.position);
-            Vector2 screenVectorEnd = SceneCamera.WorldToScreenPoint(axis + transform.position);
+            Vector2 screenVectorBegin = ActiveWindow.Camera.WorldToScreenPoint(transform.position);
+            Vector2 screenVectorEnd = ActiveWindow.Camera.WorldToScreenPoint(axis + transform.position);
 
             Vector3 screenVector = screenVectorEnd - screenVectorBegin;
             float screenVectorMag = screenVector.magnitude;
@@ -778,10 +746,10 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                Vector2 mousePosition = InputController._MousePosition;
+                Vector2 mousePosition = ActiveWindow.Pointer.ScreenPoint;
 
                 distanceToAxis = (screenVectorBegin - mousePosition).magnitude;
-                bool result = distanceToAxis <= SelectionMargin;
+                bool result = distanceToAxis <= Appearance.SelectionMargin * SelectionMarginPixels;
                 if (!result)
                 {
                     distanceToAxis = float.PositiveInfinity;
@@ -797,21 +765,22 @@ namespace Battlehub.RTHandles
         protected virtual bool HitScreenAxis(out float distanceToAxis, Vector2 screenVectorBegin, Vector3 screenVector, float screenVectorMag)
         {
             Vector2 perp = PerpendicularClockwise(screenVector).normalized;
-            Vector2 mousePosition = InputController._MousePosition;
+            Vector2 mousePosition = Editor.Input.GetPointerXY(0);
             Vector2 relMousePositon = mousePosition - screenVectorBegin;
 
             distanceToAxis = Mathf.Abs(Vector2.Dot(perp, relMousePositon));
             Vector2 hitPoint = (relMousePositon - perp * distanceToAxis);
             float vectorSpaceCoord = Vector2.Dot(screenVector, hitPoint);
 
-            bool result = vectorSpaceCoord <= screenVectorMag + SelectionMargin && vectorSpaceCoord >= -SelectionMargin && distanceToAxis <= SelectionMargin;
+            float selectionMargin = Appearance.SelectionMargin * SelectionMarginPixels;
+            bool result = vectorSpaceCoord <= screenVectorMag + selectionMargin && vectorSpaceCoord >= -selectionMargin && distanceToAxis <= selectionMargin;
             if (!result)
             {
                 distanceToAxis = float.PositiveInfinity;
             }
             else
             {
-                if (screenVectorMag < SelectionMargin)
+                if (screenVectorMag < selectionMargin)
                 {
                     distanceToAxis = 0.0f;
                 }
@@ -827,7 +796,7 @@ namespace Battlehub.RTHandles
 
         protected virtual Plane GetDragPlane()
         {
-            Vector3 toCam = SceneCamera.cameraToWorldMatrix.MultiplyVector(Vector3.forward); //Camera.transform.position - transform.position;
+            Vector3 toCam = ActiveWindow.Camera.cameraToWorldMatrix.MultiplyVector(Vector3.forward); //Camera.transform.position - transform.position;
             Plane dragPlane = new Plane(toCam.normalized, transform.position);
             return dragPlane;
         }
@@ -839,7 +808,17 @@ namespace Battlehub.RTHandles
 
         protected virtual bool GetPointOnDragPlane(Plane dragPlane, Vector3 screenPos, out Vector3 point)
         {
-            Ray ray = SceneCamera.ScreenPointToRay(screenPos);
+            Ray ray = ActiveWindow.Camera.ScreenPointToRay(screenPos);
+            return GetPointOnDragPlane(dragPlane, ray, out point);
+        }
+
+        protected virtual bool GetPointOnDragPlane(Ray ray, out Vector3 point)
+        {
+            return GetPointOnDragPlane(m_dragPlane, ray, out point);
+        }
+
+        protected virtual bool GetPointOnDragPlane(Plane dragPlane, Ray ray, out Vector3 point)
+        {
             float distance;
             if (dragPlane.Raycast(ray, out distance))
             {
@@ -850,6 +829,7 @@ namespace Battlehub.RTHandles
             point = Vector3.zero;
             return false;
         }
+
 
         private static Vector2 PerpendicularClockwise(Vector2 vector2)
         {

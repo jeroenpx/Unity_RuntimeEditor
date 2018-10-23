@@ -24,8 +24,8 @@ namespace Battlehub.RTCommon
     }
 
 
-    public delegate void ExposeToEditorChangeEvent<T>(ExposeToEditor obj, T oldValue, T newValue);
-    public delegate void ExposeToEditorEvent(ExposeToEditor obj);
+    public delegate void ExposeToEditorChangeEvent<T>(IRTE editor, ExposeToEditor obj, T oldValue, T newValue);
+    public delegate void ExposeToEditorEvent(IRTE editor, ExposeToEditor obj);
 
     [System.Serializable]
     public class ExposeToEditorUnityEvent : UnityEvent<ExposeToEditor> { }
@@ -33,16 +33,16 @@ namespace Battlehub.RTCommon
     [DisallowMultipleComponent]
     public class ExposeToEditor : MonoBehaviour
     {
-        public static event ExposeToEditorEvent Awaked;
-        public static event ExposeToEditorEvent Destroying;
-        public static event ExposeToEditorEvent Destroyed;
-        public static event ExposeToEditorEvent MarkAsDestroyedChanged;
-        public static event ExposeToEditorEvent NameChanged;
-        public static event ExposeToEditorEvent TransformChanged;
-        public static event ExposeToEditorEvent Started;
-        public static event ExposeToEditorEvent Enabled;
-        public static event ExposeToEditorEvent Disabled;
-        public static event ExposeToEditorChangeEvent<ExposeToEditor> ParentChanged;
+        public static event ExposeToEditorEvent _Awaked;
+        public static event ExposeToEditorEvent _Destroying;
+        public static event ExposeToEditorEvent _Destroyed;
+        public static event ExposeToEditorEvent _MarkAsDestroyedChanged;
+        public static event ExposeToEditorEvent _NameChanged;
+        public static event ExposeToEditorEvent _TransformChanged;
+        public static event ExposeToEditorEvent _Started;
+        public static event ExposeToEditorEvent _Enabled;
+        public static event ExposeToEditorEvent _Disabled;
+        public static event ExposeToEditorChangeEvent<ExposeToEditor> _ParentChanged;
         
         private bool m_applicationQuit;
         [SerializeField]
@@ -98,9 +98,9 @@ namespace Battlehub.RTCommon
                 {
                     m_markAsDestroyed = value;
                     gameObject.SetActive(!m_markAsDestroyed);
-                    if (MarkAsDestroyedChanged != null)
+                    if (_MarkAsDestroyedChanged != null)
                     {
-                        MarkAsDestroyedChanged(this);
+                        _MarkAsDestroyedChanged(m_rte, this);
                     }
                 }
             }
@@ -191,9 +191,9 @@ namespace Battlehub.RTCommon
                 return null;
             }
 
-            IEnumerable<GameObject> exposedToEditor = RuntimeEditorApplication.IsPlaying ?
-                FindAll(ExposeToEditorObjectType.PlayMode) :
-                FindAll(ExposeToEditorObjectType.EditorMode).OrderBy(g => g.transform.GetSiblingIndex()); 
+            IEnumerable<GameObject> exposedToEditor = m_rte.IsPlaying ?
+                FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
+                FindAll(Editor, ExposeToEditorObjectType.EditorMode).OrderBy(g => g.transform.GetSiblingIndex()); 
 
             IEnumerator<GameObject> en = exposedToEditor.GetEnumerator();
             while(en.MoveNext())
@@ -217,9 +217,9 @@ namespace Battlehub.RTCommon
                 {
                     ExposeToEditor oldParent = ChangeParent(value);
 
-                    if (ParentChanged != null)
+                    if (_ParentChanged != null)
                     {
-                        ParentChanged(this, oldParent, m_parent);
+                        _ParentChanged(m_rte, this, oldParent, m_parent);
                     }
                 }
             }
@@ -244,9 +244,17 @@ namespace Battlehub.RTCommon
         }
 
         private bool m_initialized;
+        private IRTE m_rte;
+        public IRTE Editor
+        {
+            get { return m_rte; }
+        }
+
         private void Awake()
         {
-            RuntimeEditorApplication.IsOpenedChanged += OnEditorIsOpenedChanged;
+            m_rte = RTE.Get;
+
+            m_rte.IsOpenedChanged += OnEditorIsOpenedChanged;
 
             m_objectType = ExposeToEditorObjectType.Undefined;
 
@@ -260,9 +268,9 @@ namespace Battlehub.RTCommon
 
             if (hideFlags != HideFlags.HideAndDontSave)
             {
-                if (Awaked != null)
+                if (_Awaked != null)
                 {
-                    Awaked(this);
+                    _Awaked(m_rte, this);
                 }
             }
         }
@@ -296,7 +304,7 @@ namespace Battlehub.RTCommon
 
         private void OnEditorIsOpenedChanged()
         {
-            if (RuntimeEditorApplication.IsOpened)
+            if (m_rte.IsOpened)
             {
                 TryToAddColliders();
             }
@@ -323,8 +331,7 @@ namespace Battlehub.RTCommon
                 //BoundsInWorldSpace = true;
             }
             
-
-            if (RuntimeEditorApplication.IsOpened)
+            if (m_rte.IsOpened)
             {
                 TryToAddColliders();
             }
@@ -336,9 +343,9 @@ namespace Battlehub.RTCommon
         
             if (hideFlags != HideFlags.HideAndDontSave)
             {
-                if (Started != null)
+                if (_Started != null)
                 {
-                    Started(this);
+                    _Started(m_rte, this);
                 }
             }
         }
@@ -347,9 +354,9 @@ namespace Battlehub.RTCommon
         {
             if (hideFlags != HideFlags.HideAndDontSave)
             {
-                if (Enabled != null)
+                if (_Enabled != null)
                 {
-                    Enabled(this);
+                    _Enabled(m_rte, this);
                 }
             }
         }
@@ -358,9 +365,9 @@ namespace Battlehub.RTCommon
         {
             if (hideFlags != HideFlags.HideAndDontSave)
             {
-                if (Disabled != null)
+                if (_Disabled != null)
                 {
-                    Disabled(this);
+                    _Disabled(m_rte, this);
                 }
             }
         }
@@ -368,16 +375,18 @@ namespace Battlehub.RTCommon
      
         private void OnDestroy()
         {
+            if(m_rte != null)
+            {
+                m_rte.IsOpenedChanged -= OnEditorIsOpenedChanged;
+            }
             
-            RuntimeEditorApplication.IsOpenedChanged -= OnEditorIsOpenedChanged;
-
             if (!m_applicationQuit)
             {
                 if (hideFlags != HideFlags.HideAndDontSave)
                 {
-                    if (Destroying != null)
+                    if (_Destroying != null)
                     {
-                        Destroying(this);
+                        _Destroying(m_rte, this);
                     }
                 }
 
@@ -400,9 +409,9 @@ namespace Battlehub.RTCommon
 
                 if (hideFlags != HideFlags.HideAndDontSave)
                 {
-                    if (Destroyed != null)
+                    if (_Destroyed != null)
                     {
-                        Destroyed(this);
+                        _Destroyed(m_rte, this);
                     }
                 }
             }
@@ -416,7 +425,7 @@ namespace Battlehub.RTCommon
 
         private void Update()
         {
-            if (TransformChanged != null)
+            if (_TransformChanged != null)
             {
                 if (transform.hasChanged)
                 {
@@ -424,9 +433,9 @@ namespace Battlehub.RTCommon
 
                     if (hideFlags != HideFlags.HideAndDontSave)
                     {
-                        if (TransformChanged != null)
+                        if (_TransformChanged != null)
                         {
-                            TransformChanged(this);
+                            _TransformChanged(m_rte, this);
                         }
                     }
                 }
@@ -555,14 +564,14 @@ namespace Battlehub.RTCommon
             gameObject.name = name;
             if (hideFlags != HideFlags.HideAndDontSave)
             {
-                if (NameChanged != null)
+                if (_NameChanged != null)
                 {
-                    NameChanged(this);
+                    _NameChanged(m_rte, this);
                 }
             }
         }
 
-        private static bool IsExposedToEditor(GameObject go, ExposeToEditorObjectType type, bool roots)
+        private static bool IsExposedToEditor(IRTE editor, GameObject go, ExposeToEditorObjectType type, bool roots)
         {
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             return exposeToEditor != null && (!roots ||
@@ -570,14 +579,15 @@ namespace Battlehub.RTCommon
                     exposeToEditor.transform.parent.GetComponentsInParent<ExposeToEditor>(true).Length == 0) &&
                 !exposeToEditor.MarkAsDestroyed &&
                 exposeToEditor.ObjectType == type &&
+                exposeToEditor.Editor == editor &&
                 exposeToEditor.hideFlags != HideFlags.HideAndDontSave;
         }
 
-        public static IEnumerable<GameObject> FindAll(ExposeToEditorObjectType type, bool roots = true)
+        public static IEnumerable<GameObject> FindAll(IRTE editor, ExposeToEditorObjectType type, bool roots = true)
         {
             if(SceneManager.GetActiveScene().isLoaded)
             {
-                return FindAllUsingSceneManagement(type, roots);
+                return FindAllUsingSceneManagement(editor, type, roots);
             }
             List<GameObject> filtered = new List<GameObject>();
             GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
@@ -595,10 +605,10 @@ namespace Battlehub.RTCommon
                 }
             }
 
-            return filtered.Where(f => IsExposedToEditor(f, type, roots));
+            return filtered.Where(f => IsExposedToEditor(editor, f, type, roots));
         }
 
-        public static IEnumerable<GameObject> FindAllUsingSceneManagement(ExposeToEditorObjectType type, bool roots = true)
+        public static IEnumerable<GameObject> FindAllUsingSceneManagement(IRTE editor, ExposeToEditorObjectType type, bool roots = true)
         {
             List<GameObject> filtered = new List<GameObject>();
             GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
@@ -608,7 +618,7 @@ namespace Battlehub.RTCommon
                 for (int j = 0; j < exposedObjects.Length; ++j)
                 {
                     ExposeToEditor obj = exposedObjects[j];
-                    if (IsExposedToEditor(obj.gameObject, type, roots))
+                    if (IsExposedToEditor(editor, obj.gameObject, type, roots))
                     {
                         if (!obj.gameObject.IsPrefab())
                         {

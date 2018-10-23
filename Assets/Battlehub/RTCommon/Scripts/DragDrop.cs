@@ -5,26 +5,66 @@ namespace Battlehub.RTCommon
 {
     public delegate void DragDropEventHander(PointerEventData pointerEventData);
 
-    public static class DragDrop 
+    public interface IDragDrop
     {
-        private static object m_cursorLocker = new object();
+        event DragDropEventHander BeginDrag;
+        event DragDropEventHander Drag;
+        event DragDropEventHander Drop;
 
-        public static event DragDropEventHander BeginDrag;
-        public static event DragDropEventHander Drag;
-        public static event DragDropEventHander Drop;
+        object[] DragObjects
+        {
+            get;
+        }
 
-        public static object[] DragObjects
+        bool InProgress
+        {
+            get;
+        }
+
+        void Reset();
+
+        void SetCursor(KnownCursor cursorType);
+        
+        void ResetCursor();
+
+        void RaiseBeginDrag(object[] dragItems, PointerEventData pointerEventData);
+
+        void RaiseDrag(PointerEventData eventData);
+
+        void RaiseDrop(PointerEventData pointerEventData);
+    }
+
+    public class DragDrop : IDragDrop
+    {
+        private object m_cursorLocker = new object();
+
+        public event DragDropEventHander BeginDrag;
+        public event DragDropEventHander Drag;
+        public event DragDropEventHander Drop;
+
+        public object[] DragObjects
         {
             get;
             private set;
         }
 
-        public static void Reset()
+        public bool InProgress
+        {
+            get { return DragObjects != null && DragObjects.Length > 0; }
+        }
+
+        private IRTE m_editor;
+        public DragDrop(IRTE rte)
+        {
+            m_editor = rte;
+        }
+
+        public void Reset()
         {
             DragObjects = null;
         }
 
-        public static object DragObject
+        public object DragObject
         {
             get
             {
@@ -37,18 +77,22 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void SetCursor(KnownCursor cursorType)
+        public void SetCursor(KnownCursor cursorType)
         {
-            CursorHelper.SetCursor(m_cursorLocker, cursorType);
+            m_editor.CursorHelper.SetCursor(m_cursorLocker, cursorType);
         }
 
-        public static void ResetCursor()
+        public void ResetCursor()
         {
-            CursorHelper.ResetCursor(m_cursorLocker);
+            m_editor.CursorHelper.ResetCursor(m_cursorLocker);
         }
 
-        public static void RaiseBeginDrag(object[] dragItems, PointerEventData pointerEventData)
+        public void RaiseBeginDrag(object[] dragItems, PointerEventData pointerEventData)
         {
+            if(dragItems == null)
+            {
+                return;
+            }
             DragObjects = dragItems;
             SetCursor(KnownCursor.DropNowAllowed);
             if (BeginDrag != null)
@@ -57,7 +101,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void RaiseDrag(PointerEventData eventData)
+        public void RaiseDrag(PointerEventData eventData)
         {
             if(DragObjects != null)
             {
@@ -68,7 +112,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void RaiseDrop(PointerEventData pointerEventData)
+        public void RaiseDrop(PointerEventData pointerEventData)
         {
             if(DragObjects != null)
             {

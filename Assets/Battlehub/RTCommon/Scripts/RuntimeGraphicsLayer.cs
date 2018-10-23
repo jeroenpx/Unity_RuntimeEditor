@@ -1,117 +1,110 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Battlehub.RTCommon
 {
+    [RequireComponent(typeof(RuntimeWindow))]
     public class RuntimeGraphicsLayer : MonoBehaviour
     {
-        private Camera m_sceneCamera;
         private Camera m_graphicsLayerCamera;
 
-        [SerializeField]
-        private int m_graphicsLayer = 24;
-        public int GraphicsLayer
+        private RuntimeWindow m_editorWindow;
+
+        public RuntimeWindow Window
         {
-            get { return m_graphicsLayer; }
+            get { return m_editorWindow; }
         }
-
-        private void UpdateCameraCullingMask()
-        {
-            m_sceneCamera.cullingMask &= ~(1 << m_graphicsLayer);
-            m_graphicsLayerCamera.cullingMask = 1 << m_graphicsLayer;
-
-            if(RuntimeEditorApplication.GameCameras != null)
-            {
-                for(int i = 0; i < RuntimeEditorApplication.GameCameras.Length; ++i)
-                {
-                    RuntimeEditorApplication.GameCameras[i].cullingMask &= ~(1 << m_graphicsLayer);
-                }
-            }
-        }
-
+        
         private void Awake()
         {
-            RuntimeEditorApplication.ActiveSceneCameraChanged += OnActiveSceneCameraChanged;
+            m_editorWindow = GetComponent<RuntimeWindow>();
             PrepareGraphicsLayerCamera();
         }
 
         private void OnDestroy()
         {
-            RuntimeEditorApplication.ActiveSceneCameraChanged -= OnActiveSceneCameraChanged;
-        }
-
-        private void OnActiveSceneCameraChanged()
-        {
-            PrepareGraphicsLayerCamera();
+            if(m_graphicsLayerCamera != null)
+            {
+                Destroy(m_graphicsLayerCamera.gameObject);
+            }
         }
 
         private void PrepareGraphicsLayerCamera()
         {
-            m_sceneCamera = RuntimeEditorApplication.ActiveSceneCamera;
+            if(m_editorWindow.Editor.IsVR && m_editorWindow.Camera.stereoEnabled && m_editorWindow.Camera.stereoTargetEye == StereoTargetEyeMask.Both)
+            {
+                bool wasActive = m_editorWindow.Camera.gameObject.activeSelf;
+                m_editorWindow.Camera.gameObject.SetActive(false);
+                m_graphicsLayerCamera = Instantiate(m_editorWindow.Camera, m_editorWindow.Camera.transform.parent);
+                m_graphicsLayerCamera.transform.SetSiblingIndex(m_editorWindow.Camera.transform.GetSiblingIndex() + 1);
+                m_editorWindow.Camera.gameObject.SetActive(wasActive);
+                m_graphicsLayerCamera.gameObject.SetActive(wasActive);
+            }
+            else
+            {
+                m_graphicsLayerCamera = Instantiate(m_editorWindow.Camera, m_editorWindow.Camera.transform);
+            }
             
-            if(m_sceneCamera == null)
+            for (int i = m_graphicsLayerCamera.transform.childCount - 1; i >= 0; i--)
             {
-                m_sceneCamera = Camera.main;
+                Destroy(m_graphicsLayerCamera.transform.GetChild(i).gameObject);
             }
-            if (m_sceneCamera != null)
+
+            Component[] components = m_graphicsLayerCamera.GetComponents<Component>();
+            for (int i = 0; i < components.Length; ++i)
             {
-                Destroy(m_graphicsLayerCamera);
-
-                m_graphicsLayerCamera = Instantiate(m_sceneCamera, m_sceneCamera.transform);
-                for (int i =  m_graphicsLayerCamera.transform.childCount - 1; i >= 0; i--)
+                Component component = components[i];
+                if (component is Transform)
                 {
-                    Destroy(m_graphicsLayerCamera.transform.GetChild(i).gameObject);
+                    continue;
                 }
-
-                Component[] components = m_graphicsLayerCamera.GetComponents<Component>();
-                for(int i = 0; i < components.Length; ++i)
+                if (component is Camera)
                 {
-                    Component component = components[i];
-                    if(component is Transform)
-                    {
-                        continue;
-                    }
-                    if (component is Camera)
-                    {
-                        continue;
-                    }
-                    Destroy(component);
+                    continue;
                 }
-
-                m_graphicsLayerCamera.clearFlags = CameraClearFlags.Depth;
-                m_graphicsLayerCamera.transform.localPosition = Vector3.zero;
-                m_graphicsLayerCamera.transform.localRotation = Quaternion.identity;
-                m_graphicsLayerCamera.transform.localScale = Vector3.one;
-                m_graphicsLayerCamera.name = "GraphicsLayerCamera";
-                
-                UpdateCameraCullingMask();
+                Destroy(component);
             }
+
+            m_graphicsLayerCamera.clearFlags = CameraClearFlags.Depth;
+            m_graphicsLayerCamera.transform.localPosition = Vector3.zero;
+            m_graphicsLayerCamera.transform.localRotation = Quaternion.identity;
+            m_graphicsLayerCamera.transform.localScale = Vector3.one;
+            m_graphicsLayerCamera.name = "GraphicsLayerCamera";
+            m_graphicsLayerCamera.depth = m_editorWindow.Camera.depth + 1;
+
+            m_graphicsLayerCamera.cullingMask = 1 << m_editorWindow.Editor.CameraLayerSettings.RuntimeHandlesLayer;
         }
 
         private void Update()
         {
-            if (m_graphicsLayerCamera.fieldOfView != m_sceneCamera.fieldOfView)
+            if (m_graphicsLayerCamera.fieldOfView != m_editorWindow.Camera.fieldOfView)
             {
-                m_graphicsLayerCamera.fieldOfView = m_sceneCamera.fieldOfView;
+                m_graphicsLayerCamera.fieldOfView = m_editorWindow.Camera.fieldOfView;
             }
 
-            if (m_graphicsLayerCamera.orthographic != m_sceneCamera.orthographic)
+            if (m_graphicsLayerCamera.orthographic != m_editorWindow.Camera.orthographic)
             {
-                m_graphicsLayerCamera.orthographic = m_sceneCamera.orthographic;
+                m_graphicsLayerCamera.orthographic = m_editorWindow.Camera.orthographic;
             }
 
-            if (m_graphicsLayerCamera.orthographicSize != m_sceneCamera.orthographicSize)
+            if (m_graphicsLayerCamera.orthographicSize != m_editorWindow.Camera.orthographicSize)
             {
-                m_graphicsLayerCamera.orthographicSize = m_sceneCamera.orthographicSize;
+                m_graphicsLayerCamera.orthographicSize = m_editorWindow.Camera.orthographicSize;
             }
 
-            if (m_graphicsLayerCamera.rect != m_sceneCamera.rect)
+            if (m_graphicsLayerCamera.rect != m_editorWindow.Camera.rect)
             {
-                m_graphicsLayerCamera.rect = m_sceneCamera.rect;
+                m_graphicsLayerCamera.rect = m_editorWindow.Camera.rect;
             }
 
-            if(m_graphicsLayerCamera.enabled != m_sceneCamera.enabled)
+            if(m_graphicsLayerCamera.enabled != m_editorWindow.Camera.enabled)
             {
-                m_graphicsLayerCamera.enabled = m_sceneCamera.enabled;
+                m_graphicsLayerCamera.enabled = m_editorWindow.Camera.enabled;
+            }
+
+            if(m_graphicsLayerCamera.gameObject.activeSelf != m_editorWindow.Camera.gameObject.activeSelf)
+            {
+                m_graphicsLayerCamera.gameObject.SetActive(m_editorWindow.Camera.gameObject.activeSelf);
             }
         }
     }

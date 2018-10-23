@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityObject = UnityEngine.Object;
 
+using Battlehub.RTSaveLoad2.Interface;
+
 namespace Battlehub.RTSaveLoad2
 {
     public class Project : MonoBehaviour, IProject
@@ -45,19 +47,21 @@ namespace Battlehub.RTSaveLoad2
         private Transform m_dynamicPrefabsRoot;
         private readonly Dictionary<int, UnityObject> m_dynamicResources = new Dictionary<int, UnityObject>();
 
+        private MappingInfo m_staticReferencesMapping;
+
         private void Awake()
         {
-            if (RTSL2Deps.Get == null)
+            if (RTSL2InternalDeps.Get == null)
             {
                 GameObject deps = new GameObject();
                 deps.name = "RTSL2Deps";
-                deps.AddComponent<RTSL2Deps>();
+                deps.AddComponent<RTSL2InternalDeps>();
             }
 
-            m_storage = RTSL2Deps.Get.Storage;
-            m_assetDB = RTSL2Deps.Get.AssetDB;
-            m_typeMap = RTSL2Deps.Get.TypeMap;
-            m_factory = RTSL2Deps.Get.UnityObjFactory;
+            m_storage = RTSL2InternalDeps.Get.Storage;
+            m_assetDB = RTSL2InternalDeps.Get.AssetDB;
+            m_typeMap = RTSL2InternalDeps.Get.TypeMap;
+            m_factory = RTSL2InternalDeps.Get.UnityObjFactory;
 
             if(m_dynamicPrefabsRoot == null)
             {
@@ -80,6 +84,7 @@ namespace Battlehub.RTSaveLoad2
                 Destroy(dynamicResource);
             }
             m_dynamicResources.Clear();
+            m_staticReferencesMapping = null;
         }
 
         private bool IsDynamicOrdinal(int ordinal)
@@ -300,6 +305,31 @@ namespace Battlehub.RTSaveLoad2
             return m_assetDB.IsStaticFolderID(projectItem.ItemID) || m_assetDB.IsStaticResourceID(projectItem.ItemID);
         }
 
+        public bool TryGetFromStaticReferences(AssetItem assetItem, out UnityObject obj)
+        {
+            return m_staticReferencesMapping.PersistentIDtoObj.TryGetValue(unchecked((int)assetItem.ItemID), out obj);
+        }
+        
+        public Type ToType(AssetItem assetItem)
+        {
+            return m_typeMap.ToType(assetItem.TypeGuid);
+        }
+
+        public Guid ToGuid(Type type)
+        {
+            return m_typeMap.ToGuid(type);
+        }
+
+        public long ToID(UnityObject obj)
+        {
+            return m_assetDB.ToID(obj);
+        }
+
+        public T FromID<T>(long id) where T : UnityObject
+        {
+            return m_assetDB.FromID<T>(id);
+        }
+
         public string GetExt(object obj)
         {
             if(obj is Scene)
@@ -320,6 +350,16 @@ namespace Battlehub.RTSaveLoad2
 
         public ProjectAsyncOperation Open(string project, ProjectEventHandler callback)
         {
+            m_staticReferencesMapping = new MappingInfo();
+            for (int i = 0; i < StaticReferences.Length; ++i)
+            {
+                AssetLibraryReference reference = StaticReferences[i];
+                if (reference != null)
+                {
+                    reference.LoadIDMappingTo(m_staticReferencesMapping, false, true);
+                }
+            }
+
             ProjectAsyncOperation ao = new ProjectAsyncOperation();
             m_projectPath = project;
 

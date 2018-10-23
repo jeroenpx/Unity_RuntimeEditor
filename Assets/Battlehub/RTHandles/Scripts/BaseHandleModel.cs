@@ -1,42 +1,66 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
 using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
-    public class BaseHandleModel : MonoBehaviour
+    public class BaseHandleModel : RTEBehaviour
     {
-        [SerializeField]
-        protected Color m_xColor = RTHColors.XColor;
-        [SerializeField]
-        protected Color m_yColor = RTHColors.YColor;
-        [SerializeField]
-        protected Color m_zColor = RTHColors.ZColor;
-        [SerializeField]
-        protected Color m_altColor = RTHColors.AltColor;
-        [SerializeField]
-        protected Color m_altColor2 = RTHColors.AltColor2;
-        [SerializeField]
-        protected Color m_disabledColor = RTHColors.DisabledColor;
-        [SerializeField]
-        protected Color m_selectionColor = RTHColors.SelectionColor;
+        private RuntimeHandlesComponent m_appearance;
+        public RuntimeHandlesComponent Appearance
+        {
+            get { return m_appearance; }
+            set { m_appearance = value; }
+        }
+
+        public RTHColors Colors
+        {
+            get { return m_appearance.Colors; }
+        }
+
+        private float m_modelScale = 1.0f;
+        public float ModelScale
+        {
+            get { return m_modelScale;  }
+            set
+            {
+                if(m_modelScale != value)
+                {
+                    m_modelScale = value;
+                    UpdateModel();
+                }   
+            }
+        }
+
+        private float m_selectionMargin = 1.0f;
+        public float SelectionMargin
+        {
+            get { return m_selectionMargin; }
+            set
+            {
+                if(m_selectionMargin != value)
+                {
+                    m_selectionMargin = value;
+                    UpdateModel();   
+                }
+            }
+        }
 
         protected RuntimeHandleAxis m_selectedAxis = RuntimeHandleAxis.None;
         protected LockObject m_lockObj = new LockObject();
-        protected RuntimeGraphicsLayer m_graphicsLayer;
 
-        protected virtual void Awake()
+        protected override void OnWindowRegistered(RuntimeWindow window)
         {
-            m_graphicsLayer = FindObjectOfType<RuntimeGraphicsLayer>();
-            if (m_graphicsLayer == null)
+            base.OnWindowRegistered(window);
+            if(IsSupported(window))
             {
-                GameObject go = new GameObject();
-                go.AddComponent<PersistentIgnore>();
-                m_graphicsLayer = go.AddComponent<RuntimeGraphicsLayer>();
-                m_graphicsLayer.name = "RuntimeGraphicsLayer";
-            }
+                RuntimeGraphicsLayer graphicsLayer = window.GetComponent<RuntimeGraphicsLayer>();
+                if (graphicsLayer == null)
+                {
+                    graphicsLayer = window.gameObject.AddComponent<RuntimeGraphicsLayer>();
+                }
 
-            SetLayer(transform, m_graphicsLayer.GraphicsLayer);
+                SetLayer(transform, graphicsLayer.Window.Editor.CameraLayerSettings.RuntimeHandlesLayer);
+            }
         }
 
         private void SetLayer(Transform t, int layer)
@@ -67,19 +91,33 @@ namespace Battlehub.RTHandles
 
         }
 
+        public virtual RuntimeHandleAxis HitTest(Ray ray)
+        {
+            return RuntimeHandleAxis.None;
+        }
+
         protected virtual void Start()
         {
 
         }
 
-        protected virtual void OnDestroy()
-        {
-
-        }
 
         protected virtual void Update()
         {
 
+        }
+
+        protected virtual void UpdateModel()
+        {
+
+        }
+
+        
+
+        protected virtual void OnWillRenderObject()
+        {
+            float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Camera.current);
+            transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
         }
     }
 

@@ -10,7 +10,7 @@ namespace Battlehub.RTEditor
         {
             base.InitEditor(editor, descriptor);
 
-            if(RuntimeTools.LockAxes == null)
+            if(Editor.Tools.LockAxes == null)
             {
                 return;
             }
@@ -18,25 +18,25 @@ namespace Battlehub.RTEditor
             if(descriptor.ComponentMemberInfo == Strong.PropertyInfo((Transform x) => x.position, "position"))
             {
                 Vector3Editor vector3Editor = (Vector3Editor)editor;
-                vector3Editor.IsXInteractable = !RuntimeTools.LockAxes.PositionX;
-                vector3Editor.IsYInteractable = !RuntimeTools.LockAxes.PositionY;
-                vector3Editor.IsZInteractable = !RuntimeTools.LockAxes.PositionZ;
+                vector3Editor.IsXInteractable = !Editor.Tools.LockAxes.PositionX;
+                vector3Editor.IsYInteractable = !Editor.Tools.LockAxes.PositionY;
+                vector3Editor.IsZInteractable = !Editor.Tools.LockAxes.PositionZ;
             }
 
             if (descriptor.ComponentMemberInfo == Strong.PropertyInfo((Transform x) => x.rotation, "rotation"))
             {
                 Vector3Editor vector3Editor = (Vector3Editor)editor;
-                vector3Editor.IsXInteractable = !RuntimeTools.LockAxes.RotationX;
-                vector3Editor.IsYInteractable = !RuntimeTools.LockAxes.RotationY;
-                vector3Editor.IsZInteractable = !RuntimeTools.LockAxes.RotationZ;
+                vector3Editor.IsXInteractable = !Editor.Tools.LockAxes.RotationX;
+                vector3Editor.IsYInteractable = !Editor.Tools.LockAxes.RotationY;
+                vector3Editor.IsZInteractable = !Editor.Tools.LockAxes.RotationZ;
             }
 
             if (descriptor.ComponentMemberInfo == Strong.PropertyInfo((Transform x) => x.localScale, "localScale"))
             {
                 Vector3Editor vector3Editor = (Vector3Editor)editor;
-                vector3Editor.IsXInteractable = !RuntimeTools.LockAxes.ScaleX;
-                vector3Editor.IsYInteractable = !RuntimeTools.LockAxes.ScaleY;
-                vector3Editor.IsZInteractable = !RuntimeTools.LockAxes.ScaleZ;
+                vector3Editor.IsXInteractable = !Editor.Tools.LockAxes.ScaleX;
+                vector3Editor.IsYInteractable = !Editor.Tools.LockAxes.ScaleY;
+                vector3Editor.IsZInteractable = !Editor.Tools.LockAxes.ScaleZ;
             }
         }
     }

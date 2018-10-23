@@ -18,26 +18,30 @@ namespace Battlehub.RTEditor
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            m_lastTool = RuntimeTools.Current;
-            RuntimeTools.ToolChanged += OnToolChanged;
+            m_lastTool = Editor.Tools.Current;
+            Editor.Tools.ToolChanged += OnToolChanged;
         }
 
         protected override void OnDestroyOverride()
         {
-            RuntimeTools.ToolChanged -= OnToolChanged;
             base.OnDestroyOverride();
             if (m_editColliderButton != null)
             {
                 m_editColliderButton.onValueChanged.RemoveListener(OnEditCollider);
             }
-            RuntimeTools.Current = m_lastTool;
+
+            if (Editor != null)
+            {
+                Editor.Tools.ToolChanged -= OnToolChanged;
+                Editor.Tools.Current = m_lastTool;
+            }
         }
 
         private void OnToolChanged()
         {
-            if(RuntimeTools.Current != RuntimeTool.None)
+            if(Editor.Tools.Current != RuntimeTool.None)
             {
-                m_lastTool = RuntimeTools.Current;
+                m_lastTool = Editor.Tools.Current;
                 m_isEditing = false;
                 if (m_editColliderButton != null)
                 {
@@ -73,13 +77,13 @@ namespace Battlehub.RTEditor
             m_isEditing = edit;
             if(m_isEditing)
             {
-                m_lastTool = RuntimeTools.Current;
-                RuntimeTools.Current = RuntimeTool.None;
+                m_lastTool = Editor.Tools.Current;
+                Editor.Tools.Current = RuntimeTool.None;
                 TryCreateGizmo(GetComponentDescriptor());
             }
             else
             {
-                RuntimeTools.Current = m_lastTool;
+                Editor.Tools.Current = m_lastTool;
                 DestroyGizmo();
             }
         }
@@ -89,8 +93,7 @@ namespace Battlehub.RTEditor
             if(m_isEditing)
             {
                 base.TryCreateGizmo(componentDescriptor);
-            }
-            
+            }   
         }
 
         protected override void DestroyGizmo()

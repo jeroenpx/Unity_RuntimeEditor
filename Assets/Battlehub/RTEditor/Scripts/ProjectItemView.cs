@@ -1,10 +1,9 @@
-﻿using Battlehub.RTSaveLoad2;
+﻿
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Battlehub.RTSaveLoad2.Interface;
 namespace Battlehub.RTEditor
 {
     public class ProjectItemView : MonoBehaviour

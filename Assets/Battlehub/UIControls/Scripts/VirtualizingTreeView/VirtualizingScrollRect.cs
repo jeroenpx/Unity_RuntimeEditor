@@ -245,7 +245,6 @@ namespace Battlehub.UIControls
             {
                 if (ContainerSize < 0.00001f)
                 {
-                    Debug.LogWarning("ContainerSize is too small");
                     return 0;
                 }
                 return Mathf.FloorToInt(Size / ContainerSize) * ContainersPerGroup;
@@ -422,7 +421,7 @@ namespace Battlehub.UIControls
                     }
 
                     RectTransform parent = (RectTransform)m_virtualContent.parent;
-                    ContainersPerGroup = Mathf.FloorToInt(parent.rect.height / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.y + m_gridSpacing.y));
+                    ContainersPerGroup = Mathf.RoundToInt(parent.rect.height / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.y + m_gridSpacing.y));
                 }
             }
             else if(m_mode == VirtualizingMode.Vertical)
@@ -436,7 +435,7 @@ namespace Battlehub.UIControls
                     }
 
                     RectTransform parent = (RectTransform)m_virtualContent.parent;
-                    ContainersPerGroup = Mathf.FloorToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
+                    ContainersPerGroup = Mathf.RoundToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
                 }
             }
         }
@@ -532,6 +531,7 @@ namespace Battlehub.UIControls
         /// <param name="newValue"></param>
         private void OnNormalizedIndexChanged(float newValue)
         {
+
             //clamp newValue to be in [0,1]
             newValue = Mathf.Clamp01(newValue);
             

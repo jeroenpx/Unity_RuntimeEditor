@@ -50,9 +50,17 @@ namespace Battlehub.RTHandles
 
         private Vector3 m_scale = Vector3.one;
 
-        protected override void Awake()
+        private readonly bool m_useColliders = true;
+        private BoxCollider m_xCollider;
+        private BoxCollider m_yCollider;
+        private BoxCollider m_zCollider;
+        private BoxCollider m_xyzCollider;
+        private Collider[] m_colliders;
+
+        protected override void AwakeOverride()
         {
-            base.Awake();
+            base.AwakeOverride();
+        
             m_b1x = m_armature.GetChild(0);
             m_b1y = m_armature.GetChild(1);
             m_b1z = m_armature.GetChild(2);
@@ -67,13 +75,31 @@ namespace Battlehub.RTHandles
             Renderer renderer = m_model.GetComponent<Renderer>();
             m_materials = renderer.materials;
             renderer.sharedMaterials = m_materials;
+
+            if (m_useColliders)
+            {
+                GameObject colliders = new GameObject("Colliders");
+                colliders.transform.SetParent(transform, false);
+                colliders.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+
+                m_xyzCollider = colliders.AddComponent<BoxCollider>();
+                m_xCollider = colliders.AddComponent<BoxCollider>();
+                m_yCollider = colliders.AddComponent<BoxCollider>();
+                m_zCollider = colliders.AddComponent<BoxCollider>();
+
+                m_colliders = new Collider[] { m_xyzCollider, m_xCollider, m_yCollider, m_zCollider };
+                for (int i = 0; i < m_colliders.Length; ++i)
+                {
+                    m_colliders[i].isTrigger = true;
+                }
+            }
         }
 
         protected override void Start()
         {
             base.Start();
 
-            UpdateTransforms();
+            UpdateModel();
             SetColors();
         }
 
@@ -93,43 +119,43 @@ namespace Battlehub.RTHandles
         {
             if (m_lockObj.ScaleX)
             {
-                m_materials[m_xMatIndex].color = m_disabledColor;
-                m_materials[m_xArrowMatIndex].color = m_disabledColor;
+                m_materials[m_xMatIndex].color = Colors.DisabledColor;
+                m_materials[m_xArrowMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_xMatIndex].color = m_xColor;
-                m_materials[m_xArrowMatIndex].color = m_xColor;
+                m_materials[m_xMatIndex].color = Colors.XColor;
+                m_materials[m_xArrowMatIndex].color = Colors.XColor;
             }
 
             if (m_lockObj.ScaleY)
             {
-                m_materials[m_yMatIndex].color = m_disabledColor;
-                m_materials[m_yArrowMatIndex].color = m_disabledColor;
+                m_materials[m_yMatIndex].color = Colors.DisabledColor;
+                m_materials[m_yArrowMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_yMatIndex].color = m_yColor;
-                m_materials[m_yArrowMatIndex].color = m_yColor;
+                m_materials[m_yMatIndex].color = Colors.YColor;
+                m_materials[m_yArrowMatIndex].color = Colors.YColor;
             }
 
             if (m_lockObj.ScaleZ)
             {
-                m_materials[m_zMatIndex].color = m_disabledColor;
+                m_materials[m_zMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_zMatIndex].color = m_zColor;
-                m_materials[m_zArrowMatIndex].color = m_zColor;
+                m_materials[m_zMatIndex].color = Colors.ZColor;
+                m_materials[m_zArrowMatIndex].color = Colors.ZColor;
             }
 
             if(m_lockObj.IsPositionLocked)
             {
-                m_materials[m_xyzMatIndex].color = m_disabledColor;
+                m_materials[m_xyzMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_xyzMatIndex].color = m_altColor;
+                m_materials[m_xyzMatIndex].color = Colors.AltColor;
             }
         }
 
@@ -141,26 +167,26 @@ namespace Battlehub.RTHandles
                 case RuntimeHandleAxis.X:
                     if (!m_lockObj.ScaleX)
                     {
-                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_xMatIndex].color = m_selectionColor;
+                        m_materials[m_xArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_xMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Y:
                     if (!m_lockObj.ScaleY)
                     {
-                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_yMatIndex].color = m_selectionColor;
+                        m_materials[m_yArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Z:
                     if (!m_lockObj.ScaleZ)
                     {
-                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_zMatIndex].color = m_selectionColor;
+                        m_materials[m_zArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Free:
-                    m_materials[m_xyzMatIndex].color = m_selectionColor;
+                    m_materials[m_xyzMatIndex].color = Colors.SelectionColor;
                     break;
             }
         }
@@ -169,10 +195,10 @@ namespace Battlehub.RTHandles
         {
             base.SetScale(scale);
             m_scale = scale;
-            UpdateTransforms();
+            UpdateModel();
         }
 
-        private void UpdateTransforms()
+        protected override void UpdateModel()
         {
             m_radius = Mathf.Max(0.01f, m_radius);
 
@@ -180,28 +206,109 @@ namespace Battlehub.RTHandles
             Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;
             Vector3 forward = transform.rotation * Vector3.forward * transform.localScale.z;
             Vector3 p = transform.position;
-            float scale = m_radius / DefaultRadius;
-            float arrowScale = m_arrowRadius / DefaultArrowRadius;
 
+            float radius = m_radius * ModelScale;
+            float arrowRadius = m_arrowRadius * ModelScale;
+            float length = m_length * ModelScale;
 
-            m_b0.localScale = Vector3.one * arrowScale * 2;
+            float scale = radius / DefaultRadius;
+            float arrowScale = arrowRadius / DefaultArrowRadius;
+
+            m_b0.localScale = Vector3.one * arrowScale;// * 2;
             m_b3z.localScale = m_b3y.localScale = m_b3x.localScale = Vector3.one * arrowScale;
 
-            m_b1x.position = p + right * m_arrowRadius;
-            m_b1y.position = p + up * m_arrowRadius;
-            m_b1z.position = p + forward * m_arrowRadius;
+            m_b1x.position = p + right * arrowRadius;
+            m_b1y.position = p + up * arrowRadius;
+            m_b1z.position = p + forward * arrowRadius;
 
-            m_b2x.position = p + right * (m_length * m_scale.x - m_arrowRadius); 
-            m_b2y.position = p + up * (m_length * m_scale.y - m_arrowRadius);
-            m_b2z.position = p + forward * (m_length * m_scale.z - m_arrowRadius);
+            m_b2x.position = p + right * (length * m_scale.x - arrowRadius); 
+            m_b2y.position = p + up * (length * m_scale.y - arrowRadius);
+            m_b2z.position = p + forward * (length * m_scale.z - arrowRadius);
 
             m_b2x.localScale = m_b1x.localScale = new Vector3(1, scale, scale);
             m_b2y.localScale = m_b1y.localScale = new Vector3(scale, scale, 1);
             m_b2z.localScale = m_b1z.localScale = new Vector3(scale, 1, scale);
 
-            m_b3x.position = p + right * m_length * m_scale.x;
-            m_b3y.position = p + up * m_length * m_scale.y;
-            m_b3z.position = p + forward * m_length * m_scale.z;
+            m_b3x.position = p + right * length * m_scale.x;
+            m_b3y.position = p + up * length * m_scale.y;
+            m_b3z.position = p + forward * length * m_scale.z;
+
+            UpdateColliders();
+        }
+
+        private void UpdateColliders()
+        {
+            if (!m_useColliders)
+            {
+                return;
+            }
+
+            float size = 2 * m_arrowRadius * ModelScale * SelectionMargin;
+
+            Transform root = m_xCollider.transform.parent;
+
+            Vector3 b3x = root.InverseTransformPoint(m_b3x.position);
+            Vector3 b1x = root.InverseTransformPoint(m_b1x.position);
+            m_xCollider.size = new Vector3(b3x.x - b1x.x, size, size);
+            m_xCollider.center = new Vector3(b1x.x + m_xCollider.size.x / 2, b3x.y, b3x.z);
+
+            Vector3 b3y = root.InverseTransformPoint(m_b3y.position);
+            Vector3 b1y = root.InverseTransformPoint(m_b1y.position);
+            m_yCollider.size = new Vector3(size, b3y.y - b1y.y, size);
+            m_yCollider.center = new Vector3(b3y.x, b1y.y + m_yCollider.size.y / 2, b3y.z);
+
+            Vector3 b3z = root.InverseTransformPoint(m_b3z.position);
+            Vector3 b1z = root.InverseTransformPoint(m_b1z.position);
+            m_zCollider.size = new Vector3(size, size, b3z.z - b1z.z);
+            m_zCollider.center = new Vector3(b3z.x, b3z.y, b1z.z + m_zCollider.size.z / 2);
+
+            m_xyzCollider.size = new Vector3(size * 2, size * 2, size * 2);
+        }
+
+        public override RuntimeHandleAxis HitTest(Ray ray)
+        {
+            if (!m_useColliders)
+            {
+                return RuntimeHandleAxis.None;
+            }
+
+            Collider collider = null;
+            float minDistance = float.MaxValue;
+
+            for (int i = 0; i < m_colliders.Length; ++i)
+            {
+                RaycastHit hit;
+                if (m_colliders[i].Raycast(ray, out hit, ActiveWindow.Camera.farClipPlane))
+                {
+                    if (hit.distance < minDistance)
+                    {
+                        collider = hit.collider;
+                        minDistance = hit.distance;
+                    }
+                }
+            }
+
+            if (collider == m_xCollider)
+            {
+                return RuntimeHandleAxis.X;
+            }
+
+            if (collider == m_yCollider)
+            {
+                return RuntimeHandleAxis.Y;
+            }
+
+            if (collider == m_zCollider)
+            {
+                return RuntimeHandleAxis.Z;
+            }
+
+            if (collider == m_xyzCollider)
+            {
+                return RuntimeHandleAxis.Free;
+            }
+
+            return RuntimeHandleAxis.None;
         }
 
         private float m_prevRadius;
@@ -215,7 +322,7 @@ namespace Battlehub.RTHandles
                 m_prevRadius = m_radius;
                 m_prevLength = m_length;
                 m_prevArrowRadius = m_arrowRadius;
-                UpdateTransforms();
+                UpdateModel();
             }
 
         }

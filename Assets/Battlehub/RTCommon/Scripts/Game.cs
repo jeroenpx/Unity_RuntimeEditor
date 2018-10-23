@@ -13,15 +13,28 @@ namespace Battlehub.RTCommon
         private ExposeToEditor[] m_enabledEditorObjects;
         private Object[] m_editorSelection;
         private bool m_applicationQuit;
+        private IRTE m_editor;
+
+        protected IRTE Editor
+        {
+            get { return m_editor; }
+        }
 
         private void Awake()
         {
+            m_editor = RTE.Get;
+            if(m_editor == null)
+            {
+                Debug.LogError("editor is null");
+                return;
+            }
+
             if (BtnRestart != null)
             {
                 BtnRestart.onClick.AddListener(RestartGame);
             }
 
-            RuntimeEditorApplication.ActiveWindowChanged += OnActiveWindowChanged;
+            m_editor.ActiveWindowChanged += OnActiveWindowChanged;
             StartGame();
 
             AwakeOverride();
@@ -45,7 +58,7 @@ namespace Battlehub.RTCommon
             {
                 BtnRestart.onClick.RemoveListener(RestartGame);
             }
-            RuntimeEditorApplication.ActiveWindowChanged -= OnActiveWindowChanged;
+            m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
         }
 
         private void OnApplicationQuit()
@@ -55,19 +68,19 @@ namespace Battlehub.RTCommon
 
         private void RestartGame()
         {
-            RuntimeEditorApplication.IsPlaying = false;
-            RuntimeEditorApplication.IsPlaying = true;
+            m_editor.IsPlaying = false;
+            m_editor.IsPlaying = true;
         }
 
         private void StartGame()
         {
             DestroyGame();
 
-            m_editorObjects = ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode, true).Select(go => go.GetComponent<ExposeToEditor>()).OrderBy(exp => exp.transform.GetSiblingIndex()).ToArray();
+            m_editorObjects = ExposeToEditor.FindAll(m_editor, ExposeToEditorObjectType.EditorMode, true).Select(go => go.GetComponent<ExposeToEditor>()).OrderBy(exp => exp.transform.GetSiblingIndex()).ToArray();
             m_enabledEditorObjects = m_editorObjects.Where(eo => eo.gameObject.activeSelf).ToArray();
-            m_editorSelection = RuntimeSelection.objects;
+            m_editorSelection = m_editor.Selection.objects;
 
-            HashSet<GameObject> selectionHS = new HashSet<GameObject>(RuntimeSelection.gameObjects != null ? RuntimeSelection.gameObjects : new GameObject[0]);
+            HashSet<GameObject> selectionHS = new HashSet<GameObject>(m_editor.Selection.gameObjects != null ? m_editor.Selection.gameObjects : new GameObject[0]);
             List<GameObject> playmodeSelection = new List<GameObject>();
             for (int i = 0; i < m_editorObjects.Length; ++i)
             {
@@ -97,11 +110,11 @@ namespace Battlehub.RTCommon
                 editorObj.gameObject.SetActive(false);
             }
 
-            bool isEnabled = RuntimeUndo.Enabled;
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = playmodeSelection.ToArray();
-            RuntimeUndo.Enabled = isEnabled;
-            RuntimeUndo.Store();
+            bool isEnabled = m_editor.Undo.Enabled;
+            m_editor.Undo.Enabled = false;
+            m_editor.Selection.objects = playmodeSelection.ToArray();
+            m_editor.Undo.Enabled = isEnabled;
+            m_editor.Undo.Store();
         }
 
         private void DestroyGame()
@@ -113,7 +126,7 @@ namespace Battlehub.RTCommon
 
             OnDestoryGameOverride();
             
-            ExposeToEditor[] playObjects = ExposeToEditor.FindAll(ExposeToEditorObjectType.PlayMode, true).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            ExposeToEditor[] playObjects = ExposeToEditor.FindAll(m_editor, ExposeToEditorObjectType.PlayMode, true).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
             for (int i = 0; i < playObjects.Length; ++i)
             {
                 ExposeToEditor playObj = playObjects[i];
@@ -133,11 +146,11 @@ namespace Battlehub.RTCommon
             }
 
 
-            bool isEnabled = RuntimeUndo.Enabled;
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = m_editorSelection;
-            RuntimeUndo.Enabled = isEnabled;
-            RuntimeUndo.Restore();
+            bool isEnabled = m_editor.Undo.Enabled;
+            m_editor.Undo.Enabled = false;
+            m_editor.Selection.objects = m_editorSelection;
+            m_editor.Undo.Enabled = isEnabled;
+            m_editor.Undo.Restore();
 
             m_editorObjects = null;
             m_enabledEditorObjects = null;

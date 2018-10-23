@@ -24,6 +24,8 @@ namespace Battlehub.UIControls
         private float m_midX;
         private float m_midY;
 
+        private CursorHelper m_cursorHelper = new CursorHelper();
+
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
             if (Parent != null && SecondaryTarget != null)
@@ -126,7 +128,7 @@ namespace Battlehub.UIControls
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             m_pointerInside = true;
-            CursorHelper.SetCursor(this, CursorTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
+            m_cursorHelper.SetCursor(this, CursorTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
@@ -134,7 +136,7 @@ namespace Battlehub.UIControls
             m_pointerInside = false;
             if (!m_pointerDown)
             {
-                CursorHelper.ResetCursor(this);
+                m_cursorHelper.ResetCursor(this);
             }
         }
 
@@ -157,7 +159,7 @@ namespace Battlehub.UIControls
             m_pointerDown = false;
             if(!m_pointerInside)
             {
-                CursorHelper.ResetCursor(this);
+                m_cursorHelper.ResetCursor(this);
             }
         }
     }

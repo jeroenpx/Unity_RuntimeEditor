@@ -23,16 +23,17 @@ namespace Battlehub.RTSaveLoad
         public string ImagePath = "test.png";
 
         private IProjectManager m_projectManager;
+        private IRTE m_editor;
 
         private void Start()
         {
             m_projectManager = Dependencies.ProjectManager;
+            m_editor = RTE.Get;
         }
 
         private void Update()
         {
-
-            if (InputController._GetKeyDown(AddAssetBundleKey2))
+            if (m_editor.Input.GetKeyDown(AddAssetBundleKey2))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
                 m_projectManager.AddBundledResources(rootFolder, "bundledemo",
@@ -50,7 +51,7 @@ namespace Battlehub.RTSaveLoad
             }
 
 
-            if (InputController._GetKeyDown(AddAssetBundleKey))
+            if (m_editor.Input.GetKeyDown(AddAssetBundleKey))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
                 m_projectManager.AddBundledResource(rootFolder, "bundledemo", "monkey", addedItems =>
@@ -62,7 +63,7 @@ namespace Battlehub.RTSaveLoad
                 });
             }
 
-            if (InputController._GetKeyDown(AddWithDependenciesKey))
+            if (m_editor.Input.GetKeyDown(AddWithDependenciesKey))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
                 List<UnityObject> objects = new List<UnityObject>();
@@ -110,7 +111,7 @@ namespace Battlehub.RTSaveLoad
             }
 
 
-            if (InputController._GetKeyDown(AddInstantiatedObjectKey))
+            if (m_editor.Input.GetKeyDown(AddInstantiatedObjectKey))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
                 List<UnityObject> objects = new List<UnityObject>();
@@ -147,7 +148,7 @@ namespace Battlehub.RTSaveLoad
                 });
             }
 
-            if(InputController._GetKeyDown(KeyCode.Keypad7))
+            if(m_editor.Input.GetKeyDown(KeyCode.Keypad7))
             {
                 ProjectItem projectItem = m_projectManager.Project.FlattenHierarchy().Where(item => item.Name == "TestGO").FirstOrDefault();
                 m_projectManager.GetOrCreateObjects(new[] { projectItem }, result =>
@@ -156,7 +157,7 @@ namespace Battlehub.RTSaveLoad
                 });
             }
 
-            if (InputController._GetKeyDown(AddPrefabKey))
+            if (m_editor.Input.GetKeyDown(AddPrefabKey))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
                 List<UnityObject> objects = new List<UnityObject>();
@@ -185,7 +186,7 @@ namespace Battlehub.RTSaveLoad
                 });
             }
 
-            if (InputController._GetKeyDown(AddTextureKey))
+            if (m_editor.Input.GetKeyDown(AddTextureKey))
             {
                 ProjectItem rootFolder = m_projectManager.Project;
                 List<UnityObject> objects = new List<UnityObject>();

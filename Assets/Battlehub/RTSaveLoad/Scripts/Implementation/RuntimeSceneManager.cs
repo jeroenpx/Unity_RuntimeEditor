@@ -15,13 +15,14 @@ namespace Battlehub.RTSaveLoad
 
         protected IProject m_project;
         protected ISerializer m_serializer;
+        protected IRTE m_editor;
 
         [NonSerialized]
         private ProjectItem m_activeScene;
         public ProjectItem ActiveScene
         {
             get { return m_activeScene; }
-        }
+        }        
 
         private void Awake()
         {
@@ -30,6 +31,12 @@ namespace Battlehub.RTSaveLoad
 
             m_project = Dependencies.Project;
             m_serializer = Dependencies.Serializer;
+            m_editor = RTE.Get;
+            if(m_editor == null)
+            {
+                Debug.LogError("RTE is null");
+                return;
+            }
 
             AwakeOverride();
         }
@@ -80,7 +87,7 @@ namespace Battlehub.RTSaveLoad
 
             GameObject extraData = new GameObject();
             ExtraSceneData saveLoad = extraData.AddComponent<ExtraSceneData>();
-            saveLoad.Selection = RuntimeSelection.objects;
+            saveLoad.Selection = m_editor.Selection.objects;
 
             PersistentScene persistentScene = PersistentScene.CreatePersistentScene();
             if (scene.Internal_Data == null)
@@ -112,10 +119,10 @@ namespace Battlehub.RTSaveLoad
         {
             RaiseSceneLoading(scene);
 
-            bool isEnabled = RuntimeUndo.Enabled;
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = null;
-            RuntimeUndo.Enabled = isEnabled;
+            bool isEnabled = m_editor.Undo.Enabled;
+            m_editor.Undo.Enabled = false;
+            m_editor.Selection.objects = null;
+            m_editor.Undo.Enabled = isEnabled;
 
             m_project.LoadData(new[] { scene }, loadDataCompleted =>
             {
@@ -150,9 +157,9 @@ namespace Battlehub.RTSaveLoad
             m_project.UnloadData(scene);
 
             ExtraSceneData extraData = FindObjectOfType<ExtraSceneData>();
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = extraData.Selection;
-            RuntimeUndo.Enabled = isEnabled;
+            m_editor.Undo.Enabled = false;
+            m_editor.Selection.objects = extraData.Selection;
+            m_editor.Undo.Enabled = isEnabled;
             Destroy(extraData.gameObject);
 
             m_activeScene = scene;
@@ -167,9 +174,9 @@ namespace Battlehub.RTSaveLoad
 
         public virtual void CreateScene()
         {
-            RuntimeSelection.objects = null;
-            RuntimeUndo.Purge();
-            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            m_editor.Selection.objects = null;
+            m_editor.Undo.Purge();
+            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(m_editor, ExposeToEditorObjectType.EditorMode, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
             for (int i = 0; i < editorObjects.Length; ++i)
             {
                 ExposeToEditor exposeToEditor = editorObjects[i];

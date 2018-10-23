@@ -66,8 +66,8 @@ namespace Battlehub.RTGizmos
         protected override void RecordOverride()
         {
             base.RecordOverride();
-            RuntimeUndo.RecordValue(m_light, Strong.PropertyInfo((Light x) => x.range, "range"));
-            RuntimeUndo.RecordValue(m_light, Strong.PropertyInfo((Light x) => x.spotAngle, "spotAngle"));
+            Window.Editor.Undo.RecordValue(m_light, Strong.PropertyInfo((Light x) => x.range, "range"));
+            Window.Editor.Undo.RecordValue(m_light, Strong.PropertyInfo((Light x) => x.spotAngle, "spotAngle"));
         }
 
         private void Reset()

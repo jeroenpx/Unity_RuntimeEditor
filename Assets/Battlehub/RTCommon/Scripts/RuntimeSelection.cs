@@ -4,17 +4,88 @@ using System.Collections.Generic;
 
 namespace Battlehub.RTCommon
 {
-   public delegate void RuntimeSelectionChanged(Object[] unselectedObjects);
+    public delegate void RuntimeSelectionChanged(Object[] unselectedObjects);
+    public interface IRuntimeSelection
+    {
+        event RuntimeSelectionChanged SelectionChanged;
+        bool Enabled
+        {
+            get;
+            set;
+        }
+        GameObject activeGameObject
+        {
+            get;
+            set;
+        }
+        Object activeObject
+        {
+            get;
+            set;
+        }
+        Object[] objects
+        {
+            get;
+            set;
+        }
+
+        GameObject[] gameObjects
+        {
+            get;
+        }
+
+        Transform activeTransform
+        {
+            get;
+        }
+
+        bool IsSelected(Object obj);
+
+        void Select(Object activeObject, Object[] selection);
+    }
+   
+    public interface IRuntimeSelectionInternal : IRuntimeSelection
+    {
+        Object INTERNAL_activeObjectProperty
+        {
+            get;
+            set;
+        }
+
+        Object[] INTERNAL_objectsProperty
+        {
+            get;
+            set;
+        }
+    }
 
     /// <summary>
     /// Runtime selection (rough equivalent of UnityEditor.Selection class) 
     /// </summary>
-    public class RuntimeSelection
+    public class RuntimeSelection : IRuntimeSelectionInternal
     {
-        public static event RuntimeSelectionChanged SelectionChanged;
+        public event RuntimeSelectionChanged SelectionChanged;
 
-        private static bool m_isEnabled = true;
-        public static bool Enabled
+        public Object INTERNAL_activeObjectProperty
+        {
+            get { return m_activeObject; }
+            set
+            {
+                m_activeObject = value;
+            }
+        }
+
+        public Object[] INTERNAL_objectsProperty
+        {
+            get { return m_objects; }
+            set
+            {
+                SetObjects(value);
+            }
+        }
+
+        private bool m_isEnabled = true;
+        public bool Enabled
         {
             get { return m_isEnabled; }
             set
@@ -27,9 +98,9 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static HashSet<Object> m_selectionHS;
+        private HashSet<Object> m_selectionHS;
 
-        protected static void RaiseSelectionChanged(Object[] unselectedObjects)
+        protected void RaiseSelectionChanged(Object[] unselectedObjects)
         {
             if (SelectionChanged != null)
             {
@@ -37,14 +108,14 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static GameObject activeGameObject
+        public GameObject activeGameObject
         {
             get { return activeObject as GameObject; }
             set { activeObject = value; }
         }
 
-        protected static Object m_activeObject;
-        public static Object activeObject
+        protected Object m_activeObject;
+        public Object activeObject
         {
             get { return m_activeObject; }
             set
@@ -56,7 +127,7 @@ namespace Battlehub.RTCommon
                         return;
                     }
 
-                    RuntimeUndo.RecordSelection();
+                    m_editor.Undo.RecordSelection();
                     m_activeObject = value;
                     Object[] unselectedObjects = m_objects;
                     if (m_activeObject != null)
@@ -68,14 +139,14 @@ namespace Battlehub.RTCommon
                         m_objects = new Object[0];
                     }
                     UpdateHS();
-                    RuntimeUndo.RecordSelection();
+                    m_editor.Undo.RecordSelection();
                     RaiseSelectionChanged(unselectedObjects);
                 }
             }
         }
 
-        protected static Object[] m_objects;
-        public static Object[] objects
+        protected Object[] m_objects;
+        public Object[] objects
         {
             get { return m_objects; }
             set
@@ -87,14 +158,20 @@ namespace Battlehub.RTCommon
 
                 if (IsSelectionChanged(value))
                 {
-                    RuntimeUndo.RecordSelection();
-                    SetObjects(value);  
-                    RuntimeUndo.RecordSelection();
+                    m_editor.Undo.RecordSelection();
+                    SetObjects(value);
+                    m_editor.Undo.RecordSelection();
                 }
             }
         }
 
-        public static bool IsSelected(Object obj)
+        private IRTE m_editor;
+        public RuntimeSelection(IRTE rte)
+        {
+            m_editor = rte;
+        }
+
+        public bool IsSelected(Object obj)
         {
             if(m_selectionHS == null)
             {
@@ -103,7 +180,7 @@ namespace Battlehub.RTCommon
             return m_selectionHS.Contains(obj);
         }
 
-        private static void UpdateHS()
+        private void UpdateHS()
         {
             if (m_objects != null)
             {
@@ -115,7 +192,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static bool IsSelectionChanged(Object[] value)
+        private bool IsSelectionChanged(Object[] value)
         {
             if(m_objects == value)
             {
@@ -148,7 +225,7 @@ namespace Battlehub.RTCommon
             return false;
         }
 
-        protected static void SetObjects(Object[] value)
+        protected void SetObjects(Object[] value)
         {
             if(!IsSelectionChanged(value))
             {
@@ -173,7 +250,7 @@ namespace Battlehub.RTCommon
             RaiseSelectionChanged(oldObjects);
         }
 
-        public static GameObject[] gameObjects
+        public GameObject[] gameObjects
         {
             get
             {
@@ -186,7 +263,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static Transform activeTransform
+        public Transform activeTransform
         {
             get
             {
@@ -203,14 +280,14 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void Select(Object activeObject, Object[] selection)
+        public void Select(Object activeObject, Object[] selection)
         {
             if(IsSelectionChanged(selection))
             {
-                RuntimeUndo.RecordSelection();
+                m_editor.Undo.RecordSelection();
                 m_activeObject = activeObject;
                 SetObjects(selection);
-                RuntimeUndo.RecordSelection();
+                m_editor.Undo.RecordSelection();
             }
         }
     }

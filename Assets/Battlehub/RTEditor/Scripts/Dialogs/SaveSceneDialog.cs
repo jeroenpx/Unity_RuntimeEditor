@@ -32,9 +32,11 @@ namespace Battlehub.RTEditor
         }
 
         private IProjectManager m_projectManager;
+        private IRTE m_editor;
 
         private void Start()
         {
+            m_editor = RTE.Get;
             m_parentPopup = GetComponentInParent<PopupWindow>();
             if (m_parentPopup != null)
             {
@@ -215,7 +217,7 @@ namespace Battlehub.RTEditor
                 {
                     PopupWindow.Show("Scene with same name already exits", "Do you want to override it?", "Yes", yes =>
                     {
-                        RuntimeUndo.Purge();
+                        m_editor.Undo.Purge();
                         ShowProgress = true;
                         m_projectManager.SaveScene(selectedItem, () =>
                         {
@@ -245,7 +247,7 @@ namespace Battlehub.RTEditor
             {
                 PopupWindow.Show("Scene with same name already exits", "Do you want to override it?", "Yes", yes =>
                 {
-                    RuntimeUndo.Purge();
+                    m_editor.Undo.Purge();
                     ShowProgress = true;
                     m_projectManager.SaveScene(folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && p.IsScene).First(), () =>
                     {
@@ -261,7 +263,7 @@ namespace Battlehub.RTEditor
                 ProjectItem newScene = ProjectItem.CreateScene(Input.text);
                 folder.AddChild(newScene);
 
-                RuntimeUndo.Purge();
+                m_editor.Undo.Purge();
                 ShowProgress = true;
                 m_projectManager.SaveScene(newScene, () =>
                 {

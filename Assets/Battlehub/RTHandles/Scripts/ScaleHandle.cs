@@ -16,7 +16,7 @@ namespace Battlehub.RTHandles
         private Vector3[] m_refScales;
         private float m_screenScale;
 
-        protected override RuntimeTool Tool
+        public override RuntimeTool Tool
         {
             get { return RuntimeTool.Scale; }
         }
@@ -28,35 +28,40 @@ namespace Battlehub.RTHandles
 
         protected override void AwakeOverride()
         {
+            base.AwakeOverride();
+        
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
-        }
-
-        protected override void OnDestroyOverride()
-        {
-            base.OnDestroyOverride();
         }
 
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
-
-            if(HightlightOnHover && !IsDragging)
+            if (Editor.Tools.IsViewing)
             {
-                if (RuntimeTools.IsPointerOverGameObject())
-                {
-                    return;
-                }
+                SelectedAxis = RuntimeHandleAxis.None;
+                return;
+            }
+            if (ActiveWindow == null || !ActiveWindow.IsPointerOver)
+            {
+                return;
+            }
+            if (HightlightOnHover && !IsDragging)
+            {
                 SelectedAxis = Hit();
             }
         }
 
-
         private RuntimeHandleAxis Hit()
         {
-            m_screenScale = RuntimeHandles.GetScreenScale(transform.position, SceneCamera) * RuntimeHandles.HandleScale;
-            m_matrix = Matrix4x4.TRS(transform.position, Rotation, RuntimeHandles.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
+            m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, ActiveWindow.Camera) * Appearance.HandleScale;
+            m_matrix = Matrix4x4.TRS(transform.position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
+
+            if (Model != null)
+            {
+                return Model.HitTest(ActiveWindow.Pointer);
+            }
 
             Matrix4x4 matrix = Matrix4x4.TRS(transform.position, Rotation, new Vector3(m_screenScale, m_screenScale, m_screenScale));
 
@@ -68,7 +73,7 @@ namespace Battlehub.RTHandles
             float distToZAxis;
             float distToXAxis;
             bool hit = HitAxis(Vector3.up, matrix, out distToYAxis);
-            hit |= HitAxis(RuntimeHandles.Forward, matrix, out distToZAxis);
+            hit |= HitAxis(Appearance.Forward, matrix, out distToZAxis);
             hit |= HitAxis(Vector3.right, matrix, out distToXAxis);
 
             if (hit)
@@ -92,6 +97,11 @@ namespace Battlehub.RTHandles
 
         protected override bool OnBeginDrag()
         {
+            if(!base.OnBeginDrag())
+            {
+                return false;
+            }
+
             SelectedAxis = Hit();
 
             if(SelectedAxis == RuntimeHandleAxis.Free)
@@ -106,12 +116,12 @@ namespace Battlehub.RTHandles
             m_refScales = new Vector3[ActiveTargets.Length];
             for (int i = 0; i < m_refScales.Length; ++i)
             {
-                Quaternion rotation = RuntimeTools.PivotRotation == RuntimePivotRotation.Global ? ActiveTargets[i].rotation : Quaternion.identity;
+                Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? ActiveTargets[i].rotation : Quaternion.identity;
                 m_refScales[i] = rotation * ActiveTargets[i].localScale;
             }
 
             DragPlane = GetDragPlane();
-            bool result = GetPointOnDragPlane(InputController._MousePosition, out m_prevPoint);
+            bool result = GetPointOnDragPlane(ActiveWindow.Pointer, out m_prevPoint);
             if(!result)
             {
                 SelectedAxis = RuntimeHandleAxis.None;
@@ -121,8 +131,10 @@ namespace Battlehub.RTHandles
 
         protected override void OnDrag()
         {
+            base.OnDrag();
+
             Vector3 point;
-            if (GetPointOnDragPlane(InputController._MousePosition, out point))
+            if (GetPointOnDragPlane(ActiveWindow.Pointer, out point))
             {
                 Vector3 offset = m_inverse.MultiplyVector((point - m_prevPoint) / m_screenScale);
                 float mag = offset.magnitude;
@@ -187,7 +199,7 @@ namespace Battlehub.RTHandles
 
                 for (int i = 0; i < m_refScales.Length; ++i)
                 {
-                    Quaternion rotation =  RuntimeTools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
+                    Quaternion rotation =  Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
                     
                     ActiveTargets[i].localScale = Quaternion.Inverse(rotation) * Vector3.Scale(m_refScales[i], m_roundedScale);
                 }
@@ -198,6 +210,8 @@ namespace Battlehub.RTHandles
 
         protected override void OnDrop()
         {
+            base.OnDrop();
+
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
             if(Model != null)
@@ -208,7 +222,7 @@ namespace Battlehub.RTHandles
 
         protected override void DrawOverride()
         {
-            RuntimeHandles.DoScaleHandle(m_roundedScale, Target.position, Rotation,  SelectedAxis, LockObject);
+            Appearance.DoScaleHandle(m_roundedScale, Target.position, Rotation,  SelectedAxis, LockObject);
         }
     }
 }

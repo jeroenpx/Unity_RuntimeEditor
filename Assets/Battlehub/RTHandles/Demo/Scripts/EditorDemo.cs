@@ -11,7 +11,7 @@ namespace Battlehub.RTHandles
 {
    // [RequireComponent(typeof(PersistentIgnore))]
     [DisallowMultipleComponent]
-    public class EditorDemo : MonoBehaviour
+    public class EditorDemo : RTE
     {
         [SerializeField]
         private string SaveFileName = "RTHandlesEditorDemo";
@@ -58,7 +58,7 @@ namespace Battlehub.RTHandles
         private Quaternion m_playerCameraRotation;
         public Camera PlayerCamera;
         public Camera EditorCamera;
-        public Grid Grid;
+        public RuntimeGrid Grid;
         public Button ProjectionButton;
         public Button PlayButton;
         public Button HintButton;
@@ -85,6 +85,11 @@ namespace Battlehub.RTHandles
         private GameObject m_game;
 
         private ISceneManager m_sceneManager;
+
+        public static new EditorDemo Get
+        {
+            get { return (EditorDemo)RTE.Get; }
+        }
 
         private void OnAwaked(ExposeToEditor obj)
         {
@@ -123,20 +128,20 @@ namespace Battlehub.RTHandles
         private Transform m_autoFocusTranform;
         public bool AutoFocus
         {
-            get { return RuntimeTools.AutoFocus; }
-            set { RuntimeTools.AutoFocus = value; }
+            get { return Tools.AutoFocus; }
+            set { Tools.AutoFocus = value; }
         }
 
         public bool AutoUnitSnapping
         {
-            get { return RuntimeTools.UnitSnapping; }
-            set { RuntimeTools.UnitSnapping = value; }
+            get { return Tools.UnitSnapping; }
+            set { Tools.UnitSnapping = value; }
         }
 
         public bool BoundingBoxSnapping
         {
-            get { return RuntimeTools.IsSnapping; }
-            set { RuntimeTools.IsSnapping = value;  }
+            get { return Tools.IsSnapping; }
+            set { Tools.IsSnapping = value;  }
         }
 
         private bool m_enableCharacters;
@@ -165,58 +170,51 @@ namespace Battlehub.RTHandles
 
         public bool ShowSelectionGizmos
         {
-            get { return RuntimeTools.ShowSelectionGizmos; }
+            get { return Tools.ShowSelectionGizmos; }
             set
             {
-                RuntimeTools.ShowSelectionGizmos = value;
+                Tools.ShowSelectionGizmos = value;
             }
         }
 
         public bool IsGlobalPivotRotation
         {
-            get { return RuntimeTools.PivotRotation == RuntimePivotRotation.Global; }
+            get { return Tools.PivotRotation == RuntimePivotRotation.Global; }
             set
             {
                 if (value)
                 {
-                    RuntimeTools.PivotRotation = RuntimePivotRotation.Global;
+                    Tools.PivotRotation = RuntimePivotRotation.Global;
                 }
                 else
                 {
-                    RuntimeTools.PivotRotation = RuntimePivotRotation.Local;
+                    Tools.PivotRotation = RuntimePivotRotation.Local;
                 }
             }
         }
 
-        public static EditorDemo Instance
+        protected override void Awake()
         {
-            get;
-            private set;
-        }
- 
-        private void Awake()
-        {
-            Instance = this;
+            base.Awake();
 
-            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
             for (int i = 0; i < editorObjects.Length; ++i)
             {
                 editorObjects[i].ObjectType = ExposeToEditorObjectType.EditorMode;
             }
 
-            RuntimeTools.SnappingMode = SnappingMode.BoundingBox;
-            RuntimeEditorApplication.IsOpened = !IsInPlayMode;
-            RuntimeEditorApplication.SceneCameras = new[] { EditorCamera };
-            RuntimeEditorApplication.PlaymodeStateChanged += OnPlaymodeStateChanged;
-            RuntimeEditorApplication.IsOpenedChanged += OnIsOpenedChanged;
-            RuntimeSelection.SelectionChanged += OnRuntimeSelectionChanged;
-            RuntimeTools.ToolChanged += OnRuntimeToolChanged;
-            RuntimeTools.PivotRotationChanged += OnPivotRotationChanged;
-            RuntimeUndo.UndoCompleted += OnUndoCompleted;
-            RuntimeUndo.RedoCompleted += OnRedoCompleted;
-            RuntimeUndo.StateChanged += OnUndoRedoStateChanged;
+            Tools.SnappingMode = SnappingMode.BoundingBox;
+            IsOpened = !IsInPlayMode;
+            PlaymodeStateChanged += OnPlaymodeStateChanged;
+            IsOpenedChanged += OnIsOpenedChanged;
+            Selection.SelectionChanged += OnRuntimeSelectionChanged;
+            Tools.ToolChanged += OnRuntimeToolChanged;
+            Tools.PivotRotationChanged += OnPivotRotationChanged;
+            Undo.UndoCompleted += OnUndoCompleted;
+            Undo.RedoCompleted += OnRedoCompleted;
+            Undo.StateChanged += OnUndoRedoStateChanged;
 
-            TransformPanel.SetActive(RuntimeSelection.activeTransform != null);
+            TransformPanel.SetActive(Selection.activeTransform != null);
             if (Prefabs != null && PrefabsPanel != null && PrefabPresenter != null)
             {
                 Prefabs = Prefabs.Where(p => p != null).ToArray();
@@ -245,13 +243,11 @@ namespace Battlehub.RTHandles
         {
             Vector3 toCam = new Vector3(1, 1, 1);
 
-            bool useSceneViewInput = SelectionController is RuntimeSceneView;
+            bool useSceneViewInput = SelectionController is RuntimeSceneComponent;
             if (!useSceneViewInput)
             {
                 EditorCamera.transform.position = m_pivot + toCam * EditorCamDistance;
                 EditorCamera.transform.LookAt(m_pivot);
-
-                RuntimeTools.DrawSelectionGizmoRay = true;
             }
 
             UpdateUIState(IsInPlayMode);
@@ -261,8 +257,8 @@ namespace Battlehub.RTHandles
             ShowSelectionGizmos = TogShowGizmos.isOn;
             EnableCharacters = TogEnableCharacters.isOn;
 
-            ExposeToEditor.Awaked += OnAwaked;
-            ExposeToEditor.Destroyed += OnDestroyed;
+            Object.Awaked += OnAwaked;
+            Object.Destroyed += OnDestroyed;
 
             m_sceneManager = Dependencies.SceneManager;
             if (m_sceneManager != null)
@@ -276,31 +272,27 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
-            if(Instance == this)
-            {
-                Instance = null;
-                RuntimeEditorApplication.Reset();
-            }
+            base.OnDestroy();
 
-            RuntimeEditorApplication.PlaymodeStateChanged -= OnPlaymodeStateChanged;
-            RuntimeEditorApplication.IsOpenedChanged -= OnIsOpenedChanged;
-            RuntimeSelection.SelectionChanged -= OnRuntimeSelectionChanged;
-            RuntimeTools.ToolChanged -= OnRuntimeToolChanged;
-            RuntimeTools.PivotRotationChanged -= OnPivotRotationChanged;
-            RuntimeUndo.RedoCompleted -= OnUndoCompleted;
-            RuntimeUndo.RedoCompleted -= OnRedoCompleted;
-            RuntimeUndo.StateChanged -= OnUndoRedoStateChanged;
-            ExposeToEditor.Awaked -= OnAwaked;
-            ExposeToEditor.Destroyed -= OnDestroyed;
+            PlaymodeStateChanged -= OnPlaymodeStateChanged;
+            IsOpenedChanged -= OnIsOpenedChanged;
+            Selection.SelectionChanged -= OnRuntimeSelectionChanged;
+            Tools.ToolChanged -= OnRuntimeToolChanged;
+            Tools.PivotRotationChanged -= OnPivotRotationChanged;
+            Undo.RedoCompleted -= OnUndoCompleted;
+            Undo.RedoCompleted -= OnRedoCompleted;
+            Undo.StateChanged -= OnUndoRedoStateChanged;
+            Object.Awaked -= OnAwaked;
+            Object.Destroyed -= OnDestroyed;
         }
 
         private void Update()
         {
-            if (InputController._GetKeyDown(EnterPlayModeKey))
+            if (Input.GetKeyDown(EnterPlayModeKey))
             {
-                if (InputController._GetKey(ModifierKey))
+                if (Input.GetKey(ModifierKey))
                 {
                     TogglePlayMode();
                 }
@@ -316,29 +308,29 @@ namespace Battlehub.RTHandles
                 TogBoundingBoxSnap.isOn = BoundingBoxSnapping;
             }
 
-            if (InputController._GetKeyDown(DuplicateKey))
+            if (Input.GetKeyDown(DuplicateKey))
             {
-                if (InputController._GetKey(ModifierKey))
+                if (Input.GetKey(ModifierKey))
                 {
                     Duplicate();
                 }
             }
-            else if (InputController._GetKeyDown(SnapToGridKey))
+            else if (Input.GetKeyDown(SnapToGridKey))
             {
-                if (InputController._GetKey(ModifierKey))
+                if (Input.GetKey(ModifierKey))
                 {
                     SnapToGrid();
                 }
             }
-            else if (InputController._GetKeyDown(DeleteKey))
+            else if (Input.GetKeyDown(DeleteKey))
             {
                 Delete();
             }
           
-            bool useSceneViewInput = SelectionController is RuntimeSceneView;
+            bool useSceneViewInput = SelectionController is RuntimeSceneComponent;
             if (!useSceneViewInput)
             {
-                float wheel = InputController._GetAxis("Mouse ScrollWheel");
+                float wheel = Input.GetAxis(InputAxis.Z); 
                 if (wheel != 0.0f)
                 {
 #if UNITY_WEBGL
@@ -356,32 +348,32 @@ namespace Battlehub.RTHandles
                 }
 
 #if UNITY_WEBGL
-            if (InputController._GetMouseButtonDown(1))
+            if (m_editor.Input.GetMouseButtonDown(1))
 #else
-                if (InputController._GetMouseButtonDown(1) || InputController._GetMouseButtonDown(2))
+                if (Input.GetPointerDown(1) || Input.GetPointerDown(2))
 #endif
                 {
                     m_dragPlane = new Plane(Vector3.up, m_pivot);
-                    m_pan = GetPointOnDragPlane(InputController._MousePosition, out m_prevMouse);
-                    m_prevMouse = InputController._MousePosition;
+                    m_pan = GetPointOnDragPlane(Input.GetPointerXY(0), out m_prevMouse);
+                    m_prevMouse = Input.GetPointerXY(0);
                     CursorHelper.SetCursor(this, PanTexture, Vector2.zero, CursorMode.Auto);
 
                 }
 #if UNITY_WEBGL
             else if (InputController._GetMouseButton(1))
 #else
-                else if (InputController._GetMouseButton(1) || InputController._GetMouseButton(2))
+                else if (Input.GetPointer(1) || Input.GetPointer(2))
 #endif
                 {
                     if (m_pan)
                     {
                         Vector3 pointOnDragPlane;
                         Vector3 prevPointOnDragPlane;
-                        if (GetPointOnDragPlane(InputController._MousePosition, out pointOnDragPlane) &&
+                        if (GetPointOnDragPlane(Input.GetPointerXY(0), out pointOnDragPlane) &&
                             GetPointOnDragPlane(m_prevMouse, out prevPointOnDragPlane))
                         {
                             Vector3 dragOffset = (pointOnDragPlane - prevPointOnDragPlane);
-                            m_prevMouse = InputController._MousePosition;
+                            m_prevMouse = Input.GetPointerXY(0);
                             m_panOffset -= dragOffset;
                             EditorCamera.transform.position -= dragOffset;
                         }
@@ -389,51 +381,51 @@ namespace Battlehub.RTHandles
 
                 }
 #if UNITY_WEBGL
-                else if (InputController._GetMouseButtonUp(1))
+                else if (Input.GetMouseButtonUp(1))
 #else
-                else if (InputController._GetMouseButtonUp(1) || InputController._GetMouseButtonUp(2))
+                else if (Input.GetPointerUp(1) || Input.GetPointerUp(2))
 #endif
                 {
                     m_pan = false;
                     CursorHelper.ResetCursor(this);
                 }
 
-                if (InputController._GetKey(UpKey))
+                if (Input.GetKey(UpKey))
                 {
                     Vector3 position = EditorCamera.transform.position;
                     position.y += PanSpeed * Time.deltaTime;
                     m_panOffset.y += PanSpeed * Time.deltaTime;
                     EditorCamera.transform.position = position;
                 }
-                if (InputController._GetKey(DownKey))
+                if (Input.GetKey(DownKey))
                 {
                     Vector3 position = EditorCamera.transform.position;
                     position.y -= PanSpeed * Time.deltaTime;
                     m_panOffset.y -= PanSpeed * Time.deltaTime;
                     EditorCamera.transform.position = position;
                 }
-                if (InputController._GetKey(LeftKey))
+                if (Input.GetKey(LeftKey))
                 {
                     MoveMinZ();
                     MovePlusX();
                 }
-                if (InputController._GetKey(RightKey))
+                if (Input.GetKey(RightKey))
                 {
                     MovePlusZ();
                     MoveMinX();
                 }
-                if (InputController._GetKey(FwdKey))
+                if (Input.GetKey(FwdKey))
                 {
                     MoveMinX();
                     MoveMinZ();
                 }
-                if (InputController._GetKey(BwdKey))
+                if (Input.GetKey(BwdKey))
                 {
                     MovePlusX();
                     MovePlusZ();
                 }
 
-                if (InputController._GetKeyDown(FocusKey))
+                if (Input.GetKeyDown(FocusKey))
                 {
                     Focus();
                 }
@@ -441,7 +433,7 @@ namespace Battlehub.RTHandles
                 {
                     do
                     {
-                        if (RuntimeTools.ActiveTool != null)
+                        if (Tools.ActiveTool != null)
                         {
                             break;
                         }
@@ -470,10 +462,10 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (RuntimeSelection.activeTransform != null)
+            if (Selection.activeTransform != null)
             {
                 Vector3 offset = Grid.GridOffset;
-                offset.y = RuntimeSelection.activeTransform.position.y;
+                offset.y = Selection.activeTransform.position.y;
                 Grid.GridOffset = offset;
             }
         }
@@ -527,13 +519,13 @@ namespace Battlehub.RTHandles
 
         public void Duplicate()
         {
-            GameObject[] selection = RuntimeSelection.gameObjects;
+            GameObject[] selection = Selection.gameObjects;
             if(selection == null)
             {
                 return;
             }
 
-            RuntimeUndo.BeginRecord();
+            Undo.BeginRecord();
             for (int i = 0; i < selection.Length; ++i)
             {
                 GameObject selectedObj = selection[i];
@@ -544,86 +536,86 @@ namespace Battlehub.RTHandles
                     copy.transform.SetParent(p, true);
 
                     selection[i] = copy;
-                    RuntimeUndo.BeginRegisterCreateObject(copy);
+                    Undo.BeginRegisterCreateObject(copy);
                 }
             }
-            RuntimeUndo.RecordSelection();
-            RuntimeUndo.EndRecord();
+            Undo.RecordSelection();
+            Undo.EndRecord();
 
-            bool isEnabled = RuntimeUndo.Enabled;
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = selection;
-            RuntimeUndo.Enabled = isEnabled;
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.objects = selection;
+            Undo.Enabled = isEnabled;
 
-            RuntimeUndo.BeginRecord();
+            Undo.BeginRecord();
            
             for (int i = 0; i < selection.Length; ++i)
             {
                 GameObject selectedObj = selection[i];
                 if (selectedObj != null)
                 {
-                    RuntimeUndo.RegisterCreatedObject(selectedObj);
+                    Undo.RegisterCreatedObject(selectedObj);
                 }
             }
-            RuntimeUndo.RecordSelection();
-            RuntimeUndo.EndRecord();
+            Undo.RecordSelection();
+            Undo.EndRecord();
         }
 
         public void Delete()
         {
-            GameObject[] selection = RuntimeSelection.gameObjects;
+            GameObject[] selection = Selection.gameObjects;
             if (selection == null)
             {
                 return;
             }
 
-            RuntimeUndo.BeginRecord();
+            Undo.BeginRecord();
             for (int i = 0; i < selection.Length; ++i)
             {
                 GameObject selectedObj = selection[i];
                 if (selectedObj != null)
                 {
-                    RuntimeUndo.BeginDestroyObject(selectedObj);
+                    Undo.BeginDestroyObject(selectedObj);
                 }
             }
-            RuntimeUndo.RecordSelection();
-            RuntimeUndo.EndRecord();
+            Undo.RecordSelection();
+            Undo.EndRecord();
 
-            bool isEnabled = RuntimeUndo.Enabled;
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = null;
-            RuntimeUndo.Enabled = isEnabled;
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.objects = null;
+            Undo.Enabled = isEnabled;
 
-            RuntimeUndo.BeginRecord();
+            Undo.BeginRecord();
 
             for (int i = 0; i < selection.Length; ++i)
             {
                 GameObject selectedObj = selection[i];
                 if (selectedObj != null)
                 {
-                    RuntimeUndo.DestroyObject(selectedObj);
+                    Undo.DestroyObject(selectedObj);
                 }
             }
-            RuntimeUndo.RecordSelection();
-            RuntimeUndo.EndRecord();
+            Undo.RecordSelection();
+            Undo.EndRecord();
         }
 
         public void TogglePlayMode()
         {
-            RuntimeEditorApplication.IsPlaying = !RuntimeEditorApplication.IsPlaying;
+            IsPlaying = !IsPlaying;
         }
 
 
         private void OnIsOpenedChanged()
         {
-            RuntimeEditorApplication.IsPlaying = !RuntimeEditorApplication.IsOpened;
+            IsPlaying = !IsOpened;
         }
 
         private void OnPlaymodeStateChanged()
         {
             UpdateUIState(m_game == null);
 
-            RuntimeEditorApplication.IsOpened = !RuntimeEditorApplication.IsPlaying;
+            IsOpened = !IsPlaying;
             if (m_game == null)
             {
                 m_game = Instantiate(GamePrefab);
@@ -635,18 +627,12 @@ namespace Battlehub.RTHandles
                 m_game = null;
             }
 
-            RuntimeEditorApplication.IsOpened = !IsInPlayMode;
-            
-
-            if (BoxSelection.Current != null)
-            {
-                BoxSelection.Current.gameObject.SetActive(!IsInPlayMode);
-            }
+            IsOpened = !IsInPlayMode;
 
             if(IsInPlayMode)
             {
-                RuntimeSelection.objects = null;
-                RuntimeUndo.Purge();
+                Selection.objects = null;
+                Undo.Purge();
 
                 m_playerCameraPostion = PlayerCamera.transform.position;
                 m_playerCameraRotation = PlayerCamera.transform.rotation;
@@ -662,21 +648,21 @@ namespace Battlehub.RTHandles
  
         public void Focus()
         {
-            RuntimeSceneView sceneView = SelectionController as RuntimeSceneView;
+            RuntimeSceneComponent sceneView = SelectionController as RuntimeSceneComponent;
             if(sceneView != null)
             {
                 sceneView.Focus();
                 return;
             }
 
-            if (RuntimeSelection.activeTransform == null)
+            if (Selection.activeTransform == null)
             {
                 return;
             }
             
-            m_autoFocusTranform = RuntimeSelection.activeTransform;
+            m_autoFocusTranform = Selection.activeTransform;
 
-            Vector3 offset = RuntimeSelection.activeTransform.position - m_pivot - m_panOffset;
+            Vector3 offset = Selection.activeTransform.position - m_pivot - m_panOffset;
             const float duration = 0.1f;
             Run.Instance.Remove(m_focusAnimations[0]);
             Run.Instance.Remove(m_focusAnimations[1]);
@@ -691,7 +677,7 @@ namespace Battlehub.RTHandles
                 });
             m_focusAnimations[1] = new Vector3AnimationInfo(
                 m_pivot,
-                RuntimeSelection.activeTransform.position, duration, Vector3AnimationInfo.EaseOutCubic,
+                Selection.activeTransform.position, duration, Vector3AnimationInfo.EaseOutCubic,
                 (target, value, t, completed) =>
                 {
                     m_pivot = value;
@@ -711,7 +697,7 @@ namespace Battlehub.RTHandles
 
         private void OnRuntimeSelectionChanged(Object[] unselectedObjects)
         {
-            TransformPanel.SetActive(RuntimeSelection.activeTransform != null);
+            TransformPanel.SetActive(Selection.activeTransform != null);
             TogPivotRotation.isOn = IsGlobalPivotRotation;
         }
 
@@ -722,25 +708,25 @@ namespace Battlehub.RTHandles
 
         private void OnRuntimeToolChanged()
         {
-            if (RuntimeTools.Current == RuntimeTool.None || RuntimeTools.Current == RuntimeTool.View)
+            if (Tools.Current == RuntimeTool.None || Tools.Current == RuntimeTool.View)
             {
                 TxtCurrentControl.text = "none";
                 ResetButton.gameObject.SetActive(false);
             }
 
-            else if (RuntimeTools.Current == RuntimeTool.Move)
+            else if (Tools.Current == RuntimeTool.Move)
             {
                 TxtCurrentControl.text = "move";
                 ResetButton.gameObject.SetActive(true);
             }
 
-            else if (RuntimeTools.Current == RuntimeTool.Rotate)
+            else if (Tools.Current == RuntimeTool.Rotate)
             {
                 TxtCurrentControl.text = "rotate";
                 ResetButton.gameObject.SetActive(true);
             }
 
-            else if (RuntimeTools.Current == RuntimeTool.Scale)
+            else if (Tools.Current == RuntimeTool.Scale)
             {
                 TxtCurrentControl.text = "scale";
                 ResetButton.gameObject.SetActive(true);
@@ -749,43 +735,42 @@ namespace Battlehub.RTHandles
 
         public void SwitchControl()
         {
-            if(RuntimeTools.Current == RuntimeTool.None || RuntimeTools.Current == RuntimeTool.View)
+            if(Tools.Current == RuntimeTool.None || Tools.Current == RuntimeTool.View)
             {
-                RuntimeTools.Current = RuntimeTool.Move;
+                Tools.Current = RuntimeTool.Move;
                 TxtCurrentControl.text = "move";
             }
 
-            else if (RuntimeTools.Current == RuntimeTool.Move)
+            else if (Tools.Current == RuntimeTool.Move)
             {
-                RuntimeTools.Current = RuntimeTool.Rotate;
+                Tools.Current = RuntimeTool.Rotate;
                 TxtCurrentControl.text = "rotate";
             }
 
-            else if (RuntimeTools.Current == RuntimeTool.Rotate)
+            else if (Tools.Current == RuntimeTool.Rotate)
             {
-                RuntimeTools.Current = RuntimeTool.Scale;
+                Tools.Current = RuntimeTool.Scale;
                 TxtCurrentControl.text = "scale";
             }
 
-            else if (RuntimeTools.Current == RuntimeTool.Scale)
+            else if (Tools.Current == RuntimeTool.Scale)
             {
-                RuntimeTools.Current = RuntimeTool.View;
+                Tools.Current = RuntimeTool.View;
                 TxtCurrentControl.text = "none";
-                
             }
         }
 
         public void ResetPosition()
         {
-            if(RuntimeTools.Current == RuntimeTool.Move)
+            if(Tools.Current == RuntimeTool.Move)
             {
                 ForEachSelectedObject(go => go.transform.position = Vector3.zero);
             }
-            else if(RuntimeTools.Current == RuntimeTool.Rotate)
+            else if(Tools.Current == RuntimeTool.Rotate)
             {
                 ForEachSelectedObject(go => go.transform.rotation = Quaternion.identity);
             }
-            else if(RuntimeTools.Current == RuntimeTool.Scale)
+            else if(Tools.Current == RuntimeTool.Scale)
             {
                 ForEachSelectedObject(go => go.transform.localScale = Vector3.one);
             }
@@ -793,7 +778,7 @@ namespace Battlehub.RTHandles
 
         public void SnapToGrid()
         {
-            GameObject[] selection = RuntimeSelection.gameObjects;
+            GameObject[] selection = Selection.gameObjects;
             if (selection == null || selection.Length == 0)
             {
                 return;
@@ -812,9 +797,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private static void ForEachSelectedObject(System.Action<GameObject> execute)
+        private void ForEachSelectedObject(System.Action<GameObject> execute)
         {
-            GameObject[] selection = RuntimeSelection.gameObjects;
+            GameObject[] selection = Selection.gameObjects;
             if (selection == null)
             {
                 return;
@@ -838,7 +823,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            RuntimeUndo.Purge();
+            Undo.Purge();
 
             ConfirmationSave.SetActive(false);
             if (m_sceneManager != null)
@@ -861,8 +846,8 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            RuntimeUndo.Purge();
-            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            Undo.Purge();
+            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.EditorMode).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
             for (int i = 0; i < editorObjects.Length; ++i)
             {
                 ExposeToEditor exposeToEditor = editorObjects[i];
@@ -883,20 +868,20 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void Undo()
+        public void DoUndo()
         {
-            RuntimeUndo.Undo();
+            Undo.Undo();
         }
 
-        public void Redo()
+        public void DoRedo()
         {
-            RuntimeUndo.Redo();
+            Undo.Redo();
         }
 
         private void OnUndoCompleted()
         {
-            UndoButton.interactable = RuntimeUndo.CanUndo;
-            RedoButton.interactable = RuntimeUndo.CanRedo;
+            UndoButton.interactable = Undo.CanUndo;
+            RedoButton.interactable = Undo.CanRedo;
 
             SaveButton.interactable = m_sceneManager != null;
             LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
@@ -904,8 +889,8 @@ namespace Battlehub.RTHandles
 
         private void OnRedoCompleted()
         {
-            UndoButton.interactable = RuntimeUndo.CanUndo;
-            RedoButton.interactable = RuntimeUndo.CanRedo;
+            UndoButton.interactable = Undo.CanUndo;
+            RedoButton.interactable = Undo.CanRedo;
 
             SaveButton.interactable = m_sceneManager != null;
             LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
@@ -913,8 +898,8 @@ namespace Battlehub.RTHandles
 
         private void OnUndoRedoStateChanged()
         {
-            UndoButton.interactable = RuntimeUndo.CanUndo;
-            RedoButton.interactable = RuntimeUndo.CanRedo;
+            UndoButton.interactable = Undo.CanUndo;
+            RedoButton.interactable = Undo.CanRedo;
 
             SaveButton.interactable = m_sceneManager != null; 
             LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
@@ -944,11 +929,11 @@ namespace Battlehub.RTHandles
 
             if (isInPlayMode)
             {
-                RuntimeEditorApplication.ActivateWindow(RuntimeWindowType.GameView);
+                ActivateWindow(RuntimeWindowType.GameView);
             }
             else
             {
-                RuntimeEditorApplication.ActivateWindow(RuntimeWindowType.SceneView);
+                ActivateWindow(RuntimeWindowType.SceneView);
             }
             
         }

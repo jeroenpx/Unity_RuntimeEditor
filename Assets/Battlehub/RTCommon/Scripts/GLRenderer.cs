@@ -13,6 +13,7 @@ namespace Battlehub.RTCommon
     /// GLRenderer calls Draw method on all registered classes 
     /// </summary>
     [ExecuteInEditMode]
+    [DefaultExecutionOrder(-50)]
     public class GLRenderer : MonoBehaviour
     {
         private static GLRenderer m_instance;

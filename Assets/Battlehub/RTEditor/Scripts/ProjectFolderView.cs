@@ -1,6 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
-using Battlehub.RTSaveLoad2;
+using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 using Battlehub.Utils;
 using System;
@@ -68,10 +68,8 @@ namespace Battlehub.RTEditor
     }
     */
 
-    public class ProjectFolderView : RuntimeEditorWindow
+    public class ProjectFolderView : RuntimeWindow
     {
-        private ITypeMap m_typeMap;
-        private IAssetDB m_assetDB;
         private IProject m_project;
    
         public Type TypeFilter;
@@ -130,9 +128,15 @@ namespace Battlehub.RTEditor
         }
         */
         private ProjectItem[] m_items;
-        public void SetItems(ProjectItem[] items, bool reload)
+        private ProjectItem[] m_folders;
+        public void SetItems(ProjectItem[] folders, ProjectItem[] items, bool reload)
         {
+            m_folders = folders;
             m_items = items;
+            if(m_items != null)
+            {
+                m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.NameExt)).ToArray();
+            }
             DataBind(true);
         }
 
@@ -192,7 +196,7 @@ namespace Battlehub.RTEditor
                         else
                         {
                             AssetItem assetItem = (AssetItem)item;
-                            Type type = m_typeMap.ToType(assetItem.TypeGuid);
+                            Type type = m_project.ToType(assetItem);
                             if(type == null)
                             {
                                 itemsList.RemoveAt(i);
@@ -206,34 +210,34 @@ namespace Battlehub.RTEditor
 
                     if (typeof(GameObject) == TypeFilter)
                     {
-                        IEnumerable<GameObject> sceneObjects = RuntimeEditorApplication.IsPlaying ?
-                            ExposeToEditor.FindAll(ExposeToEditorObjectType.PlayMode) :
-                            ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode);
+                        IEnumerable<GameObject> sceneObjects = Editor.IsPlaying ?
+                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
+                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
 
                         foreach (GameObject go in sceneObjects)
                         {
                             AssetItem sceneItem = new AssetItem();
-                            sceneItem.ItemID = m_assetDB.ToID(go);
+                            sceneItem.ItemID = m_project.ToID(go);
                             sceneItem.Name = go.name;
                             sceneItem.Ext = m_project.GetExt(go);
-                            sceneItem.TypeGuid = m_typeMap.ToGuid(typeof(GameObject));
+                            sceneItem.TypeGuid = m_project.ToGuid(typeof(GameObject));
                             itemsList.Add(sceneItem);
                         }
                     }
                     else if (typeof(Component).IsAssignableFrom(TypeFilter))
                     {
-                        IEnumerable<GameObject> sceneObjects = RuntimeEditorApplication.IsPlaying ?
-                            ExposeToEditor.FindAll(ExposeToEditorObjectType.PlayMode) :
-                            ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode);
+                        IEnumerable<GameObject> sceneObjects = Editor.IsPlaying ?
+                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
+                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
 
                         foreach (GameObject go in sceneObjects)
                         {
                             Component component = go.GetComponent(TypeFilter);
-                            Guid typeGuid = m_typeMap.ToGuid(component.GetType());
+                            Guid typeGuid = m_project.ToGuid(component.GetType());
                             if (component != null && typeGuid != Guid.Empty)
                             {
                                 AssetItem sceneItem = new AssetItem();
-                                sceneItem.ItemID = m_assetDB.ToID(go);
+                                sceneItem.ItemID = m_project.ToID(go);
                                 sceneItem.Name = go.name;
                                 sceneItem.Ext = m_project.GetExt(go);
                                 sceneItem.TypeGuid = typeGuid;
@@ -264,16 +268,13 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
 
-            m_typeMap = RTSL2Deps.Get.TypeMap;
-            m_assetDB = RTSL2Deps.Get.AssetDB;
-            m_project = RTSL2Deps.Get.Project;
-
             if (!ListBoxPrefab)
             {
                 Debug.LogError("Set ListBoxPrefab field");
                 return;
             }
 
+            m_project = RTSL2Deps.Get.Project;
 
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
             if (m_listBox == null)
@@ -314,51 +315,62 @@ namespace Battlehub.RTEditor
 
         private void OnItemBeginDrag(object sender, ItemArgs e)
         {
-            DragDrop.RaiseBeginDrag(e.Items, e.PointerEventData);
+            Editor.DragDrop.RaiseBeginDrag(e.Items, e.PointerEventData);
         }
 
         private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
         {
-            if (e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget))
+            if (e.DropTarget == null || e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget))
             {
-                DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
                 e.Cancel = true;
             }
             else
             {
-                DragDrop.SetCursor(KnownCursor.DropAllowed);
+                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
             }
         }
 
         private void OnItemDrag(object sender, ItemArgs e)
         {
-            DragDrop.RaiseDrag(e.PointerEventData);
+            Editor.DragDrop.RaiseDrag(e.PointerEventData);
         }
 
         private void OnItemDragExit(object sender, EventArgs e)
         {
-            DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
         }
 
         private void OnItemDrop(object sender, ItemDropArgs e)
         {
-            DragDrop.RaiseDrop(e.PointerEventData);
+            Editor.DragDrop.RaiseDrop(e.PointerEventData);
 
-            ProjectItem parent = (ProjectItem)e.DropTarget;
-            foreach(ProjectItem item in e.DragItems)
+            if (!(e.DropTarget is AssetItem) && (e.DragItems == null || !e.DragItems.Contains(e.DropTarget)))
             {
-                if(item.Parent != parent)
+                ProjectItem parent = (ProjectItem)e.DropTarget;
+                foreach (ProjectItem item in e.DragItems)
                 {
-                    m_listBox.RemoveChild(item.Parent, item, item.Parent.Children.Count == 1);
-                    parent.AddChild(item);
-                }   
+                    if (item.Parent != parent)
+                    {
+                        m_listBox.RemoveChild(item.Parent, item, item.Parent.Children.Count == 1);
+                        parent.AddChild(item);
+                    }
+                }
             }
         }
 
         private void OnItemEndDrag(object sender, ItemArgs e)
         {
-            DragDrop.RaiseDrop(e.PointerEventData);
-        } 
+            Editor.DragDrop.RaiseDrop(e.PointerEventData);
+
+            foreach (ProjectItem item in e.Items)
+            {
+                if (m_folders.All(f => f.Children == null || !f.Children.Contains(item)))
+                {
+                    m_listBox.RemoveChild(item.Parent, item, item.Parent.Children.Count == 1);
+                }
+            }
+        }
 
         private void OnItemDataBinding(object sender, ItemDataBindingArgs e)
         {

@@ -3,11 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
-using Battlehub.Utils;
 using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
+
 namespace Battlehub.RTHandles
 {
     public enum BoxSelectionMethod
@@ -45,11 +42,19 @@ namespace Battlehub.RTHandles
         }
     }
 
-    
+    public interface IBoxSelection
+    {
+        event EventHandler<FilteringArgs> Filtering;
+        bool IsDragging
+        {
+            get;
+        }
+    }
+
     /// <summary>
     /// Box Selection
     /// </summary>
-    public class BoxSelection : MonoBehaviour
+    public class BoxSelection : RTEBehaviour, IBoxSelection
     {
         public Sprite Graphics;
         protected Image m_image;
@@ -60,45 +65,38 @@ namespace Battlehub.RTHandles
         protected Vector2 m_startPt;
         protected Vector2 m_endPt;
 
-        public bool UseCameraSpace;
-        public Camera SceneCamera;
+        public bool UseCameraSpace = true;
         public BoxSelectionMethod Method;
-        public int MouseButton = 0;
-        public KeyCode KeyCode = KeyCode.None;
         protected bool m_active;
 
-        public static event EventHandler<FilteringArgs> Filtering;
+        public event EventHandler<FilteringArgs> Filtering;
 
         public bool IsDragging
         {
             get { return m_isDragging; }
         }
 
-        private static BoxSelection m_current;
-        public static BoxSelection Current
+
+        protected override void AwakeOverride()
         {
-            get { return m_current; }
-        }
-        
-        private void Awake()
-        {
-            if(m_current != null)
+            base.AwakeOverride();
+            if (m_canvas == null)
             {
-                Debug.LogWarning("Another instance of BoxSelection exists");
+                GameObject go = new GameObject("BoxSelection");
+                go.transform.SetParent(transform.parent, false);
+                m_canvas = go.AddComponent<Canvas>();
             }
 
-            if(!GetComponent<PersistentIgnore>())
+            if (!UseCameraSpace)
             {
-                gameObject.AddComponent<PersistentIgnore>();
+                m_canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
-
-            m_current = this;
 
             m_image = gameObject.AddComponent<Image>();
             m_image.type = Image.Type.Sliced;
             if (Graphics == null)
             {
-                Graphics = Resources.Load<Sprite>("BoxSelection");
+                Graphics = Resources.Load<Sprite>("RTH_BoxSelection");
             }
             m_image.sprite = Graphics;
             m_image.raycastTarget = false;
@@ -107,143 +105,122 @@ namespace Battlehub.RTHandles
             m_rectTransform.pivot = new Vector2(0, 0);
             m_rectTransform.anchoredPosition = new Vector3(0, 0);
 
-            if (SceneCamera == null)
-            {
-                SceneCamera = Camera.main;
-            }
-        }
-
-        private void OnEnable()
-        {
-            m_canvas = GetComponentInParent<Canvas>();
-            if(SceneCamera == null)
-            {
-                return;
-            }
-            if(m_canvas == null)
-            {
-                GameObject go = new GameObject();
-                go.name = "BoxSelectionCanvas";
-                m_canvas = go.AddComponent<Canvas>();
-            }
-
             CanvasScaler scaler = m_canvas.GetComponent<CanvasScaler>();
             if (scaler == null)
             {
                 scaler = m_canvas.gameObject.AddComponent<CanvasScaler>();
             }
+            scaler.referencePixelsPerUnit = 1;
 
-            
+            transform.SetParent(m_canvas.gameObject.transform, false);
+            transform.rotation = Quaternion.identity;
+            transform.position = Vector3.zero;
+
+            if(!GetComponent<BoxSelectionInput>())
+            {
+                gameObject.AddComponent<BoxSelectionInput>();
+            }
+        }
+
+        protected override void OnWindowActivated()
+        {
+            base.OnWindowActivated();
+
             if (UseCameraSpace)
             {
-                m_canvas.worldCamera = SceneCamera;
+                m_canvas.worldCamera = ActiveWindow.Camera;
                 m_canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                m_canvas.planeDistance = SceneCamera.nearClipPlane + 0.05f;
+                m_canvas.planeDistance = ActiveWindow.Camera.nearClipPlane + 0.05f;
+                m_canvas.transform.rotation = Quaternion.identity;
+                m_canvas.transform.position = Vector3.zero;
             }
             else
             {
                 m_canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
-
-            scaler.referencePixelsPerUnit = 1;
-           // m_canvas.sortingOrder = -1;
-            transform.SetParent(m_canvas.gameObject.transform);
         }
 
-        public void SetSceneCamera(Camera camera)
+        protected override void OnWindowDeactivated()
         {
-            SceneCamera = camera;
-
-            if (m_canvas != null)
+            base.OnWindowDeactivated();
+            if (Editor.Tools.ActiveTool == this)
             {
-                if (UseCameraSpace)
-                {
-                    m_canvas.worldCamera = camera;
-                }
+                Editor.Tools.ActiveTool = null;
             }
         }
 
-        private void OnDestroy()
+        public void BeginSelect()
         {
-            if (RuntimeTools.ActiveTool == this)
+            if (!m_active)
             {
-                RuntimeTools.ActiveTool = null;
+                return;
             }
 
-            if(m_current == this)
+            m_startMousePosition = ActiveWindow.Pointer.ScreenPoint;
+            m_isDragging = GetPoint(out m_startPt) && (!ActiveWindow.Editor.IsOpened || ActiveWindow.IsPointerOver);
+            if (m_isDragging)
             {
-                m_current = null;
+                m_rectTransform.anchoredPosition = m_startPt;
+                m_rectTransform.sizeDelta = new Vector2(0, 0);
             }
+            else
+            {
+                ActiveWindow.Editor.Tools.ActiveTool = null;
+            }
+        }
+
+        public void EndSelect()
+        {
+            if (!m_active)
+            {
+                return;
+            }
+
+            if (m_isDragging)
+            {
+                m_isDragging = false;
+
+                HitTest();
+                m_rectTransform.sizeDelta = new Vector2(0, 0);
+            }
+
+            Editor.Tools.ActiveTool = null;
+            m_active = false;
         }
 
         private void LateUpdate()
         {
-            if (!RuntimeSelection.Enabled)
+            if (!Editor.Selection.Enabled)
             {
                 return;
             }
 
-            if (RuntimeTools.ActiveTool  != null && RuntimeTools.ActiveTool != this)
+            if (Editor.Tools.ActiveTool != null && Editor.Tools.ActiveTool != this)
             {
                 return;
             }
 
-            if (RuntimeTools.IsViewing)
+            if (Editor.Tools.IsViewing)
             {
+                Editor.Tools.ActiveTool = null;
+                m_active = false;
+                m_isDragging = false;
+                m_rectTransform.sizeDelta = new Vector2(0, 0);
                 return;
             }
+            m_active = true;
 
-            if (KeyCode == KeyCode.None || InputController._GetKeyDown(KeyCode))
+            if (m_isDragging)
             {
-               m_active = true; 
-            }
+                GetPoint(out m_endPt);
 
-            if (m_active)
-            {
-                if (InputController._GetMouseButtonDown(MouseButton))
+                Vector2 size = m_endPt - m_startPt;
+                if (size != Vector2.zero)
                 {
-                    m_startMousePosition = InputController._MousePosition;
-                    m_isDragging = GetPoint(out m_startPt) && 
-                        (!RuntimeEditorApplication.IsOpened || RuntimeEditorApplication.IsPointerOverWindow(RuntimeWindowType.SceneView) && !RuntimeTools.IsPointerOverGameObject());
-                    if (m_isDragging)
-                    {
-                        m_rectTransform.anchoredPosition = m_startPt;
-                        m_rectTransform.sizeDelta = new Vector2(0, 0);
-                        CursorHelper.SetCursor(this, null, Vector3.zero, CursorMode.Auto);
-                        
-                    }
-                    else
-                    {
-                        RuntimeTools.ActiveTool = null;
-                    }
+                    Editor.Tools.ActiveTool = this;
                 }
-                else if (InputController._GetMouseButtonUp(MouseButton))
-                {
-                    if (m_isDragging)
-                    {
-                        m_isDragging = false;
-                        
-                        HitTest();
-                        m_rectTransform.sizeDelta = new Vector2(0, 0);
-                        CursorHelper.ResetCursor(this);
-                    }
-
-                    RuntimeTools.ActiveTool = null;
-                    m_active = false;
-
-                }
-                else if (m_isDragging)
-                {
-                    GetPoint(out m_endPt);
-
-                    Vector2 size = m_endPt - m_startPt;
-                    if(size != Vector2.zero)
-                    {
-                        RuntimeTools.ActiveTool = this;
-                    }
-                    m_rectTransform.sizeDelta = new Vector2(Mathf.Abs(size.x), Mathf.Abs(size.y));
-                    m_rectTransform.localScale = new Vector3(Mathf.Sign(size.x), Mathf.Sign(size.y), 1);
-                }
+                m_rectTransform.sizeDelta = new Vector2(Mathf.Abs(size.x), Mathf.Abs(size.y));
+                m_rectTransform.localScale = new Vector3(Mathf.Sign(size.x), Mathf.Sign(size.y), 1);
             }
         }
 
@@ -254,11 +231,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            Vector3 center = (m_startMousePosition + InputController._MousePosition) / 2;
+            Vector3 center = (m_startMousePosition + (Vector3)ActiveWindow.Pointer.ScreenPoint) / 2;
             center.z = 0.0f;
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
 
-            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(SceneCamera);
+            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(ActiveWindow.Camera);
             
             HashSet<GameObject> selection = new HashSet<GameObject>();
             Renderer[] renderers = FindObjectsOfType<Renderer>();
@@ -281,12 +258,11 @@ namespace Battlehub.RTHandles
                 TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
             }
 
-            RuntimeSelection.objects = selection.ToArray();
+            ActiveWindow.Editor.Selection.objects = selection.ToArray();
         }
 
         private void TrySelect(ref Bounds selectionBounds, HashSet<GameObject> selection, FilteringArgs args, ref Bounds bounds, GameObject go, Plane[] frustumPlanes)
         {
-
             bool select;
             if (Method == BoxSelectionMethod.LooseFitting)
             {
@@ -331,14 +307,14 @@ namespace Battlehub.RTHandles
 
         private bool TransformCenter(ref Bounds selectionBounds, Transform tr)
         {
-            Vector3 screenPoint = SceneCamera.WorldToScreenPoint(tr.position);
+            Vector3 screenPoint = ActiveWindow.Camera.WorldToScreenPoint(tr.position);
             screenPoint.z = 0;
             return selectionBounds.Contains(screenPoint);
         }
 
         private bool BoundsCenter(ref Bounds selectionBounds, ref Bounds bounds)
         {
-            Vector3 screenPoint = SceneCamera.WorldToScreenPoint(bounds.center);
+            Vector3 screenPoint = ActiveWindow.Camera.WorldToScreenPoint(bounds.center);
             screenPoint.z = 0;
             return selectionBounds.Contains(screenPoint);
         }
@@ -354,14 +330,14 @@ namespace Battlehub.RTHandles
             Vector3 p6 = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
             Vector3 p7 = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
 
-            p0 = SceneCamera.WorldToScreenPoint(p0);
-            p1 = SceneCamera.WorldToScreenPoint(p1);
-            p2 = SceneCamera.WorldToScreenPoint(p2);
-            p3 = SceneCamera.WorldToScreenPoint(p3);
-            p4 = SceneCamera.WorldToScreenPoint(p4);
-            p5 = SceneCamera.WorldToScreenPoint(p5);
-            p6 = SceneCamera.WorldToScreenPoint(p6);
-            p7 = SceneCamera.WorldToScreenPoint(p7);
+            p0 = ActiveWindow.Camera.WorldToScreenPoint(p0);
+            p1 = ActiveWindow.Camera.WorldToScreenPoint(p1);
+            p2 = ActiveWindow.Camera.WorldToScreenPoint(p2);
+            p3 = ActiveWindow.Camera.WorldToScreenPoint(p3);
+            p4 = ActiveWindow.Camera.WorldToScreenPoint(p4);
+            p5 = ActiveWindow.Camera.WorldToScreenPoint(p5);
+            p6 = ActiveWindow.Camera.WorldToScreenPoint(p6);
+            p7 = ActiveWindow.Camera.WorldToScreenPoint(p7);
 
             float minX = Mathf.Min(p0.x, p1.x, p2.x, p3.x, p4.x, p5.x, p6.x, p7.x);
             float maxX = Mathf.Max(p0.x, p1.x, p2.x, p3.x, p4.x, p5.x, p6.x, p7.x);
@@ -382,7 +358,7 @@ namespace Battlehub.RTHandles
                 cam = m_canvas.worldCamera;
             }
 
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), InputController._MousePosition, cam, out localPoint);
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), ActiveWindow.Pointer.ScreenPoint, cam, out localPoint);
         }
     }
 

@@ -3,11 +3,11 @@ using UnityEngine.UI;
 
 using Battlehub.UIControls;
 using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
+using Battlehub.RTSaveLoad2.Interface;
 
 namespace Battlehub.RTEditor
 {
-    public class ToolsPanel : MonoBehaviour
+    public class ToolsPanel : RuntimeWindow
     {
         private bool m_handleValueChange = true;
 
@@ -34,12 +34,12 @@ namespace Battlehub.RTEditor
         public Button BtnUndo;
         public Button BtnRedo;
 
-        private IProjectManager m_projectManager;
+        private IProject m_project;
 
         private void OnEnable()
         {
-            m_projectManager = Dependencies.ProjectManager;
-
+            m_project = RTSL2Deps.Get.Project;
+            
             OnRuntimeToolChanged();
             OnPivotRotationChanged();
             OnPivotModeChanged();
@@ -49,29 +49,28 @@ namespace Battlehub.RTEditor
             OnPlaymodeStateChanged();
 
             UpdateUndoRedoButtonsState();
-            
 
-            RuntimeTools.ToolChanged += OnRuntimeToolChanged;
-            RuntimeTools.PivotRotationChanged += OnPivotRotationChanged;
-            RuntimeTools.PivotModeChanged += OnPivotModeChanged;
-            RuntimeTools.AutoFocusChanged += OnAutoFocusChanged;
-            RuntimeTools.IsSnappingChanged += OnBoundingBoxSnappingChanged;
-            RuntimeTools.UnitSnappingChanged += OnUnitSnappingChanged;
-            RuntimeEditorApplication.PlaymodeStateChanged += OnPlaymodeStateChanged;
+            Editor.Tools.ToolChanged += OnRuntimeToolChanged;
+            Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
+            Editor.Tools.PivotModeChanged += OnPivotModeChanged;
+            Editor.Tools.AutoFocusChanged += OnAutoFocusChanged;
+            Editor.Tools.IsSnappingChanged += OnBoundingBoxSnappingChanged;
+            Editor.Tools.UnitSnappingChanged += OnUnitSnappingChanged;
+            Editor.PlaymodeStateChanged += OnPlaymodeStateChanged;
 
-            if (m_projectManager != null)
-            {
-                m_projectManager.SceneLoading += OnSceneLoading;
-                m_projectManager.SceneLoaded += OnSceneLoaded;
-                m_projectManager.SceneSaving += OnSceneSaving;
-                m_projectManager.SceneSaved += OnSceneSaved;
-            }
+            //if (m_projectManager != null)
+            //{
+            //    m_projectManager.SceneLoading += OnSceneLoading;
+            //    m_projectManager.SceneLoaded += OnSceneLoaded;
+            //    m_projectManager.SceneSaving += OnSceneSaving;
+            //    m_projectManager.SceneSaved += OnSceneSaved;
+            //}
 
             UpdateLoadSaveButtonsState();
 
-            RuntimeUndo.UndoCompleted += OnUndoCompleted;
-            RuntimeUndo.RedoCompleted += OnRedoCompleted;
-            RuntimeUndo.StateChanged += OnStateChanged;
+            Editor.Undo.UndoCompleted += OnUndoCompleted;
+            Editor.Undo.RedoCompleted += OnRedoCompleted;
+            Editor.Undo.StateChanged += OnStateChanged;
             
             if (ViewToggle != null)
             {
@@ -145,24 +144,28 @@ namespace Battlehub.RTEditor
 
         private void OnDisable()
         {
-            RuntimeTools.ToolChanged -= OnRuntimeToolChanged;
-            RuntimeTools.PivotRotationChanged -= OnPivotRotationChanged;
-            RuntimeTools.PivotModeChanged -= OnPivotModeChanged;
-            RuntimeTools.AutoFocusChanged -= OnAutoFocusChanged;
-            RuntimeTools.UnitSnappingChanged -= OnUnitSnappingChanged;
-            RuntimeTools.IsSnappingChanged -= OnBoundingBoxSnappingChanged;
-            RuntimeEditorApplication.PlaymodeStateChanged -= OnPlaymodeStateChanged;
-            if (m_projectManager != null)
+            if(Editor != null)
             {
-                m_projectManager.SceneLoading -= OnSceneLoading;
-                m_projectManager.SceneLoaded -= OnSceneLoaded;
-                m_projectManager.SceneSaving -= OnSceneSaving;
-                m_projectManager.SceneSaved -= OnSceneSaved;
+                Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
+                Editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
+                Editor.Tools.PivotModeChanged -= OnPivotModeChanged;
+                Editor.Tools.AutoFocusChanged -= OnAutoFocusChanged;
+                Editor.Tools.UnitSnappingChanged -= OnUnitSnappingChanged;
+                Editor.Tools.IsSnappingChanged -= OnBoundingBoxSnappingChanged;
+                Editor.PlaymodeStateChanged -= OnPlaymodeStateChanged;
+                Editor.Undo.UndoCompleted -= OnUndoCompleted;
+                Editor.Undo.RedoCompleted -= OnRedoCompleted;
+                Editor.Undo.StateChanged -= OnStateChanged;
             }
-            RuntimeUndo.UndoCompleted -= OnUndoCompleted;
-            RuntimeUndo.RedoCompleted -= OnRedoCompleted;
-            RuntimeUndo.StateChanged -= OnStateChanged;
-
+            
+            //if (m_projectManager != null)
+            //{
+            //    m_projectManager.SceneLoading -= OnSceneLoading;
+            //    m_projectManager.SceneLoaded -= OnSceneLoaded;
+            //    m_projectManager.SceneSaving -= OnSceneSaving;
+            //    m_projectManager.SceneSaved -= OnSceneSaved;
+            //}
+            
             if (ViewToggle != null)
             {
                 ViewToggle.onValueChanged.RemoveListener(OnViewToggleValueChanged);
@@ -240,7 +243,7 @@ namespace Battlehub.RTEditor
             }
             if (value)
             {
-                RuntimeTools.Current = RuntimeTool.View;
+                Editor.Tools.Current = RuntimeTool.View;
                 m_handleValueChange = false;
                 RotateToggle.isOn = false;
                 ScaleToggle.isOn = false;
@@ -249,7 +252,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if (RuntimeTools.Current == RuntimeTool.View)
+                if (Editor.Tools.Current == RuntimeTool.View)
                 {
                     ViewToggle.isOn = true;
                 }
@@ -263,7 +266,7 @@ namespace Battlehub.RTEditor
             }
             if (value)
             {
-                RuntimeTools.Current = RuntimeTool.Move;
+                Editor.Tools.Current = RuntimeTool.Move;
                 m_handleValueChange = false;
                 RotateToggle.isOn = false;
                 ScaleToggle.isOn = false;
@@ -273,7 +276,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if (RuntimeTools.Current == RuntimeTool.Move)
+                if (Editor.Tools.Current == RuntimeTool.Move)
                 {
                     MoveToggle.isOn = true;
                 }
@@ -288,7 +291,7 @@ namespace Battlehub.RTEditor
             }
             if (value)
             {
-                RuntimeTools.Current = RuntimeTool.Rotate;
+                Editor.Tools.Current = RuntimeTool.Rotate;
                 m_handleValueChange = false;
                 ViewToggle.isOn = false;
                 ScaleToggle.isOn = false;
@@ -297,7 +300,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if (RuntimeTools.Current == RuntimeTool.Rotate)
+                if (Editor.Tools.Current == RuntimeTool.Rotate)
                 {
                     RotateToggle.isOn = true;
                 }
@@ -313,7 +316,7 @@ namespace Battlehub.RTEditor
             }
             if (value)
             {
-                RuntimeTools.Current = RuntimeTool.Scale;
+                Editor.Tools.Current = RuntimeTool.Scale;
                 m_handleValueChange = false;
                 ViewToggle.isOn = false;
                 RotateToggle.isOn = false;
@@ -322,7 +325,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if(RuntimeTools.Current == RuntimeTool.Scale)
+                if(Editor.Tools.Current == RuntimeTool.Scale)
                 {
                     ScaleToggle.isOn = true;
                 }
@@ -333,11 +336,11 @@ namespace Battlehub.RTEditor
         {
             if(value)
             {
-                RuntimeTools.PivotRotation = RuntimePivotRotation.Global;
+                Editor.Tools.PivotRotation = RuntimePivotRotation.Global;
             }
             else
             {
-                RuntimeTools.PivotRotation = RuntimePivotRotation.Local;
+                Editor.Tools.PivotRotation = RuntimePivotRotation.Local;
             }
         }
 
@@ -346,11 +349,11 @@ namespace Battlehub.RTEditor
         {
             if (value)
             {
-                RuntimeTools.PivotMode = RuntimePivotMode.Center;
+                Editor.Tools.PivotMode = RuntimePivotMode.Center;
             }
             else
             {
-                RuntimeTools.PivotMode = RuntimePivotMode.Pivot;
+                Editor.Tools.PivotMode = RuntimePivotMode.Pivot;
             }
         }
 
@@ -361,38 +364,47 @@ namespace Battlehub.RTEditor
 
         private void OnAutoFocusToggleValueChanged(bool value)
         {
-            RuntimeTools.AutoFocus = value;
+            Editor.Tools.AutoFocus = value;
         }
 
         private void OnUnitSnappingToggleValueChanged(bool value)
         {
-            RuntimeTools.UnitSnapping = value;
+            Editor.Tools.UnitSnapping = value;
         }
 
         private void OnBoundingBoxSnappingToggleValueChanged(bool value)
         {
-            RuntimeTools.IsSnapping = value;
+            Editor.Tools.IsSnapping = value;
         }
 
         private void OnPlayToggleValueChanged(bool value)
         {
-            RuntimeEditorApplication.IsPlaying = value;
+            Editor.IsPlaying = value;
         }
 
         private void OnPlaymodeStateChanged()
         {
-            if(RuntimeEditorApplication.IsPlaying)
+            if(Editor.IsPlaying)
             {
-                RuntimeEditorApplication.ActivateWindow(RuntimeWindowType.GameView);
+                RuntimeWindow gameView = Editor.GetWindow(RuntimeWindowType.GameView);
+                if(gameView != null)
+                {
+                    Editor.ActivateWindow(gameView);
+                }
+                
             }
             else
             {
-                RuntimeEditorApplication.ActivateWindow(RuntimeWindowType.SceneView);
+                if(Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.SceneView)
+                {
+                    RuntimeWindow sceneView = Editor.GetWindow(RuntimeWindowType.SceneView);
+                    Editor.ActivateWindow(sceneView);
+                }   
             }
             
             if(PlayToggle != null)
             {
-                PlayToggle.isOn = RuntimeEditorApplication.IsPlaying;
+                PlayToggle.isOn = Editor.IsPlaying;
             }
 
             UpdateLoadSaveButtonsState();
@@ -402,7 +414,7 @@ namespace Battlehub.RTEditor
         {
             if(PivotRotationToggle != null)
             {
-                if (RuntimeTools.PivotRotation == RuntimePivotRotation.Global)
+                if (Editor.Tools.PivotRotation == RuntimePivotRotation.Global)
                 {
                     PivotRotationToggle.isOn = true;
                 }
@@ -417,7 +429,7 @@ namespace Battlehub.RTEditor
         {
             if (PivotModeToggle != null)
             {
-                if (RuntimeTools.PivotMode == RuntimePivotMode.Center)
+                if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
                 {
                     PivotModeToggle.isOn = true;
                 }
@@ -436,19 +448,19 @@ namespace Battlehub.RTEditor
             }
             if (ViewToggle != null)
             {
-                ViewToggle.isOn = RuntimeTools.Current == RuntimeTool.View;
+                ViewToggle.isOn = Editor.Tools.Current == RuntimeTool.View;
             }
             if (MoveToggle != null)
             {
-                MoveToggle.isOn = RuntimeTools.Current == RuntimeTool.Move;
+                MoveToggle.isOn = Editor.Tools.Current == RuntimeTool.Move;
             }
             if (RotateToggle != null)
             {
-                RotateToggle.isOn = RuntimeTools.Current == RuntimeTool.Rotate;
+                RotateToggle.isOn = Editor.Tools.Current == RuntimeTool.Rotate;
             }
             if (ScaleToggle != null)
             {
-                ScaleToggle.isOn = RuntimeTools.Current == RuntimeTool.Scale;
+                ScaleToggle.isOn = Editor.Tools.Current == RuntimeTool.Scale;
             }
         }
 
@@ -456,7 +468,7 @@ namespace Battlehub.RTEditor
         {
             if(AutoFocusToggle != null)
             {
-                AutoFocusToggle.isOn = RuntimeTools.AutoFocus;
+                AutoFocusToggle.isOn = Editor.Tools.AutoFocus;
             }
         }
 
@@ -464,7 +476,7 @@ namespace Battlehub.RTEditor
         {
             if(UnitSnappingToggle != null)
             {
-                UnitSnappingToggle.isOn = RuntimeTools.UnitSnapping;
+                UnitSnappingToggle.isOn = Editor.Tools.UnitSnapping;
             }
         }
 
@@ -472,7 +484,7 @@ namespace Battlehub.RTEditor
         {
             if(VertexSnappingToggle != null)
             {
-                VertexSnappingToggle.isOn = RuntimeTools.IsSnapping;
+                VertexSnappingToggle.isOn = Editor.Tools.IsSnapping;
             }
         }
 
@@ -480,17 +492,17 @@ namespace Battlehub.RTEditor
         {
             if(BtnSave != null)
             {
-                BtnSave.interactable = m_projectManager != null && (RuntimeUndo.CanRedo || RuntimeUndo.CanUndo) && !RuntimeEditorApplication.IsPlaying;
+                BtnSave.interactable = m_project != null && (Editor.Undo.CanRedo || Editor.Undo.CanUndo) && !Editor.IsPlaying;
             }
 
             if (BtnSaveAs != null)
             {
-                BtnSaveAs.interactable = m_projectManager != null && (RuntimeUndo.CanRedo || RuntimeUndo.CanUndo) && !RuntimeEditorApplication.IsPlaying;
+                BtnSaveAs.interactable = m_project != null && (Editor.Undo.CanRedo || Editor.Undo.CanUndo) && !Editor.IsPlaying;
             }
 
             if (BtnNew != null)
             {
-                BtnNew.interactable = m_projectManager != null && !RuntimeEditorApplication.IsPlaying; 
+                BtnNew.interactable = m_project != null && !Editor.IsPlaying; 
             }
         }
 
@@ -498,102 +510,106 @@ namespace Battlehub.RTEditor
         {
             if (BtnUndo != null)
             {
-                BtnUndo.interactable = RuntimeUndo.CanUndo;
+                BtnUndo.interactable = Editor.Undo.CanUndo;
             }
 
             if (BtnRedo != null)
             {
-                BtnRedo.interactable = RuntimeUndo.CanRedo;
+                BtnRedo.interactable = Editor.Undo.CanRedo;
             }
         }
 
         private void OnSaveClick()
         {
-            if (RuntimeEditorApplication.IsPlaying)
+            if (Editor.IsPlaying)
             {
                 PopupWindow.Show("Save Scene", "Scene can not be saved in playmode", "OK");
                 return;
             }
-            if (m_projectManager.ActiveScene == null)
-            {
-                PopupWindow.Show("Save Scene", "Unable to save. ActiveScene is null", "OK");
-                return;
-            }
 
-            if(m_projectManager.ActiveScene.Parent == null)
-            {
-                GameObject saveSceneDialog = Instantiate(SaveSceneDialog);
-                saveSceneDialog.transform.position = Vector3.zero;
+            //if (m_projectManager.ActiveScene == null)
+            //{
+            //    PopupWindow.Show("Save Scene", "Unable to save. ActiveScene is null", "OK");
+            //    return;
+            //}
 
-                PopupWindow.Show("Save Scene As", saveSceneDialog.transform, "Save",
-                    args =>
-                    {
-                        if(!args.Cancel)
-                        {
-                            BtnSave.interactable = false;
-                            BtnSaveAs.interactable = false;
-                        }
-                    },
-                    "Cancel");
-            }
-            else
-            {
-                RuntimeUndo.Purge();
-                m_projectManager.SaveScene(m_projectManager.ActiveScene, () =>
-                {
-                });
-            }
+            //if(m_projectManager.ActiveScene.Parent == null)
+            //{
+            //    GameObject saveSceneDialog = Instantiate(SaveSceneDialog);
+            //    saveSceneDialog.transform.position = Vector3.zero;
+
+            //    PopupWindow.Show("Save Scene As", saveSceneDialog.transform, "Save",
+            //        args =>
+            //        {
+            //            if(!args.Cancel)
+            //            {
+            //                BtnSave.interactable = false;
+            //                BtnSaveAs.interactable = false;
+            //            }
+            //        },
+            //        "Cancel");
+            //}
+            //else
+            //{
+            //    RuntimeUndo.Purge();
+            //    m_projectManager.SaveScene(m_projectManager.ActiveScene, () =>
+            //    {
+            //    });
+            //}
         }
 
         private void OnSaveAsClick()
         {
-            if (RuntimeEditorApplication.IsPlaying)
+            if (Editor.IsPlaying)
             {
                 PopupWindow.Show("Save Scene", "Scene can not be saved in playmode", "OK");
                 return;
             }
 
-            if (m_projectManager == null)
+            if (m_project == null)
             {
                 Debug.LogError("Project Manager is null");
-            }
-
-            if (m_projectManager.ActiveScene == null)
-            {
-                PopupWindow.Show("Save Scene", "Unable to save. ActiveScene is null", "OK");
                 return;
             }
 
+            //if (m_projectManager.ActiveScene == null)
+            //{
+            //    PopupWindow.Show("Save Scene", "Unable to save. ActiveScene is null", "OK");
+            //    return;
+            //}
 
-            GameObject saveSceneDialog = Instantiate(SaveSceneDialog);
-            saveSceneDialog.transform.position = Vector3.zero;
 
-            PopupWindow.Show("Save Scene As", saveSceneDialog.transform, "Save",
-                args =>
-                {
-                    if (!args.Cancel)
-                    {
-                        BtnSave.interactable = false;
-                        BtnSaveAs.interactable = false;
-                    }
-                },
-                "Cancel");
+            //GameObject saveSceneDialog = Instantiate(SaveSceneDialog);
+            //saveSceneDialog.transform.position = Vector3.zero;
+
+            //PopupWindow.Show("Save Scene As", saveSceneDialog.transform, "Save",
+            //    args =>
+            //    {
+            //        if (!args.Cancel)
+            //        {
+            //            BtnSave.interactable = false;
+            //            BtnSaveAs.interactable = false;
+            //        }
+            //    },
+            //    "Cancel");
 
         }
 
         private void OnNewClick()
         {
-            if (RuntimeEditorApplication.IsPlaying)
+            if (Editor.IsPlaying)
             {
                 PopupWindow.Show("Create Scene", "Scene can not be create in playmode", "OK");
                 return;
             }
 
-            if (m_projectManager == null)
+            if (m_project == null)
             {
                 Debug.LogError("Project Manager is null");
+                return;
             }
 
+            /*
             PopupWindow.Show("Create Scene", "Are you sure you want to create new scene?", "Yes",
                 args =>
                 {
@@ -606,16 +622,17 @@ namespace Battlehub.RTEditor
                     }
                     
                 }, "No");
+            */
         }
 
         private void OnUndoClick()
         {
-            RuntimeUndo.Undo();
+            Editor.Undo.Undo();
         }
 
         private void OnRedoClick()
         {
-            RuntimeUndo.Redo();
+            Editor.Undo.Redo();
         }
 
         private void OnStateChanged()
@@ -636,6 +653,7 @@ namespace Battlehub.RTEditor
             UpdateLoadSaveButtonsState();
         }
 
+        /*
         private void OnSceneSaving(object sender, ProjectManagerEventArgs args)
         {
             
@@ -657,5 +675,6 @@ namespace Battlehub.RTEditor
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
+        */
     }
 }

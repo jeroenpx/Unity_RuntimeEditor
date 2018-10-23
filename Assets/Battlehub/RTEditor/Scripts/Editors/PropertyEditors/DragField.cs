@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Battlehub.Utils;
+using Battlehub.RTCommon;
 
 namespace Battlehub.RTEditor
 {
@@ -16,8 +17,12 @@ namespace Battlehub.RTEditor
         public UnityEvent BeginDrag;
         public UnityEvent EndDrag;
 
+        private IRTE m_editor;
+
         private void Start()
         {
+            m_editor = RTE.Get;
+
             if(Field == null)
             {
                 Debug.LogWarning("Set Field " + gameObject.name);
@@ -57,12 +62,12 @@ namespace Battlehub.RTEditor
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            CursorHelper.SetCursor(this, DragCursor, new Vector2(0.5f, 0.5f), CursorMode.Auto);
+            m_editor.CursorHelper.SetCursor(this, DragCursor, new Vector2(0.5f, 0.5f), CursorMode.Auto);
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            CursorHelper.ResetCursor(this);
+            m_editor.CursorHelper.ResetCursor(this);
         }
     }
 

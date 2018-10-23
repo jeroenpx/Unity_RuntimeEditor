@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Battlehub.Utils;
 using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad2;
 
 namespace Battlehub.RTHandles
 {
@@ -36,282 +34,217 @@ namespace Battlehub.RTHandles
         }
     }
 
-    /// <summary>
-    /// Basic selection component (handles user input and allow RuntimeSelection to be changed_
-    /// </summary>
-    public class RuntimeSelectionComponent : RuntimeEditorWindow
+    public class RuntimeSelectionComponent : RTEBehaviour
     {
         [SerializeField]
-        private PositionHandleModel m_positonHandleModel;
-        [SerializeField]
-        private RotationHandleModel m_rotationHandleModel;
-        [SerializeField]
-        private ScaleHandleModel m_scaleHandleModel;
-
-        public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
-        public KeyCode EditorModifierKey = KeyCode.LeftShift;
-        public KeyCode ModifierKey
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return EditorModifierKey;
-#else
-                return RuntimeModifierKey;
-#endif
-            }
-        }
-
-        public KeyCode SelectAllKey = KeyCode.A;
-        public KeyCode MultiselectKey = KeyCode.LeftControl;
-        public KeyCode MultiselectKey2 = KeyCode.RightControl;
-        public KeyCode RangeSelectKey = KeyCode.LeftShift;
-        public Camera SceneCamera;
-
-        protected virtual LayerMask LayerMask
-        {
-            get { return -1; }
-        }
-
-        protected virtual bool IPointerOverEditorArea
-        {
-            get
-            {
-                return !RuntimeTools.IsPointerOverGameObject();
-            }
-        }
-
-        protected PositionHandle PositionHandle
-        {
-            get { return m_positionHandle; }
-        }
-
-        protected RotationHandle RotationHandle
-        {
-            get { return m_rotationHandle; }
-        }
-
-        protected ScaleHandle ScaleHandle
-        {
-            get { return m_scaleHandle; }
-        }
-
         private PositionHandle m_positionHandle;
+        [SerializeField]
         private RotationHandle m_rotationHandle;
+        [SerializeField]
         private ScaleHandle m_scaleHandle;
-        public Transform HandlesParent;
+        [SerializeField]
+        private BoxSelection m_boxSelection;
 
-        private void Start()
+        public BoxSelection BoxSelection
         {
-            if (BoxSelection.Current == null)
+            get { return m_boxSelection; }
+        }
+
+        private bool m_isUISelected;
+        public bool IsUISelected
+        {
+            get { return m_isUISelected; }
+            private set
             {
-                GameObject boxSelection = new GameObject();
-                boxSelection.name = "BoxSelection";
-                boxSelection.transform.SetParent(transform, false);
-                boxSelection.AddComponent<BoxSelection>();
+                m_isUISelected = value;
+                if (m_boxSelection != null)
+                {
+                    m_boxSelection.enabled = value;
+                }
+            }
+        }
+
+        protected virtual void Start()
+        {
+            if (m_boxSelection != null)
+            {
+                m_boxSelection.Filtering += OnBoxSelectionFiltering;
             }
 
-            StartOverride();
-        }
-
-        private void OnEnable()
-        {
-            OnEnableOverride();
-        }
-
-        private void OnDisable()
-        {
-            OnDisableOverride();
-        }
-
-        private void LateUpdate()
-        {
-            if (InputController._GetMouseButtonDown(0))
+            if (m_positionHandle != null)
             {
-                if (RuntimeTools.ActiveTool != null && RuntimeTools.ActiveTool != BoxSelection.Current)
+                m_positionHandle.gameObject.SetActive(true);
+                m_positionHandle.gameObject.SetActive(false);
+            }
+
+            if (m_rotationHandle != null)
+            {
+                m_rotationHandle.gameObject.SetActive(true);
+                m_rotationHandle.gameObject.SetActive(false);
+            }
+
+            if (m_scaleHandle != null)
+            {
+                m_scaleHandle.gameObject.SetActive(true);
+                m_scaleHandle.gameObject.SetActive(false);
+            }
+        
+            Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
+            Editor.Tools.ToolChanged += OnRuntimeToolChanged;
+
+            if (GetComponent<RuntimeSelectionInputBase>() == null)
+            {
+                gameObject.AddComponent<RuntimeSelectionInput>();
+            }
+        }
+
+        protected override void OnDestroyOverride()
+        {
+            base.OnDestroyOverride();
+        
+            if(m_boxSelection != null)
+            {
+                m_boxSelection.Filtering -= OnBoxSelectionFiltering;
+            }
+
+            Editor.Tools.Current = RuntimeTool.None;
+            Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
+            Editor.Selection.SelectionChanged -= OnRuntimeSelectionChanged;
+        }
+
+        protected override void OnWindowRegistered(RuntimeWindow window)
+        {
+            base.OnWindowRegistered(window);
+            RuntimeSelectionComponentUI ui = window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
+            if(ui == null && !Editor.IsVR)
+            {
+                GameObject runtimeSelectionComponentUI = new GameObject("SelectionComponentUI");
+                runtimeSelectionComponentUI.transform.SetParent(window.transform, false);
+
+                ui = runtimeSelectionComponentUI.AddComponent<RuntimeSelectionComponentUI>();
+                RectTransform rt = runtimeSelectionComponentUI.GetComponent<RectTransform>();
+                rt.SetSiblingIndex(0);
+                rt.anchorMin = new Vector2(0, 0);
+                rt.anchorMax = new Vector2(1, 1);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.offsetMax = new Vector2(0, 0);
+                rt.offsetMin = new Vector2(0, 0);
+            }
+
+            if(ui != null)
+            {
+                ui.Selected += OnUISelected;
+                ui.Unselected += OnUIUnselected;
+                if (window == Editor.ActiveWindow)
                 {
-                    return;
+                    IsUISelected = ui.IsSelected;
                 }
+            }
+        }
 
-                if (!IPointerOverEditorArea)
+        protected override void OnWindowUnregistered(RuntimeWindow window)
+        {
+            base.OnWindowUnregistered(window);
+            RuntimeSelectionComponentUI ui = window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
+            if(ui != null)
+            {
+                ui.Selected -= OnUISelected;
+                ui.Unselected -= OnUIUnselected;
+            }
+        }
+
+        protected override void OnWindowActivated()
+        {
+            base.OnWindowActivated();
+            RuntimeSelectionComponentUI ui = ActiveWindow.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
+            if (ui != null)
+            {
+                IsUISelected = ui.IsSelected;
+            }
+        }
+
+        protected virtual void OnUISelected(object sender, System.EventArgs e)
+        {
+            IsUISelected = true;
+        }
+
+        protected virtual void OnUIUnselected(object sender, System.EventArgs e)
+        {
+            IsUISelected = false;
+        }
+
+        public virtual void SelectGO(bool rangeSelect, bool multiselect)
+        {
+            Ray ray = ActiveWindow.Pointer;
+            RaycastHit hitInfo;
+
+            if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
+            {
+                GameObject hitGO = hitInfo.collider.gameObject;
+                bool canSelect = CanSelect(hitGO);
+                if (canSelect)
                 {
-                    return;
-                }
-
-                if (RuntimeTools.IsViewing)
-                {
-                    return;
-                }
-
-                if (!RuntimeSelection.Enabled)
-                {
-                    return;
-                }
-
-                bool rangeSelect = InputController._GetKey(RangeSelectKey);
-                bool multiselect = InputController._GetKey(MultiselectKey) || InputController._GetKey(MultiselectKey2) || rangeSelect;
-                Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);
-                RaycastHit hitInfo;
-
-                //if (Physics.Raycast(ray, out hitInfo, float.MaxValue, LayerMask.value))
-                if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
-                {
-                    GameObject hitGO = hitInfo.collider.gameObject;
-                    bool canSelect = CanSelect(hitGO);
-                    if (canSelect)
+                    hitGO = hitGO.GetComponentInParent<ExposeToEditor>().gameObject;
+                    if (multiselect)
                     {
-                        hitGO = hitGO.GetComponentInParent<ExposeToEditor>().gameObject;
-                        if (multiselect)
+                        List<Object> selection;
+                        if (Editor.Selection.objects != null)
                         {
-                            List<Object> selection;
-                            if (RuntimeSelection.objects != null)
-                            {
-                                selection = RuntimeSelection.objects.ToList();
-                            }
-                            else
-                            {
-                                selection = new List<Object>();
-                            }
-
-                            if (selection.Contains(hitGO))
-                            {
-                                selection.Remove(hitGO);
-                                if (rangeSelect)
-                                {
-                                    selection.Insert(0, hitGO);
-                                }
-                            }
-                            else
-                            {
-                                selection.Insert(0, hitGO);
-                            }
-                            RuntimeSelection.Select(hitGO, selection.ToArray());
+                            selection = Editor.Selection.objects.ToList();
                         }
                         else
                         {
-                            RuntimeSelection.activeObject = hitGO;
+                            selection = new List<Object>();
                         }
+
+                        if (selection.Contains(hitGO))
+                        {
+                            selection.Remove(hitGO);
+                            if (rangeSelect)
+                            {
+                                selection.Insert(0, hitGO);
+                            }
+                        }
+                        else
+                        {
+                            selection.Insert(0, hitGO);
+                        }
+                        Editor.Selection.Select(hitGO, selection.ToArray());
                     }
                     else
                     {
-                        if (!multiselect)
-                        {
-                            RuntimeSelection.activeObject = null;
-                        }
+                        Editor.Selection.activeObject = hitGO;
                     }
                 }
                 else
                 {
                     if (!multiselect)
                     {
-                        RuntimeSelection.activeObject = null;
+                        Editor.Selection.activeObject = null;
                     }
                 }
             }
-
-            if (RuntimeEditorApplication.IsActiveWindow(this))
+            else
             {
-                if (InputController._GetKeyDown(SelectAllKey) && InputController._GetKey(ModifierKey))
+                if (!multiselect)
                 {
-                    IEnumerable<GameObject> filtered = RuntimeEditorApplication.IsPlaying ?
-                          ExposeToEditor.FindAll(ExposeToEditorObjectType.PlayMode) :
-                          ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode);
-                    RuntimeSelection.objects = filtered.ToArray();
+                    Editor.Selection.activeObject = null;
                 }
             }
         }
 
-        private void OnApplicationQuit()
+        public virtual void SelectAll()
         {
-            BoxSelection.Filtering -= OnBoxSelectionFiltering;
-            OnApplicationQuitOverride();
+            IEnumerable<GameObject> filtered = Editor.IsPlaying ?
+                ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
+                ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
+            Editor.Selection.objects = filtered.ToArray();
         }
 
-        protected override void AwakeOverride()
-        {
-            base.AwakeOverride();
-
-            if (SceneCamera == null)
-            {
-                SceneCamera = Camera.main;
-            }
-
-            if (HandlesParent == null)
-            {
-                HandlesParent = transform;
-            }
-
-            GameObject positionHandle = new GameObject();
-            positionHandle.name = "PositionHandle";
-            m_positionHandle = positionHandle.AddComponent<PositionHandle>();
-            m_positionHandle.Model = m_positonHandleModel;
-            m_positionHandle.SceneCamera = SceneCamera;
-            positionHandle.SetActive(false);
-            positionHandle.transform.SetParent(HandlesParent);
-
-            GameObject rotationHandle = new GameObject();
-            rotationHandle.name = "RotationHandle";
-            m_rotationHandle = rotationHandle.AddComponent<RotationHandle>();
-            m_rotationHandle.Model = m_rotationHandleModel;
-            m_rotationHandle.SceneCamera = SceneCamera;
-            rotationHandle.SetActive(false);
-            rotationHandle.transform.SetParent(HandlesParent);
-
-            GameObject scaleHandle = new GameObject();
-            scaleHandle.name = "ScaleHandle";
-            m_scaleHandle = scaleHandle.AddComponent<ScaleHandle>();
-            m_scaleHandle.Model = m_scaleHandleModel;
-            m_scaleHandle.SceneCamera = SceneCamera;
-            scaleHandle.SetActive(false);
-            scaleHandle.transform.SetParent(HandlesParent);
-
-            BoxSelection.Filtering += OnBoxSelectionFiltering;
-            RuntimeSelection.SelectionChanged += OnRuntimeSelectionChanged;
-            RuntimeTools.ToolChanged += OnRuntimeToolChanged;
-
-            if (InputController.Instance == null)
-            {
-                gameObject.AddComponent<InputController>();
-            }
-        }
-
-
-        protected virtual void StartOverride()
-        {
-
-        }
-
-
-        protected virtual void OnEnableOverride()
-        {
-
-        }
-
-
-        protected virtual void OnDisableOverride()
-        {
-
-        }
-
-        private void OnApplicationQuitOverride()
-        {
-
-        }
-
-        protected override void OnDestroyOverride()
-        {
-            base.OnDestroyOverride();
-            BoxSelection.Filtering -= OnBoxSelectionFiltering;
-            RuntimeTools.Current = RuntimeTool.None;
-            RuntimeSelection.SelectionChanged -= OnRuntimeSelectionChanged;
-            RuntimeTools.ToolChanged -= OnRuntimeToolChanged;
-        }
 
         private void OnRuntimeToolChanged()
         {
-            SetCursor();
-
-            if (RuntimeSelection.activeTransform == null)
+            if (Editor.Selection.activeTransform == null)
             {
                 return;
             }
@@ -319,9 +252,9 @@ namespace Battlehub.RTHandles
             if (m_positionHandle != null)
             {
                 m_positionHandle.gameObject.SetActive(false);
-                if (RuntimeTools.Current == RuntimeTool.Move)
+                if (Editor.Tools.Current == RuntimeTool.Move)
                 {
-                    m_positionHandle.transform.position = RuntimeSelection.activeTransform.position;
+                    m_positionHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_positionHandle.Targets = GetTargets();
                     m_positionHandle.gameObject.SetActive(m_positionHandle.Targets.Length > 0);
                 }
@@ -329,9 +262,9 @@ namespace Battlehub.RTHandles
             if (m_rotationHandle != null)
             {
                 m_rotationHandle.gameObject.SetActive(false);
-                if (RuntimeTools.Current == RuntimeTool.Rotate)
+                if (Editor.Tools.Current == RuntimeTool.Rotate)
                 {
-                    m_rotationHandle.transform.position = RuntimeSelection.activeTransform.position;
+                    m_rotationHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_rotationHandle.Targets = GetTargets();
                     m_rotationHandle.gameObject.SetActive(m_rotationHandle.Targets.Length > 0);
                 }
@@ -339,16 +272,16 @@ namespace Battlehub.RTHandles
             if (m_scaleHandle != null)
             {
                 m_scaleHandle.gameObject.SetActive(false);
-                if (RuntimeTools.Current == RuntimeTool.Scale)
+                if (Editor.Tools.Current == RuntimeTool.Scale)
                 {
-                    m_scaleHandle.transform.position = RuntimeSelection.activeTransform.position;
+                    m_scaleHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_scaleHandle.Targets = GetTargets();
                     m_scaleHandle.gameObject.SetActive(m_scaleHandle.Targets.Length > 0);
                 }
             }
 
 #if UNITY_EDITOR
-            switch (RuntimeTools.Current)
+            switch (Editor.Tools.Current)
             {
                 case RuntimeTool.None:
                     UnityEditor.Tools.current = UnityEditor.Tool.None;
@@ -368,8 +301,6 @@ namespace Battlehub.RTHandles
             }
 #endif
         }
-
-
 
         private void OnBoxSelectionFiltering(object sender, FilteringArgs e)
         {
@@ -412,7 +343,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            GameObject[] selected = RuntimeSelection.gameObjects;
+            GameObject[] selected = Editor.Selection.gameObjects;
             if (selected != null)
             {
                 for (int i = 0; i < selected.Length; ++i)
@@ -426,8 +357,7 @@ namespace Battlehub.RTHandles
                         {
                             selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
                         }
-                        selectionGizmo.SceneCamera = SceneCamera;
-
+                        
                         if (exposeToEditor.Selected != null)
                         {
                             exposeToEditor.Selected.Invoke(exposeToEditor);
@@ -436,7 +366,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (RuntimeSelection.activeGameObject == null || RuntimeSelection.activeGameObject.IsPrefab())
+            if (Editor.Selection.activeGameObject == null || Editor.Selection.activeGameObject.IsPrefab())
             {
                 if (m_positionHandle != null)
                 {
@@ -457,11 +387,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual void SetCursor()
-        {
-
-        }
-
         protected virtual bool CanSelect(GameObject go)
         {
             return go.GetComponentInParent<ExposeToEditor>();
@@ -469,49 +394,7 @@ namespace Battlehub.RTHandles
 
         protected virtual Transform[] GetTargets()
         {
-            return RuntimeSelection.gameObjects.Select(g => g.transform).OrderByDescending(g => RuntimeSelection.activeTransform == g).ToArray();
-        }
-
-
-        public virtual void SetSceneCamera(Camera camera)
-        {
-            SceneCamera = camera;
-            if (m_positionHandle != null)
-            {
-                m_positionHandle.SceneCamera = camera;
-            }
-            if (m_rotationHandle != null)
-            {
-                m_rotationHandle.SceneCamera = camera;
-            }
-            if (m_scaleHandle != null)
-            {
-                m_scaleHandle.SceneCamera = camera;
-            }
-
-            GameObject[] selected = RuntimeSelection.gameObjects;
-            if (selected != null)
-            {
-                for (int i = 0; i < selected.Length; ++i)
-                {
-                    GameObject selectedObj = selected[i];
-                    ExposeToEditor exposeToEditor = selectedObj.GetComponent<ExposeToEditor>();
-                    if (exposeToEditor && exposeToEditor.CanSelect && !selectedObj.IsPrefab() && !selectedObj.isStatic)
-                    {
-                        SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
-                        if (selectionGizmo != null)
-                        {
-                            Destroy(selectionGizmo);
-                            selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
-                        }
-                        if (selectionGizmo != null)
-                        {
-                            selectionGizmo.SceneCamera = SceneCamera;
-                        }
-
-                    }
-                }
-            }
+            return Editor.Selection.gameObjects.Select(g => g.transform).OrderByDescending(g => Editor.Selection.activeTransform == g).ToArray();
         }
     }
 }

@@ -14,10 +14,9 @@ namespace Battlehub.RTHandles
         {
             GameObject go = new GameObject();
             go.name = "RTHandles";
-            RuntimeSelectionComponent window = go.AddComponent<RuntimeSelectionComponent>();
-            window.WindowType = RuntimeWindowType.SceneView;
-            go.AddComponent<RuntimeUndoComponent>();
-            go.AddComponent<RuntimeToolsComponent>();
+            go.AddComponent<RuntimeSelectionComponent>();
+            go.AddComponent<RuntimeUndoInput>();
+            go.AddComponent<RuntimeToolsInput>();
 
             Undo.RegisterCreatedObjectUndo(go, "Battlehub.RTHandles.Create");
         }

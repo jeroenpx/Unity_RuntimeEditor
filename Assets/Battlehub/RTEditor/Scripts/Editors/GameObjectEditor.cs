@@ -17,9 +17,13 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Transform ComponentsPanel;
 
+        private IRTE m_editor;
+
         private void Start()
         {
-            GameObject go = RuntimeSelection.activeGameObject;
+            m_editor = RTE.Get;
+
+            GameObject go = m_editor.Selection.activeGameObject;
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             HierarchyItem hierarchyItem = go.GetComponent<HierarchyItem>();
             HashSet<Component> ignoreComponents = new HashSet<Component>();
@@ -80,7 +84,7 @@ namespace Battlehub.RTEditor
                             ComponentEditor editor = Instantiate(componentEditorPrefab);
                             editor.EndEditCallback = () =>
                             {
-                                RuntimeEditorApplication.SaveSelectedObjects();
+                                m_editor.IsDirty = true;
                             };
                             editor.transform.SetParent(ComponentsPanel, false);
                             editor.Component = component;
@@ -108,13 +112,13 @@ namespace Battlehub.RTEditor
 
         private void OnEnableDisable(bool enable)
         {
-            GameObject go = RuntimeSelection.activeGameObject;
+            GameObject go = m_editor.Selection.activeGameObject;
             go.SetActive(enable);
         }
 
         private void OnEndEditName(string name)
         {
-            GameObject go = RuntimeSelection.activeGameObject;
+            GameObject go = m_editor.Selection.activeGameObject;
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             if(exposeToEditor != null)
             {

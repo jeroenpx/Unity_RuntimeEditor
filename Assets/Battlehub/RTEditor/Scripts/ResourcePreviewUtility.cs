@@ -1,4 +1,4 @@
-﻿using Battlehub.RTSaveLoad2;
+﻿using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.Utils;
 using UnityEngine;
 

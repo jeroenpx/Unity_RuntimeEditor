@@ -57,7 +57,6 @@ Shader "Battlehub/RTHandles/VertexColorClip" {
 				float3 worldNorm = UnityObjectToWorldNormal(float4(input.vertex.xyz, 0));
 				output.norm = mul((float3x3)UNITY_MATRIX_V, worldNorm);
 
-				//output.norm = normalize(mul(UNITY_MATRIX_IT_MV, ));
 				output.color = GammaToLinearSpace(input.color);
 				output.color.a = input.color.a;
 				return output;

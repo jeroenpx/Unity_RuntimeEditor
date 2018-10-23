@@ -6,8 +6,6 @@ namespace Battlehub.RTHandles
     public class PositionHandleModel : BaseHandleModel
     {
         [SerializeField]
-        private Transform m_camera;
-        [SerializeField]
         private GameObject[] m_models;
         [SerializeField]
         private GameObject m_screenSpaceQuad;
@@ -61,6 +59,8 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private bool m_isVertexSnapping;
 
+        private readonly bool m_useColliders = true;
+
         private Material[] m_materials;
         private Material m_ssQuadMaterial;
 
@@ -94,6 +94,15 @@ namespace Battlehub.RTHandles
         private const float DefaultArrowLength = 0.2f;
         private const float DefaultQuadLength = 0.2f;
 
+        private BoxCollider m_xCollider;
+        private BoxCollider m_yCollider;
+        private BoxCollider m_zCollider;
+        private BoxCollider m_xyCollider;
+        private BoxCollider m_xzCollider;
+        private BoxCollider m_yzCollider;
+        private SphereCollider m_snappingCollider;
+        private Collider[] m_colliders;
+
         public bool IsVertexSnapping
         {
             get { return m_isVertexSnapping; }
@@ -109,15 +118,10 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void Awake()
+        protected override void AwakeOverride()
         {
-            base.Awake();
-            if(m_camera == null)
-            {
-                OnActiveSceneCameraChanged();
-            }
-            RuntimeEditorApplication.ActiveSceneCameraChanged += OnActiveSceneCameraChanged;
-
+            base.AwakeOverride();
+        
             m_defaultArmaturesScale = new Vector3[m_armatures.Length];
             m_defaultB3XScale = new Vector3[m_armatures.Length];
             m_defaultB3YScale = new Vector3[m_armatures.Length];
@@ -174,32 +178,63 @@ namespace Battlehub.RTHandles
             }
 
             OnVertexSnappingModeChaged();
+            if(m_useColliders)
+            {
+                GameObject colliders = new GameObject("Colliders");
+                colliders.transform.SetParent(transform, false);
+                colliders.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+
+                m_xCollider = colliders.AddComponent<BoxCollider>();
+                m_yCollider = colliders.AddComponent<BoxCollider>();
+                m_zCollider = colliders.AddComponent<BoxCollider>();
+                m_xzCollider = colliders.AddComponent<BoxCollider>();
+                m_xyCollider = colliders.AddComponent<BoxCollider>();
+                m_yzCollider = colliders.AddComponent<BoxCollider>();
+                m_snappingCollider = colliders.AddComponent<SphereCollider>();
+
+                m_colliders = new Collider[] { m_xCollider, m_yCollider, m_zCollider, m_xzCollider, m_xyCollider, m_yzCollider };
+
+                for (int i = 0; i < m_colliders.Length; ++i)
+                {
+                    m_colliders[i].isTrigger = true;
+                }
+            }
         }
 
         protected override void Start()
         {
             base.Start();
-            UpdateTransforms();
+            UpdateModel();
         }
 
-        protected override void OnDestroy()
+        protected virtual void OnEnable()
         {
-            base.OnDestroy();
-            RuntimeEditorApplication.ActiveSceneCameraChanged -= OnActiveSceneCameraChanged;
-        }
-
-        private void OnActiveSceneCameraChanged()
-        {
-            if (RuntimeEditorApplication.ActiveSceneCamera != null)
+            if(IsInActiveWindow)
             {
-                m_camera = RuntimeEditorApplication.ActiveSceneCamera.transform;
-            }
-            else if (Camera.main != null)
-            {
-                m_camera = Camera.main.transform;
+                m_prevRotation = transform.rotation;
+                m_prevPosition = transform.position;
+                m_prevCameraPosition = Editor.ActiveWindow.Camera.transform.position;
+                int index = SetCameraPosition(m_prevCameraPosition);
+                if(index >= 0)
+                {
+                    UpdateColliders(index);
+                }
+                
             }
         }
 
+        protected override void OnWindowActivated()
+        {
+            base.OnWindowActivated();
+            m_prevRotation = transform.rotation;
+            m_prevPosition = transform.position;
+            m_prevCameraPosition = Editor.ActiveWindow.Camera.transform.position;
+            int index = SetCameraPosition(m_prevCameraPosition);
+            if (index >= 0)
+            {
+                UpdateColliders(index);
+            }
+        }
 
         public override void SetLock(LockObject lockObj)
         {
@@ -225,52 +260,51 @@ namespace Battlehub.RTHandles
         {
             if (m_lockObj.PositionX)
             {
-                m_materials[m_xMatIndex].color = m_disabledColor;
-                m_materials[m_xArrowMatIndex].color = m_disabledColor;
+                m_materials[m_xMatIndex].color = Colors.DisabledColor;
+                m_materials[m_xArrowMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_xMatIndex].color = m_xColor;
-                m_materials[m_xArrowMatIndex].color = m_xColor;
+                m_materials[m_xMatIndex].color = Colors.XColor;
+                m_materials[m_xArrowMatIndex].color = Colors.XColor;
             }
 
             if (m_lockObj.PositionY)
             {
-                m_materials[m_yMatIndex].color = m_disabledColor;
-                m_materials[m_yArrowMatIndex].color = m_disabledColor;
+                m_materials[m_yMatIndex].color = Colors.DisabledColor;
+                m_materials[m_yArrowMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_yMatIndex].color = m_yColor;
-                m_materials[m_yArrowMatIndex].color = m_yColor;
+                m_materials[m_yMatIndex].color = Colors.YColor;
+                m_materials[m_yArrowMatIndex].color = Colors.YColor;
             }
 
             if (m_lockObj.PositionZ)
             {
-                m_materials[m_zMatIndex].color = m_disabledColor;
+                m_materials[m_zMatIndex].color = Colors.DisabledColor;
             }
             else
             {
-                m_materials[m_zMatIndex].color = m_zColor;
-                m_materials[m_zArrowMatIndex].color = m_zColor;
+                m_materials[m_zMatIndex].color = Colors.ZColor;
+                m_materials[m_zArrowMatIndex].color = Colors.ZColor;
             }
 
-            m_materials[m_xQMatIndex].color = m_lockObj.PositionY || m_lockObj.PositionZ ? m_disabledColor : m_xColor;
-            m_materials[m_yQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionZ ? m_disabledColor : m_yColor;
-            m_materials[m_zQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionY ? m_disabledColor : m_zColor;
+            m_materials[m_xQMatIndex].color = m_lockObj.PositionY || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.XColor;
+            m_materials[m_yQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.YColor;
+            m_materials[m_zQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionY ? Colors.DisabledColor : Colors.ZColor;
 
-            Color xQuadColor = m_xColor; xQuadColor.a = m_quadTransparency;
+            Color xQuadColor = Colors.XColor; xQuadColor.a = m_quadTransparency;
             m_materials[m_xQuadMatIndex].color = xQuadColor;
 
-            Color yQuadColor = m_yColor; yQuadColor.a = m_quadTransparency;
+            Color yQuadColor = Colors.YColor; yQuadColor.a = m_quadTransparency;
             m_materials[m_yQuadMatIndex].color = yQuadColor;
 
-            Color zQuadColor = m_zColor; zQuadColor.a = m_quadTransparency;
+            Color zQuadColor = Colors.ZColor; zQuadColor.a = m_quadTransparency;
             m_materials[m_zQuadMatIndex].color = zQuadColor;
 
-            m_ssQuadMaterial.color = m_altColor;
+            m_ssQuadMaterial.color = Colors.AltColor;
         }
-
 
         private void SetColors()
         {
@@ -280,66 +314,66 @@ namespace Battlehub.RTHandles
                 case RuntimeHandleAxis.XY:
                     if (!m_lockObj.PositionX && !m_lockObj.PositionY)
                     {
-                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_xMatIndex].color = m_selectionColor;
-                        m_materials[m_yMatIndex].color = m_selectionColor;
-                        m_materials[m_zQMatIndex].color = m_selectionColor;
-                        m_materials[m_zQuadMatIndex].color = m_selectionColor;
+                        m_materials[m_xArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_xMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zQMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zQuadMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.YZ:
                     if (!m_lockObj.PositionY && !m_lockObj.PositionZ)
                     {
-                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_yMatIndex].color = m_selectionColor;
-                        m_materials[m_zMatIndex].color = m_selectionColor;
-                        m_materials[m_xQMatIndex].color = m_selectionColor;
-                        m_materials[m_xQuadMatIndex].color = m_selectionColor;
+                        m_materials[m_yArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_xQMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_xQuadMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.XZ:
                     if (!m_lockObj.PositionX && !m_lockObj.PositionZ)
                     {
-                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_xMatIndex].color = m_selectionColor;
-                        m_materials[m_zMatIndex].color = m_selectionColor;
-                        m_materials[m_yQMatIndex].color = m_selectionColor;
-                        m_materials[m_yQuadMatIndex].color = m_selectionColor;
+                        m_materials[m_xArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_xMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yQMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yQuadMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.X:
                     if (!m_lockObj.PositionX)
                     {
-                        m_materials[m_xArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_xMatIndex].color = m_selectionColor;
+                        m_materials[m_xArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_xMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Y:
                     if (!m_lockObj.PositionY)
                     {
-                        m_materials[m_yArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_yMatIndex].color = m_selectionColor;
+                        m_materials[m_yArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_yMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Z:
                     if (!m_lockObj.PositionZ)
                     {
-                        m_materials[m_zArrowMatIndex].color = m_selectionColor;
-                        m_materials[m_zMatIndex].color = m_selectionColor;
+                        m_materials[m_zArrowMatIndex].color = Colors.SelectionColor;
+                        m_materials[m_zMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Snap:
-                    m_ssQuadMaterial.color = m_selectionColor;
+                    m_ssQuadMaterial.color = Colors.SelectionColor;
                     break;
                 case RuntimeHandleAxis.Screen:
                     break;
             }
         }
 
-        private void UpdateTransforms()
+        protected override void UpdateModel()
         {
             m_quadLength = Mathf.Abs(m_quadLength);
             m_radius = Mathf.Max(0.01f, m_radius);
@@ -348,22 +382,29 @@ namespace Battlehub.RTHandles
             Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;
             Vector3 forward = transform.rotation * Vector3.forward * transform.localScale.z;
             Vector3 p = transform.position;
-            float scale = m_radius / DefaultRadius;
-            float arrowScale = m_arrowLength / DefaultArrowLength / scale;
-            float arrowRadiusScale = m_arrowRadius / DefaultArrowRadius / scale;
+
+            float radius = m_radius * ModelScale;
+            float length = m_length * ModelScale;
+            float arrowRadius = m_arrowRadius * ModelScale;
+            float arrowLength = m_arrowLength * ModelScale;
+            float quadLength = m_quadLength * ModelScale;
+
+            float scale = radius / DefaultRadius;
+            float arrowScale = arrowLength / DefaultArrowLength / scale;
+            float arrowRadiusScale = arrowRadius / DefaultArrowRadius / scale;
 
             for (int i = 0; i < m_models.Length; ++i)
             {
                 m_armatures[i].localScale = m_defaultArmaturesScale[i] * scale;
                 m_ssQuadArmature.localScale = Vector3.one * scale;
 
-                m_b3x[i].position = p + right * m_length;
-                m_b3y[i].position = p + up * m_length;
-                m_b3z[i].position = p + forward * m_length;
+                m_b3x[i].position = p + right * length;
+                m_b3y[i].position = p + up * length;
+                m_b3z[i].position = p + forward * length;
 
-                m_b2x[i].position = p + right * (m_length - m_arrowLength);
-                m_b2y[i].position = p + up * (m_length - m_arrowLength);
-                m_b2z[i].position = p + forward * (m_length - m_arrowLength);
+                m_b2x[i].position = p + right * (length - arrowLength);
+                m_b2y[i].position = p + up * (length - arrowLength);
+                m_b2z[i].position = p + forward * (length - arrowLength);
 
                 m_b3x[i].localScale = Vector3.right * arrowScale +
                     new Vector3(0, 1, 1) * arrowRadiusScale;
@@ -372,27 +413,99 @@ namespace Battlehub.RTHandles
                 m_b3z[i].localScale = Vector3.up * arrowScale +
                     new Vector3(1, 0, 1) * arrowRadiusScale;
 
-                m_b1x[i].position = p + Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * right * m_quadLength;
-                m_b1y[i].position = p + Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * up * m_quadLength;
-                m_b1z[i].position = p + Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * forward * m_quadLength;
+                m_b1x[i].position = p + Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * right * quadLength;
+                m_b1y[i].position = p + Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * up * quadLength;
+                m_b1z[i].position = p + Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * forward * quadLength;
 
                 m_bSx[i].position = p + (m_b1y[i].position - p) + (m_b1z[i].position - p);
                 m_bSy[i].position = p + (m_b1x[i].position - p) + (m_b1z[i].position - p);
                 m_bSz[i].position = p + (m_b1x[i].position - p) + (m_b1y[i].position - p);
             }
 
-            m_b1ss.position = p + transform.rotation * new Vector3(1, 1, 0) * m_quadLength;
-            m_b2ss.position = p + transform.rotation * new Vector3(-1, -1, 0) * m_quadLength;
-            m_b3ss.position = p + transform.rotation * new Vector3(-1, 1, 0) * m_quadLength;
-            m_b4ss.position = p + transform.rotation * new Vector3(1, -1, 0) * m_quadLength;
+            m_b1ss.position = p + transform.rotation * new Vector3(1, 1, 0) * quadLength * transform.localScale.x * 0.5f;
+            m_b2ss.position = p + transform.rotation * new Vector3(-1, -1, 0) * quadLength * transform.localScale.x * 0.5f;
+            m_b3ss.position = p + transform.rotation * new Vector3(-1, 1, 0) * quadLength * transform.localScale.x * 0.5f;
+            m_b4ss.position = p + transform.rotation * new Vector3(1, -1, 0) * quadLength * transform.localScale.x * 0.5f;
+
+            int index = SetCameraPosition(ActiveWindow.Camera.transform.position);
+            if (index >= 0)
+            {
+                UpdateColliders(index);
+            }
         }
 
-        public void SetCameraPosition(Vector3 pos)
+        private void UpdateColliders(int i)
+        {
+            if (!m_useColliders)
+            {
+                return;
+            }
+
+            float size = 2 * m_arrowRadius * SelectionMargin;
+            float size2 = 2 * m_radius;
+
+            Transform root = m_xCollider.transform.parent;
+
+            Vector3 b3x, b1x;
+            b3x = m_b3x[i].position;
+            b3x = root.InverseTransformPoint(b3x);
+            b1x = m_b1x[i].position;
+            b1x = root.InverseTransformPoint(b1x);
+            m_xCollider.size = new Vector3(b3x.x - Mathf.Clamp(b1x.x, 0, b1x.x), size, size);
+            m_xCollider.center = new Vector3(Mathf.Clamp(b1x.x, 0, b1x.x) + m_xCollider.size.x / 2, b3x.y, b3x.z);
+
+            Vector3 b3y, b1y;
+            b3y = m_b3y[i].position;
+            b3y = root.InverseTransformPoint(b3y);
+            b1y = m_b1y[i].position;
+            b1y = root.InverseTransformPoint(b1y);
+            m_yCollider.size = new Vector3(size, b3y.y - Mathf.Clamp(b1y.y, 0, b1y.y), size);
+            m_yCollider.center = new Vector3(b3y.x, Mathf.Clamp(b1y.y, 0, b1y.y) + m_yCollider.size.y / 2, b3y.z);
+
+            Vector3 b3z, b1z;
+            b3z = m_b3z[i].position;
+            b3z = root.InverseTransformPoint(b3z);
+            b1z = m_b1z[i].position;
+            b1z = root.InverseTransformPoint(b1z);
+            m_zCollider.size = new Vector3(size, size, b3z.z - Mathf.Clamp(b1z.z, 0, b1z.z));
+            m_zCollider.center = new Vector3(b3z.x, b3z.y, Mathf.Clamp(b1z.z, 0, b1z.z) + m_zCollider.size.z / 2);
+
+            if(ModelScale > 0)
+            {
+                b1x /= ModelScale;
+                b1y /= ModelScale;
+                b1z /= ModelScale;
+
+                m_xyCollider.size = new Vector3(Mathf.Abs(b1x.x * SelectionMargin), Mathf.Abs(b1y.y * SelectionMargin), size2);
+                m_xyCollider.center = new Vector3(b1x.x * SelectionMargin / 2, b1y.y * SelectionMargin / 2, 0);
+
+                m_xzCollider.size = new Vector3(Mathf.Abs(b1x.x * SelectionMargin), size2, Mathf.Abs(b1z.z * SelectionMargin));
+                m_xzCollider.center = new Vector3(b1x.x * SelectionMargin / 2, 0, b1z.z * SelectionMargin / 2);
+
+                m_yzCollider.size = new Vector3(size2, Mathf.Abs(b1y.y * SelectionMargin), Mathf.Abs(b1z.z * SelectionMargin));
+                m_yzCollider.center = new Vector3(0, b1y.y * SelectionMargin / 2, b1z.z * SelectionMargin / 2);
+
+                m_snappingCollider.radius = Mathf.Abs(b1x.x * SelectionMargin) / ModelScale;
+            }
+            else
+            {
+                m_xyCollider.size = Vector3.zero;
+                m_xyCollider.center = Vector3.zero;
+                m_xzCollider.size = Vector3.zero;
+                m_xzCollider.center = Vector3.zero;
+                m_yzCollider.size = Vector3.zero;
+                m_yzCollider.center = Vector3.zero;
+                m_snappingCollider.radius = 0;
+            }
+        }
+
+
+        public int SetCameraPosition(Vector3 pos)
         {
             Vector3 toCam = (pos - transform.position).normalized;
             toCam = transform.InverseTransformDirection(toCam);
             float[] dots =
-                RuntimeHandles.InvertZAxis ?
+                transform.localScale.z < 0 ?
                 new[]
                 {
                     Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
@@ -439,16 +552,92 @@ namespace Battlehub.RTHandles
             {
                 m_models[maxIndex].SetActive(true);
             }
+            return maxIndex;
         }
 
-#if DEBUG
+        public override RuntimeHandleAxis HitTest(Ray ray)
+        {
+            if (!m_useColliders)
+            {
+                return RuntimeHandleAxis.None;
+            }
+
+            Collider collider = null;
+            float minDistance = float.MaxValue;
+
+           // m_xCollider.transform.gameObject.SetActive(true);
+
+            if(m_isVertexSnapping)
+            {
+                RaycastHit hit;
+                if(m_snappingCollider.Raycast(ray, out hit, ActiveWindow.Camera.farClipPlane))
+                {
+                    collider = hit.collider;
+                    minDistance = hit.distance;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < m_colliders.Length; ++i)
+                {
+                    RaycastHit hit;
+                    if (m_colliders[i].Raycast(ray, out hit, ActiveWindow.Camera.farClipPlane))
+                    {
+                        if (hit.distance < minDistance)
+                        {
+                            collider = hit.collider;
+                            minDistance = hit.distance;
+                        }
+                    }
+                }
+            }
+           
+            //m_xCollider.transform.gameObject.SetActive(false);
+
+            if (collider == m_xCollider)
+            {
+                return RuntimeHandleAxis.X;
+            }
+
+            if (collider == m_yCollider)
+            {
+                return RuntimeHandleAxis.Y;
+            }
+
+            if (collider == m_zCollider)
+            {
+                return RuntimeHandleAxis.Z;
+            }
+
+            if (collider == m_xyCollider)
+            {
+                return RuntimeHandleAxis.XY;
+            }
+
+            if (collider == m_xzCollider)
+            {
+                return RuntimeHandleAxis.XZ;
+            }
+
+            if(collider == m_yzCollider)
+            {
+                return RuntimeHandleAxis.YZ;
+            }
+
+            if(collider == m_snappingCollider)
+            {
+                return RuntimeHandleAxis.Snap;
+            }
+
+            return RuntimeHandleAxis.None;
+        }
+
         private float m_prevRadius;
         private float m_prevLength;
         private float m_prevArrowRadius;
         private float m_prevArrowLength;
         private float m_prevQuadLength;
 
-      
         private Vector3 m_prevCameraPosition = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         private Vector3 m_prevPosition;
         private Quaternion m_prevRotation;
@@ -456,13 +645,17 @@ namespace Battlehub.RTHandles
         protected override void Update()
         {
             base.Update();
-
-            if(m_prevCameraPosition != m_camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
+                   
+            if(m_prevCameraPosition != ActiveWindow.Camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
             {
                 m_prevRotation = transform.rotation;
                 m_prevPosition = transform.position;
-                m_prevCameraPosition = m_camera.transform.position;
-                SetCameraPosition(m_prevCameraPosition);
+                m_prevCameraPosition = ActiveWindow.Camera.transform.position;
+                int index = SetCameraPosition(m_prevCameraPosition);
+                if (index >= 0)
+                {
+                    UpdateColliders(index);
+                }
             }
 
             if (m_prevRadius != m_radius || m_prevLength != m_length || m_prevArrowRadius != m_arrowRadius || m_prevArrowLength != m_arrowLength || m_prevQuadLength != m_quadLength)
@@ -473,11 +666,11 @@ namespace Battlehub.RTHandles
                 m_prevArrowLength = m_arrowLength;
                 m_prevQuadLength = m_quadLength;
 
-                UpdateTransforms();
+                UpdateModel();
             }
         }
-#endif
 
+        
     }
 }
 

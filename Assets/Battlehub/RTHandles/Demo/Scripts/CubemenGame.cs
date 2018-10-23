@@ -25,7 +25,7 @@ namespace Battlehub.RTHandles
         private GameCharacter m_current;
 
         private RTHandlesDemoSmoothFollow m_playerCamera;
-
+        
         protected override void AwakeOverride()
         {
             m_playerCamera = FindObjectOfType<RTHandlesDemoSmoothFollow>();
@@ -100,23 +100,22 @@ namespace Battlehub.RTHandles
         {
             if (m_current != null)
             {
-                m_current.IsActive =
-                    RuntimeEditorApplication.ActiveWindowType == RuntimeWindowType.GameView || !RuntimeEditorApplication.IsOpened;
+                m_current.IsActive = Editor.ActiveWindow != null && Editor.ActiveWindow.WindowType ==  RuntimeWindowType.GameView || !Editor.IsOpened;
             }
         }
 
         private void Update()
         {
-            if(!RuntimeEditorApplication.IsActiveWindow(RuntimeWindowType.GameView) && RuntimeEditorApplication.IsOpened)
+            if((Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.GameView) && Editor.IsOpened)
             {
                 return;
             }
 
-            if (InputController._GetKeyDown(KeyCode.Return))
+            if (Editor.Input.GetKeyDown(KeyCode.Return))
             {
                 SwitchPlayer(m_current, 0.0f, true);
             }
-            else if (InputController._GetKeyDown(KeyCode.Backspace))
+            else if (Editor.Input.GetKeyDown(KeyCode.Backspace))
             {
                 SwitchPlayer(m_current, 0.0f, false);
             }

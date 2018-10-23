@@ -11,6 +11,7 @@ namespace Battlehub.RTHandles
         private CubemanUserControl m_userControl;
         private Transform m_soul;
         private SkinnedMeshRenderer m_skinnedMeshRenderer;
+        private InputLow m_inputController = new InputLow();
 
         public Transform Camera
         {
@@ -42,7 +43,7 @@ namespace Battlehub.RTHandles
                 Die();
             }
 
-            if(InputController._GetKeyDown(KeyCode.K))
+            if(m_inputController.GetKeyDown(KeyCode.K))
             {
                 Die();
             }

@@ -5,18 +5,15 @@ using UnityEngine;
 using Battlehub.RTCommon;
 using UnityObject = UnityEngine.Object;
 
-
 namespace Battlehub.RTEditor
 {
-    public class InspectorView : RuntimeEditorWindow
+    public class InspectorView : RuntimeWindow
     {
         public GameObject GameObjectEditor;
         public GameObject MaterialEditor;
         public Transform Panel;
 
         private GameObject m_editor;
-
-        
 
         protected override void AwakeOverride()
         {
@@ -29,13 +26,14 @@ namespace Battlehub.RTEditor
             {
                 Debug.LogError("MaterialEditor is not set");
             }
-            RuntimeSelection.SelectionChanged += OnRuntimeSelectionChanged;
+
+            Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
         }
 
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
-            UnityObject obj = RuntimeSelection.activeObject;
+            UnityObject obj = Editor.Selection.activeObject;
             if(obj == null)
             {
                 if (m_editor != null)
@@ -61,7 +59,10 @@ namespace Battlehub.RTEditor
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
-            RuntimeSelection.SelectionChanged -= OnRuntimeSelectionChanged;
+            if(Editor != null)
+            {
+                Editor.Selection.SelectionChanged -= OnRuntimeSelectionChanged;
+            }
         }
 
         private void OnRuntimeSelectionChanged(UnityObject[] unselectedObjects)
@@ -76,24 +77,16 @@ namespace Battlehub.RTEditor
                 Destroy(m_editor);
             }
 
-            if (RuntimeSelection.activeObject == null)
+            if (Editor.Selection.activeObject == null)
             {
                 return;
             }
 
-            UnityObject[] selectedObjects = RuntimeSelection.objects.Where(o => o != null).ToArray();
+            UnityObject[] selectedObjects = Editor.Selection.objects.Where(o => o != null).ToArray();
             if (selectedObjects.Length != 1)
             {
                 return;
             }
-
-            //if (RuntimeSelection.activeGameObject != null)
-            //{
-            //    if (RuntimeSelection.activeGameObject.IsPrefab())
-            //    {
-            //        return;
-            //    }
-            //}
 
             Type objType = selectedObjects[0].GetType();
             for (int i = 1; i < selectedObjects.Length; ++i)
@@ -119,10 +112,6 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
-                //if(!EditorsMap.IsMaterialEditorEnabled(mat.shader))
-                //{
-                //    return;
-                //}
                 editorPrefab = EditorsMap.GetMaterialEditor(mat.shader);
             }
             else

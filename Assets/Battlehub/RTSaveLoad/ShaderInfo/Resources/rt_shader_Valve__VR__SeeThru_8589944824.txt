@@ -1,0 +1,1 @@
+{"dummy":0,"Name":"Valve/VR/SeeThru","InstanceId":8589944824,"PropertyCount":1,"PropertyDescriptions":["Color"],"PropertyNames":["_Color"],"PropertyTypes":[0],"PropertyRangeLimits":[{"Def":1.0,"Min":1.0,"Max":1.0}],"PropertyTexDims":[1],"IsHidden":[false]}

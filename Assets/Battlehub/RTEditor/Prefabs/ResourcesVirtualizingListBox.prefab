@@ -368,7 +368,8 @@ MonoBehaviour:
   ExpandChildrenHeight: 0
   Camera: {fileID: 0}
   ScrollSpeed: 100
-  Indent: 20
+  ScrollMargin: {x: 25, y: 25, z: 25, w: 25}
+  Indent: 25
   CanReparent: 1
   AutoExpand: 0
 --- !u!114 &114291612124458616

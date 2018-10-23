@@ -9,23 +9,25 @@ namespace Battlehub.RTHandles
         private CubemanCharacter m_character;
         private bool m_isKinematic;
         private bool m_isEnabled;
+        private IRTE m_editor;
 
         private void Start()
         {
+            m_editor = RTE.Get;
             m_character = GetComponent<CubemanCharacter>();
             m_rigidBody = GetComponent<Rigidbody>();
         }
 
         private void Update()
         {
-            if (InputController._GetKeyDown(KeyCode.V))
+            if (m_editor.Input.GetKeyDown(KeyCode.V))
             {
                 m_isKinematic = m_rigidBody.isKinematic;
                 m_rigidBody.isKinematic = true;
                 m_isEnabled = m_character.Enabled;
                 m_character.Enabled = false;
             }
-            else if (InputController._GetKeyUp(KeyCode.V))
+            else if (m_editor.Input.GetKeyUp(KeyCode.V))
             {
                 m_rigidBody.isKinematic = m_isKinematic;
                 m_character.Enabled = m_isEnabled;
@@ -40,7 +42,7 @@ namespace Battlehub.RTHandles
 
         public void OnSelected(ExposeToEditor obj)
         {
-            if(EditorDemo.Instance != null && EditorDemo.Instance.EnableCharacters)
+            if(EditorDemo.Get != null && EditorDemo.Get.EnableCharacters)
             {
                 EnableCharacter(obj.gameObject);
             }

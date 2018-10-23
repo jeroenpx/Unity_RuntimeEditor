@@ -17,16 +17,16 @@ namespace Battlehub.RTCommon
 
         private static Dictionary<Type, Material> m_typeToMaterial;
         private static Type[] m_types;
-        private static SpriteGizmoManager m_instance;
+        private IRTE m_editor;
 
         private void Awake()
         {
-            if(m_instance != null)
+            m_editor = RTE.Get;
+            if(m_editor == null)
             {
-                Debug.LogWarning("Another instance of GizmoManager Exists");
+                Debug.LogError("RTE is null");
             }
 
-            m_instance = this;
             Cleanup();
             Initialize();
             AwakeOverride();
@@ -36,13 +36,9 @@ namespace Battlehub.RTCommon
         {
             Cleanup();
 
-            if (m_instance == this)
-            {
-                m_instance = null;
-                m_typeToMaterial = null;
-                m_types = null;
-            }
-            
+            m_typeToMaterial = null;
+            m_types = null;
+
             OnDestroyOverride();
         }
 
@@ -85,7 +81,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static void Initialize()
+        private void Initialize()
         {
             if (m_types != null)
             {
@@ -111,20 +107,23 @@ namespace Battlehub.RTCommon
                 index++;
             }
 
-            m_types = m_instance.GetTypes(m_types);
+            m_types = GetTypes(m_types);
             OnIsOpenedChanged();
-            RuntimeEditorApplication.IsOpenedChanged += OnIsOpenedChanged;
+            m_editor.IsOpenedChanged += OnIsOpenedChanged;
         }
 
-        private static void Cleanup()
+        private void Cleanup()
         {
             m_types = null;
             m_typeToMaterial = null;
-            RuntimeEditorApplication.IsOpenedChanged -= OnIsOpenedChanged;
+            if(m_editor != null)
+            {
+                m_editor.IsOpenedChanged -= OnIsOpenedChanged;
+            }
             UnsubscribeAndDestroy();
         }
 
-        private static void UnsubscribeAndDestroy()
+        private void UnsubscribeAndDestroy()
         {
             Unsubscribe();
 
@@ -134,14 +133,14 @@ namespace Battlehub.RTCommon
                 SpriteGizmo obj = objs[j];
                 if (!obj.gameObject.IsPrefab())
                 {
-                    m_instance.DestroyGizmo(obj.gameObject);
+                    DestroyGizmo(obj.gameObject);
                 }
             }
         }
 
-        private static void OnIsOpenedChanged()
+        private void OnIsOpenedChanged()
         {
-            if (RuntimeEditorApplication.IsOpened)
+            if (m_editor.IsOpened)
             {
                 for (int i = 0; i < m_types.Length; ++i)
                 {
@@ -152,9 +151,9 @@ namespace Battlehub.RTCommon
                         if (obj && !obj.gameObject.IsPrefab())
                         {
                             ExposeToEditor exposeToEditor = obj.gameObject.GetComponent<ExposeToEditor>();
-                            if (exposeToEditor != null)
+                            if (exposeToEditor != null && exposeToEditor.Editor == m_editor)
                             {
-                                m_instance.GreateGizmo(obj.gameObject, m_types[i]);
+                                GreateGizmo(obj.gameObject, m_types[i]);
                             }
                         }
                     }
@@ -168,38 +167,38 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static void Subscribe()
+        private void Subscribe()
         {
-            ExposeToEditor.Awaked += OnAwaked;
-            ExposeToEditor.Destroyed += OnDestroyed;
+            m_editor.Object.Awaked += OnAwaked;
+            m_editor.Object.Destroyed += OnDestroyed;
         }
 
-        private static void Unsubscribe()
+        private void Unsubscribe()
         {
-            ExposeToEditor.Awaked -= OnAwaked;
-            ExposeToEditor.Destroyed -= OnDestroyed;
+            m_editor.Object.Awaked -= OnAwaked;
+            m_editor.Object.Destroyed -= OnDestroyed;
         }
 
-        private static void OnAwaked(ExposeToEditor obj)
+        private void OnAwaked(ExposeToEditor obj)
         {
             for (int i = 0; i < m_types.Length; ++i)
             {
                 Component component = obj.GetComponent(m_types[i]);
                 if (component != null)
                 {
-                    m_instance.GreateGizmo(obj.gameObject, m_types[i]);
+                    GreateGizmo(obj.gameObject, m_types[i]);
                 }
             }
         }
 
-        private static void OnDestroyed(ExposeToEditor obj)
+        private void OnDestroyed(ExposeToEditor obj)
         {
             for (int i = 0; i < m_types.Length; ++i)
             {
                 Component component = obj.GetComponent(m_types[i]);
                 if (component != null)
                 {
-                    m_instance.DestroyGizmo(obj.gameObject);
+                    DestroyGizmo(obj.gameObject);
                 }
             }
         }

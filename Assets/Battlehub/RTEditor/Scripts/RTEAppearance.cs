@@ -19,10 +19,14 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Cursor[] CursorSettings;
 
+        private IRTE m_editor;
+
         private void Awake()
         {
-            RuntimeEditorApplication.IsOpenedChanged += OnIsOpenedChanged;
-            if(RuntimeEditorApplication.IsOpened)
+            m_editor = RTE.Get;
+
+            m_editor.IsOpenedChanged += OnIsOpenedChanged;
+            if(m_editor.IsOpened)
             {
                 ApplySettings();
             }
@@ -30,12 +34,12 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            RuntimeEditorApplication.IsOpenedChanged -= OnIsOpenedChanged;
+            m_editor.IsOpenedChanged -= OnIsOpenedChanged;
         }
 
         private void OnIsOpenedChanged()
         {
-            if(RuntimeEditorApplication.IsOpened)
+            if(m_editor.IsOpened)
             {
                 ApplySettings();
             }
@@ -46,7 +50,7 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < CursorSettings.Length; ++i)
             {
                 Cursor cursor = CursorSettings[i];
-                CursorHelper.Map(cursor.Type, cursor.Texture);
+                m_editor.CursorHelper.Map(cursor.Type, cursor.Texture);
             }
         }
 

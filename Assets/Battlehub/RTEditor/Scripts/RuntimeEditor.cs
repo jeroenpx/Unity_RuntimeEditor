@@ -10,16 +10,11 @@ using Battlehub.RTCommon;
 using System.Collections;
 using Battlehub.RTGizmos;
 
-
 namespace Battlehub.RTEditor
 {
-    public class RuntimeEditor : MonoBehaviour
+    public class RuntimeEditor : RTE
     {
-        public UnityEvent Opened;
-        public UnityEvent Closed;
-        public UnityEvent Play;
-        public UnityEvent Stop;
-
+        /*
         public RTHandles.Grid Grid;
         public BoxSelection BoxSelect;
         public SceneGizmo SceneGizmo;
@@ -27,10 +22,7 @@ namespace Battlehub.RTEditor
         public GameObject CloseButton;
         public GameObject EditorRoot;
 
-        public Camera[] SceneCameras;
-        public KeyCode SwitchSceneCameraKey = KeyCode.H;
-
-        public RuntimeSceneView SceneView;
+        public RuntimeSceneComponent SceneView;
         public GameObject GameView;
         private ViewportFitter m_gameViewViewportFitter;
 
@@ -672,5 +664,6 @@ namespace Battlehub.RTEditor
                 e.Cancel = true;
             }
         }
+        */
     }
 }

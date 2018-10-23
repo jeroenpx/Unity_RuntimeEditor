@@ -12,7 +12,7 @@ Shader "Battlehub/RTHandles/Shape" {
 	}
 	SubShader
 	{
-		Tags{ "Queue" = "Transparent+10" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		Pass
 		{
 			Blend SrcAlpha OneMinusSrcAlpha

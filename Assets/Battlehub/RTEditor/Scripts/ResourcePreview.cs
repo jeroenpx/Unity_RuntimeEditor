@@ -10,6 +10,7 @@ using System.Collections;
 
 namespace Battlehub.RTEditor
 {
+    /*
     public enum ProjectItemType
     {
         None = 0,
@@ -20,6 +21,8 @@ namespace Battlehub.RTEditor
         ExposedResource = 8 | Resource,
         Any = Folder | Scene | Resource
     }
+
+
 
     public class ResourcePreview : MonoBehaviour
     {
@@ -547,4 +550,5 @@ namespace Battlehub.RTEditor
             m_instance = null;
         }
     }
+    */
 }

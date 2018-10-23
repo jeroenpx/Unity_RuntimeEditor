@@ -10,18 +10,13 @@ namespace Battlehub.RTHandles
     public class SelectionGizmo : MonoBehaviour, IGL
     {
         public bool DrawRay = true;
-        public Camera SceneCamera;
+        public RuntimeHandlesComponent Appearance;
         private ExposeToEditor m_exposeToEditor;
+
         private void Awake()
         {
-            if (SceneCamera == null)
-            {
-                SceneCamera = Camera.main;
-            }
-
             m_exposeToEditor = GetComponent<ExposeToEditor>();
-
-            
+            RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
         }
 
         private void Start()
@@ -33,20 +28,12 @@ namespace Battlehub.RTHandles
                 glRenderer.AddComponent<GLRenderer>();
             }
 
-            if (SceneCamera != null)
-            {
-                if (!SceneCamera.GetComponent<GLCamera>())
-                {
-                    SceneCamera.gameObject.AddComponent<GLCamera>();
-                }
-            }
-
             if (m_exposeToEditor != null)
             {
                 GLRenderer.Instance.Add(this);
             }
 
-            if (!RuntimeSelection.IsSelected(gameObject))
+            if (!m_exposeToEditor.Editor.Selection.IsSelected(gameObject))
             {
                 Destroy(this);
             }
@@ -73,7 +60,7 @@ namespace Battlehub.RTHandles
 
         public void Draw(int cullingMask)
         {
-            if (RuntimeTools.ShowSelectionGizmos)
+            if (m_exposeToEditor.Editor.Tools.ShowSelectionGizmos)
             {
                 RTLayer layer = RTLayer.SceneView;
                 if ((cullingMask & (int)layer) == 0)
@@ -83,12 +70,7 @@ namespace Battlehub.RTHandles
 
                 Bounds bounds = m_exposeToEditor.Bounds;
                 Transform trform = m_exposeToEditor.BoundsObject.transform;
-                RuntimeHandles.DrawBounds(ref bounds, trform.position, trform.rotation, trform.lossyScale);
-                if (RuntimeTools.DrawSelectionGizmoRay)
-                {
-                    RuntimeHandles.DrawBoundRay(ref bounds, trform.TransformPoint(bounds.center), Quaternion.identity, trform.lossyScale);
-                }
-
+                Appearance.DrawBounds(ref bounds, trform.position, trform.rotation, trform.lossyScale);
             }
         }
     }

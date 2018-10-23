@@ -19,18 +19,24 @@ namespace Battlehub.RTEditor
             get; set;
         }
 
-        public HeaderDescriptor(string displayName, bool showExpander = true, bool showResetButton = true)
+        public bool ShowEnableButton
+        {
+            get; set;
+        }
+
+        public HeaderDescriptor(string displayName, bool showExpander = true, bool showResetButton = true, bool showEnableButton = true)
         {
             DisplayName = displayName;
             ShowExpander = showExpander;
             ShowResetButton = showResetButton;
+            ShowEnableButton = showEnableButton;
         }
     }
 
     public interface IComponentDescriptor
     {
-        HeaderDescriptor HeaderDescriptor { get; }
-
+        HeaderDescriptor GetHeaderDescriptor(IRTE editor);
+        
         Type ComponentType { get; }
 
         Type GizmoType { get; }
@@ -42,15 +48,13 @@ namespace Battlehub.RTEditor
 
     public abstract class ComponentDescriptorBase<TComponent> : IComponentDescriptor
     {
-        public virtual HeaderDescriptor HeaderDescriptor
+        public virtual HeaderDescriptor GetHeaderDescriptor(IRTE editor)
         {
-            get
-            {
-                return new HeaderDescriptor(
-                    ComponentType.Name,
-                    RuntimeEditorApplication.ComponentEditorSettings.ShowExpander,
-                    RuntimeEditorApplication.ComponentEditorSettings.ShowResetButton);
-            }
+            return new HeaderDescriptor(
+                ComponentType.Name,
+                editor.ComponentEditorSettings.ShowExpander,
+                editor.ComponentEditorSettings.ShowResetButton,
+                editor.ComponentEditorSettings.ShowEnableButton);
         }
 
         public virtual Type ComponentType

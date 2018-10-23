@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 237758c99c21ca84d9c5871dd6e8adcb
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: Armature
     100002: Armature.001
@@ -309,6 +309,7 @@ ModelImporter:
     100606: R
     100608: S0
     100610: SSR
+    100612: RCollider
     400000: Armature
     400002: Armature.001
     400004: Armature.002
@@ -615,6 +616,7 @@ ModelImporter:
     400606: R
     400608: S0
     400610: SSR
+    400612: RCollider
     2100000: ZMat
     2100002: YMat
     2100004: XMat
@@ -634,9 +636,11 @@ ModelImporter:
     2300000: ScreenSpaceQuad
     2300002: R
     2300004: SSR
+    2300006: RCollider
     3300000: ScreenSpaceQuad
     3300002: R
     3300004: SSR
+    3300006: RCollider
     4300000: Cone.006
     4300002: Cone.005
     4300004: Cone.004
@@ -658,6 +662,7 @@ ModelImporter:
     4300036: SArrows
     4300038: R
     4300040: SSR
+    4300042: RCollider
     9500000: //RootNode
     13700000: Cone
     13700002: Cone.001
@@ -730,10 +735,12 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
-    normalSmoothAngle: 60
+    normalSmoothAngle: 18
     normalImportMode: 0
-    tangentImportMode: 3
+    tangentImportMode: 2
     normalCalculationMode: 4
   importAnimation: 1
   copyAvatar: 0

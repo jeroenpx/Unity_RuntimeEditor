@@ -59,7 +59,7 @@ namespace Battlehub.RTSaveLoad2
         protected readonly IAssetDB m_assetDB;
         protected PersistentSurrogate()
         {
-            m_assetDB = RTSL2Deps.Get.AssetDB;
+            m_assetDB = RTSL2InternalDeps.Get.AssetDB;
         }
 
         protected virtual void ReadFromImpl(object obj) { }

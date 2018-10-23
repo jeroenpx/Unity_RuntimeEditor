@@ -121,15 +121,19 @@ namespace Battlehub.RTEditor
         [HideInInspector]
         public Material Material;
 
+        private IRTE m_editor;
+
         private void Start()
         {
+            m_editor = RTE.Get;
+
             //if(!ShaderVariants.isWarmedUp)
             //{
             //    ShaderVariants.WarmUp();
             //}
             if (Material == null)
             {
-                Material = RuntimeSelection.activeObject as Material;
+                Material = m_editor.Selection.activeObject as Material;
             }
 
             if (Material == null)
@@ -284,7 +288,7 @@ namespace Battlehub.RTEditor
 
                 editor.Init(target, propertyInfo, descriptor.Label, null, descriptor.ValueChangedCallback, () => 
                 {
-                    RuntimeEditorApplication.SaveSelectedObjects();
+                    m_editor.IsDirty = true;
                 });
             }
         }
@@ -311,20 +315,20 @@ namespace Battlehub.RTEditor
         {
             if (Preview && m_image != null)
             {
-                m_image.sprite = ResourcePreview.CreatePreview(material, Preview);
+                //m_image.sprite = ResourcePreview.CreatePreview(material, Preview);
             }
         }
 
-        private int m_updateCounter = 0;
+        //private int m_updateCounter = 0;
         private void Update()
         {
-            m_updateCounter++;
-            m_updateCounter %= ResourcePreview.UpdatePreviewInterval;
-            if (m_updateCounter == 0)
-            {
-                Material material = RuntimeSelection.activeObject as Material;
-                UpdatePreview(material);
-            }
+            //m_updateCounter++;
+            //m_updateCounter %= ResourcePreview.UpdatePreviewInterval;
+            //if (m_updateCounter == 0)
+            //{
+            //    Material material = RuntimeSelection.activeObject as Material;
+            //    UpdatePreview(material);
+            //}
            
         }
     }

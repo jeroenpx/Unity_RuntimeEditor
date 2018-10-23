@@ -15,6 +15,7 @@ namespace Battlehub.RTCommon
         void Drop(object[] dragObjects, PointerEventData eventData);
     }
 
+    [DefaultExecutionOrder(-50)]
     public class DragDropTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragDropTarget
     {
         [SerializeField]
@@ -22,9 +23,28 @@ namespace Battlehub.RTCommon
 
         private IDragDropTarget[] m_dragDropTargets = new IDragDropTarget[0];
 
+        private bool m_isPointerOver;
+        public bool IsPointerOver
+        {
+            get { return m_isPointerOver; }
+        }
+
+        private IRTE m_editor;
+        public IRTE Editor
+        {
+            get { return m_editor; }
+        }
+
         // Use this for initialization
         private void Awake()
         {
+            m_editor = RTE.Get;
+            if (m_editor == null)
+            {
+                Debug.LogError("RTE is null");
+                return;
+            }
+
             if (m_dragDropTargetGO == null)
             {
                 m_dragDropTargets = new[] { this };
@@ -59,27 +79,31 @@ namespace Battlehub.RTCommon
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
+            Debug.Log("OnPointerEnter " + name);
+            m_isPointerOver = true;
             OnPointerEnterOverride(eventData);
-            if (DragDrop.DragObjects != null)
+            if (m_editor.DragDrop.DragObjects != null)
             {
                 for(int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
-                    m_dragDropTargets[i].DragEnter(DragDrop.DragObjects, eventData);
+                    m_dragDropTargets[i].DragEnter(m_editor.DragDrop.DragObjects, eventData);
                 }
             }
 
-            DragDrop.BeginDrag += OnBeginDrag;
-            DragDrop.Drag += OnDrag;
-            DragDrop.Drop += OnDrop;
+            m_editor.DragDrop.BeginDrag += OnBeginDrag;
+            m_editor.DragDrop.Drag += OnDrag;
+            m_editor.DragDrop.Drop += OnDrop;
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
+            Debug.Log("OnPointerExit " + name);
+            m_isPointerOver = false;
             OnPointerExitOverride(eventData);
-            DragDrop.BeginDrag -= OnBeginDrag;
-            DragDrop.Drop -= OnDrop;
-            DragDrop.Drag -= OnDrag;
-            if (DragDrop.DragObjects != null)
+            m_editor.DragDrop.BeginDrag -= OnBeginDrag;
+            m_editor.DragDrop.Drop -= OnDrop;
+            m_editor.DragDrop.Drag -= OnDrag;
+            if (m_editor.DragDrop.DragObjects != null)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
@@ -100,11 +124,13 @@ namespace Battlehub.RTCommon
 
         private void OnBeginDrag(PointerEventData pointerEventData)
         {
-            if (DragDrop.DragObjects != null)
+           
+
+            if (m_editor.DragDrop.DragObjects != null)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
-                    m_dragDropTargets[i].BeginDrag(DragDrop.DragObjects, pointerEventData);
+                    m_dragDropTargets[i].BeginDrag(m_editor.DragDrop.DragObjects, pointerEventData);
                 }
             }
         }
@@ -112,25 +138,25 @@ namespace Battlehub.RTCommon
 
         private void OnDrag(PointerEventData pointerEventData)
         {
-            if(DragDrop.DragObjects != null)
+            if(m_editor.DragDrop.DragObjects != null)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
-                    m_dragDropTargets[i].Drag(DragDrop.DragObjects, pointerEventData);
+                    m_dragDropTargets[i].Drag(m_editor.DragDrop.DragObjects, pointerEventData);
                 }
             }   
         }
 
         private void OnDrop(PointerEventData eventData)
         {
-            DragDrop.BeginDrag -= OnBeginDrag;
-            DragDrop.Drop -= OnDrop;
-            DragDrop.Drag -= OnDrag;
-            if (DragDrop.DragObjects != null)
+            m_editor.DragDrop.BeginDrag -= OnBeginDrag;
+            m_editor.DragDrop.Drop -= OnDrop;
+            m_editor.DragDrop.Drag -= OnDrag;
+            if (m_editor.DragDrop.DragObjects != null)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
-                    m_dragDropTargets[i].Drop(DragDrop.DragObjects, eventData);
+                    m_dragDropTargets[i].Drop(m_editor.DragDrop.DragObjects, eventData);
                 }
             }
         }

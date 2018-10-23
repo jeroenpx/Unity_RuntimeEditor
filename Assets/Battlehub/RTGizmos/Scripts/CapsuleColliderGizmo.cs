@@ -107,9 +107,9 @@ namespace Battlehub.RTGizmos
         protected override void RecordOverride()
         {
             base.RecordOverride();
-            RuntimeUndo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.center, "center"));
-            RuntimeUndo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.height, "height"));
-            RuntimeUndo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.direction, "direction"));
+            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.center, "center"));
+            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.height, "height"));
+            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.direction, "direction"));
         }
     }
 }

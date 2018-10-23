@@ -265,10 +265,17 @@ namespace Battlehub.RTEditor
             private set;
         }
 
+        private IRTE m_editor;
+        public IRTE Editor
+        {
+            get { return m_editor; }
+        }
+        
         private void Awake()
         {
+            m_editor = RTE.Get;
             AwakeOverride();
-            RuntimeUndo.BeforeUndo += OnBeforeUndo;
+            Editor.Undo.BeforeUndo += OnBeforeUndo;
         }
         
         private void Start()
@@ -303,7 +310,11 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            RuntimeUndo.BeforeUndo -= OnBeforeUndo;
+            if(Editor != null)
+            {
+                Editor.Undo.BeforeUndo -= OnBeforeUndo;
+            }
+            
             OnDestroyOverride();
         }
 
@@ -451,7 +462,7 @@ namespace Battlehub.RTEditor
         {
             if(m_enableUndo)
             {
-                RuntimeUndo.RecordValue(Target, MemberInfo);
+                Editor.Undo.RecordValue(Target, MemberInfo);
             }
         }
 

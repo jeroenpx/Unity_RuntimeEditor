@@ -173,46 +173,95 @@ namespace Battlehub.RTCommon
     }
 
     public delegate void RuntimeUndoEventHandler();
-
-    /// <summary>
-    /// Class for handling undo and redo operations
-    /// </summary>
-    public static class RuntimeUndo
+    public interface IRuntimeUndo
     {
-        public static event RuntimeUndoEventHandler BeforeUndo;
-        public static event RuntimeUndoEventHandler UndoCompleted;
-        public static event RuntimeUndoEventHandler BeforeRedo;
-        public static event RuntimeUndoEventHandler RedoCompleted;
-        public static event RuntimeUndoEventHandler StateChanged;
+        event RuntimeUndoEventHandler BeforeUndo;
+        event RuntimeUndoEventHandler UndoCompleted;
+        event RuntimeUndoEventHandler BeforeRedo;
+        event RuntimeUndoEventHandler RedoCompleted;
+        event RuntimeUndoEventHandler StateChanged;
 
-        private static List<Record> m_group;
-        private static UndoStack<Record[]> m_stack;
-        private static Stack<UndoStack<Record[]>> m_stacks;
-
-        public const int Limit = 8192;
-        
-        public static bool Enabled
+        bool Enabled
         {
             get;
             set;
         }
 
-        public static bool CanUndo
+        bool CanUndo
+        {
+            get;
+        }
+
+        bool CanRedo
+        {
+            get;
+        }
+
+        bool IsRecording
+        {
+            get;
+        }
+
+        void BeginRecord();
+        void EndRecord();
+        void BeginRegisterCreateObject(GameObject g);
+        void RegisterCreatedObject(GameObject g);
+        void BeginDestroyObject(GameObject g);
+        void DestroyObject(GameObject g);
+        void RecordValue(object target, MemberInfo memberInfo);
+        void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
+        void RecordSelection();
+        void RecordComponent(MonoBehaviour component);
+        void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null);
+        void Redo();
+        void Undo();
+        void Purge();
+        void Store();
+        void Restore(); 
+    }
+
+ 
+    /// <summary>
+    /// Class for handling undo and redo operations
+    /// </summary>
+    public class RuntimeUndo : IRuntimeUndo
+    {
+        public event RuntimeUndoEventHandler BeforeUndo;
+        public event RuntimeUndoEventHandler UndoCompleted;
+        public event RuntimeUndoEventHandler BeforeRedo;
+        public event RuntimeUndoEventHandler RedoCompleted;
+        public event RuntimeUndoEventHandler StateChanged;
+
+        private List<Record> m_group;
+        private UndoStack<Record[]> m_stack;
+        private Stack<UndoStack<Record[]>> m_stacks;
+
+        public const int Limit = 8192;
+        
+        public bool Enabled
+        {
+            get;
+            set;
+        }
+
+        public bool CanUndo
         {
             get { return m_stack.CanPop; }
         }
 
-        public static bool CanRedo
+        public bool CanRedo
         {
             get { return m_stack.CanRestore; }
         }
 
-        static RuntimeUndo()
+        private IRTE m_rte;
+        public RuntimeUndo(IRTE rte)
         {
+            m_rte = rte;
             Reset();
         }
 
-        public static void Reset()
+        public void Reset()
         {
             Enabled = true;
             m_group = null;
@@ -220,12 +269,12 @@ namespace Battlehub.RTCommon
             m_stacks = new Stack<UndoStack<Record[]>>();
         }
 
-        public static bool IsRecording
+        public bool IsRecording
         {
             get { return m_group != null; }
         }
 
-        public static void BeginRecord()
+        public void BeginRecord()
         {
             if (!Enabled)
             {
@@ -235,7 +284,7 @@ namespace Battlehub.RTCommon
             m_group = new List<Record>();
         }
 
-        public static void EndRecord()
+        public void EndRecord()
         {
             if (!Enabled)
             {
@@ -269,7 +318,7 @@ namespace Battlehub.RTCommon
                 value = v;
             }
         }
-        private static void RecordActivateDeactivate(GameObject g, BoolState value)
+        private void RecordActivateDeactivate(GameObject g, BoolState value)
         {
             RecordObject(g, value,
                record =>
@@ -320,7 +369,7 @@ namespace Battlehub.RTCommon
                });
         }
 
-        public static void BeginRegisterCreateObject(GameObject g)
+        public void BeginRegisterCreateObject(GameObject g)
         {
             if (!Enabled)
             {
@@ -329,7 +378,7 @@ namespace Battlehub.RTCommon
             RecordActivateDeactivate(g, new BoolState(false));
         }
 
-        public static void RegisterCreatedObject(GameObject g)
+        public void RegisterCreatedObject(GameObject g)
         {
             if (!Enabled)
             {
@@ -349,7 +398,7 @@ namespace Battlehub.RTCommon
             RecordActivateDeactivate(g, new BoolState(true));
         }
 
-        public static void BeginDestroyObject(GameObject g)
+        public void BeginDestroyObject(GameObject g)
         {
             if (!Enabled)
             {
@@ -358,7 +407,7 @@ namespace Battlehub.RTCommon
             RecordActivateDeactivate(g, new BoolState(true));
         }
 
-        public static void DestroyObject(GameObject g)
+        public void DestroyObject(GameObject g)
         {
             if (!Enabled)
             {
@@ -378,7 +427,7 @@ namespace Battlehub.RTCommon
         }
 
 
-        private static object GetValue(object target, MemberInfo m)
+        private object GetValue(object target, MemberInfo m)
         {
             PropertyInfo p = m as PropertyInfo;
             if (p != null)
@@ -395,7 +444,7 @@ namespace Battlehub.RTCommon
             throw new System.ArgumentException("member is not FieldInfo and is not PropertyInfo", "m");
         }
 
-        private static void SetValue(object target, MemberInfo m, object value)
+        private void SetValue(object target, MemberInfo m, object value)
         {
             PropertyInfo p = m as PropertyInfo;
             if (p != null)
@@ -429,7 +478,7 @@ namespace Battlehub.RTCommon
         }
 
 
-        public static void RecordValue(object target, MemberInfo memberInfo)
+        public void RecordValue(object target, MemberInfo memberInfo)
         {
             // Debug.Log("Record Value " + target + " " + memberInfo.Name);
             if (!Enabled)
@@ -510,7 +559,7 @@ namespace Battlehub.RTCommon
             public int siblingIndex = -1;
         }
 
-        public static void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        public void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
         {
             if (!Enabled)
             {
@@ -567,50 +616,30 @@ namespace Battlehub.RTCommon
             public Object activeObject;
         }
 
-        private class RTSelectionInternalsAccessor : RuntimeSelection
-        {
-            public static Object activeObjectProperty
-            {
-                get { return m_activeObject; }
-                set
-                {
-                    m_activeObject = value;
-                }
-            }
 
-            public static Object[] objectsProperty
-            {
-                get { return m_objects; }
-                set
-                {
-                    SetObjects(value);
-                }
-            }
-        }
-
-        public static void RecordSelection()
+        public void RecordSelection()
         {
             if (!Enabled)
             {
                 return;
             }
 
-            RecordObject(null, new SelectionRecord { objects = RuntimeSelection.objects, activeObject = RuntimeSelection.activeObject }, record =>
+            RecordObject(null, new SelectionRecord { objects = m_rte.Selection.objects, activeObject = m_rte.Selection.activeObject }, record =>
             {
                 SelectionRecord state = (SelectionRecord)record.State;
 
                 bool hasChanged = false;
-                if (state.objects != null && RuntimeSelection.objects != null)
+                if (state.objects != null && m_rte.Selection.objects != null)
                 {
-                    if (state.objects.Length != RuntimeSelection.objects.Length)
+                    if (state.objects.Length != m_rte.Selection.objects.Length)
                     {
                         hasChanged = true;
                     }
                     else
                     {
-                        for (int i = 0; i < RuntimeSelection.objects.Length; ++i)
+                        for (int i = 0; i < m_rte.Selection.objects.Length; ++i)
                         {
-                            if (state.objects[i] != RuntimeSelection.objects[i])
+                            if (state.objects[i] != m_rte.Selection.objects[i])
                             {
                                 hasChanged = true;
                                 break;
@@ -620,9 +649,9 @@ namespace Battlehub.RTCommon
                 }
                 else if (state.objects == null)
                 {
-                    hasChanged = RuntimeSelection.objects != null && RuntimeSelection.objects.Length != 0;
+                    hasChanged = m_rte.Selection.objects != null && m_rte.Selection.objects.Length != 0;
                 }
-                else if (RuntimeSelection.objects == null)
+                else if (m_rte.Selection.objects == null)
                 {
                     hasChanged = state.objects != null && state.objects.Length != 0;
                 }
@@ -646,13 +675,13 @@ namespace Battlehub.RTCommon
                                 selection.Insert(0, state.activeObject);
                             }
                         }
-                        RTSelectionInternalsAccessor.activeObjectProperty = state.activeObject;
-                        RTSelectionInternalsAccessor.objectsProperty = selection.ToArray();
+                        m_rte.Selection.INTERNAL_activeObjectProperty = state.activeObject;
+                        m_rte.Selection.INTERNAL_objectsProperty = selection.ToArray();
                     }
                     else
                     {
-                        RTSelectionInternalsAccessor.activeObjectProperty = null;
-                        RTSelectionInternalsAccessor.objectsProperty = null;
+                        m_rte.Selection.INTERNAL_activeObjectProperty = null;
+                        m_rte.Selection.INTERNAL_objectsProperty = null;
                     }
                 }
                 return hasChanged;
@@ -661,7 +690,7 @@ namespace Battlehub.RTCommon
 
         }
 
-        public static void RecordComponent(MonoBehaviour component)
+        public void RecordComponent(MonoBehaviour component)
         {
             System.Type type = component.GetType();
             if(type == typeof(MonoBehaviour))
@@ -695,7 +724,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null)
+        public void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null)
         {
             if (!Enabled)
             {
@@ -731,7 +760,7 @@ namespace Battlehub.RTCommon
 
        
 
-        public static void Redo()
+        public void Redo()
         {
             if (!Enabled)
             {
@@ -767,7 +796,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void Undo()
+        public void Undo()
         {
             if (!Enabled)
             {
@@ -803,7 +832,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void Purge()
+        public void Purge()
         {
             if (!Enabled)
             {
@@ -829,7 +858,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void Store()
+        public void Store()
         {
             if (!Enabled)
             {
@@ -843,7 +872,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void Restore()
+        public void Restore()
         {
             if (!Enabled)
             {
@@ -863,8 +892,96 @@ namespace Battlehub.RTCommon
                     StateChanged();
                 }
             }
+        }   
+    }
+
+    public class DisabledUndo : IRuntimeUndo
+    {
+        public bool Enabled { get { return false; } set { } }
+
+        public bool CanUndo { get { return false; } }
+
+        public bool CanRedo { get { return false; } }
+
+        public bool IsRecording { get { return false; } }
+
+        private void GetRidOfWarnings()
+        {
+            BeforeUndo();
+            UndoCompleted();
+            BeforeRedo();
+            RedoCompleted();
+            StateChanged();
         }
 
-        
+        public event RuntimeUndoEventHandler BeforeUndo;
+        public event RuntimeUndoEventHandler UndoCompleted;
+        public event RuntimeUndoEventHandler BeforeRedo;
+        public event RuntimeUndoEventHandler RedoCompleted;
+        public event RuntimeUndoEventHandler StateChanged;
+
+        public void BeginDestroyObject(GameObject g)
+        {
+        }
+
+        public void BeginRecord()
+        {
+        }
+
+        public void BeginRegisterCreateObject(GameObject g)
+        {
+        }
+
+        public void DestroyObject(GameObject g)
+        {
+        }
+
+        public void EndRecord()
+        {
+        }
+
+        public void Purge()
+        {
+        }
+
+        public void RecordComponent(MonoBehaviour component)
+        {
+        }
+
+        public void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null)
+        {
+        }
+
+        public void RecordSelection()
+        {
+        }
+
+        public void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        {
+        }
+
+        public void RecordValue(object target, MemberInfo memberInfo)
+        {
+        }
+
+        public void Redo()
+        {
+        }
+
+        public void RegisterCreatedObject(GameObject g)
+        {
+        }
+
+        public void Restore()
+        {
+        }
+
+        public void Store()
+        {
+        }
+
+        public void Undo()
+        {
+        }
     }
 }

@@ -17,6 +17,8 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(3)]
         public IntArray[] m_tris;
 
+#warning do not forget to save index format
+
         public override object WriteTo(object obj)
         {
             if (obj == null)

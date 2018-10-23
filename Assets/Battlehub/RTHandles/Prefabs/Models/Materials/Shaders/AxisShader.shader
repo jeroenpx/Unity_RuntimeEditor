@@ -7,6 +7,7 @@
 
 	SubShader
 	{
+		//ZTest Always
 		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		LOD 100
 	

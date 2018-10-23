@@ -9,8 +9,6 @@ namespace Battlehub.RTEditor
 {
     public class ObjectEditor : PropertyEditor<UnityObject>, IPointerEnterHandler, IPointerExitHandler
     {
-        private bool m_isPointerOver;
-
         [SerializeField]
         private GameObject DragHighlight;
         [SerializeField]
@@ -38,8 +36,7 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
             BtnSelect.onClick.AddListener(OnSelect);
-           // DragDrop.BeginDrag += OnGlobalBeginDrag;
-            //DragDrop.Drop += OnGlobalDrop;
+
         }
 
         protected override void OnDestroyOverride()
@@ -49,8 +46,11 @@ namespace Battlehub.RTEditor
             {
                 BtnSelect.onClick.RemoveListener(OnSelect);
             }
-           // DragDrop.BeginDrag -= OnGlobalBeginDrag;
-           // DragDrop.Drop -= OnGlobalDrop;
+
+            if(Editor != null)
+            {
+                Editor.DragDrop.Drop -= OnDrop;
+            }
         }
 
         private void OnSelect()
@@ -78,48 +78,34 @@ namespace Battlehub.RTEditor
                 "Cancel");
         }
 
-#warning Commented Out. TODO: Re-implement using DragDropTarget
-        //private void OnGlobalBeginDrag()
-        //{
-        //    if(m_isPointerOver)
-        //    {
-        //        if (DragDrop.DragObject != null && MemberInfoType.IsAssignableFrom(DragDrop.DragObject.GetType()))
-        //        {
-        //            ShowDragHighlight();
-        //        }
-        //    }
-        //}
 
-        //private void OnGlobalDrop()
-        //{
-        //    if (m_isPointerOver)
-        //    {
-        //        if (DragDrop.DragObject != null && MemberInfoType.IsAssignableFrom(DragDrop.DragObject.GetType()))
-        //        {
-        //            SetValue(DragDrop.DragObject);
-        //            EndEdit();
-        //            SetInputField(DragDrop.DragObject);
-        //            HideDragHighlight();
-        //        }
-        //    }
-        //}
+        private void OnDrop(PointerEventData pointerEventData)
+        {
+            object dragObject = Editor.DragDrop.DragObjects[0];
+            #warning Recover this functionality
+            throw new System.NotImplementedException();
+            //SetValue(DragDrop.DragObject);
+            //EndEdit();
+            //SetInputField(DragDrop.DragObject);
+            //HideDragHighlight();
+
+        }
+
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            m_isPointerOver = true;
-            if (DragDrop.DragObject != null && MemberInfoType.IsAssignableFrom(DragDrop.DragObject.GetType()))
+            if (Editor.DragDrop.InProgress && Editor.DragDrop.DragObjects[0] != null && MemberInfoType.IsAssignableFrom(Editor.DragDrop.DragObjects[0].GetType()))
             {
+                Editor.DragDrop.Drop -= OnDrop;
+                Editor.DragDrop.Drop += OnDrop;
                 ShowDragHighlight();
             }
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            m_isPointerOver = false;
-            if(DragDrop.DragObject != null)
-            {
-                HideDragHighlight();
-            }
+            HideDragHighlight();
+            Editor.DragDrop.Drop -= OnDrop;
         }
 
         private void ShowDragHighlight()

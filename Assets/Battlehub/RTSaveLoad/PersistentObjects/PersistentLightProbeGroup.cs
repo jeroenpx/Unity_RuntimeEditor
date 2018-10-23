@@ -21,7 +21,7 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 				return null;
 			}
 			UnityEngine.LightProbeGroup o = (UnityEngine.LightProbeGroup)obj;
-			o.probePositions = probePositions;
+			//o.probePositions = probePositions;
 			return o;
 		}
 
@@ -32,8 +32,8 @@ namespace Battlehub.RTSaveLoad.PersistentObjects
 			{
 				return;
 			}
-			UnityEngine.LightProbeGroup o = (UnityEngine.LightProbeGroup)obj;
-			probePositions = o.probePositions;
+			//UnityEngine.LightProbeGroup o = (UnityEngine.LightProbeGroup)obj;
+			//probePositions = o.probePositions;
 		}
 
 		public override void FindDependencies<T>(System.Collections.Generic.Dictionary<long, T> dependencies, System.Collections.Generic.Dictionary<long, T> objects, bool allowNulls)

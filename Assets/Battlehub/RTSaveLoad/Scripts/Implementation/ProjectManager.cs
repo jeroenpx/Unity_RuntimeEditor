@@ -375,10 +375,10 @@ namespace Battlehub.RTSaveLoad
 
             RaiseSceneLoading(scene);
 
-            bool isEnabled = RuntimeUndo.Enabled;
-            RuntimeUndo.Enabled = false;
-            RuntimeSelection.objects = null;
-            RuntimeUndo.Enabled = isEnabled;
+            bool isEnabled = m_editor.Undo.Enabled;
+            m_editor.Undo.Enabled = false;
+            m_editor.Selection.objects = null;
+            m_editor.Undo.Enabled = isEnabled;
 
             bool includeDynamicResources = false;
             Dictionary<long, UnityObject> allObjects = IdentifiersMap.FindResources(includeDynamicResources);

@@ -17,7 +17,7 @@ MonoBehaviour:
     m_Name: Root
     m_Depth: 0
     Identity: 725
-    FolderIdentity: 45
+    FolderIdentity: 46
     Folders:
     - m_ID: 0
       m_Name: Assets
@@ -2996,5 +2996,10 @@ MonoBehaviour:
         Object: {fileID: 2800000, guid: 5aa9a02297bbbef49a0e4e0ca6b61d26, type: 3}
         IsEnabled: 1
         PrefabParts: []
+      IsEnabled: 1
+    - m_ID: 45
+      m_Name: Folder
+      m_Depth: 1
+      Assets: []
       IsEnabled: 1
   AssetLibraryPath: Assets/Battlehub/RTSaveLoad2/Resources/AssetLibrary.asset

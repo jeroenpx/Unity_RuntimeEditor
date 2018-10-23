@@ -1,20 +1,19 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Battlehub.Utils;
 using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
 {
     [RequireComponent(typeof(Camera))]
-    public class SceneGizmo : MonoBehaviour
+    public class SceneGizmo : RTEBehaviour
     {
-        public Camera SceneCamera;
         public Button BtnProjection;
         public Transform Pivot;
         public Vector2 Size = new Vector2(96, 96);
         public Vector3 Up = Vector3.up;
+        public RuntimeHandlesComponent Appearance;
 
         public UnityEvent OrientationChanging;
         public UnityEvent OrientationChanged;
@@ -57,7 +56,7 @@ namespace Battlehub.RTHandles
             set
             {
                 m_camera.orthographic = value;
-                SceneCamera.orthographic = value;
+                m_window.Camera.orthographic = value;
 
                 if(BtnProjection != null)
                 {
@@ -74,7 +73,12 @@ namespace Battlehub.RTHandles
                         }
                     }
                 }
-               
+
+                if (SceneComponent != null)
+                {
+                    SceneComponent.OnSceneGizmoProjectionChanged();
+                }
+
                 if (ProjectionChanged != null)
                 {
                     ProjectionChanged.Invoke();
@@ -83,12 +87,41 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void Start()
+        [SerializeField]
+        private RuntimeSceneComponent m_sceneComponent;
+        public RuntimeSceneComponent SceneComponent
         {
-            if (SceneCamera == null)
+            get { return m_sceneComponent; }
+            set { m_sceneComponent = value; }
+        }
+
+        [SerializeField]
+        private RuntimeWindow m_window;
+        public RuntimeWindow Window
+        {
+            get { return m_window; }
+        }
+
+        protected override void AwakeOverride()
+        {
+            base.AwakeOverride();
+        
+            if (Window == null)
             {
-                SceneCamera = Camera.main;
+                m_window = Editor.GetWindow(RuntimeWindowType.SceneView);
+                if (Window == null)
+                {
+                    enabled = false;
+                    return;
+                }
             }
+
+            if(m_sceneComponent == null)
+            {
+                m_sceneComponent = GetComponentInParent<RuntimeSceneComponent>();
+            }
+
+            RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
 
             if (Pivot == null)
             {
@@ -118,7 +151,7 @@ namespace Battlehub.RTHandles
             m_camera.allowMSAA = false;
             m_camera.allowHDR = false;
             m_camera.cullingMask = 0;
-            SceneCamera.orthographic = m_camera.orthographic;
+            m_window.Camera.orthographic = m_camera.orthographic;
 
             m_screenHeight = Screen.height;
             m_screenWidth = Screen.width;
@@ -139,35 +172,38 @@ namespace Battlehub.RTHandles
             {
                 BtnProjection.onClick.AddListener(OnBtnModeClick);
             }
+
+            if(!GetComponent<SceneGizmoInput>())
+            {
+                gameObject.AddComponent<SceneGizmoInput>();
+            }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroyOverride()
         {
+            base.OnDestroyOverride();
+        
             if (BtnProjection != null)
             {
                 BtnProjection.onClick.RemoveListener(OnBtnModeClick);
             }
-
-            if(RuntimeTools.ActiveTool == this)
+            if(m_window != null && m_window.Editor != null)
             {
-                RuntimeTools.ActiveTool = null;
+                if(m_window.Editor.Tools.ActiveTool == this)
+                {
+                    m_window.Editor.Tools.ActiveTool = null;
+                }
             }
         }
 
         private void OnBtnModeClick()
         {
-            IsOrthographic = !SceneCamera.orthographic;
-        }
-
-        public void SetSceneCamera(Camera camera)
-        {
-            SceneCamera = camera;
-            UpdateLayout();
+            IsOrthographic = !m_window.Camera.orthographic;
         }
 
         private void OnPostRender()
         {
-            RuntimeHandles.DoSceneGizmo(GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y / 96, m_xAlpha, m_yAlpha, m_zAlpha);
+            Appearance.DoSceneGizmo(GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y / 96, m_xAlpha, m_yAlpha, m_zAlpha);
         }
 
         private void OnGUI()
@@ -176,7 +212,7 @@ namespace Battlehub.RTHandles
             {
                 return;
             }
-            if (SceneCamera.orthographic)
+            if (m_window.Camera.orthographic)
             {
                 if (GUI.Button(m_buttonRect, "Ortho", m_buttonStyle))
                 {
@@ -192,6 +228,15 @@ namespace Battlehub.RTHandles
             }
         }
 
+        protected override void OnWindowActivated()
+        {
+            base.OnWindowActivated();
+
+            m_aspect = 0;
+            m_screenHeight = 0;
+            Sync();
+        }
+
         private void Update()
         {
             Sync();
@@ -201,42 +246,32 @@ namespace Battlehub.RTHandles
             updateAlpha |= UpdateAlpha(ref m_yAlpha, Vector3.up, delta);
             updateAlpha |= UpdateAlpha(ref m_zAlpha, Vector3.forward, delta);
 
-            if (RuntimeTools.IsPointerOverGameObject())
-            {
-                if(RuntimeTools.ActiveTool == this)
-                {
-                    RuntimeTools.ActiveTool = null;
-                }
-                m_selectedAxis = Vector3.zero;
-                return;
-            }
 
-            if (RuntimeTools.IsViewing)
+            if (m_window.Editor.Tools.IsViewing)
             {
                 m_selectedAxis = Vector3.zero;
                 return;
             }
 
-            if(RuntimeTools.ActiveTool != null && RuntimeTools.ActiveTool != this)
+            if(m_window.Editor.Tools.ActiveTool != null && m_window.Editor.Tools.ActiveTool != this)
             {
                 m_selectedAxis = Vector3.zero;
                 return;
             }
 
-
-            Vector2 guiMousePositon = InputController._MousePosition;
+            Vector2 guiMousePositon = m_window.Pointer.ScreenPoint;
             guiMousePositon.y = Screen.height - guiMousePositon.y;
             bool isMouseOverButton = m_buttonRect.Contains(guiMousePositon, true);
             if(isMouseOverButton)
             {
-                RuntimeTools.ActiveTool = this;
+                m_window.Editor.Tools.ActiveTool = this;
             }
             else
             {
-                RuntimeTools.ActiveTool = null;
+                m_window.Editor.Tools.ActiveTool = null;
             }
 
-            if (m_camera.pixelRect.Contains(InputController._MousePosition))
+            if (m_camera.pixelRect.Contains(m_window.Pointer.ScreenPoint))
             {
                 if (!m_mouseOver || updateAlpha)
                 {
@@ -281,63 +316,12 @@ namespace Battlehub.RTHandles
                 if (m_selectedAxis != Vector3.zero || isMouseOverButton)
                 {
                     //RuntimeTools.IsSceneGizmoSelected = true;
-                    RuntimeTools.ActiveTool = this;
+                    m_window.Editor.Tools.ActiveTool = this;
                 }
                 else
                 {
                     //RuntimeTools.IsSceneGizmoSelected = false;
-                    RuntimeTools.ActiveTool = null;
-                }
-
-                if (InputController._GetMouseButtonUp(0))
-                {
-
-                    if (m_selectedAxis != Vector3.zero)
-                    {
-                        if (m_selectedAxis == Vector3.one)
-                        {
-                            IsOrthographic = !IsOrthographic;
-                        }
-                        else
-                        {
-                            if (m_rotateAnimation == null || !m_rotateAnimation.InProgress)
-                            {
-                                if (OrientationChanging != null)
-                                {
-                                    OrientationChanging.Invoke();
-                                }
-                            }
-
-                            if (m_rotateAnimation != null)
-                            {
-                                m_rotateAnimation.Abort();
-                            }
-
-                            Vector3 pivot = Pivot.transform.position;
-                            Vector3 radiusVector = Vector3.back * (SceneCamera.transform.position - pivot).magnitude;
-                            Quaternion targetRotation = Quaternion.LookRotation(-m_selectedAxis, Up);
-                            m_rotateAnimation = new QuaternionAnimationInfo(SceneCamera.transform.rotation, targetRotation, 0.4f, QuaternionAnimationInfo.EaseOutCubic,
-                                (target, value, t, completed) =>
-                                {
-                                    SceneCamera.transform.position = pivot + value * radiusVector;
-                                    SceneCamera.transform.rotation = value;
-
-                                    if (completed)
-                                    {
-                                        DisableColliders();
-                                        EnableColliders();
-
-                                        if (OrientationChanged != null)
-                                        {
-                                            OrientationChanged.Invoke();
-                                        }
-                                    }
-
-                                });
-
-                            Run.Instance.Animation(m_rotateAnimation);
-                        }
-                    }
+                    m_window.Editor.Tools.ActiveTool = null;
                 }
 
                 m_mouseOver = true;
@@ -347,10 +331,70 @@ namespace Battlehub.RTHandles
                 if (m_mouseOver)
                 {
                     DisableColliders();
-                    RuntimeTools.ActiveTool = null;
+                    m_window.Editor.Tools.ActiveTool = null;
                 }
-
+                m_selectedAxis = Vector3.zero;
                 m_mouseOver = false;
+            }
+        }
+
+        public void Click()
+        {
+            if (m_selectedAxis != Vector3.zero)
+            {
+                if (m_selectedAxis == Vector3.one)
+                {
+                    IsOrthographic = !IsOrthographic;
+                }
+                else
+                {
+                    if (m_rotateAnimation == null || !m_rotateAnimation.InProgress)
+                    {
+                        if (SceneComponent != null)
+                        {
+                            SceneComponent.OnSceneGizmoOrientationChanging();
+                        }
+
+                        if (OrientationChanging != null)
+                        {
+                            OrientationChanging.Invoke();
+                        }
+                    }
+
+                    if (m_rotateAnimation != null)
+                    {
+                        m_rotateAnimation.Abort();
+                    }
+
+                    Vector3 pivot = Pivot.transform.position;
+                    Vector3 radiusVector = Vector3.back * (m_window.Camera.transform.position - pivot).magnitude;
+                    Quaternion targetRotation = Quaternion.LookRotation(-m_selectedAxis, Up);
+                    m_rotateAnimation = new QuaternionAnimationInfo(m_window.Camera.transform.rotation, targetRotation, 0.4f, QuaternionAnimationInfo.EaseOutCubic,
+                        (target, value, t, completed) =>
+                        {
+                            m_window.Camera.transform.position = pivot + value * radiusVector;
+                            m_window.Camera.transform.rotation = value;
+
+                            if (completed)
+                            {
+                                DisableColliders();
+                                EnableColliders();
+
+                                if (SceneComponent != null)
+                                {
+                                    SceneComponent.OnSceneGizmoOrientationChanged();
+                                }
+
+                                if (OrientationChanged != null)
+                                {
+                                    OrientationChanged.Invoke();
+                                }
+                            }
+
+                        });
+
+                    Run.Instance.Animation(m_rotateAnimation);
+                }
             }
         }
 
@@ -372,11 +416,11 @@ namespace Battlehub.RTHandles
 
             if (m_aspect != m_camera.aspect)
             {
-                m_camera.pixelRect = new Rect(SceneCamera.pixelRect.min.x + SceneCamera.pixelWidth - Size.x, SceneCamera.pixelRect.min.y + SceneCamera.pixelHeight - Size.y, Size.x, Size.y);
+                m_camera.pixelRect = new Rect(m_window.Camera.pixelRect.min.x + m_window.Camera.pixelWidth - Size.x, m_window.Camera.pixelRect.min.y + m_window.Camera.pixelHeight - Size.y, Size.x, Size.y);
                 m_aspect = m_camera.aspect;
             }
 
-            m_camera.transform.rotation = SceneCamera.transform.rotation;
+            m_camera.transform.rotation = m_window.Camera.transform.rotation;
         }
 
         private void EnableColliders()
@@ -410,7 +454,7 @@ namespace Battlehub.RTHandles
 
         private Collider HitTest()
         {
-            Ray ray = m_camera.ScreenPointToRay(InputController._MousePosition);
+            Ray ray = m_camera.ScreenPointToRay(m_window.Pointer.ScreenPoint);
             float minDistance = float.MaxValue;
             Collider result = null;
             for(int i = 0; i < m_colliders.Length; ++i)
@@ -438,7 +482,7 @@ namespace Battlehub.RTHandles
         private void InitColliders()
         {
             m_gizmoPosition = GetGizmoPosition();
-            float sScale = RuntimeHandles.GetScreenScale(m_gizmoPosition, m_camera) * Size.y / 96;
+            float sScale = RuntimeHandlesComponent.GetScreenScale(m_gizmoPosition, m_camera) * Size.y / 96;
 
             m_collidersGO.transform.rotation = Quaternion.identity;
             m_collidersGO.transform.position = GetGizmoPosition();
@@ -467,7 +511,7 @@ namespace Battlehub.RTHandles
 
         private bool UpdateAlpha(ref float alpha, Vector3 axis, float delta)
         {
-            bool hide = Math.Abs(Vector3.Dot(SceneCamera.transform.forward, axis)) > 0.9;
+            bool hide = Math.Abs(Vector3.Dot(m_window.Camera.transform.forward, axis)) > 0.9;
             if (hide)
             {
                 if (alpha > 0.0f)
@@ -506,10 +550,10 @@ namespace Battlehub.RTHandles
 
             m_aspect = m_camera.aspect;
 
-            if (SceneCamera != null)
+            if (m_window.Camera != null)
             {
                 bool initColliders = false;
-                m_camera.pixelRect = new Rect(SceneCamera.pixelRect.min.x + SceneCamera.pixelWidth - Size.x, SceneCamera.pixelRect.min.y + SceneCamera.pixelHeight - Size.y, Size.x, Size.y);
+                m_camera.pixelRect = new Rect(m_window.Camera.pixelRect.min.x + m_window.Camera.pixelWidth - Size.x, m_window.Camera.pixelRect.min.y + m_window.Camera.pixelHeight - Size.y, Size.x, Size.y);
                 if (m_camera.pixelRect.height == 0 || m_camera.pixelRect.width == 0)
                 {
                     enabled = false;
@@ -523,10 +567,10 @@ namespace Battlehub.RTHandles
                     }
                     enabled = true;
                 }
-                m_camera.depth = SceneCamera.depth + 1;
+                m_camera.depth = m_window.Camera.depth + 1;
                 m_aspect = m_camera.aspect;
 
-                m_buttonRect = new Rect(SceneCamera.pixelRect.min.x + SceneCamera.pixelWidth - Size.x / 2 - 20, (Screen.height - SceneCamera.pixelRect.yMax) + Size.y - 5.0f, 40, 30);
+                m_buttonRect = new Rect(m_window.Camera.pixelRect.min.x + m_window.Camera.pixelWidth - Size.x / 2 - 20, (Screen.height - m_window.Camera.pixelRect.yMax) + Size.y - 5.0f, 40, 30);
                 m_buttonStyle = new GUIStyle();
                 m_buttonStyle.alignment = TextAnchor.MiddleCenter;
                 m_buttonStyle.normal.textColor = new Color(0.8f, 0.8f, 0.8f, 0.8f);

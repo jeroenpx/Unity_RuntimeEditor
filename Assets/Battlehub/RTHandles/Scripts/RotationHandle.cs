@@ -9,8 +9,8 @@ namespace Battlehub.RTHandles
     public class RotationHandle : BaseHandle
     {
         public float GridSize = 15.0f;
-        public float XSpeed = 10.0f;
-        public float YSpeed = 10.0f;
+        public float XSpeed = 1.0f;
+        public float YSpeed = 1.0f;
 
         private const float innerRadius = 1.0f;
         private const float outerRadius = 1.2f;
@@ -18,8 +18,9 @@ namespace Battlehub.RTHandles
 
         private float m_deltaX;
         private float m_deltaY;
+        private Vector2 m_prevPointer;
 
-        protected override RuntimeTool Tool
+        public override RuntimeTool Tool
         {
             get { return RuntimeTool.Rotate; }
         }
@@ -28,13 +29,13 @@ namespace Battlehub.RTHandles
         private Quaternion m_startingRotation = Quaternion.identity;
         private Quaternion StartingRotation
         {
-            get { return RuntimeTools.PivotRotation == RuntimePivotRotation.Global ? m_startingRotation : Quaternion.identity; }
+            get { return Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? m_startingRotation : Quaternion.identity; }
         }
 
         private Quaternion m_startinRotationInv = Quaternion.identity;
         private Quaternion StartingRotationInv
         {
-            get { return RuntimeTools.PivotRotation == RuntimePivotRotation.Global ? m_startinRotationInv : Quaternion.identity; }
+            get { return Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? m_startinRotationInv : Quaternion.identity; }
         }
 
         private Quaternion m_targetInverse = Quaternion.identity;
@@ -48,18 +49,19 @@ namespace Battlehub.RTHandles
 
         protected override void AwakeOverride()
         {
-            RuntimeTools.PivotRotationChanged += OnPivotRotationChanged;
+            base.AwakeOverride();
+            Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
         }
 
         protected override void OnDestroyOverride()
         {
-            base.OnDestroyOverride();
-            RuntimeTools.PivotRotationChanged -= OnPivotRotationChanged;
+            base.OnDestroyOverride();    
+            Editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
         }
 
-        protected override void StartOverride()
+        protected override void OnStartOverride()
         {
-            base.StartOverride();
+            base.OnStartOverride();    
             OnPivotRotationChanged();
         }
 
@@ -72,7 +74,12 @@ namespace Battlehub.RTHandles
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
-            if (RuntimeTools.IsPointerOverGameObject())
+            if (Editor.Tools.IsViewing)
+            {
+                SelectedAxis = RuntimeHandleAxis.None;
+                return;
+            }
+            if (ActiveWindow == null && !ActiveWindow.IsPointerOver)
             {
                 return;
             }
@@ -131,14 +138,19 @@ namespace Battlehub.RTHandles
 
         private RuntimeHandleAxis Hit()
         {
+            if (Model != null)
+            {
+                return Model.HitTest(ActiveWindow.Pointer);
+            }
+
             float hit1Distance;
             float hit2Distance;
-            Ray ray = SceneCamera.ScreenPointToRay(InputController._MousePosition);
-            float scale = RuntimeHandles.GetScreenScale(Target.position, SceneCamera) * RuntimeHandles.HandleScale;
+            Ray ray = ActiveWindow.Pointer;
+            float scale = RuntimeHandlesComponent.GetScreenScale(Target.position, ActiveWindow.Camera) * Appearance.HandleScale;
             if (Intersect(ray, Target.position, outerRadius * scale, out hit1Distance, out hit2Distance))
             {
                 Vector3 dpHitPoint;
-                GetPointOnDragPlane(GetDragPlane(), InputController._MousePosition, out dpHitPoint);
+                GetPointOnDragPlane(GetDragPlane(), ray, out dpHitPoint);
 
                 RuntimeHandleAxis axis = HitAxis();
                 if (axis != RuntimeHandleAxis.None)
@@ -163,7 +175,7 @@ namespace Battlehub.RTHandles
 
         private RuntimeHandleAxis HitAxis()
         {
-            float screenScale = RuntimeHandles.GetScreenScale(Target.position, SceneCamera) * RuntimeHandles.HandleScale;
+            float screenScale = RuntimeHandlesComponent.GetScreenScale(Target.position, ActiveWindow.Camera) * Appearance.HandleScale;
             Vector3 scale = new Vector3(screenScale, screenScale, screenScale);
             Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, Target.rotation * StartingRotationInv * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
             Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, Target.rotation * StartingRotationInv * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
@@ -205,7 +217,7 @@ namespace Battlehub.RTHandles
 
             Vector3 zeroCamPoint = transform.MultiplyPoint(Vector3.zero);
             zeroCamPoint = objToWorld.MultiplyPoint(zeroCamPoint);
-            zeroCamPoint = SceneCamera.worldToCameraMatrix.MultiplyPoint(zeroCamPoint);
+            zeroCamPoint = ActiveWindow.Camera.worldToCameraMatrix.MultiplyPoint(zeroCamPoint);
 
             Vector3 prevPoint = transform.MultiplyPoint(new Vector3(radius, 0, z));
             prevPoint = objToWorld.MultiplyPoint(prevPoint);
@@ -217,17 +229,17 @@ namespace Battlehub.RTHandles
                 Vector3 point = transform.MultiplyPoint(new Vector3(x, y, z));
                 point = objToWorld.MultiplyPoint(point);
 
-                Vector3 camPoint = SceneCamera.worldToCameraMatrix.MultiplyPoint(point);
+                Vector3 camPoint = ActiveWindow.Camera.worldToCameraMatrix.MultiplyPoint(point);
 
                 if (camPoint.z > zeroCamPoint.z)
                 {
-                    Vector3 screenVector = SceneCamera.WorldToScreenPoint(point) - SceneCamera.WorldToScreenPoint(prevPoint);
+                    Vector3 screenVector = ActiveWindow.Camera.WorldToScreenPoint(point) - ActiveWindow.Camera.WorldToScreenPoint(prevPoint);
                     float screenVectorMag = screenVector.magnitude;
                     screenVector.Normalize();
                     if (screenVector != Vector3.zero)
                     {
                         float distance;
-                        if (HitScreenAxis(out distance, SceneCamera.WorldToScreenPoint(prevPoint), screenVector, screenVectorMag))
+                        if (HitScreenAxis(out distance, ActiveWindow.Camera.WorldToScreenPoint(prevPoint), screenVector, screenVectorMag))
                         {
                             if (distance < minDistance)
                             {
@@ -243,23 +255,51 @@ namespace Battlehub.RTHandles
             return hit;
         }
 
-
         protected override bool OnBeginDrag()
         {
+            if(!base.OnBeginDrag())
+            {
+                return false;
+            }
+
             m_targetRotation = Target.rotation;
             m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation * StartingRotationInv, Vector3.one).inverse;
             SelectedAxis = Hit();
             m_deltaX = 0.0f;
             m_deltaY = 0.0f;
 
+            Vector2 point;
+            if (ActiveWindow.Pointer.XY(Target.position, out point))
+            {  
+                m_prevPointer = point;
+            }
+            else
+            {
+                SelectedAxis = RuntimeHandleAxis.None;
+            }
+
             if (SelectedAxis == RuntimeHandleAxis.Screen)
             {
-                Vector2 center = SceneCamera.WorldToScreenPoint(Target.position);
-                Vector2 point = InputController._MousePosition;
+                Vector2 center;
 
-                float angle = Mathf.Atan2(point.y - center.y, point.x - center.x);
-                m_targetInverse = Quaternion.Inverse(Quaternion.AngleAxis(Mathf.Rad2Deg * angle, Vector3.forward));
-                m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation, Vector3.one).inverse;
+                if (ActiveWindow.Pointer.WorldToScreenPoint(Target.position, Target.position, out center))
+                {
+                    if (ActiveWindow.Pointer.XY(Target.position, out point))
+                    {
+                        float angle = Mathf.Atan2(point.y - center.y, point.x - center.x);
+                        m_targetInverse = Quaternion.Inverse(Quaternion.AngleAxis(Mathf.Rad2Deg * angle, Vector3.forward));
+                        m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation, Vector3.one).inverse;
+                        m_prevPointer = point;
+                    }
+                    else
+                    {
+                        SelectedAxis = RuntimeHandleAxis.None;
+                    }
+                }
+                else
+                {
+                    SelectedAxis = RuntimeHandleAxis.None;
+                }     
             }
             else
             {
@@ -284,8 +324,17 @@ namespace Battlehub.RTHandles
 
         protected override void OnDrag()
         {
-            float deltaX = InputController._GetAxis("Mouse X");
-            float deltaY = InputController._GetAxis("Mouse Y");
+            base.OnDrag();
+
+            Vector2 point;
+            if (!ActiveWindow.Pointer.XY(Target.position, out point))
+            {
+                return;
+            }
+
+            float deltaX = point.x - m_prevPointer.x;
+            float deltaY = point.y - m_prevPointer.y;
+            m_prevPointer = point;
 
             deltaX = deltaX * XSpeed;
             deltaY = deltaY * YSpeed;
@@ -293,8 +342,13 @@ namespace Battlehub.RTHandles
             m_deltaX += deltaX;
             m_deltaY += deltaY;
 
+            Matrix4x4 toWorldMatrix;
+            if (!ActiveWindow.Pointer.ToWorldMatrix(Target.position, out toWorldMatrix))
+            {
+                return;
+            }
 
-            Vector3 delta = StartingRotation * Quaternion.Inverse(Target.rotation) * SceneCamera.cameraToWorldMatrix.MultiplyVector(new Vector3(m_deltaY, -m_deltaX, 0));
+            Vector3 delta = StartingRotation * Quaternion.Inverse(Target.rotation) * toWorldMatrix.MultiplyVector(new Vector3(m_deltaY, -m_deltaX, 0));
             Quaternion rotation = Quaternion.identity;
             if (SelectedAxis == RuntimeHandleAxis.X)
             {
@@ -414,7 +468,7 @@ namespace Battlehub.RTHandles
                 }
 
 
-                Vector3 axis = m_targetInverseMatrix.MultiplyVector(SceneCamera.cameraToWorldMatrix.MultiplyVector(-Vector3.forward));
+                Vector3 axis = m_targetInverseMatrix.MultiplyVector(ActiveWindow.Camera.cameraToWorldMatrix.MultiplyVector(-Vector3.forward));
 
                 if(!LockObject.RotationScreen)
                 {
@@ -441,9 +495,15 @@ namespace Battlehub.RTHandles
             m_targetRotation = Target.rotation;
         }
 
+        protected override void SyncModelTransform()
+        {
+            base.SyncModelTransform();
+            Model.transform.rotation = Target.rotation * StartingRotationInv;
+        }
+
         protected override void DrawOverride()
         {
-            RuntimeHandles.DoRotationHandle(Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject);
+            Appearance.DoRotationHandle(Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject, Editor.IsVR);
         }
     }
 }

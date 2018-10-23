@@ -11,7 +11,8 @@
 	
 		Pass
 		{
-			
+			//ZTest Always
+			Blend SrcAlpha OneMinusSrcAlpha
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -50,7 +51,7 @@
 		
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.color = input.color * 1.5 * dot(viewNorm, float3(0, 0, 1));
-				output.color = GammaToLinearSpace(output.color);
+				output.color =  GammaToLinearSpace(output.color);
 				output.color.a = input.color.a;
 
 
