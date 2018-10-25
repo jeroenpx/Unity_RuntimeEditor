@@ -80,7 +80,7 @@ namespace Battlehub.RTHandles
             {
                 GameObject colliders = new GameObject("Colliders");
                 colliders.transform.SetParent(transform, false);
-                colliders.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+                colliders.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
 
                 m_xyzCollider = colliders.AddComponent<BoxCollider>();
                 m_xCollider = colliders.AddComponent<BoxCollider>();
@@ -278,7 +278,7 @@ namespace Battlehub.RTHandles
             for (int i = 0; i < m_colliders.Length; ++i)
             {
                 RaycastHit hit;
-                if (m_colliders[i].Raycast(ray, out hit, ActiveWindow.Camera.farClipPlane))
+                if (m_colliders[i].Raycast(ray, out hit, Window.Camera.farClipPlane))
                 {
                     if (hit.distance < minDistance)
                     {

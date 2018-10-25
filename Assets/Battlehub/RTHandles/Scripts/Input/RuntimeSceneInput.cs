@@ -73,7 +73,12 @@ namespace Battlehub.RTHandles
 
         protected override void LateUpdate()
         {
-            bool isPointerOverAndSelected = m_component.IsInActiveWindow && m_component.ActiveWindow.IsPointerOver && m_component.IsUISelected;
+            if(!m_component.IsWindowActive)
+            {
+                return;
+            }
+
+            bool isPointerOverAndSelected =  m_component.Window.IsPointerOver && m_component.IsUISelected;
 
             IInput input = m_component.Editor.Input;
             RuntimeTools tools = m_component.Editor.Tools;

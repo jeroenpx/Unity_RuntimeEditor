@@ -15,25 +15,9 @@ namespace Battlehub.RTHandles
         public float CamOffset = 0.0f;
         public bool AutoCamOffset = true;
         public Vector3 GridOffset;
-        [SerializeField]
-        private RuntimeWindow m_window;
-        public RuntimeWindow Window
-        {
-            get { return m_window; }
-        }
-
 
         protected virtual void Start()
         {
-            if(Window == null)
-            {
-                m_window = Editor.GetWindow(RuntimeWindowType.SceneView);
-                if(Window == null)
-                {
-                    enabled = false;
-                    return;
-                }
-            }
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
 
             m_camera = GetComponent<Camera>();
@@ -58,7 +42,7 @@ namespace Battlehub.RTHandles
         }
 
         private void OnPostRender()
-        {
+        { 
             if(AutoCamOffset)
             {
                 Appearance.DrawGrid(GridOffset, Camera.current.transform.position.y);

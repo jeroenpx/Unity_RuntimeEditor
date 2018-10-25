@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
-    [DefaultExecutionOrder(-80)]
     public class RuntimeSelectionInput : RuntimeSelectionInputBase
     {
 #if UNITY_EDITOR

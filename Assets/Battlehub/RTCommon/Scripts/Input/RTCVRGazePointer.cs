@@ -37,7 +37,7 @@ namespace Battlehub.RTCommon
             if(m_spriteRenderer == null)
             {
                 GameObject gazeIcon = new GameObject("GazeIcon");
-                gazeIcon.layer = m_editor.CameraLayerSettings.RuntimeHandlesLayer;
+                gazeIcon.layer = m_editor.CameraLayerSettings.RuntimeGraphicsLayer;
                 gazeIcon.transform.SetParent(m_ovrGazePointer.transform, false);
 
                 SpriteRenderer renderer = gazeIcon.AddComponent<SpriteRenderer>();

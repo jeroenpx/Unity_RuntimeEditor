@@ -42,11 +42,11 @@ namespace Battlehub.RTHandles
                 SelectedAxis = RuntimeHandleAxis.None;
                 return;
             }
-            if (ActiveWindow == null || !ActiveWindow.IsPointerOver)
+            if (!IsWindowActive || !Window.IsPointerOver)
             {
                 return;
             }
-            if (HightlightOnHover && !IsDragging)
+            if (HightlightOnHover && !IsDragging && !IsPointerDown)
             {
                 SelectedAxis = Hit();
             }
@@ -54,13 +54,13 @@ namespace Battlehub.RTHandles
 
         private RuntimeHandleAxis Hit()
         {
-            m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, ActiveWindow.Camera) * Appearance.HandleScale;
+            m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera) * Appearance.HandleScale;
             m_matrix = Matrix4x4.TRS(transform.position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
             if (Model != null)
             {
-                return Model.HitTest(ActiveWindow.Pointer);
+                return Model.HitTest(Window.Pointer);
             }
 
             Matrix4x4 matrix = Matrix4x4.TRS(transform.position, Rotation, new Vector3(m_screenScale, m_screenScale, m_screenScale));
@@ -121,7 +121,7 @@ namespace Battlehub.RTHandles
             }
 
             DragPlane = GetDragPlane();
-            bool result = GetPointOnDragPlane(ActiveWindow.Pointer, out m_prevPoint);
+            bool result = GetPointOnDragPlane(Window.Pointer, out m_prevPoint);
             if(!result)
             {
                 SelectedAxis = RuntimeHandleAxis.None;
@@ -134,7 +134,7 @@ namespace Battlehub.RTHandles
             base.OnDrag();
 
             Vector3 point;
-            if (GetPointOnDragPlane(ActiveWindow.Pointer, out point))
+            if (GetPointOnDragPlane(Window.Pointer, out point))
             {
                 Vector3 offset = m_inverse.MultiplyVector((point - m_prevPoint) / m_screenScale);
                 float mag = offset.magnitude;

@@ -2,14 +2,7 @@
 
 namespace Battlehub.RTCommon
 {
-    public enum RTLayer
-    {
-        None = 0,
-        SceneView = 1 << 0,
-        GameView = 1 << 1,
-        Any = -1,
-    }
-
+ 
     /// <summary>
     /// Camera behavior for GL. rendering
     /// </summary>

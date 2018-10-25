@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
 {
+    [DefaultExecutionOrder(-100)]
     public class MultitouchEmulator : RTEBehaviour
     {
         [SerializeField]

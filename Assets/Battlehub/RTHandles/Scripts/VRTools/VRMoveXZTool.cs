@@ -52,21 +52,14 @@ namespace Battlehub.RTHandles
         private void OnEnable()
         {
             m_dragPlane = new Plane(Vector3.up, Vector3.zero);
-            
-        }
-
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-
-            Transform camera = ActiveWindow.Camera.transform;
+            Transform camera = Window.Camera.transform;
             m_prevOrigin = camera.TransformPoint(m_originOffset);
             m_prevForward = camera.forward;
         }
 
         private void Update()
         {
-            Transform camera = ActiveWindow.Camera.transform;
+            Transform camera = Window.Camera.transform;
             Vector3 origin = camera.TransformPoint(m_originOffset);
             Vector3 forward = camera.forward;
 

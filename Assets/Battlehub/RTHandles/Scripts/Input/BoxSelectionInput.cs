@@ -20,7 +20,12 @@ namespace Battlehub.RTHandles
 
         private void LateUpdate()
         {
-            if(m_editor.Tools.ActiveTool != null && m_editor.Tools.ActiveTool != m_boxSelection)
+            if (!m_boxSelection.IsWindowActive)
+            {
+                return;
+            }
+
+            if (m_editor.Tools.ActiveTool != null && m_editor.Tools.ActiveTool != m_boxSelection)
             {
                 return;
             }

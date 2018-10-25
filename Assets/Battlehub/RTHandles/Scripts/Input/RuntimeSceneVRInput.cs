@@ -99,6 +99,20 @@ namespace Battlehub.RTHandles
         {
             base.LateUpdate();
 
+            if (Time.time > m_countdownStartT)
+            {
+                if (Component.Progress == 0)
+                {
+                    Component.BeginShowProgress();
+                }
+                Component.Progress = (Time.time - m_countdownStartT) * 5f;
+                if (Component.Progress >= 1)
+                {
+                    m_countdownStartT = float.PositiveInfinity;
+                    m_menu.IsOpened = true;
+                }
+            }
+
             IInput input = m_component.Editor.Input;
             if(input.GetPointerDown(0))
             {
@@ -143,22 +157,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void Update()
-        {
-            if (Time.time > m_countdownStartT)
-            {
-                if(Component.Progress == 0)
-                {
-                    Component.BeginShowProgress();
-                }
-                Component.Progress = (Time.time - m_countdownStartT) * 5f;
-                if (Component.Progress >= 1)
-                {
-                    m_countdownStartT = float.PositiveInfinity;
-                    m_menu.IsOpened = true;
-                }
-            }
-        }
     }
 }
 

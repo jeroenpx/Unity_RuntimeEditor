@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
+    [DefaultExecutionOrder(-60)]
     public class RuntimeSelectionInputBase : MonoBehaviour
     {
         protected RuntimeSelectionComponent m_component;
@@ -24,7 +25,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void LateUpdate()
         {
-            if (!m_component.IsInActiveWindow || !m_component.ActiveWindow.IsPointerOver)
+            if (!m_component.IsWindowActive || !m_component.Window.IsPointerOver)
             {
                 return;
             }

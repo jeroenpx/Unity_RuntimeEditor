@@ -49,11 +49,11 @@ namespace Battlehub.RTCommon
 
         void IGL.Draw(int cullingMask)
         {
-            RTLayer layer = RTLayer.SceneView;
-            if ((cullingMask & (int)layer) == 0)
-            {
-                return;
-            }
+            
+            //if ((cullingMask & (int)layer) == 0)
+            //{
+            //    return;
+            //}
 
             Material.SetPass(0);
             RuntimeGraphics.DrawQuad(transform.localToWorldMatrix);

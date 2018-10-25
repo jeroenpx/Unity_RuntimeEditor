@@ -7794,8 +7794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c28ad0c9eb0502f469d73baaadf6d441, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_windowMask: 2
-  m_requiresCamera: 1
+  m_window: {fileID: 0}
   m_models:
   - {fileID: 1250170600500624}
   - {fileID: 1181928631730536}

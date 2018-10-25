@@ -67,8 +67,7 @@ namespace Battlehub.RTHandles
 
         public bool UseCameraSpace = true;
         public BoxSelectionMethod Method;
-        protected bool m_active;
-
+       
         public event EventHandler<FilteringArgs> Filtering;
 
         public bool IsDragging
@@ -86,8 +85,15 @@ namespace Battlehub.RTHandles
                 go.transform.SetParent(transform.parent, false);
                 m_canvas = go.AddComponent<Canvas>();
             }
-
-            if (!UseCameraSpace)
+            if (UseCameraSpace)
+            {
+                m_canvas.worldCamera = Window.Camera;
+                m_canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                m_canvas.planeDistance = Window.Camera.nearClipPlane + 0.05f;
+                m_canvas.transform.rotation = Quaternion.identity;
+                m_canvas.transform.position = Vector3.zero;
+            }
+            else
             {
                 m_canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
@@ -122,99 +128,91 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void OnWindowActivated()
+        protected override void OnDestroyOverride()
         {
-            base.OnWindowActivated();
-
-            if (UseCameraSpace)
+            base.OnDestroyOverride();
+            if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {
-                m_canvas.worldCamera = ActiveWindow.Camera;
-                m_canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                m_canvas.planeDistance = ActiveWindow.Camera.nearClipPlane + 0.05f;
-                m_canvas.transform.rotation = Quaternion.identity;
-                m_canvas.transform.position = Vector3.zero;
-            }
-            else
-            {
-                m_canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                if (Editor.Tools.ActiveTool == this)
+                {
+                    Editor.Tools.ActiveTool = null;
+                }
             }
         }
 
         protected override void OnWindowDeactivated()
         {
             base.OnWindowDeactivated();
-            if (Editor.Tools.ActiveTool == this)
+            if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {
-                Editor.Tools.ActiveTool = null;
+                if (Editor.Tools.ActiveTool == this)
+                {
+                    Editor.Tools.ActiveTool = null;
+                }
             }
         }
 
         public void BeginSelect()
         {
-            if (!m_active)
+            if(Editor.Tools.ActiveTool != null)
             {
                 return;
             }
 
-            m_startMousePosition = ActiveWindow.Pointer.ScreenPoint;
-            m_isDragging = GetPoint(out m_startPt) && (!ActiveWindow.Editor.IsOpened || ActiveWindow.IsPointerOver);
+            m_startMousePosition = Window.Pointer.ScreenPoint;
+            m_isDragging = GetPoint(out m_startPt) && (!Window.Editor.IsOpened || Window.IsPointerOver);
             if (m_isDragging)
             {
                 m_rectTransform.anchoredPosition = m_startPt;
                 m_rectTransform.sizeDelta = new Vector2(0, 0);
             }
-            else
-            {
-                ActiveWindow.Editor.Tools.ActiveTool = null;
-            }
         }
 
         public void EndSelect()
         {
-            if (!m_active)
-            {
-                return;
-            }
-
             if (m_isDragging)
             {
                 m_isDragging = false;
 
                 HitTest();
                 m_rectTransform.sizeDelta = new Vector2(0, 0);
+                if (Editor.Tools.ActiveTool == this)
+                {
+                    Editor.Tools.ActiveTool = null;
+                }
             }
-
-            Editor.Tools.ActiveTool = null;
-            m_active = false;
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             if (!Editor.Selection.Enabled)
             {
                 return;
             }
 
-            if (Editor.Tools.ActiveTool != null && Editor.Tools.ActiveTool != this)
+            if (Editor.Tools.ActiveTool != this && Editor.Tools.ActiveTool != null)
             {
                 return;
             }
 
             if (Editor.Tools.IsViewing)
             {
-                Editor.Tools.ActiveTool = null;
-                m_active = false;
+                if(Editor.Tools.ActiveTool == this)
+                {
+                    Editor.Tools.ActiveTool = null;
+                }
+                
                 m_isDragging = false;
                 m_rectTransform.sizeDelta = new Vector2(0, 0);
                 return;
             }
-            m_active = true;
 
             if (m_isDragging)
             {
                 GetPoint(out m_endPt);
 
                 Vector2 size = m_endPt - m_startPt;
+                Editor.Tools.ActiveTool = this;
                 if (size != Vector2.zero)
                 {
                     Editor.Tools.ActiveTool = this;
@@ -231,11 +229,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            Vector3 center = (m_startMousePosition + (Vector3)ActiveWindow.Pointer.ScreenPoint) / 2;
+            Vector3 center = (m_startMousePosition + (Vector3)Window.Pointer.ScreenPoint) / 2;
             center.z = 0.0f;
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
 
-            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(ActiveWindow.Camera);
+            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
             
             HashSet<GameObject> selection = new HashSet<GameObject>();
             Renderer[] renderers = FindObjectsOfType<Renderer>();
@@ -258,7 +256,7 @@ namespace Battlehub.RTHandles
                 TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
             }
 
-            ActiveWindow.Editor.Selection.objects = selection.ToArray();
+            Editor.Selection.objects = selection.ToArray();
         }
 
         private void TrySelect(ref Bounds selectionBounds, HashSet<GameObject> selection, FilteringArgs args, ref Bounds bounds, GameObject go, Plane[] frustumPlanes)
@@ -307,14 +305,14 @@ namespace Battlehub.RTHandles
 
         private bool TransformCenter(ref Bounds selectionBounds, Transform tr)
         {
-            Vector3 screenPoint = ActiveWindow.Camera.WorldToScreenPoint(tr.position);
+            Vector3 screenPoint = Window.Camera.WorldToScreenPoint(tr.position);
             screenPoint.z = 0;
             return selectionBounds.Contains(screenPoint);
         }
 
         private bool BoundsCenter(ref Bounds selectionBounds, ref Bounds bounds)
         {
-            Vector3 screenPoint = ActiveWindow.Camera.WorldToScreenPoint(bounds.center);
+            Vector3 screenPoint = Window.Camera.WorldToScreenPoint(bounds.center);
             screenPoint.z = 0;
             return selectionBounds.Contains(screenPoint);
         }
@@ -330,14 +328,14 @@ namespace Battlehub.RTHandles
             Vector3 p6 = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z);
             Vector3 p7 = bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
 
-            p0 = ActiveWindow.Camera.WorldToScreenPoint(p0);
-            p1 = ActiveWindow.Camera.WorldToScreenPoint(p1);
-            p2 = ActiveWindow.Camera.WorldToScreenPoint(p2);
-            p3 = ActiveWindow.Camera.WorldToScreenPoint(p3);
-            p4 = ActiveWindow.Camera.WorldToScreenPoint(p4);
-            p5 = ActiveWindow.Camera.WorldToScreenPoint(p5);
-            p6 = ActiveWindow.Camera.WorldToScreenPoint(p6);
-            p7 = ActiveWindow.Camera.WorldToScreenPoint(p7);
+            p0 = Window.Camera.WorldToScreenPoint(p0);
+            p1 = Window.Camera.WorldToScreenPoint(p1);
+            p2 = Window.Camera.WorldToScreenPoint(p2);
+            p3 = Window.Camera.WorldToScreenPoint(p3);
+            p4 = Window.Camera.WorldToScreenPoint(p4);
+            p5 = Window.Camera.WorldToScreenPoint(p5);
+            p6 = Window.Camera.WorldToScreenPoint(p6);
+            p7 = Window.Camera.WorldToScreenPoint(p7);
 
             float minX = Mathf.Min(p0.x, p1.x, p2.x, p3.x, p4.x, p5.x, p6.x, p7.x);
             float maxX = Mathf.Max(p0.x, p1.x, p2.x, p3.x, p4.x, p5.x, p6.x, p7.x);
@@ -358,7 +356,7 @@ namespace Battlehub.RTHandles
                 cam = m_canvas.worldCamera;
             }
 
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), ActiveWindow.Pointer.ScreenPoint, cam, out localPoint);
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), Window.Pointer.ScreenPoint, cam, out localPoint);
         }
     }
 

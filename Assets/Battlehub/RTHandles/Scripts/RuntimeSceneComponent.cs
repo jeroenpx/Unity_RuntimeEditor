@@ -17,10 +17,22 @@ namespace Battlehub.RTHandles
         private Transform m_autoFocusTransform;
         public float GridSize = 1;
 
+        [SerializeField]
+        private Transform m_pivot;
+
+        [SerializeField]
+        private Transform m_secondaryPivot;
+
+        [SerializeField]
+        private SceneGizmo m_sceneGizmo;
+
+        [SerializeField]
+        private RuntimeGrid m_grid;
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-        
+
             if (Run.Instance == null)
             {
                 GameObject runGO = new GameObject("Run");
@@ -28,8 +40,6 @@ namespace Battlehub.RTHandles
                 runGO.name = "Run";
                 runGO.AddComponent<Run>();
             }
-
-           
 
             if (ViewTexture == null)
             {
@@ -40,51 +50,78 @@ namespace Battlehub.RTHandles
                 MoveTexture = Resources.Load<Texture2D>("RTH_Hand");
             }
 
-            if(GetComponent<RuntimeSelectionInputBase>() == null)
+            if (GetComponent<RuntimeSelectionInputBase>() == null)
             {
                 gameObject.AddComponent<RuntimeSceneInput>();
             }
-        }
 
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-            m_mouseOrbit = ActiveWindow.Camera.GetComponent<MouseOrbit>();
+            if (m_pivot == null)
+            {
+                GameObject pivot = new GameObject("Pivot");
+                pivot.transform.SetParent(transform, false);
+                m_pivot = pivot.transform;
+            }
+
+            if (m_secondaryPivot == null)
+            {
+                GameObject secondaryPivot = new GameObject("SecondaryPivot");
+                secondaryPivot.transform.SetParent(transform, false);
+                m_secondaryPivot = secondaryPivot.transform;
+            }
+
+            Window.Camera.transform.LookAt(m_pivot);
+            m_mouseOrbit = Window.Camera.GetComponent<MouseOrbit>();
             if (!m_mouseOrbit)
             {
-                m_mouseOrbit = ActiveWindow.Camera.gameObject.AddComponent<MouseOrbit>();
-                if (m_mouseOrbit.Target == null)
-                {
-                    GameObject pivot = new GameObject("Pivot");
-                    pivot.transform.SetParent(transform, false);
-                    pivot.transform.position = ActiveWindow.Camera.transform.position + ActiveWindow.Camera.transform.forward * 5f;
-                    m_mouseOrbit.Target = pivot.transform;
-                }
-
-                if (m_mouseOrbit.SecondaryTarget == null)
-                {
-                    GameObject secondaryPivot = new GameObject("SecondaryPivot");
-                    secondaryPivot.transform.SetParent(transform, false);
-                    secondaryPivot.transform.position = ActiveWindow.Camera.transform.position + ActiveWindow.Camera.transform.forward * 5f;
-                    m_mouseOrbit.SecondaryTarget = secondaryPivot.transform;
-                }
+                m_mouseOrbit = Window.Camera.gameObject.AddComponent<MouseOrbit>();
             }
-        }
+            m_mouseOrbit.Target = m_pivot;
+            m_mouseOrbit.SecondaryTarget = m_secondaryPivot;
 
-        protected override void OnWindowDeactivated()
-        {
-            base.OnWindowDeactivated();
-            if (m_mouseOrbit != null)
+            if(m_sceneGizmo == null)
             {
-                Destroy(m_mouseOrbit);
+                m_sceneGizmo = GetComponentInChildren<SceneGizmo>(true);
+            }
+
+            if (m_sceneGizmo != null)
+            {
+                if(m_sceneGizmo.Window == null)
+                {
+                    m_sceneGizmo.Window = Window;
+                }
+                m_sceneGizmo.OrientationChanging.AddListener(OnSceneGizmoOrientationChanging);
+                m_sceneGizmo.OrientationChanged.AddListener(OnSceneGizmoOrientationChanged);
+                m_sceneGizmo.ProjectionChanged.AddListener(OnSceneGizmoProjectionChanged);
+                m_sceneGizmo.Pivot = m_pivot;
+            }
+
+            if(m_grid == null)
+            {
+                m_grid = GetComponentInChildren<RuntimeGrid>(true);
+            }
+
+            if(m_grid != null)
+            {
+                if(m_grid.Window == null)
+                {
+                    m_grid.Window = Window;
+                }
             }
         }
 
-        protected virtual void OnDisable()
+        protected override void OnDestroyOverride()
         {
+            base.OnDestroyOverride();
             if(m_mouseOrbit != null)
             {
                 Destroy(m_mouseOrbit);
+            }
+
+            if (m_sceneGizmo != null)
+            {
+                m_sceneGizmo.OrientationChanging.RemoveListener(OnSceneGizmoOrientationChanging);
+                m_sceneGizmo.OrientationChanged.RemoveListener(OnSceneGizmoOrientationChanged);
+                m_sceneGizmo.ProjectionChanged.RemoveListener(OnSceneGizmoProjectionChanged);
             }
         }
 
@@ -119,13 +156,8 @@ namespace Battlehub.RTHandles
                         break;
                     }
 
-                    if(ActiveWindow == null)
-                    {
-                        break;
-                    }
-
                     Vector3 offset = (m_autoFocusTransform.position - m_mouseOrbit.SecondaryTarget.position);
-                    ActiveWindow.Camera.transform.position += offset;
+                    Window.Camera.transform.position += offset;
                     m_mouseOrbit.Target.transform.position += offset;
                     m_mouseOrbit.SecondaryTarget.transform.position += offset;
 
@@ -144,7 +176,7 @@ namespace Battlehub.RTHandles
         {
             if (!isPointerOverEditorArea)
             {
-                ActiveWindow.Editor.CursorHelper.ResetCursor(this);
+                Window.Editor.CursorHelper.ResetCursor(this);
                 return;
             }
 
@@ -225,7 +257,7 @@ namespace Battlehub.RTHandles
             }
 
             Bounds bounds = CalculateBounds(Editor.Selection.activeTransform);
-            float fov = ActiveWindow.Camera.fieldOfView * Mathf.Deg2Rad;
+            float fov = Window.Camera.fieldOfView * Mathf.Deg2Rad;
             float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z) * 2.0f;
             float distance = Mathf.Abs(objSize / Mathf.Sin(fov / 2.0f));
 
@@ -233,12 +265,12 @@ namespace Battlehub.RTHandles
             m_mouseOrbit.SecondaryTarget.position = Editor.Selection.activeTransform.position;
             const float duration = 0.1f;
 
-            m_focusAnimation = new Vector3AnimationInfo(ActiveWindow.Camera.transform.position, m_mouseOrbit.Target.position - distance * ActiveWindow.Camera.transform.forward, duration, Vector3AnimationInfo.EaseOutCubic,
+            m_focusAnimation = new Vector3AnimationInfo(Window.Camera.transform.position, m_mouseOrbit.Target.position - distance * Window.Camera.transform.forward, duration, Vector3AnimationInfo.EaseOutCubic,
                 (target, value, t, completed) =>
                 {
-                    if (ActiveWindow.Camera)
+                    if (Window.Camera)
                     {
-                        ActiveWindow.Camera.transform.position = value;
+                        Window.Camera.transform.position = value;
                     }
                 });
             Run.Instance.Animation(m_focusAnimation);
@@ -251,12 +283,12 @@ namespace Battlehub.RTHandles
                     }
                 }));
 
-            Run.Instance.Animation(new FloatAnimationInfo(ActiveWindow.Camera.orthographicSize, objSize, duration, Vector3AnimationInfo.EaseOutCubic,
+            Run.Instance.Animation(new FloatAnimationInfo(Window.Camera.orthographicSize, objSize, duration, Vector3AnimationInfo.EaseOutCubic,
                 (target, value, t, completed) =>
                 {
-                    if (ActiveWindow.Camera)
+                    if (Window.Camera)
                     {
-                        ActiveWindow.Camera.orthographicSize = value;
+                        Window.Camera.orthographicSize = value;
                     }
                 }));
         }
@@ -268,7 +300,7 @@ namespace Battlehub.RTHandles
                 return;
             }
             m_lastMousePosition = mousePosition;
-            m_dragPlane = new Plane(-ActiveWindow.Camera.transform.forward, m_mouseOrbit.Target.position);
+            m_dragPlane = new Plane(-Window.Camera.transform.forward, m_mouseOrbit.Target.position);
         }
 
         public void Pan(Vector3 mousePosition)
@@ -284,7 +316,7 @@ namespace Battlehub.RTHandles
             {
                 Vector3 delta = (pointOnDragPlane - prevPointOnDragPlane);
                 m_lastMousePosition = mousePosition;
-                ActiveWindow.Camera.transform.position -= delta;
+                Window.Camera.transform.position -= delta;
                 m_mouseOrbit.Target.position -= delta;
                 m_mouseOrbit.SecondaryTarget.position -= delta;
             }
@@ -299,30 +331,29 @@ namespace Battlehub.RTHandles
             m_mouseOrbit.Orbit(deltaX, deltaY, deltaZ);
         }
             
-        public void OnSceneGizmoOrientationChanging()
+        private void OnSceneGizmoOrientationChanging()
         {
             m_lockInput = true;
         }
 
-        public void OnSceneGizmoOrientationChanged()
+        private void OnSceneGizmoOrientationChanged()
         {
             m_lockInput = false;
             if (m_mouseOrbit != null)
             {
-                m_mouseOrbit.Target.position = ActiveWindow.Camera.transform.position + ActiveWindow.Camera.transform.forward * m_mouseOrbit.Distance;
+                m_mouseOrbit.Target.position = Window.Camera.transform.position + Window.Camera.transform.forward * m_mouseOrbit.Distance;
                 m_mouseOrbit.SecondaryTarget.position = m_mouseOrbit.Target.position;
                 m_mouseOrbit.SyncAngles();
             }
         }
 
-        public void OnSceneGizmoProjectionChanged()
+        private void OnSceneGizmoProjectionChanged()
         {
-            float fov = ActiveWindow.Camera.fieldOfView * Mathf.Deg2Rad;
-            float distance = (ActiveWindow.Camera.transform.position - m_mouseOrbit.Target.position).magnitude;
+            float fov = Window.Camera.fieldOfView * Mathf.Deg2Rad;
+            float distance = (Window.Camera.transform.position - m_mouseOrbit.Target.position).magnitude;
             float objSize = distance * Mathf.Sin(fov / 2);
-            ActiveWindow.Camera.orthographicSize = objSize;
+            Window.Camera.orthographicSize = objSize;
         }
-
 
         private Bounds CalculateBounds(Transform t)
         {
@@ -385,7 +416,7 @@ namespace Battlehub.RTHandles
 
         private bool GetPointOnDragPlane(Vector3 mouse, out Vector3 point)
         {
-            Ray ray = ActiveWindow.Camera.ScreenPointToRay(mouse);
+            Ray ray = Window.Camera.ScreenPointToRay(mouse);
             float distance;
             if (m_dragPlane.Raycast(ray, out distance))
             {

@@ -48,19 +48,16 @@ namespace Battlehub.RTHandles
         protected RuntimeHandleAxis m_selectedAxis = RuntimeHandleAxis.None;
         protected LockObject m_lockObj = new LockObject();
 
-        protected override void OnWindowRegistered(RuntimeWindow window)
+        protected override void AwakeOverride()
         {
-            base.OnWindowRegistered(window);
-            if(IsSupported(window))
+            base.AwakeOverride();
+            RuntimeGraphicsLayer graphicsLayer = Window.GetComponent<RuntimeGraphicsLayer>();
+            if (graphicsLayer == null)
             {
-                RuntimeGraphicsLayer graphicsLayer = window.GetComponent<RuntimeGraphicsLayer>();
-                if (graphicsLayer == null)
-                {
-                    graphicsLayer = window.gameObject.AddComponent<RuntimeGraphicsLayer>();
-                }
-
-                SetLayer(transform, graphicsLayer.Window.Editor.CameraLayerSettings.RuntimeHandlesLayer);
+                graphicsLayer = Window.gameObject.AddComponent<RuntimeGraphicsLayer>();
             }
+
+            SetLayer(transform, graphicsLayer.Window.Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index);
         }
 
         private void SetLayer(Transform t, int layer)

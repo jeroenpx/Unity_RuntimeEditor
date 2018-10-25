@@ -52,9 +52,9 @@ namespace Battlehub.RTHandles
         {
             VRRecenterCtrl ctrl = Instantiate(m_recenterCtrlPrefab, transform);
             Canvas canvas = ctrl.GetComponentInChildren<Canvas>();
-            if(canvas != null && Component.ActiveWindow != null)
+            if(canvas != null && Component.Window != null)
             {
-                canvas.worldCamera = Component.ActiveWindow.Camera;
+                canvas.worldCamera = Component.Window.Camera;
             }
             ctrl.name = "Ctrl";
             ctrl.Recenter += OnRecenter;
@@ -65,17 +65,7 @@ namespace Battlehub.RTHandles
             return ctrl;
         }
 
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-
-            Canvas[] canvas = GetComponentsInChildren<Canvas>(true);
-            for (int i = 0; i < canvas.Length; ++i)
-            {
-                canvas[i].worldCamera = Component.ActiveWindow.Camera;
-            }  
-        }
-
+     
         private void OnRight(object sender, System.EventArgs e)
         {
             if (Recenter != null)
@@ -141,10 +131,7 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if(IsInActiveWindow)
-            {
-                transform.position = ActiveWindow.Camera.transform.position;
-            }
+            transform.position = Window.Camera.transform.position;
         }
     }
 

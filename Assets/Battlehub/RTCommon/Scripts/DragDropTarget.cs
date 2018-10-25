@@ -124,8 +124,6 @@ namespace Battlehub.RTCommon
 
         private void OnBeginDrag(PointerEventData pointerEventData)
         {
-           
-
             if (m_editor.DragDrop.DragObjects != null)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
@@ -134,7 +132,6 @@ namespace Battlehub.RTCommon
                 }
             }
         }
-
 
         private void OnDrag(PointerEventData pointerEventData)
         {

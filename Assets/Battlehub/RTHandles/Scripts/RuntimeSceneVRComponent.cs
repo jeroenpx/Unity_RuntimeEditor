@@ -171,7 +171,7 @@ namespace Battlehub.RTHandles
                         }
                         else
                         {
-                            m_targetRotation = Quaternion.LookRotation(ActiveWindow.Pointer.Ray.direction);
+                            m_targetRotation = Quaternion.LookRotation(Window.Pointer.Ray.direction);
                         }
 
                     }
@@ -238,21 +238,16 @@ namespace Battlehub.RTHandles
                 m_recenterTool.Recenter += OnRecenter;
             }
             OnVRToolChanged();
-        }
 
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-
-            if(m_cameraRig != ActiveWindow.Camera.transform.parent)
+            if (m_cameraRig != Window.Camera.transform.parent)
             {
-                m_cameraRig = ActiveWindow.Camera.transform.parent;
+                m_cameraRig = Window.Camera.transform.parent;
             }
 
             if (m_cameraRig == null)
             {
                 GameObject cameraRig = new GameObject("CameraRig");
-                ActiveWindow.Camera.transform.SetParent(cameraRig.transform);
+                Window.Camera.transform.SetParent(cameraRig.transform);
                 m_cameraRig = cameraRig.transform;
             }
         }
@@ -267,9 +262,8 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void Start()
+        protected virtual void Start()
         {
-            base.Start();
             if(m_gazePointer == null)
             {
                 m_gazePointer = FindObjectOfType<RTCVRGazePointer>();

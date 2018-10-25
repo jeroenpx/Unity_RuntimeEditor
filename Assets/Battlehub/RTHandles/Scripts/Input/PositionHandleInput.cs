@@ -23,7 +23,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if(!m_handle.IsInActiveWindow || !m_editor.ActiveWindow.IsPointerOver)
+            if(!m_handle.IsWindowActive || !m_handle.Window.IsPointerOver)
             {
                 return;
             }

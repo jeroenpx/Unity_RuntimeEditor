@@ -936,17 +936,17 @@ namespace Battlehub.RTHandles
                     Graphics.DrawMeshNow(SceneGizmoZAxis, Matrix4x4.TRS(position, rotation, screenScale));
                 }
             }
-
-            m_xMaterial.SetPass(0);
+            
             m_xMaterial.color = new Color(1, 1, 1, xAlpha);
+            m_xMaterial.SetPass(0);
             DragSceneGizmoAxis(position, rotation, Vector3.right, gizmoScale, billboardScale, billboardOffset, sScale);
-
-            m_yMaterial.SetPass(0);
+            
             m_yMaterial.color = new Color(1, 1, 1, yAlpha);
+            m_yMaterial.SetPass(0);
             DragSceneGizmoAxis(position, rotation, Vector3.up, gizmoScale, billboardScale, billboardOffset, sScale);
 
-            m_zMaterial.SetPass(0);
             m_zMaterial.color = new Color(1, 1, 1, zAlpha);
+            m_zMaterial.SetPass(0);
             DragSceneGizmoAxis(position, rotation, Forward, gizmoScale, billboardScale, billboardOffset, sScale);
 
         }
@@ -996,7 +996,6 @@ namespace Battlehub.RTHandles
             return spacing * 150;
         }
 
-        
         public void DrawGrid(Vector3 gridOffset, float camOffset = 0.0f)
         {
             float h = camOffset;
@@ -1004,6 +1003,7 @@ namespace Battlehub.RTHandles
             h = Mathf.Max(1, h);
             
             float d = CountOfDigits(h);
+
        
             float spacing = Mathf.Pow(10, d - 1);
             float nextSpacing = Mathf.Pow(10, d);

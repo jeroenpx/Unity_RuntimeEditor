@@ -21,6 +21,14 @@ namespace Battlehub.RTCommon
             PrepareGraphicsLayerCamera();
         }
 
+        private void Start()
+        {
+            if (m_editorWindow.Index >= m_editorWindow.Editor.CameraLayerSettings.MaxGraphicsLayers)
+            {
+                Debug.LogError("m_editorWindow.Index >= m_editorWindow.Editor.CameraLayerSettings.MaxGraphicsLayers");
+            }
+        }
+
         private void OnDestroy()
         {
             if(m_graphicsLayerCamera != null)
@@ -72,7 +80,7 @@ namespace Battlehub.RTCommon
             m_graphicsLayerCamera.name = "GraphicsLayerCamera";
             m_graphicsLayerCamera.depth = m_editorWindow.Camera.depth + 1;
 
-            m_graphicsLayerCamera.cullingMask = 1 << m_editorWindow.Editor.CameraLayerSettings.RuntimeHandlesLayer;
+            m_graphicsLayerCamera.cullingMask = 1 << (m_editorWindow.Editor.CameraLayerSettings.RuntimeGraphicsLayer + m_editorWindow.Index);
         }
 
         private void Update()

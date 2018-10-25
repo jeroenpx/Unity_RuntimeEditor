@@ -356,11 +356,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129fb7dc0f2ef1746bb4386063c9c130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 2}
   m_targets: []
-  m_window: {fileID: 0}
   GridSize: 1
 --- !u!4 &394367927
 Transform:
@@ -498,9 +498,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b95a6c6297783f438b44ca4295cde1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
   m_touchPrefab: {fileID: 114475305474144508, guid: 5f186e3bc7b64d64eb168eb400968461,
     type: 2}
-  m_window: {fileID: 0}
 --- !u!114 &758573999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1253,11 +1253,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d451d0f67a9a1044a90064b872cd0f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
   Model: {fileID: 114244960618619326, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 2}
   m_targets: []
-  m_window: {fileID: 0}
   GridSize: 0.1
 --- !u!4 &1564471776
 Transform:
@@ -1299,11 +1299,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67d6901c172b2f24da74d2f5e1d51ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 2}
   m_targets: []
-  m_window: {fileID: 0}
   GridSize: 15
   XSpeed: 10
   YSpeed: 10
@@ -1347,10 +1347,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea11195821566d44993028ebab95ebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
   Graphics: {fileID: 0}
   UseCameraSpace: 1
   Method: 0
-  m_window: {fileID: 0}
 --- !u!4 &1604174526
 Transform:
   m_ObjectHideFlags: 0
@@ -1392,6 +1392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 690ffc30ea6fa5f4ba757f9213c70c1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
   BtnProjection: {fileID: 0}
   Pivot: {fileID: 0}
   Size: {x: 120, y: 120}
@@ -1412,7 +1413,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_window: {fileID: 0}
 --- !u!20 &1663442427
 Camera:
   m_ObjectHideFlags: 0
@@ -1625,7 +1625,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f98013b7cfb25b478004e5cca9c680d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ui: {fileID: 0}
   m_window: {fileID: 0}
   m_positionHandle: {fileID: 394367926}
   m_rotationHandle: {fileID: 1579011940}
@@ -1633,10 +1632,10 @@ MonoBehaviour:
   m_boxSelection: {fileID: 1604174525}
   ViewTexture: {fileID: 0}
   MoveTexture: {fileID: 0}
-  Pivot: {fileID: 0}
-  SecondaryPivot: {fileID: 0}
-  m_sceneGizmo: {fileID: 1663442426}
   GridSize: 1
+  m_pivot: {fileID: 0}
+  m_secondaryPivot: {fileID: 0}
+  m_sceneGizmo: {fileID: 1663442426}
 --- !u!114 &1911405870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1713,7 +1712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92243744f566c614fbb88a7e54153e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Window: {fileID: 0}
+  m_window: {fileID: 0}
   Appearance: {fileID: 0}
   CamOffset: 0
   AutoCamOffset: 1

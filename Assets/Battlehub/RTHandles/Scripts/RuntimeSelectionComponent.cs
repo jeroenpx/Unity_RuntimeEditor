@@ -34,6 +34,7 @@ namespace Battlehub.RTHandles
         }
     }
 
+    [DefaultExecutionOrder(-55)]
     public class RuntimeSelectionComponent : RTEBehaviour
     {
         [SerializeField]
@@ -64,37 +65,98 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual void Start()
+
+        protected override void AwakeOverride()
         {
+            base.AwakeOverride();
+
+            if(m_boxSelection == null)
+            {
+                m_boxSelection = GetComponentInChildren<BoxSelection>(true);
+            }
+            if(m_positionHandle == null)
+            {
+                m_positionHandle = GetComponentInChildren<PositionHandle>(true);
+            }
+            if(m_rotationHandle == null)
+            {
+                m_rotationHandle = GetComponentInChildren<RotationHandle>(true);
+            }
+            if(m_scaleHandle == null)
+            {
+                m_scaleHandle = GetComponentInChildren<ScaleHandle>(true);
+            }
+
             if (m_boxSelection != null)
             {
+                if(m_boxSelection.Window == null)
+                {
+                    m_boxSelection.Window = Window;
+                }
+
                 m_boxSelection.Filtering += OnBoxSelectionFiltering;
             }
 
             if (m_positionHandle != null)
             {
+                if(m_positionHandle.Window == null)
+                {
+                    m_positionHandle.Window = Window;
+                }
+
                 m_positionHandle.gameObject.SetActive(true);
                 m_positionHandle.gameObject.SetActive(false);
             }
 
             if (m_rotationHandle != null)
             {
+                if(m_rotationHandle.Window == null)
+                {
+                    m_rotationHandle.Window = Window;
+                }
+
                 m_rotationHandle.gameObject.SetActive(true);
                 m_rotationHandle.gameObject.SetActive(false);
             }
 
             if (m_scaleHandle != null)
             {
+                if(m_scaleHandle.Window == null)
+                {
+                    m_scaleHandle.Window = Window;
+                }
                 m_scaleHandle.gameObject.SetActive(true);
                 m_scaleHandle.gameObject.SetActive(false);
             }
-        
+
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
             Editor.Tools.ToolChanged += OnRuntimeToolChanged;
 
             if (GetComponent<RuntimeSelectionInputBase>() == null)
             {
                 gameObject.AddComponent<RuntimeSelectionInput>();
+            }
+
+            RuntimeSelectionComponentUI ui = Window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
+            if (ui == null && !Editor.IsVR)
+            {
+                GameObject runtimeSelectionComponentUI = new GameObject("SelectionComponentUI");
+                runtimeSelectionComponentUI.transform.SetParent(Window.transform, false);
+
+                ui = runtimeSelectionComponentUI.AddComponent<RuntimeSelectionComponentUI>();
+                RectTransform rt = runtimeSelectionComponentUI.GetComponent<RectTransform>();
+                rt.SetSiblingIndex(0);
+                rt.anchorMin = new Vector2(0, 0);
+                rt.anchorMax = new Vector2(1, 1);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.offsetMax = new Vector2(0, 0);
+                rt.offsetMin = new Vector2(0, 0);
+            }
+
+            if (ui != null)
+            {
+                ui.Selected += OnUISelected;
+                ui.Unselected += OnUIUnselected;
             }
         }
 
@@ -110,56 +172,15 @@ namespace Battlehub.RTHandles
             Editor.Tools.Current = RuntimeTool.None;
             Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
             Editor.Selection.SelectionChanged -= OnRuntimeSelectionChanged;
-        }
 
-        protected override void OnWindowRegistered(RuntimeWindow window)
-        {
-            base.OnWindowRegistered(window);
-            RuntimeSelectionComponentUI ui = window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
-            if(ui == null && !Editor.IsVR)
+            if(Window != null)
             {
-                GameObject runtimeSelectionComponentUI = new GameObject("SelectionComponentUI");
-                runtimeSelectionComponentUI.transform.SetParent(window.transform, false);
-
-                ui = runtimeSelectionComponentUI.AddComponent<RuntimeSelectionComponentUI>();
-                RectTransform rt = runtimeSelectionComponentUI.GetComponent<RectTransform>();
-                rt.SetSiblingIndex(0);
-                rt.anchorMin = new Vector2(0, 0);
-                rt.anchorMax = new Vector2(1, 1);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.offsetMax = new Vector2(0, 0);
-                rt.offsetMin = new Vector2(0, 0);
-            }
-
-            if(ui != null)
-            {
-                ui.Selected += OnUISelected;
-                ui.Unselected += OnUIUnselected;
-                if (window == Editor.ActiveWindow)
+                RuntimeSelectionComponentUI ui = Window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
+                if (ui != null)
                 {
-                    IsUISelected = ui.IsSelected;
+                    ui.Selected -= OnUISelected;
+                    ui.Unselected -= OnUIUnselected;
                 }
-            }
-        }
-
-        protected override void OnWindowUnregistered(RuntimeWindow window)
-        {
-            base.OnWindowUnregistered(window);
-            RuntimeSelectionComponentUI ui = window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
-            if(ui != null)
-            {
-                ui.Selected -= OnUISelected;
-                ui.Unselected -= OnUIUnselected;
-            }
-        }
-
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-            RuntimeSelectionComponentUI ui = ActiveWindow.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
-            if (ui != null)
-            {
-                IsUISelected = ui.IsSelected;
             }
         }
 
@@ -175,7 +196,7 @@ namespace Battlehub.RTHandles
 
         public virtual void SelectGO(bool rangeSelect, bool multiselect)
         {
-            Ray ray = ActiveWindow.Pointer;
+            Ray ray = Window.Pointer;
             RaycastHit hitInfo;
 
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
@@ -357,7 +378,7 @@ namespace Battlehub.RTHandles
                         {
                             selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
                         }
-                        
+                        selectionGizmo.Window = Window;
                         if (exposeToEditor.Selected != null)
                         {
                             exposeToEditor.Selected.Invoke(exposeToEditor);

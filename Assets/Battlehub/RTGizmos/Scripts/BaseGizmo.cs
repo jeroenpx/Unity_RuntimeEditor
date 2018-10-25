@@ -345,11 +345,11 @@ namespace Battlehub.RTGizmos
 
         void IGL.Draw(int cullingMask)
         {
-            RTLayer layer = RTLayer.SceneView;
-            if ((cullingMask & (int)layer) == 0)
-            {
-                return;
-            }
+            //RTLayer layer = RTLayer.SceneView;
+            //if ((cullingMask & (int)layer) == 0)
+            //{
+            //    return;
+            //}
 
             if(Target == null)
             {

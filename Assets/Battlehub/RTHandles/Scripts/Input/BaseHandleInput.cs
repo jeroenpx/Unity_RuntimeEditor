@@ -2,14 +2,14 @@
 using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
 {
-    [DefaultExecutionOrder(-80)]
+    [DefaultExecutionOrder(-60)]
     public class BaseHandleInput : MonoBehaviour
     {
         [SerializeField]
         protected BaseHandle m_handle;
         protected IRTE m_editor;
 
-        private void Start()
+        private void Awake()
         {
             if (m_handle == null)
             {
@@ -18,32 +18,20 @@ namespace Battlehub.RTHandles
             m_editor = m_handle.Editor;
         }
 
+        private void OnEnable()
+        {
+            if (BeginDragAction())
+            {
+                m_handle.BeginDrag();
+            }
+        }
+
+
         protected virtual void Update()
         {
             if (BeginDragAction())
             {
-                if (m_editor.Tools.Current != m_handle.Tool && m_editor.Tools.Current != RuntimeTool.None || m_editor.Tools.IsViewing)
-                {
-                    return;
-                }
-
-                if (!m_handle.IsInActiveWindow)
-                {
-                    return;
-                }
-
-                if (m_editor.Tools.ActiveTool != null)
-                {
-                    return;
-                }
-
-                if (m_handle.ActiveWindow.Camera != null && !m_handle.ActiveWindow.IsPointerOver)
-                {
-                    return;
-                }
-
                 m_handle.BeginDrag();
-
             }
             else if (EndDragAction())
             {

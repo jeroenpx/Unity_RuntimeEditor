@@ -182,7 +182,7 @@ namespace Battlehub.RTHandles
             {
                 GameObject colliders = new GameObject("Colliders");
                 colliders.transform.SetParent(transform, false);
-                colliders.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+                colliders.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
 
                 m_xCollider = colliders.AddComponent<BoxCollider>();
                 m_yCollider = colliders.AddComponent<BoxCollider>();
@@ -209,7 +209,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void OnEnable()
         {
-            if(IsInActiveWindow)
+            if(IsWindowActive)
             {
                 m_prevRotation = transform.rotation;
                 m_prevPosition = transform.position;
@@ -427,7 +427,7 @@ namespace Battlehub.RTHandles
             m_b3ss.position = p + transform.rotation * new Vector3(-1, 1, 0) * quadLength * transform.localScale.x * 0.5f;
             m_b4ss.position = p + transform.rotation * new Vector3(1, -1, 0) * quadLength * transform.localScale.x * 0.5f;
 
-            int index = SetCameraPosition(ActiveWindow.Camera.transform.position);
+            int index = SetCameraPosition(Window.Camera.transform.position);
             if (index >= 0)
             {
                 UpdateColliders(index);
@@ -570,7 +570,7 @@ namespace Battlehub.RTHandles
             if(m_isVertexSnapping)
             {
                 RaycastHit hit;
-                if(m_snappingCollider.Raycast(ray, out hit, ActiveWindow.Camera.farClipPlane))
+                if(m_snappingCollider.Raycast(ray, out hit, Window.Camera.farClipPlane))
                 {
                     collider = hit.collider;
                     minDistance = hit.distance;
@@ -581,7 +581,7 @@ namespace Battlehub.RTHandles
                 for (int i = 0; i < m_colliders.Length; ++i)
                 {
                     RaycastHit hit;
-                    if (m_colliders[i].Raycast(ray, out hit, ActiveWindow.Camera.farClipPlane))
+                    if (m_colliders[i].Raycast(ray, out hit, Window.Camera.farClipPlane))
                     {
                         if (hit.distance < minDistance)
                         {
@@ -646,11 +646,11 @@ namespace Battlehub.RTHandles
         {
             base.Update();
                    
-            if(m_prevCameraPosition != ActiveWindow.Camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
+            if(m_prevCameraPosition != Window.Camera.transform.position || m_prevPosition != transform.position || m_prevRotation != transform.rotation)
             {
                 m_prevRotation = transform.rotation;
                 m_prevPosition = transform.position;
-                m_prevCameraPosition = ActiveWindow.Camera.transform.position;
+                m_prevCameraPosition = Window.Camera.transform.position;
                 int index = SetCameraPosition(m_prevCameraPosition);
                 if (index >= 0)
                 {

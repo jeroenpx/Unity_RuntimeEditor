@@ -2,72 +2,61 @@
 
 namespace Battlehub.RTCommon
 {
-    [DefaultExecutionOrder(-75)]
     public class RTEBehaviour : MonoBehaviour
     {
-        [SerializeField]
-        private RuntimeWindowType m_windowMask = RuntimeWindowType.SceneView;
-        public RuntimeWindowType WindowMask
-        {
-            get { return m_windowMask; }
-        }
-
-        protected bool IsSupported(RuntimeWindow window)
-        {
-            if(window == null)
-            {
-                return false;
-            }
-
-            if(m_requiresCamera && window.Camera == null)
-            {
-                return false;
-            }
-
-            int mask = (int)m_windowMask;
-            int windowType = (int)window.WindowType;
-            return (windowType & mask) != 0;
-        }
-
-        [SerializeField]
-        private bool m_requiresCamera = true;
-
-        private RuntimeWindow m_activeWindow;
-        public RuntimeWindow ActiveWindow
-        {
-            get { return m_activeWindow; }
-        }
-
-        public bool IsInActiveWindow
-        {
-            get { return ActiveWindow != null; }
-        }
-
         private IRTE m_editor;
         public IRTE Editor
         {
             get { return m_editor; }
         }
 
+        [SerializeField]
+        private RuntimeWindow m_window;
+
+        public virtual RuntimeWindow Window
+        {
+            get { return m_window; }
+            set
+            {
+                if(m_awaked)
+                {
+                    throw new System.NotSupportedException("window change is not supported");
+                }
+                m_editor = RTE.Get;
+                m_window = value;
+            }
+        }
+
+        public bool IsWindowActive
+        {
+            get { return Window == m_editor.ActiveWindow; }
+        }
+
+        private bool m_awaked;
         private void Awake()
         {
+            
             m_editor = RTE.Get;
+
+            if(Window == null)
+            {
+                Window = m_editor.GetWindow(RuntimeWindowType.SceneView);
+                if(Window == null)
+                {
+                    Debug.LogError("m_window == null");
+                    enabled = false;
+                    return;
+                }
+            }
+
+            m_awaked = true;
 
             AwakeOverride();
 
-            RuntimeWindow[] windows = m_editor.Windows;
-            for (int i = 0; i < windows.Length; ++i)
-            {
-                OnWindowRegistered(windows[i]);
-            }
-
-            m_activeWindow = m_editor.ActiveWindow;
-            if (m_activeWindow != null)
+            if(IsWindowActive)
             {
                 OnWindowActivated();
             }
-            m_editor.WindowRegistered += OnWindowRegistered;
-            m_editor.WindowUnregistered += OnWindowUnregistered;
             m_editor.ActiveWindowChanged += OnActiveWindowChanged;
         }
 
@@ -80,8 +69,6 @@ namespace Battlehub.RTCommon
         {
             if(m_editor != null)
             {
-                m_editor.WindowRegistered -= OnWindowRegistered;
-                m_editor.WindowUnregistered -= OnWindowUnregistered;
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
             }
             OnDestroyOverride();
@@ -93,51 +80,27 @@ namespace Battlehub.RTCommon
 
         }
 
-        protected virtual void OnActiveWindowChanged()
+        private void OnActiveWindowChanged()
         {
-            RuntimeWindow oldActiveWindow = m_activeWindow;
-
-            if (IsSupported(m_editor.ActiveWindow))
+            if (m_editor.ActiveWindow == Window)
             {
-                m_activeWindow = m_editor.ActiveWindow;
+                OnWindowActivated();
             }
             else
             {
-                m_activeWindow = null;
-            }
-
-            if(oldActiveWindow != m_activeWindow)
-            {
-                if(m_activeWindow != null)
-                {
-                    OnWindowActivated();
-                }
-                else
-                {
-                    OnWindowDeactivated();
-                }
+                OnWindowDeactivated();
             }
         }
 
         protected virtual void OnWindowActivated()
         {
-
+            
         }
-        
+
         protected virtual void OnWindowDeactivated()
         {
 
         }
-
-        protected virtual void OnWindowUnregistered(RuntimeWindow window)
-        {
-            
-        }
-
-        protected virtual void OnWindowRegistered(RuntimeWindow window)
-        {
-            
-        }       
     }
 }
 

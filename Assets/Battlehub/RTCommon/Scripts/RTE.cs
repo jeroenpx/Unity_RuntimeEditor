@@ -23,11 +23,13 @@ namespace Battlehub.RTCommon
 
     public struct CameraLayerSettings
     {
-        public int RuntimeHandlesLayer;
-
-        public CameraLayerSettings(int runtimeGraphicsLayer)
+        public int RuntimeGraphicsLayer;
+        public int MaxGraphicsLayers;
+        
+        public CameraLayerSettings(int runtimeGraphicsLayer, int maxLayers)
         {
-            RuntimeHandlesLayer = runtimeGraphicsLayer;
+            RuntimeGraphicsLayer = runtimeGraphicsLayer;
+            MaxGraphicsLayers = maxLayers;
         }
     }
 
@@ -130,7 +132,9 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        RuntimeWindow GetWindow(RuntimeWindowType window);
+        int GetIndex(RuntimeWindowType windowType);
+
+        RuntimeWindow GetWindow(RuntimeWindowType windowType);
 
         void ActivateWindow(RuntimeWindowType window);
 
@@ -150,7 +154,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true);
         [SerializeField]
-        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(24);
+        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 4);
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
@@ -158,7 +162,7 @@ namespace Battlehub.RTCommon
         private GraphicRaycaster m_raycaster;
         [SerializeField]
         private EventSystem m_eventSystem;
-        
+                
         public event RuntimeEditorEvent PlaymodeStateChanging;
         public event RuntimeEditorEvent PlaymodeStateChanged;
         public event RuntimeEditorEvent ActiveWindowChanged;
@@ -197,7 +201,10 @@ namespace Battlehub.RTCommon
         {
             get { return m_cameraLayerSettings; }
         }
-        
+
+        [SerializeField]
+        private bool m_enableVR = true;
+
         public bool IsVR
         {
             get;
@@ -420,7 +427,7 @@ namespace Battlehub.RTCommon
                 m_undo = new DisabledUndo();
             }
 
-            IsVR = UnityEngine.XR.XRDevice.isPresent;
+            IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVR;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
             m_object = new ExposeToEditorEvents(this);
@@ -508,7 +515,13 @@ namespace Battlehub.RTCommon
 
             if(m_activeWindow == window)
             {
-                ActivateWindow(m_windows.Select(w => w.GetComponent<RuntimeWindow>()).FirstOrDefault());
+                RuntimeWindow activeWindow = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).Where(w => w.WindowType == window.WindowType).FirstOrDefault();
+                if(activeWindow == null)
+                {
+                    activeWindow = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).FirstOrDefault();
+                }
+                    
+                ActivateWindow(activeWindow);
             }
         }
 
@@ -539,6 +552,21 @@ namespace Battlehub.RTCommon
             }
         }
     
+        public int GetIndex(RuntimeWindowType windowType)
+        {
+            IEnumerable<RuntimeWindow> windows = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).Where(w => w.WindowType == windowType).OrderBy(w => w.Index);
+            int freeIndex = 0;
+            foreach(RuntimeWindow window in windows)
+            {
+                if(window.Index != freeIndex)
+                {
+                    return freeIndex;
+                }
+                freeIndex++;
+            }
+            return freeIndex;
+        }
+
         public RuntimeWindow GetWindow(RuntimeWindowType window)
         {
             return m_windows.Select(w => w.GetComponent<RuntimeWindow>()).FirstOrDefault(w => w.WindowType == window);

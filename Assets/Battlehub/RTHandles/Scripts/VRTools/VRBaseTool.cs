@@ -11,19 +11,17 @@ namespace Battlehub.RTHandles
             set;
         }
 
-        protected override void OnWindowRegistered(RuntimeWindow window)
+        protected override void AwakeOverride()
         {
-            base.OnWindowRegistered(window);
-            if (IsSupported(window))
+            base.AwakeOverride();
+            RuntimeGraphicsLayer graphicsLayer = Window.GetComponent<RuntimeGraphicsLayer>();
+            if (graphicsLayer == null)
             {
-                RuntimeGraphicsLayer graphicsLayer = window.GetComponent<RuntimeGraphicsLayer>();
-                if (graphicsLayer == null)
-                {
-                    graphicsLayer = window.gameObject.AddComponent<RuntimeGraphicsLayer>();
-                }
-
-                SetLayer(transform, graphicsLayer.Window.Editor.CameraLayerSettings.RuntimeHandlesLayer);
+                graphicsLayer = Window.gameObject.AddComponent<RuntimeGraphicsLayer>();
             }
+
+            SetLayer(transform, Window.Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index);
+
         }
 
         private void SetLayer(Transform t, int layer)

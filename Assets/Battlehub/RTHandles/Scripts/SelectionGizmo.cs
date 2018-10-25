@@ -13,14 +13,35 @@ namespace Battlehub.RTHandles
         public RuntimeHandlesComponent Appearance;
         private ExposeToEditor m_exposeToEditor;
 
+        private RuntimeWindow m_window;
+        public virtual RuntimeWindow Window
+        {
+            get { return m_window; }
+            set { m_window = value; }
+        }
+
+        private IRTE m_editor;
+
         private void Awake()
         {
+            m_editor = RTE.Get;
             m_exposeToEditor = GetComponent<ExposeToEditor>();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
         }
 
         private void Start()
         {
+            if (m_window == null)
+            {
+                m_window = m_editor.GetWindow(RuntimeWindowType.SceneView);
+                if(m_window == null)
+                {
+                    Debug.LogError("m_window == null");
+                    enabled = false;
+                    return;
+                }
+            }
+
             if (GLRenderer.Instance == null)
             {
                 GameObject glRenderer = new GameObject();
@@ -62,8 +83,7 @@ namespace Battlehub.RTHandles
         {
             if (m_exposeToEditor.Editor.Tools.ShowSelectionGizmos)
             {
-                RTLayer layer = RTLayer.SceneView;
-                if ((cullingMask & (int)layer) == 0)
+                if ((cullingMask & (1 << (m_editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index))) == 0)
                 {
                     return;
                 }

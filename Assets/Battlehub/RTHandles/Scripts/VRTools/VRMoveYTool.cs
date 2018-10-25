@@ -20,12 +20,8 @@ namespace Battlehub.RTHandles
             base.AwakeOverride();
             gameObject.SetActive(false);
             m_lineRenderer = GetComponent<LineRenderer>();
-        }
 
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-            Transform camera = ActiveWindow.Camera.transform;
+            Transform camera = Window.Camera.transform;
             m_prevOrigin = camera.position;
             m_prevForward = camera.forward;
             m_lineRenderer.positionCount = 2;
@@ -34,12 +30,12 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
-            if(!IsInActiveWindow)
+            if(!IsWindowActive)
             {
                 return;
             }
 
-            Transform camera = ActiveWindow.Camera.transform;
+            Transform camera = Window.Camera.transform;
             if (m_prevForward != camera.forward || m_prevOrigin != camera.position)
             {
                 UpdateTool();
@@ -51,7 +47,7 @@ namespace Battlehub.RTHandles
 
         private void UpdateTool()
         {
-            Ray ray = ActiveWindow.Pointer.Ray;
+            Ray ray = Window.Pointer.Ray;
 
             Vector3 direction = ray.direction;
             direction.y = 0;

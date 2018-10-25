@@ -6,7 +6,7 @@ namespace Battlehub.RTHandles
 {
     public class RotationHandleModel : BaseHandleModel
     {
-        private const float DefaultMinorRadius = 0.05f;
+        private const float DefaultMinorRadius = 0.0075f;
         private const float DefaultMajorRadius = 1.0f;
         private const float DefaultOuterRadius = 1.11f;
         [SerializeField]
@@ -115,7 +115,7 @@ namespace Battlehub.RTHandles
             {
                 GameObject colliders = new GameObject("Colliders");
                 colliders.transform.SetParent(transform, false);
-                colliders.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+                colliders.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
                 m_graphicsBlockingCollider = colliders.AddComponent<SphereCollider>();
                 m_graphicsBlockingCollider.isTrigger = true;
 
@@ -145,7 +145,7 @@ namespace Battlehub.RTHandles
                 foreach(Collider collider in m_colliders)
                 {
                     collider.gameObject.SetActive(false);
-                    collider.gameObject.layer = Editor.CameraLayerSettings.RuntimeHandlesLayer;
+                    collider.gameObject.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
                 }
             }
         }

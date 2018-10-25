@@ -423,7 +423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
-  m_minorRadius: 0.01
+  m_minorRadius: 0.0075
   m_majorRadius: 1
   m_outerRadius: 1.11
   m_xyz: {fileID: 33652244811446066}
