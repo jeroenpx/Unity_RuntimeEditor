@@ -1,50 +1,80 @@
-﻿using UnityEngine;
+﻿using Battlehub.RTCommon;
+using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public interface IRTEDeps
-    {
-        IResourcePreviewUtility ResourcePreview
-        {
-            get;
-        }
-    }
-
     [DefaultExecutionOrder(-100)]
-    public class RTEDeps : MonoBehaviour, IRTEDeps
+    public class RTEDeps : MonoBehaviour
     {
-        public static IRTEDeps Get
-        {
-            get;
-            private set;
-        }
-
         private IResourcePreviewUtility m_resourcePreview;
-        public IResourcePreviewUtility ResourcePreview
+
+        protected virtual IResourcePreviewUtility ResourcePreview
         {
-            get { return m_resourcePreview; }
+            get
+            {
+                IResourcePreviewUtility resourcePreviewUtility = FindObjectOfType<ResourcePreviewUtility>();
+                if (resourcePreviewUtility == null)
+                {
+                    resourcePreviewUtility = gameObject.AddComponent<ResourcePreviewUtility>();
+                }
+                return resourcePreviewUtility;
+            }
         }
 
-        protected virtual void Awake()
+        private void Awake()
         {
-            if (Get != null)
+            if (m_instance != null)
             {
-                Destroy(((MonoBehaviour)Get).gameObject);
-                Debug.LogWarning("Another instance of RTSL2Deps exist");
+                Debug.LogWarning("AnotherInstance of RTSL2 exists");
             }
-            Get = this;
-            m_resourcePreview = FindObjectOfType<ResourcePreviewUtility>();
+            m_instance = this;
+            AwakeOverride();
         }
 
-        protected virtual void OnDestroy()
+        protected virtual void AwakeOverride()
         {
-            if (this == (MonoBehaviour)Get)
+            if (m_resourcePreview == null)
             {
-                Get = null;
-                m_resourcePreview = null;
+                m_resourcePreview = ResourcePreview;
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (m_instance == this)
+            {
+                m_instance = null;
+            }
+
+            OnDestroyOverride();
+            m_resourcePreview = null;
+        }
+
+        protected virtual void OnDestroyOverride()
+        {
+
+        }
+
+
+        private static RTEDeps m_instance;
+        private static RTEDeps Instance
+        {
+            get
+            {
+                if (m_instance == null)
+                {
+                    GameObject go = new GameObject("RTEDeps");
+                    go.AddComponent<RTEDeps>();
+                }
+                return m_instance;
+            }
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Init()
+        {
+            IOC.RegisterFallback(() => Instance.m_resourcePreview);
         }
     }
-
 }
 

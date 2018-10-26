@@ -75,7 +75,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_resourcePreview = RTEDeps.Get.ResourcePreview;
+            m_resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
             if(m_resourcePreview == null)
             {
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");

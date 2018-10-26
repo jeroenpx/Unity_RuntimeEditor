@@ -14,7 +14,6 @@ namespace Battlehub.RTEditor
 {
     public class RuntimeEditor : RTE
     {
-
         protected override void Awake()
         {
             base.Awake();
