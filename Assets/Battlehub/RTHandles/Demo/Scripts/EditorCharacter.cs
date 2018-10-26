@@ -13,7 +13,7 @@ namespace Battlehub.RTHandles
 
         private void Start()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             m_character = GetComponent<CubemanCharacter>();
             m_rigidBody = GetComponent<Rigidbody>();
         }
@@ -42,7 +42,8 @@ namespace Battlehub.RTHandles
 
         public void OnSelected(ExposeToEditor obj)
         {
-            if(EditorDemo.Get != null && EditorDemo.Get.EnableCharacters)
+            EditorDemo editorDemo = IOC.Resolve<EditorDemo>();
+            if(editorDemo != null && editorDemo.EnableCharacters)
             {
                 EnableCharacter(obj.gameObject);
             }

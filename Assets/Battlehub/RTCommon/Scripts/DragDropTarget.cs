@@ -38,7 +38,7 @@ namespace Battlehub.RTCommon
         // Use this for initialization
         private void Awake()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             if (m_editor == null)
             {
                 Debug.LogError("RTE is null");

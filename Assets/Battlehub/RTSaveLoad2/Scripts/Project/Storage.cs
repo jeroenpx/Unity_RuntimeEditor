@@ -4,6 +4,8 @@ using System.IO;
 using UnityEngine;
 
 using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTCommon;
+
 namespace Battlehub.RTSaveLoad2
 {
     public delegate void StorageEventHandler(Error error);
@@ -43,7 +45,7 @@ namespace Battlehub.RTSaveLoad2
             projectPath = FullPath(projectPath) + "/Project.rtmeta";
             ProjectInfo projectInfo;
             Error error = new Error();
-            ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
             if (!File.Exists(projectPath))
             {
                 projectInfo = new ProjectInfo();
@@ -126,7 +128,7 @@ namespace Battlehub.RTSaveLoad2
                 return;
             }
 
-            ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
             string[] dirs = Directory.GetDirectories(path);
             for (int i = 0; i < dirs.Length; ++i)
             {
@@ -155,7 +157,7 @@ namespace Battlehub.RTSaveLoad2
         {
             projectPath = AssetsFolderPath(projectPath);
 
-            ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
             Preview[][] result = new Preview[folderPath.Length][];
             for (int i = 0; i < folderPath.Length; ++i)
             {
@@ -182,7 +184,7 @@ namespace Battlehub.RTSaveLoad2
         {
             projectPath = FullPath(projectPath);
             string projectInfoPath = projectPath + "/Project.rtmeta";
-            ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
             Error error = new Error(Error.OK);
             try
             {
@@ -230,7 +232,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 string assetPath = assetPaths[i];
                 assetPath = FullPath(projectPath) + assetPath;
-                ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+                ISerializer serializer = IOC.Resolve<ISerializer>();
                 try
                 {
                     if (File.Exists(assetPath))

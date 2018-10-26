@@ -14,6 +14,13 @@ namespace Battlehub.RTEditor
 {
     public class RuntimeEditor : RTE
     {
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
+        #region Commented Out
         /*
         public RTHandles.Grid Grid;
         public BoxSelection BoxSelect;
@@ -665,5 +672,6 @@ namespace Battlehub.RTEditor
             }
         }
         */
+        #endregion
     }
 }

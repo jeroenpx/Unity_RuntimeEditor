@@ -22,7 +22,7 @@ namespace Battlehub.RTCommon
                 {
                     throw new System.NotSupportedException("window change is not supported");
                 }
-                m_editor = RTE.Get;
+                m_editor = IOC.Resolve<IRTE>();
                 m_window = value;
             }
         }
@@ -35,8 +35,8 @@ namespace Battlehub.RTCommon
         private bool m_awaked;
         private void Awake()
         {
-            
-            m_editor = RTE.Get;
+
+            m_editor = IOC.Resolve<IRTE>();
 
             if(Window == null)
             {

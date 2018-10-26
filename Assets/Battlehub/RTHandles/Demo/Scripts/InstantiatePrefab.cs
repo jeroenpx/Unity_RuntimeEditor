@@ -27,7 +27,7 @@ namespace Battlehub.RTHandles
 
         public void Spawn()
         {
-            m_editor = EditorDemo.Get;
+            m_editor = IOC.Resolve<EditorDemo>();
             if (m_editor == null)
             {
                 Debug.LogError("Editor.Instance is null");

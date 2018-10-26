@@ -28,7 +28,7 @@ namespace Battlehub.RTSaveLoad
         private void Start()
         {
             m_projectManager = Dependencies.ProjectManager;
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
         }
 
         private void Update()

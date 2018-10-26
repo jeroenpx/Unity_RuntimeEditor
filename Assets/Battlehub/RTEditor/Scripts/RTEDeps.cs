@@ -2,7 +2,7 @@
 
 namespace Battlehub.RTEditor
 {
-    public interface IRTSL2Deps
+    public interface IRTEDeps
     {
         IResourcePreviewUtility ResourcePreview
         {
@@ -11,9 +11,9 @@ namespace Battlehub.RTEditor
     }
 
     [DefaultExecutionOrder(-100)]
-    public class RTEDeps : MonoBehaviour, IRTSL2Deps
+    public class RTEDeps : MonoBehaviour, IRTEDeps
     {
-        public static IRTSL2Deps Get
+        public static IRTEDeps Get
         {
             get;
             private set;

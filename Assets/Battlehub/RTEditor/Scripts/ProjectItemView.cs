@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTCommon;
+
 namespace Battlehub.RTEditor
 {
     public class ProjectItemView : MonoBehaviour
@@ -109,7 +111,7 @@ namespace Battlehub.RTEditor
 
         private void Awake()
         {
-            m_project = RTSL2Deps.Get.Project;
+            m_project = IOC.Resolve<IProject>();
         }
 
         private void OnDestroy()

@@ -21,7 +21,7 @@ namespace Battlehub.RTCommon
         private void Start()
         {
             m_camera = GetComponentInParent<Camera>();
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
           
             m_ovrGazePointer = GetComponentInChildren<OVRGazePointer>();
             if(m_ovrGazePointer == null)

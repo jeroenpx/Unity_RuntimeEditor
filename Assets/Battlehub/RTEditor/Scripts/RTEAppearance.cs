@@ -23,7 +23,7 @@ namespace Battlehub.RTEditor
 
         private void Awake()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
 
             m_editor.IsOpenedChanged += OnIsOpenedChanged;
             if(m_editor.IsOpened)

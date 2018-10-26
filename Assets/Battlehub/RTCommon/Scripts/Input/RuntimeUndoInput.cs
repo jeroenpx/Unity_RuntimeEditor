@@ -30,7 +30,7 @@ namespace Battlehub.RTCommon
         private IRTE m_rte;
         private void Awake()
         {
-            m_rte = RTE.Get;
+            m_rte = IOC.Resolve<IRTE>();
             if(m_rte == null)
             {
                 Debug.LogError("m_rte is null");

@@ -24,7 +24,7 @@ namespace Battlehub.RTHandles
 
         private void Awake()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             m_exposeToEditor = GetComponent<ExposeToEditor>();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
         }

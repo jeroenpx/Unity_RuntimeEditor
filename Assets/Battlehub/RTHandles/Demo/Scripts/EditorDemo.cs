@@ -86,11 +86,6 @@ namespace Battlehub.RTHandles
 
         private ISceneManager m_sceneManager;
 
-        public static new EditorDemo Get
-        {
-            get { return (EditorDemo)RTE.Get; }
-        }
-
         private void OnAwaked(ExposeToEditor obj)
         {
             if (IsInPlayMode)
@@ -192,11 +187,13 @@ namespace Battlehub.RTHandles
                 }
             }
         }
-
         protected override void Awake()
         {
             base.Awake();
 
+            IOC.Register<IRTE>(this);
+            IOC.RegisterFallback(this);
+            
             ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
             for (int i = 0; i < editorObjects.Length; ++i)
             {
@@ -275,6 +272,9 @@ namespace Battlehub.RTHandles
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
+            IOC.Unregister<IRTE>(this);
+            IOC.UnregisterFallback(this);
 
             PlaymodeStateChanged -= OnPlaymodeStateChanged;
             IsOpenedChanged -= OnIsOpenedChanged;

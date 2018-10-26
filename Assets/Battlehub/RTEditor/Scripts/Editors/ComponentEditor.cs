@@ -273,7 +273,7 @@ namespace Battlehub.RTEditor
         }
         private void Awake()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             AwakeOverride();
         }
 

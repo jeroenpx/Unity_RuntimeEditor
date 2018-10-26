@@ -38,7 +38,7 @@ namespace Battlehub.RTEditor
 
         private void OnEnable()
         {
-            m_project = RTSL2Deps.Get.Project;
+            m_project = IOC.Resolve<IProject>();
             
             OnRuntimeToolChanged();
             OnPivotRotationChanged();

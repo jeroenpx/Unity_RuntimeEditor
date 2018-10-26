@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityObject = UnityEngine.Object;
 
 using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTCommon;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -49,19 +50,13 @@ namespace Battlehub.RTSaveLoad2
 
         private MappingInfo m_staticReferencesMapping;
 
+
         private void Awake()
         {
-            if (RTSL2InternalDeps.Get == null)
-            {
-                GameObject deps = new GameObject();
-                deps.name = "RTSL2Deps";
-                deps.AddComponent<RTSL2InternalDeps>();
-            }
-
-            m_storage = RTSL2InternalDeps.Get.Storage;
-            m_assetDB = RTSL2InternalDeps.Get.AssetDB;
-            m_typeMap = RTSL2InternalDeps.Get.TypeMap;
-            m_factory = RTSL2InternalDeps.Get.UnityObjFactory;
+            m_storage = IOC.Resolve<IStorage>();
+            m_assetDB = IOC.Resolve<IAssetDB>();
+            m_typeMap = IOC.Resolve<ITypeMap>();
+            m_factory = IOC.Resolve<IUnityObjectFactory>();
 
             if(m_dynamicPrefabsRoot == null)
             {

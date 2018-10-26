@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTCommon;
+
 namespace Battlehub.RTSaveLoad2
 {
     public class ProjectTests
@@ -12,17 +14,13 @@ namespace Battlehub.RTSaveLoad2
         [TearDown]
         public void Cleanup()
         {
-            Object.DestroyImmediate(Object.FindObjectOfType<RTSL2InternalDeps>().gameObject);
-            Object.DestroyImmediate(Object.FindObjectOfType<Project>().gameObject);
+            Object.DestroyImmediate(Object.FindObjectOfType<RTSL2Deps>().gameObject);
         }
      
         [UnityTest]
         public IEnumerator OpenProjectTest()
         {
-            GameObject projectGo = new GameObject();
-            projectGo.AddComponent<Project>();
-            
-            IProject project = RTSL2InternalDeps.Get.Project;
+            IProject project = IOC.Resolve<IProject>();
             Assert.IsNull(project.Root);
 
             bool done = false;
@@ -44,10 +42,7 @@ namespace Battlehub.RTSaveLoad2
         [Test]
         public void SaveTest1()
         {
-            GameObject projectGo = new GameObject();
-            projectGo.AddComponent<Project>();
-
-            IProject project = RTSL2InternalDeps.Get.Project;
+            IProject project = IOC.Resolve<IProject>();
             Assert.Throws<System.InvalidOperationException>(() =>
             {
                 project.Save(null, null, null);
@@ -58,10 +53,7 @@ namespace Battlehub.RTSaveLoad2
         [Test]
         public void SaveTest2()
         {
-            GameObject projectGo = new GameObject();
-            projectGo.AddComponent<Project>();
-
-            IProject project = RTSL2InternalDeps.Get.Project;
+            IProject project = IOC.Resolve<IProject>();
             Assert.Throws<System.InvalidOperationException>(() =>
             {
                 project.Save(null, null, null, null);
@@ -73,9 +65,6 @@ namespace Battlehub.RTSaveLoad2
         [UnityTest]
         public IEnumerator SaveLoadTest([Values(false, true)]bool unload)
         {
-            GameObject projectGo = new GameObject();
-            projectGo.AddComponent<Project>();
-
             byte[] dummyPreview = new byte[] { 0x1, 0x2, 0x3 };
             GameObject dummyGo = new GameObject();
             dummyGo.transform.position = new Vector3(1, 2, 3);
@@ -85,8 +74,8 @@ namespace Battlehub.RTSaveLoad2
             dummyChild.name = "dummyChild";
             dummyChild.transform.SetParent(dummyGo.transform, false);
             dummyChild.transform.position = new Vector3(2, 3, 4);
-  
-            IProject project = RTSL2InternalDeps.Get.Project;
+
+            IProject project = IOC.Resolve<IProject>();
 
             bool done = false;
             project.Open("TestProject", openError =>
@@ -144,9 +133,6 @@ namespace Battlehub.RTSaveLoad2
         [UnityTest]
         public IEnumerator SaveLoadTest2([Values(false, true)]bool unload)
         {
-            GameObject projectGo = new GameObject();
-            projectGo.AddComponent<Project>();
-
             byte[] dummyPreview = new byte[] { 0x1, 0x2, 0x3 };
             GameObject dummyGo = new GameObject();
             dummyGo.transform.position = new Vector3(1, 2, 3);
@@ -157,7 +143,7 @@ namespace Battlehub.RTSaveLoad2
             dummyChild.transform.SetParent(dummyGo.transform, false);
             dummyChild.transform.position = new Vector3(2, 3, 4);
 
-            IProject project = RTSL2InternalDeps.Get.Project;
+            IProject project = IOC.Resolve<IProject>();
 
             var openResult = project.Open("TestProject");
             yield return openResult;

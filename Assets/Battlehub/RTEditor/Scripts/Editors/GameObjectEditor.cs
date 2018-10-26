@@ -21,7 +21,7 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
 
             GameObject go = m_editor.Selection.activeGameObject;
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();

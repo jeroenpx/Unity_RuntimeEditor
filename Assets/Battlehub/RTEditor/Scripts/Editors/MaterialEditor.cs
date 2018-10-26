@@ -125,7 +125,7 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
 
             //if(!ShaderVariants.isWarmedUp)
             //{

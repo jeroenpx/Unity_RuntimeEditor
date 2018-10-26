@@ -324,9 +324,11 @@ namespace Battlehub.RTCommon
         }
 
         private static RTE m_instance;
-        public static IRTE Get
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Init()
         {
-            get
+            Debug.Log("RTE Initialized");
+            IOC.RegisterFallback<IRTE>(() =>
             {
                 if (m_instance == null)
                 {
@@ -334,12 +336,11 @@ namespace Battlehub.RTCommon
                     editor.AddComponent<RTE>();
                     m_instance.BuildUp(editor);
                 }
-
                 return m_instance;
-            }
+            });
         }
 
-        protected void BuildUp(GameObject editor)
+        protected virtual void BuildUp(GameObject editor)
         {
             editor.AddComponent<GLRenderer>();
 

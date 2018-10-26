@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using Battlehub.RTCommon;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Battlehub.RTSaveLoad2
 
         public PersistentRuntimePrefab()
         {
-            m_typeMap = RTSL2InternalDeps.Get.TypeMap;
+            m_typeMap = IOC.Resolve<ITypeMap>();
         }
 
         protected override void ReadFromImpl(object obj)

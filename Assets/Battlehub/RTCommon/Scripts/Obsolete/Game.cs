@@ -22,7 +22,7 @@ namespace Battlehub.RTCommon
 
         private void Awake()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             if(m_editor == null)
             {
                 Debug.LogError("editor is null");

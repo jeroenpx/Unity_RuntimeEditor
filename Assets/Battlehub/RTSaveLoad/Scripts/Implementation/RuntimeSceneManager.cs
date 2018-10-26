@@ -31,7 +31,7 @@ namespace Battlehub.RTSaveLoad
 
             m_project = Dependencies.Project;
             m_serializer = Dependencies.Serializer;
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             if(m_editor == null)
             {
                 Debug.LogError("RTE is null");

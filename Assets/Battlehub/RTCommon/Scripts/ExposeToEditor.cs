@@ -252,7 +252,7 @@ namespace Battlehub.RTCommon
 
         private void Awake()
         {
-            m_rte = RTE.Get;
+            m_rte = IOC.Resolve<IRTE>();
 
             m_rte.IsOpenedChanged += OnEditorIsOpenedChanged;
 

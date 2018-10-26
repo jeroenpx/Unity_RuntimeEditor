@@ -274,7 +274,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_project = RTSL2Deps.Get.Project;
+            m_project = IOC.Resolve<IProject>();
 
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
             if (m_listBox == null)

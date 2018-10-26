@@ -36,7 +36,7 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_editor = RTE.Get;
+            m_editor = IOC.Resolve<IRTE>();
             m_parentPopup = GetComponentInParent<PopupWindow>();
             if (m_parentPopup != null)
             {

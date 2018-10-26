@@ -257,7 +257,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_project = RTSL2Deps.Get.Project;
+            m_project = IOC.Resolve<IProject>();
 
             m_treeView = Instantiate(TreeViewPrefab).GetComponent<VirtualizingTreeView>();
             m_treeView.CanReorder = false;

@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using Battlehub.RTCommon;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,14 +60,13 @@ namespace Battlehub.RTSaveLoad2
         protected readonly IAssetDB m_assetDB;
         protected PersistentSurrogate()
         {
-            m_assetDB = RTSL2InternalDeps.Get.AssetDB;
+            m_assetDB = IOC.Resolve<IAssetDB>();
         }
 
         protected virtual void ReadFromImpl(object obj) { }
         protected virtual object WriteToImpl(object obj) { return obj; }
         protected virtual void GetDepsImpl(GetDepsContext context) { }
         protected virtual void GetDepsFromImpl(object obj, GetDepsFromContext context) { }
-
 
         public virtual void ReadFrom(object obj)
         {

@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections;
+using Battlehub.RTCommon;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -12,7 +13,7 @@ namespace Battlehub.RTSaveLoad2
         [TearDown]
         public void Cleanup()
         {
-            var rtsl2Deps = Object.FindObjectOfType<RTSL2InternalDeps>();
+            var rtsl2Deps = Object.FindObjectOfType<RTSL2Deps>();
             if(rtsl2Deps != null)
             {
                 Object.DestroyImmediate(rtsl2Deps.gameObject);
@@ -22,15 +23,12 @@ namespace Battlehub.RTSaveLoad2
         [UnityTest]
         public IEnumerator PersistentTransformTest()
         {
-            GameObject deps = new GameObject();
-            deps.AddComponent<RTSL2InternalDeps>();
-
             PersistentTransform tf = new PersistentTransform();
             tf.position = Vector3.one;
             tf.rotation = Quaternion.Euler(45, 45, 45);
             tf.localScale = Vector3.one * 2;
 
-            ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
             PersistentTransform clone = serializer.Deserialize<PersistentTransform>(serializer.Serialize(tf));
 
             Assert.AreEqual(tf.position, clone.position);
@@ -60,14 +58,10 @@ namespace Battlehub.RTSaveLoad2
             child.transform.position = Vector3.one * 2;
             child.transform.SetParent(go.transform, true);
 
-            GameObject deps = new GameObject();
-            deps.AddComponent<RTSL2InternalDeps>();
-
-
             PersistentRuntimeScene scene = new PersistentRuntimeScene();
             scene.ReadFrom(SceneManager.GetActiveScene());
 
-            ISerializer serializer = RTSL2InternalDeps.Get.Serializer;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
             PersistentRuntimeScene clone = serializer.DeepClone(scene);
 
             clone.WriteTo(SceneManager.GetActiveScene());

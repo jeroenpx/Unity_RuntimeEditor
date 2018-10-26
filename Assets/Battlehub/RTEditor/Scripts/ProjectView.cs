@@ -67,7 +67,7 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_project = RTSL2Deps.Get.Project;
+            m_project = IOC.Resolve<IProject>();
             if(m_project == null)
             {
                 Debug.LogWarning("RTSL2Deps.Get.Project is null");
