@@ -775,6 +775,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+
         public ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback)
         {
             Type type = m_typeMap.ToType(assetItem.TypeGuid);

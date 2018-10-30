@@ -93,6 +93,12 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+
+            if(m_editor.IsBusy)
+            {
+                return;
+            }
+
             DragObjects = dragItems;
             SetCursor(KnownCursor.DropNowAllowed);
             if (BeginDrag != null)
@@ -103,7 +109,7 @@ namespace Battlehub.RTCommon
 
         public void RaiseDrag(PointerEventData eventData)
         {
-            if(DragObjects != null)
+            if(InProgress)
             {
                 if (Drag != null)
                 {
@@ -114,7 +120,7 @@ namespace Battlehub.RTCommon
 
         public void RaiseDrop(PointerEventData pointerEventData)
         {
-            if(DragObjects != null)
+            if(InProgress)
             {
                 if (Drop != null)
                 {

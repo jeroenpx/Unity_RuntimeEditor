@@ -774,8 +774,10 @@ namespace Battlehub.RTEditor
                     
                     if(assetItem != null && m_project.ToType(assetItem) == typeof(GameObject))
                     {
+                        Editor.IsBusy = true;
                         m_project.Load(assetItem, (error, obj) =>
                         {
+                            Editor.IsBusy = false;
                             if(obj is GameObject)
                             {
                                 GameObject prefab = (GameObject)obj;

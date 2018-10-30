@@ -82,7 +82,7 @@ namespace Battlehub.RTCommon
             Debug.Log("OnPointerEnter " + name);
             m_isPointerOver = true;
             OnPointerEnterOverride(eventData);
-            if (m_editor.DragDrop.DragObjects != null)
+            if (m_editor.DragDrop.InProgress)
             {
                 for(int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
@@ -103,7 +103,7 @@ namespace Battlehub.RTCommon
             m_editor.DragDrop.BeginDrag -= OnBeginDrag;
             m_editor.DragDrop.Drop -= OnDrop;
             m_editor.DragDrop.Drag -= OnDrag;
-            if (m_editor.DragDrop.DragObjects != null)
+            if (m_editor.DragDrop.InProgress)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
@@ -124,7 +124,7 @@ namespace Battlehub.RTCommon
 
         private void OnBeginDrag(PointerEventData pointerEventData)
         {
-            if (m_editor.DragDrop.DragObjects != null)
+            if (m_editor.DragDrop.InProgress)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
@@ -135,7 +135,7 @@ namespace Battlehub.RTCommon
 
         private void OnDrag(PointerEventData pointerEventData)
         {
-            if(m_editor.DragDrop.DragObjects != null)
+            if(m_editor.DragDrop.InProgress)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {
@@ -149,7 +149,7 @@ namespace Battlehub.RTCommon
             m_editor.DragDrop.BeginDrag -= OnBeginDrag;
             m_editor.DragDrop.Drop -= OnDrop;
             m_editor.DragDrop.Drag -= OnDrag;
-            if (m_editor.DragDrop.DragObjects != null)
+            if (m_editor.DragDrop.InProgress)
             {
                 for (int i = 0; i < m_dragDropTargets.Length; ++i)
                 {

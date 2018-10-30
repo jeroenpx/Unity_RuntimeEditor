@@ -62,7 +62,6 @@ namespace Battlehub.RTCommon
             get;
         }
 
-
         IInput Input
         {
             get;
@@ -105,6 +104,12 @@ namespace Battlehub.RTCommon
         }
 
         bool IsOpened
+        {
+            get;
+            set;
+        }
+
+        bool IsBusy
         {
             get;
             set;
@@ -183,6 +188,7 @@ namespace Battlehub.RTCommon
         public event RuntimeEditorEvent<RuntimeWindow> WindowUnregistered;
         public event RTEEvent IsOpenedChanged;
         public event RTEEvent IsDirtyChanged;
+        public event RTEEvent IsBusyChanged;
 
         private InputLow m_input;
         private RuntimeSelection m_selection;
@@ -298,6 +304,23 @@ namespace Battlehub.RTCommon
                     {
                         IsClosedEvent.Invoke();
                     }
+                }
+            }
+        }
+
+        private bool m_isBusy;
+        public bool IsBusy
+        {
+            get { return m_isBusy; }
+            set
+            {
+                if(m_isBusy != value)
+                {
+                    m_isBusy = value;
+                    if (IsBusyChanged != null)
+                    {
+                        IsBusyChanged();
+                    }           
                 }
             }
         }
