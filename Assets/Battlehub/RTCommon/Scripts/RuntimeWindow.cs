@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
@@ -8,16 +9,19 @@ namespace Battlehub.RTCommon
     {
         None = 0,
         GameView = 1,
-        SceneView = 2,
-        Hierarchy = 4,
-        ProjectTree = 8,
-        Resources = 16,
-        Inspector = 32,
-        Other = 64
+        SceneView = 1 << 1,
+        Hierarchy = 1 << 2,
+        Project = 1 << 3,
+        ProjectTree = 1 << 4,
+        ProjectFolder = 1 << 5,
+        Inspector = 1 << 6,
+        Other = 1 << 31
     }
 
     public class RuntimeWindow : DragDropTarget
     {
+        private bool m_isActivated;
+
         [SerializeField]
         private RuntimeWindowType m_windowType = RuntimeWindowType.SceneView;
         public virtual RuntimeWindowType WindowType
@@ -39,14 +43,15 @@ namespace Battlehub.RTCommon
             get { return m_index; }
         }
 
-        private bool m_isActivated;
-
-        [SerializeField]
-        private Image m_rootGraphics;
-
         [SerializeField]
         private RectTransform m_rectTransform;
         private Canvas m_canvas;
+        [SerializeField]
+        private Image m_background;
+        public Image Background
+        {
+            get { return m_background; }
+        }
 
         [SerializeField]
         private Camera m_camera;
@@ -98,13 +103,17 @@ namespace Battlehub.RTCommon
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            if(m_rootGraphics == null)
+            if(m_background == null)
             {
                 if(!Editor.IsVR)
                 {
-                    m_rootGraphics = gameObject.AddComponent<Image>();
-                    m_rootGraphics.color = new Color(0, 0, 0, 0);
-                    m_rootGraphics.raycastTarget = true;
+                    m_background = GetComponent<Image>();
+                    if(m_background == null)
+                    {
+                        m_background = gameObject.AddComponent<Image>();
+                        m_background.color = new Color(0, 0, 0, 0);
+                        m_background.raycastTarget = true;
+                    }
                 }
             }
 
@@ -193,15 +202,19 @@ namespace Battlehub.RTCommon
             }
         }
 
-        protected virtual void OnRectTransformDimensionsChange()
+        protected virtual IEnumerator OnRectTransformDimensionsChange()
         {
             if (m_camera != null && m_rectTransform != null && m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             {
+
+                yield return new WaitForEndOfFrame();
+
                 Vector3[] corners = new Vector3[4];
                 m_rectTransform.GetWorldCorners(corners);
                 m_camera.pixelRect = new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y));
             }
         }
+
 
         protected virtual void OnActivated()
         {

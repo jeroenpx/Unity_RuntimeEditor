@@ -19,6 +19,7 @@ namespace Battlehub.RTHandles
         public UnityEvent OrientationChanged;
         public UnityEvent ProjectionChanged;
 
+        private Rect m_cameraPixelRect;
         private float m_aspect;
         private Camera m_camera;
         
@@ -373,10 +374,11 @@ namespace Battlehub.RTHandles
                 m_rotation = transform.rotation;
             }
 
-            if (m_screenHeight != Screen.height || m_screenWidth != Screen.width)
+            if (m_screenHeight != Screen.height || m_screenWidth != Screen.width || m_cameraPixelRect != Window.Camera.pixelRect)
             {
                 m_screenHeight = Screen.height;
                 m_screenWidth = Screen.width;
+                m_cameraPixelRect = Window.Camera.pixelRect;
                 UpdateLayout();
             }
 

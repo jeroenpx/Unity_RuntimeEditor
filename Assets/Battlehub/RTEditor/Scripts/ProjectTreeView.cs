@@ -244,6 +244,7 @@ namespace Battlehub.RTEditor
 
         protected override void AwakeOverride()
         {
+            WindowType = RuntimeWindowType.ProjectTree;
             base.AwakeOverride();
             if(Editor == null)
             {

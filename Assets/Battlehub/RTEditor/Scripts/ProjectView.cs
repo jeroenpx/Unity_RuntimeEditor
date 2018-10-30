@@ -65,6 +65,12 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.Project;
+            base.AwakeOverride();
+        }
+
         private void Start()
         {
             m_project = IOC.Resolve<IProject>();

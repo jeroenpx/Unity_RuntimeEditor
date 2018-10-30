@@ -1,4 +1,5 @@
-﻿using Battlehub.RTSaveLoad2.Interface;
+﻿using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.Utils;
 using UnityEngine;
 
@@ -27,7 +28,41 @@ namespace Battlehub.RTEditor
 
         private void Awake()
         {
+            IRTE rte = IOC.Resolve<IRTE>();
+
             m_unlitTexShader = Shader.Find("Unlit/Texture");
+            if(m_objectToTextureCamera == null)
+            {
+                GameObject objectToTextureGO = new GameObject("Object To Texture");
+                objectToTextureGO.SetActive(false);
+                objectToTextureGO.transform.SetParent(transform, false);
+
+                Camera camera = objectToTextureGO.AddComponent<Camera>();
+                camera.nearClipPlane = 0.01f;
+                camera.orthographic = true;
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.stereoTargetEye = StereoTargetEyeMask.None;
+                camera.cullingMask = 1 << rte.CameraLayerSettings.ResourcePreviewLayer;
+
+                m_objectToTextureCamera = objectToTextureGO.AddComponent<ObjectToTexture>();
+                m_objectToTextureCamera.objectImageLayer = rte.CameraLayerSettings.ResourcePreviewLayer;
+
+
+                Light[] lights = FindObjectsOfType<Light>();
+                for(int i = 0; i < lights.Length; ++i)
+                {
+                    lights[i].cullingMask &= ~(1 << rte.CameraLayerSettings.ResourcePreviewLayer);
+                }
+
+                GameObject lightGO = new GameObject("Directional light");
+                lightGO.transform.SetParent(objectToTextureGO.transform, false);
+                lightGO.layer = rte.CameraLayerSettings.ResourcePreviewLayer;
+                lightGO.transform.rotation = Quaternion.Euler(30, 0, 0);
+
+                Light light = lightGO.AddComponent<Light>();
+                light.type = LightType.Directional;
+                light.cullingMask = 1 << rte.CameraLayerSettings.ResourcePreviewLayer;
+            }
         }
 
         private void OnDestroy()

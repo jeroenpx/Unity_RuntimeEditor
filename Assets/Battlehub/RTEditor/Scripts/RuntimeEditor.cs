@@ -1,14 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-
-using System.Linq;
-
-using Battlehub.RTHandles;
-using Battlehub.RTSaveLoad;
-using Battlehub.RTCommon;
-
-using System.Collections;
-using Battlehub.RTGizmos;
+﻿using Battlehub.RTCommon;
 
 namespace Battlehub.RTEditor
 {
@@ -17,6 +7,12 @@ namespace Battlehub.RTEditor
         protected override void Awake()
         {
             base.Awake();
+            IOC.Resolve<IRTEAppearance>();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
         }
 
         #region Commented Out

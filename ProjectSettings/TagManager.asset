@@ -25,6 +25,7 @@ TagManager:
   - 
   - 
   - 
+  - ResourcePreviewLayer
   - RuntimeGraphicsLayer0
   - RuntimeGraphicsLayer1
   - RuntimeGraphicsLayer2
@@ -36,7 +37,6 @@ TagManager:
   - 
   - 
   - 
-  - PositionHandle
   m_SortingLayers:
   - name: Default
     uniqueID: 0

@@ -40,6 +40,11 @@ namespace Battlehub.RTSaveLoad2
             return RootPath + path + "/Assets";
         }
 
+        public FileSystemStorage()
+        {
+            Debug.LogFormat("RootPath : {0}", RootPath);
+        }
+
         public void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback)
         {
             projectPath = FullPath(projectPath) + "/Project.rtmeta";

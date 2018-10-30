@@ -7,6 +7,8 @@ namespace Battlehub.RTEditor
     public class RTEDeps : MonoBehaviour
     {
         private IResourcePreviewUtility m_resourcePreview;
+        private IRTEAppearance m_rteAppearance;
+        private IRTE m_rte;
 
         protected virtual IResourcePreviewUtility ResourcePreview
         {
@@ -21,6 +23,33 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected virtual IRTEAppearance RTEAppearance
+        {
+            get
+            {
+                IRTEAppearance rteAppearance = FindObjectOfType<RTEAppearance>();
+                if(rteAppearance == null)
+                {
+                    rteAppearance = gameObject.AddComponent<RTEAppearance>();
+                }
+                return rteAppearance;
+            }
+        }
+
+        protected virtual IRTE RTE
+        {
+            get
+            {
+                IRTE rte = FindObjectOfType<RuntimeEditor>();
+                if(rte == null)
+                {
+                    rte = gameObject.AddComponent<RuntimeEditor>();
+                }
+                return rte;
+            }
+        }
+
+
         private void Awake()
         {
             if (m_instance != null)
@@ -33,10 +62,9 @@ namespace Battlehub.RTEditor
 
         protected virtual void AwakeOverride()
         {
-            if (m_resourcePreview == null)
-            {
-                m_resourcePreview = ResourcePreview;
-            }
+            m_rte = RTE;
+            m_resourcePreview = ResourcePreview;
+            m_rteAppearance = RTEAppearance;
         }
 
         private void OnDestroy()
@@ -48,6 +76,8 @@ namespace Battlehub.RTEditor
 
             OnDestroyOverride();
             m_resourcePreview = null;
+            m_rteAppearance = null;
+            m_rte = null;
         }
 
         protected virtual void OnDestroyOverride()
@@ -63,8 +93,12 @@ namespace Battlehub.RTEditor
             {
                 if (m_instance == null)
                 {
-                    GameObject go = new GameObject("RTEDeps");
-                    go.AddComponent<RTEDeps>();
+                    m_instance = FindObjectOfType<RTEDeps>();
+                    if(m_instance == null)
+                    {
+                        GameObject go = new GameObject("RTEDeps");
+                        go.AddComponent<RTEDeps>();
+                    }
                 }
                 return m_instance;
             }
@@ -73,7 +107,9 @@ namespace Battlehub.RTEditor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
+            IOC.Register(() => Instance.m_rte);
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
+            IOC.RegisterFallback(() => Instance.m_rteAppearance);
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2
 {
+    [DefaultExecutionOrder(-100)]
     public class RTSL2Deps : MonoBehaviour 
     {
         private IAssetDB m_assetDB;

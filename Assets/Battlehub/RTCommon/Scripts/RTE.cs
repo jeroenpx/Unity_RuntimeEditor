@@ -2,6 +2,7 @@ using Battlehub.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -9,9 +10,9 @@ namespace Battlehub.RTCommon
 {
     public struct ComponentEditorSettings
     {
-        public readonly bool ShowResetButton;
-        public readonly bool ShowExpander;
-        public readonly bool ShowEnableButton;
+        public bool ShowResetButton;
+        public bool ShowExpander;
+        public bool ShowEnableButton;
       
         public ComponentEditorSettings(bool showExpander, bool showResetButton, bool showEnableButton)
         {
@@ -21,13 +22,16 @@ namespace Battlehub.RTCommon
         }
     }
 
+    [System.Serializable]
     public struct CameraLayerSettings
     {
+        public int ResourcePreviewLayer;
         public int RuntimeGraphicsLayer;
         public int MaxGraphicsLayers;
         
-        public CameraLayerSettings(int runtimeGraphicsLayer, int maxLayers)
+        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers)
         {
+            ResourcePreviewLayer = resourcePreviewLayer;
             RuntimeGraphicsLayer = runtimeGraphicsLayer;
             MaxGraphicsLayers = maxLayers;
         }
@@ -35,13 +39,13 @@ namespace Battlehub.RTCommon
 
     public interface IRTE
     {
-        event RuntimeEditorEvent PlaymodeStateChanging;
-        event RuntimeEditorEvent PlaymodeStateChanged;
-        event RuntimeEditorEvent ActiveWindowChanged;
+        event RTEEvent PlaymodeStateChanging;
+        event RTEEvent PlaymodeStateChanged;
+        event RTEEvent ActiveWindowChanged;
         event RuntimeEditorEvent<RuntimeWindow> WindowRegistered;
         event RuntimeEditorEvent<RuntimeWindow> WindowUnregistered;
-        event RuntimeEditorEvent IsOpenedChanged;
-        event RuntimeEditorEvent IsDirtyChanged;
+        event RTEEvent IsOpenedChanged;
+        event RTEEvent IsDirtyChanged;
 
         ComponentEditorSettings ComponentEditorSettings
         {
@@ -145,31 +149,40 @@ namespace Battlehub.RTCommon
         void UnregisterWindow(RuntimeWindow window);
     }
 
-    public delegate void RuntimeEditorEvent();
+    public delegate void RTEEvent();
     public delegate void RuntimeEditorEvent<T>(T arg);
-
+    
     [DefaultExecutionOrder(-90)]
     public class RTE : MonoBehaviour, IRTE
     {
         [SerializeField]
-        private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true);
-        [SerializeField]
-        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 4);
-        [SerializeField]
-        private bool m_useBuiltinUndo = true;
-
-        [SerializeField]
         private GraphicRaycaster m_raycaster;
         [SerializeField]
         private EventSystem m_eventSystem;
-                
-        public event RuntimeEditorEvent PlaymodeStateChanging;
-        public event RuntimeEditorEvent PlaymodeStateChanged;
-        public event RuntimeEditorEvent ActiveWindowChanged;
+
+        [SerializeField]
+        private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true);
+        [SerializeField]
+        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4);
+        [SerializeField]
+        private bool m_useBuiltinUndo = true;
+        [SerializeField]
+        private bool m_enableVRIfAvailable = true;
+
+        [SerializeField]
+        private bool m_isOpened = true;
+        [SerializeField]
+        private UnityEvent IsOpenedEvent;
+        [SerializeField]
+        private UnityEvent IsClosedEvent;
+
+        public event RTEEvent PlaymodeStateChanging;
+        public event RTEEvent PlaymodeStateChanged;
+        public event RTEEvent ActiveWindowChanged;
         public event RuntimeEditorEvent<RuntimeWindow> WindowRegistered;
         public event RuntimeEditorEvent<RuntimeWindow> WindowUnregistered;
-        public event RuntimeEditorEvent IsOpenedChanged;
-        public event RuntimeEditorEvent IsDirtyChanged;
+        public event RTEEvent IsOpenedChanged;
+        public event RTEEvent IsDirtyChanged;
 
         private InputLow m_input;
         private RuntimeSelection m_selection;
@@ -182,72 +195,70 @@ namespace Battlehub.RTCommon
         private readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
 
         private RuntimeWindow m_activeWindow;
-        public RuntimeWindow ActiveWindow
+        public virtual RuntimeWindow ActiveWindow
         {
             get { return m_activeWindow; }
         }
 
-        public RuntimeWindow[] Windows
+        public virtual RuntimeWindow[] Windows
         {
             get { return m_windows.Where(go => go != null).Select(go => go.GetComponent<RuntimeWindow>()).Where(w => w != null).ToArray(); }
         }
 
-        public ComponentEditorSettings ComponentEditorSettings
+        public virtual ComponentEditorSettings ComponentEditorSettings
         {
             get { return m_componentEditorSettings; }
         }
 
-        public CameraLayerSettings CameraLayerSettings
+        public virtual CameraLayerSettings CameraLayerSettings
         {
             get { return m_cameraLayerSettings; }
         }
 
-        [SerializeField]
-        private bool m_enableVR = true;
 
-        public bool IsVR
+        public virtual bool IsVR
         {
             get;
             private set;
         }
 
-        public IInput Input
+        public virtual IInput Input
         {
             get { return m_input; }
         }
 
-        public IRuntimeSelectionInternal Selection
+        public virtual IRuntimeSelectionInternal Selection
         {
             get { return m_selection; }
         }
 
-        public IRuntimeUndo Undo
+        public virtual IRuntimeUndo Undo
         {
             get { return m_undo; }
         }
 
-        public RuntimeTools Tools
+        public virtual RuntimeTools Tools
         {
             get { return m_tools; }
         }
 
-        public CursorHelper CursorHelper
+        public virtual CursorHelper CursorHelper
         {
             get { return m_cursorHelper; }
         }
 
-        public ExposeToEditorEvents Object
+        public virtual ExposeToEditorEvents Object
         {
             get { return m_object; }
         }
 
-        public IDragDrop DragDrop
+        public virtual IDragDrop DragDrop
         {
             get { return m_dragDrop; }
         }
 
         private bool m_isDirty;
-        public bool IsDirty
+        public virtual bool IsDirty
         {
             get { return m_isDirty; }
             set
@@ -263,8 +274,7 @@ namespace Battlehub.RTCommon
             }
         }
       
-        private bool m_isOpened;
-        public bool IsOpened
+        public virtual bool IsOpened
         {
             get { return m_isOpened; }
             set
@@ -280,19 +290,26 @@ namespace Battlehub.RTCommon
                     {
                         IsOpenedChanged();
                     }
-
+                    if (m_isOpened)
+                    {
+                        IsOpenedEvent.Invoke();
+                    }
+                    else
+                    {
+                        IsClosedEvent.Invoke();
+                    }
                 }
             }
         }
 
         private bool m_isPlayModeStateChanging;
-        public bool IsPlaymodeStateChanging
+        public virtual bool IsPlaymodeStateChanging
         {
             get { return m_isPlayModeStateChanging; }
         }
 
         private bool m_isPlaying;
-        public bool IsPlaying
+        public virtual bool IsPlaying
         {
             get
             {
@@ -428,7 +445,12 @@ namespace Battlehub.RTCommon
                 m_undo = new DisabledUndo();
             }
 
-            IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVR;
+            if(m_raycaster == null)
+            {
+                m_raycaster = GetComponent<GraphicRaycaster>();
+            }
+
+            IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
             m_object = new ExposeToEditorEvents(this);
@@ -443,7 +465,18 @@ namespace Battlehub.RTCommon
             }
 
             m_instance = this;
-            Reset();
+
+            bool isOpened = m_isOpened;
+            m_isOpened = !isOpened;
+            IsOpened = isOpened;
+        }
+
+        protected virtual void Start()
+        {
+            if(GetComponent<RTEInput>() == null)
+            {
+                gameObject.AddComponent<RTEInput>();
+            }
         }
 
         protected virtual void OnDestroy()
@@ -464,29 +497,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void Reset()
-        {
-            m_windows.Clear();
-            m_activeWindow = null;
-            m_isOpened = false;
-            m_isPlaying = false;
-
-            if(m_selection != null)
-            {
-                m_selection.objects = null;
-            }
-
-            if(m_tools != null)
-            {
-                m_tools.Reset();
-            }
-            
-            if(m_cursorHelper != null)
-            {
-                m_cursorHelper.Reset();
-            }
-        }
-
+ 
         public void RegisterWindow(RuntimeWindow window)
         {
             if(!m_windows.Contains(window.gameObject))

@@ -13,10 +13,10 @@ namespace Battlehub.Utils
         public int objectImageLayer;
 
         public bool DestroyScripts = true;
-        public int snapshotTextureWidth = 256;
-        public int snapshotTextureHeight = 256;
-        public Vector3 defaultPosition = new Vector3(0, 0, 1);
-        public Vector3 defaultRotation = new Vector3(345.8529f, 0, 14.28433f);
+        public int snapshotTextureWidth = 128;
+        public int snapshotTextureHeight = 128;
+        public Vector3 defaultPosition = new Vector3(0, 0, 0);
+        public Vector3 defaultRotation = new Vector3(26, 135, -24);
         public Vector3 defaultScale = new Vector3(1, 1, 1);
 
         private void Awake()

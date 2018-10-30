@@ -140,8 +140,8 @@ namespace Battlehub.RTEditor
             DataBind(true);
         }
 
-        [SerializeField]
-        private Texture2D DragIcon;
+        //[SerializeField]
+        //private Texture2D DragIcon;
         [SerializeField]
         private GameObject ListBoxPrefab;
         private VirtualizingTreeView m_listBox;
@@ -266,7 +266,9 @@ namespace Battlehub.RTEditor
 
         protected override void AwakeOverride()
         {
+            WindowType = RuntimeWindowType.ProjectFolder;
             base.AwakeOverride();
+
 
             if (!ListBoxPrefab)
             {
