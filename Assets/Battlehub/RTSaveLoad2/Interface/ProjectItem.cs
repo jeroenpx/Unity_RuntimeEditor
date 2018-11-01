@@ -31,9 +31,10 @@ namespace Battlehub.RTSaveLoad2.Interface
     }
 
     [ProtoContract]
+    [ProtoInclude(1, typeof(AssetItem))]
     public class ProjectItem
     {
-        [ProtoMember(1)]
+        [ProtoMember(2)]
         public long ItemID;
 
         public string Name;

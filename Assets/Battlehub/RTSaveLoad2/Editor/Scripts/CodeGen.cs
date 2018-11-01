@@ -510,19 +510,16 @@ namespace Battlehub.RTSaveLoad2
             PersistentSubclass[] subclasses = mapping.Subclasses.Where(sc => sc.IsEnabled).ToArray();
             for (int i = 0; i < subclasses.Length - 1; ++i)
             {
-                PersistentSubclass subclass = mapping.Subclasses[i];
-                if(subclass.IsEnabled)
-                {
-                    sb.Append(BR + TAB3 + TAB);
-                    sb.AppendFormat(AddSubtypeTemplate, subclass.TypeName, subclass.PersistentTag + SubclassOffset);
-                }
+                PersistentSubclass subclass = subclasses[i];
+                sb.Append(BR + TAB3 + TAB);
+                sb.AppendFormat(AddSubtypeTemplate, subclass.TypeName, subclass.PersistentTag + SubclassOffset);
             }
 
             if (subclasses.Length > 0)
             {
-                if(mapping.Subclasses[subclasses.Length - 1].IsEnabled)
+                if(subclasses[subclasses.Length - 1].IsEnabled)
                 {
-                    PersistentSubclass subclass = mapping.Subclasses[subclasses.Length - 1];
+                    PersistentSubclass subclass = subclasses[subclasses.Length - 1];
                     sb.Append(BR + TAB3 + TAB);
                     sb.AppendFormat(AddSubtypeTemplate, subclass.TypeName, subclass.PersistentTag + SubclassOffset);
                 }

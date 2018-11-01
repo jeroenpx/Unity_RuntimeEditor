@@ -14,9 +14,13 @@ namespace Battlehub.RTSaveLoad2
         [TearDown]
         public void Cleanup()
         {
-            Object.DestroyImmediate(Object.FindObjectOfType<RTSL2Deps>().gameObject);
+            RTSL2Deps deps = Object.FindObjectOfType<RTSL2Deps>();
+            if(deps != null)
+            {
+                Object.DestroyImmediate(deps.gameObject);
+            }
         }
-     
+
         [UnityTest]
         public IEnumerator OpenProjectTest()
         {
@@ -31,12 +35,12 @@ namespace Battlehub.RTSaveLoad2
                 done = true;
             });
 
-            while(!done)
+            while (!done)
             {
                 yield return null;
             }
 
-            
+
         }
 
         [Test]
@@ -46,7 +50,7 @@ namespace Battlehub.RTSaveLoad2
             Assert.Throws<System.InvalidOperationException>(() =>
             {
                 project.Save(null, null, null);
-            }, 
+            },
             "Project is not opened. Use OpenProject method");
         }
 
@@ -80,14 +84,14 @@ namespace Battlehub.RTSaveLoad2
             bool done = false;
             project.Open("TestProject", openError =>
             {
-                project.Save(null, dummyPreview, dummyGo, (saveError, assetItem) =>
+                project.Save(null, dummyPreview, dummyGo, null, (saveError, assetItem) =>
                 {
                     Assert.IsFalse(saveError.HasError);
                     Assert.AreEqual(assetItem.Parent, project.Root);
 
                     Assert.IsNotNull(assetItem.Preview);
                     Assert.AreEqual(dummyPreview[2], assetItem.Preview.PreviewData[2]);
-                    if(unload)
+                    if (unload)
                     {
                         project.Unload(ao =>
                         {
@@ -119,12 +123,12 @@ namespace Battlehub.RTSaveLoad2
                 Assert.AreEqual(dummyGo.transform.position, loadedGo.transform.position);
 
                 Assert.AreEqual(1, loadedGo.transform.childCount);
-                foreach(Transform child in loadedGo.transform)
+                foreach (Transform child in loadedGo.transform)
                 {
                     Assert.AreEqual(dummyChild.name, child.gameObject.name);
                     Assert.AreEqual(dummyChild.transform.position, child.transform.position);
                 }
-                
+
                 done = true;
             });
             return done;
@@ -148,7 +152,7 @@ namespace Battlehub.RTSaveLoad2
             var openResult = project.Open("TestProject");
             yield return openResult;
 
-            var saveResult = project.Save(null, dummyPreview, dummyGo);
+            var saveResult = project.Save(null, dummyPreview, dummyGo, null);
             yield return saveResult;
 
             Assert.IsFalse(saveResult.Error.HasError);
@@ -182,6 +186,23 @@ namespace Battlehub.RTSaveLoad2
                 Assert.AreEqual(dummyChild.name, child.gameObject.name);
                 Assert.AreEqual(dummyChild.transform.position, child.transform.position);
             }
+        }
+
+        [UnityTest]
+        public IEnumerator AssetItemsSerializationTest()
+        {
+            AssetItem assetItem = new AssetItem();
+            assetItem.ItemID = 123;
+            assetItem.TypeGuid = System.Guid.NewGuid();
+
+            ProtobufSerializer serizalizer = new ProtobufSerializer();
+
+            AssetItem clone = serizalizer.DeepClone(assetItem);
+
+            Assert.AreEqual(assetItem.ItemID, clone.ItemID);
+            Assert.AreEqual(assetItem.TypeGuid, clone.TypeGuid);
+
+            yield break;
         }
     }
 

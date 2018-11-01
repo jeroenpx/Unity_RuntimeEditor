@@ -218,12 +218,12 @@ namespace Battlehub.RTCommon
 
         protected virtual void OnActivated()
         {
-            Debug.Log("Activated");
+            //Debug.Log("Activated");
         }
 
         protected virtual void OnDeactivated()
         {
-            Debug.Log("Deactivated");
+            //Debug.Log("Deactivated");
         }
 
         protected virtual void SetCullingMask()

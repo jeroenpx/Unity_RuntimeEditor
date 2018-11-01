@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using UnityEngine;
 
 namespace Battlehub.RTCommon
 {
-    public class RTCVRGraphicsRaycaster : OVRRaycaster
+    public class RTEVRGraphicsRaycaster : OVRRaycaster
     {
         public RuntimeWindow SceneWindow;
 

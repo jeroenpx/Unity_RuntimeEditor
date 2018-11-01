@@ -1428,6 +1428,7 @@ namespace Battlehub.RTSaveLoad2
         {
             typeof(UnityObject),
             typeof(GameObject),
+            typeof(Renderer),
             typeof(MeshRenderer),
             typeof(MeshFilter),
             typeof(SkinnedMeshRenderer),

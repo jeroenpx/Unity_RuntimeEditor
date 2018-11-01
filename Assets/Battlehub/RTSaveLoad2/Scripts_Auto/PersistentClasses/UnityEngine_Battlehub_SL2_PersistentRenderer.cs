@@ -9,45 +9,45 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public partial class PersistentMeshFilter : PersistentObject
+    public partial class PersistentRenderer : PersistentObject
     {
-        [ProtoMember(256)]
-        public long sharedMesh;
+        [ProtoMember(281)]
+        public long[] sharedMaterials;
 
         protected override void ReadFromImpl(object obj)
         {
             base.ReadFromImpl(obj);
-            MeshFilter uo = (MeshFilter)obj;
-            sharedMesh = ToID(uo.sharedMesh);
+            Renderer uo = (Renderer)obj;
+            sharedMaterials = ToID(uo.sharedMaterials);
         }
 
         protected override object WriteToImpl(object obj)
         {
             obj = base.WriteToImpl(obj);
-            MeshFilter uo = (MeshFilter)obj;
-            uo.sharedMesh = FromID<Mesh>(sharedMesh);
+            Renderer uo = (Renderer)obj;
+            uo.sharedMaterials = FromID<Material>(sharedMaterials);
             return uo;
         }
 
         protected override void GetDepsImpl(GetDepsContext context)
         {
-            AddDep(sharedMesh, context);
+            AddDep(sharedMaterials, context);
         }
 
         protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
         {
-            MeshFilter uo = (MeshFilter)obj;
-            AddDep(uo.sharedMesh, context);
+            Renderer uo = (Renderer)obj;
+            AddDep(uo.sharedMaterials, context);
         }
 
-        public static implicit operator MeshFilter(PersistentMeshFilter surrogate)
+        public static implicit operator Renderer(PersistentRenderer surrogate)
         {
-            return (MeshFilter)surrogate.WriteTo(new MeshFilter());
+            return (Renderer)surrogate.WriteTo(new Renderer());
         }
         
-        public static implicit operator PersistentMeshFilter(MeshFilter obj)
+        public static implicit operator PersistentRenderer(Renderer obj)
         {
-            PersistentMeshFilter surrogate = new PersistentMeshFilter();
+            PersistentRenderer surrogate = new PersistentRenderer();
             surrogate.ReadFrom(obj);
             return surrogate;
         }

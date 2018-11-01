@@ -3,6 +3,7 @@ using ProtoBuf;
 using Battlehub.RTSaveLoad2;
 using UnityEngine;
 using UnityEngine.Battlehub.SL2;
+using System;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
 
 using UnityObject = UnityEngine.Object;
@@ -48,6 +49,18 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(Mesh), new System.Guid("a41c3ba8-499c-474a-8708-f0e60748c83f"));
             m_toType.Add(new System.Guid("a92f5cff-b3de-463c-b616-37448bef09dd"), typeof(PersistentMesh));
             m_toType.Add(new System.Guid("a41c3ba8-499c-474a-8708-f0e60748c83f"), typeof(Mesh));
+            m_toPeristentType.Add(typeof(Material), typeof(PersistentMaterial));
+            m_toUnityType.Add(typeof(PersistentMaterial), typeof(Material));
+            m_toGuid.Add(typeof(PersistentMaterial), new System.Guid("a66e3fb6-ef47-49e3-9a9f-e78cb7f18efd"));
+            m_toGuid.Add(typeof(Material), new System.Guid("cd75c9b9-b33a-42a1-941b-2a8401b012c5"));
+            m_toType.Add(new System.Guid("a66e3fb6-ef47-49e3-9a9f-e78cb7f18efd"), typeof(PersistentMaterial));
+            m_toType.Add(new System.Guid("cd75c9b9-b33a-42a1-941b-2a8401b012c5"), typeof(Material));
+            m_toPeristentType.Add(typeof(Renderer), typeof(PersistentRenderer));
+            m_toUnityType.Add(typeof(PersistentRenderer), typeof(Renderer));
+            m_toGuid.Add(typeof(PersistentRenderer), new System.Guid("415e7246-0394-49f1-adcd-98f6761dee35"));
+            m_toGuid.Add(typeof(Renderer), new System.Guid("d7c020b8-b7b4-4175-af43-f5fd40038441"));
+            m_toType.Add(new System.Guid("415e7246-0394-49f1-adcd-98f6761dee35"), typeof(PersistentRenderer));
+            m_toType.Add(new System.Guid("d7c020b8-b7b4-4175-af43-f5fd40038441"), typeof(Renderer));
             m_toPeristentType.Add(typeof(Transform), typeof(PersistentTransform));
             m_toUnityType.Add(typeof(PersistentTransform), typeof(Transform));
             m_toGuid.Add(typeof(PersistentTransform), new System.Guid("cda48184-0d5b-42f8-9cd8-f76d46a57094"));
@@ -79,6 +92,7 @@ namespace Battlehub.RTSaveLoad2
             m_toType.Add(new System.Guid("04e8ba08-f06b-41fd-be90-17134c33c6ea"), typeof(PersistentQuaternion));
             m_toType.Add(new System.Guid("2dc2e69f-d44a-4f12-8de4-25f509ed12bf"), typeof(Quaternion));
             
+            OnConstructed();
         }
     }
 }

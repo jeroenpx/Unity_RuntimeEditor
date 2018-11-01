@@ -11,7 +11,7 @@ namespace Battlehub.RTHandles
 {
    // [RequireComponent(typeof(PersistentIgnore))]
     [DisallowMultipleComponent]
-    public class EditorDemo : RTE
+    public class EditorDemo : RTEBase
     {
         [SerializeField]
         private string SaveFileName = "RTHandlesEditorDemo";

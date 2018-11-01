@@ -2,7 +2,7 @@
 
 namespace Battlehub.RTCommon
 {
-    public class RTCVRGazePointer : MonoBehaviour
+    public class RTEVRGazePointer : MonoBehaviour
     {
         private OVRGazePointer m_ovrGazePointer;
         

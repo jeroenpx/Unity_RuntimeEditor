@@ -158,7 +158,7 @@ namespace Battlehub.RTCommon
     public delegate void RuntimeEditorEvent<T>(T arg);
     
     [DefaultExecutionOrder(-90)]
-    public class RTE : MonoBehaviour, IRTE
+    public class RTEBase : MonoBehaviour, IRTE
     {
         [SerializeField]
         private GraphicRaycaster m_raycaster;
@@ -363,7 +363,7 @@ namespace Battlehub.RTCommon
             get { return transform; }
         }
 
-        private static RTE m_instance;
+        private static RTEBase m_instance;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
@@ -373,7 +373,7 @@ namespace Battlehub.RTCommon
                 if (m_instance == null)
                 {
                     GameObject editor = new GameObject("RTE");
-                    editor.AddComponent<RTE>();
+                    editor.AddComponent<RTEBase>();
                     m_instance.BuildUp(editor);
                 }
                 return m_instance;
@@ -414,7 +414,7 @@ namespace Battlehub.RTCommon
                 eventSystem = editor.AddComponent<EventSystem>();
                 if (m_instance.IsVR)
                 {
-                    RTCVRInputModule inputModule = editor.AddComponent<RTCVRInputModule>();
+                    RTEVRInputModule inputModule = editor.AddComponent<RTEVRInputModule>();
                     inputModule.rayTransform = sceneView.Camera.transform;
                     inputModule.Editor = this;
                 }
@@ -441,7 +441,7 @@ namespace Battlehub.RTCommon
 
             if (m_instance.IsVR)
             {
-                RTCVRGraphicsRaycaster raycaster = ui.AddComponent<RTCVRGraphicsRaycaster>();
+                RTEVRGraphicsRaycaster raycaster = ui.AddComponent<RTEVRGraphicsRaycaster>();
                 raycaster.SceneWindow = sceneView;
                 m_instance.m_raycaster = raycaster;
             }
@@ -496,9 +496,9 @@ namespace Battlehub.RTCommon
 
         protected virtual void Start()
         {
-            if(GetComponent<RTEInput>() == null)
+            if(GetComponent<RTEBaseInput>() == null)
             {
-                gameObject.AddComponent<RTEInput>();
+                gameObject.AddComponent<RTEBaseInput>();
             }
         }
 
@@ -648,7 +648,7 @@ namespace Battlehub.RTCommon
 
         private IRTE m_rte;
 
-        public ExposeToEditorEvents(RTE rte)
+        public ExposeToEditorEvents(RTEBase rte)
         {
             m_rte = rte;
 

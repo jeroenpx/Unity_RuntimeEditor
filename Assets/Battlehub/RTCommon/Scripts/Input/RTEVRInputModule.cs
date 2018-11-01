@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.RTCommon
 {
-    public class RTCVRInputModule : OVRInputModule
+    public class RTEVRInputModule : OVRInputModule
     {
         public IRTE Editor;
 

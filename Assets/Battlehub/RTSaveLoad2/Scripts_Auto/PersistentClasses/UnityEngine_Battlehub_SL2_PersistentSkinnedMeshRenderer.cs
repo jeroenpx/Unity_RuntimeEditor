@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public partial class PersistentSkinnedMeshRenderer : PersistentObject
+    public partial class PersistentSkinnedMeshRenderer : PersistentRenderer
     {
         
         public static implicit operator SkinnedMeshRenderer(PersistentSkinnedMeshRenderer surrogate)

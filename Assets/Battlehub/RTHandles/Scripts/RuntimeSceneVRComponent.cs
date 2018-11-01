@@ -43,8 +43,8 @@ namespace Battlehub.RTHandles
         private VRPhysicsRaycastTool m_physicsRaycastTool;
         
         [SerializeField]
-        private RTCVRGazePointer m_gazePointer;
-        public RTCVRGazePointer GazePointer
+        private RTEVRGazePointer m_gazePointer;
+        public RTEVRGazePointer GazePointer
         {
             get { return m_gazePointer; }
             set { m_gazePointer = value; }
@@ -266,7 +266,7 @@ namespace Battlehub.RTHandles
         {
             if(m_gazePointer == null)
             {
-                m_gazePointer = FindObjectOfType<RTCVRGazePointer>();
+                m_gazePointer = FindObjectOfType<RTEVRGazePointer>();
             }
         }
 

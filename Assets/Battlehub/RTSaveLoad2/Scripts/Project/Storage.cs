@@ -94,14 +94,17 @@ namespace Battlehub.RTSaveLoad2
         private static T LoadItem<T>(ISerializer serializer, string path) where T : ProjectItem, new()
         {
             T item = Load<T>(serializer, path);
-            item.Name = Path.GetFileNameWithoutExtension(path);
-            item.Ext = Path.GetExtension(path);
+
+            string fileNameWithoutMetaExt = Path.GetFileNameWithoutExtension(path);
+            item.Name = Path.GetFileNameWithoutExtension(fileNameWithoutMetaExt);
+            item.Ext = Path.GetExtension(fileNameWithoutMetaExt);
+
             return item;
         }
        
         private static T Load<T>(ISerializer serializer, string path) where T : new()
         {
-            string metaFile = path + MetaExt;
+            string metaFile = path;
             T item;
             if (File.Exists(metaFile))
             {
@@ -138,7 +141,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < dirs.Length; ++i)
             {
                 string dir = dirs[i];
-                ProjectItem projectItem = LoadItem<ProjectItem>(serializer, dir);
+                ProjectItem projectItem = LoadItem<ProjectItem>(serializer, dir + MetaExt);
 
                 projectItem.Parent = parent;
                 projectItem.Children = new List<ProjectItem>();
@@ -151,8 +154,12 @@ namespace Battlehub.RTSaveLoad2
             for(int i = 0; i < files.Length; ++i)
             {
                 string file = files[i];
-                AssetItem assetItem =  LoadItem<AssetItem>(serializer, file);
+                if(!File.Exists(file.Replace(MetaExt, string.Empty)))
+                {
+                    continue;
+                }
 
+                AssetItem assetItem =  LoadItem<AssetItem>(serializer, file);
                 assetItem.Parent = parent;
                 parent.Children.Add(assetItem);
             }

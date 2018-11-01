@@ -1,19 +1,72 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad2;
+using Battlehub.RTSaveLoad2.Interface;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTEditor
 {
-    public class RuntimeEditor : RTE
+    public interface IRuntimeEditor : IRTE
     {
+        void SaveScene();
+        void OpenScene();
+    }
+
+    public class RuntimeEditor : RTEBase, IRuntimeEditor
+    {
+        private IProject m_project;
+
         protected override void Awake()
         {
             base.Awake();
             IOC.Resolve<IRTEAppearance>();
+            m_project = IOC.Resolve<IProject>();
+        }
+
+        protected override void Start()
+        {
+            if (GetComponent<RuntimeEditorInput>() == null)
+            {
+                gameObject.AddComponent<RuntimeEditorInput>();
+            }
+            base.Start();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
         }
+
+        public void OpenScene()
+        {
+            IsBusy = true;
+
+            AssetItem assetItem = m_project.Root.Get("Assets/TestScene" + m_project.GetExt(typeof(Scene))) as AssetItem;
+            if(assetItem != null)
+            {
+                m_project.Load(assetItem, (error, scene) =>
+                {
+                    if(error.HasError)
+                    {
+                        Debug.LogError(error.ToString());
+                    }
+                    Debug.Log("Scene Opened");
+                    IsBusy = false;
+                });
+            }
+        }
+
+        public void SaveScene()
+        {
+            IsBusy = true;
+            
+            m_project.Save(m_project.Root, new byte[0], SceneManager.GetActiveScene(), "TestScene", (error, assetItem) =>
+            {
+                Debug.Log("Scene Saved");
+                IsBusy = false;
+            });
+        }
+
 
         #region Commented Out
         /*

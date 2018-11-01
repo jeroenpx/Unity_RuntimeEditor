@@ -1623,7 +1623,10 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 76ecfd557d86859438b5eb5f6bfafa57, type: 2}
+  - {fileID: 2100000, guid: 2c6b56a8e30936a4f94630454cca36bf, type: 2}
+  - {fileID: 2100000, guid: 780ae22f90a84864aa4618c180cfd3c1, type: 2}
+  - {fileID: 2100000, guid: 8f9dc35a8f1091b4c8bd615a5a404f9d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1649,7 +1652,7 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 770513436}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
 --- !u!4 &770513440
 Transform:
   m_ObjectHideFlags: 0
@@ -2162,6 +2165,7 @@ GameObject:
   - component: {fileID: 1288691112}
   - component: {fileID: 1288691111}
   - component: {fileID: 1288691110}
+  - component: {fileID: 1288691114}
   m_Layer: 0
   m_Name: RTE
   m_TagString: Untagged
@@ -2293,6 +2297,17 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &1288691114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1288691108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ea087bcd0e3f0418cf1b4d8a6e0d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1298252208
 GameObject:
   m_ObjectHideFlags: 0

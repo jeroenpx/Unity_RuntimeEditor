@@ -79,7 +79,7 @@ namespace Battlehub.RTCommon
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            Debug.Log("OnPointerEnter " + name);
+            //Debug.Log("OnPointerEnter " + name);
             m_isPointerOver = true;
             OnPointerEnterOverride(eventData);
             if (m_editor.DragDrop.InProgress)
@@ -97,7 +97,7 @@ namespace Battlehub.RTCommon
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            Debug.Log("OnPointerExit " + name);
+            //Debug.Log("OnPointerExit " + name);
             m_isPointerOver = false;
             OnPointerExitOverride(eventData);
             m_editor.DragDrop.BeginDrag -= OnBeginDrag;

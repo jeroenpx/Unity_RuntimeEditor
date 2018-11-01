@@ -2,31 +2,46 @@
 
 namespace Battlehub.RTCommon
 {
-    public class RTEInput : MonoBehaviour
+    public class RTEBaseInput : MonoBehaviour
     {
+        [SerializeField]
+        protected KeyCode RuntimeModifierKey = KeyCode.LeftControl;
+        [SerializeField]
+        protected KeyCode EditorModifierKey = KeyCode.LeftShift;
+        protected KeyCode ModifierKey
+        {
+            get
+            {
+                #if UNITY_EDITOR
+                return EditorModifierKey;
+                #else
+                return RuntimeModifierKey;
+            #endif
+            }
+        }
         [SerializeField]
         protected KeyCode OpenEditorKey = KeyCode.F12;
         [SerializeField]
         protected KeyCode PlayKey = KeyCode.F5;
 
-        protected IRTE m_editor;
+        private IRTE m_editor;
 
-        protected bool OpenEditorAction()
+        protected virtual bool OpenEditorAction()
         {
             return m_editor.Input.GetKeyDown(OpenEditorKey);
         }
 
-        protected bool PlayAction()
+        protected virtual bool PlayAction()
         {
             return m_editor.Input.GetKeyDown(PlayKey);
         }
        
-        private void Awake()
+        protected virtual void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if(OpenEditorAction())
             {

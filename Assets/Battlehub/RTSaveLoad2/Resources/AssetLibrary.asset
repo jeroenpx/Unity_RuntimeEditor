@@ -16,14 +16,291 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 725
-    FolderIdentity: 46
+    Identity: 789
+    FolderIdentity: 49
     Folders:
     - m_ID: 0
       m_Name: Assets
       m_Depth: -1
       Assets: []
       IsEnabled: 0
+    - m_ID: 48
+      m_Name: Resources
+      m_Depth: 0
+      Assets:
+      - m_ID: 725
+        m_Name: Fork
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 8f9dc35a8f1091b4c8bd615a5a404f9d, type: 2}
+        IsEnabled: 1
+        PrefabParts: []
+      - m_ID: 726
+        m_Name: Connectors
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 780ae22f90a84864aa4618c180cfd3c1, type: 2}
+        IsEnabled: 1
+        PrefabParts: []
+      - m_ID: 644
+        m_Name: Chest
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 2c6b56a8e30936a4f94630454cca36bf, type: 2}
+        IsEnabled: 1
+        PrefabParts: []
+      - m_ID: 727
+        m_Name: Body
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 76ecfd557d86859438b5eb5f6bfafa57, type: 2}
+        IsEnabled: 1
+        PrefabParts: []
+      - m_ID: 728
+        m_Name: cubeman
+        m_Depth: 0
+        Object: {fileID: 100010, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+        IsEnabled: 0
+        PrefabParts:
+        - ParentPersistentID: -1
+          PersistentID: 729
+          Object: {fileID: 400010, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 730
+          Object: {fileID: 9500000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 731
+          Object: {fileID: 100000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 0
+        - ParentPersistentID: 731
+          PersistentID: 732
+          Object: {fileID: 400000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 1
+        - ParentPersistentID: 731
+          PersistentID: 733
+          Object: {fileID: 100032, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 1
+        - ParentPersistentID: 733
+          PersistentID: 734
+          Object: {fileID: 400032, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 2
+        - ParentPersistentID: 733
+          PersistentID: 735
+          Object: {fileID: 100044, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 2
+        - ParentPersistentID: 735
+          PersistentID: 736
+          Object: {fileID: 400044, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 3
+        - ParentPersistentID: 735
+          PersistentID: 737
+          Object: {fileID: 100006, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 3
+        - ParentPersistentID: 737
+          PersistentID: 738
+          Object: {fileID: 400006, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 737
+          PersistentID: 739
+          Object: {fileID: 100038, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 739
+          PersistentID: 740
+          Object: {fileID: 400038, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 739
+          PersistentID: 741
+          Object: {fileID: 100028, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 741
+          PersistentID: 742
+          Object: {fileID: 400028, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 741
+          PersistentID: 743
+          Object: {fileID: 100030, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 743
+          PersistentID: 744
+          Object: {fileID: 400030, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 7
+        - ParentPersistentID: 737
+          PersistentID: 745
+          Object: {fileID: 100040, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 745
+          PersistentID: 746
+          Object: {fileID: 400040, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 745
+          PersistentID: 747
+          Object: {fileID: 100002, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 747
+          PersistentID: 748
+          Object: {fileID: 400002, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 747
+          PersistentID: 749
+          Object: {fileID: 100016, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 749
+          PersistentID: 750
+          Object: {fileID: 400016, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 7
+        - ParentPersistentID: 749
+          PersistentID: 751
+          Object: {fileID: 100020, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 7
+        - ParentPersistentID: 751
+          PersistentID: 752
+          Object: {fileID: 400020, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 8
+        - ParentPersistentID: 751
+          PersistentID: 753
+          Object: {fileID: 100022, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 8
+        - ParentPersistentID: 753
+          PersistentID: 754
+          Object: {fileID: 400022, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 9
+        - ParentPersistentID: 737
+          PersistentID: 755
+          Object: {fileID: 100042, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 755
+          PersistentID: 756
+          Object: {fileID: 400042, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 755
+          PersistentID: 757
+          Object: {fileID: 100004, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 757
+          PersistentID: 758
+          Object: {fileID: 400004, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 757
+          PersistentID: 759
+          Object: {fileID: 100018, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 759
+          PersistentID: 760
+          Object: {fileID: 400018, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 7
+        - ParentPersistentID: 759
+          PersistentID: 761
+          Object: {fileID: 100024, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 7
+        - ParentPersistentID: 761
+          PersistentID: 762
+          Object: {fileID: 400024, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 8
+        - ParentPersistentID: 761
+          PersistentID: 763
+          Object: {fileID: 100026, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 8
+        - ParentPersistentID: 763
+          PersistentID: 764
+          Object: {fileID: 400026, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 9
+        - ParentPersistentID: 731
+          PersistentID: 765
+          Object: {fileID: 100054, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 1
+        - ParentPersistentID: 765
+          PersistentID: 766
+          Object: {fileID: 400054, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 2
+        - ParentPersistentID: 765
+          PersistentID: 767
+          Object: {fileID: 100034, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 2
+        - ParentPersistentID: 767
+          PersistentID: 768
+          Object: {fileID: 400034, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 3
+        - ParentPersistentID: 767
+          PersistentID: 769
+          Object: {fileID: 100012, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 3
+        - ParentPersistentID: 769
+          PersistentID: 770
+          Object: {fileID: 400012, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 769
+          PersistentID: 771
+          Object: {fileID: 100046, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 771
+          PersistentID: 772
+          Object: {fileID: 400046, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 771
+          PersistentID: 773
+          Object: {fileID: 100048, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 773
+          PersistentID: 774
+          Object: {fileID: 400048, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: 731
+          PersistentID: 775
+          Object: {fileID: 100056, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 1
+        - ParentPersistentID: 775
+          PersistentID: 776
+          Object: {fileID: 400056, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 2
+        - ParentPersistentID: 775
+          PersistentID: 777
+          Object: {fileID: 100036, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 2
+        - ParentPersistentID: 777
+          PersistentID: 778
+          Object: {fileID: 400036, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 3
+        - ParentPersistentID: 777
+          PersistentID: 779
+          Object: {fileID: 100014, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 3
+        - ParentPersistentID: 779
+          PersistentID: 780
+          Object: {fileID: 400014, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 779
+          PersistentID: 781
+          Object: {fileID: 100050, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 4
+        - ParentPersistentID: 781
+          PersistentID: 782
+          Object: {fileID: 400050, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 781
+          PersistentID: 783
+          Object: {fileID: 100052, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 5
+        - ParentPersistentID: 783
+          PersistentID: 784
+          Object: {fileID: 400052, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 6
+        - ParentPersistentID: -1
+          PersistentID: 785
+          Object: {fileID: 100008, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 0
+        - ParentPersistentID: 785
+          PersistentID: 786
+          Object: {fileID: 400008, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 1
+        - ParentPersistentID: 785
+          PersistentID: 787
+          Object: {fileID: 13700000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+          Depth: 1
+      - m_ID: 788
+        m_Name: Cube.002
+        m_Depth: 0
+        Object: {fileID: 4300000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
+        IsEnabled: 1
+        PrefabParts: []
+      IsEnabled: 1
     - m_ID: 36
       m_Name: zz1
       m_Depth: 0
@@ -2661,12 +2938,6 @@ MonoBehaviour:
         m_Name: Central2
         m_Depth: 0
         Object: {fileID: 2800000, guid: e2bb13e4b42a21143b1e8024aabd20be, type: 3}
-        IsEnabled: 1
-        PrefabParts: []
-      - m_ID: 644
-        m_Name: Chest
-        m_Depth: 0
-        Object: {fileID: 2100000, guid: 2c6b56a8e30936a4f94630454cca36bf, type: 2}
         IsEnabled: 1
         PrefabParts: []
       - m_ID: 645

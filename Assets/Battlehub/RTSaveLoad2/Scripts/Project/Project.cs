@@ -522,7 +522,8 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        public ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, ProjectEventHandler<AssetItem> callback)
+    
+        public ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
         {
             if(m_root == null)
             {
@@ -611,12 +612,25 @@ namespace Battlehub.RTSaveLoad2
             {
                 m_assetDB.RegisterDynamicResource((int)m_assetDB.ToDynamicResourceID(rootOrdinal, rootId), (UnityObject)obj);
             }
-       
+
             PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
             persistentObject.ReadFrom(obj);  
-            
+
+            if(!string.IsNullOrEmpty(nameOverride))
+            {
+                persistentObject.name = nameOverride;
+            }
+
             AssetItem assetItem = new AssetItem();
-            assetItem.ItemID = m_assetDB.ToDynamicResourceID(rootOrdinal, rootId);
+            if(obj is Scene)
+            {
+                assetItem.ItemID = m_assetDB.ToSceneID(rootOrdinal, rootId);
+            }
+            else
+            {
+                assetItem.ItemID = m_assetDB.ToDynamicResourceID(rootOrdinal, rootId);
+            }
+            
             assetItem.Name = persistentObject.name;
             assetItem.Ext = GetExt(obj);
             assetItem.TypeGuid = m_typeMap.ToGuid(obj.GetType());
@@ -645,16 +659,19 @@ namespace Battlehub.RTSaveLoad2
             {
                 if(!error.HasError)
                 {
-                    if(assetItem.Parts != null)
+                    if(!(obj is Scene))
                     {
-                        for (int i = 0; i < assetItem.Parts.Length; ++i)
+                        if (assetItem.Parts != null)
                         {
-                            m_idToAssetItem.Add(assetItem.Parts[i].PartID, assetItem);
+                            for (int i = 0; i < assetItem.Parts.Length; ++i)
+                            {
+                                m_idToAssetItem.Add(assetItem.Parts[i].PartID, assetItem);
+                            }
                         }
-                    }
-                    else
-                    {
-                        m_idToAssetItem.Add(assetItem.ItemID, assetItem);
+                        else
+                        {
+                            m_idToAssetItem.Add(assetItem.ItemID, assetItem);
+                        }
                     }
                    
                     parent.AddChild(assetItem);
@@ -848,7 +865,13 @@ namespace Battlehub.RTSaveLoad2
                         PersistentObject persistentObject = persistentObjects[i];
                         if(persistentObject != null)
                         {
-                            if (persistentObject is PersistentRuntimePrefab)
+                            if(persistentObject is PersistentRuntimeScene)
+                            {
+                                PersistentRuntimeScene persistentScene = (PersistentRuntimeScene)persistentObject;
+                                Dictionary<int, UnityObject> idToObj = new Dictionary<int, UnityObject>();
+                                persistentScene.CreateGameObjectWithComponents(m_typeMap, persistentScene.Descriptors[0], idToObj);
+                            }
+                            else if (persistentObject is PersistentRuntimePrefab)
                             {
                                 PersistentRuntimePrefab persistentPrefab = (PersistentRuntimePrefab)persistentObject;
                                 Dictionary<int, UnityObject> idToObj = new Dictionary<int, UnityObject>();

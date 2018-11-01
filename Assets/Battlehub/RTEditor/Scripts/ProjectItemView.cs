@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.RTCommon;
+using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTEditor
 {
@@ -77,7 +78,11 @@ namespace Battlehub.RTEditor
             else if (m_projectItem is AssetItem)
             {
                 AssetItem assetItem = (AssetItem)m_projectItem;
-                if(assetItem.Preview == null || assetItem.Preview.PreviewData == null)
+                if(m_project.ToType(assetItem) == typeof(Scene))
+                {
+                    m_imgPreview.sprite = m_scene;
+                }
+                else if(assetItem.Preview == null || assetItem.Preview.PreviewData == null)
                 {
                     m_imgPreview.sprite = m_none;
                 }

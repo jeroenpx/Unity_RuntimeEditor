@@ -29,7 +29,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null);
 
         bool CanSave(ProjectItem parent, UnityObject obj);
-        ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, ProjectEventHandler<AssetItem> callback = null);
+        ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
         ProjectAsyncOperation Save(AssetItem assetItem, object obj, ProjectEventHandler callback = null);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);

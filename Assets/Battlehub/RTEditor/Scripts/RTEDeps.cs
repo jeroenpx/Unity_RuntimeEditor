@@ -8,7 +8,7 @@ namespace Battlehub.RTEditor
     {
         private IResourcePreviewUtility m_resourcePreview;
         private IRTEAppearance m_rteAppearance;
-        private IRTE m_rte;
+        private IRuntimeEditor m_rte;
 
         protected virtual IResourcePreviewUtility ResourcePreview
         {
@@ -36,11 +36,11 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected virtual IRTE RTE
+        protected virtual IRuntimeEditor RTE
         {
             get
             {
-                IRTE rte = FindObjectOfType<RuntimeEditor>();
+                IRuntimeEditor rte = FindObjectOfType<RuntimeEditor>();
                 if(rte == null)
                 {
                     rte = gameObject.AddComponent<RuntimeEditor>();
@@ -107,6 +107,7 @@ namespace Battlehub.RTEditor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
+            IOC.Register<IRTE>(() => Instance.m_rte);
             IOC.Register(() => Instance.m_rte);
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
