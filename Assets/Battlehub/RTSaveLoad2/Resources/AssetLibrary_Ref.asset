@@ -52,12 +52,6 @@ MonoBehaviour:
         Object: {fileID: 2100000, guid: 76ecfd557d86859438b5eb5f6bfafa57, type: 2}
         IsEnabled: 1
         PrefabParts: []
-      - m_ID: 788
-        m_Name: Cube.002
-        m_Depth: 0
-        Object: {fileID: 4300000, guid: dfe97c78f0edf014cada991ad6091ea9, type: 3}
-        IsEnabled: 1
-        PrefabParts: []
       IsEnabled: 1
     - m_ID: 36
       m_Name: zz1

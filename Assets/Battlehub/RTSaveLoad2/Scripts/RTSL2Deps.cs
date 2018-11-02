@@ -13,6 +13,12 @@ namespace Battlehub.RTSaveLoad2
         private ISerializer m_serializer;
         private IStorage m_storage;
         private IProject m_project;
+        private IRuntimeShaderUtil m_shaderUtil;
+
+        protected virtual IRuntimeShaderUtil ShaderUtil
+        {
+            get { return new RuntimeShaderUtil(); }
+        }
 
         protected virtual IAssetDB AssetDB
         {
@@ -65,35 +71,13 @@ namespace Battlehub.RTSaveLoad2
 
         protected virtual void AwakeOverride()
         {
-            if(m_assetDB == null)
-            {
-                m_assetDB = AssetDB;
-            }
-
-            if(m_typeMap  == null)
-            {
-                m_typeMap = TypeMap;
-            }
-            
-            if(m_objectFactory == null)
-            {
-                m_objectFactory = ObjectFactory;
-            }
-
-            if(m_serializer == null)
-            {
-                m_serializer = Serializer;
-            }
-            
-            if(m_storage == null)
-            {
-                m_storage = Storage;
-            }
-
-            if(m_project == null)
-            {
-                m_project = Project;
-            }
+            m_shaderUtil = ShaderUtil;
+            m_assetDB = AssetDB;
+            m_typeMap = TypeMap;
+            m_objectFactory = ObjectFactory;
+            m_serializer = Serializer;
+            m_storage = Storage;
+            m_project = Project;
         }
 
         private void OnDestroy()
@@ -105,6 +89,7 @@ namespace Battlehub.RTSaveLoad2
 
             OnDestroyOverride();
 
+            m_shaderUtil = null;
             m_assetDB = null;
             m_typeMap = null;
             m_objectFactory = null;
@@ -143,6 +128,7 @@ namespace Battlehub.RTSaveLoad2
             IOC.RegisterFallback(() => Instance.m_assetDB);
             IOC.RegisterFallback<IIDMap>(() => Instance.m_assetDB);
             IOC.RegisterFallback(() => Instance.m_project);
+            IOC.RegisterFallback(() => Instance.m_shaderUtil);
         }
     }
 }

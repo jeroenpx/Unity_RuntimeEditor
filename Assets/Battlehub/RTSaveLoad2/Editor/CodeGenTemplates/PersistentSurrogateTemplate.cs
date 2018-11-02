@@ -1,6 +1,4 @@
 ﻿using System;
-using UnityEditor;
-using UnityEditor.Compilation;
 using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
@@ -9,11 +7,20 @@ namespace Battlehub.RTSaveLoad2.Internal
     {
         public readonly string ForType;
         public readonly string[] FieldNames;
+        public readonly Type[] RequiredTypes;
 
         public PersistentTemplateAttribute(string forType, params string[] templateFields)
         {
             ForType = forType;
             FieldNames = templateFields;
+            RequiredTypes = new Type[0];
+        }
+
+        public PersistentTemplateAttribute(string forType, string[] templateFields, Type[] requiredTypes)
+        {
+            ForType = forType;
+            FieldNames = templateFields;
+            RequiredTypes = requiredTypes;
         }
     }
 

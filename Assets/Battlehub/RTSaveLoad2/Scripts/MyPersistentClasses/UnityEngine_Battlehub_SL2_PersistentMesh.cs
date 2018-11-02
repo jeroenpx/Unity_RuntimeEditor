@@ -17,7 +17,8 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(3)]
         public IntArray[] m_tris;
 
-#warning do not forget to save index format
+        [ProtoMember(4)]
+        private UnityEngine.Rendering.IndexFormat indexFormat;
 
         public override object WriteTo(object obj)
         {
@@ -27,6 +28,7 @@ namespace UnityEngine.Battlehub.SL2
             }
 
             Mesh o = (Mesh)obj;
+            o.indexFormat = indexFormat;
             o.vertices = vertices;
             o.subMeshCount = subMeshCount;
             if (m_tris != null)
@@ -47,6 +49,7 @@ namespace UnityEngine.Battlehub.SL2
                 return;
             }
             Mesh o = (Mesh)obj;
+            indexFormat = o.indexFormat;
             subMeshCount = o.subMeshCount;
             vertices = o.vertices;
             m_tris = new IntArray[subMeshCount];

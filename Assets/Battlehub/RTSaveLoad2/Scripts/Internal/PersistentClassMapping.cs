@@ -59,7 +59,9 @@ namespace Battlehub.RTSaveLoad2
         public bool UseSurrogate; 
 
         //True if property (or field) is unity object or non-unity object with dependencies
-        public bool HasDependenciesOrIsDependencyItself; 
+        public bool HasDependenciesOrIsDependencyItself;
+
+        public bool HasPropertyInTemplate;
     }
 
     [Serializable]

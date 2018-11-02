@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Battlehub.RTSaveLoad2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentTransform : PersistentObject
+    public class PersistentTransform : PersistentComponent
     {
         [ProtoMember(256)]
         public Vector3 position;

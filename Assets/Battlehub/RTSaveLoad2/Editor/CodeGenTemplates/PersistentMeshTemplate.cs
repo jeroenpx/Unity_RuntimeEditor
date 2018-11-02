@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
 {
-    [PersistentTemplate("UnityEngine.Mesh", "vertices", "subMeshCount")]
+    [PersistentTemplate("UnityEngine.Mesh", "vertices", "subMeshCount", "indexFormat", "triangles")]
     public class PersistentMeshTemplate : PersistentSurrogateTemplate
     {
 #if RTSL2_COMPILE_TEMPLATES
@@ -22,6 +22,9 @@ namespace Battlehub.RTSaveLoad2.Internal
         [ProtoMember(3)]
         public IntArray[] m_tris;
 
+        [ProtoMember(4)]
+        private UnityEngine.Rendering.IndexFormat indexFormat;
+
         public override object WriteTo(object obj)
         {
             if (obj == null)
@@ -30,6 +33,7 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             Mesh o = (Mesh)obj;
+            o.indexFormat = indexFormat;
             o.vertices = vertices;
             o.subMeshCount = subMeshCount;
             if (m_tris != null)
@@ -50,6 +54,7 @@ namespace Battlehub.RTSaveLoad2.Internal
                 return;
             }
             Mesh o = (Mesh)obj;
+            indexFormat = o.indexFormat;
             subMeshCount = o.subMeshCount;
             vertices = o.vertices;
             m_tris = new IntArray[subMeshCount];

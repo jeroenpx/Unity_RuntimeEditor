@@ -10,7 +10,6 @@ using System.Runtime.Serialization;
 namespace Battlehub.RTSaveLoad
 {
     
-
     public class TypeModelCreator 
     {
         public RuntimeTypeModel Create()

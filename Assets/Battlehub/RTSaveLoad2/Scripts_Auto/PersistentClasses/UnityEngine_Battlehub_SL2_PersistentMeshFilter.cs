@@ -9,7 +9,7 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public partial class PersistentMeshFilter : PersistentObject
+    public partial class PersistentMeshFilter : PersistentComponent
     {
         [ProtoMember(256)]
         public long sharedMesh;

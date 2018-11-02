@@ -522,7 +522,6 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-    
         public ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
         {
             if(m_root == null)

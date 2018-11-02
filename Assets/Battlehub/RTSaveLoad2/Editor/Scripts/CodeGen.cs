@@ -162,7 +162,11 @@ namespace Battlehub.RTSaveLoad2
             "            {1}" + BR +
             "       }}" + BR +
             "   }}" + BR +
-            "}}" + END;
+            "}}" + BR +
+            "{2}" + END;
+
+        private static readonly string NamespaceDefinitionTemplate =
+            "namespace {0} {{}}";
 
         private static readonly string AddTypeTemplate =
             "model.Add(typeof({0}), {1}){2}";
@@ -446,8 +450,44 @@ namespace Battlehub.RTSaveLoad2
         {
             string usings = CreateUsings(mappings);
             string body = CreateTypeModelCreatorBody(mappings);
+            string nsDefinitions = CreateNamespaceDefinitions(mappings);
+            return string.Format(TypeModelCreatorTemplate, usings, body, nsDefinitions);
+        }
 
-            return string.Format(TypeModelCreatorTemplate, usings, body);
+        private string CreateNamespaceDefinitions(PersistentClassMapping[] mappings)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            HashSet<string> nsHs = new HashSet<string>();
+            for (int m = 0; m < mappings.Length; ++m)
+            {
+                PersistentClassMapping mapping = mappings[m];
+                if(!mapping.IsEnabled)
+                {
+                    continue;
+                }
+               
+                for(int i = 0; i < mapping.PropertyMappings.Length; ++i)
+                {
+                    PersistentPropertyMapping pMapping = mapping.PropertyMappings[i];
+                    if(!pMapping.IsEnabled || pMapping.HasPropertyInTemplate)
+                    {
+                        continue;
+                    }
+                    if(!nsHs.Contains(pMapping.PersistentNamespace))
+                    {
+                        nsHs.Add(pMapping.PersistentNamespace);
+                    }
+                }
+            }
+
+            foreach(string ns in nsHs)
+            {
+                sb.AppendFormat(NamespaceDefinitionTemplate, ns);
+                sb.Append(BR);
+            }
+            
+            return sb.ToString();
         }
 
         private string CreateTypeModelCreatorBody(PersistentClassMapping[] mappings)
@@ -609,7 +649,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
-                if (!prop.IsEnabled)
+                if (!prop.IsEnabled || prop.HasPropertyInTemplate)
                 {
                     continue;
                 }
@@ -700,7 +740,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
-                if (!prop.IsEnabled)
+                if (!prop.IsEnabled || prop.HasPropertyInTemplate)
                 {
                     continue;
                 }
@@ -731,7 +771,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
-                if (!prop.IsEnabled)
+                if (!prop.IsEnabled || prop.HasPropertyInTemplate)
                 {
                     continue;
                 }
@@ -767,7 +807,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
-                if (!prop.IsEnabled)
+                if (!prop.IsEnabled || prop.HasPropertyInTemplate)
                 {
                     continue;
                 }
@@ -802,7 +842,7 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
-                if (!prop.IsEnabled)
+                if (!prop.IsEnabled || prop.HasPropertyInTemplate)
                 {
                     continue;
                 }
@@ -862,7 +902,7 @@ namespace Battlehub.RTSaveLoad2
                     for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
                     {
                         PersistentPropertyMapping propertyMapping = mapping.PropertyMappings[i];
-                        if (!propertyMapping.IsEnabled)
+                        if (!propertyMapping.IsEnabled || propertyMapping.HasPropertyInTemplate)
                         {
                             continue;
                         }
@@ -917,6 +957,87 @@ namespace Battlehub.RTSaveLoad2
                 return typeof(long);
             }
             return null;
+        }
+
+        public void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
+        {
+            assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
+
+            List<Type> allUOTypes = new List<Type>();
+            List<Assembly> assembliesList = new List<Assembly>() { null };
+
+            for (int i = 0; i < assemblies.Length; ++i)
+            {
+                Assembly assembly = assemblies[i];
+                Type[] uoTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(UnityObject))).ToArray();
+                if (uoTypes.Length > 0)
+                {
+                    assembliesList.Add(assembly);
+                    allUOTypes.AddRange(uoTypes);
+                }
+            }
+
+            types = allUOTypes.ToArray();
+            assemblies = assembliesList.ToArray();
+        }
+
+        private void GetTypesRecursive(Type type, HashSet<Type> typesHS)
+        {
+            PropertyInfo[] properties = GetAllProperties(type);
+            FieldInfo[] fields = GetFields(type);
+
+            for (int p = 0; p < properties.Length; ++p)
+            {
+                PropertyInfo pInfo = properties[p];
+                if (!typesHS.Contains(pInfo.PropertyType))
+                {
+                    Type surrogateType = GetSurrogateType(pInfo.PropertyType);
+                    if (surrogateType != null && !typesHS.Contains(surrogateType))
+                    {
+                        typesHS.Add(surrogateType);
+                        GetTypesRecursive(surrogateType, typesHS);
+                    }
+                }
+            }
+
+            for (int f = 0; f < fields.Length; ++f)
+            {
+                FieldInfo fInfo = fields[f];
+                if (!typesHS.Contains(fInfo.FieldType))
+                {
+                    Type surrogateType = GetSurrogateType(fInfo.FieldType);
+                    if (surrogateType != null && !typesHS.Contains(surrogateType))
+                    {
+                        typesHS.Add(surrogateType);
+                        GetTypesRecursive(surrogateType, typesHS);
+                    }
+                }
+            }
+        }
+
+        public void GetSurrogateAssembliesAndTypes(Type[] uoTypes, out Dictionary<string, HashSet<Type>> declaredIn, out Type[] types)
+        {
+            HashSet<Type> allTypesHS = new HashSet<Type>();
+            declaredIn = new Dictionary<string, HashSet<Type>>();
+
+            for (int typeIndex = 0; typeIndex < uoTypes.Length; ++typeIndex)
+            {
+                Type uoType = uoTypes[typeIndex];
+
+                HashSet<Type> typesHs = new HashSet<Type>();
+                GetTypesRecursive(uoType, typesHs);
+                declaredIn.Add(uoType.Name, typesHs);
+
+                foreach (Type type in typesHs)
+                {
+                    if (!allTypesHS.Contains(type))
+                    {
+                        allTypesHS.Add(type);
+                    }
+                }
+            }
+
+            types = allTypesHS.ToArray();
         }
     }
 }
