@@ -47,9 +47,7 @@ namespace Battlehub.RTSaveLoad2
         [SerializeField]
         private Transform m_dynamicPrefabsRoot;
         private readonly Dictionary<int, UnityObject> m_dynamicResources = new Dictionary<int, UnityObject>();
-
         private MappingInfo m_staticReferencesMapping;
-
 
         private void Awake()
         {
@@ -80,6 +78,7 @@ namespace Battlehub.RTSaveLoad2
             }
             m_dynamicResources.Clear();
             m_staticReferencesMapping = null;
+            m_idToAssetItem = new Dictionary<long, AssetItem>();
         }
 
         private bool IsDynamicOrdinal(int ordinal)

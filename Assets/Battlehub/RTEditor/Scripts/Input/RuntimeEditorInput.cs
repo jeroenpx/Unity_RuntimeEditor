@@ -12,9 +12,9 @@ namespace Battlehub.RTEditor
 
         private IRuntimeEditor m_editor;
 
-        protected override void Awake()
+        protected override void Start()
         {
-            base.Awake();
+            base.Start();
             m_editor = IOC.Resolve<IRuntimeEditor>();
         }
 

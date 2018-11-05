@@ -63,6 +63,10 @@ namespace Battlehub.RTEditor
         protected virtual void AwakeOverride()
         {
             m_rte = RTE;
+            IOC.Register<IRTE>(m_rte);
+            IOC.Register(m_rte);
+
+
             m_resourcePreview = ResourcePreview;
             m_rteAppearance = RTEAppearance;
         }
@@ -75,6 +79,10 @@ namespace Battlehub.RTEditor
             }
 
             OnDestroyOverride();
+
+            IOC.Unregister<IRTE>(m_rte);
+            IOC.Unregister(m_rte);
+
             m_resourcePreview = null;
             m_rteAppearance = null;
             m_rte = null;
@@ -107,8 +115,6 @@ namespace Battlehub.RTEditor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-            IOC.Register<IRTE>(() => Instance.m_rte);
-            IOC.Register(() => Instance.m_rte);
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
         }

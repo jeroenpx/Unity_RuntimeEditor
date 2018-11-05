@@ -19,6 +19,7 @@ namespace Battlehub.RTEditor
         protected override void Awake()
         {
             base.Awake();
+      
             IOC.Resolve<IRTEAppearance>();
             m_project = IOC.Resolve<IProject>();
         }

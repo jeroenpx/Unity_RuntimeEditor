@@ -298,11 +298,18 @@ namespace Battlehub.RTCommon
                     }
                     if (m_isOpened)
                     {
-                        IsOpenedEvent.Invoke();
+                        if(IsOpenedEvent != null)
+                        {
+                            IsOpenedEvent.Invoke();
+                        }
+                        
                     }
                     else
                     {
-                        IsClosedEvent.Invoke();
+                        if (IsClosedEvent != null)
+                        {
+                            IsClosedEvent.Invoke();
+                        }
                     }
                 }
             }

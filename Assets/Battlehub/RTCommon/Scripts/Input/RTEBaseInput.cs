@@ -36,12 +36,12 @@ namespace Battlehub.RTCommon
             return m_editor.Input.GetKeyDown(PlayKey);
         }
        
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             m_editor = IOC.Resolve<IRTE>();
         }
 
-        protected virtual void Update()
+         protected virtual void Update()
         {
             if(OpenEditorAction())
             {
