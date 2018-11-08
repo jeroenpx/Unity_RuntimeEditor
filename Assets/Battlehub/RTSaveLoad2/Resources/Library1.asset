@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
+  m_Name: Library1
+  m_EditorClassIdentifier: 
+  m_keepRuntimeProjectInSync: 1
+  m_assetLibrary:
+    m_ID: 0
+    m_Name: Root
+    m_Depth: -1
+    Identity: 1395
+    FolderIdentity: 12
+    Folders:
+    - m_ID: 0
+      m_Name: Root
+      m_Depth: -1
+      Assets: []
+      IsEnabled: 0
+    - m_ID: 3
+      m_Name: Assets
+      m_Depth: 0
+      Assets:
+      - m_ID: 1345
+        m_Name: Block
+        m_Depth: 0
+        Object: {fileID: 105912, guid: 04ea8aeeb78fcfe40a4454a53de4f993, type: 2}
+        IsEnabled: 1
+        PrefabParts:
+        - ParentPersistentID: -1
+          PersistentID: 1346
+          Object: {fileID: 401142, guid: 04ea8aeeb78fcfe40a4454a53de4f993, type: 2}
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 1347
+          Object: {fileID: 3360802, guid: 04ea8aeeb78fcfe40a4454a53de4f993, type: 2}
+          Depth: 0
+        - ParentPersistentID: -1
+          PersistentID: 1348
+          Object: {fileID: 2328444, guid: 04ea8aeeb78fcfe40a4454a53de4f993, type: 2}
+          Depth: 0
+      IsEnabled: 1
+    - m_ID: 11
+      m_Name: Folder22
+      m_Depth: 1
+      Assets:
+      - m_ID: 1349
+        m_Name: Body
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 07d9b659de749f944bfe8bcc9f93c0a9, type: 2}
+        IsEnabled: 1
+        PrefabParts: []
+      IsEnabled: 1

@@ -228,14 +228,6 @@ namespace Battlehub.RTSaveLoad2
                         continue;
                     }
 
-                    //List<AssetInfo> assets = new List<AssetInfo>();
-                    //FlattenItems(assetInfo, assets);
-                    //assets.Reverse();
-                    //for(int j = 0; j < assets.Count; ++j)
-                    //{
-                    //    AddAssetToFolder(assets[j], folder);
-                    //}
-
                     AddAssetToFolder(assetInfo, folder);
 
                     TreeView.treeModel.SetData(GetData());
@@ -249,22 +241,34 @@ namespace Battlehub.RTSaveLoad2
                         return;
                     }
 
-                    CreateAsset(obj, parentAssetInfo, insertIndex, folder);
-                  
+                    if(!CreateAsset(obj, parentAssetInfo, insertIndex, folder))
+                    {
+                        EditorUtility.DisplayDialog("Unable to add asset", string.Format("Max 'Indentity' value reached. 'Identity' ==  {0}", AssetLibraryInfo.MAX_ASSETS), "OK");
+                    }
                 }
             }
         }
 
-        private void CreateAsset(UnityObject obj, AssetInfo parentAssetInfo, int insertIndex = -1, AssetFolderInfo folder = null)
-        {
-            AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
-            assetInfo.Object = obj;
-            AddAssetToFolder(assetInfo, folder);
+        private bool CreateAsset(UnityObject obj, AssetInfo parentAssetInfo, int insertIndex = -1, AssetFolderInfo folder = null)
+        {        
             if (obj is GameObject)
             {
                 GameObject go = (GameObject)obj;
-                assetInfo.PrefabParts = new List<PrefabPartInfo>();
-                CreatePefabParts(assetInfo, go);
+
+                int identity = m_asset.AssetLibrary.Identity + 1;
+                List<PrefabPartInfo> prefabParts = new List<PrefabPartInfo>();
+                CreatePefabParts(go, ref identity, prefabParts);
+                if(identity >= AssetLibraryInfo.MAX_ASSETS)
+                {
+                    return false;
+                }
+
+                AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
+                assetInfo.Object = obj;
+                AddAssetToFolder(assetInfo, folder);
+
+                assetInfo.PrefabParts = prefabParts;
+                m_asset.AssetLibrary.Identity = identity;
 
                 if (folder != null)
                 {
@@ -307,20 +311,27 @@ namespace Battlehub.RTSaveLoad2
                     }
                 }
             } 
+            else
+            {
+                AssetInfo assetInfo = CreateAsset(obj.name, parentAssetInfo, insertIndex, folder);
+                assetInfo.Object = obj;
+                AddAssetToFolder(assetInfo, folder);
+            }
+            return true;
         }
 
-        private void CreatePefabParts(AssetInfo assetInfo, GameObject go, int parentId = -1, int depth = 0)
+        public static void CreatePefabParts(GameObject go, ref int indenitity, List<PrefabPartInfo> prefabParts, int parentId = -1, int depth = 0)
         {
             Component[] components = go.GetComponents<Component>();
             foreach (Component component in components)
             {
                 PrefabPartInfo componentPart = new PrefabPartInfo();
                 componentPart.ParentPersistentID = parentId;
-                componentPart.PersistentID = m_asset.AssetLibrary.Identity;
+                componentPart.PersistentID = indenitity;
                 componentPart.Object = component;
                 componentPart.Depth = depth;
-                m_asset.AssetLibrary.Identity++;
-                assetInfo.PrefabParts.Add(componentPart);
+                indenitity++;
+                prefabParts.Add(componentPart);
             }
 
             if (go.transform.childCount > 0)
@@ -329,13 +340,58 @@ namespace Battlehub.RTSaveLoad2
                 {
                     PrefabPartInfo childPart = new PrefabPartInfo();
                     childPart.ParentPersistentID = parentId;
-                    childPart.PersistentID = m_asset.AssetLibrary.Identity;
+                    childPart.PersistentID = indenitity;
                     childPart.Object = child.gameObject;
                     childPart.Depth = depth;
-                    m_asset.AssetLibrary.Identity++;
-                    assetInfo.PrefabParts.Add(childPart);
+                    indenitity++;
+                    prefabParts.Add(childPart);
+                    CreatePefabParts(child.gameObject, ref indenitity, prefabParts, childPart.PersistentID,  depth + 1);
+                }
+            }
+        }
 
-                    CreatePefabParts(assetInfo, child.gameObject, childPart.PersistentID,  depth + 1);
+        public static void CreatePefabParts(GameObject go, ref int identity, Dictionary<UnityObject, int> objToId, List<PrefabPartInfo> prefabParts, int parentId = -1, int depth = 0)
+        {
+            Component[] components = go.GetComponents<Component>();
+            foreach (Component component in components)
+            {
+                PrefabPartInfo componentPart = new PrefabPartInfo();
+                componentPart.ParentPersistentID = parentId;
+                if(objToId.ContainsKey(component))
+                {
+                    componentPart.PersistentID = objToId[component];
+                }
+                else
+                {
+                    componentPart.PersistentID = identity;
+                    identity++;
+                }
+                
+                componentPart.Object = component;
+                componentPart.Depth = depth;
+                prefabParts.Add(componentPart);
+            }
+
+            if (go.transform.childCount > 0)
+            {
+                foreach (Transform child in go.transform)
+                {
+                    PrefabPartInfo childPart = new PrefabPartInfo();
+                    childPart.ParentPersistentID = parentId;
+                    if (objToId.ContainsKey(child.gameObject))
+                    {
+                        childPart.PersistentID = objToId[child.gameObject];
+                    }
+                    else
+                    {
+                        childPart.PersistentID = identity;
+                        identity++;
+                    }
+                    
+                    childPart.Object = child.gameObject;
+                    childPart.Depth = depth;
+                    prefabParts.Add(childPart);
+                    CreatePefabParts(child.gameObject, ref identity, objToId, prefabParts, childPart.PersistentID, depth + 1);
                 }
             }
         }
@@ -370,7 +426,7 @@ namespace Battlehub.RTSaveLoad2
             folder.Assets.Add(assetInfo);
         }
 
-        private  AssetInfo CreateAsset( string name, TreeElement parent, int insertIndex = -1, AssetFolderInfo folder = null)
+        private AssetInfo CreateAsset(string name, TreeElement parent, int insertIndex = -1, AssetFolderInfo folder = null)
         {
             int depth = parent != null ? parent.depth + 1 : 0;
             int id = m_asset.AssetLibrary.Identity;
@@ -489,7 +545,7 @@ namespace Battlehub.RTSaveLoad2
                     id = 0,
                     name = "Root",
                     IsEnabled = false,
-                    depth = -1
+                    depth = -1,
                 }
             };
         }
@@ -506,6 +562,8 @@ namespace Battlehub.RTSaveLoad2
             TreeView.OnGUI(rect);
         }
 
+        private bool m_hasSelectedRootItems;
+        private int m_selectedRootItemsCount;
         private void DoCommands()
         {
             Event e = Event.current;
@@ -523,7 +581,12 @@ namespace Battlehub.RTSaveLoad2
                         break;
                     }
             }
+
             EditorGUILayout.BeginHorizontal();
+
+            int selectedRootItemsCount = TreeView.SelectedRootItemsCount;
+            bool hasSelectedRootItems = TreeView.HasSelectedRootItems;
+
             if(m_folders != null && m_folders.Length == 1)
             {
                 if (GUILayout.Button("Add Asset"))
@@ -532,21 +595,28 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            if(TreeView.SelectedRootItemsCount == 1)
+            if (m_selectedRootItemsCount == 1)
             {
                 if (GUILayout.Button("Rename Asset"))
                 {
                     RenameAsset();
                 }
-            }
 
-            if (TreeView.HasSelectedRootItems)
+                if(GUILayout.Button("Ping Asset"))
+                {
+                    PingAsset();
+                }
+            }
+            m_selectedRootItemsCount = TreeView.SelectedRootItemsCount;
+                        
+            if (m_hasSelectedRootItems)
             {
                 if (GUILayout.Button("Remove Asset"))
                 {
                     RemoveAsset();
                 }
             }
+            m_hasSelectedRootItems = TreeView.HasSelectedRootItems;
 
             EditorGUILayout.EndHorizontal();
 
@@ -561,7 +631,7 @@ namespace Battlehub.RTSaveLoad2
                     m_currentPickerWindow = -1;
                     if (m_pickedObject != null)
                     {
-                        if (m_folders[0].Assets == null || !m_folders[0].Assets.Any(a => a.Object == m_pickedObject))
+                        if (m_folders[0].Assets == null || !m_folders[0].Assets.Any(a => a.Object == m_pickedObject || a.Object != null && a.Object.name == m_pickedObject.name && a.Object.GetType() == m_pickedObject.GetType()))
                         {
                             if (m_pickedObject == null || m_pickedObject.GetType().Assembly.FullName.Contains("UnityEditor"))
                             {
@@ -613,6 +683,19 @@ namespace Battlehub.RTSaveLoad2
         {
             m_currentPickerWindow = GUIUtility.GetControlID(FocusType.Passive) + 100;
             EditorGUIUtility.ShowObjectPicker<UnityObject>(null, false, string.Empty, m_currentPickerWindow);
+        }
+
+        private void PingAsset()
+        {
+            var selection = TreeView.GetSelection();
+            if(selection != null && selection.Count > 0)
+            {
+                AssetInfo assetInfo = TreeView.treeModel.Find(selection[0]);
+                if(assetInfo != null && assetInfo.Object != null)
+                {
+                    EditorGUIUtility.PingObject(assetInfo.Object);
+                }
+            }
         }
 
         private void RenameAsset()

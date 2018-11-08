@@ -172,7 +172,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private bool m_useBuiltinUndo = true;
         [SerializeField]
-        private bool m_enableVRIfAvailable = true;
+        private bool m_enableVRIfAvailable = false;
 
         [SerializeField]
         private bool m_isOpened = true;

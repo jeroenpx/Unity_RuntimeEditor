@@ -68,7 +68,7 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 
-    [CreateAssetMenu(fileName = "AssetLibrary", menuName = "RT Asset Library", order = 1)]
+    [CreateAssetMenu(fileName = "AssetLibrary", menuName = "Runtime Asset Library/Create")]
     public class AssetLibraryAsset : ScriptableObject
     {
         private int m_offset;
@@ -261,21 +261,27 @@ namespace Battlehub.RTSaveLoad2
         {
             if (m_assetLibrary == null || m_assetLibrary.Folders.Count == 0)
             {
-                AssetFolderInfo assetsFolder = new AssetFolderInfo
+                AssetFolderInfo rootFolder = new AssetFolderInfo
                 {
-                    name = "Assets",
+                    name = "Root",
                     depth = -1,
                 };
 
+                AssetFolderInfo assetsFolder = new AssetFolderInfo("Assets", 0, 3);
+                assetsFolder.IsEnabled = true;
+                
                 m_assetLibrary = new AssetLibraryInfo
                 {
                     name = "Root",
                     depth = -1,
                     Folders = new List<AssetFolderInfo>
                     {
+                        rootFolder,
                         assetsFolder
-                    }
+                    },
                 };
+
+                
             }
           
         }

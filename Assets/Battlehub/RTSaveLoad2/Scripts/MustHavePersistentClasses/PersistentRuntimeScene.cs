@@ -90,9 +90,20 @@ namespace Battlehub.RTSaveLoad2
             return scene;
         }
 
-        public void Unload()
+        protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
         {
-            m_assetDB.UnregisterSceneObjects();
+            if(!(obj is Scene))
+            {
+                return;
+            }
+
+            Scene scene = (Scene)obj;
+            GameObject[] gameObjects = scene.GetRootGameObjects();
+
+            for(int i = 0; i < gameObjects.Length; ++i)
+            {
+                base.GetDepsFromImpl(gameObjects[i], context);
+            }
         }
     }
 }

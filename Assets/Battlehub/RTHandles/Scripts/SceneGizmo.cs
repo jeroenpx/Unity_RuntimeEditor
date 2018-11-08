@@ -146,6 +146,11 @@ namespace Battlehub.RTHandles
             }
         }
 
+        protected virtual void Start()
+        {
+            IsOrthographic = Window.Camera.orthographic;
+        }
+
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();

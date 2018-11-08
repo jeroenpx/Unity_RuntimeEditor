@@ -29,6 +29,10 @@ namespace Battlehub.RTSaveLoad2
             get;
             private set;
         }
+
+        private bool m_canRenameOrRemove = false;
+        private bool m_canCreate = false;
+
         internal AssetFolderTreeView TreeView
         {
             get;
@@ -70,7 +74,7 @@ namespace Battlehub.RTSaveLoad2
                     multiColumnHeader.ResizeToFit();
 
                 var treeModel = new TreeModel<AssetFolderInfo>(GetData());
-
+                
                 TreeView = new AssetFolderTreeView(
                     m_TreeViewState, 
                     multiColumnHeader, 
@@ -139,7 +143,6 @@ namespace Battlehub.RTSaveLoad2
 
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex, bool outside)
         {
-            Debug.Log(insertIndex);
             AssetFolderInfo parentFolder;
             if(parent == null)
             {
@@ -390,6 +393,10 @@ namespace Battlehub.RTSaveLoad2
         private void OnSelectionChanged(AssetFolderInfo[] selection)
         {
             SelectedFolders = selection;
+
+            m_canRenameOrRemove = SelectedFolders != null && SelectedFolders.Length > 0 && SelectedFolders.All(f => f.depth != 0 && f.depth != -1);
+            m_canCreate = SelectedFolders != null && SelectedFolders.Length > 0 && SelectedFolders.All(f => f.depth != -1);
+
             if(SelectedFoldersChanged != null)
             {
                 SelectedFoldersChanged(this, EventArgs.Empty);
@@ -428,6 +435,11 @@ namespace Battlehub.RTSaveLoad2
 
         private void DoCommands()
         {
+            if (!TreeView.HasSelection())
+            {
+                return;
+            }
+
             Event e = Event.current;
             switch (e.type)
             {
@@ -435,7 +447,7 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (Event.current.keyCode == KeyCode.Delete)
                         {
-                            if(TreeView.HasFocus())
+                            if (TreeView.HasFocus() && m_canRenameOrRemove)
                             {
                                 RemoveFolder();
                                 GUIUtility.ExitGUI();
@@ -446,18 +458,26 @@ namespace Battlehub.RTSaveLoad2
             }
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Create Folder"))
+            if(m_canCreate)
             {
-                CreateFolder();
+                if (GUILayout.Button("Create Folder"))
+                {
+                    CreateFolder();
+                }
             }
-            if (GUILayout.Button("Rename Folder"))
+
+            if (m_canRenameOrRemove)
             {
-                RenameFolder();
+                if (GUILayout.Button("Rename Folder"))
+                {
+                    RenameFolder();
+                }
+                if (GUILayout.Button("Remove Folder"))
+                {
+                    RemoveFolder();
+                }
             }
-            if (GUILayout.Button("Remove Folder"))
-            {
-                RemoveFolder();
-            }
+            
             EditorGUILayout.EndHorizontal();
         }
 

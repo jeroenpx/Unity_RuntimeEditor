@@ -43,6 +43,7 @@ namespace Battlehub.RTCommon
             get { return m_index; }
         }
 
+        private Rect m_rect;
         [SerializeField]
         private RectTransform m_rectTransform;
         private Canvas m_canvas;
@@ -132,7 +133,6 @@ namespace Battlehub.RTCommon
             m_rectTransform = GetComponent<RectTransform>();
             m_canvas = GetComponentInParent<Canvas>();
 
-            OnRectTransformDimensionsChange();
 
             Editor.ActiveWindowChanged += OnActiveWindowChanged;
 
@@ -179,7 +179,14 @@ namespace Battlehub.RTCommon
 
         protected virtual void UpdateOverride()
         {
-            
+            if(m_camera != null)
+            {
+                if(m_rectTransform.rect != m_rect)
+                {
+                    OnRectTransformDimensionsChange();
+                    m_rect = m_rectTransform.rect;
+                }
+            }
         }
 
         protected virtual void OnActiveWindowChanged()
@@ -202,13 +209,10 @@ namespace Battlehub.RTCommon
             }
         }
 
-        protected virtual IEnumerator OnRectTransformDimensionsChange()
+        protected virtual void OnRectTransformDimensionsChange()
         {
             if (m_camera != null && m_rectTransform != null && m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             {
-
-                yield return new WaitForEndOfFrame();
-
                 Vector3[] corners = new Vector3[4];
                 m_rectTransform.GetWorldCorners(corners);
                 m_camera.pixelRect = new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y));

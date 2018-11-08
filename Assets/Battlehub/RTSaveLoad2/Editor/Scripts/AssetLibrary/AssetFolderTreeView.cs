@@ -109,7 +109,11 @@ namespace Battlehub.RTSaveLoad2
                     break; 
                 case Columns.ExposeToEditor:
                     {
-                        item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
+                        if(item.depth != 0)
+                        {
+                            item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
+                        }
+                        
                     }
                     break;
             }
@@ -117,6 +121,11 @@ namespace Battlehub.RTSaveLoad2
 
         protected override bool CanRename(TreeViewItem item)
         {
+            if(item.depth == 0)
+            {
+                return false;
+            }
+
             // Only allow rename if we can show the rename overlay with a certain width (label might be clipped by other columns)
             Rect renameRect = GetRenameRect(treeViewRect, 0, item);
             return renameRect.width > 30;
@@ -190,6 +199,7 @@ namespace Battlehub.RTSaveLoad2
 
             return desiredName;
         }
+
 
         protected override void RenameEnded(RenameEndedArgs args)
         {

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace Battlehub.RTCommon
 {
+    [DefaultExecutionOrder(-60)]
     public class MouseOrbit : MonoBehaviour
     {
         protected Camera m_camera;

@@ -26,7 +26,13 @@ namespace Battlehub.RTEditor
         private Button m_btnDuplicate;
         [SerializeField]
         private Button m_btnAddFolder;
-
+        [SerializeField]
+        private Button m_btnImport;
+        [SerializeField]
+        private AssetLibrarySelectDialog m_assetLibrarySelectorPrefab;
+        [SerializeField]
+        private AssetLibraryImportDialog m_assetLibraryImportPrefab;
+        
         [SerializeField]
         private string ProjectName = "DefaultProject";
 
@@ -139,6 +145,11 @@ namespace Battlehub.RTEditor
             //{
             //    m_btnAddFolder.onClick.AddListener(AddFolder);
             //}
+
+            if(m_btnImport != null)
+            {
+                m_btnImport.onClick.AddListener(SelectLibrary);
+            }
         }
 
         protected override void OnDestroyOverride()
@@ -162,7 +173,7 @@ namespace Battlehub.RTEditor
             //    m_projectTree.Deleted -= OnProjectTreeItemDeleted;
             //    m_projectTree.Drop -= OnProjectTreeItemDrop;
             }
-            
+
             //if(m_projectManager != null)
             //{
             //    m_projectManager.DynamicResourcesAdded -= OnDynamicResourcesAdded;
@@ -171,7 +182,7 @@ namespace Battlehub.RTEditor
             //    m_projectManager.SceneSaved -= OnSceneSaved;
             //    m_projectManager.SceneLoaded -= OnSceneLoaded;
             //}
-           
+
 
             //if (m_btnDuplicate != null)
             //{
@@ -182,6 +193,11 @@ namespace Battlehub.RTEditor
             //{
             //    m_btnAddFolder.onClick.RemoveListener(AddFolder);
             //}
+
+            if (m_btnImport != null)
+            {
+                m_btnImport.onClick.RemoveListener(SelectLibrary);
+            }
         }
 
         protected override void UpdateOverride()
@@ -264,6 +280,33 @@ namespace Battlehub.RTEditor
             //        });
             //    });
             //});
+        }
+
+        private void SelectLibrary()
+        {
+            AssetLibrarySelectDialog assetLibrarySelector = Instantiate(m_assetLibrarySelectorPrefab);
+            assetLibrarySelector.transform.position = Vector3.zero;
+
+            PopupWindow.Show("Import Asset Library", assetLibrarySelector.transform, "Select",
+                args =>
+                {
+                    Import(assetLibrarySelector.SelectedAssetLibrary);
+                },
+                "Cancel");
+        }
+
+        private void Import(string assetLibrary)
+        {
+            AssetLibraryImportDialog assetLibraryImporter = Instantiate(m_assetLibraryImportPrefab);
+            assetLibraryImporter.transform.position = Vector3.zero;
+            assetLibraryImporter.SelectedAssetLibrary = assetLibrary;
+
+            PopupWindow.Show("Select Assets", assetLibraryImporter.transform, "Import",
+                args =>
+                {
+                    
+                },
+                "Cancel");
         }
 
         //private bool CanDuplicate(ProjectItemObjectPair itemObjectPair)

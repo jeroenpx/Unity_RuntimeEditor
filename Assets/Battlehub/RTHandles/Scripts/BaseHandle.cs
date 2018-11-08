@@ -555,7 +555,7 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                if (!Editor.ActiveWindow.IsPointerOver)
+                if (!Window.IsPointerOver)
                 {
                     SelectedAxis = RuntimeHandleAxis.None;
                 }

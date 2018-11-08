@@ -16,6 +16,7 @@ namespace Battlehub.RTCommon
             float h = camera.pixelHeight;
             if (camera.orthographic)
             {
+
                 return camera.orthographicSize * 2f / h * 90;
             }
 

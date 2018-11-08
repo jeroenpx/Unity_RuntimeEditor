@@ -58,7 +58,7 @@ namespace Battlehub.RTCommon
             }
             if(m_registered.ContainsKey(typeof(T)))
             {
-                Debug.LogWarning("type {0} already registered.");
+                Debug.LogWarningFormat("type {0} already registered.", typeof(T).FullName);
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace Battlehub.RTCommon
             Item item;
             if(m_registered.TryGetValue(typeof(T), out item))
             {
-                if(ReferenceEquals(item, instance))
+                if(ReferenceEquals(item.Instance, instance))
                 {
                     m_registered.Remove(typeof(T));
                 }
@@ -124,7 +124,7 @@ namespace Battlehub.RTCommon
             Item item;
             if (m_fallbacks.TryGetValue(typeof(T), out item))
             {
-                if (item.Function != null && item.Equals(func))
+                if (item.Function != null && item.Function.Equals(func))
                 {
                     m_fallbacks.Remove(typeof(T));
                 }
@@ -136,7 +136,7 @@ namespace Battlehub.RTCommon
             Item item;
             if (m_fallbacks.TryGetValue(typeof(T), out item))
             {
-                if (ReferenceEquals(item, instance))
+                if (ReferenceEquals(item.Instance, instance))
                 {
                     m_fallbacks.Remove(typeof(T));
                 }

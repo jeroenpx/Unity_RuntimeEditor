@@ -125,12 +125,14 @@ namespace Battlehub.RTSaveLoad2
         private static readonly string GetDepsMethodTemplate =
             "protected override void GetDepsImpl(GetDepsContext context)" + BR + TAB2 +
             "{{" + BR + TAB2 +
+            "    base.GetDepsImpl(context);" + BR + TAB2 +
             "{0}" +
             "}}" + BR;
 
         private static readonly string GetDepsFromMethodTemplate =
             "protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)" + BR + TAB2 +
             "{{" + BR + TAB2 +
+            "    base.GetDepsFromImpl(obj, context);" + BR + TAB2 +
             "    {1} uo = ({1})obj;" + BR + TAB2 +
             "{0}" +
             "}}" + BR;

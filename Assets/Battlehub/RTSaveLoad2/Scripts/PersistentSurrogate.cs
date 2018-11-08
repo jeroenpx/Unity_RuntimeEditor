@@ -91,11 +91,11 @@ namespace Battlehub.RTSaveLoad2
 
         public virtual void GetDepsFrom(object obj, GetDepsFromContext context)
         {
-            if (context.VisitedObjects.Contains(this))
+            if (context.VisitedObjects.Contains(obj))
             {
                 return;
             }
-            context.VisitedObjects.Add(this);
+            context.VisitedObjects.Add(obj);
             GetDepsFromImpl(obj, context);
         }
 

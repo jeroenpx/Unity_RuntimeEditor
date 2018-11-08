@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTCommon
 {
+    [DefaultExecutionOrder(-55)]
     [RequireComponent(typeof(RuntimeWindow))]
     public class RuntimeGraphicsLayer : MonoBehaviour
     {
@@ -83,7 +84,7 @@ namespace Battlehub.RTCommon
             m_graphicsLayerCamera.cullingMask = 1 << (m_editorWindow.Editor.CameraLayerSettings.RuntimeGraphicsLayer + m_editorWindow.Index);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (m_graphicsLayerCamera.fieldOfView != m_editorWindow.Camera.fieldOfView)
             {

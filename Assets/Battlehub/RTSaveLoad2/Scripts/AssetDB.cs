@@ -53,7 +53,6 @@ namespace Battlehub.RTSaveLoad2
         void RegisterDynamicResources(Dictionary<int, UnityObject> idToObj);
         void UnregisterDynamicResources();
         
-        bool IsLibraryRefLoaded(int ordinal);
         bool IsLibraryLoaded(int ordinal);
         bool AddLibrary(AssetLibraryAsset library, int ordinal);
         void RemoveLibrary(int ordinal);
@@ -123,18 +122,6 @@ namespace Battlehub.RTSaveLoad2
             return m_ordinalToLib.ContainsKey(ordinal);
         }
 
-        public bool IsLibraryRefLoaded(int ordinal)
-        {
-            AssetLibraryAsset assetLib;
-            if(m_ordinalToLib.TryGetValue(ordinal, out assetLib))
-            {
-                return assetLib is AssetLibraryReference;
-            }
-
-            return false;
-        }
-
-
         public bool AddLibrary(AssetLibraryAsset assetLib, int ordinal)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
@@ -189,10 +176,7 @@ namespace Battlehub.RTSaveLoad2
         {
             foreach (AssetLibraryAsset assetLibrary in m_loadedLibraries)
             {
-                if(!(assetLibrary is AssetLibraryReference))
-                {
-                    Resources.UnloadAsset(assetLibrary);
-                }
+                Resources.UnloadAsset(assetLibrary);
             }
             m_ordinalToLib.Clear();
             m_loadedLibraries.Clear();

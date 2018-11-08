@@ -10,7 +10,7 @@ namespace Battlehub.RTSaveLoad2.Interface
             get;
         }
 
-        AssetLibraryReference[] StaticReferences
+        string[] AssetLibraries
         {
             get;
         }
@@ -33,6 +33,9 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation Save(AssetItem assetItem, object obj, ProjectEventHandler callback = null);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
+
+        ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(int index, ProjectEventHandler<ProjectItem> callback = null);
+        ProjectAsyncOperation ImportAssets(AssetItem[] assetItems, ProjectEventHandler callback);
     }
 
     public delegate void ProjectEventHandler(Error error);
