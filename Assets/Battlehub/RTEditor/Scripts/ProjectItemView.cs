@@ -6,7 +6,9 @@ using UnityEngine.UI;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.RTCommon;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
+using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTEditor
 {
     public class ProjectItemView : MonoBehaviour
@@ -133,6 +135,67 @@ namespace Battlehub.RTEditor
                     AssetItem assetItem = (AssetItem)m_projectItem;
                     assetItem.PreviewDataChanged -= OnPreviewDataChanged;
                 }
+            }
+        }
+
+        public static IEnumerator CoCreatePreviews(ProjectItem[] items, IProject project, IResourcePreviewUtility resourcePreview)
+        {
+            if (resourcePreview == null)
+            {
+                yield break;
+            }
+
+            for (int i = 0; i < items.Length; ++i)
+            {
+                ImportItem importItem = items[i] as ImportItem;
+                if (importItem != null)
+                {
+                    if (importItem.Preview == null && importItem.Object != null)
+                    {
+                        importItem.Preview = new Preview
+                        {
+                            ItemID = importItem.ItemID,
+                            PreviewData = resourcePreview.CreatePreviewData(importItem.Object)
+                        };
+                    }
+                }
+                else
+                {
+                    ImportItem assetItem = items[i] as ImportItem;
+                    if (assetItem != null)
+                    {
+                        UnityObject obj;
+                        if (project.IsStatic(assetItem))
+                        {
+                            if (!project.TryGetFromStaticReferences(assetItem, out obj))
+                            {
+                                obj = null;
+                            }
+                        }
+                        else
+                        {
+                            if (assetItem.Preview == null)
+                            {
+                                obj = project.FromID<UnityObject>(assetItem.ItemID);
+                            }
+                            else
+                            {
+                                obj = null;
+                            }
+                        }
+
+                        if (obj != null)
+                        {
+                            assetItem.Preview = new Preview
+                            {
+                                ItemID = assetItem.ItemID,
+                                PreviewData = resourcePreview.CreatePreviewData(obj)
+                            };
+                        }
+                    }
+                }
+
+                yield return new WaitForSeconds(0.01f);
             }
         }
     }

@@ -18,7 +18,6 @@ namespace Battlehub.RTEditor
 
 
         private IProject m_project;
-        private IRTE m_editor;
 
         public string SelectedAssetLibrary
         {
@@ -27,7 +26,6 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_editor = IOC.Resolve<IRTE>();
             m_parentPopup = GetComponentInParent<PopupWindow>();
             if (m_parentPopup != null)
             {

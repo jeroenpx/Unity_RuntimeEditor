@@ -2,6 +2,7 @@
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,12 +12,9 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         private VirtualizingTreeView TreeViewPrefab;
-        [SerializeField]
-        private Sprite AssetLibraryIcon;
-
+        
         private PopupWindow m_parentPopup;
         private VirtualizingTreeView m_treeView;
-
 
         private IProject m_project;
         private IRTE m_editor;
@@ -46,10 +44,9 @@ namespace Battlehub.RTEditor
             m_treeView.ItemDataBinding += OnItemDataBinding;
             m_treeView.ItemDoubleClick += OnItemDoubleClick;
             m_treeView.ItemExpanding += OnItemExpanding;
-
+            
             m_treeView.CanDrag = false;
             m_treeView.CanEdit = false;
-            m_treeView.CanUnselectAll = false;
 
             m_project = IOC.Resolve<IProject>();
 
@@ -57,10 +54,43 @@ namespace Battlehub.RTEditor
             m_project.LoadAssetLibrary(Array.IndexOf(m_project.AssetLibraries, m_selectedAssetLibrary), (error, root) =>
             {
                 m_editor.IsBusy = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Unable to load AssetLibrary", error.ErrorText, "OK", arg =>
+                    {
+                        m_parentPopup.Close(false);
+                    });
+                }
+                else
+                {
+                    m_treeView.Items = new[] { root };
+                    m_treeView.SelectedItems = root.Flatten(false);
+                    ExpandAll(root);
+                    
 
-                m_treeView.Items = new[] { root };
-                m_treeView.SelectedIndex = 0;
+                    IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
+                    StartCoroutine(ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview));
+                }
             });
+        }
+
+        private void ExpandAll(ProjectItem root)
+        {
+            Queue<ProjectItem> q = new Queue<ProjectItem>();
+            q.Enqueue(root);
+            while(q.Count > 0)
+            {
+                ProjectItem item = q.Dequeue();
+                m_treeView.Expand(item);
+
+                if (item.Children != null)
+                {
+                    for (int i = 0; i < item.Children.Count; ++i)
+                    {
+                        q.Enqueue(item.Children[i]);
+                    }
+                }
+            }            
         }
 
         private void OnDestroy()
@@ -86,9 +116,11 @@ namespace Battlehub.RTEditor
                 Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
                 text.text = item.Name;
 
-                Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);
-                image.sprite = AssetLibraryIcon;
-                image.gameObject.SetActive(true);
+                ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
+                itemView.ProjectItem = item;
+
+                Toggle toogle = e.ItemPresenter.GetComponentInChildren<Toggle>();
+                toogle.isOn = m_treeView.IsItemSelected(item);
 
                 e.HasChildren = item.Children != null && item.Children.Count > 0;
             }
@@ -113,5 +145,7 @@ namespace Battlehub.RTEditor
                 return;
             }
         }
+
+
     }
 }

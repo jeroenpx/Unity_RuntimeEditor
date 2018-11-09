@@ -313,7 +313,7 @@ namespace Battlehub.UIControls
                     m_itemLayout.padding.top,
                     m_itemLayout.padding.bottom);
             }
-
+            
             if (CanExpand && TreeView.AutoExpand)
             {
                 IsExpanded = true;

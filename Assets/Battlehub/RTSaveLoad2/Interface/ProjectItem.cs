@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System;
 
+using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2.Interface
 {
     [ProtoContract]
@@ -224,10 +225,25 @@ namespace Battlehub.RTSaveLoad2.Interface
         public byte[] PreviewData;
     }
 
+  
+    public class ImportItem : AssetItem
+    {
+        public UnityObject Object;
+    }
+
     [ProtoContract]
     public class AssetItem : ProjectItem
     {
         public event EventHandler PreviewDataChanged;
+
+        [ProtoMember(1)]
+        public Guid TypeGuid;
+
+        [ProtoMember(2)]
+        public PrefabPart[] Parts;
+
+        [ProtoMember(3)]
+        public long[] Dependencies;
 
         private Preview m_preview;
         public Preview Preview
@@ -235,7 +251,7 @@ namespace Battlehub.RTSaveLoad2.Interface
             get { return m_preview; }
             set
             {
-                if(m_preview != value)
+                if (m_preview != value)
                 {
                     m_preview = value;
                     if (PreviewDataChanged != null)
@@ -245,18 +261,6 @@ namespace Battlehub.RTSaveLoad2.Interface
                 }
             }
         }
-
-        /// <summary>
-        /// UnityObject type
-        /// </summary>
-        [ProtoMember(1)]
-        public Guid TypeGuid;
-
-        [ProtoMember(2)]
-        public PrefabPart[] Parts;
-
-        [ProtoMember(3)]
-        public long[] Dependencies;
 
         public override bool IsFolder
         {

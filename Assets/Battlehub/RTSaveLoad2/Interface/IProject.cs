@@ -35,7 +35,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
         ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(int index, ProjectEventHandler<ProjectItem> callback = null);
-        ProjectAsyncOperation ImportAssets(AssetItem[] assetItems, ProjectEventHandler callback);
+        ProjectAsyncOperation ImportAssets(ImportItem[] assetItems, ProjectEventHandler callback);
     }
 
     public delegate void ProjectEventHandler(Error error);

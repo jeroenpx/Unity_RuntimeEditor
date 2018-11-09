@@ -17,6 +17,7 @@ namespace Battlehub.UIControls
         public bool CanDrag = true;
         public bool CanEdit = true;
         public bool CanDrop = true;
+        public bool CanSelect = true;
 
         public static event EventHandler Selected;
         public static event EventHandler Unselected;
@@ -235,6 +236,11 @@ namespace Battlehub.UIControls
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
             m_canBeginEdit = m_isSelected && ItemsControl != null && ItemsControl.SelectedItemsCount == 1 && ItemsControl.CanEdit;
+
+            if(!CanSelect)
+            {
+                return;
+            }
             if (PointerDown != null)
             {
                 PointerDown(this, eventData);
@@ -268,6 +274,11 @@ namespace Battlehub.UIControls
                         m_coBeginEdit = CoBeginEdit();
                         StartCoroutine(m_coBeginEdit);
                     }
+                }
+
+                if (!CanSelect)
+                {
+                    return;
                 }
 
                 if (PointerUp != null)

@@ -7,6 +7,7 @@ using Battlehub.RTSaveLoad2.Interface;
 using System.Collections;
 
 using UnityObject = UnityEngine.Object;
+using System;
 
 namespace Battlehub.RTEditor
 {
@@ -212,53 +213,7 @@ namespace Battlehub.RTEditor
             //}
         }
 
-        private IEnumerator CreatePreviewForLoadedResources(ProjectItem[] items)
-        {
-            if(m_resourcePreview == null)
-            {
-                yield break;
-            }
       
-            for(int i = 0; i < items.Length; ++i)
-            {
-                ProjectItem projectItem = items[i];
-                if(projectItem is AssetItem)
-                {
-                    AssetItem assetItem = (AssetItem)projectItem;
-                    UnityObject obj;
-                    if(m_project.IsStatic(projectItem))
-                    {
-                        if(!m_project.TryGetFromStaticReferences(assetItem, out obj))
-                        {
-                            obj = null;
-                        }
-                    }
-                    else
-                    {
-                        if (assetItem.Preview == null)
-                        {
-                            obj = m_project.FromID<UnityObject>(assetItem.ItemID);
-                        }
-                        else
-                        {
-                            obj = null;
-                        }
-                    }
-
-
-                    if(obj != null)
-                    {
-                        assetItem.Preview = new Preview
-                        {
-                            ItemID = assetItem.ItemID,
-                            PreviewData = m_resourcePreview.CreatePreviewData(obj)
-                        };
-                    }
-
-                    yield return new WaitForSeconds(0.01f);
-                } 
-            }
-        }
 
         private void AddFolder()
         {
@@ -521,7 +476,7 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
-                StartCoroutine(CreatePreviewForLoadedResources(assets));
+                StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, m_resourcePreview));
                 m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
             });
 

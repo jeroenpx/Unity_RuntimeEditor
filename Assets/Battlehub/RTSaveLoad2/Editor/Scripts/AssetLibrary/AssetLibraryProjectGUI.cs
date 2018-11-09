@@ -144,13 +144,18 @@ namespace Battlehub.RTSaveLoad2
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex, bool outside)
         {
             AssetFolderInfo parentFolder;
-            if(parent == null)
+            if (parent == null)
             {
-                parentFolder = TreeView.treeModel.root;
+                //parentFolder = TreeView.treeModel.root;
+                return DragAndDropVisualMode.None;
             }
             else
             {
                 parentFolder = ((TreeViewItem<AssetFolderInfo>)parent).data;
+                if (parentFolder == TreeView.treeModel.root)
+                {
+                    return DragAndDropVisualMode.None;
+                }
             }
 
             if (DragAndDrop.objectReferences != null && DragAndDrop.objectReferences.Length > 0 && DragAndDrop.objectReferences.All(o => !CanDrop(o))) 

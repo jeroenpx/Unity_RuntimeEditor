@@ -19,7 +19,8 @@ namespace Battlehub.RTEditor
   
         [SerializeField]
         private GameObject m_fallbackPrefab;
-        
+
+ 
         [SerializeField]
         private Vector3 m_scale = new Vector3(0.9f, 0.9f, 0.9f);
 
@@ -63,6 +64,7 @@ namespace Battlehub.RTEditor
                 light.type = LightType.Directional;
                 light.cullingMask = 1 << rte.CameraLayerSettings.ResourcePreviewLayer;
             }
+
         }
 
         private void OnDestroy()
@@ -76,8 +78,18 @@ namespace Battlehub.RTEditor
             m_objectToTextureCamera.gameObject.SetActive(true);
             Texture2D texture = m_objectToTextureCamera.TakeObjectSnapshot(obj, m_fallbackPrefab);
             m_objectToTextureCamera.gameObject.SetActive(false);
-            byte[] result = texture.EncodeToPNG();
-            Destroy(texture);
+
+            byte[] result;
+            if (texture != null)
+            {
+                result = texture.EncodeToPNG();
+                Destroy(texture);
+            }
+            else
+            {
+                result = new byte[0];
+            }
+            
             return result;
         }
 
@@ -127,19 +139,27 @@ namespace Battlehub.RTEditor
             else if(obj is Sprite)
             {
                 Sprite sprite = (Sprite)obj;
-                if(sprite.texture != null && sprite.texture.IsReadable())
-                {
-                    Texture2D texture = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
-                    Color[] newColors = sprite.texture.GetPixels((int)sprite.textureRect.x,
-                                                                 (int)sprite.textureRect.y,
-                                                                 (int)sprite.textureRect.width,
-                                                                 (int)sprite.textureRect.height);
-                    texture.SetPixels(newColors);
-                    texture.Resize(m_objectToTextureCamera.snapshotTextureWidth, m_objectToTextureCamera.snapshotTextureHeight);
-                    previewData = texture.EncodeToPNG();
+                previewData = FromSprite(sprite);
+            }
 
-                    Destroy(texture);
-                }                
+            return previewData;
+        }
+
+        private byte[] FromSprite(Sprite sprite)
+        {
+            byte[] previewData = null;
+            if (sprite.texture != null && sprite.texture.IsReadable())
+            {
+                Texture2D texture = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height);
+                Color[] newColors = sprite.texture.GetPixels((int)sprite.textureRect.x,
+                                                             (int)sprite.textureRect.y,
+                                                             (int)sprite.textureRect.width,
+                                                             (int)sprite.textureRect.height);
+                texture.SetPixels(newColors);
+                texture.Resize(m_objectToTextureCamera.snapshotTextureWidth, m_objectToTextureCamera.snapshotTextureHeight);
+                previewData = texture.EncodeToPNG();
+
+                Destroy(texture);
             }
 
             return previewData;

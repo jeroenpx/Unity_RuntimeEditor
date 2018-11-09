@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.Utils
 {
@@ -69,57 +71,67 @@ namespace Battlehub.Utils
             {
                 MonoBehaviour[] scripts = go.GetComponentsInChildren<MonoBehaviour>(true);
                 for (int i = 0; i < scripts.Length; ++i)
-                {
+                {   
+                    if(scripts[i].GetType().FullName.StartsWith("UnityEngine"))
+                    {
+                        continue;
+                    }
                     DestroyImmediate(scripts[i]);
                 }
             }
 
             prefab.SetActive(isActive);
             Renderer[] renderers = go.GetComponentsInChildren<Renderer>(true);
-            if(renderers.Length == 0 && fallback != null)
+            if(renderers.Length == 0 )
             {
-                DestroyImmediate(go);
-                go = Instantiate(fallback, position, rotation) as GameObject;
-                renderers = new[] { fallback.GetComponentInChildren<Renderer>(true) };
+                if(fallback != null)
+                {
+                    DestroyImmediate(go);
+                    go = Instantiate(fallback, position, rotation) as GameObject;
+                    renderers = new[] { fallback.GetComponentInChildren<Renderer>(true) };
+                }
             }
-
-            Bounds bounds = go.CalculateBounds();
-            float fov = Camera.fieldOfView * Mathf.Deg2Rad;
-            float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z);
-            float distance = Mathf.Abs(objSize / Mathf.Sin(fov / 2.0f));
-
-            go.SetActive(true);
-            for(int i = 0; i < renderers.Length; ++i)
+            Texture2D texture = null;
+            if (renderers.Length != 0)
             {
-                renderers[i].gameObject.SetActive(true);
+                Bounds bounds = go.CalculateBounds();
+                float fov = Camera.fieldOfView * Mathf.Deg2Rad;
+                float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z);
+                float distance = Mathf.Abs(objSize / Mathf.Sin(fov / 2.0f));
+
+                go.SetActive(true);
+                for (int i = 0; i < renderers.Length; ++i)
+                {
+                    renderers[i].gameObject.SetActive(true);
+                }
+
+                position += bounds.center;
+
+                Camera.transform.position = position - distance * Camera.transform.forward;
+                Camera.orthographicSize = objSize;
+
+                // set the layer so the render to texture camera will see the object 
+                SetLayerRecursively(go, objectImageLayer);
+
+                // get a temporary render texture and render the camera
+                Camera.targetTexture = RenderTexture.GetTemporary(snapshotTextureWidth, snapshotTextureHeight, 24);
+                Camera.enabled = true;
+                Camera.Render();
+                Camera.enabled = false;
+                // activate the render texture and extract the image into a new texture
+                RenderTexture saveActive = RenderTexture.active;
+                RenderTexture.active = Camera.targetTexture;
+                texture = new Texture2D(Camera.targetTexture.width, Camera.targetTexture.height);
+                texture.ReadPixels(new Rect(0, 0, Camera.targetTexture.width, Camera.targetTexture.height), 0, 0);
+                texture.Apply();
+
+                RenderTexture.active = saveActive;
+
+                // clean up after ourselves
+                RenderTexture.ReleaseTemporary(Camera.targetTexture);
             }
-         
-            position += bounds.center;
-
-            Camera.transform.position = position - distance * Camera.transform.forward;
-            Camera.orthographicSize = objSize;
-            
-            // set the layer so the render to texture camera will see the object 
-            SetLayerRecursively(go, objectImageLayer);
-
-            // get a temporary render texture and render the camera
-            Camera.targetTexture = RenderTexture.GetTemporary(snapshotTextureWidth, snapshotTextureHeight, 24);
-            Camera.enabled = true;
-            Camera.Render();
-            Camera.enabled = false;
-            // activate the render texture and extract the image into a new texture
-            RenderTexture saveActive = RenderTexture.active;
-            RenderTexture.active = Camera.targetTexture;
-            Texture2D texture = new Texture2D(Camera.targetTexture.width, Camera.targetTexture.height);
-            texture.ReadPixels(new Rect(0, 0, Camera.targetTexture.width, Camera.targetTexture.height), 0, 0);
-            texture.Apply();
-            
-            RenderTexture.active = saveActive;
-
-            // clean up after ourselves
-            RenderTexture.ReleaseTemporary(Camera.targetTexture);
+           
             DestroyImmediate(go);
-
             return texture;
         }
     }

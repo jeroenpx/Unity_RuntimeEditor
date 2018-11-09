@@ -8,9 +8,11 @@ using UnityObject = UnityEngine.Object;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.RTCommon;
 using System.IO;
+using Battlehub.RTCommon.EditorTreeView;
 
 namespace Battlehub.RTSaveLoad2
 {
+   
     public class Project : MonoBehaviour, IProject
     {
         private IStorage m_storage;
@@ -363,7 +365,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 return ".rtshader";
             }
-            return ".rt" + obj.GetType().Name.ToLower().Take(3);
+            return ".rt" + obj.GetType().Name.ToLower().Substring(0, 3);
         }
 
         public string GetExt(Type type)
@@ -396,7 +398,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 return ".rtshader";
             }
-            return ".rt" + type.Name.ToLower().Take(3);
+            return ".rt" + type.Name.ToLower().Substring(0, 3);
         }
 
         public ProjectAsyncOperation Open(string project, ProjectEventHandler callback)
@@ -1006,9 +1008,26 @@ namespace Battlehub.RTSaveLoad2
 
                 AssetLibraryAsset asset = (AssetLibraryAsset)request.asset;
 
-                BuildTree(result, asset.AssetLibrary.Folders.Where(f => f.depth == 0).First());
-
                 Error error = new Error(Error.OK);
+                if (asset == null)
+                {
+                    error.ErrorCode = Error.E_NotFound;
+                    error.ErrorText = "Asset Library " + AssetLibraries[index] + " does not exist";
+                    if(callback != null)
+                    {
+                        callback(error, result);
+                    }
+
+                    pao.Result = null;
+                    pao.IsCompleted = true;
+                    return;
+                }
+
+                TreeModel<AssetFolderInfo> model = new TreeModel<AssetFolderInfo>(asset.AssetLibrary.Folders);
+                
+                BuildTree(result, (AssetFolderInfo)model.root.children[0], index);
+
+                
                 if (callback != null)
                 {
                     callback(error, result);
@@ -1021,7 +1040,7 @@ namespace Battlehub.RTSaveLoad2
             return pao;
         }
 
-        private void BuildTree(ProjectItem projectItem, AssetFolderInfo folder)
+        private void BuildTree(ProjectItem projectItem, AssetFolderInfo folder, int ordinal)
         {
             projectItem.Name = folder.name;
 
@@ -1032,7 +1051,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     ProjectItem child = new ProjectItem();
                     projectItem.AddChild(child);
-                    BuildTree(child, (AssetFolderInfo)folder.children[i]);
+                    BuildTree(child, (AssetFolderInfo)folder.children[i], ordinal);
                 }
             }
 
@@ -1051,12 +1070,13 @@ namespace Battlehub.RTSaveLoad2
                     {
                         string ext = GetExt(assetInfo.Object);
 
-                        AssetItem assetItem = new AssetItem
+                        ImportItem importItem = new ImportItem
                         {
                             Name = PathHelper.GetUniqueName(assetInfo.name, ext, existingNames),
                             Ext = ext,
+                            Object = assetInfo.Object,
                             TypeGuid = m_typeMap.ToGuid(assetInfo.Object.GetType()),
-                            ItemID = assetInfo.PersistentID, 
+                            ItemID = m_assetDB.ToStaticResourceID(ordinal, assetInfo.PersistentID)
                         };
 
                         if(assetInfo.PrefabParts != null)
@@ -1070,26 +1090,25 @@ namespace Battlehub.RTSaveLoad2
                                     PrefabPart part = new PrefabPart
                                     {
                                         Name = partInfo.Object.name,
-                                        PartID = partInfo.PersistentID,
-                                        ParentID = assetInfo.PersistentID,
+                                        PartID = m_assetDB.ToStaticResourceID(ordinal, partInfo.PersistentID),
+                                        ParentID = m_assetDB.ToStaticResourceID(ordinal, partInfo.PersistentID),
                                         TypeGuid = m_typeMap.ToGuid(partInfo.Object.GetType()),
                                     };
 
                                     parts.Add(part);
                                 }
                             }
-
-                            assetItem.Parts = parts.ToArray();
+                            importItem.Parts = parts.ToArray();
                         }
 
-                        projectItem.AddChild(assetItem);
-                        existingNames.Add(assetItem.NameExt);
+                        projectItem.AddChild(importItem);
+                        existingNames.Add(importItem.NameExt);
                     }
                 }
             }
         }
 
-        public ProjectAsyncOperation ImportAssets(AssetItem[] assetItems, ProjectEventHandler callback)
+        public ProjectAsyncOperation ImportAssets(ImportItem[] assetItems, ProjectEventHandler callback)
         {
             return null;
         }

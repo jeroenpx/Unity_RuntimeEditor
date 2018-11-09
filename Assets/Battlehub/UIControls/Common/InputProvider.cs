@@ -139,16 +139,8 @@ namespace Battlehub.UIControls
             get { return Input.mousePosition; }
         }
 
-        [SerializeField]
-        private bool m_isMouseButtonDown;
-
         public virtual bool IsMouseButtonDown(int button)
         {
-            if(!m_isMouseButtonDown)
-            {
-                return false;
-            }
-
             return Input.GetMouseButtonDown(button);
         }
 
