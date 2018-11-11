@@ -16,7 +16,7 @@ namespace Battlehub.RTSaveLoad2
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
-        void Save(string projectPath, string folderPath, AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback);
+        void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback);
         void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback);
     }
 
@@ -192,46 +192,58 @@ namespace Battlehub.RTSaveLoad2
             callback(new Error(), result);
         }
 
-        public void Save(string projectPath, string folderPath, AssetItem assetItem, PersistentObject persistentObject, ProjectInfo projectInfo, StorageEventHandler callback)
+        public void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback)
         {
+            if(assetItems.Length != persistentObjects.Length || persistentObjects.Length != folderPaths.Length)
+            {
+                throw new ArgumentException("assetItems");
+            }
+
             projectPath = FullPath(projectPath);
             string projectInfoPath = projectPath + "/Project.rtmeta";
             ISerializer serializer = IOC.Resolve<ISerializer>();
             Error error = new Error(Error.OK);
-            try
+            for(int i = 0; i < assetItems.Length; ++i)
             {
-                string path = projectPath + folderPath;
-                string previewPath = path + "/" + assetItem.NameExt + PreviewExt;
-                if (assetItem.Preview == null)
+                string folderPath = folderPaths[i];
+                AssetItem assetItem = assetItems[i];
+                PersistentObject persistentObject = persistentObjects[i];
+                try
                 {
-                    File.Delete(previewPath);
-                }
-                else
-                {
-                    using (FileStream fs = File.OpenWrite(previewPath))
+                    string path = projectPath + folderPath;
+                    string previewPath = path + "/" + assetItem.NameExt + PreviewExt;
+                    if (assetItem.Preview == null)
                     {
-                        serializer.Serialize(assetItem.Preview, fs);
+                        File.Delete(previewPath);
+                    }
+                    else
+                    {
+                        using (FileStream fs = File.OpenWrite(previewPath))
+                        {
+                            serializer.Serialize(assetItem.Preview, fs);
+                        }
+                    }
+
+                    using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt + MetaExt))
+                    {
+                        serializer.Serialize(assetItem, fs);
+                    }
+                    using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt))
+                    {
+                        serializer.Serialize(persistentObject, fs);
+                    }
+                    using (FileStream fs = File.OpenWrite(projectInfoPath))
+                    {
+                        serializer.Serialize(projectInfo, fs);
                     }
                 }
-
-                using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt + MetaExt))
+                catch (Exception e)
                 {
-                    serializer.Serialize(assetItem, fs);
+                    Debug.LogErrorFormat("Unable to create asset: {0} -> got exception: {1} ", assetItem.NameExt, e.ToString());
+                    error.ErrorCode = Error.E_Exception;
+                    error.ErrorText = e.ToString();
+                    break;
                 }
-                using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt))
-                {
-                    serializer.Serialize(persistentObject, fs);
-                }
-                using (FileStream fs = File.OpenWrite(projectInfoPath))
-                {
-                    serializer.Serialize(projectInfo, fs);
-                }
-            }
-            catch(Exception e)
-            {
-                Debug.LogErrorFormat("Unable to create asset: {0} -> got exception: {1} ", assetItem.NameExt, e.ToString());
-                error.ErrorCode = Error.E_Exception;
-                error.ErrorText = e.ToString();
             }
 
             callback(error);

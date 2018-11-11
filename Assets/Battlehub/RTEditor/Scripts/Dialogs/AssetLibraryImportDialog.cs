@@ -3,6 +3,7 @@ using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,14 @@ namespace Battlehub.RTEditor
         public string SelectedAssetLibrary
         {
             set { m_selectedAssetLibrary = value; }
+        }
+
+        public ImportItem[] SelectedAssets
+        {
+            get
+            {
+                return m_treeView.SelectedItems.OfType<ImportItem>().ToArray();
+            }
         }
 
         private void Start()
@@ -67,7 +76,6 @@ namespace Battlehub.RTEditor
                     m_treeView.SelectedItems = root.Flatten(false);
                     ExpandAll(root);
                     
-
                     IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
                     StartCoroutine(ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview));
                 }
@@ -119,9 +127,20 @@ namespace Battlehub.RTEditor
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
                 itemView.ProjectItem = item;
 
-                Toggle toogle = e.ItemPresenter.GetComponentInChildren<Toggle>();
+                Toggle toogle = e.ItemPresenter.GetComponentInChildren<Toggle>(true);
                 toogle.isOn = m_treeView.IsItemSelected(item);
 
+                AssetLibraryImportStatus status = e.ItemPresenter.GetComponentInChildren<AssetLibraryImportStatus>(true);
+                if (item is ImportItem)
+                {
+                    ImportItem importItem = (ImportItem)item;
+                    status.Current = importItem.Status;
+                }
+                else
+                {
+                    status.Current = ImportStatus.None;
+                }
+                
                 e.HasChildren = item.Children != null && item.Children.Count > 0;
             }
         }
@@ -139,7 +158,7 @@ namespace Battlehub.RTEditor
 
         private void OnOK(PopupWindowArgs args)
         {
-            if (m_treeView.SelectedItem == null)
+            if (m_treeView.SelectedItemsCount == 0)
             {
                 args.Cancel = true;
                 return;

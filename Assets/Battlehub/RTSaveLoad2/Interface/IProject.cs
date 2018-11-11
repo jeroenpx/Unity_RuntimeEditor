@@ -16,7 +16,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         }
 
         bool IsStatic(ProjectItem projectItem);
-        bool TryGetFromStaticReferences(AssetItem assetItem, out UnityObject obj);
+        //bool TryGetFromStaticReferences(AssetItem assetItem, out UnityObject obj);
         Type ToType(AssetItem assetItem);
         Guid ToGuid(Type type);
         long ToID(UnityObject obj);
@@ -30,8 +30,9 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         bool CanSave(ProjectItem parent, UnityObject obj);
         ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
-        ProjectAsyncOperation Save(AssetItem assetItem, object obj, ProjectEventHandler callback = null);
+        ProjectAsyncOperation Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler callback);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
+
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
         ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(int index, ProjectEventHandler<ProjectItem> callback = null);

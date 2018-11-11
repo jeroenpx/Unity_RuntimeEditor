@@ -259,7 +259,15 @@ namespace Battlehub.RTEditor
             PopupWindow.Show("Select Assets", assetLibraryImporter.transform, "Import",
                 args =>
                 {
-                    
+                    Editor.IsBusy = true;
+                    m_project.ImportAssets(assetLibraryImporter.SelectedAssets, error =>
+                    {
+                        Editor.IsBusy = false;
+                        if (error.HasError)
+                        {
+                            PopupWindow.Show("Unable to Import assets", error.ErrorText, "OK");
+                        }
+                    });
                 },
                 "Cancel");
         }

@@ -133,7 +133,7 @@ namespace Battlehub.RTSaveLoad2.Interface
             }
         }
 
-        public ProjectItem Get(string path)
+        public ProjectItem Get(string path, bool forceCreate = false)
         {
             path = path.Trim('/');
             string[] pathParts = path.Split('/');
@@ -144,22 +144,55 @@ namespace Battlehub.RTSaveLoad2.Interface
                 string pathPart = pathParts[i];
                 if (item.Children == null)
                 {
-                    return item;
+                    if(forceCreate)
+                    {
+                        item.Children = new List<ProjectItem>();
+                    }
+                    else
+                    {
+                        return item;
+                    }
                 }
 
+                ProjectItem nextItem;
                 if (i == pathParts.Length - 1)
                 {
-                    item = item.Children.Where(child => child.NameExt == pathPart).FirstOrDefault();
+                    nextItem = item.Children.Where(child => child.NameExt == pathPart).FirstOrDefault();
                 }
                 else
                 {
-                    item = item.Children.Where(child => child.Name == pathPart).FirstOrDefault();
+                    nextItem = item.Children.Where(child => child.Name == pathPart).FirstOrDefault();
                 }
 
-                if (item == null)
+                if (nextItem == null)
                 {
-                    break;
+                    if (forceCreate)
+                    {
+                        if (string.IsNullOrEmpty(Path.GetExtension(pathPart)))
+                        {
+                            nextItem = new ProjectItem
+                            {
+                                Name = pathPart
+                            };
+                            item.AddChild(nextItem);
+                        }
+                        else
+                        {
+                            nextItem = new AssetItem
+                            {
+                                Name = Path.GetFileNameWithoutExtension(pathPart),
+                                Ext = Path.GetExtension(pathPart),
+                            };
+                            item.AddChild(nextItem);
+                        }
+                    }
+                    else
+                    {
+                        item = nextItem;
+                        break;
+                    }
                 }
+                item = nextItem;
             }
             return item;
         }
@@ -225,10 +258,19 @@ namespace Battlehub.RTSaveLoad2.Interface
         public byte[] PreviewData;
     }
 
-  
+    public enum ImportStatus
+    {
+        None,
+        New,
+        Conflict,
+        Overwrite
+    }
+
     public class ImportItem : AssetItem
     {
         public UnityObject Object;
+
+        public ImportStatus Status;
     }
 
     [ProtoContract]

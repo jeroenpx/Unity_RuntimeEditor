@@ -145,6 +145,7 @@ namespace Battlehub.RTEditor
                 yield break;
             }
 
+
             for (int i = 0; i < items.Length; ++i)
             {
                 ImportItem importItem = items[i] as ImportItem;
@@ -167,7 +168,8 @@ namespace Battlehub.RTEditor
                         UnityObject obj;
                         if (project.IsStatic(assetItem))
                         {
-                            if (!project.TryGetFromStaticReferences(assetItem, out obj))
+                            #warning CommentedOut
+                            //if (!project.TryGetFromStaticReferences(assetItem, out obj))
                             {
                                 obj = null;
                             }
