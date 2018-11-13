@@ -236,8 +236,10 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+        
             Vector3 toCam = new Vector3(1, 1, 1);
 
             bool useSceneViewInput = SelectionController is RuntimeSceneComponent;

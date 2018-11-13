@@ -71,8 +71,8 @@ namespace Battlehub.RTSaveLoad2
 
         protected virtual void AwakeOverride()
         {
-            m_shaderUtil = ShaderUtil;
             m_assetDB = AssetDB;
+            m_shaderUtil = ShaderUtil;
             m_typeMap = TypeMap;
             m_objectFactory = ObjectFactory;
             m_serializer = Serializer;

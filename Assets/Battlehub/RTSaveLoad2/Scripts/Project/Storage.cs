@@ -18,6 +18,9 @@ namespace Battlehub.RTSaveLoad2
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
         void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback);
         void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback);
+        void Delete(string projectPath, string[] paths, StorageEventHandler callback);
+        void Move(string projectPath, string[] paths, string[] names, string targetPath, StorageEventHandler callback);
+        void Rename(string projectPath, string[] paths, string[] oldNames, string[] names, StorageEventHandler callback);
     }
 
     public class FileSystemStorage : IStorage
@@ -167,7 +170,7 @@ namespace Battlehub.RTSaveLoad2
 
         public void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback)
         {
-            projectPath = AssetsFolderPath(projectPath);
+            projectPath = FullPath(projectPath);
 
             ISerializer serializer = IOC.Resolve<ISerializer>();
             Preview[][] result = new Preview[folderPath.Length][];
@@ -211,6 +214,11 @@ namespace Battlehub.RTSaveLoad2
                 try
                 {
                     string path = projectPath + folderPath;
+                    if(!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
                     string previewPath = path + "/" + assetItem.NameExt + PreviewExt;
                     if (assetItem.Preview == null)
                     {
@@ -282,6 +290,87 @@ namespace Battlehub.RTSaveLoad2
             }
 
             callback(new Error(Error.OK), result);
+        }
+
+        public void Delete(string projectPath, string[] paths, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            for(int i = 0; i < paths.Length; ++i)
+            {
+                string path = fullPath + paths[i];
+                if(File.Exists(path))
+                {
+                    File.Delete(path);
+                    if(File.Exists(path + MetaExt))
+                    {
+                        File.Delete(path + MetaExt);
+                    }
+                    if(File.Exists(path + PreviewExt))
+                    {
+                        File.Delete(path + PreviewExt);
+                    }
+                }
+                else if(Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+
+            callback(new Error(Error.OK));
+        }
+
+        public void Rename(string projectPath, string[] paths, string[] oldNames, string[] names, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            for (int i = 0; i < paths.Length; ++i)
+            {
+                string path = fullPath + paths[i] + "/" + oldNames[i];
+                if (File.Exists(path))
+                {
+                    File.Move(path, fullPath + paths[i] + "/" + names[i]);
+                    if (File.Exists(path + MetaExt))
+                    {
+                        File.Move(path + MetaExt, fullPath + paths[i] + "/" + names[i] + MetaExt);
+                    }
+                    if (File.Exists(path + PreviewExt))
+                    {
+                        File.Move(path + PreviewExt, fullPath + paths[i] + "/" + names[i] + PreviewExt);
+                    }
+                }
+                else if (Directory.Exists(path))
+                {
+                    Directory.Move(path, fullPath + paths[i] + "/" + names[i]);
+                }
+            }
+
+            callback(new Error(Error.OK));
+        }
+
+        public void Move(string projectPath, string[] paths, string[] names, string targetPath, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            for (int i = 0; i < paths.Length; ++i)
+            {
+                string path = fullPath + paths[i] + "/" + names[i];
+                if (File.Exists(path))
+                {
+                    File.Move(path, fullPath + targetPath + "/" + names[i]);
+                    if (File.Exists(path + MetaExt))
+                    {
+                        File.Move(path + MetaExt, fullPath + targetPath + "/" + names[i] + MetaExt);
+                    }
+                    if (File.Exists(path + PreviewExt))
+                    {
+                        File.Move(path + PreviewExt, fullPath + targetPath + "/" + names[i] + PreviewExt);
+                    }
+                }
+                else if (Directory.Exists(path))
+                {
+                    Directory.Move(path, fullPath + targetPath + "/" + names[i]);
+                }
+            }
+
+            callback(new Error(Error.OK));
         }
     }
 }

@@ -55,6 +55,8 @@ namespace Battlehub.RTHandles
             set { transform.position = value; }
         }
 
+      
+
         /// <summary>
         /// Target objects which will be affected by handle (for example if m_targets array containes O1 and O2 objects, and O1 is parent of O2 then m_activeTargets array will contain only O1 object)
         /// </summary>
@@ -81,6 +83,8 @@ namespace Battlehub.RTHandles
 
         private Transform[] m_commonCenter;
         private Transform[] m_commonCenterTarget;
+
+        private static List<BaseHandle> m_allHandles = new List<BaseHandle>();
 
         private void GetActiveRealTargets()
         {
@@ -141,7 +145,7 @@ namespace Battlehub.RTHandles
             }
             set
             {
-                DestroyCommonCenter();
+                DestroyCommonCenter(true);
                 m_realTargets = value;
                 GetActiveRealTargets();
                 Targets_Internal = value;
@@ -342,6 +346,8 @@ namespace Battlehub.RTHandles
         {
             base.AwakeOverride();
 
+            m_allHandles.Add(this);
+
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
             if (m_targets != null && m_targets.Length > 0)
             {
@@ -448,7 +454,7 @@ namespace Battlehub.RTHandles
                 Editor.Undo.RedoCompleted -= OnRedoCompleted;
             }
 
-            DestroyCommonCenter();
+            DestroyCommonCenter(false);
 
             if (Model != null)
             {
@@ -467,12 +473,14 @@ namespace Battlehub.RTHandles
         {
             base.OnDestroyOverride();
 
+            m_allHandles.Remove(this);
+
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
             }
 
-            DestroyCommonCenter();
+            DestroyCommonCenter(false);
 
             if (Model != null && Model.gameObject != null)
             {
@@ -503,13 +511,25 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void DestroyCommonCenter()
+        private void DestroyCommonCenter(bool destroyImmediate)
         {
             if (m_commonCenter != null)
             {
                 for (int i = 0; i < m_commonCenter.Length; ++i)
                 {
-                    Destroy(m_commonCenter[i].gameObject);
+                    if(m_commonCenter[i])
+                    {
+                        if(destroyImmediate)
+                        {
+                            DestroyImmediate(m_commonCenter[i].gameObject);
+                        }
+                        else
+                        {
+                            Destroy(m_commonCenter[i].gameObject);
+                        }
+                        
+                    }
+                    
                 }
             }
 
@@ -517,7 +537,17 @@ namespace Battlehub.RTHandles
             {
                 for (int i = 0; i < m_commonCenterTarget.Length; ++i)
                 {
-                    Destroy(m_commonCenterTarget[i].gameObject);
+                    if(m_commonCenterTarget[i])
+                    {
+                        if (destroyImmediate)
+                        {
+                            DestroyImmediate(m_commonCenterTarget[i].gameObject);
+                        }
+                        else
+                        {
+                            Destroy(m_commonCenterTarget[i].gameObject);
+                        }
+                    }
                 }
             }
 
@@ -575,6 +605,20 @@ namespace Battlehub.RTHandles
                         target.transform.position = commonCenterTarget.position;
                         target.transform.rotation = commonCenterTarget.rotation;
                         target.transform.localScale = commonCenterTarget.localScale;
+                    }
+                }   
+
+                if(m_commonCenter != null && m_commonCenter.Length > 0)
+                {
+                    for (int i = 0; i < m_allHandles.Count; ++i)
+                    {
+                        BaseHandle handle = m_allHandles[i];
+                        if (handle.Editor == Editor && handle.gameObject.activeSelf)
+                        {
+                            handle.m_commonCenter[0].position = m_commonCenter[0].position;
+                            handle.m_commonCenter[0].rotation = m_commonCenter[0].rotation;
+                            handle.m_commonCenter[0].localScale = m_commonCenter[0].localScale;
+                        }
                     }
                 }
             }

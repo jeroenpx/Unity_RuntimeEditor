@@ -54,9 +54,10 @@ namespace Battlehub.RTSaveLoad2
         void UnregisterDynamicResources();
         
         bool IsLibraryLoaded(int ordinal);
-        bool AddLibrary(AssetLibraryAsset library, int ordinal);
-        void RemoveLibrary(int ordinal);
-        bool LoadLibrary(string assetLibrary, int ordinal);
+
+        bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadPIDtoObj);
+        void LoadLibrary(string assetLibrary, int ordinal, bool loadPIDtoObj, Action<bool> callback);
+        void UnloadLibrary(int ordinal);
         void UnloadLibraries();
         
         AsyncOperation UnloadUnusedAssets(Action<AsyncOperation> completedCallback = null);   
@@ -122,7 +123,7 @@ namespace Battlehub.RTSaveLoad2
             return m_ordinalToLib.ContainsKey(ordinal);
         }
 
-        public bool AddLibrary(AssetLibraryAsset assetLib, int ordinal)
+        public bool AddLibrary(AssetLibraryAsset assetLib, int ordinal, bool PIDtoObj)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
             {
@@ -139,12 +140,12 @@ namespace Battlehub.RTSaveLoad2
             assetLib.Ordinal = ordinal;
             m_loadedLibraries.Add(assetLib);
             m_ordinalToLib.Add(ordinal, assetLib);
-            LoadMapping(ordinal, true, true);
+            LoadMapping(ordinal, true, PIDtoObj);
 
             return true;
         }
 
-        public bool LoadLibrary(string assetLibrary, int ordinal)
+        public bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadPIDtoObj)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
             {
@@ -158,17 +159,46 @@ namespace Battlehub.RTSaveLoad2
                 Debug.LogWarningFormat("Asset Library not found", assetLibrary);
                 return false;
             }
-            return AddLibrary(assetLib, ordinal);
+            AddLibrary(assetLib, ordinal, loadPIDtoObj);
+            return true;
+        }
+
+        public void LoadLibrary(string assetLibrary, int ordinal, bool loadPIDtoObj, Action<bool> callback)
+        {
+            if (m_ordinalToLib.ContainsKey(ordinal))
+            {
+                Debug.LogWarningFormat("Asset Library {0} with this same ordinal {1} already loaded", m_ordinalToLib[ordinal].name, ordinal);
+                callback(false);
+                return;
+            }
+
+            ResourceRequest request = Resources.LoadAsync<AssetLibraryAsset>(assetLibrary);
+            Action<AsyncOperation> completed = null;
+            completed = ao =>
+            {
+                AssetLibraryAsset assetLib = (AssetLibraryAsset)request.asset;
+                if (assetLib == null)
+                {
+                    Debug.LogWarningFormat("Asset Library not found", assetLibrary);
+                    callback(false);
+                    return;
+                }
+                request.completed -= completed;
+                AddLibrary(assetLib, ordinal, loadPIDtoObj);
+                callback(true);
+            };
+            request.completed += completed;
         }     
 
-        public void RemoveLibrary(int ordinal)
+        public void UnloadLibrary(int ordinal)
         {
             AssetLibraryAsset assetLib;
             if(m_ordinalToLib.TryGetValue(ordinal, out assetLib))
             {
+                UnloadMapping(ordinal);
                 m_loadedLibraries.Remove(assetLib);
                 m_ordinalToLib.Remove(ordinal);
-                UnloadMapping(ordinal);
+                Resources.UnloadAsset(assetLib);
             }
         }
 
@@ -395,7 +425,7 @@ namespace Battlehub.RTSaveLoad2
             if (IsInstanceID(id))
             {
                 int persistentID = unchecked((int)id);
-                return m_persistentIDToSceneObject.ContainsKey(persistentID);
+                return m_persistentIDToSceneObject != null && m_persistentIDToSceneObject.ContainsKey(persistentID);
             }
             if (IsStaticResourceID(id))
             {
@@ -430,7 +460,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 UnityObject obj;
                 int persistentID = unchecked((int)id);
-                if(m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
+                if(m_persistentIDToSceneObject != null && m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
                 }

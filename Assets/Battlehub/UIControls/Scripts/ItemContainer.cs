@@ -71,6 +71,7 @@ namespace Battlehub.UIControls
             }
         }
 
+        [SerializeField]
         private bool m_isEditing;
         public bool IsEditing
         {

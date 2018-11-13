@@ -161,7 +161,6 @@ namespace Battlehub.RTSaveLoad2
             List<int> persistentIDs,
             bool IIDtoPID, bool PIDtoObj)
         {
-
             if (IIDtoPID)
             {
                 int instanceID = asset.Object.GetInstanceID();
@@ -176,12 +175,28 @@ namespace Battlehub.RTSaveLoad2
                 persistentIDs.Add(persistentID);
             }
 
-            if (asset.children != null)
+            if (asset.PrefabParts != null)
             {
-                for (int i = 0; i < asset.children.Count; ++i)
+                for (int i = 0; i < asset.PrefabParts.Count; ++i)
                 {
-                    AssetInfo child = (AssetInfo)asset.children[i];
-                    LoadIDMappingTo(child, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
+                    PrefabPartInfo prefabPart = asset.PrefabParts[i];
+                    if(prefabPart != null && prefabPart.Object != null)
+                    {
+                        if (IIDtoPID)
+                        {
+                            int instanceID = prefabPart.Object.GetInstanceID();
+                            mapping.Add(instanceID, m_offset + prefabPart.PersistentID);
+                            instanceIDs.Add(instanceID);
+                        }
+
+                        if (PIDtoObj)
+                        {
+                            int persistentID = m_offset + prefabPart.PersistentID;
+                            mapping.Add(persistentID, prefabPart.Object);
+                            persistentIDs.Add(persistentID);
+                        }
+
+                    }
                 }
             }
         }

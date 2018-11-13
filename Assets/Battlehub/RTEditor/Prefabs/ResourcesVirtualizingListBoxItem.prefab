@@ -146,7 +146,6 @@ GameObject:
   - component: {fileID: 114082872927456202}
   - component: {fileID: 114313652690311392}
   - component: {fileID: 114694682316188240}
-  - component: {fileID: 114309422092375930}
   - component: {fileID: 114253900775658910}
   m_Layer: 5
   m_Name: ResourcesVirtualizingListBoxItem
@@ -383,6 +382,7 @@ MonoBehaviour:
   CanDrag: 1
   CanEdit: 1
   CanDrop: 1
+  CanSelect: 1
   ItemPresenter: {fileID: 1236361541564308}
   EditorPresenter: {fileID: 1956878271013460}
   m_itemLayout: {fileID: 0}
@@ -440,22 +440,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114309422092375930
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1779855925843524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8f760902d873bb4e945141eeb5f11b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CanDrag: 1
-  CanEdit: 1
-  CanDrop: 1
-  ItemPresenter: {fileID: 1236361541564308}
-  EditorPresenter: {fileID: 1956878271013460}
 --- !u!114 &114310410241874620
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -568,7 +552,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114309422092375930}
+      - m_Target: {fileID: 114253900775658910}
         m_MethodName: set_IsEditing
         m_Mode: 6
         m_Arguments:
@@ -991,7 +975,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 1, y: -40}
-  m_SizeDelta: {x: 70, y: 78}
+  m_SizeDelta: {x: 78, y: 78}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224632102826388250
 RectTransform:
@@ -1068,8 +1052,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 35, y: -39}
-  m_SizeDelta: {x: 70, y: 78}
+  m_AnchoredPosition: {x: 39, y: -39}
+  m_SizeDelta: {x: 78, y: 78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224899049746791486
 RectTransform:

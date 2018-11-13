@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.SpatialTracking;
 
 namespace Battlehub.RTCommon
 {
@@ -7,9 +8,12 @@ namespace Battlehub.RTCommon
     [RequireComponent(typeof(RuntimeWindow))]
     public class RuntimeGraphicsLayer : MonoBehaviour
     {
+        [SerializeField]
         private Camera m_graphicsLayerCamera;
 
         private RuntimeWindow m_editorWindow;
+
+        private TrackedPoseDriver m_trackedPoseDriver;
 
         public RuntimeWindow Window
         {
@@ -40,7 +44,8 @@ namespace Battlehub.RTCommon
 
         private void PrepareGraphicsLayerCamera()
         {
-            if(m_editorWindow.Editor.IsVR && m_editorWindow.Camera.stereoEnabled && m_editorWindow.Camera.stereoTargetEye == StereoTargetEyeMask.Both)
+            m_trackedPoseDriver = m_editorWindow.Camera.GetComponent<TrackedPoseDriver>();
+            if (m_editorWindow.Editor.IsVR && m_editorWindow.Camera.stereoEnabled && m_editorWindow.Camera.stereoTargetEye == StereoTargetEyeMask.Both )
             {
                 bool wasActive = m_editorWindow.Camera.gameObject.activeSelf;
                 m_editorWindow.Camera.gameObject.SetActive(false);
@@ -53,7 +58,7 @@ namespace Battlehub.RTCommon
             {
                 m_graphicsLayerCamera = Instantiate(m_editorWindow.Camera, m_editorWindow.Camera.transform);
             }
-            
+
             for (int i = m_graphicsLayerCamera.transform.childCount - 1; i >= 0; i--)
             {
                 Destroy(m_graphicsLayerCamera.transform.GetChild(i).gameObject);
@@ -71,6 +76,7 @@ namespace Battlehub.RTCommon
                 {
                     continue;
                 }
+             
                 Destroy(component);
             }
 
@@ -80,8 +86,12 @@ namespace Battlehub.RTCommon
             m_graphicsLayerCamera.transform.localScale = Vector3.one;
             m_graphicsLayerCamera.name = "GraphicsLayerCamera";
             m_graphicsLayerCamera.depth = m_editorWindow.Camera.depth + 1;
-
             m_graphicsLayerCamera.cullingMask = 1 << (m_editorWindow.Editor.CameraLayerSettings.RuntimeGraphicsLayer + m_editorWindow.Index);
+
+            if(m_trackedPoseDriver != null)
+            {
+                m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix;
+            }
         }
 
         private void LateUpdate()
@@ -114,6 +124,11 @@ namespace Battlehub.RTCommon
             if(m_graphicsLayerCamera.gameObject.activeSelf != m_editorWindow.Camera.gameObject.activeSelf)
             {
                 m_graphicsLayerCamera.gameObject.SetActive(m_editorWindow.Camera.gameObject.activeSelf);
+            }
+
+            if(m_trackedPoseDriver != null)
+            {
+                m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix;
             }
         }
     }

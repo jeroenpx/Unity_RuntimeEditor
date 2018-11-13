@@ -81,6 +81,11 @@ namespace Battlehub.UIControls
             get { return m_isEditing; }
             set
             {
+                if(Item == null)
+                {
+                    return;
+                }
+
                 if (m_isEditing != value && m_isSelected)
                 {
                     m_isEditing = value && m_isSelected;

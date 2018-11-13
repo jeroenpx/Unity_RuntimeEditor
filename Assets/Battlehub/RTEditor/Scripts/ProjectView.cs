@@ -26,7 +26,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Button m_btnDuplicate;
         [SerializeField]
-        private Button m_btnAddFolder;
+        private Dropdown m_ddCreate;
         [SerializeField]
         private Button m_btnImport;
         [SerializeField]
@@ -94,18 +94,28 @@ namespace Battlehub.RTEditor
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
             }
 
+            if(m_ddCreate != null)
+            {
+                m_ddCreate.onValueChanged.AddListener(OnCreate);
+            }
+            
+
+
             //RuntimeEditorApplication.SaveSelectedObjectsRequired += OnSaveSelectedObjectsRequest;
 
             //m_projectResources.SelectionChanged += OnProjectResourcesSelectionChanged;
-            //m_projectResources.DoubleClick += OnProjectResourcesDoubleClick;
-            //m_projectResources.Renamed += OnProjectResourcesRenamed;
-            //m_projectResources.Deleted += OnProjectResourcesDeleted;
+            m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
+            m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
+            m_projectResources.ItemDeleted += OnProjectResourcesDeleted;
+            m_projectResources.ItemsDropped += OnProjectResourcesDrop;
             //m_projectResources.BeginDrag += OnProjectResourcesBeginDrag;
             //m_projectResources.Drop += OnProjectResourcesDrop;
 
+            
+
             m_projectTree.SelectionChanged += OnProjectTreeSelectionChanged;
-            //m_projectTree.Renamed += OnProjectTreeItemRenamed;
-            //m_projectTree.Deleted += OnProjectTreeItemDeleted;
+            m_projectTree.ItemRenamed += OnProjectTreeItemRenamed;
+            m_projectTree.ItemDeleted += OnProjectTreeItemDeleted;
             //m_projectTree.Drop += OnProjectTreeItemDrop;
 
             ShowProgress = true;
@@ -123,29 +133,9 @@ namespace Battlehub.RTEditor
                 ShowProgress = false;
 
                 m_projectTree.LoadProject(m_project.Root);
-
                 m_projectTree.SelectedFolder = m_project.Root;
-
-          
-
-                //StartCoroutine(CreatePreviewForStaticResources(m_project.Root));
             });
 
-            //m_projectManager.DynamicResourcesAdded += OnDynamicResourcesAdded;
-            //m_projectManager.BundledResourcesAdded += OnBundledResourcesAdded;
-            //m_projectManager.SceneCreated += OnSceneCreated;
-            //m_projectManager.SceneLoaded += OnSceneLoaded;
-            //m_projectManager.SceneSaved += OnSceneSaved;
-
-            //if (m_btnDuplicate != null)
-            //{
-            //    m_btnDuplicate.onClick.AddListener(DuplicateProjectResources);
-            //}
-
-            //if(m_btnAddFolder != null)
-            //{
-            //    m_btnAddFolder.onClick.AddListener(AddFolder);
-            //}
 
             if(m_btnImport != null)
             {
@@ -155,49 +145,31 @@ namespace Battlehub.RTEditor
 
         protected override void OnDestroyOverride()
         {
-            //RuntimeEditorApplication.SaveSelectedObjectsRequired -= OnSaveSelectedObjectsRequest;
+            if (m_projectResources != null)
+            {
+                m_projectResources.ItemDoubleClick -= OnProjectResourcesDoubleClick;
 
-            //if (m_projectResources != null)
-            //{
-            //    m_projectResources.DoubleClick -= OnProjectResourcesDoubleClick;
-            //    m_projectResources.SelectionChanged -= OnProjectResourcesSelectionChanged;
-            //    m_projectResources.Renamed -= OnProjectResourcesRenamed;
-            //    m_projectResources.Deleted -= OnProjectResourcesDeleted;
-            //    m_projectResources.BeginDrag -= OnProjectResourcesBeginDrag;
-            //    m_projectResources.Drop -= OnProjectResourcesDrop;
-            //}
+                m_projectResources.ItemRenamed -= OnProjectResourcesRenamed;
+                m_projectResources.ItemDeleted -= OnProjectResourcesDeleted;
+                m_projectResources.ItemsDropped -= OnProjectResourcesDrop;
+
+            }
 
             if(m_projectTree != null)
             {
                 m_projectTree.SelectionChanged -= OnProjectTreeSelectionChanged;
-            //    m_projectTree.Renamed -= OnProjectTreeItemRenamed;
-            //    m_projectTree.Deleted -= OnProjectTreeItemDeleted;
-            //    m_projectTree.Drop -= OnProjectTreeItemDrop;
+                m_projectTree.ItemDeleted -= OnProjectTreeItemDeleted;
+                m_projectTree.ItemRenamed -= OnProjectTreeItemRenamed;
             }
-
-            //if(m_projectManager != null)
-            //{
-            //    m_projectManager.DynamicResourcesAdded -= OnDynamicResourcesAdded;
-            //    m_projectManager.BundledResourcesAdded -= OnBundledResourcesAdded;
-            //    m_projectManager.SceneCreated -= OnSceneCreated;
-            //    m_projectManager.SceneSaved -= OnSceneSaved;
-            //    m_projectManager.SceneLoaded -= OnSceneLoaded;
-            //}
-
-
-            //if (m_btnDuplicate != null)
-            //{
-            //    m_btnDuplicate.onClick.RemoveListener(DuplicateProjectResources);
-            //}
-
-            //if (m_btnAddFolder != null)
-            //{
-            //    m_btnAddFolder.onClick.RemoveListener(AddFolder);
-            //}
 
             if (m_btnImport != null)
             {
                 m_btnImport.onClick.RemoveListener(SelectLibrary);
+            }
+
+            if(m_ddCreate != null)
+            {
+                m_ddCreate.onValueChanged.RemoveListener(OnCreate);
             }
         }
 
@@ -213,28 +185,22 @@ namespace Battlehub.RTEditor
             //}
         }
 
-      
-
-        private void AddFolder()
+        private void OnCreate(int index)
         {
-            //ProjectItem parent = m_projectTree.SelectedFolder;
-            
-            //ShowProgress = true;
+            if(m_ddCreate.value != 0)
+            {
+                if(m_ddCreate.value == 1)
+                {
+                    CreateFolder();
+                }
+            }
 
-            //ProjectItemObjectPair[] selection = GetSelection(false);
-            //m_projectManager.SaveObjects(selection.Where(iop => iop.IsResource).ToArray(), () =>
-            //{
-            //    m_projectManager.CreateFolder("Folder", parent, folder =>
-            //    {
-            //        m_projectTree.AddProjectItem(folder, parent);
-            //        m_projectManager.GetOrCreateObjects(parent, objects =>
-            //        {
-            //            ShowProgress = false;
-            //            m_projectResources.SetSelectedItems(objects, new[] { folder });
-            //            m_projectResources.SetObjects(objects, false);
-            //        });
-            //    });
-            //});
+            m_ddCreate.value = 0;
+        }
+
+        private void CreateFolder()
+        {
+            Debug.LogWarning("CreateFolder");
         }
 
         private void SelectLibrary()
@@ -260,220 +226,39 @@ namespace Battlehub.RTEditor
                 args =>
                 {
                     Editor.IsBusy = true;
-                    m_project.ImportAssets(assetLibraryImporter.SelectedAssets, error =>
+                    m_project.Import(assetLibraryImporter.SelectedAssets, error =>
                     {
                         Editor.IsBusy = false;
                         if (error.HasError)
                         {
                             PopupWindow.Show("Unable to Import assets", error.ErrorText, "OK");
                         }
+
+                        string path = string.Empty;
+                        if(m_projectTree.SelectedFolder != null)
+                        {
+                            path = m_projectTree.SelectedFolder.ToString();
+                        }
+                        
+                        m_projectTree.LoadProject(m_project.Root);
+
+                        if(!string.IsNullOrEmpty(path))
+                        {
+                            m_projectTree.SelectedFolder = m_project.Root.Get(path);
+                        }
+                        else
+                        {
+                            m_projectTree.SelectedFolder = m_project.Root;
+                        }
+                        
                     });
                 },
                 "Cancel");
         }
 
-        //private bool CanDuplicate(ProjectItemObjectPair itemObjectPair)
-        //{
-        //    ProjectItem projectItem = itemObjectPair.ProjectItem;
-
-        //    if (projectItem.TypeCode == ProjectItemTypes.Texture)
-        //    {
-        //        return (itemObjectPair.Object as Texture2D).IsReadable();
-        //    }
-        //    else if (projectItem.TypeCode == ProjectItemTypes.ProceduralMaterial)
-        //    {
-        //        return false; //unable to duplicate procedural materials
-        //    }
-
-        //    return projectItem != null && (!projectItem.IsExposedFromEditor || !projectItem.IsFolder);
-        //}
-
-
-        //private ProjectItemObjectPair[] GetSelection(bool checkIfCanDuplicate)
-        //{
-
-        //    ProjectItemObjectPair[] selection = m_projectResources.SelectionToProjectItemObjectPair(m_projectResources.SelectedItems);
-        //    if (selection == null)
-        //    {
-        //        return new ProjectItemObjectPair[0];
-        //    }
-        //    selection = selection.Where(iop => iop.ProjectItem != null && (!checkIfCanDuplicate || CanDuplicate(iop))).ToArray();
-        //    if (selection.Length == 0)
-        //    {
-        //        return new ProjectItemObjectPair[0];
-        //    }
-
-        //    return selection;
-        //}
-
-        //private void DuplicateProjectResources()
-        //{
-        //    ProjectItemObjectPair[] selection = GetSelection(true);
-
-        //    if (selection.Length == 0)
-        //    {
-        //        return;
-        //    }
-
-        //    ShowProgress = true;
-        //    m_projectManager.SaveObjects(selection.Where(iop => iop.IsResource).ToArray(), () =>
-        //    {
-        //        m_projectManager.Duplicate(selection.Select(p => p.ProjectItem).ToArray(), duplicatedItems =>
-        //        {
-        //            ProjectItem parent = null;
-        //            for (int i = 0; i < selection.Length; ++i)
-        //            {
-        //                parent = selection[i].ProjectItem.Parent;
-        //                if (parent != null)
-        //                {
-        //                    ProjectItem duplicatedItem = duplicatedItems[i];
-        //                    if (duplicatedItem.IsFolder)
-        //                    {
-        //                        m_projectTree.AddProjectItem(duplicatedItem, parent);
-        //                        m_projectTree.DropProjectItem(duplicatedItem, parent);
-        //                    }
-        //                    else
-        //                    {
-        //                        parent.AddChild(duplicatedItem);
-        //                    }
-        //                }
-        //            }
-
-        //            if (parent != null)
-        //            {
-        //                m_projectTree.SelectedFolder = parent;
-        //            }
-
-        //            m_projectManager.GetOrCreateObjects(m_projectTree.SelectedFolder, objects =>
-        //            {
-        //                ShowProgress = false;
-
-        //                m_projectResources.SetSelectedItems(objects, duplicatedItems);
-        //                m_projectResources.SetObjects(objects, false);
-
-        //                if(m_projectResources.SelectedItems != null)
-        //                {
-        //                    RuntimeSelection.objects = m_projectResources.SelectedItems.Where(o => o != null).ToArray();
-        //                }
-        //            });
-        //        });
-        //    }); 
-        //}
-
-        //private void OnBundledResourcesAdded(object sender, ProjectManagerEventArgs e)
-        //{
-        //    ShowProgress = true;
-        //    OnResourcesAdded(e);
-        //}
-
-        //private void OnDynamicResourcesAdded(object sender, ProjectManagerEventArgs e)
-        //{
-        //    ShowProgress = true;
-        //    OnResourcesAdded(e);
-        //}
-
-        //private void OnResourcesAdded(ProjectManagerEventArgs e)
-        //{
-        //    ProjectItemObjectPair[] selection = GetSelection(false);
-        //    m_projectManager.SaveObjects(selection.Where(iop => iop.IsResource).ToArray(), () =>
-        //    {
-        //        m_projectManager.GetOrCreateObjects(m_projectTree.SelectedFolder, objects =>
-        //        {
-        //            ShowProgress = false;
-
-        //            m_projectResources.SetSelectedItems(objects, e.ProjectItems.Take(1).ToArray());
-        //            m_projectResources.SetObjects(objects, false);
-
-        //            if (m_projectResources.SelectedItems != null)
-        //            {
-        //                RuntimeSelection.activeObject = m_projectResources.SelectedItems.Where(o => o != null).FirstOrDefault();
-        //            }
-        //        });
-        //    });
-        //}
-
-        //private void OnSceneCreated(object sender, ProjectManagerEventArgs e)
-        //{
-        //    ShowProgress = true;
-        //    m_projectManager.GetOrCreateObjects(m_projectTree.SelectedFolder, objects =>
-        //    {
-        //        ShowProgress = false;
-        //        m_projectResources.SetObjects(objects, false);
-        //    });
-        //}
-
-        //private void OnSceneSaved(object sender, ProjectManagerEventArgs e)
-        //{
-        //    ShowProgress = true;
-        //    m_projectManager.GetOrCreateObjects(m_projectTree.SelectedFolder, objects =>
-        //    {
-        //        ShowProgress = false;
-        //        m_projectResources.SetObjects(objects, false);
-        //    });
-        //}
-
-
-        //private void OnSceneLoaded(object sender, ProjectManagerEventArgs e)
-        //{
-        //    ShowProgress = true;
-        //    m_projectManager.GetOrCreateObjects(m_projectTree.SelectedFolder, objects =>
-        //    {
-        //        ShowProgress = false;
-        //        m_projectResources.SetObjects(objects, false);
-        //    });
-        //}
-
-        //private void OnProjectResourcesSelectionChanged(object sender, SelectionChangedArgs<ProjectItemObjectPair> e)
-        //{
-        //    if (e.IsUserAction)
-        //    {
-        //        RuntimeSelection.objects = e.NewItems.Where(p => p.Object != null).Select(p => p.Object).ToArray();
-        //    }
-
-        //    ProjectItemObjectPair[] unselected = e.OldItems;
-        //    if (unselected != null)
-        //    {
-        //        unselected = unselected.Where(
-        //            p => p.IsResource &&
-        //            // do not save mesh each time it unselected
-        //            p.ProjectItem.TypeCode != ProjectItemTypes.Mesh &&
-        //            p.ProjectItem.TypeCode != ProjectItemTypes.Texture
-        //            ).ToArray();
-        //        if (unselected.Length != 0)
-        //        {
-        //            ShowProgress = true;
-        //            m_projectManager.SaveObjects(unselected, () =>
-        //            {
-        //                ShowProgress = false;
-        //            });
-        //        }
-        //    }
-
-        //    UpdateCanDuplicateButtonState(e.NewItem);
-        //}
-
-        //private void UpdateCanDuplicateButtonState(ProjectItemObjectPair itemObjectPair)
-        //{
-        //    if (m_btnDuplicate != null)
-        //    {
-        //        if (itemObjectPair == null)
-        //        {
-        //            m_btnDuplicate.gameObject.SetActive(false);
-        //        }
-        //        else
-        //        {
-        //            m_btnDuplicate.gameObject.SetActive(CanDuplicate(itemObjectPair));
-        //        }
-        //    }
-        //}
-
+   
         private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)
         {
-            if (m_btnAddFolder != null)
-            {
-                m_btnAddFolder.gameObject.SetActive(e.NewItem != null);
-            }
-
             ShowProgress = true;
             m_project.GetAssetItems(e.NewItems, (error, assets) =>
             {
@@ -488,154 +273,75 @@ namespace Battlehub.RTEditor
                 m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
             });
 
-         
-           // m_project.GetAssets()
-
-            /*
-            m_projectManager.SaveObjects(GetSelection(false).Where(
-                iop => iop.IsResource &&
-                // do not save mesh each time it unselected
-                //iop.ProjectItem.TypeCode != ProjectItemTypes.Texture &&
-                iop.ProjectItem.TypeCode != ProjectItemTypes.Mesh
-                ).ToArray(), () =>
-            {
-                m_projectManager.GetOrCreateObjects(e.NewItems, objects =>
-                {
-                    ShowProgress = false;
-                    m_projectResources.SetObjects(objects, true);
-
-                    UpdateCanDuplicateButtonState(GetSelection(true).FirstOrDefault());
-
-                });
-            });
-            */
         }
 
+     
+        private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)
+        {
+            Editor.IsBusy = true;
+            
+            m_project.Delete(e.ProjectItems, error =>
+            {
+                Editor.IsBusy = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Unable to remove", error.ErrorText, "OK");
+                }
 
-        //private void OnSaveSelectedObjectsRequest()
-        //{
+                m_projectTree.RemoveProjectItemsFromTree(e.ProjectItems);
+            });
+        }
 
-        //    ShowProgress = true;
-        //    m_projectManager.SaveObjects(GetSelection(false).Where(
-        //         iop => iop.IsResource &&
-        //         // do not save mesh each time it unselected
-        //         iop.ProjectItem.TypeCode != ProjectItemTypes.Mesh).ToArray(), () =>
-        //         {
-        //             ShowProgress = false;
-        //         });
-        //}
+        private void OnProjectResourcesDrop(object sender, ProjectTreeEventArgs e)
+        {
+            m_projectTree.ChangeParent(e.ProjectItems);
+        }
 
-        //private void OnProjectResourcesDoubleClick(object sender, ProjectResourcesEventArgs e)
-        //{
-        //    if(e.ItemObjectPair != null)
-        //    {
-        //        ProjectItem projectItem = e.ItemObjectPair.ProjectItem;
-        //        if(projectItem.IsFolder)
-        //        {
-        //            m_projectTree.SelectedFolder = projectItem;
-        //        }
-        //        else if(projectItem.IsScene)
-        //        {
-        //            if (RuntimeEditorApplication.IsPlaying)
-        //            {
-        //                PopupWindow.Show("Unable to load scene", "Unable to load scene in play mode", "OK");
-        //                return;
-        //            }
+        private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
+        {
+            m_projectTree.SelectedFolder = e.ProjectItem;
+        }
 
-        //            RuntimeUndo.Purge();
+        private void OnProjectResourcesRenamed(object sender, ProjectTreeRenamedEventArgs e)
+        {
+            m_projectTree.UpdateProjectItem(e.ProjectItem);
 
-        //            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(ExposeToEditorObjectType.EditorMode, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
-        //            for (int i = 0; i < editorObjects.Length; ++i)
-        //            {
-        //                ExposeToEditor exposeToEditor = editorObjects[i];
-        //                if (exposeToEditor != null)
-        //                {
-        //                    DestroyImmediate(exposeToEditor.gameObject);
-        //                }
-        //            }
+            Editor.IsBusy = true;
+            m_project.Rename(e.ProjectItem, e.OldName, error =>
+            {
+                Editor.IsBusy = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Unable to rename asset", error.ToString(), "OK");
+                }
+            });
+        }
 
-        //            ShowProgress = true;
-        //            m_projectManager.LoadScene(projectItem, () =>
-        //            {
-        //                ShowProgress = false;
-        //            });
+        private void OnProjectTreeItemRenamed(object sender, ProjectTreeRenamedEventArgs e)
+        {
+            Editor.IsBusy = true;
+            m_project.Rename(e.ProjectItem, e.OldName, error =>
+            {
+                Editor.IsBusy = false;
+                if(error.HasError)
+                {
+                    PopupWindow.Show("Unable to rename asset", error.ToString(), "OK");
+                }
+            });
+        }
 
-        //        }
-        //    }
-        //}
-
-        //private void OnProjectResourcesRenamed(object sender, ProjectResourcesRenamedEventArgs e)
-        //{
-        //    if (e.ItemObjectPair != null)
-        //    {
-        //        ProjectItem projectItem = e.ItemObjectPair.ProjectItem;
-        //        string name = projectItem.Name;
-        //        projectItem.Name = e.OldName;
-        //        ShowProgress = true;
-        //        m_projectManager.Rename(projectItem, name, () =>
-        //        {
-        //            m_projectTree.UpdateProjectItem(projectItem);
-        //            ShowProgress = false;
-        //        });
-        //    }
-        //}
-
-        //private void OnProjectTreeItemRenamed(object sender, ProjectTreeRenamedEventArgs e)
-        //{
-        //    if (e.ProjectItem != null)
-        //    {
-        //        ProjectItem projectItem = e.ProjectItem;
-        //        string name = projectItem.Name;
-        //        projectItem.Name = e.OldName;
-        //        ShowProgress = true;
-        //        m_projectManager.Rename(projectItem, name, () =>
-        //        {
-        //            m_projectResources.UpdateProjectItem(projectItem);
-        //            ShowProgress = false;
-        //        });
-        //    }
-        //}
-
-        //private void OnProjectResourcesDeleted(object sender, ProjectResourcesEventArgs e)
-        //{
-        //    if (e.ItemObjectPair != null)
-        //    {
-        //        ProjectItem[] projectItems = e.ItemObjectPairs.Select(p => p.ProjectItem).ToArray();
-        //        projectItems = ProjectItem.GetRootItems(projectItems);
-
-        //        ShowProgress = true;
-        //        m_projectManager.Delete(projectItems, () =>
-        //        {
-        //            m_projectTree.RemoveProjectItemsFromTree(projectItems);
-        //            ShowProgress = false;
-        //        });
-        //    }
-        //}
-
-        //private void OnProjectTreeItemDeleted(object sender, ProjectTreeEventArgs e)
-        //{
-        //    if (e.ProjectItem != null)
-        //    {
-        //        ProjectItem[] projectItems = e.ProjectItems;
-        //        projectItems = ProjectItem.GetRootItems(projectItems);
-        //        ProjectItem firstParent = projectItems[0].Parent;
-
-        //        ShowProgress = true;
-        //        m_projectManager.Delete(projectItems, () =>
-        //        {
-        //            for(int i = 0; i < projectItems.Length; ++i)
-        //            {
-        //                ProjectItem parent = projectItems[i].Parent;
-        //                if(parent != null)
-        //                {
-        //                    parent.RemoveChild(projectItems[i]);
-        //                }
-        //            }
-        //            ShowProgress = false;
-        //            m_projectTree.SelectedFolder = firstParent;
-        //        });  
-        //    }
-        //}
+        private void OnProjectTreeItemDeleted(object sender, ProjectTreeEventArgs e)
+        {
+            Editor.IsBusy = true;
+            m_project.Delete(e.ProjectItems, error =>
+            {
+                Editor.IsBusy = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Unable to remove", error.ErrorText, "OK");
+                }
+            });
+        }
 
 
         //private void OnProjectResourcesBeginDrag(object sender, ProjectResourcesEventArgs e)

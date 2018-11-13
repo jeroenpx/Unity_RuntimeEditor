@@ -480,6 +480,8 @@ namespace Battlehub.RTCommon
                 m_raycaster = GetComponent<GraphicRaycaster>();
             }
 
+
+
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);

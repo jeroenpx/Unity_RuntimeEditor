@@ -118,6 +118,8 @@ namespace Battlehub.RTCommon
 #endif
             if (pointer == 0)
             {
+
+
                 return Input.mousePosition;
             }
             else
@@ -135,7 +137,8 @@ namespace Battlehub.RTCommon
                 return m_multitouchEmulator.IsTouchDown(index);
             }
 #endif
-            return Input.GetMouseButtonDown(index);
+            bool buttonDown = Input.GetMouseButtonDown(index);
+            return buttonDown;
         }
 
         public virtual bool GetPointerUp(int index)
@@ -146,6 +149,7 @@ namespace Battlehub.RTCommon
                 return m_multitouchEmulator.IsTouchUp(index);
             }
 #endif
+
             return Input.GetMouseButtonUp(index);
         }
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -225,8 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea11195821566d44993028ebab95ebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_windowMask: 2
-  m_requiresCamera: 1
+  m_window: {fileID: 0}
   Graphics: {fileID: 0}
   UseCameraSpace: 0
   Method: 0
@@ -391,8 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67d6901c172b2f24da74d2f5e1d51ac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_windowMask: 2
-  m_requiresCamera: 1
+  m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 2}
@@ -756,8 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129fb7dc0f2ef1746bb4386063c9c130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_windowMask: 2
-  m_requiresCamera: 1
+  m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 2}
@@ -910,8 +907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d451d0f67a9a1044a90064b872cd0f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_windowMask: 2
-  m_requiresCamera: 1
+  m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
   Model: {fileID: 114244960618619326, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 2}
@@ -945,8 +941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42d325d1c6d5af489a10d3e9c6df236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_windowMask: 2
-  m_requiresCamera: 1
+  m_window: {fileID: 0}
   m_positionHandle: {fileID: 1250982126}
   m_rotationHandle: {fileID: 346817308}
   m_scaleHandle: {fileID: 1557706257}

@@ -26,30 +26,26 @@ namespace Battlehub.UIControls
             get { return base.Item; }
             set
             {
-                if(base.Item != value)
-                {
-                    base.Item = value;
+                base.Item = value;
 
-                    m_treeViewItemData = (TreeViewItemContainerData)TreeView.GetItemContainerData(value);
-                    if(m_treeViewItemData == null)
+                m_treeViewItemData = (TreeViewItemContainerData)TreeView.GetItemContainerData(value);
+                if (m_treeViewItemData == null)
+                {
+                    m_treeViewItemData = new TreeViewItemContainerData();
+                    name = "Null";
+                    return;
+                }
+                else
+                {
+
+                    UpdateIndent();
+                    if (m_expander != null)
                     {
-                        m_treeViewItemData = new TreeViewItemContainerData();
-                        name = "Null";
-                        return;
+                        m_expander.CanExpand = m_treeViewItemData.CanExpand;
+                        m_expander.IsOn = m_treeViewItemData.IsExpanded && m_treeViewItemData.CanExpand;
                     }
-                    else
-                    {
-                        
-                        UpdateIndent();
-                        if(m_expander != null)
-                        {
-                            m_expander.CanExpand = m_treeViewItemData.CanExpand;
-                            m_expander.IsOn = m_treeViewItemData.IsExpanded && m_treeViewItemData.CanExpand;
-                        }
-                        
-                        name = base.Item.ToString() + " " + m_treeViewItemData.ToString();
-                    }
-                    
+
+                    name = base.Item.ToString() + " " + m_treeViewItemData.ToString();
                 }
             }
         }

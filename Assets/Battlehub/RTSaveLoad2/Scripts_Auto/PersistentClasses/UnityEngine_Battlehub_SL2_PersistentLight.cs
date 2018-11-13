@@ -34,12 +34,6 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(264)]
         public LightRenderMode renderMode;
 
-        [ProtoMember(266)]
-        public Vector2 areaSize;
-
-        [ProtoMember(267)]
-        public LightmapBakeType lightmapBakeType;
-
         [ProtoMember(271)]
         public LightType type;
 
@@ -85,12 +79,6 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(285)]
         public LightShadowCasterMode lightShadowCasterMode;
 
-        [ProtoMember(286)]
-        public float shadowRadius;
-
-        [ProtoMember(287)]
-        public float shadowAngle;
-
         protected override void ReadFromImpl(object obj)
         {
             base.ReadFromImpl(obj);
@@ -102,8 +90,6 @@ namespace UnityEngine.Battlehub.SL2
             cookieSize = uo.cookieSize;
             cookie = ToID(uo.cookie);
             renderMode = uo.renderMode;
-            areaSize = uo.areaSize;
-            lightmapBakeType = uo.lightmapBakeType;
             type = uo.type;
             spotAngle = uo.spotAngle;
             color = uo.color;
@@ -119,8 +105,6 @@ namespace UnityEngine.Battlehub.SL2
             bakingOutput = uo.bakingOutput;
             cullingMask = uo.cullingMask;
             lightShadowCasterMode = uo.lightShadowCasterMode;
-            shadowRadius = uo.shadowRadius;
-            shadowAngle = uo.shadowAngle;
         }
 
         protected override object WriteToImpl(object obj)
@@ -134,8 +118,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.cookieSize = cookieSize;
             uo.cookie = FromID<Texture>(cookie);
             uo.renderMode = renderMode;
-            uo.areaSize = areaSize;
-            uo.lightmapBakeType = lightmapBakeType;
             uo.type = type;
             uo.spotAngle = spotAngle;
             uo.color = color;
@@ -151,8 +133,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.bakingOutput = bakingOutput;
             uo.cullingMask = cullingMask;
             uo.lightShadowCasterMode = lightShadowCasterMode;
-            uo.shadowRadius = shadowRadius;
-            uo.shadowAngle = shadowAngle;
             return uo;
         }
 

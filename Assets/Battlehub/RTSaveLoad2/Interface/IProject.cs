@@ -16,7 +16,6 @@ namespace Battlehub.RTSaveLoad2.Interface
         }
 
         bool IsStatic(ProjectItem projectItem);
-        //bool TryGetFromStaticReferences(AssetItem assetItem, out UnityObject obj);
         Type ToType(AssetItem assetItem);
         Guid ToGuid(Type type);
         long ToID(UnityObject obj);
@@ -32,11 +31,13 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation<AssetItem> Save(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
         ProjectAsyncOperation Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler callback);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
-
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
         ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(int index, ProjectEventHandler<ProjectItem> callback = null);
-        ProjectAsyncOperation ImportAssets(ImportItem[] assetItems, ProjectEventHandler callback);
+        ProjectAsyncOperation Import(ImportItem[] assetItems, ProjectEventHandler callback);
+        ProjectAsyncOperation Delete(ProjectItem[] projectItems, ProjectEventHandler callback);
+        ProjectAsyncOperation Move(ProjectItem[] projectItems, ProjectItem target, bool modifyTree, ProjectEventHandler callback);
+        ProjectAsyncOperation Rename(ProjectItem projectItem, string oldName, ProjectEventHandler callback);
     }
 
     public delegate void ProjectEventHandler(Error error);

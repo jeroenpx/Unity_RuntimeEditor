@@ -162,8 +162,8 @@ namespace Battlehub.RTEditor
     public class ProjectTreeView : RuntimeWindow
     {
         public event EventHandler<SelectionChangedArgs<ProjectItem>> SelectionChanged;
-        public event EventHandler<ProjectTreeRenamedEventArgs> Renamed;
-        public event EventHandler<ProjectTreeEventArgs> Deleted;
+        public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
+        public event EventHandler<ProjectTreeEventArgs> ItemDeleted;
         //public event EventHandler<ItemDropArgs> Drop;
 
         private IProject m_project;
@@ -184,7 +184,7 @@ namespace Battlehub.RTEditor
         [NonSerialized]
         private ProjectItem m_root;
 
-
+      
         public ProjectItem SelectedFolder
         {
             get
@@ -196,8 +196,20 @@ namespace Battlehub.RTEditor
                 ProjectItem folder = value;
                 string path = folder.ToString();
                 folder = m_root.Get(path);
-                m_treeView.Expand(folder);
-                if(m_treeView.IndexOf(folder) >= 0)
+
+                if(folder != null)
+                {
+                    if(folder.Parent == null)
+                    {
+                        Expand(folder);
+                    }
+                    else
+                    {
+                        Expand(folder.Parent);
+                    }
+                }
+                
+                if (m_treeView.IndexOf(folder) >= 0)
                 {
                     m_treeView.ScrollIntoView(folder);
                     m_treeView.SelectedItem = folder;
@@ -205,28 +217,19 @@ namespace Battlehub.RTEditor
             }
         }
 
-        //private VirtualizingTreeViewItem Expand(ProjectItem projectItem)
-        //{
-           
-        //    //VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(projectItem);
-        //    //if (treeViewItem == null)
-        //    //{
-        //    //    if(projectItem.Parent == null)
-        //    //    {
+        private void Expand(ProjectItem item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+            if (item.Parent != null && !m_treeView.IsExpanded(item.Parent))
+            {
+                Expand(item.Parent);
+            }
+            m_treeView.Expand(item);
+        }
 
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        Expand(projectItem.Parent);
-        //    //        treeViewItem = m_treeView.GetTreeViewItem(projectItem);
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    treeViewItem.IsExpanded = true;
-        //    //}
-        //    //return treeViewItem;
-        //}
 
         private void Toggle(ProjectItem projectItem)
         {
@@ -296,7 +299,7 @@ namespace Battlehub.RTEditor
                         }
                         else
                         {
-                            PopupWindow.Show("Remove Selected assets", "You can not undo this action", "Delete", args =>
+                            PopupWindow.Show("Delete Selected Assets", "You cannot undo this action", "Delete", arg =>
                             {
                                 m_treeView.RemoveSelectedItems();
                             },"Cancel");
@@ -324,15 +327,13 @@ namespace Battlehub.RTEditor
             m_treeView.ItemBeginDrop -= OnItemBeginDrop;
             m_treeView.ItemDrop -= OnItemDrop;
             m_treeView.ItemDoubleClick -= OnItemDoubleClick;
-
         }
 
         public void LoadProject(ProjectItem root)
         {
             if (ShowRootFolder)
-            {
+            {                
                 m_treeView.Items = new[] { root };
-                m_treeView.SelectedItem = root;
             }
             else
             {
@@ -340,17 +341,27 @@ namespace Battlehub.RTEditor
                 {
                     m_root.Children = root.Children.OrderBy(projectItem => projectItem.NameExt).ToList();
                     m_treeView.Items = m_root.Children.Where(projectItem => CanDisplayFolder(projectItem)).ToArray();
-                    m_treeView.SelectedItem = m_treeView.Items.OfType<object>().FirstOrDefault();
                 }
             }
 
-            VirtualizingTreeViewItem rootTreeViewItem = m_treeView.GetTreeViewItem(0);
-            if (rootTreeViewItem != null)
-            {
-                rootTreeViewItem.IsExpanded = true;
-            }
-
             m_root = root;
+        }
+
+        public void ChangeParent(ProjectItem[] projectItems)
+        {
+            for(int i = 0; i < projectItems.Length; ++i)
+            {
+                m_treeView.ChangeParent(projectItems[i].Parent, projectItems[i]);
+            }
+        }
+
+        public void UpdateProjectItem(ProjectItem item)
+        {
+            VirtualizingItemContainer itemContainer = m_treeView.GetItemContainer(item);
+            if (itemContainer != null)
+            {
+                m_treeView.DataBindItem(item, itemContainer);
+            }
         }
 
         //public void BeginDragProjectItem(ProjectItem projectItem)
@@ -378,7 +389,7 @@ namespace Battlehub.RTEditor
 
         //    return dropTarget;
         //}
-        
+
 
         //public void AddProjectItem(ProjectItem item, ProjectItem parent)
         //{
@@ -434,22 +445,18 @@ namespace Battlehub.RTEditor
         //    }
         //}
 
-        //public void RemoveProjectItemsFromTree(ProjectItem[] projectItems)
-        //{
-        //    for(int i = 0; i < projectItems.Length; ++i)
-        //    {
-        //        ProjectItem projectItem = projectItems[i];
-        //        if(projectItem.IsFolder)
-        //        {
-        //            bool isLastChild = projectItem.Parent == null || projectItem.Parent.Children.Where(p => p.IsFolder).Count() == 1;
-        //            m_treeView.RemoveChild(projectItem.Parent, projectItem, isLastChild);
-        //            if(projectItem.Parent != null)
-        //            {
-        //                projectItem.Parent.RemoveChild(projectItem);
-        //            }
-        //        }
-        //    }
-        //}
+        public void RemoveProjectItemsFromTree(ProjectItem[] projectItems)
+        {
+            for (int i = 0; i < projectItems.Length; ++i)
+            {
+                ProjectItem projectItem = projectItems[i];
+                if (projectItem.IsFolder)
+                {
+                    bool isLastChild = projectItem.Parent == null || projectItem.Parent.Children.Where(p => p.IsFolder).Count() == 1;
+                    m_treeView.RemoveChild(projectItem.Parent, projectItem, isLastChild);
+                }
+            }
+        }
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
@@ -507,10 +514,23 @@ namespace Battlehub.RTEditor
             ProjectItem drop = (ProjectItem)e.DropTarget;
             if (e.Action == ItemDropAction.SetLastChild)
             {
-                //if (Drop != null)
-                //{
-                //    Drop(this, e);
-                //}
+                m_project.Move(e.DragItems.OfType<ProjectItem>().ToArray(), (ProjectItem)e.DropTarget, false, error =>
+                {
+                    if (error.HasError)
+                    {
+                        PopupWindow.Show("Unable to move assets", error.ErrorText, "OK");
+                        return;
+                    }
+
+                    ProjectItem parent = (ProjectItem)e.DropTarget;
+                    foreach (ProjectItem item in e.DragItems)
+                    {
+                        if (item.Parent != parent)
+                        {
+                            parent.AddChild(item);
+                        }
+                    }
+                });
             }
         }
 
@@ -556,18 +576,21 @@ namespace Battlehub.RTEditor
             if (projectItem.Parent != null)
             {
                 ProjectItem parentItem = projectItem.Parent;
-                string newNameExt = inputField.text.Trim() + "." + projectItem.Ext;
+                string newNameExt = inputField.text.Trim() + projectItem.Ext;
                 if (!string.IsNullOrEmpty(inputField.text.Trim()) && ProjectItem.IsValidName(inputField.text.Trim()) && !parentItem.Children.Any(p => p.NameExt == newNameExt))
                 {
                     projectItem.Name = inputField.text.Trim();
                 }
             }
 
-            if (Renamed != null)
+            if(projectItem.Name != oldName)
             {
-                Renamed(this, new ProjectTreeRenamedEventArgs(new[] { projectItem }, new[] { oldName }));
+                if (ItemRenamed != null)
+                {
+                    ItemRenamed(this, new ProjectTreeRenamedEventArgs(new[] { projectItem }, new[] { oldName }));
+                }
             }
-
+            
             text.text = projectItem.Name;
 
             //Following code is required to unfocus inputfield if focused and release InputManager
@@ -607,9 +630,9 @@ namespace Battlehub.RTEditor
 
         private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
         {
-            if(Deleted != null)
+            if(ItemDeleted != null)
             {
-                Deleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                ItemDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
             }
         }
 
@@ -699,21 +722,27 @@ namespace Battlehub.RTEditor
             ProjectItem dropTarget = (ProjectItem)m_treeView.DropTarget;
             if (CanDrop(dropTarget, dragObjects))
             {
-                for (int i = 0; i < dragObjects.Length; ++i)
+                m_project.Move(dragObjects.OfType<ProjectItem>().ToArray(), dropTarget, false, error =>
                 {
-                    object dragObject = dragObjects[i];
-                    ProjectItem projectItem = dragObject as ProjectItem;
-
-                    dropTarget.AddChild(projectItem);
-                    if (!(projectItem is AssetItem))
-                    {                      
-                        m_treeView.ChangeParent(dropTarget, projectItem);
+                    if (error.HasError)
+                    {
+                        PopupWindow.Show("Unable to move assets", error.ErrorText, "OK");
+                        return;
                     }
-                }
+                    for (int i = 0; i < dragObjects.Length; ++i)
+                    {
+                        object dragObject = dragObjects[i];
+                        ProjectItem projectItem = dragObject as ProjectItem;
+
+                        dropTarget.AddChild(projectItem);
+                        if (!(projectItem is AssetItem))
+                        {
+                            m_treeView.ChangeParent(dropTarget, projectItem);
+                        }
+                    }
+                });
             }
-
             m_treeView.ExternalItemDrop();
-
         }
     }
 }
