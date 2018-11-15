@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTCommon
 {
-    public class IOC
+    public class IOCContainer
     {
         private class Item
         {
@@ -32,10 +32,10 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static Dictionary<Type, Item> m_registered = new Dictionary<Type, Item>();
-        private static Dictionary<Type, Item> m_fallbacks = new Dictionary<Type, Item>();
+        private Dictionary<Type, Item> m_registered = new Dictionary<Type, Item>();
+        private Dictionary<Type, Item> m_fallbacks = new Dictionary<Type, Item>();
 
-        public static void Register<T>(Func<T> func)
+        public void Register<T>(Func<T> func)
         {
             if(func == null)
             {
@@ -50,7 +50,7 @@ namespace Battlehub.RTCommon
             m_registered.Add(typeof(T), new Item(func));
         }
 
-        public static void Register<T>(T instance)
+        public void Register<T>(T instance)
         {
             if(instance == null)
             {
@@ -65,7 +65,7 @@ namespace Battlehub.RTCommon
             m_registered.Add(typeof(T), new Item(instance));
         }
 
-        public static void Unregister<T>(Func<T> func)
+        public void Unregister<T>(Func<T> func)
         {
             Item item;
             if(m_registered.TryGetValue(typeof(T), out item))
@@ -77,7 +77,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void Unregister<T>(T instance)
+        public void Unregister<T>(T instance)
         {
             Item item;
             if(m_registered.TryGetValue(typeof(T), out item))
@@ -89,7 +89,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void RegisterFallback<T>(Func<T> func)
+        public void RegisterFallback<T>(Func<T> func)
         {
             if (func == null)
             {
@@ -104,7 +104,7 @@ namespace Battlehub.RTCommon
         }
 
 
-        public static void RegisterFallback<T>(T instance)
+        public void RegisterFallback<T>(T instance)
         {
             if (instance == null)
             {
@@ -119,7 +119,7 @@ namespace Battlehub.RTCommon
             m_fallbacks.Add(typeof(T), new Item(instance));
         }
 
-        public static void UnregisterFallback<T>(Func<T> func)
+        public void UnregisterFallback<T>(Func<T> func)
         {
             Item item;
             if (m_fallbacks.TryGetValue(typeof(T), out item))
@@ -131,7 +131,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static void UnregisterFallback<T>(T instance)
+        public void UnregisterFallback<T>(T instance)
         {
             Item item;
             if (m_fallbacks.TryGetValue(typeof(T), out item))
@@ -143,7 +143,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public static T Resolve<T>()
+        public T Resolve<T>()
         {
             Item item;
             if (m_registered.TryGetValue(typeof(T), out item))
@@ -160,26 +160,83 @@ namespace Battlehub.RTCommon
             return default(T);
         }
 
-        public static bool ClearOnSceneUnloaded = true;
-        public static void Clear()
+        public bool ClearOnSceneUnloaded = true;
+        public void Clear()
         {
             m_registered.Clear();
             m_fallbacks.Clear();  
         }
-       
+    }
+
+    public static class IOC
+    {
+        public static void Register<T>(Func<T> func)
+        {
+            m_container.Register(func);
+        }
+
+        public static void Register<T>(T instance)
+        {
+            m_container.Register(instance);
+        }
+
+        public static void Unregister<T>(Func<T> func)
+        {
+            m_container.Unregister(func);
+        }
+
+        public static void Unregister<T>(T instance)
+        {
+            m_container.Unregister(instance);
+        }
+
+        public static void RegisterFallback<T>(Func<T> func)
+        {
+            m_container.RegisterFallback(func);
+        }
+
+        public static void RegisterFallback<T>(T instance)
+        {
+            m_container.RegisterFallback(instance);
+        }
+
+        public static void UnregisterFallback<T>(Func<T> func)
+        {
+            m_container.UnregisterFallback(func);
+        }
+
+        public static void UnregisterFallback<T>(T instance)
+        {
+            m_container.UnregisterFallback(instance);
+        }
+
+        public static T Resolve<T>()
+        {
+            return m_container.Resolve<T>();
+        }
+
+        public static bool ClearOnSceneUnloaded
+        {
+            get { return m_container.ClearOnSceneUnloaded; }
+            set { m_container.ClearOnSceneUnloaded = value; }
+        }
+
+        private static IOCContainer m_container;
         static IOC()
         {
+            m_container = new IOCContainer();
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         private static void OnSceneUnloaded(Scene arg0)
         {
-            if(ClearOnSceneUnloaded)
+            if (m_container.ClearOnSceneUnloaded)
             {
-                Clear();
+                m_container.Clear();
             }
         }
     }
+
 
 }
 

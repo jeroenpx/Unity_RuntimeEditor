@@ -34,8 +34,21 @@ namespace Battlehub.RTHandles
         }
     }
 
+    public interface IScenePivot
+    {
+        Transform Pivot
+        {
+            get;
+        }
+
+        Transform SecondaryPivot
+        {
+            get;
+        }
+    }
+
     [DefaultExecutionOrder(-55)]
-    public class RuntimeSelectionComponent : RTEBehaviour
+    public class RuntimeSelectionComponent : RTEBehaviour, IScenePivot
     {
         [SerializeField]
         private PositionHandle m_positionHandle;
@@ -45,6 +58,21 @@ namespace Battlehub.RTHandles
         private ScaleHandle m_scaleHandle;
         [SerializeField]
         private BoxSelection m_boxSelection;
+        [SerializeField]
+        private Transform m_pivot;
+        [SerializeField]
+        private Transform m_secondaryPivot;
+
+        public Transform Pivot
+        {
+            get { return m_pivot; }
+        }
+
+        public Transform SecondaryPivot
+        {
+            get { return m_secondaryPivot; }
+        }
+
 
         public BoxSelection BoxSelection
         {
@@ -69,6 +97,8 @@ namespace Battlehub.RTHandles
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+
+            Window.IOCContainer.RegisterFallback<IScenePivot>(this);
 
             if(m_boxSelection == null)
             {
@@ -158,13 +188,31 @@ namespace Battlehub.RTHandles
                 ui.Selected += OnUISelected;
                 ui.Unselected += OnUIUnselected;
             }
+
+            if (m_pivot == null)
+            {
+                GameObject pivot = new GameObject("Pivot");
+                pivot.transform.SetParent(transform, false);
+                m_pivot = pivot.transform;
+            }
+
+            if (m_secondaryPivot == null)
+            {
+                GameObject secondaryPivot = new GameObject("SecondaryPivot");
+                secondaryPivot.transform.SetParent(transform, false);
+                m_secondaryPivot = secondaryPivot.transform;
+            }
+
+            Window.Camera.transform.LookAt(m_pivot);
         }
 
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
-        
-            if(m_boxSelection != null)
+
+            Window.IOCContainer.UnregisterFallback<IScenePivot>(this);
+
+            if (m_boxSelection != null)
             {
                 m_boxSelection.Filtering -= OnBoxSelectionFiltering;
             }

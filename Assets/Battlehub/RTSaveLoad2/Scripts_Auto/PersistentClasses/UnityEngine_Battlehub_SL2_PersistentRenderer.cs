@@ -106,13 +106,13 @@ namespace UnityEngine.Battlehub.SL2
             uo.sortingLayerID = sortingLayerID;
             uo.sortingOrder = sortingOrder;
             uo.allowOcclusionWhenDynamic = allowOcclusionWhenDynamic;
-            uo.lightProbeProxyVolumeOverride = FromID<GameObject>(lightProbeProxyVolumeOverride);
-            uo.probeAnchor = FromID<Transform>(probeAnchor);
+            uo.lightProbeProxyVolumeOverride = FromID<GameObject>(lightProbeProxyVolumeOverride, uo.lightProbeProxyVolumeOverride);
+            uo.probeAnchor = FromID<Transform>(probeAnchor, uo.probeAnchor);
             uo.lightmapIndex = lightmapIndex;
             uo.realtimeLightmapIndex = realtimeLightmapIndex;
             uo.lightmapScaleOffset = lightmapScaleOffset;
             uo.realtimeLightmapScaleOffset = realtimeLightmapScaleOffset;
-            uo.sharedMaterials = FromID<Material>(sharedMaterials);
+            uo.sharedMaterials = FromID<Material>(sharedMaterials, uo.sharedMaterials);
             return uo;
         }
 

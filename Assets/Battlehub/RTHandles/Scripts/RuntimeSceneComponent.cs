@@ -18,12 +18,6 @@ namespace Battlehub.RTHandles
         public float GridSize = 1;
 
         [SerializeField]
-        private Transform m_pivot;
-
-        [SerializeField]
-        private Transform m_secondaryPivot;
-
-        [SerializeField]
         private SceneGizmo m_sceneGizmo;
 
         [SerializeField]
@@ -55,28 +49,13 @@ namespace Battlehub.RTHandles
                 gameObject.AddComponent<RuntimeSceneInput>();
             }
 
-            if (m_pivot == null)
-            {
-                GameObject pivot = new GameObject("Pivot");
-                pivot.transform.SetParent(transform, false);
-                m_pivot = pivot.transform;
-            }
-
-            if (m_secondaryPivot == null)
-            {
-                GameObject secondaryPivot = new GameObject("SecondaryPivot");
-                secondaryPivot.transform.SetParent(transform, false);
-                m_secondaryPivot = secondaryPivot.transform;
-            }
-
-            Window.Camera.transform.LookAt(m_pivot);
             m_mouseOrbit = Window.Camera.GetComponent<MouseOrbit>();
             if (!m_mouseOrbit)
             {
                 m_mouseOrbit = Window.Camera.gameObject.AddComponent<MouseOrbit>();
             }
-            m_mouseOrbit.Target = m_pivot;
-            m_mouseOrbit.SecondaryTarget = m_secondaryPivot;
+            m_mouseOrbit.Target = Pivot;
+            m_mouseOrbit.SecondaryTarget = SecondaryPivot;
 
             if(m_sceneGizmo == null)
             {
@@ -92,7 +71,7 @@ namespace Battlehub.RTHandles
                 m_sceneGizmo.OrientationChanging.AddListener(OnSceneGizmoOrientationChanging);
                 m_sceneGizmo.OrientationChanged.AddListener(OnSceneGizmoOrientationChanged);
                 m_sceneGizmo.ProjectionChanged.AddListener(OnSceneGizmoProjectionChanged);
-                m_sceneGizmo.Pivot = m_pivot;
+                m_sceneGizmo.Pivot = Pivot;
             }
 
             if(m_grid == null)
@@ -160,7 +139,6 @@ namespace Battlehub.RTHandles
                     Window.Camera.transform.position += offset;
                     m_mouseOrbit.Target.transform.position += offset;
                     m_mouseOrbit.SecondaryTarget.transform.position += offset;
-
                 }
                 while (false);
             }

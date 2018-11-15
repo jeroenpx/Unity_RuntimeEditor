@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.Utils;
 using System.Linq;
@@ -9,15 +10,14 @@ namespace Battlehub.RTEditor
 {
     public class SceneView : RuntimeWindow
     {
+        private Plane m_dragPlane;
         private IProject m_project;
         private GameObject m_prefabInstance;
-        private bool m_dropExecuted;
-
+     
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
             m_project = IOC.Resolve<IProject>();
-            
         }
 
         protected override void OnActivated()
@@ -49,6 +49,18 @@ namespace Battlehub.RTEditor
                         {
                             if (obj is GameObject)
                             {
+                                IScenePivot scenePivot = IOCContainer.Resolve<IScenePivot>();
+                                Vector3 up = Vector3.up;
+                                if(Mathf.Abs(Vector3.Dot(Camera.transform.up, Vector3.up)) > Mathf.Cos(Mathf.Deg2Rad))
+                                {
+                                    up = Vector3.Cross(Camera.transform.right, Vector3.up);
+                                }
+                                else
+                                {
+                                    up = Vector3.up;
+                                }
+                                m_dragPlane = new Plane(up, scenePivot.SecondaryPivot.position);
+                        
                                 GameObject prefab = (GameObject)obj;
                                 bool wasPrefabEnabled = prefab.activeSelf;
                                 prefab.SetActive(false);
@@ -65,18 +77,31 @@ namespace Battlehub.RTEditor
 
                                 exposeToEditor.SetName(obj.name);
                                 m_prefabInstance.SetActive(true);
-
-                                if(m_dropExecuted)
-                                {
-                                    RecordUndo();
-                                    m_prefabInstance = null;
-                                    m_dropExecuted = true;
-                                }
                             }
                         }
                     });
                 }
             }
+        }
+
+        public override void Drag(object[] dragObjects, PointerEventData eventData)
+        {
+            base.Drag(dragObjects, eventData);
+
+            if(m_prefabInstance != null)
+            {
+                Vector3 point;
+                if (GetPointOnDragPlane(out point))
+                {
+                    m_prefabInstance.transform.position = point;
+                    
+                    RaycastHit hit = Physics.RaycastAll(Pointer).Where(h => h.transform != m_prefabInstance.transform).FirstOrDefault();
+                    if (hit.transform != null)
+                    {
+                        m_prefabInstance.transform.position = hit.point;
+                    }
+                }
+            }   
         }
 
         public override void Drop(object[] dragObjects, PointerEventData eventData)
@@ -85,10 +110,6 @@ namespace Battlehub.RTEditor
             {
                 RecordUndo();
                 m_prefabInstance = null;
-            }
-            else
-            {
-                m_dropExecuted = true;
             }
         }
 
@@ -121,6 +142,19 @@ namespace Battlehub.RTEditor
                 Destroy(m_prefabInstance);
                 m_prefabInstance = null;
             }
+        }
+
+        private bool GetPointOnDragPlane(out Vector3 point)
+        {
+            Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+            float distance;
+            if (m_dragPlane.Raycast(ray, out distance))
+            {
+                point = ray.GetPoint(distance);
+                return true;
+            }
+            point = Vector3.zero;
+            return false;
         }
     }
 

@@ -21,6 +21,11 @@ namespace Battlehub.RTCommon
     public class RuntimeWindow : DragDropTarget
     {
         private bool m_isActivated;
+        private IOCContainer m_container = new IOCContainer();
+        public IOCContainer IOCContainer
+        {
+            get { return m_container; }
+        }
 
         [SerializeField]
         private RuntimeWindowType m_windowType = RuntimeWindowType.SceneView;

@@ -182,10 +182,49 @@ namespace Battlehub.RTSaveLoad2
             return m_assetDB.FromID<T>(id);
         }
 
+        protected T FromID<T>(long id, T fallback) where T : UnityObject
+        {
+            if(m_assetDB.IsNullID(id))
+            {
+                return default(T);
+            }
+
+            T value = m_assetDB.FromID<T>(id);
+            if(value == default(T))
+            {
+                return fallback;
+            }
+
+            return value;
+        }
+
         protected T[] FromID<T>(long[] id) where T : UnityObject
         {
             return m_assetDB.FromID<T>(id);
         }
+
+        protected T[] FromID<T>(long[] id, T[] fallback) where T : UnityObject
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            T[] objs = new T[id.Length];
+            for (int i = 0; i < id.Length; ++i)
+            {
+                if(fallback != null && i < fallback.Length)
+                {
+                    objs[i] = FromID(id[i], fallback[i]);
+                }
+                else
+                { 
+                    objs[i] = FromID<T>(id[i]);
+                }
+            }
+            return objs;
+        }
+
     }
 }
 

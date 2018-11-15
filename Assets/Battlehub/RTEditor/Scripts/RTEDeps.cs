@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -6,9 +7,15 @@ namespace Battlehub.RTEditor
     [DefaultExecutionOrder(-100)]
     public class RTEDeps : MonoBehaviour
     {
+        private IScenePivot m_scenePivot;
         private IResourcePreviewUtility m_resourcePreview;
         private IRTEAppearance m_rteAppearance;
         private IRuntimeEditor m_rte;
+        
+        protected virtual IScenePivot ScenePivot
+        {
+            get { return FindObjectOfType<RuntimeSelectionComponent>(); }
+        }
 
         protected virtual IResourcePreviewUtility ResourcePreview
         {
@@ -66,7 +73,7 @@ namespace Battlehub.RTEditor
             IOC.Register<IRTE>(m_rte);
             IOC.Register(m_rte);
 
-
+            m_scenePivot = ScenePivot;
             m_resourcePreview = ResourcePreview;
             m_rteAppearance = RTEAppearance;
         }
@@ -117,6 +124,7 @@ namespace Battlehub.RTEditor
         {
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
+            IOC.RegisterFallback(() => Instance.m_scenePivot);
         }
     }
 }

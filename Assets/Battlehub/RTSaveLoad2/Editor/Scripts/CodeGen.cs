@@ -785,7 +785,8 @@ namespace Battlehub.RTSaveLoad2
                     //generate code which will convert identifier to unity object
 
                     Type mappedType = prop.MappedType.IsArray ? prop.MappedType.GetElementType() : prop.MappedType;
-                    sb.AppendFormat("uo.{0} = FromID<{2}>({1});", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(mappedType.Name));
+                    //sb.AppendFormat("uo.{0} = FromID<{2}>({1}, uo.{0});", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(mappedType.Name));
+                    sb.AppendFormat("uo.{0} = FromID({1}, uo.{0});", prop.MappedName, prop.PersistentName);
                 }
                 else
                 {

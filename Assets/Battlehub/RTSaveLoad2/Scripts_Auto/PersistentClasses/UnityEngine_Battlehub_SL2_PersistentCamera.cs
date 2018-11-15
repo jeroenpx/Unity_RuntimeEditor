@@ -225,7 +225,7 @@ namespace UnityEngine.Battlehub.SL2
             uo.focalLength = focalLength;
             uo.rect = rect;
             uo.pixelRect = pixelRect;
-            uo.targetTexture = FromID<RenderTexture>(targetTexture);
+            uo.targetTexture = FromID<RenderTexture>(targetTexture, uo.targetTexture);
             uo.targetDisplay = targetDisplay;
             uo.worldToCameraMatrix = worldToCameraMatrix;
             uo.projectionMatrix = projectionMatrix;

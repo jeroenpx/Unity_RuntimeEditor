@@ -45,7 +45,7 @@ namespace UnityEngine.Battlehub.SL2
         {
             obj = base.WriteToImpl(obj);
             Material uo = (Material)obj;
-            uo.shader = FromID<Shader>(shader);
+            uo.shader = FromID<Shader>(shader, uo.shader);
             uo.renderQueue = renderQueue;
             uo.globalIlluminationFlags = globalIlluminationFlags;
             uo.doubleSidedGI = doubleSidedGI;
