@@ -68,6 +68,13 @@ namespace Battlehub.RTHandles
             get { return m_invertZAxis; }
         }
 
+        [SerializeField]
+        public bool m_positionHandleArrowOnly = false;
+        public bool PositionHandleArrowOnly
+        {
+            get { return m_positionHandleArrowOnly; }
+        }
+        
         public Vector3 Forward
         {
             get { return m_invertZAxis ? Vector3.back : Vector3.forward; }
@@ -531,107 +538,112 @@ namespace Battlehub.RTHandles
             }
             else
             {
-            
-                Camera camera = Camera.current;
-                Vector3 toCam = transform.inverse.MultiplyVector(camera.transform.position - position);
-
-                float fx = Mathf.Sign(Vector3.Dot(toCam, x)) * m_handleScale;
-                float fy = Mathf.Sign(Vector3.Dot(toCam, y)) * m_handleScale;
-                float fz = Mathf.Sign(Vector3.Dot(toCam, z)) * m_handleScale;
-
-                x.x *= fx;
-                y.y *= fy;
-                z.z *= fz;
-
-                Vector3 xy = x + y;
-                Vector3 xz = x + z;
-                Vector3 yz = y + z;
-
-                x = transform.MultiplyPoint(x);
-                y = transform.MultiplyPoint(y);
-                z = transform.MultiplyPoint(z);
-                xy = transform.MultiplyPoint(xy);
-                xz = transform.MultiplyPoint(xz);
-                yz = transform.MultiplyPoint(yz);
-
-                
-                if(!xLocked && !zLocked)
+                if(PositionHandleArrowOnly)
                 {
-                    GL.Color(selectedAxis != RuntimeHandleAxis.XZ ? m_colors.YColor : m_colors.SelectionColor);
-                    GL.Vertex(position);
-                    GL.Vertex(z);
-                    GL.Vertex(z);
-                    GL.Vertex(xz);
-                    GL.Vertex(xz);
-                    GL.Vertex(x);
-                    GL.Vertex(x);
-                    GL.Vertex(position);
+                    GL.End();
                 }
-            
-                if(!xLocked && !yLocked)
+                else
                 {
-                    GL.Color(selectedAxis != RuntimeHandleAxis.XY ? m_colors.ZColor : m_colors.SelectionColor);
-                    GL.Vertex(position);
-                    GL.Vertex(y);
-                    GL.Vertex(y);
-                    GL.Vertex(xy);
-                    GL.Vertex(xy);
-                    GL.Vertex(x);
-                    GL.Vertex(x);
-                    GL.Vertex(position);
-                }
-           
-                if(!yLocked && !zLocked)
-                {
-                    GL.Color(selectedAxis != RuntimeHandleAxis.YZ ? m_colors.XColor : m_colors.SelectionColor);
-                    GL.Vertex(position);
-                    GL.Vertex(y);
-                    GL.Vertex(y);
-                    GL.Vertex(yz);
-                    GL.Vertex(yz);
-                    GL.Vertex(z);
-                    GL.Vertex(z);
-                    GL.Vertex(position);
-                }
-                GL.End();
+                    Camera camera = Camera.current;
+                    Vector3 toCam = transform.inverse.MultiplyVector(camera.transform.position - position);
+
+                    float fx = Mathf.Sign(Vector3.Dot(toCam, x)) * m_handleScale;
+                    float fy = Mathf.Sign(Vector3.Dot(toCam, y)) * m_handleScale;
+                    float fz = Mathf.Sign(Vector3.Dot(toCam, z)) * m_handleScale;
+
+                    x.x *= fx;
+                    y.y *= fy;
+                    z.z *= fz;
+
+                    Vector3 xy = x + y;
+                    Vector3 xz = x + z;
+                    Vector3 yz = y + z;
+
+                    x = transform.MultiplyPoint(x);
+                    y = transform.MultiplyPoint(y);
+                    z = transform.MultiplyPoint(z);
+                    xy = transform.MultiplyPoint(xy);
+                    xz = transform.MultiplyPoint(xz);
+                    yz = transform.MultiplyPoint(yz);
+
+                    if (!xLocked && !zLocked)
+                    {
+                        GL.Color(selectedAxis != RuntimeHandleAxis.XZ ? m_colors.YColor : m_colors.SelectionColor);
+                        GL.Vertex(position);
+                        GL.Vertex(z);
+                        GL.Vertex(z);
+                        GL.Vertex(xz);
+                        GL.Vertex(xz);
+                        GL.Vertex(x);
+                        GL.Vertex(x);
+                        GL.Vertex(position);
+                    }
+
+                    if (!xLocked && !yLocked)
+                    {
+                        GL.Color(selectedAxis != RuntimeHandleAxis.XY ? m_colors.ZColor : m_colors.SelectionColor);
+                        GL.Vertex(position);
+                        GL.Vertex(y);
+                        GL.Vertex(y);
+                        GL.Vertex(xy);
+                        GL.Vertex(xy);
+                        GL.Vertex(x);
+                        GL.Vertex(x);
+                        GL.Vertex(position);
+                    }
+
+                    if (!yLocked && !zLocked)
+                    {
+                        GL.Color(selectedAxis != RuntimeHandleAxis.YZ ? m_colors.XColor : m_colors.SelectionColor);
+                        GL.Vertex(position);
+                        GL.Vertex(y);
+                        GL.Vertex(y);
+                        GL.Vertex(yz);
+                        GL.Vertex(yz);
+                        GL.Vertex(z);
+                        GL.Vertex(z);
+                        GL.Vertex(position);
+                    }
+                    GL.End();
 
 
-                GL.Begin(GL.QUADS);
+                    GL.Begin(GL.QUADS);
 
-                if(!xLocked && !zLocked)
-                {
-                    Color color = m_colors.YColor;
-                    color.a = 0.5f;
-                    GL.Color(color);
-                    GL.Vertex(position);
-                    GL.Vertex(z);
-                    GL.Vertex(xz);
-                    GL.Vertex(x);
-                }
+                    if (!xLocked && !zLocked)
+                    {
+                        Color color = m_colors.YColor;
+                        color.a = 0.5f;
+                        GL.Color(color);
+                        GL.Vertex(position);
+                        GL.Vertex(z);
+                        GL.Vertex(xz);
+                        GL.Vertex(x);
+                    }
 
-                if(!xLocked && !yLocked)
-                {
-                    Color color = m_colors.ZColor;
-                    color.a = 0.5f;
-                    GL.Color(color);
-                    GL.Vertex(position);
-                    GL.Vertex(y);
-                    GL.Vertex(xy);
-                    GL.Vertex(x);
+                    if (!xLocked && !yLocked)
+                    {
+                        Color color = m_colors.ZColor;
+                        color.a = 0.5f;
+                        GL.Color(color);
+                        GL.Vertex(position);
+                        GL.Vertex(y);
+                        GL.Vertex(xy);
+                        GL.Vertex(x);
+                    }
+
+                    if (!yLocked && !zLocked)
+                    {
+                        Color color = m_colors.XColor;
+                        color.a = 0.5f;
+                        GL.Color(color);
+                        GL.Vertex(position);
+                        GL.Vertex(y);
+                        GL.Vertex(yz);
+                        GL.Vertex(z);
+                    }
+
+                    GL.End();
                 }
-                
-                if(!yLocked && !zLocked)
-                {
-                    Color color = m_colors.XColor;
-                    color.a = 0.5f;
-                    GL.Color(color);
-                    GL.Vertex(position);
-                    GL.Vertex(y);
-                    GL.Vertex(yz);
-                    GL.Vertex(z);
-                }
-               
-                GL.End();
             }
            
             m_shapesMaterial.SetPass(0);

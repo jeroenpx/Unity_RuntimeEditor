@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System;
 using UnityEngine;
 
 namespace Battlehub.RTHandles
@@ -56,6 +57,10 @@ namespace Battlehub.RTHandles
         private float m_arrowLength = DefaultArrowLength;
         [SerializeField]
         private float m_quadLength = DefaultQuadLength;
+        private float QuadLength
+        {
+            get { return Appearance.PositionHandleArrowOnly ? 0 : m_quadLength;}
+        }
         [SerializeField]
         private bool m_isVertexSnapping;
 
@@ -238,7 +243,7 @@ namespace Battlehub.RTHandles
 
         public override void SetLock(LockObject lockObj)
         {
-            base.SetLock(m_lockObj);
+            base.SetLock(lockObj);
             OnVertexSnappingModeChaged();
             SetColors();
         }
@@ -294,13 +299,13 @@ namespace Battlehub.RTHandles
             m_materials[m_yQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.YColor;
             m_materials[m_zQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionY ? Colors.DisabledColor : Colors.ZColor;
 
-            Color xQuadColor = Colors.XColor; xQuadColor.a = m_quadTransparency;
-            m_materials[m_xQuadMatIndex].color = xQuadColor;
+            Color xQuadColor = m_lockObj.PositionY || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.XColor; xQuadColor.a = Mathf.Min(m_quadTransparency, xQuadColor.a);
+            m_materials[m_xQuadMatIndex].color =  xQuadColor;
 
-            Color yQuadColor = Colors.YColor; yQuadColor.a = m_quadTransparency;
+            Color yQuadColor = m_lockObj.PositionX || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.YColor; yQuadColor.a = Mathf.Min(m_quadTransparency, yQuadColor.a);
             m_materials[m_yQuadMatIndex].color = yQuadColor;
 
-            Color zQuadColor = Colors.ZColor; zQuadColor.a = m_quadTransparency;
+            Color zQuadColor = m_lockObj.PositionX || m_lockObj.PositionY ? Colors.DisabledColor : Colors.ZColor; zQuadColor.a = Mathf.Min(m_quadTransparency, zQuadColor.a);
             m_materials[m_zQuadMatIndex].color = zQuadColor;
 
             m_ssQuadMaterial.color = Colors.AltColor;
@@ -375,7 +380,7 @@ namespace Battlehub.RTHandles
 
         protected override void UpdateModel()
         {
-            m_quadLength = Mathf.Abs(m_quadLength);
+            float quadLength = Mathf.Abs(QuadLength);
             m_radius = Mathf.Max(0.01f, m_radius);
 
             Vector3 right = transform.rotation * Vector3.right * transform.localScale.x;
@@ -387,7 +392,8 @@ namespace Battlehub.RTHandles
             float length = m_length * ModelScale;
             float arrowRadius = m_arrowRadius * ModelScale;
             float arrowLength = m_arrowLength * ModelScale;
-            float quadLength = m_quadLength * ModelScale;
+
+            quadLength = quadLength * ModelScale;
 
             float scale = radius / DefaultRadius;
             float arrowScale = arrowLength / DefaultArrowLength / scale;
@@ -502,6 +508,7 @@ namespace Battlehub.RTHandles
 
         public int SetCameraPosition(Vector3 pos)
         {
+
             Vector3 toCam = (pos - transform.position).normalized;
             toCam = transform.InverseTransformDirection(toCam);
             float[] dots =
@@ -531,28 +538,30 @@ namespace Battlehub.RTHandles
 
             float maxDot = float.MinValue;
             int maxIndex = -1;
-            for(int i = 0; i < dots.Length; ++i)
+            for (int i = 0; i < dots.Length; ++i)
             {
-                if(dots[i] > maxDot)
+                if (dots[i] > maxDot)
                 {
                     maxDot = dots[i];
                     maxIndex = i;
                 }
             }
 
-            for(int i = 0; i < m_models.Length - 1; ++i)
+
+            for (int i = 0; i < m_models.Length - 1; ++i)
             {
-                if(i != maxIndex)
+                if (i != maxIndex)
                 {
                     m_models[i].SetActive(false);
                 }
             }
 
-            if(maxIndex >= 0)
+            if (maxIndex >= 0)
             {
                 m_models[maxIndex].SetActive(true);
             }
             return maxIndex;
+
         }
 
         public override RuntimeHandleAxis HitTest(Ray ray)
@@ -583,6 +592,29 @@ namespace Battlehub.RTHandles
                     RaycastHit hit;
                     if (m_colliders[i].Raycast(ray, out hit, Window.Camera.farClipPlane))
                     {
+                        if(m_lockObj.PositionX)
+                        {
+                            if(hit.collider == m_xCollider || hit.collider == m_xyCollider || hit.collider == m_xzCollider)
+                            {
+                                continue;
+                            }
+                            
+                        }
+                        if(m_lockObj.PositionY)
+                        {
+                            if (hit.collider == m_yCollider || hit.collider == m_yzCollider || hit.collider == m_xyCollider)
+                            {
+                                continue;
+                            }
+                        }
+                        if(m_lockObj.PositionZ)
+                        {
+                            if (hit.collider == m_zCollider || hit.collider == m_yzCollider || hit.collider == m_xzCollider)
+                            {
+                                continue;
+                            }
+                        }
+
                         if (hit.distance < minDistance)
                         {
                             collider = hit.collider;
@@ -658,13 +690,13 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (m_prevRadius != m_radius || m_prevLength != m_length || m_prevArrowRadius != m_arrowRadius || m_prevArrowLength != m_arrowLength || m_prevQuadLength != m_quadLength)
+            if (m_prevRadius != m_radius || m_prevLength != m_length || m_prevArrowRadius != m_arrowRadius || m_prevArrowLength != m_arrowLength || m_prevQuadLength != QuadLength)
             {
                 m_prevRadius = m_radius;
                 m_prevLength = m_length;
                 m_prevArrowRadius = m_arrowRadius;
                 m_prevArrowLength = m_arrowLength;
-                m_prevQuadLength = m_quadLength;
+                m_prevQuadLength = QuadLength;
 
                 UpdateModel();
             }

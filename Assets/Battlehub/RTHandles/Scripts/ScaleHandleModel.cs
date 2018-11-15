@@ -105,7 +105,7 @@ namespace Battlehub.RTHandles
 
         public override void SetLock(LockObject lockObj)
         {
-            base.SetLock(m_lockObj);
+            base.SetLock(lockObj);
             SetColors();
         }
 
@@ -280,6 +280,36 @@ namespace Battlehub.RTHandles
                 RaycastHit hit;
                 if (m_colliders[i].Raycast(ray, out hit, Window.Camera.farClipPlane))
                 {
+                    if(m_lockObj.ScaleX && m_lockObj.ScaleY && m_lockObj.ScaleZ)
+                    {
+                        if(hit.collider == m_xyzCollider)
+                        {
+                            continue;
+                        }
+                    }
+                    if (m_lockObj.ScaleX)
+                    {
+                        if (hit.collider == m_xCollider)
+                        {
+                            continue;
+                        }
+                    }
+                    if (m_lockObj.ScaleY)
+                    {
+                        if (hit.collider == m_yCollider)
+                        {
+                            continue;
+                        }
+                    }
+                    if (m_lockObj.ScaleZ)
+                    {
+                        if (hit.collider == m_zCollider)
+                        {
+                            continue;
+                        }
+                    }
+                   
+
                     if (hit.distance < minDistance)
                     {
                         collider = hit.collider;

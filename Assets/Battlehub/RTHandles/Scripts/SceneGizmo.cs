@@ -543,7 +543,8 @@ namespace Battlehub.RTHandles
                 m_camera.depth = Window.Camera.depth + 1;
                 m_aspect = m_camera.aspect;
 
-                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x / 2 - 20, (Screen.height - Window.Camera.pixelRect.yMax) + Size.y - 5.0f, 40, 30);
+                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x / 2 - 17, (Screen.height - Window.Camera.pixelRect.yMax) + Size.y - 10.0f, 35, 14);
+                
                 m_buttonStyle = new GUIStyle();
                 m_buttonStyle.alignment = TextAnchor.MiddleCenter;
                 m_buttonStyle.normal.textColor = new Color(0.8f, 0.8f, 0.8f, 0.8f);

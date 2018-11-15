@@ -2,10 +2,7 @@
 using UnityEngine;
 using Battlehub.RTSaveLoad;
 using System.Linq;
-using UnityEngine.EventSystems;
-
 using Battlehub.RTCommon;
-using Battlehub.Utils;
 
 namespace Battlehub.RTHandles
 {
@@ -13,7 +10,7 @@ namespace Battlehub.RTHandles
     public class PositionHandle : BaseHandle
     {
         public float GridSize = 1.0f;
-
+        
         private Vector3 m_cursorPosition;
         private Vector3 m_currentPosition;
 
@@ -537,11 +534,9 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            
             m_snapTargets = snapTargets.ToArray();
             m_targetLayers = new int[m_snapTargets.Length];
             m_snapTargetsBounds = snapTargetBounds.ToArray();
-
 
             Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
             ExposeToEditor[] exposeToEditorObjects = FindObjectsOfType<ExposeToEditor>();
@@ -656,23 +651,27 @@ namespace Battlehub.RTHandles
 
             float scale = RuntimeHandlesComponent.GetScreenScale(HandlePosition, Window.Camera);
             Matrix4x4 matrix = Matrix4x4.TRS(HandlePosition, Rotation, new Vector3(scale, scale, scale));
-            float s = 0.23f * scale;
 
-            if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale))
+            if(!Appearance.PositionHandleArrowOnly)
             {
-                return RuntimeHandleAxis.XZ;
-            }
+                float s = 0.23f * scale;
 
-            if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale))
-            {
-                return RuntimeHandleAxis.YZ;
-            }
+                if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale))
+                {
+                    return RuntimeHandleAxis.XZ;
+                }
 
-            if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale))
-            {
-                return RuntimeHandleAxis.XY;
-            }
+                if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale))
+                {
+                    return RuntimeHandleAxis.YZ;
+                }
 
+                if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale))
+                {
+                    return RuntimeHandleAxis.XY;
+                }
+            }
+           
             float distToYAxis;
             float distToZAxis;
             float distToXAxis;

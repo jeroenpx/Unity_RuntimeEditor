@@ -316,10 +316,13 @@ namespace Battlehub.RTHandles
             get { return m_selectedAxis; }
             set
             {
-                m_selectedAxis = value;
-                if (Model != null)
+                if(m_selectedAxis != value)
                 {
-                    Model.Select(SelectedAxis);
+                    m_selectedAxis = value;
+                    if (Model != null)
+                    {
+                        Model.Select(SelectedAxis);
+                    }
                 }
             }
         }

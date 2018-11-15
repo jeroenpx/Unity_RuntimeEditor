@@ -231,25 +231,25 @@ namespace Battlehub.RTHandles
             switch (m_selectedAxis)
             {
                 case RuntimeHandleAxis.X:
-                    if (!m_lockObj.PositionX)
+                    if (!m_lockObj.RotationX)
                     {
                         m_xyzMaterials[m_xMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Y:
-                    if (!m_lockObj.PositionY)
+                    if (!m_lockObj.RotationY)
                     {
                         m_xyzMaterials[m_yMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Z:
-                    if (!m_lockObj.PositionZ)
+                    if (!m_lockObj.RotationZ)
                     {
                         m_xyzMaterials[m_zMatIndex].color = Colors.SelectionColor;
                     }
                     break;
                 case RuntimeHandleAxis.Free:
-                    if(!m_lockObj.IsPositionLocked)
+                    if(!m_lockObj.IsRotationLocked)
                     {
                         m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0.1f);
                     }
@@ -401,6 +401,43 @@ namespace Battlehub.RTHandles
                 RaycastHit hit;
                 if (m_colliders[i].Raycast(ray, out hit, camera.farClipPlane))
                 {
+                    if(m_lockObj.RotationX && m_lockObj.RotationY && m_lockObj.RotationZ)
+                    {
+                        if(hit.collider == m_innerCollider)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (m_lockObj.RotationX)
+                    {
+                        if (hit.collider == m_xCollider)
+                        {
+                            continue;
+                        }
+                    }
+                    if (m_lockObj.RotationY)
+                    {
+                        if (hit.collider == m_yCollider)
+                        {
+                            continue;
+                        }
+                    }
+                    if (m_lockObj.RotationZ)
+                    {
+                        if (hit.collider == m_zCollider)
+                        {
+                            continue;
+                        }
+                    }
+                    if(m_lockObj.RotationScreen)
+                    {
+                        if(hit.collider == m_outerCollider)
+                        {
+                            continue;
+                        }
+                    }
+
                     if (hit.distance < minDistance)
                     {
                         collider = hit.collider;
