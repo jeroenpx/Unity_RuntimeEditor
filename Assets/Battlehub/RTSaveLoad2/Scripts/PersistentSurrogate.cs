@@ -101,7 +101,7 @@ namespace Battlehub.RTSaveLoad2
 
         protected void AddDep(long depenency, GetDepsContext context)
         {
-            if (depenency > 0 && !context.Dependencies.Contains(depenency))
+            if (depenency > 0 && !m_assetDB.IsNullID(depenency) && !context.Dependencies.Contains(depenency))
             {
                 context.Dependencies.Add(depenency);
             }

@@ -15,7 +15,6 @@ namespace Battlehub.RTEditor
     public class ProjectFolderView : RuntimeWindow
     {
         public event EventHandler<ProjectTreeEventArgs> ItemDeleted;
-        public event EventHandler<ProjectTreeEventArgs> ItemsDropped;
         public event EventHandler<ProjectTreeEventArgs> ItemDoubleClick;
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
 
@@ -31,10 +30,44 @@ namespace Battlehub.RTEditor
             m_items = items;
             if (m_items != null)
             {
-                m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.NameExt)).ToArray();
+                m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToArray();
             }
-            DataBind(true);
+            DataBind(reload);
         }
+
+        public void InsertItems(ProjectItem[] items)
+        {
+            if(m_folders == null)
+            {
+                return;
+            }
+
+            items = items.Where(item => m_folders.Contains(item.Parent)).ToArray();
+            if(items.Length == 0)
+            {
+                return;
+            }
+
+            ProjectItem[] sorted = m_items.Union(items).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToArray();
+            ProjectItem selectItem = null;
+            for(int i = 0; i < sorted.Length; ++i)
+            {
+                if(items.Contains(sorted[i]))
+                {
+                    m_listBox.Insert(i, sorted[i]);
+                    selectItem = sorted[i];
+                }
+            }
+            m_items = sorted;
+
+            if(selectItem != null)
+            {
+                m_listBox.SelectedItem = selectItem;
+                m_listBox.ScrollIntoView(selectItem);
+            }
+            
+        }
+
 
         [SerializeField]
         private GameObject ListBoxPrefab;
@@ -158,13 +191,10 @@ namespace Battlehub.RTEditor
             }
         }
 
-      
-
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.ProjectFolder;
             base.AwakeOverride();
-
 
             if (!ListBoxPrefab)
             {
@@ -271,29 +301,7 @@ namespace Battlehub.RTEditor
             if (!(e.DropTarget is AssetItem) && (e.DragItems == null || !e.DragItems.Contains(e.DropTarget)))
             {
                 ProjectItem[] projectItems = e.DragItems.OfType<ProjectItem>().ToArray();
-                m_project.Move(projectItems, (ProjectItem)e.DropTarget, false, error =>
-                {
-                    if(error.HasError)
-                    {
-                        PopupWindow.Show("Unable to move assets", error.ErrorText, "OK");
-                        return;
-                    }
-
-                    ProjectItem parent = (ProjectItem)e.DropTarget;
-                    foreach (ProjectItem item in e.DragItems)
-                    {
-                        if (item.Parent != parent)
-                        {
-                            m_listBox.RemoveChild(item.Parent, item, item.Parent.Children.Count == 1);
-                            parent.AddChild(item);
-                        }
-                    }
-
-                    if(ItemsDropped != null)
-                    {
-                        ItemsDropped(this, new ProjectTreeEventArgs(projectItems));
-                    }
-                });
+                m_project.Move(projectItems, (ProjectItem)e.DropTarget);
             }
         }
 

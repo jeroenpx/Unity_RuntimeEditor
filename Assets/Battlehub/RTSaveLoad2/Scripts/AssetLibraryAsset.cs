@@ -164,8 +164,16 @@ namespace Battlehub.RTSaveLoad2
             if (IIDtoPID)
             {
                 int instanceID = asset.Object.GetInstanceID();
-                mapping.Add(instanceID, m_offset + asset.PersistentID);
-                instanceIDs.Add(instanceID);
+
+                //Following if statement required because object can be added to multiple libraries and 
+                //have multiple persistetnt identifiers. Only first persistent identifier is added to dictionary.
+                //Any persistent id can be converted to "first" persistent id using following approach:
+                //(PersistenID -> Obj) -> (InstanceID -> First PersistentID)
+                if (!mapping.InstanceIDtoPID.ContainsKey(instanceID)) 
+                {
+                    mapping.Add(instanceID, m_offset + asset.PersistentID);
+                    instanceIDs.Add(instanceID);
+                }
             }
 
             if (PIDtoObj)
@@ -185,8 +193,11 @@ namespace Battlehub.RTSaveLoad2
                         if (IIDtoPID)
                         {
                             int instanceID = prefabPart.Object.GetInstanceID();
-                            mapping.Add(instanceID, m_offset + prefabPart.PersistentID);
-                            instanceIDs.Add(instanceID);
+                            if(!mapping.InstanceIDtoPID.ContainsKey(instanceID))
+                            {
+                                mapping.Add(instanceID, m_offset + prefabPart.PersistentID);
+                                instanceIDs.Add(instanceID);
+                            }
                         }
 
                         if (PIDtoObj)

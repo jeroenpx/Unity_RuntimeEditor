@@ -55,8 +55,8 @@ namespace Battlehub.RTSaveLoad2
         
         bool IsLibraryLoaded(int ordinal);
 
-        bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadPIDtoObj);
-        void LoadLibrary(string assetLibrary, int ordinal, bool loadPIDtoObj, Action<bool> callback);
+        bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadIIDtoPID,  bool loadPIDtoObj);
+        void LoadLibrary(string assetLibrary, int ordinal, bool loadIIDtoPID, bool loadPIDtoObj, Action<bool> callback);
         void UnloadLibrary(int ordinal);
         void UnloadLibraries();
         
@@ -123,7 +123,7 @@ namespace Battlehub.RTSaveLoad2
             return m_ordinalToLib.ContainsKey(ordinal);
         }
 
-        public bool AddLibrary(AssetLibraryAsset assetLib, int ordinal, bool PIDtoObj)
+        public bool AddLibrary(AssetLibraryAsset assetLib, int ordinal, bool IIDtoObj, bool PIDtoObj)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
             {
@@ -140,12 +140,12 @@ namespace Battlehub.RTSaveLoad2
             assetLib.Ordinal = ordinal;
             m_loadedLibraries.Add(assetLib);
             m_ordinalToLib.Add(ordinal, assetLib);
-            LoadMapping(ordinal, true, PIDtoObj);
+            LoadMapping(ordinal, IIDtoObj, PIDtoObj);
 
             return true;
         }
 
-        public bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadPIDtoObj)
+        public bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadIIDtoPID, bool loadPIDtoObj)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
             {
@@ -159,11 +159,11 @@ namespace Battlehub.RTSaveLoad2
                 Debug.LogWarningFormat("Asset Library not found", assetLibrary);
                 return false;
             }
-            AddLibrary(assetLib, ordinal, loadPIDtoObj);
+            AddLibrary(assetLib, ordinal, loadIIDtoPID, loadPIDtoObj);
             return true;
         }
 
-        public void LoadLibrary(string assetLibrary, int ordinal, bool loadPIDtoObj, Action<bool> callback)
+        public void LoadLibrary(string assetLibrary, int ordinal, bool loadIIDtoPID, bool loadPIDtoObj, Action<bool> callback)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
             {
@@ -184,7 +184,7 @@ namespace Battlehub.RTSaveLoad2
                     return;
                 }
                 request.completed -= completed;
-                AddLibrary(assetLib, ordinal, loadPIDtoObj);
+                AddLibrary(assetLib, ordinal, loadIIDtoPID, loadPIDtoObj);
                 callback(true);
             };
             request.completed += completed;

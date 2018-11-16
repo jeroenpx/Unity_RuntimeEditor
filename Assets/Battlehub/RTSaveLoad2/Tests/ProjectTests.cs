@@ -60,7 +60,7 @@ namespace Battlehub.RTSaveLoad2
             IProject project = IOC.Resolve<IProject>();
             Assert.Throws<System.InvalidOperationException>(() =>
             {
-                project.Save(null, null, null, null);
+                project.CreatePrefab(null, null, null, null);
             },
             "Project is not opened. Use OpenProject method");
         }
@@ -84,7 +84,7 @@ namespace Battlehub.RTSaveLoad2
             bool done = false;
             project.Open("TestProject", openError =>
             {
-                project.Save(null, dummyPreview, dummyGo, null, (saveError, assetItem) =>
+                project.CreatePrefab(null, dummyPreview, dummyGo, null, (saveError, assetItem) =>
                 {
                     Assert.IsFalse(saveError.HasError);
                     Assert.AreEqual(assetItem.Parent, project.Root);
@@ -152,7 +152,7 @@ namespace Battlehub.RTSaveLoad2
             var openResult = project.Open("TestProject");
             yield return openResult;
 
-            var saveResult = project.Save(null, dummyPreview, dummyGo, null);
+            var saveResult = project.CreatePrefab(null, dummyPreview, dummyGo, null);
             yield return saveResult;
 
             Assert.IsFalse(saveResult.Error.HasError);

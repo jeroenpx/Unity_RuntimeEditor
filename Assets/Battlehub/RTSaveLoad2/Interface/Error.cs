@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Battlehub.RTSaveLoad2
+namespace Battlehub.RTSaveLoad2.Interface
 {
     public class Error
     {

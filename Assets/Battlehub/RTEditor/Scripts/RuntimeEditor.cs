@@ -61,7 +61,7 @@ namespace Battlehub.RTEditor
         {
             IsBusy = true;
             
-            m_project.Save(m_project.Root, new byte[0], SceneManager.GetActiveScene(), "TestScene", (error, assetItem) =>
+            m_project.CreatePrefab(m_project.Root, new byte[0], SceneManager.GetActiveScene(), "TestScene", (error, assetItem) =>
             {
                 Debug.Log("Scene Saved");
                 IsBusy = false;
