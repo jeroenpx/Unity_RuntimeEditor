@@ -1,4 +1,5 @@
-﻿using ProtoBuf;
+﻿using Battlehub.RTCommon;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,31 +13,81 @@ namespace Battlehub.RTSaveLoad2
     [ProtoContract(AsReferenceDefault = true)]
     public class PersistentRuntimeScene : PersistentRuntimePrefab
     {
+        [ProtoMember(1)]
+        public PersistentObject[] Assets;
+
+        [ProtoMember(2)]
+        public int[] AssetIdentifiers;
+
         protected override void ReadFromImpl(object obj)
         {
             Scene scene = (Scene)obj;
             
             GameObject[] rootGameObjects = scene.GetRootGameObjects();
+
             List<PersistentObject> data = new List<PersistentObject>();
             List<long> identifiers = new List<long>();    
             List<PersistentDescriptor> descriptors = new List<PersistentDescriptor>(rootGameObjects.Length);
-            GetDepsContext getDepsCtx = new GetDepsContext();
-            HashSet<int> usings = new HashSet<int>();
+            GetDepsFromContext getSceneDepsCtx = new GetDepsFromContext();
+
             for(int i = 0; i < rootGameObjects.Length; ++i)
             {
                 GameObject rootGO = rootGameObjects[i];
-                PersistentDescriptor descriptor = CreateDescriptorAndData(rootGO, data, identifiers, usings, getDepsCtx);
+                PersistentDescriptor descriptor = CreateDescriptorAndData(rootGO, data, identifiers, getSceneDepsCtx);
                 if(descriptor != null)
                 {
                     descriptors.Add(descriptor);
                 }
             }
 
+            HashSet<object> allDeps = getSceneDepsCtx.Dependencies;
+            List<UnityObject> externalDeps = new List<UnityObject>(allDeps.OfType<UnityObject>());
+            Queue<UnityObject> depsQueue = new Queue<UnityObject>(allDeps.OfType<UnityObject>());
+
+            List<PersistentObject> assets = new List<PersistentObject>();
+            List<int> assetIdentifiers = new List<int>();
+
+            GetDepsFromContext getDepsCtx = new GetDepsFromContext();
+            while(depsQueue.Count > 0)
+            {   
+                UnityObject uo = depsQueue.Dequeue();
+                if(!m_assetDB.IsMapped(uo))
+                {
+                    if (!(uo is GameObject) && !(uo is Component))
+                    {
+                        Type persistentType = m_typeMap.ToPersistentType(uo.GetType());
+                        if (persistentType != null)
+                        {
+                            getDepsCtx.Clear();
+
+                            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                            persistentObject.ReadFrom(uo);
+                            persistentObject.GetDepsFrom(uo, getDepsCtx);
+
+                            assets.Add(persistentObject);
+                            assetIdentifiers.Add(uo.GetInstanceID());
+
+                            foreach (UnityObject dep in getDepsCtx.Dependencies)
+                            {
+                                if(!allDeps.Contains(dep))
+                                {
+                                    allDeps.Add(dep);
+                                    depsQueue.Enqueue(dep);
+                                }
+                            }
+                        }
+                    }
+                    externalDeps.Remove(uo);
+                }
+            }
+
             Descriptors = descriptors.ToArray();
             Identifiers = identifiers.ToArray();
             Data = data.ToArray();
+            Dependencies = externalDeps.Select(uo => m_assetDB.ToID(uo)).ToArray();
 
-            Dependencies = getDepsCtx.Dependencies.ToArray();
+            Assets = assets.ToArray();
+            AssetIdentifiers = assetIdentifiers.ToArray();
         }
 
         protected override object WriteToImpl(object obj)
@@ -84,8 +135,49 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
+            UnityObject[] assetInstances = null;
+            if (AssetIdentifiers != null)
+            {
+                IUnityObjectFactory factory = IOC.Resolve<IUnityObjectFactory>();
+                assetInstances = new UnityObject[AssetIdentifiers.Length];
+                for (int i = 0; i < AssetIdentifiers.Length; ++i)
+                {
+                    PersistentObject asset = Assets[i];
+
+                    Type uoType = m_typeMap.ToUnityType(asset.GetType());
+                    if (uoType != null)
+                    {
+                        UnityObject assetInstance = factory.CreateInstance(uoType);
+                        if(assetInstance != null)
+                        {
+                            assetInstances[i] = assetInstance;
+                            idToUnityObj.Add(AssetIdentifiers[i], assetInstance);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Unable to resolve unity type for " + asset.GetType().FullName);
+                    }
+                }
+            }
+          
             m_assetDB.RegisterSceneObjects(idToUnityObj);
+
+            if(assetInstances != null)
+            {
+                for (int i = 0; i < AssetIdentifiers.Length; ++i)
+                {
+                    UnityObject assetInstance = assetInstances[i];
+                    if (assetInstance != null)
+                    {
+                        PersistentObject asset = Assets[i];
+                        asset.WriteTo(assetInstance);
+                    }
+                }
+            }
+
             RestoreDataAndResolveDependencies();
+            m_assetDB.UnregisterSceneObjects();
 
             return scene;
         }

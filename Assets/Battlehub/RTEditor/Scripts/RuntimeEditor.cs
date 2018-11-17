@@ -41,7 +41,7 @@ namespace Battlehub.RTEditor
         public void OpenScene()
         {
             IsBusy = true;
-
+            Selection.objects = null;
             AssetItem assetItem = m_project.Root.Get("Assets/TestScene" + m_project.GetExt(typeof(Scene))) as AssetItem;
             if(assetItem != null)
             {

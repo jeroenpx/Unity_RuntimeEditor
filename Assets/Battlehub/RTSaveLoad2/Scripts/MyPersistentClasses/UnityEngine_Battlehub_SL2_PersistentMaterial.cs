@@ -101,6 +101,10 @@ namespace UnityEngine.Battlehub.SL2
 
         public override void GetDeps(GetDepsContext context)
         {
+            if (context.VisitedObjects.Contains(this))
+            {
+                return;
+            }
             base.GetDeps(context);
             if (m_propertyValues != null)
             {
@@ -122,6 +126,10 @@ namespace UnityEngine.Battlehub.SL2
 
         public override void GetDepsFrom(object obj, GetDepsFromContext context)
         {
+            if (context.VisitedObjects.Contains(this))
+            {
+                return;
+            }
             base.GetDepsFrom(obj, context);
             if (obj == null)
             {

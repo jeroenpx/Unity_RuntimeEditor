@@ -29,6 +29,11 @@ namespace Battlehub.RTSaveLoad2
                 Texture2D texture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
                 return texture;
             }
+            else if(type == typeof(Shader))
+            {
+                Debug.LogWarning("Unable to instantiate Shader");
+                return null;
+            }
 
             return (UnityObject)Activator.CreateInstance(type);
         }

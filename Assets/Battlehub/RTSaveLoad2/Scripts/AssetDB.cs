@@ -29,6 +29,7 @@ namespace Battlehub.RTSaveLoad2
         long ToDynamicFolderID(int ordinal, int id);
         long ToSceneID(int ordinal, int id);
 
+        bool IsMapped(UnityObject uo);
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
 
@@ -69,26 +70,38 @@ namespace Battlehub.RTSaveLoad2
         private readonly Dictionary<int, AssetLibraryAsset> m_ordinalToLib = new Dictionary<int, AssetLibraryAsset>();
         private MappingInfo m_mapping = new MappingInfo();
 
-        private Dictionary<int, UnityObject> m_persistentIDToSceneObject;
-        private Dictionary<int, int> m_sceneObjectIDToPersistentID;
+        private readonly Dictionary<int, UnityObject> m_persistentIDToSceneObject = new Dictionary<int, UnityObject>();
+        private readonly Dictionary<int, int> m_sceneObjectIDToPersistentID = new Dictionary<int, int>();
 
         private readonly Dictionary<int, UnityObject> m_persistentIDToDynamicResource = new Dictionary<int, UnityObject>();
         private readonly Dictionary<int, int> m_dynamicResourceIDToPersistentID = new Dictionary<int, int>();
 
         public void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj)
         {
-            if(m_persistentIDToSceneObject != null)
+            if (m_persistentIDToSceneObject != null)
             {
                 Debug.LogWarning("scene objects were not unregistered");
             }
-            m_persistentIDToSceneObject = idToObj;
-            m_sceneObjectIDToPersistentID = m_persistentIDToSceneObject.ToDictionary(kvp => kvp.Value.GetInstanceID(), kvp => kvp.Key);
+
+            foreach (KeyValuePair<int, UnityObject> kvp in idToObj)
+            {
+                if (!m_persistentIDToSceneObject.ContainsKey(kvp.Key))
+                {
+                    m_persistentIDToSceneObject.Add(kvp.Key, kvp.Value);
+                }
+
+                int instanceId = kvp.Value.GetInstanceID();
+                if (!m_sceneObjectIDToPersistentID.ContainsKey(instanceId))
+                {
+                    m_sceneObjectIDToPersistentID.Add(instanceId, kvp.Key);
+                }
+            }
         }
 
         public void UnregisterSceneObjects()
         {
-            m_persistentIDToSceneObject = null;
-            m_sceneObjectIDToPersistentID = null;
+            m_persistentIDToSceneObject.Clear();
+            m_sceneObjectIDToPersistentID.Clear();
         }
 
         public void RegisterDynamicResource(int persistentID, UnityObject obj)
@@ -367,6 +380,34 @@ namespace Battlehub.RTSaveLoad2
             return (id >> AssetLibraryInfo.ORDINAL_OFFSET) & AssetLibraryInfo.ORDINAL_MASK;
         }
 
+        public bool IsMapped(UnityObject uo)
+        {
+            if (uo == null)
+            {
+                return false;
+            }
+
+            int instanceID = uo.GetInstanceID();
+            int persistentID;
+            if (m_mapping.InstanceIDtoPID.TryGetValue(instanceID, out persistentID))
+            {
+                return true;
+            }
+
+            //if (m_sceneObjectIDToPersistentID != null && m_sceneObjectIDToPersistentID.TryGetValue(instanceID, out persistentID))
+            //{
+            //    return true;
+            //}
+
+            if (m_dynamicResourceIDToPersistentID.TryGetValue(instanceID, out persistentID))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
         public long ToID(UnityObject uo)
         {
             if(uo == null)
@@ -381,10 +422,10 @@ namespace Battlehub.RTSaveLoad2
                 return m_staticResourceIDMask | (0x00000000FFFFFFFFL & persistentID);
             }
             
-            if(m_sceneObjectIDToPersistentID != null && m_sceneObjectIDToPersistentID.TryGetValue(instanceID, out persistentID))
-            {
-                return m_instanceIDMask | (0x00000000FFFFFFFFL & persistentID);
-            }
+            //if(m_sceneObjectIDToPersistentID != null && m_sceneObjectIDToPersistentID.TryGetValue(instanceID, out persistentID))
+            //{
+            //    return m_instanceIDMask | (0x00000000FFFFFFFFL & persistentID);
+            //}
 
             if(m_dynamicResourceIDToPersistentID.TryGetValue(instanceID, out persistentID))
             {
@@ -456,11 +497,11 @@ namespace Battlehub.RTSaveLoad2
                     return obj as T;
                 }
             }
-            else if(IsInstanceID(id))
+            else if (IsInstanceID(id))
             {
                 UnityObject obj;
                 int persistentID = unchecked((int)id);
-                if(m_persistentIDToSceneObject != null && m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
+                if (m_persistentIDToSceneObject != null && m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
                 }

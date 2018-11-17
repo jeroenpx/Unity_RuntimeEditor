@@ -93,7 +93,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-
         protected override void AwakeOverride()
         {
             base.AwakeOverride();

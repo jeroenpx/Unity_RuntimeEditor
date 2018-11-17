@@ -302,7 +302,6 @@ namespace Battlehub.RTCommon
                         {
                             IsOpenedEvent.Invoke();
                         }
-                        
                     }
                     else
                     {

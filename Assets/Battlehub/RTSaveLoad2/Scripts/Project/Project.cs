@@ -98,7 +98,7 @@ namespace Battlehub.RTSaveLoad2
         private void UnloadUnregisterDestroy()
         {
             m_assetDB.UnloadLibraries();
-            m_assetDB.UnregisterSceneObjects();
+            //m_assetDB.UnregisterSceneObjects();
             m_assetDB.UnregisterDynamicResources();
             foreach (UnityObject dynamicResource in m_dynamicResources.Values)
             {
@@ -495,6 +495,11 @@ namespace Battlehub.RTSaveLoad2
                 throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
             }
 
+            //if (objType == typeof(Scene))
+            //{
+            //    m_assetDB.UnregisterSceneObjects();
+            //}
+
             ProjectAsyncOperation<AssetItem> ao = new ProjectAsyncOperation<AssetItem>();
             LoadLibraryWithSceneDependencies(() => DoCreatePrefab(ao, persistentType, parent, previewData, obj, nameOverride, callback));
             return ao;
@@ -832,10 +837,10 @@ namespace Battlehub.RTSaveLoad2
                 throw new ArgumentException("assetItem", string.Format("Unable to resolve type using TypeGuid {0}", assetItem.TypeGuid));
             }
 
-            if (type == typeof(Scene))
-            {
-                m_assetDB.UnregisterSceneObjects();
-            }
+            //if (type == typeof(Scene))
+            //{
+            //    m_assetDB.UnregisterSceneObjects();
+            //}
 
             ProjectAsyncOperation<UnityObject> ao = new ProjectAsyncOperation<UnityObject>();
 

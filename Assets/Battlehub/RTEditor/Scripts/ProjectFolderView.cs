@@ -22,15 +22,15 @@ namespace Battlehub.RTEditor
 
         public Type TypeFilter;
 
-        private ProjectItem[] m_items;
+        private List<ProjectItem> m_items;
         private ProjectItem[] m_folders;
         public void SetItems(ProjectItem[] folders, ProjectItem[] items, bool reload)
         {
             m_folders = folders;
-            m_items = items;
+            m_items = new List<ProjectItem>(items);
             if (m_items != null)
             {
-                m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToArray();
+                m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
             }
             DataBind(reload);
         }
@@ -48,9 +48,9 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            ProjectItem[] sorted = m_items.Union(items).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToArray();
+            List<ProjectItem> sorted = m_items.Union(items).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
             ProjectItem selectItem = null;
-            for(int i = 0; i < sorted.Length; ++i)
+            for(int i = 0; i < sorted.Count; ++i)
             {
                 if(items.Contains(sorted[i]))
                 {
@@ -344,7 +344,12 @@ namespace Battlehub.RTEditor
 
         private void OnItemRemoved(object sender, ItemsRemovedArgs e)
         {
-            if(ItemDeleted != null)
+            for(int i = 0; i < e.Items.Length; ++i)
+            {
+                m_items.Remove((ProjectItem)e.Items[i]);
+            }
+
+            if (ItemDeleted != null)
             {
                 ItemDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
             }
