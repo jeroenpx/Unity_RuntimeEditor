@@ -25,7 +25,7 @@ namespace UnityEngine.Battlehub.SL2
         {
             obj = base.WriteToImpl(obj);
             MeshFilter uo = (MeshFilter)obj;
-            uo.sharedMesh = FromID<Mesh>(sharedMesh, uo.sharedMesh);
+            uo.sharedMesh = FromID(sharedMesh, uo.sharedMesh);
             return uo;
         }
 

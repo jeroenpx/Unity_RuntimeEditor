@@ -70,11 +70,19 @@ namespace Battlehub.RTSaveLoad2
 
         public virtual void ReadFrom(object obj)
         {
+            if(obj == null)
+            {
+                return;
+            }
             ReadFromImpl(obj);
         }
 
         public virtual object WriteTo(object obj)
         {
+            if(obj == null)
+            {
+                return null;
+            }
             obj = WriteToImpl(obj);
             return obj;
         }
@@ -125,7 +133,23 @@ namespace Battlehub.RTSaveLoad2
 
         protected void AddDep<T>(T[] dependencies, GetDepsFromContext context)
         {
+            if(dependencies == null)
+            {
+                return;
+            }
             for (int i = 0; i < dependencies.Length; ++i)
+            {
+                AddDep(dependencies[i], context);
+            }
+        }
+
+        protected void AddDep<T>(List<T> dependencies, GetDepsFromContext context)
+        {
+            if (dependencies == null)
+            {
+                return;
+            }
+            for (int i = 0; i < dependencies.Count; ++i)
             {
                 AddDep(dependencies[i], context);
             }
@@ -138,9 +162,26 @@ namespace Battlehub.RTSaveLoad2
 
         protected void AddSurrogateDeps<T>(T[] surrogateArray, GetDepsContext context) where T : PersistentSurrogate
         {
+            if(surrogateArray == null)
+            {
+                return;
+            }
             for (int i = 0; i < surrogateArray.Length; ++i)
             {
                 PersistentSurrogate surrogate = surrogateArray[i];
+                surrogate.GetDeps(context);
+            }
+        }
+
+        protected void AddSurrogateDeps<T>(List<T> surrogateList, GetDepsContext context) where T : PersistentSurrogate
+        {
+            if(surrogateList == null)
+            {
+                return;
+            }
+            for (int i = 0; i < surrogateList.Count; ++i)
+            {
+                PersistentSurrogate surrogate = surrogateList[i];
                 surrogate.GetDeps(context);
             }
         }
@@ -156,6 +197,10 @@ namespace Battlehub.RTSaveLoad2
 
         protected void AddSurrogateDeps<T>(T[] objArray, GetDepsFromContext context)
         {
+            if(objArray == null)
+            {
+                return;
+            }
             for (int i = 0; i < objArray.Length; ++i)
             {
                 object obj = objArray[i];
@@ -167,6 +212,24 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        protected void AddSurrogateDeps<T>(List<T> objList, GetDepsFromContext context)
+        {
+            if(objList == null)
+            {
+                return;
+            }
+            for (int i = 0; i < objList.Count; ++i)
+            {
+                object obj = objList[i];
+                if (obj != null)
+                {
+                    PersistentSurrogate surrogate = (PersistentSurrogate)obj;
+                    surrogate.GetDepsFrom(obj, context);
+                }
+            }
+        }
+
+
         protected long ToID(UnityObject uo)
         {
             return m_assetDB.ToID(uo);
@@ -177,12 +240,12 @@ namespace Battlehub.RTSaveLoad2
             return m_assetDB.ToID(uo);
         }
 
-        protected T FromID<T>(long id) where T : UnityObject
+        protected long[] ToID<T>(List<T> uo) where T : UnityObject
         {
-            return m_assetDB.FromID<T>(id);
+            return m_assetDB.ToID(uo);
         }
 
-        protected T FromID<T>(long id, T fallback) where T : UnityObject
+        protected T FromID<T>(long id, T fallback = null) where T : UnityObject
         {
             if(m_assetDB.IsNullID(id))
             {
@@ -198,12 +261,7 @@ namespace Battlehub.RTSaveLoad2
             return value;
         }
 
-        protected T[] FromID<T>(long[] id) where T : UnityObject
-        {
-            return m_assetDB.FromID<T>(id);
-        }
-
-        protected T[] FromID<T>(long[] id, T[] fallback) where T : UnityObject
+        protected T[] FromID<T>(long[] id, T[] fallback = null) where T : UnityObject
         {
             if (id == null)
             {
@@ -220,6 +278,28 @@ namespace Battlehub.RTSaveLoad2
                 else
                 { 
                     objs[i] = FromID<T>(id[i]);
+                }
+            }
+            return objs;
+        }
+
+        protected List<T> FromID<T>(long[] id, List<T> fallback = null) where T : UnityObject
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            List<T> objs = new List<T>();
+            for (int i = 0; i < id.Length; ++i)
+            {
+                if (fallback != null && i < fallback.Count)
+                {
+                    objs.Add(FromID(id[i], fallback[i]));
+                }
+                else
+                {
+                    objs.Add(FromID<T>(id[i]));
                 }
             }
             return objs;

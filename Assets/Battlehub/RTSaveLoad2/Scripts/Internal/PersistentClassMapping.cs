@@ -119,11 +119,20 @@ namespace Battlehub.RTSaveLoad2
 
         public static string ToPersistentNamespace(string mappedNamespace)
         {
+            if(mappedNamespace == null)
+            {
+                return "Battlehub.SL2";
+            }
             return mappedNamespace + ".Battlehub.SL2";
         }
 
         public static string ToMappedNamespace(string persistentNamespace)
         {
+            if(persistentNamespace == "Battlehub.SL2")
+            {
+                return string.Empty;
+            }
+
             return persistentNamespace.Replace(".Battlehub.SL2", "");
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
@@ -254,7 +255,8 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public PropertyInfo[] GetAllProperties(Type type)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(p => p.GetIndexParameters().Length == 0).ToArray();
+            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(p => (!p.PropertyType.IsGenericType || IsGenericList(p.PropertyType)) && p.GetIndexParameters().Length == 0).ToArray();
         }
 
         /// <summary>
@@ -264,7 +266,13 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public FieldInfo[] GetFields(Type type)
         {
-            return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToArray();
+        }
+
+        public bool IsGenericList(Type type)
+        {
+            bool isList = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
+            return isList;
         }
 
         /// <summary>
@@ -279,11 +287,17 @@ namespace Battlehub.RTSaveLoad2
                 type = type.GetElementType();
             }
 
+            if(IsGenericList(type))
+            {
+                type = type.GetGenericArguments()[0];
+            }
+
             if (!type.IsSubclassOf(typeof(UnityObject)) &&
                  type != typeof(UnityObject) &&
                 !type.IsEnum &&
                 !type.IsGenericType &&
                 !type.IsArray &&
+                !IsGenericList(type) &&
                 !type.IsPrimitive &&
                 (type.IsPublic || type.IsNestedPublic) &&
                 (type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null) &&
@@ -318,6 +332,11 @@ namespace Battlehub.RTSaveLoad2
             if (type.IsArray)
             {
                 type = type.GetElementType();
+            }
+
+            if(IsGenericList(type))
+            {
+                type = type.GetGenericArguments()[0];
             }
 
             if (inspectedTypes.Contains(type))
@@ -357,6 +376,11 @@ namespace Battlehub.RTSaveLoad2
                 type = type.GetElementType();
             }
 
+            if (IsGenericList(type))
+            {
+                type = type.GetGenericArguments()[0];
+            }
+
             if (type.IsSubclassOf(typeof(UnityObject)))
             {
                 return true;
@@ -378,9 +402,25 @@ namespace Battlehub.RTSaveLoad2
         public string TypeName(Type type)
         {
             if (type.DeclaringType == null)
-                return type.Name;
+            {
+                return _TypeName(type);
+            }
 
-            return TypeName(type.DeclaringType) + "+" + type.Name;
+            return TypeName(type.DeclaringType) + "+" + _TypeName(type);
+        }
+
+        private static string _TypeName(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                string name = type.FullName;
+                if (!string.IsNullOrEmpty(type.Namespace))
+                {
+                    name = name.Remove(0, type.Namespace.Length + 1);
+                }
+                return name;
+            }
+            return type.Name;
         }
 
         public string PreparePersistentTypeName(string typeName)
@@ -468,8 +508,13 @@ namespace Battlehub.RTSaveLoad2
                 {
                     continue;
                 }
-               
-                for(int i = 0; i < mapping.PropertyMappings.Length; ++i)
+
+                if (!nsHs.Contains(mapping.PersistentNamespace))
+                {
+                    nsHs.Add(mapping.PersistentNamespace);
+                }
+
+                for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
                 {
                     PersistentPropertyMapping pMapping = mapping.PropertyMappings[i];
                     if(!pMapping.IsEnabled || pMapping.HasPropertyInTemplate)
@@ -536,7 +581,7 @@ namespace Battlehub.RTSaveLoad2
                 }
                 else if(mappingType != null)
                 {
-                    if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject))
+                    if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject) || mappingType == typeof(UnityEventBase))
                     {
                         sb.AppendFormat(AddTypeTemplate, PreparePersistentTypeName(mapping.PersistentTypeName), "true", endOfLine);
                     }
@@ -679,7 +724,23 @@ namespace Battlehub.RTSaveLoad2
                     }
                     else
                     {
-                        typeName = PreparePersistentTypeName(prop.PersistentTypeName);
+                        if(IsGenericList(prop.MappedType))
+                        {
+                            Type argType = prop.MappedType.GetGenericArguments()[0];
+                            if (m_primitiveNames.TryGetValue(argType, out primitiveTypeName))
+                            {
+                                typeName = string.Format("List<{0}>", primitiveTypeName);
+                            }
+                            else
+                            {
+                                typeName = string.Format("List<{0}>", argType.FullName);
+                            }
+                        }
+                        else
+                        {
+                            typeName = PreparePersistentTypeName(prop.PersistentTypeName);
+                        }
+                        
                     }
                 }
 
@@ -750,7 +811,9 @@ namespace Battlehub.RTSaveLoad2
                 sb.Append(TAB);
 
                 
-                if(prop.MappedType.IsSubclassOf(typeof(UnityObject)) || prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)))
+                if(prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
+                   prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) || 
+                   IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                 {
                     //generate code which will convert unity object to identifier
                     sb.AppendFormat("{0} = ToID(uo.{1});", prop.PersistentName, prop.MappedName);
@@ -780,7 +843,9 @@ namespace Battlehub.RTSaveLoad2
 
                 sb.Append(TAB);
  
-                if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) || prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)))
+                if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) || 
+                    prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) ||
+                    IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                 {
                     //generate code which will convert identifier to unity object
 
@@ -823,7 +888,9 @@ namespace Battlehub.RTSaveLoad2
                         sb.AppendFormat("AddSurrogateDeps({0}, context);", prop.PersistentName);
                         sb.Append(BR + TAB2);
                     }
-                    else if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) || prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)))
+                    else if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
+                        prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) ||
+                        IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                     {
                         sb.Append(TAB);
                         sb.AppendFormat("AddDep({0}, context);", prop.PersistentName);
@@ -857,7 +924,9 @@ namespace Battlehub.RTSaveLoad2
                         sb.AppendFormat("AddSurrogateDeps(uo.{0}, context);", prop.MappedName);
                         sb.Append(BR + TAB2);
                     }
-                    if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) || prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)))
+                    if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
+                        prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) ||
+                        IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                     {
                         sb.Append(TAB);
                         sb.AppendFormat("AddDep(uo.{0}, context);", prop.MappedName);
@@ -887,7 +956,7 @@ namespace Battlehub.RTSaveLoad2
 
                 if(mapping.IsEnabled)
                 {
-                    if (!namespaces.Contains(mapping.MappedNamespace))
+                    if (!namespaces.Contains(mapping.MappedNamespace) && !string.IsNullOrEmpty(mapping.MappedNamespace))
                     {
                         namespaces.Add(mapping.MappedNamespace);
                     }
@@ -909,7 +978,7 @@ namespace Battlehub.RTSaveLoad2
                         {
                             continue;
                         }
-                        if (!namespaces.Contains(propertyMapping.MappedNamespace))
+                        if (!namespaces.Contains(propertyMapping.MappedNamespace) && !string.IsNullOrEmpty(propertyMapping.MappedNamespace))
                         {
                             namespaces.Add(propertyMapping.MappedNamespace);
                         }
@@ -955,6 +1024,15 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
+            if(IsGenericList(type))
+            {
+                Type elementType = type.GetGenericArguments()[0];
+                if (elementType.IsSubclassOf(typeof(UnityObject)))
+                {
+                    return typeof(long[]);
+                }
+            }
+
             if(type.IsSubclassOf(typeof(UnityObject)))
             {
                 return typeof(long);
@@ -964,15 +1042,16 @@ namespace Battlehub.RTSaveLoad2
 
         public void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
         {
-            assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
+            //assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
+            assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.Contains("UnityEditor") && !a.FullName.Contains("Assembly-CSharp-Editor")).OrderBy(a => a.FullName).ToArray();
 
             List<Type> allUOTypes = new List<Type>();
-            List<Assembly> assembliesList = new List<Assembly>() { null };
+            List<Assembly> assembliesList = new List<Assembly>();
 
             for (int i = 0; i < assemblies.Length; ++i)
             {
                 Assembly assembly = assemblies[i];
-                Type[] uoTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(UnityObject))).ToArray();
+                Type[] uoTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(UnityObject)) && !t.IsGenericType).ToArray();
                 if (uoTypes.Length > 0)
                 {
                     assembliesList.Add(assembly);
@@ -980,8 +1059,8 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            types = allUOTypes.ToArray();
-            assemblies = assembliesList.ToArray();
+            types = allUOTypes.OrderByDescending(t => t.FullName.Contains("UnityEngine")).ToArray();
+            assemblies = new Assembly[] { null }.Union(assembliesList.OrderBy(a => a.FullName)).ToArray();
         }
 
         private void GetTypesRecursive(Type type, HashSet<Type> typesHS)
@@ -1029,7 +1108,7 @@ namespace Battlehub.RTSaveLoad2
 
                 HashSet<Type> typesHs = new HashSet<Type>();
                 GetTypesRecursive(uoType, typesHs);
-                declaredIn.Add(uoType.Name, typesHs);
+                declaredIn.Add(uoType.FullName, typesHs);
 
                 foreach (Type type in typesHs)
                 {

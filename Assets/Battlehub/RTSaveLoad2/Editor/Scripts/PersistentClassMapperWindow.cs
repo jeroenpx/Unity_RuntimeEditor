@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 using System.IO;
 using Battlehub.RTSaveLoad2.Internal;
-
+using UnityEngine.Events;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -36,6 +36,8 @@ namespace Battlehub.RTSaveLoad2
             typeof(Quaternion),
             typeof(RuntimePrefab),
             typeof(RuntimeScene),
+            typeof(UnityEventBase),
+            typeof(UnityEvent)
         };
 
         public event Action<Type> TypeLocked;
@@ -46,7 +48,11 @@ namespace Battlehub.RTSaveLoad2
         private string[] m_groupNames;
         private string m_groupLabel;
         private int m_selectedGroupIndex;
+        private bool m_useGroupFilterText;
+        private string m_groupFilterText = string.Empty;
         private string m_filterText = string.Empty;
+        private string m_namespaceFilterText = string.Empty;
+        
         private Vector2 m_scrollViewPosition;
         private Type[] m_types;
         private Dictionary<Type, int> m_typeToIndex;
@@ -143,6 +149,7 @@ namespace Battlehub.RTSaveLoad2
             Type[] types, 
             string[] groupNames,
             string groupLabel, 
+            bool useGroupTextFilter,
             Func<Type, string, bool> groupFilter)
         {
             m_uniqueId = uniqueId;
@@ -171,6 +178,7 @@ namespace Battlehub.RTSaveLoad2
             m_types = types;
             m_groupNames = groupNames;
             m_groupLabel = groupLabel;
+            m_useGroupFilterText = useGroupTextFilter;
             m_groupFilter = groupFilter;
             m_templates = new Dictionary<Type, PersistentTemplateInfo>();
 
@@ -260,8 +268,18 @@ namespace Battlehub.RTSaveLoad2
             EditorGUILayout.Separator();
             EditorGUI.BeginChangeCheck();
 
-            m_selectedGroupIndex = EditorGUILayout.Popup(m_groupLabel, m_selectedGroupIndex, m_groupNames);
+            if(m_useGroupFilterText)
+            {
+                m_groupFilterText = EditorGUILayout.TextField(m_groupLabel, m_groupFilterText);
+            }
+            else
+            {
+                m_selectedGroupIndex = EditorGUILayout.Popup(m_groupLabel, m_selectedGroupIndex, m_groupNames);
+            }
+            
+            m_namespaceFilterText = EditorGUILayout.TextField("Namespace Filter:", m_namespaceFilterText);
             m_filterText = EditorGUILayout.TextField("Type Filter:", m_filterText);
+            
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -325,7 +343,14 @@ namespace Battlehub.RTSaveLoad2
             for (int i = 0; i < m_types.Length; ++i)
             {
                 Type type = m_types[i];
-                if (m_codeGen.TypeName(type).ToLower().Contains(m_filterText.ToLower()) && (m_selectedGroupIndex == 0 || m_selectedGroupIndex >= 0 && m_selectedGroupIndex < m_groupNames.Length && m_groupFilter(type, m_groupNames[m_selectedGroupIndex])))
+
+                bool matchNs = string.IsNullOrEmpty(type.Namespace) && string.IsNullOrEmpty(m_namespaceFilterText) || !string.IsNullOrEmpty(type.Namespace) && type.Namespace.ToLower().Contains(m_namespaceFilterText.ToLower());
+
+                bool groupFilterPassed = m_useGroupFilterText ?
+                     m_groupFilter(type, m_groupFilterText) :
+                    (m_selectedGroupIndex == 0 || m_selectedGroupIndex >= 0 && m_selectedGroupIndex < m_groupNames.Length && m_groupFilter(type, m_groupNames[m_selectedGroupIndex]));
+
+                if (matchNs && m_codeGen.TypeName(type).ToLower().Contains(m_filterText.ToLower()) && groupFilterPassed)
                 {
                     filteredTypeIndices.Add(i);
                 }
@@ -453,6 +478,10 @@ namespace Battlehub.RTSaveLoad2
             {
                 mappedType = mappedType.GetElementType();
             }
+            else if(m_codeGen.IsGenericList(mappedType))
+            {
+                mappedType = mappedType.GetGenericArguments()[0];
+            }
 
             if (!m_dependencyTypes.ContainsKey(mappedType))
             {
@@ -490,6 +519,10 @@ namespace Battlehub.RTSaveLoad2
             if (mappedType.IsArray)
             {
                 mappedType = mappedType.GetElementType();
+            }
+            else if (m_codeGen.IsGenericList(mappedType))
+            {
+                mappedType = mappedType.GetGenericArguments()[0];
             }
 
             if (m_dependencyTypes.ContainsKey(mappedType))
@@ -985,6 +1018,8 @@ namespace Battlehub.RTSaveLoad2
                 {
                     GUILayout.Space(5 + 18 * indent);
                     EditorGUILayout.BeginVertical();
+                    EditorGUILayout.LabelField("Namespace: " + m_types[typeIndex].Namespace);
+
                     m_mappings[typeIndex].IsSupportedPlaftormsSectionExpanded = EditorGUILayout.Foldout(m_mappings[typeIndex].IsSupportedPlaftormsSectionExpanded, "Supported Platforms");
                     if (m_mappings[typeIndex].IsSupportedPlaftormsSectionExpanded)
                     {
@@ -1204,13 +1239,16 @@ namespace Battlehub.RTSaveLoad2
                         EditorGUILayout.EndHorizontal();
                     }
 
-                    if (type.BaseType != m_baseType)
+                    Type baseType = type.BaseType;
+                    while (baseType != m_baseType)
                     {
                         int parentIndex;
-                        if (m_typeToIndex.TryGetValue(type.BaseType, out parentIndex))
+                        if (m_typeToIndex.TryGetValue(baseType, out parentIndex))
                         {
                             DrawTypeEditor(rootTypeIndex, parentIndex, indent + 1);
+                            break;
                         }
+                        baseType = baseType.BaseType;
                     }
                 }
                 EditorGUILayout.EndVertical();
@@ -1389,7 +1427,6 @@ namespace Battlehub.RTSaveLoad2
 
                 pMappings.Add(mapping);
             }
-
 
             for (int p = 0; p < properties.Length; ++p)
             {
@@ -1590,7 +1627,9 @@ namespace Battlehub.RTSaveLoad2
                 allTypes.Remove(m_mostImportantSurrogateTypes[i]);
             }
 
-            types = m_mostImportantSurrogateTypes.Union(allTypes.OrderBy(t => m_codeGen.TypeName(t))).ToArray();
+            allTypes.Add(typeof(UnityEventBase));
+
+            types = m_mostImportantSurrogateTypes.Union(allTypes.OrderBy(t => t.Name)).ToArray();
         }
 
         private void OnGUI()
@@ -1618,6 +1657,7 @@ namespace Battlehub.RTSaveLoad2
                     m_uoTypes.Union(new[] { typeof(RuntimePrefab), typeof(RuntimeScene) }).ToArray(), 
                     assemblies.Select(a => a == null ? "All" : a.GetName().Name).ToArray(),
                     "Assembly",
+                    false,
                     (type, groupName) => type.Assembly.GetName().Name == groupName);
                 m_uoMapperGUI.TypeLocked += OnUOTypeLocked;
                 m_uoMapperGUI.TypeUnlocked += OnUOTypeUnlocked;
@@ -1636,8 +1676,9 @@ namespace Battlehub.RTSaveLoad2
                     typeof(object),
                     types, 
                     new[] { "All" }.Union(declaredIn.Where(t => t.Value.Count > 0).Select(t => t.Key)).ToArray(), 
-                    "Declaring Type",
-                    (type, groupName) => declaredIn[groupName].Contains(type));
+                    "Declaring Type:",
+                    true,
+                    (type, groupName) => declaredIn.Any(kvp => kvp.Key.Contains(groupName) && kvp.Value.Contains(type)));
 
                 m_surrogatesMapperGUI.TypeLocked += OnSurrogateTypeLocked;
                 m_surrogatesMapperGUI.TypeUnlocked += OnSurrogateTypeUnlocked;

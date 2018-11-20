@@ -9,6 +9,9 @@ using UnityEngine.Rendering.Battlehub.SL2;
 using UnityEngine.SceneManagement;
 using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
+using Battlehub.SL2;
+using UnityEngine.Events;
+using UnityEngine.Events.Battlehub.SL2;
 
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
@@ -125,6 +128,12 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(Flare), new System.Guid("c0274c2d-266b-408a-915b-1f427c9c180b"));
             m_toType.Add(new System.Guid("b2dfc5ab-7bde-41a1-b3a4-4d57de5f7390"), typeof(PersistentFlare));
             m_toType.Add(new System.Guid("c0274c2d-266b-408a-915b-1f427c9c180b"), typeof(Flare));
+            m_toPeristentType.Add(typeof(MonoBehaviour), typeof(PersistentMonoBehaviour));
+            m_toUnityType.Add(typeof(PersistentMonoBehaviour), typeof(MonoBehaviour));
+            m_toGuid.Add(typeof(PersistentMonoBehaviour), new System.Guid("66a67c35-7782-4112-ae0e-0b50bb7ac23d"));
+            m_toGuid.Add(typeof(MonoBehaviour), new System.Guid("8cf9be54-9c07-4a52-bc55-92a4f8bb1743"));
+            m_toType.Add(new System.Guid("66a67c35-7782-4112-ae0e-0b50bb7ac23d"), typeof(PersistentMonoBehaviour));
+            m_toType.Add(new System.Guid("8cf9be54-9c07-4a52-bc55-92a4f8bb1743"), typeof(MonoBehaviour));
             m_toPeristentType.Add(typeof(PhysicMaterial), typeof(PersistentPhysicMaterial));
             m_toUnityType.Add(typeof(PersistentPhysicMaterial), typeof(PhysicMaterial));
             m_toGuid.Add(typeof(PersistentPhysicMaterial), new System.Guid("a0c9f6c5-4fb9-4a3b-bf4c-d59323ef3569"));
@@ -167,6 +176,12 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(RuntimeScene), new System.Guid("ecb2a50b-b00e-4a78-9065-c58eb67994be"));
             m_toType.Add(new System.Guid("e966174d-f3d0-46a7-b793-498cb3f78672"), typeof(PersistentRuntimeScene));
             m_toType.Add(new System.Guid("ecb2a50b-b00e-4a78-9065-c58eb67994be"), typeof(RuntimeScene));
+            m_toPeristentType.Add(typeof(TestBehavior), typeof(PersistentTestBehavior));
+            m_toUnityType.Add(typeof(PersistentTestBehavior), typeof(TestBehavior));
+            m_toGuid.Add(typeof(PersistentTestBehavior), new System.Guid("3bac54cf-baef-480e-a932-3d8647a57e67"));
+            m_toGuid.Add(typeof(TestBehavior), new System.Guid("def304c7-5e61-492a-ba1c-ca9444c2b2c4"));
+            m_toType.Add(new System.Guid("3bac54cf-baef-480e-a932-3d8647a57e67"), typeof(PersistentTestBehavior));
+            m_toType.Add(new System.Guid("def304c7-5e61-492a-ba1c-ca9444c2b2c4"), typeof(TestBehavior));
             m_toPeristentType.Add(typeof(Vector2), typeof(PersistentVector2));
             m_toUnityType.Add(typeof(PersistentVector2), typeof(Vector2));
             m_toGuid.Add(typeof(PersistentVector2), new System.Guid("5ba3ff6b-8b6a-4184-8949-663c95d9c896"));
@@ -233,6 +248,24 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(Scene), new System.Guid("ffa60660-cd3c-452f-8b3b-45f9e9d8024c"));
             m_toType.Add(new System.Guid("471f41e7-c60a-458a-b0ff-d9ed0728e45d"), typeof(PersistentScene));
             m_toType.Add(new System.Guid("ffa60660-cd3c-452f-8b3b-45f9e9d8024c"), typeof(Scene));
+            m_toPeristentType.Add(typeof(UnityEvent), typeof(PersistentUnityEvent));
+            m_toUnityType.Add(typeof(PersistentUnityEvent), typeof(UnityEvent));
+            m_toGuid.Add(typeof(PersistentUnityEvent), new System.Guid("9f432f32-23f3-432c-992d-6cc43b8edbad"));
+            m_toGuid.Add(typeof(UnityEvent), new System.Guid("3ed54cee-4405-475c-8954-a5eaed086ad7"));
+            m_toType.Add(new System.Guid("9f432f32-23f3-432c-992d-6cc43b8edbad"), typeof(PersistentUnityEvent));
+            m_toType.Add(new System.Guid("3ed54cee-4405-475c-8954-a5eaed086ad7"), typeof(UnityEvent));
+            m_toPeristentType.Add(typeof(UnityEventBase), typeof(PersistentUnityEventBase));
+            m_toUnityType.Add(typeof(PersistentUnityEventBase), typeof(UnityEventBase));
+            m_toGuid.Add(typeof(PersistentUnityEventBase), new System.Guid("1f0e42fc-2817-49d9-af67-1fd15dd6f9ed"));
+            m_toGuid.Add(typeof(UnityEventBase), new System.Guid("9e9f6774-aeb8-4cc5-b149-597a62077a89"));
+            m_toType.Add(new System.Guid("1f0e42fc-2817-49d9-af67-1fd15dd6f9ed"), typeof(PersistentUnityEventBase));
+            m_toType.Add(new System.Guid("9e9f6774-aeb8-4cc5-b149-597a62077a89"), typeof(UnityEventBase));
+            m_toPeristentType.Add(typeof(Test), typeof(PersistentTest));
+            m_toUnityType.Add(typeof(PersistentTest), typeof(Test));
+            m_toGuid.Add(typeof(PersistentTest), new System.Guid("7d350e73-72d0-4659-9145-cd4ade149e0b"));
+            m_toGuid.Add(typeof(Test), new System.Guid("c04aa8f4-8a9d-44fc-a485-121d2923ecdc"));
+            m_toType.Add(new System.Guid("7d350e73-72d0-4659-9145-cd4ade149e0b"), typeof(PersistentTest));
+            m_toType.Add(new System.Guid("c04aa8f4-8a9d-44fc-a485-121d2923ecdc"), typeof(Test));
             
             OnConstructed();
         }

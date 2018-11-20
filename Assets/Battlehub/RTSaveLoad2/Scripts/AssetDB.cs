@@ -32,7 +32,7 @@ namespace Battlehub.RTSaveLoad2
         bool IsMapped(UnityObject uo);
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
-
+        long[] ToID<T>(List<T> uo) where T : UnityObject;
         bool IsMapped(long id);
         T FromID<T>(long id) where T : UnityObject;
         T[] FromID<T>(long[] id) where T : UnityObject;
@@ -78,7 +78,7 @@ namespace Battlehub.RTSaveLoad2
 
         public void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj)
         {
-            if (m_persistentIDToSceneObject != null)
+            if (m_persistentIDToSceneObject.Count != 0)
             {
                 Debug.LogWarning("scene objects were not unregistered");
             }
@@ -443,6 +443,20 @@ namespace Battlehub.RTSaveLoad2
             }
             long[] ids = new long[uo.Length];
             for(int i = 0; i < uo.Length; ++i)
+            {
+                ids[i] = ToID(uo[i]);
+            }
+            return ids;
+        }
+
+        public long[] ToID<T>(List<T> uo) where T : UnityObject
+        {
+            if (uo == null)
+            {
+                return null;
+            }
+            long[] ids = new long[uo.Count];
+            for (int i = 0; i < uo.Count; ++i)
             {
                 ids[i] = ToID(uo[i]);
             }

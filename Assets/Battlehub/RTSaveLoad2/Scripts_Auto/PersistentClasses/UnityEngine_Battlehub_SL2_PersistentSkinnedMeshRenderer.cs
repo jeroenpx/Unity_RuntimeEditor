@@ -51,9 +51,9 @@ namespace UnityEngine.Battlehub.SL2
             SkinnedMeshRenderer uo = (SkinnedMeshRenderer)obj;
             uo.quality = quality;
             uo.updateWhenOffscreen = updateWhenOffscreen;
-            uo.rootBone = FromID<Transform>(rootBone, uo.rootBone);
-            uo.bones = FromID<Transform>(bones, uo.bones);
-            uo.sharedMesh = FromID<Mesh>(sharedMesh, uo.sharedMesh);
+            uo.rootBone = FromID(rootBone, uo.rootBone);
+            uo.bones = FromID(bones, uo.bones);
+            uo.sharedMesh = FromID(sharedMesh, uo.sharedMesh);
             uo.skinnedMotionVectors = skinnedMotionVectors;
             uo.localBounds = localBounds;
             return uo;

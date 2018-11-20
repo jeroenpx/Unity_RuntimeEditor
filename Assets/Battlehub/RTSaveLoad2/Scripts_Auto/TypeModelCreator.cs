@@ -10,6 +10,9 @@ using UnityEngine.Rendering.Battlehub.SL2;
 using UnityEngine.SceneManagement;
 using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
+using Battlehub.SL2;
+using UnityEngine.Events;
+using UnityEngine.Events.Battlehub.SL2;
 
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
@@ -45,7 +48,8 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentLight), true);
             model.Add(typeof(PersistentBehaviour), true)
                 .AddSubType(1025, typeof(PersistentCamera))
-                .AddSubType(1026, typeof(PersistentLight));
+                .AddSubType(1026, typeof(PersistentLight))
+                .AddSubType(1027, typeof(PersistentMonoBehaviour));
             model.Add(typeof(PersistentCollider), true)
                 .AddSubType(1025, typeof(PersistentBoxCollider))
                 .AddSubType(1026, typeof(PersistentSphereCollider))
@@ -58,6 +62,8 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1029, typeof(PersistentRigidbody))
                 .AddSubType(1030, typeof(PersistentCollider));
             model.Add(typeof(PersistentFlare), true);
+            model.Add(typeof(PersistentMonoBehaviour), true)
+                .AddSubType(1026, typeof(PersistentTestBehavior));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
             model.Add(typeof(PersistentShader), true);
@@ -67,6 +73,7 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentRuntimePrefab), true)
                 .AddSubType(1025, typeof(PersistentRuntimeScene));
             model.Add(typeof(PersistentRuntimeScene), true);
+            model.Add(typeof(PersistentTestBehavior), true);
             model.Add(typeof(Vector2), false).SetSurrogate(typeof(PersistentVector2));
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
             model.Add(typeof(Vector4), false).SetSurrogate(typeof(PersistentVector4));
@@ -78,13 +85,21 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(Quaternion), false).SetSurrogate(typeof(PersistentQuaternion));
             model.Add(typeof(Rect), false).SetSurrogate(typeof(PersistentRect));
             model.Add(typeof(Scene), false).SetSurrogate(typeof(PersistentScene));
+            model.Add(typeof(UnityEvent), false).SetSurrogate(typeof(PersistentUnityEvent));
+            model.Add(typeof(PersistentUnityEventBase), true)
+                .AddSubType(1025, typeof(PersistentUnityEvent));
+            model.Add(typeof(Test), false).SetSurrogate(typeof(PersistentTest));
             
        }
    }
 }
+namespace UnityEngine.Battlehub.SL2 {}
 namespace System.Battlehub.SL2 {}
 namespace UnityEngine.Rendering.Battlehub.SL2 {}
-namespace UnityEngine.Battlehub.SL2 {}
 namespace UnityEngine.SceneManagement.Battlehub.SL2 {}
+namespace Battlehub.RTSaveLoad2.Battlehub.SL2 {}
+namespace Battlehub.SL2 {}
+namespace System.Collections.Generic.Battlehub.SL2 {}
+namespace UnityEngine.Events.Battlehub.SL2 {}
 
 

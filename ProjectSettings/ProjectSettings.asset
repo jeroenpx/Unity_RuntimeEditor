@@ -645,7 +645,7 @@ PlayerSettings:
   webGLLinkerTarget: 0
   scriptingDefineSymbols:
     1: 
-    7: 
+    7: RTSL2_MAINTENANCE
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

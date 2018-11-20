@@ -702,30 +702,27 @@ namespace Battlehub.RTSaveLoad
                             if(!field.FieldType.IsEnum())
                             {
                                 object fieldValue = field.GetValue(obj);
-                                if(fieldValue != null)
+                                if (typeof(IEnumerable).IsAssignableFrom(field.FieldType))
                                 {
-                                    if (typeof(IEnumerable).IsAssignableFrom(field.FieldType) && field.FieldType != typeof(string) && !(field.FieldType.IsArray && field.FieldType.GetElementType().IsPrimitive))
+                                    IEnumerable enumerable = (IEnumerable)fieldValue;
+                                    foreach (object o in enumerable)
                                     {
-                                        IEnumerable enumerable = (IEnumerable)fieldValue;
-                                        foreach (object o in enumerable)
+                                        if (o is IRTSerializable)
                                         {
-                                            if (o is IRTSerializable)
-                                            {
-                                                IRTSerializable rtSerializable = (IRTSerializable)o;
-                                                rtSerializable.Serialize();
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (fieldValue is IRTSerializable)
-                                        {
-                                            IRTSerializable rtSerializable = (IRTSerializable)fieldValue;
+                                            IRTSerializable rtSerializable = (IRTSerializable)o;
                                             rtSerializable.Serialize();
                                         }
                                     }
                                 }
-                            
+                                else
+                                {
+                                    if (fieldValue is IRTSerializable)
+                                    {
+                                        IRTSerializable rtSerializable = (IRTSerializable)fieldValue;
+                                        rtSerializable.Serialize();
+                                    }
+                                }
+
                                 if (field.FieldType.IsPrimitive() || field.FieldType.IsArray())
                                 {
                                     PrimitiveContract primitive = PrimitiveContract.Create(field.FieldType);
@@ -740,8 +737,8 @@ namespace Battlehub.RTSaveLoad
                             else
                             {
                                 //Debug.Log("Want to create primitive contract for " + field.FieldType);
-                                PrimitiveContract primitive = PrimitiveContract.Create(typeof(uint));
-                                primitive.ValueBase = (uint)Convert.ChangeType(field.GetValue(obj), typeof(uint));
+                                PrimitiveContract primitive = PrimitiveContract.Create(typeof(int));
+                                primitive.ValueBase = (int)Convert.ChangeType(field.GetValue(obj), typeof(int));
                                 this.fields.Add(field.Name, new DataContract(primitive));
                             }
                         }
@@ -1155,7 +1152,7 @@ namespace Battlehub.RTSaveLoad
                                     PrimitiveContract primitive = value.AsPrimitive;
                                     if (primitive == null ||
                                         primitive.ValueBase == null && field.FieldType.IsValueType() ||
-                                        primitive.ValueBase != null && primitive.ValueBase.GetType() != typeof(uint))
+                                        primitive.ValueBase != null && primitive.ValueBase.GetType() != typeof(int))
                                     {
                                         continue;
                                     }

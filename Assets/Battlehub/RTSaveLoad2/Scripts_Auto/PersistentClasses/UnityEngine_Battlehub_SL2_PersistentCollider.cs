@@ -40,7 +40,7 @@ namespace UnityEngine.Battlehub.SL2
             uo.enabled = enabled;
             uo.isTrigger = isTrigger;
             uo.contactOffset = contactOffset;
-            uo.sharedMaterial = FromID<PhysicMaterial>(sharedMaterial, uo.sharedMaterial);
+            uo.sharedMaterial = FromID(sharedMaterial, uo.sharedMaterial);
             return uo;
         }
 

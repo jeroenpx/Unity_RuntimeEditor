@@ -25,7 +25,7 @@ namespace UnityEngine.Battlehub.SL2
         {
             obj = base.WriteToImpl(obj);
             MeshRenderer uo = (MeshRenderer)obj;
-            uo.additionalVertexStreams = FromID<Mesh>(additionalVertexStreams, uo.additionalVertexStreams);
+            uo.additionalVertexStreams = FromID(additionalVertexStreams, uo.additionalVertexStreams);
             return uo;
         }
 

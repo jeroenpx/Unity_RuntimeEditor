@@ -116,7 +116,7 @@ namespace UnityEngine.Battlehub.SL2
             uo.shadowResolution = shadowResolution;
             uo.layerShadowCullDistances = layerShadowCullDistances;
             uo.cookieSize = cookieSize;
-            uo.cookie = FromID<Texture>(cookie, uo.cookie);
+            uo.cookie = FromID(cookie, uo.cookie);
             uo.renderMode = renderMode;
             uo.type = type;
             uo.spotAngle = spotAngle;
@@ -129,7 +129,7 @@ namespace UnityEngine.Battlehub.SL2
             uo.shadowNormalBias = shadowNormalBias;
             uo.shadowNearPlane = shadowNearPlane;
             uo.range = range;
-            uo.flare = FromID<Flare>(flare, uo.flare);
+            uo.flare = FromID(flare, uo.flare);
             uo.bakingOutput = bakingOutput;
             uo.cullingMask = cullingMask;
             uo.lightShadowCasterMode = lightShadowCasterMode;
