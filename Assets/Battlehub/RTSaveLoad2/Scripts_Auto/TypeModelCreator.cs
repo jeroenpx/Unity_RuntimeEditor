@@ -63,7 +63,7 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1030, typeof(PersistentCollider));
             model.Add(typeof(PersistentFlare), true);
             model.Add(typeof(PersistentMonoBehaviour), true)
-                .AddSubType(1026, typeof(PersistentTestBehavior));
+                .AddSubType(1025, typeof(PersistentTestBehavior));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
             model.Add(typeof(PersistentShader), true);

@@ -51,6 +51,10 @@ namespace Battlehub.RTSaveLoad2
             while(depsQueue.Count > 0)
             {   
                 UnityObject uo = depsQueue.Dequeue();
+                if(!uo)
+                {
+                    continue;
+                }
                 if(!m_assetDB.IsMapped(uo))
                 {
                     if (!(uo is GameObject) && !(uo is Component))

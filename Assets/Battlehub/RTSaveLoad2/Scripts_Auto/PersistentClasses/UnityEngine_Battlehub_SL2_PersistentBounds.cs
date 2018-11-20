@@ -11,10 +11,10 @@ namespace UnityEngine.Battlehub.SL2
     public partial class PersistentBounds : PersistentSurrogate
     {
         [ProtoMember(256)]
-        public Vector3 center;
+        public PersistentVector3 center;
 
         [ProtoMember(258)]
-        public Vector3 extents;
+        public PersistentVector3 extents;
 
         protected override void ReadFromImpl(object obj)
         {

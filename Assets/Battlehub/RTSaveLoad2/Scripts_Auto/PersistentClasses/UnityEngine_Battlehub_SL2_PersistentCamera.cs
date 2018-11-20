@@ -52,7 +52,7 @@ namespace UnityEngine.Battlehub.SL2
         public TransparencySortMode transparencySortMode;
 
         [ProtoMember(268)]
-        public Vector3 transparencySortAxis;
+        public PersistentVector3 transparencySortAxis;
 
         [ProtoMember(269)]
         public float depth;
@@ -79,10 +79,10 @@ namespace UnityEngine.Battlehub.SL2
         public bool useOcclusionCulling;
 
         [ProtoMember(277)]
-        public Matrix4x4 cullingMatrix;
+        public PersistentMatrix4x4 cullingMatrix;
 
         [ProtoMember(278)]
-        public Color backgroundColor;
+        public PersistentColor backgroundColor;
 
         [ProtoMember(279)]
         public CameraClearFlags clearFlags;
@@ -97,19 +97,19 @@ namespace UnityEngine.Battlehub.SL2
         public bool usePhysicalProperties;
 
         [ProtoMember(283)]
-        public Vector2 sensorSize;
+        public PersistentVector2 sensorSize;
 
         [ProtoMember(284)]
-        public Vector2 lensShift;
+        public PersistentVector2 lensShift;
 
         [ProtoMember(285)]
         public float focalLength;
 
         [ProtoMember(286)]
-        public Rect rect;
+        public PersistentRect rect;
 
         [ProtoMember(287)]
-        public Rect pixelRect;
+        public PersistentRect pixelRect;
 
         [ProtoMember(288)]
         public long targetTexture;
@@ -118,19 +118,19 @@ namespace UnityEngine.Battlehub.SL2
         public int targetDisplay;
 
         [ProtoMember(290)]
-        public Matrix4x4 worldToCameraMatrix;
+        public PersistentMatrix4x4 worldToCameraMatrix;
 
         [ProtoMember(291)]
-        public Matrix4x4 projectionMatrix;
+        public PersistentMatrix4x4 projectionMatrix;
 
         [ProtoMember(292)]
-        public Matrix4x4 nonJitteredProjectionMatrix;
+        public PersistentMatrix4x4 nonJitteredProjectionMatrix;
 
         [ProtoMember(293)]
         public bool useJitteredProjectionMatrixForTransparentRendering;
 
         [ProtoMember(294)]
-        public Scene scene;
+        public PersistentScene scene;
 
         [ProtoMember(295)]
         public float stereoSeparation;

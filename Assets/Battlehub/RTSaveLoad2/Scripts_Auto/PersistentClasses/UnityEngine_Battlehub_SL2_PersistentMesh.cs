@@ -11,85 +11,85 @@ namespace UnityEngine.Battlehub.SL2
     public partial class PersistentMesh : PersistentObject
     {
         [ProtoMember(257)]
-        public BoneWeight[] boneWeights;
+        public PersistentBoneWeight[] boneWeights;
 
         [ProtoMember(258)]
-        public Matrix4x4[] bindposes;
+        public PersistentMatrix4x4[] bindposes;
 
         [ProtoMember(259)]
-        public Bounds bounds;
+        public PersistentBounds bounds;
 
         [ProtoMember(260)]
-        public Vector3[] normals;
+        public PersistentVector3[] normals;
 
         [ProtoMember(261)]
-        public Vector4[] tangents;
+        public PersistentVector4[] tangents;
 
         [ProtoMember(262)]
-        public Vector2[] uv;
+        public PersistentVector2[] uv;
 
         [ProtoMember(263)]
-        public Vector2[] uv2;
+        public PersistentVector2[] uv2;
 
         [ProtoMember(264)]
-        public Vector2[] uv3;
+        public PersistentVector2[] uv3;
 
         [ProtoMember(265)]
-        public Vector2[] uv4;
+        public PersistentVector2[] uv4;
 
         [ProtoMember(266)]
-        public Vector2[] uv5;
+        public PersistentVector2[] uv5;
 
         [ProtoMember(267)]
-        public Vector2[] uv6;
+        public PersistentVector2[] uv6;
 
         [ProtoMember(268)]
-        public Vector2[] uv7;
+        public PersistentVector2[] uv7;
 
         [ProtoMember(269)]
-        public Vector2[] uv8;
+        public PersistentVector2[] uv8;
 
         [ProtoMember(270)]
-        public Color[] colors;
+        public PersistentColor[] colors;
 
         protected override void ReadFromImpl(object obj)
         {
             base.ReadFromImpl(obj);
             Mesh uo = (Mesh)obj;
-            boneWeights = uo.boneWeights;
-            bindposes = uo.bindposes;
+            boneWeights = Assign(uo.boneWeights, v_ => (PersistentBoneWeight)v_);
+            bindposes = Assign(uo.bindposes, v_ => (PersistentMatrix4x4)v_);
             bounds = uo.bounds;
-            normals = uo.normals;
-            tangents = uo.tangents;
-            uv = uo.uv;
-            uv2 = uo.uv2;
-            uv3 = uo.uv3;
-            uv4 = uo.uv4;
-            uv5 = uo.uv5;
-            uv6 = uo.uv6;
-            uv7 = uo.uv7;
-            uv8 = uo.uv8;
-            colors = uo.colors;
+            normals = Assign(uo.normals, v_ => (PersistentVector3)v_);
+            tangents = Assign(uo.tangents, v_ => (PersistentVector4)v_);
+            uv = Assign(uo.uv, v_ => (PersistentVector2)v_);
+            uv2 = Assign(uo.uv2, v_ => (PersistentVector2)v_);
+            uv3 = Assign(uo.uv3, v_ => (PersistentVector2)v_);
+            uv4 = Assign(uo.uv4, v_ => (PersistentVector2)v_);
+            uv5 = Assign(uo.uv5, v_ => (PersistentVector2)v_);
+            uv6 = Assign(uo.uv6, v_ => (PersistentVector2)v_);
+            uv7 = Assign(uo.uv7, v_ => (PersistentVector2)v_);
+            uv8 = Assign(uo.uv8, v_ => (PersistentVector2)v_);
+            colors = Assign(uo.colors, v_ => (PersistentColor)v_);
         }
 
         protected override object WriteToImpl(object obj)
         {
             obj = base.WriteToImpl(obj);
             Mesh uo = (Mesh)obj;
-            uo.boneWeights = boneWeights;
-            uo.bindposes = bindposes;
+            uo.boneWeights = Assign(boneWeights, v_ => (BoneWeight)v_);
+            uo.bindposes = Assign(bindposes, v_ => (Matrix4x4)v_);
             uo.bounds = bounds;
-            uo.normals = normals;
-            uo.tangents = tangents;
-            uo.uv = uv;
-            uo.uv2 = uv2;
-            uo.uv3 = uv3;
-            uo.uv4 = uv4;
-            uo.uv5 = uv5;
-            uo.uv6 = uv6;
-            uo.uv7 = uv7;
-            uo.uv8 = uv8;
-            uo.colors = colors;
+            uo.normals = Assign(normals, v_ => (Vector3)v_);
+            uo.tangents = Assign(tangents, v_ => (Vector4)v_);
+            uo.uv = Assign(uv, v_ => (Vector2)v_);
+            uo.uv2 = Assign(uv2, v_ => (Vector2)v_);
+            uo.uv3 = Assign(uv3, v_ => (Vector2)v_);
+            uo.uv4 = Assign(uv4, v_ => (Vector2)v_);
+            uo.uv5 = Assign(uv5, v_ => (Vector2)v_);
+            uo.uv6 = Assign(uv6, v_ => (Vector2)v_);
+            uo.uv7 = Assign(uv7, v_ => (Vector2)v_);
+            uo.uv8 = Assign(uv8, v_ => (Vector2)v_);
+            uo.colors = Assign(colors, v_ => (Color)v_);
             return uo;
         }
 

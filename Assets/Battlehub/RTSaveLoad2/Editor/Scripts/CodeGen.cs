@@ -346,6 +346,11 @@ namespace Battlehub.RTSaveLoad2
 
             inspectedTypes.Add(type);
 
+            if(type.IsSubclassOf(typeof(UnityEventBase)))
+            {
+                return true;
+            }
+
             PropertyInfo[] properties = GetProperties(type);
             for (int i = 0; i < properties.Length; ++i)
             {
@@ -382,6 +387,11 @@ namespace Battlehub.RTSaveLoad2
             }
 
             if (type.IsSubclassOf(typeof(UnityObject)))
+            {
+                return true;
+            }
+
+            if (type.IsSubclassOf(typeof(UnityEventBase)))
             {
                 return true;
             }
@@ -701,6 +711,7 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
+              
                 string typeName;
                 Type repacementType = GetReplacementType(prop.MappedType);
                 if (repacementType != null)
@@ -733,12 +744,26 @@ namespace Battlehub.RTSaveLoad2
                             }
                             else
                             {
-                                typeName = string.Format("List<{0}>", argType.FullName);
+                                if(prop.UseSurrogate)
+                                {
+                                    typeName = string.Format("List<Persistent{0}>", argType.Name);
+                                }
+                                else
+                                {
+                                    typeName = string.Format("List<{0}>", argType.FullName);
+                                }   
                             }
                         }
                         else
                         {
-                            typeName = PreparePersistentTypeName(prop.PersistentTypeName);
+                            if(prop.UseSurrogate)
+                            {
+                                typeName = "Persistent" + PreparePersistentTypeName(prop.PersistentTypeName);
+                            }
+                            else
+                            {
+                                typeName = PreparePersistentTypeName(prop.PersistentTypeName);
+                            }
                         }
                         
                     }
@@ -820,7 +845,25 @@ namespace Battlehub.RTSaveLoad2
                 }
                 else
                 {
-                    sb.AppendFormat("{0} = uo.{1};", prop.PersistentName, prop.MappedName);
+                    if (prop.UseSurrogate)
+                    {
+                        if (IsGenericList(prop.MappedType))
+                        {
+                            sb.AppendFormat("{0} = Assign(uo.{1}, v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetGenericArguments()[0].Name);
+                        }
+                        else if(prop.MappedType.IsArray)
+                        {
+                            sb.AppendFormat("{0} = Assign(uo.{1}, v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetElementType().Name);
+                        }
+                        else
+                        {
+                            sb.AppendFormat("{0} = uo.{1};", prop.PersistentName, prop.MappedName);
+                        }
+                    }
+                    else
+                    {
+                        sb.AppendFormat("{0} = uo.{1};", prop.PersistentName, prop.MappedName);
+                    }
                 }
 
                 sb.Append(BR + TAB2);
@@ -855,7 +898,26 @@ namespace Battlehub.RTSaveLoad2
                 }
                 else
                 {
-                    sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
+                    if (prop.UseSurrogate)
+                    {
+                        if (IsGenericList(prop.MappedType))
+                        {
+                            sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetGenericArguments()[0].Name);
+                        }
+                        else if (prop.MappedType.IsArray)
+                        {
+                            sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetElementType().Name);
+                        }
+                        else
+                        {
+                            sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
+                        }
+                    }
+                    else
+                    {
+                        sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
+                    }
+                    
                 }
 
                 sb.Append(BR + TAB2);
@@ -921,7 +983,7 @@ namespace Battlehub.RTSaveLoad2
                     if (prop.UseSurrogate)
                     {
                         sb.Append(TAB);
-                        sb.AppendFormat("AddSurrogateDeps(uo.{0}, context);", prop.MappedName);
+                        sb.AppendFormat("AddSurrogateDeps(uo.{0}, v_ => ({1})v_, context);", prop.MappedName, "Persistent" + prop.PersistentTypeName);
                         sb.Append(BR + TAB2);
                     }
                     if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
@@ -984,6 +1046,10 @@ namespace Battlehub.RTSaveLoad2
                         }
 
                         Type type = propertyMapping.MappedType;
+                        if(type == null)
+                        {
+                            Debug.LogWarning("Unable to resolve type: " + propertyMapping.MappedAssemblyQualifiedName);
+                        }
                         Type replacementType = GetReplacementType(type);
                         if (replacementType != null)
                         {

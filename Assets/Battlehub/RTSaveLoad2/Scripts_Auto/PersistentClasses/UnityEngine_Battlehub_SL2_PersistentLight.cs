@@ -41,7 +41,7 @@ namespace UnityEngine.Battlehub.SL2
         public float spotAngle;
 
         [ProtoMember(273)]
-        public Color color;
+        public PersistentColor color;
 
         [ProtoMember(274)]
         public float colorTemperature;
@@ -71,7 +71,7 @@ namespace UnityEngine.Battlehub.SL2
         public long flare;
 
         [ProtoMember(283)]
-        public LightBakingOutput bakingOutput;
+        public PersistentLightBakingOutput bakingOutput;
 
         [ProtoMember(284)]
         public int cullingMask;

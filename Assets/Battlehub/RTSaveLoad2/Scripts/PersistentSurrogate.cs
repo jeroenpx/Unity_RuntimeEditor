@@ -186,16 +186,16 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        protected void AddSurrogateDeps(object obj, GetDepsFromContext context)
+        protected void AddSurrogateDeps<T>(T obj, Func<T, PersistentSurrogate> convert, GetDepsFromContext context)
         {
             if (obj != null)
             {
-                PersistentSurrogate surrogate = (PersistentSurrogate)obj;
+                PersistentSurrogate surrogate = convert(obj);
                 surrogate.GetDepsFrom(obj, context);
             }
         }
 
-        protected void AddSurrogateDeps<T>(T[] objArray, GetDepsFromContext context)
+        protected void AddSurrogateDeps<T>(T[] objArray, Func<T, PersistentSurrogate> convert, GetDepsFromContext context)
         {
             if(objArray == null)
             {
@@ -203,16 +203,16 @@ namespace Battlehub.RTSaveLoad2
             }
             for (int i = 0; i < objArray.Length; ++i)
             {
-                object obj = objArray[i];
+                T obj = objArray[i];
                 if (obj != null)
                 {
-                    PersistentSurrogate surrogate = (PersistentSurrogate)obj;
+                    PersistentSurrogate surrogate = convert(obj);
                     surrogate.GetDepsFrom(obj, context);
                 }
             }
         }
 
-        protected void AddSurrogateDeps<T>(List<T> objList, GetDepsFromContext context)
+        protected void AddSurrogateDeps<T>(List<T> objList, Func<T, PersistentSurrogate> convert, GetDepsFromContext context)
         {
             if(objList == null)
             {
@@ -220,13 +220,43 @@ namespace Battlehub.RTSaveLoad2
             }
             for (int i = 0; i < objList.Count; ++i)
             {
-                object obj = objList[i];
+                T obj = objList[i];
                 if (obj != null)
                 {
-                    PersistentSurrogate surrogate = (PersistentSurrogate)obj;
+                    PersistentSurrogate surrogate = convert(obj);
                     surrogate.GetDepsFrom(obj, context);
                 }
             }
+        }
+
+        public List<T> Assign<V, T>(List<V> list, Func<V, T> convert)
+        {
+            if (list == null)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>(list.Count);
+            for (int i = 0; i < list.Count; ++i)
+            {
+                result.Add(convert(list[i]));
+            }
+            return result;
+        }
+
+        public T[] Assign<V, T>(V[] arr, Func<V, T> convert)
+        {
+            if (arr == null)
+            {
+                return null;
+            }
+
+            T[] result = new T[arr.Length];
+            for (int i = 0; i < arr.Length; ++i)
+            {
+                result[i] = convert(arr[i]);
+            }
+            return result;
         }
 
 

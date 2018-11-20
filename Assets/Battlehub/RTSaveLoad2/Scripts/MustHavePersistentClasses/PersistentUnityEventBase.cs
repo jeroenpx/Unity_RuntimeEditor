@@ -3,14 +3,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 using UnityEngine.Events;
 using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentArgumentCache
+    public class PersistentArgumentCache : PersistentSurrogate
     {
         [ProtoMember(1)]
         public bool m_BoolArgument;
@@ -79,8 +78,12 @@ namespace Battlehub.RTSaveLoad2
             m_isFieldInfoInitialized = true;
         }
 
-        public void ReadFrom(object obj, IIDMap idMap)
+   
+      
+
+        protected override void ReadFromImpl(object obj)
         {
+            base.ReadFromImpl(obj);
             if (obj == null)
             {
                 m_BoolArgument = false;
@@ -97,12 +100,31 @@ namespace Battlehub.RTSaveLoad2
             m_IntArgument = (int)m_intArgumentFieldInfo.GetValue(obj);
             m_StringArgument = (string)m_stringArgumentFieldInfo.GetValue(obj);
             UnityObject uobjArgument = (UnityObject)m_objectArgumentFieldInfo.GetValue(obj);
-            m_ObjectArgument = idMap.ToID(uobjArgument);
+            m_ObjectArgument = ToID(uobjArgument);
             m_ObjectArgumentAssemblyTypeName = (string)m_objectArgumentAssemblyTypeNameFieldInfo.GetValue(obj);
         }
 
-        public void GetDependencies(object obj, Dictionary<long, UnityObject> dependencies, IIDMap idMap)
+        protected override object WriteToImpl(object obj)
         {
+            obj = base.WriteToImpl(obj);
+            if (obj == null)
+            {
+                return obj;
+            }
+
+            Initialize(obj.GetType());
+            m_boolArgumentFieldInfo.SetValue(obj, m_BoolArgument);
+            m_floatArgumentFieldInfo.SetValue(obj, m_FloatArgument);
+            m_intArgumentFieldInfo.SetValue(obj, m_IntArgument);
+            m_stringArgumentFieldInfo.SetValue(obj, m_StringArgument);
+            m_objectArgumentFieldInfo.SetValue(obj, FromID(m_ObjectArgument, m_objectArgumentFieldInfo.GetValue(obj) as UnityObject));
+            m_objectArgumentAssemblyTypeNameFieldInfo.SetValue(obj, m_ObjectArgumentAssemblyTypeName);
+            return obj;
+        }
+
+        protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
+        {
+            base.GetDepsFromImpl(obj, context);
             if (obj == null)
             {
                 return;
@@ -110,58 +132,18 @@ namespace Battlehub.RTSaveLoad2
 
             Initialize(obj.GetType());
             UnityObject uobjArgument = (UnityObject)m_objectArgumentFieldInfo.GetValue(obj);
-            AddDependency(uobjArgument, dependencies, idMap);
+            AddDep(uobjArgument, context);
         }
 
-        protected void AddDependency(UnityObject obj, Dictionary<long, UnityObject> dependencies, IIDMap idMap)
+        protected override void GetDepsImpl(GetDepsContext context)
         {
-            if (obj == null)
-            {
-                return;
-            }
-
-            long instanceId = idMap.ToID(obj);
-            if (!dependencies.ContainsKey(instanceId))
-            {
-                dependencies.Add(instanceId, obj);
-            }
-        }
-
-        public void FindDependencies<T>(Dictionary<long, T> dependencies, Dictionary<long, T> objects, bool allowNulls)
-        {
-            AddDependency(m_ObjectArgument, dependencies, objects, allowNulls);
-        }
-
-        protected void AddDependency<T>(long id, Dictionary<long, T> dependencies, Dictionary<long, T> objects, bool allowNulls)
-        {
-            T obj = objects.Get(id);
-            if (obj != null || allowNulls)
-            {
-                if (!dependencies.ContainsKey(id))
-                {
-                    dependencies.Add(id, obj);
-                }
-            }
-        }
-
-        public void WriteTo(object obj, Dictionary<long, UnityObject> objects)
-        {
-            if (obj == null)
-            {
-                return;
-            }
-            Initialize(obj.GetType());
-            m_boolArgumentFieldInfo.SetValue(obj, m_BoolArgument);
-            m_floatArgumentFieldInfo.SetValue(obj, m_FloatArgument);
-            m_intArgumentFieldInfo.SetValue(obj, m_IntArgument);
-            m_stringArgumentFieldInfo.SetValue(obj, m_StringArgument);
-            m_objectArgumentFieldInfo.SetValue(obj, objects.Get(m_ObjectArgument));
-            m_objectArgumentAssemblyTypeNameFieldInfo.SetValue(obj, m_ObjectArgumentAssemblyTypeName);
+            base.GetDepsImpl(context);
+            AddDep(m_ObjectArgument, context);
         }
     }
 
     [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentPersistentCall
+    public class PersistentPersistentCall : PersistentSurrogate
     {
         [ProtoMember(1)]
         public PersistentArgumentCache m_Arguments;
@@ -219,8 +201,9 @@ namespace Battlehub.RTSaveLoad2
             m_isFieldInfoInitialized = true;
         }
 
-        public void ReadFrom(object obj, IIDMap idMap)
+        protected override void ReadFromImpl(object obj)
         {
+            base.ReadFromImpl(obj);
             if (obj == null)
             {
                 m_Arguments = default(PersistentArgumentCache);
@@ -233,17 +216,42 @@ namespace Battlehub.RTSaveLoad2
 
             Initialize(obj.GetType());
             m_Arguments = new PersistentArgumentCache();
-            m_Arguments.ReadFrom(m_argumentsFieldInfo.GetValue(obj), idMap);
+            m_Arguments.ReadFrom(m_argumentsFieldInfo.GetValue(obj));
             m_CallState = (UnityEventCallState)m_callStatFieldInfo.GetValue(obj);
             m_MethodName = (string)m_methodNameFieldInfo.GetValue(obj);
             m_Mode = (PersistentListenerMode)m_modeFieldInfo.GetValue(obj);
             UnityObject target = (UnityObject)m_targetFieldInfo.GetValue(obj);
-            m_Target = idMap.ToID(target);
+            m_Target = ToID(target);
         }
 
-
-        public void GetDependencies(object obj, Dictionary<long, UnityObject> dependencies, IIDMap idMap)
+        protected override object WriteToImpl(object obj)
         {
+            obj = base.WriteToImpl(obj);
+            if (obj == null)
+            {
+                return obj;
+            }
+
+            Initialize(obj.GetType());
+            TypeName = obj.GetType().AssemblyQualifiedName;
+
+            if (m_Arguments != null)
+            {
+                object arguments = Activator.CreateInstance(m_argumentsFieldInfo.FieldType);
+                m_Arguments.WriteTo(arguments);
+                m_argumentsFieldInfo.SetValue(obj, arguments);
+            }
+
+            m_callStatFieldInfo.SetValue(obj, m_CallState);
+            m_methodNameFieldInfo.SetValue(obj, m_MethodName);
+            m_modeFieldInfo.SetValue(obj, m_Mode);
+            m_targetFieldInfo.SetValue(obj, FromID(m_Target, m_targetFieldInfo.GetValue(obj) as UnityObject));
+            return obj;
+        }
+
+        protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
+        {
+            base.GetDepsFromImpl(obj, context);
             if (obj == null)
             {
                 return;
@@ -252,85 +260,21 @@ namespace Battlehub.RTSaveLoad2
             Initialize(obj.GetType());
 
             PersistentArgumentCache args = new PersistentArgumentCache();
-            args.GetDependencies(m_argumentsFieldInfo.GetValue(obj), dependencies, idMap);
+            args.GetDepsFrom(m_argumentsFieldInfo.GetValue(obj), context);
 
             UnityObject target = (UnityObject)m_targetFieldInfo.GetValue(obj);
-            AddDependency(target, dependencies, idMap);
+            AddDep(target, context);
         }
 
-        protected void AddDependency(UnityObject obj, Dictionary<long, UnityObject> dependencies, IIDMap idMap)
+        public override void GetDeps(GetDepsContext context)
         {
-            if (obj == null)
-            {
-                return;
-            }
-
-            long instanceId = idMap.ToID(obj);
-            if (!dependencies.ContainsKey(instanceId))
-            {
-                dependencies.Add(instanceId, obj);
-            }
-        }
-
-        public void FindDependencies<T>(Dictionary<long, T> dependencies, Dictionary<long, T> objects, bool allowNulls)
-        {
+            base.GetDeps(context);
             if (m_Arguments != null)
             {
-                m_Arguments.FindDependencies(dependencies, objects, allowNulls);
+                m_Arguments.GetDeps(context);
             }
 
-            AddDependency(m_Target, dependencies, objects, allowNulls);
-        }
-
-        protected void AddDependency<T>(long id, Dictionary<long, T> dependencies, Dictionary<long, T> objects, bool allowNulls)
-        {
-            T obj = objects.Get(id);
-            if (obj != null || allowNulls)
-            {
-                if (!dependencies.ContainsKey(id))
-                {
-                    dependencies.Add(id, obj);
-                }
-            }
-        }
-
-        public void WriteTo(object obj, Dictionary<long, UnityObject> objects)
-        {
-            if (obj == null)
-            {
-                return;
-            }
-            Initialize(obj.GetType());
-
-            TypeName = obj.GetType().AssemblyQualifiedName;
-
-            if (m_Arguments != null)
-            {
-                object arguments = Activator.CreateInstance(m_argumentsFieldInfo.FieldType);
-                m_Arguments.WriteTo(arguments, objects);
-                m_argumentsFieldInfo.SetValue(obj, arguments);
-            }
-
-            m_callStatFieldInfo.SetValue(obj, m_CallState);
-            m_methodNameFieldInfo.SetValue(obj, m_MethodName);
-            m_modeFieldInfo.SetValue(obj, m_Mode);
-            m_targetFieldInfo.SetValue(obj, objects.Get(m_Target));
-        }
-    }
-
-    [ProtoContract(AsReferenceDefault = true)]
-    public class PersistentUnityEvent : PersistentUnityEventBase
-    {
-        public static implicit operator UnityEvent(PersistentUnityEvent surrogate)
-        {
-            return (UnityEvent)surrogate.WriteTo(new UnityEvent());
-        }
-
-        public static implicit operator PersistentUnityEvent(UnityEvent obj)
-        {
-            PersistentUnityEvent surrogate = new PersistentUnityEvent();
-            surrogate.ReadFrom(obj);
-            return surrogate;
+            AddDep(m_Target, context);
         }
     }
 
@@ -368,8 +312,9 @@ namespace Battlehub.RTSaveLoad2
             m_callType = callsType.GetGenericArguments()[0];
         }
 
-        public void ReadFrom(UnityEventBase obj, IIDMap idMap)
+        protected override void ReadFromImpl(object obj)
         {
+            base.ReadFromImpl(obj);
             if (obj == null)
             {
                 return;
@@ -393,13 +338,50 @@ namespace Battlehub.RTSaveLoad2
             {
                 object call = list[i];
                 PersistentPersistentCall persistentCall = new PersistentPersistentCall();
-                persistentCall.ReadFrom(call, idMap);
+                persistentCall.ReadFrom(call);
                 m_calls[i] = persistentCall;
             }
         }
 
-        public void GetDependencies(UnityEventBase obj, Dictionary<long, UnityObject> dependencies, IIDMap idMap)
+        protected override object WriteToImpl(object obj)
         {
+            obj = base.WriteToImpl(obj);
+            if (obj == null)
+            {
+                return null;
+            }
+
+            if (m_calls == null)
+            {
+                return obj;
+            }
+
+            object persistentCalls = Activator.CreateInstance(m_persistentCallGroupInfo.FieldType);
+            object calls = Activator.CreateInstance(m_callsInfo.FieldType);
+
+            IList list = (IList)calls;
+            for (int i = 0; i < m_calls.Length; ++i)
+            {
+                PersistentPersistentCall persistentCall = m_calls[i];
+                if (persistentCall != null)
+                {
+                    object call = Activator.CreateInstance(m_callType);
+                    persistentCall.WriteTo(call);
+                    list.Add(call);
+                }
+                else
+                {
+                    list.Add(null);
+                }
+            }
+            m_callsInfo.SetValue(persistentCalls, calls);
+            m_persistentCallGroupInfo.SetValue(obj, persistentCalls);
+            return obj;
+        }
+
+        protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
+        {
+            base.GetDepsFromImpl(obj, context);
             if (obj == null)
             {
                 return;
@@ -422,12 +404,13 @@ namespace Battlehub.RTSaveLoad2
             {
                 object call = list[i];
                 PersistentPersistentCall persistentCall = new PersistentPersistentCall();
-                persistentCall.GetDependencies(call, dependencies, idMap);
+                persistentCall.GetDepsFrom(call, context);
             }
         }
 
-        public void FindDependencies<T>(Dictionary<long, T> dependencies, Dictionary<long, T> objects, bool allowNulls)
+        protected override void GetDepsImpl(GetDepsContext context)
         {
+            base.GetDepsImpl(context);
             if (m_calls == null)
             {
                 return;
@@ -438,46 +421,26 @@ namespace Battlehub.RTSaveLoad2
                 PersistentPersistentCall persistentCall = m_calls[i];
                 if (persistentCall != null)
                 {
-                    persistentCall.FindDependencies(dependencies, objects, allowNulls);
+                    persistentCall.GetDeps(context);
                 }
             }
         }
-
-        public void WriteTo(UnityEventBase obj, Dictionary<long, UnityObject> objects, IIDMap idMap)
-        {
-            if (obj == null)
-            {
-                return;
-            }
-
-            if (m_calls == null)
-            {
-                return;
-            }
-
-            object persistentCalls = Activator.CreateInstance(m_persistentCallGroupInfo.FieldType);
-            object calls = Activator.CreateInstance(m_callsInfo.FieldType);
-
-            IList list = (IList)calls;
-            for (int i = 0; i < m_calls.Length; ++i)
-            {
-                PersistentPersistentCall persistentCall = m_calls[i];
-                if (persistentCall != null)
-                {
-                    object call = Activator.CreateInstance(m_callType);
-                    persistentCall.WriteTo(call, objects);
-                    list.Add(call);
-                }
-                else
-                {
-                    list.Add(null);
-                }
-            }
-            m_callsInfo.SetValue(persistentCalls, calls);
-            m_persistentCallGroupInfo.SetValue(obj, persistentCalls);
-        }
-
-
-
     }
+
+    [ProtoContract(AsReferenceDefault = true)]
+    public class PersistentUnityEvent : PersistentUnityEventBase
+    {
+        public static implicit operator UnityEvent(PersistentUnityEvent surrogate)
+        {
+            return (UnityEvent)surrogate.WriteTo(new UnityEvent());
+        }
+
+        public static implicit operator PersistentUnityEvent(UnityEvent obj)
+        {
+            PersistentUnityEvent surrogate = new PersistentUnityEvent();
+            surrogate.ReadFrom(obj);
+            return surrogate;
+        }
+    }
+
 }

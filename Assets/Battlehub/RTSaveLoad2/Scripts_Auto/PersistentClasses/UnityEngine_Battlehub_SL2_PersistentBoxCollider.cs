@@ -11,10 +11,10 @@ namespace UnityEngine.Battlehub.SL2
     public partial class PersistentBoxCollider : PersistentCollider
     {
         [ProtoMember(256)]
-        public Vector3 center;
+        public PersistentVector3 center;
 
         [ProtoMember(257)]
-        public Vector3 size;
+        public PersistentVector3 size;
 
         protected override void ReadFromImpl(object obj)
         {

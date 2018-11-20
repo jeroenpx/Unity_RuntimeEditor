@@ -178,10 +178,10 @@ namespace Battlehub.RTSaveLoad2
             m_toType.Add(new System.Guid("ecb2a50b-b00e-4a78-9065-c58eb67994be"), typeof(RuntimeScene));
             m_toPeristentType.Add(typeof(TestBehavior), typeof(PersistentTestBehavior));
             m_toUnityType.Add(typeof(PersistentTestBehavior), typeof(TestBehavior));
-            m_toGuid.Add(typeof(PersistentTestBehavior), new System.Guid("3bac54cf-baef-480e-a932-3d8647a57e67"));
-            m_toGuid.Add(typeof(TestBehavior), new System.Guid("def304c7-5e61-492a-ba1c-ca9444c2b2c4"));
-            m_toType.Add(new System.Guid("3bac54cf-baef-480e-a932-3d8647a57e67"), typeof(PersistentTestBehavior));
-            m_toType.Add(new System.Guid("def304c7-5e61-492a-ba1c-ca9444c2b2c4"), typeof(TestBehavior));
+            m_toGuid.Add(typeof(PersistentTestBehavior), new System.Guid("9c1990b4-3f97-4a73-9005-4220ffafc5b9"));
+            m_toGuid.Add(typeof(TestBehavior), new System.Guid("9ac80b19-a75b-4a9c-9291-41cd41f53c4f"));
+            m_toType.Add(new System.Guid("9c1990b4-3f97-4a73-9005-4220ffafc5b9"), typeof(PersistentTestBehavior));
+            m_toType.Add(new System.Guid("9ac80b19-a75b-4a9c-9291-41cd41f53c4f"), typeof(TestBehavior));
             m_toPeristentType.Add(typeof(Vector2), typeof(PersistentVector2));
             m_toUnityType.Add(typeof(PersistentVector2), typeof(Vector2));
             m_toGuid.Add(typeof(PersistentVector2), new System.Guid("5ba3ff6b-8b6a-4184-8949-663c95d9c896"));

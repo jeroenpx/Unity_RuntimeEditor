@@ -12,10 +12,10 @@ namespace UnityEngine.Battlehub.SL2
     public partial class PersistentRigidbody : PersistentComponent
     {
         [ProtoMember(256)]
-        public Vector3 velocity;
+        public PersistentVector3 velocity;
 
         [ProtoMember(257)]
-        public Vector3 angularVelocity;
+        public PersistentVector3 angularVelocity;
 
         [ProtoMember(258)]
         public float drag;
@@ -45,22 +45,22 @@ namespace UnityEngine.Battlehub.SL2
         public CollisionDetectionMode collisionDetectionMode;
 
         [ProtoMember(267)]
-        public Vector3 centerOfMass;
+        public PersistentVector3 centerOfMass;
 
         [ProtoMember(268)]
-        public Quaternion inertiaTensorRotation;
+        public PersistentQuaternion inertiaTensorRotation;
 
         [ProtoMember(269)]
-        public Vector3 inertiaTensor;
+        public PersistentVector3 inertiaTensor;
 
         [ProtoMember(270)]
         public bool detectCollisions;
 
         [ProtoMember(271)]
-        public Vector3 position;
+        public PersistentVector3 position;
 
         [ProtoMember(272)]
-        public Quaternion rotation;
+        public PersistentQuaternion rotation;
 
         [ProtoMember(273)]
         public RigidbodyInterpolation interpolation;

@@ -1365,10 +1365,16 @@ namespace Battlehub.RTSaveLoad2
                     mapping.MappedNamespace = null;
                     mapping.MappedAssemblyName = null;
 
+                    mapping.UseSurrogate = false;
+                    mapping.HasDependenciesOrIsDependencyItself = false;
+
                     pMappingsEnabled.Add(false);
                 }
                 else
                 {
+                    mapping.UseSurrogate = m_codeGen.GetSurrogateType(mapping.MappedType) != null;
+                    mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
+
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
 
@@ -1418,10 +1424,16 @@ namespace Battlehub.RTSaveLoad2
                     mapping.MappedNamespace = null;
                     mapping.MappedAssemblyName = null;
 
+                    mapping.HasDependenciesOrIsDependencyItself = false;
+                    mapping.UseSurrogate = false;
+
                     pMappingsEnabled.Add(false);
                 }
                 else
                 {
+                    mapping.UseSurrogate = m_codeGen.GetSurrogateType(mapping.MappedType) != null;
+                    mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
+
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
 
@@ -1478,8 +1490,13 @@ namespace Battlehub.RTSaveLoad2
             for (int propIndex = 0; propIndex < pMappings.Count; ++propIndex)
             {
                 PersistentPropertyMapping pMapping = pMappings[propIndex];
-              
-                var propertyInfo = GetSuitableFields(fields, PersistentClassMapping.ToMappedNamespace(pMapping.PersistentNamespace) + "." + pMapping.PersistentTypeName)
+
+                string ns = PersistentClassMapping.ToMappedNamespace(pMapping.PersistentNamespace);
+                if(!string.IsNullOrEmpty(ns))
+                {
+                    ns += ".";
+                }
+                var propertyInfo = GetSuitableFields(fields, ns + pMapping.PersistentTypeName)
                     .Select(f => new {
                         Name = f.Name,
                         ObsoleteAttribute = f.GetCustomAttributes(false).OfType<ObsoleteAttribute>().FirstOrDefault(),
@@ -1487,7 +1504,7 @@ namespace Battlehub.RTSaveLoad2
                         TypeName = m_codeGen.TypeName(f.FieldType),
                         Namespace = f.FieldType.Namespace,
                         Assembly = f.FieldType.Assembly.FullName.Split(',')[0] })
-                    .Union(GetSuitableProperties(properties, PersistentClassMapping.ToMappedNamespace(pMapping.PersistentNamespace) + "." + pMapping.PersistentTypeName)
+                    .Union(GetSuitableProperties(properties, ns + pMapping.PersistentTypeName)
                     .Select(p => new {
                         Name = p.Name,
                         ObsoleteAttribute = p.GetCustomAttributes(false).OfType<ObsoleteAttribute>().FirstOrDefault(),
@@ -1505,7 +1522,7 @@ namespace Battlehub.RTSaveLoad2
                 m_mappings[typeIndex].PropertyMappingTypes[propIndex] = propertyInfo.Select(p => p.Type).ToArray();
                 m_mappings[typeIndex].PropertyMappingNamespaces[propIndex] = propertyInfo.Select(p => p.Namespace).ToArray();
                 m_mappings[typeIndex].PropertyMappingAssemblyNames[propIndex] = propertyInfo.Select(p => p.Assembly).ToArray();
-                mappedKeys[propIndex] = propertyInfo.Select(m => m.Namespace + "." + m.TypeName + " " + m.Name).ToArray();
+                mappedKeys[propIndex] = propertyInfo.Select(m => (string.IsNullOrEmpty(m.Namespace) ? m.TypeName : m.Namespace + "." + m.TypeName) + " " + m.Name).ToArray();
             }
 
             for (int propIndex = 0; propIndex < m_mappings[typeIndex].PropertyMappingSelection.Length; ++propIndex)

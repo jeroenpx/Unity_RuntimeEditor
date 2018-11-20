@@ -25,12 +25,27 @@ namespace Battlehub.RTSaveLoad2
 
         public string PersistentFullTypeName
         {
-            get { return PersistentNamespace + "." + PersistentTypeName; }
+            get
+            {
+                if(string.IsNullOrEmpty(PersistentNamespace))
+                {
+                    return PersistentTypeName;
+                }
+                return PersistentNamespace + "." + PersistentTypeName;
+            }
         }
 
         public string MappedFullTypeName
         {
-            get { return MappedNamespace + "." + MappedTypeName; }
+            get
+            {
+                if(string.IsNullOrEmpty(MappedNamespace))
+                {
+                    return MappedTypeName;
+                }
+
+                return MappedNamespace + "." + MappedTypeName;
+            }
         }
 
         public string MappedAssemblyQualifiedName
@@ -70,7 +85,15 @@ namespace Battlehub.RTSaveLoad2
         public int PersistentTag;
         public string FullTypeName
         {
-            get { return Namespace + "." + TypeName; }
+            get
+            {
+                if(string.IsNullOrEmpty(Namespace))
+                {
+                    return TypeName;
+                }
+
+                return Namespace + "." + TypeName;
+            }
         }
         public string Namespace;
         public string TypeName;
@@ -81,12 +104,28 @@ namespace Battlehub.RTSaveLoad2
     {
         public string MappedFullTypeName
         {
-            get { return MappedNamespace + "." + MappedTypeName; }
+            get
+            {
+                if(string.IsNullOrEmpty(MappedNamespace))
+                {
+                    return MappedTypeName;
+                }
+
+                return MappedNamespace + "." + MappedTypeName;
+            }
         }
 
         public string PersistentFullTypeName
         {
-            get { return PersistentNamespace + "." + PersistentTypeName; }
+            get
+            {
+                if(string.IsNullOrEmpty(PersistentNamespace))
+                {
+                    return PersistentTypeName;
+                }
+
+                return PersistentNamespace + "." + PersistentTypeName;
+            }
         }
 
         public string MappedAssemblyQualifiedName
@@ -119,7 +158,7 @@ namespace Battlehub.RTSaveLoad2
 
         public static string ToPersistentNamespace(string mappedNamespace)
         {
-            if(mappedNamespace == null)
+            if(string.IsNullOrEmpty(mappedNamespace))
             {
                 return "Battlehub.SL2";
             }
@@ -143,7 +182,13 @@ namespace Battlehub.RTSaveLoad2
 
         public static string ToPersistentFullName(string ns, string typeName)
         {
-            return ToPersistentNamespace(ns) + "." + ToPersistentName(typeName);
+            ns = ToPersistentNamespace(ns);
+            if(string.IsNullOrEmpty(ns))
+            {
+                return ToPersistentName(typeName);
+            }
+
+            return ns + "." + ToPersistentName(typeName);
         }
     }
 

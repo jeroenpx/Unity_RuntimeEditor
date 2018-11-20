@@ -16,7 +16,15 @@ namespace Battlehub.RTSaveLoad2
         protected override void ReadFromImpl(object obj)
         {
             UnityObject uo = (UnityObject)obj;
-            name = uo.name;
+            try
+            {
+                name = uo.name;
+            }
+            catch
+            {
+                Debug.Log("Exc");
+            }
+            
             hideFlags = (int)uo.hideFlags;
         }
 

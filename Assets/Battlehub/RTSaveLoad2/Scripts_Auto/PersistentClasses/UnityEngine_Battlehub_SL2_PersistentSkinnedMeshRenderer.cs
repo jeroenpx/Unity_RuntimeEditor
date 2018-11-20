@@ -30,7 +30,7 @@ namespace UnityEngine.Battlehub.SL2
         public bool skinnedMotionVectors;
 
         [ProtoMember(262)]
-        public Bounds localBounds;
+        public PersistentBounds localBounds;
 
         protected override void ReadFromImpl(object obj)
         {

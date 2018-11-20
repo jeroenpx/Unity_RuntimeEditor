@@ -59,10 +59,10 @@ namespace UnityEngine.Battlehub.SL2
         public int realtimeLightmapIndex;
 
         [ProtoMember(276)]
-        public Vector4 lightmapScaleOffset;
+        public PersistentVector4 lightmapScaleOffset;
 
         [ProtoMember(277)]
-        public Vector4 realtimeLightmapScaleOffset;
+        public PersistentVector4 realtimeLightmapScaleOffset;
 
         [ProtoMember(281)]
         public long[] sharedMaterials;

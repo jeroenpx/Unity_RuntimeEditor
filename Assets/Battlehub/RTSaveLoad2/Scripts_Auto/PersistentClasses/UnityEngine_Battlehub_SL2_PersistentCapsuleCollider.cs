@@ -12,7 +12,7 @@ namespace UnityEngine.Battlehub.SL2
     public partial class PersistentCapsuleCollider : PersistentCollider
     {
         [ProtoMember(256)]
-        public Vector3 center;
+        public PersistentVector3 center;
 
         [ProtoMember(257)]
         public float radius;
