@@ -9,13 +9,34 @@ using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2.Interface
 {
     [ProtoContract]
-    public class AssetLibraryReferenceInfo
+    public class AssetBundleItemInfo
     {
         [ProtoMember(1)]
-        public string AssetLibrary;
+        public string Path;
+
+        [ProtoMember(2)]
+        public int Id;
+
+        [ProtoMember(3)]
+        public int ParentId;
+
+
+    }
+
+    [ProtoContract]
+    public class AssetBundleInfo
+    {
+        [ProtoMember(1)]
+        public string UniqueName;
 
         [ProtoMember(2)]
         public int Ordinal;
+
+        [ProtoMember(3)]
+        public AssetBundleItemInfo[] AssetBundleItems;
+
+        [ProtoMember(4)]
+        public int Identifier = 4;
     }
 
     [ProtoContract]
@@ -28,7 +49,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         public int AssetIdentifier = 1;
 
         [ProtoMember(3)]
-        public AssetLibraryReferenceInfo[] References;
+        public int BundleIdentifier = 0;
     }
 
     [ProtoContract]

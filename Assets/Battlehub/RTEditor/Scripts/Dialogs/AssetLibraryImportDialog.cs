@@ -20,10 +20,16 @@ namespace Battlehub.RTEditor
         private IProject m_project;
         private IRTE m_editor;
 
-        private string m_selectedAssetLibrary;
-        public string SelectedAssetLibrary
+        private bool m_isBuiltIn;
+        public bool IsBuiltIn
         {
-            set { m_selectedAssetLibrary = value; }
+            set { m_isBuiltIn = value; }
+        }
+
+        private string m_selectedLibrary;
+        public string SelectedLibrary
+        {
+            set { m_selectedLibrary = value; }
         }
 
         public ImportItem[] SelectedAssets
@@ -60,7 +66,8 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
 
             m_editor.IsBusy = true;
-            m_project.LoadAssetLibrary(Array.IndexOf(m_project.AssetLibraries, m_selectedAssetLibrary), (error, root) =>
+
+            m_project.LoadAssetLibrary(m_selectedLibrary, m_isBuiltIn, (error, root) =>
             {
                 m_editor.IsBusy = false;
                 if (error.HasError)

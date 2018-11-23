@@ -51,6 +51,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator PhysicMaterial(PersistentPhysicMaterial surrogate)
         {
+            if(surrogate == null) return default(PhysicMaterial);
             return (PhysicMaterial)surrogate.WriteTo(new PhysicMaterial());
         }
         

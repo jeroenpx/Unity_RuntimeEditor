@@ -35,6 +35,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator BoxCollider(PersistentBoxCollider surrogate)
         {
+            if(surrogate == null) return default(BoxCollider);
             return (BoxCollider)surrogate.WriteTo(new BoxCollider());
         }
         

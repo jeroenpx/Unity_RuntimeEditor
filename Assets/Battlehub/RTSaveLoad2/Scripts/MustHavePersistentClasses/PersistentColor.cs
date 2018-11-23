@@ -2,11 +2,8 @@ using System.Collections.Generic;
 using ProtoBuf;
 using Battlehub.RTSaveLoad2;
 using UnityEngine;
-using UnityEngine.Battlehub.SL2;
-using System;
 
-using UnityObject = UnityEngine.Object;
-namespace UnityEngine.Battlehub.SL2
+namespace Battlehub.RTSaveLoad2
 {
     [ProtoContract(AsReferenceDefault = true)]
     public partial class PersistentColor : PersistentSurrogate
@@ -46,6 +43,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Color(PersistentColor surrogate)
         {
+            if(surrogate == null) return default(Color);
             return (Color)surrogate.WriteTo(new Color());
         }
         

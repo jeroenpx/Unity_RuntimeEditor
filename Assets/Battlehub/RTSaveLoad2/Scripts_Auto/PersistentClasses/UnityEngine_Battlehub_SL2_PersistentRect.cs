@@ -46,6 +46,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Rect(PersistentRect surrogate)
         {
+            if(surrogate == null) return default(Rect);
             return (Rect)surrogate.WriteTo(new Rect());
         }
         

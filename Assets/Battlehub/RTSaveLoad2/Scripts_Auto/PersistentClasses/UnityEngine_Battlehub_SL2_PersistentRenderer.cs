@@ -135,6 +135,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Renderer(PersistentRenderer surrogate)
         {
+            if(surrogate == null) return default(Renderer);
             return (Renderer)surrogate.WriteTo(new Renderer());
         }
         

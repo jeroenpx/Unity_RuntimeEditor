@@ -44,6 +44,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator MeshRenderer(PersistentMeshRenderer surrogate)
         {
+            if(surrogate == null) return default(MeshRenderer);
             return (MeshRenderer)surrogate.WriteTo(new MeshRenderer());
         }
         

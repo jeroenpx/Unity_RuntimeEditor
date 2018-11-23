@@ -12,28 +12,24 @@ namespace UnityEngine.Battlehub.SL2
     public partial class PersistentMaterial : PersistentObject
     {
         [ProtoMember(256)]
-        public long shader;
-
-        [ProtoMember(257)]
         public int renderQueue;
 
-        [ProtoMember(258)]
+        [ProtoMember(257)]
         public MaterialGlobalIlluminationFlags globalIlluminationFlags;
 
-        [ProtoMember(259)]
+        [ProtoMember(258)]
         public bool doubleSidedGI;
 
-        [ProtoMember(260)]
+        [ProtoMember(259)]
         public bool enableInstancing;
 
-        [ProtoMember(261)]
+        [ProtoMember(260)]
         public string[] shaderKeywords;
 
         protected override void ReadFromImpl(object obj)
         {
             base.ReadFromImpl(obj);
             Material uo = (Material)obj;
-            shader = ToID(uo.shader);
             renderQueue = uo.renderQueue;
             globalIlluminationFlags = uo.globalIlluminationFlags;
             doubleSidedGI = uo.doubleSidedGI;
@@ -45,26 +41,12 @@ namespace UnityEngine.Battlehub.SL2
         {
             obj = base.WriteToImpl(obj);
             Material uo = (Material)obj;
-            uo.shader = FromID(shader, uo.shader);
             uo.renderQueue = renderQueue;
             uo.globalIlluminationFlags = globalIlluminationFlags;
             uo.doubleSidedGI = doubleSidedGI;
             uo.enableInstancing = enableInstancing;
             uo.shaderKeywords = shaderKeywords;
             return uo;
-        }
-
-        protected override void GetDepsImpl(GetDepsContext context)
-        {
-            base.GetDepsImpl(context);
-            AddDep(shader, context);
-        }
-
-        protected override void GetDepsFromImpl(object obj, GetDepsFromContext context)
-        {
-            base.GetDepsFromImpl(obj, context);
-            Material uo = (Material)obj;
-            AddDep(uo.shader, context);
         }
     }
 }

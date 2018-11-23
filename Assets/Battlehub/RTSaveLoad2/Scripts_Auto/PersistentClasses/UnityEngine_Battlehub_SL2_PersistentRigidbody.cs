@@ -136,6 +136,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Rigidbody(PersistentRigidbody surrogate)
         {
+            if(surrogate == null) return default(Rigidbody);
             return (Rigidbody)surrogate.WriteTo(new Rigidbody());
         }
         

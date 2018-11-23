@@ -13,6 +13,7 @@ namespace UnityEngine.SceneManagement.Battlehub.SL2
         
         public static implicit operator Scene(PersistentScene surrogate)
         {
+            if(surrogate == null) return default(Scene);
             return (Scene)surrogate.WriteTo(new Scene());
         }
         

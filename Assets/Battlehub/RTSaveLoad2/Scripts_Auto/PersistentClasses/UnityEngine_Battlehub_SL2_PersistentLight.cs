@@ -153,6 +153,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Light(PersistentLight surrogate)
         {
+            if(surrogate == null) return default(Light);
             return (Light)surrogate.WriteTo(new Light());
         }
         

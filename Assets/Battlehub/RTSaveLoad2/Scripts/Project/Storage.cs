@@ -5,19 +5,23 @@ using UnityEngine;
 
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.RTCommon;
+using System.Linq;
 
 namespace Battlehub.RTSaveLoad2
 {
     public delegate void StorageEventHandler(Error error);
     public delegate void StorageEventHandler<T>(Error error, T data);
+    public delegate void StorageEventHandler<T, T2>(Error error, T data, T2 data2);
 
     public interface IStorage
     {
-        void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
+        void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback);
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
         void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback);
+        void Save(string projectPath, AssetBundleInfo assetBundleInfo, ProjectInfo project, StorageEventHandler callback);
         void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback);
+        void Load(string projectPath, string bundleName, StorageEventHandler<AssetBundleInfo> callback);
         void Delete(string projectPath, string[] paths, StorageEventHandler callback);
         void Move(string projectPath, string[] paths, string[] names, string targetPath, StorageEventHandler callback);
         void Rename(string projectPath, string[] paths, string[] oldNames, string[] names, StorageEventHandler callback);
@@ -48,12 +52,13 @@ namespace Battlehub.RTSaveLoad2
             Debug.LogFormat("RootPath : {0}", RootPath);
         }
 
-        public void GetProject(string projectPath, StorageEventHandler<ProjectInfo> callback)
+        public void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback)
         {
             projectPath = FullPath(projectPath) + "/Project.rtmeta";
             ProjectInfo projectInfo;
             Error error = new Error();
             ISerializer serializer = IOC.Resolve<ISerializer>();
+            AssetBundleInfo[] result = new AssetBundleInfo[0];
             if (!File.Exists(projectPath))
             {
                 projectInfo = new ProjectInfo();
@@ -65,7 +70,18 @@ namespace Battlehub.RTSaveLoad2
                     using (FileStream fs = File.OpenRead(projectPath))
                     {
                         projectInfo = serializer.Deserialize<ProjectInfo>(fs);
-                    }       
+                    }
+
+                    string[] files = Directory.GetFiles(projectPath).Where(fn => fn.EndsWith(".rtbundle")).ToArray();
+                    result = new AssetBundleInfo[files.Length];
+
+                    for (int i = 0; i < result.Length; ++i)
+                    {
+                        using (FileStream fs = File.OpenRead(files[i]))
+                        {
+                            result[i] = serializer.Deserialize<AssetBundleInfo>(fs);
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -74,7 +90,8 @@ namespace Battlehub.RTSaveLoad2
                     error.ErrorText = e.ToString();
                 }
             }
-            callback(error, projectInfo);
+
+            callback(error, projectInfo, result);
         }
 
         public void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback)
@@ -257,6 +274,30 @@ namespace Battlehub.RTSaveLoad2
             callback(error);
         }
 
+        public void Save(string projectPath, AssetBundleInfo assetBundleInfo, ProjectInfo projectInfo, StorageEventHandler callback)
+        {
+            projectPath = FullPath(projectPath);
+            string projectInfoPath = projectPath + "/Project.rtmeta";
+
+            string assetBundlePath = assetBundleInfo.UniqueName.Replace("/", "_").Replace("\\", "_");
+            assetBundlePath += ".rtbundle";
+            assetBundlePath = projectPath + "/" + assetBundlePath;
+
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+
+            using (FileStream fs = File.OpenWrite(assetBundlePath))
+            {
+                serializer.Serialize(assetBundleInfo, fs);
+            }
+
+            using (FileStream fs = File.OpenWrite(projectInfoPath))
+            {
+                serializer.Serialize(projectInfo, fs);
+            }
+
+            callback(new Error(Error.OK));
+        }
+
         public void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback)
         {
             PersistentObject[] result = new PersistentObject[assetPaths.Length];
@@ -291,6 +332,29 @@ namespace Battlehub.RTSaveLoad2
 
             callback(new Error(Error.OK), result);
         }
+
+        public void Load(string projectPath, string bundleName, StorageEventHandler<AssetBundleInfo> callback)
+        {
+            string assetBundleInfoPath = bundleName.Replace("/", "_").Replace("\\", "_");
+            assetBundleInfoPath += ".rtbundle";
+            assetBundleInfoPath = projectPath + "/" + assetBundleInfoPath;
+
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+            if (File.Exists(assetBundleInfoPath))
+            {
+                using (FileStream fs = File.OpenRead(assetBundleInfoPath))
+                {
+                    callback(new Error(Error.OK), serializer.Deserialize<AssetBundleInfo>(fs));
+                }
+            }
+            else
+            {
+                callback(new Error(Error.E_NotFound), null);
+                return;
+            }
+        }
+
+
 
         public void Delete(string projectPath, string[] paths, StorageEventHandler callback)
         {

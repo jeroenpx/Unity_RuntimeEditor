@@ -253,6 +253,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Camera(PersistentCamera surrogate)
         {
+            if(surrogate == null) return default(Camera);
             return (Camera)surrogate.WriteTo(new Camera());
         }
         

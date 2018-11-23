@@ -13,6 +13,7 @@ namespace UnityEngine.Battlehub.SL2
         
         public static implicit operator Vector2(PersistentVector2 surrogate)
         {
+            if(surrogate == null) return default(Vector2);
             return (Vector2)surrogate.WriteTo(new Vector2());
         }
         

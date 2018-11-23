@@ -118,7 +118,7 @@ namespace Battlehub.RTEditor
             m_project.DeleteCompleted += OnDeleteCompleted;
             m_project.RenameCompleted += OnRenameCompleted;
             m_project.MoveCompleted += OnMoveCompleted;
-            m_project.CreatePrefabCompleted += OnPrefabCreateCompleted;
+            m_project.CreateCompleted += OnPrefabCreateCompleted;
             m_project.SaveCompleted += OnSaveCompleted;
 
             ShowProgress = true;
@@ -152,7 +152,7 @@ namespace Battlehub.RTEditor
                 m_project.DeleteCompleted -= OnDeleteCompleted;
                 m_project.RenameCompleted -= OnRenameCompleted;
                 m_project.MoveCompleted -= OnMoveCompleted;
-                m_project.CreatePrefabCompleted -= OnPrefabCreateCompleted;
+                m_project.CreateCompleted -= OnPrefabCreateCompleted;
                 m_project.SaveCompleted -= OnSaveCompleted;
             }
 
@@ -287,16 +287,17 @@ namespace Battlehub.RTEditor
             PopupWindow.Show("Import Asset Library", assetLibrarySelector.transform, "Select",
                 args =>
                 {
-                    Import(assetLibrarySelector.SelectedAssetLibrary);
+                    Import(assetLibrarySelector.SelectedLibrary, assetLibrarySelector.IsBuiltInLibrary);
                 },
                 "Cancel");
         }
 
-        private void Import(string assetLibrary)
+        private void Import(string assetLibrary, bool isBuiltIn)
         {
             AssetLibraryImportDialog assetLibraryImporter = Instantiate(m_assetLibraryImportPrefab);
             assetLibraryImporter.transform.position = Vector3.zero;
-            assetLibraryImporter.SelectedAssetLibrary = assetLibrary;
+            assetLibraryImporter.SelectedLibrary = assetLibrary;
+            assetLibraryImporter.IsBuiltIn = isBuiltIn;
 
             PopupWindow.Show("Select Assets", assetLibraryImporter.transform, "Import",
                 args =>

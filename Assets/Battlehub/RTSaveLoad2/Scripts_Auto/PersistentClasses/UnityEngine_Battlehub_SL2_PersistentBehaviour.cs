@@ -31,6 +31,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Behaviour(PersistentBehaviour surrogate)
         {
+            if(surrogate == null) return default(Behaviour);
             return (Behaviour)surrogate.WriteTo(new Behaviour());
         }
         

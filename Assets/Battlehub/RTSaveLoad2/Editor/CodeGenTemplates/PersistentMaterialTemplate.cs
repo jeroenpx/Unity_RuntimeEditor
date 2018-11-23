@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
 {
-    [PersistentTemplate("UnityEngine.Material", new[] { "color", "mainTexture", "mainTextureOffset", "mainTextureScale" },
+    [PersistentTemplate("UnityEngine.Material", new[] { "color", "mainTexture", "mainTextureOffset", "mainTextureScale", "shader" },
         new System.Type[] {
             typeof(Vector4),
             typeof(Color) })]
@@ -39,6 +39,12 @@ namespace Battlehub.RTSaveLoad2.Internal
         [ProtoMember(6)]
         public Vector2 mainTextureScale;
 
+        [ProtoMember(7)]
+        public long shader;
+
+        [ProtoMember(8)]
+        public string m_shaderName;
+
         public override object WriteTo(object obj)
         {
             obj = base.WriteTo(obj);
@@ -52,6 +58,15 @@ namespace Battlehub.RTSaveLoad2.Internal
             {
                 o.mainTextureOffset = mainTextureOffset;
                 o.mainTextureScale = mainTextureScale;
+            }
+
+            if (m_assetDB.IsMapped(shader))
+            {
+                o.shader = m_assetDB.FromID<Shader>(shader);
+            }
+            else
+            {
+                o.shader = Shader.Find(m_shaderName);
             }
 
             if (m_keywords != null)
@@ -71,9 +86,9 @@ namespace Battlehub.RTSaveLoad2.Internal
                     switch (type)
                     {
                         case RTShaderPropertyType.Color:
-                            if (m_propertyValues[i].ValueBase is Color)
+                            if (m_propertyValues[i].ValueBase is PersistentColor)
                             {
-                                o.SetColor(name, (Color)m_propertyValues[i].ValueBase);
+                                o.SetColor(name, (PersistentColor)m_propertyValues[i].ValueBase);
                             }
                             break;
                         case RTShaderPropertyType.Float:
@@ -95,9 +110,9 @@ namespace Battlehub.RTSaveLoad2.Internal
                             }
                             break;
                         case RTShaderPropertyType.Vector:
-                            if (m_propertyValues[i].ValueBase is Vector4)
+                            if (m_propertyValues[i].ValueBase is PersistentVector4)
                             {
-                                o.SetVector(name, (Vector4)m_propertyValues[i].ValueBase);
+                                o.SetVector(name, (PersistentVector4)m_propertyValues[i].ValueBase);
                             }
                             break;
                         case RTShaderPropertyType.Unknown:
@@ -112,6 +127,9 @@ namespace Battlehub.RTSaveLoad2.Internal
         public override void GetDeps(GetDepsContext context)
         {
             base.GetDeps(context);
+
+            AddDep(shader, context);
+
             if (m_propertyValues != null)
             {
                 for (int i = 0; i < m_propertyValues.Length; ++i)
@@ -139,6 +157,8 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             Material o = (Material)obj;
+            AddDep(o.shader, context);
+
             RuntimeShaderInfo shaderInfo = null;
             IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
             if (shaderUtil != null)
@@ -164,8 +184,6 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
         }
 
-
-    
         public override void ReadFrom(object obj)
         {
             base.ReadFrom(obj);
@@ -183,8 +201,13 @@ namespace Battlehub.RTSaveLoad2.Internal
 
             if (o.shader == null)
             {
+                shader = m_assetDB.NullID;
+                m_shaderName = null;
                 return;
             }
+
+            shader = m_assetDB.ToID(o.shader);
+            m_shaderName = o.shader.name;
 
             RuntimeShaderInfo shaderInfo = null;
             IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
@@ -210,7 +233,7 @@ namespace Battlehub.RTSaveLoad2.Internal
                 switch (type)
                 {
                     case RTShaderPropertyType.Color:
-                        m_propertyValues[i] = PrimitiveContract.Create(o.GetColor(name));
+                        m_propertyValues[i] = PrimitiveContract.Create((PersistentColor)o.GetColor(name));
                         break;
                     case RTShaderPropertyType.Float:
                         m_propertyValues[i] = PrimitiveContract.Create(o.GetFloat(name));
@@ -219,10 +242,18 @@ namespace Battlehub.RTSaveLoad2.Internal
                         m_propertyValues[i] = PrimitiveContract.Create(o.GetFloat(name));
                         break;
                     case RTShaderPropertyType.TexEnv:
-                        m_propertyValues[i] = PrimitiveContract.Create(o.GetTexture(name));
+                        Texture2D texture = (Texture2D)o.GetTexture(name);
+                        if (texture == null)
+                        {
+                            m_propertyValues[i] = PrimitiveContract.Create(m_assetDB.NullID);
+                        }
+                        else
+                        {
+                            m_propertyValues[i] = PrimitiveContract.Create(m_assetDB.ToID(texture));
+                        }
                         break;
                     case RTShaderPropertyType.Vector:
-                        m_propertyValues[i] = PrimitiveContract.Create(o.GetVector(name));
+                        m_propertyValues[i] = PrimitiveContract.Create((PersistentVector4)o.GetVector(name));
                         break;
                     case RTShaderPropertyType.Unknown:
                         m_propertyValues[i] = null;
@@ -232,7 +263,6 @@ namespace Battlehub.RTSaveLoad2.Internal
 
             m_keywords = o.shaderKeywords;
         }
-
         //<TEMPLATE_BODY_END>
 #endif
     }

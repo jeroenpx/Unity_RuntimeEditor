@@ -366,6 +366,7 @@ namespace Battlehub.RTHandles
             {
                 GameObject glRenderer = new GameObject();
                 glRenderer.name = "GLRenderer";
+                glRenderer.transform.SetParent(Editor.Root, false);
                 glRenderer.AddComponent<GLRenderer>();
             }
 

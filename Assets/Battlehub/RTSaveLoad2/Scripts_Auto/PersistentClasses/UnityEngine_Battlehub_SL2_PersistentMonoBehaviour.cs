@@ -31,6 +31,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator MonoBehaviour(PersistentMonoBehaviour surrogate)
         {
+            if(surrogate == null) return default(MonoBehaviour);
             return (MonoBehaviour)surrogate.WriteTo(new MonoBehaviour());
         }
         

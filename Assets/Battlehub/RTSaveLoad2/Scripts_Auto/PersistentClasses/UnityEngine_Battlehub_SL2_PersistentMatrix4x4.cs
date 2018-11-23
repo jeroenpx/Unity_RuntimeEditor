@@ -106,6 +106,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Matrix4x4(PersistentMatrix4x4 surrogate)
         {
+            if(surrogate == null) return default(Matrix4x4);
             return (Matrix4x4)surrogate.WriteTo(new Matrix4x4());
         }
         

@@ -11,7 +11,7 @@ namespace Battlehub.RTSaveLoad2.Interface
     {
         event ProjectEventHandler OpenCompleted;
         event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
-        event ProjectEventHandler<AssetItem> CreatePrefabCompleted;
+        event ProjectEventHandler<AssetItem> CreateCompleted;
         event ProjectEventHandler<AssetItem[]> SaveCompleted;
         event ProjectEventHandler<UnityObject> LoadCompleted;
         event ProjectEventHandler UnloadCompleted;
@@ -19,6 +19,11 @@ namespace Battlehub.RTSaveLoad2.Interface
         event ProjectEventHandler<ProjectItem[]> DeleteCompleted;
         event ProjectEventHandler<ProjectItem[], ProjectItem> MoveCompleted;
         event ProjectEventHandler<ProjectItem> RenameCompleted;
+
+        bool IsBusy
+        {
+            get;
+        }
 
         ProjectItem Root
         {
@@ -42,16 +47,18 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation Open(string project, ProjectEventHandler callback = null);
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null);
 
-        ProjectAsyncOperation<AssetItem> CreatePrefab(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
+        ProjectAsyncOperation<AssetItem> Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
         ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
-        ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(int index, ProjectEventHandler<ProjectItem> callback = null);
+        ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[], ProjectItem> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);
+
+        ProjectAsyncOperation<string[]> ListAssetBundles(ProjectEventHandler<string[]> callback = null);
     }
 
     public class ProjectAsyncOperation : CustomYieldInstruction

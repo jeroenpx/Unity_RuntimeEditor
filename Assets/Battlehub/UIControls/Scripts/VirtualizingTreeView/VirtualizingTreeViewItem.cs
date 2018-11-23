@@ -28,6 +28,7 @@ namespace Battlehub.UIControls
             {
                 base.Item = value;
 
+            
                 m_treeViewItemData = (TreeViewItemContainerData)TreeView.GetItemContainerData(value);
                 if (m_treeViewItemData == null)
                 {
@@ -160,7 +161,10 @@ namespace Battlehub.UIControls
             {
                 if (base.IsSelected != value)
                 {
-                    m_toggle.isOn = value;
+                    if(m_toggle != null)
+                    {
+                        m_toggle.isOn = value;
+                    }
                     base.IsSelected = value;
                 }
             }

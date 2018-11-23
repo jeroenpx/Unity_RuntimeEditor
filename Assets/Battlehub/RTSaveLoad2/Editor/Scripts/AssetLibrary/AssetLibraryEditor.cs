@@ -76,20 +76,20 @@ namespace Battlehub.RTSaveLoad2
             m_projectGUI.OnGUI();
             m_assetsGUI.OnGUI();
             
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-            Asset.KeepRuntimeProjectInSync = EditorGUILayout.Toggle("Keep in sync", Asset.KeepRuntimeProjectInSync);
-            EditorGUILayout.EndHorizontal();
-            if (Asset.KeepRuntimeProjectInSync)
-            {
-                EditorGUILayout.HelpBox("Runtime project tree will be updated each time you launch runtime editor and will reflect all changes in this asset library", MessageType.Info);
-            }
+            //EditorGUI.BeginChangeCheck();
+            //EditorGUILayout.Space();
+           // EditorGUILayout.BeginHorizontal();
+            //Asset.KeepRuntimeProjectInSync = EditorGUILayout.Toggle("Keep in sync", Asset.KeepRuntimeProjectInSync);
+            //EditorGUILayout.EndHorizontal();
+           // if (Asset.KeepRuntimeProjectInSync)
+            //{
+            //    EditorGUILayout.HelpBox("Runtime project tree will be updated each time you launch runtime editor and will reflect all changes in this asset library", MessageType.Info);
+            //}
            
-            if(EditorGUI.EndChangeCheck())
-            {
-                SaveAsset();
-            }
+            //if(EditorGUI.EndChangeCheck())
+            //{
+            //    SaveAsset();
+            //}
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();

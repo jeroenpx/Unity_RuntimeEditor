@@ -51,6 +51,7 @@ namespace Battlehub.RTCommon
         public Collider[] Colliders
         {
             get { return m_colliders; }
+            set { m_colliders = value; }
         }
 
 

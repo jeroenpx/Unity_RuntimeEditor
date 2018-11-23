@@ -66,6 +66,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator BoneWeight(PersistentBoneWeight surrogate)
         {
+            if(surrogate == null) return default(BoneWeight);
             return (BoneWeight)surrogate.WriteTo(new BoneWeight());
         }
         

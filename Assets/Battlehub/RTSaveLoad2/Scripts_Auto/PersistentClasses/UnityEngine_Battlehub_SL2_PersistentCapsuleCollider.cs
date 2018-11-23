@@ -46,6 +46,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator CapsuleCollider(PersistentCapsuleCollider surrogate)
         {
+            if(surrogate == null) return default(CapsuleCollider);
             return (CapsuleCollider)surrogate.WriteTo(new CapsuleCollider());
         }
         

@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad2;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 using UnityEngine;
@@ -9,20 +10,36 @@ namespace Battlehub.RTEditor
     public class AssetLibrarySelectDialog : MonoBehaviour
     {
         [SerializeField]
-        private VirtualizingTreeView TreeViewPrefab;
+        private VirtualizingTreeView m_builtInTreeView;
+        [SerializeField]
+        private VirtualizingTreeView m_externalTreeView;
+        [SerializeField]
+        private Toggle m_builtInToggle;
+
         [SerializeField]
         private Sprite AssetLibraryIcon;
 
         private PopupWindow m_parentPopup;
-        private VirtualizingTreeView m_treeView;
-
 
         private IProject m_project;
 
-        public string SelectedAssetLibrary
+        public bool IsBuiltInLibrary
         {
-            get { return m_treeView.SelectedItem as string; }
+            get { return m_builtInToggle.isOn; }
         }
+
+        public string SelectedLibrary
+        {
+            get
+            {
+                if(IsBuiltInLibrary)
+                {
+                    return m_builtInTreeView.SelectedItem as string;
+                }
+                return m_externalTreeView.SelectedItem as string;
+            }
+        }
+
 
         private void Start()
         {
@@ -32,22 +49,53 @@ namespace Battlehub.RTEditor
                 m_parentPopup.OK.AddListener(OnOK);
             }
 
-            m_treeView = GetComponentInChildren<VirtualizingTreeView>();
-            if (m_treeView == null)
+            
+            if (m_builtInTreeView == null)
             {
-                m_treeView = Instantiate(TreeViewPrefab);
-                m_treeView.transform.SetParent(transform, false);
+                Debug.LogError("m_builtInTreeView == null");
+                return;
             }
 
-            m_treeView.ItemDataBinding += OnItemDataBinding;
-            m_treeView.ItemDoubleClick += OnItemDoubleClick;
-            m_treeView.CanDrag = false;
-            m_treeView.CanEdit = false;
-            m_treeView.CanUnselectAll = false;
+            if(m_externalTreeView == null)
+            {
+                Debug.LogError("m_externalTreeView == null");
+                return;
+            }
+
+            m_builtInTreeView.ItemDataBinding += OnItemDataBinding;
+            m_builtInTreeView.ItemDoubleClick += OnItemDoubleClick;
+            m_builtInTreeView.CanDrag = false;
+            m_builtInTreeView.CanEdit = false;
+            m_builtInTreeView.CanUnselectAll = false;
+
+            m_externalTreeView.ItemDataBinding += OnItemDataBinding;
+            m_externalTreeView.ItemDoubleClick += OnItemDoubleClick;
+            m_externalTreeView.CanDrag = false;
+            m_externalTreeView.CanEdit = false;
+            m_externalTreeView.CanUnselectAll = false;
+
+            m_externalTreeView.transform.parent.gameObject.SetActive(false);
+            m_builtInTreeView.transform.parent.gameObject.SetActive(true);
 
             m_project = IOC.Resolve<IProject>();
-            m_treeView.Items = m_project.AssetLibraries;
-            m_treeView.SelectedIndex = 0;
+            m_builtInTreeView.Items = m_project.AssetLibraries;
+            m_builtInTreeView.SelectedIndex = 0;
+
+            IRTE editor = IOC.Resolve<IRTE>();
+            editor.IsBusy = true;
+            m_project.ListAssetBundles((error, assetBundles) =>
+            {
+                editor.IsBusy = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Unable to list asset bundles", error.ToString(), "OK");
+                    return;
+                }
+                m_externalTreeView.Items = assetBundles;
+                m_externalTreeView.SelectedIndex = 0;
+            });
+
+
         }
 
         private void OnDestroy()
@@ -57,10 +105,10 @@ namespace Battlehub.RTEditor
                 m_parentPopup.OK.RemoveListener(OnOK);
             }
 
-            if (m_treeView != null)
+            if (m_builtInTreeView != null)
             {
-                m_treeView.ItemDataBinding -= OnItemDataBinding;
-                m_treeView.ItemDoubleClick -= OnItemDoubleClick;
+                m_builtInTreeView.ItemDataBinding -= OnItemDataBinding;
+                m_builtInTreeView.ItemDoubleClick -= OnItemDoubleClick;
             }
         }
 
@@ -82,12 +130,12 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            
+            m_parentPopup.Close(true);
         }
 
         private void OnOK(PopupWindowArgs args)
         {
-            if (m_treeView.SelectedItem == null)
+            if (m_builtInTreeView.SelectedItem == null && IsBuiltInLibrary || m_externalTreeView.SelectedItem == null && !IsBuiltInLibrary)
             {
                 args.Cancel = true;
                 return;

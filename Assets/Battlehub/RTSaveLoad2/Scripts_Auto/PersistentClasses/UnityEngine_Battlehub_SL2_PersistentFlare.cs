@@ -13,6 +13,7 @@ namespace UnityEngine.Battlehub.SL2
         
         public static implicit operator Flare(PersistentFlare surrogate)
         {
+            if(surrogate == null) return default(Flare);
             return (Flare)surrogate.WriteTo(new Flare());
         }
         

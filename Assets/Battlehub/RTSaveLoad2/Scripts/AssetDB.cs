@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -38,15 +39,14 @@ namespace Battlehub.RTSaveLoad2
         T[] FromID<T>(long[] id) where T : UnityObject;
     }
 
-    //public interface IIDMapManager : IIDMap
-    //{
-    //    void LoadMapping(int ordinal, bool IIDtoPID, bool PIDtoObj);
-    //    void UnloadMapping(int ordinal);
-    //    void LoadMapping(bool IIDtoPID, bool PIDtoObj);
-    //}
 
     public interface IAssetDB : IIDMap
     {
+        bool IsStaticLibrary(int ordinal);
+        bool IsSceneLibrary(int ordinal);
+        bool IsBundledLibrary(int ordinal);
+        bool IsDynamicLibrary(int ordinal);
+
         void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj);
         void UnregisterSceneObjects();
 
@@ -55,8 +55,7 @@ namespace Battlehub.RTSaveLoad2
         void UnregisterDynamicResources();
         
         bool IsLibraryLoaded(int ordinal);
-
-        bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadIIDtoPID,  bool loadPIDtoObj);
+        bool AddLibrary(AssetLibraryAsset assetLib, int ordinal, bool IIDtoObj, bool PIDtoObj);
         void LoadLibrary(string assetLibrary, int ordinal, bool loadIIDtoPID, bool loadPIDtoObj, Action<bool> callback);
         void UnloadLibrary(int ordinal);
         void UnloadLibraries();
@@ -68,6 +67,7 @@ namespace Battlehub.RTSaveLoad2
     {
         private readonly HashSet<AssetLibraryAsset> m_loadedLibraries = new HashSet<AssetLibraryAsset>();
         private readonly Dictionary<int, AssetLibraryAsset> m_ordinalToLib = new Dictionary<int, AssetLibraryAsset>();
+
         private MappingInfo m_mapping = new MappingInfo();
 
         private readonly Dictionary<int, UnityObject> m_persistentIDToSceneObject = new Dictionary<int, UnityObject>();
@@ -75,6 +75,26 @@ namespace Battlehub.RTSaveLoad2
 
         private readonly Dictionary<int, UnityObject> m_persistentIDToDynamicResource = new Dictionary<int, UnityObject>();
         private readonly Dictionary<int, int> m_dynamicResourceIDToPersistentID = new Dictionary<int, int>();
+
+        public bool IsStaticLibrary(int ordinal)
+        {
+            return AssetLibraryInfo.STATICLIB_FIRST <= ordinal && ordinal <= AssetLibraryInfo.STATICLIB_LAST;
+        }
+
+        public bool IsSceneLibrary(int ordinal)
+        {
+            return AssetLibraryInfo.SCENELIB_FIRST <= ordinal && ordinal <= AssetLibraryInfo.SCENELIB_LAST;
+        }
+
+        public bool IsBundledLibrary(int ordinal)
+        {
+            return AssetLibraryInfo.BUNDLEDLIB_FIRST <= ordinal && ordinal <= AssetLibraryInfo.BUNDLEDLIB_LAST;
+        }
+
+        public bool IsDynamicLibrary(int ordinal)
+        {
+            return AssetLibraryInfo.DYNAMICLIB_FIRST <= ordinal && ordinal <= AssetLibraryInfo.DYNAMICLIB_LAST;
+        }
 
         public void RegisterSceneObjects(Dictionary<int, UnityObject> idToObj)
         {
@@ -115,7 +135,7 @@ namespace Battlehub.RTSaveLoad2
         }
         public void RegisterDynamicResources(Dictionary<int, UnityObject> idToObj)
         {
-            foreach(KeyValuePair<int, UnityObject> kvp in idToObj)
+            foreach (KeyValuePair<int, UnityObject> kvp in idToObj)
             {
                 m_persistentIDToDynamicResource[kvp.Key] = kvp.Value;
                 if (kvp.Value != null)
@@ -158,24 +178,6 @@ namespace Battlehub.RTSaveLoad2
             return true;
         }
 
-        public bool LoadLibrarySync(string assetLibrary, int ordinal, bool loadIIDtoPID, bool loadPIDtoObj)
-        {
-            if (m_ordinalToLib.ContainsKey(ordinal))
-            {
-                Debug.LogWarningFormat("Asset Library {0} with this same ordinal {1} already loaded", m_ordinalToLib[ordinal].name, ordinal);
-                return false;
-            }
-
-            AssetLibraryAsset assetLib = Resources.Load<AssetLibraryAsset>(assetLibrary);
-            if (assetLib == null)
-            {
-                Debug.LogWarningFormat("Asset Library not found", assetLibrary);
-                return false;
-            }
-            AddLibrary(assetLib, ordinal, loadIIDtoPID, loadPIDtoObj);
-            return true;
-        }
-
         public void LoadLibrary(string assetLibrary, int ordinal, bool loadIIDtoPID, bool loadPIDtoObj, Action<bool> callback)
         {
             if (m_ordinalToLib.ContainsKey(ordinal))
@@ -196,12 +198,12 @@ namespace Battlehub.RTSaveLoad2
                     callback(false);
                     return;
                 }
-                request.completed -= completed;
                 AddLibrary(assetLib, ordinal, loadIIDtoPID, loadPIDtoObj);
                 callback(true);
+                request.completed -= completed;
             };
             request.completed += completed;
-        }     
+        } 
 
         public void UnloadLibrary(int ordinal)
         {
@@ -211,7 +213,10 @@ namespace Battlehub.RTSaveLoad2
                 UnloadMapping(ordinal);
                 m_loadedLibraries.Remove(assetLib);
                 m_ordinalToLib.Remove(ordinal);
-                Resources.UnloadAsset(assetLib);
+                if(!IsBundledLibrary(assetLib.Ordinal))
+                {
+                    Resources.UnloadAsset(assetLib);
+                }
             }
         }
 
@@ -219,8 +224,12 @@ namespace Battlehub.RTSaveLoad2
         {
             foreach (AssetLibraryAsset assetLibrary in m_loadedLibraries)
             {
-                Resources.UnloadAsset(assetLibrary);
+                if(!IsBundledLibrary(assetLibrary.Ordinal))
+                {
+                    Resources.UnloadAsset(assetLibrary);
+                }
             }
+            
             m_ordinalToLib.Clear();
             m_loadedLibraries.Clear();
             UnloadMappings();

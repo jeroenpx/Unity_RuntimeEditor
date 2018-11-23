@@ -74,6 +74,7 @@ namespace Battlehub.SL2
 
         public static implicit operator TestBehavior(PersistentTestBehavior surrogate)
         {
+            if(surrogate == null) return default(TestBehavior);
             return (TestBehavior)surrogate.WriteTo(new TestBehavior());
         }
         

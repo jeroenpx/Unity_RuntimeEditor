@@ -130,6 +130,20 @@ namespace Battlehub.UIControls
                 if (m_itemsControl == null)
                 {
                     m_itemsControl = GetComponentInParent<VirtualizingItemsControl>();
+                    if(m_itemsControl == null)
+                    {
+                        Transform parent = transform.parent;
+                        while(parent != null)
+                        {
+                            m_itemsControl = parent.GetComponent<VirtualizingItemsControl>();
+                            if(m_itemsControl != null)
+                            {
+                                break;
+                            }
+
+                            parent = parent.parent;
+                        }
+                    }
                 }
 
                 return m_itemsControl;

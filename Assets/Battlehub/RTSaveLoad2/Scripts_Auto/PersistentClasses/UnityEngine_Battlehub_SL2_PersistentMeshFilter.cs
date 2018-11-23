@@ -44,6 +44,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator MeshFilter(PersistentMeshFilter surrogate)
         {
+            if(surrogate == null) return default(MeshFilter);
             return (MeshFilter)surrogate.WriteTo(new MeshFilter());
         }
         

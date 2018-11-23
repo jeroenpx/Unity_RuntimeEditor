@@ -83,13 +83,13 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        [SerializeField]
-        private bool m_keepRuntimeProjectInSync = true;
-        public bool KeepRuntimeProjectInSync
-        {
-            get { return m_keepRuntimeProjectInSync; }
-            set { m_keepRuntimeProjectInSync = value; }
-        }
+        //[SerializeField]
+        //private bool m_keepRuntimeProjectInSync = true;
+        //public bool KeepRuntimeProjectInSync
+        //{
+        //    get { return m_keepRuntimeProjectInSync; }
+        //    set { m_keepRuntimeProjectInSync = value; }
+        //}
         
         [SerializeField]
         private AssetLibraryInfo m_assetLibrary;

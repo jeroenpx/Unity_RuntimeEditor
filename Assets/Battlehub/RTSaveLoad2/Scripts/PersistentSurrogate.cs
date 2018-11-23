@@ -2,6 +2,7 @@
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
@@ -333,6 +334,37 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
             return objs;
+        }
+
+        protected T GetPrivate<T>(object obj, string fieldName)
+        {
+            FieldInfo fieldInfo = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            if(fieldInfo == null)
+            {
+                return default(T);
+            }
+            object val = fieldInfo.GetValue(obj);
+            if(val is T)
+            {
+                return (T)val;
+            }
+            return default(T);
+        }
+
+        protected void SetPrivate<T>(object obj, string fieldName, T value)
+        {
+            FieldInfo fieldInfo = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            if (fieldInfo == null)
+            {
+                return;
+            }
+
+            if(!fieldInfo.FieldType.IsAssignableFrom(typeof(T)))
+            {
+                return;
+            }
+
+            fieldInfo.SetValue(obj, value);
         }
 
     }

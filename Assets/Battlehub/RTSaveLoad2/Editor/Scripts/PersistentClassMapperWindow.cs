@@ -33,7 +33,9 @@ namespace Battlehub.RTSaveLoad2
             typeof(Transform),
             typeof(GameObject),
             typeof(Vector3),
+            typeof(Vector4),
             typeof(Quaternion),
+            typeof(Color),
             typeof(RuntimePrefab),
             typeof(RuntimeScene),
             typeof(UnityEventBase),
@@ -1196,7 +1198,7 @@ namespace Battlehub.RTSaveLoad2
                                 }
                             }
 
-                            m_guiContent.text = pMapping.PersistentName;
+                            m_guiContent.text = pMapping.PersistentName + (pMapping.IsNonPublic ? " (non-public)" : "");
                             m_guiContent.tooltip = pMapping.PersistentTypeName;
                             EditorGUILayout.LabelField(m_guiContent, GUILayout.MaxWidth(230));
 
@@ -1367,14 +1369,13 @@ namespace Battlehub.RTSaveLoad2
 
                     mapping.UseSurrogate = false;
                     mapping.HasDependenciesOrIsDependencyItself = false;
-
                     pMappingsEnabled.Add(false);
                 }
                 else
                 {
+                    mapping.IsNonPublic = type.GetField(mapping.MappedName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) != null;
                     mapping.UseSurrogate = m_codeGen.GetSurrogateType(mapping.MappedType) != null;
                     mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
-
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
 
@@ -1408,6 +1409,7 @@ namespace Battlehub.RTSaveLoad2
 
                 pMapping.UseSurrogate = m_codeGen.GetSurrogateType(fInfo.FieldType) != null;
                 pMapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(fInfo.FieldType);
+                pMapping.IsNonPublic = !fInfo.IsPublic;
 
                 pMappingsEnabled.Add(false);
                 pMappings.Add(pMapping);

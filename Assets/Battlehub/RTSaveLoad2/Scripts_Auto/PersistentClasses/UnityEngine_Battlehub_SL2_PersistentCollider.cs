@@ -59,6 +59,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Collider(PersistentCollider surrogate)
         {
+            if(surrogate == null) return default(Collider);
             return (Collider)surrogate.WriteTo(new Collider());
         }
         

@@ -36,6 +36,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator SphereCollider(PersistentSphereCollider surrogate)
         {
+            if(surrogate == null) return default(SphereCollider);
             return (SphereCollider)surrogate.WriteTo(new SphereCollider());
         }
         

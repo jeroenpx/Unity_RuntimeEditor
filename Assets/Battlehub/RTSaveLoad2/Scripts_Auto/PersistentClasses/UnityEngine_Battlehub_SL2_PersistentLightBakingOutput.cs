@@ -13,6 +13,7 @@ namespace UnityEngine.Battlehub.SL2
         
         public static implicit operator LightBakingOutput(PersistentLightBakingOutput surrogate)
         {
+            if(surrogate == null) return default(LightBakingOutput);
             return (LightBakingOutput)surrogate.WriteTo(new LightBakingOutput());
         }
         

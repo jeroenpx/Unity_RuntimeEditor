@@ -30,6 +30,7 @@ namespace Battlehub.SL2
 
         public static implicit operator Test(PersistentTest surrogate)
         {
+            if(surrogate == null) return default(Test);
             return (Test)surrogate.WriteTo(new Test());
         }
         

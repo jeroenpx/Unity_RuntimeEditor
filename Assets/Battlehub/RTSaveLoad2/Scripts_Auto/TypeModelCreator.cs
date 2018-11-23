@@ -10,6 +10,8 @@ using UnityEngine.Rendering.Battlehub.SL2;
 using UnityEngine.SceneManagement;
 using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
+using Battlehub.RTCommon;
+using Battlehub.RTCommon.Battlehub.SL2;
 using Battlehub.SL2;
 using UnityEngine.Events;
 using UnityEngine.Events.Battlehub.SL2;
@@ -44,6 +46,7 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentBoxCollider), true);
             model.Add(typeof(PersistentSphereCollider), true);
             model.Add(typeof(PersistentCapsuleCollider), true);
+            model.Add(typeof(PersistentMeshCollider), true);
             model.Add(typeof(PersistentCamera), true);
             model.Add(typeof(PersistentLight), true);
             model.Add(typeof(PersistentBehaviour), true)
@@ -53,7 +56,8 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentCollider), true)
                 .AddSubType(1025, typeof(PersistentBoxCollider))
                 .AddSubType(1026, typeof(PersistentSphereCollider))
-                .AddSubType(1027, typeof(PersistentCapsuleCollider));
+                .AddSubType(1027, typeof(PersistentCapsuleCollider))
+                .AddSubType(1028, typeof(PersistentMeshCollider));
             model.Add(typeof(PersistentComponent), true)
                 .AddSubType(1025, typeof(PersistentRenderer))
                 .AddSubType(1026, typeof(PersistentTransform))
@@ -63,16 +67,20 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1030, typeof(PersistentCollider));
             model.Add(typeof(PersistentFlare), true);
             model.Add(typeof(PersistentMonoBehaviour), true)
-                .AddSubType(1025, typeof(PersistentTestBehavior));
+                .AddSubType(1025, typeof(PersistentTestBehavior))
+                .AddSubType(1026, typeof(PersistentExposeToEditor));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
             model.Add(typeof(PersistentShader), true);
             model.Add(typeof(PersistentTexture), true)
-                .AddSubType(1025, typeof(PersistentRenderTexture));
+                .AddSubType(1025, typeof(PersistentRenderTexture))
+                .AddSubType(1026, typeof(PersistentTexture2D));
+            model.Add(typeof(PersistentTexture2D), true);
             model.Add(typeof(PersistentTransform), true);
             model.Add(typeof(PersistentRuntimePrefab), true)
                 .AddSubType(1025, typeof(PersistentRuntimeScene));
             model.Add(typeof(PersistentRuntimeScene), true);
+            model.Add(typeof(PersistentExposeToEditor), true);
             model.Add(typeof(PersistentTestBehavior), true);
             model.Add(typeof(Vector2), false).SetSurrogate(typeof(PersistentVector2));
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
@@ -85,9 +93,11 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(Quaternion), false).SetSurrogate(typeof(PersistentQuaternion));
             model.Add(typeof(Rect), false).SetSurrogate(typeof(PersistentRect));
             model.Add(typeof(Scene), false).SetSurrogate(typeof(PersistentScene));
+            model.Add(typeof(ExposeToEditorUnityEvent), false).SetSurrogate(typeof(PersistentExposeToEditorUnityEvent));
             model.Add(typeof(UnityEvent), false).SetSurrogate(typeof(PersistentUnityEvent));
             model.Add(typeof(PersistentUnityEventBase), true)
-                .AddSubType(1025, typeof(PersistentUnityEvent));
+                .AddSubType(1025, typeof(PersistentUnityEvent))
+                .AddSubType(1026, typeof(PersistentExposeToEditorUnityEvent));
             model.Add(typeof(Test), false).SetSurrogate(typeof(PersistentTest));
             
        }
@@ -98,6 +108,7 @@ namespace System.Battlehub.SL2 {}
 namespace UnityEngine.Rendering.Battlehub.SL2 {}
 namespace UnityEngine.SceneManagement.Battlehub.SL2 {}
 namespace Battlehub.RTSaveLoad2.Battlehub.SL2 {}
+namespace Battlehub.RTCommon.Battlehub.SL2 {}
 namespace Battlehub.SL2 {}
 namespace System.Collections.Generic.Battlehub.SL2 {}
 namespace UnityEngine.Events.Battlehub.SL2 {}

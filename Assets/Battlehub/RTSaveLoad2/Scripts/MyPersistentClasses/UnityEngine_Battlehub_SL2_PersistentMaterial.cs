@@ -29,6 +29,12 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(6)]
         public Vector2 mainTextureScale;
 
+        [ProtoMember(7)]
+        public long shader;
+
+        [ProtoMember(8)]
+        public string m_shaderName;
+
         public override object WriteTo(object obj)
         {
             obj = base.WriteTo(obj);
@@ -42,6 +48,15 @@ namespace UnityEngine.Battlehub.SL2
             {
                 o.mainTextureOffset = mainTextureOffset;
                 o.mainTextureScale = mainTextureScale;
+            }
+
+            if (m_assetDB.IsMapped(shader))
+            {
+                o.shader = m_assetDB.FromID<Shader>(shader);
+            }
+            else
+            {
+                o.shader = Shader.Find(m_shaderName);
             }
 
             if (m_keywords != null)
@@ -61,9 +76,9 @@ namespace UnityEngine.Battlehub.SL2
                     switch (type)
                     {
                         case RTShaderPropertyType.Color:
-                            if (m_propertyValues[i].ValueBase is Color)
+                            if (m_propertyValues[i].ValueBase is PersistentColor)
                             {
-                                o.SetColor(name, (Color)m_propertyValues[i].ValueBase);
+                                o.SetColor(name, (PersistentColor)m_propertyValues[i].ValueBase);
                             }
                             break;
                         case RTShaderPropertyType.Float:
@@ -85,9 +100,9 @@ namespace UnityEngine.Battlehub.SL2
                             }
                             break;
                         case RTShaderPropertyType.Vector:
-                            if (m_propertyValues[i].ValueBase is Vector4)
+                            if (m_propertyValues[i].ValueBase is PersistentVector4)
                             {
-                                o.SetVector(name, (Vector4)m_propertyValues[i].ValueBase);
+                                o.SetVector(name, (PersistentVector4)m_propertyValues[i].ValueBase);
                             }
                             break;
                         case RTShaderPropertyType.Unknown:
@@ -102,6 +117,9 @@ namespace UnityEngine.Battlehub.SL2
         public override void GetDeps(GetDepsContext context)
         {
             base.GetDeps(context);
+
+            AddDep(shader, context);
+
             if (m_propertyValues != null)
             {
                 for (int i = 0; i < m_propertyValues.Length; ++i)
@@ -129,6 +147,8 @@ namespace UnityEngine.Battlehub.SL2
             }
 
             Material o = (Material)obj;
+            AddDep(o.shader, context);
+
             RuntimeShaderInfo shaderInfo = null;
             IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
             if (shaderUtil != null)
@@ -154,8 +174,6 @@ namespace UnityEngine.Battlehub.SL2
             }
         }
 
-
-    
         public override void ReadFrom(object obj)
         {
             base.ReadFrom(obj);
@@ -173,8 +191,13 @@ namespace UnityEngine.Battlehub.SL2
 
             if (o.shader == null)
             {
+                shader = m_assetDB.NullID;
+                m_shaderName = null;
                 return;
             }
+
+            shader = m_assetDB.ToID(o.shader);
+            m_shaderName = o.shader.name;
 
             RuntimeShaderInfo shaderInfo = null;
             IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
@@ -200,7 +223,7 @@ namespace UnityEngine.Battlehub.SL2
                 switch (type)
                 {
                     case RTShaderPropertyType.Color:
-                        m_propertyValues[i] = PrimitiveContract.Create(o.GetColor(name));
+                        m_propertyValues[i] = PrimitiveContract.Create((PersistentColor)o.GetColor(name));
                         break;
                     case RTShaderPropertyType.Float:
                         m_propertyValues[i] = PrimitiveContract.Create(o.GetFloat(name));
@@ -209,10 +232,18 @@ namespace UnityEngine.Battlehub.SL2
                         m_propertyValues[i] = PrimitiveContract.Create(o.GetFloat(name));
                         break;
                     case RTShaderPropertyType.TexEnv:
-                        m_propertyValues[i] = PrimitiveContract.Create(o.GetTexture(name));
+                        Texture2D texture = (Texture2D)o.GetTexture(name);
+                        if (texture == null)
+                        {
+                            m_propertyValues[i] = PrimitiveContract.Create(m_assetDB.NullID);
+                        }
+                        else
+                        {
+                            m_propertyValues[i] = PrimitiveContract.Create(m_assetDB.ToID(texture));
+                        }
                         break;
                     case RTShaderPropertyType.Vector:
-                        m_propertyValues[i] = PrimitiveContract.Create(o.GetVector(name));
+                        m_propertyValues[i] = PrimitiveContract.Create((PersistentVector4)o.GetVector(name));
                         break;
                     case RTShaderPropertyType.Unknown:
                         m_propertyValues[i] = null;

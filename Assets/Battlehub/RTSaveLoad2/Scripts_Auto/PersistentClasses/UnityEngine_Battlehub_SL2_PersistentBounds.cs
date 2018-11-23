@@ -35,6 +35,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Bounds(PersistentBounds surrogate)
         {
+            if(surrogate == null) return default(Bounds);
             return (Bounds)surrogate.WriteTo(new Bounds());
         }
         

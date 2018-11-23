@@ -26,6 +26,8 @@ namespace Battlehub.RTSaveLoad2.Internal
 
     public class PersistentSurrogateTemplate : ScriptableObject
     {
+        protected IAssetDB m_assetDB;
+
         public virtual void ReadFrom(object obj)
         {
             throw new InvalidOperationException();
@@ -41,7 +43,7 @@ namespace Battlehub.RTSaveLoad2.Internal
             throw new InvalidOperationException();
         }
 
-        public virtual void GetDepsFrom(object obj, GetDepsContext context)
+        public virtual void GetDepsFrom(object obj, GetDepsFromContext context)
         {
             throw new InvalidOperationException();
         }

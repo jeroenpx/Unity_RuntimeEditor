@@ -95,6 +95,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator Mesh(PersistentMesh surrogate)
         {
+            if(surrogate == null) return default(Mesh);
             return (Mesh)surrogate.WriteTo(new Mesh());
         }
         

@@ -78,6 +78,7 @@ namespace UnityEngine.Battlehub.SL2
 
         public static implicit operator SkinnedMeshRenderer(PersistentSkinnedMeshRenderer surrogate)
         {
+            if(surrogate == null) return default(SkinnedMeshRenderer);
             return (SkinnedMeshRenderer)surrogate.WriteTo(new SkinnedMeshRenderer());
         }
         

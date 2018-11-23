@@ -75,6 +75,7 @@ namespace Battlehub.RTSaveLoad2
 
         //True if property (or field) is unity object or non-unity object with dependencies
         public bool HasDependenciesOrIsDependencyItself;
+        public bool IsNonPublic;
 
         public bool HasPropertyInTemplate;
     }

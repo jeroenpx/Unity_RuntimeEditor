@@ -30,6 +30,12 @@ namespace Battlehub.RTSaveLoad2
                 primitiveContract.AddSubType(fieldNumber, derivedType);
                 fieldNumber++;
                 model.Add(derivedType, true);
+
+                derivedType = typeof(PrimitiveContract<>).MakeGenericType(type);
+                primitiveContract.AddSubType(fieldNumber, derivedType);
+                fieldNumber++;
+                model.Add(derivedType, true);
+
                 model.Add(typeof(List<>).MakeGenericType(type), true);
             }
 
@@ -54,6 +60,17 @@ namespace Battlehub.RTSaveLoad2
                 {
                     continue;
                 }
+                
+                Type derivedType = typeof(PrimitiveContract<>).MakeGenericType(type.MakeArrayType());
+                primitiveContract.AddSubType(fieldNumber, derivedType);
+                fieldNumber++;
+                model.Add(derivedType, true);
+
+                derivedType = typeof(PrimitiveContract<>).MakeGenericType(type);
+                primitiveContract.AddSubType(fieldNumber, derivedType);
+                fieldNumber++;
+                model.Add(derivedType, true);
+
                 model.Add(typeof(List<>).MakeGenericType(type), true);
             }
 

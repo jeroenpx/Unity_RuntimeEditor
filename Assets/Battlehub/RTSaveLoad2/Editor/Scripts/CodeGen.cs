@@ -142,6 +142,7 @@ namespace Battlehub.RTSaveLoad2
         private static readonly string ImplicitOperatorsTemplate =
             "public static implicit operator {0}({1} surrogate)" + BR + TAB2 +
             "{{" + BR + TAB2 +
+            "    if(surrogate == null) return default({0});" + BR + TAB2 +
             "    return ({0})surrogate.WriteTo(new {0}());" + BR + TAB2 +
             "}}" + BR + TAB2 +
             BR + TAB2 +
@@ -266,6 +267,12 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public FieldInfo[] GetFields(Type type)
         {
+            if(type.IsSubclassOf(typeof(MonoBehaviour)))
+            {
+                return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Union(
+                    type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(f => f.FieldType.IsPublic && f.GetCustomAttributes(typeof(SerializeField), true).Length > 0)).ToArray();
+            }
+
             return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToArray();
         }
 
@@ -835,13 +842,19 @@ namespace Battlehub.RTSaveLoad2
 
                 sb.Append(TAB);
 
+                string get = "uo.{1}";
+                if(prop.IsNonPublic)
+                {
+                    get = "GetPrivate<" + prop.MappedTypeName + ">(uo, \"{1}\")";
+                }
+
                 
                 if(prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
                    prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) || 
                    IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                 {
                     //generate code which will convert unity object to identifier
-                    sb.AppendFormat("{0} = ToID(uo.{1});", prop.PersistentName, prop.MappedName);
+                    sb.AppendFormat("{0} = ToID(" + get + ");", prop.PersistentName, prop.MappedName);
                 }
                 else
                 {
@@ -849,20 +862,20 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (IsGenericList(prop.MappedType))
                         {
-                            sb.AppendFormat("{0} = Assign(uo.{1}, v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetGenericArguments()[0].Name);
+                            sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetGenericArguments()[0].Name);
                         }
                         else if(prop.MappedType.IsArray)
                         {
-                            sb.AppendFormat("{0} = Assign(uo.{1}, v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetElementType().Name);
+                            sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetElementType().Name);
                         }
                         else
                         {
-                            sb.AppendFormat("{0} = uo.{1};", prop.PersistentName, prop.MappedName);
+                            sb.AppendFormat("{0} = " + get + ";", prop.PersistentName, prop.MappedName);
                         }
                     }
                     else
                     {
-                        sb.AppendFormat("{0} = uo.{1};", prop.PersistentName, prop.MappedName);
+                        sb.AppendFormat("{0} = " + get + ";", prop.PersistentName, prop.MappedName);
                     }
                 }
 
@@ -885,7 +898,13 @@ namespace Battlehub.RTSaveLoad2
                 }
 
                 sb.Append(TAB);
- 
+
+                string get = "uo.{0}";
+                if (prop.IsNonPublic)
+                {
+                    get = "GetPrivate<" + prop.MappedTypeName + ">(uo, \"{0}\")";
+                }
+
                 if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) || 
                     prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) ||
                     IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
@@ -894,7 +913,14 @@ namespace Battlehub.RTSaveLoad2
 
                     //Type mappedType = prop.MappedType.IsArray ? prop.MappedType.GetElementType() : prop.MappedType;
                     //sb.AppendFormat("uo.{0} = FromID<{2}>({1}, uo.{0});", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(mappedType.Name));
-                    sb.AppendFormat("uo.{0} = FromID({1}, uo.{0});", prop.MappedName, prop.PersistentName);
+                    if (prop.IsNonPublic)
+                    {
+                        sb.AppendFormat("SetPrivate(uo, \"{0}\", FromID({1}, " + get + "));", prop.MappedName, prop.PersistentName);
+                    }
+                    else
+                    {
+                        sb.AppendFormat("uo.{0} = FromID({1}, " + get + ");", prop.MappedName, prop.PersistentName);
+                    }
                 }
                 else
                 {
@@ -902,20 +928,50 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (IsGenericList(prop.MappedType))
                         {
-                            sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetGenericArguments()[0].Name);
+                            if (prop.IsNonPublic)
+                            {
+                                sb.AppendFormat("SetPrivate(uo, \"{0}\", Assign({1}, v_ => ({2})v_));", prop.MappedName, prop.PersistentName, prop.MappedType.GetGenericArguments()[0].Name);
+                            }
+                            else
+                            {
+                                sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetGenericArguments()[0].Name);
+                            }
                         }
                         else if (prop.MappedType.IsArray)
                         {
-                            sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetElementType().Name);
+                            if (prop.IsNonPublic)
+                            {
+                                sb.AppendFormat("SetPrivate(uo, \"{0}\", Assign({1}, v_ => ({2})v_));", prop.MappedName, prop.PersistentName, prop.MappedType.GetElementType().Name);
+                            }
+                            else
+                            {
+                                sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetElementType().Name);
+                            }
+
+                            
+                        }
+                        else
+                        {
+                            if (prop.IsNonPublic)
+                            {
+                                sb.AppendFormat("SetPrivate(uo, \"{0}\", {1});", prop.MappedName, prop.PersistentName);
+                            }
+                            else
+                            {
+                                sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (prop.IsNonPublic)
+                        {
+                            sb.AppendFormat("SetPrivate(uo, \"{0}\", {1});", prop.MappedName, prop.PersistentName);
                         }
                         else
                         {
                             sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
                         }
-                    }
-                    else
-                    {
-                        sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
                     }
                     
                 }
@@ -980,10 +1036,16 @@ namespace Battlehub.RTSaveLoad2
                 }
                 if (prop.HasDependenciesOrIsDependencyItself)
                 {
+                    string get = "uo.{0}";
+                    if (prop.IsNonPublic)
+                    {
+                        get = "GetPrivate<" + prop.MappedTypeName + ">(uo, \"{0}\")";
+                    }
+
                     if (prop.UseSurrogate)
                     {
                         sb.Append(TAB);
-                        sb.AppendFormat("AddSurrogateDeps(uo.{0}, v_ => ({1})v_, context);", prop.MappedName, "Persistent" + prop.PersistentTypeName);
+                        sb.AppendFormat("AddSurrogateDeps(" + get + ", v_ => ({1})v_, context);", prop.MappedName, "Persistent" + prop.PersistentTypeName);
                         sb.Append(BR + TAB2);
                     }
                     if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
@@ -991,7 +1053,7 @@ namespace Battlehub.RTSaveLoad2
                         IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                     {
                         sb.Append(TAB);
-                        sb.AppendFormat("AddDep(uo.{0}, context);", prop.MappedName);
+                        sb.AppendFormat("AddDep(" + get + ", context);", prop.MappedName);
                         sb.Append(BR + TAB2);
                     }
                 }

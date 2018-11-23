@@ -14,6 +14,12 @@ namespace Battlehub.RTSaveLoad2
         private IStorage m_storage;
         private IProject m_project;
         private IRuntimeShaderUtil m_shaderUtil;
+        private IAssetBundleLoader m_assetBundleLoader;
+
+        protected virtual IAssetBundleLoader AssetBundleLoader
+        {
+            get { return new AssetBundleLoader(); }
+        }
 
         protected virtual IRuntimeShaderUtil ShaderUtil
         {
@@ -71,6 +77,7 @@ namespace Battlehub.RTSaveLoad2
 
         protected virtual void AwakeOverride()
         {
+            m_assetBundleLoader = AssetBundleLoader;
             m_assetDB = AssetDB;
             m_shaderUtil = ShaderUtil;
             m_typeMap = TypeMap;
@@ -89,6 +96,7 @@ namespace Battlehub.RTSaveLoad2
 
             OnDestroyOverride();
 
+            m_assetBundleLoader = null;
             m_shaderUtil = null;
             m_assetDB = null;
             m_typeMap = null;
@@ -121,6 +129,7 @@ namespace Battlehub.RTSaveLoad2
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
+            IOC.RegisterFallback(() => Instance.m_assetBundleLoader);
             IOC.RegisterFallback(() => Instance.m_typeMap);
             IOC.RegisterFallback(() => Instance.m_objectFactory);
             IOC.RegisterFallback(() => Instance.m_serializer);

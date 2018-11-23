@@ -27,9 +27,16 @@ public class TestBehavior : MonoBehaviour {
 
     public UnityEvent Event;
 
+    public Shader Shader;
+
   
 
     void Start () {
+        if(Shader != null)
+        {
+            Debug.Log(Shader.name);
+        }
+
        
     }
 

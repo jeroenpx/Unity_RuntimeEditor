@@ -18,7 +18,7 @@ namespace Battlehub.RTSaveLoad2
         {
             HashSet<UnityObject> hs = new HashSet<UnityObject>();
 
-            string[] guids = AssetDatabase.FindAssets("", new[] { "Assets/" + BHPath.Root + "/RTSaveLoad2/AssetLibraries/Resources/" + scene.name });
+            string[] guids = AssetDatabase.FindAssets("", new[] { "Assets/" + BHPath.Root + "/RTSaveLoad2/Resources_Auto/Resources/" + scene.name });
 
             List<AssetLibraryAsset> assetLibraries = new List<AssetLibraryAsset>();
             foreach (string guid in guids)
@@ -168,12 +168,12 @@ namespace Battlehub.RTSaveLoad2
             string dir = BHPath.Root + "/RTSaveLoad2";
             string dataPath = Application.dataPath + "/";
 
-            if (!Directory.Exists(dataPath + dir + "/AssetLibraries"))
+            if (!Directory.Exists(dataPath + dir + "/Resources_Auto"))
             {
-                AssetDatabase.CreateFolder("Assets/" + dir, "AssetLibraries");
+                AssetDatabase.CreateFolder("Assets/" + dir, "Resources_Auto");
             }
 
-            dir = dir + "/AssetLibraries";
+            dir = dir + "/Resources_Auto";
             if (!Directory.Exists(dataPath + dir + "/Resources"))
             {
                 AssetDatabase.CreateFolder("Assets/" + dir, "Resources");
@@ -222,6 +222,12 @@ namespace Battlehub.RTSaveLoad2
             HashSet<UnityObject> hs = ReadFromAssetLibraries(scene, out index, out asset, out folder);
 
             CreateAssetLibraryFromScene(scene, index, asset, folder, hs);
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad2/Create Shader Profiles")]
+        private static void CreateShaderProfiles()
+        {
+            RuntimeShaderProfilesGen.CreateProfile();
         }
     }
 
