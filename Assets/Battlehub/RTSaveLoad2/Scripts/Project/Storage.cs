@@ -54,7 +54,8 @@ namespace Battlehub.RTSaveLoad2
 
         public void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback)
         {
-            projectPath = FullPath(projectPath) + "/Project.rtmeta";
+            string projectDir = FullPath(projectPath);
+            projectPath = projectDir + "/Project.rtmeta";
             ProjectInfo projectInfo;
             Error error = new Error();
             ISerializer serializer = IOC.Resolve<ISerializer>();
@@ -72,7 +73,7 @@ namespace Battlehub.RTSaveLoad2
                         projectInfo = serializer.Deserialize<ProjectInfo>(fs);
                     }
 
-                    string[] files = Directory.GetFiles(projectPath).Where(fn => fn.EndsWith(".rtbundle")).ToArray();
+                    string[] files = Directory.GetFiles(projectDir).Where(fn => fn.EndsWith(".rtbundle")).ToArray();
                     result = new AssetBundleInfo[files.Length];
 
                     for (int i = 0; i < result.Length; ++i)
@@ -337,15 +338,18 @@ namespace Battlehub.RTSaveLoad2
         {
             string assetBundleInfoPath = bundleName.Replace("/", "_").Replace("\\", "_");
             assetBundleInfoPath += ".rtbundle";
-            assetBundleInfoPath = projectPath + "/" + assetBundleInfoPath;
+            assetBundleInfoPath = FullPath(projectPath) + "/" + assetBundleInfoPath;
 
             ISerializer serializer = IOC.Resolve<ISerializer>();
             if (File.Exists(assetBundleInfoPath))
             {
+                AssetBundleInfo result = null;
                 using (FileStream fs = File.OpenRead(assetBundleInfoPath))
                 {
-                    callback(new Error(Error.OK), serializer.Deserialize<AssetBundleInfo>(fs));
+                    result = serializer.Deserialize<AssetBundleInfo>(fs);
                 }
+
+                callback(new Error(Error.OK), result);
             }
             else
             {

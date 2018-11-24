@@ -194,7 +194,18 @@ namespace Battlehub.RTSaveLoad2
                 AssetLibraryAsset assetLib = (AssetLibraryAsset)request.asset;
                 if (assetLib == null)
                 {
-                    Debug.LogWarningFormat("Asset Library not found", assetLibrary);
+                    if(IsSceneLibrary(ordinal))
+                    {
+                        if (ordinal - AssetLibraryInfo.SCENELIB_FIRST == 0)
+                        {
+                            Debug.LogWarningFormat("Asset Library not found : {0}", assetLibrary);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarningFormat("Asset Library not found : {0}", assetLibrary);
+                    }
+                    
                     callback(false);
                     return;
                 }

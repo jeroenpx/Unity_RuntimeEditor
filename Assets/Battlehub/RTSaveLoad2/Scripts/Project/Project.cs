@@ -8,6 +8,7 @@ using UnityObject = UnityEngine.Object;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.EditorTreeView;
+using System.IO;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -78,7 +79,26 @@ namespace Battlehub.RTSaveLoad2
             get { return m_isBusy; }
             private set
             {
-                m_isBusy = value;
+                if(m_isBusy != value)
+                {
+                    m_isBusy = value;
+                    if(m_isBusy)
+                    {
+                        Application.logMessageReceived += OnApplicationLogMessageReceived;
+                    }
+                    else
+                    {
+                        Application.logMessageReceived -= OnApplicationLogMessageReceived;
+                    }
+                }   
+            }
+        }
+
+        private void OnApplicationLogMessageReceived(string condition, string stackTrace, LogType type)
+        {
+            if(type == LogType.Exception)
+            {
+                IsBusy = false;
             }
         }
 
@@ -230,9 +250,19 @@ namespace Battlehub.RTSaveLoad2
             {
                 throw new InvalidOperationException("IsBusy");
             }
-
             IsBusy = true;
+            return _Open(project, error =>
+            {
+                IsBusy = false;
+                if(callback != null)
+                {
+                    callback(error);
+                }
+            });
+        }
 
+        private ProjectAsyncOperation _Open(string project, ProjectEventHandler callback)
+        {
             UnloadUnregisterDestroy();
 
             m_projectInfo = null;
@@ -245,7 +275,6 @@ namespace Battlehub.RTSaveLoad2
             {
                 if (error.HasError)
                 {
-                    IsBusy = false;
                     if (callback != null)
                     {
                         callback(error);
@@ -282,8 +311,6 @@ namespace Battlehub.RTSaveLoad2
             {
                 if (error.HasError)
                 {
-                    IsBusy = false;
-
                     if (callback != null)
                     {
                         callback(error);
@@ -325,8 +352,6 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            IsBusy = false;
-
             if (callback != null)
             {
                 callback(error);
@@ -353,14 +378,23 @@ namespace Battlehub.RTSaveLoad2
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
+            return _GetAssetItems(folders, (error, result) =>
+            {
+                IsBusy = false;
+                if(callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
 
+        private ProjectAsyncOperation<ProjectItem[]> _GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback)
+        {
             ProjectAsyncOperation<ProjectItem[]> ao = new ProjectAsyncOperation<ProjectItem[]>();
             m_storage.GetPreviews(m_projectPath, folders.Select(f => f.ToString()).ToArray(), (error, result) =>
             {
                 if (error.HasError)
                 {
-                    IsBusy = false;
-
                     if (callback != null)
                     {
                         callback(error, new AssetItem[0]);
@@ -413,8 +447,6 @@ namespace Battlehub.RTSaveLoad2
                     }
                 }
             }
-
-            IsBusy = false;
 
             ProjectItem[] projectItems = folders.Where(f => f.Children != null).SelectMany(f => f.Children).ToArray();
             if (callback != null)
@@ -532,6 +564,23 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<AssetItem> Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
         {
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("IsBusy");
+            }
+            IsBusy = true;
+            return _Create(parent, previewData, obj, nameOverride, (error, result) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
+
+        private ProjectAsyncOperation<AssetItem> _Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
+        {
             if (m_root == null)
             {
                 throw new InvalidOperationException("Project is not opened. Use OpenProject method");
@@ -541,12 +590,6 @@ namespace Battlehub.RTSaveLoad2
             {
                 throw new ArgumentNullException("obj");
             }
-
-            if (IsBusy)
-            {
-                throw new InvalidOperationException("IsBusy");
-            }
-            IsBusy = true;
 
             Type objType = obj.GetType();
             Type persistentType = m_typeMap.ToPersistentType(objType);
@@ -677,8 +720,6 @@ namespace Battlehub.RTSaveLoad2
 
             m_storage.Save(m_projectPath, new[] { parent.ToString() }, new[] { assetItem }, new[] { persistentObject }, m_projectInfo, error =>
             {
-                IsBusy = false;
-
                 if (!error.HasError)
                 {
                     if (assetItem.Parts != null)
@@ -728,8 +769,6 @@ namespace Battlehub.RTSaveLoad2
 
         private void OnDynamicIdentifiersExhausted(ProjectEventHandler<AssetItem> callback, ProjectEventHandler<AssetItem> eventHandler, ProjectAsyncOperation<AssetItem> ao, int assetIdBackup)
         {
-            IsBusy = false;
-
             m_projectInfo.AssetIdentifier = assetIdBackup;
             Error error = new Error(Error.E_InvalidOperation);
             if (callback != null)
@@ -754,6 +793,23 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback)
         {
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("IsBusy");
+            }
+            IsBusy = true;
+            return _Save(assetItems, objects, (error, result) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
+
+        private ProjectAsyncOperation<AssetItem[]> _Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback)
+        {
             if (m_root == null)
             {
                 throw new InvalidOperationException("Project is not opened. Use OpenProject method");
@@ -764,11 +820,6 @@ namespace Battlehub.RTSaveLoad2
                 throw new ArgumentNullException("objects");
             }
 
-            if (IsBusy)
-            {
-                throw new InvalidOperationException("IsBusy");
-            }
-            IsBusy = true;
 
             ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
             LoadLibraryWithSceneDependencies(() =>
@@ -787,7 +838,6 @@ namespace Battlehub.RTSaveLoad2
                 Type persistentType = m_typeMap.ToPersistentType(obj.GetType());
                 if (persistentType == null)
                 {
-                    IsBusy = false;
                     throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
                 }
 
@@ -818,8 +868,6 @@ namespace Battlehub.RTSaveLoad2
 
             m_storage.Save(m_projectPath, assetItems.Select(ai => ai.Parent.ToString()).ToArray(), assetItems, persistentObjects, m_projectInfo, error =>
             {
-                IsBusy = false;
-
                 if (callback != null)
                 {
                     callback(error, assetItems);
@@ -834,7 +882,6 @@ namespace Battlehub.RTSaveLoad2
             });
         }
 
-    
         /// <summary>
         /// Load asset
         /// </summary>
@@ -843,17 +890,28 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback)
         {
-            Type type = m_typeMap.ToType(assetItem.TypeGuid);
-            if (type == null)
-            {
-                throw new ArgumentException("assetItem", string.Format("Unable to resolve type using TypeGuid {0}", assetItem.TypeGuid));
-            }
-
             if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
+            return _Load(assetItem, (error, result) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
+
+        private ProjectAsyncOperation<UnityObject> _Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback)
+        {
+            Type type = m_typeMap.ToType(assetItem.TypeGuid);
+            if (type == null)
+            {
+                throw new ArgumentException("assetItem", string.Format("Unable to resolve type using TypeGuid {0}", assetItem.TypeGuid));
+            }
 
             ProjectAsyncOperation<UnityObject> ao = new ProjectAsyncOperation<UnityObject>();
             HashSet<AssetItem> loadAssetItemsHs = new HashSet<AssetItem>();
@@ -966,8 +1024,6 @@ namespace Battlehub.RTSaveLoad2
             {
                 if (error.HasError)
                 {
-                    IsBusy = false;
-
                     if (callback != null)
                     {
                         callback(error, null);
@@ -1015,7 +1071,6 @@ namespace Battlehub.RTSaveLoad2
             
             if (assetLibrariesToLoad.Count == 0)
             {
-                IsBusy = false;
                 callback();
             }
             else
@@ -1041,6 +1096,11 @@ namespace Battlehub.RTSaveLoad2
                                 assetLibraryName = m_sceneDepsLibrary;
                             }       
                         }
+                        else if(m_assetDB.IsBundledLibrary(ordinal))
+                        {
+                            AssetBundleInfo assetBundleInfo = m_ordinalToAssetBundleInfo[ordinal];
+                            assetLibraryName = assetBundleInfo.UniqueName;
+                        }
                     }
 
                     if(!string.IsNullOrEmpty(assetLibraryName))
@@ -1054,7 +1114,6 @@ namespace Battlehub.RTSaveLoad2
                             loadedLibrariesCount++;
                             if (assetLibrariesToLoad.Count == loadedLibrariesCount)
                             {
-                                IsBusy = false;
                                 callback();
                             }
                         });
@@ -1064,7 +1123,6 @@ namespace Battlehub.RTSaveLoad2
                         loadedLibrariesCount++;
                         if (assetLibrariesToLoad.Count == loadedLibrariesCount)
                         {
-                            IsBusy = false;
                             callback();
                         }
                     }
@@ -1083,6 +1141,16 @@ namespace Battlehub.RTSaveLoad2
             if (m_assetDB.IsStaticLibrary(ordinal))
             {
                 m_assetDB.LoadLibrary(AssetLibraries[ordinal], ordinal, loadIIDtoPID, loadPIDtoObj, callback);
+            }
+            else if(m_assetDB.IsSceneLibrary(ordinal))
+            {
+                int num = ordinal - AssetLibraryInfo.SCENELIB_FIRST;
+                string sceneLibraryName = m_sceneDepsLibrary;
+                if(num > 0)
+                {
+                    sceneLibraryName += (num + 1);
+                }
+                m_assetDB.LoadLibrary(sceneLibraryName, ordinal, loadIIDtoPID, loadPIDtoObj, callback);
             }
             else if (m_assetDB.IsBundledLibrary(ordinal))
             {
@@ -1111,7 +1179,7 @@ namespace Battlehub.RTSaveLoad2
             }
             else
             {
-                throw new ArgumentException("could load either static or bundled library", "ordinal");
+                throw new ArgumentException("could load static or bundled library", "ordinal");
             }
         }
 
@@ -1181,8 +1249,6 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            IsBusy = false;
-
             Error error = new Error(Error.OK);
             UnityObject result = m_assetDB.FromID<UnityObject>(rootItem.ItemID);
             if (callback != null)
@@ -1205,7 +1271,7 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public AsyncOperation Unload(ProjectEventHandler callback = null)
         {
-            if (IsBusy)
+            if(IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
@@ -1214,6 +1280,7 @@ namespace Battlehub.RTSaveLoad2
             return m_assetDB.UnloadUnusedAssets(ao =>
             {
                 IsBusy = false;
+
                 if (callback != null)
                 {
                     callback(new Error());
@@ -1239,7 +1306,18 @@ namespace Battlehub.RTSaveLoad2
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
+            return _LoadAssetLibrary(libraryName, isBuiltIn, (error, result) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
 
+        private ProjectAsyncOperation<ProjectItem> _LoadAssetLibrary(string libraryName, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null)
+        {
             ProjectAsyncOperation<ProjectItem> pao = new ProjectAsyncOperation<ProjectItem>();
             if (m_root == null)
             {
@@ -1369,12 +1447,12 @@ namespace Battlehub.RTSaveLoad2
             Component[] components = go.GetComponents<Component>();
             for(int i = 0; i < components.Length; ++i)
             {
-                Component component = components[i];
+                Component component = components[i]; 
                 if(component != null)
                 {
                     string componentName = assetName + "/" + component.GetType().FullName;
                     AssetBundleItemInfo bundleItem;
-                    if (!pathToBundleItem.TryGetValue(componentName, out bundleItem))
+                    if (!pathToBundleItem.TryGetValue(componentName, out bundleItem)) //Multiple components of same type are not supported
                     {
                         bundleItem = new AssetBundleItemInfo
                         {
@@ -1388,11 +1466,23 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            int index = 0;
+            Dictionary<string, int> nameToIndex = new Dictionary<string, int>();
             foreach(Transform child in go.transform)
             {
                 GameObject childGo = child.gameObject;
-                string childName = assetName + "/" + childGo.name + "@@@" + index;
+                string childName = assetName + "/" + childGo.name + "###";  //Children re-arrangement will lead to new (wrong) identifiers will be generated
+                int index = 0;
+                if(!nameToIndex.TryGetValue(childName, out index))
+                {
+                    nameToIndex.Add(childName, 2);
+                }
+
+                if(index > 0)
+                {
+                    childName += index;
+                    nameToIndex[childName]++;
+                }
+                
                 AssetBundleItemInfo bundleItem;
                 if (!pathToBundleItem.TryGetValue(childName, out bundleItem))
                 {
@@ -1424,6 +1514,8 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
+
+            
             AssetLibraryAsset result = ScriptableObject.CreateInstance<AssetLibraryAsset>();
             result.Ordinal = info.Ordinal;
 
@@ -1466,33 +1558,41 @@ namespace Battlehub.RTSaveLoad2
                     folder = childFolder;                    
                 }
 
-                AssetInfo assetInfo = folder.Assets != null ? folder.Assets.Where(a => a.name == pathParts[p]).FirstOrDefault() : null;
-                if (assetInfo == null)
+                if(pathParts.Length > 1)
                 {
-                    assetInfo = new AssetInfo(pathParts[p], 0, bundleItem.Id);
-                    assetInfo.PrefabParts = new List<PrefabPartInfo>();
+                    AssetInfo assetInfo = folder.Assets != null ? folder.Assets.Where(a => a.name == pathParts[p]).FirstOrDefault() : null;
+                    if (assetInfo == null)
+                    {
+                        assetInfo = new AssetInfo(pathParts[p], 0, bundleItem.Id);
+                        assetInfo.PrefabParts = new List<PrefabPartInfo>();
 
-                    Debug.Assert(p == pathParts.Length - 1);
-                    assetInfo.Object = bundle.LoadAsset(bundleItem.Path);
-                    folder.Assets.Add(assetInfo);
-
-                    assetsList.Add(assetInfo);
+                        Debug.Assert(p == pathParts.Length - 1);
+                        assetInfo.Object = bundle.LoadAsset(bundleItem.Path);
+                        
+                        folder.Assets.Add(assetInfo);
+                        assetsList.Add(assetInfo);
+                    }
+                    else
+                    {
+                        UnityObject prefab = assetInfo.Object;
+                        if (prefab is GameObject)
+                        {
+                            GameObject go = (GameObject)prefab;
+                            PrefabPartInfo prefabPart = new PrefabPartInfo();
+                            prefabPart.Object = GetPrefabPartAtPath(go, pathParts, p + 1);
+                            prefabPart.PersistentID = bundleItem.Id;
+                            prefabPart.ParentPersistentID = bundleItem.ParentId;
+                            prefabPart.Depth = pathParts.Length - p;
+                            assetInfo.PrefabParts.Add(prefabPart);
+                        }
+                    }
                 }
-                else
-                {
-                    PrefabPartInfo prefabPart = new PrefabPartInfo();
-                    prefabPart.Object = bundle.LoadAsset(bundleItem.Path);
-                    prefabPart.PersistentID = bundleItem.Id;
-                    prefabPart.ParentPersistentID = bundleItem.ParentId;
-                    prefabPart.Depth = pathParts.Length - p;
-                    assetInfo.PrefabParts.Add(prefabPart);
-                }   
             }
 
             //fix names
             for(int i = 0; i < assetsList.Count; ++i)
             {
-                assetsList[i].name = assetsList[i].Object.name;
+                assetsList[i].name = Path.GetFileNameWithoutExtension(assetsList[i].name);
             }
 
             //convert folders tree to assetLibraryInfo folders array;
@@ -1505,6 +1605,63 @@ namespace Battlehub.RTSaveLoad2
             }
             
             return result;
+        }
+
+        private UnityObject GetPrefabPartAtPath(GameObject go, string[] path, int pathPartIndex)
+        {
+            string pathPart = path[pathPartIndex];
+            if(pathPart.Contains("###"))
+            {
+                string[] nameAndNumber = pathPart.Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+                string name = nameAndNumber[0];
+                int number;
+
+                GameObject childGo = null;
+                if (nameAndNumber.Length > 1 && int.TryParse(nameAndNumber[1], out number))
+                {
+                    int n = 2;
+                    foreach (Transform child in go.transform)
+                    {
+                        if (child.name == name)
+                        {
+                            if(n == number)
+                            {
+                                childGo = child.gameObject;
+                                break;
+                            }
+                            else
+                            {
+                                n++;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach(Transform child in go.transform)
+                    {
+                        if(child.name == name)
+                        {
+                            childGo = child.gameObject;
+                            break;
+                        }
+                    }
+                }
+
+                if(childGo != null)
+                {
+                    if (pathPartIndex < path.Length - 1)
+                    {
+                        return GetPrefabPartAtPath(childGo, path, pathPartIndex + 1);
+                    }
+                }
+                
+                return childGo;
+            }
+            
+            Debug.Assert(pathPartIndex == path.Length - 1);
+            Component component = go.GetComponents<Component>().FirstOrDefault(c => c.GetType().FullName == path[pathPartIndex]);
+            return component;
         }
 
         private void FoldersTreeToArray(AssetLibraryInfo assetLibraryInfo, AssetFolderInfo folder)
@@ -1521,8 +1678,6 @@ namespace Battlehub.RTSaveLoad2
 
         private ProjectAsyncOperation<ProjectItem> RaiseLoadAssetLibraryCallback(ProjectEventHandler<ProjectItem> callback, ProjectAsyncOperation<ProjectItem> pao, Error error)
         {
-            IsBusy = false;
-
             if (callback != null)
             {
                 callback(error, null);
@@ -1534,8 +1689,6 @@ namespace Battlehub.RTSaveLoad2
 
         private void CompleteLoadAssetLibrary(string name, ProjectEventHandler<ProjectItem> callback, ProjectAsyncOperation<ProjectItem> pao, int ordinal, AssetLibraryAsset asset)
         {
-            IsBusy = false;
-
             ProjectItem result = new ProjectItem();
             Error error = new Error(Error.OK);
             if (asset == null)
@@ -1699,8 +1852,19 @@ namespace Battlehub.RTSaveLoad2
             {
                 throw new InvalidOperationException("IsBusy");
             }
-
             IsBusy = true;
+            return _Import(importItems, (error, result) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
+
+        private ProjectAsyncOperation<AssetItem[]> _Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback)
+        {
             HashSet<int> assetLibraryIds = new HashSet<int>();
             ProjectAsyncOperation<AssetItem[]> pao = new ProjectAsyncOperation<AssetItem[]>();
             if (m_root == null)
@@ -1877,9 +2041,8 @@ namespace Battlehub.RTSaveLoad2
                     RaiseImportAssetsCompletedCallback(deleteError, null, callback, pao);
                 }
                 else
-                {
-                    m_isBusy = false;
-                    Save(assetItems, objects, (saveError, savedAssetItems) =>
+                {                    
+                    _Save(assetItems, objects, (saveError, savedAssetItems) =>
                     {
                         if(unloadWhenDone)
                         {
@@ -1900,8 +2063,6 @@ namespace Battlehub.RTSaveLoad2
 
         private void RaiseImportAssetsCompletedCallback(Error error, AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback, ProjectAsyncOperation<AssetItem[]> pao)
         {
-            IsBusy = false;
-
             if (callback != null)
             {
                 callback(error, assetItems);
@@ -1969,18 +2130,16 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback)
         {
-            if (IsBusy)
+            if(IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
-
             IsBusy = true;
 
             ProjectAsyncOperation<ProjectItem> pao = new ProjectAsyncOperation<ProjectItem>();
             m_storage.Rename(m_projectPath, new[] { projectItem.Parent.ToString() }, new[] { oldName + projectItem.Ext }, new[] { projectItem.NameExt } , error =>
             {
                 IsBusy = false;
-
                 if(callback != null)
                 {
                     callback(error, projectItem);
@@ -2107,13 +2266,17 @@ namespace Battlehub.RTSaveLoad2
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
+
             ProjectAsyncOperation<string[]> pao = new ProjectAsyncOperation<string[]>();
             IOC.Resolve<IAssetBundleLoader>().ListAssetBundles(result =>
             {
                 IsBusy = false;
 
                 Error error = new Error(Error.OK);
-                callback(error, result);
+                if(callback != null)
+                {
+                    callback(error, result);
+                }
 
                 pao.Error = error;
                 pao.Result = result;
