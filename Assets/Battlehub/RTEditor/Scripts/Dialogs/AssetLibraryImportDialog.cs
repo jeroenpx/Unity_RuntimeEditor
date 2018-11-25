@@ -2,6 +2,7 @@
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -40,13 +41,17 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private IEnumerator m_coCreatePreviews;
+
         private void Start()
         {
             m_editor = IOC.Resolve<IRTE>();
             m_parentPopup = GetComponentInParent<PopupWindow>();
+            
             if (m_parentPopup != null)
             {
                 m_parentPopup.OK.AddListener(OnOK);
+                m_parentPopup.Cancel.AddListener(OnCancel);
             }
 
             m_treeView = GetComponentInChildren<VirtualizingTreeView>();
@@ -57,7 +62,6 @@ namespace Battlehub.RTEditor
             }
 
             m_treeView.ItemDataBinding += OnItemDataBinding;
-            m_treeView.ItemDoubleClick += OnItemDoubleClick;
             m_treeView.ItemExpanding += OnItemExpanding;
             
             m_treeView.CanDrag = false;
@@ -66,12 +70,14 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
 
             m_editor.IsBusy = true;
+            m_parentPopup.IsContentLoaded = false;
 
-            m_project.LoadAssetLibrary(m_selectedLibrary, m_isBuiltIn, (error, root) =>
-            {
-                m_editor.IsBusy = false;
+            m_project.LoadImportItems(m_selectedLibrary, m_isBuiltIn, (error, root) =>
+            {  
                 if (error.HasError)
                 {
+                    m_parentPopup.IsContentLoaded = true;
+                    m_editor.IsBusy = false;
                     PopupWindow.Show("Unable to load AssetLibrary", error.ErrorText, "OK", arg =>
                     {
                         m_parentPopup.Close(false);
@@ -79,12 +85,23 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
+                    
                     m_treeView.Items = new[] { root };
                     m_treeView.SelectedItems = root.Flatten(false);
                     ExpandAll(root);
-                    
+
+                    m_editor.IsBusy = true;
                     IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
-                    StartCoroutine(ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview));
+
+                    m_coCreatePreviews = ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview, () =>
+                    {
+                        m_project.UnloadImportItems(root);
+                        m_parentPopup.IsContentLoaded = true;
+                        m_editor.IsBusy = false;
+                        m_coCreatePreviews = null;
+                    });
+
+                    StartCoroutine(m_coCreatePreviews);
                 }
             });
         }
@@ -113,13 +130,19 @@ namespace Battlehub.RTEditor
             if (m_parentPopup != null)
             {
                 m_parentPopup.OK.RemoveListener(OnOK);
+                m_parentPopup.Cancel.RemoveListener(OnCancel);
             }
 
             if (m_treeView != null)
             {
                 m_treeView.ItemDataBinding -= OnItemDataBinding;
-                m_treeView.ItemDoubleClick -= OnItemDoubleClick;
                 m_treeView.ItemExpanding -= OnItemExpanding;
+            }
+
+            if(m_coCreatePreviews != null)
+            {
+                StopCoroutine(m_coCreatePreviews);
+                m_coCreatePreviews = null;
             }
         }
 
@@ -158,13 +181,13 @@ namespace Battlehub.RTEditor
             e.Children = item.Children;
         }
 
-        private void OnItemDoubleClick(object sender, ItemArgs e)
-        {
-
-        }
-
         private void OnOK(PopupWindowArgs args)
         {
+            if(!m_parentPopup.IsContentLoaded)
+            {
+                args.Cancel = true;
+                return;
+            }
             if (m_treeView.SelectedItemsCount == 0)
             {
                 args.Cancel = true;
@@ -172,6 +195,28 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private void OnCancel(PopupWindowArgs args)
+        {
+            if(m_editor.IsBusy)
+            {
+                args.Cancel = true;
+                return;
+            }
 
+            if (m_coCreatePreviews != null)
+            {
+                StopCoroutine(m_coCreatePreviews);
+                m_coCreatePreviews = null;
+            }
+
+            if(m_treeView.Items != null)
+            {
+                m_project.UnloadImportItems(m_treeView.Items.OfType<ProjectItem>().FirstOrDefault());
+            }
+            else
+            {
+                Debug.LogWarning("m_treeView.Items == null");
+            }
+        }
     }
 }

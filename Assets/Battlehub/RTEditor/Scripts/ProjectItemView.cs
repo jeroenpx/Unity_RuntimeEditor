@@ -138,13 +138,16 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public static IEnumerator CoCreatePreviews(ProjectItem[] items, IProject project, IResourcePreviewUtility resourcePreview)
+        public static IEnumerator CoCreatePreviews(ProjectItem[] items, IProject project, IResourcePreviewUtility resourcePreview, Action done = null)
         {
             if (resourcePreview == null)
             {
+                if(done != null)
+                {
+                    done();
+                }
                 yield break;
             }
-
 
             for (int i = 0; i < items.Length; ++i)
             {
@@ -162,28 +165,13 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    ImportItem assetItem = items[i] as ImportItem;
+                    AssetItem assetItem = items[i] as AssetItem;
                     if (assetItem != null)
                     {
-                        UnityObject obj;
-                        if (project.IsStatic(assetItem))
+                        UnityObject obj = null;
+                        if (assetItem.Preview == null)
                         {
-                            #warning CommentedOut
-                            //if (!project.TryGetFromStaticReferences(assetItem, out obj))
-                            {
-                                obj = null;
-                            }
-                        }
-                        else
-                        {
-                            if (assetItem.Preview == null)
-                            {
-                                obj = project.FromID<UnityObject>(assetItem.ItemID);
-                            }
-                            else
-                            {
-                                obj = null;
-                            }
+                            obj = project.FromID<UnityObject>(assetItem.ItemID);
                         }
 
                         if (obj != null)
@@ -198,6 +186,11 @@ namespace Battlehub.RTEditor
                 }
 
                 yield return new WaitForSeconds(0.01f);
+            }
+
+            if(done != null)
+            {
+                done();
             }
         }
     }

@@ -44,7 +44,11 @@ namespace Battlehub.RTSaveLoad2.Interface
         string GetExt(object obj);
         string GetExt(Type type);
 
+        ProjectAsyncOperation Create(string project, ProjectEventHandler callback = null);
         ProjectAsyncOperation Open(string project, ProjectEventHandler callback = null);
+        ProjectAsyncOperation<ProjectInfo[]> List(ProjectEventHandler<ProjectInfo[]> callback = null);
+        ProjectAsyncOperation Delete(string project, ProjectEventHandler callback = null);
+
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null);
 
         ProjectAsyncOperation<AssetItem> Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
@@ -52,8 +56,10 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
-        ProjectAsyncOperation<ProjectItem> LoadAssetLibrary(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);
-        ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null);
+        ProjectAsyncOperation<ProjectItem> LoadImportItems(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);
+        void UnloadImportItems(ProjectItem importItemsRoot);
+
+        ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[], ProjectItem> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);

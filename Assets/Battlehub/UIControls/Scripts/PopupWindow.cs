@@ -44,6 +44,24 @@ namespace Battlehub.UIControls
 
         private static PopupWindow m_instance;
 
+        private bool m_isContentLoaded;
+        public bool IsContentLoaded
+        {
+            get { return m_isContentLoaded; }
+            set
+            {
+                if(m_isContentLoaded != value)
+                {
+                    m_isContentLoaded = value;
+
+                    if(BtnOk != null)
+                    {
+                        BtnOk.interactable = m_isContentLoaded;
+                    }
+                }
+            }
+        }
+
         private bool m_isOpened;
         public bool IsOpened
         {
@@ -100,8 +118,6 @@ namespace Battlehub.UIControls
                 BtnOk.onClick.RemoveListener(OnBtnOk);
             }
         }
-
-
 
         private void OnBtnOk()
         {
@@ -195,7 +211,9 @@ namespace Battlehub.UIControls
                 body.SetParent(Body, false);
             }
 
-            if(BtnOk != null)
+            IsContentLoaded = true;
+
+            if (BtnOk != null)
             {
                 if (string.IsNullOrEmpty(ok))
                 {
@@ -239,7 +257,10 @@ namespace Battlehub.UIControls
         {
             if(result)
             {
-                OnBtnOk();
+                if(IsContentLoaded)
+                {
+                    OnBtnOk();
+                }
             }
             else
             {

@@ -94,8 +94,6 @@ namespace Battlehub.RTEditor
                 m_externalTreeView.Items = assetBundles;
                 m_externalTreeView.SelectedIndex = 0;
             });
-
-
         }
 
         private void OnDestroy()

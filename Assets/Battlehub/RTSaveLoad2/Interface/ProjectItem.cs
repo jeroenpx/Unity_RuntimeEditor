@@ -50,6 +50,13 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         [ProtoMember(3)]
         public int BundleIdentifier = 0;
+
+        [ProtoMember(4)]
+        public string Version = RTSL2Version.Version;
+
+        //This properties populate using fileData
+        public string Name;
+        public DateTime LastWriteTime;
     }
 
     [ProtoContract]

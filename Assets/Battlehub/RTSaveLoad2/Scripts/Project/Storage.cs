@@ -15,6 +15,9 @@ namespace Battlehub.RTSaveLoad2
 
     public interface IStorage
     {
+        void CreateProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
+        void DeleteProject(string projectPath, StorageEventHandler callback);
+        void ListProjects(StorageEventHandler callback);
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback);
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
@@ -52,17 +55,59 @@ namespace Battlehub.RTSaveLoad2
             Debug.LogFormat("RootPath : {0}", RootPath);
         }
 
-        public void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback)
+        public void CreateProject(string projectName, StorageEventHandler<ProjectInfo> callback)
         {
-            string projectDir = FullPath(projectPath);
-            projectPath = projectDir + "/Project.rtmeta";
+            string projectDir = FullPath(projectName);
+            if (Directory.Exists(projectDir))
+            {
+                Error error = new Error(Error.E_AlreadyExist);
+                error.ErrorText = "Project with the same name already exists " + projectName;
+                callback(error, null);
+            }
+            else
+            {
+                ISerializer serializer = IOC.Resolve<ISerializer>();
+                Directory.CreateDirectory(projectDir);
+                ProjectInfo projectInfo = null;
+                using (FileStream fs = File.OpenWrite(projectName))
+                {
+                    projectInfo = new ProjectInfo
+                    {
+                        Name = projectName,
+                        LastWriteTime = DateTime.UtcNow
+                    };
+
+                    serializer.Serialize(projectInfo, fs);
+                }
+                callback(new Error(Error.OK), projectInfo);
+            }
+        }
+
+        public void DeleteProject(string projectPath, StorageEventHandler callback)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ListProjects(StorageEventHandler callback)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetProject(string projectName, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback)
+        {
+            string projectDir = FullPath(projectName);
+            string projectPath = projectDir + "/Project.rtmeta";
             ProjectInfo projectInfo;
             Error error = new Error();
             ISerializer serializer = IOC.Resolve<ISerializer>();
             AssetBundleInfo[] result = new AssetBundleInfo[0];
             if (!File.Exists(projectPath))
             {
-                projectInfo = new ProjectInfo();
+                projectInfo = new ProjectInfo
+                {
+                    Name = projectName,
+                    LastWriteTime = DateTime.UtcNow,
+                };
             }
             else
             {
@@ -71,7 +116,9 @@ namespace Battlehub.RTSaveLoad2
                     using (FileStream fs = File.OpenRead(projectPath))
                     {
                         projectInfo = serializer.Deserialize<ProjectInfo>(fs);
+                        projectInfo.Name = projectName;
                     }
+                    projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectPath);
 
                     string[] files = Directory.GetFiles(projectDir).Where(fn => fn.EndsWith(".rtbundle")).ToArray();
                     result = new AssetBundleInfo[files.Length];

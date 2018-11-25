@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
+using UnityObject = UnityEngine.Object;
+
 [System.Serializable]
 public class Test
 {
@@ -32,12 +34,51 @@ public class TestBehavior : MonoBehaviour {
   
 
     void Start () {
-        if(Shader != null)
-        {
-            Debug.Log(Shader.name);
-        }
 
-       
+        //AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(Application.streamingAssetsPath + "/bundledemo");
+        //Action<AsyncOperation> completed = null;
+        //GameObject go = null;
+        //completed = result =>
+        //{
+        //    AssetBundle bundle = request.assetBundle;
+        //    if(bundle != null)
+        //    {
+        //        //string[] allNames = bundle.GetAllAssetNames();
+        //        //foreach(string name in allNames)
+        //        //{
+        //        //    Debug.Log(name);
+        //        //}
+
+        //        go = bundle.LoadAsset<GameObject>("assets/battlehub/rteditor/demo/bundledobject/monkey.prefab");
+        //        Debug.Log(go);
+        //    }
+        //    bundle.Unload(false);
+        //    Compare(go);
+        //    request.completed -= completed;
+        //};
+        //request.completed += completed;
+
+
+
+    }
+
+    private void Compare(UnityObject obj)
+    {
+        AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(Application.streamingAssetsPath + "/bundledemo");
+        Action<AsyncOperation> completed = null;
+        UnityObject loaded = null;
+        completed = result =>
+        {
+            AssetBundle bundle = request.assetBundle;
+            if (bundle != null)
+            {
+                loaded = bundle.LoadAsset<GameObject>("assets/battlehub/rteditor/demo/bundledobject/monkey.prefab");
+                Debug.Assert(loaded == obj);
+            }
+            bundle.Unload(false);
+            request.completed -= completed;
+        };
+        request.completed += completed;
     }
 
   

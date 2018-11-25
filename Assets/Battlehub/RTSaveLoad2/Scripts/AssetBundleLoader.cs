@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -31,17 +32,36 @@ namespace Battlehub.RTSaveLoad2
             callback(result.ToArray());
         }
 
-        public void Load(string name, LoadAssetBundleHandler callback)
+        public void Load(string bundleName, LoadAssetBundleHandler callback)
         {
-            if (!File.Exists(Application.streamingAssetsPath + "/" + name))
+            if (!File.Exists(Application.streamingAssetsPath + "/" + bundleName))
             {
                 callback(null);
                 return;
             }
-            AssetBundle bundle = AssetBundle.LoadFromFile(Application.streamingAssetsPath + "/" + name);
-            if (callback != null)
+
+            AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(Application.streamingAssetsPath + "/" + bundleName);
+            if(request.isDone)
             {
-                callback(bundle);
+                AssetBundle bundle = request.assetBundle;
+                if (callback != null)
+                {
+                    callback(bundle);
+                }
+            }
+            else
+            {
+                Action<AsyncOperation> completed = null;
+                completed = result =>
+                {
+                    AssetBundle bundle = request.assetBundle;
+                    if (callback != null)
+                    {
+                        callback(bundle);
+                    }
+                    request.completed -= completed;
+                };
+                request.completed += completed;
             }
         }
     }

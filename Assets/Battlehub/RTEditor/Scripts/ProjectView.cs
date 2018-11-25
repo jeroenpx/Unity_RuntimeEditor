@@ -305,7 +305,11 @@ namespace Battlehub.RTEditor
                     Editor.IsBusy = true;
                     m_project.Import(assetLibraryImporter.SelectedAssets);
                 },
-                "Cancel");
+                "Cancel", 
+                args =>
+                {
+
+                });
         }
 
    

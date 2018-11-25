@@ -2,7 +2,7 @@
 {
     public class RTSL2Version
     {
-        public const string Version = "2018.0.0";
+        public const string Version = "2019.0.0";
     }
 }
 
