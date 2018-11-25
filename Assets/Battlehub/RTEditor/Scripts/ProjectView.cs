@@ -4,10 +4,6 @@ using Battlehub.RTCommon;
 using System.Linq;
 using Battlehub.UIControls;
 using Battlehub.RTSaveLoad2.Interface;
-using System.Collections;
-
-using UnityObject = UnityEngine.Object;
-using System;
 
 namespace Battlehub.RTEditor
 {
@@ -113,7 +109,7 @@ namespace Battlehub.RTEditor
             m_projectTree.ItemRenamed += OnProjectTreeItemRenamed;
             m_projectTree.ItemDeleted += OnProjectTreeItemDeleted;
 
-            m_project.OpenCompleted += OnProjectOpenCompleted;
+            m_project.OpenProjectCompleted += OnProjectOpenCompleted;
             m_project.ImportCompleted += OnImportCompleted;
             m_project.DeleteCompleted += OnDeleteCompleted;
             m_project.RenameCompleted += OnRenameCompleted;
@@ -124,7 +120,7 @@ namespace Battlehub.RTEditor
             ShowProgress = true;
             Editor.IsBusy = true;
 
-            m_project.Open(ProjectName);
+            m_project.OpenProject(ProjectName);
         }
 
         protected override void OnDestroyOverride()
@@ -147,7 +143,7 @@ namespace Battlehub.RTEditor
 
             if (m_project != null)
             {
-                m_project.OpenCompleted -= OnProjectOpenCompleted;
+                m_project.OpenProjectCompleted -= OnProjectOpenCompleted;
                 m_project.ImportCompleted -= OnImportCompleted;
                 m_project.DeleteCompleted -= OnDeleteCompleted;
                 m_project.RenameCompleted -= OnRenameCompleted;
@@ -167,12 +163,8 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void UpdateOverride()
-        {
-            base.UpdateOverride();
-        }
 
-        private void OnProjectOpenCompleted(Error error)
+        private void OnProjectOpenCompleted(Error error, ProjectInfo projectInfo)
         {
             ShowProgress = false;
             Editor.IsBusy = false;

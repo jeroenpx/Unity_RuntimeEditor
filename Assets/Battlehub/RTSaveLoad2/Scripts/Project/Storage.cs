@@ -17,7 +17,7 @@ namespace Battlehub.RTSaveLoad2
     {
         void CreateProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
         void DeleteProject(string projectPath, StorageEventHandler callback);
-        void ListProjects(StorageEventHandler callback);
+        void ListProjects(StorageEventHandler<ProjectInfo[]> callback);
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback);
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
@@ -85,12 +85,33 @@ namespace Battlehub.RTSaveLoad2
 
         public void DeleteProject(string projectPath, StorageEventHandler callback)
         {
-            throw new NotImplementedException();
+            string projectDir = FullPath(projectPath);
+            Directory.Delete(projectDir, true);
+            callback(new Error(Error.OK));
         }
 
-        public void ListProjects(StorageEventHandler callback)
+        public void ListProjects(StorageEventHandler<ProjectInfo[]> callback)
         {
-            throw new NotImplementedException();
+            string projectsRoot = FullPath(string.Empty);
+            string[] projectDirs = Directory.GetDirectories(projectsRoot);
+            List<ProjectInfo> result = new List<ProjectInfo>();
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+            for (int i = 0; i < projectDirs.Length; ++i)
+            {
+                string projectDir = projectDirs[i];
+                if(File.Exists(projectDir + "/Project.rtmeta"))
+                {
+                    ProjectInfo projectInfo;
+                    using (FileStream fs = File.OpenRead(projectDir + "/Project.rtmeta"))
+                    {
+                        projectInfo = serializer.Deserialize<ProjectInfo>(fs);
+                    }
+                    projectInfo.Name = Path.GetFileName(Path.GetDirectoryName(projectDir));
+                    projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectDir + "/Project.rtmeta");
+                    result.Add(projectInfo);
+                }
+            }
+            callback(new Error(Error.OK), result.ToArray());
         }
 
         public void GetProject(string projectName, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback)
@@ -116,8 +137,8 @@ namespace Battlehub.RTSaveLoad2
                     using (FileStream fs = File.OpenRead(projectPath))
                     {
                         projectInfo = serializer.Deserialize<ProjectInfo>(fs);
-                        projectInfo.Name = projectName;
                     }
+                    projectInfo.Name = projectName;
                     projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectPath);
 
                     string[] files = Directory.GetFiles(projectDir).Where(fn => fn.EndsWith(".rtbundle")).ToArray();

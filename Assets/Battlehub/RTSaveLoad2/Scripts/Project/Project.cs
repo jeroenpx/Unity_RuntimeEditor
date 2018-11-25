@@ -17,7 +17,12 @@ namespace Battlehub.RTSaveLoad2
     /// </summary>
     public class Project : MonoBehaviour, IProject
     {
-        public event ProjectEventHandler OpenCompleted;
+        public event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
+        public event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
+        public event ProjectEventHandler<string> DeleteProjectCompleted;
+        public event ProjectEventHandler<ProjectInfo[]> ListProjectsCompleted;
+        public event ProjectEventHandler Closed;
+
         public event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         public event ProjectEventHandler<AssetItem> CreateCompleted;
         public event ProjectEventHandler<AssetItem[]> SaveCompleted;
@@ -239,19 +244,124 @@ namespace Battlehub.RTSaveLoad2
         }
 
 
-        public ProjectAsyncOperation Create(string project, ProjectEventHandler callback = null)
+        /// <summary>
+        /// Create Project
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null)
         {
-            throw new NotImplementedException();
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("IsBusy");
+            }
+            IsBusy = true;
+            ProjectAsyncOperation<ProjectInfo> pao = new ProjectAsyncOperation<ProjectInfo>();
+            m_storage.CreateProject(project, (error, projectInfo) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, projectInfo);
+                }
+                if(CreateProjectCompleted != null)
+                {
+                    CreateProjectCompleted(error, projectInfo);
+                }
+                pao.Error = error;
+                pao.Result = projectInfo;
+                pao.IsCompleted = true;
+            });
+            return pao;
         }
 
-        public ProjectAsyncOperation<ProjectInfo[]> List(ProjectEventHandler<ProjectInfo[]> callback = null)
+
+        /// <summary>
+        /// List all projects
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public ProjectAsyncOperation<ProjectInfo[]> ListProjects(ProjectEventHandler<ProjectInfo[]> callback = null)
         {
-            throw new NotImplementedException();
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("IsBusy");
+            }
+            IsBusy = true;
+            ProjectAsyncOperation<ProjectInfo[]> pao = new ProjectAsyncOperation<ProjectInfo[]>();
+            m_storage.ListProjects((error, projects) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, projects);
+                }
+                if(ListProjectsCompleted != null)
+                {
+                    ListProjectsCompleted(error, projects);
+                }
+                pao.Error = error;
+                pao.Result = projects;
+                pao.IsCompleted = true;
+            });
+            return pao;
         }
 
-        public ProjectAsyncOperation Delete(string project, ProjectEventHandler callback = null)
+        /// <summary>
+        /// Delete Project
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null)
         {
-            throw new NotImplementedException();
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("IsBusy");
+            }
+
+            if(m_projectInfo != null && project == m_projectInfo.Name)
+            {
+                CloseProject();
+            }
+            
+            IsBusy = true;
+            ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
+            m_storage.DeleteProject(project, error =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, project);
+                }
+                if(DeleteProjectCompleted != null)
+                {
+                    DeleteProjectCompleted(error, project);
+                }
+                pao.Error = error;
+                pao.Result = project;
+                pao.IsCompleted = true;
+            });
+            return pao;
+        }
+
+        /// <summary>
+        /// Close Project
+        /// </summary>
+        public void CloseProject()
+        {
+            if(m_projectInfo != null)
+            {
+                UnloadUnregisterDestroy();
+            }
+            m_projectInfo = null;
+            m_root = null;
+
+            if(Closed != null)
+            {
+                Closed(new Error(Error.OK));
+            }
         }
 
         /// <summary>
@@ -260,31 +370,31 @@ namespace Battlehub.RTSaveLoad2
         /// <param name="project"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation Open(string project, ProjectEventHandler callback)
+        public ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback)
         {
             if(IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
-            return _Open(project, error =>
+            return _Open(project, (error, projectInfo) =>
             {
                 IsBusy = false;
                 if(callback != null)
                 {
-                    callback(error);
+                    callback(error, projectInfo);
                 }
             });
         }
 
-        private ProjectAsyncOperation _Open(string project, ProjectEventHandler callback)
+        private ProjectAsyncOperation<ProjectInfo> _Open(string project, ProjectEventHandler<ProjectInfo> callback)
         {
             UnloadUnregisterDestroy();
 
             m_projectInfo = null;
             m_root = null;
 
-            ProjectAsyncOperation ao = new ProjectAsyncOperation();
+            ProjectAsyncOperation<ProjectInfo> ao = new ProjectAsyncOperation<ProjectInfo>();
             m_projectPath = project;
 
             m_storage.GetProject(m_projectPath, (error, projectInfo, assetBundleInfo) =>
@@ -293,12 +403,14 @@ namespace Battlehub.RTSaveLoad2
                 {
                     if (callback != null)
                     {
-                        callback(error);
+                        callback(error, projectInfo);
                     }
-                    if (OpenCompleted != null)
+                    if (OpenProjectCompleted != null)
                     {
-                        OpenCompleted(error);
+                        OpenProjectCompleted(error, projectInfo);
                     }
+
+                    ao.Result = projectInfo;
                     ao.Error = error;
                     ao.IsCompleted = true;
                     return;
@@ -310,7 +422,7 @@ namespace Battlehub.RTSaveLoad2
             return ao;
         }
 
-        private void OnOpened(string project, ProjectInfo projectInfo, ProjectAsyncOperation ao, ProjectEventHandler callback)
+        private void OnOpened(string project, ProjectInfo projectInfo, ProjectAsyncOperation<ProjectInfo> ao, ProjectEventHandler<ProjectInfo> callback)
         {
             if (projectInfo == null)
             {
@@ -321,7 +433,7 @@ namespace Battlehub.RTSaveLoad2
             GetProjectTree(project, ao, callback);
         }
 
-        private void GetProjectTree(string project, ProjectAsyncOperation ao, ProjectEventHandler callback)
+        private void GetProjectTree(string project, ProjectAsyncOperation<ProjectInfo> ao, ProjectEventHandler<ProjectInfo> callback)
         {
             m_storage.GetProjectTree(project, (error, rootFolder) =>
             {
@@ -329,14 +441,15 @@ namespace Battlehub.RTSaveLoad2
                 {
                     if (callback != null)
                     {
-                        callback(error);
+                        callback(error, m_projectInfo);
                     }
 
-                    if (OpenCompleted != null)
+                    if (OpenProjectCompleted != null)
                     {
-                        OpenCompleted(error);
+                        OpenProjectCompleted(error, m_projectInfo);
                     }
 
+                    ao.Result = m_projectInfo;
                     ao.Error = error;
                     ao.IsCompleted = true;
                     return;
@@ -346,7 +459,7 @@ namespace Battlehub.RTSaveLoad2
             });
         }
 
-        private void OnGetProjectTreeCompleted(Error error, ProjectItem rootFolder, ProjectAsyncOperation ao, ProjectEventHandler callback)
+        private void OnGetProjectTreeCompleted(Error error, ProjectItem rootFolder, ProjectAsyncOperation<ProjectInfo> ao, ProjectEventHandler<ProjectInfo> callback)
         {
             m_root = rootFolder;
 
@@ -370,13 +483,14 @@ namespace Battlehub.RTSaveLoad2
 
             if (callback != null)
             {
-                callback(error);
+                callback(error, m_projectInfo);
             }
-            if (OpenCompleted != null)
+            if (OpenProjectCompleted != null)
             {
-                OpenCompleted(error);
+                OpenProjectCompleted(error, m_projectInfo);
             }
 
+            ao.Result = m_projectInfo;
             ao.Error = error;
             ao.IsCompleted = true;
         }
@@ -2210,7 +2324,12 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback)
         {
-            if(IsBusy)
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+
+            if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
@@ -2246,6 +2365,10 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<ProjectItem[], ProjectItem> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem> callback)
         {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
             if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
@@ -2292,6 +2415,10 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback)
         {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
             if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
@@ -2341,6 +2468,10 @@ namespace Battlehub.RTSaveLoad2
         /// <returns></returns>
         public ProjectAsyncOperation<string[]> ListAssetBundles(ProjectEventHandler<string[]> callback = null)
         {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
             if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");

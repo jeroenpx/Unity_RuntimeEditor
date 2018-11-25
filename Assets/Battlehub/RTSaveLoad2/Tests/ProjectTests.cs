@@ -28,7 +28,7 @@ namespace Battlehub.RTSaveLoad2
             Assert.IsNull(project.Root);
 
             bool done = false;
-            project.Open("TestProject", error =>
+            project.OpenProject("TestProject", (error, projectInfo) =>
             {
                 Assert.IsFalse(error.HasError);
                 Assert.IsNotNull(project.Root);
@@ -82,7 +82,7 @@ namespace Battlehub.RTSaveLoad2
             IProject project = IOC.Resolve<IProject>();
 
             bool done = false;
-            project.Open("TestProject", openError =>
+            project.OpenProject("TestProject", (openError, projectInfo) =>
             {
                 project.Create(null, dummyPreview, dummyGo, null, (saveError, assetItem) =>
                 {
@@ -149,7 +149,7 @@ namespace Battlehub.RTSaveLoad2
 
             IProject project = IOC.Resolve<IProject>();
 
-            var openResult = project.Open("TestProject");
+            var openResult = project.OpenProject("TestProject");
             yield return openResult;
 
             var saveResult = project.Create(null, dummyPreview, dummyGo, null);

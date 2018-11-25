@@ -9,7 +9,12 @@ namespace Battlehub.RTSaveLoad2.Interface
 
     public interface IProject
     {
-        event ProjectEventHandler OpenCompleted;
+        event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
+        event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
+        event ProjectEventHandler<string> DeleteProjectCompleted;
+        event ProjectEventHandler<ProjectInfo[]> ListProjectsCompleted;
+        event ProjectEventHandler Closed;
+
         event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         event ProjectEventHandler<AssetItem> CreateCompleted;
         event ProjectEventHandler<AssetItem[]> SaveCompleted;
@@ -44,10 +49,11 @@ namespace Battlehub.RTSaveLoad2.Interface
         string GetExt(object obj);
         string GetExt(Type type);
 
-        ProjectAsyncOperation Create(string project, ProjectEventHandler callback = null);
-        ProjectAsyncOperation Open(string project, ProjectEventHandler callback = null);
-        ProjectAsyncOperation<ProjectInfo[]> List(ProjectEventHandler<ProjectInfo[]> callback = null);
-        ProjectAsyncOperation Delete(string project, ProjectEventHandler callback = null);
+        ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
+        ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
+        ProjectAsyncOperation<ProjectInfo[]> ListProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
+        ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null);
+        void CloseProject();
 
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null);
 

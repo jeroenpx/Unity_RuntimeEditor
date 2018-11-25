@@ -1,5 +1,5 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
+using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 
 using UnityEngine;
@@ -25,6 +25,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Button m_btnDelete;
 
+ 
         private void Start()
         {
             m_parentPopup = GetComponentInParent<PopupWindow>();
@@ -47,20 +48,33 @@ namespace Battlehub.RTEditor
             m_treeView.CanUnselectAll = false;
 
             m_project = IOC.Resolve<IProject>();
-            //m_treeView.Items = m_project.AssetLibraries;
-            m_treeView.SelectedIndex = 0;
-
+           
             IRTE editor = IOC.Resolve<IRTE>();
-            
-            if (m_btnNew != null)
-            {
-                m_btnNew.onClick.AddListener(OnCreateProjectClick);
-            }
 
-            if (m_btnDelete != null)
+            m_parentPopup.IsContentLoaded = false;
+            editor.IsBusy = true;
+
+            m_project.ListProjects((error, projectInfo) =>
             {
-                m_btnDelete.onClick.AddListener(OnDestroyProjectClick);
-            }
+                m_parentPopup.IsContentLoaded = true;
+                editor.IsBusy = false;
+
+                m_treeView.Items = projectInfo;
+                if(projectInfo != null && projectInfo.Length > 0)
+                {
+                    m_treeView.SelectedIndex = 0;
+                }
+
+                if (m_btnNew != null)
+                {
+                    m_btnNew.onClick.AddListener(OnCreateProjectClick);
+                }
+
+                if (m_btnDelete != null)
+                {
+                    m_btnDelete.onClick.AddListener(OnDestroyProjectClick);
+                }
+            });
         }
 
         private void OnDestroy()
@@ -124,6 +138,15 @@ namespace Battlehub.RTEditor
 
         private void OnDestroyProjectClick()
         {
+            PopupWindow.Show("Delete Project", "Delete selected project?", "Delete", args =>
+            {
+                ProjectInfo selectedProject = (ProjectInfo)m_treeView.SelectedItem;
+                m_project.DeleteProject(selectedProject.Name, (error, deletedProject) =>
+                {
+
+                });
+            },
+            "Cancel");
 
         }
     }
