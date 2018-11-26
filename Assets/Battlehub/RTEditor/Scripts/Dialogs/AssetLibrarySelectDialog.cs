@@ -83,7 +83,7 @@ namespace Battlehub.RTEditor
 
             IRTE editor = IOC.Resolve<IRTE>();
             editor.IsBusy = true;
-            m_project.ListAssetBundles((error, assetBundles) =>
+            m_project.GetAssetBundles((error, assetBundles) =>
             {
                 editor.IsBusy = false;
                 if (error.HasError)

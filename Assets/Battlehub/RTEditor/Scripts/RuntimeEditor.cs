@@ -38,6 +38,11 @@ namespace Battlehub.RTEditor
             base.OnDestroy();
         }
 
+        public void CloseProject()
+        {
+            m_project.CloseProject();
+        }
+
         public void OpenScene()
         {
             IsBusy = true;

@@ -202,27 +202,34 @@ namespace Battlehub.RTEditor
             }
             set
             {
-                ProjectItem folder = value;
-                string path = folder.ToString();
-                folder = m_root.Get(path);
+                if(value == null)
+                {
+                    m_treeView.SelectedIndex = -1;
+                }
+                else
+                {
+                    ProjectItem folder = value;
+                    string path = folder.ToString();
+                    folder = m_root.Get(path);
 
-                if(folder != null)
-                {
-                    if(folder.Parent == null)
+                    if (folder != null)
                     {
-                        Expand(folder);
+                        if (folder.Parent == null)
+                        {
+                            Expand(folder);
+                        }
+                        else
+                        {
+                            Expand(folder.Parent);
+                        }
                     }
-                    else
+
+                    if (m_treeView.IndexOf(folder) >= 0)
                     {
-                        Expand(folder.Parent);
+                        m_treeView.ScrollIntoView(folder);
+                        m_treeView.SelectedItem = folder;
                     }
-                }
-                
-                if (m_treeView.IndexOf(folder) >= 0)
-                {
-                    m_treeView.ScrollIntoView(folder);
-                    m_treeView.SelectedItem = folder;
-                }
+                }  
             }
         }
 
@@ -362,19 +369,26 @@ namespace Battlehub.RTEditor
 
         public void LoadProject(ProjectItem root)
         {
-            if (ShowRootFolder)
-            {                
-                m_treeView.Items = new[] { root };
+            if(root == null)
+            {
+                m_treeView.Items = null;
             }
             else
             {
-                if (root.Children != null)
+                if (ShowRootFolder)
                 {
-                    m_root.Children = root.Children.OrderBy(projectItem => projectItem.NameExt).ToList();
-                    m_treeView.Items = m_root.Children.Where(projectItem => CanDisplayFolder(projectItem)).ToArray();
+                    m_treeView.Items = new[] { root };
+                }
+                else
+                {
+                    if (root.Children != null)
+                    {
+                        m_root.Children = root.Children.OrderBy(projectItem => projectItem.NameExt).ToList();
+                        m_treeView.Items = m_root.Children.Where(projectItem => CanDisplayFolder(projectItem)).ToArray();
+                    }
                 }
             }
-
+            
             m_root = root;
         }
 

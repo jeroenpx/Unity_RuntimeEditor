@@ -41,6 +41,12 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private ProjectItem m_root;
+        public ProjectItem AssetLibraryRoot
+        {
+            get { return m_root; }
+        }
+
         private IEnumerator m_coCreatePreviews;
 
         private void Start()
@@ -73,7 +79,9 @@ namespace Battlehub.RTEditor
             m_parentPopup.IsContentLoaded = false;
 
             m_project.LoadImportItems(m_selectedLibrary, m_isBuiltIn, (error, root) =>
-            {  
+            {
+                m_root = root;
+
                 if (error.HasError)
                 {
                     m_parentPopup.IsContentLoaded = true;
@@ -85,7 +93,6 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    
                     m_treeView.Items = new[] { root };
                     m_treeView.SelectedItems = root.Flatten(false);
                     ExpandAll(root);

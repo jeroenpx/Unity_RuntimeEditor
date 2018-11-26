@@ -9,11 +9,12 @@ namespace Battlehub.RTSaveLoad2.Interface
 
     public interface IProject
     {
+        event ProjectEventHandler NewSceneCreated;
         event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
         event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
         event ProjectEventHandler<string> DeleteProjectCompleted;
         event ProjectEventHandler<ProjectInfo[]> ListProjectsCompleted;
-        event ProjectEventHandler Closed;
+        event ProjectEventHandler CloseProjectCompleted;
 
         event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         event ProjectEventHandler<AssetItem> CreateCompleted;
@@ -49,14 +50,14 @@ namespace Battlehub.RTSaveLoad2.Interface
         string GetExt(object obj);
         string GetExt(Type type);
 
+        void CreateNewScene();
         ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
         ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
-        ProjectAsyncOperation<ProjectInfo[]> ListProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
+        ProjectAsyncOperation<ProjectInfo[]> GetProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
         ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null);
         void CloseProject();
 
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null);
-
         ProjectAsyncOperation<AssetItem> Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
         ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
@@ -64,13 +65,13 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         ProjectAsyncOperation<ProjectItem> LoadImportItems(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);
         void UnloadImportItems(ProjectItem importItemsRoot);
-
         ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback = null);
+
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[], ProjectItem> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);
 
-        ProjectAsyncOperation<string[]> ListAssetBundles(ProjectEventHandler<string[]> callback = null);
+        ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);
     }
 
     public class ProjectAsyncOperation : CustomYieldInstruction

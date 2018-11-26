@@ -10,8 +10,16 @@ namespace Battlehub.RTEditor
 
         public string Text
         {
-            get;
-            private set;
+            get { return m_inputField.text; }
+            private set
+            {
+                m_inputField.text = value;
+            }
+        }
+
+        private void Start()
+        {
+            m_inputField.Select();
         }
 
     }

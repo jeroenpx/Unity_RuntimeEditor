@@ -1264,6 +1264,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aec9fe317dc3154299c80b1d2b9565b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_inputDialogPrefab: {fileID: 114165407000031426, guid: 1103761afaa3c97448e5684e161a60b0,
+    type: 2}
   m_treeView: {fileID: 114145870192396426}
   ProjectIcon: {fileID: 21300000, guid: 8eb1638682a6ded4295023097793c7b2, type: 3}
   m_btnNew: {fileID: 114900102675353630}

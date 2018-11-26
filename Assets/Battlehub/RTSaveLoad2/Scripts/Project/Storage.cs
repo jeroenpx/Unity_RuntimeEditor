@@ -17,7 +17,7 @@ namespace Battlehub.RTSaveLoad2
     {
         void CreateProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
         void DeleteProject(string projectPath, StorageEventHandler callback);
-        void ListProjects(StorageEventHandler<ProjectInfo[]> callback);
+        void GetProjects(StorageEventHandler<ProjectInfo[]> callback);
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback);
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
@@ -69,7 +69,7 @@ namespace Battlehub.RTSaveLoad2
                 ISerializer serializer = IOC.Resolve<ISerializer>();
                 Directory.CreateDirectory(projectDir);
                 ProjectInfo projectInfo = null;
-                using (FileStream fs = File.OpenWrite(projectName))
+                using (FileStream fs = File.OpenWrite(projectDir + "/Project.rtmeta"))
                 {
                     projectInfo = new ProjectInfo
                     {
@@ -90,7 +90,7 @@ namespace Battlehub.RTSaveLoad2
             callback(new Error(Error.OK));
         }
 
-        public void ListProjects(StorageEventHandler<ProjectInfo[]> callback)
+        public void GetProjects(StorageEventHandler<ProjectInfo[]> callback)
         {
             string projectsRoot = FullPath(string.Empty);
             string[] projectDirs = Directory.GetDirectories(projectsRoot);
@@ -106,7 +106,7 @@ namespace Battlehub.RTSaveLoad2
                     {
                         projectInfo = serializer.Deserialize<ProjectInfo>(fs);
                     }
-                    projectInfo.Name = Path.GetFileName(Path.GetDirectoryName(projectDir));
+                    projectInfo.Name = Path.GetFileName(projectDir);
                     projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectDir + "/Project.rtmeta");
                     result.Add(projectInfo);
                 }

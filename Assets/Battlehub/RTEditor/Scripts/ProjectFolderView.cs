@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTEditor
 {
     public class ProjectFolderView : RuntimeWindow
@@ -26,13 +25,22 @@ namespace Battlehub.RTEditor
         private ProjectItem[] m_folders;
         public void SetItems(ProjectItem[] folders, ProjectItem[] items, bool reload)
         {
-            m_folders = folders;
-            m_items = new List<ProjectItem>(items);
-            if (m_items != null)
+            if(folders == null || items == null)
             {
-                m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
+                m_folders = null;
+                m_items = null;
+                m_listBox.Items = null;
             }
-            DataBind(reload);
+            else
+            {
+                m_folders = folders;
+                m_items = new List<ProjectItem>(items);
+                if (m_items != null)
+                {
+                    m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
+                }
+                DataBind(reload);
+            }
         }
 
         public void InsertItems(ProjectItem[] items)

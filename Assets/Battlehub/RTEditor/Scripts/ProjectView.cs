@@ -26,9 +26,13 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Button m_btnImport;
         [SerializeField]
+        private Button m_btnProjects;
+        [SerializeField]
         private AssetLibrarySelectDialog m_assetLibrarySelectorPrefab;
         [SerializeField]
         private AssetLibraryImportDialog m_assetLibraryImportPrefab;
+        [SerializeField]
+        private ProjectsDialog m_projectsDialogPrefab;
         
         [SerializeField]
         private string ProjectName = "DefaultProject";
@@ -100,23 +104,28 @@ namespace Battlehub.RTEditor
                 m_btnImport.onClick.AddListener(SelectLibrary);
             }
 
+            if(m_btnProjects != null)
+            {
+                m_btnProjects.onClick.AddListener(ManageProjects);
+            }
+
             m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
             m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
             m_projectResources.ItemDeleted += OnProjectResourcesDeleted;
-            //m_projectResources.ItemsDropped += OnProjectResourcesDrop;
-     
+                
             m_projectTree.SelectionChanged += OnProjectTreeSelectionChanged;
             m_projectTree.ItemRenamed += OnProjectTreeItemRenamed;
             m_projectTree.ItemDeleted += OnProjectTreeItemDeleted;
 
             m_project.OpenProjectCompleted += OnProjectOpenCompleted;
+            m_project.CloseProjectCompleted += OnCloseProjectCompleted;
             m_project.ImportCompleted += OnImportCompleted;
             m_project.DeleteCompleted += OnDeleteCompleted;
             m_project.RenameCompleted += OnRenameCompleted;
             m_project.MoveCompleted += OnMoveCompleted;
             m_project.CreateCompleted += OnPrefabCreateCompleted;
             m_project.SaveCompleted += OnSaveCompleted;
-
+            
             ShowProgress = true;
             Editor.IsBusy = true;
 
@@ -128,10 +137,8 @@ namespace Battlehub.RTEditor
             if (m_projectResources != null)
             {
                 m_projectResources.ItemDoubleClick -= OnProjectResourcesDoubleClick;
-
                 m_projectResources.ItemRenamed -= OnProjectResourcesRenamed;
                 m_projectResources.ItemDeleted -= OnProjectResourcesDeleted;
-                //m_projectResources.ItemsDropped -= OnProjectResourcesDrop;
             }
 
             if(m_projectTree != null)
@@ -161,6 +168,11 @@ namespace Battlehub.RTEditor
             {
                 m_ddCreate.onValueChanged.RemoveListener(OnCreate);
             }
+
+            if (m_btnProjects != null)
+            {
+                m_btnProjects.onClick.RemoveListener(ManageProjects);
+            }
         }
 
 
@@ -176,6 +188,19 @@ namespace Battlehub.RTEditor
             
             m_projectTree.LoadProject(m_project.Root);
             m_projectTree.SelectedFolder = m_project.Root;
+        }
+
+        private void OnCloseProjectCompleted(Error error)
+        {
+            if (error.HasError)
+            {
+                PopupWindow.Show("Can't close project", error.ToString(), "OK");
+                return;
+            }
+
+            m_projectTree.LoadProject(null);
+            m_projectTree.SelectedFolder = null;
+            m_projectResources.SetItems(null, null, true);
         }
 
         private void OnImportCompleted(Error error, AssetItem[] result)
@@ -244,20 +269,67 @@ namespace Battlehub.RTEditor
 
         private void OnSaveCompleted(Error saveError, AssetItem[] result)
         {
-            //StartCoroutine(ProjectItemView.CoCreatePreviews(result, m_project, m_resourcePreview));
         }
 
         private void OnPrefabCreateCompleted(Error createPrefabError, AssetItem result)
         {
-            //StartCoroutine(ProjectItemView.CoCreatePreviews(new[] { result }, m_project, m_resourcePreview));
             m_projectResources.InsertItems(new[] { result });
+        }
+  
+        private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)
+        {
+            ShowProgress = true;
+            m_project.GetAssetItems(e.NewItems, (error, assets) =>
+            {
+                ShowProgress = false;
+                if (error.HasError)
+                {
+                    PopupWindow.Show("Can't GetAssets", error.ToString(), "OK");
+                    return;
+                }
+
+                StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, m_resourcePreview));
+                m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
+            });
+
+        }
+
+        private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)
+        {
+            Editor.IsBusy = true;
+            m_project.Delete(e.ProjectItems);
+        }
+
+        private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
+        {
+            m_projectTree.SelectedFolder = e.ProjectItem;
+        }
+
+        private void OnProjectResourcesRenamed(object sender, ProjectTreeRenamedEventArgs e)
+        {
+            m_projectTree.UpdateProjectItem(e.ProjectItem);
+
+            Editor.IsBusy = true;
+            m_project.Rename(e.ProjectItem, e.OldName);
+        }
+
+        private void OnProjectTreeItemRenamed(object sender, ProjectTreeRenamedEventArgs e)
+        {
+            Editor.IsBusy = true;
+            m_project.Rename(e.ProjectItem, e.OldName);
+        }
+
+        private void OnProjectTreeItemDeleted(object sender, ProjectTreeEventArgs e)
+        {
+            Editor.IsBusy = true;
+            m_project.Delete(e.ProjectItems);
         }
 
         private void OnCreate(int index)
         {
-            if(m_ddCreate.value != 0)
+            if (m_ddCreate.value != 0)
             {
-                if(m_ddCreate.value == 1)
+                if (m_ddCreate.value == 1)
                 {
                     CreateFolder();
                 }
@@ -297,66 +369,39 @@ namespace Battlehub.RTEditor
                     Editor.IsBusy = true;
                     m_project.Import(assetLibraryImporter.SelectedAssets);
                 },
-                "Cancel", 
+                "Cancel",
                 args =>
                 {
-
+                    if(assetLibraryImporter.AssetLibraryRoot != null)
+                    {
+                        m_project.UnloadImportItems(assetLibraryImporter.AssetLibraryRoot);
+                    }
+                    
                 });
         }
 
-   
-        private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)
+        private void ManageProjects()
         {
-            ShowProgress = true;
-            m_project.GetAssetItems(e.NewItems, (error, assets) =>
-            {
-                ShowProgress = false;
-                if (error.HasError)
+            ProjectsDialog project = Instantiate(m_projectsDialogPrefab);
+            project.transform.position = Vector3.zero;
+
+            PopupWindow.Show("Projects", project.transform, "Open", 
+                args =>
                 {
-                    PopupWindow.Show("Can't GetAssets", error.ToString(), "OK");
-                    return;
-                }
-
-                StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, m_resourcePreview));
-                m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
-            });
-
-        }
-
-        private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)
-        {
-            Editor.IsBusy = true;
-            m_project.Delete(e.ProjectItems);
-        }
-
-        //private void OnProjectResourcesDrop(object sender, ProjectTreeEventArgs e)
-        //{
-        //    m_projectTree.ChangeParent(e.ProjectItems);
-        //}
-
-        private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
-        {
-            m_projectTree.SelectedFolder = e.ProjectItem;
-        }
-
-        private void OnProjectResourcesRenamed(object sender, ProjectTreeRenamedEventArgs e)
-        {
-            m_projectTree.UpdateProjectItem(e.ProjectItem);
-
-            Editor.IsBusy = true;
-            m_project.Rename(e.ProjectItem, e.OldName);
-        }
-
-        private void OnProjectTreeItemRenamed(object sender, ProjectTreeRenamedEventArgs e)
-        {
-            Editor.IsBusy = true;
-            m_project.Rename(e.ProjectItem, e.OldName);
-        }
-
-        private void OnProjectTreeItemDeleted(object sender, ProjectTreeEventArgs e)
-        {
-            Editor.IsBusy = true;
-            m_project.Delete(e.ProjectItems);
+                    ProjectInfo selectedProject = project.SelectedProject;
+                    if (selectedProject == null)
+                    {
+                        args.Cancel = true;
+                    }
+                    else
+                    {
+                        ShowProgress = true;
+                        Editor.IsBusy = true;
+                        m_project.OpenProject(selectedProject.Name);
+                        
+                    }
+                },
+                "Cancel");
         }
     }
 }

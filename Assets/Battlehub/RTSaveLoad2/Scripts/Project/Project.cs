@@ -17,11 +17,12 @@ namespace Battlehub.RTSaveLoad2
     /// </summary>
     public class Project : MonoBehaviour, IProject
     {
+        public event ProjectEventHandler NewSceneCreated;
         public event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
         public event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
         public event ProjectEventHandler<string> DeleteProjectCompleted;
         public event ProjectEventHandler<ProjectInfo[]> ListProjectsCompleted;
-        public event ProjectEventHandler Closed;
+        public event ProjectEventHandler CloseProjectCompleted;
 
         public event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         public event ProjectEventHandler<AssetItem> CreateCompleted;
@@ -243,6 +244,25 @@ namespace Battlehub.RTSaveLoad2
             return ".rt" + type.Name.ToLower().Substring(0, 3);
         }
 
+        public void CreateNewScene()
+        {
+            GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+            for (int i = 0; i < rootGameObjects.Length; ++i)
+            {
+                GameObject rootGO = rootGameObjects[i];
+                if (rootGO.GetComponent<RTSL2Ignore>())
+                {
+                    continue;
+                }
+
+                Destroy(rootGO);
+            }
+
+            if(NewSceneCreated != null)
+            {
+                NewSceneCreated(new Error(Error.OK));
+            }
+        }
 
         /// <summary>
         /// Create Project
@@ -282,7 +302,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation<ProjectInfo[]> ListProjects(ProjectEventHandler<ProjectInfo[]> callback = null)
+        public ProjectAsyncOperation<ProjectInfo[]> GetProjects(ProjectEventHandler<ProjectInfo[]> callback = null)
         {
             if (IsBusy)
             {
@@ -290,7 +310,7 @@ namespace Battlehub.RTSaveLoad2
             }
             IsBusy = true;
             ProjectAsyncOperation<ProjectInfo[]> pao = new ProjectAsyncOperation<ProjectInfo[]>();
-            m_storage.ListProjects((error, projects) =>
+            m_storage.GetProjects((error, projects) =>
             {
                 IsBusy = false;
                 if (callback != null)
@@ -358,9 +378,11 @@ namespace Battlehub.RTSaveLoad2
             m_projectInfo = null;
             m_root = null;
 
-            if(Closed != null)
+            CreateNewScene();
+
+            if (CloseProjectCompleted != null)
             {
-                Closed(new Error(Error.OK));
+                CloseProjectCompleted(new Error(Error.OK));
             }
         }
 
@@ -389,6 +411,11 @@ namespace Battlehub.RTSaveLoad2
 
         private ProjectAsyncOperation<ProjectInfo> _Open(string project, ProjectEventHandler<ProjectInfo> callback)
         {
+            if(m_projectInfo != null)
+            {
+                CreateNewScene();
+            }
+
             UnloadUnregisterDestroy();
 
             m_projectInfo = null;
@@ -2466,7 +2493,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation<string[]> ListAssetBundles(ProjectEventHandler<string[]> callback = null)
+        public ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null)
         {
             if (m_root == null)
             {
@@ -2479,7 +2506,7 @@ namespace Battlehub.RTSaveLoad2
             IsBusy = true;
 
             ProjectAsyncOperation<string[]> pao = new ProjectAsyncOperation<string[]>();
-            IOC.Resolve<IAssetBundleLoader>().ListAssetBundles(result =>
+            IOC.Resolve<IAssetBundleLoader>().GetAssetBundles(result =>
             {
                 IsBusy = false;
 

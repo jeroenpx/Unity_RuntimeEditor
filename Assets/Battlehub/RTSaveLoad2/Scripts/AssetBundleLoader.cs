@@ -9,13 +9,13 @@ namespace Battlehub.RTSaveLoad2
     public delegate void ListAssetBundlesHandler(string[] bundleNames);
     public interface IAssetBundleLoader
     {
-        void ListAssetBundles(ListAssetBundlesHandler assetBundles);
+        void GetAssetBundles(ListAssetBundlesHandler assetBundles);
         void Load(string name, LoadAssetBundleHandler callback);
     }
 
     public class AssetBundleLoader : IAssetBundleLoader
     {
-        public void ListAssetBundles(ListAssetBundlesHandler callback)
+        public void GetAssetBundles(ListAssetBundlesHandler callback)
         {
             List<string> result = new List<string>();
 
