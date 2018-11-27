@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -21,9 +20,11 @@ namespace Battlehub.UIControls.DockPanels
 
     public delegate void TabEventArgs<T>(Tab sender, T args);
 
-    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
     {
         public event TabEventArgs<bool> Toggle;
+        public event TabEventArgs<PointerEventData> PointerDown;
+        public event TabEventArgs<PointerEventData> PointerUp;
         public event TabEventArgs<PointerEventData> BeginDrag;
         public event TabEventArgs<PointerEventData> Drag;
         public event TabEventArgs<PointerEventData> EndDrag;
@@ -61,8 +62,14 @@ namespace Battlehub.UIControls.DockPanels
             set { m_toggle.isOn = value; }
         }
 
+        public int Index
+        {
+            get { return transform.GetSiblingIndex(); }
+        }
+
         private void Awake()
         {
+
             m_toggle.onValueChanged.AddListener(OnToggleValueChanged);
         }
 
@@ -106,6 +113,24 @@ namespace Battlehub.UIControls.DockPanels
             if(EndDrag != null)
             {
                 EndDrag(this, eventData);
+            }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            Debug.Log("PointerDown");
+            if(PointerDown != null)
+            {
+                PointerDown(this, eventData);
+            }
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            Debug.Log("PointerUp");
+            if(PointerUp != null)
+            {
+                PointerUp(this, eventData);
             }
         }
     }
