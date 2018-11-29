@@ -113,23 +113,17 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void ExpandAll(ProjectItem root)
+        private void ExpandAll(ProjectItem item)
         {
-            Queue<ProjectItem> q = new Queue<ProjectItem>();
-            q.Enqueue(root);
-            while(q.Count > 0)
+            if (item.Children != null)
             {
-                ProjectItem item = q.Dequeue();
                 m_treeView.Expand(item);
 
-                if (item.Children != null)
+                foreach (ProjectItem child in item.Children)
                 {
-                    for (int i = 0; i < item.Children.Count; ++i)
-                    {
-                        q.Enqueue(item.Children[i]);
-                    }
+                    ExpandAll(child);
                 }
-            }            
+            }
         }
 
         private void OnDestroy()

@@ -552,14 +552,13 @@ namespace Battlehub.UIControls
         public void Collapse(object item)
         {
             VirtualizingTreeViewItem tvi = GetTreeViewItem(item);
-            if(tvi != null)
+            if (tvi != null)
             {
                 tvi.IsExpanded = false;
             }
             else
             {
-                TreeViewItemContainerData containerData = (TreeViewItemContainerData)GetItemContainerData(item);
-                containerData.IsExpanded = false;
+                Internal_Collapse(item);
             }
         }
 

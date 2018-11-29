@@ -18,6 +18,7 @@ namespace Battlehub.UIControls.DockPanels
         }
     }
 
+    public delegate void TabEventArgs(Tab sender);
     public delegate void TabEventArgs<T>(Tab sender, T args);
 
     public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
@@ -28,7 +29,17 @@ namespace Battlehub.UIControls.DockPanels
         public event TabEventArgs<PointerEventData> BeginDrag;
         public event TabEventArgs<PointerEventData> Drag;
         public event TabEventArgs<PointerEventData> EndDrag;
+        public event TabEventArgs Close;
 
+        private Region m_parentRegion;
+
+        [SerializeField]
+        private TabPreview m_tabPreviewPrefab;
+        private TabPreview m_tabPreview;
+
+        [SerializeField]
+        private CanvasGroup m_canvasGroup;
+        
         [SerializeField]
         private Image m_img;
 
@@ -37,6 +48,9 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private Toggle m_toggle;
+
+        [SerializeField]
+        private Button m_closeButton;
 
         public Sprite Icon
         {
@@ -67,10 +81,24 @@ namespace Battlehub.UIControls.DockPanels
             get { return transform.GetSiblingIndex(); }
         }
 
+        public Vector3 Position
+        {
+            get { return m_tabPreview.transform.position; }
+            set { m_tabPreview.transform.position = value; }
+        }
+        
         private void Awake()
         {
-
             m_toggle.onValueChanged.AddListener(OnToggleValueChanged);
+            if(m_closeButton != null)
+            {
+                m_closeButton.onClick.AddListener(OnCloseButtonClick);
+            }
+        }
+
+        private void Start()
+        {
+            m_parentRegion = GetComponentInParent<Region>();
         }
 
         private void OnDestroy()
@@ -78,6 +106,11 @@ namespace Battlehub.UIControls.DockPanels
             if(m_toggle != null)
             {
                 m_toggle.onValueChanged.RemoveListener(OnToggleValueChanged);
+            }
+
+            if (m_closeButton != null)
+            {
+                m_closeButton.onClick.RemoveListener(OnCloseButtonClick);
             }
         }
 
@@ -89,50 +122,70 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        public void OnBeginDrag(PointerEventData eventData)
+        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            Debug.Log("BeginDrag");
-            if(BeginDrag != null)
+            m_tabPreview = Instantiate(m_tabPreviewPrefab, m_parentRegion.PreviewPanel);
+
+            RectTransform previewTransform = (RectTransform)m_tabPreview.transform;
+            RectTransform rt = (RectTransform)transform;
+            previewTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rt.rect.width);
+            previewTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rt.rect.height);
+            previewTransform.position = Position;
+
+            m_tabPreview.Icon = Icon;
+            m_tabPreview.Text = Text;
+
+            m_canvasGroup.alpha = 0;
+
+            if (BeginDrag != null)
             {
                 BeginDrag(this, eventData);
             }
         }
 
-        public void OnDrag(PointerEventData eventData)
+        void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            Debug.Log("Drag");
             if(Drag != null)
             {
                 Drag(this, eventData);
             }
         }
 
-        public void OnEndDrag(PointerEventData eventData)
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
-            Debug.Log("EndDrag");
-            if(EndDrag != null)
+            Destroy(m_tabPreview.gameObject);
+            m_tabPreview = null;
+
+            m_canvasGroup.alpha = 1;
+
+            if (EndDrag != null)
             {
                 EndDrag(this, eventData);
             }
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            Debug.Log("PointerDown");
             if(PointerDown != null)
             {
                 PointerDown(this, eventData);
             }
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            Debug.Log("PointerUp");
             if(PointerUp != null)
             {
                 PointerUp(this, eventData);
             }
         }
-    }
 
+        private void OnCloseButtonClick()
+        {
+            if(Close != null)
+            {
+                Close(this);
+            }
+        }
+    }
 }
