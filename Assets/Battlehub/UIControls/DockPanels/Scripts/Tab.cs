@@ -79,14 +79,26 @@ namespace Battlehub.UIControls.DockPanels
         public int Index
         {
             get { return transform.GetSiblingIndex(); }
+            set { transform.SetSiblingIndex(value); }
         }
 
-        public Vector3 Position
+        public Vector3 PreviewPosition
         {
             get { return m_tabPreview.transform.position; }
             set { m_tabPreview.transform.position = value; }
         }
-        
+
+        public bool IsPreviewContentActive
+        {
+            get { return m_tabPreview.IsContentActive; }
+            set { m_tabPreview.IsContentActive = value; }
+        }
+
+        public Vector2 PreviewContentSize
+        {
+            set { m_tabPreview.ContentSize = value; }
+        }
+
         private void Awake()
         {
             m_toggle.onValueChanged.AddListener(OnToggleValueChanged);
@@ -128,10 +140,10 @@ namespace Battlehub.UIControls.DockPanels
 
             RectTransform previewTransform = (RectTransform)m_tabPreview.transform;
             RectTransform rt = (RectTransform)transform;
+            PreviewPosition = rt.position;
             previewTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rt.rect.width);
             previewTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rt.rect.height);
-            previewTransform.position = Position;
-
+            
             m_tabPreview.Icon = Icon;
             m_tabPreview.Text = Text;
 
@@ -166,6 +178,8 @@ namespace Battlehub.UIControls.DockPanels
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
+            m_toggle.isOn = true;
+
             if(PointerDown != null)
             {
                 PointerDown(this, eventData);

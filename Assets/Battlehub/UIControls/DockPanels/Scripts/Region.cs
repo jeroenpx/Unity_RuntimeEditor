@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +21,7 @@ namespace Battlehub.UIControls.DockPanels
 
     public class Region : MonoBehaviour, IPointerDownHandler
     {
+        private static int m_regionDebugId;
         public static event RegionEventArgs Selected;
         public static event RegionEventArgs Unselected;
 
@@ -27,7 +30,7 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private ToggleGroup m_tabPanel;
-
+        
         [SerializeField]
         private Transform m_contentPanel;
 
@@ -35,8 +38,8 @@ namespace Battlehub.UIControls.DockPanels
         private RectTransform m_childrenPanel;
 
         [SerializeField]
-        private Transform m_previewPanel;
-        public Transform PreviewPanel
+        private RectTransform m_previewPanel;
+        public RectTransform PreviewPanel
         {
             get { return m_previewPanel; }
         }
@@ -91,6 +94,11 @@ namespace Battlehub.UIControls.DockPanels
                 }
             }
         }
+
+        private Vector2 m_beginDragTabPos;
+        private RectTransform m_pointerOverTab;
+        private bool m_isFree = false;
+        private RegionSplitType m_splitType;
 
         protected virtual void Awake()
         {
@@ -200,10 +208,12 @@ namespace Battlehub.UIControls.DockPanels
             Tab tab = m_tabPanel.transform.GetChild(index).GetComponent<Tab>();
             Unsubscribe(tab, this);
 
+            bool destroy = m_tabPanel.transform.childCount == 1 && targetRegion != this;
+
             Transform content = m_contentPanel.transform.GetChild(index);
             targetRegion.Insert(targetIndex, tab, content, targetSplitType);
 
-            if(m_tabPanel.transform.childCount == 0)
+            if(destroy)
             {
                 Destroy(gameObject);
             }
@@ -282,7 +292,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             content.SetParent(m_contentPanel, false);
 
-            tab.transform.SetParent(m_tabPanel.transform);
+            tab.transform.SetParent(m_tabPanel.transform, false);
             tab.transform.SetSiblingIndex(index);
             tab.ToggleGroup = m_tabPanel;
 
@@ -293,29 +303,29 @@ namespace Battlehub.UIControls.DockPanels
         private void SplitTop(Tab tab, Transform content)
         {
             CreateVerticalLayoutGroup();
-            CreateVerticalRegion(tab, content);
-            MoveContentsToChildRegion();
+            CreateHorizontalRegion(tab, content);
+            MoveContentsToChildRegion(tab);
         }
 
         private void SplitBottom(Tab tab, Transform content)
         {
             CreateVerticalLayoutGroup();
-            MoveContentsToChildRegion();
-            CreateVerticalRegion(tab, content);
+            MoveContentsToChildRegion(tab);
+            CreateHorizontalRegion(tab, content);
         }
 
         private void SplitLeft(Tab tab, Transform content)
         {
             CreateHorizontalLayoutGroup();
-            CreateHorizontalRegion(tab, content);
-            MoveContentsToChildRegion();
+            CreateVerticalRegion(tab, content);
+            MoveContentsToChildRegion(tab);
         }
 
         private void SplitRight(Tab tab, Transform content)
         {
             CreateHorizontalLayoutGroup();
-            MoveContentsToChildRegion();
-            CreateHorizontalRegion(tab, content);
+            MoveContentsToChildRegion(tab);
+            CreateVerticalRegion(tab, content);
         }
 
         private void CreateVerticalLayoutGroup()
@@ -336,11 +346,11 @@ namespace Battlehub.UIControls.DockPanels
             lg.childForceExpandWidth = false;
         }
 
-        private void CreateVerticalRegion(Tab tab, Transform content)
+        private void CreateHorizontalRegion(Tab tab, Transform content)
         {
             Rect rect = m_childrenPanel.rect;
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
-            region.name = "Region";
+            region.name = "Region " + m_regionDebugId++;
          
             region.m_layoutElement.preferredHeight = rect.height / 3;
             region.m_layoutElement.preferredWidth = -1;
@@ -349,11 +359,11 @@ namespace Battlehub.UIControls.DockPanels
             region.Insert(0, tab, content);
         }
 
-        private void CreateHorizontalRegion(Tab tab, Transform content)
+        private void CreateVerticalRegion(Tab tab, Transform content)
         {
             Rect rect = m_childrenPanel.rect;
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
-            region.name = "Region";
+            region.name = "Region " + m_regionDebugId++;
 
             region.m_layoutElement.preferredWidth = rect.width / 3;
             region.m_layoutElement.preferredHeight = -1;
@@ -362,10 +372,10 @@ namespace Battlehub.UIControls.DockPanels
             region.Insert(0, tab, content);
         }
 
-        private void MoveContentsToChildRegion()
+        private void MoveContentsToChildRegion(Tab exceptTab)
         {
             Region childRegion = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
-            childRegion.name = "Region";
+            childRegion.name = "Region " + m_regionDebugId++;
             childRegion.m_layoutElement.preferredWidth = -1;
             childRegion.m_layoutElement.preferredHeight = -1;
             childRegion.m_layoutElement.flexibleWidth = 1;
@@ -376,6 +386,10 @@ namespace Battlehub.UIControls.DockPanels
             for (int i = 0; i < tabs.Length; ++i)
             {                
                 Tab tab = tabs[i];
+                if(tab == exceptTab)
+                {
+                    continue;
+                }
                 Unsubscribe(tab, this);
                 Subscribe(tab, childRegion);
                 
@@ -383,7 +397,13 @@ namespace Battlehub.UIControls.DockPanels
                 tab.ToggleGroup = childRegion.m_tabPanel;
 
                 contents[i].transform.SetParent(childRegion.m_contentPanel, false);
-            }   
+            }
+
+            Tab selectTab = tabs.Where(tab => tab != exceptTab).OrderBy(t => t.Index).FirstOrDefault();
+            if(selectTab != null)
+            {
+                selectTab.IsOn = true;
+            }
         }
 
 
@@ -407,21 +427,229 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabClose(Tab sender)
         {
-            RemoveAt(sender.transform.GetSiblingIndex());
+            RemoveAt(sender.Index);
         }
 
         private void OnTabBeginDrag(Tab sender, PointerEventData args)
         {
-   
+            Vector2 tabScreenPos = RectTransformUtility.WorldToScreenPoint(args.pressEventCamera, sender.PreviewPosition);
+            RectTransform tabPanelRT = (RectTransform)m_tabPanel.transform;
+            Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(tabPanelRT, tabScreenPos, args.pressEventCamera, out m_beginDragTabPos));
+
+            m_pointerOverTab = null;
+            m_isFree = false;
+            m_splitType = RegionSplitType.None;
         }
 
         private void OnTabDrag(Tab sender, PointerEventData args)
         {
-            sender.Position = args.position;
+            Vector2 localPoint;
+            RectTransform tabPanelRT = (RectTransform)m_tabPanel.transform;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(tabPanelRT, args.position, args.pressEventCamera, out localPoint))
+            {
+                Rect tabPanelRect = tabPanelRT.rect;
+                tabPanelRect.yMax *= 2.0f;
+                tabPanelRect.yMin *= 2.0f;
+                if (tabPanelRect.Contains(localPoint))
+                {
+                    localPoint.y = m_beginDragTabPos.y;
+                    sender.PreviewPosition = tabPanelRT.TransformPoint(localPoint);
+                    SetTabSiblingIndex(sender, args, localPoint);
+
+                    m_isFree = false;
+                    m_splitType = RegionSplitType.None;
+                    sender.IsPreviewContentActive = false;
+                }
+                else
+                {
+                    SetMaxTabSiblingIndex(sender);
+                    DragOutsideOfTabPanel(sender, args);
+                }
+            }
+            else
+            {
+                SetMaxTabSiblingIndex(sender);
+                DragOutsideOfTabPanel(sender, args);
+            }
+
+        }
+
+        private void DragOutsideOfTabPanel(Tab tab, PointerEventData args)
+        {
+            Vector2 localPoint;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_previewPanel, args.position, args.pressEventCamera, out localPoint))
+            {
+                RegionSplitType splitType = RegionSplitType.None;
+                bool isFree = false;
+
+                float w = m_previewPanel.rect.width;
+                float h = m_previewPanel.rect.height;
+
+                localPoint.y = -localPoint.y;
+
+                Debug.Log("LocalPoint " + localPoint);
+
+                if (w / 3 <= localPoint.x && localPoint.x <= 2 * w / 3 && 
+                    h / 3 <= localPoint.y && localPoint.y <= 2 * h / 3 ||
+                    m_tabPanel.transform.childCount == 1)
+                {
+                    Vector3 worldPoint;
+                    if (RectTransformUtility.ScreenPointToWorldPointInRectangle(m_previewPanel, args.position, args.pressEventCamera, out worldPoint))
+                    {
+                        //floating window 
+                        tab.PreviewPosition = worldPoint;
+                        tab.IsPreviewContentActive = true;
+
+                        isFree = true;
+                        splitType = RegionSplitType.None;
+                    }
+                }
+                else
+                {
+                    isFree = false;
+
+                    float x = localPoint.x;
+                    float y = (w / h) * localPoint.y;
+                    float wy = w - y;
+
+                    Debug.Log(x + "," + y + "," + wy + ", x > y ? " + (x > y) + ", x > wy ? " + (x > wy));
+
+                    if(x > y && x > wy)
+                    {
+                        splitType = RegionSplitType.Right;
+                    }
+                    else if(x < y && x < wy)
+                    {
+                        splitType = RegionSplitType.Left;
+                    }
+                    else if (x < y && x > wy)
+                    {
+                        splitType = RegionSplitType.Bottom;
+                    }
+                    else
+                    {
+                        splitType = RegionSplitType.Top;
+                    }
+
+                    Debug.Log(splitType);
+                }
+
+                if(m_isFree != isFree || m_splitType != splitType)
+                {
+                    tab.IsPreviewContentActive = true;
+                    m_isFree = isFree;
+                    m_splitType = splitType;
+
+                    if(m_isFree)
+                    {
+                        tab.PreviewContentSize = new Vector2(w / 3, h / 3);
+                    }
+                    else
+                    {
+                        RectTransform tabTransform = (RectTransform)tab.transform;
+                        Vector2 pivot = Vector2.Scale(new Vector2(tabTransform.rect.width, -tabTransform.rect.height), tabTransform.pivot);
+                        Debug.Log(tabTransform.anchoredPosition);
+                        switch (splitType)
+                        {
+                            case RegionSplitType.Top:
+                                tab.PreviewPosition = m_previewPanel.TransformPoint(pivot);
+                                tab.PreviewContentSize = new Vector2(w, h / 3);
+                                break;
+                            case RegionSplitType.Bottom:
+                                tab.PreviewPosition = m_previewPanel.TransformPoint(pivot - new Vector2(0, 2 * h / 3));
+                                tab.PreviewContentSize = new Vector2(w, h / 3);
+                                break;
+                            case RegionSplitType.Left:
+                                tab.PreviewPosition = m_previewPanel.TransformPoint(pivot + new Vector2(0, 0));
+                                tab.PreviewContentSize = new Vector2(w / 3, h);
+                                break;
+                            case RegionSplitType.Right:
+                                tab.PreviewPosition = m_previewPanel.TransformPoint(pivot + new Vector2(2 * w / 3, 0));
+                                tab.PreviewContentSize = new Vector2(w / 3, h);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SetTabSiblingIndex(Tab tab, PointerEventData args, Vector2 localPoint)
+        {
+            Transform contentTransform = m_contentPanel.GetChild(tab.Index);
+            foreach (RectTransform childRT in m_tabPanel.transform)
+            {
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(childRT, args.position, args.pressEventCamera, out localPoint))
+                {
+                    if (childRT.rect.Contains(localPoint))
+                    {
+                        if (childRT != m_pointerOverTab)
+                        {
+                            m_pointerOverTab = childRT;
+
+                            Tab pointerOverTab = m_pointerOverTab.GetComponent<Tab>();
+                            int index = pointerOverTab.Index;
+                            tab.Index = index;
+                            tab.IsPreviewContentActive = false;
+
+                            contentTransform.SetSiblingIndex(index);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SetMaxTabSiblingIndex(Tab tab)
+        {
+            if (m_pointerOverTab != null)
+            {
+                Transform contentTransform = m_contentPanel.GetChild(tab.Index);
+                tab.transform.SetSiblingIndex(m_tabPanel.transform.childCount - 1);
+                contentTransform.SetSiblingIndex(m_tabPanel.transform.childCount - 1);
+                m_pointerOverTab = null;
+            }
         }
 
         private void OnTabEndDrag(Tab sender, PointerEventData args)
         {
+            if (m_isFree)
+            {
+                Debug.Log("Set free");
+            }
+            else
+            {
+                if(m_splitType != RegionSplitType.None)
+                {
+                    Move(sender.Index, 0, this, m_splitType);
+                }
+            }
+
+            m_pointerOverTab = null;
+            m_isFree = false;
+            m_splitType = RegionSplitType.None;
+        }
+
+        private List<RaycastResult> m_raycastResults = new List<RaycastResult>();
+        private Region GetRegion(PointerEventData args)
+        {
+            m_raycastResults.Clear();
+            m_root.Raycaster.Raycast(args, m_raycastResults);
+            Region region = null;
+            for(int i = 0; i < m_raycastResults.Count; ++i)
+            {
+                RaycastResult result = m_raycastResults[i];
+                region = result.gameObject.GetComponent<Region>();
+                if(region != null)
+                {
+                    break;
+                }
+            }
+
+
+            if(region == null)
+            {
+                region = m_root.RootRegion;
+            }
+            return region;
         }
     }
 }

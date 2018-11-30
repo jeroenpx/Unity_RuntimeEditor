@@ -14,7 +14,6 @@ namespace Battlehub.UIControls.DockPanels
         [SerializeField]
         private RectTransform m_contentPart;
 
-
         public Sprite Icon
         {
             get { return m_img.sprite; }
@@ -27,10 +26,24 @@ namespace Battlehub.UIControls.DockPanels
             set { m_text.text = value; }
         }
 
+        public bool IsContentActive
+        {
+            get { return m_contentPart.gameObject.activeSelf; }
+            set { m_contentPart.gameObject.SetActive(value); }
+        }
+
+        public Vector2 ContentSize
+        {
+            set
+            {
+                m_contentPart.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
+                m_contentPart.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
+            }
+        }
 
         private void Awake()
         {
-            
+            IsContentActive = false;
         }
 
     }
