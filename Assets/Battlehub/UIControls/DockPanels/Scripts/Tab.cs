@@ -31,7 +31,7 @@ namespace Battlehub.UIControls.DockPanels
         public event TabEventArgs<PointerEventData> EndDrag;
         public event TabEventArgs Close;
 
-        private Region m_parentRegion;
+        private DockPanelsRoot m_root;
 
         [SerializeField]
         private TabPreview m_tabPreviewPrefab;
@@ -51,6 +51,8 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private Button m_closeButton;
+
+        private RectTransform m_rt;
 
         public Sprite Icon
         {
@@ -96,11 +98,16 @@ namespace Battlehub.UIControls.DockPanels
 
         public Vector2 PreviewContentSize
         {
-            set { m_tabPreview.ContentSize = value; }
+            set
+            {
+                m_tabPreview.MaxWidth = m_rt.rect.width; 
+                m_tabPreview.Size = value;
+            }
         }
 
         private void Awake()
         {
+            m_rt = (RectTransform)transform;
             m_toggle.onValueChanged.AddListener(OnToggleValueChanged);
             if(m_closeButton != null)
             {
@@ -110,7 +117,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Start()
         {
-            m_parentRegion = GetComponentInParent<Region>();
+            m_root = GetComponentInParent<DockPanelsRoot>();
         }
 
         private void OnDestroy()
@@ -136,7 +143,7 @@ namespace Battlehub.UIControls.DockPanels
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            m_tabPreview = Instantiate(m_tabPreviewPrefab, m_parentRegion.PreviewPanel);
+            m_tabPreview = Instantiate(m_tabPreviewPrefab, m_root.RootRegion.PreviewPanel);
 
             RectTransform previewTransform = (RectTransform)m_tabPreview.transform;
             RectTransform rt = (RectTransform)transform;

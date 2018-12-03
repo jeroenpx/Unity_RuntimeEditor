@@ -14,6 +14,9 @@ namespace Battlehub.UIControls.DockPanels
         [SerializeField]
         private RectTransform m_contentPart;
 
+        [SerializeField]
+        private RectTransform m_rt;
+
         public Sprite Icon
         {
             get { return m_img.sprite; }
@@ -32,17 +35,30 @@ namespace Battlehub.UIControls.DockPanels
             set { m_contentPart.gameObject.SetActive(value); }
         }
 
-        public Vector2 ContentSize
+        private float m_maxWidth;
+        public float MaxWidth
+        {
+            set { m_maxWidth = value; }
+        }
+
+        public Vector2 Size
         {
             set
             {
                 m_contentPart.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
                 m_contentPart.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
+                m_rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Min(value.x, m_maxWidth));
             }
         }
 
+
         private void Awake()
         {
+            if(m_rt == null)
+            {
+                m_rt = (RectTransform)transform;
+            }
+
             IsContentActive = false;
         }
 
