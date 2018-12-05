@@ -69,7 +69,15 @@ namespace Battlehub.UIControls.DockPanels
         public ToggleGroup ToggleGroup
         {
             get { return m_toggle.group; }
-            set { m_toggle.group = value; }
+            set
+            {
+                if(m_toggle.group)
+                {
+                    m_toggle.group.UnregisterToggle(m_toggle);
+                }
+
+                m_toggle.group = value;
+            }
         }
 
         public bool IsOn
@@ -184,7 +192,7 @@ namespace Battlehub.UIControls.DockPanels
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
-        {
+        {            
             m_toggle.isOn = true;
 
             if(PointerDown != null)
