@@ -317,40 +317,76 @@ namespace Battlehub.UIControls.DockPanels
             tab.IsOn = true;
         }
 
+        private void Stretch(Transform transform)
+        {
+            RectTransform rt = (RectTransform)transform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+        }
+
         private void SplitTop(Tab tab, Transform content)
         {
-            CreateVerticalLayoutGroup(this);
-            Region region = CreateHorizontalRegion(tab, content);
+            tab.transform.SetParent(m_root.transform);
+            content.transform.SetParent(m_root.transform);
+
             MoveContentsToChildRegion();
+            Region region = CreateHorizontalRegion(tab, content);
+
+            CreateVerticalLayoutGroup(this);
 
             region.transform.SetSiblingIndex(0);
+
+            Stretch(content);
         }
 
         private void SplitBottom(Tab tab, Transform content)
         {
-            CreateVerticalLayoutGroup(this);
-            Region region = CreateHorizontalRegion(tab, content);
+            tab.transform.SetParent(m_root.transform);
+            content.transform.SetParent(m_root.transform);
+
             MoveContentsToChildRegion();
 
-            region.transform.SetSiblingIndex(1);   
+            Region region = CreateHorizontalRegion(tab, content);
+
+            CreateVerticalLayoutGroup(this);
+
+            region.transform.SetSiblingIndex(1);
+
+            Stretch(content);
         }
 
         private void SplitLeft(Tab tab, Transform content)
         {
-            CreateHorizontalLayoutGroup(this);
-            Region region = CreateVerticalRegion(tab, content);
+            tab.transform.SetParent(m_root.transform);
+            content.transform.SetParent(m_root.transform);
+
             MoveContentsToChildRegion();
 
+            Region region = CreateVerticalRegion(tab, content);
+
+            CreateHorizontalLayoutGroup(this);
+
             region.transform.SetSiblingIndex(0);
+
+            Stretch(content);
         }
 
         private void SplitRight(Tab tab, Transform content)
         {
-            CreateHorizontalLayoutGroup(this);
-            Region region = CreateVerticalRegion(tab, content);
+            tab.transform.SetParent(m_root.transform);
+            content.transform.SetParent(m_root.transform);
+
             MoveContentsToChildRegion();
 
+            Region region = CreateVerticalRegion(tab, content);
+
+            CreateHorizontalLayoutGroup(this);
+
             region.transform.SetSiblingIndex(1);
+
+            Stretch(content);
         }
 
         private static void CreateVerticalLayoutGroup(Region region)
