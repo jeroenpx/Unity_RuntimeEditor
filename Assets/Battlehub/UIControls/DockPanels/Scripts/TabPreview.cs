@@ -41,6 +41,14 @@ namespace Battlehub.UIControls.DockPanels
             set { m_maxWidth = value; }
         }
 
+        public Vector2 HeaderSize
+        {
+            get
+            {
+                return m_rt.rect.size;
+            }
+        }
+
         public Vector2 Size
         {
             set

@@ -104,6 +104,11 @@ namespace Battlehub.UIControls.DockPanels
             set { m_tabPreview.IsContentActive = value; }
         }
 
+        public Vector2 PreviewHeaderSize
+        {
+            get { return m_tabPreview.HeaderSize; }
+        }
+
         public Vector2 PreviewContentSize
         {
             set
@@ -151,7 +156,7 @@ namespace Battlehub.UIControls.DockPanels
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            m_tabPreview = Instantiate(m_tabPreviewPrefab, m_root.RootRegion.PreviewPanel);
+            m_tabPreview = Instantiate(m_tabPreviewPrefab, m_root.Preview);
 
             RectTransform previewTransform = (RectTransform)m_tabPreview.transform;
             RectTransform rt = (RectTransform)transform;
@@ -179,16 +184,17 @@ namespace Battlehub.UIControls.DockPanels
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-        {
-            Destroy(m_tabPreview.gameObject);
-            m_tabPreview = null;
-
+        {          
             m_canvasGroup.alpha = 1;
 
             if (EndDrag != null)
             {
                 EndDrag(this, eventData);
             }
+
+            Destroy(m_tabPreview.gameObject);
+            m_tabPreview = null;
+
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)

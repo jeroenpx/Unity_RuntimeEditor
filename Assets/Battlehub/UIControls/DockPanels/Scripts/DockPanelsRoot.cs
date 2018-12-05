@@ -33,6 +33,27 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_rootRegion; }
         }
 
+        [SerializeField]
+        private Transform m_docked;    
+        public Transform Docked
+        {
+            get { return m_docked; }
+        }
+
+        [SerializeField]
+        private Transform m_free;
+        public Transform Free
+        {
+            get { return m_free; }
+        }
+
+        [SerializeField]
+        private RectTransform m_preview;
+        public RectTransform Preview
+        {
+            get { return m_preview; }
+        }
+
         private void Awake()
         {
             if(m_raycaster == null)
@@ -47,6 +68,12 @@ namespace Battlehub.UIControls.DockPanels
             if(m_rootRegion == null)
             {
                 m_rootRegion = GetComponentInChildren<Region>();
+            }
+
+            if(m_rootRegion == null)
+            {
+                m_rootRegion = Instantiate(m_regionPrefab, m_docked);
+                m_rootRegion.name = "Root Region";
             }
 
             Region.Selected += OnRegionSelected;
@@ -66,6 +93,11 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
+            if(m_selectedRegion != null)
+            {
+                m_selectedRegion.IsSelected = false;
+            }
+
             m_selectedRegion = sender;
         }
 
@@ -76,7 +108,10 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            m_selectedRegion = sender;
+            if(m_selectedRegion == sender)
+            {
+                m_selectedRegion = null;
+            }
         }
     }
 
