@@ -21,11 +21,12 @@ namespace Battlehub.UIControls.DockPanels
     public delegate void TabEventArgs(Tab sender);
     public delegate void TabEventArgs<T>(Tab sender, T args);
 
-    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IInitializePotentialDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
     {
         public event TabEventArgs<bool> Toggle;
         public event TabEventArgs<PointerEventData> PointerDown;
         public event TabEventArgs<PointerEventData> PointerUp;
+        public event TabEventArgs<PointerEventData> InitializePotentialDrag;
         public event TabEventArgs<PointerEventData> BeginDrag;
         public event TabEventArgs<PointerEventData> Drag;
         public event TabEventArgs<PointerEventData> EndDrag;
@@ -154,6 +155,14 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
+        {
+            if(InitializePotentialDrag != null)
+            {
+                InitializePotentialDrag(this, eventData);
+            }
+        }
+
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
             m_tabPreview = Instantiate(m_tabPreviewPrefab, m_root.Preview);
@@ -222,5 +231,6 @@ namespace Battlehub.UIControls.DockPanels
                 Close(this);
             }
         }
+
     }
 }

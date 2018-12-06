@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Battlehub.Utils;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
@@ -52,6 +53,12 @@ namespace Battlehub.UIControls.DockPanels
         public RectTransform Preview
         {
             get { return m_preview; }
+        }
+
+        private CursorHelper m_cursorHelper = new CursorHelper();
+        public CursorHelper CursorHelper
+        {
+            get { return m_cursorHelper; }
         }
 
         private void Awake()
