@@ -153,23 +153,44 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public Transform GetDragRegion()
+        {
+            Transform parent = transform;
+
+            while (parent != null)
+            {
+                if (parent.parent == m_root.Free)
+                {
+                    return parent;
+                }
+
+                parent = parent.parent;
+            }
+            return null;
+        }
+
         public bool IsFree()
         {
-            bool isFree = false;
+            if(transform.parent != null)
+            {
+                if(transform.parent.GetComponentInParent<Region>() != null)
+                {
+                    return false;
+                }
+            }
+
             Transform parent = transform;
             while (parent != null)
             {
                 if (parent.parent == m_root.Free)
                 {
-                    m_dragRegion = parent;
-                    isFree = true;
-                    break;
+                    return true;
                 }
 
                 parent = parent.parent;
             }
 
-            return isFree;
+            return false;
         }
 
         public void Add(Sprite icon, string header, Transform content, RegionSplitType splitType = RegionSplitType.None)
@@ -941,14 +962,17 @@ namespace Battlehub.UIControls.DockPanels
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
             m_root.CursorHelper.SetCursor(this, null);
-            bool canBeginDrag = IsFree();
+            m_dragRegion = GetDragRegion();
 
-            if (canBeginDrag)
+            if (m_dragRegion)
             {
                 m_isDragging = RectTransformUtility.ScreenPointToWorldPointInRectangle((RectTransform)m_dragRegion, eventData.position, eventData.pressEventCamera, out m_prevPoint);
                 if (m_isDragging)
                 {
-                    transform.SetSiblingIndex(m_root.Preview.childCount - 1);
+                    if (IsFree())
+                    {
+                        transform.SetSiblingIndex(m_root.Preview.childCount - 1);
+                    }
                 }
             }
         }
