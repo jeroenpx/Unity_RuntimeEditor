@@ -864,10 +864,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Region freeRegion = Instantiate(m_root.RegionPrefab, m_root.Free);
                 freeRegion.name = "Region " + m_regionDebugId++;
-
-                Vector3 screenPos = RectTransformUtility.WorldToScreenPoint(args.pressEventCamera, tab.PreviewPosition);
-                Vector3 worldPos;
-                
+ 
                 RectTransform rt = (RectTransform)freeRegion.transform;
                 RectTransform beginRt = (RectTransform)m_beginDragRegion.transform;
                 Vector2 size = beginRt.rect.size;
@@ -876,6 +873,7 @@ namespace Battlehub.UIControls.DockPanels
                 rt.pivot = new Vector2((tab.PreviewHeaderSize.x * 0.5f) / size.x, 1 - (tab.PreviewHeaderSize.y * 0.5f) / size.y);
                 rt.sizeDelta = size;
 
+                Vector3 worldPos;
                 Debug.Assert(RectTransformUtility.ScreenPointToWorldPointInRectangle(rt, args.position, args.pressEventCamera, out worldPos));
                 freeRegion.transform.position = worldPos;
                 

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Battlehub.RTCommon;
 using Battlehub.Utils;
 using System.Linq;
 
@@ -28,7 +27,7 @@ namespace Battlehub.RTGizmos
                 {
                     return 0;
                 }
-
+                
                 if(m_max)
                 {
                     return m_source.maxDistance;
