@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.UIControls.MenuControl
 {
@@ -41,6 +42,9 @@ namespace Battlehub.UIControls.MenuControl
         private MenuItem m_menuItemPrefab;
 
         [SerializeField]
+        private RectTransform m_anchor;
+
+        [SerializeField]
         private Transform m_panel;
 
         private Transform m_root;
@@ -50,6 +54,37 @@ namespace Battlehub.UIControls.MenuControl
         {
             get { return m_depth; }
             set { m_depth = value; }
+        }
+
+        private MenuItem m_child;
+        public MenuItem Child
+        {
+            get { return m_child; }
+            set
+            {
+                if(m_child != null && m_child != value && m_child.Submenu != null)
+                {
+                    MenuItem oldChild = m_child;
+                    m_child = value;
+                    oldChild.Unselect();
+                }
+                else
+                {
+                    m_child = value;
+                }
+
+                
+            }
+        }
+
+        private MenuItem m_parent;
+        public MenuItem Parent
+        {
+            get { return m_parent; }
+            set
+            {
+                m_parent = value;
+            }
         }
 
         [SerializeField]
@@ -64,7 +99,6 @@ namespace Battlehub.UIControls.MenuControl
             }
         }
 
-        
         private void Awake()
         {
             if(m_panel == null)
@@ -73,32 +107,27 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             m_root = transform.parent;
-
-            DataBind();
         }
 
         private void DataBind()
         {
-            foreach(Transform child in m_panel)
-            {
-                Destroy(child.gameObject);
-            }
+            Clear();
 
             Dictionary<string, MenuItemInfo> pathToItem = new Dictionary<string, MenuItemInfo>();
             Dictionary<string, List<MenuItemInfo>> pathToChildren = new Dictionary<string, List<MenuItemInfo>>();
-            if(m_items != null)
+            if (m_items != null)
             {
-                for(int i = 0; i < m_items.Length; ++i)
+                for (int i = 0; i < m_items.Length; ++i)
                 {
                     MenuItemInfo menuItemInfo = m_items[i];
-                    if(string.IsNullOrEmpty(menuItemInfo.Path))
+                    if (string.IsNullOrEmpty(menuItemInfo.Path))
                     {
                         continue;
                     }
 
                     menuItemInfo.Path = menuItemInfo.Path.Replace("\\", "/");
                     string[] pathParts = menuItemInfo.Path.Split('/');
-                    if(pathParts.Length == m_depth + 1)
+                    if (pathParts.Length == m_depth + 1)
                     {
                         if (string.IsNullOrEmpty(menuItemInfo.Text))
                         {
@@ -110,13 +139,13 @@ namespace Battlehub.UIControls.MenuControl
                     {
                         string path = string.Join("/", pathParts, 0, m_depth + 1);
                         List<MenuItemInfo> childrenList;
-                        if(!pathToChildren.TryGetValue(path, out childrenList))
+                        if (!pathToChildren.TryGetValue(path, out childrenList))
                         {
                             childrenList = new List<MenuItemInfo>();
                             pathToChildren.Add(path, childrenList);
                         }
 
-                        if(!pathToItem.ContainsKey(pathParts[m_depth]))
+                        if (!pathToItem.ContainsKey(pathParts[m_depth]))
                         {
                             pathToItem[pathParts[m_depth]] = new MenuItemInfo
                             {
@@ -125,7 +154,7 @@ namespace Battlehub.UIControls.MenuControl
                             };
                         }
 
-                        if(string.IsNullOrEmpty(menuItemInfo.Text))
+                        if (string.IsNullOrEmpty(menuItemInfo.Text))
                         {
                             menuItemInfo.Text = pathParts[m_depth + 1];
                         }
@@ -134,9 +163,10 @@ namespace Battlehub.UIControls.MenuControl
                 }
             }
 
-            foreach(MenuItemInfo menuItemInfo in pathToItem.Values)
+            foreach (MenuItemInfo menuItemInfo in pathToItem.Values)
             {
                 MenuItem menuItem = Instantiate(m_menuItemPrefab, m_panel, false);
+                menuItem.name = "MenuItem";
                 menuItem.Depth = Depth + 1;
                 menuItem.Root = m_root;
 
@@ -150,10 +180,100 @@ namespace Battlehub.UIControls.MenuControl
             }
         }
 
-        public void Open(Transform anchor, bool alignVertically)
+        private void Clear()
         {
-            DataBind();
+            foreach (Transform child in m_panel)
+            {
+                MenuItem menuItem = child.GetComponent<MenuItem>();
+                Destroy(child.gameObject);
+            }
         }
 
+        public void Open()
+        {
+            if(m_anchor != null)
+            {
+                Vector3[] corners = new Vector3[4];
+                m_anchor.GetWorldCorners(corners);
+                transform.position = corners[0];
+            }
+            
+            DataBind();
+            gameObject.SetActive(true);
+
+            if(m_anchor == null)
+            {
+                Fit();
+            }   
+        }
+
+        private void Fit()
+        {
+            RectTransform rootRT = (RectTransform)m_root;
+            Vector3 position = rootRT.InverseTransformPoint(transform.position);
+
+            Vector2 topLeft = -Vector2.Scale(rootRT.rect.size, rootRT.pivot);
+            RectTransform rt = m_menuItemPrefab.GetComponent<RectTransform>();
+            Vector2 size = new Vector2(rt.rect.width, rt.rect.height * m_panel.childCount);
+
+            if (position.x + size.x  > topLeft.x + rootRT.rect.width)
+            {
+                position.x = position.x - size.x - 3;
+            }
+            else
+            {
+                position.x += 3;
+            }
+
+            if (position.y - size.y < topLeft.y)
+            {
+                position.y -= (position.y - size.y) - topLeft.y;
+            }
+
+            transform.position = rootRT.TransformPoint(position);
+        }
+
+        public void Close()
+        {
+            Clear();
+            gameObject.SetActive(false);
+        }
+
+        private void LateUpdate()
+        {
+            if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+            {
+                if(m_child == null)
+                {
+                    MenuItem parentMenuItem = m_parent;
+                    while (parentMenuItem != null && !parentMenuItem.IsPointerOver)
+                    {
+                        Menu parentMenu = parentMenuItem.GetComponentInParent<Menu>();
+                        parentMenuItem = parentMenu.m_parent;
+                        if (parentMenuItem != null)
+                        {
+                            Destroy(parentMenu.gameObject);
+                        }
+                        else
+                        {
+                            parentMenu.Close();
+                        }
+                    }
+                    
+
+                    if(m_parent == null)
+                    {
+                        Close();
+                    }
+                    else
+                    {
+                        if (!m_parent.IsPointerOver)
+                        {
+                            Destroy(gameObject);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

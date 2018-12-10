@@ -943,7 +943,6 @@ namespace Battlehub.UIControls.DockPanels
             if(region == null)
             {
                 region = m_root.RootRegion;
-                Debug.Log("Root Region");
             }
             
             return region;

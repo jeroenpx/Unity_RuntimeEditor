@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Battlehub.UIControls.MenuControl
 {
+    public delegate void MenuItemEventHandler(MenuItem menuItem);
+
     public class MenuItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField]
@@ -61,7 +64,32 @@ namespace Battlehub.UIControls.MenuControl
             get { return m_children != null && m_children.Length > 0; }
         }
 
+        private bool m_isPointerOver;
+        public bool IsPointerOver
+        {
+            get { return m_isPointerOver; }
+        }
+
         private Menu m_submenu;
+        public Menu Submenu
+        {
+            get { return m_submenu; }
+        }
+
+        private GraphicRaycaster m_raycaster;
+
+        private void Awake()
+        {
+            m_raycaster = GetComponentInParent<GraphicRaycaster>();
+            if(m_raycaster == null)
+            {
+                Canvas canvas = GetComponentInParent<Canvas>();
+                if(canvas != null)
+                {
+                    m_raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
+                }
+            }
+        }
 
         private void OnDestroy()
         {
@@ -111,28 +139,77 @@ namespace Battlehub.UIControls.MenuControl
                     m_item.Action.Invoke();
                 }
             }
+
+
+            Menu menu = GetComponentInParent<Menu>();
+            while(menu.Parent != null)
+            {
+                menu = menu.Parent.GetComponentInParent<Menu>();
+            }
+            menu.Close();
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            m_selection.SetActive(true);
-            if(HasChildren)
-            {
-                m_submenu = Instantiate(m_menuPrefab, m_root, false);
-                m_submenu.Depth = m_depth;
-                m_submenu.Items = Children;
-                m_submenu.transform.position = FindPosition();
-            }
+            Select();
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
+            m_isPointerOver = false;
+            if(m_submenu == null)
+            {
+                Menu menu = GetComponentInParent<Menu>();
+                menu.Child = null;
+                m_selection.SetActive(false);
+            }
+            else
+            {
+                if (!IsPointerOverSubmenu(eventData))
+                {
+                    Unselect();
+                }
+            }
+        }
+
+        public void Select()
+        {
+            m_isPointerOver = true;
+            m_selection.SetActive(true);
+
+            Menu menu = GetComponentInParent<Menu>();
+            menu.Child = this;
+
+            if (HasChildren)
+            {
+                if (m_submenu == null)
+                {
+                    m_submenu = Instantiate(m_menuPrefab, m_root, false);
+                    m_submenu.Parent = this;
+                    m_submenu.name = "Submenu";
+                    m_submenu.Depth = m_depth;
+                    m_submenu.Items = Children;
+                    m_submenu.transform.position = FindPosition();
+                }
+            }
+        }
+
+        public void Unselect()
+        {
+            Menu menu = GetComponentInParent<Menu>();
+            menu.Child = null;
             m_selection.SetActive(false);
-          //  Destroy(m_submenu.gameObject);
+            if (m_submenu != null)
+            {
+                Destroy(m_submenu.gameObject);
+                m_submenu = null;
+            }
         }
 
         private Vector3 FindPosition()
         {
+            const float overlap = 5;
+
             RectTransform rootRT = (RectTransform)m_root;
             RectTransform rt = (RectTransform)transform;
 
@@ -147,11 +224,11 @@ namespace Battlehub.UIControls.MenuControl
             
             if (position.x + size.x + size.x > topLeft.x + rootRT.rect.width)
             {
-                position.x = position.x - size.x;
+                position.x = position.x - size.x + overlap;
             }
             else
             {
-                position.x = position.x + size.x;
+                position.x = position.x + size.x - overlap;
             }            
             
             if (position.y - size.y < topLeft.y)
@@ -160,6 +237,22 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             return rootRT.TransformPoint(position);
+        }
+
+        private bool IsPointerOverSubmenu(PointerEventData eventData)
+        {
+            List<RaycastResult> raycastResultList = new List<RaycastResult>();
+            m_raycaster.Raycast(eventData, raycastResultList);
+            for(int i = 0; i < raycastResultList.Count; ++i)
+            {
+                RaycastResult raycastResult = raycastResultList[i];
+                if(raycastResult.gameObject == m_submenu.gameObject)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
