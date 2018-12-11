@@ -8,6 +8,7 @@ namespace Battlehub.RTEditor
 {
     public interface IRuntimeEditor : IRTE
     {
+        void CreateWindow();
         void SaveScene();
         void OpenScene();
     }
@@ -36,6 +37,12 @@ namespace Battlehub.RTEditor
         protected override void OnDestroy()
         {
             base.OnDestroy();
+        }
+
+        public void CreateWindow()
+        {
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            //windowManager.CreateWindow(windowType, focusIfExists);
         }
 
         public void CloseProject()

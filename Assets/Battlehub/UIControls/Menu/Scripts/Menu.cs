@@ -36,8 +36,13 @@ namespace Battlehub.UIControls.MenuControl
         public UnityEvent Action;
     }
 
+
+
     public class Menu : MonoBehaviour
     {
+        public event EventHandler Opened;
+        public event EventHandler Closed;
+
         [SerializeField]
         private MenuItemInfo[] m_items;
         public MenuItemInfo[] Items
@@ -115,6 +120,14 @@ namespace Battlehub.UIControls.MenuControl
             if(m_canvasGroup != null)
             {
                 m_canvasGroup.alpha = 0;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if(Closed != null)
+            {
+                Closed(this, EventArgs.Empty);
             }
         }
 
@@ -214,7 +227,24 @@ namespace Battlehub.UIControls.MenuControl
             {
                 Fit();
             }   
+
+            if(Opened != null)
+            {
+                Opened(this, EventArgs.Empty);
+            }
         }
+
+        public void Close()
+        {
+            Clear();
+            gameObject.SetActive(false);
+
+            if(Closed != null)
+            {
+                Closed(this, EventArgs.Empty);
+            }
+        }
+
 
         private void Fit()
         {
@@ -244,11 +274,6 @@ namespace Battlehub.UIControls.MenuControl
             transform.position = rootRT.TransformPoint(position);
         }
 
-        public void Close()
-        {
-            Clear();
-            gameObject.SetActive(false);
-        }
 
         private void LateUpdate()
         {
@@ -265,6 +290,12 @@ namespace Battlehub.UIControls.MenuControl
                     while (parentMenuItem != null && !parentMenuItem.IsPointerOver)
                     {
                         Menu parentMenu = parentMenuItem.GetComponentInParent<Menu>();
+                        if(parentMenu == null)
+                        {
+                            Destroy(gameObject);
+                            Debug.LogWarning("parentMenu is null");
+                            return;
+                        }
                         parentMenuItem = parentMenu.m_parent;
                         if (parentMenuItem != null)
                         {
