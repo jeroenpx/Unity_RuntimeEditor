@@ -397,12 +397,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a63a6834d00c0034384ef641a9b1c22e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_selectionColor: {r: 0, g: 0.5921569, b: 1, a: 1}
+  m_textColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_disabledSelectionColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.5019608}
+  m_disableTextColor: {r: 0.7735849, g: 0.748042, b: 0.748042, a: 1}
   m_menuPrefab: {fileID: 114641633655484212, guid: 324d427cdfc17f147a6f5fe5a3063f06,
     type: 2}
   m_icon: {fileID: 114438565579397756}
   m_text: {fileID: 114736155059618392}
   m_expander: {fileID: 1819023035701398}
-  m_selection: {fileID: 1760180673578374}
+  m_selection: {fileID: 114837753897550234}
 --- !u!222 &222111684024281614
 CanvasRenderer:
   m_ObjectHideFlags: 1

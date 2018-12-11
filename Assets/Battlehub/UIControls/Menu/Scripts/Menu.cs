@@ -39,6 +39,18 @@ namespace Battlehub.UIControls.MenuControl
     public class Menu : MonoBehaviour
     {
         [SerializeField]
+        private MenuItemInfo[] m_items;
+        public MenuItemInfo[] Items
+        {
+            get { return m_items; }
+            set
+            {
+                m_items = value;
+                DataBind();
+            }
+        }
+
+        [SerializeField]
         private MenuItem m_menuItemPrefab;
 
         [SerializeField]
@@ -72,8 +84,6 @@ namespace Battlehub.UIControls.MenuControl
                 {
                     m_child = value;
                 }
-
-                
             }
         }
 
@@ -88,17 +98,11 @@ namespace Battlehub.UIControls.MenuControl
         }
 
         [SerializeField]
-        private MenuItemInfo[] m_items;
-        public MenuItemInfo[] Items
-        {
-            get { return m_items; }
-            set
-            {
-                m_items = value;
-                DataBind();
-            }
-        }
+        private CanvasGroup m_canvasGroup;
 
+        [SerializeField]
+        private float FadeInSpeed = 2;
+     
         private void Awake()
         {
             if(m_panel == null)
@@ -107,6 +111,11 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             m_root = transform.parent;
+
+            if(m_canvasGroup != null)
+            {
+                m_canvasGroup.alpha = 0;
+            }
         }
 
         private void DataBind()
@@ -184,14 +193,15 @@ namespace Battlehub.UIControls.MenuControl
         {
             foreach (Transform child in m_panel)
             {
-                MenuItem menuItem = child.GetComponent<MenuItem>();
                 Destroy(child.gameObject);
             }
         }
 
         public void Open()
         {
-            if(m_anchor != null)
+            gameObject.SetActive(true);
+
+            if (m_anchor != null)
             {
                 Vector3[] corners = new Vector3[4];
                 m_anchor.GetWorldCorners(corners);
@@ -199,8 +209,7 @@ namespace Battlehub.UIControls.MenuControl
             }
             
             DataBind();
-            gameObject.SetActive(true);
-
+            
             if(m_anchor == null)
             {
                 Fit();
@@ -216,13 +225,15 @@ namespace Battlehub.UIControls.MenuControl
             RectTransform rt = m_menuItemPrefab.GetComponent<RectTransform>();
             Vector2 size = new Vector2(rt.rect.width, rt.rect.height * m_panel.childCount);
 
-            if (position.x + size.x  > topLeft.x + rootRT.rect.width)
+            const float offset = 3;
+
+            if (position.x + size.x - offset > topLeft.x + rootRT.rect.width)
             {
-                position.x = position.x - size.x - 3;
+                position.x = position.x - size.x - offset;
             }
             else
             {
-                position.x += 3;
+                position.x += offset;
             }
 
             if (position.y - size.y < topLeft.y)
@@ -241,6 +252,11 @@ namespace Battlehub.UIControls.MenuControl
 
         private void LateUpdate()
         {
+            if(m_canvasGroup != null && m_canvasGroup.alpha < 1)
+            {
+                m_canvasGroup.alpha += Time.deltaTime * FadeInSpeed;
+            }
+
             if(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
             {
                 if(m_child == null)

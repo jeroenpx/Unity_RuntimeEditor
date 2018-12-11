@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,6 +10,15 @@ namespace Battlehub.UIControls.MenuControl
 
     public class MenuItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
+        [SerializeField]
+        private Color m_selectionColor = new Color32(0x00, 0x97, 0xFF, 0xFF);
+        [SerializeField]
+        private Color m_textColor = new Color32(0x32, 0x32, 0x32, 0x7F);
+        [SerializeField]
+        private Color m_disabledSelectionColor = new Color32(0xC5, 0xBF, 0xBF, 0x7F);
+        [SerializeField]
+        private Color m_disableTextColor = new Color32(0x32, 0x32, 0x32, 0xFF);
+        
         [SerializeField]
         private Menu m_menuPrefab;
 
@@ -22,7 +32,7 @@ namespace Battlehub.UIControls.MenuControl
         private GameObject m_expander;
 
         [SerializeField]
-        private GameObject m_selection;
+        private Image m_selection;
 
         private Transform m_root;
         public Transform Root
@@ -115,6 +125,34 @@ namespace Battlehub.UIControls.MenuControl
                 m_text.text = string.Empty;
                 m_expander.SetActive(false);
             }
+
+            if(IsValid())
+            {
+                m_text.color = m_textColor;
+                m_selection.color = m_selectionColor;
+            }
+            else
+            {
+                m_text.color = m_disableTextColor;
+                m_selection.color = m_disabledSelectionColor;
+            }
+        }
+
+        private bool IsValid()
+        {
+            if(m_item == null)
+            {
+                return false;
+            }
+
+            if(m_item.Validate == null)
+            {
+                return true;
+            }
+
+            MenuItemValidationArgs args = new MenuItemValidationArgs();
+            m_item.Validate.Invoke(args);
+            return args.IsValid;
         }
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
@@ -123,30 +161,21 @@ namespace Battlehub.UIControls.MenuControl
             {
                 return;
             }
-            if (m_item.Action != null)
+
+            if(IsValid())
             {
-                if (m_item.Validate != null)
-                {
-                    MenuItemValidationArgs args = new MenuItemValidationArgs();
-                    m_item.Validate.Invoke(args);
-                    if (args.IsValid)
-                    {
-                        m_item.Action.Invoke();
-                    }
-                }
-                else
+                if (m_item.Action != null)
                 {
                     m_item.Action.Invoke();
                 }
-            }
 
-
-            Menu menu = GetComponentInParent<Menu>();
-            while(menu.Parent != null)
-            {
-                menu = menu.Parent.GetComponentInParent<Menu>();
+                Menu menu = GetComponentInParent<Menu>();
+                while (menu.Parent != null)
+                {
+                    menu = menu.Parent.GetComponentInParent<Menu>();
+                }
+                menu.Close();
             }
-            menu.Close();
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -159,9 +188,21 @@ namespace Battlehub.UIControls.MenuControl
             m_isPointerOver = false;
             if(m_submenu == null)
             {
+                if (m_coUnselect != null)
+                {
+                    StopCoroutine(m_coUnselect);
+                    m_coUnselect = null;
+                }
+
+                if (m_coSelect != null)
+                {
+                    StopCoroutine(m_coSelect);
+                    m_coSelect = null;
+                }
+
                 Menu menu = GetComponentInParent<Menu>();
                 menu.Child = null;
-                m_selection.SetActive(false);
+                m_selection.gameObject.SetActive(false);
             }
             else
             {
@@ -172,13 +213,17 @@ namespace Battlehub.UIControls.MenuControl
             }
         }
 
-        public void Select()
+        private IEnumerator m_coSelect;
+        private IEnumerator m_coUnselect;
+        private IEnumerator CoSelect()
         {
             m_isPointerOver = true;
-            m_selection.SetActive(true);
+            m_selection.gameObject.SetActive(true);
 
             Menu menu = GetComponentInParent<Menu>();
             menu.Child = this;
+
+            yield return new WaitForSeconds(0.2f);
 
             if (HasChildren)
             {
@@ -192,19 +237,64 @@ namespace Battlehub.UIControls.MenuControl
                     m_submenu.transform.position = FindPosition();
                 }
             }
+
+            m_coSelect = null;
         }
 
-        public void Unselect()
+        private IEnumerator CoUnselect()
         {
+            m_selection.gameObject.SetActive(false);
+
+            yield return new WaitForSeconds(0.2f);
+
             Menu menu = GetComponentInParent<Menu>();
             menu.Child = null;
-            m_selection.SetActive(false);
+            
             if (m_submenu != null)
             {
                 Destroy(m_submenu.gameObject);
                 m_submenu = null;
             }
+
+            m_coUnselect = null;
         }
+
+        public void Select()
+        {
+            if(m_coUnselect != null)
+            {
+                StopCoroutine(m_coUnselect);
+                m_coUnselect = null;
+            }
+
+            if(m_coSelect != null)
+            {
+                StopCoroutine(m_coSelect);
+                m_coSelect = null;
+            }
+
+            m_coSelect = CoSelect();
+            StartCoroutine(m_coSelect);
+        }
+
+        public void Unselect()
+        {
+            if (m_coUnselect != null)
+            {
+                StopCoroutine(m_coUnselect);
+                m_coUnselect = null;
+            }
+
+            if (m_coSelect != null)
+            {
+                StopCoroutine(m_coSelect);
+                m_coSelect = null;
+            }
+
+            m_coUnselect = CoUnselect();
+            StartCoroutine(m_coUnselect);
+        }
+
 
         private Vector3 FindPosition()
         {
@@ -222,7 +312,7 @@ namespace Battlehub.UIControls.MenuControl
 
             Vector2 topLeft = -Vector2.Scale(rootRT.rect.size, rootRT.pivot);
             
-            if (position.x + size.x + size.x > topLeft.x + rootRT.rect.width)
+            if (position.x + size.x + size.x - overlap > topLeft.x + rootRT.rect.width)
             {
                 position.x = position.x - size.x + overlap;
             }

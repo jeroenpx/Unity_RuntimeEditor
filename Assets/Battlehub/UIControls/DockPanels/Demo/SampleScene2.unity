@@ -325,6 +325,7 @@ GameObject:
   - component: {fileID: 44792966}
   - component: {fileID: 44792967}
   - component: {fileID: 44792968}
+  - component: {fileID: 44792969}
   m_Layer: 5
   m_Name: WindowMenu
   m_TagString: Untagged
@@ -430,10 +431,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e21bc90cc7d1b1458e6bddead9b678d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
-    type: 2}
-  m_anchor: {fileID: 0}
-  m_panel: {fileID: 44792962}
   m_items:
   - Path: General\Scene
     Text: 
@@ -474,6 +471,12 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
+    type: 2}
+  m_anchor: {fileID: 0}
+  m_panel: {fileID: 44792962}
+  m_canvasGroup: {fileID: 44792969}
+  FadeInSpeed: 8
 --- !u!114 &44792968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -488,6 +491,17 @@ MonoBehaviour:
   m_EffectColor: {r: 0.3679245, g: 0.34189212, b: 0.34189212, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!225 &44792969
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 44792961}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &170076733
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,6 +590,7 @@ GameObject:
   - component: {fileID: 224199659}
   - component: {fileID: 224199660}
   - component: {fileID: 224199661}
+  - component: {fileID: 224199662}
   m_Layer: 5
   m_Name: TestCommands
   m_TagString: Untagged
@@ -663,6 +678,17 @@ MonoBehaviour:
   m_contentPrefab: {fileID: 224503044231661712, guid: 14fee9e36a9c0a243a046d23cac7ae3f,
     type: 2}
   m_splitType: 0
+--- !u!114 &224199662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 224199657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba93970128ce17c4c98bcf622dc597c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &282840810
 GameObject:
   m_ObjectHideFlags: 0
@@ -1068,6 +1094,7 @@ GameObject:
   - component: {fileID: 724687603}
   - component: {fileID: 724687602}
   - component: {fileID: 724687601}
+  - component: {fileID: 724687607}
   m_Layer: 5
   m_Name: ContextMenu
   m_TagString: Untagged
@@ -1118,10 +1145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e21bc90cc7d1b1458e6bddead9b678d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
-    type: 2}
-  m_anchor: {fileID: 0}
-  m_panel: {fileID: 724687600}
   m_items:
   - Path: General\Scene
     Text: 
@@ -1154,7 +1177,18 @@ MonoBehaviour:
     Icon: {fileID: 0}
     Validate:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 224199662}
+          m_MethodName: InvalidateMenuItem
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     Action:
@@ -1201,6 +1235,12 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
+    type: 2}
+  m_anchor: {fileID: 0}
+  m_panel: {fileID: 724687600}
+  m_canvasGroup: {fileID: 724687607}
+  FadeInSpeed: 8
 --- !u!114 &724687603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1270,6 +1310,17 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 724687599}
   m_CullTransparentMesh: 0
+--- !u!225 &724687607
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 724687599}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &785100822
 GameObject:
   m_ObjectHideFlags: 0
@@ -1284,6 +1335,7 @@ GameObject:
   - component: {fileID: 785100825}
   - component: {fileID: 785100824}
   - component: {fileID: 785100829}
+  - component: {fileID: 785100830}
   m_Layer: 5
   m_Name: FileMenu
   m_TagString: Untagged
@@ -1320,10 +1372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e21bc90cc7d1b1458e6bddead9b678d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
-    type: 2}
-  m_anchor: {fileID: 6947556}
-  m_panel: {fileID: 785100823}
   m_items:
   - Path: General\Scene
     Text: 
@@ -1403,6 +1451,12 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
+    type: 2}
+  m_anchor: {fileID: 6947556}
+  m_panel: {fileID: 785100823}
+  m_canvasGroup: {fileID: 785100830}
+  FadeInSpeed: 8
 --- !u!114 &785100825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1486,6 +1540,17 @@ MonoBehaviour:
   m_EffectColor: {r: 0.3679245, g: 0.34189212, b: 0.34189212, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!225 &785100830
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 785100822}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &841204982
 GameObject:
   m_ObjectHideFlags: 0
@@ -1797,7 +1862,6 @@ GameObject:
   - component: {fileID: 1855169438}
   - component: {fileID: 1855169439}
   - component: {fileID: 1855169440}
-  - component: {fileID: 1855169442}
   m_Layer: 5
   m_Name: MenuPanel
   m_TagString: Untagged
@@ -1859,13 +1923,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_menu: {fileID: 724687602}
---- !u!222 &1855169442
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1855169437}
-  m_CullTransparentMesh: 0
 --- !u!1 &2000400219
 GameObject:
   m_ObjectHideFlags: 0
