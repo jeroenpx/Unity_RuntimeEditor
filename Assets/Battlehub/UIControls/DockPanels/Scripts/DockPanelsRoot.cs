@@ -6,6 +6,10 @@ namespace Battlehub.UIControls.DockPanels
 {
     public class DockPanelsRoot : MonoBehaviour
     {
+        public event RegionEventHandler<Transform> TabActivated;
+        public event RegionEventHandler<Transform> TabDeactivated;
+        public event RegionEventHandler<Transform> TabClosed;
+
         [SerializeField]
         private GraphicRaycaster m_raycaster;
         public GraphicRaycaster Raycaster
@@ -15,7 +19,6 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private Region m_regionPrefab;
-
         public Region RegionPrefab
         {
             get { return m_regionPrefab; }
@@ -61,14 +64,32 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_cursorHelper; }
         }
 
+        private int m_regionId;
+        public int RegionId
+        {
+            get { return m_regionId; }
+            set { m_regionId = value; }
+        }
+
+        [SerializeField]
+        private bool m_allowDragOutside = false;
+        public bool AllowDragOutside
+        {
+            get { return m_allowDragOutside; }
+        }
+
         private void Awake()
         {
             if(m_raycaster == null)
             {
-                m_raycaster = GetComponent<GraphicRaycaster>();
+                m_raycaster = GetComponentInParent<GraphicRaycaster>();
                 if(m_raycaster == null)
                 {
-                    m_raycaster = gameObject.AddComponent<GraphicRaycaster>();
+                    Canvas canvas = GetComponentInParent<Canvas>();
+                    if(canvas)
+                    {
+                        m_raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
+                    }
                 }
             }
 
@@ -85,17 +106,67 @@ namespace Battlehub.UIControls.DockPanels
 
             Region.Selected += OnRegionSelected;
             Region.Unselected += OnRegionUnselected;
+            Region.TabActivated += OnTabActivated;
+            Region.TabDeactivated += OnTabDeactivated;
+            Region.TabClosed += OnTabClosed;
         }
 
         private void OnDestroy()
         {
-            Region.Selected += OnRegionSelected;
-            Region.Unselected += OnRegionUnselected;
+            Region.Selected -= OnRegionSelected;
+            Region.Unselected -= OnRegionUnselected;
+            Region.TabActivated -= OnTabActivated;
+            Region.TabDeactivated -= OnTabDeactivated;
+            Region.TabClosed -= OnTabClosed;
         }
 
-        private void OnRegionSelected(Region sender)
+        private void OnTabActivated(Region region, Transform arg)
         {
-            if (sender.Root != this)
+            if (region.Root != this)
+            {
+                return;
+            }
+
+            if(TabActivated != null)
+            {
+                TabActivated(region, arg);
+            }
+        }
+
+        private void OnTabDeactivated(Region region, Transform arg)
+        {
+            if (region.Root != this)
+            {
+                return;
+            }
+
+            if (TabDeactivated != null)
+            {
+                TabDeactivated(region, arg);
+            }
+        }
+
+        private void OnTabClosed(Region region, Transform arg)
+        {
+            if(region.Root != this)
+            {
+                return;
+            }
+
+            if (m_selectedRegion == region)
+            {
+                m_selectedRegion = null;
+            }
+
+            if (TabClosed != null)
+            {
+                TabClosed(region, arg);
+            }
+        }
+
+        private void OnRegionSelected(Region region)
+        {
+            if (region.Root != this)
             {
                 return;
             }
@@ -105,21 +176,23 @@ namespace Battlehub.UIControls.DockPanels
                 m_selectedRegion.IsSelected = false;
             }
 
-            m_selectedRegion = sender;
+            m_selectedRegion = region;
         }
 
-        private void OnRegionUnselected(Region sender)
+        private void OnRegionUnselected(Region region)
         {
-            if(sender.Root != this)
+            if(region.Root != this)
             {
                 return;
             }
 
-            if(m_selectedRegion == sender)
+            if(m_selectedRegion == region)
             {
                 m_selectedRegion = null;
             }
         }
+
+
     }
 
 }

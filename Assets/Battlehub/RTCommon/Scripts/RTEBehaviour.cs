@@ -40,7 +40,7 @@ namespace Battlehub.RTCommon
 
             if(Window == null)
             {
-                Window = m_editor.GetWindow(RuntimeWindowType.SceneView);
+                Window = m_editor.GetWindow(RuntimeWindowType.Scene);
                 if(Window == null)
                 {
                     Debug.LogError("m_window == null");

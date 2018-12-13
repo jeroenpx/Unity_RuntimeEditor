@@ -386,7 +386,7 @@ namespace Battlehub.RTEditor
         {
             if(Editor.IsPlaying)
             {
-                RuntimeWindow gameView = Editor.GetWindow(RuntimeWindowType.GameView);
+                RuntimeWindow gameView = Editor.GetWindow(RuntimeWindowType.Game);
                 if(gameView != null)
                 {
                     Editor.ActivateWindow(gameView);
@@ -395,9 +395,9 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if(Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.SceneView)
+                if(Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.Scene)
                 {
-                    RuntimeWindow sceneView = Editor.GetWindow(RuntimeWindowType.SceneView);
+                    RuntimeWindow sceneView = Editor.GetWindow(RuntimeWindowType.Scene);
                     Editor.ActivateWindow(sceneView);
                 }   
             }

@@ -931,11 +931,11 @@ namespace Battlehub.RTHandles
 
             if (isInPlayMode)
             {
-                ActivateWindow(RuntimeWindowType.GameView);
+                ActivateWindow(RuntimeWindowType.Game);
             }
             else
             {
-                ActivateWindow(RuntimeWindowType.SceneView);
+                ActivateWindow(RuntimeWindowType.Scene);
             }
             
         }

@@ -290,7 +290,7 @@ namespace Battlehub.RTCommon
                     m_isOpened = value;
                     if (!m_isOpened)
                     {
-                        ActivateWindow(GetWindow(RuntimeWindowType.GameView));
+                        ActivateWindow(GetWindow(RuntimeWindowType.Game));
                     }
                     if (IsOpenedChanged != null)
                     {
@@ -411,7 +411,7 @@ namespace Battlehub.RTCommon
             scene.transform.SetParent(ui.transform, false);
 
             RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
-            sceneView.WindowType = RuntimeWindowType.SceneView;
+            sceneView.WindowType = RuntimeWindowType.Scene;
             sceneView.Camera = Camera.main;
 
             EventSystem eventSystem = FindObjectOfType<EventSystem>();
@@ -615,7 +615,7 @@ namespace Battlehub.RTCommon
             return m_windows.Select(w => w.GetComponent<RuntimeWindow>()).FirstOrDefault(w => w.WindowType == window);
         }
 
-        public void ActivateWindow(RuntimeWindowType windowType)
+        public virtual void ActivateWindow(RuntimeWindowType windowType)
         {
             RuntimeWindow window = GetWindow(windowType);
             if(window != null)
@@ -624,7 +624,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void ActivateWindow(RuntimeWindow window)
+        public virtual void ActivateWindow(RuntimeWindow window)
         {
             if (m_activeWindow != window)
             {

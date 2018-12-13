@@ -33,7 +33,7 @@ namespace Battlehub.RTHandles
         {
             if (m_window == null)
             {
-                m_window = m_editor.GetWindow(RuntimeWindowType.SceneView);
+                m_window = m_editor.GetWindow(RuntimeWindowType.Scene);
                 if(m_window == null)
                 {
                     Debug.LogError("m_window == null");

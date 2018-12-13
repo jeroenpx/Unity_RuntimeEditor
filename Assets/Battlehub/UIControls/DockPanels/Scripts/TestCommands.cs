@@ -58,7 +58,7 @@ namespace Battlehub.UIControls.DockPanels
                 Text text = content.GetComponentInChildren<Text>();
                 text.text = "Content " + m_counter;
 
-                m_dockPanels.SelectedRegion.Add(m_sprite, m_headerText + " " + m_counter, content, m_splitType);
+                m_dockPanels.SelectedRegion.Add(m_sprite, m_headerText + " " + m_counter, content, false, m_splitType);
             }
         }
 

@@ -43,7 +43,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            bool isGameViewActive = m_editor.ActiveWindow != null && m_editor.ActiveWindow.WindowType == RuntimeWindowType.GameView;
+            bool isGameViewActive = m_editor.ActiveWindow != null && m_editor.ActiveWindow.WindowType == RuntimeWindowType.Game;
             bool isLocked = m_editor.Tools.IsViewing || isGameViewActive;
             if (!isLocked)
             {

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
 {
+    
+
     public class Resizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
@@ -21,7 +23,9 @@ namespace Battlehub.UIControls.DockPanels
         private bool m_isEnabled;
         private bool m_isFree;
         private Vector2 m_prevPoint;
+        [SerializeField]
         private float m_dx;
+        [SerializeField]
         private float m_dy;
         private Vector2 m_adjustment;
         private bool m_isDragging;
@@ -60,8 +64,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Canvas canvas = GetComponentInParent<Canvas>();
                 Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, transform.position);
-                EvaluateDXDY(screenPoint, canvas.worldCamera);
-
+                
                 if (m_dx == 0 || m_dy == 0)
                 {
                     int siblingIndex = m_region.transform.GetSiblingIndex();
@@ -112,109 +115,7 @@ namespace Battlehub.UIControls.DockPanels
         }
 
      
-        private void EvaluateDXDY(Vector2 position, Camera camera)
-        {
-            RectTransform regionRT = (RectTransform)m_region.transform;
-            float w = regionRT.rect.width;
-            float h = regionRT.rect.height;
-            Vector2 pivot = regionRT.pivot;
-
-            float left = -w * pivot.x;
-            float right = w * (1 - pivot.x);
-            float top = -h * pivot.y;
-            float bottom = h * (1 - pivot.y);
-
-            Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(regionRT, position, camera, out m_prevPoint));
-
-            RectTransform rt = (RectTransform)transform;
-            Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, position, camera, out m_adjustment));
-
-            float size = Mathf.Min(rt.rect.width, rt.rect.height);
-            float toLeft = Mathf.Abs(left - m_prevPoint.x);
-            float toRight = Mathf.Abs(right - m_prevPoint.x);
-            float toTop = Mathf.Abs(top - m_prevPoint.y);
-            float toBottom = Mathf.Abs(bottom - m_prevPoint.y);
-
-            if (toLeft < toRight)
-            {
-                if (toTop < toBottom)
-                {
-                    if (toLeft < size && toTop < size)
-                    {
-                        m_dx = -1;
-                        m_dy = -1;
-                    }
-                    else if (toLeft < toTop)
-                    {
-                        m_dx = -1;
-                        m_dy = 0;
-                    }
-                    else
-                    {
-                        m_dx = 0;
-                        m_dy = -1;
-                    }
-                }
-                else
-                {
-                    if (toLeft < size && toBottom < size)
-                    {
-                        m_dx = -1;
-                        m_dy = 1;
-                    }
-                    else if (toLeft < toBottom)
-                    {
-                        m_dx = -1;
-                        m_dy = 0;
-                    }
-                    else
-                    {
-                        m_dx = 0;
-                        m_dy = 1;
-                    }
-                }
-            }
-            else
-            {
-                if (toTop < toBottom)
-                {
-                    if (toRight < size && toTop < size)
-                    {
-                        m_dx = 1;
-                        m_dy = -1;
-                    }
-                    else if (toRight < toTop)
-                    {
-                        m_dx = 1;
-                        m_dy = 0;
-                    }
-                    else
-                    {
-                        m_dx = 0;
-                        m_dy = -1;
-                    }
-                }
-                else
-                {
-                    if (toRight < size && toBottom < size)
-                    {
-                        m_dx = 1;
-                        m_dy = 1;
-                    }
-                    else if (toRight < toBottom)
-                    {
-                        m_dx = 1;
-                        m_dy = 0;
-                    }
-                    else
-                    {
-                        m_dx = 0;
-                        m_dy = 1;
-                    }
-                }
-            }
-        }
-
+      
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
             if (!m_isEnabled)
@@ -239,8 +140,6 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Vector2 position = eventData.position;
                 Camera camera = eventData.pressEventCamera;
-
-                EvaluateDXDY(position, camera);
 
                 RectTransform freePanelRt = (RectTransform)m_region.Root.Free;
                 Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out m_prevPoint));

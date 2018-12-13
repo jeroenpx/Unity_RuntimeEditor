@@ -8,13 +8,14 @@ namespace Battlehub.RTCommon
     public enum RuntimeWindowType
     {
         None = 0,
-        GameView = 1,
-        SceneView = 1 << 1,
+        Game = 1,
+        Scene = 1 << 1,
         Hierarchy = 1 << 2,
         Project = 1 << 3,
         ProjectTree = 1 << 4,
         ProjectFolder = 1 << 5,
         Inspector = 1 << 6,
+        Console = 1 << 7,
         Other = 1 << 31
     }
 
@@ -28,7 +29,7 @@ namespace Battlehub.RTCommon
         }
 
         [SerializeField]
-        private RuntimeWindowType m_windowType = RuntimeWindowType.SceneView;
+        private RuntimeWindowType m_windowType = RuntimeWindowType.Scene;
         public virtual RuntimeWindowType WindowType
         {
             get { return m_windowType; }
@@ -48,6 +49,7 @@ namespace Battlehub.RTCommon
             get { return m_index; }
         }
 
+        private Vector3 m_position;
         private Rect m_rect;
         [SerializeField]
         private RectTransform m_rectTransform;
@@ -86,7 +88,7 @@ namespace Battlehub.RTCommon
                 if(m_camera != null)
                 {
                     SetCullingMask();
-                    if (WindowType == RuntimeWindowType.SceneView)
+                    if (WindowType == RuntimeWindowType.Scene)
                     {
                         GLCamera glCamera = m_camera.GetComponent<GLCamera>();
                         if (!glCamera)
@@ -146,7 +148,7 @@ namespace Battlehub.RTCommon
             if (m_camera != null)
             {
                 SetCullingMask();
-                if (WindowType == RuntimeWindowType.SceneView)
+                if (WindowType == RuntimeWindowType.Scene)
                 {
                     GLCamera glCamera = m_camera.GetComponent<GLCamera>();
                     if (!glCamera)
@@ -186,13 +188,16 @@ namespace Battlehub.RTCommon
         {
             if(m_camera != null)
             {
-                if(m_rectTransform.rect != m_rect)
+                if(m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
                 {
                     OnRectTransformDimensionsChange();
                     m_rect = m_rectTransform.rect;
+                    m_position = m_rectTransform.position;
                 }
             }
         }
+
+       
 
         protected virtual void OnActiveWindowChanged()
         {
@@ -214,16 +219,48 @@ namespace Battlehub.RTCommon
             }
         }
 
+        
+
         protected virtual void OnRectTransformDimensionsChange()
         {
-            if (m_camera != null && m_rectTransform != null && m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-            {
-                Vector3[] corners = new Vector3[4];
-                m_rectTransform.GetWorldCorners(corners);
-                m_camera.pixelRect = new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y));
-            }
+            HandleResize();
         }
 
+       
+
+        public void HandleResize()
+        {
+            if (m_camera != null && m_rectTransform != null)
+            {
+                if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                {
+                    Vector3[] corners = new Vector3[4];
+                    m_rectTransform.GetWorldCorners(corners);
+                    m_camera.pixelRect = new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y));
+                }
+                else if (m_canvas.renderMode == RenderMode.ScreenSpaceCamera)
+                {
+                    Vector3[] corners = new Vector3[4];
+                    m_rectTransform.GetWorldCorners(corners);
+
+                    corners[0] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[0]);
+                    corners[1] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[1]);
+                    corners[2] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[2]);
+                    corners[3] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[3]);
+
+                    Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
+                    m_camera.pixelRect = new Rect(corners[0], size);
+                    // m_camera.
+                    //m_camera.aspect = size.x / Mathf.Max(size.y, 0.001f);
+                    Debug.Log(m_camera.pixelWidth + " " + m_camera.scaledPixelWidth);
+
+
+
+                    Debug.Log("After setting rect " + m_camera.pixelWidth + " " + m_camera.scaledPixelWidth);
+
+                }
+            }
+        }
 
         protected virtual void OnActivated()
         {

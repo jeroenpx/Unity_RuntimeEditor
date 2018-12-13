@@ -14,16 +14,19 @@ namespace Battlehub.UIControls.DockPanels
         Left,
         Top,
         Right,
-        Bottom
+        Bottom,
     }
 
-    public delegate void RegionEventArgs(Region sender);
+    public delegate void RegionEventHandler(Region region);
+    public delegate void RegionEventHandler<T>(Region region, T arg);
 
     public class Region : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        private static int m_regionDebugId;
-        public static event RegionEventArgs Selected;
-        public static event RegionEventArgs Unselected;
+        public static event RegionEventHandler Selected;
+        public static event RegionEventHandler Unselected;
+        public static event RegionEventHandler<Transform> TabActivated;
+        public static event RegionEventHandler<Transform> TabDeactivated;
+        public static event RegionEventHandler<Transform> TabClosed;
 
         [SerializeField]
         private LayoutElement m_layoutElement;
@@ -45,6 +48,12 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private DockPanelsRoot m_root;
+
+        [SerializeField]
+        private Image m_headerImage;
+
+        [SerializeField]
+        private Image m_frameImage;
         
         public DockPanelsRoot Root
         {
@@ -62,6 +71,24 @@ namespace Battlehub.UIControls.DockPanels
                 }
                 return -1;
             }   
+        }
+
+        private LayoutGroup m_layoutGroup;
+        public LayoutGroup LayoutGroup
+        {
+            get { return m_layoutGroup; }
+        }
+
+        public Transform ActiveContent
+        {
+            get
+            {
+                if(ActiveTabIndex >= 0)
+                {
+                    return m_contentPanel.GetChild(ActiveTabIndex);
+                }
+                return null;
+            }
         }
 
         private bool m_isSelected;
@@ -108,6 +135,11 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        protected virtual void Start()
+        {
+            UpdateVisualState();
+        }
+
         protected virtual void OnDestroy()
         {
             if(transform.parent != null)
@@ -116,6 +148,7 @@ namespace Battlehub.UIControls.DockPanels
                 if (parent != null)
                 {
                     parent.DestroyChildRegion(transform.GetSiblingIndex());
+                    parent.UpdateVisualState(1);
                     UpdateResizers();
                 }
             }
@@ -193,9 +226,96 @@ namespace Battlehub.UIControls.DockPanels
             return false;
         }
 
-        public void Add(Sprite icon, string header, Transform content, RegionSplitType splitType = RegionSplitType.None)
+        public void Fit()
         {
-            if(m_childrenPanel.childCount > 0)
+            RectTransform rt = ((RectTransform)transform);
+            Vector3[] corners = new Vector3[4];
+            rt.GetWorldCorners(corners);
+
+            Resizer[] resizers = GetComponentsInChildren<Resizer>();
+            float resizerSize = resizers.Select(r => (RectTransform)r.transform).Max(r => Mathf.Min(r.rect.width, r.rect.height));
+
+            float minWidth = m_layoutElement.minWidth + resizerSize;
+            float minHeight = m_layoutElement.minHeight + resizerSize;
+
+            RectTransform free = (RectTransform)m_root.Free;
+            for (int i = 0; i < corners.Length; ++i)
+            {
+                Vector3 corner = free.InverseTransformPoint(corners[i]);
+                if (corner.x < free.rect.xMin)
+                {
+                    corner.x = free.rect.xMin;
+                }
+
+                if ((i == 0 || i == 1) && corner.x + minWidth > free.rect.xMax)
+                {
+                    corner.x = free.rect.xMax - minWidth;
+                }
+
+                if (corner.x > free.rect.xMax)
+                {
+                    corner.x = free.rect.xMax;
+                }
+
+                if ((i == 2 || i == 3) && corner.x - minWidth < free.rect.xMin)
+                {
+                    corner.x = free.rect.xMin + minWidth;
+                }
+
+                if (corner.y < free.rect.yMin)
+                {
+                    corner.y = free.rect.yMin;
+                }
+
+                if ((i == 0 || i == 3) && corner.y + minHeight > free.rect.yMax)
+                {
+                    corner.y = free.rect.yMax - minHeight;
+                }
+
+                if (corner.y > free.rect.yMax)
+                {
+                    corner.y = free.rect.yMax;
+                }
+
+                if ((i == 1 || i == 2) && corner.y - minHeight < free.rect.yMin)
+                {
+                    corner.y = free.rect.yMin + minHeight;
+                }
+
+                corner = free.TransformPoint(corner);
+                corners[i] = corner;
+            }
+
+
+            Vector3 position = (corners[0] + corners[2]) * 0.5f;
+            for (int i = 0; i < corners.Length; ++i)
+            {
+                Vector3 corner = rt.InverseTransformPoint(corners[i]);
+                corners[i] = corner;
+            }
+
+            rt.offsetMin = corners[0];
+            rt.offsetMax = corners[2];
+
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.position = position;
+        }
+
+        public static Tab FindTab(Transform content)
+        {
+            Region region = content.GetComponentInParent<Region>();
+            if(content.parent != region.m_contentPanel)
+            {
+                return null;
+            }
+
+            int index = content.GetSiblingIndex();
+            return region.m_tabPanel.transform.GetChild(index).GetComponent<Tab>();
+        }
+
+        public void Add(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None)
+        {
+            if(m_childrenPanel.childCount > 0 && !isFree)
             {
                 throw new InvalidOperationException("Unable to Add content. Region has children and is not a \"leaf\" region.");
             }
@@ -204,8 +324,19 @@ namespace Battlehub.UIControls.DockPanels
             tab.name = "Tab " + header;
             tab.Icon = icon;
             tab.Text = header;
-            Insert(m_tabPanel.transform.childCount, tab, content, splitType);
+
+            if (isFree)
+            {
+                RectTransform rootRegionRT = (RectTransform)m_root.RootRegion.transform;
+                CreateFreeRegion(tab, content, rootRegionRT.rect.size * 0.5f, Vector2.one * 0.5f, rootRegionRT.transform.position);
+            }
+            else
+            {
+                Insert(m_tabPanel.transform.childCount, tab, content, splitType);
+            }
+
             UpdateResizers();
+            UpdateVisualState();
         }
 
         public void RemoveAt(int index)
@@ -218,6 +349,11 @@ namespace Battlehub.UIControls.DockPanels
             if (m_tabPanel.transform.childCount == 1 && this != m_root.RootRegion)
             {
                 Destroy(gameObject);
+                Transform content = m_contentPanel.transform.GetChild(0); 
+                if(TabClosed != null)
+                {
+                    TabClosed(this, content);
+                }
             }
             else
             {
@@ -242,12 +378,17 @@ namespace Battlehub.UIControls.DockPanels
                 Unsubscribe(tab, this);
               
                 Transform content = m_contentPanel.transform.GetChild(index);
-
+                if(TabClosed != null)
+                {
+                    TabClosed(this, content);
+                }
                 Destroy(tab.gameObject);
                 Destroy(content.gameObject);
             }
 
             UpdateResizers();
+            UpdateVisualState();
+
             m_root.CursorHelper.ResetCursor(this);
         }
 
@@ -267,6 +408,7 @@ namespace Battlehub.UIControls.DockPanels
             Transform content = m_contentPanel.transform.GetChild(index);
             Move(tab, content, targetIndex, targetRegion, targetSplitType);
             UpdateResizers();
+            UpdateVisualState();
         }
 
         private void Move(Tab tab, Transform content, int targetIndex, Region targetRegion, RegionSplitType targetSplitType = RegionSplitType.None)
@@ -279,8 +421,8 @@ namespace Battlehub.UIControls.DockPanels
             Debug.Assert(content.parent == m_contentPanel);
 
             Unsubscribe(tab, this);
-            
-            bool destroy = m_contentPanel.childCount == 1 && targetRegion != this;
+
+            bool destroy = m_contentPanel.childCount == 1 && targetRegion != this && m_root.RootRegion != this;
             
             targetRegion.Insert(targetIndex, tab, content, targetSplitType);
 
@@ -317,6 +459,7 @@ namespace Battlehub.UIControls.DockPanels
                         {
                             Destroy(layoutGroup);
                         }
+                        m_layoutGroup = null;
                     }
                     
                     Destroy(childRegion.gameObject);
@@ -449,6 +592,8 @@ namespace Battlehub.UIControls.DockPanels
             lg.childControlWidth = true;
             lg.childForceExpandHeight = false;
             lg.childForceExpandWidth = true;
+
+            region.m_layoutGroup = lg;
         }
 
         private static void CreateHorizontalLayoutGroup(Region region)
@@ -469,13 +614,15 @@ namespace Battlehub.UIControls.DockPanels
             lg.childControlWidth = true;
             lg.childForceExpandHeight = true;
             lg.childForceExpandWidth = false;
+
+            region.m_layoutGroup = lg;
         }
 
         private Region CreateHorizontalRegion(Tab tab, Transform content)
         {
             Rect rect = m_childrenPanel.rect;
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
-            region.name = "Region " + m_regionDebugId++;
+            region.name = "Region " + m_root.RegionId++;
 
             region.m_layoutElement.preferredHeight = -1;// rect.height / 3;
             region.m_layoutElement.preferredWidth = -1;
@@ -489,7 +636,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             Rect rect = m_childrenPanel.rect;
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
-            region.name = "Region " + m_regionDebugId++;
+            region.name = "Region " + m_root.RegionId++;
 
             region.m_layoutElement.preferredWidth = -1;// rect.width / 3;
             region.m_layoutElement.preferredHeight = -1;
@@ -502,7 +649,7 @@ namespace Battlehub.UIControls.DockPanels
         private void MoveContentsToChildRegion()
         {
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
-            region.name = "Region " + m_regionDebugId++;
+            region.name = "Region " + m_root.RegionId++;
             region.m_layoutElement.preferredWidth = -1;
             region.m_layoutElement.preferredHeight = -1;
             region.m_layoutElement.flexibleWidth = 0.7f;
@@ -612,14 +759,30 @@ namespace Battlehub.UIControls.DockPanels
             rt.offsetMax = Vector2.zero;
         }
 
-        private void OnTabToggle(Tab sender, bool isOn)
+        private void OnTabToggle(Tab tab, bool isOn)
         {
-            Transform content = m_contentPanel.GetChild(sender.Index);
+            Transform content = m_contentPanel.GetChild(tab.Index);
             content.gameObject.SetActive(isOn);
-            m_activeTab = sender;
+            m_activeTab = tab;
+
+            if (isOn)
+            {
+                if (TabActivated != null)
+                {
+                    TabActivated(this, content);
+                }
+            }
+            else
+            {
+                if(TabDeactivated != null)
+                {
+                    TabDeactivated(this, content);
+                }
+            }
+            
         }
 
-        private void OnTabPointerDown(Tab sender, PointerEventData args)
+        private void OnTabPointerDown(Tab tab, PointerEventData args)
         {
             IsSelected = true;
         }
@@ -863,8 +1026,8 @@ namespace Battlehub.UIControls.DockPanels
             if (m_isFree)
             {
                 Region freeRegion = Instantiate(m_root.RegionPrefab, m_root.Free);
-                freeRegion.name = "Region " + m_regionDebugId++;
- 
+                freeRegion.name = "Region " + m_root.RegionId++;
+
                 RectTransform rt = (RectTransform)freeRegion.transform;
                 RectTransform beginRt = (RectTransform)m_beginDragRegion.transform;
                 Vector2 size = beginRt.rect.size;
@@ -876,19 +1039,25 @@ namespace Battlehub.UIControls.DockPanels
                 Vector3 worldPos;
                 Debug.Assert(RectTransformUtility.ScreenPointToWorldPointInRectangle(rt, args.position, args.pressEventCamera, out worldPos));
                 freeRegion.transform.position = worldPos;
-                
+
                 Unsubscribe(tab, this);
                 freeRegion.Insert(0, tab, m_dragContent);
 
-                if(m_contentPanel.childCount == 0 && this != m_root.RootRegion)
+                if (m_contentPanel.childCount == 0 && this != m_root.RootRegion)
                 {
                     Destroy(gameObject);
                 }
+
+                freeRegion.Fit();
+
+                //Depth changed
             }
             else
             {
                 Unsubscribe(tab, m_beginDragRegion);
                 Move(tab, m_dragContent, tab.Index, tab.GetComponentInParent<Region>(), m_splitType);
+
+                //Depth changed
             }
 
             IEnumerable<Tab> children = m_beginDragRegion.m_tabPanel.transform.OfType<Transform>().Select(t => t.GetComponent<Tab>());
@@ -902,6 +1071,7 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             UpdateResizers();
+            UpdateVisualState();
 
             m_dragContent = null;
             m_beginDragRegion = null;
@@ -909,6 +1079,74 @@ namespace Battlehub.UIControls.DockPanels
             m_isFree = false;
             m_splitType = RegionSplitType.None;
             m_isDraggingOutside = false;
+        }
+
+        private RectTransform CreateFreeRegion(Tab tab, Transform content, Vector2 size, Vector2 pivot, Vector3 worldPos)
+        {
+            Region freeRegion = Instantiate(m_root.RegionPrefab, m_root.Free);
+            freeRegion.name = "Region " + m_root.RegionId++;
+
+            RectTransform rt = (RectTransform)freeRegion.transform;
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = pivot;
+            rt.sizeDelta = size;
+            rt.position = worldPos;
+
+            freeRegion.Insert(0, tab, content);
+
+            Stretch(content);
+
+            freeRegion.Fit();
+
+            //Depth changed
+
+            return rt;
+        }
+
+        private void UpdateVisualState(int expectedChildrenCount = 0)
+        {
+            Transform dragRegion = GetDragRegion();
+
+            if (dragRegion != null)
+            {
+                if(dragRegion != transform)
+                {
+                    if (m_headerImage != null)
+                    {
+                        m_headerImage.enabled = true;
+                    }
+
+                    if (m_frameImage != null)
+                    {
+                        m_frameImage.enabled = true;
+                    }
+                }
+                else 
+                {
+                    if (m_headerImage != null)
+                    {
+                        m_headerImage.enabled = m_childrenPanel.childCount == expectedChildrenCount;
+                    }
+
+                    if (m_frameImage != null)
+                    {
+                        m_frameImage.enabled = m_childrenPanel.childCount == expectedChildrenCount;
+                    }
+                }    
+            }
+            else
+            {
+                if (m_headerImage != null)
+                {
+                    m_headerImage.enabled = false;
+                }
+
+                if (m_frameImage != null)
+                {
+                    m_frameImage.enabled = false;
+                }
+            }
         }
 
         private void UpdateResizers()
@@ -968,7 +1206,7 @@ namespace Battlehub.UIControls.DockPanels
                 {
                     if (IsFree())
                     {
-                        transform.SetSiblingIndex(m_root.Preview.childCount - 1);
+                        transform.SetSiblingIndex(m_root.Free.childCount - 1);
                     }
                 }
             }
@@ -995,17 +1233,34 @@ namespace Battlehub.UIControls.DockPanels
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
+            if(m_dragRegion == null)
+            {
+                Debug.LogWarning("m_dragRegion == null");
+                return;
+            }
+
+            if (!m_root.AllowDragOutside)
+            {
+                Region region = m_dragRegion.GetComponentInChildren<Region>();
+                region.Fit();
+            }
+
             m_root.CursorHelper.ResetCursor(this);
             m_dragRegion = null;
             m_isDragging = false;   
         }
 
+
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            if(IsFree())
+            if(transform.GetSiblingIndex() != m_root.Free.childCount - 1)
             {
-                transform.SetSiblingIndex(m_root.Preview.childCount - 1);
+                if (IsFree())
+                {
+                    transform.SetSiblingIndex(m_root.Free.childCount - 1);
+                }
             }
+            
             IsSelected = true;
         }
     }

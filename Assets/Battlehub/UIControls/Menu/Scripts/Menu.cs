@@ -31,9 +31,9 @@ namespace Battlehub.UIControls.MenuControl
         public string Path;
         public string Text;
         public Sprite Icon;
-        
-        public MenuItemValidationEvent Validate;
+
         public UnityEvent Action;
+        public MenuItemValidationEvent Validate;
     }
 
 
@@ -88,6 +88,11 @@ namespace Battlehub.UIControls.MenuControl
                 else
                 {
                     m_child = value;
+                }
+
+                if(m_child != null)
+                {
+                    m_child.Select(true);
                 }
             }
         }
@@ -286,6 +291,9 @@ namespace Battlehub.UIControls.MenuControl
             {
                 if(m_child == null)
                 {
+
+                    Debug.Log(name);
+
                     MenuItem parentMenuItem = m_parent;
                     while (parentMenuItem != null && !parentMenuItem.IsPointerOver)
                     {
@@ -293,9 +301,14 @@ namespace Battlehub.UIControls.MenuControl
                         if(parentMenu == null)
                         {
                             Destroy(gameObject);
-                            Debug.LogWarning("parentMenu is null");
                             return;
                         }
+
+                        if(parentMenu.Child != null)
+                        {
+                            break;
+                        }
+
                         parentMenuItem = parentMenu.m_parent;
                         if (parentMenuItem != null)
                         {

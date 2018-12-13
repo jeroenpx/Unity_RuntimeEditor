@@ -23,6 +23,9 @@ namespace Battlehub.UIControls.DockPanels
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
             eventData.Use();
+
+            IPointerDownHandler pointerDown = GetComponentInParent<Region>();
+            pointerDown.OnPointerDown(eventData);
         }
     }
 

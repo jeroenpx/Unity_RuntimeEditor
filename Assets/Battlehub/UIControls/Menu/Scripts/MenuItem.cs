@@ -161,7 +161,7 @@ namespace Battlehub.UIControls.MenuControl
             {
                 return;
             }
-
+            
             if(IsValid())
             {
                 if (m_item.Action != null)
@@ -180,7 +180,7 @@ namespace Battlehub.UIControls.MenuControl
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            Select();
+            Select(false);
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
@@ -217,12 +217,6 @@ namespace Battlehub.UIControls.MenuControl
         private IEnumerator m_coUnselect;
         private IEnumerator CoSelect()
         {
-            m_isPointerOver = true;
-            m_selection.gameObject.SetActive(true);
-
-            Menu menu = GetComponentInParent<Menu>();
-            menu.Child = this;
-
             yield return new WaitForSeconds(0.2f);
 
             if (HasChildren)
@@ -243,14 +237,9 @@ namespace Battlehub.UIControls.MenuControl
 
         private IEnumerator CoUnselect()
         {
-            m_selection.gameObject.SetActive(false);
-
             yield return new WaitForSeconds(0.2f);
 
-            Menu menu = GetComponentInParent<Menu>();
-            menu.Child = null;
-            
-            if (m_submenu != null)
+            if (m_submenu != null && m_submenu.Child == null)
             {
                 Destroy(m_submenu.gameObject);
                 m_submenu = null;
@@ -259,9 +248,15 @@ namespace Battlehub.UIControls.MenuControl
             m_coUnselect = null;
         }
 
-        public void Select()
+        public void Select(bool showSelectioOnly)
         {
-            if(m_coUnselect != null)
+            if(showSelectioOnly)
+            {
+                m_selection.gameObject.SetActive(true);
+                return;
+            }
+
+            if (m_coUnselect != null)
             {
                 StopCoroutine(m_coUnselect);
                 m_coUnselect = null;
@@ -271,6 +266,18 @@ namespace Battlehub.UIControls.MenuControl
             {
                 StopCoroutine(m_coSelect);
                 m_coSelect = null;
+            }
+
+            m_isPointerOver = true;
+            m_selection.gameObject.SetActive(true);
+
+            Menu menu = GetComponentInParent<Menu>();
+            menu.Child = this;
+
+            if(menu.Parent != null)
+            {
+                Menu parentMenu = menu.Parent.GetComponentInParent<Menu>();
+                parentMenu.Child = menu.Parent;
             }
 
             m_coSelect = CoSelect();
@@ -290,6 +297,10 @@ namespace Battlehub.UIControls.MenuControl
                 StopCoroutine(m_coSelect);
                 m_coSelect = null;
             }
+
+            m_selection.gameObject.SetActive(false);
+            Menu menu = GetComponentInParent<Menu>();
+            menu.Child = null;
 
             m_coUnselect = CoUnselect();
             StartCoroutine(m_coUnselect);

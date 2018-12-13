@@ -100,13 +100,13 @@ namespace Battlehub.RTHandles
         {
             if (m_current != null)
             {
-                m_current.IsActive = Editor.ActiveWindow != null && Editor.ActiveWindow.WindowType ==  RuntimeWindowType.GameView || !Editor.IsOpened;
+                m_current.IsActive = Editor.ActiveWindow != null && Editor.ActiveWindow.WindowType ==  RuntimeWindowType.Game || !Editor.IsOpened;
             }
         }
 
         private void Update()
         {
-            if((Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.GameView) && Editor.IsOpened)
+            if((Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.Game) && Editor.IsOpened)
             {
                 return;
             }

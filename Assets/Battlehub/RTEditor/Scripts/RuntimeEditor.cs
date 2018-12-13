@@ -1,5 +1,4 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad2;
 using Battlehub.RTSaveLoad2.Interface;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,7 +7,8 @@ namespace Battlehub.RTEditor
 {
     public interface IRuntimeEditor : IRTE
     {
-        void CreateWindow();
+        void CreateWindow(string window);
+        void CreateOrActivateWindow(string window);
         void SaveScene();
         void OpenScene();
     }
@@ -39,18 +39,53 @@ namespace Battlehub.RTEditor
             base.OnDestroy();
         }
 
-        public void CreateWindow()
+        public virtual void CreateWindow(string windowTypeName)
         {
             IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-            //windowManager.CreateWindow(windowType, focusIfExists);
+            windowManager.CreateWindow(windowTypeName);
         }
 
-        public void CloseProject()
+        public virtual void CreateOrActivateWindow(string windowTypeName)
+        {
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+
+            if(!windowManager.CreateWindow(windowTypeName))
+            {
+                if (windowManager.Exists(windowTypeName))
+                {
+                    if(!windowManager.IsActive(windowTypeName))
+                    {
+                        windowManager.ActivateWindow(windowTypeName);
+
+                        Transform windowTransform = windowManager.GetWindow(windowTypeName);
+
+                        RuntimeWindow window = windowTransform.GetComponentInChildren<RuntimeWindow>();
+                        if (window != null)
+                        {
+                            base.ActivateWindow(window);
+                        }
+                    }
+                }
+            }
+        }
+
+        public override void ActivateWindow(RuntimeWindow window)
+        {
+            base.ActivateWindow(window);
+
+            if(window != null)
+            {
+                IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+                windowManager.ActivateWindow(window.transform);
+            }
+        }
+
+        public virtual void CloseProject()
         {
             m_project.CloseProject();
         }
 
-        public void OpenScene()
+        public virtual void OpenScene()
         {
             IsBusy = true;
             Selection.objects = null;
@@ -69,7 +104,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void SaveScene()
+        public virtual void SaveScene()
         {
             IsBusy = true;
             

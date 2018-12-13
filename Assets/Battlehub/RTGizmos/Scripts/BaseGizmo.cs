@@ -187,7 +187,7 @@ namespace Battlehub.RTGizmos
                     return;
                 }
 
-                if (Window.Camera != null && (!Window.IsPointerOver || Window.WindowType != RuntimeWindowType.SceneView))
+                if (Window.Camera != null && (!Window.IsPointerOver || Window.WindowType != RuntimeWindowType.Scene))
                 {
                     return;
                 }
