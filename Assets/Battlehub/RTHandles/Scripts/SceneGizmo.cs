@@ -393,6 +393,10 @@ namespace Battlehub.RTHandles
                 m_aspect = m_camera.aspect;
             }
 
+            if(m_camera.depth != Window.Camera.depth + 1)
+            {
+                m_camera.depth = Window.Camera.depth + 1;
+            }
             m_camera.transform.rotation = Window.Camera.transform.rotation;
         }
 

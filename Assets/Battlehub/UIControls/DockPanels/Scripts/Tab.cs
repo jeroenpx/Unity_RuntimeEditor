@@ -203,7 +203,6 @@ namespace Battlehub.UIControls.DockPanels
 
             Destroy(m_tabPreview.gameObject);
             m_tabPreview = null;
-
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)

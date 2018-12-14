@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+
 namespace Battlehub.RTEditor
 {
     public interface IWindowManager
@@ -73,7 +75,7 @@ namespace Battlehub.RTEditor
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
-            
+            m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
 
             if(m_componentsRoot == null)
             {
@@ -94,6 +96,7 @@ namespace Battlehub.RTEditor
                 m_dockPanels.TabActivated -= OnTabActivated;
                 m_dockPanels.TabDeactivated -= OnTabDeactivated;
                 m_dockPanels.TabClosed -= OnTabClosed;
+                m_dockPanels.RegionDepthChanged -= OnRegionDepthChanged;
             }
         }
 
@@ -339,6 +342,29 @@ namespace Battlehub.RTEditor
             windows.Add(content.transform);
             
             return true;
+        }
+
+        private void OnRegionDepthChanged(Region region, int depth)
+        {
+            RuntimeWindow window = region.GetComponentInChildren<RuntimeWindow>();
+            if(window.Camera != null)
+            {
+                window.Camera.depth = depth * 2;
+            }
+        }
+
+        private void ApplyMaterial(GameObject go, Material material)
+        {
+            if(go.GetComponent<RuntimeWindow>() != null)
+            {
+                return;
+            }
+
+            Graphic graphic = go.GetComponent<Graphic>();
+            if(graphic)
+            {
+               // gra
+            }
         }
 
     }

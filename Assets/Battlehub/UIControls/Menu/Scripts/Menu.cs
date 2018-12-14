@@ -224,6 +224,10 @@ namespace Battlehub.UIControls.MenuControl
                 Vector3[] corners = new Vector3[4];
                 m_anchor.GetWorldCorners(corners);
                 transform.position = corners[0];
+
+                Vector3 lp = transform.localPosition;
+                lp.z = 0;
+                transform.localPosition = lp;
             }
             
             DataBind();
@@ -277,6 +281,10 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             transform.position = rootRT.TransformPoint(position);
+
+            Vector3 lp = transform.localPosition;
+            lp.z = 0;
+            transform.localPosition = lp;
         }
 
 

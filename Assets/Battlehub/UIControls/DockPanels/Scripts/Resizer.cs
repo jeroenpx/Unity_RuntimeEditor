@@ -6,10 +6,14 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
 {
-    
+    public delegate void ResizerEventHandler(Resizer resizer, Region region);
 
     public class Resizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
+        public static event ResizerEventHandler BeginResize;
+        public static event ResizerEventHandler Resize;
+        public static event ResizerEventHandler EndResize;
+
         [SerializeField]
         private Texture2D m_cursor;
 
@@ -22,7 +26,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private bool m_isEnabled;
         private bool m_isFree;
-        private Vector2 m_prevPoint;
+        //private Vector2 m_prevPoint;
         [SerializeField]
         private float m_dx;
         [SerializeField]
@@ -64,7 +68,10 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Canvas canvas = GetComponentInParent<Canvas>();
                 Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, transform.position);
-                
+
+                RectTransform rt = (RectTransform)transform;
+                Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, screenPoint, canvas.worldCamera, out m_adjustment));
+
                 if (m_dx == 0 || m_dy == 0)
                 {
                     int siblingIndex = m_region.transform.GetSiblingIndex();
@@ -141,12 +148,20 @@ namespace Battlehub.UIControls.DockPanels
                 Vector2 position = eventData.position;
                 Camera camera = eventData.pressEventCamera;
 
-                RectTransform freePanelRt = (RectTransform)m_region.Root.Free;
-                Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out m_prevPoint));
+                RectTransform rt = (RectTransform)transform;
+                Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, position, camera, out m_adjustment));
+
+                //RectTransform freePanelRt = (RectTransform)m_region.Root.Free;
+                //Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out m_prevPoint));
             }
             else
             {
                 m_layoutGroups = m_region.Root.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
+            }
+
+            if(BeginResize != null)
+            {
+                BeginResize(this, m_region);
             }
            
             m_isDragging = true;
@@ -223,7 +238,7 @@ namespace Battlehub.UIControls.DockPanels
                 regionRT.offsetMin = offsetMin;
                 regionRT.offsetMax = offsetMax;
 
-                m_prevPoint = point;
+                //m_prevPoint = point;
             }
             else
             {
@@ -258,6 +273,11 @@ namespace Battlehub.UIControls.DockPanels
                     LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)m_layoutGroups[i].transform);
                 }
             }
+
+            if(Resize != null)
+            {
+                Resize(this, m_region);
+            }
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
@@ -270,6 +290,11 @@ namespace Battlehub.UIControls.DockPanels
             }
             
             m_region.Root.CursorHelper.ResetCursor(this);
+
+            if(EndResize != null)
+            {
+                EndResize(this, m_region);
+            }
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)

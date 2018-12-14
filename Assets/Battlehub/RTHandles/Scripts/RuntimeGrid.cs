@@ -64,6 +64,11 @@ namespace Battlehub.RTHandles
             m_camera.transform.rotation = Window.Camera.transform.rotation;
             m_camera.transform.localScale = Window.Camera.transform.localScale;
 
+            if (m_camera.depth != Window.Camera.depth + 0.01f)
+            {
+                m_camera.depth = Window.Camera.depth + 0.01f;
+            }
+
             if (m_camera.fieldOfView != Window.Camera.fieldOfView)
             {
                 m_camera.fieldOfView = Window.Camera.fieldOfView;
