@@ -98,6 +98,11 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public Transform ContentPanel
+        {
+            get { return m_contentPanel; }
+        }
+
         private bool m_isSelected;
         public bool IsSelected
         {
@@ -133,6 +138,9 @@ namespace Battlehub.UIControls.DockPanels
         private Transform m_dragContent;
         private bool m_isFree = false;
         private RegionSplitType m_splitType;
+
+        [SerializeField]
+        private bool m_forceRebuildLayoutImmediate = true;
 
         protected virtual void Awake()
         {
@@ -317,8 +325,7 @@ namespace Battlehub.UIControls.DockPanels
 
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.position = position;
-
-      
+     
             if(TransformChanged != null)
             {
                 TransformChanged(this);
@@ -329,6 +336,10 @@ namespace Battlehub.UIControls.DockPanels
         public static Tab FindTab(Transform content)
         {
             Region region = content.GetComponentInParent<Region>();
+            if(region == null)
+            {
+                return null;
+            }
             if(content.parent != region.m_contentPanel)
             {
                 return null;
@@ -452,6 +463,9 @@ namespace Battlehub.UIControls.DockPanels
             bool destroy = m_contentPanel.childCount == 1 && targetRegion != this && m_root.RootRegion != this;
             
             targetRegion.Insert(targetIndex, tab, content, targetSplitType);
+            targetRegion.RaiseDepthChanged();
+            RaiseDepthChanged();
+
 
             if (destroy)
             {
@@ -518,8 +532,6 @@ namespace Battlehub.UIControls.DockPanels
                     SplitBottom(tab, content);
                     break;
             }
-
-            RaiseDepthChanged();
         }
 
         private void Insert(int index, Tab tab, Transform content)
@@ -819,6 +831,15 @@ namespace Battlehub.UIControls.DockPanels
             m_root.CursorHelper.SetCursor(this, null);
         }
 
+        private void SetRaycastTargets(bool value)
+        {
+            Region[] regions = m_root.GetComponentsInChildren<Region>();
+            for(int i = 0; i < regions.Length; ++i)
+            {
+                regions[i].m_frameImage.raycastTarget = value;
+            }
+        }
+
         private void OnTabBeginDrag(Tab tab, PointerEventData args)
         {
             m_pointerOverTab = null;
@@ -828,6 +849,7 @@ namespace Battlehub.UIControls.DockPanels
             m_beginDragRegion = m_pointerOverRegion = tab.GetComponentInParent<Region>();
             m_dragContent = m_contentPanel.GetChild(tab.Index);
 
+            SetRaycastTargets(true);
             BeginDragInsideOfTabPanel(this, tab, args);
         }
 
@@ -1037,7 +1059,7 @@ namespace Battlehub.UIControls.DockPanels
         private void SetMaxTabSiblingIndex(Tab tab)
         {
             Region region = tab.GetComponentInParent<Region>();
-            tab.transform.SetSiblingIndex(region.m_tabPanel.transform.childCount - 1);
+            tab.transform.SetSiblingIndex(Mathf.Max(region.m_tabPanel.transform.childCount - 1, 0));
             m_pointerOverTab = null;
         }
 
@@ -1077,9 +1099,10 @@ namespace Battlehub.UIControls.DockPanels
             else
             {
                 Unsubscribe(tab, m_beginDragRegion);
-                Move(tab, m_dragContent, tab.Index, tab.GetComponentInParent<Region>(), m_splitType);
 
-                //Depth changed
+                Region targetRegion = tab.GetComponentInParent<Region>();
+                Move(tab, m_dragContent, tab.Index, targetRegion, m_splitType);
+                targetRegion.UpdateVisualState();
             }
 
             IEnumerable<Tab> children = m_beginDragRegion.m_tabPanel.transform.OfType<Transform>().Select(t => t.GetComponent<Tab>());
@@ -1094,6 +1117,7 @@ namespace Battlehub.UIControls.DockPanels
 
             UpdateResizers();
             UpdateVisualState();
+            SetRaycastTargets(false);
 
             m_dragContent = null;
             m_beginDragRegion = null;
@@ -1101,6 +1125,8 @@ namespace Battlehub.UIControls.DockPanels
             m_isFree = false;
             m_splitType = RegionSplitType.None;
             m_isDraggingOutside = false;
+
+            ForceUpdateLayoutImmediate(m_root.transform);
         }
 
         private RectTransform CreateFreeRegion(Tab tab, Transform content, Vector2 size, Vector2 pivot, Vector3 worldPos)
@@ -1121,9 +1147,26 @@ namespace Battlehub.UIControls.DockPanels
 
             freeRegion.Fit();
 
+            
             freeRegion.RaiseDepthChanged();
-           
+
+            ForceUpdateLayoutImmediate(freeRegion.transform);
+
             return rt;
+        }
+
+        private void ForceUpdateLayoutImmediate(Transform transform)
+        {
+            if(!m_forceRebuildLayoutImmediate)
+            {
+                return;
+            }
+
+            HorizontalOrVerticalLayoutGroup[] layoutGroups = transform.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
+            for (int i = 0; i < layoutGroups.Length; ++i)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)layoutGroups[i].transform);
+            }
         }
 
         private void UpdateVisualState(int expectedChildrenCount = 0)
@@ -1161,12 +1204,12 @@ namespace Battlehub.UIControls.DockPanels
             {
                 if (m_headerImage != null)
                 {
-                    m_headerImage.enabled = false;
+                    m_headerImage.enabled = m_childrenPanel.childCount == expectedChildrenCount;
                 }
 
                 if (m_frameImage != null)
                 {
-                    m_frameImage.enabled = false;
+                    m_frameImage.enabled = m_childrenPanel.childCount == expectedChildrenCount;
                 }
             }
         }
@@ -1302,7 +1345,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 if (dragRegion.GetSiblingIndex() != m_root.Free.childCount - 1)
                 {
-                    dragRegion.SetSiblingIndex(m_root.Free.childCount - 1);
+                    dragRegion.SetSiblingIndex(Mathf.Max(0,  m_root.Free.childCount - 1));
 
                     RaiseDepthChanged();
                 }

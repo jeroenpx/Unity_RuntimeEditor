@@ -42,7 +42,7 @@ namespace Battlehub.UIControls.DockPanels
             depthMasks.name = "DepthMasks";
             RectTransform depthMasksRT = depthMasks.AddComponent<RectTransform>();
             depthMasksRT.SetParent(m_root.Free.parent, false);
-            depthMasksRT.SetSiblingIndex(m_root.Free.GetSiblingIndex());
+            depthMasksRT.SetSiblingIndex(0);
             depthMasksRT.Stretch();
             m_depthMasks = depthMasksRT;
 
@@ -165,6 +165,7 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             depthMask.Depth = depth;
+
             ApplyDepth(region, depthMask);
         }
 
@@ -174,9 +175,18 @@ namespace Battlehub.UIControls.DockPanels
             pos.z = -depthMask.Depth * 0.01f;
             depthMask.Transform.localPosition = pos;
 
-            pos = region.transform.localPosition;
-            pos.z = -(0.005f + depthMask.Depth * 0.01f);
-            region.transform.localPosition = pos;
+            if (region.transform.parent.GetComponentInParent<Region>() == null)
+            {
+                pos = region.transform.localPosition;
+                pos.z = -(0.005f + depthMask.Depth * 0.01f);
+                region.transform.localPosition = pos;
+            }
+            else
+            {
+                pos = region.transform.localPosition;
+                pos.z = 0;
+                region.transform.localPosition = pos;
+            }   
         }
 
         private void OnRegionBeginDrag(Region region)

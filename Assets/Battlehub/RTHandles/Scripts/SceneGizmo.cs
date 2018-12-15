@@ -533,7 +533,7 @@ namespace Battlehub.RTHandles
                 m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y, Size.x, Size.y);
                 if (m_camera.pixelRect.height == 0 || m_camera.pixelRect.width == 0)
                 {
-                    enabled = false;
+                   // enabled = false;
                     return;
                 }
                 else
@@ -542,7 +542,7 @@ namespace Battlehub.RTHandles
                     {
                         initColliders = true;
                     }
-                    enabled = true;
+                   // enabled = true;
                 }
                 m_camera.depth = Window.Camera.depth + 1;
                 m_aspect = m_camera.aspect;

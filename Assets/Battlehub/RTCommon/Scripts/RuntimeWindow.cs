@@ -162,6 +162,8 @@ namespace Battlehub.RTCommon
             Editor.RegisterWindow(this);
         }
 
+
+        
      
         protected override void OnDestroyOverride()
         {
@@ -250,14 +252,6 @@ namespace Battlehub.RTCommon
 
                     Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
                     m_camera.pixelRect = new Rect(corners[0], size);
-                    // m_camera.
-                    //m_camera.aspect = size.x / Mathf.Max(size.y, 0.001f);
-                    Debug.Log(m_camera.pixelWidth + " " + m_camera.scaledPixelWidth);
-
-
-
-                    Debug.Log("After setting rect " + m_camera.pixelWidth + " " + m_camera.scaledPixelWidth);
-
                 }
             }
         }

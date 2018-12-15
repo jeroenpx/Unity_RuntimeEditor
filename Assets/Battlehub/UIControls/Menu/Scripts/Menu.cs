@@ -299,9 +299,6 @@ namespace Battlehub.UIControls.MenuControl
             {
                 if(m_child == null)
                 {
-
-                    Debug.Log(name);
-
                     MenuItem parentMenuItem = m_parent;
                     while (parentMenuItem != null && !parentMenuItem.IsPointerOver)
                     {

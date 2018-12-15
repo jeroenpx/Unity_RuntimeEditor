@@ -458,6 +458,31 @@ namespace Battlehub.RTCommon
             m_instance.m_eventSystem = eventSystem;
         }
 
+        private bool m_isPaused;
+        public bool IsApplicationPaused
+        {
+            get { return m_isPaused; }
+        }
+
+        private void OnApplicationQuit()
+        {
+            m_isPaused = true;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if(Application.isEditor)
+            {
+                return;
+            }
+            m_isPaused = !hasFocus;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            m_isPaused = pauseStatus;
+        }
+
         protected virtual void Awake()
         {
             if (m_instance != null)
@@ -551,6 +576,11 @@ namespace Battlehub.RTCommon
         {
             m_windows.Remove(window.gameObject);
 
+            if(IsApplicationPaused)
+            {
+                return;
+            }
+
             if(WindowUnregistered != null)
             {
                 WindowUnregistered(window);
@@ -567,6 +597,7 @@ namespace Battlehub.RTCommon
                 ActivateWindow(activeWindow);
             }
         }
+
 
         private void Update()
         {

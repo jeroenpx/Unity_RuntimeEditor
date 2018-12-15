@@ -34,6 +34,9 @@ namespace Battlehub.UIControls.DockPanels
         private Vector2 m_adjustment;
         private bool m_isDragging;
 
+        [SerializeField]
+        private bool m_forceRebuildLayoutImmediate = true;
+
         private void Awake()
         {
             if(m_region == null)
@@ -150,16 +153,13 @@ namespace Battlehub.UIControls.DockPanels
 
                 RectTransform rt = (RectTransform)transform;
                 Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, position, camera, out m_adjustment));
-
-                //RectTransform freePanelRt = (RectTransform)m_region.Root.Free;
-                //Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out m_prevPoint));
             }
-            else
+            if (m_forceRebuildLayoutImmediate)
             {
                 m_layoutGroups = m_region.Root.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
             }
 
-            if(BeginResize != null)
+            if (BeginResize != null)
             {
                 BeginResize(this, m_region);
             }
@@ -267,14 +267,17 @@ namespace Battlehub.UIControls.DockPanels
                     m_layout.flexibleWidth = 1 - m_siblingLayout.flexibleWidth;
                     m_layout.flexibleHeight = 1 - m_siblingLayout.flexibleHeight;
                 }
+            }
 
-                for(int i = 0; i < m_layoutGroups.Length; ++i)
+            if(m_forceRebuildLayoutImmediate)
+            {
+                for (int i = 0; i < m_layoutGroups.Length; ++i)
                 {
                     LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)m_layoutGroups[i].transform);
                 }
             }
-
-            if(Resize != null)
+            
+            if (Resize != null)
             {
                 Resize(this, m_region);
             }

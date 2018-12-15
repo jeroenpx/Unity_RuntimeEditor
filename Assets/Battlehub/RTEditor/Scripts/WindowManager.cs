@@ -64,10 +64,10 @@ namespace Battlehub.RTEditor
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
         private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();
 
-        private void Awake()
+        private void Start()
         {
-            
-            if(m_dockPanels == null)
+
+            if (m_dockPanels == null)
             {
                 m_dockPanels = FindObjectOfType<DockPanelsRoot>();
             }
@@ -77,17 +77,16 @@ namespace Battlehub.RTEditor
             m_dockPanels.TabClosed += OnTabClosed;
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
 
-            if(m_componentsRoot == null)
+            if (m_componentsRoot == null)
             {
                 m_componentsRoot = transform;
             }
-        }
 
-        private void Start()
-        {
             m_editor = IOC.Resolve<IRTE>();
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
         }
+
+
 
         private void OnDestroy()
         {
@@ -346,27 +345,17 @@ namespace Battlehub.RTEditor
 
         private void OnRegionDepthChanged(Region region, int depth)
         {
-            RuntimeWindow window = region.GetComponentInChildren<RuntimeWindow>();
-            if(window.Camera != null)
+            RuntimeWindow[] windows = region.GetComponentsInChildren<RuntimeWindow>();
+            for(int i = 0; i < windows.Length; ++i)
             {
-                window.Camera.depth = depth * 2;
+                RuntimeWindow window = windows[i];
+
+                if (window.Camera != null)
+                {
+                    window.Camera.depth = depth * 2;
+                }
             }
         }
-
-        private void ApplyMaterial(GameObject go, Material material)
-        {
-            if(go.GetComponent<RuntimeWindow>() != null)
-            {
-                return;
-            }
-
-            Graphic graphic = go.GetComponent<Graphic>();
-            if(graphic)
-            {
-               // gra
-            }
-        }
-
     }
 }
 

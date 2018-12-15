@@ -65,6 +65,7 @@ namespace Battlehub.RTCommon
             OnDestroyOverride();
         }
 
+
         protected virtual void AwakeOverride()
         {
 
