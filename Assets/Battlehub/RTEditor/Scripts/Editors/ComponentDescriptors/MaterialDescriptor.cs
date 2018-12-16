@@ -5,10 +5,11 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-using Battlehub.RTSaveLoad;
+using Battlehub.RTSaveLoad2;
 using Battlehub.Utils;
 
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTCommon;
 #if PROC_MATERIAL
 using ProcMaterial = UnityEngine.ProceduralMaterial;
 using ProcPropertyDescription = UnityEngine.ProceduralPropertyDescription;
@@ -296,7 +297,7 @@ namespace Battlehub.RTEditor
         public MaterialPropertyDescriptor[] GetProperties(MaterialEditor editor, object converter)
         {
             RuntimeShaderInfo shaderInfo = null;
-            IRuntimeShaderUtil shaderUtil = Dependencies.ShaderUtil;
+            IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
             if (shaderUtil != null)
             {
                 shaderInfo = shaderUtil.GetShaderInfo(editor.Material.shader);

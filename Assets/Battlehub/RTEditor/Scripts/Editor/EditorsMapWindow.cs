@@ -74,17 +74,42 @@ namespace Battlehub.RTEditor
             Init();
         }
 
+
+        private void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
+        {
+            //assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
+            assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.Contains("UnityEditor") && !a.FullName.Contains("Assembly-CSharp-Editor")).OrderBy(a => a.FullName).ToArray();
+
+            List<Type> allUOTypes = new List<Type>();
+            List<Assembly> assembliesList = new List<Assembly>();
+
+            for (int i = 0; i < assemblies.Length; ++i)
+            {
+                Assembly assembly = assemblies[i];
+                Type[] uoTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(UnityEngine.Object)) && !t.IsGenericType).ToArray();
+                if (uoTypes.Length > 0)
+                {
+                    assembliesList.Add(assembly);
+                    allUOTypes.AddRange(uoTypes);
+                }
+            }
+
+            types = allUOTypes.OrderByDescending(t => t.FullName.Contains("UnityEngine")).ToArray();
+            assemblies = new Assembly[] { null }.Union(assembliesList.OrderBy(a => a.FullName)).ToArray();
+        }
+
+
         private void Init()
         {
             m_map = Resources.Load<EditorsMapStorage>(EditorsMapStorage.EditorsMapPrefabName);
             EditorsMap.LoadMap();
 
-            Assembly unityAssembly = typeof(GameObject).Assembly;
-            Assembly unityEditorAssembly = typeof(Editor).Assembly;
-            Assembly unityUI = typeof(UnityEngine.UI.Button).Assembly;
-            Assembly unityNet = typeof(UnityEngine.Networking.NetworkBehaviour).Assembly;
-            Assembly yetAnotherAssembly = typeof(NetworkScenePostProcess).Assembly;
-            Assembly[] otherAssemblies = AppDomain.CurrentDomain.GetAssemblies().Except(new[] { unityAssembly, unityEditorAssembly, unityUI, unityNet, yetAnotherAssembly }).ToArray();
+            Assembly[] allAssemblies;
+            Type[] types;
+            GetUOAssembliesAndTypes(out allAssemblies, out types);
+
+            Assembly[] unityAssemblies = allAssemblies.Where(a => a != null && a.FullName != null && a.FullName.Contains("UnityEngine")).ToArray();
+            Assembly[] otherAssemblies = allAssemblies.Where(a => a != null && a.FullName != null && !a.FullName.Contains("UnityEngine")).ToArray();
 
             m_objectEditorDescriptors = new[] { typeof(GameObject) }
                 .Where(t => t.IsPublic && !t.IsGenericType)
@@ -92,7 +117,7 @@ namespace Battlehub.RTEditor
             m_propertyEditorDescriptors = new[] { typeof(object), typeof(UnityEngine.Object), typeof(bool), typeof(Enum), typeof(List<>), typeof(Array), typeof(string), typeof(int), typeof(float), typeof(Range), typeof(Vector2), typeof(Vector3), typeof(Vector4), typeof(Quaternion), typeof(Color), typeof(Bounds) }
                 .Where(t =>  t.IsPublic)
                 .Select(t => new EditorDescriptor(t, m_map != null && EditorsMap.IsPropertyEditorEnabled(t), m_map != null ? EditorsMap.GetPropertyEditor(t, true) : null, true)).ToArray();
-            m_stdComponentEditorDescriptors = unityAssembly.GetTypes()
+            m_stdComponentEditorDescriptors = unityAssemblies.SelectMany(a => a.GetTypes())
                 .Where(t => typeof(Component).IsAssignableFrom(t) && t.IsPublic && !t.IsGenericType)
                 .OrderBy(t => (t == typeof(Component)) ? string.Empty : t.Name)
                 .Select(t => new EditorDescriptor(t, m_map != null && EditorsMap.IsObjectEditorEnabled(t), m_map != null ? EditorsMap.GetObjectEditor(t, true) : null, false)).ToArray();

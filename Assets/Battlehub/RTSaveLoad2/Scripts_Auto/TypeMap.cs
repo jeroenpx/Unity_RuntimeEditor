@@ -11,9 +11,8 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.Battlehub.SL2;
-using Battlehub.SL2;
-using UnityEngine.Events;
 using UnityEngine.Events.Battlehub.SL2;
+using UnityEngine.Events;
 
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
@@ -196,12 +195,6 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(ExposeToEditor), new System.Guid("34740418-83eb-4b3a-931a-07bee88d81db"));
             m_toType.Add(new System.Guid("0b046b2c-5763-4525-bac0-cc07da016cdd"), typeof(PersistentExposeToEditor));
             m_toType.Add(new System.Guid("34740418-83eb-4b3a-931a-07bee88d81db"), typeof(ExposeToEditor));
-            m_toPeristentType.Add(typeof(TestBehavior), typeof(PersistentTestBehavior));
-            m_toUnityType.Add(typeof(PersistentTestBehavior), typeof(TestBehavior));
-            m_toGuid.Add(typeof(PersistentTestBehavior), new System.Guid("9c1990b4-3f97-4a73-9005-4220ffafc5b9"));
-            m_toGuid.Add(typeof(TestBehavior), new System.Guid("9ac80b19-a75b-4a9c-9291-41cd41f53c4f"));
-            m_toType.Add(new System.Guid("9c1990b4-3f97-4a73-9005-4220ffafc5b9"), typeof(PersistentTestBehavior));
-            m_toType.Add(new System.Guid("9ac80b19-a75b-4a9c-9291-41cd41f53c4f"), typeof(TestBehavior));
             m_toPeristentType.Add(typeof(Vector2), typeof(PersistentVector2));
             m_toUnityType.Add(typeof(PersistentVector2), typeof(Vector2));
             m_toGuid.Add(typeof(PersistentVector2), new System.Guid("5ba3ff6b-8b6a-4184-8949-663c95d9c896"));
@@ -286,12 +279,6 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(UnityEventBase), new System.Guid("9e9f6774-aeb8-4cc5-b149-597a62077a89"));
             m_toType.Add(new System.Guid("1f0e42fc-2817-49d9-af67-1fd15dd6f9ed"), typeof(PersistentUnityEventBase));
             m_toType.Add(new System.Guid("9e9f6774-aeb8-4cc5-b149-597a62077a89"), typeof(UnityEventBase));
-            m_toPeristentType.Add(typeof(Test), typeof(PersistentTest));
-            m_toUnityType.Add(typeof(PersistentTest), typeof(Test));
-            m_toGuid.Add(typeof(PersistentTest), new System.Guid("7d350e73-72d0-4659-9145-cd4ade149e0b"));
-            m_toGuid.Add(typeof(Test), new System.Guid("c04aa8f4-8a9d-44fc-a485-121d2923ecdc"));
-            m_toType.Add(new System.Guid("7d350e73-72d0-4659-9145-cd4ade149e0b"), typeof(PersistentTest));
-            m_toType.Add(new System.Guid("c04aa8f4-8a9d-44fc-a485-121d2923ecdc"), typeof(Test));
             
             OnConstructed();
         }

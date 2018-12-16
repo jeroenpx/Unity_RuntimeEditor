@@ -1,1 +1,0 @@
-{"dummy":0,"Name":"Unlit/Texture","InstanceId":8589944828,"PropertyCount":1,"PropertyDescriptions":["Base (RGB)"],"PropertyNames":["_MainTex"],"PropertyTypes":[4],"PropertyRangeLimits":[{"Def":0.0,"Min":0.0,"Max":0.0}],"PropertyTexDims":[2],"IsHidden":[false]}

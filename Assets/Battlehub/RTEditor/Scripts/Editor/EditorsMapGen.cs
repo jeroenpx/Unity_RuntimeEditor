@@ -60,7 +60,8 @@ namespace Battlehub.RTEditor
             editorsMap.IsMaterialEditorEnabled = materialEditorsEnabled.ToArray();
 
             string path = "Assets" + PrefabsPath + "/Resources/" + EditorsMapStorage.EditorsMapPrefabName + ".prefab";
-            PrefabUtility.CreatePrefab(path, go);
+            //PrefabUtility.CreatePrefab(path, go);
+            PrefabUtility.SaveAsPrefabAsset(go, path);
             UnityEngine.Object.DestroyImmediate(go);
 
             AssetDatabase.ImportAsset("Assets" + ScriptsPath, ImportAssetOptions.ImportRecursive);

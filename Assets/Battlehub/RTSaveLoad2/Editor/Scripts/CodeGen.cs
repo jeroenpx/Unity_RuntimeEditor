@@ -478,7 +478,6 @@ namespace Battlehub.RTSaveLoad2
                 Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
                 if(mappingType == null)
                 {
-                    Debug.LogWarning("Type " + mapping.MappedAssemblyQualifiedName + " was not found");
                     continue;
                 }
 
@@ -718,6 +717,10 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
+                if(prop.MappedType == null)
+                {
+                    continue;
+                }
               
                 string typeName;
                 Type repacementType = GetReplacementType(prop.MappedType);
@@ -840,6 +843,11 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
+                if(prop.MappedType == null)
+                {
+                    continue;
+                }
+
                 sb.Append(TAB);
 
                 string get = "uo.{1}";
@@ -893,6 +901,10 @@ namespace Battlehub.RTSaveLoad2
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
                 if (!prop.IsEnabled || prop.HasPropertyInTemplate)
+                {
+                    continue;
+                }
+                if (prop.MappedType == null)
                 {
                     continue;
                 }
@@ -997,6 +1009,10 @@ namespace Battlehub.RTSaveLoad2
                 {
                     continue;
                 }
+                if (prop.MappedType == null)
+                {
+                    continue;
+                }
 
                 if (prop.HasDependenciesOrIsDependencyItself)
                 {
@@ -1031,6 +1047,10 @@ namespace Battlehub.RTSaveLoad2
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
                 if (!prop.IsEnabled || prop.HasPropertyInTemplate)
+                {
+                    continue;
+                }
+                if (prop.MappedType == null)
                 {
                     continue;
                 }
@@ -1077,7 +1097,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     continue;
                 }
-
+                
                 if(mapping.IsEnabled)
                 {
                     if (!namespaces.Contains(mapping.MappedNamespace) && !string.IsNullOrEmpty(mapping.MappedNamespace))
@@ -1111,6 +1131,7 @@ namespace Battlehub.RTSaveLoad2
                         if(type == null)
                         {
                             Debug.LogWarning("Unable to resolve type: " + propertyMapping.MappedAssemblyQualifiedName);
+                            continue;
                         }
                         Type replacementType = GetReplacementType(type);
                         if (replacementType != null)

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Linq;
 
 using Battlehub.Utils;
-using Battlehub.RTSaveLoad;
+//using Battlehub.RTSaveLoad;
 using Battlehub.RTCommon;
 
 namespace Battlehub.RTHandles
@@ -13,8 +13,8 @@ namespace Battlehub.RTHandles
     [DisallowMultipleComponent]
     public class EditorDemo : RTEBase
     {
-        [SerializeField]
-        private string SaveFileName = "RTHandlesEditorDemo";
+        //[SerializeField]
+        //private string SaveFileName = "RTHandlesEditorDemo";
         private bool m_saveFileExists;
 
         public GameObject[] Prefabs;
@@ -84,7 +84,7 @@ namespace Battlehub.RTHandles
         
         private GameObject m_game;
 
-        private ISceneManager m_sceneManager;
+       // private ISceneManager m_sceneManager;
 
         private void OnAwaked(ExposeToEditor obj)
         {
@@ -259,16 +259,16 @@ namespace Battlehub.RTHandles
             Object.Awaked += OnAwaked;
             Object.Destroyed += OnDestroyed;
 
-            m_sceneManager = Dependencies.SceneManager;
-            if (m_sceneManager != null)
-            {
-                m_sceneManager.ActiveScene.Name = SaveFileName;
-                m_sceneManager.Exists(m_sceneManager.ActiveScene, exists =>
-                {
-                    m_saveFileExists = exists;
-                    LoadButton.interactable = exists;
-                });
-            }
+            //m_sceneManager = Dependencies.SceneManager;
+            //if (m_sceneManager != null)
+            //{
+            //    m_sceneManager.ActiveScene.Name = SaveFileName;
+            //    m_sceneManager.Exists(m_sceneManager.ActiveScene, exists =>
+            //    {
+            //        m_saveFileExists = exists;
+            //        LoadButton.interactable = exists;
+            //    });
+            //}
         }
 
         protected override void OnDestroy()
@@ -828,16 +828,16 @@ namespace Battlehub.RTHandles
             Undo.Purge();
 
             ConfirmationSave.SetActive(false);
-            if (m_sceneManager != null)
-            {
-                m_sceneManager.ActiveScene.Name = SaveFileName;
-                m_sceneManager.SaveScene(m_sceneManager.ActiveScene, () =>
-                {
-                    SaveButton.interactable = false;
-                    m_saveFileExists = true;
-                    LoadButton.interactable = true;
-                });
-            }
+            //if (m_sceneManager != null)
+            //{
+            //    m_sceneManager.ActiveScene.Name = SaveFileName;
+            //    m_sceneManager.SaveScene(m_sceneManager.ActiveScene, () =>
+            //    {
+            //        SaveButton.interactable = false;
+            //        m_saveFileExists = true;
+            //        LoadButton.interactable = true;
+            //    });
+            //}
         }
 
         public void Load()
@@ -860,14 +860,14 @@ namespace Battlehub.RTHandles
             }
 
             ConfirmationLoad.SetActive(false);
-            if (m_sceneManager != null)
-            {
-                m_sceneManager.ActiveScene.Name = SaveFileName;
-                m_sceneManager.LoadScene(m_sceneManager.ActiveScene, () =>
-                {
-                    SaveButton.interactable = false;
-                });
-            }
+            //if (m_sceneManager != null)
+            //{
+            //    m_sceneManager.ActiveScene.Name = SaveFileName;
+            //    m_sceneManager.LoadScene(m_sceneManager.ActiveScene, () =>
+            //    {
+            //        SaveButton.interactable = false;
+            //    });
+            //}
         }
 
         public void DoUndo()
@@ -885,8 +885,8 @@ namespace Battlehub.RTHandles
             UndoButton.interactable = Undo.CanUndo;
             RedoButton.interactable = Undo.CanRedo;
 
-            SaveButton.interactable = m_sceneManager != null;
-            LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
+           // SaveButton.interactable = m_sceneManager != null;
+            //LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
         }
 
         private void OnRedoCompleted()
@@ -894,8 +894,8 @@ namespace Battlehub.RTHandles
             UndoButton.interactable = Undo.CanUndo;
             RedoButton.interactable = Undo.CanRedo;
 
-            SaveButton.interactable = m_sceneManager != null;
-            LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
+            //SaveButton.interactable = m_sceneManager != null;
+           // LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
         }
 
         private void OnUndoRedoStateChanged()
@@ -903,8 +903,8 @@ namespace Battlehub.RTHandles
             UndoButton.interactable = Undo.CanUndo;
             RedoButton.interactable = Undo.CanRedo;
 
-            SaveButton.interactable = m_sceneManager != null; 
-            LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
+            //SaveButton.interactable = m_sceneManager != null; 
+            //LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
         }
 
         private void UpdateUIState(bool isInPlayMode)
@@ -927,7 +927,7 @@ namespace Battlehub.RTHandles
             RedoButton.gameObject.SetActive(!isInPlayMode);
             UI.gameObject.SetActive(!isInPlayMode);
             Grid.gameObject.SetActive(TogGrid.isOn && !isInPlayMode);
-            LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
+            //LoadButton.interactable = m_sceneManager != null && m_saveFileExists;
 
             if (isInPlayMode)
             {

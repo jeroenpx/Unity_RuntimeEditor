@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 using Battlehub.UIControls;
-using Battlehub.RTSaveLoad;
+//using Battlehub.RTSaveLoad;
 #if UNITY_WINRT
 using Battlehub.RTCommon;
 #endif
@@ -37,11 +37,11 @@ namespace Battlehub.RTEditor
 
             RuntimeEditor runtimeEditor = FindObjectOfType<RuntimeEditor>();
             ProjectFolderView resources = runtimeEditor.GetComponentInChildren<ProjectFolderView>(true);
-            IProjectManager manager = Dependencies.ProjectManager;
-            if(manager != null)
+            //IProjectManager manager = Dependencies.ProjectManager;
+            //if(manager != null)
             {
-                ProjectItem[] itemsOfType = manager.Project.FlattenHierarchy();
-                itemsOfType = itemsOfType.Where(item => item.TypeName != null && Type.GetType(item.TypeName) != null && ObjectType.IsAssignableFrom(Type.GetType(item.TypeName))).ToArray();
+               // ProjectItem[] itemsOfType = manager.Project.FlattenHierarchy();
+               // itemsOfType = itemsOfType.Where(item => item.TypeName != null && Type.GetType(item.TypeName) != null && ObjectType.IsAssignableFrom(Type.GetType(item.TypeName))).ToArray();
 
                 m_resources = Instantiate(resources);
                // m_resources.TypeFilter = ObjectType;
@@ -74,25 +74,25 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnResourcesSelectionChanged(object sender, SelectionChangedArgs<ProjectItemObjectPair> e)
-        {
-            if (e.NewItem != null && e.NewItem.IsNone)
-            {
-                IsNoneSelected = true;
-            }
-            else
-            {
-                IsNoneSelected = false;
-                if(e.NewItem != null)
-                {
-                    SelectedObject = e.NewItem.Object;
-                }
-                else
-                {
-                    SelectedObject = null;
-                }
-            }
-        }
+        //private void OnResourcesSelectionChanged(object sender, SelectionChangedArgs<ProjectItemObjectPair> e)
+        //{
+        //    if (e.NewItem != null && e.NewItem.IsNone)
+        //    {
+        //        IsNoneSelected = true;
+        //    }
+        //    else
+        //    {
+        //        IsNoneSelected = false;
+        //        if(e.NewItem != null)
+        //        {
+        //            SelectedObject = e.NewItem.Object;
+        //        }
+        //        else
+        //        {
+        //            SelectedObject = null;
+        //        }
+        //    }
+        //}
 
         //private void OnResourcesDoubleClick(object sender, ProjectResourcesEventArgs e)
         //{

@@ -12,9 +12,8 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.Battlehub.SL2;
-using Battlehub.SL2;
-using UnityEngine.Events;
 using UnityEngine.Events.Battlehub.SL2;
+using UnityEngine.Events;
 
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2
@@ -67,7 +66,6 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1030, typeof(PersistentCollider));
             model.Add(typeof(PersistentFlare), true);
             model.Add(typeof(PersistentMonoBehaviour), true)
-                .AddSubType(1025, typeof(PersistentTestBehavior))
                 .AddSubType(1026, typeof(PersistentExposeToEditor));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
@@ -81,7 +79,6 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1025, typeof(PersistentRuntimeScene));
             model.Add(typeof(PersistentRuntimeScene), true);
             model.Add(typeof(PersistentExposeToEditor), true);
-            model.Add(typeof(PersistentTestBehavior), true);
             model.Add(typeof(Vector2), false).SetSurrogate(typeof(PersistentVector2));
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
             model.Add(typeof(Vector4), false).SetSurrogate(typeof(PersistentVector4));
@@ -98,7 +95,6 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentUnityEventBase), true)
                 .AddSubType(1025, typeof(PersistentUnityEvent))
                 .AddSubType(1026, typeof(PersistentExposeToEditorUnityEvent));
-            model.Add(typeof(Test), false).SetSurrogate(typeof(PersistentTest));
             
        }
    }
@@ -109,8 +105,6 @@ namespace UnityEngine.Rendering.Battlehub.SL2 {}
 namespace UnityEngine.SceneManagement.Battlehub.SL2 {}
 namespace Battlehub.RTSaveLoad2.Battlehub.SL2 {}
 namespace Battlehub.RTCommon.Battlehub.SL2 {}
-namespace Battlehub.SL2 {}
-namespace System.Collections.Generic.Battlehub.SL2 {}
 namespace UnityEngine.Events.Battlehub.SL2 {}
 
 

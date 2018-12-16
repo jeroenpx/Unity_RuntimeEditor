@@ -158,6 +158,18 @@ namespace Battlehub.UIControls.DockPanels
             Region.TabClosed -= OnTabClosed;
         }
 
+        private void OnRectTransformDimensionsChange()
+        {
+            foreach(Transform child in Free)
+            {
+                Region region =  child.GetComponent<Region>();
+                if(region != null)
+                {
+                    region.Fit();
+                }
+            }
+        }
+
         private void OnTabActivated(Region region, Transform arg)
         {
             if (region.Root != this)

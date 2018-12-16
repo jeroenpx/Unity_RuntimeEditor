@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityObject = UnityEngine.Object;
-using Battlehub.RTSaveLoad;
 
 namespace Battlehub.RTEditor
 {
     public class SelectFolderDialog : EditorWindow
     {
+        /*
         public Dictionary<UnityObject, FolderTemplate[]> ObjectsWithMultipleFolders = new Dictionary<UnityObject, FolderTemplate[]>();
         private int m_index;
         private bool m_closed;
@@ -68,9 +68,9 @@ namespace Battlehub.RTEditor
                 m_closed = true;
             }
             GUILayout.EndHorizontal();
-
-            
         }
+
+        */
     }
 
 }

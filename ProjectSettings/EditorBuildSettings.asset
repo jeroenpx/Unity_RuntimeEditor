@@ -23,7 +23,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Battlehub/RTHandles/Demo/ExampleScenes/Mobile3_BasicWithSceneComponent.unity
     guid: 9fa22473c39f8e84695fd75b24dc4e38
-  - enabled: 1
-    path: Assets/GoogleARCore/Examples/HelloAR/Scenes/RTHHelloARWith.unity
+  - enabled: 0
+    path: Assets/RTHHelloAR.unity
     guid: b9d5641b76555884b91064119a422b2e
   m_configObjects: {}

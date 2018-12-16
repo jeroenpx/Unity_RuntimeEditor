@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Battlehub.RTSaveLoad;
 using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
 {
@@ -38,13 +37,13 @@ namespace Battlehub.RTHandles
             m_dragPlane = new Plane(Vector3.up, m_editor.Pivot);
             if(GetPointOnDragPlane(out point))
             {
-                m_instance = Prefab.InstantiatePrefab(point, Quaternion.identity);
+                //m_instance = Prefab.InstantiatePrefab(point, Quaternion.identity);
                 enabled = true;
                 m_spawn = true;
             }
             else
             {
-                m_instance = Prefab.InstantiatePrefab(m_editor.Pivot, Quaternion.identity);
+                //m_instance = Prefab.InstantiatePrefab(m_editor.Pivot, Quaternion.identity);
             }
 
             ExposeToEditor exposeToEditor = m_instance.GetComponent<ExposeToEditor>();

@@ -35,7 +35,7 @@ namespace UnityEngine.Battlehub.SL2
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e.ToString());
+                Debug.LogError(e.ToString());
                 m_bytes = new byte[0];
                 m_isReadable = false;
             }

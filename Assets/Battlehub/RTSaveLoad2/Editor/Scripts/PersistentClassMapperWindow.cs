@@ -885,7 +885,8 @@ namespace Battlehub.RTSaveLoad2
             }
 
             EditorUtility.SetDirty(storageGO);
-            PrefabUtility.CreatePrefab(m_mappingStoragePath, storageGO);
+            PrefabUtility.SaveAsPrefabAsset(storageGO, m_mappingStoragePath);
+            ///PrefabUtility.CreatePrefab(m_mappingStoragePath, storageGO);
             UnityObject.DestroyImmediate(storageGO);
         }
 
@@ -1419,7 +1420,13 @@ namespace Battlehub.RTSaveLoad2
             {
                 PersistentPropertyMapping mapping = propertyMappings[i];
                 string key = mapping.MappedFullTypeName + " " + mapping.MappedName;
-                if (!propertyHs.Contains(key))
+
+                if(mapping.MappedType == null)
+                {
+                    Debug.LogWarning("Unable to find type " + mapping.MappedFullTypeName);
+                }
+
+                if (!propertyHs.Contains(key) || mapping.MappedType == null)
                 {
                     mapping.MappedName = null;
                     mapping.MappedTypeName = null;
@@ -1770,6 +1777,9 @@ namespace Battlehub.RTSaveLoad2
                     Directory.CreateDirectory(myPersistentClassesPath);
                 }
 
+                uoMappings = uoMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
+                surrogateMappings = surrogateMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
+
                 HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => t.FullName));
                 CodeGen codeGen = new CodeGen();
                 for (int i = 0; i < uoMappings.Length; ++i)
@@ -1781,7 +1791,7 @@ namespace Battlehub.RTSaveLoad2
                         {
                             continue;
                         }
-
+                      
                         if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
                         {
                             continue;
@@ -1812,6 +1822,8 @@ namespace Battlehub.RTSaveLoad2
                         {
                             continue;
                         }
+
+
 
                         if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
                         {
@@ -1900,7 +1912,8 @@ namespace Battlehub.RTSaveLoad2
                 storageGO = new GameObject();
                 filePathStorage = storageGO.AddComponent<FilePathStorage>();
                 filePathStorage.PathRecords = records.ToArray();
-                PrefabUtility.CreatePrefab(FilePathStoragePath, storageGO);
+                PrefabUtility.SaveAsPrefabAsset(storageGO, FilePathStoragePath);
+                //PrefabUtility.CreatePrefab(FilePathStoragePath, storageGO);
                 DestroyImmediate(storageGO);
             }
       

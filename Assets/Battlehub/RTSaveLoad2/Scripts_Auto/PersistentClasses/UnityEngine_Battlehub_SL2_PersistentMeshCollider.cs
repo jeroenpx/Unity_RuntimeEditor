@@ -17,14 +17,8 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(257)]
         public bool convex;
 
-        [ProtoMember(258)]
-        public bool inflateMesh;
-
         [ProtoMember(259)]
         public MeshColliderCookingOptions cookingOptions;
-
-        [ProtoMember(260)]
-        public float skinWidth;
 
         protected override void ReadFromImpl(object obj)
         {
@@ -32,9 +26,7 @@ namespace UnityEngine.Battlehub.SL2
             MeshCollider uo = (MeshCollider)obj;
             sharedMesh = ToID(uo.sharedMesh);
             convex = uo.convex;
-            inflateMesh = uo.inflateMesh;
             cookingOptions = uo.cookingOptions;
-            skinWidth = uo.skinWidth;
         }
 
         protected override object WriteToImpl(object obj)
@@ -43,9 +35,7 @@ namespace UnityEngine.Battlehub.SL2
             MeshCollider uo = (MeshCollider)obj;
             uo.sharedMesh = FromID(sharedMesh, uo.sharedMesh);
             uo.convex = convex;
-            uo.inflateMesh = inflateMesh;
             uo.cookingOptions = cookingOptions;
-            uo.skinWidth = skinWidth;
             return uo;
         }
 

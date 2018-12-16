@@ -4,7 +4,7 @@ using System.Linq;
 
 using Battlehub.UIControls;
 using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad;
+//using Battlehub.RTSaveLoad;
 
 namespace Battlehub.RTEditor
 {
@@ -19,7 +19,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Sprite SceneIcon;
 
-        private PopupWindow m_parentPopup;
+        //private PopupWindow m_parentPopup;
         private TreeView m_treeView;
 
         [HideInInspector]
@@ -31,64 +31,64 @@ namespace Battlehub.RTEditor
             set; //show progress if required;
         }
 
-        private IProjectManager m_projectManager;
-        private IRTE m_editor;
+        //private IProjectManager m_projectManager;
+        //private IRTE m_editor;
 
         private void Start()
         {
-            m_editor = IOC.Resolve<IRTE>();
-            m_parentPopup = GetComponentInParent<PopupWindow>();
-            if (m_parentPopup != null)
-            {
-                m_parentPopup.OK.AddListener(OnOK);
-            }
+            //m_editor = IOC.Resolve<IRTE>();
+            //m_parentPopup = GetComponentInParent<PopupWindow>();
+            //if (m_parentPopup != null)
+            //{
+            //    m_parentPopup.OK.AddListener(OnOK);
+            //}
 
-            m_treeView = GetComponentInChildren<TreeView>();
-            if (m_treeView == null)
-            {
-                m_treeView = Instantiate(TreeViewPrefab);
-                m_treeView.transform.SetParent(transform, false);
-            }
+            //m_treeView = GetComponentInChildren<TreeView>();
+            //if (m_treeView == null)
+            //{
+            //    m_treeView = Instantiate(TreeViewPrefab);
+            //    m_treeView.transform.SetParent(transform, false);
+            //}
 
-            m_treeView.ItemDataBinding += OnItemDataBinding;
-            m_treeView.ItemExpanding += OnItemExpanding;
-            m_treeView.SelectionChanged += OnSelectionChanged;
-            m_treeView.ItemDoubleClick += OnItemDoubleClick;
-            m_treeView.CanDrag = false;
-            m_treeView.CanEdit = false;
-            m_treeView.CanUnselectAll = false;
-            m_treeView.RemoveKey = KeyCode.None;
-            m_treeView.SelectAllKey = KeyCode.None;
-            m_treeView.RangeselectKey = KeyCode.None;
-            m_treeView.MultiselectKey = KeyCode.None;
+            //m_treeView.ItemDataBinding += OnItemDataBinding;
+            //m_treeView.ItemExpanding += OnItemExpanding;
+            //m_treeView.SelectionChanged += OnSelectionChanged;
+            //m_treeView.ItemDoubleClick += OnItemDoubleClick;
+            //m_treeView.CanDrag = false;
+            //m_treeView.CanEdit = false;
+            //m_treeView.CanUnselectAll = false;
+            //m_treeView.RemoveKey = KeyCode.None;
+            //m_treeView.SelectAllKey = KeyCode.None;
+            //m_treeView.RangeselectKey = KeyCode.None;
+            //m_treeView.MultiselectKey = KeyCode.None;
 
-            m_projectManager = Dependencies.ProjectManager;
+           // m_projectManager = Dependencies.ProjectManager;
 
-            if (m_projectManager == null)
+            //if (m_projectManager == null)
             {
                 Debug.LogError("ProjectManager.Instance is null");
                 return;
             }
 
-            if (ShowRoot)
-            {
-                m_treeView.Items = new[] { m_projectManager.Project };
-                m_treeView.SelectedItem = m_projectManager.Project;
-            }
-            else
-            {
-                if (m_projectManager.Project.Children != null)
-                {
-                    m_treeView.Items = m_projectManager.Project.Children.Where(c => c.IsFolder);
-                    m_treeView.SelectedItem = m_projectManager.Project.Children.Where(c => c.IsFolder).FirstOrDefault();
-                }
+            //if (ShowRoot)
+            //{
+            //    //m_treeView.Items = new[] { m_projectManager.Project };
+            //    //m_treeView.SelectedItem = m_projectManager.Project;
+            //}
+            //else
+            //{
+            //    //if (m_projectManager.Project.Children != null)
+            //    //{
+            //    //    m_treeView.Items = m_projectManager.Project.Children.Where(c => c.IsFolder);
+            //    //    m_treeView.SelectedItem = m_projectManager.Project.Children.Where(c => c.IsFolder).FirstOrDefault();
+            //    //}
 
-            }
+            //}
 
-            TreeViewItem root = m_treeView.GetTreeViewItem(0);
-            root.IsExpanded = true;
+            //TreeViewItem root = m_treeView.GetTreeViewItem(0);
+            //root.IsExpanded = true;
 
-            Input.ActivateInputField();
+            //Input.ActivateInputField();
         }
 
 
@@ -108,10 +108,10 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            if (m_parentPopup != null)
-            {
-                m_parentPopup.OK.RemoveListener(OnOK);
-            }
+            //if (m_parentPopup != null)
+            //{
+            //    m_parentPopup.OK.RemoveListener(OnOK);
+            //}
 
             if (m_treeView != null)
             {
@@ -124,6 +124,7 @@ namespace Battlehub.RTEditor
 
         private void OnItemDataBinding(object sender, TreeViewItemDataBindingArgs e)
         {
+            /*
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
             {
@@ -143,31 +144,32 @@ namespace Battlehub.RTEditor
 
                 e.HasChildren = item.Children != null && item.Children.Count(projectItem => projectItem.IsFolder || projectItem.IsScene) > 0;
             }
+            */
         }
 
         private void OnItemExpanding(object sender, ItemExpandingArgs e)
         {
-            ProjectItem item = e.Item as ProjectItem;
-            if (item != null)
-            {
-                e.Children = item.Children.Where(projectItem => projectItem.IsFolder).OrderBy(projectItem => projectItem.Name)
-                    .Union(item.Children.Where(projectItem => projectItem.IsScene).OrderBy(projectItem => projectItem.Name));
-            }
+            //ProjectItem item = e.Item as ProjectItem;
+            //if (item != null)
+            //{
+            //    e.Children = item.Children.Where(projectItem => projectItem.IsFolder).OrderBy(projectItem => projectItem.Name)
+            //        .Union(item.Children.Where(projectItem => projectItem.IsScene).OrderBy(projectItem => projectItem.Name));
+            //}
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedArgs e)
         {
-            ProjectItem selectedItem = (ProjectItem)e.NewItem;
-            if (selectedItem == null)
-            {
-                return;
-            }
-            if (selectedItem.IsScene)
-            {
-                Input.text = selectedItem.Name;
-            }
+            //ProjectItem selectedItem = (ProjectItem)e.NewItem;
+            //if (selectedItem == null)
+            //{
+            //    return;
+            //}
+            //if (selectedItem.IsScene)
+            //{
+            //    Input.text = selectedItem.Name;
+            //}
 
-            Input.ActivateInputField();
+            //Input.ActivateInputField();
         }
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
@@ -203,75 +205,75 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if (!ProjectItem.IsValidName(Input.text))
-            {
-                PopupWindow.Show("Scene name is invalid", "Scene name contains invalid characters", "OK");
-                args.Cancel = true;
-                return;
-            }
+            //if (!ProjectItem.IsValidName(Input.text))
+            //{
+            //    PopupWindow.Show("Scene name is invalid", "Scene name contains invalid characters", "OK");
+            //    args.Cancel = true;
+            //    return;
+            //}
 
-            ProjectItem selectedItem = (ProjectItem)m_treeView.SelectedItem;
-            if (selectedItem.IsScene)
-            {
-                if (Input.text.ToLower() == selectedItem.Name.ToLower())
-                {
-                    PopupWindow.Show("Scene with same name already exits", "Do you want to override it?", "Yes", yes =>
-                    {
-                        m_editor.Undo.Purge();
-                        ShowProgress = true;
-                        m_projectManager.SaveScene(selectedItem, () =>
-                        {
-                            ShowProgress = false;
-                            m_parentPopup.Close(false);
-                        });
-                    },
-                    "No", no => Input.ActivateInputField());
-                    args.Cancel = true;
-                }
-                else
-                {
-                    ProjectItem folder = selectedItem.Parent;
-                    SaveSceneToFolder(args, folder);
-                }
-            }
-            else
-            {
-                ProjectItem folder = selectedItem;
-                SaveSceneToFolder(args, folder);
-            }
+            //ProjectItem selectedItem = (ProjectItem)m_treeView.SelectedItem;
+            //if (selectedItem.IsScene)
+            //{
+            //    if (Input.text.ToLower() == selectedItem.Name.ToLower())
+            //    {
+            //        PopupWindow.Show("Scene with same name already exits", "Do you want to override it?", "Yes", yes =>
+            //        {
+            //            m_editor.Undo.Purge();
+            //            ShowProgress = true;
+            //            m_projectManager.SaveScene(selectedItem, () =>
+            //            {
+            //                ShowProgress = false;
+            //                m_parentPopup.Close(false);
+            //            });
+            //        },
+            //        "No", no => Input.ActivateInputField());
+            //        args.Cancel = true;
+            //    }
+            //    else
+            //    {
+            //        ProjectItem folder = selectedItem.Parent;
+            //        SaveSceneToFolder(args, folder);
+            //    }
+            //}
+            //else
+            //{
+            //    ProjectItem folder = selectedItem;
+            //    SaveSceneToFolder(args, folder);
+            //}
         }
 
-        private void SaveSceneToFolder(PopupWindowArgs args, ProjectItem folder)
-        {
-            if (folder.Children != null && folder.Children.Any(p => p.Name.ToLower() == Input.text.ToLower() && p.IsScene))
-            {
-                PopupWindow.Show("Scene with same name already exits", "Do you want to override it?", "Yes", yes =>
-                {
-                    m_editor.Undo.Purge();
-                    ShowProgress = true;
-                    m_projectManager.SaveScene(folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && p.IsScene).First(), () =>
-                    {
-                        ShowProgress = false;
-                        m_parentPopup.Close(false);
-                    });
-                },
-                "No", no => Input.ActivateInputField());
-                args.Cancel = true;
-            }
-            else
-            {
-                ProjectItem newScene = ProjectItem.CreateScene(Input.text);
-                folder.AddChild(newScene);
+        //private void SaveSceneToFolder(PopupWindowArgs args, ProjectItem folder)
+        //{
+        //    if (folder.Children != null && folder.Children.Any(p => p.Name.ToLower() == Input.text.ToLower() && p.IsScene))
+        //    {
+        //        PopupWindow.Show("Scene with same name already exits", "Do you want to override it?", "Yes", yes =>
+        //        {
+        //            m_editor.Undo.Purge();
+        //            ShowProgress = true;
+        //            m_projectManager.SaveScene(folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && p.IsScene).First(), () =>
+        //            {
+        //                ShowProgress = false;
+        //                m_parentPopup.Close(false);
+        //            });
+        //        },
+        //        "No", no => Input.ActivateInputField());
+        //        args.Cancel = true;
+        //    }
+        //    else
+        //    {
+        //        ProjectItem newScene = ProjectItem.CreateScene(Input.text);
+        //        folder.AddChild(newScene);
 
-                m_editor.Undo.Purge();
-                ShowProgress = true;
-                m_projectManager.SaveScene(newScene, () =>
-                {
-                    ShowProgress = false;
-                    m_parentPopup.Close(false);
-                });
-            }
-        }
+        //        m_editor.Undo.Purge();
+        //        ShowProgress = true;
+        //        m_projectManager.SaveScene(newScene, () =>
+        //        {
+        //            ShowProgress = false;
+        //            m_parentPopup.Close(false);
+        //        });
+        //    }
+        //}
     }
 }
 

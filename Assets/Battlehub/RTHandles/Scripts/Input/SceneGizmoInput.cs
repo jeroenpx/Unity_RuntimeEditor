@@ -19,6 +19,11 @@ namespace Battlehub.RTHandles
 
         private void Update()
         {
+            if(m_editor.ActiveWindow != m_sceneGizmo.Window && m_sceneGizmo.Window.IsPointerOver)
+            {
+                return;
+            }
+
             if (m_editor.Input.GetPointerUp(0))
             {
                m_sceneGizmo.Click();

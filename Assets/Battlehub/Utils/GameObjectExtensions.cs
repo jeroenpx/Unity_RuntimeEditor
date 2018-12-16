@@ -1,9 +1,4 @@
-﻿
-
-using UnityEngine;
-
-
-using System.Collections;
+﻿using UnityEngine;
 
 namespace Battlehub.Utils
 {
@@ -14,7 +9,8 @@ namespace Battlehub.Utils
             if (Application.isEditor && !Application.isPlaying)
             {
                 #if UNITY_EDITOR
-                return UnityEditor.PrefabUtility.GetPrefabType(go) == UnityEditor.PrefabType.Prefab;
+                UnityEditor.PrefabAssetType assetType = UnityEditor.PrefabUtility.GetPrefabAssetType(go);
+                return assetType == UnityEditor.PrefabAssetType.Regular || assetType == UnityEditor.PrefabAssetType.Model;
                 #else
                 throw new System.InvalidOperationException("Does not work in edit mode");
                 #endif

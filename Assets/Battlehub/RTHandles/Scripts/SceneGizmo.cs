@@ -247,7 +247,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (m_camera.pixelRect.Contains(Window.Pointer.ScreenPoint))
+            if (m_camera.pixelRect.Contains(Window.Pointer.ScreenPoint) && Editor.ActiveWindow == Window && Window.IsPointerOver)
             {
                 if (!m_mouseOver || updateAlpha)
                 {
