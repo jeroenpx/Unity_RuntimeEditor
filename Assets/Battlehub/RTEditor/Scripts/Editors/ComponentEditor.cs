@@ -134,17 +134,17 @@ namespace Battlehub.RTEditor
         public PropertyEditorCallback EndEditCallback;
 
         [SerializeField]
-        protected Transform EditorsPanel;
+        protected Transform EditorsPanel = null;
         [SerializeField]
-        private BoolEditor EnabledEditor;
+        private BoolEditor EnabledEditor = null;
         [SerializeField]
-        private Text Header;
+        private Text Header = null;
         [SerializeField]
-        private Toggle Expander;
+        private Toggle Expander = null;
         [SerializeField]
-        private GameObject ExpanderGraphics;
+        private GameObject ExpanderGraphics = null;
         [SerializeField]
-        private Button ResetButton;
+        private Button ResetButton = null;
 
         private object m_converter;
 

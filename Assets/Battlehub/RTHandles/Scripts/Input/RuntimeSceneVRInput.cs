@@ -8,7 +8,7 @@ namespace Battlehub.RTHandles
         private float m_countdownStartT = float.MaxValue;
         
         [SerializeField]
-        private RuntimeSceneVRMenu m_menu;
+        private RuntimeSceneVRMenu m_menu = null;
 
         public RuntimeSceneVRComponent Component
         {

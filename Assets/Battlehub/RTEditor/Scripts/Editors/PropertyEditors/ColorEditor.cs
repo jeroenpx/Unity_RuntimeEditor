@@ -8,16 +8,16 @@ namespace Battlehub.RTEditor
     public class ColorEditor : PropertyEditor<Color>
     {
         [SerializeField]
-        private Image MainColor;
+        private Image MainColor = null;
 
         [SerializeField]
-        private RectTransform Alpha;
+        private RectTransform Alpha = null;
 
         [SerializeField]
-        private Button BtnSelect;
+        private Button BtnSelect = null;
 
         [SerializeField]
-        private SelectColorDialog ColorSelectorPrefab;
+        private SelectColorDialog ColorSelectorPrefab = null;
 
         private SelectColorDialog m_colorSelector;
 

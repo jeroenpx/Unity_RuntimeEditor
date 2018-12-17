@@ -20,9 +20,9 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private int m_xyzMatIndex = 6;
         [SerializeField]
-        private Transform m_armature;
+        private Transform m_armature = null;
         [SerializeField]
-        private Transform m_model;
+        private Transform m_model = null;
 
         private Transform m_b1x;
         private Transform m_b2x;

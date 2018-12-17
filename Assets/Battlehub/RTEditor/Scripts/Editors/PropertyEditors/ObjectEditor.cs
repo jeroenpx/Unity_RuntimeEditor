@@ -10,13 +10,13 @@ namespace Battlehub.RTEditor
     public class ObjectEditor : PropertyEditor<UnityObject>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private GameObject DragHighlight;
+        private GameObject DragHighlight = null;
         [SerializeField]
-        private InputField Input;
+        private InputField Input = null;
         [SerializeField]
-        private Button BtnSelect;
+        private Button BtnSelect = null;
         [SerializeField]
-        private SelectObjectDialog ObjectSelectorPrefab;
+        private SelectObjectDialog ObjectSelectorPrefab = null;
 
         private SelectObjectDialog m_objectSelector;
 

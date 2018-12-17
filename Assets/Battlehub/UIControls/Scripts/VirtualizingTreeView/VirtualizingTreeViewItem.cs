@@ -7,7 +7,7 @@ namespace Battlehub.UIControls
     {
         private TreeViewExpander m_expander;
         [SerializeField]
-        private HorizontalLayoutGroup m_itemLayout;
+        private HorizontalLayoutGroup m_itemLayout = null;
 
         private Toggle m_toggle;
        

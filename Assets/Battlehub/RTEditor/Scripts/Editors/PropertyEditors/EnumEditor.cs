@@ -10,7 +10,7 @@ namespace Battlehub.RTEditor
     public class EnumEditor : PropertyEditor<Enum>
     {
         [SerializeField]
-        private Dropdown m_input;
+        private Dropdown m_input = null;
 
         protected override void AwakeOverride()
         {

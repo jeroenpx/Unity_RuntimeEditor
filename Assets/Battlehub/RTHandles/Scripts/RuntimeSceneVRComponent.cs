@@ -32,18 +32,18 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private float m_height = 1.76f;
         [SerializeField]
-        private Transform m_cameraRig;
+        private Transform m_cameraRig = null;
         [SerializeField]
-        private VRRecenterTool m_recenterTool;
+        private VRRecenterTool m_recenterTool = null;
         [SerializeField]
-        private VRMoveXZTool m_moveXZTool;
+        private VRMoveXZTool m_moveXZTool = null;
         [SerializeField]
-        private VRMoveYTool m_moveYTool;
+        private VRMoveYTool m_moveYTool = null;
         [SerializeField]
-        private VRPhysicsRaycastTool m_physicsRaycastTool;
-        
+        private VRPhysicsRaycastTool m_physicsRaycastTool = null;
+
         [SerializeField]
-        private RTEVRGazePointer m_gazePointer;
+        private RTEVRGazePointer m_gazePointer = null;
         public RTEVRGazePointer GazePointer
         {
             get { return m_gazePointer; }

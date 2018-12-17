@@ -6,7 +6,7 @@ namespace Battlehub.UIControls.MenuControl
     public class ContextMenuTrigger : MonoBehaviour
     {
         [SerializeField]
-        private Menu m_menu;
+        private Menu m_menu = null;
 
         private void Update()
         {

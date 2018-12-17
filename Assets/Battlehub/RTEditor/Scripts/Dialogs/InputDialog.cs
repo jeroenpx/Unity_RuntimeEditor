@@ -6,7 +6,7 @@ namespace Battlehub.RTEditor
     public class InputDialog : MonoBehaviour
     {
         [SerializeField]
-        private InputField m_inputField;
+        private InputField m_inputField = null;
 
         public string Text
         {

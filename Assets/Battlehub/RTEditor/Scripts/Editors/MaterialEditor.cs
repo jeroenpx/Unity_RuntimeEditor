@@ -106,20 +106,20 @@ namespace Battlehub.RTEditor
         // private ShaderVariantCollection ShaderVariants;
 
         [SerializeField]
-        private RangeEditor RangeEditor;
+        private RangeEditor RangeEditor = null;
         [SerializeField]
-        private TakeSnapshot Preview;
+        private TakeSnapshot Preview = null;
         private Image m_image;
         [SerializeField]
-        private Text TxtMaterialName;
+        private Text TxtMaterialName = null;
         [SerializeField]
-        private Text TxtShaderName;
+        private Text TxtShaderName = null;
 
         [SerializeField]
-        private Transform EditorsPanel;
+        private Transform EditorsPanel = null;
 
         [HideInInspector]
-        public Material Material;
+        public Material Material = null;
 
         private IRTE m_editor;
 

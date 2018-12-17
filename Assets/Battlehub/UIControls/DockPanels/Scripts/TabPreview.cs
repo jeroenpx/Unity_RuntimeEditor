@@ -6,16 +6,16 @@ namespace Battlehub.UIControls.DockPanels
     public class TabPreview : MonoBehaviour
     {
         [SerializeField]
-        private Image m_img;
+        private Image m_img = null;
 
         [SerializeField]
-        private Text m_text;
+        private Text m_text = null;
 
         [SerializeField]
-        private RectTransform m_contentPart;
+        private RectTransform m_contentPart = null;
 
         [SerializeField]
-        private RectTransform m_rt;
+        private RectTransform m_rt = null;
 
         public Sprite Icon
         {

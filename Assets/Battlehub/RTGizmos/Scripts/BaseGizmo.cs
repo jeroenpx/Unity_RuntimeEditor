@@ -66,7 +66,7 @@ namespace Battlehub.RTGizmos
 
 
         [SerializeField]
-        private RuntimeWindow m_window;
+        private RuntimeWindow m_window = null;
         public RuntimeWindow Window
         {
             get { return m_window; }

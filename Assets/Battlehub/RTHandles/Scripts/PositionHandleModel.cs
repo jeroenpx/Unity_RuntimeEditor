@@ -7,17 +7,17 @@ namespace Battlehub.RTHandles
     public class PositionHandleModel : BaseHandleModel
     {
         [SerializeField]
-        private GameObject[] m_models;
+        private GameObject[] m_models = null;
         [SerializeField]
-        private GameObject m_screenSpaceQuad;
+        private GameObject m_screenSpaceQuad = null;
         [SerializeField]
-        private GameObject m_normalModeArrows;
+        private GameObject m_normalModeArrows = null;
         [SerializeField]
-        private GameObject m_vertexSnappingModeArrows;      
+        private GameObject m_vertexSnappingModeArrows = null;      
         [SerializeField]
-        private Transform[] m_armatures;
+        private Transform[] m_armatures = null;
         [SerializeField]
-        private Transform m_ssQuadArmature;
+        private Transform m_ssQuadArmature = null;
 
         [SerializeField]
         private int m_xMatIndex = 0;

@@ -7,11 +7,11 @@ namespace Battlehub.RTEditor
     public class Vector2Editor : PropertyEditor<Vector2>
     {
         [SerializeField]
-        private InputField m_xInput;
+        private InputField m_xInput = null;
         [SerializeField]
-        private InputField m_yInput;
+        private InputField m_yInput = null;
         [SerializeField]
-        protected DragField[] m_dragFields;
+        protected DragField[] m_dragFields = null;
 
         protected override void AwakeOverride()
         {

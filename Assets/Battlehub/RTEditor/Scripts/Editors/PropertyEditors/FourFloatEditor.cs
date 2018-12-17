@@ -8,26 +8,26 @@ namespace Battlehub.RTEditor
     public abstract class FourFloatEditor<T> : PropertyEditor<T>
     {
         [SerializeField]
-        private InputField m_xInput;
+        private InputField m_xInput = null;
         [SerializeField]
-        private InputField m_yInput;
+        private InputField m_yInput = null;
         [SerializeField]
-        private InputField m_zInput;
+        private InputField m_zInput = null;
         [SerializeField]
-        private InputField m_wInput;
+        private InputField m_wInput = null;
         [SerializeField]
-        private RectTransform m_expander;
+        private RectTransform m_expander = null;
         [SerializeField]
-        private RectTransform m_xLabel;
+        private RectTransform m_xLabel = null;
         [SerializeField]
-        private RectTransform m_yLabel;
+        private RectTransform m_yLabel = null;
         [SerializeField]
-        private RectTransform m_zLabel;
+        private RectTransform m_zLabel = null;
         [SerializeField]
-        private RectTransform m_wLabel;
+        private RectTransform m_wLabel = null;
 
         [SerializeField]
-        protected DragField[] m_dragFields;
+        protected DragField[] m_dragFields = null;
 
         protected override void AwakeOverride()
         {

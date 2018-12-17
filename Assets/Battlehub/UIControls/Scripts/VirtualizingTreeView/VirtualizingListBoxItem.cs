@@ -6,10 +6,10 @@ namespace Battlehub.UIControls
     public class VirtualizingListBoxItem : VirtualizingItemContainer
     {
         [SerializeField]
-        private Graphic m_selectionGraphics;
+        private Graphic m_selectionGraphics = null;
 
         [SerializeField]
-        private Graphic[] m_presenterGraphics;
+        private Graphic[] m_presenterGraphics = null;
 
         [SerializeField]
         private Color m_selectionNormalColor = Color.gray;
@@ -18,10 +18,10 @@ namespace Battlehub.UIControls
         private Color m_selectionFocusedColor = new Color32(0x0B, 0x7E, 0xF0, 0xFF);
 
         [SerializeField]
-        private Color[] m_presenterSelectedColor;
+        private Color[] m_presenterSelectedColor = null;
 
         [SerializeField]
-        private Color[] m_presenterNormalColor;
+        private Color[] m_presenterNormalColor = null;
 
         
         public override bool IsSelected

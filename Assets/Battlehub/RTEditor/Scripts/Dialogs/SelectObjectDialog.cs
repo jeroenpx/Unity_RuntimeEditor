@@ -20,7 +20,7 @@ namespace Battlehub.RTEditor
         [HideInInspector]
         public Type ObjectType;
         [SerializeField]
-        private Transform ObjectsPanel;
+        private Transform ObjectsPanel = null;
 
         public bool IsNoneSelected
         {

@@ -23,7 +23,7 @@ namespace Battlehub.RTEditor
     public class RangeEditor : FloatEditor
     {
         [SerializeField]
-        private SliderOverride m_slider;
+        private SliderOverride m_slider = null;
 
         public float Min = 0.0f;
         public float Max = 1.0f;

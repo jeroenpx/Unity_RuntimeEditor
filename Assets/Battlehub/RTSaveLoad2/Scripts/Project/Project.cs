@@ -45,14 +45,14 @@ namespace Battlehub.RTSaveLoad2
         /// If you want to remove reference, just set to null corresponding array element.
         /// Append new references to the end of m_assetLibaries array.
         [SerializeField]
-        private string[] m_assetLibaries;
+        private string[] m_assetLibaries = null;
         public string[] AssetLibraries
         {
             get { return m_assetLibaries; }
         }
 
         [SerializeField]
-        private string m_sceneDepsLibrary;
+        private string m_sceneDepsLibrary = null;
 
 
         private ProjectInfo m_projectInfo;

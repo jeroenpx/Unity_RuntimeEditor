@@ -11,23 +11,23 @@ namespace Battlehub.RTEditor
     public class ProjectsDialog : MonoBehaviour
     {
         [SerializeField]
-        private InputDialog m_inputDialogPrefab;
+        private InputDialog m_inputDialogPrefab = null;
 
         [SerializeField]
-        private VirtualizingTreeView m_treeView;
+        private VirtualizingTreeView m_treeView = null;
         
         [SerializeField]
-        private Sprite ProjectIcon;
+        private Sprite ProjectIcon = null;
 
         private PopupWindow m_parentPopup;
 
         private IProject m_project;
 
         [SerializeField]
-        private Button m_btnNew;
+        private Button m_btnNew = null;
 
         [SerializeField]
-        private Button m_btnDelete;
+        private Button m_btnDelete = null;
 
         public ProjectInfo SelectedProject
         {

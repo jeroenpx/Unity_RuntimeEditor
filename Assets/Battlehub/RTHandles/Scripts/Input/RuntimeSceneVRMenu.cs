@@ -1,29 +1,28 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Battlehub.RTHandles
 {
     public class RuntimeSceneVRMenu : MonoBehaviour
     {
         [SerializeField]
-        private PointerOverButton m_recenterButton;
+        private PointerOverButton m_recenterButton = null;
 
         [SerializeField]
-        private PointerOverButton m_moveXZButton;
+        private PointerOverButton m_moveXZButton = null;
 
         [SerializeField]
-        private PointerOverButton m_moveYButton;
+        private PointerOverButton m_moveYButton = null;
 
         [SerializeField]
-        private PointerOverButton m_positionHandleButton;
+        private PointerOverButton m_positionHandleButton = null;
 
         [SerializeField]
-        private PointerOverButton m_rotationHandleButton;
+        private PointerOverButton m_rotationHandleButton = null;
 
         [SerializeField]
-        private PointerOverButton m_scaleHandleButton;
+        private PointerOverButton m_scaleHandleButton = null;
 
         public bool IsOpened
         {

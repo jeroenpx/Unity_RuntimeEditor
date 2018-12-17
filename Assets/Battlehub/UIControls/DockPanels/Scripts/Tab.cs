@@ -35,23 +35,23 @@ namespace Battlehub.UIControls.DockPanels
         private DockPanelsRoot m_root;
 
         [SerializeField]
-        private TabPreview m_tabPreviewPrefab;
+        private TabPreview m_tabPreviewPrefab = null;
         private TabPreview m_tabPreview;
 
         [SerializeField]
-        private CanvasGroup m_canvasGroup;
-        
-        [SerializeField]
-        private Image m_img;
+        private CanvasGroup m_canvasGroup = null;
 
         [SerializeField]
-        private Text m_text;
+        private Image m_img = null;
 
         [SerializeField]
-        private Toggle m_toggle;
+        private Text m_text = null;
 
         [SerializeField]
-        private Button m_closeButton;
+        private Toggle m_toggle = null;
+
+        [SerializeField]
+        private Button m_closeButton = null;
 
         private RectTransform m_rt;
 

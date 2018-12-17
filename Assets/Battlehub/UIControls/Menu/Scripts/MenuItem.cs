@@ -20,19 +20,19 @@ namespace Battlehub.UIControls.MenuControl
         private Color m_disableTextColor = new Color32(0x32, 0x32, 0x32, 0xFF);
         
         [SerializeField]
-        private Menu m_menuPrefab;
+        private Menu m_menuPrefab = null;
 
         [SerializeField]
-        private Image m_icon;
+        private Image m_icon = null;
 
         [SerializeField]
-        private Text m_text;
+        private Text m_text = null;
 
         [SerializeField]
-        private GameObject m_expander;
+        private GameObject m_expander = null;
 
         [SerializeField]
-        private Image m_selection;
+        private Image m_selection = null;
 
         private Transform m_root;
         public Transform Root

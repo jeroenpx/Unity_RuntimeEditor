@@ -8,7 +8,7 @@ namespace Battlehub.RTHandles
     public class RuntimeSelectionComponentUI : Selectable
     {
         [SerializeField]
-        private Image m_background;
+        private Image m_background = null;
 
         public event EventHandler Selected;
         public event EventHandler Unselected;

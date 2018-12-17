@@ -15,10 +15,10 @@ namespace Battlehub.RTEditor
     public class ResourcePreviewUtility : MonoBehaviour, IResourcePreviewUtility
     {
         [SerializeField]
-        private ObjectToTexture m_objectToTextureCamera;
+        private ObjectToTexture m_objectToTextureCamera = null;
   
         [SerializeField]
-        private GameObject m_fallbackPrefab;
+        private GameObject m_fallbackPrefab = null;
 
  
         [SerializeField]

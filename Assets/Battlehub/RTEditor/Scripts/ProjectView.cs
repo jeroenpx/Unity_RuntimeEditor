@@ -11,28 +11,28 @@ namespace Battlehub.RTEditor
     {
         private IProject m_project;
         private IResourcePreviewUtility m_resourcePreview;
-       
-        [SerializeField]
-        private Text m_loadingProgressText;
 
         [SerializeField]
-        private ProjectTreeView m_projectTree;
+        private Text m_loadingProgressText = null;
+
         [SerializeField]
-        private ProjectFolderView m_projectResources;
+        private ProjectTreeView m_projectTree = null;
         [SerializeField]
-        private Button m_btnDuplicate;
+        private ProjectFolderView m_projectResources = null;
+        //[SerializeField]
+        //private Button m_btnDuplicate = null;
         [SerializeField]
-        private Dropdown m_ddCreate;
+        private Dropdown m_ddCreate = null;
         [SerializeField]
-        private Button m_btnImport;
+        private Button m_btnImport = null;
         [SerializeField]
-        private Button m_btnProjects;
+        private Button m_btnProjects = null;
         [SerializeField]
-        private AssetLibrarySelectDialog m_assetLibrarySelectorPrefab;
+        private AssetLibrarySelectDialog m_assetLibrarySelectorPrefab = null;
         [SerializeField]
-        private AssetLibraryImportDialog m_assetLibraryImportPrefab;
+        private AssetLibraryImportDialog m_assetLibraryImportPrefab = null;
         [SerializeField]
-        private ProjectsDialog m_projectsDialogPrefab;
+        private ProjectsDialog m_projectsDialogPrefab = null;
         
         [SerializeField]
         private string ProjectName = "DefaultProject";

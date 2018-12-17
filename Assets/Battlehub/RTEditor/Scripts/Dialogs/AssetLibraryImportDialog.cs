@@ -13,7 +13,7 @@ namespace Battlehub.RTEditor
     public class AssetLibraryImportDialog : MonoBehaviour
     {
         [SerializeField]
-        private VirtualizingTreeView TreeViewPrefab;
+        private VirtualizingTreeView TreeViewPrefab = null;
         
         private PopupWindow m_parentPopup;
         private VirtualizingTreeView m_treeView;

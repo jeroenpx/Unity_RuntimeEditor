@@ -11,11 +11,11 @@ namespace Battlehub.RTEditor
     public class GameObjectEditor : MonoBehaviour
     {
         [SerializeField]
-        private Toggle TogEnableDisable;
+        private Toggle TogEnableDisable = null;
         [SerializeField]
-        private InputField InputName;
+        private InputField InputName = null;
         [SerializeField]
-        private Transform ComponentsPanel;
+        private Transform ComponentsPanel = null;
 
         private IRTE m_editor;
 

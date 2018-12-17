@@ -8,36 +8,36 @@ namespace Battlehub.RTEditor
     public class SelectColorDialog : MonoBehaviour
     {
         [HideInInspector]
-        public Color SelectedColor;
+        public Color SelectedColor = Color.white;
 
         [SerializeField]
-        private Slider RSlider;
+        private Slider RSlider = null;
         [SerializeField]
-        private Text RValue;
+        private Text RValue = null;
 
         [SerializeField]
-        private Slider GSlider;
+        private Slider GSlider = null;
         [SerializeField]
-        private Text GValue;
+        private Text GValue = null;
 
         [SerializeField]
-        private Slider BSlider;
+        private Slider BSlider = null;
         [SerializeField]
-        private Text BValue;
+        private Text BValue = null;
 
         [SerializeField]
-        private Slider ASlider;
+        private Slider ASlider = null;
         [SerializeField]
-        private Text AValue;
+        private Text AValue = null;
 
         [SerializeField]
-        private InputField InputHex;
+        private InputField InputHex = null;
 
         [SerializeField]
-        private Image ColorPreview;
+        private Image ColorPreview = null;
 
         [SerializeField]
-        private Image AlphaPreview;
+        private Image AlphaPreview = null;
 
         private PopupWindow m_parentPopup;
 

@@ -6,10 +6,10 @@ namespace Battlehub.UIControls
     public class ProgressBar : MonoBehaviour
     {
         [SerializeField]
-        private Image[] Images;
+        private Image[] Images = null;
 
         [SerializeField]
-        private Outline[] Outlines;
+        private Outline[] Outlines = null;
 
         private float[] m_alpha;
      

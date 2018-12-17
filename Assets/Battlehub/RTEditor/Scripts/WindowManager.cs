@@ -36,28 +36,28 @@ namespace Battlehub.RTEditor
     public class WindowManager : MonoBehaviour, IWindowManager
     {
         [SerializeField]
-        private WindowDescriptor m_sceneWindow;
+        private WindowDescriptor m_sceneWindow = null;
 
         [SerializeField]
-        private WindowDescriptor m_gameWindow;
+        private WindowDescriptor m_gameWindow = null;
 
         [SerializeField]
-        private WindowDescriptor m_hierarchyWindow;
+        private WindowDescriptor m_hierarchyWindow = null;
 
         [SerializeField]
-        private WindowDescriptor m_inspectorWindow;
+        private WindowDescriptor m_inspectorWindow = null;
 
         [SerializeField]
-        private WindowDescriptor m_projectWindow;
+        private WindowDescriptor m_projectWindow = null;
 
         [SerializeField]
-        private WindowDescriptor m_consoleWindow;
+        private WindowDescriptor m_consoleWindow = null;
 
         [SerializeField]
-        private DockPanelsRoot m_dockPanels;
+        private DockPanelsRoot m_dockPanels = null;
 
         [SerializeField]
-        private Transform m_componentsRoot;
+        private Transform m_componentsRoot = null;
 
         private IRTE m_editor;
 
@@ -163,6 +163,10 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_hierarchyWindow;
                 }
+                else if(windowTypeName == RuntimeWindowType.Inspector.ToString().ToLower())
+                {
+                    wd = m_inspectorWindow;
+                }
                 else if (windowTypeName == RuntimeWindowType.Project.ToString().ToLower())
                 {
                     wd = m_projectWindow;
@@ -259,6 +263,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.Hierarchy.ToString().ToLower())
             {
                 wd = m_hierarchyWindow;
+            }
+            else if (windowTypeName == RuntimeWindowType.Inspector.ToString().ToLower())
+            {
+                wd = m_inspectorWindow;
             }
             else if (windowTypeName == RuntimeWindowType.Project.ToString().ToLower())
             {

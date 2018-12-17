@@ -7,19 +7,19 @@ namespace Battlehub.RTHandles
     public class VRRecenterCtrl : MonoBehaviour
     {
         [SerializeField]
-        private Button m_btnRecenter;
+        private Button m_btnRecenter = null;
 
         [SerializeField]
-        private Button m_btnUp;
+        private Button m_btnUp = null;
 
         [SerializeField]
-        private Button m_btnDown;
+        private Button m_btnDown = null;
 
         [SerializeField]
-        private Button m_buttonLeft;
+        private Button m_buttonLeft = null;
 
         [SerializeField]
-        private Button m_buttonRight;
+        private Button m_buttonRight = null;
 
         public event EventHandler Recenter;
         public event EventHandler Up;

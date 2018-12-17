@@ -169,12 +169,12 @@ namespace Battlehub.RTEditor
         private IProject m_project;
 
         [SerializeField]
-        private GameObject TreeViewPrefab;
+        private GameObject TreeViewPrefab = null;
         [SerializeField]
-        private Sprite FolderIcon;
+        private Sprite FolderIcon = null;
 
         [SerializeField]
-        private Sprite ExposedFolderIcon;
+        private Sprite ExposedFolderIcon = null;
         private VirtualizingTreeView m_treeView;
 
         public KeyCode RemoveKey = KeyCode.Delete;

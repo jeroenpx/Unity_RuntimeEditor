@@ -37,7 +37,7 @@ namespace Battlehub.UIControls
         /// ui containers parent
         /// </summary>
         [SerializeField]
-        private RectTransform m_virtualContent;
+        private RectTransform m_virtualContent = null;
 
         /// <summary>
         /// Listen for virtualContent dimensions change
@@ -57,7 +57,7 @@ namespace Battlehub.UIControls
             get { return m_useGrid; }
         }
         [SerializeField]
-        private Vector2 m_gridSpacing;
+        private Vector2 m_gridSpacing = Vector2.zero;
 
         private GridLayoutGroup m_gridLayoutGroup;
         public int ContainersPerGroup

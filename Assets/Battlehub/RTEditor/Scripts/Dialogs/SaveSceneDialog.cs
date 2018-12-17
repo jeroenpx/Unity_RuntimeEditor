@@ -10,17 +10,17 @@ namespace Battlehub.RTEditor
 {
     public class SaveSceneDialog : MonoBehaviour
     {
+        //[SerializeField]
+        //private TreeView TreeViewPrefab = null;
         [SerializeField]
-        private TreeView TreeViewPrefab;
-        [SerializeField]
-        private InputField Input;
-        [SerializeField]
-        private Sprite FolderIcon;
-        [SerializeField]
-        private Sprite SceneIcon;
+        private InputField Input = null;
+       // [SerializeField]
+        //private Sprite FolderIcon = null;
+        //[SerializeField]
+        //private Sprite SceneIcon = null;
 
         //private PopupWindow m_parentPopup;
-        private TreeView m_treeView;
+        private TreeView m_treeView = null;
 
         [HideInInspector]
         public bool ShowRoot = true;

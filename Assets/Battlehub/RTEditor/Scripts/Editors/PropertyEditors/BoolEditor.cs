@@ -7,7 +7,7 @@ namespace Battlehub.RTEditor
     public class BoolEditor : PropertyEditor<bool>
     {
         [SerializeField]
-        private Toggle m_input;
+        private Toggle m_input = null;
 
         protected override void AwakeOverride()
         {

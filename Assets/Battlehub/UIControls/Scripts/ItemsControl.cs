@@ -458,7 +458,7 @@ namespace Battlehub.UIControls
         /// Pefab for data item presentation
         /// </summary>
         [SerializeField]
-        private GameObject ItemContainerPrefab;
+        private GameObject ItemContainerPrefab = null;
 
         /// <summary>
         /// Items Panel

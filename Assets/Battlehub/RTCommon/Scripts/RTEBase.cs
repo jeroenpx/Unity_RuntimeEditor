@@ -177,9 +177,9 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private bool m_isOpened = true;
         [SerializeField]
-        private UnityEvent IsOpenedEvent;
+        private UnityEvent IsOpenedEvent = null;
         [SerializeField]
-        private UnityEvent IsClosedEvent;
+        private UnityEvent IsClosedEvent = null;
 
         public event RTEEvent PlaymodeStateChanging;
         public event RTEEvent PlaymodeStateChanged;

@@ -5,13 +5,13 @@ namespace Battlehub.UIControls.Demo
     public class ReparentAndScrollExample : MonoBehaviour
     {
         [SerializeField]
-        private Transform m_parent;
+        private Transform m_parent = null;
 
         [SerializeField]
-        private Transform m_obj;
+        private Transform m_obj = null;
 
         [SerializeField]
-        private VirtualizingTreeView m_treeView;
+        private VirtualizingTreeView m_treeView = null;
 
         private void Update()
         {

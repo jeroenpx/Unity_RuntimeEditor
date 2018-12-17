@@ -36,31 +36,31 @@ namespace Battlehub.UIControls.DockPanels
         public static event RegionEventHandler<int> DepthChanged;
 
         [SerializeField]
-        private LayoutElement m_layoutElement;
+        private LayoutElement m_layoutElement = null;
 
         [SerializeField]
-        private ToggleGroup m_tabPanel;
+        private ToggleGroup m_tabPanel = null;
 
         [SerializeField]
-        private RectTransform m_content;
+        private RectTransform m_content = null;
 
         [SerializeField]
-        private Transform m_contentPanel;
+        private Transform m_contentPanel = null;
 
         [SerializeField]
-        private RectTransform m_childrenPanel;
+        private RectTransform m_childrenPanel = null;
 
         [SerializeField]
-        private Tab m_tabPrefab;
+        private Tab m_tabPrefab = null;
 
         [SerializeField]
-        private DockPanelsRoot m_root;
+        private DockPanelsRoot m_root = null;
 
         [SerializeField]
-        private Image m_headerImage;
+        private Image m_headerImage = null;
 
         [SerializeField]
-        private Image m_frameImage;
+        private Image m_frameImage = null;
         
         public DockPanelsRoot Root
         {

@@ -10,14 +10,14 @@ namespace Battlehub.RTEditor
     public class AssetLibrarySelectDialog : MonoBehaviour
     {
         [SerializeField]
-        private VirtualizingTreeView m_builtInTreeView;
+        private VirtualizingTreeView m_builtInTreeView = null;
         [SerializeField]
-        private VirtualizingTreeView m_externalTreeView;
+        private VirtualizingTreeView m_externalTreeView = null;
         [SerializeField]
-        private Toggle m_builtInToggle;
+        private Toggle m_builtInToggle = null;
 
         [SerializeField]
-        private Sprite AssetLibraryIcon;
+        private Sprite AssetLibraryIcon = null;
 
         private PopupWindow m_parentPopup;
 

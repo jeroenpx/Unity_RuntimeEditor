@@ -7,16 +7,16 @@ namespace Battlehub.RTEditor
     public class AssetLibraryImportStatus : MonoBehaviour
     {
         [SerializeField]
-        private Sprite m_statusNone;
+        private Sprite m_statusNone = null;
 
         [SerializeField]
-        private Sprite m_statusNew;
+        private Sprite m_statusNew = null;
 
         [SerializeField]
-        private Sprite m_statusWarning;
+        private Sprite m_statusWarning = null;
 
         [SerializeField]
-        private Sprite m_statusOverwrite;
+        private Sprite m_statusOverwrite = null;
 
         private Image m_image;
 

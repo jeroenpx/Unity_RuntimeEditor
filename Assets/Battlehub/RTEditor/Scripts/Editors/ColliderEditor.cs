@@ -7,7 +7,7 @@ namespace Battlehub.RTEditor
     public class ColliderEditor : ComponentEditor
     {
         [SerializeField]
-        private GameObject ToggleButton;
+        private GameObject ToggleButton = null;
 
         private Toggle m_editColliderButton;
 

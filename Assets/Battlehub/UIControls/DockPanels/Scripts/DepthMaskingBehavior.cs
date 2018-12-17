@@ -7,14 +7,14 @@ namespace Battlehub.UIControls.DockPanels
     public class DepthMaskingBehavior : MonoBehaviour
     {
         [SerializeField]
-        private Material m_depthMaskMaterial;
+        private Material m_depthMaskMaterial = null;
 
         private DockPanelsRoot m_root;
 
         private RectTransform m_depthMasks;
 
         [SerializeField]
-        private RectTransform[] m_foregroundLayerObjects;
+        private RectTransform[] m_foregroundLayerObjects = null;
 
         
         private class DepthMask

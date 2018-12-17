@@ -7,13 +7,13 @@ namespace Battlehub.RTHandles
     public class RuntimeSceneMobileInput : RuntimeSelectionInputBase
     {
         [SerializeField]
-        private Button m_rotateButton;
+        private Button m_rotateButton = null;
         [SerializeField]
-        private Button m_panButton;
+        private Button m_panButton = null;
         [SerializeField]
-        private Button m_cancelButton;
+        private Button m_cancelButton = null;
         [SerializeField]
-        private Button m_focusButton;
+        private Button m_focusButton = null;
 
         [SerializeField]
         private float m_zoomSensitivity = 1;

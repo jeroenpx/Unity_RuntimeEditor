@@ -7,13 +7,13 @@ namespace Battlehub.RTEditor
     public class Vector3Editor : PropertyEditor<Vector3>
     {
         [SerializeField]
-        private InputField m_xInput;
+        private InputField m_xInput = null;
         [SerializeField]
-        private InputField m_yInput;
+        private InputField m_yInput = null;
         [SerializeField]
-        private InputField m_zInput;
+        private InputField m_zInput = null;
         [SerializeField]
-        protected DragField[] m_dragFields;
+        protected DragField[] m_dragFields = null;
 
         public bool IsXInteractable
         {

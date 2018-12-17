@@ -6,7 +6,7 @@ namespace Battlehub.RTHandles
     public class EditorHint : MonoBehaviour
     {
         [SerializeField]
-        private EditorDemo EditorDemo;
+        private EditorDemo EditorDemo = null;
 
         // Use this for initialization
         private void Start()

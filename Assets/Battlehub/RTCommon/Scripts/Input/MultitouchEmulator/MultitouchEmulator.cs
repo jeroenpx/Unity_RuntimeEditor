@@ -8,7 +8,7 @@ namespace Battlehub.RTCommon
     public class MultitouchEmulator : RTEBehaviour
     {
         [SerializeField]
-        private EmuTouchControl m_touchPrefab;
+        private EmuTouchControl m_touchPrefab = null;
 
         private EmuTouchControl[] m_touches = new EmuTouchControl[5];
         private EmuTouchControl m_selectedTouch;

@@ -7,10 +7,10 @@ namespace Battlehub.UIControls.MenuControl
     public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField]
-        private Menu m_menu;
+        private Menu m_menu = null;
 
         [SerializeField]
-        private Image m_selection;
+        private Image m_selection = null;
 
         [SerializeField]
         private Color m_pointerOverColor = new Color32(0x00, 0x97, 0xFF, 0x7F);

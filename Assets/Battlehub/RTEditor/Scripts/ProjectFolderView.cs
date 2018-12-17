@@ -78,7 +78,7 @@ namespace Battlehub.RTEditor
 
 
         [SerializeField]
-        private GameObject ListBoxPrefab;
+        private GameObject ListBoxPrefab = null;
         private VirtualizingTreeView m_listBox;
         private bool m_lockSelection;
 

@@ -18,7 +18,7 @@ namespace Battlehub.RTHandles
 
 
         [SerializeField]
-        private AnimationCurve m_interpolationCurve;
+        private AnimationCurve m_interpolationCurve = null;
         [SerializeField]
         public InterpolationType m_interpolationType = InterpolationType.Exponential;
         [SerializeField]

@@ -45,9 +45,9 @@ namespace Battlehub.RTEditor
     public class BoundsEditor : PropertyEditor<Bounds>
     {
         [SerializeField]
-        private Vector3Editor m_center;
+        private Vector3Editor m_center = null;
         [SerializeField]
-        private Vector3Editor m_extents;
+        private Vector3Editor m_extents = null;
         
         protected override void AwakeOverride()
         {

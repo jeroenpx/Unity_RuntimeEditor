@@ -14,16 +14,16 @@ namespace Battlehub.RTEditor
     public abstract class IListEditor : PropertyEditor<IList>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private GameObject SizeEditor;
+        private GameObject SizeEditor = null;
         [SerializeField]
-        private InputField SizeInput;
+        private InputField SizeInput = null;
         [SerializeField]
-        private Text SizeLabel;
+        private Text SizeLabel = null;
 
         [SerializeField]
-        private Transform Panel;
+        private Transform Panel = null;
         [SerializeField]
-        private Toggle Expander;
+        private Toggle Expander = null;
 
         private PropertyEditor m_editorPrefab;
 

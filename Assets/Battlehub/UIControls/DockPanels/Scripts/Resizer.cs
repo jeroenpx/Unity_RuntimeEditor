@@ -15,7 +15,7 @@ namespace Battlehub.UIControls.DockPanels
         public static event ResizerEventHandler EndResize;
 
         [SerializeField]
-        private Texture2D m_cursor;
+        private Texture2D m_cursor = null;
 
         [SerializeField]
         private Region m_region;
@@ -28,9 +28,9 @@ namespace Battlehub.UIControls.DockPanels
         private bool m_isFree;
         //private Vector2 m_prevPoint;
         [SerializeField]
-        private float m_dx;
+        private float m_dx = -1;
         [SerializeField]
-        private float m_dy;
+        private float m_dy = -1;
         private Vector2 m_adjustment;
         private bool m_isDragging;
 

@@ -16,18 +16,18 @@ namespace Battlehub.RTEditor
         private IProject m_project;
 
         [SerializeField]
-        private Image m_imgPreview;
+        private Image m_imgPreview = null;
 
         [SerializeField]
-        public Sprite m_folder;
+        public Sprite m_folder = null;
         [SerializeField]
-        public Sprite m_readonlyFolder;
+        public Sprite m_readonlyFolder = null;
         [SerializeField]
-        public Sprite m_scene;
+        public Sprite m_scene = null;
         [SerializeField]
-        public Sprite m_defaultPrefab;
+        public Sprite m_defaultPrefab = null;
         [SerializeField]
-        public Sprite m_none;
+        public Sprite m_none = null;
 
         private Texture2D m_texture;
 

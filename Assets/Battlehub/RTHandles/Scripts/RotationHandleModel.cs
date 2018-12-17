@@ -16,15 +16,15 @@ namespace Battlehub.RTHandles
         private float m_outerRadius = DefaultOuterRadius;
 
         [SerializeField]
-        private MeshFilter m_xyz;
+        private MeshFilter m_xyz = null;
         [SerializeField]
-        private MeshFilter m_innerCircle;
+        private MeshFilter m_innerCircle = null;
         [SerializeField]
-        private MeshFilter m_outerCircle;
+        private MeshFilter m_outerCircle = null;
         [SerializeField]
-        private MeshFilter m_innerCircleVR;
+        private MeshFilter m_innerCircleVR = null;
         [SerializeField]
-        private MeshFilter m_outerCircleVR;
+        private MeshFilter m_outerCircleVR = null;
 
         private MeshFilter m_inner;
         private MeshFilter m_outer;
@@ -50,9 +50,9 @@ namespace Battlehub.RTHandles
 
         private readonly bool m_useColliders = true;
         [SerializeField]
-        private Mesh m_axisColliderMesh;
+        private Mesh m_axisColliderMesh = null;
         [SerializeField]
-        private Mesh m_ssMesh;
+        private Mesh m_ssMesh = null;
 
         private SphereCollider m_graphicsBlockingCollider;
         private MeshCollider m_xCollider;

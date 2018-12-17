@@ -6,25 +6,25 @@ namespace Battlehub.UIControls.DockPanels
     public class TestCommands : MonoBehaviour
     {
         [SerializeField]
-        private Button m_addButton;
+        private Button m_addButton = null;
 
         [SerializeField]
-        private Button m_deleteButton;
+        private Button m_deleteButton = null;
 
         [SerializeField]
-        private DockPanelsRoot m_dockPanels;
+        private DockPanelsRoot m_dockPanels = null;
 
         [SerializeField]
-        private Sprite m_sprite;
+        private Sprite m_sprite = null;
 
         [SerializeField]
-        private string m_headerText;
+        private string m_headerText = null;
 
         [SerializeField]
-        private Transform m_contentPrefab;
+        private Transform m_contentPrefab = null;
 
         [SerializeField]
-        private RegionSplitType m_splitType;
+        private RegionSplitType m_splitType = RegionSplitType.None;
 
         private int m_counter;
 

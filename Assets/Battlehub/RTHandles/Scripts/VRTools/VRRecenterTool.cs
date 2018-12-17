@@ -8,7 +8,7 @@ namespace Battlehub.RTHandles
     public class VRRecenterTool : VRBaseTool
     {
         [SerializeField]
-        private VRRecenterCtrl m_recenterCtrlPrefab;
+        private VRRecenterCtrl m_recenterCtrlPrefab = null;
 
         [SerializeField]
         private float m_uiDistance = 10;

@@ -20,19 +20,19 @@ namespace Battlehub.UIControls
     public class PopupWindow : MonoBehaviour
     {
         [SerializeField]
-        private PopupWindow Prefab;
+        private PopupWindow Prefab = null;
         [SerializeField]
-        private Text DefaultBody;
+        private Text DefaultBody = null;
         [SerializeField]
-        private Text TxtHeader;
+        private Text TxtHeader = null;
         [SerializeField]
-        private Transform Body;
+        private Transform Body = null;
         [SerializeField]
-        private Button BtnCancel;
+        private Button BtnCancel = null;
         [SerializeField]
-        private Button BtnOk;
+        private Button BtnOk = null;
         [SerializeField]
-        private LayoutElement Panel;
+        private LayoutElement Panel = null;
 
         public PopupWindowEvent OK;
         public PopupWindowEvent Cancel;

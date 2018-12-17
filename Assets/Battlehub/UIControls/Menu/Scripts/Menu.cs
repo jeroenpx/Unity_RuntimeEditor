@@ -44,7 +44,7 @@ namespace Battlehub.UIControls.MenuControl
         public event EventHandler Closed;
 
         [SerializeField]
-        private MenuItemInfo[] m_items;
+        private MenuItemInfo[] m_items = null;
         public MenuItemInfo[] Items
         {
             get { return m_items; }
@@ -56,13 +56,13 @@ namespace Battlehub.UIControls.MenuControl
         }
 
         [SerializeField]
-        private MenuItem m_menuItemPrefab;
+        private MenuItem m_menuItemPrefab = null;
 
         [SerializeField]
-        private RectTransform m_anchor;
+        private RectTransform m_anchor = null;
 
         [SerializeField]
-        private Transform m_panel;
+        private Transform m_panel = null;
 
         private Transform m_root;
 
@@ -108,7 +108,7 @@ namespace Battlehub.UIControls.MenuControl
         }
 
         [SerializeField]
-        private CanvasGroup m_canvasGroup;
+        private CanvasGroup m_canvasGroup = null;
 
         [SerializeField]
         private float FadeInSpeed = 2;

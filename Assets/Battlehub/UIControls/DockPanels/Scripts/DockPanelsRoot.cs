@@ -24,14 +24,14 @@ namespace Battlehub.UIControls.DockPanels
         public event ResizerEventHandler RegionEndResize;
 
         [SerializeField]
-        private GraphicRaycaster m_raycaster;
+        private GraphicRaycaster m_raycaster = null;
         public GraphicRaycaster Raycaster
         {
             get { return m_raycaster; }
         }
 
         [SerializeField]
-        private Region m_regionPrefab;
+        private Region m_regionPrefab = null;
         public Region RegionPrefab
         {
             get { return m_regionPrefab; }
@@ -44,28 +44,28 @@ namespace Battlehub.UIControls.DockPanels
         }
 
         [SerializeField]
-        private Region m_rootRegion;
+        private Region m_rootRegion = null;
         public Region RootRegion
         {
             get { return m_rootRegion; }
         }
 
         [SerializeField]
-        private Transform m_docked;    
+        private Transform m_docked = null;
         public Transform Docked
         {
             get { return m_docked; }
         }
 
         [SerializeField]
-        private Transform m_free;
+        private Transform m_free = null;
         public Transform Free
         {
             get { return m_free; }
         }
 
         [SerializeField]
-        private RectTransform m_preview;
+        private RectTransform m_preview = null;
         public RectTransform Preview
         {
             get { return m_preview; }

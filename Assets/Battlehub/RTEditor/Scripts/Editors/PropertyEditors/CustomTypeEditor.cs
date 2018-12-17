@@ -11,9 +11,9 @@ namespace Battlehub.RTEditor
     public class CustomTypeEditor : PropertyEditor<object>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private Transform Panel;
+        private Transform Panel = null;
         [SerializeField]
-        private Toggle Expander;
+        private Toggle Expander = null;
 
         public bool StartExpanded;
 
