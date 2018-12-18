@@ -212,7 +212,7 @@ namespace Battlehub.RTHandles
             }
             m_outerCircleMaterial.SetInt("_ZTest", 2);
 
-            if (m_lockObj.IsPositionLocked)
+            if (m_lockObj.RotationFree)
             {
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.DisabledColor;
             }
@@ -248,7 +248,7 @@ namespace Battlehub.RTHandles
                     }
                     break;
                 case RuntimeHandleAxis.Free:
-                    if(!m_lockObj.IsRotationLocked)
+                    if(!m_lockObj.RotationFree)
                     {
                         m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0.1f);
                     }
@@ -400,7 +400,7 @@ namespace Battlehub.RTHandles
                 RaycastHit hit;
                 if (m_colliders[i].Raycast(ray, out hit, camera.farClipPlane))
                 {
-                    if(m_lockObj.RotationX && m_lockObj.RotationY && m_lockObj.RotationZ)
+                    if(m_lockObj.RotationFree)
                     {
                         if(hit.collider == m_innerCollider)
                         {

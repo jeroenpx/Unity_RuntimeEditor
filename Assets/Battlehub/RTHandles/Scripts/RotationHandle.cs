@@ -430,7 +430,7 @@ namespace Battlehub.RTHandles
             {
                 delta = StartingRotationInv * delta;
 
-                if(LockObject.IsRotationLocked)
+                if(LockObject.RotationFree)
                 {
                     delta.x = 0.0f;
                     delta.y = 0.0f;

@@ -729,9 +729,9 @@ namespace Battlehub.RTHandles
             bool xLocked = lockObject != null && lockObject.RotationX;
             bool yLocked = lockObject != null && lockObject.RotationY;
             bool zLocked = lockObject != null && lockObject.RotationZ;
+            bool freeLocked = lockObject != null && lockObject.RotationFree;
             bool screenLocked = lockObject != null && lockObject.RotationScreen;
 
-            
             if (cameraFacingBillboardMode)
             {
                 m_linesMaterial.SetPass(0);
@@ -746,7 +746,7 @@ namespace Battlehub.RTHandles
             }
 
             GL.Begin(GL.LINES);
-            if (xLocked && yLocked && zLocked)
+            if (freeLocked)
                 GL.Color(m_colors.DisabledColor);
             else
                 GL.Color(selectedAxis != RuntimeHandleAxis.Free ? m_colors.AltColor : m_colors.SelectionColor);

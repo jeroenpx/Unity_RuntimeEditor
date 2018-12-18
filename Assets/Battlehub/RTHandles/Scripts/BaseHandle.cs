@@ -246,6 +246,7 @@ namespace Battlehub.RTHandles
                     LockObject.RotationX = LockObject.RotationY = LockObject.RotationZ = true;
                     LockObject.ScaleX = LockObject.ScaleY = LockObject.ScaleZ = true;
                     LockObject.RotationScreen = true;
+                    LockObject.RotationFree = true;
                 }
 
                 if(m_activeTargets != null && m_activeTargets.Length > 0)
@@ -426,6 +427,10 @@ namespace Battlehub.RTHandles
             {
                 SyncModelTransform();
                 Model.gameObject.SetActive(true);
+                if (!Model.gameObject.IsPrefab())
+                {
+                    Model.SetLock(LockObject);
+                }
             }
             else
             {
@@ -447,7 +452,6 @@ namespace Battlehub.RTHandles
             {
                 GLRenderer.Instance.Remove(this);
             }
-
 
             if (Editor != null)
             {

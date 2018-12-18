@@ -11,6 +11,7 @@ namespace Battlehub.RTCommon
         public bool RotationX;
         public bool RotationY;
         public bool RotationZ;
+        public bool RotationFree;
         public bool RotationScreen;
         public bool ScaleX;
         public bool ScaleY;
@@ -23,7 +24,7 @@ namespace Battlehub.RTCommon
 
         public bool IsRotationLocked
         {
-            get { return RotationX && RotationY && RotationZ && RotationScreen; }
+            get { return RotationX && RotationY && RotationZ && RotationFree && RotationScreen; }
         }
 
         public bool IsScaleLocked
@@ -40,6 +41,7 @@ namespace Battlehub.RTCommon
         public bool RotationX;
         public bool RotationY;
         public bool RotationZ;
+        public bool RotationFree;
         public bool RotationScreen;
         public bool ScaleX;
         public bool ScaleY;
@@ -57,6 +59,7 @@ namespace Battlehub.RTCommon
                 lockObject.RotationX = lockAxes.Any(la => la.RotationX);
                 lockObject.RotationY = lockAxes.Any(la => la.RotationY);
                 lockObject.RotationZ = lockAxes.Any(la => la.RotationZ);
+                lockObject.RotationFree = lockAxes.Any(la => la.RotationFree);
                 lockObject.RotationScreen = lockAxes.Any(la => la.RotationScreen);
 
                 lockObject.ScaleX = lockAxes.Any(la => la.ScaleX);
