@@ -96,6 +96,11 @@ namespace Battlehub.RTCommon
 
         private void LateUpdate()
         {
+            if(m_graphicsLayerCamera.depth != m_editorWindow.Camera.depth + 1)
+            {
+                m_graphicsLayerCamera.depth = m_editorWindow.Camera.depth + 1;
+            }
+
             if (m_graphicsLayerCamera.fieldOfView != m_editorWindow.Camera.fieldOfView)
             {
                 m_graphicsLayerCamera.fieldOfView = m_editorWindow.Camera.fieldOfView;

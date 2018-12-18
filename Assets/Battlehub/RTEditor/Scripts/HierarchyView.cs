@@ -54,6 +54,8 @@ namespace Battlehub.RTEditor
 
             m_treeView = Instantiate(TreeViewPrefab).GetComponent<VirtualizingTreeView>();
             m_treeView.transform.SetParent(transform, false);
+            RectTransform rt = (RectTransform)m_treeView.transform;
+            rt.Stretch();
                         
             m_treeView.ItemDataBinding += OnItemDataBinding;
             m_treeView.SelectionChanged += OnSelectionChanged;

@@ -203,6 +203,8 @@ namespace Battlehub.RTHandles
             }
 
             Window.Camera.transform.LookAt(m_pivot);
+
+            OnRuntimeSelectionChanged(null);
         }
 
         protected override void OnDestroyOverride()

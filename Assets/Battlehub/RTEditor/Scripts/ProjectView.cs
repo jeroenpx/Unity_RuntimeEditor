@@ -125,11 +125,19 @@ namespace Battlehub.RTEditor
             m_project.MoveCompleted += OnMoveCompleted;
             m_project.CreateCompleted += OnPrefabCreateCompleted;
             m_project.SaveCompleted += OnSaveCompleted;
-            
-            ShowProgress = true;
-            Editor.IsBusy = true;
 
-            m_project.OpenProject(ProjectName);
+
+            if (!m_project.IsOpened && !m_project.IsBusy)
+            {
+                ShowProgress = true;
+                Editor.IsBusy = true;
+                m_project.OpenProject(ProjectName);
+            }
+            else
+            {
+                m_projectTree.LoadProject(m_project.Root);
+                m_projectTree.SelectedFolder = m_project.Root;
+            }   
         }
 
         protected override void OnDestroyOverride()

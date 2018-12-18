@@ -114,7 +114,7 @@ namespace Battlehub.UIControls.MenuControl
             if(m_item != null)
             {
                 m_icon.sprite = m_item.Icon;
-                m_icon.gameObject.SetActive(m_icon.sprite != null);
+                m_icon.gameObject.SetActive(m_item.Icon != null);
                 m_text.text = m_item.Text;
                 m_expander.SetActive(HasChildren);
             }

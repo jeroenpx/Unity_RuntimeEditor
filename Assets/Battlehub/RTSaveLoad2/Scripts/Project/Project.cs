@@ -108,6 +108,11 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        public bool IsOpened
+        {
+            get { return m_projectInfo != null; }
+        }
+
         private void Awake()
         {
             if (string.IsNullOrEmpty(m_sceneDepsLibrary))
@@ -411,7 +416,7 @@ namespace Battlehub.RTSaveLoad2
 
         private ProjectAsyncOperation<ProjectInfo> _Open(string project, ProjectEventHandler<ProjectInfo> callback)
         {
-            if(m_projectInfo != null)
+            if(m_projectInfo != null && m_projectPath != project)
             {
                 CreateNewScene();
             }

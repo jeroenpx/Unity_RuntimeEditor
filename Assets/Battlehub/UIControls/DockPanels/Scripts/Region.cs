@@ -17,6 +17,33 @@ namespace Battlehub.UIControls.DockPanels
         Bottom,
     }
 
+    public class LayoutInfo
+    {
+        public Sprite Icon;
+        public string Header;
+        public Transform Content;
+
+        public bool IsVertical;
+        public LayoutInfo Child0;
+        public LayoutInfo Child1;
+        public float Ratio;
+
+        public LayoutInfo(Transform content, string header = null, Sprite icon = null)
+        {
+            Content = content;
+            Header = header;
+            Icon = icon;
+        }
+
+        public LayoutInfo(bool isVertical, LayoutInfo child0, LayoutInfo child1, float ratio = 0.5f)
+        {
+            IsVertical = isVertical;
+            Child0 = child0;
+            Child1 = child1;
+            Ratio = ratio;
+        }
+    }
+
     public delegate void RegionEventHandler(Region region);
     public delegate void RegionEventHandler<T>(Region region, T arg);
 
@@ -233,6 +260,84 @@ namespace Battlehub.UIControls.DockPanels
             {
                 m_activeTab = null;
             }
+        }
+
+        public void Clear()
+        {
+            for (int i = m_tabPanel.transform.childCount - 1; i >= 0; i--)
+            {
+                RemoveAt(i);
+            }
+
+            foreach (Transform child in m_childrenPanel)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        public void Build(LayoutInfo layout)
+        {
+            Clear();
+            Build(layout, this);
+        }
+
+        private void Build(LayoutInfo layout, Region region)
+        {
+            if (layout.Child0 != null && layout.Child1 != null)
+            {
+                if(layout.IsVertical)
+                {
+                    Rect rect = region.m_childrenPanel.rect;
+                    Region region0 = CreateVerticalRegion(region, layout.Ratio);
+                    Region region1 = CreateVerticalRegion(region, 1 - layout.Ratio);
+
+                    CreateVerticalLayoutGroup(region);
+
+                    Build(layout.Child0, region0);
+                    Build(layout.Child1, region1);
+                }
+                else
+                {
+                    Rect rect = region.m_childrenPanel.rect;
+                    Region region0 = CreateHorizontalRegion(region, layout.Ratio);
+                    Region region1 = CreateHorizontalRegion(region, 1 - layout.Ratio);
+
+                    CreateHorizontalLayoutGroup(region);
+
+                    Build(layout.Child0, region0);
+                    Build(layout.Child1, region1);
+                }
+            }
+            else
+            {
+                region.Add(layout.Icon, layout.Header, layout.Content);
+                ((RectTransform)layout.Content).Stretch();
+            }
+
+            region.UpdateVisualState();
+
+        }
+
+        private Region CreateVerticalRegion(Region region, float ratio)
+        {
+            Region childRegion = Instantiate(m_root.RegionPrefab, region.m_childrenPanel, false);
+            childRegion.name = "Region " + m_root.RegionId++;
+            childRegion.m_layoutElement.preferredHeight = -1;
+            childRegion.m_layoutElement.preferredWidth = -1;
+            childRegion.m_layoutElement.flexibleHeight = Mathf.Clamp01(ratio);
+            childRegion.m_layoutElement.flexibleWidth = -1;
+            return childRegion;
+        }
+
+        private Region CreateHorizontalRegion(Region region, float ratio)
+        {
+            Region childRegion = Instantiate(m_root.RegionPrefab, region.m_childrenPanel, false);
+            childRegion.name = "Region " + m_root.RegionId++;
+            childRegion.m_layoutElement.preferredWidth = -1;
+            childRegion.m_layoutElement.preferredHeight = -1;
+            childRegion.m_layoutElement.flexibleWidth = Mathf.Clamp01(ratio);
+            childRegion.m_layoutElement.flexibleHeight = -1;
+            return childRegion;
         }
 
         public Transform GetDragRegion()
@@ -596,7 +701,7 @@ namespace Battlehub.UIControls.DockPanels
             content.transform.SetParent(m_root.transform);
 
             MoveContentsToChildRegion();
-            Region region = CreateHorizontalRegion(tab, content);
+            Region region = CreateVerticalRegion(tab, content);
 
             CreateVerticalLayoutGroup(this);
 
@@ -612,7 +717,7 @@ namespace Battlehub.UIControls.DockPanels
 
             MoveContentsToChildRegion();
 
-            Region region = CreateHorizontalRegion(tab, content);
+            Region region = CreateVerticalRegion(tab, content);
 
             CreateVerticalLayoutGroup(this);
 
@@ -628,7 +733,7 @@ namespace Battlehub.UIControls.DockPanels
 
             MoveContentsToChildRegion();
 
-            Region region = CreateVerticalRegion(tab, content);
+            Region region = CreateHorizontalRegion(tab, content);
 
             CreateHorizontalLayoutGroup(this);
 
@@ -644,7 +749,7 @@ namespace Battlehub.UIControls.DockPanels
 
             MoveContentsToChildRegion();
 
-            Region region = CreateVerticalRegion(tab, content);
+            Region region = CreateHorizontalRegion(tab, content);
 
             CreateHorizontalLayoutGroup(this);
 
@@ -697,13 +802,12 @@ namespace Battlehub.UIControls.DockPanels
             region.m_layoutGroup = lg;
         }
 
-        private Region CreateHorizontalRegion(Tab tab, Transform content)
+        private Region CreateVerticalRegion(Tab tab, Transform content)
         {
-            Rect rect = m_childrenPanel.rect;
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
             region.name = "Region " + m_root.RegionId++;
 
-            region.m_layoutElement.preferredHeight = -1;// rect.height / 3;
+            region.m_layoutElement.preferredHeight = -1;
             region.m_layoutElement.preferredWidth = -1;
             region.m_layoutElement.flexibleHeight = 0.3f;
             region.m_layoutElement.flexibleWidth = -1;
@@ -711,13 +815,12 @@ namespace Battlehub.UIControls.DockPanels
             return region;
         }
 
-        private Region CreateVerticalRegion(Tab tab, Transform content)
+        private Region CreateHorizontalRegion(Tab tab, Transform content)
         {
-            Rect rect = m_childrenPanel.rect;
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
             region.name = "Region " + m_root.RegionId++;
 
-            region.m_layoutElement.preferredWidth = -1;// rect.width / 3;
+            region.m_layoutElement.preferredWidth = -1;
             region.m_layoutElement.preferredHeight = -1;
             region.m_layoutElement.flexibleWidth = 0.3f;
             region.m_layoutElement.flexibleHeight = -1;
@@ -1245,6 +1348,8 @@ namespace Battlehub.UIControls.DockPanels
                 }
             }
 
+            UpdateMinSize(m_root.RootRegion);
+
             Resizer[] resizers = m_root.RootRegion.GetComponentsInChildren<Resizer>();
             for(int i = 0; i < resizers.Length; ++i)
             {
@@ -1451,15 +1556,6 @@ namespace Battlehub.UIControls.DockPanels
         }
     }
 
-    public static class RectTransformExtensions
-    {
-        public static void Stretch(this RectTransform rt)
-        {
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
-        }
-    }
+   
 }
 

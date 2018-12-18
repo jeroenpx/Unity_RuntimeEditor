@@ -49,6 +49,11 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         string GetExt(object obj);
         string GetExt(Type type);
+        
+        bool IsOpened
+        {
+            get;
+        }
 
         void CreateNewScene();
         ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);

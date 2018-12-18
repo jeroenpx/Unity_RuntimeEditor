@@ -11,6 +11,8 @@ namespace Battlehub.RTEditor
 {
     public interface IWindowManager
     {
+        void SetDefaultLayout();
+
         Transform GetWindow(string windowTypeName);
         bool Exists(string windowTypeName);
         bool IsActive(string windowType);
@@ -66,7 +68,6 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-
             if (m_dockPanels == null)
             {
                 m_dockPanels = FindObjectOfType<DockPanelsRoot>();
@@ -86,6 +87,7 @@ namespace Battlehub.RTEditor
 
             m_editor = IOC.Resolve<IRTE>();
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
+            SetDefaultLayout();
         }
 
         private void OnDestroy()
@@ -152,21 +154,26 @@ namespace Battlehub.RTEditor
 
         private void OnTabClosed(Region region, Transform content)
         {
+            OnContentDestroyed(content);
+        }
+
+        private void OnContentDestroyed(Transform content)
+        {
             string windowTypeName = m_windows.Where(kvp => kvp.Value.Contains(content)).Select(kvp => kvp.Key).FirstOrDefault();
-            if(!string.IsNullOrEmpty(windowTypeName))
+            if (!string.IsNullOrEmpty(windowTypeName))
             {
                 HashSet<Transform> windowsOfType = m_windows[windowTypeName];
                 windowsOfType.Remove(content);
 
-                if(windowsOfType.Count == 0)
+                if (windowsOfType.Count == 0)
                 {
                     m_windows.Remove(windowTypeName);
                 }
 
                 List<Transform> extraComponents = new List<Transform>();
-                if(m_extraComponents.TryGetValue(content, out extraComponents))
+                if (m_extraComponents.TryGetValue(content, out extraComponents))
                 {
-                    for(int i = 0; i < extraComponents.Count; ++i)
+                    for (int i = 0; i < extraComponents.Count; ++i)
                     {
                         Destroy(extraComponents[i].gameObject);
                     }
@@ -185,7 +192,7 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_hierarchyWindow;
                 }
-                else if(windowTypeName == RuntimeWindowType.Inspector.ToString().ToLower())
+                else if (windowTypeName == RuntimeWindowType.Inspector.ToString().ToLower())
                 {
                     wd = m_inspectorWindow;
                 }
@@ -201,6 +208,65 @@ namespace Battlehub.RTEditor
                 wd.Created--;
                 Debug.Assert(wd.Created >= 0);
             }
+        }
+
+        public void SetDefaultLayout()
+        {
+            Region rootRegion = m_dockPanels.RootRegion;
+            ClearRegion(rootRegion);
+            foreach(Transform child in m_dockPanels.Free)
+            {
+                Region region = child.GetComponent<Region>();
+                ClearRegion(region);
+            }
+
+            WindowDescriptor sceneWd;
+            GameObject sceneContent;
+            CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent);
+
+            WindowDescriptor inspectorWd;
+            GameObject inspectorContent;
+            CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent);
+
+            WindowDescriptor hierarchyWd;
+            GameObject hierarchyContent;
+            CreateWindow(RuntimeWindowType.Hierarchy.ToString(), out hierarchyWd, out hierarchyContent);
+
+            WindowDescriptor projectWd;
+            GameObject projectContent;
+            CreateWindow(RuntimeWindowType.Project.ToString(), out projectWd, out projectContent);
+
+            LayoutInfo layout = new LayoutInfo(false,
+                new LayoutInfo(false,
+                    new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
+                    new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
+                    0.25f),
+                new LayoutInfo(true,
+                    new LayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
+                    new LayoutInfo(projectContent.transform, projectWd.Header, projectWd.Icon),
+                    0.5f),
+                1.0f);
+
+            m_dockPanels.RootRegion.Build(layout);
+
+            ActivateContent(sceneWd, sceneContent);
+            ActivateContent(projectWd, projectContent);
+            ActivateContent(hierarchyWd, hierarchyContent);
+            ActivateContent(inspectorWd, inspectorContent);
+        }
+
+        private void ClearRegion(Region rootRegion)
+        {
+            Region[] regions = rootRegion.GetComponentsInChildren<Region>();
+            for (int i = 0; i < regions.Length; ++i)
+            {
+                Region region = regions[i];
+                foreach (Transform content in region.ContentPanel)
+                {
+                    OnContentDestroyed(content);
+                }
+            }
+            rootRegion.Clear();
         }
 
         public bool Exists(string windowTypeName)
@@ -266,14 +332,30 @@ namespace Battlehub.RTEditor
 
         public bool CreateWindow(string windowTypeName)
         {
+            WindowDescriptor wd;
+            GameObject content;
+            if (!CreateWindow(windowTypeName, out wd, out content))
+            {
+                return false;
+            }
+
+            m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, true);
+
+            ActivateContent(wd, content);
+
+            return true;
+        }
+
+        private bool CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content)
+        {
             if (m_dockPanels == null)
             {
                 Debug.LogError("Unable to create window. m_dockPanels == null. Set DockPanels field");
             }
 
             windowTypeName = windowTypeName.ToLower();
-
-            WindowDescriptor wd = null;
+            wd = null;
+            content = null;
             if (windowTypeName == RuntimeWindowType.Scene.ToString().ToLower())
             {
                 wd = m_sceneWindow;
@@ -311,10 +393,8 @@ namespace Battlehub.RTEditor
             }
             wd.Created++;
 
-            GameObject content;
             if (wd.ContentPrefab != null)
             {
-                bool wasActive = wd.ContentPrefab.activeSelf;
                 wd.ContentPrefab.SetActive(false);
                 content = Instantiate(wd.ContentPrefab);
                 content.name = windowTypeName;
@@ -331,23 +411,17 @@ namespace Battlehub.RTEditor
                     }
                 }
 
-                m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, true);
 
                 List<Transform> extraComponents = new List<Transform>();
-
                 for (int i = 0; i < children.Length; ++i)
                 {
                     if (children[i].parent == m_componentsRoot)
                     {
-                        children[i].gameObject.SetActive(true);
                         extraComponents.Add(children[i]);
                     }
                 }
 
                 m_extraComponents.Add(content.transform, extraComponents);
-
-                content.SetActive(true);
-                wd.ContentPrefab.SetActive(wasActive);
             }
             else
             {
@@ -356,21 +430,32 @@ namespace Battlehub.RTEditor
                 content = new GameObject();
                 content.AddComponent<RectTransform>();
                 content.name = "Empty Content";
-                m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, true);
 
                 m_extraComponents.Add(content.transform, new List<Transform>());
             }
 
             HashSet<Transform> windows;
-            if(!m_windows.TryGetValue(windowTypeName, out windows))
+            if (!m_windows.TryGetValue(windowTypeName, out windows))
             {
                 windows = new HashSet<Transform>();
                 m_windows.Add(windowTypeName, windows);
             }
 
             windows.Add(content.transform);
-            
             return true;
+        }
+
+        private void ActivateContent(WindowDescriptor wd, GameObject content)
+        {
+            List<Transform> extraComponentsList = new List<Transform>();
+            m_extraComponents.TryGetValue(content.transform, out extraComponentsList);
+            for (int i = 0; i < extraComponentsList.Count; ++i)
+            {
+                extraComponentsList[i].gameObject.SetActive(true);
+            }
+
+            wd.ContentPrefab.SetActive(true);
+            content.SetActive(true);
         }
 
         private void OnRegionDepthChanged(Region region, int depth)

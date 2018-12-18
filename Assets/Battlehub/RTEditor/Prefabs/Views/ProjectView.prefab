@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 8756119970407778073}
   - component: {fileID: 721812406174773305}
   m_Layer: 5
-  m_Name: ProjectWindow
+  m_Name: ProjectView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

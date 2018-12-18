@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
 {
+ 
     public class DockPanelsRoot : MonoBehaviour
     {
         public event RegionEventHandler<Transform> TabActivated;
         public event RegionEventHandler<Transform> TabDeactivated;
         public event RegionEventHandler<Transform> TabClosed;
-
 
         public event RegionEventHandler RegionSelected;
         public event RegionEventHandler RegionUnselected;

@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2.Interface;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,6 +26,17 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
         }
 
+        protected virtual void OnEnable()
+        {
+            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            for (int i = 0; i < editorObjects.Length; ++i)
+            {
+                editorObjects[i].ObjectType = ExposeToEditorObjectType.EditorMode;
+                editorObjects[i].Init();
+            }
+            Object.Awaked += OnObjectAwaked;
+        }
+
         protected override void Start()
         {
             if (GetComponent<RuntimeEditorInput>() == null)
@@ -34,9 +46,23 @@ namespace Battlehub.RTEditor
             base.Start();
         }
 
+        protected virtual void OnDisable()
+        {
+            if(Object != null)
+            {
+                Object.Awaked -= OnObjectAwaked;
+            }
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
+        }
+
+        public void SetDefaultLayout()
+        {
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            windowManager.SetDefaultLayout();
         }
 
         public virtual void CreateWindow(string windowTypeName)
@@ -113,6 +139,24 @@ namespace Battlehub.RTEditor
                 Debug.Log("Scene Saved");
                 IsBusy = false;
             });
+        }
+
+        private void OnObjectAwaked(ExposeToEditor obj)
+        {
+            if (IsPlaying || !IsOpened)
+            {
+                if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
+                {
+                    obj.ObjectType = ExposeToEditorObjectType.PlayMode;
+                }
+            }
+            else
+            {
+                if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
+                {
+                    obj.ObjectType = ExposeToEditorObjectType.EditorMode;
+                }
+            }
         }
 
 
