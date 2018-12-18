@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,7 +33,8 @@ namespace Battlehub.UIControls.DockPanels
 
         private Dictionary<Region, DepthMask> m_regionToDepthMask = new Dictionary<Region, DepthMask>();
 
-        private DepthMask m_depthMask;
+        private DepthMask[] m_dragDepthMasks;
+        private Vector3 m_previousDragPosition;
         
         private void Awake()
         {
@@ -41,6 +43,7 @@ namespace Battlehub.UIControls.DockPanels
             GameObject depthMasks = new GameObject();
             depthMasks.name = "DepthMasks";
             RectTransform depthMasksRT = depthMasks.AddComponent<RectTransform>();
+
             depthMasksRT.SetParent(m_root.Free.parent, false);
             depthMasksRT.SetSiblingIndex(0);
             depthMasksRT.Stretch();
@@ -187,37 +190,60 @@ namespace Battlehub.UIControls.DockPanels
                 pos.z = 0;
                 region.transform.localPosition = pos;
             }   
+
+            foreach(Transform content in region.ContentPanel)
+            {
+                Vector3 contentPos = content.localPosition;
+                contentPos.z = 0;
+                content.localPosition = contentPos;
+            }
         }
 
         private void OnRegionBeginDrag(Region region)
         {
-            m_depthMask = m_regionToDepthMask[region];
+            Transform dragRegion = region.GetDragRegion();
+            if(dragRegion == null)
+            {
+                m_dragDepthMasks = new[] { m_regionToDepthMask[region] };
+            }
+            else
+            {
+                Region[] regions = dragRegion.GetComponentsInChildren<Region>();
+                m_dragDepthMasks = regions.Where(r => r.Root == m_root).Select(r => m_regionToDepthMask[r]).ToArray();
+            }
+
+            m_previousDragPosition = region.transform.position;
         }
 
         private void OnRegionDrag(Region region)
         {
-            m_depthMask.Transform.position = region.transform.position;
-            ApplyDepth(region, m_depthMask);
+            for(int i = 0; i < m_dragDepthMasks.Length; ++i)
+            {
+                DepthMask depthMask = m_dragDepthMasks[i];
+                depthMask.Transform.position += (region.transform.position - m_previousDragPosition);
+                m_previousDragPosition = region.transform.position;
+                ApplyDepth(region, depthMask);
+            }
         }
 
         private void OnRegionEndDrag(Region region)
         {
-            m_depthMask = null;
+            m_dragDepthMasks = null;
         }
 
         private void OnRegionBeginResize(Resizer resizer, Region region)
         {
-            m_depthMask = m_regionToDepthMask[region];
+            m_dragDepthMasks = new[] { m_regionToDepthMask[region] };
         }
 
         private void OnRegionResize(Resizer resizer, Region region)
         {
-            UpdateDepthMaskTransform(region, m_depthMask);
+            UpdateDepthMaskTransform(region, m_dragDepthMasks[0]);
         }
 
         private void OnRegionEndResize(Resizer resizer, Region region)
         {
-            m_depthMask = null;
+            m_dragDepthMasks = null;
         }
 
         private void OnRegionTransformChanged(Region region)

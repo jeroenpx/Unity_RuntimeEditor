@@ -96,7 +96,13 @@ namespace Battlehub.UIControls.DockPanels
         public Vector3 PreviewPosition
         {
             get { return m_tabPreview.transform.position; }
-            set { m_tabPreview.transform.position = value; }
+            set
+            {
+                m_tabPreview.transform.position = value;
+                Vector3 localPosition = m_tabPreview.transform.localPosition;
+                localPosition.z = 0;
+                m_tabPreview.transform.localPosition = localPosition;
+            }
         }
 
         public bool IsPreviewContentActive

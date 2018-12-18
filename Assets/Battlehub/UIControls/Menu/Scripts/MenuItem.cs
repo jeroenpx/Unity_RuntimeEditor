@@ -277,7 +277,14 @@ namespace Battlehub.UIControls.MenuControl
             if(menu.Parent != null)
             {
                 Menu parentMenu = menu.Parent.GetComponentInParent<Menu>();
-                parentMenu.Child = menu.Parent;
+                if(parentMenu == null)
+                {
+                    Debug.LogWarning("parentMenu is null");
+                }
+                else
+                {
+                    parentMenu.Child = menu.Parent;
+                }
             }
 
             m_coSelect = CoSelect();

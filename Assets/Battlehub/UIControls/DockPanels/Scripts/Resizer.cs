@@ -1,5 +1,7 @@
 ﻿using Battlehub.Utils;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -156,7 +158,25 @@ namespace Battlehub.UIControls.DockPanels
             }
             if (m_forceRebuildLayoutImmediate)
             {
-                m_layoutGroups = m_region.Root.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
+                //m_layoutGroups = m_region.Root.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
+
+                List<HorizontalOrVerticalLayoutGroup> lgList = new List<HorizontalOrVerticalLayoutGroup>();
+                Region[] regions = m_region.Root.GetComponentsInChildren<Region>();
+                for(int i = 0; i < regions.Length; ++i)
+                {
+                    HorizontalOrVerticalLayoutGroup lg = regions[i].ChildrenPanel.GetComponent<HorizontalOrVerticalLayoutGroup>();
+                    if(lg != null)
+                    {
+                        lgList.Add(lg);
+                    }
+                    lg = regions[i].Content.GetComponent<HorizontalOrVerticalLayoutGroup>();
+                    if(lg != null)
+                    {
+                        lgList.Add(lg);
+                    }
+                }
+                m_layoutGroups = lgList.ToArray();
+
             }
 
             if (BeginResize != null)
@@ -253,8 +273,16 @@ namespace Battlehub.UIControls.DockPanels
                 {
                     localPoint = (pivotPosition + localPoint) - new Vector2(m_layout.minWidth, m_layout.minHeight);
                     
-                    m_layout.flexibleWidth = localPoint.x / size.x;
-                    m_layout.flexibleHeight = localPoint.y / size.y;
+                    m_layout.flexibleWidth = (size.x == 0) ? 1 : localPoint.x / size.x;
+                    if (m_siblingLayout.flexibleWidth < 0)
+                    {
+                        m_siblingLayout.flexibleWidth = 0;
+                    }
+                    m_layout.flexibleHeight = (size.y == 0) ? 1 : localPoint.y / size.y;
+                    if (m_siblingLayout.flexibleHeight < 0)
+                    {
+                        m_siblingLayout.flexibleHeight = 0;
+                    }
                     m_siblingLayout.flexibleWidth = 1 - m_layout.flexibleWidth;
                     m_siblingLayout.flexibleHeight = 1 - m_layout.flexibleHeight;
                 }
@@ -262,8 +290,17 @@ namespace Battlehub.UIControls.DockPanels
                 {
                     localPoint = (pivotPosition + localPoint) - new Vector2(m_siblingLayout.minWidth, m_siblingLayout.minHeight);
 
-                    m_siblingLayout.flexibleWidth = localPoint.x / size.x;
-                    m_siblingLayout.flexibleHeight = localPoint.y / size.y;
+                    m_siblingLayout.flexibleWidth = (size.x == 0) ? 1 : localPoint.x / size.x;
+                    if(m_siblingLayout.flexibleWidth < 0)
+                    {
+                        m_siblingLayout.flexibleWidth = 0;
+                    }
+                    m_siblingLayout.flexibleHeight = (size.y == 0) ? 1 : localPoint.y / size.y;
+                    if (m_siblingLayout.flexibleHeight < 0)
+                    {
+                        m_siblingLayout.flexibleHeight = 0;
+                    }
+
                     m_layout.flexibleWidth = 1 - m_siblingLayout.flexibleWidth;
                     m_layout.flexibleHeight = 1 - m_siblingLayout.flexibleHeight;
                 }
@@ -271,9 +308,23 @@ namespace Battlehub.UIControls.DockPanels
 
             if(m_forceRebuildLayoutImmediate)
             {
-                for (int i = 0; i < m_layoutGroups.Length; ++i)
+                if(m_layoutGroups == null)
                 {
-                    LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)m_layoutGroups[i].transform);
+                    Debug.LogError("m_layoutGroups is null " + m_region.Root.name);
+                }
+                else
+                {
+                    for (int i = 0; i < m_layoutGroups.Length; ++i)
+                    {
+                        HorizontalOrVerticalLayoutGroup lg = m_layoutGroups[i];
+                        if(lg == null)
+                        {
+                            Debug.LogError("layoutGroup " + i + " is null " + m_region.Root.name);
+                            continue;
+                        }
+                        RectTransform rt = (RectTransform)lg.transform;
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+                    }
                 }
             }
             

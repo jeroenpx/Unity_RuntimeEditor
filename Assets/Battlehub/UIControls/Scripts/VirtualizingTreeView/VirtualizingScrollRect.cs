@@ -421,7 +421,16 @@ namespace Battlehub.UIControls
                     }
 
                     RectTransform parent = (RectTransform)m_virtualContent.parent;
-                    ContainersPerGroup = Mathf.RoundToInt(parent.rect.height / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.y + m_gridSpacing.y));
+
+                    if(verticalScrollbarVisibility == ScrollbarVisibility.Permanent)
+                    {
+                        ContainersPerGroup = Mathf.FloorToInt(parent.rect.height / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.y + m_gridSpacing.y));
+                    }
+                    else
+                    {
+                        ContainersPerGroup = Mathf.RoundToInt(parent.rect.height / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.y + m_gridSpacing.y));
+                    }
+                    
                 }
             }
             else if(m_mode == VirtualizingMode.Vertical)
@@ -435,7 +444,15 @@ namespace Battlehub.UIControls
                     }
 
                     RectTransform parent = (RectTransform)m_virtualContent.parent;
-                    ContainersPerGroup = Mathf.RoundToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
+
+                    if(horizontalScrollbarVisibility == ScrollbarVisibility.Permanent)
+                    {
+                        ContainersPerGroup = Mathf.FloorToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
+                    }
+                    else
+                    {
+                        ContainersPerGroup = Mathf.RoundToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
+                    }
                 }
             }
         }

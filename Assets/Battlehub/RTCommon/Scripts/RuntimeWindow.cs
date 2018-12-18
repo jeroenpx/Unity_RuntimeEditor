@@ -140,7 +140,6 @@ namespace Battlehub.RTCommon
             m_rectTransform = GetComponent<RectTransform>();
             m_canvas = GetComponentInParent<Canvas>();
 
-
             Editor.ActiveWindowChanged += OnActiveWindowChanged;
 
             m_index = Editor.GetIndex(WindowType);

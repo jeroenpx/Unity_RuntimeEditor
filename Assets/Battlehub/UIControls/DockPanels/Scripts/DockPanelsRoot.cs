@@ -10,6 +10,9 @@ namespace Battlehub.UIControls.DockPanels
         public event RegionEventHandler<Transform> TabDeactivated;
         public event RegionEventHandler<Transform> TabClosed;
 
+
+        public event RegionEventHandler RegionSelected;
+        public event RegionEventHandler RegionUnselected;
         public event RegionEventHandler RegionCreated;
         public event RegionEventHandler<int> RegionDepthChanged;
         public event RegionEventHandler RegionDestroyed;
@@ -91,6 +94,21 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_allowDragOutside; }
         }
 
+        [SerializeField]
+        private float m_minWidth = 0;
+        public float MinWidth
+        {
+            get { return m_minWidth; }
+        }
+
+
+        [SerializeField]
+        private float m_minHeight = 0;
+        public float MinHeight
+        {
+            get { return m_minHeight; }
+        }
+
         private void Awake()
         {
             if(m_raycaster == null)
@@ -160,12 +178,15 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRectTransformDimensionsChange()
         {
-            foreach(Transform child in Free)
+            if(Free != null)
             {
-                Region region =  child.GetComponent<Region>();
-                if(region != null)
+                foreach (Transform child in Free)
                 {
-                    region.Fit();
+                    Region region = child.GetComponent<Region>();
+                    if (region != null)
+                    {
+                        region.Fit();
+                    }
                 }
             }
         }
@@ -227,6 +248,11 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             m_selectedRegion = region;
+
+            if(RegionSelected != null)
+            {
+                RegionSelected(m_selectedRegion);
+            }
         }
 
         private void OnRegionUnselected(Region region)
@@ -239,6 +265,10 @@ namespace Battlehub.UIControls.DockPanels
             if(m_selectedRegion == region)
             {
                 m_selectedRegion = null;
+                if (RegionUnselected != null)
+                {
+                    RegionUnselected(m_selectedRegion);
+                }
             }
         }
 

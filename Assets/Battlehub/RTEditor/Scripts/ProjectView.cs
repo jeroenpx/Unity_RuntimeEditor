@@ -134,6 +134,7 @@ namespace Battlehub.RTEditor
 
         protected override void OnDestroyOverride()
         {
+            base.OnDestroyOverride();
             if (m_projectResources != null)
             {
                 m_projectResources.ItemDoubleClick -= OnProjectResourcesDoubleClick;

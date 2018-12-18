@@ -76,6 +76,8 @@ namespace Battlehub.RTEditor
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
+            m_dockPanels.RegionSelected += OnRegionSelected;
+            m_dockPanels.RegionUnselected += OnRegionUnselected;
 
             if (m_componentsRoot == null)
             {
@@ -86,8 +88,6 @@ namespace Battlehub.RTEditor
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
         }
 
-
-
         private void OnDestroy()
         {
             if(m_dockPanels != null)
@@ -96,7 +96,23 @@ namespace Battlehub.RTEditor
                 m_dockPanels.TabDeactivated -= OnTabDeactivated;
                 m_dockPanels.TabClosed -= OnTabClosed;
                 m_dockPanels.RegionDepthChanged -= OnRegionDepthChanged;
+                m_dockPanels.RegionSelected -= OnRegionSelected;
+                m_dockPanels.RegionUnselected -= OnRegionUnselected;
             }
+        }
+
+        private void OnRegionSelected(Region region)
+        {
+            RuntimeWindow window = region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
+            if (window != null)
+            {
+                window.Editor.ActivateWindow(window);
+            }
+        }
+
+        private void OnRegionUnselected(Region region)
+        {
+
         }
 
         private void OnTabActivated(Region region, Transform content)
@@ -109,6 +125,12 @@ namespace Battlehub.RTEditor
                     Transform extraComponent = extraComponents[i];
                     extraComponent.gameObject.SetActive(true);
                 }
+            }
+
+            RuntimeWindow window = region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
+            if(window != null)
+            {
+                window.Editor.ActivateWindow(window);
             }
         }
 
