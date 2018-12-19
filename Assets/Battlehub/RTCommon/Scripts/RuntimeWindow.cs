@@ -237,7 +237,7 @@ namespace Battlehub.RTCommon
                 {
                     Vector3[] corners = new Vector3[4];
                     m_rectTransform.GetWorldCorners(corners);
-                    m_camera.pixelRect = new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y));
+                    ResizeCamera(new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y)));
                 }
                 else if (m_canvas.renderMode == RenderMode.ScreenSpaceCamera)
                 {
@@ -250,9 +250,14 @@ namespace Battlehub.RTCommon
                     corners[3] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[3]);
 
                     Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
-                    m_camera.pixelRect = new Rect(corners[0], size);
+                    ResizeCamera(new Rect(corners[0], size));
                 }
             }
+        }
+
+        protected virtual void ResizeCamera(Rect pixelRect)
+        {
+            m_camera.pixelRect = pixelRect;
         }
 
         protected virtual void OnActivated()

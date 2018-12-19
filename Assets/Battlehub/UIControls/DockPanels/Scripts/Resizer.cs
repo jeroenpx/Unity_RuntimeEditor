@@ -206,7 +206,7 @@ namespace Battlehub.UIControls.DockPanels
                 RectTransform regionRT = (RectTransform)m_region.transform;
                 RectTransform freePanelRt = (RectTransform)m_region.Root.Free;
 
-                Vector2 point;
+                Vector2 point = Vector2.zero;
                 Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out point));
 
                 Vector2 pivotOffset = Vector2.Scale(freePanelRt.rect.size, freePanelRt.pivot);

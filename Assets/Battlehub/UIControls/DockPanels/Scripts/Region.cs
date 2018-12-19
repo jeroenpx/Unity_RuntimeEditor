@@ -1220,7 +1220,7 @@ namespace Battlehub.UIControls.DockPanels
                 rt.pivot = new Vector2((tab.PreviewHeaderSize.x * 0.5f) / size.x, 1 - (tab.PreviewHeaderSize.y * 0.5f) / size.y);
                 rt.sizeDelta = size;
 
-                Vector3 worldPos;
+                Vector3 worldPos = Vector3.zero;
                 Debug.Assert(RectTransformUtility.ScreenPointToWorldPointInRectangle(rt, args.position, args.pressEventCamera, out worldPos));
                 freeRegion.transform.position = worldPos;
 

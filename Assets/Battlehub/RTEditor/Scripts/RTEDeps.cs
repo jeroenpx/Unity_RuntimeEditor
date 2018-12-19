@@ -7,6 +7,7 @@ namespace Battlehub.RTEditor
     [DefaultExecutionOrder(-100)]
     public class RTEDeps : MonoBehaviour
     {
+        private IRuntimeConsole m_console;
         private IScenePivot m_scenePivot;
         private IResourcePreviewUtility m_resourcePreview;
         private IRTEAppearance m_rteAppearance;
@@ -70,6 +71,19 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected virtual IRuntimeConsole RuntimeConsole
+        {
+            get
+            {
+                IRuntimeConsole console = FindObjectOfType<RuntimeConsole>();
+                if(console == null)
+                {
+                    console = gameObject.AddComponent<RuntimeConsole>();
+                }
+                return console;
+            }
+        }
+
 
         private void Awake()
         {
@@ -91,6 +105,7 @@ namespace Battlehub.RTEditor
             m_resourcePreview = ResourcePreview;
             m_rteAppearance = RTEAppearance;
             m_windowManager = WindowManager;
+            m_console = RuntimeConsole;
         }
 
         private void OnDestroy()
@@ -116,7 +131,6 @@ namespace Battlehub.RTEditor
 
         }
 
-
         private static RTEDeps m_instance;
         private static RTEDeps Instance
         {
@@ -138,10 +152,12 @@ namespace Battlehub.RTEditor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
+            IOC.RegisterFallback(() => Instance.m_console);
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
             IOC.RegisterFallback(() => Instance.m_scenePivot);
             IOC.RegisterFallback(() => Instance.m_windowManager);
+            
         }
     }
 }

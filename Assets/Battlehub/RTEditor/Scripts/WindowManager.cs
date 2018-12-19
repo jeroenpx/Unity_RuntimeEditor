@@ -224,9 +224,17 @@ namespace Battlehub.RTEditor
             GameObject sceneContent;
             CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent);
 
+            WindowDescriptor gameWd;
+            GameObject gameContent;
+            CreateWindow(RuntimeWindowType.Game.ToString(), out gameWd, out gameContent);
+
             WindowDescriptor inspectorWd;
             GameObject inspectorContent;
             CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent);
+
+            WindowDescriptor consoleWd;
+            GameObject consoleContent;
+            CreateWindow(RuntimeWindowType.Console.ToString(), out consoleWd, out consoleContent);
 
             WindowDescriptor hierarchyWd;
             GameObject hierarchyContent;
@@ -238,8 +246,14 @@ namespace Battlehub.RTEditor
 
             LayoutInfo layout = new LayoutInfo(false,
                 new LayoutInfo(false,
-                    new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
-                    new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
+                    new LayoutInfo(true,
+                        new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
+                        new LayoutInfo(consoleContent.transform, consoleWd.Header, consoleWd.Icon),
+                        0.7f),
+                    new LayoutInfo(true,
+                        new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
+                        new LayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon),
+                        0.5f),
                     0.25f),
                 new LayoutInfo(true,
                     new LayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),

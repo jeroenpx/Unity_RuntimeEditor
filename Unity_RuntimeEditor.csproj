@@ -11,15 +11,15 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile></TargetFrameworkProfile>
     <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectGenerator>VSTU</UnityProjectGenerator>
     <UnityProjectType>Game:1</UnityProjectType>
-    <UnityBuildTarget>Android:13</UnityBuildTarget>
-    <UnityVersion>2018.2.5f1</UnityVersion>
+    <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
+    <UnityVersion>2018.3.0f2</UnityVersion>
     <RootNamespace></RootNamespace>
-    <LangVersion>4</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <NoConfig>true</NoConfig>
@@ -33,7 +33,7 @@
     <IntermediateOutputPath>Temp\UnityVS_obj\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_2_5;UNITY_2018_2;UNITY_2018;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_PACKMAN;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_ANDROID;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_SUBSTANCE;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_EVENT_QUEUE;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;PLATFORM_SUPPORTS_ADS_ID;UNITY_CAN_SHOW_SPLASH_SCREEN;ENABLE_VR;ENABLE_AR;ENABLE_SPATIALTRACKING;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_VSTU;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_3_0;UNITY_2018_3;UNITY_2018;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_VSTU;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -43,280 +43,614 @@
     <IntermediateOutputPath>Temp\UnityVS_obj\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_2_5;UNITY_2018_2;UNITY_2018;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_PACKMAN;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_ANDROID;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_SUBSTANCE;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_EVENT_QUEUE;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING;PLATFORM_SUPPORTS_ADS_ID;UNITY_CAN_SHOW_SPLASH_SCREEN;ENABLE_VR;ENABLE_AR;ENABLE_SPATIALTRACKING;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_VSTU;UNITY_HAS_GOOGLEVR;UNITY_HAS_TANGO</DefineConstants>
+    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_3_0;UNITY_2018_3;UNITY_2018;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_VSTU;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.AIModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.ARModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.AccessibilityModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.AccessibilityModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.AccessibilityModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.AnimationModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.AssetBundleModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.AudioModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.BaselibModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.BaselibModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.BaselibModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.ClothModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ClothModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ClothModule.dll</HintPath>
     </Reference>
-    <Reference Include="Managed/UnityEngine/UnityEngine.CloudWebServicesModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.CloudWebServicesModule.dll</HintPath>
+    <Reference Include="Managed/UnityEngine/UnityEngine.ClusterInputModule">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Managed/UnityEngine/UnityEngine.ClusterRendererModule">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.CoreModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.CrashReportingModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.CrashReportingModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.CrashReportingModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.DirectorModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.DirectorModule.dll</HintPath>
-    </Reference>
-    <Reference Include="Managed/UnityEngine/UnityEngine.FacebookModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.FacebookModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.DirectorModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.FileSystemHttpModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.FileSystemHttpModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.FileSystemHttpModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.GameCenterModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.GameCenterModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.GameCenterModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.GridModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.GridModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.GridModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.HotReloadModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.HotReloadModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.HotReloadModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.IMGUIModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.ImageConversionModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.InputModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.InputModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.InputModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.JSONSerializeModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.LocalizationModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.LocalizationModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.LocalizationModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.ParticleSystemModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll</HintPath>
-    </Reference>
-    <Reference Include="Managed/UnityEngine/UnityEngine.ParticlesLegacyModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ParticlesLegacyModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.PerformanceReportingModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.PhysicsModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.Physics2DModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.ProfilerModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ProfilerModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ProfilerModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.ScreenCaptureModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.SharedInternalsModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="Managed/UnityEngine/UnityEngine.SpatialTrackingModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.SpatialTrackingModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.SpriteMaskModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.SpriteShapeModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.StreamingModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.StreamingModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.StreamingModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.StyleSheetsModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.StyleSheetsModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.StyleSheetsModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.SubstanceModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.SubstanceModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.SubstanceModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.TLSModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.TLSModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TLSModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.TerrainModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.TerrainPhysicsModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Managed/UnityEngine/UnityEngine.TextCoreModule">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TextCoreModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.TextRenderingModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.TilemapModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.TilemapModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TilemapModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.TimelineModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.TimelineModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.TimelineModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UIModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UIModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UIModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UIElementsModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UNETModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UNETModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UNETModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UmbraModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UmbraModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UmbraModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityAnalyticsModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityConnectModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityConnectModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Managed/UnityEngine/UnityEngine.UnityTestProtocolModule">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityTestProtocolModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityWebRequestModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Managed/UnityEngine/UnityEngine.VFXModule">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.VFXModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.VRModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.VRModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.VRModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.VehiclesModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.VehiclesModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.VehiclesModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.VideoModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.VideoModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.VideoModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.WindModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.WindModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.WindModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEngine/UnityEngine.XRModule">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="Managed/UnityEditor">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/UnityEditor.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/UnityEditor.dll</HintPath>
     </Reference>
     <Reference Include="Managed/Unity.Locator">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\Managed/Unity.Locator.dll</HintPath>
-    </Reference>
-    <Reference Include="Facebook.Unity.Settings">
-      <HintPath>Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\Managed/Unity.Locator.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Timeline">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
     </Reference>
     <Reference Include="Vuforia.UnityExtensions">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/PlaybackEngines/VuforiaSupport/Managed/Runtime/Vuforia.UnityExtensions.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/PlaybackEngines/VuforiaSupport/Managed/Runtime/Vuforia.UnityExtensions.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.GoogleAudioSpatializer">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.HoloLens">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>Assets/Battlehub/Deps/protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Analytics">
-      <HintPath>C:/Users/vad/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
+    <Reference Include="UnityEngine.Advertisements">
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.StandardEvents">
-      <HintPath>C:/Users/vad/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+    <Reference Include="UnityEngine.Advertisements.Editor">
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.Editor">
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.StandardEvents">
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.Tracker">
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\PlaybackEngines\AppleTVSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>D:/Program Files/Unity_2018_2_5/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Common.dll</HintPath>
+      <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\PlaybackEngines\AppleTVSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\Microsoft.Win32.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.AppContext">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.AppContext.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Concurrent">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Collections.Concurrent.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.NonGeneric">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Collections.NonGeneric.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Specialized">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Collections.Specialized.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.ComponentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.EventBasedAsync">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.ComponentModel.EventBasedAsync.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.ComponentModel.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.TypeConverter">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.ComponentModel.TypeConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Console">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.Common">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Contracts">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Debug">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.FileVersionInfo">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.FileVersionInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Process">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.Process.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.StackTrace">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.StackTrace.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.TextWriterTraceListener">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.TextWriterTraceListener.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tools">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.Tools.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.TraceSource">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.TraceSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Diagnostics.Tracing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Drawing.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Dynamic.Runtime">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Dynamic.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Globalization.Calendars.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Globalization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Extensions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Globalization.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.ZipFile">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.Compression.ZipFile.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.DriveInfo">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.FileSystem.DriveInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Watcher">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.FileSystem.Watcher.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.IsolatedStorage">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.IsolatedStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.MemoryMappedFiles">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.MemoryMappedFiles.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Pipes">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.Pipes.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.UnmanagedMemoryStream">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.IO.UnmanagedMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Expressions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Linq.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Parallel">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Linq.Parallel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Queryable">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Linq.Queryable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.NameResolution">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.NameResolution.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.NetworkInformation">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.NetworkInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Ping">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.Ping.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Requests">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.Requests.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Security">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Sockets">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebHeaderCollection">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.WebHeaderCollection.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebSockets.Client">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.WebSockets.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebSockets">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Net.WebSockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ObjectModel">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Extensions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Reflection.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Reflection.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Resources.Reader">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Resources.Reader.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Resources.ResourceManager">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Resources.ResourceManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Resources.Writer">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Resources.Writer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.VisualC">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.CompilerServices.VisualC.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Handles">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Handles.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.InteropServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Numerics">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Formatters">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Serialization.Formatters.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Json">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Serialization.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Serialization.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Xml">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Runtime.Serialization.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Claims">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Claims.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Csp">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Cryptography.Csp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.Principal.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.SecureString">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Security.SecureString.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Text.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.Extensions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Text.Encoding.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Text.RegularExpressions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Overlapped">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.Overlapped.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Parallel">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.Tasks.Parallel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Thread">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.Thread.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.ThreadPool">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.ThreadPool.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Timer">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Threading.Timer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.ReaderWriter">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Xml.ReaderWriter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XDocument">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Xml.XDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XmlDocument">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Xml.XmlDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XmlSerializer">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Xml.XmlSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Xml.XPath.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath.XDocument">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netstandard\System.Xml.XPath.XDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\Extensions\2.0.0\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.WindowsRuntime">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\mscorlib.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\mscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="System">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.dll</HintPath>
+    <Reference Include="System.ComponentModel.Composition">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Core.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.IO.Compression.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Runtime.Serialization.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Runtime.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.ServiceModel.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Transactions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Xml.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Xml.Linq.dll</HintPath>
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="UnityScript">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\UnityScript.dll</HintPath>
+    <Reference Include="System.Xml.Serialization">
+      <HintPath>D:\Program Files\Unity_2018_3_0_f2\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="UnityScript.Lang">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\UnityScript.Lang.dll</HintPath>
-    </Reference>
-    <Reference Include="Boo.Lang">
-      <HintPath>D:\Program Files\Unity_2018_2_5\Editor\Data\MonoBleedingEdge\lib\mono\unity\Boo.Lang.dll</HintPath>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
+      <Project>{3A848AB7-9891-EDDA-D555-BF184C2F81F4}</Project>
+      <Name>Unity.TextMeshPro.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.PackageManagerUI.Editor.csproj">
+      <Project>{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}</Project>
+      <Name>Unity.PackageManagerUI.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.CollabProxy.Editor.csproj">
+      <Project>{C12CEEC6-100C-58A2-DE36-314E4DE5E40B}</Project>
+      <Name>Unity.CollabProxy.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.TextMeshPro.csproj">
+      <Project>{07A21C90-D344-AE1A-8456-9910C203B41A}</Project>
+      <Name>Unity.TextMeshPro</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Analytics.DataPrivacy.csproj">
+      <Project>{D6E266C6-3D1F-28C8-9FEB-2A01E44DBF77}</Project>
+      <Name>Unity.Analytics.DataPrivacy</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Battlehub\Cubeman\Scripts\CubemanCharacter.cs" />
@@ -359,6 +693,13 @@
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\TreeViewDataModel\TreeModel.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\Utils\IOC.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\Utils\Reflection.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\ConsoleView.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\AssetLibraryImportDialog.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\AssetLibraryImportStatus.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\AssetLibraryImportToggle.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\AssetLibrarySelectDialog.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\InputDialog.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\ProjectsDialog.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\SaveSceneDialog.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\SelectColorDialog.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Dialogs\SelectObjectDialog.cs" />
@@ -424,6 +765,7 @@
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\SceneView.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\ToolsPanel.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\ViewportFitter.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\WindowManager.cs" />
     <Compile Include="Assets\Battlehub\RTGizmos\Scripts\AudioReverbZoneGizmo.cs" />
     <Compile Include="Assets\Battlehub\RTGizmos\Scripts\AudioSourceGizmo.cs" />
     <Compile Include="Assets\Battlehub\RTGizmos\Scripts\BaseGizmo.cs" />
@@ -488,279 +830,18 @@
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\VRTools\VRPhysicsRaycastTool.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\VRTools\VRRecenterCtrl.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\VRTools\VRRecenterTool.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentAnimationCurve.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentBurst.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentColorBySpeedModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentColorOverLifetimeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentCustomDataModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentEmitParams.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentExternalForcesModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentForceOverLifetimeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentGradient.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentInheritVelocityModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentKeyframe.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentLightsModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentLimitVelocityOverLifetimeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentMainModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentMinMaxCurve.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentMinMaxGradient.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentNoiseModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentParticle.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentRotationBySpeedModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentRotationOverLifetimeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentShapeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentSizeBySpeedModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentSizeOverLifetimeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentSubEmittersModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentTextureSheetAnimationModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentTrailModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\ParticleSystem\PersistentVelocityOverLifetimeModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAnchoredJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAnimation.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAnimationClip.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAnimator.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAnimatorOverrideController.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAreaEffector2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAspectRatioFitter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAssetBundle.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAssetBundleManifest.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioBehaviour.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioChorusFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioClip.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioDistortionFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioEchoFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioHighPassFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioListener.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioLowPassFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioMixer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioMixerGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioMixerSnapshot.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioReverbFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioReverbZone.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAudioSource.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAvatar.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentAvatarMask.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBaseInput.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBaseInputModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBaseMeshEffect.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBaseRaycaster.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBehaviour.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBillboardAsset.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBillboardRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBoxCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBoxCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentBuoyancyEffector2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCamera.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCanvas.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCanvasGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCanvasRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCanvasScaler.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCapsuleCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCapsuleCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCharacterController.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCharacterJoint.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCircleCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentComponent.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCompositeCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentComputeShader.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentConfigurableJoint.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentConstantForce.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentConstantForce2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentContentSizeFitter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCubemap.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentCubemapArray.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentData.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentDetailPrototype.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentDistanceJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentEdgeCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentEffector2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentEventSystem.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentEventTrigger.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentFixedJoint.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentFixedJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentFlare.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentFlareLayer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentFont.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentFrictionJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGameObject.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGraphic.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGraphicRaycaster.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGraphicsSettings.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGridLayoutGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUIElement.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUILayer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUISkin.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUIStyle.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUIStyleState.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUIText.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentGUITexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentHingeJoint.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentHingeJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentHorizontalLayoutGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentHorizontalOrVerticalLayoutGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentImage.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentJoint.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLayoutElement.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLayoutGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLensFlare.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLight.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLightmapSettings.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLightProbeGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLightProbeProxyVolume.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLightProbes.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLineRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentLODGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMask.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMeshCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMeshFilter.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMeshRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMonoBehaviour.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMotion.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentMovieTexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentNavMeshAgent.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentNavMeshData.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentNavMeshObstacle.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentNetworkMatch.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentNetworkView.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentOcclusionArea.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentOcclusionPortal.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentOffMeshLink.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentOutline.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentParticleSystemRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPhysicMaterial.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPhysics2DRaycaster.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPhysicsMaterial2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPhysicsRaycaster.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPhysicsUpdateBehaviour2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPlatformEffector2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPlayerConnection.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPointEffector2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPointerInputModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPolygonCollider2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentPositionAsUV1.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentProceduralTexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentProjector.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentQualitySettings.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRawImage.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRectMask2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRectTransform.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentReflectionProbe.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRelativeJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRenderPipelineAsset.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRenderSettings.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRenderTexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRigidbody.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRigidbody2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentRuntimeAnimatorController.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentScriptableObject.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentShader.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentShaderVariantCollection.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentShadow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSkinnedMeshRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSkybox.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSliderJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSortingGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSparseTexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSphereCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSplatPrototype.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSpringJoint.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSpringJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSprite.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSpriteRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentStandaloneInputModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentStateMachineBehaviour.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentSurfaceEffector2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTargetJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTerrain.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTerrainCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTerrainData.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentText.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTextAsset.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTextMesh.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTexture2DArray.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTexture3D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentToggle.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentToggleGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTrailRenderer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTree.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentTreePrototype.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentUIBehaviour.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentVerticalLayoutGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentVideoClip.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentVideoPlayer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentWebCamTexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentWheelCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentWheelJoint2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentWindZone.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\PersistentWorldAnchor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\PersistentObjects\SerializationSurrogates.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Demo\AddResourcesTest.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\AssetBundlesCreator.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\BundleResourceMap.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\NotImplemented\SaveLoadConfig.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\NotImplemented\SaveLoadConfigAuto.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentData.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentDescriptor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\ParticleSystem\PersistentCollisionModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\ParticleSystem\PersistentEmissionModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\ParticleSystem\PersistentParticleSystem.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\ParticleSystem\PersistentTriggerModule.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentCloth.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentMaterial.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentMesh.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentObject.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentProceduralMaterial.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentScript.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentTexture.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentTexture2D.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\PersistentTransform.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentButton.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentDropdown.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentInputField.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentMaskableGraphic.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentNavigation.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentOptionData.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentScrollbar.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentScrollRect.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentSelectable.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentSlider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentObjects\UI\PersistentSpriteState.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\PersistentScene.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\ProjectManager.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\ResourceGroup.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\ResourceMap.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\ResourceMapGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\RuntimeSceneManager.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\RuntimeShaderInfoGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\RuntimeShaderUtil.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\Serializier.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Implementation\TypeModelCreator.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\AssetBundleLoader.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Dependencies.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\ExtraSceneData.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\FolderTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\IProjectManager.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\IRuntimeShaderUtil.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\ISerializer.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Job.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\PersistentIgnore.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Project.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\ProjectItem.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad\Scripts\Interface\Storage.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Interface\Error.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Interface\IProject.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Interface\ProjectItem.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Interface\RTSL2Ignore.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetBundleLoader.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetDB.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetLibraryAsset.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetLibraryInfo.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\AssetLibraryReference.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\DynamicTypeContracts.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Internal\FilePathStorage.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Internal\PersistentClassMapping.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentColor.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentComponent.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentGameObject.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentObject.cs" />
@@ -768,22 +849,27 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentRuntimePrefab.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentRuntimeScene.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentTransform.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentUnityEventBase.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentVector3.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MustHavePersistentClasses\PersistentVector4.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MyPersistentClasses\UnityEngine_Battlehub_SL2_PersistentMaterial.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MyPersistentClasses\UnityEngine_Battlehub_SL2_PersistentMesh.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\MyPersistentClasses\UnityEngine_Battlehub_SL2_PersistentTexture2D.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentDescriptor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentMonoBehavior.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\PersistentSurrogate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Project\Error.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Project\PathHelper.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Project\Project.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Project\Storage.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\RTSL2Deps.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\RTSL2Version.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\RuntimeShaderProfilesAsset.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\RuntimeShaderUtil.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\Serializer.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\TypeMap.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\TypeModelCreator.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts\UnityObjectFactory.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\Battlehub_RTCommon_Battlehub_SL2_PersistentExposeToEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\Battlehub_RTCommon_Battlehub_SL2_PersistentExposeToEditorUnityEvent.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentBehaviour.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentBoneWeight.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentBounds.cs" />
@@ -791,15 +877,16 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentCamera.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentCapsuleCollider.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentCollider.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentColor.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentFlare.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentLight.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentLightBakingOutput.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMaterial.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMatrix4x4.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMesh.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMeshCollider.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMeshFilter.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMeshRenderer.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentMonoBehaviour.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentPhysicMaterial.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentRect.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentRenderer.cs" />
@@ -809,8 +896,8 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentSkinnedMeshRenderer.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentSphereCollider.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentTexture.cs" />
+    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentTexture2D.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentVector2.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_Battlehub_SL2_PersistentVector4.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\PersistentClasses\UnityEngine_SceneManagement_Battlehub_SL2_PersistentScene.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\TypeMap.cs" />
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Scripts_Auto\TypeModelCreator.cs" />
@@ -818,39 +905,52 @@
     <Compile Include="Assets\Battlehub\RTSaveLoad2\Tests\ProjectTests.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Common\InputProvider.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Common\InputProviderAdapter.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Common\ProgressBar.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Common\RectTransformChangeListener.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Common\RectTransformExtensions.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Common\Repeater.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\ExternalDragItem.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\ListBoxDemo.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\Rotation.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\TreeViewDemo.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\VirtualizingExternalDragItem.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Demo\Scripts\VirtualizingTreeViewDemo.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\Breadcrumb.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\ItemContainer.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\ItemDropMarker.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\ItemsControl.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\LayoutElementResizer.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\ListBox.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\ListBoxItem.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\PopupWindow.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\ProgressBar.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\RectTransformChangeListener.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\TreeView.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\TreeViewDropMarker.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\TreeViewExpander.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\TreeViewItem.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingItemContainer.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingItemDropMarker.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingItemsControl.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingItemsControlInputProvider.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingListBox.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingListBoxItem.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingScrollRect.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingTreeView.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingTreeViewDropMarker.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Scripts\VirtualizingTreeView\VirtualizingTreeViewItem.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\DepthMaskingBehavior.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\DockPanelsRoot.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\EatDragEvent.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\Region.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\Resizer.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\Tab.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\TabPreview.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\TestCommands.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Menu\Demo\MenuTest.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\ContextMenuTrigger.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\MainMenuButton.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\Menu.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\MenuItem.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\PopupWindow\Scripts\PopupWindow.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Demo\Scripts\ExternalDragItem.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Demo\Scripts\ListBoxDemo.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Demo\Scripts\Rotation.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Demo\Scripts\TreeViewDemo.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Demo\Scripts\VirtualizingExternalDragItem.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Demo\Scripts\VirtualizingTreeViewDemo.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\ItemContainer.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\ItemDropMarker.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\ItemsControl.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\LayoutElementResizer.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\ListBox.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\ListBoxItem.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\TreeView.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\TreeViewDropMarker.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\TreeViewExpander.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\TreeView\Scripts\TreeViewItem.cs" />
     <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Demo\Scripts\ReparentAndScrollExample.cs" />
     <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Demo\Scripts\VirtualizingTreeViewDemo_AddItems.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingItemContainer.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingItemDropMarker.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingItemsControl.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingItemsControlInputProvider.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingListBox.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingListBoxItem.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingScrollRect.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingTreeView.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingTreeViewDropMarker.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\VirtualizingTreeViewItem.cs" />
     <Compile Include="Assets\Battlehub\Utils\BtnRepeat.cs" />
     <Compile Include="Assets\Battlehub\Utils\CursorHelper.cs" />
     <Compile Include="Assets\Battlehub\Utils\EditorStopwatch.cs" />
@@ -892,38 +992,22 @@
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorBillboard.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorClip.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorClipUsingClipPlane.shader" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTCommon__Billboard_8589934908.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTEditor__Demo__NewSurfaceShader_9663682893.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTHandles__Models__ArrowShader_8589942843.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTHandles__Models__AxisShader_8589942846.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTHandles__Models__DepthMaskColorBillboard_8589942844.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTHandles__Models__QuadShader_8589942845.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTHandles__Models__SSCircleShader_8589942847.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Battlehub__RTHandles__Models__SSQuadShader_8589942848.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_FX__LightCone_8589944827.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Particles__Additive (Soft)_8589934904.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Particles__Additive_8589941242.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Particles__Alpha Blended_8589934906.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Skybox__6 Sided_8589934912.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Standard (Specular setup)_8589944830.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Standard_8589934902.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Standard_9663682894.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Unlit__Color_8589944822.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Unlit__Texture_8589944828.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Valve__VR__ControllerButtonHints_8589944826.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Valve__VR__Highlight_8589944821.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Valve__VR__SeeThru_8589944824.txt" />
-    <None Include="Assets\Battlehub\RTSaveLoad\ShaderInfo\Resources\rt_shader_Valve__VR__Silhouette_8589944829.txt" />
+    <None Include="Assets\Battlehub\UIControls\DockPanels\Shaders\DepthMask.shader" />
+    <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryCommon.uss" />
+    <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryDark.uss" />
+    <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryLight.uss" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Styles\Main_Dark.uss" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Styles\Main_Light.uss" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\Alert.uxml" />
+    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageAddFromUrlField.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageDetails.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageGroup.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageItem.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageList.uxml" />
+    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageManagerToolbar.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageManagerWindow.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageSearchFilterTabs.uxml" />
-    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackagesLoading.uxml" />
+    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageSearchToolbar.uxml" />
+    <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageStatusBar.uxml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

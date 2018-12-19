@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{08CBCB14-D812-326C-2EB7-B3D1EE73624C}</ProjectGuid>
+    <ProjectGuid>{C12CEEC6-100C-58A2-DE36-314E4DE5E40B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>Unity.CollabProxy.Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
@@ -700,60 +700,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity_RuntimeEditor.csproj">
-      <Project>{50328339-1E9B-7E3D-F605-8810123E718D}</Project>
-      <Name>Unity_RuntimeEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
-      <Project>{3A848AB7-9891-EDDA-D555-BF184C2F81F4}</Project>
-      <Name>Unity.TextMeshPro.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.PackageManagerUI.Editor.csproj">
-      <Project>{6877705C-FBD9-0C4F-5AFB-6FB431E5D39D}</Project>
-      <Name>Unity.PackageManagerUI.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.CollabProxy.Editor.csproj">
-      <Project>{C12CEEC6-100C-58A2-DE36-314E4DE5E40B}</Project>
-      <Name>Unity.CollabProxy.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.csproj">
-      <Project>{07A21C90-D344-AE1A-8456-9910C203B41A}</Project>
-      <Name>Unity.TextMeshPro</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Analytics.DataPrivacy.csproj">
-      <Project>{D6E266C6-3D1F-28C8-9FEB-2A01E44DBF77}</Project>
-      <Name>Unity.Analytics.DataPrivacy</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Assets\Battlehub\ObjectToTexture\Scripts\Editor\ObjectToTextureEditor.cs" />
-    <Compile Include="Assets\Battlehub\RTCommon\Scripts\Editor\TreeViewDataModel\TreeViewWithTreeModel.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapGen.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorEditor.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorMenu.cs" />
-    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\SelectFolderDialog.cs" />
-    <Compile Include="Assets\Battlehub\RTHandles\Demo\Scripts\Editor\RTHandlesMenuDemo.cs" />
-    <Compile Include="Assets\Battlehub\RTHandles\Scripts\Editor\RTHandlesMenu.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentMaterialTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentMeshTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentSurrogateTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentTexture2DTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetFolderTreeView.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryAssetsGUI.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryEditor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryProjectGUI.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetTreeView.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\CodeGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\Menu.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\PersistentClassMapperWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\RuntimeShaderProfilesGen.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\Editor\MenuEditor.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\Editor\VirtualizingScrollRectEditor.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\EnumFlagsDrawer.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\ExposeProperties.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\ReadonlyDrawer.cs" />
-    <Compile Include="Assets\Battlehub\Utils\Editor\ReadonlyPropertyDrawer.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\AssemblyInfo.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Bootstrap.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\CollabAnalytics.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\CollabHistoryWindow.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\CollabToolbarButton.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\CollabToolbarWindow.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Presenters\CollabHistoryPresenter.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\BuildStatusButton.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\CollabHistoryDropDown.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\CollabHistoryDropDownItem.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\CollabHistoryItem.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\CollabHistoryItemFactory.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\CollabHistoryRevisionLine.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\HistoryProgressSpinner.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\ICollabHistoryItemFactory.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\PagedListView.cs" />
+    <Compile Include="Packages\com.unity.collab-proxy\Editor\Collab\Views\StatusView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Battlehub\RTCommon\Resources\Billboard.shader" />
