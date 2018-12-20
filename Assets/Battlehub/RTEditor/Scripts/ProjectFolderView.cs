@@ -145,36 +145,32 @@ namespace Battlehub.RTEditor
 
                     if (typeof(GameObject) == TypeFilter)
                     {
-                        IEnumerable<GameObject> sceneObjects = Editor.IsPlaying ?
-                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
-                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
+                        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
 
-                        foreach (GameObject go in sceneObjects)
+                        foreach (ExposeToEditor obj in sceneObjects)
                         {
                             AssetItem sceneItem = new AssetItem();
-                            sceneItem.ItemID = m_project.ToID(go);
-                            sceneItem.Name = go.name;
-                            sceneItem.Ext = m_project.GetExt(go);
+                            sceneItem.ItemID = m_project.ToID(obj.gameObject);
+                            sceneItem.Name = obj.gameObject.name;
+                            sceneItem.Ext = m_project.GetExt(obj.gameObject);
                             sceneItem.TypeGuid = m_project.ToGuid(typeof(GameObject));
                             itemsList.Add(sceneItem);
                         }
                     }
                     else if (typeof(Component).IsAssignableFrom(TypeFilter))
                     {
-                        IEnumerable<GameObject> sceneObjects = Editor.IsPlaying ?
-                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
-                            ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
+                        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
 
-                        foreach (GameObject go in sceneObjects)
+                        foreach (ExposeToEditor obj in sceneObjects)
                         {
-                            Component component = go.GetComponent(TypeFilter);
+                            Component component = obj.GetComponent(TypeFilter);
                             Guid typeGuid = m_project.ToGuid(component.GetType());
                             if (component != null && typeGuid != Guid.Empty)
                             {
                                 AssetItem sceneItem = new AssetItem();
-                                sceneItem.ItemID = m_project.ToID(go);
-                                sceneItem.Name = go.name;
-                                sceneItem.Ext = m_project.GetExt(go);
+                                sceneItem.ItemID = m_project.ToID(obj.gameObject);
+                                sceneItem.Name = obj.gameObject.name;
+                                sceneItem.Ext = m_project.GetExt(obj.gameObject);
                                 sceneItem.TypeGuid = typeGuid;
 
                                 itemsList.Add(sceneItem);

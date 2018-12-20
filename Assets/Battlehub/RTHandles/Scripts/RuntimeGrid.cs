@@ -7,7 +7,7 @@ namespace Battlehub.RTHandles
     /// Attach to any game object to Draw grid
     /// </summary>
     [RequireComponent(typeof(Camera))]
-    public class RuntimeGrid : RTEBehaviour
+    public class RuntimeGrid : RTEComponent
     {
         private Camera m_camera;
         public RuntimeHandlesComponent Appearance;

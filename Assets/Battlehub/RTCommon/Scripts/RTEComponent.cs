@@ -2,7 +2,7 @@
 
 namespace Battlehub.RTCommon
 {
-    public class RTEBehaviour : MonoBehaviour
+    public class RTEComponent : MonoBehaviour
     {
         private IRTE m_editor;
         public IRTE Editor
@@ -33,15 +33,15 @@ namespace Battlehub.RTCommon
         }
 
         private bool m_awaked;
+        
         private void Awake()
         {
-
             m_editor = IOC.Resolve<IRTE>();
 
             if(Window == null)
             {
-                Window = m_editor.GetWindow(RuntimeWindowType.Scene);
-                if(Window == null)
+                Window = GetDefaultWindow();
+                if (Window == null)
                 {
                     Debug.LogError("m_window == null");
                     enabled = false;
@@ -49,15 +49,19 @@ namespace Battlehub.RTCommon
                 }
             }
 
+            AwakeOverride();
             m_awaked = true;
 
-            AwakeOverride();
-
-            if(IsWindowActive)
+            if (IsWindowActive)
             {
                 OnWindowActivated();
             }
             m_editor.ActiveWindowChanged += OnActiveWindowChanged;
+        }
+
+        protected virtual RuntimeWindow GetDefaultWindow()
+        {
+           return m_editor.GetWindow(RuntimeWindowType.Scene);
         }
 
         protected virtual void AwakeOverride()

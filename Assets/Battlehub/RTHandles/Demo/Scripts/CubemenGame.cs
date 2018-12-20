@@ -12,6 +12,7 @@ namespace Battlehub.RTHandles
 {
     public class CubemenGame : Game
     {
+        /*
         public Text TxtScore;
         public Text TxtCompleted;
         public Text TxtTip;
@@ -260,5 +261,7 @@ namespace Battlehub.RTHandles
                 m_playerCamera.target = m_current.transform;
             }
         }
+
+    */
     }
 }

@@ -48,7 +48,7 @@ namespace Battlehub.RTHandles
     }
 
     [DefaultExecutionOrder(-55)]
-    public class RuntimeSelectionComponent : RTEBehaviour, IScenePivot
+    public class RuntimeSelectionComponent : RTEComponent, IScenePivot
     {
         [SerializeField]
         private PositionHandle m_positionHandle;
@@ -305,12 +305,9 @@ namespace Battlehub.RTHandles
 
         public virtual void SelectAll()
         {
-            IEnumerable<GameObject> filtered = Editor.IsPlaying ?
-                ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
-                ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
-            Editor.Selection.objects = filtered.ToArray();
+            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(true);
+            Editor.Selection.objects = objects.Select(o => o.gameObject).ToArray();
         }
-
 
         private void OnRuntimeToolChanged()
         {

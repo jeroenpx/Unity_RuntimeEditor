@@ -8,6 +8,7 @@ namespace Battlehub.RTCommon
 
     public class Game : MonoBehaviour
     {
+        /*
         public Button BtnRestart;
         private ExposeToEditor[] m_editorObjects;
         private ExposeToEditor[] m_enabledEditorObjects;
@@ -181,7 +182,7 @@ namespace Battlehub.RTCommon
         {
 
         }
-
+        */
 
     }
 }

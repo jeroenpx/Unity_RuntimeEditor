@@ -51,6 +51,7 @@ namespace Battlehub.RTHandles
 
         private void OnTriggerEnter(Collider other)
         {
+            /*
             if(other.tag == "Finish")
             {
                 Game.OnPlayerFinish(this);
@@ -64,10 +65,12 @@ namespace Battlehub.RTHandles
                 }
                 Destroy(gameObject, 2);
             }
+            */
         }
 
         private void Die()
         {
+            /*
             Game.OnPlayerDie(this);
             if(m_skinnedMeshRenderer != null)
             {
@@ -86,6 +89,7 @@ namespace Battlehub.RTHandles
                 m_soul.gameObject.SetActive(true);
             }
             Destroy(gameObject, 2);
+            */
         }
 
     }

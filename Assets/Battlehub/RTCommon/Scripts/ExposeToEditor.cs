@@ -16,16 +16,10 @@ namespace Battlehub.RTCommon
         None,
         Sprite,
     }
-    public enum ExposeToEditorObjectType
-    {
-        Undefined,
-        EditorMode,
-        PlayMode
-    }
 
 
-    public delegate void ExposeToEditorChangeEvent<T>(IRTE editor, ExposeToEditor obj, T oldValue, T newValue);
-    public delegate void ExposeToEditorEvent(IRTE editor, ExposeToEditor obj);
+    public delegate void ExposeToEditorChangeEvent<T>(ExposeToEditor obj, T oldValue, T newValue);
+    public delegate void ExposeToEditorEvent(ExposeToEditor obj);
 
     [System.Serializable]
     public class ExposeToEditorUnityEvent : UnityEvent<ExposeToEditor> { }
@@ -44,7 +38,6 @@ namespace Battlehub.RTCommon
         public static event ExposeToEditorEvent _Disabled;
         public static event ExposeToEditorChangeEvent<ExposeToEditor> _ParentChanged;
         
-        private bool m_applicationQuit;
         [SerializeField]
         [HideInInspector]
         private Collider[] m_colliders;
@@ -54,12 +47,25 @@ namespace Battlehub.RTCommon
             set { m_colliders = value; }
         }
 
-
         private SpriteRenderer m_spriteRenderer;
-        private MeshFilter m_filter;
-        private SkinnedMeshRenderer m_skinned;
-        private static readonly Bounds m_none = new Bounds();
+        public SpriteRenderer SpriteRenderer
+        {
+            get { return m_spriteRenderer; }
+        }
 
+        private MeshFilter m_filter;
+        public MeshFilter MeshFilter
+        {
+            get { return m_filter; }
+        }
+
+        private SkinnedMeshRenderer m_skinned;
+        public SkinnedMeshRenderer SkinnedMeshRenderer
+        {
+            get { return m_skinned; }
+        }
+
+        private static readonly Bounds m_none = new Bounds();
         public ExposeToEditorUnityEvent Selected;
         public ExposeToEditorUnityEvent Unselected;
         public GameObject BoundsObject;
@@ -72,23 +78,7 @@ namespace Battlehub.RTCommon
         public bool CanSnap = true;
         public bool AddColliders = true;
 
-        [SerializeField]
-        [HideInInspector]
-        private ExposeToEditorObjectType m_objectType;
-        public ExposeToEditorObjectType ObjectType
-        {
-            get { return m_objectType; }
-            set
-            {
-                if (m_objectType != ExposeToEditorObjectType.Undefined && m_objectType != value)
-                {
-                   // throw new System.InvalidOperationException("ObjectType can not be changed");
-                }
-
-                m_objectType = value;
-            }
-        }
-
+  
         private bool m_markAsDestroyed;
         public bool MarkAsDestroyed
         {
@@ -101,13 +91,17 @@ namespace Battlehub.RTCommon
                     gameObject.SetActive(!m_markAsDestroyed);
                     if (_MarkAsDestroyedChanged != null)
                     {
-                        _MarkAsDestroyedChanged(m_rte, this);
+                        _MarkAsDestroyedChanged(this);
                     }
                 }
             }
         }
 
         private BoundsType m_effectiveBoundsType;
+        public BoundsType EffectiveBoundsType
+        {
+            get { return m_effectiveBoundsType; }
+        }
         public Bounds Bounds
         {
             get
@@ -180,29 +174,26 @@ namespace Battlehub.RTCommon
             return m_children.OrderBy(c => c.transform.GetSiblingIndex()).ToArray();
         }
 
-        public ExposeToEditor NextSibling()
+        public ExposeToEditor NextSibling(IEnumerable<ExposeToEditor> objects)
         {
-            if(Parent != null)
+            if (Parent != null)
             {
                 int index = Parent.m_children.IndexOf(this);
-                if(index < Parent.m_children.Count - 1)
+                if (index < Parent.m_children.Count - 1)
                 {
                     return Parent.m_children[index - 1];
                 }
                 return null;
             }
 
-            IEnumerable<GameObject> exposedToEditor = m_rte.IsPlaying ?
-                FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
-                FindAll(Editor, ExposeToEditorObjectType.EditorMode).OrderBy(g => g.transform.GetSiblingIndex()); 
-
-            IEnumerator<GameObject> en = exposedToEditor.GetEnumerator();
-            while(en.MoveNext())
+            IEnumerable<ExposeToEditor> exposedToEditor = objects.OrderBy(o => o.transform.GetSiblingIndex());
+            IEnumerator<ExposeToEditor> en = exposedToEditor.GetEnumerator();
+            while (en.MoveNext())
             {
-                if(en.Current == gameObject)
+                if (en.Current == this)
                 {
                     en.MoveNext();
-                    return en.Current.GetComponent<ExposeToEditor>();
+                    return en.Current;
                 }
             }
             return null;
@@ -220,7 +211,7 @@ namespace Battlehub.RTCommon
 
                     if (_ParentChanged != null)
                     {
-                        _ParentChanged(m_rte, this, oldParent, m_parent);
+                        _ParentChanged(this, oldParent, m_parent);
                     }
                 }
             }
@@ -245,20 +236,9 @@ namespace Battlehub.RTCommon
         }
 
         private bool m_initialized;
-        private IRTE m_rte;
-        public IRTE Editor
-        {
-            get { return m_rte; }
-        }
-
+               
         private void Awake()
         {
-            m_rte = IOC.Resolve<IRTE>();
-
-            m_rte.IsOpenedChanged += OnEditorIsOpenedChanged;
-
-            m_objectType = ExposeToEditorObjectType.Undefined;
-
             Init();
 
             m_hierarchyItem = gameObject.GetComponent<HierarchyItem>();
@@ -271,7 +251,7 @@ namespace Battlehub.RTCommon
             {
                 if (_Awaked != null)
                 {
-                    _Awaked(m_rte, this);
+                    _Awaked(this);
                 }
             }
         }
@@ -283,6 +263,10 @@ namespace Battlehub.RTCommon
                 return;
             }
             FindChildren(transform);
+            if (BoundsObject == null)
+            {
+                BoundsObject = gameObject;
+            }
             m_initialized = true;
         }
 
@@ -303,24 +287,9 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void OnEditorIsOpenedChanged()
-        {
-            if (m_rte.IsOpened)
-            {
-                TryToAddColliders();
-            }
-            else
-            {
-                TryToDestroyColliders();
-            }
-        }
-
         private void Start()
         {
-            if (BoundsObject == null)
-            {
-                BoundsObject = gameObject;
-            }
+          
 
             m_effectiveBoundsType = BoundsType;
             m_filter = BoundsObject.GetComponent<MeshFilter>();
@@ -329,24 +298,13 @@ namespace Battlehub.RTCommon
             if(m_filter == null && m_skinned == null)
             {
                 m_spriteRenderer = BoundsObject.GetComponent<SpriteRenderer>();
-                //BoundsInWorldSpace = true;
             }
             
-            if (m_rte.IsOpened)
-            {
-                TryToAddColliders();
-            }
-            else
-            {
-                TryToDestroyColliders();
-                m_colliders = null; //do not move this inside of TryToDestroyColliders;
-            }
-        
             if (hideFlags != HideFlags.HideAndDontSave)
             {
                 if (_Started != null)
                 {
-                    _Started(m_rte, this);
+                    _Started(this);
                 }
             }
         }
@@ -357,7 +315,7 @@ namespace Battlehub.RTCommon
             {
                 if (_Enabled != null)
                 {
-                    _Enabled(m_rte, this);
+                    _Enabled(this);
                 }
             }
         }
@@ -368,26 +326,20 @@ namespace Battlehub.RTCommon
             {
                 if (_Disabled != null)
                 {
-                    _Disabled(m_rte, this);
+                    _Disabled(this);
                 }
             }
         }
 
-     
         private void OnDestroy()
         {
-            if(m_rte != null)
-            {
-                m_rte.IsOpenedChanged -= OnEditorIsOpenedChanged;
-            }
-            
-            if (!m_applicationQuit)
+            if (!m_isPaused)
             {
                 if (hideFlags != HideFlags.HideAndDontSave)
                 {
                     if (_Destroying != null)
                     {
-                        _Destroying(m_rte, this);
+                        _Destroying(this);
                     }
                 }
 
@@ -396,32 +348,39 @@ namespace Battlehub.RTCommon
                     ChangeParent(null);
                 }
 
-                #if UNITY_EDITOR
-               // if(m_saveInPlayMode == null)
-                #endif
+                if (m_hierarchyItem != null)
                 {
-                    TryToDestroyColliders();
-
-                    if (m_hierarchyItem != null)
-                    {
-                        Destroy(m_hierarchyItem);
-                    }
+                    Destroy(m_hierarchyItem);
                 }
 
                 if (hideFlags != HideFlags.HideAndDontSave)
                 {
                     if (_Destroyed != null)
                     {
-                        _Destroyed(m_rte, this);
+                        _Destroyed(this);
                     }
                 }
             }
         }
 
-
+        private bool m_isPaused;
         private void OnApplicationQuit()
         {
-            m_applicationQuit = true;
+            m_isPaused = true;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (Application.isEditor)
+            {
+                return;
+            }
+            m_isPaused = !hasFocus;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            m_isPaused = pauseStatus;
         }
 
         private void Update()
@@ -436,127 +395,10 @@ namespace Battlehub.RTCommon
                     {
                         if (_TransformChanged != null)
                         {
-                            _TransformChanged(m_rte, this);
+                            _TransformChanged(this);
                         }
                     }
                 }
-            }
-        }
-
-        private void TryToAddColliders()
-        {
-            if(this == null)
-            {
-                return;
-            }
-
-            if (m_colliders == null || m_colliders.Length == 0)
-            {
-                List<Collider> colliders = new List<Collider>();
-                Rigidbody rigidBody = BoundsObject.GetComponent<Rigidbody>();
-
-                bool isRigidBody = rigidBody != null;
-                if (m_effectiveBoundsType == BoundsType.Any)
-                {
-                    if (m_filter != null)
-                    {
-                        if (AddColliders && !isRigidBody)
-                        {
-                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
-                            collider.convex = isRigidBody;
-                            collider.sharedMesh = m_filter.sharedMesh;
-                            colliders.Add(collider);
-                        }
-                    }
-                    else if (m_skinned != null)
-                    {
-                        if (AddColliders && !isRigidBody)
-                        {
-                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
-                            collider.convex = isRigidBody;
-                            collider.sharedMesh = m_skinned.sharedMesh;
-                            colliders.Add(collider);
-                        }
-                    }
-                    else if(m_spriteRenderer != null)
-                    {
-                        if(AddColliders && !isRigidBody)
-                        {
-                            BoxCollider collider = BoundsObject.AddComponent<BoxCollider>();
-                            collider.size = m_spriteRenderer.sprite.bounds.size;
-                            colliders.Add(collider);
-                        }
-                    }
-                }
-                else if (m_effectiveBoundsType == BoundsType.Mesh)
-                {
-                    if (m_filter != null)
-                    {
-                        if (AddColliders && !isRigidBody)
-                        {
-                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
-                            collider.convex = isRigidBody;
-                            collider.sharedMesh = m_filter.sharedMesh;
-                            colliders.Add(collider);
-                        }
-                    }
-                }
-                else if (m_effectiveBoundsType == BoundsType.SkinnedMesh)
-                {
-                    if (m_skinned != null)
-                    {
-                        if (AddColliders && !isRigidBody)
-                        {
-                            MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
-                            collider.convex = isRigidBody;
-                            collider.sharedMesh = m_skinned.sharedMesh;
-                            colliders.Add(collider);
-                        }
-                    }
-                }
-                else if(m_effectiveBoundsType == BoundsType.Sprite)
-                {
-                    if (m_spriteRenderer != null)
-                    {
-                        if (AddColliders && !isRigidBody)
-                        {
-                            BoxCollider collider = BoundsObject.AddComponent<BoxCollider>();
-                            collider.size = m_spriteRenderer.sprite.bounds.size;
-                            colliders.Add(collider);
-                        }
-                    }
-                }
-                else if (m_effectiveBoundsType == BoundsType.Custom)
-                {
-                    if (AddColliders && !isRigidBody)
-                    {
-                        Mesh box = RuntimeGraphics.CreateCubeMesh(Color.black, CustomBounds.center, CustomBounds.extents.x * 2, CustomBounds.extents.y * 2, CustomBounds.extents.z * 2);
-
-                        MeshCollider collider = BoundsObject.AddComponent<MeshCollider>();
-                        collider.convex = isRigidBody;
-
-                        collider.sharedMesh = box;
-                        colliders.Add(collider);
-                    }
-                }
-
-                m_colliders = colliders.ToArray();
-            }
-        }
-
-        private void TryToDestroyColliders()
-        {
-            if (m_colliders != null)
-            {
-                for (int i = 0; i < m_colliders.Length; ++i)
-                {
-                    Collider collider = m_colliders[i];
-                    if (collider != null)
-                    {
-                        Destroy(collider);
-                    }
-                }
-                m_colliders = null;
             }
         }
 
@@ -567,68 +409,9 @@ namespace Battlehub.RTCommon
             {
                 if (_NameChanged != null)
                 {
-                    _NameChanged(m_rte, this);
+                    _NameChanged(this);
                 }
             }
-        }
-
-        private static bool IsExposedToEditor(IRTE editor, GameObject go, ExposeToEditorObjectType type, bool roots)
-        {
-            ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
-            return exposeToEditor != null && (!roots ||
-                    exposeToEditor.transform.parent == null ||
-                    exposeToEditor.transform.parent.GetComponentsInParent<ExposeToEditor>(true).Length == 0) &&
-                !exposeToEditor.MarkAsDestroyed &&
-                exposeToEditor.ObjectType == type &&
-                exposeToEditor.Editor == editor &&
-                exposeToEditor.hideFlags != HideFlags.HideAndDontSave;
-        }
-
-        public static IEnumerable<GameObject> FindAll(IRTE editor, ExposeToEditorObjectType type, bool roots = true)
-        {
-            if(SceneManager.GetActiveScene().isLoaded)
-            {
-                return FindAllUsingSceneManagement(editor, type, roots);
-            }
-            List<GameObject> filtered = new List<GameObject>();
-            GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
-            for (int i = 0; i < objects.Length; ++i)
-            {
-                GameObject obj = objects[i] as GameObject;
-                if (obj == null)
-                {
-                    continue;
-                }
-
-                if (!obj.IsPrefab())
-                {
-                    filtered.Add(obj);
-                }
-            }
-
-            return filtered.Where(f => IsExposedToEditor(editor, f, type, roots));
-        }
-
-        public static IEnumerable<GameObject> FindAllUsingSceneManagement(IRTE editor, ExposeToEditorObjectType type, bool roots = true)
-        {
-            List<GameObject> filtered = new List<GameObject>();
-            GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-            for (int i = 0; i < rootGameObjects.Length; ++i)
-            {
-                ExposeToEditor[] exposedObjects = rootGameObjects[i].GetComponentsInChildren<ExposeToEditor>(true);
-                for (int j = 0; j < exposedObjects.Length; ++j)
-                {
-                    ExposeToEditor obj = exposedObjects[j];
-                    if (IsExposedToEditor(editor, obj.gameObject, type, roots))
-                    {
-                        if (!obj.gameObject.IsPrefab())
-                        {
-                            filtered.Add(obj.gameObject);
-                        }
-                    }
-                }
-            }
-            return filtered;
         }
     }
 }

@@ -164,7 +164,7 @@ namespace Battlehub.RTEditor
         {
             BindGameObjects();
             m_lockSelection = true;
-            m_treeView.SelectedItems = Editor.Selection.gameObjects;
+            m_treeView.SelectedItems = Editor.Selection.gameObjects != null ? Editor.Selection.gameObjects.Select(g => g.GetComponent<ExposeToEditor>()).Where(e => e != null).ToArray() : null;
             m_lockSelection = false;
 
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
@@ -222,48 +222,42 @@ namespace Battlehub.RTEditor
 
         private void BindGameObjects()
         {
-            IEnumerable<GameObject> gameObjects = Editor.IsPlaying ?
-                ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.PlayMode) :
-                ExposeToEditor.FindAll(Editor, ExposeToEditorObjectType.EditorMode);
+            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(true);
 
-            if(gameObjects.Any())
+            if(objects.Any())
             {
-                Transform commonParent = gameObjects.First().transform.parent;
-                foreach(GameObject go in gameObjects)
+                Transform commonParent = objects.First().transform.parent;
+                foreach(ExposeToEditor obj in objects)
                 {
-                    if(go.transform.parent != commonParent)
+                    if(obj.transform.parent != commonParent)
                     {
                         Debug.LogWarning("ExposeToEditor objects have different parents, hierarchy may not work correctly.");
                         break;
                     }
                 }
             }
-            m_treeView.Items = gameObjects.OrderBy(g => g.transform.GetSiblingIndex());
+            m_treeView.Items = objects.OrderBy(g => g.transform.GetSiblingIndex());
         }
 
         private void OnPlaymodeStateChanged()
         {
-            //if(RuntimeEditor.Instance.GamePrefab != null)
-            //{
-            //    BindGameObjects();
-            //}  
+            BindGameObjects();
         }
 
         private void OnItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
-            GameObject gameObject = (GameObject)e.Item;
-            ExposeToEditor exposeToEditor = gameObject.GetComponent<ExposeToEditor>();
+            ExposeToEditor exposeToEditor = (ExposeToEditor)e.Item;
             
             if (exposeToEditor.ChildCount > 0)
             {
-                e.Children = exposeToEditor.GetChildren().Where(obj => !obj.MarkAsDestroyed).Select(obj => obj.gameObject);
+                e.Children = exposeToEditor.GetChildren().Where(obj => !obj.MarkAsDestroyed);
 
                 //This line is required to syncronize selection, runtime selection and treeview selection
                 OnTreeViewSelectionChanged(m_treeView.SelectedItems, m_treeView.SelectedItems);
             }
             else
             {
-                e.Children = new GameObject[0];
+                e.Children = new ExposeToEditor[0];
             }
         }
 
@@ -277,11 +271,11 @@ namespace Battlehub.RTEditor
 
             if(Editor.Selection.gameObjects == null)
             {
-                m_treeView.SelectedItems = new GameObject[0];
+                m_treeView.SelectedItems = new ExposeToEditor[0];
             }
             else
             {
-                m_treeView.SelectedItems = Editor.Selection.gameObjects;
+                m_treeView.SelectedItems = Editor.Selection.gameObjects.Select(g => g.GetComponent<ExposeToEditor>()).Where(e => e != null).ToArray();
             }
             
             m_lockSelection = false;
@@ -303,13 +297,13 @@ namespace Battlehub.RTEditor
 
             if (newItems == null)
             {
-                newItems = new GameObject[0];
+                newItems = new ExposeToEditor[0];
             }
-            GameObject[] selectableGameObjects = newItems.OfType<GameObject>().Where(g => g.GetComponent<ExposeToEditor>() && g.GetComponent<ExposeToEditor>().CanSelect).ToArray();
-            Editor.Selection.objects = selectableGameObjects;
+            ExposeToEditor[] selectableObjects = newItems.OfType<ExposeToEditor>().Where(o => o.CanSelect).ToArray();
+            Editor.Selection.objects = selectableObjects.Select(o => o.gameObject).ToArray();
 
             //sync with RunitimeSelectiom.objects because of OnBeforeSelectionChanged event
-            m_treeView.SelectedItems = selectableGameObjects;
+            m_treeView.SelectedItems = selectableObjects;
 
             m_lockSelection = false;
         }
@@ -321,12 +315,12 @@ namespace Battlehub.RTEditor
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
-            GameObject dataItem = e.Item as GameObject;
+            ExposeToEditor dataItem = (ExposeToEditor)e.Item;
             if (dataItem != null)
             {
                 Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
                 text.text = dataItem.name;
-                if (dataItem.activeInHierarchy)
+                if (dataItem.gameObject.activeInHierarchy)
                 {
                     text.color = EnabledItemColor;
                 }
@@ -341,18 +335,17 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClicked(object sender, ItemArgs e)
         {
-            GameObject go = (GameObject)e.Items[0];
-            ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
+            ExposeToEditor exposeToEditor = (ExposeToEditor)e.Items[0];
             if (exposeToEditor.CanSelect)
             {
-                Editor.Selection.activeObject = go;
+                Editor.Selection.activeObject = exposeToEditor.gameObject;
                 ItemDoubleClick.Invoke();
             }
         }
 
         private void OnItemBeginEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
-            GameObject dataItem = e.Item as GameObject;
+            ExposeToEditor dataItem = (ExposeToEditor)e.Item;
             if (dataItem != null)
             {
                 InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
@@ -371,7 +364,7 @@ namespace Battlehub.RTEditor
 
         private void OnItemEndEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
-            GameObject dataItem = e.Item as GameObject;
+            ExposeToEditor dataItem = (ExposeToEditor)e.Item ;
             if (dataItem != null)
             {
                 
@@ -410,7 +403,7 @@ namespace Battlehub.RTEditor
                 Editor.Undo.BeginRecord();
                 for (int i = 0; i < e.DragItems.Length; ++i)
                 {
-                    Transform dragT = ((GameObject)e.DragItems[i]).transform;
+                    Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
                     Editor.Undo.RecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
                     Editor.Undo.RecordObject(dragT.gameObject, m_treeView.IndexOf(dragT.gameObject), RestoreIndexFromUndoRecord);
                 }
@@ -426,13 +419,13 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                Transform dropT = ((GameObject)e.DropTarget).transform;
+                Transform dropT = ((ExposeToEditor)e.DropTarget).transform;
                 if (e.Action == ItemDropAction.SetLastChild)
                 {
                     Editor.Undo.BeginRecord();
                     for (int i = 0; i < e.DragItems.Length; ++i)
                     {
-                        Transform dragT = ((GameObject)e.DragItems[i]).transform;
+                        Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
                         dragT.SetParent(dropT, true);
                         dragT.SetAsLastSibling();
 
@@ -446,7 +439,7 @@ namespace Battlehub.RTEditor
                     Editor.Undo.BeginRecord();
                     for (int i = e.DragItems.Length - 1; i >= 0; --i)
                     {
-                        Transform dragT = ((GameObject)e.DragItems[i]).transform;
+                        Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
                         int dropTIndex = dropT.GetSiblingIndex();
                         if (dragT.parent != dropT.parent)
                         {
@@ -477,7 +470,7 @@ namespace Battlehub.RTEditor
                     Editor.Undo.BeginRecord();
                     for (int i = 0; i < e.DragItems.Length; ++i)
                     {
-                        Transform dragT = ((GameObject)e.DragItems[i]).transform;
+                        Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
                         if (dragT.parent != dropT.parent)
                         {
                             dragT.SetParent(dropT.parent, true);
@@ -526,13 +519,13 @@ namespace Battlehub.RTEditor
             if (m_isSpawningPrefab && m_treeView.DropAction != ItemDropAction.None)
             {
                 VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(m_treeView.DropTarget);
-                GameObject dropTarget = (GameObject)m_treeView.DropTarget;
+                ExposeToEditor dropTarget = (ExposeToEditor)m_treeView.DropTarget;
                 if (m_treeView.DropAction == ItemDropAction.SetLastChild)
                 {
                     obj.transform.SetParent(dropTarget.transform);
-                    if (m_treeView.IndexOf(obj.gameObject) == -1)
+                    if (m_treeView.IndexOf(obj) == -1)
                     {
-                        m_treeView.AddChild(dropTarget, obj.gameObject);
+                        m_treeView.AddChild(dropTarget, obj);
                     }
                     treeViewItem.CanExpand = true;
                     treeViewItem.IsExpanded = true;
@@ -552,21 +545,21 @@ namespace Battlehub.RTEditor
                     obj.transform.SetParent(dropTarget.transform.parent);
                     obj.transform.SetSiblingIndex(index);
 
-                    TreeViewItemContainerData itemContainerData = (TreeViewItemContainerData)m_treeView.Insert(index, obj.gameObject);
+                    TreeViewItemContainerData itemContainerData = (TreeViewItemContainerData)m_treeView.Insert(index, obj);
                     itemContainerData.Parent = treeViewItem.Parent;
                 }
             }
             else
             {
-                GameObject parent = null;
+                ExposeToEditor parent = null;
 
                 if (obj.Parent != null)
                 {
-                    parent = obj.Parent.gameObject;
+                    parent = obj.Parent;
                 }
-                if (m_treeView.IndexOf(obj.gameObject) == -1)
+                if (m_treeView.IndexOf(obj) == -1)
                 {
-                    m_treeView.AddChild(parent, obj.gameObject);
+                    m_treeView.AddChild(parent, obj);
                 }
             }
 
@@ -580,7 +573,7 @@ namespace Battlehub.RTEditor
 
         private void OnObjectEnabled(ExposeToEditor obj)
         {
-            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj.gameObject);
+            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj);
             if (tvItem == null)
             {
                 return;
@@ -591,7 +584,7 @@ namespace Battlehub.RTEditor
 
         private void OnObjectDisabled(ExposeToEditor obj)
         {
-            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj.gameObject);
+            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj);
             if (tvItem == null)
             {
                 return;
@@ -602,15 +595,15 @@ namespace Battlehub.RTEditor
 
         private void OnObjectDestroying(ExposeToEditor o)
         {
-            GameObject parent = null;
+            ExposeToEditor parent = null;
             bool isLastChild = false;
             if (o.Parent != null)
             {
-                parent = o.Parent.gameObject;
+                parent = o.Parent;
                 isLastChild = (o.Parent.ChildCount - o.Parent.MarkedAsDestroyedChildCount) <= 1; //ChildCount is not yet decremented
             }
 
-            m_treeView.RemoveChild(parent, o.gameObject, isLastChild);
+            m_treeView.RemoveChild(parent, o, isLastChild);
         }
 
         private void OnObjectDestroyed(ExposeToEditor o)
@@ -622,32 +615,32 @@ namespace Battlehub.RTEditor
         {
             if (o.MarkAsDestroyed)
             {
-                GameObject parent = null;
+                ExposeToEditor parent = null;
                 bool isLastChild = false;
                 if (o.Parent != null)
                 {
-                    parent = o.Parent.gameObject;
+                    parent = o.Parent;
                     isLastChild = (o.Parent.ChildCount - o.Parent.MarkedAsDestroyedChildCount) <= 0;
                 }
 
-                m_treeView.RemoveChild(parent, o.gameObject, isLastChild);
+                m_treeView.RemoveChild(parent, o, isLastChild);
             }
             else
             {
-                GameObject parent = null;
+                ExposeToEditor parent = null;
 
                 if (o.Parent != null)
                 {
-                    parent = o.Parent.gameObject;
+                    parent = o.Parent;
                 }
 
-                ExposeToEditor nextSibling = o.NextSibling();
+                ExposeToEditor nextSibling = o.NextSibling(Editor.Object.Get(true));
 
-                m_treeView.AddChild(parent, o.gameObject); //TODO: replace with Insert                    
+                m_treeView.AddChild(parent, o); //TODO: replace with Insert                    
                  
                 if(nextSibling != null)
                 {
-                    m_treeView.SetPrevSibling(nextSibling.gameObject, o.gameObject);
+                    m_treeView.SetPrevSibling(nextSibling, o);
                 }
                 
             }
@@ -663,32 +656,29 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            GameObject newParentGO = null;
-            GameObject oldParentGO = null;
+            
             bool isNewParentExpanded = true;
             bool isOldParentExpanded = true;
             bool isLastChild = false;
             if (newParent != null)
             {
-                newParentGO = newParent.gameObject;
-                isNewParentExpanded = m_treeView.IsExpanded(newParentGO);
+                isNewParentExpanded = m_treeView.IsExpanded(newParent);
             }
 
             if (oldParent != null)
             {
-                oldParentGO = oldParent.gameObject;
                 isLastChild = (oldParent.ChildCount - oldParent.MarkedAsDestroyedChildCount) <= 1;
-                isOldParentExpanded = m_treeView.IsExpanded(oldParentGO);
+                isOldParentExpanded = m_treeView.IsExpanded(oldParent);
             }
 
             if (isNewParentExpanded)
             {
-                m_treeView.ChangeParent(newParentGO, obj.gameObject);
+                m_treeView.ChangeParent(newParent, obj);
                 if (!isOldParentExpanded)
                 {
                     if (isLastChild)
                     {
-                        VirtualizingTreeViewItem oldParentContainer = m_treeView.GetTreeViewItem(oldParentGO);
+                        VirtualizingTreeViewItem oldParentContainer = m_treeView.GetTreeViewItem(oldParent);
                         if (oldParentContainer)
                         {
                             oldParentContainer.CanExpand = false;
@@ -698,28 +688,28 @@ namespace Battlehub.RTEditor
             }
             else
             {   
-                if(newParentGO != null)
+                if(newParent != null)
                 {
-                    VirtualizingTreeViewItem newParentTreeViewItem = m_treeView.GetTreeViewItem(newParentGO);
+                    VirtualizingTreeViewItem newParentTreeViewItem = m_treeView.GetTreeViewItem(newParent);
                     if(newParentTreeViewItem != null)
                     {
                         newParentTreeViewItem.CanExpand = true;
                     }
                 }
 
-                m_treeView.RemoveChild(oldParentGO, obj.gameObject, isLastChild);
+                m_treeView.RemoveChild(oldParent, obj, isLastChild);
             }
         }
 
         private void OnNameChanged(ExposeToEditor obj)
         {
-            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj.gameObject);
+            VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj);
             if (tvItem == null)
             {
                 return;
             }
             Text text = tvItem.GetComponentInChildren<Text>();
-            text.text = obj.gameObject.name;
+            text.text = obj.name;
         }
 
         private bool CanDrop(object[] dragObjects)
@@ -797,7 +787,7 @@ namespace Battlehub.RTEditor
                                 }
 
                                 exposeToEditor.SetName(obj.name);
-                                exposeToEditor.Parent = ((GameObject)m_treeView.DropTarget).GetComponent<ExposeToEditor>();
+                                exposeToEditor.Parent = (ExposeToEditor)m_treeView.DropTarget;
                                 prefabInstance.SetActive(true);
 
                                 Editor.Undo.BeginRecord();

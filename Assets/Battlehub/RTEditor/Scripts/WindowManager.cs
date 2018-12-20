@@ -264,6 +264,8 @@ namespace Battlehub.RTEditor
             m_dockPanels.RootRegion.Build(layout);
 
             ActivateContent(sceneWd, sceneContent);
+            ActivateContent(consoleWd, consoleContent);
+            ActivateContent(gameWd, gameContent);
             ActivateContent(projectWd, projectContent);
             ActivateContent(hierarchyWd, hierarchyContent);
             ActivateContent(inspectorWd, inspectorContent);
@@ -478,11 +480,7 @@ namespace Battlehub.RTEditor
             for(int i = 0; i < windows.Length; ++i)
             {
                 RuntimeWindow window = windows[i];
-
-                if (window.Camera != null)
-                {
-                    window.Camera.depth = depth * 2;
-                }
+                window.SetCameraDepth(10 + depth * 5);
             }
         }
     }

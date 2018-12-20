@@ -62,7 +62,7 @@ namespace Battlehub.RTCommon
         }
 
         [SerializeField]
-        private Camera m_camera;
+        protected Camera m_camera;
         public virtual Camera Camera
         {
             get { return m_camera; }
@@ -100,6 +100,22 @@ namespace Battlehub.RTCommon
                 }
             }
         }
+
+        private int m_cameraDepth;
+        public int CameraDepth
+        {
+            get { return m_cameraDepth; }
+        }
+
+        public virtual void SetCameraDepth(int depth)
+        {
+            m_cameraDepth = depth;
+            if (m_camera != null)
+            {
+                m_camera.depth = m_cameraDepth;
+            }
+        }
+
 
         [SerializeField]
         private Pointer m_pointer;
@@ -220,14 +236,11 @@ namespace Battlehub.RTCommon
             }
         }
 
-        
-
+       
         protected virtual void OnRectTransformDimensionsChange()
         {
             HandleResize();
         }
-
-       
 
         public void HandleResize()
         {
@@ -272,11 +285,21 @@ namespace Battlehub.RTCommon
 
         protected virtual void SetCullingMask()
         {
+            SetCullingMask(m_camera);
+        }
+
+        protected virtual void SetCullingMask(Camera camera)
+        {
             CameraLayerSettings settings = Editor.CameraLayerSettings;
             m_camera.cullingMask &= ~(((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
         }
 
         protected virtual void ResetCullingMask()
+        {
+            ResetCullingMask(m_camera);
+        }
+
+        protected virtual void ResetCullingMask(Camera camera)
         {
             CameraLayerSettings settings = Editor.CameraLayerSettings;
             m_camera.cullingMask |= (((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);

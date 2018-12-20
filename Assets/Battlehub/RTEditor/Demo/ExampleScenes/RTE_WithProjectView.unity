@@ -270,7 +270,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &55995095
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -479,7 +478,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &88655600
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -715,7 +713,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 5
-  m_Depth: 50
+  m_Depth: 75
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 524288
@@ -977,7 +975,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &244991226
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1440,7 +1437,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &288547709
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1564,7 +1560,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &319559599
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1938,7 +1933,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &421447072
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2222,7 +2216,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &501245690
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2783,7 +2776,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &561356747
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2907,7 +2899,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &561892510
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4075,7 +4066,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &838374335
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4274,7 +4264,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &871592420
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4398,7 +4387,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &875550122
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4522,7 +4510,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &885258774
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4738,7 +4725,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &918063773
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6314,7 +6300,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &1222426644
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6475,6 +6460,7 @@ GameObject:
   - component: {fileID: 1288691113}
   - component: {fileID: 1288691115}
   - component: {fileID: 1288691116}
+  - component: {fileID: 1288691117}
   - component: {fileID: 1288691112}
   - component: {fileID: 1288691111}
   - component: {fileID: 1288691110}
@@ -6674,6 +6660,18 @@ MonoBehaviour:
   m_store: 0
   m_maxItems: 300
   m_clearThreshold: 600
+--- !u!114 &1288691117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288691108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 847ccfb3a05fef543af8116518f52aa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1292591233
 GameObject:
   m_ObjectHideFlags: 0
@@ -6719,7 +6717,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 32
@@ -7307,7 +7305,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!65 &1378610407
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7583,6 +7580,140 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 114896490672942560, guid: 2ed29955c5c4f2e4ea08ecfe5de9cacf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2ed29955c5c4f2e4ea08ecfe5de9cacf, type: 3}
+--- !u!1 &1465978582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1465978586}
+  - component: {fileID: 1465978585}
+  - component: {fileID: 1465978584}
+  - component: {fileID: 1465978583}
+  - component: {fileID: 1465978587}
+  m_Layer: 0
+  m_Name: Camera (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1465978583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465978582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed45e9bc9f5521499ae437efde28108, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rect:
+    serializedVersion: 2
+    x: 0.5
+    y: 0.5
+    width: 0.5
+    height: 0.5
+  m_depth: 1
+--- !u!81 &1465978584
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465978582}
+  m_Enabled: 1
+--- !u!20 &1465978585
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465978582}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_GateFitMode: 2
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0.5
+    y: 0.5
+    width: 0.5
+    height: 0.5
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1465978586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465978582}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.27, y: 0, z: -20.21}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 24
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1465978587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465978582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a961995cedcfac146a43008994f76948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_colliders: []
+  Selected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTCommon.ExposeToEditorUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Unselected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTCommon.ExposeToEditorUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  BoundsObject: {fileID: 0}
+  BoundsType: 0
+  CustomBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  CanSelect: 1
+  CanSnap: 1
+  AddColliders: 1
 --- !u!1 &1478033455
 GameObject:
   m_ObjectHideFlags: 0
@@ -8225,7 +8356,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &1635301374
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -9541,7 +9671,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &1754367320
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -9919,6 +10048,140 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e21bc90cc7d1b1458e6bddead9b678d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1786630463
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1786630467}
+  - component: {fileID: 1786630466}
+  - component: {fileID: 1786630465}
+  - component: {fileID: 1786630464}
+  - component: {fileID: 1786630468}
+  m_Layer: 0
+  m_Name: Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1786630464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786630463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed45e9bc9f5521499ae437efde28108, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  m_depth: 0
+--- !u!81 &1786630465
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786630463}
+  m_Enabled: 1
+--- !u!20 &1786630466
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786630463}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_GateFitMode: 2
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1786630467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786630463}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.27, y: 0, z: -20.21}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1786630468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786630463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a961995cedcfac146a43008994f76948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_colliders: []
+  Selected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTCommon.ExposeToEditorUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Unselected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTCommon.ExposeToEditorUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  BoundsObject: {fileID: 0}
+  BoundsType: 0
+  CustomBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  CanSelect: 1
+  CanSnap: 1
+  AddColliders: 1
 --- !u!1 &1799486795
 GameObject:
   m_ObjectHideFlags: 0
@@ -10089,7 +10352,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &1812147963
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -10778,7 +11040,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &2025977932
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -11255,7 +11516,6 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
-  m_objectType: 0
 --- !u!135 &2110844238
 SphereCollider:
   m_ObjectHideFlags: 0

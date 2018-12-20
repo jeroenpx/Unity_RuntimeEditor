@@ -87,7 +87,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        ExposeToEditorEvents Object
+        IRTEObjects Object
         {
             get;
         }
@@ -196,7 +196,7 @@ namespace Battlehub.RTCommon
         private CursorHelper m_cursorHelper = new CursorHelper();
         private IRuntimeUndo m_undo;
         private DragDrop m_dragDrop;
-        private ExposeToEditorEvents m_object;
+        private IRTEObjects m_object;
 
         private readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
 
@@ -253,7 +253,7 @@ namespace Battlehub.RTCommon
             get { return m_cursorHelper; }
         }
 
-        public virtual ExposeToEditorEvents Object
+        public virtual IRTEObjects Object
         {
             get { return m_object; }
         }
@@ -288,6 +288,11 @@ namespace Battlehub.RTCommon
                 if (m_isOpened != value)
                 {
                     m_isOpened = value;
+                    if(!m_isOpened)
+                    {
+                        IsPlaying = false;
+                    }
+
                     if (!m_isOpened)
                     {
                         ActivateWindow(GetWindow(RuntimeWindowType.Game));
@@ -509,7 +514,7 @@ namespace Battlehub.RTCommon
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
-            m_object = new ExposeToEditorEvents(this);
+            m_object = GetComponent<RTEObjects>();
 
             if(IsVR)
             {
@@ -539,7 +544,6 @@ namespace Battlehub.RTCommon
         {
             if(m_object != null)
             {
-                m_object.Reset();
                 m_object = null;
             }
         
@@ -668,186 +672,6 @@ namespace Battlehub.RTCommon
         }
     }
 
-    public delegate void ObjectEvent(ExposeToEditor obj);
-    public delegate void ObjectParentChangedEvent(ExposeToEditor obj, ExposeToEditor oldValue, ExposeToEditor newValue);
-
-    #region ExposeToEditorEvents
-    public class ExposeToEditorEvents
-    {
-        public event ObjectEvent Awaked;
-        public event ObjectEvent Started;
-        public event ObjectEvent Enabled;
-        public event ObjectEvent Disabled;
-        public event ObjectEvent Destroying;
-        public event ObjectEvent Destroyed;
-        public event ObjectEvent MarkAsDestroyedChanged;
-        public event ObjectEvent TransformChanged;
-        public event ObjectEvent NameChanged;
-        public event ObjectParentChangedEvent ParentChanged;
-
-        private IRTE m_rte;
-
-        public ExposeToEditorEvents(RTEBase rte)
-        {
-            m_rte = rte;
-
-            ExposeToEditor._Awaked += OnAwaked;
-            ExposeToEditor._Enabled += OnEnabled;
-            ExposeToEditor._Started += OnStarted;
-            ExposeToEditor._Disabled += OnDisabled;
-            ExposeToEditor._Destroying += OnDestroying;
-            ExposeToEditor._Destroyed += OnDestroyed;
-            ExposeToEditor._MarkAsDestroyedChanged += OnMarkAsDestroyedChanged;
-
-            ExposeToEditor._TransformChanged += OnTransformChanged;
-            ExposeToEditor._NameChanged += OnNameChanged;
-            ExposeToEditor._ParentChanged += OnParentChanged;
-        }
-
-        public void Reset()
-        {
-            ExposeToEditor._Awaked -= OnAwaked;
-            ExposeToEditor._Enabled -= OnEnabled;
-            ExposeToEditor._Started -= OnStarted;
-            ExposeToEditor._Disabled -= OnDisabled;
-            ExposeToEditor._Destroying -= OnDestroying;
-            ExposeToEditor._Destroyed -= OnDestroyed;
-            ExposeToEditor._MarkAsDestroyedChanged -= OnMarkAsDestroyedChanged;
-
-            ExposeToEditor._TransformChanged -= OnTransformChanged;
-            ExposeToEditor._NameChanged -= OnNameChanged;
-            ExposeToEditor._ParentChanged -= OnParentChanged;
-        }
-
-        private void OnAwaked(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (Awaked != null)
-            {
-                Awaked(obj);
-            }
-        }
-
-        private void OnEnabled(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (Enabled != null)
-            {
-                Enabled(obj);
-            }
-        }
-
-        private void OnStarted(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (Started != null)
-            {
-                Started(obj);
-            }
-        }
-
-        private void OnDisabled(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (Disabled != null)
-            {
-                Disabled(obj);
-            }
-        }
-
-        private void OnDestroying(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (Destroying != null)
-            {
-                Destroying(obj);
-            }
-        }
-
-        private void OnDestroyed(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (Destroyed != null)
-            {
-                Destroyed(obj);
-            }
-        }
-
-        private void OnMarkAsDestroyedChanged(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (MarkAsDestroyedChanged != null)
-            {
-                MarkAsDestroyedChanged(obj);
-            }
-        }
-
-        private void OnTransformChanged(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (TransformChanged != null)
-            {
-                TransformChanged(obj);
-            }
-        }
-
-        private void OnNameChanged(IRTE editor, ExposeToEditor obj)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (NameChanged != null)
-            {
-                NameChanged(obj);
-            }
-        }
-
-        private void OnParentChanged(IRTE editor, ExposeToEditor obj, ExposeToEditor oldValue, ExposeToEditor newValue)
-        {
-            if (m_rte != editor)
-            {
-                return;
-            }
-
-            if (ParentChanged != null)
-            {
-                ParentChanged(obj, oldValue, newValue);
-            }
-        }
-    }
-    #endregion
+   
+ 
 }

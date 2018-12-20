@@ -185,7 +185,6 @@ namespace Battlehub.UIControls.DockPanels
         [SerializeField]
         private bool m_forceRebuildLayoutImmediate = true;
 
-        
         protected virtual void Awake()
         {
             if(m_root == null)
@@ -279,6 +278,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             Clear();
             Build(layout, this);
+            RaiseDepthChanged();
         }
 
         private void Build(LayoutInfo layout, Region region)
@@ -608,7 +608,6 @@ namespace Battlehub.UIControls.DockPanels
             targetRegion.Insert(targetIndex, tab, content, targetSplitType);
             targetRegion.RaiseDepthChanged();
             RaiseDepthChanged();
-
 
             if (destroy)
             {

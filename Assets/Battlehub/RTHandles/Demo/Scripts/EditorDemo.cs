@@ -88,20 +88,20 @@ namespace Battlehub.RTHandles
 
         private void OnAwaked(ExposeToEditor obj)
         {
-            if (IsInPlayMode)
-            {
-                if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
-                {
-                    obj.ObjectType = ExposeToEditorObjectType.PlayMode;
-                }
-            }
-            else
-            {
-                if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
-                {
-                    obj.ObjectType = ExposeToEditorObjectType.EditorMode;
-                }
-            }
+        //    if (IsInPlayMode)
+        //    {
+        //        if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
+        //        {
+        //            obj.ObjectType = ExposeToEditorObjectType.PlayMode;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
+        //        {
+        //            obj.ObjectType = ExposeToEditorObjectType.EditorMode;
+        //        }
+        //    }
         }
         private void OnDestroyed(ExposeToEditor obj)
         {
@@ -194,11 +194,11 @@ namespace Battlehub.RTHandles
             IOC.Register<IRTE>(this);
             IOC.RegisterFallback(this);
             
-            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
-            for (int i = 0; i < editorObjects.Length; ++i)
-            {
-                editorObjects[i].ObjectType = ExposeToEditorObjectType.EditorMode;
-            }
+            //ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            //for (int i = 0; i < editorObjects.Length; ++i)
+            //{
+            //    editorObjects[i].ObjectType = ExposeToEditorObjectType.EditorMode;
+            //}
 
             Tools.SnappingMode = SnappingMode.BoundingBox;
             IsOpened = !IsInPlayMode;
@@ -849,15 +849,15 @@ namespace Battlehub.RTHandles
             }
 
             Undo.Purge();
-            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.EditorMode).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
-            for (int i = 0; i < editorObjects.Length; ++i)
-            {
-                ExposeToEditor exposeToEditor = editorObjects[i];
-                if (exposeToEditor != null)
-                {
-                    DestroyImmediate(exposeToEditor.gameObject);
-                }
-            }
+            //ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.EditorMode).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
+            //for (int i = 0; i < editorObjects.Length; ++i)
+            //{
+            //    ExposeToEditor exposeToEditor = editorObjects[i];
+            //    if (exposeToEditor != null)
+            //    {
+            //        DestroyImmediate(exposeToEditor.gameObject);
+            //    }
+            //}
 
             ConfirmationLoad.SetActive(false);
             //if (m_sceneManager != null)

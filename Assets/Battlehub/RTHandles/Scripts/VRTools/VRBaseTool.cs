@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
-    public class VRBaseTool : RTEBehaviour
+    public class VRBaseTool : RTEComponent
     {
         public RuntimeSceneVRComponent Component
         {

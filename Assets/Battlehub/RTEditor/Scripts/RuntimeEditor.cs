@@ -14,6 +14,7 @@ namespace Battlehub.RTEditor
         void OpenScene();
     }
 
+    [RequireComponent(typeof(RTEObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
         private IProject m_project;
@@ -26,17 +27,6 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
         }
 
-        protected virtual void OnEnable()
-        {
-            ExposeToEditor[] editorObjects = ExposeToEditor.FindAll(this, ExposeToEditorObjectType.Undefined, false).Select(go => go.GetComponent<ExposeToEditor>()).ToArray();
-            for (int i = 0; i < editorObjects.Length; ++i)
-            {
-                editorObjects[i].ObjectType = ExposeToEditorObjectType.EditorMode;
-                editorObjects[i].Init();
-            }
-            Object.Awaked += OnObjectAwaked;
-        }
-
         protected override void Start()
         {
             if (GetComponent<RuntimeEditorInput>() == null)
@@ -44,14 +34,6 @@ namespace Battlehub.RTEditor
                 gameObject.AddComponent<RuntimeEditorInput>();
             }
             base.Start();
-        }
-
-        protected virtual void OnDisable()
-        {
-            if(Object != null)
-            {
-                Object.Awaked -= OnObjectAwaked;
-            }
         }
 
         protected override void OnDestroy()
@@ -141,23 +123,7 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void OnObjectAwaked(ExposeToEditor obj)
-        {
-            if (IsPlaying || !IsOpened)
-            {
-                if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
-                {
-                    obj.ObjectType = ExposeToEditorObjectType.PlayMode;
-                }
-            }
-            else
-            {
-                if (obj.ObjectType == ExposeToEditorObjectType.Undefined)
-                {
-                    obj.ObjectType = ExposeToEditorObjectType.EditorMode;
-                }
-            }
-        }
+   
 
 
         #region Commented Out

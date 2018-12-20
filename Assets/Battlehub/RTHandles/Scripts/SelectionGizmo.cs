@@ -54,7 +54,7 @@ namespace Battlehub.RTHandles
                 GLRenderer.Instance.Add(this);
             }
 
-            if (!m_exposeToEditor.Editor.Selection.IsSelected(gameObject))
+            if (!m_editor.Selection.IsSelected(gameObject))
             {
                 Destroy(this);
             }
@@ -81,7 +81,7 @@ namespace Battlehub.RTHandles
 
         public void Draw(int cullingMask)
         {
-            if (m_exposeToEditor.Editor.Tools.ShowSelectionGizmos)
+            if (m_editor.Tools.ShowSelectionGizmos)
             {
                 if ((cullingMask & (1 << (m_editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index))) == 0)
                 {

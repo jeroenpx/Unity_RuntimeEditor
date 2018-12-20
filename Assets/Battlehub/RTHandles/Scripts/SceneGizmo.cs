@@ -7,7 +7,7 @@ using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
 {
     [RequireComponent(typeof(Camera))]
-    public class SceneGizmo : RTEBehaviour
+    public class SceneGizmo : RTEComponent
     {
         public Button BtnProjection;
         public Transform Pivot;

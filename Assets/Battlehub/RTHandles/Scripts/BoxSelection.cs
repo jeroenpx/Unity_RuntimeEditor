@@ -54,7 +54,7 @@ namespace Battlehub.RTHandles
     /// <summary>
     /// Box Selection
     /// </summary>
-    public class BoxSelection : RTEBehaviour, IBoxSelection
+    public class BoxSelection : RTEComponent, IBoxSelection
     {
         public Sprite Graphics;
         protected Image m_image;

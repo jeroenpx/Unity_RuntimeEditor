@@ -13,7 +13,7 @@ namespace Battlehub.RTHandles
     /// </summary>
 
     [DefaultExecutionOrder(-50)]
-    public abstract class BaseHandle : RTEBehaviour, IGL
+    public abstract class BaseHandle : RTEComponent, IGL
     {
         private const float SelectionMarginPixels = 10;
 

@@ -1,6 +1,7 @@
 ﻿using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 using UnityObject = UnityEngine.Object;
@@ -142,20 +143,14 @@ namespace Battlehub.RTCommon
         {
             if (m_editor.IsOpened)
             {
+                IEnumerable<ExposeToEditor> objects = m_editor.Object.Get(false);
+
                 for (int i = 0; i < m_types.Length; ++i)
                 {
-                    UnityObject[] objs = Resources.FindObjectsOfTypeAll(m_types[i]);
-                    for (int j = 0; j < objs.Length; ++j)
+                    IEnumerable<ExposeToEditor> objectsOfType = objects.Where(o => GetComponent(m_types[i]) != null);
+                    foreach (ExposeToEditor obj in objectsOfType)
                     {
-                        Component obj = objs[j] as Component;
-                        if (obj && !obj.gameObject.IsPrefab())
-                        {
-                            ExposeToEditor exposeToEditor = obj.gameObject.GetComponent<ExposeToEditor>();
-                            if (exposeToEditor != null && exposeToEditor.Editor == m_editor)
-                            {
-                                GreateGizmo(obj.gameObject, m_types[i]);
-                            }
-                        }
+                        GreateGizmo(obj.gameObject, m_types[i]);
                     }
                 }
 

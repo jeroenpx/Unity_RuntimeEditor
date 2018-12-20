@@ -37,9 +37,6 @@ namespace Battlehub.RTCommon.Battlehub.SL2
         [ProtoMember(263)]
         public bool AddColliders;
 
-        [ProtoMember(266)]
-        public ExposeToEditorObjectType ObjectType;
-
         [ProtoMember(269)]
         public long[] Colliders;
 
@@ -55,7 +52,6 @@ namespace Battlehub.RTCommon.Battlehub.SL2
             CanSelect = uo.CanSelect;
             CanSnap = uo.CanSnap;
             AddColliders = uo.AddColliders;
-            ObjectType = uo.ObjectType;
             Colliders = ToID(uo.Colliders);
         }
 
@@ -71,7 +67,6 @@ namespace Battlehub.RTCommon.Battlehub.SL2
             uo.CanSelect = CanSelect;
             uo.CanSnap = CanSnap;
             uo.AddColliders = AddColliders;
-            uo.ObjectType = ObjectType;
             uo.Colliders = FromID(Colliders, uo.Colliders);
             return uo;
         }

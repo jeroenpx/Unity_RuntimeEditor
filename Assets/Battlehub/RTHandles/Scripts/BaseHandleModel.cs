@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
-    public class BaseHandleModel : RTEBehaviour
+    public class BaseHandleModel : RTEComponent
     {
         private RuntimeHandlesComponent m_appearance;
         public RuntimeHandlesComponent Appearance
