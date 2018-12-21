@@ -28,7 +28,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private bool m_isEnabled;
         private bool m_isFree;
-        //private Vector2 m_prevPoint;
+        
         [SerializeField]
         private float m_dx = -1;
         [SerializeField]
@@ -44,8 +44,9 @@ namespace Battlehub.UIControls.DockPanels
             if(m_region == null)
             {
                 m_region = GetComponentInParent<Region>();
-                m_layout = m_region.GetComponent<LayoutElement>();
             }
+
+            m_layout = m_region.GetComponent<LayoutElement>();
         }
 
         private void Start()
@@ -130,6 +131,10 @@ namespace Battlehub.UIControls.DockPanels
       
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
+            if(!m_region.CanResize)
+            {
+                return;
+            }
             if (!m_isEnabled)
             {
                 return;
@@ -143,7 +148,11 @@ namespace Battlehub.UIControls.DockPanels
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            if(!m_isEnabled)
+            if (!m_region.CanResize)
+            {
+                return;
+            }
+            if (!m_isEnabled)
             {
                 return;
             }
@@ -158,8 +167,6 @@ namespace Battlehub.UIControls.DockPanels
             }
             if (m_forceRebuildLayoutImmediate)
             {
-                //m_layoutGroups = m_region.Root.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
-
                 List<HorizontalOrVerticalLayoutGroup> lgList = new List<HorizontalOrVerticalLayoutGroup>();
                 Region[] regions = m_region.Root.GetComponentsInChildren<Region>();
                 for(int i = 0; i < regions.Length; ++i)
@@ -190,6 +197,10 @@ namespace Battlehub.UIControls.DockPanels
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
+            if (!m_region.CanResize)
+            {
+                return;
+            }
             if (!m_isEnabled)
             {
                 return;
@@ -257,8 +268,6 @@ namespace Battlehub.UIControls.DockPanels
 
                 regionRT.offsetMin = offsetMin;
                 regionRT.offsetMax = offsetMax;
-
-                //m_prevPoint = point;
             }
             else
             {
@@ -338,6 +347,10 @@ namespace Battlehub.UIControls.DockPanels
         {
             m_isDragging = false;
             m_layoutGroups = null;
+            if (!m_region.CanResize)
+            {
+                return;
+            }
             if (!m_isEnabled)
             {
                 return;
@@ -353,10 +366,15 @@ namespace Battlehub.UIControls.DockPanels
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
+            if (!m_region.CanResize)
+            {
+                return;
+            }
             if (!m_isEnabled)
             {
                 return;
             }
+
             if (!m_isDragging)
             {
                 m_region.Root.CursorHelper.SetCursor(this, m_cursor);
@@ -366,6 +384,10 @@ namespace Battlehub.UIControls.DockPanels
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
+            if (!m_region.CanResize)
+            {
+                return;
+            }
             if (!m_isEnabled)
             {
                 return;

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class ProjectsDialog : MonoBehaviour
+    public class ProjectsDialog : RuntimeWindow
     {
         [SerializeField]
         private InputDialog m_inputDialogPrefab = null;

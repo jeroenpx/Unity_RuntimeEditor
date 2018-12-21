@@ -175,13 +175,13 @@ namespace Battlehub.UIControls.DockPanels
         private static void ApplyDepth(Region region, DepthMask depthMask)
         {
             Vector3 pos = depthMask.Transform.localPosition;
-            pos.z = -depthMask.Depth * 0.01f;
+            pos.z = -depthMask.Depth * 0.05f;
             depthMask.Transform.localPosition = pos;
 
             if (region.transform.parent.GetComponentInParent<Region>() == null)
             {
                 pos = region.transform.localPosition;
-                pos.z = -(0.005f + depthMask.Depth * 0.01f);
+                pos.z = -(0.025f + depthMask.Depth * 0.05f);
                 region.transform.localPosition = pos;
             }
             else

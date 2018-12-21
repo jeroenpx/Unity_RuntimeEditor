@@ -12,6 +12,9 @@ namespace Battlehub.UIControls.DockPanels
         private Button m_deleteButton = null;
 
         [SerializeField]
+        private Button m_showPopup = null;
+
+        [SerializeField]
         private DockPanelsRoot m_dockPanels = null;
 
         [SerializeField]
@@ -32,6 +35,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             m_addButton.onClick.AddListener(OnAddClick);
             m_deleteButton.onClick.AddListener(OnDeleteClick);
+            m_showPopup.onClick.AddListener(OnShowDialog);
         }
 
         private void OnDestroy()
@@ -44,6 +48,11 @@ namespace Battlehub.UIControls.DockPanels
             if(m_deleteButton != null)
             {
                 m_deleteButton.onClick.RemoveListener(OnDeleteClick);
+            }
+
+            if(m_showPopup != null)
+            {
+                m_showPopup.onClick.RemoveListener(OnShowDialog);
             }
         }
 
@@ -69,6 +78,23 @@ namespace Battlehub.UIControls.DockPanels
                 Region region = m_dockPanels.SelectedRegion;
                 region.RemoveAt(region.ActiveTabIndex);
             }
+        }
+
+        private void OnShowDialog()
+        {
+            m_counter++;
+
+            Transform content = Instantiate(m_contentPrefab);
+
+            Text text = content.GetComponentInChildren<Text>();
+            text.text = "Content " + m_counter;
+
+            Transform headerContent = Instantiate(m_contentPrefab);
+
+            Text headerText = headerContent.GetComponentInChildren<Text>();
+            headerText.text = "Header " + m_counter;
+
+            m_dockPanels.AddModalRegion(headerContent, content, 400, 200, true); 
         }
     }
 }

@@ -63,17 +63,43 @@ namespace Battlehub.UIControls.DockPanels
         public static event RegionEventHandler<int> DepthChanged;
 
         [SerializeField]
+        private bool m_canResize = true;
+        public bool CanResize
+        {
+            get { return m_canResize; }
+            set { m_canResize = value; }
+        }
+
+        [SerializeField]
         private float m_minWidth = 95;
+        public float MinWidth
+        {
+            get { return m_minWidth; }
+            set
+            {
+                m_minWidth = value;
+                m_layoutElement.minWidth = m_minWidth;
+            }
+        }
         
         [SerializeField]
         private float m_minHeight = 140;
+        public float MinHeight
+        {
+            get { return m_minHeight; }
+            set
+            {
+                m_minHeight = value;
+                m_layoutElement.minHeight = m_minHeight;
+            }
+        }
 
         [SerializeField]
         private LayoutElement m_layoutElement = null;
 
         [SerializeField]
         private ToggleGroup m_tabPanel = null;
-
+     
         [SerializeField]
         private RectTransform m_content = null;
 
@@ -91,10 +117,18 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private Image m_headerImage = null;
+        public Image HeaderImage
+        {
+            get { return m_headerImage; }
+        }
 
         [SerializeField]
         private Image m_frameImage = null;
-        
+        public Image FrameImage
+        {
+            get { return m_frameImage; }
+        }
+
         public DockPanelsRoot Root
         {
             get { return m_root; }
@@ -173,6 +207,7 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        private bool m_isDraggingTab;
         private bool m_isDraggingOutside;
         private Vector2 m_beginDragTabPos;
         private RectTransform m_pointerOverTab;
@@ -346,7 +381,7 @@ namespace Battlehub.UIControls.DockPanels
 
             while (parent != null)
             {
-                if (parent.parent == m_root.Free)
+                if (parent.parent == m_root.Free || parent.parent == m_root.Modal)
                 {
                     return parent;
                 }
@@ -369,7 +404,7 @@ namespace Battlehub.UIControls.DockPanels
             Transform parent = transform;
             while (parent != null)
             {
-                if (parent.parent == m_root.Free)
+                if (parent.parent == m_root.Free || parent.parent == m_root.Modal)
                 {
                     return true;
                 }
@@ -382,7 +417,7 @@ namespace Battlehub.UIControls.DockPanels
 
         public void Fit()
         {
-            if(m_root.Free == null)
+            if(m_root.Free == null || m_root.Modal == null)
             {
                 return;
             }
@@ -407,54 +442,53 @@ namespace Battlehub.UIControls.DockPanels
             Vector3[] corners = new Vector3[4];
             rt.GetWorldCorners(corners);
 
-            RectTransform free = (RectTransform)m_root.Free;
+            RectTransform parentPanel = (RectTransform)GetDragRegion().parent;
             for (int i = 0; i < corners.Length; ++i)
             {
-                Vector3 corner = free.InverseTransformPoint(corners[i]);
-                if (corner.x < free.rect.xMin)
+                Vector3 corner = parentPanel.InverseTransformPoint(corners[i]);
+                if (corner.x < parentPanel.rect.xMin)
                 {
-                    corner.x = free.rect.xMin;
+                    corner.x = parentPanel.rect.xMin;
                 }
 
-                if ((i == 0 || i == 1) && corner.x + minWidth > free.rect.xMax)
+                if ((i == 0 || i == 1) && corner.x + minWidth > parentPanel.rect.xMax)
                 {
-                    corner.x = free.rect.xMax - minWidth;
+                    corner.x = parentPanel.rect.xMax - minWidth;
                 }
 
-                if (corner.x > free.rect.xMax)
+                if (corner.x > parentPanel.rect.xMax)
                 {
-                    corner.x = free.rect.xMax;
+                    corner.x = parentPanel.rect.xMax;
                 }
 
-                if ((i == 2 || i == 3) && corner.x - minWidth < free.rect.xMin)
+                if ((i == 2 || i == 3) && corner.x - minWidth < parentPanel.rect.xMin)
                 {
-                    corner.x = free.rect.xMin + minWidth;
+                    corner.x = parentPanel.rect.xMin + minWidth;
                 }
 
-                if (corner.y < free.rect.yMin)
+                if (corner.y < parentPanel.rect.yMin)
                 {
-                    corner.y = free.rect.yMin;
+                    corner.y = parentPanel.rect.yMin;
                 }
 
-                if ((i == 0 || i == 3) && corner.y + minHeight > free.rect.yMax)
+                if ((i == 0 || i == 3) && corner.y + minHeight > parentPanel.rect.yMax)
                 {
-                    corner.y = free.rect.yMax - minHeight;
+                    corner.y = parentPanel.rect.yMax - minHeight;
                 }
 
-                if (corner.y > free.rect.yMax)
+                if (corner.y > parentPanel.rect.yMax)
                 {
-                    corner.y = free.rect.yMax;
+                    corner.y = parentPanel.rect.yMax;
                 }
 
-                if ((i == 1 || i == 2) && corner.y - minHeight < free.rect.yMin)
+                if ((i == 1 || i == 2) && corner.y - minHeight < parentPanel.rect.yMin)
                 {
-                    corner.y = free.rect.yMin + minHeight;
+                    corner.y = parentPanel.rect.yMin + minHeight;
                 }
 
-                corner = free.TransformPoint(corner);
+                corner = parentPanel.TransformPoint(corner);
                 corners[i] = corner;
             }
-
 
             Vector3 position = (corners[0] + corners[2]) * 0.5f;
             for (int i = 0; i < corners.Length; ++i)
@@ -967,6 +1001,13 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabInitializePotentialDrag(Tab tab, PointerEventData args)
         {
+            if(m_root.Modal != null && m_root.Modal.childCount > 0 && transform.parent != m_root.Modal)
+            {
+                m_isDraggingTab = false;
+                return;
+            }
+
+            m_isDraggingTab = true;
             m_root.CursorHelper.SetCursor(this, null);
         }
 
@@ -981,6 +1022,10 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabBeginDrag(Tab tab, PointerEventData args)
         {
+            if(!m_isDraggingTab)
+            {
+                return;
+            }
             m_pointerOverTab = null;
             m_isFree = false;
             m_splitType = RegionSplitType.None;
@@ -994,6 +1039,10 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabDrag(Tab tab, PointerEventData args)
         {
+            if (!m_isDraggingTab)
+            {
+                return;
+            }
             Region region = GetRegion(args);
             bool isRegionChanged = false;
             if(region != m_pointerOverRegion)
@@ -1204,6 +1253,13 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabEndDrag(Tab tab, PointerEventData args)
         {
+            if (!m_isDraggingTab)
+            {
+                return;
+            }
+
+            m_isDraggingTab = false;
+
             m_root.CursorHelper.ResetCursor(this);
 
             if (m_isFree)
@@ -1347,6 +1403,22 @@ namespace Battlehub.UIControls.DockPanels
                 }
             }
 
+            if(m_root.Modal != null)
+            {
+                Region[] modalRegions = m_root.Modal.OfType<Transform>().Select(t => t.GetComponent<Region>()).ToArray();
+                foreach(Region region in modalRegions)
+                {
+                    UpdateMinSize(region);
+                    region.Fit();
+
+                    Resizer[] modalResizers = region.GetComponentsInChildren<Resizer>();
+                    for (int i = 0; i < modalResizers.Length; ++i)
+                    {
+                        modalResizers[i].UpdateState();
+                    }
+                }
+            }
+
             UpdateMinSize(m_root.RootRegion);
 
             Resizer[] resizers = m_root.RootRegion.GetComponentsInChildren<Resizer>();
@@ -1438,13 +1510,20 @@ namespace Battlehub.UIControls.DockPanels
 
             if (m_dragRegion)
             {
-                m_isDragging = RectTransformUtility.ScreenPointToWorldPointInRectangle((RectTransform)m_dragRegion, eventData.position, eventData.pressEventCamera, out m_prevPoint);
-                if (m_isDragging)
+                if (m_root.Modal != null && m_root.Modal.childCount > 0 && m_dragRegion.parent != m_root.Modal)
                 {
-                    MoveRegionToForeground();
-                    if(BeginDrag != null)
+                    m_isDragging = false;
+                }
+                else
+                {
+                    m_isDragging = RectTransformUtility.ScreenPointToWorldPointInRectangle((RectTransform)m_dragRegion, eventData.position, eventData.pressEventCamera, out m_prevPoint);
+                    if (m_isDragging)
                     {
-                        BeginDrag(this);
+                        MoveRegionToForeground();
+                        if (BeginDrag != null)
+                        {
+                            BeginDrag(this);
+                        }
                     }
                 }
             }
@@ -1512,14 +1591,14 @@ namespace Battlehub.UIControls.DockPanels
 
         private void MoveRegionToForeground()
         {
-            if(m_root.Free != null)
+            if(m_root.Free != null || m_root.Modal != null)
             {
                 Transform dragRegion = GetDragRegion();
                 if (dragRegion != null)
                 {
-                    if (dragRegion.GetSiblingIndex() != m_root.Free.childCount - 1)
+                    if (dragRegion.GetSiblingIndex() != dragRegion.parent.childCount - 1)
                     {
-                        dragRegion.SetSiblingIndex(Mathf.Max(0, m_root.Free.childCount - 1));
+                        dragRegion.SetSiblingIndex(Mathf.Max(0, dragRegion.parent.childCount - 1));
 
                         RaiseDepthChanged();
                     }

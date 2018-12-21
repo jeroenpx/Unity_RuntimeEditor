@@ -150,6 +150,7 @@ MonoBehaviour:
   m_docked: {fileID: 7176562610682322028}
   m_free: {fileID: 0}
   m_preview: {fileID: 0}
+  m_modal: {fileID: 0}
   m_allowDragOutside: 0
   m_minWidth: 202
   m_minHeight: 180

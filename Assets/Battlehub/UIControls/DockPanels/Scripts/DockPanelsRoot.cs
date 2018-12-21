@@ -1,4 +1,5 @@
 ﻿using Battlehub.Utils;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,6 +73,13 @@ namespace Battlehub.UIControls.DockPanels
         public RectTransform Preview
         {
             get { return m_preview; }
+        }
+
+        [SerializeField]
+        private RectTransform m_modal = null;
+        public RectTransform Modal
+        {
+            get { return m_modal; }
         }
 
         private CursorHelper m_cursorHelper = new CursorHelper();
@@ -305,9 +313,29 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionDestroyed != null)
+            if (m_modal != null)
+            {
+                if (region.transform.parent == m_modal)
+                {
+                    if (m_modal.childCount == 1)
+                    {
+                        StartCoroutine(CoDisableModal());
+                    }
+                }
+            }
+
+            if (RegionDestroyed != null)
             {
                 RegionDestroyed(region);
+            }
+        }
+
+        private IEnumerator CoDisableModal()
+        {
+            yield return new WaitForEndOfFrame();
+            if (m_modal.childCount == 0)
+            {
+                m_modal.gameObject.SetActive(false);
             }
         }
 
@@ -404,7 +432,55 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public void AddModalRegion(Transform headerContent, Transform content,  float ratio = 0.7f, bool canResize = true)
+        {
+            AddModalRegion(headerContent, content, m_modal.rect.width * ratio, m_modal.rect.height * ratio);
+        }
 
+        public void AddModalRegion(Transform headerContent, Transform content, float minWidth, float minHeight, bool canResize = true)
+        {
+            Rect rect = new Rect(
+                Mathf.Max(0, m_modal.rect.width - minWidth) / 2,
+                -Mathf.Max(0, m_modal.rect.height - minHeight) / 2,
+                minWidth,
+                minHeight);
+
+            AddModalRegion(headerContent, content, minWidth, minHeight, rect, canResize);
+        }
+
+        public void AddModalRegion(Transform headerContent, Transform content, float minWidth, float minHeight, Rect rect, bool canResize = true)
+        {
+            m_modal.gameObject.SetActive(true);
+
+            Region region = Instantiate(m_regionPrefab, m_modal);
+            region.name = "Region " + m_regionId++;
+            RectTransform rt = (RectTransform)region.transform;
+
+            headerContent.SetParent(region.HeaderImage.transform, false);
+            RectTransform headerContentRT = (RectTransform)headerContent;
+            headerContentRT.Stretch();
+
+            content.SetParent(region.ContentPanel, false);
+            RectTransform contentRT = (RectTransform)content;
+            contentRT.Stretch();
+
+            region.CanResize = canResize;
+            region.MinWidth = minWidth;
+            region.MinHeight = minHeight;
+
+            rect.width = Mathf.Max(rect.width, minWidth);
+            rect.height = Mathf.Max(rect.height, minHeight);
+            
+            rt.pivot = new Vector2(0, 1);
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.width);
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rect.height);
+
+            rt.anchoredPosition = rect.position;
+            region.Fit();
+        }
     }
 
 }

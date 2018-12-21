@@ -112,7 +112,7 @@ namespace Battlehub.RTEditor
                         _CameraEnabled(this);
                     }
                 }
-                else;
+                else
                 {
                     if (_CameraDisabled != null)
                     {

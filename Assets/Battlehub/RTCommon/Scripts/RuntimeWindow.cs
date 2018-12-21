@@ -4,19 +4,19 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
 {
-    [System.Flags]
     public enum RuntimeWindowType
     {
         None = 0,
-        Game = 1,
-        Scene = 1 << 1,
-        Hierarchy = 1 << 2,
-        Project = 1 << 3,
-        ProjectTree = 1 << 4,
-        ProjectFolder = 1 << 5,
-        Inspector = 1 << 6,
-        Console = 1 << 7,
-        Other = 1 << 31
+        Game,
+        Scene,
+        Hierarchy,
+        Project,
+        ProjectTree,
+        ProjectFolder,
+        Inspector,
+        Console,
+        
+        OpenProject
     }
 
     public class RuntimeWindow : DragDropTarget
@@ -254,16 +254,19 @@ namespace Battlehub.RTCommon
                 }
                 else if (m_canvas.renderMode == RenderMode.ScreenSpaceCamera)
                 {
-                    Vector3[] corners = new Vector3[4];
-                    m_rectTransform.GetWorldCorners(corners);
+                    if(m_canvas.worldCamera != Camera)
+                    {
+                        Vector3[] corners = new Vector3[4];
+                        m_rectTransform.GetWorldCorners(corners);
 
-                    corners[0] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[0]);
-                    corners[1] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[1]);
-                    corners[2] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[2]);
-                    corners[3] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[3]);
+                        corners[0] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[0]);
+                        corners[1] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[1]);
+                        corners[2] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[2]);
+                        corners[3] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[3]);
 
-                    Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
-                    ResizeCamera(new Rect(corners[0], size));
+                        Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
+                        ResizeCamera(new Rect(corners[0], size));
+                    }
                 }
             }
         }

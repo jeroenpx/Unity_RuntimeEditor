@@ -56,6 +56,9 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_consoleWindow = null;
 
         [SerializeField]
+        private WindowDescriptor m_openProjectDialog = null;
+
+        [SerializeField]
         private DockPanelsRoot m_dockPanels = null;
 
         [SerializeField]
@@ -203,6 +206,10 @@ namespace Battlehub.RTEditor
                 else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
                 {
                     wd = m_consoleWindow;
+                }
+                else if(windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
+                {
+                    wd = m_openProjectDialog;
                 }
 
                 wd.Created--;
@@ -395,6 +402,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
             {
                 wd = m_consoleWindow;
+            }
+            else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
+            {
+                wd = m_openProjectDialog;
             }
 
             if (wd == null)
