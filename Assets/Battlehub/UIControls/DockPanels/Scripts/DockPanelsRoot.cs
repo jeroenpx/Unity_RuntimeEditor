@@ -437,7 +437,7 @@ namespace Battlehub.UIControls.DockPanels
             AddModalRegion(headerContent, content, m_modal.rect.width * ratio, m_modal.rect.height * ratio);
         }
 
-        public void AddModalRegion(Transform headerContent, Transform content, float minWidth, float minHeight, bool canResize = true)
+        public void AddModalRegion(Transform headerContent, Transform content, float minWidth, float minHeight, bool canResize = true, float margin = 50)
         {
             Rect rect = new Rect(
                 Mathf.Max(0, m_modal.rect.width - minWidth) / 2,
@@ -445,10 +445,10 @@ namespace Battlehub.UIControls.DockPanels
                 minWidth,
                 minHeight);
 
-            AddModalRegion(headerContent, content, minWidth, minHeight, rect, canResize);
+            AddModalRegion(headerContent, content, minWidth, minHeight, rect, true, canResize, margin);
         }
 
-        public void AddModalRegion(Transform headerContent, Transform content, float minWidth, float minHeight, Rect rect, bool canResize = true)
+        public void AddModalRegion(Transform headerContent, Transform content, float minWidth, float minHeight, Rect rect, bool center = false, bool canResize = true, float margin = 50)
         {
             m_modal.gameObject.SetActive(true);
 
@@ -468,9 +468,25 @@ namespace Battlehub.UIControls.DockPanels
             region.MinWidth = minWidth;
             region.MinHeight = minHeight;
 
-            rect.width = Mathf.Max(rect.width, minWidth);
-            rect.height = Mathf.Max(rect.height, minHeight);
+            if (rect.width > m_modal.rect.width - margin * 2)
+            {
+                rect.width = m_modal.rect.width - margin * 2;
+            }
+
+            if(rect.height > m_modal.rect.height - margin * 2)
+            {
+                rect.height = m_modal.rect.height - margin * 2;
+            }
             
+            rect.width = Mathf.Max(rect.width , minWidth);
+            rect.height = Mathf.Max(rect.height, minHeight);
+
+            if (center)
+            {
+                rect.position = new Vector2(Mathf.Max(0, m_modal.rect.width  - rect.width) / 2,
+                                           -Mathf.Max(0, m_modal.rect.height - rect.height) / 2);
+            }
+
             rt.pivot = new Vector2(0, 1);
             rt.anchorMin = new Vector2(0, 1);
             rt.anchorMax = new Vector2(0, 1);

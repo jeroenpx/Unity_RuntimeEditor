@@ -5938,6 +5938,12 @@ PrefabInstance:
       propertyPath: m_items.Array.data[5].Action.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: OpenProject
       objectReference: {fileID: 0}
+    - target: {fileID: 114641633655484212, guid: 324d427cdfc17f147a6f5fe5a3063f06,
+        type: 3}
+      propertyPath: m_items.Array.data[4].Icon
+      value: 
+      objectReference: {fileID: 21300000, guid: 1d809aa58d8449f44be584087c1a618a,
+        type: 3}
     - target: {fileID: 224308982547327976, guid: 324d427cdfc17f147a6f5fe5a3063f06,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6499,6 +6505,7 @@ GameObject:
   - component: {fileID: 1288691109}
   - component: {fileID: 1288691113}
   - component: {fileID: 1288691115}
+  - component: {fileID: 1288691118}
   - component: {fileID: 1288691116}
   - component: {fileID: 1288691117}
   - component: {fileID: 1288691112}
@@ -6633,6 +6640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2d3a545c8533904face2a485b9c362f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_dialogManager: {fileID: 1288691118}
   m_sceneWindow:
     Icon: {fileID: 21300000, guid: adee4d2c74aa3ed489dc78650267d5c9, type: 3}
     Header: Scene
@@ -6684,7 +6692,7 @@ MonoBehaviour:
     MaxWindows: 1
     Created: 0
   m_openProjectDialog:
-    Icon: {fileID: 0}
+    Icon: {fileID: 21300000, guid: 1d809aa58d8449f44be584087c1a618a, type: 3}
     Header: Open Project
     ContentPrefab: {fileID: 1332217457950486, guid: 3f23c6dd4897cb04c99b825c569749e6,
       type: 3}
@@ -6720,6 +6728,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 847ccfb3a05fef543af8116518f52aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1288691118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288691108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32e7ef1f9d5aa6b44b1134dbc8d68c38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_dockPanels: {fileID: 1930395726}
+  m_dialogPrefab: {fileID: 7767250135497788611, guid: d95561211dd22b54a9c2b9d191897485,
+    type: 3}
 --- !u!1 &1292591233
 GameObject:
   m_ObjectHideFlags: 0
@@ -7624,6 +7647,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657745503551034573, guid: 2ed29955c5c4f2e4ea08ecfe5de9cacf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7526084536496385055, guid: 2ed29955c5c4f2e4ea08ecfe5de9cacf,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114896490672942560, guid: 2ed29955c5c4f2e4ea08ecfe5de9cacf, type: 3}

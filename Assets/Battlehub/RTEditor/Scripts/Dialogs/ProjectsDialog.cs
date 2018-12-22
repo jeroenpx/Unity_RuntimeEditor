@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
+using Battlehub.UIControls.Dialogs;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Sprite ProjectIcon = null;
 
-        private PopupWindow m_parentPopup;
+        private Dialog m_parentDialog;
 
         private IProject m_project;
 
@@ -36,12 +37,14 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_parentPopup = GetComponentInParent<PopupWindow>();
-            if (m_parentPopup != null)
+            m_parentDialog = GetComponentInParent<Dialog>();
+            if (m_parentDialog != null)
             {
-                m_parentPopup.OK.AddListener(OnOK);
+                m_parentDialog.IsOkVisible = true;
+                m_parentDialog.IsCancelVisible = true;
+                m_parentDialog.OkText = "Open";
+                m_parentDialog.Ok += OnOk;
             }
-
 
             if (m_treeView == null)
             {
@@ -59,7 +62,7 @@ namespace Battlehub.RTEditor
            
             IRTE editor = IOC.Resolve<IRTE>();
 
-            m_parentPopup.IsContentLoaded = false;
+            m_parentDialog.IsInteractable = false;
             editor.IsBusy = true;
 
             m_project.GetProjects((error, projectInfo) =>
@@ -70,7 +73,7 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
-                m_parentPopup.IsContentLoaded = true;
+                m_parentDialog.IsInteractable = true;
                 editor.IsBusy = false;
 
                 m_treeView.Items = projectInfo.OrderBy(p => p.Name).ToArray();
@@ -91,11 +94,13 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void OnDestroy()
+        protected override void OnDestroyOverride()
         {
-            if (m_parentPopup != null)
+            base.OnDestroyOverride();
+        
+            if (m_parentDialog != null)
             {
-                m_parentPopup.OK.RemoveListener(OnOK);
+                m_parentDialog.Ok -= OnOk;
             }
 
             if (m_treeView != null)
@@ -133,10 +138,10 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            m_parentPopup.Close(true);
+            m_parentDialog.Close(true);
         }
 
-        private void OnOK(PopupWindowArgs args)
+        private void OnOk(Dialog sender, DialogCancelArgs args)
         {
             if (m_treeView.SelectedItem == null)
             {

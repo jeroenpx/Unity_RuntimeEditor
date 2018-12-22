@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.UIControls.Dialogs;
 using Battlehub.UIControls.DockPanels;
 using Battlehub.Utils;
 using System;
@@ -38,6 +39,9 @@ namespace Battlehub.RTEditor
     public class WindowManager : MonoBehaviour, IWindowManager
     {
         [SerializeField]
+        private DialogManager m_dialogManager = null;
+
+        [SerializeField]
         private WindowDescriptor m_sceneWindow = null;
 
         [SerializeField]
@@ -67,7 +71,7 @@ namespace Battlehub.RTEditor
         private IRTE m_editor;
 
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
-        private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();
+        private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();        
 
         private void Start()
         {
@@ -76,12 +80,19 @@ namespace Battlehub.RTEditor
                 m_dockPanels = FindObjectOfType<DockPanelsRoot>();
             }
 
+            if(m_dialogManager == null)
+            {
+                m_dialogManager = FindObjectOfType<DialogManager>();
+            }
+
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
             m_dockPanels.RegionSelected += OnRegionSelected;
             m_dockPanels.RegionUnselected += OnRegionUnselected;
+
+            m_dialogManager.DialogDestroyed += OnDialogDestroyed;
 
             if (m_componentsRoot == null)
             {
@@ -104,6 +115,17 @@ namespace Battlehub.RTEditor
                 m_dockPanels.RegionSelected -= OnRegionSelected;
                 m_dockPanels.RegionUnselected -= OnRegionUnselected;
             }
+
+            if(m_dialogManager != null)
+            {
+                m_dialogManager.DialogDestroyed -= OnDialogDestroyed;
+            }
+        }
+
+
+        private void OnDialogDestroyed(Dialog dialog)
+        {
+            OnContentDestroyed(dialog.Content);
         }
 
         private void OnRegionSelected(Region region)
@@ -229,27 +251,28 @@ namespace Battlehub.RTEditor
 
             WindowDescriptor sceneWd;
             GameObject sceneContent;
-            CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent);
+            bool isDialog;
+            CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent, out isDialog);
 
             WindowDescriptor gameWd;
             GameObject gameContent;
-            CreateWindow(RuntimeWindowType.Game.ToString(), out gameWd, out gameContent);
+            CreateWindow(RuntimeWindowType.Game.ToString(), out gameWd, out gameContent, out isDialog);
 
             WindowDescriptor inspectorWd;
             GameObject inspectorContent;
-            CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent);
+            CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent, out isDialog);
 
             WindowDescriptor consoleWd;
             GameObject consoleContent;
-            CreateWindow(RuntimeWindowType.Console.ToString(), out consoleWd, out consoleContent);
+            CreateWindow(RuntimeWindowType.Console.ToString(), out consoleWd, out consoleContent, out isDialog);
 
             WindowDescriptor hierarchyWd;
             GameObject hierarchyContent;
-            CreateWindow(RuntimeWindowType.Hierarchy.ToString(), out hierarchyWd, out hierarchyContent);
+            CreateWindow(RuntimeWindowType.Hierarchy.ToString(), out hierarchyWd, out hierarchyContent, out isDialog);
 
             WindowDescriptor projectWd;
             GameObject projectContent;
-            CreateWindow(RuntimeWindowType.Project.ToString(), out projectWd, out projectContent);
+            CreateWindow(RuntimeWindowType.Project.ToString(), out projectWd, out projectContent, out isDialog);
 
             LayoutInfo layout = new LayoutInfo(false,
                 new LayoutInfo(false,
@@ -357,19 +380,29 @@ namespace Battlehub.RTEditor
         {
             WindowDescriptor wd;
             GameObject content;
-            if (!CreateWindow(windowTypeName, out wd, out content))
+            bool isDialog;
+            if (!CreateWindow(windowTypeName, out wd, out content, out isDialog))
             {
                 return false;
             }
 
-            m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, true);
-
+            if(isDialog)
+            {
+                Dialog dialog = m_dialogManager.ShowDialog(wd.Icon, wd.Header, content.transform);
+                dialog.IsCancelVisible = false;
+                dialog.IsOkVisible = false;
+            }
+            else
+            {
+                m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, true);
+            }
+            
             ActivateContent(wd, content);
 
             return true;
         }
 
-        private bool CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content)
+        private bool CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)
         {
             if (m_dockPanels == null)
             {
@@ -379,6 +412,9 @@ namespace Battlehub.RTEditor
             windowTypeName = windowTypeName.ToLower();
             wd = null;
             content = null;
+            isDialog = false;
+
+
             if (windowTypeName == RuntimeWindowType.Scene.ToString().ToLower())
             {
                 wd = m_sceneWindow;
@@ -406,6 +442,7 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
             {
                 wd = m_openProjectDialog;
+                isDialog = true;
             }
 
             if (wd == null)
