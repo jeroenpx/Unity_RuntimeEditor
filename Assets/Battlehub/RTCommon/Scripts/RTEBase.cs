@@ -161,9 +161,9 @@ namespace Battlehub.RTCommon
     public class RTEBase : MonoBehaviour, IRTE
     {
         [SerializeField]
-        private GraphicRaycaster m_raycaster;
+        protected GraphicRaycaster m_raycaster;
         [SerializeField]
-        private EventSystem m_eventSystem;
+        protected EventSystem m_eventSystem;
 
         [SerializeField]
         private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true);
@@ -190,7 +190,7 @@ namespace Battlehub.RTCommon
         public event RTEEvent IsDirtyChanged;
         public event RTEEvent IsBusyChanged;
 
-        private InputLow m_input;
+        protected InputLow m_input;
         private RuntimeSelection m_selection;
         private RuntimeTools m_tools = new RuntimeTools();
         private CursorHelper m_cursorHelper = new CursorHelper();
@@ -198,7 +198,7 @@ namespace Battlehub.RTCommon
         private DragDrop m_dragDrop;
         private IRTEObjects m_object;
 
-        private readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
+        protected readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
 
         private RuntimeWindow m_activeWindow;
         public virtual RuntimeWindow ActiveWindow
@@ -320,7 +320,7 @@ namespace Battlehub.RTCommon
         }
 
         private bool m_isBusy;
-        public bool IsBusy
+        public virtual bool IsBusy
         {
             get { return m_isBusy; }
             set
@@ -542,6 +542,8 @@ namespace Battlehub.RTCommon
 
         protected virtual void OnDestroy()
         {
+            IsOpened = false;
+
             if(m_object != null)
             {
                 m_object = null;
@@ -598,12 +600,15 @@ namespace Battlehub.RTCommon
                     activeWindow = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).FirstOrDefault();
                 }
                     
-                ActivateWindow(activeWindow);
+                if(IsOpened)
+                {
+                    ActivateWindow(activeWindow);
+                }
             }
         }
 
 
-        private void Update()
+        protected virtual void Update()
         {
             if(m_input.GetPointerDown(0))
             {

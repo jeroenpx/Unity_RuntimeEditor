@@ -406,8 +406,7 @@ namespace Battlehub.RTEditor
                     {
                         ShowProgress = true;
                         Editor.IsBusy = true;
-                        m_project.OpenProject(selectedProject.Name);
-                        
+                        m_project.OpenProject(selectedProject.Name);   
                     }
                 },
                 "Cancel");

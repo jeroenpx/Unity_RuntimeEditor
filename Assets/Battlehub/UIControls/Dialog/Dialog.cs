@@ -354,6 +354,12 @@ namespace Battlehub.UIControls.Dialogs
 
         public void Close(bool? result = null)
         {
+            if(m_parentRegion == null)
+            {
+                return;
+            }
+
+
             if(result != null)
             {
                 if (result == false && CancelAction != null)

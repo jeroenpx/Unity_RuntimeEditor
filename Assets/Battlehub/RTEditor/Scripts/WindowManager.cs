@@ -21,6 +21,23 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
         bool CreateWindow(string windowTypeName);
+
+        void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null);
+        void MessageBox(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok = null);
+        void Confirmation(string header, string text, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel");
+        void Confirmation(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel");
+        
+        void Dialog(string header, Transform content, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel",
+             float minWidth = 150,
+             float minHeight = 150,
+             float preferredWidth = 700,
+             float preferredHeight = 400);
+
+        void Dialog(Sprite icon, string header, Transform content, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel",
+            float minWidth = 150,
+             float minHeight = 150,
+             float preferredWidth = 700,
+             float preferredHeight = 400);
     }
 
     [Serializable]
@@ -58,6 +75,9 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private WindowDescriptor m_consoleWindow = null;
+
+        [SerializeField]
+        private WindowDescriptor m_createProjectDialog = null;
 
         [SerializeField]
         private WindowDescriptor m_openProjectDialog = null;
@@ -228,6 +248,10 @@ namespace Battlehub.RTEditor
                 else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
                 {
                     wd = m_consoleWindow;
+                }
+                else if(windowTypeName == RuntimeWindowType.CreateProject.ToString().ToLower())
+                {
+                    wd = m_createProjectDialog;
                 }
                 else if(windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
                 {
@@ -439,6 +463,11 @@ namespace Battlehub.RTEditor
             {
                 wd = m_consoleWindow;
             }
+            else if (windowTypeName == RuntimeWindowType.CreateProject.ToString().ToLower())
+            {
+                wd = m_createProjectDialog;
+                isDialog = true;
+            }
             else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
             {
                 wd = m_openProjectDialog;
@@ -530,6 +559,44 @@ namespace Battlehub.RTEditor
                 RuntimeWindow window = windows[i];
                 window.SetCameraDepth(10 + depth * 5);
             }
+        }
+
+        public void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null)
+        {
+            m_dialogManager.ShowDialog(null, header, text, ok);
+        }
+
+        public void MessageBox(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok = null)
+        {
+            m_dialogManager.ShowDialog(icon, header, text, ok);
+        }
+
+        public void Confirmation(string header, string text, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel")
+        {
+            m_dialogManager.ShowDialog(null, header, text, ok, okText, cancel, cancelText);
+
+        }
+        public void Confirmation(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel")
+        {
+            m_dialogManager.ShowDialog(icon, header, text, ok, okText, cancel, cancelText);
+        }
+
+        public void Dialog(string header, Transform content, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel", 
+             float minWidth = 150,
+             float minHeight = 150,
+             float preferredWidth = 700,
+             float preferredHeight = 400)
+        {
+            m_dialogManager.ShowDialog(null, header, content, ok, okText, cancel, cancelText, minWidth, minHeight, preferredWidth, preferredHeight);
+        }
+
+        public void Dialog(Sprite icon, string header, Transform content, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel",
+            float minWidth = 150,
+             float minHeight = 150,
+             float preferredWidth = 700,
+             float preferredHeight = 400)
+        {
+            m_dialogManager.ShowDialog(icon, header, content, ok, okText, cancel, cancelText, minWidth, minHeight, preferredWidth, preferredHeight); 
         }
     }
 }

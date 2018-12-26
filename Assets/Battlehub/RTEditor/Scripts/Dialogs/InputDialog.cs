@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using Battlehub.RTCommon;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class InputDialog : MonoBehaviour
+    public class InputDialog : RuntimeWindow
     {
         [SerializeField]
         private InputField m_inputField = null;

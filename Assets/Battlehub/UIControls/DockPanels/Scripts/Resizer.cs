@@ -106,7 +106,7 @@ namespace Battlehub.UIControls.DockPanels
                         }
                     }
 
-                    if (m_isEnabled)
+                    if (m_isEnabled && m_region.transform.parent.childCount > (siblingIndex + 1) % 2)
                     {
                         m_siblingLayout = m_region.transform.parent.GetChild((siblingIndex + 1) % 2).GetComponent<LayoutElement>();
                         m_parentRT = (RectTransform)m_region.transform.parent;

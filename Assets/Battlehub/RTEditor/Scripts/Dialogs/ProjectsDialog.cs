@@ -24,6 +24,8 @@ namespace Battlehub.RTEditor
 
         private IProject m_project;
 
+        private IWindowManager m_windowManager;
+
         [SerializeField]
         private Button m_btnNew = null;
 
@@ -59,7 +61,8 @@ namespace Battlehub.RTEditor
             m_treeView.CanUnselectAll = false;
 
             m_project = IOC.Resolve<IProject>();
-           
+            m_windowManager = IOC.Resolve<IWindowManager>();
+
             IRTE editor = IOC.Resolve<IRTE>();
 
             m_parentDialog.IsInteractable = false;
@@ -148,15 +151,36 @@ namespace Battlehub.RTEditor
                 args.Cancel = true;
                 return;
             }
+            else
+            {
+                ProjectInfo selectedProject = SelectedProject;
+                if (selectedProject == null)
+                {
+                    args.Cancel = true;
+                }
+                else
+                {
+                    Editor.IsBusy = true;
+                    m_project.OpenProject(selectedProject.Name, (error, result) =>
+                    {
+                        Editor.IsBusy = false;
+                        if (error.HasError)
+                        {
+                            m_windowManager.MessageBox("Unable to open project", error.ErrorText);
+                        }                        
+                    });
+                }
+            }
         }
 
         private void OnCreateProjectClick()
         {
+
             InputDialog input = Instantiate(m_inputDialogPrefab);
             input.transform.position = Vector3.zero;
 
-            PopupWindow.Show("Create Project", input.transform, "Create",
-                args =>
+            m_windowManager.Dialog("Create Project", input.transform,
+                (sender, args) =>
                 {
                     string projectName = input.Text;
                     if(string.IsNullOrEmpty(projectName))
@@ -167,40 +191,48 @@ namespace Battlehub.RTEditor
 
                     if (m_treeView.Items != null && m_treeView.Items.OfType<ProjectInfo>().Any(p => p.Name == projectName))
                     {
-                        PopupWindow.Show("Unable to create project", "Project with the same name already exists", "OK");
+                        m_windowManager.MessageBox("Unable to create project", "Project with the same name already exists");
                         args.Cancel = true;
                         return;
                     }
 
+                    Editor.IsBusy = true;
                     m_project.CreateProject(projectName, (error, newProjectInfo) =>
                     {
+                        Editor.IsBusy = false;
                         if(error.HasError)
                         {
-                            PopupWindow.Show("Unable to create project", error.ErrorText, "OK");
+                            m_windowManager.MessageBox("Unable to create project", error.ErrorText);
                             args.Cancel = true;
                             return;
                         }
 
+                        m_treeView.SelectedItem = null;
                         ProjectInfo[] projectInfo = m_treeView.Items.OfType<ProjectInfo>().Union(new[] { newProjectInfo }).OrderBy(p => p.Name).ToArray();
                         m_treeView.Insert(Array.IndexOf(projectInfo, newProjectInfo), newProjectInfo);
                         m_treeView.SelectedItem = newProjectInfo;
+                        m_treeView.ScrollIntoView(newProjectInfo);
                     });
                 },
-                "Cancel");
+                (sender, args) => { },
+                "Create",
+                "Cancel", 120, 120, 350, 120);
         }
 
         private void OnDestroyProjectClick()
         {
             ProjectInfo selectedProject = (ProjectInfo)m_treeView.SelectedItem;
-            PopupWindow.Show("Delete Project", "Delete " + selectedProject.Name  + " project?", "Delete", args =>
+            m_windowManager.Confirmation("Delete Project", "Delete " + selectedProject.Name  + " project?", (sender, args) =>
             {
                 ProjectInfo[] projectInfo = m_treeView.Items.OfType<ProjectInfo>().ToArray();
                 int index = Array.IndexOf(projectInfo, selectedProject);
+                Editor.IsBusy = true;
                 m_project.DeleteProject(selectedProject.Name, (error, deletedProject) =>
                 {
-                    if(error.HasError)
+                    Editor.IsBusy = false;
+                    if (error.HasError)
                     {
-                        PopupWindow.Show("Unable to delete project", error.ErrorText, "OK");
+                        m_windowManager.MessageBox("Unable to delete project", error.ErrorText);
                         args.Cancel = true;
                         return;
                     }
@@ -218,6 +250,8 @@ namespace Battlehub.RTEditor
                     
                 });
             },
+            (sender, args) => { },
+            "Delete",
             "Cancel");
 
         }

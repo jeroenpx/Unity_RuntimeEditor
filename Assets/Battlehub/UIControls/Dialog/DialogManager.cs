@@ -46,6 +46,7 @@ namespace Battlehub.UIControls.Dialogs
             }
 
             Dialog dialog = Instantiate(m_dialogPrefab);
+            dialog.name = "Dialog " + header;
             dialog.Icon = icon;
             dialog.HeaderText = header;
             dialog.ContentText = content;

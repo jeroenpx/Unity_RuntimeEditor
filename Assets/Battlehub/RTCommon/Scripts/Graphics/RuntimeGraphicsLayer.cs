@@ -88,6 +88,8 @@ namespace Battlehub.RTCommon
             m_graphicsLayerCamera.depth = m_editorWindow.Camera.depth + 1;
             m_graphicsLayerCamera.cullingMask = 1 << (m_editorWindow.Editor.CameraLayerSettings.RuntimeGraphicsLayer + m_editorWindow.Index);
 
+            m_graphicsLayerCamera.allowHDR = false; //fix strange screen blinking bug...
+
             if(m_trackedPoseDriver != null)
             {
                 m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix;

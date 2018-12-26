@@ -309,7 +309,7 @@ namespace Battlehub.UIControls.MenuControl
                             return;
                         }
 
-                        if(parentMenu.Child != null)
+                        if(parentMenu.Child != null && parentMenu.Child.Submenu != this)
                         {
                             break;
                         }

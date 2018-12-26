@@ -1,7 +1,10 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.UIControls.DockPanels;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTEditor
@@ -18,6 +21,23 @@ namespace Battlehub.RTEditor
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
         private IProject m_project;
+
+        [SerializeField]
+        private GameObject m_progressIndicator = null;
+
+        public override bool IsBusy
+        {
+            get { return base.IsBusy; }
+            set
+            {
+                if(m_progressIndicator != null)
+                {
+                    m_progressIndicator.gameObject.SetActive(value);
+                }
+
+                base.IsBusy = value;
+            }
+        }
 
         protected override void Awake()
         {
@@ -39,6 +59,43 @@ namespace Battlehub.RTEditor
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
+        }
+
+        protected override void Update()
+        {
+            if (m_input.GetPointerDown(0))
+            {
+                PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
+                //Set the Pointer Event Position to that of the mouse position
+                pointerEventData.position = m_input.GetPointerXY(0);
+
+                //Create a list of Raycast Results
+                List<RaycastResult> results = new List<RaycastResult>();
+
+                //Raycast using the Graphics Raycaster and mouse click position
+                m_raycaster.Raycast(pointerEventData, results);
+
+                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+                foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()))
+                {
+                    if(region == null)
+                    {
+                        continue;
+                    }
+
+                    RuntimeWindow window = region.ActiveContent != null ? region.ActiveContent.GetComponentInChildren<RuntimeWindow>() :
+                        region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
+                    if(window != null)
+                    {
+                        if (m_windows.Contains(window.gameObject))
+                        {
+                            ActivateWindow(window);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         public void SetDefaultLayout()
@@ -123,8 +180,13 @@ namespace Battlehub.RTEditor
             });
         }
 
-   
 
+        public void Close()
+        {
+            Destroy(gameObject);
+        }
+
+        
 
         #region Commented Out
         /*

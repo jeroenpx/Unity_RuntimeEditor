@@ -160,11 +160,18 @@ namespace Battlehub.UIControls
 
                 if(m_isEditing)
                 {
-                    EditorPresenter.SetActive(m_item != null);
+                    if(EditorPresenter != null)
+                    {
+                        EditorPresenter.SetActive(m_item != null);
+                    }
+                    
                 }
                 else
                 {
-                    ItemPresenter.SetActive(m_item != null);
+                    if(ItemPresenter != null)
+                    {
+                        ItemPresenter.SetActive(m_item != null);
+                    }
                 }   
 
                 if(m_item == null)

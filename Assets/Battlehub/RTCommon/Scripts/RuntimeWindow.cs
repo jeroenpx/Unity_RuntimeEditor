@@ -7,16 +7,17 @@ namespace Battlehub.RTCommon
     public enum RuntimeWindowType
     {
         None = 0,
-        Game,
-        Scene,
-        Hierarchy,
-        Project,
-        ProjectTree,
-        ProjectFolder,
-        Inspector,
-        Console,
-        
-        OpenProject
+        Game = 1,
+        Scene = 2,
+        Hierarchy = 3,
+        Project = 4,
+        ProjectTree = 5,
+        ProjectFolder = 6,
+        Inspector = 7,
+        Console = 8,
+
+        CreateProject = 50,
+        OpenProject = 51,
     }
 
     public class RuntimeWindow : DragDropTarget
@@ -138,6 +139,10 @@ namespace Battlehub.RTCommon
                         m_background.color = new Color(0, 0, 0, 0);
                         m_background.raycastTarget = true;
                     }
+                    else
+                    {
+                        m_background.raycastTarget = true;
+                    }
                 }
             }
 
@@ -177,9 +182,6 @@ namespace Battlehub.RTCommon
             Editor.RegisterWindow(this);
         }
 
-
-        
-     
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
@@ -294,7 +296,7 @@ namespace Battlehub.RTCommon
         protected virtual void SetCullingMask(Camera camera)
         {
             CameraLayerSettings settings = Editor.CameraLayerSettings;
-            m_camera.cullingMask &= ~(((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
+            camera.cullingMask &= ~(((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
         }
 
         protected virtual void ResetCullingMask()
@@ -305,7 +307,7 @@ namespace Battlehub.RTCommon
         protected virtual void ResetCullingMask(Camera camera)
         {
             CameraLayerSettings settings = Editor.CameraLayerSettings;
-            m_camera.cullingMask |= (((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
+            camera.cullingMask |= (((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
         }
 
     }
