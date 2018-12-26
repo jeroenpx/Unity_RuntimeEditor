@@ -36,6 +36,12 @@ namespace Battlehub.RTSaveLoad2.Interface
             get;
         }
 
+        AssetItem LoadedScene
+        {
+            get;
+            set;
+        }
+
         string[] AssetLibraries
         {
             get;

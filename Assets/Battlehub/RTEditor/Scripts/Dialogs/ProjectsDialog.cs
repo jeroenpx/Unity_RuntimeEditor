@@ -72,7 +72,7 @@ namespace Battlehub.RTEditor
             {
                 if(error.HasError)
                 {
-                    PopupWindow.Show("Unable to get projects", error.ToString(), "OK");
+                    m_windowManager.MessageBox("Unable to get projects", error.ToString());
                     return;
                 }
 

@@ -77,21 +77,23 @@ namespace Battlehub.UIControls.Dialogs
                 while(m_dialogStack.Count > 0)
                 {
                     Dialog dialog = m_dialogStack.Pop();
-                    dialog.Close();
+                    
                     if (sender == dialog)
                     {
-                        if(DialogDestroyed != null)
+                        if (DialogDestroyed != null)
                         {
-                            DialogDestroyed(sender);
+                            DialogDestroyed(dialog);
                         }
-
-                        if(m_dialogStack.Count > 0)
+                        dialog.Close();
+                        if (m_dialogStack.Count > 0)
                         {
                             Dialog previousDialog = m_dialogStack.Peek();
                             previousDialog.Show();
                         }
                         break;
                     }
+
+                    dialog.Close();
                 }
             }
         }

@@ -64,6 +64,13 @@ namespace Battlehub.RTSaveLoad2
             get { return m_root; }
         }
 
+        private AssetItem m_loadedScene;
+        public AssetItem LoadedScene
+        {
+            get { return m_loadedScene; }
+            set { m_loadedScene = value; }
+        }
+
         /// <summary>
         /// For fast access when resolving dependencies.
         /// </summary>
@@ -263,7 +270,8 @@ namespace Battlehub.RTSaveLoad2
                 Destroy(rootGO);
             }
 
-            if(NewSceneCreated != null)
+            m_loadedScene = null;
+            if (NewSceneCreated != null)
             {
                 NewSceneCreated(new Error(Error.OK));
             }
@@ -734,6 +742,7 @@ namespace Battlehub.RTSaveLoad2
             return _Create(parent, previewData, obj, nameOverride, (error, result) =>
             {
                 IsBusy = false;
+
                 if (callback != null)
                 {
                     callback(error, result);
@@ -1057,8 +1066,17 @@ namespace Battlehub.RTSaveLoad2
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
+            
             return _Load(assetItem, (error, result) =>
             {
+                if(!error.HasError)
+                {
+                    if(ToType(assetItem) == typeof(Scene))
+                    {
+                        m_loadedScene = assetItem;
+                    }
+                }
+
                 IsBusy = false;
                 if (callback != null)
                 {
@@ -1836,7 +1854,8 @@ namespace Battlehub.RTSaveLoad2
             }
             
             Debug.Assert(pathPartIndex == path.Length - 1);
-            Component component = go.GetComponents<Component>().FirstOrDefault(c => c.GetType().FullName == path[pathPartIndex]);
+            
+            Component component = go.GetComponents<Component>().Where(c => c != null && c.GetType().FullName == path[pathPartIndex]).FirstOrDefault();
             return component;
         }
 

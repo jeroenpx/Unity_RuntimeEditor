@@ -20,7 +20,7 @@ namespace Battlehub.RTEditor
         bool IsActive(Transform content);
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
-        bool CreateWindow(string windowTypeName);
+        Transform CreateWindow(string windowTypeName);
 
         void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null);
         void MessageBox(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok = null);
@@ -77,10 +77,16 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_consoleWindow = null;
 
         [SerializeField]
-        private WindowDescriptor m_createProjectDialog = null;
+        private WindowDescriptor m_saveSceneDialog = null;
 
         [SerializeField]
         private WindowDescriptor m_openProjectDialog = null;
+
+        [SerializeField]
+        private WindowDescriptor m_selectAssetLibrary = null;
+
+        [SerializeField]
+        private WindowDescriptor m_importAssets = null;
 
         [SerializeField]
         private DockPanelsRoot m_dockPanels = null;
@@ -249,13 +255,21 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_consoleWindow;
                 }
-                else if(windowTypeName == RuntimeWindowType.CreateProject.ToString().ToLower())
+                else if(windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
                 {
-                    wd = m_createProjectDialog;
+                    wd = m_saveSceneDialog;
                 }
                 else if(windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
                 {
                     wd = m_openProjectDialog;
+                }
+                else if(windowTypeName == RuntimeWindowType.SelectAssetLibrary.ToString().ToLower())
+                {
+                    wd = m_selectAssetLibrary;
+                }
+                else if(windowTypeName == RuntimeWindowType.ImportAssets.ToString().ToLower())
+                {
+                    wd = m_importAssets;
                 }
 
                 wd.Created--;
@@ -400,14 +414,16 @@ namespace Battlehub.RTEditor
             return true;
         }
 
-        public bool CreateWindow(string windowTypeName)
+        public Transform CreateWindow(string windowTypeName)
         {
             WindowDescriptor wd;
             GameObject content;
             bool isDialog;
-            if (!CreateWindow(windowTypeName, out wd, out content, out isDialog))
+
+            Transform window = CreateWindow(windowTypeName, out wd, out content, out isDialog);
+            if (!window)
             {
-                return false;
+                return window;
             }
 
             if(isDialog)
@@ -423,10 +439,10 @@ namespace Battlehub.RTEditor
             
             ActivateContent(wd, content);
 
-            return true;
+            return window;
         }
 
-        private bool CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)
+        private Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)
         {
             if (m_dockPanels == null)
             {
@@ -463,9 +479,9 @@ namespace Battlehub.RTEditor
             {
                 wd = m_consoleWindow;
             }
-            else if (windowTypeName == RuntimeWindowType.CreateProject.ToString().ToLower())
+            else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
             {
-                wd = m_createProjectDialog;
+                wd = m_saveSceneDialog;
                 isDialog = true;
             }
             else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
@@ -473,16 +489,26 @@ namespace Battlehub.RTEditor
                 wd = m_openProjectDialog;
                 isDialog = true;
             }
+            else if(windowTypeName == RuntimeWindowType.SelectAssetLibrary.ToString().ToLower())
+            {
+                wd = m_selectAssetLibrary;
+                isDialog = true;
+            }
+            else if(windowTypeName == RuntimeWindowType.ImportAssets.ToString().ToLower())
+            {
+                wd = m_importAssets;
+                isDialog = true;
+            }
 
             if (wd == null)
             {
                 Debug.LogWarningFormat("{0} window was not found", windowTypeName);
-                return false;
+                return null;
             }
 
             if (wd.Created >= wd.MaxWindows)
             {
-                return false;
+                return null;
             }
             wd.Created++;
 
@@ -535,7 +561,7 @@ namespace Battlehub.RTEditor
             }
 
             windows.Add(content.transform);
-            return true;
+            return content.transform;
         }
 
         private void ActivateContent(WindowDescriptor wd, GameObject content)

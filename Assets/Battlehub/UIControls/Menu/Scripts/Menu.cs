@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.UIControls.MenuControl
 {
+    [Serializable]
     public class MenuItemValidationArgs
     {
         public bool IsValid

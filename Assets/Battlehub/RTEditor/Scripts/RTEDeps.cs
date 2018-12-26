@@ -13,7 +13,8 @@ namespace Battlehub.RTEditor
         private IRTEAppearance m_rteAppearance;
         private IRuntimeEditor m_rte;
         private IWindowManager m_windowManager;
-        
+        private IGameObjectCmd m_gameObjectCmd;
+
         protected virtual IScenePivot ScenePivot
         {
             get { return FindObjectOfType<RuntimeSelectionComponent>(); }
@@ -84,6 +85,14 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected virtual IGameObjectCmd GameObjectCmd
+        {
+            get
+            {
+                return FindObjectOfType<GameObjectCmd>();
+            }
+        }
+
 
         private void Awake()
         {
@@ -106,6 +115,7 @@ namespace Battlehub.RTEditor
             m_rteAppearance = RTEAppearance;
             m_windowManager = WindowManager;
             m_console = RuntimeConsole;
+            m_gameObjectCmd = GameObjectCmd;
         }
 
         private void OnDestroy()
@@ -157,7 +167,7 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
             IOC.RegisterFallback(() => Instance.m_scenePivot);
             IOC.RegisterFallback(() => Instance.m_windowManager);
-            
+            IOC.RegisterFallback(() => Instance.m_gameObjectCmd);  
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad2;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
+using Battlehub.UIControls.Dialogs;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class AssetLibrarySelectDialog : MonoBehaviour
+    public class AssetLibrarySelectDialog : RuntimeWindow
     {
         [SerializeField]
         private VirtualizingTreeView m_builtInTreeView = null;
@@ -19,16 +19,16 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Sprite AssetLibraryIcon = null;
 
-        private PopupWindow m_parentPopup;
+        private Dialog m_parentDialog;
 
         private IProject m_project;
 
-        public bool IsBuiltInLibrary
+        private bool IsBuiltInLibrary
         {
             get { return m_builtInToggle.isOn; }
         }
 
-        public string SelectedLibrary
+        private string SelectedLibrary
         {
             get
             {
@@ -40,15 +40,15 @@ namespace Battlehub.RTEditor
             }
         }
 
-
+        private IWindowManager m_windowManager;
         private void Start()
         {
-            m_parentPopup = GetComponentInParent<PopupWindow>();
-            if (m_parentPopup != null)
-            {
-                m_parentPopup.OK.AddListener(OnOK);
-            }
-
+            m_parentDialog = GetComponentInParent<Dialog>();
+            m_parentDialog.IsOkVisible = true;
+            m_parentDialog.OkText = "Select";
+            m_parentDialog.IsCancelVisible = true;
+            m_parentDialog.CancelText = "Cancel";
+            m_parentDialog.Ok += OnOk;
             
             if (m_builtInTreeView == null)
             {
@@ -61,6 +61,8 @@ namespace Battlehub.RTEditor
                 Debug.LogError("m_externalTreeView == null");
                 return;
             }
+
+            m_windowManager = IOC.Resolve<IWindowManager>();
 
             m_builtInTreeView.ItemDataBinding += OnItemDataBinding;
             m_builtInTreeView.ItemDoubleClick += OnItemDoubleClick;
@@ -96,13 +98,15 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void OnDestroy()
+        protected override void OnDestroyOverride()
         {
-            if (m_parentPopup != null)
-            {
-                m_parentPopup.OK.RemoveListener(OnOK);
-            }
+            base.OnDestroyOverride();
 
+            if(m_parentDialog != null)
+            {
+                m_parentDialog.Ok -= OnOk;
+            }
+            
             if (m_builtInTreeView != null)
             {
                 m_builtInTreeView.ItemDataBinding -= OnItemDataBinding;
@@ -128,16 +132,26 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            m_parentPopup.Close(true);
+            m_parentDialog.Close(true);
         }
 
-        private void OnOK(PopupWindowArgs args)
+        private void OnOk(Dialog sender, DialogCancelArgs args)
         {
             if (m_builtInTreeView.SelectedItem == null && IsBuiltInLibrary || m_externalTreeView.SelectedItem == null && !IsBuiltInLibrary)
             {
                 args.Cancel = true;
                 return;
             }
+
+            Import(SelectedLibrary, IsBuiltInLibrary);
+        }
+
+        private void Import(string assetLibrary, bool isBuiltIn)
+        {
+            Transform transform = m_windowManager.CreateWindow(RuntimeWindowType.ImportAssets.ToString());
+            AssetLibraryImportDialog assetLibraryImporter = transform.GetComponentInChildren<AssetLibraryImportDialog>();
+            assetLibraryImporter.SelectedLibrary = assetLibrary;
+            assetLibraryImporter.IsBuiltIn = isBuiltIn;
         }
     }
 }

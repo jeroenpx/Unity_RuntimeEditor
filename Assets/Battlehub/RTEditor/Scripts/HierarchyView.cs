@@ -790,21 +790,9 @@ namespace Battlehub.RTEditor
                                 exposeToEditor.Parent = (ExposeToEditor)m_treeView.DropTarget;
                                 prefabInstance.SetActive(true);
 
-                                Editor.Undo.BeginRecord();
-                                Editor.Undo.RecordSelection();
-                                Editor.Undo.BeginRegisterCreateObject(prefabInstance);
-                                Editor.Undo.EndRecord();
-
-                                bool isEnabled = Editor.Undo.Enabled;
-                                Editor.Undo.Enabled = false;
-                                Editor.Selection.activeGameObject = prefabInstance;
-                                Editor.Undo.Enabled = isEnabled;
-
-                                Editor.Undo.BeginRecord();
-                                Editor.Undo.RegisterCreatedObject(prefabInstance);
-                                Editor.Undo.RecordSelection();
-                                Editor.Undo.EndRecord();
-
+                                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                                editor.RegisterCreateObject(prefabInstance);
+                             
                                 m_isSpawningPrefab = false;
                             }
                         });

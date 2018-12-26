@@ -1,25 +1,23 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
-using System;
+using Battlehub.UIControls.Dialogs;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class AssetLibraryImportDialog : MonoBehaviour
+    public class AssetLibraryImportDialog : RuntimeWindow
     {
         [SerializeField]
         private VirtualizingTreeView TreeViewPrefab = null;
         
-        private PopupWindow m_parentPopup;
+        private Dialog m_parentDialog;
         private VirtualizingTreeView m_treeView;
 
         private IProject m_project;
-        private IRTE m_editor;
 
         private bool m_isBuiltIn;
         public bool IsBuiltIn
@@ -33,7 +31,7 @@ namespace Battlehub.RTEditor
             set { m_selectedLibrary = value; }
         }
 
-        public ImportItem[] SelectedAssets
+        private ImportItem[] SelectedAssets
         {
             get
             {
@@ -49,17 +47,20 @@ namespace Battlehub.RTEditor
 
         private IEnumerator m_coCreatePreviews;
 
+        private IWindowManager m_windowManager;
+
         private void Start()
         {
-            m_editor = IOC.Resolve<IRTE>();
-            m_parentPopup = GetComponentInParent<PopupWindow>();
-            
-            if (m_parentPopup != null)
-            {
-                m_parentPopup.OK.AddListener(OnOK);
-                m_parentPopup.Cancel.AddListener(OnCancel);
-            }
+            m_parentDialog = GetComponentInParent<Dialog>();
+            m_parentDialog.IsOkVisible = true;
+            m_parentDialog.OkText = "Import";
+            m_parentDialog.IsCancelVisible = true;
+            m_parentDialog.CancelText = "Cancel";
+            m_parentDialog.Ok += OnOk;
+            m_parentDialog.Cancel += OnCancel;
 
+            m_windowManager = IOC.Resolve<IWindowManager>();
+            
             m_treeView = GetComponentInChildren<VirtualizingTreeView>();
             if (m_treeView == null)
             {
@@ -75,20 +76,18 @@ namespace Battlehub.RTEditor
 
             m_project = IOC.Resolve<IProject>();
 
-            m_editor.IsBusy = true;
-            m_parentPopup.IsContentLoaded = false;
-
+            Editor.IsBusy = true;
+            
             m_project.LoadImportItems(m_selectedLibrary, m_isBuiltIn, (error, root) =>
             {
                 m_root = root;
 
                 if (error.HasError)
                 {
-                    m_parentPopup.IsContentLoaded = true;
-                    m_editor.IsBusy = false;
-                    PopupWindow.Show("Unable to load AssetLibrary", error.ErrorText, "OK", arg =>
+                    Editor.IsBusy = false;
+                    m_windowManager.MessageBox("Unable to load AssetLibrary", error.ErrorText, (sender, arg) =>
                     {
-                        m_parentPopup.Close(false);
+                        m_parentDialog.Close(false);
                     });
                 }
                 else
@@ -97,14 +96,13 @@ namespace Battlehub.RTEditor
                     m_treeView.SelectedItems = root.Flatten(false);
                     ExpandAll(root);
 
-                    m_editor.IsBusy = true;
+                    Editor.IsBusy = true;
                     IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
 
                     m_coCreatePreviews = ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview, () =>
                     {
                         m_project.UnloadImportItems(root);
-                        m_parentPopup.IsContentLoaded = true;
-                        m_editor.IsBusy = false;
+                        Editor.IsBusy = false;
                         m_coCreatePreviews = null;
                     });
 
@@ -126,12 +124,14 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroyOverride()
         {
-            if (m_parentPopup != null)
+            base.OnDestroyOverride();
+        
+            if (m_parentDialog != null)
             {
-                m_parentPopup.OK.RemoveListener(OnOK);
-                m_parentPopup.Cancel.RemoveListener(OnCancel);
+                m_parentDialog.Ok -= OnOk;
+                m_parentDialog.Cancel -= OnCancel;
             }
 
             if (m_treeView != null)
@@ -182,9 +182,10 @@ namespace Battlehub.RTEditor
             e.Children = item.Children;
         }
 
-        private void OnOK(PopupWindowArgs args)
+
+        private void OnOk(Dialog sender, DialogCancelArgs args)
         {
-            if(!m_parentPopup.IsContentLoaded)
+            if (Editor.IsBusy)
             {
                 args.Cancel = true;
                 return;
@@ -194,11 +195,15 @@ namespace Battlehub.RTEditor
                 args.Cancel = true;
                 return;
             }
+
+            Editor.IsBusy = true;
+            m_project.Import(SelectedAssets);
         }
 
-        private void OnCancel(PopupWindowArgs args)
+
+        private void OnCancel(Dialog sender, DialogCancelArgs args)
         {
-            if(m_editor.IsBusy)
+            if (Editor.IsBusy)
             {
                 args.Cancel = true;
                 return;
@@ -210,7 +215,7 @@ namespace Battlehub.RTEditor
                 m_coCreatePreviews = null;
             }
 
-            if(m_treeView.Items != null)
+            if (m_treeView.Items != null)
             {
                 m_project.UnloadImportItems(m_treeView.Items.OfType<ProjectItem>().FirstOrDefault());
             }

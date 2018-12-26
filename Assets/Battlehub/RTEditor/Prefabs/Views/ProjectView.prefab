@@ -118,15 +118,6 @@ MonoBehaviour:
   m_loadingProgressText: {fileID: 0}
   m_projectTree: {fileID: 8756119971012547091}
   m_projectResources: {fileID: 8756119972034287729}
-  m_ddCreate: {fileID: 0}
-  m_btnImport: {fileID: 0}
-  m_btnProjects: {fileID: 0}
-  m_assetLibrarySelectorPrefab: {fileID: 114051337936331774, guid: bcc2d6c74b36cdc409d1bb5c0fdcf813,
-    type: 3}
-  m_assetLibraryImportPrefab: {fileID: 114382788582051668, guid: cd6a994708ac3e0478a75789c8e96fa4,
-    type: 3}
-  m_projectsDialogPrefab: {fileID: 114869526492449876, guid: 3f23c6dd4897cb04c99b825c569749e6,
-    type: 3}
   ProjectName: DefaultProject
   DuplicateKey: 100
   RuntimeModifierKey: 306

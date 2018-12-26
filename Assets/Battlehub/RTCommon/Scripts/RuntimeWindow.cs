@@ -16,8 +16,10 @@ namespace Battlehub.RTCommon
         Inspector = 7,
         Console = 8,
 
-        CreateProject = 50,
         OpenProject = 51,
+        SelectAssetLibrary = 52,
+        ImportAssets = 53,
+        SaveScene = 54,
     }
 
     public class RuntimeWindow : DragDropTarget

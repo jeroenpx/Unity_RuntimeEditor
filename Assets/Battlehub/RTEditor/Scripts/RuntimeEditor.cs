@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls.DockPanels;
+using Battlehub.UIControls.MenuControl;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,14 +14,20 @@ namespace Battlehub.RTEditor
     {
         void CreateWindow(string window);
         void CreateOrActivateWindow(string window);
+
+        void NewScene();
         void SaveScene();
-        void OpenScene();
+
+        void CmdGameObject(string cmd);
+        void RegisterCreateObject(GameObject go);
+        void Close();
     }
 
     [RequireComponent(typeof(RTEObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
         private IProject m_project;
+        
 
         [SerializeField]
         private GameObject m_progressIndicator = null;
@@ -110,6 +117,11 @@ namespace Battlehub.RTEditor
             windowManager.CreateWindow(windowTypeName);
         }
 
+        public virtual void ValidateProjectIsOpened(MenuItemValidationArgs validation)
+        {
+            validation.IsValid = m_project.IsOpened;
+        }
+
         public virtual void CreateOrActivateWindow(string windowTypeName)
         {
             IWindowManager windowManager = IOC.Resolve<IWindowManager>();
@@ -145,41 +157,70 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public virtual void CloseProject()
+        public virtual void NewScene()
         {
-            m_project.CloseProject();
-        }
-
-        public virtual void OpenScene()
-        {
-            IsBusy = true;
-            Selection.objects = null;
-            AssetItem assetItem = m_project.Root.Get("Assets/TestScene" + m_project.GetExt(typeof(Scene))) as AssetItem;
-            if(assetItem != null)
-            {
-                m_project.Load(assetItem, (error, scene) =>
-                {
-                    if(error.HasError)
-                    {
-                        Debug.LogError(error.ToString());
-                    }
-                    Debug.Log("Scene Opened");
-                    IsBusy = false;
-                });
-            }
+            m_project.CreateNewScene();
         }
 
         public virtual void SaveScene()
         {
-            IsBusy = true;
-            
-            m_project.Create(m_project.Root, new byte[0], SceneManager.GetActiveScene(), "TestScene", (error, assetItem) =>
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            if (m_project.LoadedScene == null)
             {
-                Debug.Log("Scene Saved");
-                IsBusy = false;
-            });
+                windowManager.CreateWindow(RuntimeWindowType.SaveScene.ToString());
+            }
+            else
+            {
+                Undo.Purge();
+                IsBusy = true;
+                m_project.Delete(new[] { m_project.LoadedScene }, (deleteError, result) =>
+                {
+                    IsBusy = false;
+                    if (deleteError.HasError)
+                    {
+                        windowManager.MessageBox("Unable to save scene", deleteError.ErrorText);
+                    }
+                    IsBusy = true;
+                    m_project.Create(m_project.Root, new byte[0], SceneManager.GetActiveScene(), m_project.LoadedScene.Name, (error, assetItem) =>
+                    {
+                        m_project.LoadedScene = assetItem;
+
+                        IsBusy = false;
+                        if (error.HasError)
+                        {
+                            windowManager.MessageBox("Unable to save scene", error.ErrorText);
+                        }
+                    });
+                });
+            }
         }
 
+        public void CmdGameObject(string cmd)
+        {
+            IGameObjectCmd goCmd = IOC.Resolve<IGameObjectCmd>();
+            if(goCmd != null)
+            {
+                goCmd.Exec(cmd);
+            }
+        }
+
+        public void RegisterCreateObject(GameObject go)
+        {
+            Undo.BeginRecord();
+            Undo.RecordSelection();
+            Undo.BeginRegisterCreateObject(go);
+            Undo.EndRecord();
+
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.activeGameObject = go;
+            Undo.Enabled = isEnabled;
+
+            Undo.BeginRecord();
+            Undo.RegisterCreatedObject(go);
+            Undo.RecordSelection();
+            Undo.EndRecord();
+        }
 
         public void Close()
         {

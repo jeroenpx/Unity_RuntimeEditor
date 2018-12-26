@@ -72,6 +72,11 @@ namespace Battlehub.Utils
                 MonoBehaviour[] scripts = go.GetComponentsInChildren<MonoBehaviour>(true);
                 for (int i = 0; i < scripts.Length; ++i)
                 {   
+                    if(scripts[i] == null)
+                    {
+                        continue;
+                    }
+
                     if(scripts[i].GetType().FullName.StartsWith("UnityEngine"))
                     {
                         continue;

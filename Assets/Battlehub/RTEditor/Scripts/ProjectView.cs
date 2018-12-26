@@ -22,19 +22,6 @@ namespace Battlehub.RTEditor
         //[SerializeField]
         //private Button m_btnDuplicate = null;
         [SerializeField]
-        private Dropdown m_ddCreate = null;
-        [SerializeField]
-        private Button m_btnImport = null;
-        [SerializeField]
-        private Button m_btnProjects = null;
-        [SerializeField]
-        private AssetLibrarySelectDialog m_assetLibrarySelectorPrefab = null;
-        [SerializeField]
-        private AssetLibraryImportDialog m_assetLibraryImportPrefab = null;
-        [SerializeField]
-        private ProjectsDialog m_projectsDialogPrefab = null;
-        
-        [SerializeField]
         private string ProjectName = "DefaultProject";
 
         public KeyCode DuplicateKey = KeyCode.D;
@@ -94,21 +81,6 @@ namespace Battlehub.RTEditor
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
             }
 
-            if(m_ddCreate != null)
-            {
-                m_ddCreate.onValueChanged.AddListener(OnCreate);
-            }
-
-            if (m_btnImport != null)
-            {
-                m_btnImport.onClick.AddListener(SelectLibrary);
-            }
-
-            if(m_btnProjects != null)
-            {
-                m_btnProjects.onClick.AddListener(ManageProjects);
-            }
-
             m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
             m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
             m_projectResources.ItemDeleted += OnProjectResourcesDeleted;
@@ -166,21 +138,6 @@ namespace Battlehub.RTEditor
                 m_project.MoveCompleted -= OnMoveCompleted;
                 m_project.CreateCompleted -= OnPrefabCreateCompleted;
                 m_project.SaveCompleted -= OnSaveCompleted;
-            }
-
-            if (m_btnImport != null)
-            {
-                m_btnImport.onClick.RemoveListener(SelectLibrary);
-            }
-
-            if(m_ddCreate != null)
-            {
-                m_ddCreate.onValueChanged.RemoveListener(OnCreate);
-            }
-
-            if (m_btnProjects != null)
-            {
-                m_btnProjects.onClick.RemoveListener(ManageProjects);
             }
         }
 
@@ -334,82 +291,9 @@ namespace Battlehub.RTEditor
             m_project.Delete(e.ProjectItems);
         }
 
-        private void OnCreate(int index)
-        {
-            if (m_ddCreate.value != 0)
-            {
-                if (m_ddCreate.value == 1)
-                {
-                    CreateFolder();
-                }
-            }
-
-            m_ddCreate.value = 0;
-        }
-
         private void CreateFolder()
         {
             Debug.LogWarning("CreateFolder");
-        }
-
-        private void SelectLibrary()
-        {
-            AssetLibrarySelectDialog assetLibrarySelector = Instantiate(m_assetLibrarySelectorPrefab);
-            assetLibrarySelector.transform.position = Vector3.zero;
-
-            PopupWindow.Show("Import Asset Library", assetLibrarySelector.transform, "Select",
-                args =>
-                {
-                    Import(assetLibrarySelector.SelectedLibrary, assetLibrarySelector.IsBuiltInLibrary);
-                },
-                "Cancel");
-        }
-
-        private void Import(string assetLibrary, bool isBuiltIn)
-        {
-            AssetLibraryImportDialog assetLibraryImporter = Instantiate(m_assetLibraryImportPrefab);
-            assetLibraryImporter.transform.position = Vector3.zero;
-            assetLibraryImporter.SelectedLibrary = assetLibrary;
-            assetLibraryImporter.IsBuiltIn = isBuiltIn;
-
-            PopupWindow.Show("Select Assets", assetLibraryImporter.transform, "Import",
-                args =>
-                {
-                    Editor.IsBusy = true;
-                    m_project.Import(assetLibraryImporter.SelectedAssets);
-                },
-                "Cancel",
-                args =>
-                {
-                    if(assetLibraryImporter.AssetLibraryRoot != null)
-                    {
-                        m_project.UnloadImportItems(assetLibraryImporter.AssetLibraryRoot);
-                    }
-                    
-                });
-        }
-
-        private void ManageProjects()
-        {
-            ProjectsDialog project = Instantiate(m_projectsDialogPrefab);
-            project.transform.position = Vector3.zero;
-
-            PopupWindow.Show("Projects", project.transform, "Open", 
-                args =>
-                {
-                    ProjectInfo selectedProject = project.SelectedProject;
-                    if (selectedProject == null)
-                    {
-                        args.Cancel = true;
-                    }
-                    else
-                    {
-                        ShowProgress = true;
-                        Editor.IsBusy = true;
-                        m_project.OpenProject(selectedProject.Name);   
-                    }
-                },
-                "Cancel");
         }
     }
 }

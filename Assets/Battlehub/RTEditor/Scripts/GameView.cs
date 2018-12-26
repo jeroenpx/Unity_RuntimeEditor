@@ -73,6 +73,11 @@ namespace Battlehub.RTEditor
                 Camera = gameCamera.Camera;
             }
             UpdateVisualState();
+            if(Editor.IsOpened && gameCamera.Camera != null)
+            {
+                SetCullingMask(gameCamera.Camera);
+                HandleResize();
+            }
         }
 
         private void OnCameraEnabled(GameViewCamera gameCamera)

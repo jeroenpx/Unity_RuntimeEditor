@@ -7,8 +7,6 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         protected KeyCode SaveSceneKey = KeyCode.S;
-        [SerializeField]
-        protected KeyCode OpenSceneKey = KeyCode.O;
 
         private IRuntimeEditor m_editor;
 
@@ -23,11 +21,6 @@ namespace Battlehub.RTEditor
             return Input.GetKeyDown(SaveSceneKey) && Input.GetKey(ModifierKey);
         }
 
-        protected virtual bool OpenSceneAction()
-        {
-            return Input.GetKeyDown(OpenSceneKey) && Input.GetKey(ModifierKey);
-        }
-
         protected override void Update()
         {
             base.Update();
@@ -36,10 +29,6 @@ namespace Battlehub.RTEditor
                 if (SaveSceneAction())
                 {
                     m_editor.SaveScene();
-                }
-                else if (OpenSceneAction())
-                {
-                    m_editor.OpenScene();
                 }
             }
         }
