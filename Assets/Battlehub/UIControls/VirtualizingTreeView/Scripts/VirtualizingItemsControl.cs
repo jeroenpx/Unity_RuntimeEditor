@@ -1437,7 +1437,7 @@ namespace Battlehub.UIControls
 
         public void UpdateContainerSize(VirtualizingItemContainer container)
         {
-            if (container != null)
+            if (container != null && container.LayoutElement != null)
             {
                 if (ExpandChildrenWidth)
                 {

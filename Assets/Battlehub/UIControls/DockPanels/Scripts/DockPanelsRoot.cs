@@ -17,6 +17,9 @@ namespace Battlehub.UIControls.DockPanels
         public event RegionEventHandler RegionCreated;
         public event RegionEventHandler<int> RegionDepthChanged;
         public event RegionEventHandler RegionDestroyed;
+        public event RegionEventHandler RegionEnabled;
+        public event RegionEventHandler RegionDisabled;
+        public event RegionEventHandler<bool> RegionMaximized;
 
         public event RegionEventHandler RegionBeginDrag;
         public event RegionEventHandler RegionDrag;
@@ -136,6 +139,9 @@ namespace Battlehub.UIControls.DockPanels
             Region.Created += OnRegionCreated;
             Region.DepthChanged += OnRegionDepthChanged;
             Region.Destroyed += OnRegionDestroyed;
+            Region.Enabled += OnRegionEnabled;
+            Region.Disabled += OnRegionDisabled;
+            Region.Maximized += OnRegionMaximized;
 
             Region.BeginDrag += OnRegionBeginDrag;
             Region.Drag += OnRegionDrag;
@@ -169,6 +175,9 @@ namespace Battlehub.UIControls.DockPanels
             Region.Created -= OnRegionCreated;
             Region.DepthChanged -= OnRegionDepthChanged;
             Region.Destroyed -= OnRegionDestroyed;
+            Region.Enabled -= OnRegionEnabled;
+            Region.Disabled -= OnRegionDisabled;
+            Region.Maximized -= OnRegionMaximized;
 
             Region.BeginDrag -= OnRegionBeginDrag;
             Region.Drag -= OnRegionDrag;
@@ -327,6 +336,31 @@ namespace Battlehub.UIControls.DockPanels
             if (RegionDestroyed != null)
             {
                 RegionDestroyed(region);
+            }
+        }
+
+        private void OnRegionEnabled(Region region)
+        {
+            if(RegionEnabled != null)
+            {
+                RegionEnabled(region);
+            }
+        }
+
+        private void OnRegionDisabled(Region region)
+        {
+            if(RegionDisabled != null)
+            {
+                RegionDisabled(region);
+            }
+        }
+
+
+        private void OnRegionMaximized(Region region, bool maximized)
+        {
+            if(RegionMaximized != null)
+            {
+                RegionMaximized(region, maximized);
             }
         }
 
@@ -497,6 +531,8 @@ namespace Battlehub.UIControls.DockPanels
             rt.anchoredPosition = rect.position;
             region.Fit();
         }
+
+     
     }
 
 }

@@ -290,21 +290,21 @@ namespace Battlehub.UIControls.Dialogs
 
         private void OnOkClick()
         {
-            if(OkAction != null)
+            if(Ok != null)
             {
                 DialogCancelArgs args = new DialogCancelArgs();
-                OkAction(this, args);
+                Ok(this, args);
 
-                if(args.Cancel)
+                if (args.Cancel)
                 {
                     return;
                 }
             }
 
-            if(Ok != null)
+            if (OkAction != null)
             {
                 DialogCancelArgs args = new DialogCancelArgs();
-                Ok(this, args);
+                OkAction(this, args);
 
                 if (args.Cancel)
                 {
@@ -317,17 +317,6 @@ namespace Battlehub.UIControls.Dialogs
 
         private void OnCancelClick()
         {
-            if(CancelAction != null)
-            {
-                DialogCancelArgs args = new DialogCancelArgs();
-                CancelAction(this, args);
-
-                if (args.Cancel)
-                {
-                    return;
-                }
-            }
-
             if (Cancel != null)
             {
                 DialogCancelArgs args = new DialogCancelArgs();
@@ -338,6 +327,18 @@ namespace Battlehub.UIControls.Dialogs
                     return;
                 }
             }
+
+            if (CancelAction != null)
+            {
+                DialogCancelArgs args = new DialogCancelArgs();
+                CancelAction(this, args);
+
+                if (args.Cancel)
+                {
+                    return;
+                }
+            }
+
 
             Close();
         }     

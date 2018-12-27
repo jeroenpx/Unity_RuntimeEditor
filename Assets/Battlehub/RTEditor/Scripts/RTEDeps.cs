@@ -14,6 +14,7 @@ namespace Battlehub.RTEditor
         private IRuntimeEditor m_rte;
         private IWindowManager m_windowManager;
         private IGameObjectCmd m_gameObjectCmd;
+        private IEditCmd m_editCmd;
 
         protected virtual IScenePivot ScenePivot
         {
@@ -93,6 +94,14 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected virtual IEditCmd EditCmd
+        {
+            get
+            {
+                return FindObjectOfType<EditCmd>();
+            }
+        }
+
 
         private void Awake()
         {
@@ -116,6 +125,7 @@ namespace Battlehub.RTEditor
             m_windowManager = WindowManager;
             m_console = RuntimeConsole;
             m_gameObjectCmd = GameObjectCmd;
+            m_editCmd = EditCmd;
         }
 
         private void OnDestroy()
@@ -167,7 +177,8 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
             IOC.RegisterFallback(() => Instance.m_scenePivot);
             IOC.RegisterFallback(() => Instance.m_windowManager);
-            IOC.RegisterFallback(() => Instance.m_gameObjectCmd);  
+            IOC.RegisterFallback(() => Instance.m_gameObjectCmd);
+            IOC.RegisterFallback(() => Instance.m_editCmd);
         }
     }
 }

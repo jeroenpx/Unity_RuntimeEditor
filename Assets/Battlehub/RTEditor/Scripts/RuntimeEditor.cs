@@ -18,8 +18,14 @@ namespace Battlehub.RTEditor
         void NewScene();
         void SaveScene();
 
+        bool CmdGameObjectValidate(string cmd);
         void CmdGameObject(string cmd);
-        void RegisterCreateObject(GameObject go);
+        bool CmdEditValidate(string cmd);
+        void CmdEdit(string cmd);
+
+        void RegisterCreatedObject(GameObject go);
+        void Duplicate(GameObject[] go);
+        void Delete(GameObject[] go);
         void Close();
     }
 
@@ -117,11 +123,6 @@ namespace Battlehub.RTEditor
             windowManager.CreateWindow(windowTypeName);
         }
 
-        public virtual void ValidateProjectIsOpened(MenuItemValidationArgs validation)
-        {
-            validation.IsValid = m_project.IsOpened;
-        }
-
         public virtual void CreateOrActivateWindow(string windowTypeName)
         {
             IWindowManager windowManager = IOC.Resolve<IWindowManager>();
@@ -195,6 +196,21 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public void CmdGameObjectValidate(MenuItemValidationArgs args)
+        {
+            args.IsValid = CmdGameObjectValidate(args.Command);
+        }
+
+        public bool CmdGameObjectValidate(string cmd)
+        {
+            IGameObjectCmd goCmd = IOC.Resolve<IGameObjectCmd>();
+            if(goCmd != null)
+            {
+                return goCmd.CanExec(cmd);
+            }
+            return false;
+        }
+
         public void CmdGameObject(string cmd)
         {
             IGameObjectCmd goCmd = IOC.Resolve<IGameObjectCmd>();
@@ -204,7 +220,31 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void RegisterCreateObject(GameObject go)
+        public void CmdEditValidate(MenuItemValidationArgs args)
+        {
+            args.IsValid = CmdEditValidate(args.Command);
+        }
+
+        public bool CmdEditValidate(string cmd)
+        {
+            IEditCmd editCmd = IOC.Resolve<IEditCmd>();
+            if (editCmd != null)
+            {
+                return editCmd.CanExec(cmd);
+            }
+            return false;
+        }
+
+        public void CmdEdit(string cmd)
+        {
+            IEditCmd editCmd = IOC.Resolve<IEditCmd>();
+            if(editCmd != null)
+            {
+                editCmd.Exec(cmd);
+            }
+        }
+
+        public void RegisterCreatedObject(GameObject go)
         {
             Undo.BeginRecord();
             Undo.RecordSelection();
@@ -221,6 +261,120 @@ namespace Battlehub.RTEditor
             Undo.RecordSelection();
             Undo.EndRecord();
         }
+
+        public void Duplicate(GameObject[] gameObjects)
+        {
+            if (gameObjects == null || gameObjects.Length == 0)
+            {
+                return;
+            }
+
+            if(!Undo.Enabled)
+            {
+                for (int i = 0; i < gameObjects.Length; ++i)
+                {
+                    GameObject go = gameObjects[i];
+                    if(go != null)
+                    {
+                        Instantiate(go, go.transform.position, go.transform.rotation);
+                    }
+                }
+                return;
+            }
+
+            Undo.BeginRecord();
+            GameObject[] duplicates = new GameObject[gameObjects.Length];
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                if (go == null)
+                {
+                    continue;
+                }
+                GameObject duplicate = Instantiate(go, go.transform.position, go.transform.rotation);
+
+                duplicate.SetActive(true);
+                duplicate.SetActive(go.activeSelf);
+                if (go.transform.parent != null)
+                {
+                    duplicate.transform.SetParent(go.transform.parent, true);
+                }
+
+                duplicates[i] = duplicate;
+                Undo.BeginRegisterCreateObject(duplicate);
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.objects = duplicates;
+            Undo.Enabled = isEnabled;
+
+            Undo.BeginRecord();
+            for (int i = 0; i < duplicates.Length; ++i)
+            {
+                GameObject selectedObj = duplicates[i];
+                if (selectedObj != null)
+                {
+                    Undo.RegisterCreatedObject(selectedObj);
+                }
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+        }
+
+        public void Delete(GameObject[] gameObjects)
+        {
+            if (gameObjects == null || gameObjects.Length == 0)
+            {
+                return;
+            }
+
+            if(!Undo.Enabled)
+            {
+                for(int i = 0; i < gameObjects.Length; ++i)
+                {
+                    GameObject go = gameObjects[i];
+                    if(go != null)
+                    {
+                        Destroy(go);
+                    }
+                }
+                return;
+            }
+
+            Undo.BeginRecord();
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                if (go != null)
+                {
+                    Undo.BeginDestroyObject(go);
+                }
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.objects = null;
+            Undo.Enabled = isEnabled;
+
+            Undo.BeginRecord();
+
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                if (go != null)
+                {
+                    Undo.DestroyObject(go);
+                }
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+        }
+
 
         public void Close()
         {

@@ -15,16 +15,30 @@ namespace Battlehub.UIControls.MenuControl
             set;
         }
 
-        public MenuItemValidationArgs()
+        public string Command
+        {
+            get;
+            private set;
+        }
+
+        public MenuItemValidationArgs(string command)
         {
             IsValid = true;
+            Command = command;
         }
     }
+
 
     [Serializable]
     public class MenuItemValidationEvent : UnityEvent<MenuItemValidationArgs>
     {
     }
+
+    [Serializable]
+    public class MenuItemEvent : UnityEvent<string>
+    {
+    }
+
 
     [Serializable]
     public class MenuItemInfo
@@ -33,10 +47,10 @@ namespace Battlehub.UIControls.MenuControl
         public string Text;
         public Sprite Icon;
 
-        public UnityEvent Action;
+        public string Command;
+        public MenuItemEvent Action;
         public MenuItemValidationEvent Validate;
     }
-
 
 
     public class Menu : MonoBehaviour

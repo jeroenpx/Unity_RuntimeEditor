@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.Battlehub.SL2;
+using Battlehub.SL2;
 using UnityEngine.Events.Battlehub.SL2;
 using UnityEngine.Events;
 
@@ -66,7 +67,8 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1030, typeof(PersistentCollider));
             model.Add(typeof(PersistentFlare), true);
             model.Add(typeof(PersistentMonoBehaviour), true)
-                .AddSubType(1026, typeof(PersistentExposeToEditor));
+                .AddSubType(1026, typeof(PersistentExposeToEditor))
+                .AddSubType(1027, typeof(PersistentTestBehaviour));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
             model.Add(typeof(PersistentShader), true);
@@ -79,6 +81,7 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1025, typeof(PersistentRuntimeScene));
             model.Add(typeof(PersistentRuntimeScene), true);
             model.Add(typeof(PersistentExposeToEditor), true);
+            model.Add(typeof(PersistentTestBehaviour), true);
             model.Add(typeof(Vector2), false).SetSurrogate(typeof(PersistentVector2));
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
             model.Add(typeof(Vector4), false).SetSurrogate(typeof(PersistentVector4));
@@ -105,6 +108,7 @@ namespace UnityEngine.Rendering.Battlehub.SL2 {}
 namespace UnityEngine.SceneManagement.Battlehub.SL2 {}
 namespace Battlehub.RTSaveLoad2.Battlehub.SL2 {}
 namespace Battlehub.RTCommon.Battlehub.SL2 {}
+namespace Battlehub.SL2 {}
 namespace UnityEngine.Events.Battlehub.SL2 {}
 
 

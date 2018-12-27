@@ -20,6 +20,10 @@ namespace Battlehub.RTCommon
         SelectAssetLibrary = 52,
         ImportAssets = 53,
         SaveScene = 54,
+        About = 55,
+
+        SelectObject = 101,
+        SelectColor = 102,
     }
 
     public class RuntimeWindow : DragDropTarget

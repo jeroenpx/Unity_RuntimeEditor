@@ -44,7 +44,7 @@ namespace Battlehub.RTEditor
 				{ typeof(UnityEngine.Transform), new EditorDescriptor(19, true, false) },
 				{ typeof(Battlehub.Cubeman.CubemanCharacter), new EditorDescriptor(17, true, false) },
 				{ typeof(Battlehub.Cubeman.CubemanUserControl), new EditorDescriptor(17, true, false) },
-				//{ typeof(Battlehub.RTEditor.Ev4D_ObjectInfos), new EditorDescriptor(17, false, false) },
+				{ typeof(TestBehaviour), new EditorDescriptor(17, true, false) },
 			};
 		}
 	}

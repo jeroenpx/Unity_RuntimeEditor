@@ -6,6 +6,7 @@ namespace Battlehub.RTEditor
 {
     public interface IGameObjectCmd
     {
+        bool CanExec(string cmd);
         void Exec(string cmd);
     }
 
@@ -40,6 +41,11 @@ namespace Battlehub.RTEditor
         private void Awake()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();   
+        }
+
+        public bool CanExec(string cmd)
+        {
+            return true;
         }
 
         public void Exec(string cmd)
@@ -122,7 +128,7 @@ namespace Battlehub.RTEditor
                 go.transform.position = pivot;
                 go.AddComponent<ExposeToEditor>();
                 go.SetActive(true);
-                m_editor.RegisterCreateObject(go);
+                m_editor.RegisterCreatedObject(go);
             }
             
         }

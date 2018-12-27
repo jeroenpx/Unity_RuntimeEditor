@@ -127,12 +127,17 @@ namespace Battlehub.RTSaveLoad2.Interface
             Parent.Children.Insert(index, this);
         }
 
-        public ProjectItem[] Flatten(bool excludeFolders)
+        public ProjectItem[] Flatten(bool excludeFolders, bool excludeAssets = false)
         {
             List<ProjectItem> items = new List<ProjectItem>();
             Foreach(this, projectItem =>
             {
                 if (excludeFolders && projectItem.IsFolder)
+                {
+                    return;
+                }
+
+                if(excludeAssets && !projectItem.IsFolder)
                 {
                     return;
                 }

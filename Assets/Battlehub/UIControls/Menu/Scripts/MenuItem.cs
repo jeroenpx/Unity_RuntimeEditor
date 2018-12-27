@@ -150,7 +150,7 @@ namespace Battlehub.UIControls.MenuControl
                 return true;
             }
 
-            MenuItemValidationArgs args = new MenuItemValidationArgs();
+            MenuItemValidationArgs args = new MenuItemValidationArgs(m_item.Command);
             m_item.Validate.Invoke(args);
             return args.IsValid;
         }
@@ -166,7 +166,7 @@ namespace Battlehub.UIControls.MenuControl
             {
                 if (m_item.Action != null)
                 {
-                    m_item.Action.Invoke();
+                    m_item.Action.Invoke(m_item.Command);
                 }
 
                 if(this != null)

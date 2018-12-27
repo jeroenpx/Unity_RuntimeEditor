@@ -21,6 +21,12 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
         Transform CreateWindow(string windowTypeName);
+        Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
+             float minWidth = 150,
+             float minHeight = 150,
+             float preferredWidth = 700,
+             float preferredHeight = 400,
+             bool canResize = true);
 
         void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null);
         void MessageBox(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok = null);
@@ -83,10 +89,19 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_openProjectDialog = null;
 
         [SerializeField]
-        private WindowDescriptor m_selectAssetLibrary = null;
+        private WindowDescriptor m_selectAssetLibraryDialog = null;
 
         [SerializeField]
-        private WindowDescriptor m_importAssets = null;
+        private WindowDescriptor m_importAssetsDialog = null;
+
+        [SerializeField]
+        private WindowDescriptor m_aboutDialog = null;
+
+        [SerializeField]
+        private WindowDescriptor m_selectObjectDialog = null;
+
+        [SerializeField]
+        private WindowDescriptor m_selectColorDialog = null;
 
         [SerializeField]
         private DockPanelsRoot m_dockPanels = null;
@@ -117,6 +132,9 @@ namespace Battlehub.RTEditor
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
             m_dockPanels.RegionSelected += OnRegionSelected;
             m_dockPanels.RegionUnselected += OnRegionUnselected;
+            m_dockPanels.RegionEnabled += OnRegionEnabled;
+            m_dockPanels.RegionDisabled += OnRegionDisabled;
+            m_dockPanels.RegionMaximized += OnRegionMaximized;
 
             m_dialogManager.DialogDestroyed += OnDialogDestroyed;
 
@@ -140,6 +158,9 @@ namespace Battlehub.RTEditor
                 m_dockPanels.RegionDepthChanged -= OnRegionDepthChanged;
                 m_dockPanels.RegionSelected -= OnRegionSelected;
                 m_dockPanels.RegionUnselected -= OnRegionUnselected;
+                m_dockPanels.RegionEnabled -= OnRegionEnabled;
+                m_dockPanels.RegionDisabled -= OnRegionDisabled;
+                m_dockPanels.RegionMaximized -= OnRegionMaximized;
             }
 
             if(m_dialogManager != null)
@@ -208,6 +229,54 @@ namespace Battlehub.RTEditor
             OnContentDestroyed(content);
         }
 
+
+        private void OnRegionDisabled(Region region)
+        {
+            if(region.ActiveContent != null)
+            {
+                List<Transform> extraComponents;
+                if (m_extraComponents.TryGetValue(region.ActiveContent, out extraComponents))
+                {
+                    for (int i = 0; i < extraComponents.Count; ++i)
+                    {
+                        Transform extraComponent = extraComponents[i];
+                        if (extraComponent)
+                        {
+                            extraComponent.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnRegionEnabled(Region region)
+        {
+            if(region.ActiveContent != null)
+            {
+                List<Transform> extraComponents;
+                if (m_extraComponents.TryGetValue(region.ActiveContent, out extraComponents))
+                {
+                    for (int i = 0; i < extraComponents.Count; ++i)
+                    {
+                        Transform extraComponent = extraComponents[i];
+                        extraComponent.gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
+
+        private void OnRegionMaximized(Region region, bool maximized)
+        {
+            if(!maximized)
+            {
+                RuntimeWindow[] windows = m_dockPanels.RootRegion.GetComponentsInChildren<RuntimeWindow>();
+                for(int i = 0; i < windows.Length; ++i)
+                {
+                    windows[i].HandleResize();
+                }
+            }
+        }
+
         private void OnContentDestroyed(Transform content)
         {
             string windowTypeName = m_windows.Where(kvp => kvp.Value.Contains(content)).Select(kvp => kvp.Key).FirstOrDefault();
@@ -265,11 +334,23 @@ namespace Battlehub.RTEditor
                 }
                 else if(windowTypeName == RuntimeWindowType.SelectAssetLibrary.ToString().ToLower())
                 {
-                    wd = m_selectAssetLibrary;
+                    wd = m_selectAssetLibraryDialog;
                 }
                 else if(windowTypeName == RuntimeWindowType.ImportAssets.ToString().ToLower())
                 {
-                    wd = m_importAssets;
+                    wd = m_importAssetsDialog;
+                }
+                else if(windowTypeName == RuntimeWindowType.About.ToString().ToLower())
+                {
+                    wd = m_aboutDialog;
+                }
+                else if(windowTypeName == RuntimeWindowType.SelectObject.ToString().ToLower())
+                {
+                    wd = m_selectObjectDialog;
+                }
+                else if(windowTypeName == RuntimeWindowType.SelectColor.ToString().ToLower())
+                {
+                    wd = m_selectColorDialog;
                 }
 
                 wd.Created--;
@@ -442,6 +523,43 @@ namespace Battlehub.RTEditor
             return window;
         }
 
+        public Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
+             float minWidth = 150,
+             float minHeight = 150,
+             float preferredWidth = 700,
+             float preferredHeight = 400,
+             bool canResize = true)
+        {
+            WindowDescriptor wd;
+            GameObject content;
+            bool isDialog;
+
+            Transform window = CreateWindow(windowTypeName, out wd, out content, out isDialog);
+            if (!window)
+            {
+                return window;
+            }
+
+            if (isDialog)
+            {
+                if(header == null)
+                {
+                    header = wd.Header;
+                }
+                Dialog dialog = m_dialogManager.ShowDialog(wd.Icon, header, content.transform, okAction, "OK", cancelAction, "Cancel", minWidth, minHeight, preferredWidth, preferredHeight, canResize);
+                dialog.IsCancelVisible = false;
+                dialog.IsOkVisible = false;
+            }
+            else
+            {
+                throw new ArgumentException(windowTypeName + " is not a dialog");
+            }
+
+            ActivateContent(wd, content);
+
+            return window;
+        }
+
         private Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)
         {
             if (m_dockPanels == null)
@@ -491,12 +609,27 @@ namespace Battlehub.RTEditor
             }
             else if(windowTypeName == RuntimeWindowType.SelectAssetLibrary.ToString().ToLower())
             {
-                wd = m_selectAssetLibrary;
+                wd = m_selectAssetLibraryDialog;
                 isDialog = true;
             }
             else if(windowTypeName == RuntimeWindowType.ImportAssets.ToString().ToLower())
             {
-                wd = m_importAssets;
+                wd = m_importAssetsDialog;
+                isDialog = true;
+            }
+            else if(windowTypeName == RuntimeWindowType.About.ToString().ToLower())
+            {
+                wd = m_aboutDialog;
+                isDialog = true;
+            }
+            else if(windowTypeName == RuntimeWindowType.SelectObject.ToString().ToLower())
+            {
+                wd = m_selectObjectDialog;
+                isDialog = true;
+            }
+            else if(windowTypeName == RuntimeWindowType.SelectColor.ToString().ToLower())
+            {
+                wd = m_selectColorDialog;
                 isDialog = true;
             }
 

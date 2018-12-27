@@ -1,4 +1,5 @@
 ﻿using System;
+using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,11 +16,6 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private Button BtnSelect = null;
-
-        [SerializeField]
-        private SelectColorDialog ColorSelectorPrefab = null;
-
-        private SelectColorDialog m_colorSelector;
 
         protected override void SetInputField(Color value)
         {
@@ -47,20 +43,18 @@ namespace Battlehub.RTEditor
 
         private void OnSelect()
         {
-            m_colorSelector = Instantiate(ColorSelectorPrefab);
-            m_colorSelector.transform.position = Vector3.zero;
-            m_colorSelector.SelectedColor = GetValue();
-
-            PopupWindow.Show("Select " + MemberInfoType.Name, m_colorSelector.transform, "Select",
-                args =>
+            SelectColorDialog colorSelector = null;
+            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialog(RuntimeWindowType.SelectColor.ToString(), "Select " + MemberInfoType.Name,
+                (sender, args) =>
                 {
-                    SetValue(m_colorSelector.SelectedColor);
+                    SetValue(colorSelector.SelectedColor);
                     EndEdit();
-                    SetInputField(m_colorSelector.SelectedColor);
-                },
-                "Cancel", no => { }, 260);
-        }
+                    SetInputField(colorSelector.SelectedColor);
+                }, (sender, args) => { }, 200, 450, 200, 450, false);
 
+            colorSelector = dialogTransform.GetComponentInChildren<SelectColorDialog>();
+            colorSelector.SelectedColor = GetValue();
+        }
     }
 
 }

@@ -16,6 +16,7 @@ namespace Battlehub.RTEditor
         public event EventHandler<ProjectTreeEventArgs> ItemDeleted;
         public event EventHandler<ProjectTreeEventArgs> ItemDoubleClick;
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
+        public event EventHandler<ProjectTreeEventArgs> SelectionChanged;
 
         private IProject m_project;
 
@@ -234,6 +235,7 @@ namespace Battlehub.RTEditor
             m_listBox.ItemDoubleClick += OnItemDoubleClick;
             m_listBox.ItemBeginEdit += OnItemBeginEdit;
             m_listBox.ItemEndEdit += OnItemEndEdit;
+            m_listBox.SelectionChanged += OnSelectionChanged;
         }
 
         protected override void OnDestroyOverride()
@@ -254,6 +256,7 @@ namespace Battlehub.RTEditor
                 m_listBox.ItemDoubleClick -= OnItemDoubleClick;
                 m_listBox.ItemBeginEdit -= OnItemBeginEdit;
                 m_listBox.ItemEndEdit -= OnItemEndEdit;
+                m_listBox.SelectionChanged -= OnSelectionChanged;
             }
         }
 
@@ -426,6 +429,15 @@ namespace Battlehub.RTEditor
             if (EventSystem.current != null && !EventSystem.current.alreadySelecting)
             {
                 EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedArgs e)
+        {
+            if(SelectionChanged != null)
+            {
+                ProjectItem[] selectedItems = e.NewItems == null ? new ProjectItem[0] : e.NewItems.OfType<ProjectItem>().ToArray();
+                SelectionChanged(this, new ProjectTreeEventArgs(selectedItems));
             }
         }
     }

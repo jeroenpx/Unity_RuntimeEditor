@@ -54,6 +54,37 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private Dictionary<Camera, bool> m_wasCameraActive;
+        protected virtual void OnEnable()
+        {
+            if(m_wasCameraActive != null)
+            {
+                for (int i = 0; i < m_gameCameras.Count; ++i)
+                {
+                    GameViewCamera gameCamera = m_gameCameras[i];
+                    if (gameCamera.Camera != null && m_wasCameraActive.ContainsKey(gameCamera.Camera))
+                    {
+                        gameCamera.Camera.gameObject.SetActive(m_wasCameraActive[gameCamera.Camera]);
+                    }
+                }
+                m_wasCameraActive = null;
+            }
+        }
+
+        protected virtual void OnDisable()
+        {
+            m_wasCameraActive = new Dictionary<Camera, bool>();
+            for (int i = 0; i < m_gameCameras.Count; ++i)
+            {
+                GameViewCamera gameCamera = m_gameCameras[i];
+                if (gameCamera.Camera != null)
+                {
+                    m_wasCameraActive.Add(gameCamera.Camera, gameCamera.Camera.gameObject.activeSelf);
+                    gameCamera.Camera.gameObject.SetActive(false);
+                }
+            }
+        }
+
         public override void SetCameraDepth(int depth)
         {
             base.SetCameraDepth(depth);

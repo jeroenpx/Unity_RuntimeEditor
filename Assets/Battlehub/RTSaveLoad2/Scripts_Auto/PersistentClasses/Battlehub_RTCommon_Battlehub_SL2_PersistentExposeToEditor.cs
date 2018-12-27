@@ -37,7 +37,7 @@ namespace Battlehub.RTCommon.Battlehub.SL2
         [ProtoMember(263)]
         public bool AddColliders;
 
-        [ProtoMember(269)]
+        [ProtoMember(267)]
         public long[] Colliders;
 
         protected override void ReadFromImpl(object obj)

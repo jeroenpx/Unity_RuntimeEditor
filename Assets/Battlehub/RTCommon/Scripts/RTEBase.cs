@@ -171,6 +171,7 @@ namespace Battlehub.RTCommon
         private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4);
         [SerializeField]
         private bool m_useBuiltinUndo = true;
+        
         [SerializeField]
         private bool m_enableVRIfAvailable = false;
 

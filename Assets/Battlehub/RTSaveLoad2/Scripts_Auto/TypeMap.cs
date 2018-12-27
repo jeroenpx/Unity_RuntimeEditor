@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.Battlehub.SL2;
+using Battlehub.SL2;
 using UnityEngine.Events.Battlehub.SL2;
 using UnityEngine.Events;
 
@@ -195,6 +196,12 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(ExposeToEditor), new System.Guid("34740418-83eb-4b3a-931a-07bee88d81db"));
             m_toType.Add(new System.Guid("0b046b2c-5763-4525-bac0-cc07da016cdd"), typeof(PersistentExposeToEditor));
             m_toType.Add(new System.Guid("34740418-83eb-4b3a-931a-07bee88d81db"), typeof(ExposeToEditor));
+            m_toPeristentType.Add(typeof(TestBehaviour), typeof(PersistentTestBehaviour));
+            m_toUnityType.Add(typeof(PersistentTestBehaviour), typeof(TestBehaviour));
+            m_toGuid.Add(typeof(PersistentTestBehaviour), new System.Guid("5bcdd03c-fc23-4e01-9903-0d355ca29362"));
+            m_toGuid.Add(typeof(TestBehaviour), new System.Guid("f46a99bc-ec67-4d03-b7d9-f356c9dc32b6"));
+            m_toType.Add(new System.Guid("5bcdd03c-fc23-4e01-9903-0d355ca29362"), typeof(PersistentTestBehaviour));
+            m_toType.Add(new System.Guid("f46a99bc-ec67-4d03-b7d9-f356c9dc32b6"), typeof(TestBehaviour));
             m_toPeristentType.Add(typeof(Vector2), typeof(PersistentVector2));
             m_toUnityType.Add(typeof(PersistentVector2), typeof(Vector2));
             m_toGuid.Add(typeof(PersistentVector2), new System.Guid("5ba3ff6b-8b6a-4184-8949-663c95d9c896"));

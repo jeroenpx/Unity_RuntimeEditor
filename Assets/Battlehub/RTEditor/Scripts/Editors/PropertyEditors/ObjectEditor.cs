@@ -15,11 +15,6 @@ namespace Battlehub.RTEditor
         private InputField Input = null;
         [SerializeField]
         private Button BtnSelect = null;
-        [SerializeField]
-        private SelectObjectDialog ObjectSelectorPrefab = null;
-
-        private SelectObjectDialog m_objectSelector;
-
         protected override void SetInputField(UnityObject value)
         {
             if (value != null)
@@ -55,27 +50,25 @@ namespace Battlehub.RTEditor
 
         private void OnSelect()
         {
-            m_objectSelector = Instantiate(ObjectSelectorPrefab);
-            m_objectSelector.transform.position = Vector3.zero;
-            m_objectSelector.ObjectType = MemberInfoType;
-
-            PopupWindow.Show("Select " + MemberInfoType.Name, m_objectSelector.transform, "Select",
-                args =>
-                {
-                    if(m_objectSelector.IsNoneSelected)
-                    {
-                        SetValue(null);
-                        EndEdit();
-                        SetInputField(null);
-                    }
-                    else
-                    {
-                        SetValue(m_objectSelector.SelectedObject);
-                        EndEdit();
-                        SetInputField(m_objectSelector.SelectedObject);
-                    }
-                },
-                "Cancel");
+            SelectObjectDialog objectSelector = null;
+            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialog(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
+                 (sender, args) =>
+                 {
+                     if (objectSelector.IsNoneSelected)
+                     {
+                         SetValue(null);
+                         EndEdit();
+                         SetInputField(null);
+                     }
+                     else
+                     {
+                         SetValue(objectSelector.SelectedObject);
+                         EndEdit();
+                         SetInputField(objectSelector.SelectedObject);
+                     }
+                 });
+            objectSelector = dialogTransform.GetComponentInChildren<SelectObjectDialog>();
+            objectSelector.ObjectType = MemberInfoType;
         }
 
 

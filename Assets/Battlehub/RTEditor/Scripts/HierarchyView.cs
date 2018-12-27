@@ -791,7 +791,7 @@ namespace Battlehub.RTEditor
                                 prefabInstance.SetActive(true);
 
                                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
-                                editor.RegisterCreateObject(prefabInstance);
+                                editor.RegisterCreatedObject(prefabInstance);
                              
                                 m_isSpawningPrefab = false;
                             }
