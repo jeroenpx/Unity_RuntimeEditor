@@ -247,7 +247,8 @@ namespace Battlehub.UIControls
                 {
                     return 0;
                 }
-                return Mathf.FloorToInt(Size / ContainerSize) * ContainersPerGroup;
+                //return Mathf.FloorToInt(Size / ContainerSize) * ContainersPerGroup;
+                return Mathf.RoundToInt(Size / ContainerSize) * ContainersPerGroup;
             }
         }
 
@@ -447,7 +448,8 @@ namespace Battlehub.UIControls
 
                     if(horizontalScrollbarVisibility == ScrollbarVisibility.Permanent)
                     {
-                        ContainersPerGroup = Mathf.FloorToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
+                        //ContainersPerGroup = Mathf.FloorToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
+                        ContainersPerGroup = Mathf.RoundToInt(parent.rect.width / Mathf.Max(0.00001f, m_gridLayoutGroup.cellSize.x + m_gridSpacing.x));
                     }
                     else
                     {

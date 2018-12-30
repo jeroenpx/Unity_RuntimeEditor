@@ -212,7 +212,8 @@ namespace Battlehub.RTEditor
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
             if (m_listBox == null)
             {
-                m_listBox = Instantiate(ListBoxPrefab).GetComponent<VirtualizingTreeView>();
+                m_listBox = Instantiate(ListBoxPrefab, transform).GetComponent<VirtualizingTreeView>();
+                m_listBox.name = "AssetsListBox";
                 m_listBox.CanDrag = true;
                 m_listBox.CanReorder = false;
                 //m_listBox.MultiselectKey = KeyCode.None;
@@ -220,7 +221,6 @@ namespace Battlehub.RTEditor
                 //m_listBox.RemoveKey = KeyCode.None;
 
                 m_listBox.CanRemove = false;
-                m_listBox.transform.SetParent(transform, false);
             }
 
             m_listBox.ItemDataBinding += OnItemDataBinding;

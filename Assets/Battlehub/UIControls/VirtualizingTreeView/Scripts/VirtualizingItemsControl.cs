@@ -646,7 +646,12 @@ namespace Battlehub.UIControls
 
             if (Camera == null)
             {
-                Camera = Camera.main;
+                Canvas canvas = GetComponentInParent<Canvas>();
+                if(canvas != null)
+                {
+                    Camera = canvas.worldCamera;
+                }
+                
             }
 
             m_prevCanDrag = CanDrag;

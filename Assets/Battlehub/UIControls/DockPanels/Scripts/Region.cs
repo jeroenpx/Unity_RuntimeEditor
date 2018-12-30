@@ -66,7 +66,7 @@ namespace Battlehub.UIControls.DockPanels
         public static event RegionEventHandler<bool> Maximized;
 
         [SerializeField]
-        private Toggle m_maximizeToggle;
+        private Toggle m_maximizeToggle = null;
         private bool IsMaximized
         {
             get { return m_maximizeToggle == null ? false : m_maximizeToggle.isOn; }
@@ -1616,7 +1616,10 @@ namespace Battlehub.UIControls.DockPanels
 
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
-            eventData.useDragThreshold = false;
+            if(GetDragRegion() != null)
+            {
+                eventData.useDragThreshold = false;
+            }
         }
 
         private bool m_isDragging;
@@ -1676,7 +1679,6 @@ namespace Battlehub.UIControls.DockPanels
         {
             if(m_dragRegion == null)
             {
-                Debug.LogWarning("m_dragRegion == null");
                 return;
             }
 

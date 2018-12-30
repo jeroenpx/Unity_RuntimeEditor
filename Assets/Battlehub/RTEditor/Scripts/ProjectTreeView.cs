@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.RTSaveLoad2.Interface;
-using System.Collections.Generic;
 using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
@@ -279,14 +278,15 @@ namespace Battlehub.RTEditor
 
             m_project = IOC.Resolve<IProject>();
            
-            m_treeView = Instantiate(TreeViewPrefab).GetComponent<VirtualizingTreeView>();
+            m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
+            m_treeView.name = "ProjectTreeView";
+
             m_treeView.CanReorder = false;
             m_treeView.CanReparent = ShowRootFolder;
             m_treeView.CanUnselectAll = false;
             m_treeView.CanDrag = ShowRootFolder;
             m_treeView.CanRemove = false;
-
-            m_treeView.transform.SetParent(transform, false);
+            
             m_treeView.SelectionChanged += OnSelectionChanged;
             m_treeView.ItemDataBinding += OnItemDataBinding;
             m_treeView.ItemExpanding += OnItemExpanding;

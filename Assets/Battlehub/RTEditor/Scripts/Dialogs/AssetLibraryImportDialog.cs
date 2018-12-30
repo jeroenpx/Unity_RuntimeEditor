@@ -64,8 +64,8 @@ namespace Battlehub.RTEditor
             m_treeView = GetComponentInChildren<VirtualizingTreeView>();
             if (m_treeView == null)
             {
-                m_treeView = Instantiate(TreeViewPrefab);
-                m_treeView.transform.SetParent(transform, false);
+                m_treeView = Instantiate(TreeViewPrefab, transform);
+                m_treeView.name = "ImportAssetsTreeView";
             }
 
             m_treeView.ItemDataBinding += OnItemDataBinding;

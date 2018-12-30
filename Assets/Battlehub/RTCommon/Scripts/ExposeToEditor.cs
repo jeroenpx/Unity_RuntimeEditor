@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Battlehub.Utils;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace Battlehub.RTCommon
 {
@@ -178,10 +179,11 @@ namespace Battlehub.RTCommon
         {
             if (Parent != null)
             {
-                int index = Parent.m_children.IndexOf(this);
-                if (index < Parent.m_children.Count - 1)
+                ExposeToEditor[] children = Parent.GetChildren();
+                int index = Array.IndexOf(children, this);
+                if (index < children.Length - 1)
                 {
-                    return Parent.m_children[index - 1];
+                    return children[index + 1];
                 }
                 return null;
             }

@@ -17,12 +17,12 @@ namespace Battlehub.RTCommon
             set;
         }
 
-        float GetAxis(InputAxis axis);
+        bool IsAnyKeyDown();
 
+        float GetAxis(InputAxis axis);
         bool GetKeyDown(KeyCode key);
         bool GetKeyUp(KeyCode key);
         bool GetKey(KeyCode key);
-
         
         Vector3 GetPointerXY(int pointer);
 
@@ -76,6 +76,11 @@ namespace Battlehub.RTCommon
         {
             get { return m_multitouchEmulator; }
             set { m_multitouchEmulator = value; }
+        }
+
+        public virtual bool IsAnyKeyDown()
+        {
+            return Input.anyKeyDown;
         }
 
         public virtual bool GetKeyDown(KeyCode key)
@@ -149,7 +154,6 @@ namespace Battlehub.RTCommon
                 return m_multitouchEmulator.IsTouchUp(index);
             }
 #endif
-
             return Input.GetMouseButtonUp(index);
         }
 

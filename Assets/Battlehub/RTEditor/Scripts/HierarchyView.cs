@@ -52,8 +52,9 @@ namespace Battlehub.RTEditor
 
             m_project = IOC.Resolve<IProject>();
 
-            m_treeView = Instantiate(TreeViewPrefab).GetComponent<VirtualizingTreeView>();
-            m_treeView.transform.SetParent(transform, false);
+            m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
+            m_treeView.name = "HierarchyTreeView";
+
             RectTransform rt = (RectTransform)m_treeView.transform;
             rt.Stretch();
                         
@@ -137,6 +138,7 @@ namespace Battlehub.RTEditor
 
             if(m_project != null)
             {
+                
               //  m_project.SceneLoading -= OnSceneLoading;
                // m_project.SceneLoaded -= OnSceneLoaded;
                // m_project.SceneCreated -= OnSceneCreated;
@@ -310,6 +312,11 @@ namespace Battlehub.RTEditor
 
         private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
         {
+            if(Editor.ActiveWindow == this)
+            {
+                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                editor.Delete(e.Items.OfType<ExposeToEditor>().Select(exposed => exposed.gameObject).ToArray());
+            }
             //Removal handled in RuntimeEditor class
         }
 
@@ -403,9 +410,10 @@ namespace Battlehub.RTEditor
                 Editor.Undo.BeginRecord();
                 for (int i = 0; i < e.DragItems.Length; ++i)
                 {
-                    Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
+                    ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                    Transform dragT = exposed.transform;
                     Editor.Undo.RecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
-                    Editor.Undo.RecordObject(dragT.gameObject, m_treeView.IndexOf(dragT.gameObject), RestoreIndexFromUndoRecord);
+                    Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
                 }
                 Editor.Undo.EndRecord();
             }
@@ -425,12 +433,13 @@ namespace Battlehub.RTEditor
                     Editor.Undo.BeginRecord();
                     for (int i = 0; i < e.DragItems.Length; ++i)
                     {
-                        Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
+                        ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                        Transform dragT = exposed.transform;
                         dragT.SetParent(dropT, true);
                         dragT.SetAsLastSibling();
 
                         Editor.Undo.RecordTransform(dragT, dropT, dragT.GetSiblingIndex());
-                        Editor.Undo.RecordObject(dragT.gameObject, m_treeView.IndexOf(dragT.gameObject), RestoreIndexFromUndoRecord);
+                        Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
                     }
                     Editor.Undo.EndRecord();
                 }
@@ -439,7 +448,8 @@ namespace Battlehub.RTEditor
                     Editor.Undo.BeginRecord();
                     for (int i = e.DragItems.Length - 1; i >= 0; --i)
                     {
-                        Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
+                        ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                        Transform dragT = exposed.transform;
                         int dropTIndex = dropT.GetSiblingIndex();
                         if (dragT.parent != dropT.parent)
                         {
@@ -460,7 +470,7 @@ namespace Battlehub.RTEditor
                         }
 
                         Editor.Undo.RecordTransform(dragT, dropT.parent, dragT.GetSiblingIndex());
-                        Editor.Undo.RecordObject(dragT.gameObject, m_treeView.IndexOf(dragT.gameObject), RestoreIndexFromUndoRecord);
+                        Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
                     }
 
                     Editor.Undo.EndRecord();
@@ -470,7 +480,8 @@ namespace Battlehub.RTEditor
                     Editor.Undo.BeginRecord();
                     for (int i = 0; i < e.DragItems.Length; ++i)
                     {
-                        Transform dragT = ((ExposeToEditor)e.DragItems[i]).transform;
+                        ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                        Transform dragT = exposed.transform;
                         if (dragT.parent != dropT.parent)
                         {
                             dragT.SetParent(dropT.parent, true);
@@ -488,7 +499,7 @@ namespace Battlehub.RTEditor
                         }
 
                         Editor.Undo.RecordTransform(dragT, dropT.parent, dragT.GetSiblingIndex());
-                        Editor.Undo.RecordObject(dragT.gameObject, m_treeView.IndexOf(dragT.gameObject), RestoreIndexFromUndoRecord);
+                        Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
                     }
                     Editor.Undo.EndRecord();
                 }
@@ -497,12 +508,12 @@ namespace Battlehub.RTEditor
 
         private bool RestoreIndexFromUndoRecord(Record record)
         {
-            int currentIndex = m_treeView.IndexOf(record.Target);
+            //int currentIndex = m_treeView.IndexOf(record.Target);
 
             int index = (int)record.State;
-            bool hasChanged = currentIndex != index;
+            //bool hasChanged = currentIndex != index;
 
-            if (hasChanged)
+            //if (hasChanged)
             {
                 m_treeView.SetIndex(record.Target, index);
                 m_treeView.UpdateIndent(record.Target);
@@ -674,6 +685,7 @@ namespace Battlehub.RTEditor
             if (isNewParentExpanded)
             {
                 m_treeView.ChangeParent(newParent, obj);
+                
                 if (!isOldParentExpanded)
                 {
                     if (isLastChild)

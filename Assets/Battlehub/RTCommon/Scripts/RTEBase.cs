@@ -142,16 +142,16 @@ namespace Battlehub.RTCommon
         }
 
         int GetIndex(RuntimeWindowType windowType);
-
         RuntimeWindow GetWindow(RuntimeWindowType windowType);
-
         void ActivateWindow(RuntimeWindowType window);
-
         void ActivateWindow(RuntimeWindow window);
-
         void RegisterWindow(RuntimeWindow window);
-
         void UnregisterWindow(RuntimeWindow window);
+
+        void RegisterCreatedObject(GameObject go);
+        void Duplicate(GameObject[] go);
+        void Delete(GameObject[] go);
+        void Close();
     }
 
     public delegate void RTEEvent();
@@ -198,6 +198,10 @@ namespace Battlehub.RTCommon
         private IRuntimeUndo m_undo;
         private DragDrop m_dragDrop;
         private IRTEObjects m_object;
+
+        protected GameObject m_currentSelectedGameObject;
+        protected InputField m_currentInputField;
+        protected float m_zAxis;
 
         protected readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
 
@@ -611,7 +615,28 @@ namespace Battlehub.RTCommon
 
         protected virtual void Update()
         {
-            if(m_input.GetPointerDown(0))
+            if(m_eventSystem.currentSelectedGameObject != m_currentSelectedGameObject)
+            {
+                m_currentSelectedGameObject = m_eventSystem.currentSelectedGameObject;
+                if(m_currentSelectedGameObject != null)
+                {
+                    m_currentInputField = m_currentSelectedGameObject.GetComponent<InputField>();
+                }
+            }
+
+            bool mwheel = false;
+            if(m_zAxis != Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z))))
+            {
+                mwheel = m_zAxis == 0;
+                m_zAxis = Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z)));
+                
+            }
+
+            if (m_input.GetPointerDown(0) ||
+                m_input.GetPointerDown(1) ||
+                m_input.GetPointerDown(2) ||
+                mwheel ||
+                m_input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
             {
                 PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
                 //Set the Pointer Event Position to that of the mouse position
@@ -676,8 +701,142 @@ namespace Battlehub.RTCommon
                 }
             }
         }
-    }
 
-   
- 
+        public void RegisterCreatedObject(GameObject go)
+        {
+            Undo.BeginRecord();
+            Undo.RecordSelection();
+            Undo.BeginRegisterCreateObject(go);
+            Undo.EndRecord();
+
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.activeGameObject = go;
+            Undo.Enabled = isEnabled;
+
+            Undo.BeginRecord();
+            Undo.RegisterCreatedObject(go);
+            Undo.RecordSelection();
+            Undo.EndRecord();
+        }
+
+        public void Duplicate(GameObject[] gameObjects)
+        {
+            if (gameObjects == null || gameObjects.Length == 0)
+            {
+                return;
+            }
+
+            if (!Undo.Enabled)
+            {
+                for (int i = 0; i < gameObjects.Length; ++i)
+                {
+                    GameObject go = gameObjects[i];
+                    if (go != null)
+                    {
+                        Instantiate(go, go.transform.position, go.transform.rotation);
+                    }
+                }
+                return;
+            }
+
+            Undo.BeginRecord();
+            GameObject[] duplicates = new GameObject[gameObjects.Length];
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                if (go == null)
+                {
+                    continue;
+                }
+                GameObject duplicate = Instantiate(go, go.transform.position, go.transform.rotation);
+
+                duplicate.SetActive(true);
+                duplicate.SetActive(go.activeSelf);
+                if (go.transform.parent != null)
+                {
+                    duplicate.transform.SetParent(go.transform.parent, true);
+                }
+
+                duplicates[i] = duplicate;
+                Undo.BeginRegisterCreateObject(duplicate);
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.objects = duplicates;
+            Undo.Enabled = isEnabled;
+
+            Undo.BeginRecord();
+            for (int i = 0; i < duplicates.Length; ++i)
+            {
+                GameObject selectedObj = duplicates[i];
+                if (selectedObj != null)
+                {
+                    Undo.RegisterCreatedObject(selectedObj);
+                }
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+        }
+
+        public void Delete(GameObject[] gameObjects)
+        {
+            if (gameObjects == null || gameObjects.Length == 0)
+            {
+                return;
+            }
+
+            if (!Undo.Enabled)
+            {
+                for (int i = 0; i < gameObjects.Length; ++i)
+                {
+                    GameObject go = gameObjects[i];
+                    if (go != null)
+                    {
+                        Destroy(go);
+                    }
+                }
+                return;
+            }
+
+            Undo.BeginRecord();
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                if (go != null)
+                {
+                    Undo.BeginDestroyObject(go);
+                }
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+
+            bool isEnabled = Undo.Enabled;
+            Undo.Enabled = false;
+            Selection.objects = null;
+            Undo.Enabled = isEnabled;
+
+            Undo.BeginRecord();
+
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                if (go != null)
+                {
+                    Undo.DestroyObject(go);
+                }
+            }
+            Undo.RecordSelection();
+            Undo.EndRecord();
+        }
+
+
+        public void Close()
+        {
+            Destroy(gameObject);
+        }
+    }
 }

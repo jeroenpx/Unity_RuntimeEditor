@@ -64,7 +64,7 @@ namespace Battlehub.RTEditor
                     GameViewCamera gameCamera = m_gameCameras[i];
                     if (gameCamera.Camera != null && m_wasCameraActive.ContainsKey(gameCamera.Camera))
                     {
-                        gameCamera.Camera.gameObject.SetActive(m_wasCameraActive[gameCamera.Camera]);
+                        gameCamera.Camera.enabled = m_wasCameraActive[gameCamera.Camera];
                     }
                 }
                 m_wasCameraActive = null;
@@ -80,7 +80,7 @@ namespace Battlehub.RTEditor
                 if (gameCamera.Camera != null)
                 {
                     m_wasCameraActive.Add(gameCamera.Camera, gameCamera.Camera.gameObject.activeSelf);
-                    gameCamera.Camera.gameObject.SetActive(false);
+                    gameCamera.Camera.enabled = false;
                 }
             }
         }

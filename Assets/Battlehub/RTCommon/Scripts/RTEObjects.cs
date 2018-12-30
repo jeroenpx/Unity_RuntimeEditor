@@ -54,12 +54,17 @@ namespace Battlehub.RTCommon
                 {
                     return m_playModeCache.Where(o => o.Parent == null);
                 }
+                else
+                {
+                    return m_editModeCache.Where(o => o.Parent == null);
+                }
             }
 
             if (m_editor.IsPlaying)
             {
                 return m_playModeCache;
             }
+
             return m_editModeCache;
         }
 
@@ -148,7 +153,7 @@ namespace Battlehub.RTCommon
 
                 HashSet<GameObject> selectionHS = new HashSet<GameObject>(m_editor.Selection.gameObjects != null ? m_editor.Selection.gameObjects : new GameObject[0]);
                 List<GameObject> playmodeSelection = new List<GameObject>();
-                foreach(ExposeToEditor editorObj in m_editModeCache)
+                foreach(ExposeToEditor editorObj in m_editModeCache.OrderBy(eo => eo.transform.GetSiblingIndex()))
                 {
                     if (editorObj.Parent != null)
                     {
@@ -184,7 +189,10 @@ namespace Battlehub.RTCommon
             {
                 foreach (ExposeToEditor playObj in m_playModeCache)
                 {
-                    DestroyImmediate(playObj.gameObject);
+                    if(playObj != null)
+                    {
+                        DestroyImmediate(playObj.gameObject);
+                    }
                 }
                 
                 for (int i = 0; i < m_enabledObjects.Length; ++i)

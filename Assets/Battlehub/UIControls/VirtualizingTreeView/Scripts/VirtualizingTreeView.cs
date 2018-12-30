@@ -430,6 +430,11 @@ namespace Battlehub.UIControls
             ItemContainerData dragItem = GetItemContainerData(item);
             if (dragItem == null)
             {
+                if(parent == null)
+                {
+                    Add(item);
+                }
+
                 return;
             }
 
