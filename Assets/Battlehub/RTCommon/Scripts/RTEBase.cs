@@ -836,6 +836,7 @@ namespace Battlehub.RTCommon
 
         public void Close()
         {
+            IsOpened = false;
             Destroy(gameObject);
         }
     }

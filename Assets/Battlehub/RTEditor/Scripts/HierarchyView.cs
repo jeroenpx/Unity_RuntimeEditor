@@ -414,6 +414,7 @@ namespace Battlehub.RTEditor
                     Transform dragT = exposed.transform;
                     Editor.Undo.RecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
                     Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
+
                 }
                 Editor.Undo.EndRecord();
             }
@@ -440,6 +441,7 @@ namespace Battlehub.RTEditor
 
                         Editor.Undo.RecordTransform(dragT, dropT, dragT.GetSiblingIndex());
                         Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
+
                     }
                     Editor.Undo.EndRecord();
                 }
@@ -471,6 +473,7 @@ namespace Battlehub.RTEditor
 
                         Editor.Undo.RecordTransform(dragT, dropT.parent, dragT.GetSiblingIndex());
                         Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
+
                     }
 
                     Editor.Undo.EndRecord();
@@ -500,6 +503,7 @@ namespace Battlehub.RTEditor
 
                         Editor.Undo.RecordTransform(dragT, dropT.parent, dragT.GetSiblingIndex());
                         Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
+
                     }
                     Editor.Undo.EndRecord();
                 }

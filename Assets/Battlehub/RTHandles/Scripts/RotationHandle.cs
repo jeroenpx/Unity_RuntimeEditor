@@ -489,7 +489,10 @@ namespace Battlehub.RTHandles
         protected override void SyncModelTransform()
         {
             base.SyncModelTransform();
-            Model.transform.rotation = Target.rotation * StartingRotationInv;
+            if(Target != null)
+            {
+                Model.transform.rotation = Target.rotation * StartingRotationInv;
+            }
         }
 
         protected override void DrawOverride()

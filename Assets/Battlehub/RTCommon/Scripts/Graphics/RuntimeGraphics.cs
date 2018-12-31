@@ -14,6 +14,7 @@ namespace Battlehub.RTCommon
         public static float GetScreenScale(Vector3 position, Camera camera)
         {
             float h = camera.pixelHeight;
+      
             if (camera.orthographic)
             {
 

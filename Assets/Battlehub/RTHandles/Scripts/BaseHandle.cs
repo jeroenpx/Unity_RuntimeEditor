@@ -353,14 +353,18 @@ namespace Battlehub.RTHandles
             m_allHandles.Add(this);
 
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
-            if (m_targets != null && m_targets.Length > 0)
+            if (m_targets != null && m_targets.Length > 0 )
             {
+                var lockObject = LockObject;
                 Targets = m_targets;
+                LockObject = lockObject;
             }
 
             if (Targets == null || Targets.Length == 0)
             {
+                var lockObject = LockObject;
                 Targets = new[] { transform };
+                LockObject = lockObject;
             }
 
             if (GLRenderer.Instance == null)
@@ -670,7 +674,11 @@ namespace Battlehub.RTHandles
             Model.transform.position = position;
             Model.transform.rotation = Rotation;
             float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera);
-            Model.transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
+            if(!float.IsInfinity(screenScale) && !float.IsNaN(screenScale))
+            {
+                Model.transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
+            }
+            
         }
 
         public void BeginDrag()

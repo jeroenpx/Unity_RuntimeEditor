@@ -503,14 +503,14 @@ namespace Battlehub.UIControls.DockPanels
                     {
                         children[i].gameObject.SetActive(true);
                         children[i].IsMaximized = true;
-                        if(children[i].m_layoutElement.flexibleWidth == 0)
+                        if(Mathf.Approximately(children[i].m_layoutElement.flexibleWidth,0))
                         {
-                            children[i].m_layoutElement.flexibleWidth = 0.01f;
+                            children[i].m_layoutElement.flexibleWidth = 0.05f;
                         }
 
-                        if (children[i].m_layoutElement.flexibleHeight == 0)
+                        if (Mathf.Approximately(children[i].m_layoutElement.flexibleHeight, 0))
                         {
-                            children[i].m_layoutElement.flexibleHeight = 0.01f;
+                            children[i].m_layoutElement.flexibleHeight = 0.05f;
                         }
                     }
                 }

@@ -46,10 +46,17 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < m_gameCameras.Count; ++i)
             {
                 GameViewCamera gameCamera = m_gameCameras[i];
-                if(gameCamera != null)
+                if (gameCamera != null)
                 {
                     gameCamera.Camera.depth = gameCamera.Depth;
                     gameCamera.Camera.rect = gameCamera.Rect;
+                    if (Editor == null || !Editor.IsOpened)
+                    {
+                        if (gameCamera.Camera != null && m_wasCameraActive.ContainsKey(gameCamera.Camera))
+                        {
+                            gameCamera.Camera.enabled = m_wasCameraActive[gameCamera.Camera];
+                        }
+                    }
                 }
             }
         }
@@ -79,11 +86,15 @@ namespace Battlehub.RTEditor
                 GameViewCamera gameCamera = m_gameCameras[i];
                 if (gameCamera.Camera != null)
                 {
-                    m_wasCameraActive.Add(gameCamera.Camera, gameCamera.Camera.gameObject.activeSelf);
-                    gameCamera.Camera.enabled = false;
+                    if(Editor.IsOpened)
+                    {
+                        m_wasCameraActive.Add(gameCamera.Camera, gameCamera.Camera.gameObject.activeSelf);
+                        gameCamera.Camera.enabled = false;
+                    }
                 }
             }
         }
+
 
         public override void SetCameraDepth(int depth)
         {
