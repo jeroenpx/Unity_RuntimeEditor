@@ -92,10 +92,10 @@ namespace Battlehub.RTSaveLoad2
             //}
 
             EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Button("Create Reference", GUILayout.Width(100));
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.BeginHorizontal();
+            //GUILayout.FlexibleSpace();
+            //GUILayout.Button("Create Reference", GUILayout.Width(100));
+            //EditorGUILayout.EndHorizontal();
 
             if (click)
             {

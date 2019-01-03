@@ -6,6 +6,11 @@ namespace Battlehub.Utils
     {
         public static bool IsPrefab(this GameObject go)
         {   
+            if(go == null)
+            {
+                return false;
+            }
+
             if (Application.isEditor && !Application.isPlaying)
             {
                 #if UNITY_EDITOR

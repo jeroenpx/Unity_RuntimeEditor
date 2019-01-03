@@ -97,7 +97,12 @@ namespace Battlehub.RTSaveLoad2
             
             foreach (UnityObject obj in ctx.Dependencies)
             {
-                if(hs.Contains(obj))
+                if (!obj)
+                {
+                    continue;
+                }
+
+                if (hs.Contains(obj))
                 {
                     continue; 
                 }

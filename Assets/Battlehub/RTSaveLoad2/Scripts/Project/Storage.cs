@@ -20,6 +20,7 @@ namespace Battlehub.RTSaveLoad2
         void GetProjects(StorageEventHandler<ProjectInfo[]> callback);
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback);
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
+        void GetPreviews(string projectPath, string[] assetPath, StorageEventHandler<Preview[]> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
         void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback);
         void Save(string projectPath, AssetBundleInfo assetBundleInfo, ProjectInfo project, StorageEventHandler callback);
@@ -252,6 +253,24 @@ namespace Battlehub.RTSaveLoad2
                 assetItem.Parent = parent;
                 parent.Children.Add(assetItem);
             }
+        }
+
+        public void GetPreviews(string projectPath, string[] assetPath, StorageEventHandler<Preview[]> callback)
+        {
+            projectPath = FullPath(projectPath);
+
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+            Preview[] result = new Preview[assetPath.Length];
+            for(int i = 0; i < assetPath.Length; ++i)
+            {
+                string path = projectPath + assetPath[i] + PreviewExt;
+                if(File.Exists(path))
+                {
+                    result[i] = Load<Preview>(serializer, path);
+                }
+            }
+
+            callback(new Error(), result);
         }
 
         public void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback)

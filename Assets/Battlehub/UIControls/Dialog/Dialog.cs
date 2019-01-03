@@ -363,25 +363,52 @@ namespace Battlehub.UIControls.Dialogs
 
             if(result != null)
             {
-                if (result == false && CancelAction != null)
+                if (result == false)
                 {
-                    DialogCancelArgs args = new DialogCancelArgs();
-                    CancelAction(this, args);
-
-                    if (args.Cancel)
+                    if(Cancel != null)
                     {
-                        return;
+                        DialogCancelArgs args = new DialogCancelArgs();
+                        Cancel(this, args);
+                        if (args.Cancel)
+                        {
+                            return;
+                        }
                     }
+
+                    if(CancelAction != null)
+                    {
+                        DialogCancelArgs args = new DialogCancelArgs();
+                        CancelAction(this, args);
+                        if (args.Cancel)
+                        {
+                            return;
+                        }
+                    }
+                    
+                    
                 }
-                else if (result == true && Ok != null)
+                else if (result == true)
                 {
-                    DialogCancelArgs args = new DialogCancelArgs();
-                    Ok(this, args);
-
-                    if (args.Cancel)
+                    if(Ok != null)
                     {
-                        return;
+                        DialogCancelArgs args = new DialogCancelArgs();
+                        Ok(this, args);
+                        if (args.Cancel)
+                        {
+                            return;
+                        }
                     }
+                
+                    if(OkAction != null)
+                    {
+                        DialogCancelArgs args = new DialogCancelArgs();
+                        OkAction(this, args);
+                        if (args.Cancel)
+                        {
+                            return;
+                        }
+                    }
+                   
                 }
             }
 

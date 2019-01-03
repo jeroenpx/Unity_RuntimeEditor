@@ -16,7 +16,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 7
+    Identity: 8
     FolderIdentity: 4
     Folders:
     - m_ID: 0
@@ -44,6 +44,12 @@ MonoBehaviour:
         m_Name: Cube
         m_Depth: 0
         Object: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 7
+        m_Name: Sphere
+        m_Depth: 0
+        Object: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
         IsEnabled: 0
         PrefabParts: []
       IsEnabled: 1

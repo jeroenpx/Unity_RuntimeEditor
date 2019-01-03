@@ -428,41 +428,7 @@ namespace Battlehub.RTEditor
             Toggle(projectItem);
         }
 
-        private bool CanDrop(ProjectItem dropFolder, object[] dragItems)
-        {
-            if(dropFolder == null)
-            {
-                return false;
-            }
-
-            if(dropFolder.Children == null)
-            {
-                return true;
-            }
-
-
-            ProjectItem[] dragProjectItems = dragItems.OfType<ProjectItem>().ToArray();
-            if(dragProjectItems.Length == 0)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < dragProjectItems.Length; ++i)
-            {
-                ProjectItem dragItem = dragProjectItems[i];
-                if(dropFolder.IsAncestorOf(dragItem))
-                {
-                    return false;
-                }
-                
-                if(dropFolder.Children.Any(childItem => childItem.NameExt == dragItem.NameExt))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
+      
       
         private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
         {
@@ -635,6 +601,63 @@ namespace Battlehub.RTEditor
             return projectItem.IsFolder;// && (projectItem.ResourceTypes == null || projectItem.ResourceTypes.Any(type => m_displayResourcesHS.Contains(type)));
         }
 
+        private bool CanCreatePrefab(ProjectItem dropFolder, object[] dragItems)
+        {
+            if (dropFolder == null)
+            {
+                return false;
+            }
+
+            ExposeToEditor[] objects = dragItems.OfType<ExposeToEditor>().ToArray();
+            if (objects.Length == 0)
+            {
+                return false;
+            }
+
+            if (dropFolder.Children == null)
+            {
+                return true;
+            }
+
+
+            return true;
+        }
+
+        private bool CanDrop(ProjectItem dropFolder, object[] dragItems)
+        {
+            if (dropFolder == null)
+            {
+                return false;
+            }
+
+            ProjectItem[] dragProjectItems = dragItems.OfType<ProjectItem>().ToArray();
+            if (dragProjectItems.Length == 0)
+            {
+                return false;
+            }
+
+            if (dropFolder.Children == null)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < dragProjectItems.Length; ++i)
+            {
+                ProjectItem dragItem = dragProjectItems[i];
+                if (dropFolder.IsAncestorOf(dragItem))
+                {
+                    return false;
+                }
+
+                if (dropFolder.Children.Any(childItem => childItem.NameExt == dragItem.NameExt))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
         public override void DragEnter(object[] dragObjects, PointerEventData pointerEventData)
         {
             base.DragEnter(dragObjects, pointerEventData);
@@ -652,7 +675,7 @@ namespace Battlehub.RTEditor
         {
             base.Drag(dragObjects, pointerEventData);
             m_treeView.ExternalItemDrag(pointerEventData.position);
-            if (CanDrop((ProjectItem)m_treeView.DropTarget, dragObjects))
+            if (CanCreatePrefab((ProjectItem)m_treeView.DropTarget, dragObjects) || CanDrop((ProjectItem)m_treeView.DropTarget, dragObjects))
             {
                 Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
             }
@@ -671,6 +694,10 @@ namespace Battlehub.RTEditor
             if (CanDrop(dropTarget, dragObjects))
             {
                 m_project.Move(dragObjects.OfType<ProjectItem>().ToArray(), dropTarget);
+            }
+            else if(CanCreatePrefab(dropTarget, dragObjects))
+            {
+                Debug.Log("Create Prefab");
             }
             m_treeView.ExternalItemDrop();
         }

@@ -22,8 +22,8 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(Transform content);
         Transform CreateWindow(string windowTypeName);
         Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
-             float minWidth = 150,
-             float minHeight = 150,
+             float minWidth = 250,
+             float minHeight = 250,
              float preferredWidth = 700,
              float preferredHeight = 400,
              bool canResize = true);
@@ -523,11 +523,11 @@ namespace Battlehub.RTEditor
             return window;
         }
 
-        public Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
-             float minWidth = 150,
-             float minHeight = 150,
-             float preferredWidth = 700,
-             float preferredHeight = 400,
+        public Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction,
+             float minWidth,
+             float minHeight,
+             float preferredWidth,
+             float preferredHeight,
              bool canResize = true)
         {
             WindowDescriptor wd;

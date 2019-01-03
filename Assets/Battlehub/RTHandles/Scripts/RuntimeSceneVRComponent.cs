@@ -262,8 +262,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual void Start()
+        protected override void Start()
         {
+            base.Start();
             if(m_gazePointer == null)
             {
                 m_gazePointer = FindObjectOfType<RTEVRGazePointer>();

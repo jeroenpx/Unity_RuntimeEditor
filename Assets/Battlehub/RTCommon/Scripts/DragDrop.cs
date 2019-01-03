@@ -16,6 +16,11 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        object Source
+        {
+            get;
+        }
+
         bool InProgress
         {
             get;
@@ -27,7 +32,7 @@ namespace Battlehub.RTCommon
         
         void ResetCursor();
 
-        void RaiseBeginDrag(object[] dragItems, PointerEventData pointerEventData);
+        void RaiseBeginDrag(object source, object[] dragItems, PointerEventData pointerEventData);
 
         void RaiseDrag(PointerEventData eventData);
 
@@ -51,6 +56,12 @@ namespace Battlehub.RTCommon
         public bool InProgress
         {
             get { return DragObjects != null && DragObjects.Length > 0; }
+        }
+
+        private object m_source;
+        public object Source
+        {
+            get { return m_source; }
         }
 
         private IRTE m_editor;
@@ -87,7 +98,7 @@ namespace Battlehub.RTCommon
             m_editor.CursorHelper.ResetCursor(m_cursorLocker);
         }
 
-        public void RaiseBeginDrag(object[] dragItems, PointerEventData pointerEventData)
+        public void RaiseBeginDrag(object source, object[] dragItems, PointerEventData pointerEventData)
         {
             if(dragItems == null)
             {
@@ -99,6 +110,7 @@ namespace Battlehub.RTCommon
                 return;
             }
 
+            m_source = source;
             DragObjects = dragItems;
             SetCursor(KnownCursor.DropNowAllowed);
             if (BeginDrag != null)
@@ -129,6 +141,7 @@ namespace Battlehub.RTCommon
 
                 ResetCursor();
                 DragObjects = null;
+                m_source = null;
             }
         }
     }

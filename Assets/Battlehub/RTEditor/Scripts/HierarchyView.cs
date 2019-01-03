@@ -64,8 +64,11 @@ namespace Battlehub.RTEditor
             m_treeView.ItemExpanding += OnItemExpanding;
             m_treeView.ItemBeginDrag += OnItemBeginDrag;
             m_treeView.ItemBeginDrop += OnItemBeginDrop;
+            m_treeView.ItemDrag += OnItemDrag;
             m_treeView.ItemDrop += OnItemDrop;
             m_treeView.ItemEndDrag += OnItemEndDrag;
+            m_treeView.ItemDragEnter += OnItemDragEnter;
+            m_treeView.ItemDragExit += OnItemDragExit;
             m_treeView.ItemDoubleClick += OnItemDoubleClicked;
             m_treeView.ItemBeginEdit += OnItemBeginEdit;
             m_treeView.ItemEndEdit += OnItemEndEdit;   
@@ -113,8 +116,11 @@ namespace Battlehub.RTEditor
             m_treeView.ItemExpanding -= OnItemExpanding;
             m_treeView.ItemBeginDrag -= OnItemBeginDrag;
             m_treeView.ItemBeginDrop -= OnItemBeginDrop;
+            m_treeView.ItemDrag -= OnItemDrag;
             m_treeView.ItemDrop -= OnItemDrop;
             m_treeView.ItemEndDrag -= OnItemEndDrag;
+            m_treeView.ItemDragEnter -= OnItemDragEnter;
+            m_treeView.ItemDragExit -= OnItemDragExit;
             m_treeView.ItemDoubleClick -= OnItemDoubleClicked;
             m_treeView.ItemBeginEdit -= OnItemBeginEdit;
             m_treeView.ItemEndEdit -= OnItemEndEdit;          
@@ -395,8 +401,24 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
+        {
+            Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+        }
+
+        private void OnItemDragExit(object sender, System.EventArgs e)
+        {
+            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+        }
+
         private void OnItemBeginDrag(object sender, ItemArgs e)
         {
+            Editor.DragDrop.RaiseBeginDrag(this, e.Items, e.PointerEventData);
+        }
+
+        private void OnItemDrag(object sender, ItemArgs e)
+        {
+            Editor.DragDrop.RaiseDrag(e.PointerEventData);
         }
 
         private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
@@ -428,6 +450,8 @@ namespace Battlehub.RTEditor
             }
             else
             {
+                Editor.DragDrop.RaiseDrop(e.PointerEventData);
+
                 Transform dropT = ((ExposeToEditor)e.DropTarget).transform;
                 if (e.Action == ItemDropAction.SetLastChild)
                 {
@@ -527,6 +551,7 @@ namespace Battlehub.RTEditor
 
         private void OnItemEndDrag(object sender, ItemArgs e)
         {
+            Editor.DragDrop.RaiseDrop(e.PointerEventData);
         }
 
         private void OnObjectAwaked(ExposeToEditor obj)

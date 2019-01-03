@@ -8,11 +8,15 @@ using Battlehub.RTSaveLoad2.Interface;
 
 using UnityObject = UnityEngine.Object;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections;
 
 namespace Battlehub.RTEditor
 {
     public class SelectObjectDialog : RuntimeWindow
     {
+        [SerializeField]
+        private InputField m_filter;
         [HideInInspector]
         public UnityObject SelectedObject;
         [HideInInspector]
@@ -26,7 +30,11 @@ namespace Battlehub.RTEditor
         }
 
         private Dialog m_parentDialog;
+        private IWindowManager m_windowManager;
         private IProject m_project;
+        private Guid m_noneGuid = Guid.NewGuid();
+        private bool m_previewsCreated;
+        private AssetItem[] m_cache;
         
         private void Start()
         {
@@ -38,25 +46,51 @@ namespace Battlehub.RTEditor
             m_parentDialog.Ok += OnOk;
 
             m_project = IOC.Resolve<IProject>();
-            IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
-            
-            ProjectItem[] folders = m_project.Root.Flatten(false, true);
+            m_windowManager = IOC.Resolve<IWindowManager>();
 
-            m_treeView.ItemDoubleClick += OnItemDoubleClick;
+            IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
+            AssetItem[] assetItems = m_project.Root.Flatten(true, false).Where(item => m_project.ToType((AssetItem)item) == ObjectType).OfType<AssetItem>().ToArray();
+
             m_treeView.SelectionChanged += OnSelectionChanged;
             m_treeView.ItemDataBinding += OnItemDataBinding;
             Editor.IsBusy = true;
-            m_project.GetAssetItems(folders, (error, assets) =>
+            m_parentDialog.IsOkInteractable = false;
+            m_project.GetAssetItems(assetItems, (error, assetItemsWithPreviews) =>
             {
-                Editor.IsBusy = false;
                 if (error.HasError)
                 {
-                    PopupWindow.Show("Can't GetAssets", error.ToString(), "OK");
+                    Editor.IsBusy = false;
+                    m_windowManager.MessageBox("Can't GetAssets", error.ToString());
                     return;
                 }
 
-                StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, resourcePreview));
-                m_treeView.Items = assets;
+                AssetItem none = new AssetItem();
+                none.Name = "None";
+                none.TypeGuid = m_noneGuid;
+
+                assetItemsWithPreviews = new[] { none }.Union(assetItemsWithPreviews).ToArray();
+
+                m_previewsCreated = false;
+                StartCoroutine(ProjectItemView.CoCreatePreviews(assetItemsWithPreviews, m_project, resourcePreview, () =>
+                {
+                    m_previewsCreated = true;
+                    HandleSelectionChanged((AssetItem)m_treeView.SelectedItem);
+                    m_treeView.ItemDoubleClick += OnItemDoubleClick;
+                    m_parentDialog.IsOkInteractable = m_previewsCreated && m_treeView.SelectedItem != null;
+                    Editor.IsBusy = false;
+
+                    if(m_filter != null)
+                    {
+                        if (!string.IsNullOrEmpty(m_filter.text))
+                        {
+                            ApplyFilter(m_filter.text);
+                        }
+                        m_filter.onValueChanged.AddListener(OnFilterValueChanged);
+                    }
+                }));
+
+                m_cache = assetItemsWithPreviews;
+                m_treeView.Items = m_cache;
             });
         }
 
@@ -74,6 +108,11 @@ namespace Battlehub.RTEditor
                 m_treeView.ItemDoubleClick -= OnItemDoubleClick;
                 m_treeView.SelectionChanged -= OnSelectionChanged;
                 m_treeView.ItemDataBinding -= OnItemDataBinding;
+            }
+
+            if (m_filter != null)
+            {
+                m_filter.onValueChanged.RemoveListener(OnFilterValueChanged);
             }
         }
 
@@ -99,17 +138,29 @@ namespace Battlehub.RTEditor
 
         private void OnSelectionChanged(object sender, SelectionChangedArgs e)
         {
-            //if (e.ProjectItem != null && e.ProjectItem.IsNone)
-            //{
-            //    IsNoneSelected = true;
-            //}
-            //else
+            if (!m_previewsCreated)
+            {
+                return;
+            }
+
+            AssetItem assetItem = (AssetItem)e.NewItem;
+            HandleSelectionChanged(assetItem);
+        }
+
+        private void HandleSelectionChanged(AssetItem assetItem)
+        {
+            if (assetItem != null && assetItem.TypeGuid == m_noneGuid)
+            {
+                IsNoneSelected = true;
+                SelectedObject = null;
+            }
+            else
             {
                 IsNoneSelected = false;
-                if (e.NewItem != null)
+                if (assetItem != null)
                 {
                     SelectedObject = null;
-                    m_project.Load((AssetItem)e.NewItem, (error, obj) =>
+                    m_project.Load(assetItem, (error, obj) =>
                     {
                         SelectedObject = obj;
                     });
@@ -119,22 +170,27 @@ namespace Battlehub.RTEditor
                     SelectedObject = null;
                 }
             }
+
+            m_parentDialog.IsOkInteractable = m_treeView.SelectedItem != null;
         }
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            //if (e.ProjectItem != null && e.ProjectItem.IsNone)
-            //{
-            //    IsNoneSelected = true;
-            //}
-            //else
+            AssetItem assetItem = (AssetItem)e.Items[0];
+            if (assetItem != null && assetItem.TypeGuid == m_noneGuid)
+            {
+                IsNoneSelected = true;
+                SelectedObject = null;
+                m_parentDialog.Close(true);
+            }
+            else
             {
                 IsNoneSelected = false;
-                if (e.Items != null)
+                if (assetItem != null)
                 {
                     SelectedObject = null;
                     Editor.IsBusy = true;
-                    m_project.Load((AssetItem)e.Items[0], (error, obj) =>
+                    m_project.Load(assetItem, (error, obj) =>
                     {
                         Editor.IsBusy = false;
                         SelectedObject = obj;
@@ -154,6 +210,35 @@ namespace Battlehub.RTEditor
             if (SelectedObject == null && !IsNoneSelected)
             {
                 args.Cancel = true;
+            }
+        }
+
+        private void OnFilterValueChanged(string text)
+        {
+            ApplyFilter(text);
+        }
+
+        private void ApplyFilter(string text)
+        {
+            if (m_coApplyFilter != null)
+            {
+                StopCoroutine(m_coApplyFilter);
+            }
+            StartCoroutine(m_coApplyFilter = CoApplyFilter(text));
+        }
+
+        private IEnumerator m_coApplyFilter;
+        private IEnumerator CoApplyFilter(string filter)
+        {
+            yield return new WaitForSeconds(0.3f);
+
+            if (string.IsNullOrEmpty(filter))
+            {
+                m_treeView.Items = m_cache;
+            }
+            else
+            {
+                m_treeView.Items = m_cache.Where(item => item.Name.ToLower().Contains(filter.ToLower()));
             }
         }
     }

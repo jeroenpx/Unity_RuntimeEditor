@@ -2474,6 +2474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_color: {r: 0, g: 0, b: 0, a: 0}
+  m_gameObject: {fileID: 0}
 --- !u!1 &1465978582
 GameObject:
   m_ObjectHideFlags: 0

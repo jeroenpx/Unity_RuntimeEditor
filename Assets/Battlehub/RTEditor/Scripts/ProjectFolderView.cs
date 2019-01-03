@@ -20,8 +20,6 @@ namespace Battlehub.RTEditor
 
         private IProject m_project;
 
-        public Type TypeFilter;
-
         private List<ProjectItem> m_items;
         private ProjectItem[] m_folders;
         public void SetItems(ProjectItem[] folders, ProjectItem[] items, bool reload)
@@ -120,74 +118,71 @@ namespace Battlehub.RTEditor
                 m_listBox.SelectedItems = null;
 
                 List<ProjectItem> itemsList = m_items.ToList();
-                if (TypeFilter != null)
-                {
-                    for (int i = itemsList.Count - 1; i >= 0; i--)
-                    {
-                        ProjectItem item = itemsList[i];
-                        if (item.IsFolder)
-                        {
-                            itemsList.Remove(item);
-                        }
-                        else
-                        {
-                            AssetItem assetItem = (AssetItem)item;
-                            Type type = m_project.ToType(assetItem);
-                            if (type == null)
-                            {
-                                itemsList.RemoveAt(i);
-                            }
-                            else if (!TypeFilter.IsAssignableFrom(type))
-                            {
-                                itemsList.RemoveAt(i);
-                            }
-                        }
-                    }
+                //if (TypeFilter != null)
+                //{
+                //    for (int i = itemsList.Count - 1; i >= 0; i--)
+                //    {
+                //        ProjectItem item = itemsList[i];
+                //        if (item.IsFolder)
+                //        {
+                //            itemsList.Remove(item);
+                //        }
+                //        else
+                //        {
+                //            AssetItem assetItem = (AssetItem)item;
+                //            Type type = m_project.ToType(assetItem);
+                //            if (type == null)
+                //            {
+                //                itemsList.RemoveAt(i);
+                //            }
+                //            else if (!TypeFilter.IsAssignableFrom(type))
+                //            {
+                //                itemsList.RemoveAt(i);
+                //            }
+                //        }
+                //    }
 
-                    if (typeof(GameObject) == TypeFilter)
-                    {
-                        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
+                //    if (typeof(GameObject) == TypeFilter)
+                //    {
+                //        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
 
-                        foreach (ExposeToEditor obj in sceneObjects)
-                        {
-                            AssetItem sceneItem = new AssetItem();
-                            sceneItem.ItemID = m_project.ToID(obj.gameObject);
-                            sceneItem.Name = obj.gameObject.name;
-                            sceneItem.Ext = m_project.GetExt(obj.gameObject);
-                            sceneItem.TypeGuid = m_project.ToGuid(typeof(GameObject));
-                            itemsList.Add(sceneItem);
-                        }
-                    }
-                    else if (typeof(Component).IsAssignableFrom(TypeFilter))
-                    {
-                        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
+                //        foreach (ExposeToEditor obj in sceneObjects)
+                //        {
+                //            AssetItem sceneItem = new AssetItem();
+                //            sceneItem.ItemID = m_project.ToID(obj.gameObject);
+                //            sceneItem.Name = obj.gameObject.name;
+                //            sceneItem.Ext = m_project.GetExt(obj.gameObject);
+                //            sceneItem.TypeGuid = m_project.ToGuid(typeof(GameObject));
+                //            itemsList.Add(sceneItem);
+                //        }
+                //    }
+                //    else if (typeof(Component).IsAssignableFrom(TypeFilter))
+                //    {
+                //        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
 
-                        foreach (ExposeToEditor obj in sceneObjects)
-                        {
-                            Component component = obj.GetComponent(TypeFilter);
-                            Guid typeGuid = m_project.ToGuid(component.GetType());
-                            if (component != null && typeGuid != Guid.Empty)
-                            {
-                                AssetItem sceneItem = new AssetItem();
-                                sceneItem.ItemID = m_project.ToID(obj.gameObject);
-                                sceneItem.Name = obj.gameObject.name;
-                                sceneItem.Ext = m_project.GetExt(obj.gameObject);
-                                sceneItem.TypeGuid = typeGuid;
+                //        foreach (ExposeToEditor obj in sceneObjects)
+                //        {
+                //            Component component = obj.GetComponent(TypeFilter);
+                //            Guid typeGuid = m_project.ToGuid(component.GetType());
+                //            if (component != null && typeGuid != Guid.Empty)
+                //            {
+                //                AssetItem sceneItem = new AssetItem();
+                //                sceneItem.ItemID = m_project.ToID(obj.gameObject);
+                //                sceneItem.Name = obj.gameObject.name;
+                //                sceneItem.Ext = m_project.GetExt(obj.gameObject);
+                //                sceneItem.TypeGuid = typeGuid;
 
-                                itemsList.Add(sceneItem);
-                            }
-                        }
-                    }
+                //                itemsList.Add(sceneItem);
+                //            }
+                //        }
+                //    }
+                //    m_listBox.Items = itemsList;
 
-                    //itemsList.Insert(0, none);
-                    m_listBox.Items = itemsList;
-
-                }
-                else
-                {
-                    m_listBox.Items = itemsList;
-                }
-
+                //}
+                //else
+                //{
+                m_listBox.Items = itemsList;
+                //}
 
                 //if (m_selectedItems != null)
                 //{
@@ -275,7 +270,7 @@ namespace Battlehub.RTEditor
 
         private void OnItemBeginDrag(object sender, ItemArgs e)
         {
-            Editor.DragDrop.RaiseBeginDrag(e.Items, e.PointerEventData);
+            Editor.DragDrop.RaiseBeginDrag(this, e.Items, e.PointerEventData);
         }
 
         private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
@@ -439,6 +434,74 @@ namespace Battlehub.RTEditor
                 ProjectItem[] selectedItems = e.NewItems == null ? new ProjectItem[0] : e.NewItems.OfType<ProjectItem>().ToArray();
                 SelectionChanged(this, new ProjectTreeEventArgs(selectedItems));
             }
+        }
+
+
+
+        private bool CanCreatePrefab(ProjectItem dropTarget, object[] dragItems)
+        {
+            if (dropTarget == null)
+            {
+                return false;
+            }
+
+          
+            if(!dropTarget.IsFolder && m_project.ToType((AssetItem)dropTarget) != typeof(GameObject))
+            {
+                return false;
+            }
+
+            ExposeToEditor[] objects = dragItems.OfType<ExposeToEditor>().ToArray();
+            if (objects.Length == 0)
+            {
+                return false;
+            }
+
+            if (dropTarget.Children == null)
+            {
+                return true;
+            }
+
+            return true;
+        }
+
+        public override void DragEnter(object[] dragObjects, PointerEventData pointerEventData)
+        {
+            base.DragEnter(dragObjects, pointerEventData);
+            m_listBox.ExternalBeginDrag(pointerEventData.position);
+        }
+
+        public override void DragLeave(PointerEventData pointerEventData)
+        {
+            base.DragLeave(pointerEventData);
+            m_listBox.ExternalItemDrop();
+            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+        }
+
+        public override void Drag(object[] dragObjects, PointerEventData pointerEventData)
+        {
+            base.Drag(dragObjects, pointerEventData);
+            m_listBox.ExternalItemDrag(pointerEventData.position);
+            if (CanCreatePrefab((ProjectItem)m_listBox.DropTarget, dragObjects) )
+            {
+                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+            }
+            else
+            {
+                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                m_listBox.ClearTarget();
+            }
+        }
+
+        public override void Drop(object[] dragObjects, PointerEventData pointerEventData)
+        {
+            base.Drop(dragObjects, pointerEventData);
+            ProjectItem dropTarget = (ProjectItem)m_listBox.DropTarget;
+            if (CanCreatePrefab(dropTarget, dragObjects))
+            {
+                Debug.Log("Create Prefab");
+            }
+            m_listBox.ExternalItemDrop();
         }
     }
 }

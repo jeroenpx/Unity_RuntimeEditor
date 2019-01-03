@@ -1,5 +1,7 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -31,7 +33,6 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
             BtnSelect.onClick.AddListener(OnSelect);
-
         }
 
         protected override void OnDestroyOverride()
@@ -81,13 +82,28 @@ namespace Battlehub.RTEditor
             //EndEdit();
             //SetInputField(DragDrop.DragObject);
             //HideDragHighlight();
-
         }
-
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            if (Editor.DragDrop.InProgress && Editor.DragDrop.DragObjects[0] != null && MemberInfoType.IsAssignableFrom(Editor.DragDrop.DragObjects[0].GetType()))
+            if(!Editor.DragDrop.InProgress)
+            {
+                return;
+            }
+            object dragObject = Editor.DragDrop.DragObjects[0];            
+            Type type = null;
+            if(dragObject is ExposeToEditor)
+            {
+                type = typeof(GameObject);
+            }
+            else if(dragObject is AssetItem)
+            {
+                AssetItem assetItem = (AssetItem)dragObject;
+                IProject project = IOC.Resolve<IProject>();
+                type = project.ToType(assetItem);
+            }
+
+            if (type != null && MemberInfoType.IsAssignableFrom(type))
             {
                 Editor.DragDrop.Drop -= OnDrop;
                 Editor.DragDrop.Drop += OnDrop;

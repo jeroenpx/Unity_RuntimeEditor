@@ -535,6 +535,52 @@ namespace Battlehub.RTSaveLoad2
             ao.IsCompleted = true;
         }
 
+        public ProjectAsyncOperation<AssetItem[]> GetAssetItems(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback)
+        {
+            if (IsBusy)
+            {
+                throw new InvalidOperationException("IsBusy");
+            }
+            IsBusy = true;
+            return _GetAssetItems(assetItems, (error, result) =>
+            {
+                IsBusy = false;
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+            });
+        }
+
+        private ProjectAsyncOperation<AssetItem[]> _GetAssetItems(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback)
+        {
+            ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
+            m_storage.GetPreviews(m_projectPath, assetItems.Select(f => f.ToString()).ToArray(), (error, previews) =>
+            {
+                if (error.HasError)
+                {
+                    callback(error, new AssetItem[0]);
+                }
+
+                AssetItem[] result = assetItems.ToArray();
+                for (int i = 0; i < result.Length; ++i)
+                {
+                    AssetItem assetItem = result[i];
+                    assetItem.Preview = previews[i];
+                }
+
+                if (callback != null)
+                {
+                    callback(error, result);
+                }
+
+                ao.Error = error;
+                ao.Result = result;
+                ao.IsCompleted = true;
+            });
+            return ao;
+        }
+            
         /// <summary>
         /// Get Asset Items with previews
         /// </summary>
@@ -548,7 +594,7 @@ namespace Battlehub.RTSaveLoad2
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
-            return _GetAssetItems(folders, (error, result) =>
+            return _GetAssetItems(folders, (Error error, ProjectItem[] result) =>
             {
                 IsBusy = false;
                 if(callback != null)

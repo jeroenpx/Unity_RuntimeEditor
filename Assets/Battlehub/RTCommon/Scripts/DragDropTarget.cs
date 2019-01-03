@@ -33,6 +33,7 @@ namespace Battlehub.RTCommon
             get { return m_editor; }
         }
 
+
         // Use this for initialization
         private void Awake()
         {
@@ -78,36 +79,30 @@ namespace Battlehub.RTCommon
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            //Debug.Log("OnPointerEnter " + name);
             m_isPointerOver = true;
             OnPointerEnterOverride(eventData);
-            if (m_editor.DragDrop.InProgress)
-            {
-                for(int i = 0; i < m_dragDropTargets.Length; ++i)
-                {
-                    m_dragDropTargets[i].DragEnter(m_editor.DragDrop.DragObjects, eventData);
-                }
+            if (m_editor.DragDrop.InProgress && m_editor.DragDrop.Source != (object)this)
+            {   
+                DragEnter(m_editor.DragDrop.DragObjects, eventData);
+
+                m_editor.DragDrop.BeginDrag += OnBeginDrag;
+                m_editor.DragDrop.Drag += OnDrag;
+                m_editor.DragDrop.Drop += OnDrop;
             }
 
-            m_editor.DragDrop.BeginDrag += OnBeginDrag;
-            m_editor.DragDrop.Drag += OnDrag;
-            m_editor.DragDrop.Drop += OnDrop;
+            
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            //Debug.Log("OnPointerExit " + name);
             m_isPointerOver = false;
             OnPointerExitOverride(eventData);
             m_editor.DragDrop.BeginDrag -= OnBeginDrag;
             m_editor.DragDrop.Drop -= OnDrop;
             m_editor.DragDrop.Drag -= OnDrag;
-            if (m_editor.DragDrop.InProgress)
+            if (m_editor.DragDrop.InProgress && m_editor.DragDrop.Source != (object)this)
             {
-                for (int i = 0; i < m_dragDropTargets.Length; ++i)
-                {
-                    m_dragDropTargets[i].DragLeave(eventData);
-                }
+                DragLeave(eventData);
             }
         }
 
@@ -173,7 +168,6 @@ namespace Battlehub.RTCommon
 
         public virtual void DragLeave(PointerEventData eventData)
         {
-            
         }
 
         public virtual void Drop(object[] dragObjects, PointerEventData eventData)
