@@ -341,9 +341,9 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            float majorRadius =  m_majorRadius * ModelScale * SelectionMargin;
-            float minorRadius =  (m_minorRadius + 0.07f) * ModelScale * SelectionMargin;
-            float outerRadius =  m_outerRadius * ModelScale * SelectionMargin;
+            float majorRadius = m_majorRadius * ModelScale;//  * SelectionMargin;
+            float minorRadius = m_minorRadius * SelectionMargin * 10;// * ModelScale * SelectionMargin;
+            float outerRadius = m_outerRadius * ModelScale;//  * SelectionMargin;
 
             Mesh axisMesh = Instantiate(m_axisColliderMesh);
             UpdateCircle(axisMesh, m_axisColliderMesh, m_xCollider.transform, majorRadius, minorRadius);
@@ -379,7 +379,7 @@ namespace Battlehub.RTHandles
             Collider collider = null;
             float minDistance = float.MaxValue;
 
-            Camera camera = Editor.ActiveWindow.Camera;
+            Camera camera = Window.Camera;// Editor.ActiveWindow.Camera;
             if (Editor.IsVR)
             {
                 

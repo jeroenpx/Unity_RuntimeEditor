@@ -98,18 +98,9 @@ namespace Battlehub.RTHandles
                 m_canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
 
-            m_image = gameObject.AddComponent<Image>();
-            m_image.type = Image.Type.Sliced;
-            if (Graphics == null)
-            {
-                Graphics = Resources.Load<Sprite>("RTH_BoxSelection");
-            }
-            m_image.sprite = Graphics;
-            m_image.raycastTarget = false;
-            m_rectTransform = GetComponent<RectTransform>();
-            m_rectTransform.sizeDelta = new Vector2(0, 0);
-            m_rectTransform.pivot = new Vector2(0, 0);
-            m_rectTransform.anchoredPosition = new Vector3(0, 0);
+            transform.SetParent(m_canvas.gameObject.transform, false);
+            transform.rotation = Quaternion.identity;
+            transform.position = Vector3.zero;
 
             CanvasScaler scaler = m_canvas.GetComponent<CanvasScaler>();
             if (scaler == null)
@@ -118,15 +109,30 @@ namespace Battlehub.RTHandles
             }
             scaler.referencePixelsPerUnit = 1;
 
-            transform.SetParent(m_canvas.gameObject.transform, false);
-            transform.rotation = Quaternion.identity;
-            transform.position = Vector3.zero;
-
             if(!GetComponent<BoxSelectionInput>())
             {
                 gameObject.AddComponent<BoxSelectionInput>();
             }
+
+            m_rectTransform = GetComponent<RectTransform>();
+            if (m_rectTransform == null)
+            {
+                m_rectTransform = gameObject.AddComponent<RectTransform>();
+            }
+            m_rectTransform.sizeDelta = new Vector2(0, 0);
+            m_rectTransform.pivot = new Vector2(0, 0);
+            m_rectTransform.anchoredPosition = new Vector3(0, 0);
+
+            m_image = gameObject.AddComponent<Image>();
+            m_image.type = Image.Type.Sliced;
+            if (Graphics == null)
+            {
+                Graphics = Resources.Load<Sprite>("RTH_BoxSelection");
+            }
+            m_image.sprite = Graphics;
+            m_image.raycastTarget = false;
         }
+
 
         protected override void OnDestroyOverride()
         {

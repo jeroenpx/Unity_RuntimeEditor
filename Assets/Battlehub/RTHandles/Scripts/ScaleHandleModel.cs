@@ -243,7 +243,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            float size = 2 * m_arrowRadius * ModelScale * SelectionMargin;
+            float size = 2 * m_arrowRadius * SelectionMargin;
 
             Transform root = m_xCollider.transform.parent;
 

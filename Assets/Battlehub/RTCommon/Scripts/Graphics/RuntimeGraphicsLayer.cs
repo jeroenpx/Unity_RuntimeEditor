@@ -24,10 +24,12 @@ namespace Battlehub.RTCommon
         {
             m_editorWindow = GetComponent<RuntimeWindow>();
             PrepareGraphicsLayerCamera();
+            //m_graphicsLayerCamera.usePhysicalProperties = true;
         }
 
         private void Start()
         {
+           // m_graphicsLayerCamera.usePhysicalProperties = false;
             if (m_editorWindow.Index >= m_editorWindow.Editor.CameraLayerSettings.MaxGraphicsLayers)
             {
                 Debug.LogError("m_editorWindow.Index >= m_editorWindow.Editor.CameraLayerSettings.MaxGraphicsLayers");

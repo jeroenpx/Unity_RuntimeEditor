@@ -545,8 +545,7 @@ namespace Battlehub.RTHandles
                     maxDot = dots[i];
                     maxIndex = i;
                 }
-            }
-
+            } 
 
             for (int i = 0; i < m_models.Length - 1; ++i)
             {
