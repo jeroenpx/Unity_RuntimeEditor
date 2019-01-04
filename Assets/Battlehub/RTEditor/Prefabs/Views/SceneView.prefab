@@ -46,7 +46,7 @@ MonoBehaviour:
   m_window: {fileID: 0}
   HightlightOnHover: 1
   Appearance: {fileID: 0}
-  Model: {fileID: 114244960618619326, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
+  Model: {fileID: 737, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
   m_targets: []
   GridSize: 0.1
 --- !u!1 &1192367540956640

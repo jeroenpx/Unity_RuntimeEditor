@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Battlehub/RTEditor/Demo/Demo_New.unity
     guid: 4215a0f4652834c40978a0dc505ae257
-  - enabled: 1
+  - enabled: 0
     path: Assets/RTHHelloAR.unity
     guid: b9d5641b76555884b91064119a422b2e
   m_configObjects: {}
