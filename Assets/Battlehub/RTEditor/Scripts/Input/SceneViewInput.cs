@@ -1,11 +1,10 @@
-﻿using Battlehub.RTCommon;
-using System.Collections;
-using System.Collections.Generic;
+﻿
+using Battlehub.RTCommon;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class HierarchyViewInput : BaseViewInput<HierarchyView>
+    public class SceneViewInput : BaseViewInput<SceneView>
     {
         public KeyCode SelectAllKey = KeyCode.A;
 
@@ -22,7 +21,6 @@ namespace Battlehub.RTEditor
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
-          
 
             if (SelectAllAction())
             {

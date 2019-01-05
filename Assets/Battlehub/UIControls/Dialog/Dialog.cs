@@ -198,6 +198,14 @@ namespace Battlehub.UIControls.Dialogs
                 {
                     m_buttonsRoot.gameObject.SetActive(m_cancelButton != null && m_cancelButton.gameObject.activeSelf || m_okButton != null && m_okButton.gameObject.activeSelf);
                 }
+
+                if(m_okButton != null)
+                {
+                    if (value)
+                    {
+                        m_okButton.Select();
+                    }
+                }
             }
         }
 
@@ -286,6 +294,11 @@ namespace Battlehub.UIControls.Dialogs
             }
 
             m_parentRegion = GetComponentInParent<Region>();
+
+            if (m_okButton != null && m_okButton.gameObject.activeSelf)
+            {
+                m_okButton.Select();
+            }
         }
 
         private void OnOkClick()

@@ -18,6 +18,11 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
             m_project = IOC.Resolve<IProject>();
+
+            if(!GetComponent<SceneViewInput>())
+            {
+                gameObject.AddComponent<SceneViewInput>();
+            }
         }
 
         protected override void OnActivated()
@@ -156,6 +161,10 @@ namespace Battlehub.RTEditor
             point = Vector3.zero;
             return false;
         }
-    }
 
+        public void SelectAll()
+        {
+            Editor.Selection.objects = Editor.Object.Get(false).Select(exposed => exposed.gameObject).ToArray();
+        }
+    }
 }

@@ -65,9 +65,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  RuntimeModifierKey: 306
-  EditorModifierKey: 304
-  SelectAllKey: 97
 --- !u!222 &6852351706692445496
 CanvasRenderer:
   m_ObjectHideFlags: 0

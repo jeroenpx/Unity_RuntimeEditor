@@ -24,21 +24,6 @@ namespace Battlehub.RTEditor
         private bool m_isSpawningPrefab;
         private bool m_isStarted;
 
-        public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
-        public KeyCode EditorModifierKey = KeyCode.LeftShift;
-        public KeyCode ModifierKey
-        {
-            get
-            {
-                #if UNITY_EDITOR
-                return EditorModifierKey;
-                #else
-                return RuntimeModifierKey;
-                #endif
-            }
-        }
-        public KeyCode SelectAllKey = KeyCode.A;
-
         private IProject m_project;
 
         protected override void AwakeOverride()
@@ -71,7 +56,12 @@ namespace Battlehub.RTEditor
             m_treeView.ItemDragExit += OnItemDragExit;
             m_treeView.ItemDoubleClick += OnItemDoubleClicked;
             m_treeView.ItemBeginEdit += OnItemBeginEdit;
-            m_treeView.ItemEndEdit += OnItemEndEdit;   
+            m_treeView.ItemEndEdit += OnItemEndEdit;  
+            
+            if(!GetComponent<HierarchyViewInput>())
+            {
+                gameObject.AddComponent<HierarchyViewInput>();
+            }
         }
 
         private void Start()
@@ -151,21 +141,9 @@ namespace Battlehub.RTEditor
             }            
         }
 
-        protected override void UpdateOverride()
+        public void SelectAll()
         {
-            base.UpdateOverride();
-            if (Editor.ActiveWindow != this)
-            {
-                return;
-            }
-
-            if(Editor.Input.GetKeyDown(SelectAllKey))
-            {
-                if (Editor.Input.GetKey(ModifierKey))
-                {
-                    m_treeView.SelectedItems = m_treeView.Items;
-                }
-            }
+            m_treeView.SelectedItems = m_treeView.Items;
         }
 
         private void EnableHierarchy()
