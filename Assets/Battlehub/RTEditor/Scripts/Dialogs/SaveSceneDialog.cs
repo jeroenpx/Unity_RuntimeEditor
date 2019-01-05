@@ -158,7 +158,7 @@ namespace Battlehub.RTEditor
 
                     }
                     Editor.IsBusy = true;
-                    m_project.Create(m_project.Root, new byte[0], SceneManager.GetActiveScene(), selectedItem.Name, (error, assetItem) =>
+                    m_project.Create(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { selectedItem.Name }, (error, assetItem) =>
                     {
                         Editor.IsBusy = false;
                         if (error.HasError)
@@ -167,7 +167,7 @@ namespace Battlehub.RTEditor
                         }
                         else
                         {
-                            m_project.LoadedScene = assetItem;
+                            m_project.LoadedScene = assetItem[0];
                         }
                         m_parentDialog.Close(null);
                     });
@@ -259,7 +259,7 @@ namespace Battlehub.RTEditor
                 Editor.Undo.Purge();
 
                 Editor.IsBusy = true;
-                m_project.Create(m_project.Root, new byte[0], SceneManager.GetActiveScene(),  Input.text, (error, assetItem) =>
+                m_project.Create(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { Input.text }, (error, assetItem) =>
                 {
                     Editor.IsBusy = false;
                     if (error.HasError)

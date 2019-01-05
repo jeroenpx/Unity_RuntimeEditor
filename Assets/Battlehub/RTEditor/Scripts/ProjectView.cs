@@ -237,9 +237,9 @@ namespace Battlehub.RTEditor
         {
         }
 
-        private void OnPrefabCreateCompleted(Error createPrefabError, AssetItem result)
+        private void OnPrefabCreateCompleted(Error createPrefabError, AssetItem[] result)
         {
-            m_projectResources.InsertItems(new[] { result });
+            m_projectResources.InsertItems(result);
         }
   
         private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)

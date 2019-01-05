@@ -19,6 +19,7 @@ namespace Battlehub.RTEditor
         public event EventHandler<ProjectTreeEventArgs> SelectionChanged;
 
         private IProject m_project;
+        private IWindowManager m_windowManager;
 
         private List<ProjectItem> m_items;
         private ProjectItem[] m_folders;
@@ -203,6 +204,7 @@ namespace Battlehub.RTEditor
             }
 
             m_project = IOC.Resolve<IProject>();
+            m_windowManager = IOC.Resolve<IWindowManager>();
 
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
             if (m_listBox == null)
@@ -260,11 +262,12 @@ namespace Battlehub.RTEditor
             base.UpdateOverride();
             if(Editor.Input.GetKeyDown(RemoveKey) && Editor.ActiveWindow == this)
             {
-                PopupWindow.Show("Delete Selected Assets", "You cannot undo this action", "Delete", arg =>
+                m_windowManager.Confirmation("Delete Selected Assets", "You cannot undo this action",  (sender, arg) =>
                 {
                     m_listBox.RemoveSelectedItems();
-                },
-                "No");
+                }, 
+                (sender, arg) => { }, 
+                "Delete");
             }
         }
 
@@ -446,7 +449,7 @@ namespace Battlehub.RTEditor
             }
 
           
-            if(!dropTarget.IsFolder && m_project.ToType((AssetItem)dropTarget) != typeof(GameObject))
+            if(!dropTarget.IsFolder)
             {
                 return false;
             }
@@ -482,26 +485,43 @@ namespace Battlehub.RTEditor
         {
             base.Drag(dragObjects, pointerEventData);
             m_listBox.ExternalItemDrag(pointerEventData.position);
-            if (CanCreatePrefab((ProjectItem)m_listBox.DropTarget, dragObjects) )
+            if (!CanCreatePrefab((ProjectItem)m_listBox.DropTarget, dragObjects) )
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
-            }
-            else
-            {
-                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
                 m_listBox.ClearTarget();
             }
+            Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
         }
 
         public override void Drop(object[] dragObjects, PointerEventData pointerEventData)
         {
             base.Drop(dragObjects, pointerEventData);
             ProjectItem dropTarget = (ProjectItem)m_listBox.DropTarget;
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
             if (CanCreatePrefab(dropTarget, dragObjects))
             {
-                Debug.Log("Create Prefab");
+                ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
+                if (dropTarget.IsFolder)
+                {
+                    editor.CreatePrefab(dropTarget, dragObject, assetItem =>
+                    {
+                    });
+                } 
+            }
+            else
+            {
+                if(dragObjects[0] is ExposeToEditor)
+                {
+                    ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
+                    editor.CreatePrefab(m_folders[0], dragObject, assetItem =>
+                    {
+                       
+                    });   
+                }
             }
             m_listBox.ExternalItemDrop();
         }
+
+       
+
     }
 }

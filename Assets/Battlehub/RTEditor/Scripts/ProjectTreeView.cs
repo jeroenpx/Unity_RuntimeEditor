@@ -697,7 +697,14 @@ namespace Battlehub.RTEditor
             }
             else if(CanCreatePrefab(dropTarget, dragObjects))
             {
-                Debug.Log("Create Prefab");
+                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
+                if (dropTarget.IsFolder)
+                {
+                    editor.CreatePrefab(dropTarget, dragObject, assetItem =>
+                    {
+                    });
+                }
             }
             m_treeView.ExternalItemDrop();
         }

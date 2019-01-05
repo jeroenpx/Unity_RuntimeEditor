@@ -16,7 +16,7 @@ namespace Battlehub.RTEditor
     public class SelectObjectDialog : RuntimeWindow
     {
         [SerializeField]
-        private InputField m_filter;
+        private InputField m_filter = null;
         [HideInInspector]
         public UnityObject SelectedObject;
         [HideInInspector]

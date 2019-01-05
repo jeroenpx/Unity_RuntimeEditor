@@ -302,9 +302,19 @@ namespace Battlehub.RTSaveLoad2
 
         public void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback)
         {
-            if(assetItems.Length != persistentObjects.Length || persistentObjects.Length != folderPaths.Length)
+            if(assetItems.Length != persistentObjects.Length)
             {
                 throw new ArgumentException("assetItems");
+            }
+
+            if(persistentObjects.Length > folderPaths.Length)
+            {
+                int l = folderPaths.Length;
+                Array.Resize(ref folderPaths, persistentObjects.Length);
+                for (int i = l; i < folderPaths.Length; ++i)
+                {
+                    folderPaths[i] = folderPaths[l - 1];
+                }
             }
 
             projectPath = FullPath(projectPath);

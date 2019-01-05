@@ -24,6 +24,8 @@ namespace Battlehub.RTSaveLoad2
         int ToOrdinal(long id);
         int ToOrdinal(int id);
 
+        int ToInt(long id);
+
         long ToStaticResourceID(int ordinal, int id);
         long ToStaticFolderID(int ordinal, int id);
         long ToDynamicResourceID(int ordinal, int id);
@@ -483,6 +485,11 @@ namespace Battlehub.RTSaveLoad2
             return ids;
         }
 
+        public int ToInt(long id)
+        {
+            return (int)(0x00000000FFFFFFFFL & id);
+        }
+
         public bool IsMapped(long id)
         {
             if (IsNullID(id))
@@ -499,17 +506,17 @@ namespace Battlehub.RTSaveLoad2
             }
             if (IsInstanceID(id))
             {
-                int persistentID = unchecked((int)id);
+                int persistentID = ToInt(id);
                 return m_persistentIDToSceneObject != null && m_persistentIDToSceneObject.ContainsKey(persistentID);
             }
             if (IsStaticResourceID(id))
             {
-                int persistentID = unchecked((int)id);
+                int persistentID = ToInt(id);
                 return m_mapping.PersistentIDtoObj.ContainsKey(persistentID);
             }
             if(IsDynamicResourceID(id))
             {
-                int persistentID = unchecked((int)id);
+                int persistentID = ToInt(id);
                 return m_persistentIDToDynamicResource.ContainsKey(persistentID);
             }
             return false;
@@ -525,7 +532,7 @@ namespace Battlehub.RTSaveLoad2
             if(IsStaticResourceID(id))
             {
                 UnityObject obj;
-                int persistentID = unchecked((int)id);
+                int persistentID = ToInt(id);
                 if (m_mapping.PersistentIDtoObj.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
@@ -534,7 +541,7 @@ namespace Battlehub.RTSaveLoad2
             else if (IsInstanceID(id))
             {
                 UnityObject obj;
-                int persistentID = unchecked((int)id);
+                int persistentID = ToInt(id);
                 if (m_persistentIDToSceneObject != null && m_persistentIDToSceneObject.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
@@ -543,8 +550,8 @@ namespace Battlehub.RTSaveLoad2
             else if(IsDynamicResourceID(id))
             {
                 UnityObject obj;
-                int persistentID = unchecked((int)id);
-                if(m_persistentIDToDynamicResource.TryGetValue(persistentID, out obj))
+                int persistentID = ToInt(id);
+                if (m_persistentIDToDynamicResource.TryGetValue(persistentID, out obj))
                 {
                     return obj as T;
                 }

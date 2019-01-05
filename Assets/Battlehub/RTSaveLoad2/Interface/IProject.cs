@@ -17,7 +17,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         event ProjectEventHandler CloseProjectCompleted;
 
         event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
-        event ProjectEventHandler<AssetItem> CreateCompleted;
+        event ProjectEventHandler<AssetItem[]> CreateCompleted;
         event ProjectEventHandler<AssetItem[]> SaveCompleted;
         event ProjectEventHandler<UnityObject> LoadCompleted;
         event ProjectEventHandler UnloadCompleted;
@@ -68,10 +68,11 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null);
         void CloseProject();
 
-        
         ProjectAsyncOperation<AssetItem[]> GetAssetItems(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null); /*no events raised*/
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null); /*GetAssetItemsCompleted raised*/
-        ProjectAsyncOperation<AssetItem> Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback = null);
+
+        ProjectAsyncOperation<object[]> GetDependencies(object obj, bool exceptMappedObject = false, ProjectEventHandler<object[]> callback = null); /*no events raised*/
+        ProjectAsyncOperation<AssetItem[]> Create(ProjectItem parent, byte[][] previewData, object[] obj, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);

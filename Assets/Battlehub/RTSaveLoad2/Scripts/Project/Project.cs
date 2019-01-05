@@ -25,7 +25,7 @@ namespace Battlehub.RTSaveLoad2
         public event ProjectEventHandler CloseProjectCompleted;
 
         public event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
-        public event ProjectEventHandler<AssetItem> CreateCompleted;
+        public event ProjectEventHandler<AssetItem[]> CreateCompleted;
         public event ProjectEventHandler<AssetItem[]> SaveCompleted;
         public event ProjectEventHandler<UnityObject> LoadCompleted;
         public event ProjectEventHandler UnloadCompleted;
@@ -770,6 +770,57 @@ namespace Battlehub.RTSaveLoad2
         }
 
         /// <summary>
+        /// Get Dependecies from object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public ProjectAsyncOperation<object[]> GetDependencies(object obj, bool exceptMappedObject, ProjectEventHandler<object[]> callback)
+        {
+            Type objType = obj.GetType();
+            Type persistentType = m_typeMap.ToPersistentType(objType);
+            if (persistentType == null)
+            {
+                throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
+            }
+
+            if (persistentType == typeof(PersistentGameObject))
+            {
+                persistentType = typeof(PersistentRuntimePrefab);
+            }
+
+            ProjectAsyncOperation<object[]> ao = new ProjectAsyncOperation<object[]>();
+            LoadLibraryWithSceneDependencies(() =>
+            {
+                PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                GetDepsFromContext getDepsFromCtx = new GetDepsFromContext();
+                persistentObject.GetDepsFrom(obj, getDepsFromCtx);
+
+                object[] dependencies;
+                if (exceptMappedObject)
+                {
+                    dependencies = getDepsFromCtx.Dependencies.Where(d => d is UnityObject && !m_assetDB.IsMapped((UnityObject)d)).ToArray();
+                }
+                else
+                {
+                    dependencies = getDepsFromCtx.Dependencies.ToArray();
+                }
+
+                Error error = new Error(Error.OK);
+                if (callback != null)
+                {
+                    callback(error, dependencies);
+                }
+                
+                ao.Error = error;
+                ao.Result = dependencies;
+                ao.IsCompleted = true;
+            });
+
+            return ao;
+        }
+
+        /// <summary>
         /// Create asset
         /// </summary>
         /// <param name="parent"></param>
@@ -778,14 +829,14 @@ namespace Battlehub.RTSaveLoad2
         /// <param name="nameOverride"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation<AssetItem> Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
+        public ProjectAsyncOperation<AssetItem[]> Create(ProjectItem parent, byte[][] previewData, object[] objects, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback)
         {
             if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
-            return _Create(parent, previewData, obj, nameOverride, (error, result) =>
+            return _Create(parent, previewData, objects, nameOverrides, (error, result) =>
             {
                 IsBusy = false;
 
@@ -796,37 +847,26 @@ namespace Battlehub.RTSaveLoad2
             });
         }
 
-        private ProjectAsyncOperation<AssetItem> _Create(ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
+        private ProjectAsyncOperation<AssetItem[]> _Create(ProjectItem parent, byte[][] previewData, object[] objects, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback)
         {
             if (m_root == null)
             {
                 throw new InvalidOperationException("Project is not opened. Use OpenProject method");
             }
 
-            if (obj == null)
+            if (objects == null)
             {
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException("objects");
             }
 
-            Type objType = obj.GetType();
-            Type persistentType = m_typeMap.ToPersistentType(objType);
-            if (persistentType == null)
-            {
-                throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
-            }
-
-            ProjectAsyncOperation<AssetItem> ao = new ProjectAsyncOperation<AssetItem>();
-            LoadLibraryWithSceneDependencies(() => DoCreate(ao, persistentType, parent, previewData, obj, nameOverride, callback));
+          
+            ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
+            LoadLibraryWithSceneDependencies(() => DoCreate(ao, parent, previewData, objects, nameOverrides, callback));
             return ao;
         }
 
-        private void DoCreate(ProjectAsyncOperation<AssetItem> ao, Type persistentType, ProjectItem parent, byte[] previewData, object obj, string nameOverride, ProjectEventHandler<AssetItem> callback)
+        private void DoCreate(ProjectAsyncOperation<AssetItem[]> ao, ProjectItem parent, byte[][] previewData, object[] objects, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback)
         {
-            if (persistentType == typeof(PersistentGameObject))
-            {
-                persistentType = typeof(PersistentRuntimePrefab);
-            }
-
             if (parent == null)
             {
                 parent = Root;
@@ -838,134 +878,187 @@ namespace Battlehub.RTSaveLoad2
             }
 
             int assetIdBackup = m_projectInfo.AssetIdentifier;
-            int rootOrdinal;
-            int rootId;
-            if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out rootOrdinal, out rootId))
+            int[] rootIds = new int[objects.Length];
+            int[] rootOrdinals = new int[objects.Length];
+            
+            for(int o = 0; o < objects.Length; ++o)
             {
-                OnDynamicIdentifiersExhausted(callback, CreateCompleted, ao, assetIdBackup);
-                return;
-            }
-
-            if (obj is GameObject)
-            {
-                Dictionary<int, UnityObject> idToObj = new Dictionary<int, UnityObject>();
-                GameObject go = (GameObject)obj;
-                idToObj.Add(unchecked((int)m_assetDB.ToDynamicResourceID(rootOrdinal, rootId)), go);
-
-                Transform[] transforms = go.GetComponentsInChildren<Transform>(true);
-                for (int i = 0; i < transforms.Length; ++i)
+                object obj = objects[o];
+                Type objType = obj.GetType();
+                Type persistentType = m_typeMap.ToPersistentType(objType);
+                if (persistentType == null)
                 {
-                    Transform tf = transforms[i];
-                    if (tf.gameObject != go)
-                    {
-                        int ordinal;
-                        int id;
-                        if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out ordinal, out id))
-                        {
-                            OnDynamicIdentifiersExhausted(callback, CreateCompleted, ao, assetIdBackup);
-                            return;
-                        }
-                        idToObj.Add(unchecked((int)m_assetDB.ToDynamicResourceID(ordinal, id)), tf.gameObject);
-                    }
-
-                    Component[] components = tf.GetComponents<Component>();
-                    for (int j = 0; j < components.Length; ++j)
-                    {
-                        Component comp = components[j];
-                        int ordinal;
-                        int id;
-                        if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out ordinal, out id))
-                        {
-                            OnDynamicIdentifiersExhausted(callback, CreateCompleted, ao, assetIdBackup);
-                            return;
-                        }
-                        idToObj.Add(unchecked((int)m_assetDB.ToDynamicResourceID(ordinal, id)), comp);
-
-                    }
+                    throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
                 }
 
-                m_assetDB.RegisterDynamicResources(idToObj);
-            }
-            else if (obj is UnityObject)
-            {
-                m_assetDB.RegisterDynamicResource((int)m_assetDB.ToDynamicResourceID(rootOrdinal, rootId), (UnityObject)obj);
-            }
-
-            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-            persistentObject.ReadFrom(obj);
-
-            if (!string.IsNullOrEmpty(nameOverride))
-            {
-                persistentObject.name = nameOverride;
-            }
-
-            persistentObject.name = PathHelper.GetUniqueName(persistentObject.name, GetExt(obj), parent.Children.Select(c => c.NameExt).ToList());
-
-            AssetItem assetItem = new AssetItem();
-            if (obj is Scene)
-            {
-                assetItem.ItemID = m_assetDB.ToSceneID(rootOrdinal, rootId);
-            }
-            else
-            {
-                assetItem.ItemID = m_assetDB.ToDynamicResourceID(rootOrdinal, rootId);
-            }
-
-            assetItem.Name = persistentObject.name;
-            assetItem.Ext = GetExt(obj);
-            assetItem.TypeGuid = m_typeMap.ToGuid(obj.GetType());
-            assetItem.Preview = new Preview
-            {
-                ItemID = assetItem.ItemID,
-                PreviewData = previewData
-            };
-
-            if (persistentObject is PersistentRuntimePrefab && !(persistentObject is PersistentRuntimeScene))
-            {
-                PersistentRuntimePrefab persistentPrefab = (PersistentRuntimePrefab)persistentObject;
-                if (persistentPrefab.Descriptors != null)
+                if (persistentType == typeof(PersistentGameObject))
                 {
-                    List<PrefabPart> prefabParts = new List<PrefabPart>();
-                    PersistentDescriptorsToPrefabPartItems(persistentPrefab.Descriptors, prefabParts);
-                    assetItem.Parts = prefabParts.ToArray();
+                    persistentType = typeof(PersistentRuntimePrefab);
+                }
+
+                int rootOrdinal;
+                int rootId;
+                if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out rootOrdinal, out rootId))
+                {
+                    OnDynamicIdentifiersExhausted(callback, CreateCompleted, ao, assetIdBackup);
+                    return;
+                }
+
+                rootOrdinals[o] = rootOrdinal;
+                rootIds[o] = rootId;
+
+                if (obj is GameObject)
+                {
+                    Dictionary<int, UnityObject> idToObj = new Dictionary<int, UnityObject>();
+                    GameObject go = (GameObject)obj;
+                    idToObj.Add(m_assetDB.ToInt(m_assetDB.ToDynamicResourceID(rootOrdinal, rootId)), go);
+
+                    Transform[] transforms = go.GetComponentsInChildren<Transform>(true);
+                    for (int i = 0; i < transforms.Length; ++i)
+                    {
+                        Transform tf = transforms[i];
+                        if (tf.gameObject != go)
+                        {
+                            int ordinal;
+                            int id;
+                            if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out ordinal, out id))
+                            {
+                                OnDynamicIdentifiersExhausted(callback, CreateCompleted, ao, assetIdBackup);
+                                return;
+                            }
+                            idToObj.Add(m_assetDB.ToInt(m_assetDB.ToDynamicResourceID(ordinal, id)), tf.gameObject);
+                        }
+
+                        Component[] components = tf.GetComponents<Component>();
+                        for (int j = 0; j < components.Length; ++j)
+                        {
+                            Component comp = components[j];
+                            int ordinal;
+                            int id;
+                            if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out ordinal, out id))
+                            {
+                                OnDynamicIdentifiersExhausted(callback, CreateCompleted, ao, assetIdBackup);
+                                return;
+                            }
+
+                            idToObj.Add(m_assetDB.ToInt(m_assetDB.ToDynamicResourceID(ordinal, id)), comp);
+                        }
+                    }
+
+                    m_assetDB.RegisterDynamicResources(idToObj);
+                }
+                else if (obj is UnityObject)
+                {
+                    m_assetDB.RegisterDynamicResource((int)m_assetDB.ToDynamicResourceID(rootOrdinal, rootId), (UnityObject)obj);
                 }
             }
 
-            GetDepsContext getDepsCtx = new GetDepsContext();
-            persistentObject.GetDeps(getDepsCtx);
-            assetItem.Dependencies = getDepsCtx.Dependencies.ToArray();
+            AssetItem[] assetItems = new AssetItem[objects.Length];
+            PersistentObject[] persistentObjects = new PersistentObject[objects.Length];
 
-            m_storage.Save(m_projectPath, new[] { parent.ToString() }, new[] { assetItem }, new[] { persistentObject }, m_projectInfo, error =>
+            List<ProjectItem> potentialChildren = parent.Children.ToList(); //Required to generate unique names
+
+            for (int o = 0; o < objects.Length; ++o)
+            {
+                object obj = objects[o];
+                Type objType = obj.GetType();
+                Type persistentType = m_typeMap.ToPersistentType(objType);
+                if (persistentType == null)
+                {
+                    throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
+                }
+
+                if (persistentType == typeof(PersistentGameObject))
+                {
+                    persistentType = typeof(PersistentRuntimePrefab);
+                }
+
+                string nameOverride = nameOverrides != null ? nameOverrides[o] : null;
+
+                PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                persistentObject.ReadFrom(obj);
+
+                if (!string.IsNullOrEmpty(nameOverride))
+                {
+                    persistentObject.name = nameOverride;
+                }
+
+                persistentObject.name = PathHelper.GetUniqueName(persistentObject.name, GetExt(obj), potentialChildren.Select(c => c.NameExt).ToList());
+                AssetItem assetItem = new AssetItem();
+                if (obj is Scene)
+                {
+                    assetItem.ItemID = m_assetDB.ToSceneID(rootOrdinals[o], rootIds[o]);
+                }
+                else
+                {
+                    assetItem.ItemID = m_assetDB.ToDynamicResourceID(rootOrdinals[o], rootIds[o]);
+                }
+
+                assetItem.Name = persistentObject.name;
+                assetItem.Ext = GetExt(obj);
+                assetItem.TypeGuid = m_typeMap.ToGuid(obj.GetType());
+                assetItem.Preview = new Preview
+                {
+                    ItemID = assetItem.ItemID,
+                    PreviewData = previewData[o]
+                };
+
+                potentialChildren.Add(assetItem);
+
+                if (persistentObject is PersistentRuntimePrefab && !(persistentObject is PersistentRuntimeScene))
+                {
+                    PersistentRuntimePrefab persistentPrefab = (PersistentRuntimePrefab)persistentObject;
+                    if (persistentPrefab.Descriptors != null)
+                    {
+                        List<PrefabPart> prefabParts = new List<PrefabPart>();
+                        PersistentDescriptorsToPrefabPartItems(persistentPrefab.Descriptors, prefabParts);
+                        assetItem.Parts = prefabParts.ToArray();
+                    }
+                }
+
+                GetDepsContext getDepsCtx = new GetDepsContext();
+                persistentObject.GetDeps(getDepsCtx);
+                assetItem.Dependencies = getDepsCtx.Dependencies.ToArray();
+
+                persistentObjects[o] = persistentObject;
+                assetItems[o] = assetItem;
+            }
+
+            m_storage.Save(m_projectPath, new[] { parent.ToString() }, assetItems, persistentObjects, m_projectInfo, error =>
             {
                 if (!error.HasError)
                 {
-                    if (assetItem.Parts != null)
+                    for(int o = 0; o < assetItems.Length; ++o)
                     {
-                        for (int i = 0; i < assetItem.Parts.Length; ++i)
+                        AssetItem assetItem = assetItems[o];
+                        if (assetItem.Parts != null)
                         {
-                            m_idToAssetItem.Add(assetItem.Parts[i].PartID, assetItem);
+                            for (int i = 0; i < assetItem.Parts.Length; ++i)
+                            {
+                                m_idToAssetItem.Add(assetItem.Parts[i].PartID, assetItem);
+                            }
                         }
+                        else
+                        {
+                            m_idToAssetItem.Add(assetItem.ItemID, assetItem);
+                        }
+
+                        parent.AddChild(assetItem);
                     }
-                    else
+
+                    if (callback != null)
                     {
-                        m_idToAssetItem.Add(assetItem.ItemID, assetItem);
+                        callback(error, assetItems);
                     }
 
-                    parent.AddChild(assetItem);
+                    if (CreateCompleted != null)
+                    {
+                        CreateCompleted(error, assetItems);
+                    }
+                    ao.Error = error;
+                    ao.Result = assetItems;
+                    ao.IsCompleted = true;
                 }
-
-                if (callback != null)
-                {
-                    callback(error, assetItem);
-                }
-
-                if (CreateCompleted != null)
-                {
-                    CreateCompleted(error, assetItem);
-                }
-                ao.Error = error;
-                ao.Result = assetItem;
-                ao.IsCompleted = true;
             });
         }
 
@@ -984,7 +1077,7 @@ namespace Battlehub.RTSaveLoad2
             return true;
         }
 
-        private void OnDynamicIdentifiersExhausted(ProjectEventHandler<AssetItem> callback, ProjectEventHandler<AssetItem> eventHandler, ProjectAsyncOperation<AssetItem> ao, int assetIdBackup)
+        private void OnDynamicIdentifiersExhausted(ProjectEventHandler<AssetItem[]> callback, ProjectEventHandler<AssetItem[]> eventHandler, ProjectAsyncOperation<AssetItem[]> ao, int assetIdBackup)
         {
             m_projectInfo.AssetIdentifier = assetIdBackup;
             Error error = new Error(Error.E_InvalidOperation);
@@ -1439,15 +1532,15 @@ namespace Battlehub.RTSaveLoad2
                                 {
                                     GameObject createdGO = createdGameObjects[j];
                                     createdGO.transform.SetParent(createdGO.transform, false);
-                                    m_dynamicResources.Add(unchecked((int)m_assetDB.ToID(createdGO)), createdGO);
+                                    m_dynamicResources.Add(m_assetDB.ToInt(m_assetDB.ToID(createdGO)), createdGO);
                                 }
                             }
                             else
                             {
                                 Type type = m_typeMap.ToType(assetItem.TypeGuid);
                                 UnityObject instance = m_factory.CreateInstance(type);
-                                m_assetDB.RegisterDynamicResource(unchecked((int)assetItem.ItemID), instance);
-                                m_dynamicResources.Add(unchecked((int)assetItem.ItemID), instance);
+                                m_assetDB.RegisterDynamicResource(m_assetDB.ToInt(assetItem.ItemID), instance);
+                                m_dynamicResources.Add(m_assetDB.ToInt(assetItem.ItemID), instance);
                             }
                         }
                     }

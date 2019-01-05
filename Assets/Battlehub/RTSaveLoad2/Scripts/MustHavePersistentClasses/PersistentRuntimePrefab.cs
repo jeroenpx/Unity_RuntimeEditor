@@ -142,14 +142,14 @@ namespace Battlehub.RTSaveLoad2
         {
             UnityObject objGo;
             GameObject go;
-            if (idToObj.TryGetValue(unchecked((int)descriptor.PersistentID), out objGo))
+            if (idToObj.TryGetValue(m_assetDB.ToInt(descriptor.PersistentID), out objGo))
             {
                 throw new ArgumentException(string.Format("duplicate object descriptor found in descriptors hierarchy. {0}", descriptor.ToString()), "descriptor");
             }
             else
             {
                 go = new GameObject();
-                idToObj.Add(unchecked((int)descriptor.PersistentID), go);
+                idToObj.Add(m_assetDB.ToInt(descriptor.PersistentID), go);
             }
 
             if (decomposition != null)
@@ -170,7 +170,7 @@ namespace Battlehub.RTSaveLoad2
             if (descriptor.Parent != null)
             {
                 UnityObject parentGO;
-                if (!idToObj.TryGetValue(unchecked((int)descriptor.Parent.PersistentID), out parentGO))
+                if (!idToObj.TryGetValue(m_assetDB.ToInt(descriptor.Parent.PersistentID), out parentGO))
                 {
                     throw new ArgumentException(string.Format("objects dictionary is supposed to have object with PersistentID {0} at this stage. Descriptor {1}", descriptor.Parent.PersistentID, descriptor, "descriptor"));
                 }
@@ -193,26 +193,26 @@ namespace Battlehub.RTSaveLoad2
                     if (persistentComponentType == null)
                     {
                         Debug.LogWarningFormat("Unknown type {0} associated with component Descriptor {1}", componentDescriptor.PersistentTypeGuid, componentDescriptor.ToString());
-                        idToObj.Add(unchecked((int)componentDescriptor.PersistentID), null);
+                        idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
                         continue;
                     }
                     Type componentType = typeMap.ToUnityType(persistentComponentType);
                     if (componentType == null)
                     {
                         Debug.LogWarningFormat("There is no mapped type for " + persistentComponentType.FullName + " in TypeMap");
-                        idToObj.Add(unchecked((int)componentDescriptor.PersistentID), null);
+                        idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
                         continue;
                     }
 
                     if (!componentType.IsSubclassOf(typeof(Component)))
                     {
                         Debug.LogErrorFormat("{0} is not subclass of {1}", componentType.FullName, typeof(Component).FullName);
-                        idToObj.Add(unchecked((int)componentDescriptor.PersistentID), null);
+                        idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
                         continue;
                     }
 
                     UnityObject obj;
-                    if (idToObj.TryGetValue(unchecked((int)componentDescriptor.PersistentID), out obj))
+                    if (idToObj.TryGetValue(m_assetDB.ToInt(componentDescriptor.PersistentID), out obj))
                     {
                         if (obj != null && !(obj is Component))
                         {
@@ -348,7 +348,7 @@ namespace Battlehub.RTSaveLoad2
                         }
                     }
                 }
-                idToObj.Add(unchecked((int)componentDescriptor.PersistentID), component);
+                idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), component);
             }
 
             return component;

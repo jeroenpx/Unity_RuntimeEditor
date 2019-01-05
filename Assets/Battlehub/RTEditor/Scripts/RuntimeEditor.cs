@@ -3,6 +3,7 @@ using Battlehub.RTHandles;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -24,6 +25,8 @@ namespace Battlehub.RTEditor
         void CmdGameObject(string cmd);
         bool CmdEditValidate(string cmd);
         void CmdEdit(string cmd);
+
+        void CreatePrefab(ProjectItem folder, ExposeToEditor dragObject, Action<AssetItem[]> done = null);
     }
 
     [RequireComponent(typeof(RTEObjects))]
@@ -210,9 +213,9 @@ namespace Battlehub.RTEditor
                         windowManager.MessageBox("Unable to save scene", deleteError.ErrorText);
                     }
                     IsBusy = true;
-                    m_project.Create(m_project.Root, new byte[0], SceneManager.GetActiveScene(), m_project.LoadedScene.Name, (error, assetItem) =>
+                    m_project.Create(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { m_project.LoadedScene.Name }, (error, assetItem) =>
                     {
-                        m_project.LoadedScene = assetItem;
+                        m_project.LoadedScene = assetItem[0];
 
                         IsBusy = false;
                         if (error.HasError)
@@ -266,15 +269,76 @@ namespace Battlehub.RTEditor
         public void CmdEdit(string cmd)
         {
             IEditCmd editCmd = IOC.Resolve<IEditCmd>();
-            if(editCmd != null)
+            if (editCmd != null)
             {
                 editCmd.Exec(cmd);
             }
         }
 
-     
+        public void CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, Action<AssetItem[]> done)
+        {
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            windowManager.Confirmation("Create Prefab", "Include dependencies?",
+                (sender, args) =>
+                {
+                    IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
+                    m_project.GetDependencies(dragObject.gameObject, true, (error, deps) =>
+                    {
+                        object[] objects;
+                        if (!deps.Contains(dragObject.gameObject))
+                        {
+                            Debug.Log(dragObject.gameObject);
+                            objects = new object[deps.Length + 1];
+                            objects[deps.Length] = dragObject.gameObject;
+                            for (int i = 0; i < deps.Length; ++i)
+                            {
+                                objects[i] = deps[i];
+                            }
+                        }
+                        else
+                        {
+                            objects = deps;
+                        }
 
-        
+                        byte[][] previewData = new byte[objects.Length][];
+                        for (int i = 0; i < objects.Length; ++i)
+                        {
+                            if (objects[i] is UnityEngine.Object)
+                            {
+                                previewData[i] = previewUtility.CreatePreviewData((UnityEngine.Object)objects[i]);
+                            }
+                        }
+                        CreatePrefab(dropTarget, previewData, objects, done);
+                    });
+                },
+                (sender, args) =>
+                {
+                    IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
+                    byte[] previewData = previewUtility.CreatePreviewData(dragObject.gameObject);
+                    CreatePrefab(dropTarget, new[] { previewData }, new[] { dragObject.gameObject }, done);
+                },
+                "Yes",
+                "No");
+        }
+
+        private void CreatePrefab(ProjectItem dropTarget, byte[][] previewData, object[] objects, Action<AssetItem[]> done)
+        {
+            IsBusy = true;
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            m_project.Create(dropTarget, previewData, objects, null, (error, assetItems) =>
+            {
+                IsBusy = false;
+                if (error.HasError)
+                {
+                    windowManager.MessageBox("Unable to create prefab", error.ErrorText);
+                    return;
+                }
+                done(assetItems);
+            });
+        }
+
+
+
 
         #region Commented Out
         /*

@@ -84,23 +84,23 @@ namespace Battlehub.RTSaveLoad2
             bool done = false;
             project.OpenProject("TestProject", (openError, projectInfo) =>
             {
-                project.Create(null, dummyPreview, dummyGo, null, (saveError, assetItem) =>
+                project.Create(null, new[] { dummyPreview }, new[] { dummyGo }, null, (saveError, assetItem) =>
                 {
                     Assert.IsFalse(saveError.HasError);
-                    Assert.AreEqual(assetItem.Parent, project.Root);
+                    Assert.AreEqual(assetItem[0].Parent, project.Root);
 
-                    Assert.IsNotNull(assetItem.Preview);
-                    Assert.AreEqual(dummyPreview[2], assetItem.Preview.PreviewData[2]);
+                    Assert.IsNotNull(assetItem[0].Preview);
+                    Assert.AreEqual(dummyPreview, assetItem[0].Preview.PreviewData[2]);
                     if (unload)
                     {
                         project.Unload(ao =>
                         {
-                            done = Load(assetItem, dummyGo, dummyChild, project, done);
+                            done = Load(assetItem[0], dummyGo, dummyChild, project, done);
                         });
                     }
                     else
                     {
-                        done = Load(assetItem, dummyGo, dummyChild, project, done);
+                        done = Load(assetItem[0], dummyGo, dummyChild, project, done);
                     }
 
                 });
@@ -152,21 +152,21 @@ namespace Battlehub.RTSaveLoad2
             var openResult = project.OpenProject("TestProject");
             yield return openResult;
 
-            var saveResult = project.Create(null, dummyPreview, dummyGo, null);
+            var saveResult = project.Create(null, new[] { dummyPreview }, new[] { dummyGo }, null);
             yield return saveResult;
 
             Assert.IsFalse(saveResult.Error.HasError);
-            Assert.AreEqual(saveResult.Result.Parent, project.Root);
-            Assert.IsNotNull(saveResult.Result.Preview);
-            Assert.AreEqual(dummyPreview[2], saveResult.Result.Preview.PreviewData[2]);
+            Assert.AreEqual(saveResult.Result[0].Parent, project.Root);
+            Assert.IsNotNull(saveResult.Result[0].Preview);
+            Assert.AreEqual(dummyPreview[2], saveResult.Result[0].Preview.PreviewData[2]);
             if (unload)
             {
                 yield return project.Unload();
-                yield return Load2(saveResult.Result, dummyGo, dummyChild, project);
+                yield return Load2(saveResult.Result[0], dummyGo, dummyChild, project);
             }
             else
             {
-                yield return Load2(saveResult.Result, dummyGo, dummyChild, project);
+                yield return Load2(saveResult.Result[0], dummyGo, dummyChild, project);
             }
         }
 
