@@ -9,55 +9,15 @@ namespace Battlehub.RTEditor
 {
     public class ProjectView : RuntimeWindow
     {
+        private IWindowManager m_windowManager;
         private IProject m_project;
         private IResourcePreviewUtility m_resourcePreview;
-
-        [SerializeField]
-        private Text m_loadingProgressText = null;
-
         [SerializeField]
         private ProjectTreeView m_projectTree = null;
         [SerializeField]
         private ProjectFolderView m_projectResources = null;
-        //[SerializeField]
-        //private Button m_btnDuplicate = null;
         [SerializeField]
         private string ProjectName = "DefaultProject";
-
-        public KeyCode DuplicateKey = KeyCode.D;
-        public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
-        public KeyCode EditorModifierKey = KeyCode.LeftShift;
-        public KeyCode ModifierKey
-        {
-            get
-            {
-                #if UNITY_EDITOR
-                return EditorModifierKey;
-                #else
-                return RuntimeModifierKey;
-                #endif
-            }
-        }
-
-        private bool m_showProgress;
-        private bool ShowProgress
-        {
-            get { return m_showProgress; }
-            //Show progress bar if ui here needed
-            set
-            {
-                if (m_showProgress != value)
-                {
-                    m_showProgress = value;
-                    if (m_loadingProgressText != null)
-                    {
-                        m_loadingProgressText.text = "Loading...";
-                        m_loadingProgressText.gameObject.SetActive(m_showProgress);
-                    }
-
-                }
-            }
-        }
 
         protected override void AwakeOverride()
         {
@@ -67,6 +27,7 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
+            m_windowManager = IOC.Resolve<IWindowManager>();
             m_project = IOC.Resolve<IProject>();
             if(m_project == null)
             {
@@ -101,7 +62,6 @@ namespace Battlehub.RTEditor
 
             if (!m_project.IsOpened && !m_project.IsBusy)
             {
-                ShowProgress = true;
                 Editor.IsBusy = true;
                 m_project.OpenProject(ProjectName);
             }
@@ -141,14 +101,12 @@ namespace Battlehub.RTEditor
             }
         }
 
-
         private void OnProjectOpenCompleted(Error error, ProjectInfo projectInfo)
         {
-            ShowProgress = false;
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                PopupWindow.Show("Can't open project", error.ToString(), "OK");
+                m_windowManager.MessageBox("Can't open project", error.ToString());
                 return;
             }
             
@@ -160,7 +118,7 @@ namespace Battlehub.RTEditor
         {
             if (error.HasError)
             {
-                PopupWindow.Show("Can't close project", error.ToString(), "OK");
+                m_windowManager.MessageBox("Can't close project", error.ToString());
                 return;
             }
 
@@ -174,7 +132,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                PopupWindow.Show("Unable to Import assets", error.ErrorText, "OK");
+                m_windowManager.MessageBox("Unable to Import assets", error.ErrorText);
             }
 
             string path = string.Empty;
@@ -200,7 +158,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                PopupWindow.Show("Unable to remove", error.ErrorText, "OK");
+                m_windowManager.MessageBox("Unable to remove", error.ErrorText);
             }
             m_projectTree.RemoveProjectItemsFromTree(result);
         }
@@ -210,7 +168,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                PopupWindow.Show("Unable to rename asset", error.ToString(), "OK");
+                m_windowManager.MessageBox("Unable to rename asset", error.ToString());
             }
         }
 
@@ -218,7 +176,7 @@ namespace Battlehub.RTEditor
         {
             if (error.HasError)
             {
-                PopupWindow.Show("Unable to move assets", error.ErrorText, "OK");
+                m_windowManager.MessageBox("Unable to move assets", error.ErrorText);
                 return;
             }
 
@@ -244,13 +202,12 @@ namespace Battlehub.RTEditor
   
         private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)
         {
-            ShowProgress = true;
             m_project.GetAssetItems(e.NewItems, (error, assets) =>
             {
-                ShowProgress = false;
+                
                 if (error.HasError)
                 {
-                    PopupWindow.Show("Can't GetAssets", error.ToString(), "OK");
+                    m_windowManager.MessageBox("Can't GetAssets", error.ToString());
                     return;
                 }
 
@@ -268,7 +225,25 @@ namespace Battlehub.RTEditor
 
         private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
         {
-            m_projectTree.SelectedFolder = e.ProjectItem;
+            if(e.ProjectItem.IsFolder)
+            {
+                m_projectTree.SelectedFolder = e.ProjectItem;
+            }
+            else
+            {
+                if(m_project.IsScene(e.ProjectItem))
+                {
+                    Editor.IsBusy = true;
+                    m_project.Load((AssetItem)e.ProjectItem, (error, obj) =>
+                    {
+                        Editor.IsBusy = false;
+                        if(error.HasError)
+                        {
+                            m_windowManager.MessageBox("Unable to load scene " + e.ProjectItem.ToString(), error.ToString());
+                        }
+                    });
+                }
+            }
         }
 
         private void OnProjectResourcesRenamed(object sender, ProjectTreeRenamedEventArgs e)

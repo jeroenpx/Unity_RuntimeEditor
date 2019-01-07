@@ -146,6 +146,7 @@ namespace Battlehub.RTEditor
             m_treeView.SelectedItems = m_treeView.Items;
         }
 
+        
         private void EnableHierarchy()
         {
             BindGameObjects();

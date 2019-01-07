@@ -39,7 +39,8 @@ namespace Battlehub.RTSaveLoad2
             typeof(RuntimePrefab),
             typeof(RuntimeScene),
             typeof(UnityEventBase),
-            typeof(UnityEvent)
+            typeof(UnityEvent),
+            
         };
 
         public event Action<Type> TypeLocked;

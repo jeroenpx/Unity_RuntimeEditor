@@ -21,9 +21,9 @@ namespace Battlehub.RTEditor
             return Input.GetKeyDown(SaveSceneKey) && Input.GetKey(ModifierKey);
         }
 
-        protected override void Update()
+        protected override void UpdateOverride()
         {
-            base.Update();
+            base.UpdateOverride();
             if(m_editor.IsOpened)
             {
                 if (SaveSceneAction())

@@ -21,6 +21,7 @@ namespace Battlehub.RTEditor
         public Rect Rect
         {
             get { return m_rect; }
+            set { m_rect = value; }
         }
 
         [SerializeField]
@@ -28,6 +29,7 @@ namespace Battlehub.RTEditor
         public int Depth
         {
             get { return m_depth; }
+            set { m_depth = value; }
         }
 
         

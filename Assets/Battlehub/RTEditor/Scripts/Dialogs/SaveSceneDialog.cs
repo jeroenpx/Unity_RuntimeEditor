@@ -122,7 +122,7 @@ namespace Battlehub.RTEditor
             }
 
             ProjectItem selectedItem = (ProjectItem)m_treeView.SelectedItem;
-            if (IsScene(selectedItem))
+            if (m_project.IsScene(selectedItem))
             {
                 if (Input.text.ToLower() == selectedItem.Name.ToLower())
                 {
@@ -178,16 +178,6 @@ namespace Battlehub.RTEditor
             "No");
         }
 
-        private bool IsScene(ProjectItem item)
-        {
-            if(item is AssetItem)
-            {
-                AssetItem assetItem = (AssetItem)item;
-                return m_project.ToType(assetItem) == typeof(Scene);
-            }
-            return false;
-        }
-
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             ProjectItem item = e.Item as ProjectItem;
@@ -197,7 +187,7 @@ namespace Battlehub.RTEditor
                 text.text = item.Name;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);
-                if (IsScene(item))
+                if (m_project.IsScene(item))
                 {
                     image.sprite = SceneIcon;
                 }
@@ -206,7 +196,7 @@ namespace Battlehub.RTEditor
                     image.sprite = FolderIcon;
                 }
                 image.gameObject.SetActive(true);
-                e.HasChildren = item.Children != null && item.Children.Count(projectItem => projectItem.IsFolder || IsScene(projectItem)) > 0;
+                e.HasChildren = item.Children != null && item.Children.Count(projectItem => projectItem.IsFolder || m_project.IsScene(projectItem)) > 0;
             }
         }
 
@@ -216,7 +206,7 @@ namespace Battlehub.RTEditor
             if (item != null)
             {
                 e.Children = item.Children.Where(projectItem => projectItem.IsFolder).OrderBy(projectItem => projectItem.Name)
-                    .Union(item.Children.Where(projectItem => IsScene(projectItem)).OrderBy(projectItem => projectItem.Name));
+                    .Union(item.Children.Where(projectItem => m_project.IsScene(projectItem)).OrderBy(projectItem => projectItem.Name));
             }
         }
 
@@ -227,7 +217,7 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            if (IsScene(selectedItem))
+            if (m_project.IsScene(selectedItem))
             {
                 Input.text = selectedItem.Name;
             }
@@ -249,9 +239,9 @@ namespace Battlehub.RTEditor
 
         private void SaveSceneToFolder(DialogCancelArgs args, ProjectItem folder)
         {
-            if (folder.Children != null && folder.Children.Any(p => p.Name.ToLower() == Input.text.ToLower() && IsScene(p)))
+            if (folder.Children != null && folder.Children.Any(p => p.Name.ToLower() == Input.text.ToLower() && m_project.IsScene(p)))
             {
-                Overwrite(folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && IsScene(p)).First());
+                Overwrite(folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && m_project.IsScene(p)).First());
                 args.Cancel = true;
             }
             else

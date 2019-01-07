@@ -12,6 +12,8 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.Battlehub.SL2;
+using Battlehub.RTEditor;
+using Battlehub.RTEditor.Battlehub.SL2;
 using Battlehub.SL2;
 using UnityEngine.Events.Battlehub.SL2;
 using UnityEngine.Events;
@@ -68,7 +70,8 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentFlare), true);
             model.Add(typeof(PersistentMonoBehaviour), true)
                 .AddSubType(1026, typeof(PersistentExposeToEditor))
-                .AddSubType(1027, typeof(PersistentTestBehaviour));
+                .AddSubType(1027, typeof(PersistentTestBehaviour))
+                .AddSubType(1028, typeof(PersistentGameViewCamera));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
             model.Add(typeof(PersistentShader), true);
@@ -81,6 +84,7 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1025, typeof(PersistentRuntimeScene));
             model.Add(typeof(PersistentRuntimeScene), true);
             model.Add(typeof(PersistentExposeToEditor), true);
+            model.Add(typeof(PersistentGameViewCamera), true);
             model.Add(typeof(PersistentTestBehaviour), true);
             model.Add(typeof(Vector2), false).SetSurrogate(typeof(PersistentVector2));
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
@@ -108,6 +112,7 @@ namespace UnityEngine.Rendering.Battlehub.SL2 {}
 namespace UnityEngine.SceneManagement.Battlehub.SL2 {}
 namespace Battlehub.RTSaveLoad2.Battlehub.SL2 {}
 namespace Battlehub.RTCommon.Battlehub.SL2 {}
+namespace Battlehub.RTEditor.Battlehub.SL2 {}
 namespace Battlehub.SL2 {}
 namespace UnityEngine.Events.Battlehub.SL2 {}
 

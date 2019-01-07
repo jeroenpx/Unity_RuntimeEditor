@@ -48,6 +48,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         }
 
         bool IsStatic(ProjectItem projectItem);
+        bool IsScene(ProjectItem projectItem);
         Type ToType(AssetItem assetItem);
         Guid ToGuid(Type type);
         long ToID(UnityObject obj);

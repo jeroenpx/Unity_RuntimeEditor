@@ -131,6 +131,11 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        bool IsInputFieldActive
+        {
+            get;
+        }
+
         RuntimeWindow ActiveWindow
         {
             get;
@@ -204,6 +209,10 @@ namespace Battlehub.RTCommon
         protected float m_zAxis;
 
         protected readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
+        public bool IsInputFieldActive
+        {
+            get { return m_currentInputField != null; }
+        }
 
         private RuntimeWindow m_activeWindow;
         public virtual RuntimeWindow ActiveWindow

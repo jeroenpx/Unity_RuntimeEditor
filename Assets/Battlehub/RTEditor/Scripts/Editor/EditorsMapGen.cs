@@ -98,12 +98,15 @@ namespace Battlehub.RTEditor
                     continue;
                 }
 
+                string fullTypeName = descriptor.Type.FullName;
+                fullTypeName = fullTypeName.Replace("Battlehub.RTEditor.", "");
+                fullTypeName = fullTypeName.Replace("Battlehub.", "");
                 if (editors.ContainsKey(descriptor.Editor))
                 {
                     builder.AppendLine(
                         string.Format(
                             "\t\t\t\t{{ typeof({0}), new EditorDescriptor({1}, {2}, {3}) }},",
-                            descriptor.Type.FullName.Replace("`1", "<>"),
+                            fullTypeName.Replace("`1", "<>"),
                             editors[descriptor.Editor],
                             descriptor.Enabled ? "true" : "false",
                             descriptor.IsPropertyEditor ? "true" : "false"));
@@ -116,7 +119,7 @@ namespace Battlehub.RTEditor
                     builder.AppendLine(
                         string.Format(
                             "\t\t\t\t{{ typeof({0}), new EditorDescriptor({1}, {2}, {3}) }},",
-                            descriptor.Type.FullName.Replace("`1", "<>"),
+                            fullTypeName.Replace("`1", "<>"),
                             editorIndex,
                             descriptor.Enabled ? "true" : "false",
                             descriptor.IsPropertyEditor ? "true" : "false"));

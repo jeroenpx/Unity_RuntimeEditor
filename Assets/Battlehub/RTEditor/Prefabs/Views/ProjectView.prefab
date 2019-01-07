@@ -115,13 +115,9 @@ MonoBehaviour:
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}
-  m_loadingProgressText: {fileID: 0}
   m_projectTree: {fileID: 8756119971012547091}
   m_projectResources: {fileID: 8756119972034287729}
   ProjectName: DefaultProject
-  DuplicateKey: 100
-  RuntimeModifierKey: 306
-  EditorModifierKey: 304
 --- !u!114 &721812406174773305
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ namespace Battlehub.RTEditor
 				{ typeof(System.String), new EditorDescriptor(7, true, true) },
 				{ typeof(System.Int32), new EditorDescriptor(8, true, true) },
 				{ typeof(System.Single), new EditorDescriptor(9, true, true) },
-				{ typeof(Battlehub.RTEditor.Range), new EditorDescriptor(10, true, true) },
+				{ typeof(Range), new EditorDescriptor(10, true, true) },
 				{ typeof(UnityEngine.Vector2), new EditorDescriptor(11, true, true) },
 				{ typeof(UnityEngine.Vector3), new EditorDescriptor(12, true, true) },
 				{ typeof(UnityEngine.Vector4), new EditorDescriptor(13, true, true) },
@@ -42,8 +42,8 @@ namespace Battlehub.RTEditor
 				{ typeof(UnityEngine.SphereCollider), new EditorDescriptor(18, true, false) },
 				{ typeof(UnityEngine.SpringJoint), new EditorDescriptor(17, true, false) },
 				{ typeof(UnityEngine.Transform), new EditorDescriptor(19, true, false) },
-				{ typeof(Battlehub.Cubeman.CubemanCharacter), new EditorDescriptor(17, true, false) },
-				{ typeof(Battlehub.Cubeman.CubemanUserControl), new EditorDescriptor(17, true, false) },
+				{ typeof(Cubeman.CubemanCharacter), new EditorDescriptor(17, true, false) },
+				{ typeof(Cubeman.CubemanUserControl), new EditorDescriptor(17, true, false) },
 				{ typeof(TestBehaviour), new EditorDescriptor(17, true, false) },
 			};
 		}

@@ -46,6 +46,7 @@ namespace Battlehub.RTSaveLoad2
     {
         bool IsStaticLibrary(int ordinal);
         bool IsSceneLibrary(int ordinal);
+        bool IsBuiltinLibrary(int ordinal);
         bool IsBundledLibrary(int ordinal);
         bool IsDynamicLibrary(int ordinal);
 
@@ -86,6 +87,11 @@ namespace Battlehub.RTSaveLoad2
         public bool IsSceneLibrary(int ordinal)
         {
             return AssetLibraryInfo.SCENELIB_FIRST <= ordinal && ordinal <= AssetLibraryInfo.SCENELIB_LAST;
+        }
+
+        public bool IsBuiltinLibrary(int ordinal)
+        {
+            return AssetLibraryInfo.BUILTIN_FIRST <= ordinal && ordinal <= AssetLibraryInfo.BUILTIN_LAST;
         }
 
         public bool IsBundledLibrary(int ordinal)
@@ -196,7 +202,14 @@ namespace Battlehub.RTSaveLoad2
                 AssetLibraryAsset assetLib = (AssetLibraryAsset)request.asset;
                 if (assetLib == null)
                 {
-                    if(IsSceneLibrary(ordinal))
+                    if(IsBuiltinLibrary(ordinal))
+                    {
+                        if (ordinal - AssetLibraryInfo.BUILTIN_FIRST == 0)
+                        {
+                            Debug.LogWarningFormat("Asset Library not found : {0}", assetLibrary);
+                        }
+                    }
+                    else if(IsSceneLibrary(ordinal))
                     {
                         if (ordinal - AssetLibraryInfo.SCENELIB_FIRST == 0)
                         {

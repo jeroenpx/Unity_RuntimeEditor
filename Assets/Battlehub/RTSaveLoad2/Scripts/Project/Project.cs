@@ -54,6 +54,8 @@ namespace Battlehub.RTSaveLoad2
         [SerializeField]
         private string m_sceneDepsLibrary = null;
 
+        [SerializeField]
+        private string m_builtInLibrary = null;
 
         private ProjectInfo m_projectInfo;
         private string m_projectPath;
@@ -124,7 +126,12 @@ namespace Battlehub.RTSaveLoad2
         {
             if (string.IsNullOrEmpty(m_sceneDepsLibrary))
             {
-                m_sceneDepsLibrary = SceneManager.GetActiveScene().name + "/AssetLibrary";
+                m_sceneDepsLibrary = "Scenes/" + SceneManager.GetActiveScene().name + "/SceneAssetLibrary";
+            }
+
+            if(string.IsNullOrEmpty(m_builtInLibrary))
+            {
+                m_builtInLibrary = "BuiltInAssets/BuiltInAssetLibrary";
             }
 
             m_storage = IOC.Resolve<IStorage>();
@@ -168,6 +175,17 @@ namespace Battlehub.RTSaveLoad2
         public bool IsStatic(ProjectItem projectItem)
         {
             return m_assetDB.IsStaticFolderID(projectItem.ItemID) || m_assetDB.IsStaticResourceID(projectItem.ItemID);
+        }
+
+        public bool IsScene(ProjectItem projectItem)
+        {
+            if(projectItem.IsFolder)
+            {
+                return false;
+            }
+
+            AssetItem assetItem = (AssetItem)projectItem;
+            return ToType(assetItem) == typeof(Scene);
         }
 
         public Type ToType(AssetItem assetItem)
@@ -738,11 +756,11 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        private void LoadLibraryWithSceneDependencies(Action callback)
+        private void LoadBuiltinLibrary(Action callback)
         {
-            if (!m_assetDB.IsLibraryLoaded(AssetLibraryInfo.SCENELIB_FIRST))
+            if (!m_assetDB.IsLibraryLoaded(AssetLibraryInfo.BUILTIN_FIRST))
             {
-                LoadLibraryWithSceneDependencies(m_sceneDepsLibrary, AssetLibraryInfo.SCENELIB_FIRST, callback);
+                LoadBuiltinLibrary(m_builtInLibrary, AssetLibraryInfo.BUILTIN_FIRST, callback);
             }
             else
             {
@@ -750,9 +768,45 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        private void LoadBuiltinLibrary(string name, int ordinal, Action callback)
+        {
+            string libraryName = ordinal == AssetLibraryInfo.BUILTIN_FIRST ? name : name + ((ordinal - AssetLibraryInfo.BUILTIN_FIRST) + 1);
+            m_assetDB.LoadLibrary(libraryName, ordinal, true, true, done =>
+            {
+                if (!done)
+                {
+                    if (ordinal == AssetLibraryInfo.BUILTIN_FIRST)
+                    {
+                        Debug.LogWarning("Builtin library was not loaded");
+                    }
+                    callback();
+                    return;
+                }
+
+                ordinal++;
+                LoadBuiltinLibrary(name, ordinal, callback);
+            });
+        }
+
+        private void LoadLibraryWithSceneDependencies(Action callback)
+        {
+            LoadBuiltinLibrary(() =>
+            {
+                if (!m_assetDB.IsLibraryLoaded(AssetLibraryInfo.SCENELIB_FIRST))
+                {
+                    LoadLibraryWithSceneDependencies(m_sceneDepsLibrary, AssetLibraryInfo.SCENELIB_FIRST, callback);
+                }
+                else
+                {
+                    callback();
+                }
+            });
+        }
+
         private void LoadLibraryWithSceneDependencies(string name, int ordinal, Action callback)
         {
-            m_assetDB.LoadLibrary(name, ordinal, true, true, done =>
+            string libraryName = ordinal == AssetLibraryInfo.SCENELIB_FIRST ? name : name + ((ordinal - AssetLibraryInfo.SCENELIB_FIRST) + 1);
+            m_assetDB.LoadLibrary(libraryName, ordinal, true, true, done =>
             {
                 if (!done)
                 {
@@ -765,7 +819,7 @@ namespace Battlehub.RTSaveLoad2
                 }
 
                 ordinal++;
-                LoadLibraryWithSceneDependencies(name + ((ordinal - AssetLibraryInfo.SCENELIB_FIRST) + 1), ordinal, callback);
+                LoadLibraryWithSceneDependencies(name, ordinal, callback);
             });
         }
 
@@ -1404,7 +1458,18 @@ namespace Battlehub.RTSaveLoad2
                     }
                     else
                     {
-                        if(m_assetDB.IsSceneLibrary(ordinal))
+                        if(m_assetDB.IsBuiltinLibrary(ordinal))
+                        {
+                            if(ordinal != AssetLibraryInfo.BUILTIN_FIRST)
+                            {
+                                assetLibraryName = m_builtInLibrary + ((ordinal - AssetLibraryInfo.BUILTIN_FIRST) + 1);
+                            }
+                            else
+                            {
+                                assetLibraryName = m_builtInLibrary;
+                            }
+                        }
+                        else if(m_assetDB.IsSceneLibrary(ordinal))
                         {
                             if(ordinal != AssetLibraryInfo.SCENELIB_FIRST)
                             {
@@ -1460,6 +1525,16 @@ namespace Battlehub.RTSaveLoad2
             if (m_assetDB.IsStaticLibrary(ordinal))
             {
                 m_assetDB.LoadLibrary(AssetLibraries[ordinal], ordinal, loadIIDtoPID, loadPIDtoObj, callback);
+            }
+            else if(m_assetDB.IsBuiltinLibrary(ordinal))
+            {
+                int num = ordinal - AssetLibraryInfo.BUILTIN_FIRST;
+                string builtinLibraryName = m_builtInLibrary;
+                if(num > 0)
+                {
+                    builtinLibraryName += (num + 1);
+                }
+                m_assetDB.LoadLibrary(builtinLibraryName, ordinal, loadIIDtoPID, loadPIDtoObj, callback);
             }
             else if(m_assetDB.IsSceneLibrary(ordinal))
             {
@@ -2195,7 +2270,7 @@ namespace Battlehub.RTSaveLoad2
                             DestroyImmediate(importItems[i].Object, true);
                             importItems[i].Object = null;
                         }
-                        else if(m_assetDB.IsSceneLibrary(ordinal) || m_assetDB.IsStaticLibrary(ordinal))
+                        else if(m_assetDB.IsBuiltinLibrary(ordinal) || m_assetDB.IsSceneLibrary(ordinal) || m_assetDB.IsStaticLibrary(ordinal))
                         {
                             UnityObject uo = importItems[i].Object;
                             if(!(uo is GameObject) && !(uo is Component))

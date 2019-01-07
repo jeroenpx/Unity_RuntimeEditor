@@ -260,12 +260,19 @@ namespace Battlehub.RTSaveLoad2
         public const int STATICLIB_FIRST = 0;
         public const int STATICLIB_LAST = (ORDINAL_MASK - 2535) / 3 - 1;
         public const int MAX_STATICLIBS = (STATICLIB_LAST - STATICLIB_FIRST) + 1;
-        public const int SCENELIB_FIRST = STATICLIB_LAST + 1;
-        public const int SCENELIB_LAST = SCENELIB_FIRST + 2535 - 1;
+
+        public const int BUILTIN_FIRST = STATICLIB_LAST + 1;
+        public const int BUILTIN_LAST = BUILTIN_FIRST + 35 - 1;
+        public const int MAX_BUILTINLIBS = (BUILTIN_LAST - BUILTIN_FIRST) + 1;
+
+        public const int SCENELIB_FIRST = BUILTIN_LAST + 1;
+        public const int SCENELIB_LAST = SCENELIB_FIRST + 2500 - 1;
         public const int MAX_SCENELIBS = (SCENELIB_LAST - SCENELIB_FIRST) + 1;
+
         public const int BUNDLEDLIB_FIRST = SCENELIB_LAST + 1;
         public const int BUNDLEDLIB_LAST = BUNDLEDLIB_FIRST + (ORDINAL_MASK - 2535) / 3 - 1;
         public const int MAX_BUNDLEDLIBS = (BUNDLEDLIB_LAST - BUNDLEDLIB_FIRST) + 1;
+
         public const int DYNAMICLIB_FIRST = BUNDLEDLIB_LAST + 1;
         public const int DYNAMICLIB_LAST = DYNAMICLIB_FIRST + (ORDINAL_MASK - 2535) / 3 - 1;
         public const int MAX_DYNAMICLIBS = (DYNAMICLIB_LAST - DYNAMICLIB_FIRST) + 1;

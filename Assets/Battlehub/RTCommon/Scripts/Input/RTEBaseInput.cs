@@ -41,16 +41,26 @@ namespace Battlehub.RTCommon
             m_editor = IOC.Resolve<IRTE>();
         }
 
-         protected virtual void Update()
+        protected virtual void Update()
         {
-            if(OpenEditorAction())
+            if(m_editor.IsInputFieldActive)
+            {
+                return;
+            }
+
+            UpdateOverride();
+        }
+
+        protected virtual void UpdateOverride()
+        {
+            if (OpenEditorAction())
             {
                 m_editor.IsOpened = !m_editor.IsOpened;
             }
 
-            if(m_editor.IsOpened)
+            if (m_editor.IsOpened)
             {
-                if(PlayAction())
+                if (PlayAction())
                 {
                     m_editor.IsPlaying = !m_editor.IsPlaying;
                 }
