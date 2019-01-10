@@ -54,6 +54,7 @@ public class ColorSlider : MonoBehaviour
             default:
                 break;
         }
+        listen = true;
     }
 
     private void HSVChanged(float hue, float saturation, float value)
@@ -73,6 +74,7 @@ public class ColorSlider : MonoBehaviour
             default:
                 break;
         }
+        listen = true;
     }
 
     private void SliderChanged(float newValue)

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 using Battlehub.RTCommon;
 using System;
+using Battlehub.RTSaveLoad2.Interface;
 
 namespace Battlehub.RTEditor
 {
@@ -17,11 +18,11 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Transform ComponentsPanel = null;
 
-        private IRTE m_editor;
+        private IRuntimeEditor m_editor;
 
         private void Start()
         {
-            m_editor = IOC.Resolve<IRTE>();
+            m_editor = IOC.Resolve<IRuntimeEditor>();
 
             GameObject go = m_editor.Selection.activeGameObject;
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
@@ -84,6 +85,7 @@ namespace Battlehub.RTEditor
                             ComponentEditor editor = Instantiate(componentEditorPrefab);
                             editor.EndEditCallback = () =>
                             {
+                                m_editor.UpdatePreview(go);
                                 m_editor.IsDirty = true;
                             };
                             editor.transform.SetParent(ComponentsPanel, false);

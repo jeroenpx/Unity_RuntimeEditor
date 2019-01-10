@@ -84,6 +84,10 @@ namespace Battlehub.RTEditor
             else
             {
                 Editor.Tools.Current = m_lastTool;
+                if (EndEditCallback != null)
+                {
+                    EndEditCallback();
+                }
                 DestroyGizmo();
             }
         }

@@ -16,6 +16,7 @@ namespace Battlehub.RTEditor
      
         protected override void AwakeOverride()
         {
+            WindowType = RuntimeWindowType.Scene;
             base.AwakeOverride();
             m_project = IOC.Resolve<IProject>();
 
@@ -47,12 +48,12 @@ namespace Battlehub.RTEditor
                 {
                     Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
                     Editor.IsBusy = true;
-                    m_project.Load(assetItem, (error, obj) =>
+                    m_project.Load(new[] { assetItem }, (error, obj) =>
                     {
                         Editor.IsBusy = false;
                         if(IsPointerOver)
                         {
-                            if (obj is GameObject)
+                            if (obj[0] is GameObject)
                             {
                                 IScenePivot scenePivot = IOCContainer.Resolve<IScenePivot>();
                                 Vector3 up = Vector3.up;
@@ -66,7 +67,7 @@ namespace Battlehub.RTEditor
                                 }
                                 m_dragPlane = new Plane(up, scenePivot.SecondaryPivot.position);
                         
-                                GameObject prefab = (GameObject)obj;
+                                GameObject prefab = (GameObject)obj[0];
                                 bool wasPrefabEnabled = prefab.activeSelf;
                                 prefab.SetActive(false);
 
@@ -80,7 +81,7 @@ namespace Battlehub.RTEditor
                                     exposeToEditor = m_prefabInstance.AddComponent<ExposeToEditor>();
                                 }
 
-                                exposeToEditor.SetName(obj.name);
+                                exposeToEditor.SetName(obj[0].name);
                                 m_prefabInstance.SetActive(true);
                             }
                         }

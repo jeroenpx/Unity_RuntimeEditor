@@ -9,7 +9,7 @@ namespace Battlehub.RTEditor
     public interface IResourcePreviewUtility
     {
         byte[] CreatePreviewData(UnityObject obj);
-        byte[] CreatePreviewData(AssetItem projectItem);
+        //byte[] CreatePreviewData(AssetItem projectItem);
     }
 
     public class ResourcePreviewUtility : MonoBehaviour, IResourcePreviewUtility
@@ -165,10 +165,10 @@ namespace Battlehub.RTEditor
             return previewData;
         }
 
-        public byte[] CreatePreviewData(AssetItem projectItem)
-        {
-            return new byte[0];
-        }
+        //public byte[] CreatePreviewData(AssetItem projectItem)
+        //{
+        //    return new byte[0];
+        //}
     }
 }
 

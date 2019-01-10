@@ -11,6 +11,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using UnityObject = UnityEngine.Object;
+
 namespace Battlehub.RTEditor
 {
     public interface IRuntimeEditor : IRTE
@@ -26,7 +28,9 @@ namespace Battlehub.RTEditor
         bool CmdEditValidate(string cmd);
         void CmdEdit(string cmd);
 
-        void CreatePrefab(ProjectItem folder, ExposeToEditor dragObject, Action<AssetItem[]> done = null);
+        void CreatePrefab(ProjectItem folder, ExposeToEditor dragObject, bool? includeDependencies = null, Action<AssetItem[]> done = null);
+        void SaveAsset(UnityObject obj, Action<AssetItem> done = null);
+        void UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
     }
 
     [RequireComponent(typeof(RTEObjects))]
@@ -275,50 +279,74 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, Action<AssetItem[]> done)
+        public void CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, bool? includeDependencies, Action<AssetItem[]> done)
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-            windowManager.Confirmation("Create Prefab", "Include dependencies?",
-                (sender, args) =>
-                {
-                    IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
-                    m_project.GetDependencies(dragObject.gameObject, true, (error, deps) =>
+            if(!includeDependencies.HasValue)
+            {
+                IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+                windowManager.Confirmation("Create Prefab", "Include dependencies?",
+                    (sender, args) =>
                     {
-                        object[] objects;
-                        if (!deps.Contains(dragObject.gameObject))
-                        {
-                            Debug.Log(dragObject.gameObject);
-                            objects = new object[deps.Length + 1];
-                            objects[deps.Length] = dragObject.gameObject;
-                            for (int i = 0; i < deps.Length; ++i)
-                            {
-                                objects[i] = deps[i];
-                            }
-                        }
-                        else
-                        {
-                            objects = deps;
-                        }
-
-                        byte[][] previewData = new byte[objects.Length][];
-                        for (int i = 0; i < objects.Length; ++i)
-                        {
-                            if (objects[i] is UnityEngine.Object)
-                            {
-                                previewData[i] = previewUtility.CreatePreviewData((UnityEngine.Object)objects[i]);
-                            }
-                        }
-                        CreatePrefab(dropTarget, previewData, objects, done);
-                    });
-                },
-                (sender, args) =>
+                        CreatePrefabWithDependencies(dropTarget, dragObject, done);
+                    },
+                    (sender, args) =>
+                    {
+                        CreatePrefabWithoutDependencies(dropTarget, dragObject, done);
+                    },
+                    "Yes",
+                    "No");
+            }
+            else
+            {
+                if(includeDependencies.Value)
                 {
-                    IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
-                    byte[] previewData = previewUtility.CreatePreviewData(dragObject.gameObject);
-                    CreatePrefab(dropTarget, new[] { previewData }, new[] { dragObject.gameObject }, done);
-                },
-                "Yes",
-                "No");
+                    CreatePrefabWithDependencies(dropTarget, dragObject, done);
+                }
+                else
+                {
+                    CreatePrefabWithoutDependencies(dropTarget, dragObject, done);
+                }
+            }
+        }
+
+        private void CreatePrefabWithoutDependencies(ProjectItem dropTarget, ExposeToEditor dragObject, Action<AssetItem[]> done)
+        {
+            IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
+            byte[] previewData = previewUtility.CreatePreviewData(dragObject.gameObject);
+            CreatePrefab(dropTarget, new[] { previewData }, new[] { dragObject.gameObject }, done);
+        }
+
+        private void CreatePrefabWithDependencies(ProjectItem dropTarget, ExposeToEditor dragObject, Action<AssetItem[]> done)
+        {
+            IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
+            m_project.GetDependencies(dragObject.gameObject, true, (error, deps) =>
+            {
+                object[] objects;
+                if (!deps.Contains(dragObject.gameObject))
+                {
+                    Debug.Log(dragObject.gameObject);
+                    objects = new object[deps.Length + 1];
+                    objects[deps.Length] = dragObject.gameObject;
+                    for (int i = 0; i < deps.Length; ++i)
+                    {
+                        objects[i] = deps[i];
+                    }
+                }
+                else
+                {
+                    objects = deps;
+                }
+
+                byte[][] previewData = new byte[objects.Length][];
+                for (int i = 0; i < objects.Length; ++i)
+                {
+                    if (objects[i] is UnityEngine.Object)
+                    {
+                        previewData[i] = previewUtility.CreatePreviewData((UnityEngine.Object)objects[i]);
+                    }
+                }
+                CreatePrefab(dropTarget, previewData, objects, done);
+            });
         }
 
         private void CreatePrefab(ProjectItem dropTarget, byte[][] previewData, object[] objects, Action<AssetItem[]> done)
@@ -333,11 +361,107 @@ namespace Battlehub.RTEditor
                     windowManager.MessageBox("Unable to create prefab", error.ErrorText);
                     return;
                 }
-                done(assetItems);
+
+                if(done != null)
+                {
+                    done(assetItems);
+                }
             });
         }
 
+        public void SaveAsset(UnityObject obj, Action<AssetItem> done)
+        {
+            IsBusy = true;
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            IProject project = IOC.Resolve<IProject>();
+            AssetItem assetItem = project.ToAssetItem(obj);
 
+            m_project.Save(new[] { assetItem }, new[] { obj }, (saveError, saveResult) =>
+            {
+                if (saveError.HasError)
+                {
+                    IsBusy = false;
+                    windowManager.MessageBox("Unable to save asset", saveError.ErrorText);
+                    return;
+                }
+
+                UpdateDependantAssetPreviews(saveResult[0], () =>
+                {
+                    IsBusy = false;
+                    if(done != null)
+                    {
+                        done(saveResult[0]);
+                    }
+                });
+            });
+        }
+
+        private void UpdateDependantAssetPreviews(AssetItem assetItem, Action callback)
+        {
+            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
+            IResourcePreviewUtility previewUtil = IOC.Resolve<IResourcePreviewUtility>();
+            AssetItem[] dependantItems = m_project.GetDependantAssetItems(new[] { assetItem });
+            if(dependantItems.Length > 0)
+            {
+                m_project.Load(dependantItems, (loadError, loadedObjects) =>
+                {
+                    if (loadError.HasError)
+                    {
+                        IsBusy = false;
+                        windowManager.MessageBox("Unable to load assets", loadError.ErrorText);
+                        return;
+                    }
+
+                    for (int i = 0; i < loadedObjects.Length; ++i)
+                    {
+                        UnityObject loadedObject = loadedObjects[i];
+                        AssetItem dependantItem = dependantItems[i];
+                        if (loadedObject != null)
+                        {
+                            byte[] previewData = previewUtil.CreatePreviewData(loadedObject);
+                            dependantItem.Preview = new Preview { ItemID = dependantItem.ItemID, PreviewData = previewData };
+                        }
+                        else
+                        {
+                            dependantItem.Preview = new Preview { ItemID = dependantItem.ItemID };
+                        }
+                    }
+
+                    m_project.SavePreview(dependantItems, (savePreviewError, savedAssetItems) =>
+                    {
+                        if (savePreviewError.HasError)
+                        {
+                            IsBusy = false;
+                            windowManager.MessageBox("Unable to load assets", savePreviewError.ErrorText);
+                            return;
+                        }
+
+                        callback();
+                    });
+                });
+            }
+            else
+            {
+                callback();
+            }
+        }
+
+        public void UpdatePreview(UnityObject obj, Action<AssetItem> done)
+        {
+            IResourcePreviewUtility resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
+            byte[] preview = resourcePreviewUtility.CreatePreviewData(obj);
+            IProject project = IOC.Resolve<IProject>();
+            AssetItem assetItem = project.ToAssetItem(obj);
+            if (assetItem != null)
+            {
+                assetItem.Preview = new Preview { ItemID = assetItem.ItemID, PreviewData = preview };
+            }
+
+            if(done != null)
+            {
+                done(assetItem);
+            }
+        }
 
 
         #region Commented Out

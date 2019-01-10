@@ -45,6 +45,7 @@ namespace Battlehub.RTEditor
             m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
             m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
             m_projectResources.ItemDeleted += OnProjectResourcesDeleted;
+            m_projectResources.SelectionChanged += OnProjectResourcesSelectionChanged;
                 
             m_projectTree.SelectionChanged += OnProjectTreeSelectionChanged;
             m_projectTree.ItemRenamed += OnProjectTreeItemRenamed;
@@ -80,6 +81,7 @@ namespace Battlehub.RTEditor
                 m_projectResources.ItemDoubleClick -= OnProjectResourcesDoubleClick;
                 m_projectResources.ItemRenamed -= OnProjectResourcesRenamed;
                 m_projectResources.ItemDeleted -= OnProjectResourcesDeleted;
+                m_projectResources.SelectionChanged -= OnProjectResourcesSelectionChanged;
             }
 
             if(m_projectTree != null)
@@ -234,7 +236,7 @@ namespace Battlehub.RTEditor
                 if(m_project.IsScene(e.ProjectItem))
                 {
                     Editor.IsBusy = true;
-                    m_project.Load((AssetItem)e.ProjectItem, (error, obj) =>
+                    m_project.Load(new[] { (AssetItem)e.ProjectItem }, (error, obj) =>
                     {
                         Editor.IsBusy = false;
                         if(error.HasError)
@@ -252,6 +254,38 @@ namespace Battlehub.RTEditor
 
             Editor.IsBusy = true;
             m_project.Rename(e.ProjectItem, e.OldName);
+        }
+
+        private void OnProjectResourcesSelectionChanged(object sender, ProjectTreeEventArgs e)
+        {
+            if(e.ProjectItem != null)
+            {
+                Debug.Log("Selected " + e.ProjectItem.ToString());
+                if (!e.ProjectItem.IsFolder)
+                {
+                    if(m_project.IsScene(e.ProjectItem))
+                    {
+                        Editor.Selection.activeObject = null;
+                    }
+                    else
+                    {
+                        Editor.IsBusy = true;
+                        m_project.Load(new[] { (AssetItem)e.ProjectItem }, (error, obj) =>
+                        {
+                            Editor.IsBusy = false;
+                            Editor.Selection.activeObject = obj[0];
+                        });
+                    }
+                }   
+                else
+                {
+                    Editor.Selection.activeObject = null;
+                }
+            }
+            
+
+            
+            // e.ProjectItem
         }
 
         private void OnProjectTreeItemRenamed(object sender, ProjectTreeRenamedEventArgs e)

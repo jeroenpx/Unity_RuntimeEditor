@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2;
+using Battlehub.RTSaveLoad2.Interface;
 #if PROC_MATERIAL
 using ProcPropertyDescription = UnityEngine.ProceduralPropertyDescription;
 using ProcPropertyType = UnityEngine.ProceduralPropertyType;
@@ -101,15 +102,12 @@ namespace Battlehub.RTEditor
                 }
             }
         }
-
-        // [SerializeField]
-        // private ShaderVariantCollection ShaderVariants;
-
+        
         [SerializeField]
         private RangeEditor RangeEditor = null;
+
         [SerializeField]
-        private TakeSnapshot Preview = null;
-        private Image m_image;
+        private Image m_image = null;
         [SerializeField]
         private Text TxtMaterialName = null;
         [SerializeField]
@@ -121,16 +119,15 @@ namespace Battlehub.RTEditor
         [HideInInspector]
         public Material Material = null;
 
-        private IRTE m_editor;
+        private IRuntimeEditor m_editor;
+        private IResourcePreviewUtility m_resourcePreviewUtility;
+        private Texture2D m_previewTexture;
 
         private void Start()
         {
-            m_editor = IOC.Resolve<IRTE>();
+            m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
 
-            //if(!ShaderVariants.isWarmedUp)
-            //{
-            //    ShaderVariants.WarmUp();
-            //}
             if (Material == null)
             {
                 Material = m_editor.Selection.activeObject as Material;
@@ -142,6 +139,8 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            m_previewTexture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
+
             TxtMaterialName.text = Material.name;
             if (Material.shader != null)
             {
@@ -152,14 +151,18 @@ namespace Battlehub.RTEditor
                 TxtShaderName.text = "Shader missing";
             }
 
-            if (Preview != null)
-            {
-                m_image = Preview.GetComponent<Image>();
-            }
-
+    
             UpdatePreview(Material);
 
             BuildEditor();
+        }
+
+        private void OnDestroy()
+        {
+            if(m_previewTexture != null)
+            {
+                Destroy(m_previewTexture);
+            }
         }
 
         public void BuildEditor()
@@ -289,10 +292,10 @@ namespace Battlehub.RTEditor
                 editor.Init(target, propertyInfo, descriptor.Label, null, descriptor.ValueChangedCallback, () => 
                 {
                     m_editor.IsDirty = true;
+                    UpdatePreview(Material);
                 });
             }
         }
-
 
 
         private PropertyEditor InstantiateEditor( PropertyInfo propertyInfo)
@@ -313,24 +316,26 @@ namespace Battlehub.RTEditor
 
         private void UpdatePreview(Material material)
         {
-            if (Preview && m_image != null)
+            m_editor.UpdatePreview(material, assetItem =>
             {
-                //m_image.sprite = ResourcePreview.CreatePreview(material, Preview);
-            }
+                if (m_image != null)
+                {
+                    m_previewTexture.LoadImage(assetItem.Preview.PreviewData);
+                    m_image.sprite = Sprite.Create(m_previewTexture, new Rect(0, 0, m_previewTexture.width, m_previewTexture.height), new Vector2(0.5f, 0.5f));
+                }
+            });
         }
 
         //private int m_updateCounter = 0;
-        private void Update()
-        {
-            //m_updateCounter++;
-            //m_updateCounter %= ResourcePreview.UpdatePreviewInterval;
-            //if (m_updateCounter == 0)
-            //{
-            //    Material material = RuntimeSelection.activeObject as Material;
-            //    UpdatePreview(material);
-            //}
-           
-        }
+        //private void Update()
+        //{
+        //    m_updateCounter++;
+        //    m_updateCounter %= 120;
+        //    if (m_updateCounter == 0)
+        //    {
+        //        UpdatePreview(Material);
+        //    }
+        //}
     }
 }
 

@@ -4355,7 +4355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
-  m_windowType: 2
+  m_windowType: 21
   m_rectTransform: {fileID: 0}
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
@@ -9696,6 +9696,7 @@ GameObject:
   - component: {fileID: 5849259614496068625}
   - component: {fileID: 3214422774527365804}
   - component: {fileID: 848462208471534376}
+  - component: {fileID: 1868234900}
   m_Layer: 0
   m_Name: RuntimeEditor
   m_TagString: Untagged
@@ -9937,6 +9938,7 @@ MonoBehaviour:
   - Library4
   - Library5
   m_sceneDepsLibrary: 
+  m_builtInLibrary: 
   m_dynamicPrefabsRoot: {fileID: 0}
 --- !u!114 &5849259614496068636
 MonoBehaviour:
@@ -9996,6 +9998,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01be2fef4ca929a4a8a66603dfd4d50d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1868234900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614496068639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c7cd5001bd1a34488d31cf39ca787a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5849259614507436825

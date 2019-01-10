@@ -467,7 +467,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void InitEditor(PropertyEditor editor, PropertyDescriptor descriptor)
         {
-            editor.Init(descriptor.Target, descriptor.MemberInfo, descriptor.Label, null, descriptor.ValueChangedCallback, null, true, descriptor.ChildDesciptors);
+            editor.Init(descriptor.Target, descriptor.MemberInfo, descriptor.Label, null, descriptor.ValueChangedCallback, EndEditCallback, true, descriptor.ChildDesciptors);
         }
 
         protected virtual void DestroyEditor()

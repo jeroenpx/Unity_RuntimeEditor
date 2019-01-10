@@ -51,7 +51,7 @@ namespace Battlehub.RTGizmos
 
             if (IsDragging)
             {
-                RuntimeGizmos.DrawSelection(Target.TransformPoint(Center + Vector3.Scale(HandlesPositions[DragIndex], scale)), Target.rotation, scale, SelectionColor);
+                RuntimeGizmos.DrawSelection(Target.TransformPoint(Center + HandlesPositions[DragIndex] * Radius), Target.rotation, Target.localScale, SelectionColor);
             }
         }
     }

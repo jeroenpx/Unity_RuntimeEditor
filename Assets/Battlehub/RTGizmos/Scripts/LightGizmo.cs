@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTGizmos
 {
+    [DefaultExecutionOrder(-55)]
     public class LightGizmo : MonoBehaviour
     {
         private Light m_light;

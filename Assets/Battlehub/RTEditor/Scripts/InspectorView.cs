@@ -17,8 +17,10 @@ namespace Battlehub.RTEditor
 
         protected override void AwakeOverride()
         {
+            WindowType = RuntimeWindowType.Hierarchy;
             base.AwakeOverride();
-            if(GameObjectEditor == null)
+
+            if (GameObjectEditor == null)
             {
                 Debug.LogError("GameObjectEditor is not set");
             }
@@ -67,7 +69,39 @@ namespace Battlehub.RTEditor
 
         private void OnRuntimeSelectionChanged(UnityObject[] unselectedObjects)
         {
-            CreateEditor();
+            if (m_editor != null &&  unselectedObjects != null && unselectedObjects.Length > 0)
+            {
+                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                if(editor.IsDirty)
+                {
+                    editor.IsDirty = false;
+                    editor.SaveAsset(unselectedObjects[0], result =>
+                    {
+                        CreateEditor();
+                    });
+                }
+                else
+                {
+                    CreateEditor();
+                }
+            }
+            else
+            {
+                CreateEditor();
+            }
+        }
+
+        protected override void OnDeactivated()
+        {
+            base.OnDeactivated();
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+            if (editor.IsDirty && editor.Selection.activeObject != null)
+            {
+                editor.IsDirty = false;
+                editor.SaveAsset(editor.Selection.activeObject, result =>
+                {
+                });
+            }
         }
 
         private void CreateEditor()

@@ -28,9 +28,16 @@ namespace Battlehub.RTCommon
                 Debug.LogError("RTE is null");
             }
 
+
+            AwakeOverride();
+        }
+
+        private void Start()
+        {
             Cleanup();
             Initialize();
-            AwakeOverride();
+
+            StartOverride();
         }
 
         private void OnDestroy()
@@ -44,6 +51,11 @@ namespace Battlehub.RTCommon
         }
 
         protected virtual void AwakeOverride()
+        {
+
+        }
+
+        protected virtual void StartOverride()
         {
 
         }
@@ -147,7 +159,7 @@ namespace Battlehub.RTCommon
 
                 for (int i = 0; i < m_types.Length; ++i)
                 {
-                    IEnumerable<ExposeToEditor> objectsOfType = objects.Where(o => GetComponent(m_types[i]) != null);
+                    IEnumerable<ExposeToEditor> objectsOfType = objects.Where(o => o.GetComponent(m_types[i]) != null);
                     foreach (ExposeToEditor obj in objectsOfType)
                     {
                         GreateGizmo(obj.gameObject, m_types[i]);
@@ -170,8 +182,11 @@ namespace Battlehub.RTCommon
 
         private void Unsubscribe()
         {
-            m_editor.Object.Awaked -= OnAwaked;
-            m_editor.Object.Destroyed -= OnDestroyed;
+            if(m_editor != null && m_editor.Object != null)
+            {
+                m_editor.Object.Awaked -= OnAwaked;
+                m_editor.Object.Destroyed -= OnDestroyed;
+            }
         }
 
         private void OnAwaked(ExposeToEditor obj)

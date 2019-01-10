@@ -37,6 +37,12 @@ namespace Battlehub.RTEditor
             get { return m_treeView.SelectedItem as ProjectInfo; }
         }
 
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.OpenProject;
+            base.AwakeOverride();
+        }
+
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();

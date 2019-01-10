@@ -40,6 +40,12 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.SelectAssetLibrary;
+            base.AwakeOverride();
+        }
+
         private IWindowManager m_windowManager;
         private void Start()
         {
@@ -143,6 +149,8 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            args.Cancel = true;
+            m_parentDialog.Close();
             Import(SelectedLibrary, IsBuiltInLibrary);
         }
 

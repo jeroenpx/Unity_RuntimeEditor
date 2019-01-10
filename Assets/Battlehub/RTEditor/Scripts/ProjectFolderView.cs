@@ -21,6 +21,7 @@ namespace Battlehub.RTEditor
         private IProject m_project;
         private IWindowManager m_windowManager;
 
+        private Dictionary<long, ProjectItem> m_idToItem = new Dictionary<long, ProjectItem>();
         private List<ProjectItem> m_items;
         private ProjectItem[] m_folders;
         public void SetItems(ProjectItem[] folders, ProjectItem[] items, bool reload)
@@ -29,17 +30,20 @@ namespace Battlehub.RTEditor
             {
                 m_folders = null;
                 m_items = null;
+                m_idToItem = new Dictionary<long, ProjectItem>();
                 m_listBox.Items = null;
             }
             else
             {
                 m_folders = folders;
                 m_items = new List<ProjectItem>(items);
+                m_idToItem = m_items.Where(item => !item.IsFolder).ToDictionary(item => item.ItemID);
                 if (m_items != null)
                 {
                     m_items = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
                 }
                 DataBind(reload);
+                EditorSelectionChanged(null);
             }
         }
 
@@ -196,7 +200,7 @@ namespace Battlehub.RTEditor
         {
             WindowType = RuntimeWindowType.ProjectFolder;
             base.AwakeOverride();
-
+            
             if (!ListBoxPrefab)
             {
                 Debug.LogError("Set ListBoxPrefab field");
@@ -233,6 +237,8 @@ namespace Battlehub.RTEditor
             m_listBox.ItemBeginEdit += OnItemBeginEdit;
             m_listBox.ItemEndEdit += OnItemEndEdit;
             m_listBox.SelectionChanged += OnSelectionChanged;
+
+            Editor.Selection.SelectionChanged += EditorSelectionChanged;
         }
 
         protected override void OnDestroyOverride()
@@ -254,6 +260,11 @@ namespace Battlehub.RTEditor
                 m_listBox.ItemBeginEdit -= OnItemBeginEdit;
                 m_listBox.ItemEndEdit -= OnItemEndEdit;
                 m_listBox.SelectionChanged -= OnSelectionChanged;
+            }
+
+            if(Editor != null)
+            {
+                Editor.Selection.SelectionChanged -= EditorSelectionChanged;
             }
         }
 
@@ -439,8 +450,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-
-
         private bool CanCreatePrefab(ProjectItem dropTarget, object[] dragItems)
         {
             if (dropTarget == null)
@@ -502,7 +511,7 @@ namespace Battlehub.RTEditor
                 ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
                 if (dropTarget.IsFolder)
                 {
-                    editor.CreatePrefab(dropTarget, dragObject, assetItem =>
+                    editor.CreatePrefab(dropTarget, dragObject, null, assetItem =>
                     {
                     });
                 } 
@@ -512,7 +521,7 @@ namespace Battlehub.RTEditor
                 if(dragObjects[0] is ExposeToEditor)
                 {
                     ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
-                    editor.CreatePrefab(m_folders[0], dragObject, assetItem =>
+                    editor.CreatePrefab(m_folders[0], dragObject, null, assetItem =>
                     {
                        
                     });   
@@ -521,7 +530,51 @@ namespace Battlehub.RTEditor
             m_listBox.ExternalItemDrop();
         }
 
-       
+        private void EditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
+        {
+            if(m_listBox.SelectedItem != null)
+            {
+                ProjectItem selectedItem = (ProjectItem)m_listBox.SelectedItem;
+                if(unselectedObjects != null)
+                {
+                    for (int i = 0; i < unselectedObjects.Length; ++i)
+                    {
+                        UnityEngine.Object obj = unselectedObjects[i];
+                        if(obj != null)
+                        {
+                            if(selectedItem.ItemID == m_project.ToID(obj))
+                            {
+                                m_listBox.SelectedItem = null;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
+            UnityEngine.Object[] selectedObjects = Editor.Selection.objects;
+            if(selectedObjects != null)
+            {
+                List<ProjectItem> selectedItems = new List<ProjectItem>();
+                for (int i = 0; i < selectedObjects.Length; ++i)
+                {
+                    UnityEngine.Object selectedObject = selectedObjects[i];
+                    long id = m_project.ToID(selectedObject);
+                    if(m_idToItem.ContainsKey(id))
+                    {
+                        ProjectItem item = m_idToItem[id];
+                        if(item != null)
+                        {
+                            selectedItems.Add(item);
+                            break;
+                        }
+                    }
+                }
+                if(selectedItems.Count > 0)
+                {
+                    m_listBox.SelectedItem = selectedItems.First();
+                }
+            }
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Battlehub.RTSaveLoad2
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] assetPath, StorageEventHandler<Preview[]> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
-        void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback);
+        void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, bool previewOnly, StorageEventHandler callback);
         void Save(string projectPath, AssetBundleInfo assetBundleInfo, ProjectInfo project, StorageEventHandler callback);
         void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback);
         void Load(string projectPath, string bundleName, StorageEventHandler<AssetBundleInfo> callback);
@@ -300,17 +300,20 @@ namespace Battlehub.RTSaveLoad2
             callback(new Error(), result);
         }
 
-        public void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, StorageEventHandler callback)
+        public void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, bool previewOnly, StorageEventHandler callback)
         {
-            if(assetItems.Length != persistentObjects.Length)
+            if(!previewOnly)
             {
-                throw new ArgumentException("assetItems");
+                if (assetItems.Length != persistentObjects.Length)
+                {
+                    throw new ArgumentException("assetItems");
+                }
             }
 
-            if(persistentObjects.Length > folderPaths.Length)
+            if(assetItems.Length > folderPaths.Length)
             {
                 int l = folderPaths.Length;
-                Array.Resize(ref folderPaths, persistentObjects.Length);
+                Array.Resize(ref folderPaths, assetItems.Length);
                 for (int i = l; i < folderPaths.Length; ++i)
                 {
                     folderPaths[i] = folderPaths[l - 1];
@@ -318,6 +321,11 @@ namespace Battlehub.RTSaveLoad2
             }
 
             projectPath = FullPath(projectPath);
+            if(!Directory.Exists(projectPath))
+            {
+                Directory.CreateDirectory(projectPath);
+            }
+
             string projectInfoPath = projectPath + "/Project.rtmeta";
             ISerializer serializer = IOC.Resolve<ISerializer>();
             Error error = new Error(Error.OK);
@@ -325,7 +333,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 string folderPath = folderPaths[i];
                 AssetItem assetItem = assetItems[i];
-                PersistentObject persistentObject = persistentObjects[i];
+                
                 try
                 {
                     string path = projectPath + folderPath;
@@ -341,23 +349,27 @@ namespace Battlehub.RTSaveLoad2
                     }
                     else
                     {
-                        using (FileStream fs = File.OpenWrite(previewPath))
+                        File.Delete(previewPath);
+                        using (FileStream fs = File.Create(previewPath))
                         {
                             serializer.Serialize(assetItem.Preview, fs);
                         }
                     }
 
-                    using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt + MetaExt))
+                    if(!previewOnly)
                     {
-                        serializer.Serialize(assetItem, fs);
-                    }
-                    using (FileStream fs = File.OpenWrite(path + "/" + assetItem.NameExt))
-                    {
-                        serializer.Serialize(persistentObject, fs);
-                    }
-                    using (FileStream fs = File.OpenWrite(projectInfoPath))
-                    {
-                        serializer.Serialize(projectInfo, fs);
+                        PersistentObject persistentObject = persistentObjects[i];
+                        File.Delete(path + "/" + assetItem.NameExt + MetaExt);
+                        using (FileStream fs = File.Create(path + "/" + assetItem.NameExt + MetaExt))
+                        {
+                            serializer.Serialize(assetItem, fs);
+                        }
+
+                        File.Delete(path + "/" + assetItem.NameExt);
+                        using (FileStream fs = File.Create(path + "/" + assetItem.NameExt))
+                        {
+                            serializer.Serialize(persistentObject, fs);
+                        }
                     }
                 }
                 catch (Exception e)
@@ -367,6 +379,12 @@ namespace Battlehub.RTSaveLoad2
                     error.ErrorText = e.ToString();
                     break;
                 }
+            }
+
+            File.Delete(projectInfoPath);
+            using (FileStream fs = File.Create(projectInfoPath))
+            {
+                serializer.Serialize(projectInfo, fs);
             }
 
             callback(error);

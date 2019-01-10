@@ -31,7 +31,7 @@ namespace Battlehub.RTGizmos
         {
             get
             {
-                return Matrix4x4.TRS(Target.TransformPoint(Center), Target.rotation, GetHandlesScale());
+                return Matrix4x4.TRS(Target.TransformPoint(Center), Target.rotation, GetHandlesScale(true));
             }
         }
 
@@ -64,7 +64,7 @@ namespace Battlehub.RTGizmos
             }
             else
             {
-                float maxHs = GetMaxHorizontalScale();
+                float maxHs = GetMaxHorizontalScale(true);
                 Radius += (Vector3.Scale(offset, Target.localScale).magnitude / maxHs) * Mathf.Sign(Vector3.Dot(offset, HandlesNormals[index]));
                 
                 if(Radius < 0)
@@ -81,11 +81,11 @@ namespace Battlehub.RTGizmos
             base.DrawOverride();
 
            
-            float hs = GetMaxHorizontalScale();
-            Vector3 scale = GetHandlesScale();
+            float hs = GetMaxHorizontalScale(true);
+            Vector3 scale = GetHandlesScale(true);
             RuntimeGizmos.DrawCubeHandles(Target.TransformPoint(Center), Target.rotation,
 
-                GetHandlesScale(),
+                GetHandlesScale(true),
                 
                 HandlesColor);
            
@@ -99,14 +99,14 @@ namespace Battlehub.RTGizmos
 
             if (IsDragging)
             {
-                RuntimeGizmos.DrawSelection(Target.TransformPoint(Center + Vector3.Scale(HandlesPositions[DragIndex], scale)), Target.rotation, scale, SelectionColor);
+                RuntimeGizmos.DrawSelection(Target.TransformPoint(Center + Vector3.Scale(HandlesPositions[DragIndex], GetHandlesScale(false))), Target.rotation, Target.localScale, SelectionColor);
             }
         }
 
         private float GetHeight()
         {
             float s;
-            float hs = GetMaxHorizontalScale();
+            float hs = GetMaxHorizontalScale(true);
             if (Direction == 0)
             {
                 s = Target.localScale.x;
@@ -123,29 +123,29 @@ namespace Battlehub.RTGizmos
             return Height * s / hs;
         }
 
-        private Vector3 GetHandlesScale()
+        private Vector3 GetHandlesScale(bool multiplyByTargetScale)
         {
             float x;
             float y;
             float z;
-            float hs = GetMaxHorizontalScale();
+            float hs = GetMaxHorizontalScale(multiplyByTargetScale);
             if (Direction == 0)
             {
-                x = GetHandlesHeight();
+                x = GetHandlesHeight(multiplyByTargetScale);
                 y = hs * Radius; 
                 z = hs * Radius;
             }
             else if (Direction == 1)
             {
                 x = hs * Radius;
-                y = GetHandlesHeight();
+                y = GetHandlesHeight(multiplyByTargetScale);
                 z = hs * Radius;
             }
             else
             {
                 x = hs * Radius;
                 y = hs * Radius;
-                z = GetHandlesHeight();
+                z = GetHandlesHeight(multiplyByTargetScale);
             }
 
             const float min = 0.001f;
@@ -164,23 +164,33 @@ namespace Battlehub.RTGizmos
             return new Vector3(x, y, z);
         }
 
-        private float GetHandlesHeight()
+        private float GetHandlesHeight(bool multiplyByTargetScale)
         {
+            if(!multiplyByTargetScale)
+            {
+                return MaxAbs(Height / 2, Radius);
+            }
+
             if (Direction == 0)
             {
-                return MaxAbs(Target.localScale.x * Height / 2, Radius * GetMaxHorizontalScale());
+                return MaxAbs(Target.localScale.x * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
             }
             else if (Direction == 1)
             {
-                return MaxAbs(Target.localScale.y * Height / 2, Radius * GetMaxHorizontalScale());
+                return MaxAbs(Target.localScale.y * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
             }
 
-            return MaxAbs(Target.localScale.z * Height / 2, Radius * GetMaxHorizontalScale());
+            return MaxAbs(Target.localScale.z * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
 
         }
 
-        private float GetMaxHorizontalScale()
+        private float GetMaxHorizontalScale(bool multiplyByTargetScale)
         {
+            if(!multiplyByTargetScale)
+            {
+                return 1;
+            }
+
             if(Direction == 0)
             {
                 return MaxAbs(Target.localScale.y, Target.localScale.z);

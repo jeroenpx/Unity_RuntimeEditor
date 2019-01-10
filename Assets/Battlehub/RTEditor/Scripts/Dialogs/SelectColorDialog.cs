@@ -15,6 +15,12 @@ namespace Battlehub.RTEditor
 
         private Dialog m_parentDialog;
 
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.SelectColor;
+            base.AwakeOverride();
+        }
+
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();

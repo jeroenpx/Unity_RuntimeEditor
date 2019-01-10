@@ -19,7 +19,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         event ProjectEventHandler<AssetItem[]> CreateCompleted;
         event ProjectEventHandler<AssetItem[]> SaveCompleted;
-        event ProjectEventHandler<UnityObject> LoadCompleted;
+        event ProjectEventHandler<UnityObject[]> LoadCompleted;
         event ProjectEventHandler UnloadCompleted;
         event ProjectEventHandler<AssetItem[]> ImportCompleted;
         event ProjectEventHandler<ProjectItem[]> DeleteCompleted;
@@ -53,6 +53,8 @@ namespace Battlehub.RTSaveLoad2.Interface
         Guid ToGuid(Type type);
         long ToID(UnityObject obj);
         T FromID<T>(long id) where T : UnityObject;
+        AssetItem ToAssetItem(UnityObject obj);
+        AssetItem[] GetDependantAssetItems(AssetItem[] assetItems);
 
         string GetExt(object obj);
         string GetExt(Type type);
@@ -75,7 +77,8 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation<object[]> GetDependencies(object obj, bool exceptMappedObject = false, ProjectEventHandler<object[]> callback = null); /*no events raised*/
         ProjectAsyncOperation<AssetItem[]> Create(ProjectItem parent, byte[][] previewData, object[] obj, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback = null);
         ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback = null);
-        ProjectAsyncOperation<UnityObject> Load(AssetItem assetItem, ProjectEventHandler<UnityObject> callback = null);
+        ProjectAsyncOperation<AssetItem[]> SavePreview(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null); 
+        ProjectAsyncOperation<UnityObject[]> Load(AssetItem[] assetItems, ProjectEventHandler<UnityObject[]> callback = null);
         AsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
         ProjectAsyncOperation<ProjectItem> LoadImportItems(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);

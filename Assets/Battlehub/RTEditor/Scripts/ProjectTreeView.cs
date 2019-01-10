@@ -701,7 +701,7 @@ namespace Battlehub.RTEditor
                 ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
                 if (dropTarget.IsFolder)
                 {
-                    editor.CreatePrefab(dropTarget, dragObject, assetItem =>
+                    editor.CreatePrefab(dropTarget, dragObject, null, assetItem =>
                     {
                     });
                 }

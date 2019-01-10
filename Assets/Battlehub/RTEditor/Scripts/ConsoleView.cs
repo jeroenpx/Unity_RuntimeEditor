@@ -56,6 +56,8 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
 
+            WindowType = RuntimeWindowType.Console;
+
             m_treeView.CanDrag = false;
             m_treeView.CanReorder = false;
             m_treeView.CanRemove = false;

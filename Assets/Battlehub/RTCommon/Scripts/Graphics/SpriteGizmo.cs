@@ -8,6 +8,16 @@ namespace Battlehub.RTCommon
         [SerializeField, HideInInspector]
         private SphereCollider m_collider;
 
+        private void Awake()
+        {
+            if (GLRenderer.Instance == null)
+            {
+                GameObject glRenderer = new GameObject();
+                glRenderer.name = "GLRenderer";
+                glRenderer.AddComponent<GLRenderer>();
+            }
+        }
+
         private void OnEnable()
         {    
             GLRenderer glRenderer = GLRenderer.Instance;

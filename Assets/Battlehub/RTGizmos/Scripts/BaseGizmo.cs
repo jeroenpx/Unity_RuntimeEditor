@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.RTGizmos
 {
-    public abstract class BaseGizmo : MonoBehaviour, IGL
+    [DefaultExecutionOrder(-50)]
+    public abstract class BaseGizmo : RTEComponent, IGL
     {
         public float GridSize = 1.0f;
         public Color LineColor = new Color(0.0f, 1, 0.0f, 0.75f);
@@ -65,21 +66,24 @@ namespace Battlehub.RTGizmos
         private Matrix4x4 m_handlesInverseTransform;
 
 
-        [SerializeField]
-        private RuntimeWindow m_window = null;
-        public RuntimeWindow Window
+        public override RuntimeWindow Window
         {
             get { return m_window; }
-        }
-
-        private void Awake()
-        {
-            AwakeOverride();
+            set
+            {
+                m_window = value;
+                m_editor = IOC.Resolve<IRTE>();
+            }
         }
 
         private void Start()
         {
-            if(SceneCamera == null)
+            if (GetComponent<BaseGizmoInput>() == null)
+            {
+                gameObject.AddComponent<BaseGizmoInput>();
+            }
+
+            if (SceneCamera == null)
             {
                 SceneCamera = Window.Camera;
             }
@@ -147,8 +151,75 @@ namespace Battlehub.RTGizmos
             OnDisableOverride();
         }
 
-        private void OnDestroy()
+        private void Update()
         {
+            if (m_isDragging)
+            {
+                Vector3 point;
+                if (GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out point))
+                {
+                    Vector3 offset = m_handlesInverseTransform.MultiplyVector(point - m_prevPoint);
+                    offset = Vector3.Project(offset, m_normal);
+                    if (Window.Editor.Input.GetKey(UnitSnapKey) || Window.Editor.Tools.UnitSnapping)
+                    {
+                        Vector3 gridOffset = Vector3.zero;
+                        if (Mathf.Abs(offset.x * 1.5f) >= GridSize)
+                        {
+                            gridOffset.x = GridSize * Mathf.Sign(offset.x);
+                        }
+
+                        if (Mathf.Abs(offset.y * 1.5f) >= GridSize)
+                        {
+                            gridOffset.y = GridSize * Mathf.Sign(offset.y);
+                        }
+
+                        if (Mathf.Abs(offset.z * 1.5f) >= GridSize)
+                        {
+                            gridOffset.z = GridSize * Mathf.Sign(offset.z);
+                        }
+
+                        if (gridOffset != Vector3.zero)
+                        {
+                            if (OnDrag(m_dragIndex, gridOffset))
+                            {
+                                m_prevPoint = point;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (OnDrag(m_dragIndex, offset))
+                        {
+                            m_prevPoint = point;
+                        }
+                    }
+
+                }
+
+            }
+
+            UpdateOverride();
+        }
+
+        /// Lifecycle method overrides
+        protected override void AwakeOverride()
+        {
+            base.AwakeOverride();
+            m_handlesPositions = RuntimeGizmos.GetHandlesPositions();
+            m_handlesNormals = RuntimeGizmos.GetHandlesNormals();
+
+            
+        }
+
+        protected override void OnDestroyOverride()
+        {
+            base.OnDestroyOverride();
+            BaseGizmoInput gizmoInput = GetComponent<BaseGizmoInput>();
+            if (gizmoInput)
+            {
+                Destroy(gizmoInput);
+            }
+
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
@@ -158,142 +229,6 @@ namespace Battlehub.RTGizmos
             {
                 Window.Editor.Tools.ActiveTool = null;
             }
-
-            OnDestroyOverride();
-        }
-
-        private void Update()
-        {
-            if (Window.Editor.Input.GetPointerDown(0))
-            {
-                //if (RuntimeTools.IsPointerOverGameObject())
-                //{
-                //    return;
-                //}
-
-                if (SceneCamera == null)
-                {
-                    Debug.LogError("Camera is null");
-                    return;
-                }
-
-                if(Window.Editor.Tools.IsViewing)
-                {
-                    return;
-                }
-
-                if(Window.Editor.Tools.ActiveTool != null)
-                {
-                    return;
-                }
-
-                if (Window.Camera != null && (!Window.IsPointerOver || Window.WindowType != RuntimeWindowType.Scene))
-                {
-                    return;
-                }
-
-                Vector2 pointer = Window.Editor.Input.GetPointerXY(0);
-                m_dragIndex = Hit(pointer, HandlesPositions, HandlesNormals);
-                if (m_dragIndex >= 0 && OnBeginDrag(m_dragIndex))
-                {
-                    m_handlesTransform = HandlesTransform;
-                    m_handlesInverseTransform =   Matrix4x4.TRS(Target.position, Target.rotation, Target.localScale).inverse;// m_handlesTransform.inverse;
-                    m_dragPlane = GetDragPlane();
-                    m_isDragging = GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out m_prevPoint);
-                    m_normal = HandlesNormals[m_dragIndex].normalized;
-                    if(m_isDragging)
-                    {
-                        Window.Editor.Tools.ActiveTool = this;
-                    }
-                    if (EnableUndo)
-                    {
-                        bool isRecording = Window.Editor.Undo.IsRecording;
-                        if (!isRecording)
-                        {
-                            Window.Editor.Undo.BeginRecord();
-                        }
-                        RecordOverride();
-                        if (!isRecording)
-                        {
-                            Window.Editor.Undo.EndRecord();
-                        }
-                    }
-                }
-            }
-            else if (Window.Editor.Input.GetPointerUp(0))
-            {
-                if (m_isDragging)
-                {
-                    OnDrop();
-                    bool isRecording = Window.Editor.Undo.IsRecording;
-                    if (!isRecording)
-                    {
-                        Window.Editor.Undo.BeginRecord();
-                    }
-                    RecordOverride();
-                    if (!isRecording)
-                    {
-                        Window.Editor.Undo.EndRecord();
-                    }
-                    m_isDragging = false;
-                    Window.Editor.Tools.ActiveTool = null;
-                }
-            }
-            else
-            {
-                if (m_isDragging)
-                {
-                    Vector3 point;
-                    if(GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out point))
-                    {
-                        Vector3 offset = m_handlesInverseTransform.MultiplyVector(point - m_prevPoint);
-                        offset = Vector3.Project(offset, m_normal);
-                        if (Window.Editor.Input.GetKey(UnitSnapKey) || Window.Editor.Tools.UnitSnapping)
-                        {
-                            Vector3 gridOffset = Vector3.zero;
-                            if (Mathf.Abs(offset.x * 1.5f) >= GridSize)
-                            {
-                                gridOffset.x = GridSize * Mathf.Sign(offset.x);
-                            }
-
-                            if (Mathf.Abs(offset.y * 1.5f) >= GridSize)
-                            {
-                                gridOffset.y = GridSize * Mathf.Sign(offset.y);
-                            }
-
-                            if (Mathf.Abs(offset.z * 1.5f) >= GridSize)
-                            {
-                                gridOffset.z = GridSize * Mathf.Sign(offset.z);
-                            }
-
-                            if(gridOffset != Vector3.zero)
-                            {
-                                if (OnDrag(m_dragIndex, gridOffset))
-                                {
-                                    m_prevPoint = point;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (OnDrag(m_dragIndex, offset))
-                            {
-                                m_prevPoint = point;
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            UpdateOverride();
-        }
-
-        /// Lifecycle method overrides
-        protected virtual void AwakeOverride()
-        {
-            m_handlesPositions = RuntimeGizmos.GetHandlesPositions();
-            m_handlesNormals = RuntimeGizmos.GetHandlesNormals();
         }
 
         protected virtual void StartOverride()
@@ -311,11 +246,6 @@ namespace Battlehub.RTGizmos
 
         }
 
-        protected virtual void OnDestroyOverride()
-        {
-
-        }
-
         protected virtual void UpdateOverride()
         {
 
@@ -326,7 +256,18 @@ namespace Battlehub.RTGizmos
 
         }
 
-   
+        protected override void OnActiveWindowChanged()
+        {
+            if (Editor.ActiveWindow != null && Editor.ActiveWindow.WindowType == RuntimeWindowType.Scene)
+            {
+                Window = Editor.ActiveWindow;
+                SceneCamera = Window.Camera;
+            }
+
+            base.OnActiveWindowChanged();
+        }
+
+
         /// Drag And Drop virtual methods
         protected virtual bool OnBeginDrag(int index)
         {
@@ -431,6 +372,84 @@ namespace Battlehub.RTGizmos
             point = Vector3.zero;
             return false;
         }
+
+        public void BeginDrag()
+        {
+            if (!IsWindowActive)
+            {
+                return;
+            }
+
+            if (SceneCamera == null)
+            {
+                Debug.LogError("Camera is null");
+                return;
+            }
+
+            if (Window.Editor.Tools.IsViewing)
+            {
+                return;
+            }
+
+            if (Window.Editor.Tools.ActiveTool != null)
+            {
+                return;
+            }
+
+            if (Window.Camera != null && (!Window.IsPointerOver || Window.WindowType != RuntimeWindowType.Scene))
+            {
+                return;
+            }
+
+            Vector2 pointer = Window.Editor.Input.GetPointerXY(0);
+            m_dragIndex = Hit(pointer, HandlesPositions, HandlesNormals);
+            if (m_dragIndex >= 0 && OnBeginDrag(m_dragIndex))
+            {
+                m_handlesTransform = HandlesTransform;
+                m_handlesInverseTransform = Matrix4x4.TRS(Target.position, Target.rotation, Target.localScale).inverse;// m_handlesTransform.inverse;
+                m_dragPlane = GetDragPlane();
+                m_isDragging = GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out m_prevPoint);
+                m_normal = HandlesNormals[m_dragIndex].normalized;
+                if (m_isDragging)
+                {
+                    Window.Editor.Tools.ActiveTool = this;
+                }
+                if (EnableUndo)
+                {
+                    bool isRecording = Window.Editor.Undo.IsRecording;
+                    if (!isRecording)
+                    {
+                        Window.Editor.Undo.BeginRecord();
+                    }
+                    RecordOverride();
+                    if (!isRecording)
+                    {
+                        Window.Editor.Undo.EndRecord();
+                    }
+                }
+            }
+        }
+
+        public void EndDrag()
+        {
+            if (m_isDragging)
+            {
+                OnDrop();
+                bool isRecording = Window.Editor.Undo.IsRecording;
+                if (!isRecording)
+                {
+                    Window.Editor.Undo.BeginRecord();
+                }
+                RecordOverride();
+                if (!isRecording)
+                {
+                    Window.Editor.Undo.EndRecord();
+                }
+                m_isDragging = false;
+                Window.Editor.Tools.ActiveTool = null;
+            }
+        }
+
     }
 }
 

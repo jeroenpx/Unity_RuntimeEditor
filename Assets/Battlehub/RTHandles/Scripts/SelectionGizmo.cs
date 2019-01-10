@@ -25,8 +25,17 @@ namespace Battlehub.RTHandles
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
+            m_editor.IsOpenedChanged += OnIsOpeneChanged;
             m_exposeToEditor = GetComponent<ExposeToEditor>();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
+        }
+
+        private void OnDestroy()
+        {
+            if(m_editor != null)
+            {
+                m_editor.IsOpenedChanged -= OnIsOpeneChanged;
+            }
         }
 
         private void Start()
@@ -93,5 +102,15 @@ namespace Battlehub.RTHandles
                 Appearance.DrawBounds(ref bounds, trform.position, trform.rotation, trform.lossyScale);
             }
         }
+
+
+        private void OnIsOpeneChanged()
+        {
+            if (m_editor != null && !m_editor.IsOpened)
+            {
+                Destroy(this);
+            }
+        }
+
     }
 }

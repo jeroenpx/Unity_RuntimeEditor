@@ -4,14 +4,14 @@ namespace Battlehub.RTCommon
 {
     public class RTEComponent : MonoBehaviour
     {
-        private IRTE m_editor;
+        protected IRTE m_editor;
         public IRTE Editor
         {
             get { return m_editor; }
         }
 
         [SerializeField]
-        private RuntimeWindow m_window;
+        protected RuntimeWindow m_window;
 
         public virtual RuntimeWindow Window
         {
@@ -84,7 +84,7 @@ namespace Battlehub.RTCommon
 
         }
 
-        private void OnActiveWindowChanged()
+        protected virtual void OnActiveWindowChanged()
         {
             if (m_editor.ActiveWindow == Window)
             {

@@ -24,6 +24,11 @@ namespace Battlehub.RTEditor
         private IProject m_project;
         private IWindowManager m_windowManager;
 
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.SaveScene;
+            base.AwakeOverride();
+        }
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();

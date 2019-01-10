@@ -41,7 +41,7 @@ namespace Battlehub.RTHandles
             RuntimeTools tools = m_component.Editor.Tools;
             return input.GetPointer(2) ||
                 input.GetPointer(1) ||
-                input.GetPointer(0) && tools.Current == RuntimeTool.View;
+                input.GetPointer(0) && tools.Current == RuntimeTool.View && tools.ActiveTool == null;
         }
 
         protected virtual bool FocusAction()
@@ -87,7 +87,7 @@ namespace Battlehub.RTHandles
             bool rotate = RotateAction();
             bool pan = PanAction();
 
-            if(pan)
+            if(pan && tools.Current != RuntimeTool.View)
             {
                 rotate = false;
             }
@@ -119,10 +119,7 @@ namespace Battlehub.RTHandles
                 SceneComponent.UpdateCursorState(true, m_pan, m_rotate);
             }
 
-            if(beginPan)
-            {
-                SceneComponent.BeginPan(pointerPosition);
-            }
+          
            
             if(m_rotate)
             {
@@ -134,6 +131,10 @@ namespace Battlehub.RTHandles
             }
             else if(m_pan)
             {
+                if (beginPan)
+                {
+                    SceneComponent.BeginPan(pointerPosition);
+                }
                 SceneComponent.Pan(pointerPosition);
             }
             else

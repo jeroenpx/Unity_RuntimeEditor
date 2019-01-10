@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 using UnityObject = UnityEngine.Object;
+using System.Linq;
+
 namespace Battlehub.RTEditor
 {
     public class ProjectItemView : MonoBehaviour
@@ -149,12 +151,25 @@ namespace Battlehub.RTEditor
                 yield break;
             }
 
+            IRTE rte = IOC.Resolve<IRTE>();
+            
+            if(rte.Selection.activeObject != null)
+            {
+                long id = project.ToID(rte.Selection.activeObject);
+                ProjectItem selectedProjectItem = items.Where(item => item.ItemID == id).FirstOrDefault();
+                if(selectedProjectItem != null && selectedProjectItem is AssetItem)
+                {
+                    AssetItem selectedAssetItem = (AssetItem)selectedProjectItem;
+                    selectedAssetItem.Preview = null;
+                }
+            }
+
             for (int i = 0; i < items.Length; ++i)
             {
                 ImportItem importItem = items[i] as ImportItem;
                 if (importItem != null)
                 {
-                    if (importItem.Preview == null && importItem.Object != null)
+                    if (/*importItem.Preview == null &&*/ importItem.Object != null)
                     {
                         importItem.Preview = new Preview
                         {

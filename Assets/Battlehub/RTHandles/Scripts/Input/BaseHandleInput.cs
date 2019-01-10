@@ -26,7 +26,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-
         protected virtual void Update()
         {
             if (BeginDragAction())
@@ -66,6 +65,5 @@ namespace Battlehub.RTHandles
         }
 
     }
-
 }
 

@@ -175,11 +175,11 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                if (Editor.Tools.Current == RuntimeTool.View)
-                {
-                    Editor.CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
-                }
-                else
+                //if (Editor.Tools.Current == RuntimeTool.View)
+                //{
+                //    Editor.CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
+                //}
+                //else
                 {
                     Editor.CursorHelper.ResetCursor(this);
                 }

@@ -115,10 +115,10 @@ namespace Battlehub.RTSaveLoad2
 
         private static bool Load(AssetItem assetItem, GameObject dummyGo, GameObject dummyChild, IProject project, bool done)
         {
-            project.Load(assetItem, (loadError, obj) =>
+            project.Load(new[] { assetItem }, (loadError, obj) =>
             {
                 Assert.IsFalse(loadError.HasError);
-                GameObject loadedGo = (GameObject)obj;
+                GameObject loadedGo = (GameObject)obj[0];
                 Assert.AreEqual(dummyGo.name, loadedGo.name);
                 Assert.AreEqual(dummyGo.transform.position, loadedGo.transform.position);
 
@@ -172,11 +172,11 @@ namespace Battlehub.RTSaveLoad2
 
         private static IEnumerator Load2(AssetItem assetItem, GameObject dummyGo, GameObject dummyChild, IProject project)
         {
-            var loadResult = project.Load(assetItem);
+            var loadResult = project.Load(new[] { assetItem });
             yield return loadResult;
 
             Assert.IsFalse(loadResult.Error.HasError);
-            GameObject loadedGo = (GameObject)loadResult.Result;
+            GameObject loadedGo = (GameObject)loadResult.Result[0];
             Assert.AreEqual(dummyGo.name, loadedGo.name);
             Assert.AreEqual(dummyGo.transform.position, loadedGo.transform.position);
 

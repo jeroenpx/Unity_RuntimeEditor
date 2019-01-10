@@ -666,6 +666,14 @@ namespace Battlehub.RTHandles
             {
                 SyncModelTransform();
             }
+
+            if(!m_isDragging)
+            {
+                if (Editor.Tools.ActiveTool == this)
+                {
+                    Editor.Tools.ActiveTool = null;
+                }
+            }
         }
 
         protected virtual void SyncModelTransform()
@@ -690,7 +698,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (!IsWindowActive)
+            if (!IsWindowActive )
             {
                 return;
             }
@@ -730,10 +738,6 @@ namespace Battlehub.RTHandles
                 OnDrop();
                 RecordTransform();
                 m_isDragging = false;
-                if(Editor.Tools.ActiveTool == this)
-                {
-                    Editor.Tools.ActiveTool = null;
-                }
             }
         }
 

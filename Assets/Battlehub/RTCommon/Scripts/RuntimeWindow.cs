@@ -16,6 +16,8 @@ namespace Battlehub.RTCommon
         Inspector = 7,
         Console = 8,
 
+        ToolsPanel = 21,
+
         OpenProject = 51,
         SelectAssetLibrary = 52,
         ImportAssets = 53,

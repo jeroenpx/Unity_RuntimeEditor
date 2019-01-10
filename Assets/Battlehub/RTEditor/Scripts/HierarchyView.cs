@@ -28,13 +28,14 @@ namespace Battlehub.RTEditor
 
         protected override void AwakeOverride()
         {
+            WindowType = RuntimeWindowType.Hierarchy;
             base.AwakeOverride();
             if (!TreeViewPrefab)
             {
                 Debug.LogError("Set TreeViewPrefab field");
                 return;
             }
-
+            
             m_project = IOC.Resolve<IProject>();
 
             m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
@@ -787,12 +788,12 @@ namespace Battlehub.RTEditor
                     if(assetItem != null && m_project.ToType(assetItem) == typeof(GameObject))
                     {
                         Editor.IsBusy = true;
-                        m_project.Load(assetItem, (error, obj) =>
+                        m_project.Load(new[] { assetItem }, (error, obj) =>
                         {
                             Editor.IsBusy = false;
-                            if(obj is GameObject)
+                            if(obj[0] is GameObject)
                             {
-                                GameObject prefab = (GameObject)obj;
+                                GameObject prefab = (GameObject)obj[0];
                                 bool wasPrefabEnabled = prefab.activeSelf;
                                 prefab.SetActive(false);
 
@@ -806,7 +807,7 @@ namespace Battlehub.RTEditor
                                     exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
                                 }
 
-                                exposeToEditor.SetName(obj.name);
+                                exposeToEditor.SetName(obj[0].name);
                                 exposeToEditor.Parent = (ExposeToEditor)m_treeView.DropTarget;
                                 prefabInstance.SetActive(true);
 

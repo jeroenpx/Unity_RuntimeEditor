@@ -49,6 +49,12 @@ namespace Battlehub.RTEditor
 
         private IWindowManager m_windowManager;
 
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.ImportAssets;
+            base.AwakeOverride();
+        }
+
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();

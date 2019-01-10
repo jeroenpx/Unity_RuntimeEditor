@@ -35,7 +35,13 @@ namespace Battlehub.RTEditor
         private Guid m_noneGuid = Guid.NewGuid();
         private bool m_previewsCreated;
         private AssetItem[] m_cache;
-        
+
+        protected override void AwakeOverride()
+        {
+            WindowType = RuntimeWindowType.SelectObject;
+            base.AwakeOverride();
+        }
+
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();
@@ -160,9 +166,9 @@ namespace Battlehub.RTEditor
                 if (assetItem != null)
                 {
                     SelectedObject = null;
-                    m_project.Load(assetItem, (error, obj) =>
+                    m_project.Load(new[] { assetItem }, (error, obj) =>
                     {
-                        SelectedObject = obj;
+                        SelectedObject = obj[0];
                     });
                 }
                 else
@@ -190,10 +196,10 @@ namespace Battlehub.RTEditor
                 {
                     SelectedObject = null;
                     Editor.IsBusy = true;
-                    m_project.Load(assetItem, (error, obj) =>
+                    m_project.Load(new[] { assetItem }, (error, obj) =>
                     {
                         Editor.IsBusy = false;
-                        SelectedObject = obj;
+                        SelectedObject = obj[0];
                         m_parentDialog.Close(true);
                     });
                 }
