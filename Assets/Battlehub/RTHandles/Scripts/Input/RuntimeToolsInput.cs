@@ -38,7 +38,7 @@ namespace Battlehub.RTHandles
             //UnityEditorToolsListener.Update();
             #endif
 
-            if(m_editor.Tools.ActiveTool != null)
+            if(m_editor.Tools.ActiveTool != null || m_editor.IsInputFieldActive)
             {
                 return;
             }

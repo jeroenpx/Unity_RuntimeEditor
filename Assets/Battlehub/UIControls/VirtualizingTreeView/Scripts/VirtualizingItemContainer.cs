@@ -12,7 +12,7 @@ namespace Battlehub.UIControls
     /// Visual representation of data item
     /// </summary>
     [RequireComponent(typeof(RectTransform), typeof(LayoutElement))]
-    public class VirtualizingItemContainer : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
+    public class VirtualizingItemContainer : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler, IPointerClickHandler
     {
         public bool CanDrag = true;
         public bool CanEdit = true;
@@ -24,6 +24,7 @@ namespace Battlehub.UIControls
         public static event VirtualizingItemEventHandler PointerDown;
         public static event VirtualizingItemEventHandler PointerUp;
         public static event VirtualizingItemEventHandler DoubleClick;
+        public static event VirtualizingItemEventHandler Click;
         public static event VirtualizingItemEventHandler PointerEnter;
         public static event VirtualizingItemEventHandler PointerExit;
         public static event VirtualizingItemEventHandler BeginDrag;
@@ -377,6 +378,14 @@ namespace Battlehub.UIControls
             if (PointerExit != null)
             {
                 PointerExit(this, eventData);
+            }
+        }
+
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+        {
+            if(Click != null)
+            {
+                Click(this, eventData);
             }
         }
     }

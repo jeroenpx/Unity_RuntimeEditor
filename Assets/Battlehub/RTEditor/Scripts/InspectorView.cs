@@ -4,14 +4,26 @@ using UnityEngine;
 
 using Battlehub.RTCommon;
 using UnityObject = UnityEngine.Object;
+using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
     public class InspectorView : RuntimeWindow
     {
-        public GameObject GameObjectEditor;
-        public GameObject MaterialEditor;
-        public Transform Panel;
+        [SerializeField]
+        private GameObject m_gameObjectEditor;
+
+        [SerializeField]
+        private GameObject m_materialEditor;
+
+        [SerializeField]
+        private Transform m_panel;
+
+        [SerializeField]
+        private GameObject m_addComponentRoot = null;
+
+        [SerializeField]
+        private AddComponentControl m_addComponentControl = null;
 
         private GameObject m_editor;
 
@@ -20,11 +32,11 @@ namespace Battlehub.RTEditor
             WindowType = RuntimeWindowType.Hierarchy;
             base.AwakeOverride();
 
-            if (GameObjectEditor == null)
+            if (m_gameObjectEditor == null)
             {
                 Debug.LogError("GameObjectEditor is not set");
             }
-            if (MaterialEditor == null)
+            if (m_materialEditor == null)
             {
                 Debug.LogError("MaterialEditor is not set");
             }
@@ -38,10 +50,7 @@ namespace Battlehub.RTEditor
             UnityObject obj = Editor.Selection.activeObject;
             if(obj == null)
             {
-                if (m_editor != null)
-                {
-                    Destroy(m_editor);
-                }
+                DestroyEditor();
             }
         }
 
@@ -52,10 +61,7 @@ namespace Battlehub.RTEditor
 
         private void OnDisable()
         {
-            if (m_editor != null)
-            {
-                Destroy(m_editor);
-            }
+            DestroyEditor();
         }
 
         protected override void OnDestroyOverride()
@@ -104,12 +110,27 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void CreateEditor()
+        private void DestroyEditor()
         {
             if (m_editor != null)
             {
                 Destroy(m_editor);
             }
+
+            if(m_addComponentRoot != null)
+            {
+                m_addComponentRoot.SetActive(false);
+            }
+
+            if (m_addComponentControl != null)
+            {
+                m_addComponentControl.ComponentSelected -= OnAddComponent;
+            }
+        }
+
+        private void CreateEditor()
+        {
+            DestroyEditor();
 
             if (Editor.Selection.activeObject == null)
             {
@@ -138,7 +159,6 @@ namespace Battlehub.RTEditor
 #else
             if (objType == typeof(Material))
 #endif
-
             {
                 Material mat = selectedObjects[0] as Material;
                 if (mat.shader == null)
@@ -160,8 +180,68 @@ namespace Battlehub.RTEditor
             if (editorPrefab != null)
             {
                 m_editor = Instantiate(editorPrefab);
-                m_editor.transform.SetParent(Panel, false);
+                m_editor.transform.SetParent(m_panel, false);
+                m_editor.transform.SetAsFirstSibling();
             }
+
+            bool isExposedToEditor = Editor.Selection.activeGameObject != null && Editor.Selection.activeGameObject.GetComponent<ExposeToEditor>() != null;
+            if (m_addComponentRoot != null && isExposedToEditor)
+            {
+                m_addComponentRoot.SetActive(true);
+                if(m_addComponentControl != null)
+                {
+                    m_addComponentControl.ComponentSelected += OnAddComponent;
+                }
+            }
+        }
+
+
+        private class ComponentReference
+        {
+            public Component Component;
+            public ComponentReference(Component component)
+            {
+                Component = component;
+            }
+        }
+
+        private void OnAddComponent(Type type)
+        {
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+
+            ExposeToEditor exposeToEditor = editor.Selection.activeGameObject.GetComponent<ExposeToEditor>();
+
+            Component component = AddComponent(type, exposeToEditor);
+            if (component != null)
+            {
+                editor.Undo.RecordObject(exposeToEditor, new ComponentReference(component), record =>
+                {
+                    //Does not work properly. 
+                    ComponentReference state = (ComponentReference)record.State;
+                    if(state.Component != null)
+                    {
+                        Destroy(state.Component);
+                        state.Component = null;
+                    }
+                    else
+                    {
+                        state.Component = AddComponent(type, exposeToEditor);
+                    }
+                   
+                    return true;
+                });
+            }
+        }
+
+        private static Component AddComponent(Type type, ExposeToEditor exposeToEditor)
+        {
+            Component component = exposeToEditor.AddComponent(type);
+            if (component is Rigidbody)
+            {
+                Rigidbody rb = (Rigidbody)component;
+                rb.isKinematic = true;
+            }
+            return component;
         }
     }
 }

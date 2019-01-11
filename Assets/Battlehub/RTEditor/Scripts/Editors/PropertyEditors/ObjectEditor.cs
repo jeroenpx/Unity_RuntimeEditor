@@ -76,12 +76,34 @@ namespace Battlehub.RTEditor
         private void OnDrop(PointerEventData pointerEventData)
         {
             object dragObject = Editor.DragDrop.DragObjects[0];
-            #warning Recover this functionality
-            throw new System.NotImplementedException();
-            //SetValue(DragDrop.DragObject);
-            //EndEdit();
-            //SetInputField(DragDrop.DragObject);
-            //HideDragHighlight();
+            if(dragObject is AssetItem)
+            {
+                AssetItem assetItem = (AssetItem)dragObject;
+                IProject project = IOC.Resolve<IProject>();
+                Editor.IsBusy = true;
+                project.Load(new[] { assetItem }, (error, loadedObjects) =>
+                {
+                    Editor.IsBusy = false;
+                    if (error.HasError)
+                    {
+                        IWindowManager wnd = IOC.Resolve<IWindowManager>();
+                        wnd.MessageBox("Unable to load object", error.ErrorText);
+                        return;
+                    }
+
+                    SetValue(loadedObjects[0]);
+                    EndEdit();
+                    SetInputField(loadedObjects[0]);
+                    HideDragHighlight();
+                });
+            }
+            else if(dragObject is GameObject)
+            {
+                SetValue((GameObject)dragObject);
+                EndEdit();
+                SetInputField((GameObject)dragObject);
+                HideDragHighlight();
+            }
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)

@@ -13,6 +13,9 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         private VirtualizingTreeView TreeViewPrefab = null;
+
+        [SerializeField]
+        private Text m_txtNoItemsToImport = null;
         
         private Dialog m_parentDialog;
         private VirtualizingTreeView m_treeView;
@@ -98,21 +101,43 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    m_treeView.Items = new[] { root };
-                    m_treeView.SelectedItems = root.Flatten(false);
-                    ExpandAll(root);
-
-                    Editor.IsBusy = true;
-                    IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
-
-                    m_coCreatePreviews = ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview, () =>
+                    if(root.Children != null && root.Children.Count > 0)
                     {
-                        m_project.UnloadImportItems(root);
-                        Editor.IsBusy = false;
-                        m_coCreatePreviews = null;
-                    });
+                        if (m_txtNoItemsToImport != null)
+                        {
+                            m_txtNoItemsToImport.gameObject.SetActive(false);
+                        }
+                        m_treeView.gameObject.SetActive(true);
+                        m_treeView.Items = new[] { root };
+                        m_treeView.SelectedItems = root.Flatten(false);
+                        ExpandAll(root);
 
-                    StartCoroutine(m_coCreatePreviews);
+                        Editor.IsBusy = true;
+                        IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
+
+                        m_coCreatePreviews = ProjectItemView.CoCreatePreviews(root.Flatten(false), m_project, resourcePreview, () =>
+                        {
+                            m_project.UnloadImportItems(root);
+                            Editor.IsBusy = false;
+                            m_coCreatePreviews = null;
+                        });
+
+                        StartCoroutine(m_coCreatePreviews);
+                    }
+                    else
+                    {
+                        Editor.IsBusy = false;
+
+                        m_parentDialog.IsOkInteractable = false;
+
+                        if (m_txtNoItemsToImport != null)
+                        {
+                            m_txtNoItemsToImport.gameObject.SetActive(true);
+                        }
+
+                        m_treeView.gameObject.SetActive(false);
+                    }
+                   
                 }
             });
         }

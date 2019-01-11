@@ -81,14 +81,7 @@ namespace Battlehub.RTEditor
 
         protected override void Update()
         {
-            if (m_eventSystem.currentSelectedGameObject != m_currentSelectedGameObject)
-            {
-                m_currentSelectedGameObject = m_eventSystem.currentSelectedGameObject;
-                if (m_currentSelectedGameObject != null)
-                {
-                    m_currentInputField = m_currentSelectedGameObject.GetComponent<InputField>();
-                }
-            }
+            UpdateCurrentInputField();
 
             bool mwheel = false;
             if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z))))
@@ -371,11 +364,19 @@ namespace Battlehub.RTEditor
 
         public void SaveAsset(UnityObject obj, Action<AssetItem> done)
         {
-            IsBusy = true;
             IWindowManager windowManager = IOC.Resolve<IWindowManager>();
             IProject project = IOC.Resolve<IProject>();
             AssetItem assetItem = project.ToAssetItem(obj);
+            if(assetItem == null)
+            {
+                if(done != null)
+                {
+                    done(null);
+                }
+                return;
+            }
 
+            IsBusy = true;
             m_project.Save(new[] { assetItem }, new[] { obj }, (saveError, saveResult) =>
             {
                 if (saveError.HasError)

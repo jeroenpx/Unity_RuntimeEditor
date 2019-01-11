@@ -13,12 +13,14 @@ namespace Battlehub.RTCommon
         public bool ShowResetButton;
         public bool ShowExpander;
         public bool ShowEnableButton;
+        public bool ShowRemoveButton;
       
-        public ComponentEditorSettings(bool showExpander, bool showResetButton, bool showEnableButton)
+        public ComponentEditorSettings(bool showExpander, bool showResetButton, bool showEnableButton, bool showRemoveButton)
         {
             ShowResetButton = showResetButton;
             ShowExpander = showExpander;
             ShowEnableButton = showEnableButton;
+            ShowRemoveButton = showRemoveButton;
         }
     }
 
@@ -171,7 +173,7 @@ namespace Battlehub.RTCommon
         protected EventSystem m_eventSystem;
 
         [SerializeField]
-        private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true);
+        private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
         [SerializeField]
         private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4);
         [SerializeField]
@@ -624,21 +626,14 @@ namespace Battlehub.RTCommon
 
         protected virtual void Update()
         {
-            if(m_eventSystem.currentSelectedGameObject != m_currentSelectedGameObject)
-            {
-                m_currentSelectedGameObject = m_eventSystem.currentSelectedGameObject;
-                if(m_currentSelectedGameObject != null)
-                {
-                    m_currentInputField = m_currentSelectedGameObject.GetComponent<InputField>();
-                }
-            }
+            UpdateCurrentInputField();
 
             bool mwheel = false;
-            if(m_zAxis != Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z))))
+            if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z))))
             {
                 mwheel = m_zAxis == 0;
                 m_zAxis = Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z)));
-                
+
             }
 
             if (m_input.GetPointerDown(0) ||
@@ -656,11 +651,11 @@ namespace Battlehub.RTCommon
 
                 //Raycast using the Graphics Raycaster and mouse click position
                 m_raycaster.Raycast(pointerEventData, results);
-                
+
                 //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
                 foreach (RaycastResult result in results)
                 {
-                    if(m_windows.Contains(result.gameObject))
+                    if (m_windows.Contains(result.gameObject))
                     {
                         RuntimeWindow editorWindow = result.gameObject.GetComponent<RuntimeWindow>();
                         ActivateWindow(editorWindow);
@@ -669,7 +664,39 @@ namespace Battlehub.RTCommon
                 }
             }
         }
-    
+
+        protected void UpdateCurrentInputField()
+        {
+            if (m_eventSystem.currentSelectedGameObject != null && m_eventSystem.currentSelectedGameObject.activeInHierarchy)
+            {
+                if (m_eventSystem.currentSelectedGameObject != m_currentSelectedGameObject)
+                {
+                    m_currentSelectedGameObject = m_eventSystem.currentSelectedGameObject;
+                    if (m_currentSelectedGameObject != null)
+                    {
+                        m_currentInputField = m_currentSelectedGameObject.GetComponent<InputField>();
+                    }
+                    else
+                    {
+                        if(m_currentInputField != null)
+                        {
+                            m_currentInputField.DeactivateInputField();
+                        }
+                        m_currentInputField = null;
+                    }
+                }
+            }
+            else
+            {
+                m_currentSelectedGameObject = null;
+                if(m_currentInputField != null)
+                {
+                    m_currentInputField.DeactivateInputField();
+                }
+                m_currentInputField = null;
+            }
+        }
+
         public int GetIndex(RuntimeWindowType windowType)
         {
             IEnumerable<RuntimeWindow> windows = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).Where(w => w.WindowType == windowType).OrderBy(w => w.Index);

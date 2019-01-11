@@ -537,7 +537,6 @@ namespace Battlehub.RTCommon
                     {
                         hasChanged = !state.Equals(value);
                     }
-
                 }
 
                 if (hasChanged)

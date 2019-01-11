@@ -23,12 +23,29 @@ namespace Battlehub.RTEditor
         private void Start()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_editor.Object.ComponentAdded += OnComponentAdded;
 
             GameObject go = m_editor.Selection.activeGameObject;
+            HashSet<Component> ignoreComponents = IgnoreComponents(go);
+            InputName.text = go.name;
+            TogEnableDisable.isOn = go.activeSelf;
+
+            InputName.onEndEdit.AddListener(OnEndEditName);
+            TogEnableDisable.onValueChanged.AddListener(OnEnableDisable);
+            Component[] components = go.GetComponents<Component>();
+            for (int i = 0; i < components.Length; ++i)
+            {
+                Component component = components[i];
+                CreateComponentEditor(go, component, ignoreComponents);
+            }
+        }
+
+        private static HashSet<Component> IgnoreComponents(GameObject go)
+        {
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             HierarchyItem hierarchyItem = go.GetComponent<HierarchyItem>();
             HashSet<Component> ignoreComponents = new HashSet<Component>();
-            if(exposeToEditor != null)
+            if (exposeToEditor != null)
             {
                 if (exposeToEditor.Colliders != null)
                 {
@@ -44,60 +61,59 @@ namespace Battlehub.RTEditor
 
                 ignoreComponents.Add(exposeToEditor);
             }
-          
-            if(hierarchyItem != null)
+
+            if (hierarchyItem != null)
             {
                 ignoreComponents.Add(hierarchyItem);
             }
-            
-            InputName.text = go.name;
-            TogEnableDisable.isOn = go.activeSelf;
 
-            InputName.onEndEdit.AddListener(OnEndEditName);
-            TogEnableDisable.onValueChanged.AddListener(OnEnableDisable);
-            Component[] components = go.GetComponents<Component>();
-            for (int i = 0; i < components.Length; ++i)
+            return ignoreComponents;
+        }
+
+        private bool CreateComponentEditor(GameObject go, Component component, HashSet<Component> ignoreComponents)
+        {
+            if (component == null)
             {
-                Component component = components[i];
-                if(component == null)
-                {
-                    continue;
-                }
+                return false;
+            }
 
-                if(ignoreComponents.Contains(component))
-                {
-                    continue;
-                }
+            if (ignoreComponents.Contains(component))
+            {
+                return false;
+            }
 
-                if((component.hideFlags & HideFlags.HideInInspector) != 0)
-                {
-                    continue;
-                }
+            if ((component.hideFlags & HideFlags.HideInInspector) != 0)
+            {
+                return false;
+            }
 
-                if (EditorsMap.IsObjectEditorEnabled(component.GetType()))
+            if (EditorsMap.IsObjectEditorEnabled(component.GetType()))
+            {
+                GameObject editorPrefab = EditorsMap.GetObjectEditor(component.GetType());
+                if (editorPrefab != null)
                 {
-                    GameObject editorPrefab = EditorsMap.GetObjectEditor(component.GetType());
-                    if (editorPrefab != null)
+                    ComponentEditor componentEditorPrefab = editorPrefab.GetComponent<ComponentEditor>();
+                    if (componentEditorPrefab != null)
                     {
-                        ComponentEditor componentEditorPrefab = editorPrefab.GetComponent<ComponentEditor>();
-                        if (componentEditorPrefab != null)
+                        ComponentEditor editor = Instantiate(componentEditorPrefab);
+                        editor.EndEditCallback = () =>
                         {
-                            ComponentEditor editor = Instantiate(componentEditorPrefab);
-                            editor.EndEditCallback = () =>
-                            {
-                                m_editor.UpdatePreview(go);
-                                m_editor.IsDirty = true;
-                            };
-                            editor.transform.SetParent(ComponentsPanel, false);
-                            editor.Component = component;
-                        }
-                        else
-                        {
-                            Debug.LogErrorFormat("editor prefab {0} does not have ComponentEditor script", editorPrefab.name);
-                        }
+                            m_editor.UpdatePreview(go);
+                            m_editor.IsDirty = true;
+                        };
+                        editor.transform.SetParent(ComponentsPanel, false);
+                        editor.Component = component;
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.LogErrorFormat("editor prefab {0} does not have ComponentEditor script", editorPrefab.name);
+                        return false;
                     }
                 }
             }
+
+            return false;
         }
 
         private void OnDestroy()
@@ -109,6 +125,11 @@ namespace Battlehub.RTEditor
             if(TogEnableDisable != null)
             {
                 TogEnableDisable.onValueChanged.RemoveListener(OnEnableDisable);
+            }
+
+            if(m_editor != null && m_editor.Object != null)
+            {
+                m_editor.Object.ComponentAdded -= OnComponentAdded;
             }
         }
 
@@ -129,6 +150,23 @@ namespace Battlehub.RTEditor
             else
             {
                 go.name = name;
+            }
+        }
+
+        private void OnComponentAdded(ExposeToEditor obj, Component component)
+        {
+            if(component == null)
+            {
+                IWindowManager wnd = IOC.Resolve<IWindowManager>();
+                wnd.MessageBox("Unable to add component", "Component was not added");
+            }
+            else
+            {
+                HashSet<Component> components = IgnoreComponents(obj.gameObject);
+                if (!CreateComponentEditor(obj.gameObject, component, components))
+                {
+
+                }
             }
         }
     }

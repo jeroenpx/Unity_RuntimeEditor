@@ -24,12 +24,18 @@ namespace Battlehub.RTEditor
             get; set;
         }
 
-        public HeaderDescriptor(string displayName, bool showExpander = true, bool showResetButton = true, bool showEnableButton = true)
+        public bool ShowRemoveButton
+        {
+            get; set;
+        }
+
+        public HeaderDescriptor(string displayName, bool showExpander = true, bool showResetButton = true, bool showEnableButton = true, bool showRemoveButton = true)
         {
             DisplayName = displayName;
             ShowExpander = showExpander;
             ShowResetButton = showResetButton;
             ShowEnableButton = showEnableButton;
+            ShowRemoveButton = showRemoveButton;
         }
     }
 

@@ -52,6 +52,7 @@ namespace Battlehub.UIControls
             {
                 return;
             }
+
             VirtualizingItemContainer itemContainer = (VirtualizingItemContainer)sender;
             if (ItemBeginEdit != null)
             {
@@ -60,7 +61,8 @@ namespace Battlehub.UIControls
                 args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
                 args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
                 ItemEndEdit(this, args);
-            }
+            } 
+            IsSelected = true;
         }
 
         public override void DataBindItem(object item, VirtualizingItemContainer itemContainer)
@@ -156,6 +158,11 @@ namespace Battlehub.UIControls
         public event EventHandler<ItemArgs> ItemDoubleClick;
 
         /// <summary>
+        /// Raised on item click
+        /// </summary>
+        public event EventHandler<ItemArgs> ItemClick;
+
+        /// <summary>
         /// Raise before items removed
         /// </summary>
         public event EventHandler<ItemsCancelArgs> ItemsRemoving;
@@ -237,7 +244,7 @@ namespace Battlehub.UIControls
         public bool IsSelected
         {
             get { return m_isSelected; }
-            private set
+            protected set
             {
                 if(m_isSelected != value)
                 {
@@ -822,7 +829,10 @@ namespace Battlehub.UIControls
                                 }
                             });
                         }
-                        m_repeater.Repeat(Time.time);
+                        if(m_repeater != null)
+                        {
+                            m_repeater.Repeat(Time.time);
+                        }
                     }
                     else if (!Mathf.Approximately(InputProvider.HorizontalAxis, 0))
                     {
@@ -899,13 +909,14 @@ namespace Battlehub.UIControls
             VirtualizingItemContainer.PointerEnter += OnItemPointerEnter;
             VirtualizingItemContainer.PointerExit += OnItemPointerExit;
             VirtualizingItemContainer.DoubleClick += OnItemDoubleClick;
+            VirtualizingItemContainer.Click += OnItemClick;
             VirtualizingItemContainer.BeginEdit += OnItemBeginEdit;
             VirtualizingItemContainer.EndEdit += OnItemEndEdit;
             VirtualizingItemContainer.BeginDrag += OnItemBeginDrag;
             VirtualizingItemContainer.Drag += OnItemDrag;
             VirtualizingItemContainer.Drop += OnItemDrop;
             VirtualizingItemContainer.EndDrag += OnItemEndDrag;
-
+           
             OnEnableOverride();
         }
 
@@ -919,6 +930,7 @@ namespace Battlehub.UIControls
             VirtualizingItemContainer.PointerEnter -= OnItemPointerEnter;
             VirtualizingItemContainer.PointerExit -= OnItemPointerExit;
             VirtualizingItemContainer.DoubleClick -= OnItemDoubleClick;
+            VirtualizingItemContainer.Click -= OnItemClick;
             VirtualizingItemContainer.BeginEdit -= OnItemBeginEdit;
             VirtualizingItemContainer.EndEdit -= OnItemEndEdit;
             VirtualizingItemContainer.BeginDrag -= OnItemBeginDrag;
@@ -1228,6 +1240,19 @@ namespace Battlehub.UIControls
             if (ItemDoubleClick != null)
             {
                 ItemDoubleClick(this, new ItemArgs(new[] { sender.Item }, eventData));
+            }
+        }
+
+        private void OnItemClick(VirtualizingItemContainer sender, PointerEventData eventData)
+        {
+            if(!CanHandleEvent(sender))
+            {
+                return;
+            }
+
+            if (ItemClick != null)
+            {
+                ItemClick(this, new ItemArgs(new[] { sender.Item }, eventData));
             }
         }
 
@@ -1583,6 +1608,7 @@ namespace Battlehub.UIControls
         /// <param name="e"></param>
         protected virtual void OnItemEndEdit(object sender, EventArgs e)
         {
+
         }
 
         public virtual void DataBindItem(object item, VirtualizingItemContainer itemContainer)

@@ -145,6 +145,8 @@ namespace Battlehub.RTEditor
         private GameObject ExpanderGraphics = null;
         [SerializeField]
         private Button ResetButton = null;
+        [SerializeField]
+        private Button RemoveButton = null;
 
         private object m_converter;
 
@@ -298,6 +300,11 @@ namespace Battlehub.RTEditor
             {
                 ResetButton.onClick.AddListener(OnResetClick);
             }
+
+            if(RemoveButton != null)
+            {
+                RemoveButton.onClick.AddListener(OnRemove);
+            }
             
             m_editor.Undo.UndoCompleted += OnUndoCompleted;
             m_editor.Undo.RedoCompleted += OnRedoCompleted;
@@ -328,6 +335,11 @@ namespace Battlehub.RTEditor
                 ResetButton.onClick.RemoveListener(OnResetClick);
             }
 
+            if (RemoveButton != null)
+            {
+                RemoveButton.onClick.RemoveListener(OnRemove);
+            }
+
             if (m_gizmo != null)
             {
                 Destroy(m_gizmo);
@@ -340,6 +352,19 @@ namespace Battlehub.RTEditor
         protected virtual void OnDestroyOverride()
         {
 
+        }
+
+        private void Update()
+        {
+            UpdateOverride();
+        }
+
+        protected virtual void UpdateOverride()
+        {
+            if(Component == null)
+            {
+                Destroy(gameObject);
+            }
         }
 
         protected IComponentDescriptor GetComponentDescriptor()
@@ -401,7 +426,14 @@ namespace Battlehub.RTEditor
                     m_editor.ComponentEditorSettings.ShowResetButton);
             }
 
-            if (EnabledEditor != null)
+            if(RemoveButton != null)
+            {
+                RemoveButton.gameObject.SetActive(componentDescriptor != null ?
+                    componentDescriptor.GetHeaderDescriptor(m_editor).ShowRemoveButton :
+                    m_editor.ComponentEditorSettings.ShowRemoveButton);
+            }
+
+            if (EnabledEditor != null && EnabledProperty != null)
             {
                 EnabledEditor.gameObject.SetActive(componentDescriptor != null ?
                     componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton :
@@ -672,6 +704,11 @@ namespace Battlehub.RTEditor
             }
 
             m_editor.Undo.EndRecord();
+        }
+
+        private void OnRemove()
+        {
+            Destroy(Component);
         }
     }
 

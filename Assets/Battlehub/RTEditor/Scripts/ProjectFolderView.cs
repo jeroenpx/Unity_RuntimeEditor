@@ -217,10 +217,7 @@ namespace Battlehub.RTEditor
                 m_listBox.name = "AssetsListBox";
                 m_listBox.CanDrag = true;
                 m_listBox.CanReorder = false;
-                //m_listBox.MultiselectKey = KeyCode.None;
-                // m_listBox.RangeselectKey = KeyCode.None;
-                //m_listBox.RemoveKey = KeyCode.None;
-
+                m_listBox.SelectOnPointerUp = true;
                 m_listBox.CanRemove = false;
             }
 

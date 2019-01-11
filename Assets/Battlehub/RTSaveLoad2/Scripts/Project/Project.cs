@@ -2356,10 +2356,30 @@ namespace Battlehub.RTSaveLoad2
                             }
                         }
 
-                        importItem.Status = status;
+                        const bool doNotOverwriteItems = true;
+                        if(!doNotOverwriteItems || status != ImportStatus.Overwrite)
+                        {
+                            importItem.Status = status;
+                            projectItem.AddChild(importItem);
+                            existingNames.Add(importItem.NameExt);
+                        }
+                    }
+                }
+            }
 
-                        projectItem.AddChild(importItem);
-                        existingNames.Add(importItem.NameExt);
+            RemoveEmptyFolders(projectItem);
+        }
+
+        private void RemoveEmptyFolders(ProjectItem item)
+        {
+            if(item.Children != null)
+            {
+                for (int i = item.Children.Count - 1; i >= 0; --i)
+                {
+                    RemoveEmptyFolders(item.Children[i]);
+                    if (item.Children[i].IsFolder && (item.Children[i].Children == null || item.Children[i].Children.Count == 0))
+                    {
+                        item.RemoveChild(item.Children[i]);
                     }
                 }
             }

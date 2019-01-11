@@ -195,8 +195,6 @@ namespace Battlehub.RTEditor
             do
             {
                 EditorDescriptor descriptor;
-
-
                 if (m_map.TryGetValue(type, out descriptor))
                 {
                     if (descriptor.IsPropertyEditor == isPropertyEditor)
@@ -222,6 +220,11 @@ namespace Battlehub.RTEditor
             }
             while (type != null);
             return null;
+        }
+
+        public static Type[] GetEditableTypes()
+        {
+            return m_map.Where(kvp => kvp.Value != null && kvp.Value.Enabled).Select(kvp => kvp.Key).ToArray();
         }
     }
 }

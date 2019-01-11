@@ -8,6 +8,7 @@ using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTCommon
 {
     public delegate void ObjectEvent(ExposeToEditor obj);
+    public delegate void ObjectEvent<T>(ExposeToEditor obj, T arg);
     public delegate void ObjectParentChangedEvent(ExposeToEditor obj, ExposeToEditor oldValue, ExposeToEditor newValue);
    
     public interface IRTEObjects
@@ -22,6 +23,7 @@ namespace Battlehub.RTCommon
         event ObjectEvent TransformChanged;
         event ObjectEvent NameChanged;
         event ObjectParentChangedEvent ParentChanged;
+        event ObjectEvent<Component> ComponentAdded;
 
         IEnumerable<ExposeToEditor> Get(bool rootsOnly);
     }
@@ -38,6 +40,7 @@ namespace Battlehub.RTCommon
         public event ObjectEvent TransformChanged;
         public event ObjectEvent NameChanged;
         public event ObjectParentChangedEvent ParentChanged;
+        public event ObjectEvent<Component> ComponentAdded;
 
         private IRTE m_editor;
 
@@ -102,7 +105,10 @@ namespace Battlehub.RTCommon
             ExposeToEditor._TransformChanged += OnTransformChanged;
             ExposeToEditor._NameChanged += OnNameChanged;
             ExposeToEditor._ParentChanged += OnParentChanged;
+            ExposeToEditor._ComponentAdded += OnComponentAdded;
         }
+
+
 
         private void OnDestroy()
         {
@@ -123,6 +129,8 @@ namespace Battlehub.RTCommon
             ExposeToEditor._TransformChanged -= OnTransformChanged;
             ExposeToEditor._NameChanged -= OnNameChanged;
             ExposeToEditor._ParentChanged -= OnParentChanged;
+
+            ExposeToEditor._ComponentAdded -= OnComponentAdded;
         }
 
         private void OnIsOpenedChanged()
@@ -523,6 +531,14 @@ namespace Battlehub.RTCommon
             if (ParentChanged != null)
             {
                 ParentChanged(obj, oldValue, newValue);
+            }
+        }
+
+        private void OnComponentAdded(ExposeToEditor obj, Component component)
+        {
+            if(ComponentAdded != null)
+            {
+                ComponentAdded(obj, component);
             }
         }
     }
