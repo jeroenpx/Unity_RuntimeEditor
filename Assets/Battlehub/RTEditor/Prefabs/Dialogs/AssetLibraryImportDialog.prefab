@@ -1280,6 +1280,7 @@ MonoBehaviour:
   InputProvider: {fileID: 114488349424873486}
   SelectOnPointerUp: 0
   CanUnselectAll: 0
+  CanSelectAll: 1
   CanEdit: 0
   CanRemove: 0
   CanDrag: 0

@@ -460,9 +460,6 @@ namespace Battlehub.UIControls
             
         }
 
-
-
-
         /// <summary>
         /// Check wheter item is expanded
         /// </summary>

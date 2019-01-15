@@ -25,6 +25,7 @@ namespace Battlehub.RTEditor
         private bool m_isStarted;
 
         private IProject m_project;
+        private IRuntimeEditor m_editor;
 
         protected override void AwakeOverride()
         {
@@ -37,9 +38,11 @@ namespace Battlehub.RTEditor
             }
             
             m_project = IOC.Resolve<IProject>();
+            m_editor = IOC.Resolve<IRuntimeEditor>();
 
             m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
             m_treeView.name = "HierarchyTreeView";
+            m_treeView.CanSelectAll = false;
 
             RectTransform rt = (RectTransform)m_treeView.transform;
             rt.Stretch();
@@ -72,11 +75,10 @@ namespace Battlehub.RTEditor
 
         private void OnEnable()
         {
-            if(m_project != null)
+            if(m_editor != null)
             {
-                //m_project.SceneLoading += OnSceneLoading;
-                //m_project.SceneLoaded += OnSceneLoaded;
-                //m_project.SceneCreated += OnSceneCreated;
+                m_editor.SceneLoading += OnSceneLoading;
+                m_editor.SceneLoaded += OnSceneLoaded;
             }
 
             EnableHierarchy();    
@@ -84,11 +86,10 @@ namespace Battlehub.RTEditor
 
         private void OnDisable()
         {
-            if (m_project != null)
+            if (m_editor != null)
             {
-               // m_project.SceneLoading -= OnSceneLoading;
-                //m_project.SceneLoaded -= OnSceneLoaded;
-                //m_project.SceneCreated -= OnSceneCreated;
+                m_editor.SceneLoading -= OnSceneLoading;
+                m_editor.SceneLoaded -= OnSceneLoaded;
             }
 
             DisableHierarchy();
@@ -114,7 +115,7 @@ namespace Battlehub.RTEditor
             m_treeView.ItemDragExit -= OnItemDragExit;
             m_treeView.ItemDoubleClick -= OnItemDoubleClicked;
             m_treeView.ItemBeginEdit -= OnItemBeginEdit;
-            m_treeView.ItemEndEdit -= OnItemEndEdit;          
+            m_treeView.ItemEndEdit -= OnItemEndEdit;     
         }
 
         private void OnApplicationQuit()
@@ -133,13 +134,11 @@ namespace Battlehub.RTEditor
                 Editor.PlaymodeStateChanged -= OnPlaymodeStateChanged;
             }
 
-            if(m_project != null)
+            if (m_editor != null)
             {
-                
-              //  m_project.SceneLoading -= OnSceneLoading;
-               // m_project.SceneLoaded -= OnSceneLoaded;
-               // m_project.SceneCreated -= OnSceneCreated;
-            }            
+                m_editor.SceneLoading -= OnSceneLoading;
+                m_editor.SceneLoaded -= OnSceneLoaded;
+            }
         }
 
         public void SelectAll()
@@ -190,27 +189,20 @@ namespace Battlehub.RTEditor
             }
         }
 
-#warning SceneCreated/SceneLoading/SceneLoaded commented out
+        private void OnSceneLoading()
+        {
+            DisableHierarchy();
+        }
 
-        //private void OnSceneCreated(object sender, ProjectManagerEventArgs args)
-        //{
-        //    DisableHierarchy();
-        //    EnableHierarchy();
-        //}
-
-        //private void OnSceneLoading(object sender, ProjectManagerEventArgs args)
-        //{
-        //    DisableHierarchy();
-        //}
-
-        //private void OnSceneLoaded(object sender, ProjectManagerEventArgs args)
-        //{
-        //    EnableHierarchy();
-        //}
+        private void OnSceneLoaded()
+        {
+            EnableHierarchy();
+        }
 
         private void BindGameObjects()
         {
-            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(true);
+            bool useCache = Editor.IsPlaying;
+            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(true, useCache);
 
             if(objects.Any())
             {

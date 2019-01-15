@@ -75,6 +75,11 @@ namespace Battlehub.UIControls.MenuControl
 
         [SerializeField]
         private RectTransform m_anchor = null;
+        public RectTransform Anchor
+        {
+            get { return m_anchor; }
+            set { m_anchor = value; }
+        }
 
         [SerializeField]
         private Transform m_panel = null;
@@ -228,16 +233,19 @@ namespace Battlehub.UIControls.MenuControl
             {
                 Destroy(child.gameObject);
             }
+            m_panel.DetachChildren();
         }
 
         public void Open()
         {
             gameObject.SetActive(true);
 
-            if (m_anchor != null)
+            RectTransform anchor = m_anchor;
+
+            if (anchor != null)
             {
                 Vector3[] corners = new Vector3[4];
-                m_anchor.GetWorldCorners(corners);
+                anchor.GetWorldCorners(corners);
                 transform.position = corners[0];
 
                 Vector3 lp = transform.localPosition;
@@ -251,7 +259,7 @@ namespace Battlehub.UIControls.MenuControl
             {
                 Fit();
             }   
-
+         
             if(Opened != null)
             {
                 Opened(this, EventArgs.Empty);

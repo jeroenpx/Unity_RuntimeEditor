@@ -283,7 +283,7 @@ namespace Battlehub.UIControls
                     DoubleClick(this, eventData);
                 }
 
-                if (CanEdit)
+                if (CanEdit && eventData.button == PointerEventData.InputButton.Left)
                 {
                     if (m_coBeginEdit != null)
                     {
@@ -294,7 +294,7 @@ namespace Battlehub.UIControls
             }
             else
             {
-                if (m_canBeginEdit)
+                if (m_canBeginEdit && eventData.button == PointerEventData.InputButton.Left)
                 {
                     if (m_coBeginEdit == null)
                     {

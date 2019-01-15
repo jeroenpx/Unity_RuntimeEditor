@@ -15,6 +15,7 @@ namespace Battlehub.RTEditor
         private IWindowManager m_windowManager;
         private IGameObjectCmd m_gameObjectCmd;
         private IEditCmd m_editCmd;
+        private IContextMenu m_contextMenu;
 
         protected virtual IScenePivot ScenePivot
         {
@@ -39,7 +40,7 @@ namespace Battlehub.RTEditor
             get
             {
                 IRTEAppearance rteAppearance = FindObjectOfType<RTEAppearance>();
-                if(rteAppearance == null)
+                if (rteAppearance == null)
                 {
                     rteAppearance = gameObject.AddComponent<RTEAppearance>();
                 }
@@ -52,7 +53,7 @@ namespace Battlehub.RTEditor
             get
             {
                 IRuntimeEditor rte = FindObjectOfType<RuntimeEditor>();
-                if(rte == null)
+                if (rte == null)
                 {
                     rte = gameObject.AddComponent<RuntimeEditor>();
                 }
@@ -65,7 +66,7 @@ namespace Battlehub.RTEditor
             get
             {
                 IWindowManager windowManager = FindObjectOfType<WindowManager>();
-                if(windowManager == null)
+                if (windowManager == null)
                 {
                     windowManager = gameObject.AddComponent<WindowManager>();
                 }
@@ -78,7 +79,7 @@ namespace Battlehub.RTEditor
             get
             {
                 IRuntimeConsole console = FindObjectOfType<RuntimeConsole>();
-                if(console == null)
+                if (console == null)
                 {
                     console = gameObject.AddComponent<RuntimeConsole>();
                 }
@@ -99,6 +100,14 @@ namespace Battlehub.RTEditor
             get
             {
                 return FindObjectOfType<EditCmd>();
+            }
+        }
+
+        protected virtual IContextMenu ContextMenu
+        {
+            get
+            {
+                return FindObjectOfType<ContextMenu>();
             }
         }
 
@@ -126,6 +135,7 @@ namespace Battlehub.RTEditor
             m_console = RuntimeConsole;
             m_gameObjectCmd = GameObjectCmd;
             m_editCmd = EditCmd;
+            m_contextMenu = ContextMenu;
         }
 
         private void OnDestroy()
@@ -144,6 +154,7 @@ namespace Battlehub.RTEditor
             m_rteAppearance = null;
             m_rte = null;
             m_windowManager = null;
+            m_contextMenu = null;
         }
 
         protected virtual void OnDestroyOverride()
@@ -179,6 +190,7 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_windowManager);
             IOC.RegisterFallback(() => Instance.m_gameObjectCmd);
             IOC.RegisterFallback(() => Instance.m_editCmd);
+            IOC.RegisterFallback(() => Instance.m_contextMenu);
         }
     }
 }

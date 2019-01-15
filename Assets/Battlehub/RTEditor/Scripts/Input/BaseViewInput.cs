@@ -52,12 +52,14 @@ namespace Battlehub.RTEditor
             get { return m_input; }
         }
 
+        private IWindowManager m_wm;
 
         private void Start()
         {
             m_window = GetComponent<T>();
             m_editor = m_window.Editor;
             m_input = m_editor.Input;
+            m_wm = IOC.Resolve<IWindowManager>();
             StartOverride();
         }
 
@@ -68,7 +70,7 @@ namespace Battlehub.RTEditor
 
         private void Update()
         {
-            if (m_window.Editor.ActiveWindow != m_window || m_editor.IsInputFieldActive)
+            if (m_window.Editor.ActiveWindow != m_window || m_editor.IsInputFieldActive || (m_wm != null && m_wm.IsDialogOpened))
             {
                 return;
             }

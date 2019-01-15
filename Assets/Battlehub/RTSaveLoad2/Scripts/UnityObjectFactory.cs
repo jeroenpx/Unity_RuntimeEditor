@@ -1,13 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTSaveLoad2.Interface;
 namespace Battlehub.RTSaveLoad2
 {
-    public interface IUnityObjectFactory
-    {
-        UnityObject CreateInstance(Type type);
-    }
-
     public class UnityObjectFactory : IUnityObjectFactory
     {
         private static Shader m_standardShader;

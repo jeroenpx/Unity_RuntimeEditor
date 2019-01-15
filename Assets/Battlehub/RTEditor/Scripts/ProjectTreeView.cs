@@ -9,6 +9,8 @@ using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.Utils;
+using Battlehub.UIControls.MenuControl;
+using System.Collections.Generic;
 
 namespace Battlehub.RTEditor
 {
@@ -166,6 +168,7 @@ namespace Battlehub.RTEditor
         //public event EventHandler<ItemDropArgs> Drop;
 
         private IProject m_project;
+        private IWindowManager m_wm;
 
         [SerializeField]
         private GameObject TreeViewPrefab = null;
@@ -277,7 +280,8 @@ namespace Battlehub.RTEditor
             }
 
             m_project = IOC.Resolve<IProject>();
-           
+            m_wm = IOC.Resolve<IWindowManager>();
+
             m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
             m_treeView.name = "ProjectTreeView";
 
@@ -286,6 +290,7 @@ namespace Battlehub.RTEditor
             m_treeView.CanUnselectAll = false;
             m_treeView.CanDrag = ShowRootFolder;
             m_treeView.CanRemove = false;
+            m_treeView.CanSelectAll = false;
             
             m_treeView.SelectionChanged += OnSelectionChanged;
             m_treeView.ItemDataBinding += OnItemDataBinding;
@@ -297,33 +302,41 @@ namespace Battlehub.RTEditor
             m_treeView.ItemBeginDrop += OnItemBeginDrop;
             m_treeView.ItemDrop += OnItemDrop;
             m_treeView.ItemDoubleClick += OnItemDoubleClick;
-        }
+            m_treeView.ItemClick += OnItemClick;
 
-        protected override void UpdateOverride()
-        {
-            base.UpdateOverride();
-            if (Editor.ActiveWindow == this)
+            if (!GetComponent<ProjectTreeViewInput>())
             {
-                if (Editor.Input.GetKeyDown(RemoveKey))
-                {
-                    if (m_treeView.SelectedItem != null)
-                    {
-                        ProjectItem projectItem = (ProjectItem)m_treeView.SelectedItem;
-                        if(projectItem.Parent == null)
-                        {
-                            PopupWindow.Show("Unable to Remove", "Unable to remove root folder", "OK");
-                        }
-                        else
-                        {
-                            PopupWindow.Show("Delete Selected Assets", "You cannot undo this action", "Delete", arg =>
-                            {
-                                m_treeView.RemoveSelectedItems();
-                            },"Cancel");
-                        }
-                    }
-                }
+                gameObject.AddComponent<ProjectTreeViewInput>();
             }
         }
+
+        private void OnItemClick(object sender, ItemArgs e)
+        {
+            if(e.PointerEventData.button == PointerEventData.InputButton.Right)
+            {
+                IContextMenu menu = IOC.Resolve<IContextMenu>();
+
+                MenuItemInfo createFolder = new MenuItemInfo { Path = "Create Folder" };
+                createFolder.Action = new MenuItemEvent();
+                createFolder.Action.AddListener(CreateFolder);
+
+                MenuItemInfo deleteFolder = new MenuItemInfo { Path = "Delete" };
+                deleteFolder.Action = new MenuItemEvent();
+                deleteFolder.Action.AddListener(DeleteFolder);
+
+                MenuItemInfo renameFolder = new MenuItemInfo { Path = "Rename" };
+                renameFolder.Action = new MenuItemEvent();
+                renameFolder.Action.AddListener(RenameFolder);
+
+                menu.Open(new[] 
+                {
+                    createFolder,
+                    deleteFolder,
+                    renameFolder
+                });
+            }
+        }
+
 
         protected override void OnDestroyOverride()
         {
@@ -345,27 +358,9 @@ namespace Battlehub.RTEditor
                 m_treeView.ItemBeginDrop -= OnItemBeginDrop;
                 m_treeView.ItemDrop -= OnItemDrop;
                 m_treeView.ItemDoubleClick -= OnItemDoubleClick;
+                m_treeView.ItemClick -= OnItemClick;
             }
         }
-
-        //private void OnMoveCompleted(Error error, ProjectItem[] projectItems, ProjectItem target)
-        //{
-        //    if (error.HasError)
-        //    {
-        //        PopupWindow.Show("Unable to move assets", error.ErrorText, "OK");
-        //        return;
-        //    }
-
-        //    for (int i = 0; i < projectItems.Length; ++i)
-        //    {
-        //        ProjectItem projectItem = projectItems[i];
-        //        if (!(projectItem is AssetItem))
-        //        {
-        //            m_treeView.ChangeParent(target, projectItem);
-        //        }
-        //        projectItem.AddChild(projectItem);
-        //    }
-        //}
 
         public void LoadProject(ProjectItem root)
         {
@@ -422,13 +417,22 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnItemDoubleClick(object sender, ItemArgs e)
+        public void SelectRootIfNothingSelected()
         {
-            ProjectItem projectItem = (ProjectItem)e.Items[0];
-            Toggle(projectItem);
+            if (m_treeView.SelectedIndex < 0)
+            {
+                m_treeView.SelectedIndex = 0;
+            }
         }
 
-      
+        private void OnItemDoubleClick(object sender, ItemArgs e)
+        {
+            if(e.PointerEventData.button == PointerEventData.InputButton.Left)
+            {
+                ProjectItem projectItem = (ProjectItem)e.Items[0];
+                Toggle(projectItem);
+            }
+        }
       
         private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
         {
@@ -444,7 +448,8 @@ namespace Battlehub.RTEditor
             ProjectItem drop = (ProjectItem)e.DropTarget;
             if (e.Action == ItemDropAction.SetLastChild)
             {
-                m_project.Move(e.DragItems.OfType<ProjectItem>().ToArray(), (ProjectItem)e.DropTarget);
+                Editor.IsBusy = true;
+                m_project.Move(e.DragItems.OfType<ProjectItem>().ToArray(), (ProjectItem)e.DropTarget, (error, arg1, arg2) => Editor.IsBusy = false);
             }
         }
 
@@ -538,7 +543,7 @@ namespace Battlehub.RTEditor
 
             if (e.Items.Count == 0)
             {
-                PopupWindow.Show("Can't remove folder", "Unable to remove folders exposed from editor", "OK");
+                m_wm.MessageBox("Can't remove folder", "Unable to remove folders exposed from editor");
             }
         }
 
@@ -693,7 +698,8 @@ namespace Battlehub.RTEditor
             ProjectItem dropTarget = (ProjectItem)m_treeView.DropTarget;
             if (CanDrop(dropTarget, dragObjects))
             {
-                m_project.Move(dragObjects.OfType<ProjectItem>().ToArray(), dropTarget);
+                Editor.IsBusy = true;
+                m_project.Move(dragObjects.OfType<ProjectItem>().ToArray(), dropTarget, (error, arg1, arg2) => Editor.IsBusy = false);
             }
             else if(CanCreatePrefab(dropTarget, dragObjects))
             {
@@ -707,6 +713,95 @@ namespace Battlehub.RTEditor
                 }
             }
             m_treeView.ExternalItemDrop();
+        }
+
+        private void CreateFolder(string arg)
+        {
+            ProjectItem parentFolder = (ProjectItem)m_treeView.SelectedItem;
+            ProjectItem folder = new ProjectItem();
+
+            string[] existingNames = parentFolder.Children.Where(c => c.IsFolder).Select(c => c.Name).ToArray();
+            folder.Name = m_project.GetUniqueName("Folder", parentFolder.Children == null ? new string[0] : existingNames);
+            folder.Children = new List<ProjectItem>();
+            parentFolder.AddChild(folder);
+
+            AddItem(parentFolder, folder, existingNames);
+
+            Editor.IsBusy = true;
+            m_project.Create(folder, (error, projectItem) => Editor.IsBusy = false);
+        }
+
+        private void DeleteFolder(string arg)
+        {
+            DeleteSelectedFolders();
+        }
+
+        private void RenameFolder(string arg)
+        {
+            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(m_treeView.SelectedItem);
+            if(treeViewItem != null && treeViewItem.CanEdit)
+            {
+                treeViewItem.IsEditing = true;
+            }
+        }
+
+        public void DeleteSelectedFolders()
+        {
+            if (m_treeView.SelectedItem != null)
+            {
+                ProjectItem[] projectItems = m_treeView.SelectedItems.OfType<ProjectItem>().ToArray();
+                if (projectItems.Any(p => p.Parent == null))
+                {
+                    m_wm.MessageBox("Unable to Remove", "Unable to remove root folder");
+                }
+                else
+                {
+                    m_wm.Confirmation("Delete Selected Assets", "You cannot undo this action", (dialog, arg) =>
+                    {
+                        m_treeView.RemoveSelectedItems();
+                    },
+                    (dialog, arg) => { },
+                    "Delete", "Cancel");
+                }
+            }
+        }
+
+        public void SelectAll()
+        {
+            m_treeView.SelectedItems = m_treeView.Items;
+        }
+
+        public void AddItem(ProjectItem parentFolder, ProjectItem folder)
+        {
+            string[] existingNames = parentFolder.Children.Where(c => c != folder && c.IsFolder).Select(c => c.Name).ToArray();
+            AddItem(parentFolder, folder, existingNames);
+        }
+
+        private  void AddItem(ProjectItem parentFolder, ProjectItem folder, string[] existingNames)
+        {
+            m_treeView.AddChild(parentFolder, folder);
+
+            if (existingNames.Length > 0)
+            {
+                int index = Array.IndexOf(existingNames.Union(new[] { folder.Name }).OrderBy(n => n).ToArray(), folder.Name);
+                if (index > 0)
+                {
+                    m_treeView.SetNextSibling(parentFolder.Children.Where(c => c.IsFolder).OrderBy(c => c.Name).ElementAt(index - 1), folder);
+                }
+                else
+                {
+                    m_treeView.SetPrevSibling(parentFolder.Children.Where(c => c.IsFolder).OrderBy(c => c.Name).ElementAt(index + 1), folder);
+                }
+            }
+
+            ProjectItem projectItem = parentFolder;
+
+            Expand(parentFolder);
+            m_treeView.ScrollIntoView(folder);
+            m_treeView.SelectedItem = folder;
+
+            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(folder);
+            treeViewItem.IsEditing = true;
         }
     }
 }

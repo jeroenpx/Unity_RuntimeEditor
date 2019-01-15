@@ -11,13 +11,13 @@ namespace Battlehub.RTEditor
     public class InspectorView : RuntimeWindow
     {
         [SerializeField]
-        private GameObject m_gameObjectEditor;
+        private GameObject m_gameObjectEditor = null;
 
         [SerializeField]
-        private GameObject m_materialEditor;
+        private GameObject m_materialEditor = null;
 
         [SerializeField]
-        private Transform m_panel;
+        private Transform m_panel = null;
 
         [SerializeField]
         private GameObject m_addComponentRoot = null;

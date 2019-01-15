@@ -44,8 +44,8 @@ namespace Battlehub.RTCommon
         event RTEEvent PlaymodeStateChanging;
         event RTEEvent PlaymodeStateChanged;
         event RTEEvent ActiveWindowChanged;
-        event RuntimeEditorEvent<RuntimeWindow> WindowRegistered;
-        event RuntimeEditorEvent<RuntimeWindow> WindowUnregistered;
+        event RTEEvent<RuntimeWindow> WindowRegistered;
+        event RTEEvent<RuntimeWindow> WindowUnregistered;
         event RTEEvent IsOpenedChanged;
         event RTEEvent IsDirtyChanged;
 
@@ -162,7 +162,7 @@ namespace Battlehub.RTCommon
     }
 
     public delegate void RTEEvent();
-    public delegate void RuntimeEditorEvent<T>(T arg);
+    public delegate void RTEEvent<T>(T arg);
     
     [DefaultExecutionOrder(-90)]
     public class RTEBase : MonoBehaviour, IRTE
@@ -192,8 +192,8 @@ namespace Battlehub.RTCommon
         public event RTEEvent PlaymodeStateChanging;
         public event RTEEvent PlaymodeStateChanged;
         public event RTEEvent ActiveWindowChanged;
-        public event RuntimeEditorEvent<RuntimeWindow> WindowRegistered;
-        public event RuntimeEditorEvent<RuntimeWindow> WindowUnregistered;
+        public event RTEEvent<RuntimeWindow> WindowRegistered;
+        public event RTEEvent<RuntimeWindow> WindowUnregistered;
         public event RTEEvent IsOpenedChanged;
         public event RTEEvent IsDirtyChanged;
         public event RTEEvent IsBusyChanged;

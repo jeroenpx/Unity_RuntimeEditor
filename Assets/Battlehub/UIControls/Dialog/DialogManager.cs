@@ -16,6 +16,11 @@ namespace Battlehub.UIControls.Dialogs
 
         public event DialogAction DialogDestroyed;
 
+        public bool IsDialogOpened
+        {
+            get { return m_dialogStack.Count > 0; }
+        }
+
         public Dialog ShowDialog(Sprite icon, string header, Transform content,
              DialogAction<DialogCancelArgs> okAction = null, string okText = "OK",
              DialogAction<DialogCancelArgs> cancelAction = null, string cancelText = "Cancel",

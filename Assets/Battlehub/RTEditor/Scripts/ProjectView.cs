@@ -54,13 +54,13 @@ namespace Battlehub.RTEditor
             m_project.OpenProjectCompleted += OnProjectOpenCompleted;
             m_project.CloseProjectCompleted += OnCloseProjectCompleted;
             m_project.ImportCompleted += OnImportCompleted;
+            m_project.BeforeDeleteCompleted += OnBeforeDeleteCompleted;
             m_project.DeleteCompleted += OnDeleteCompleted;
             m_project.RenameCompleted += OnRenameCompleted;
+            m_project.CreateCompleted += OnCreateCompleted;
             m_project.MoveCompleted += OnMoveCompleted;
-            m_project.CreateCompleted += OnPrefabCreateCompleted;
-            m_project.SaveCompleted += OnSaveCompleted;
-
-
+            m_project.SaveCompleted += OnPrefabCreateCompleted;
+         
             if (!m_project.IsOpened && !m_project.IsBusy)
             {
                 Editor.IsBusy = true;
@@ -95,11 +95,12 @@ namespace Battlehub.RTEditor
             {
                 m_project.OpenProjectCompleted -= OnProjectOpenCompleted;
                 m_project.ImportCompleted -= OnImportCompleted;
+                m_project.BeforeDeleteCompleted -= OnBeforeDeleteCompleted;
                 m_project.DeleteCompleted -= OnDeleteCompleted;
                 m_project.RenameCompleted -= OnRenameCompleted;
+                m_project.CreateCompleted -= OnCreateCompleted;
                 m_project.MoveCompleted -= OnMoveCompleted;
-                m_project.CreateCompleted -= OnPrefabCreateCompleted;
-                m_project.SaveCompleted -= OnSaveCompleted;
+                m_project.SaveCompleted -= OnPrefabCreateCompleted;
             }
         }
 
@@ -155,7 +156,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnDeleteCompleted(Error error, ProjectItem[] result)
+        private void OnBeforeDeleteCompleted(Error error, ProjectItem[] result)
         {
             Editor.IsBusy = false;
             if (error.HasError)
@@ -165,6 +166,23 @@ namespace Battlehub.RTEditor
             m_projectTree.RemoveProjectItemsFromTree(result);
         }
 
+        private void OnDeleteCompleted(Error error, ProjectItem[] result)
+        {
+            m_projectTree.SelectRootIfNothingSelected();
+
+            if(Editor.Selection.activeObject != null)
+            {
+                long selectedObjectId = m_project.ToID(Editor.Selection.activeObject);
+                if(result.Any(r => r.ItemID == selectedObjectId))
+                {
+                    Editor.Undo.Enabled = false;
+                    Editor.Selection.activeObject = null;
+                    Editor.Undo.Enabled = true;
+                }
+            }
+            
+        }
+
         private void OnRenameCompleted(Error error, ProjectItem result)
         {
             Editor.IsBusy = false;
@@ -172,6 +190,18 @@ namespace Battlehub.RTEditor
             {
                 m_windowManager.MessageBox("Unable to rename asset", error.ToString());
             }
+        }
+
+        private void OnCreateCompleted(Error error, ProjectItem result)
+        {
+            Editor.IsBusy = false;
+            if (error.HasError)
+            {
+                m_windowManager.MessageBox("Unable to create folder", error.ToString());
+            }
+
+            m_projectTree.AddItem(result.Parent, result);
+            m_projectTree.SelectedFolder = result;
         }
 
         private void OnMoveCompleted(Error error, ProjectItem[] projectItems, ProjectItem parent)
@@ -193,12 +223,10 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnSaveCompleted(Error saveError, AssetItem[] result)
-        {
-        }
-
+     
         private void OnPrefabCreateCompleted(Error createPrefabError, AssetItem[] result)
         {
+            Editor.IsBusy = false;
             m_projectResources.InsertItems(result);
         }
   
@@ -227,6 +255,11 @@ namespace Battlehub.RTEditor
 
         private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
         {
+            if(e.ProjectItem == null)
+            {
+                return;
+            }
+
             if(e.ProjectItem.IsFolder)
             {
                 m_projectTree.SelectedFolder = e.ProjectItem;

@@ -29,6 +29,7 @@ namespace Battlehub.RTSaveLoad2
         void Delete(string projectPath, string[] paths, StorageEventHandler callback);
         void Move(string projectPath, string[] paths, string[] names, string targetPath, StorageEventHandler callback);
         void Rename(string projectPath, string[] paths, string[] oldNames, string[] names, StorageEventHandler callback);
+        void Create(string projectPath, string[] paths, string[] names, StorageEventHandler callback);
     }
 
     public class FileSystemStorage : IStorage
@@ -553,6 +554,20 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
+            callback(new Error(Error.OK));
+        }
+
+        public void Create(string projectPath, string[] paths, string[] names, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            for (int i = 0; i < paths.Length; ++i)
+            {
+                string path = fullPath + paths[i] + "/" + names[i];
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+            }
             callback(new Error(Error.OK));
         }
     }

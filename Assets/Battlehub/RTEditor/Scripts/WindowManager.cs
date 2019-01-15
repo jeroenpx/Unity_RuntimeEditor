@@ -14,6 +14,11 @@ namespace Battlehub.RTEditor
     {
         void SetDefaultLayout();
 
+        bool IsDialogOpened
+        {
+            get;
+        }
+
         Transform GetWindow(string windowTypeName);
         bool Exists(string windowTypeName);
         bool IsActive(string windowType);
@@ -113,6 +118,11 @@ namespace Battlehub.RTEditor
 
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
         private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();        
+
+        public bool IsDialogOpened
+        {
+            get { return m_dialogManager.IsDialogOpened; }
+        }
 
         private void Start()
         {

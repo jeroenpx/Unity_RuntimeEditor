@@ -115,7 +115,21 @@ namespace Battlehub.UIControls
         }
     }
 
-    public class VirtualizingItemsControl : Selectable,  IDropHandler, IUpdateSelectedHandler, IUpdateFocusedHandler
+    public class PointerEventArgs : EventArgs
+    {
+        public PointerEventData Data
+        {
+            get;
+            private set;
+        }
+
+        public PointerEventArgs(PointerEventData data)
+        {
+            Data = data;
+        }
+    }
+
+    public class VirtualizingItemsControl : Selectable,  IDropHandler, IUpdateSelectedHandler, IUpdateFocusedHandler, IPointerClickHandler
     {
         /// <summary>
         /// Raised on begin drag
@@ -172,12 +186,14 @@ namespace Battlehub.UIControls
         /// </summary>
         public event EventHandler<ItemsRemovedArgs> ItemsRemoved;
 
+
         /// <summary>
         /// Raised when IsFocused value changed
         /// </summary>
         public event EventHandler IsFocusedChanged;
         public event EventHandler Submit;
         public event EventHandler Cancel;
+        public event EventHandler<PointerEventArgs> Click;
 
         [SerializeField]
         public EventSystem m_eventSystem;
@@ -185,6 +201,7 @@ namespace Battlehub.UIControls
         public InputProvider InputProvider;
         public bool SelectOnPointerUp = false;
         public bool CanUnselectAll = true;
+        public bool CanSelectAll = true;
         public bool CanEdit = true;
         public bool CanRemove = true;
         private bool m_prevCanDrag;
@@ -463,12 +480,29 @@ namespace Battlehub.UIControls
                     }
                 }
 
-                if (SelectionChanged != null)
+                bool selectionChanged = oldSelectedItems == null && m_selectedItems != null || oldSelectedItems != null && m_selectedItems == null ||
+                    oldSelectedItems != null && m_selectedItems != null && oldSelectedItems.Count != m_selectedItems.Count;
+                if(!selectionChanged && oldSelectedItems != null)
                 {
-                    object[] selectedItems = m_selectedItems == null ? new object[0] : m_selectedItems.ToArray();
-                    SelectionChanged(this, new SelectionChangedArgs(unselectedItems.ToArray(), selectedItems));
+                    for(int i = 0; i < oldSelectedItems.Count; ++i)
+                    {
+                        if(m_selectedItems[i] != oldSelectedItems[i])
+                        {
+                            selectionChanged = true;
+                            break;
+                        }
+                    }
                 }
 
+                if(selectionChanged)
+                {
+                    if (SelectionChanged != null)
+                    {
+                        object[] selectedItems = m_selectedItems == null ? new object[0] : m_selectedItems.ToArray();
+                        SelectionChanged(this, new SelectionChangedArgs(unselectedItems.ToArray(), selectedItems));
+                    }
+                }
+                
                 m_selectionLocked = false;
             }
         }
@@ -584,6 +618,11 @@ namespace Battlehub.UIControls
         }
 
         private Dictionary<object, ItemContainerData> m_itemContainerData = new Dictionary<object, ItemContainerData>();
+
+        public int ItemsCount
+        {
+            get { return m_scrollRect.ItemsCount; }
+        }
 
         public IEnumerable Items
         {
@@ -757,7 +796,7 @@ namespace Battlehub.UIControls
                     RemoveSelectedItems();
                 }
 
-                else if (InputProvider.IsSelectAllButtonDown && InputProvider.IsFunctionalButtonPressed)
+                else if (InputProvider.IsSelectAllButtonDown && InputProvider.IsFunctionalButtonPressed && CanSelectAll)
                 {
                     SelectedItems = m_scrollRect.Items;
                 }
@@ -1129,6 +1168,11 @@ namespace Battlehub.UIControls
             m_dragItemsData = null;
             m_isDropInProgress = false;
 
+            if (sender.IsSelected && eventData.button == PointerEventData.InputButton.Right)
+            {
+                return;
+            }
+
             if (!SelectOnPointerUp)
             {
                 TryToSelect(sender);
@@ -1148,6 +1192,11 @@ namespace Battlehub.UIControls
             }
 
             if (m_dragItems != null)
+            {
+                return;
+            }
+
+            if(sender.IsSelected && eventData.button == PointerEventData.InputButton.Right)
             {
                 return;
             }
@@ -1237,9 +1286,13 @@ namespace Battlehub.UIControls
             {
                 return;
             }
-            if (ItemDoubleClick != null)
+
+            if(sender.Item != null)
             {
-                ItemDoubleClick(this, new ItemArgs(new[] { sender.Item }, eventData));
+                if (ItemDoubleClick != null)
+                {
+                    ItemDoubleClick(this, new ItemArgs(new[] { sender.Item }, eventData));
+                }
             }
         }
 
@@ -1250,10 +1303,21 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            if (ItemClick != null)
+            if(sender.Item == null)
             {
-                ItemClick(this, new ItemArgs(new[] { sender.Item }, eventData));
+                if(Click != null)
+                {
+                    Click(this, new PointerEventArgs(eventData));
+                }
             }
+            else
+            {
+                if (ItemClick != null)
+                {
+                    ItemClick(this, new ItemArgs(new[] { sender.Item }, eventData));
+                }
+            }
+            
         }
 
         private void OnItemBeginDrag(VirtualizingItemContainer sender, PointerEventData eventData)
@@ -1894,6 +1958,7 @@ namespace Battlehub.UIControls
 
             DestroyItems(selectedItems, true);
 
+
             if (ItemsRemoved != null)
             {
                 ItemsRemoved(this, new ItemsRemovedArgs(selectedItems));
@@ -1946,12 +2011,14 @@ namespace Battlehub.UIControls
         /// <returns>Item container for data item</returns>
         public virtual ItemContainerData Insert(int index, object item)
         {
+            if(m_itemContainerData.ContainsKey(item))
+            {
+                return null;
+            }
+
             ItemContainerData itemContainerData = InstantiateItemContainerData(item);
-
             m_itemContainerData.Add(item, itemContainerData);
-
             m_scrollRect.InsertItem(index, item);
-
             return itemContainerData;
         }
 
@@ -2046,5 +2113,15 @@ namespace Battlehub.UIControls
 
             eventData.Use();
         }
+
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+        {
+            if(Click != null)
+            {
+                Click(this, new PointerEventArgs(eventData));
+            }
+        }
+
+        
     }
 }

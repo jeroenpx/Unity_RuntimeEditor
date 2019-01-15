@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
+using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTEditor
 {
@@ -17,7 +20,7 @@ namespace Battlehub.RTEditor
         public event EventHandler<ProjectTreeEventArgs> ItemDoubleClick;
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
         public event EventHandler<ProjectTreeEventArgs> SelectionChanged;
-
+        
         private IProject m_project;
         private IWindowManager m_windowManager;
 
@@ -60,7 +63,8 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            List<ProjectItem> sorted = m_items.Union(items).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
+            m_items = m_items.Union(items).ToList();
+            List<ProjectItem> sorted = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
             ProjectItem selectItem = null;
             for(int i = 0; i < sorted.Count; ++i)
             {
@@ -208,6 +212,7 @@ namespace Battlehub.RTEditor
             }
 
             m_project = IOC.Resolve<IProject>();
+            //m_project.DeleteCompleted += OnDeleteCompleted;
             m_windowManager = IOC.Resolve<IWindowManager>();
 
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
@@ -215,11 +220,13 @@ namespace Battlehub.RTEditor
             {
                 m_listBox = Instantiate(ListBoxPrefab, transform).GetComponent<VirtualizingTreeView>();
                 m_listBox.name = "AssetsListBox";
-                m_listBox.CanDrag = true;
-                m_listBox.CanReorder = false;
-                m_listBox.SelectOnPointerUp = true;
-                m_listBox.CanRemove = false;
             }
+
+            m_listBox.CanDrag = true;
+            m_listBox.CanReorder = false;
+            m_listBox.SelectOnPointerUp = true;
+            m_listBox.CanRemove = false;
+            m_listBox.CanSelectAll = false;
 
             m_listBox.ItemDataBinding += OnItemDataBinding;
             m_listBox.ItemBeginDrag += OnItemBeginDrag;
@@ -234,13 +241,25 @@ namespace Battlehub.RTEditor
             m_listBox.ItemBeginEdit += OnItemBeginEdit;
             m_listBox.ItemEndEdit += OnItemEndEdit;
             m_listBox.SelectionChanged += OnSelectionChanged;
+            m_listBox.ItemClick += OnItemClick;
+            m_listBox.Click += OnListBoxClick;
 
             Editor.Selection.SelectionChanged += EditorSelectionChanged;
+
+            if (!GetComponent<ProjectFolderViewInput>())
+            {
+                gameObject.AddComponent<ProjectFolderViewInput>();
+            }
         }
 
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
+
+            //if(m_project != null)
+            //{
+            //    m_project.DeleteCompleted -= OnDeleteCompleted;
+            //}
 
             if (m_listBox != null)
             {
@@ -256,6 +275,9 @@ namespace Battlehub.RTEditor
                 m_listBox.ItemDoubleClick -= OnItemDoubleClick;
                 m_listBox.ItemBeginEdit -= OnItemBeginEdit;
                 m_listBox.ItemEndEdit -= OnItemEndEdit;
+                m_listBox.ItemClick -= OnItemClick;
+                m_listBox.Click -= OnListBoxClick;
+
                 m_listBox.SelectionChanged -= OnSelectionChanged;
             }
 
@@ -270,12 +292,7 @@ namespace Battlehub.RTEditor
             base.UpdateOverride();
             if(Editor.Input.GetKeyDown(RemoveKey) && Editor.ActiveWindow == this)
             {
-                m_windowManager.Confirmation("Delete Selected Assets", "You cannot undo this action",  (sender, arg) =>
-                {
-                    m_listBox.RemoveSelectedItems();
-                }, 
-                (sender, arg) => { }, 
-                "Delete");
+                
             }
         }
 
@@ -370,9 +387,12 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            if(ItemDoubleClick != null)
+            if(e.PointerEventData.button == PointerEventData.InputButton.Left)
             {
-                ItemDoubleClick(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                if (ItemDoubleClick != null)
+                {
+                    ItemDoubleClick(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                }
             }
         }
 
@@ -573,5 +593,161 @@ namespace Battlehub.RTEditor
                 }
             }
         }
+
+        private void OnItemClick(object sender, ItemArgs e)
+        {
+            if (e.PointerEventData.button == PointerEventData.InputButton.Right)
+            {
+                IContextMenu menu = IOC.Resolve<IContextMenu>();
+                List<MenuItemInfo> menuItems = new List<MenuItemInfo>();
+
+                MenuItemInfo createFolder = new MenuItemInfo { Path = "Create/Folder" };
+                createFolder.Action = new MenuItemEvent();
+                createFolder.Action.AddListener(CreateFolder);
+                createFolder.Validate = new MenuItemValidationEvent();
+                createFolder.Validate.AddListener(CreateValidate);
+                menuItems.Add(createFolder);
+
+                if (m_project.ToGuid(typeof(Material)) != Guid.Empty)
+                {
+                    MenuItemInfo createMaterial = new MenuItemInfo { Path = "Create/Material" };
+                    createMaterial.Action = new MenuItemEvent();
+                    createMaterial.Action.AddListener(CreateMaterial);
+                    createMaterial.Validate = new MenuItemValidationEvent();
+                    createMaterial.Validate.AddListener(CreateValidate);
+                    menuItems.Add(createMaterial);
+                }
+
+                MenuItemInfo deleteFolder = new MenuItemInfo { Path = "Delete" };
+                deleteFolder.Action = new MenuItemEvent();
+                deleteFolder.Action.AddListener(Delete);
+                menuItems.Add(deleteFolder);
+
+                MenuItemInfo renameFolder = new MenuItemInfo { Path = "Rename" };
+                renameFolder.Action = new MenuItemEvent();
+                renameFolder.Action.AddListener(Rename);
+                menuItems.Add(renameFolder);
+
+                menu.Open(menuItems.ToArray());
+            }
+        }
+
+        private void OnListBoxClick(object sender, PointerEventArgs e)
+        {
+            if (e.Data.button == PointerEventData.InputButton.Right)
+            {
+                IContextMenu menu = IOC.Resolve<IContextMenu>();
+
+                List<MenuItemInfo> menuItems = new List<MenuItemInfo>();
+
+                MenuItemInfo createFolder = new MenuItemInfo { Path = "Create/Folder" };
+                createFolder.Action = new MenuItemEvent();
+                createFolder.Command = "CurrentFolder";
+                createFolder.Action.AddListener(CreateFolder);
+                menuItems.Add(createFolder);
+
+                if (m_project.ToGuid(typeof(Material)) != Guid.Empty)
+                {
+                    MenuItemInfo createMaterial = new MenuItemInfo { Path = "Create/Material" };
+                    createMaterial.Action = new MenuItemEvent();
+                    createMaterial.Command = "CurrentFolder";
+                    createMaterial.Action.AddListener(CreateMaterial);
+                    menuItems.Add(createMaterial);
+                }
+
+                menu.Open(menuItems.ToArray());
+            }
+        }
+
+        private void CreateValidate(MenuItemValidationArgs args)
+        {
+            ProjectItem selectedItem = (ProjectItem)m_listBox.SelectedItem;
+            if(selectedItem != null && !selectedItem.IsFolder)
+            {
+                args.IsValid = false;
+            }
+        }
+
+        private void CreateFolder(string arg)
+        {
+            bool currentFolder = !string.IsNullOrEmpty(arg);
+
+            ProjectItem parentFolder = currentFolder ? m_folders.FirstOrDefault() : (ProjectItem)m_listBox.SelectedItem;
+            if(parentFolder == null)
+            {
+                return;
+            }
+            ProjectItem folder = new ProjectItem();
+
+            string[] existingNames = parentFolder.Children.Where(c => c.IsFolder).Select(c => c.Name).ToArray();
+            folder.Name = m_project.GetUniqueName("Folder", parentFolder.Children == null ? new string[0] : existingNames);
+            folder.Children = new List<ProjectItem>();
+            parentFolder.AddChild(folder);
+
+            if(currentFolder)
+            {
+                InsertItems(new[] { folder });
+            }
+
+            Editor.IsBusy = true;
+            m_project.Create(folder, (error, projectItem) => Editor.IsBusy = false);
+        }
+
+        private void CreateMaterial(string arg)
+        {
+            bool currentFolder = !string.IsNullOrEmpty(arg);
+
+            ProjectItem parentFolder = currentFolder ? m_folders.FirstOrDefault() : (ProjectItem)m_listBox.SelectedItem;
+            if (parentFolder == null)
+            {
+                return;
+            }
+
+            IUnityObjectFactory objectFactory = IOC.Resolve<IUnityObjectFactory>();
+            UnityObject unityObject = objectFactory.CreateInstance(typeof(Material));
+
+            IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
+            byte[] preview = resourcePreview.CreatePreviewData(unityObject);
+            Editor.IsBusy = true;
+            m_project.Save(parentFolder, new[] { preview }, new[] { unityObject }, null);
+        }
+
+        private void Delete(string arg)
+        {
+            DeleteSelectedAssets();
+        }
+
+        private void Rename(string arg)
+        {
+            VirtualizingTreeViewItem treeViewItem = m_listBox.GetTreeViewItem(m_listBox.SelectedItem);
+            if (treeViewItem != null && treeViewItem.CanEdit)
+            {
+                treeViewItem.IsEditing = true;
+            }
+        }
+
+        public void DeleteSelectedAssets()
+        {
+            m_windowManager.Confirmation("Delete Selected Assets", "You cannot undo this action", (sender, arg) =>
+            {
+                m_listBox.RemoveSelectedItems();
+            },
+            (sender, arg) => { },
+            "Delete");
+        }
+
+        public void SelectAll()
+        {
+            m_listBox.SelectedItems = m_listBox.Items;
+        }
+
+        //private void OnDeleteCompleted(Error error, ProjectItem[] result)
+        //{
+        //    for(int i = 0; i < result.Length; ++i)
+        //    {
+        //        m_listBox.RemoveChild(null, result[i], m_listBox.ItemsCount == 1);
+        //    }
+        //}
+
     }
 }

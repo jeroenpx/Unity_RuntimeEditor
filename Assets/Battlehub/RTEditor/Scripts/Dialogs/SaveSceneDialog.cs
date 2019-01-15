@@ -131,7 +131,7 @@ namespace Battlehub.RTEditor
             {
                 if (Input.text.ToLower() == selectedItem.Name.ToLower())
                 {
-                    Overwrite(selectedItem);
+                    Overwrite((AssetItem)selectedItem);
                     args.Cancel = true;
                 }
                 else
@@ -147,35 +147,28 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void Overwrite(ProjectItem selectedItem)
+        private void Overwrite(AssetItem selectedItem)
         {
             m_windowManager.Confirmation("Scene with same name already exits", "Do you want to override it?", (sender, yes) =>
             {
+                yes.Cancel = true;
                 m_parentDialog.gameObject.SetActive(false);
                 Editor.Undo.Purge();
                 Editor.IsBusy = true;
-                m_project.Delete(new[] { selectedItem }, (deleteError, result) =>
+                m_project.Save(new[] { selectedItem }, new[] { (object)SceneManager.GetActiveScene() }, (error, assetItem) =>
                 {
+                    sender.Close(null);
                     Editor.IsBusy = false;
-                    if (deleteError.HasError)
+                    if (error.HasError)
                     {
-                        m_windowManager.MessageBox("Unable to save scene", deleteError.ErrorText);
-
+                        m_windowManager.MessageBox("Unable to save scene", error.ErrorText);
                     }
-                    Editor.IsBusy = true;
-                    m_project.Create(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { selectedItem.Name }, (error, assetItem) =>
+                    else
                     {
-                        Editor.IsBusy = false;
-                        if (error.HasError)
-                        {
-                            m_windowManager.MessageBox("Unable to save scene", error.ErrorText);
-                        }
-                        else
-                        {
-                            m_project.LoadedScene = assetItem[0];
-                        }
-                        m_parentDialog.Close(null);
-                    });
+                        m_project.LoadedScene = assetItem[0];
+                    }
+                    
+                    m_parentDialog.Close(null);
                 });
             },
             (sender, no) => Input.ActivateInputField(),
@@ -246,7 +239,7 @@ namespace Battlehub.RTEditor
         {
             if (folder.Children != null && folder.Children.Any(p => p.Name.ToLower() == Input.text.ToLower() && m_project.IsScene(p)))
             {
-                Overwrite(folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && m_project.IsScene(p)).First());
+                Overwrite((AssetItem)folder.Children.Where(p => p.Name.ToLower() == Input.text.ToLower() && m_project.IsScene(p)).First());
                 args.Cancel = true;
             }
             else
@@ -254,14 +247,17 @@ namespace Battlehub.RTEditor
                 Editor.Undo.Purge();
 
                 Editor.IsBusy = true;
-                m_project.Create(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { Input.text }, (error, assetItem) =>
+                m_project.Save(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { Input.text },  (error, assetItem) =>
                 {
                     Editor.IsBusy = false;
                     if (error.HasError)
                     {
                         m_windowManager.MessageBox("Unable to save scene", error.ErrorText);
                     }
-//                    m_parentDialog.Close(null);
+                    else
+                    {
+                        m_project.LoadedScene = assetItem[0];
+                    }
                 });
             }
         }

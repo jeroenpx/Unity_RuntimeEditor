@@ -35,6 +35,8 @@ namespace Battlehub.RTEditor
         public Button BtnRedo;
 
         private IProject m_project;
+        private IRuntimeEditor m_editor;
+        private IWindowManager m_wm;
 
         protected override void AwakeOverride()
         {
@@ -45,7 +47,9 @@ namespace Battlehub.RTEditor
         private void OnEnable()
         {
             m_project = IOC.Resolve<IProject>();
-            
+            m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_wm = IOC.Resolve<IWindowManager>();
+
             OnRuntimeToolChanged();
             OnPivotRotationChanged();
             OnPivotModeChanged();
@@ -64,13 +68,11 @@ namespace Battlehub.RTEditor
             Editor.Tools.UnitSnappingChanged += OnUnitSnappingChanged;
             Editor.PlaymodeStateChanged += OnPlaymodeStateChanged;
 
-            //if (m_projectManager != null)
-            //{
-            //    m_projectManager.SceneLoading += OnSceneLoading;
-            //    m_projectManager.SceneLoaded += OnSceneLoaded;
-            //    m_projectManager.SceneSaving += OnSceneSaving;
-            //    m_projectManager.SceneSaved += OnSceneSaved;
-            //}
+            if (m_editor != null)
+            {
+                m_editor.SceneLoaded += OnSceneLoaded;
+                m_editor.SceneSaved += OnSceneSaved;
+            }
 
             UpdateLoadSaveButtonsState();
 
@@ -147,7 +149,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-
         private void OnDisable()
         {
             if(Editor != null)
@@ -163,15 +164,13 @@ namespace Battlehub.RTEditor
                 Editor.Undo.RedoCompleted -= OnRedoCompleted;
                 Editor.Undo.StateChanged -= OnStateChanged;
             }
-            
-            //if (m_projectManager != null)
-            //{
-            //    m_projectManager.SceneLoading -= OnSceneLoading;
-            //    m_projectManager.SceneLoaded -= OnSceneLoaded;
-            //    m_projectManager.SceneSaving -= OnSceneSaving;
-            //    m_projectManager.SceneSaved -= OnSceneSaved;
-            //}
-            
+
+            if (m_editor != null)
+            {
+                m_editor.SceneLoaded -= OnSceneLoaded;
+                m_editor.SceneSaved -= OnSceneSaved;
+            }
+
             if (ViewToggle != null)
             {
                 ViewToggle.onValueChanged.RemoveListener(OnViewToggleValueChanged);
@@ -529,46 +528,18 @@ namespace Battlehub.RTEditor
         {
             if (Editor.IsPlaying)
             {
-                PopupWindow.Show("Save Scene", "Scene can not be saved in playmode", "OK");
+                m_wm.MessageBox("Save Scene", "Scene can not be saved in playmode");
                 return;
             }
 
-            //if (m_projectManager.ActiveScene == null)
-            //{
-            //    PopupWindow.Show("Save Scene", "Unable to save. ActiveScene is null", "OK");
-            //    return;
-            //}
-
-            //if(m_projectManager.ActiveScene.Parent == null)
-            //{
-            //    GameObject saveSceneDialog = Instantiate(SaveSceneDialog);
-            //    saveSceneDialog.transform.position = Vector3.zero;
-
-            //    PopupWindow.Show("Save Scene As", saveSceneDialog.transform, "Save",
-            //        args =>
-            //        {
-            //            if(!args.Cancel)
-            //            {
-            //                BtnSave.interactable = false;
-            //                BtnSaveAs.interactable = false;
-            //            }
-            //        },
-            //        "Cancel");
-            //}
-            //else
-            //{
-            //    RuntimeUndo.Purge();
-            //    m_projectManager.SaveScene(m_projectManager.ActiveScene, () =>
-            //    {
-            //    });
-            //}
+            m_editor.SaveScene();
         }
 
         private void OnSaveAsClick()
         {
             if (Editor.IsPlaying)
             {
-                PopupWindow.Show("Save Scene", "Scene can not be saved in playmode", "OK");
+                m_wm.MessageBox("Save Scene", "Scene can not be saved in playmode");
                 return;
             }
 
@@ -578,34 +549,14 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            //if (m_projectManager.ActiveScene == null)
-            //{
-            //    PopupWindow.Show("Save Scene", "Unable to save. ActiveScene is null", "OK");
-            //    return;
-            //}
-
-
-            //GameObject saveSceneDialog = Instantiate(SaveSceneDialog);
-            //saveSceneDialog.transform.position = Vector3.zero;
-
-            //PopupWindow.Show("Save Scene As", saveSceneDialog.transform, "Save",
-            //    args =>
-            //    {
-            //        if (!args.Cancel)
-            //        {
-            //            BtnSave.interactable = false;
-            //            BtnSaveAs.interactable = false;
-            //        }
-            //    },
-            //    "Cancel");
-
+            m_editor.CreateOrActivateWindow("SaveScene");
         }
 
         private void OnNewClick()
         {
             if (Editor.IsPlaying)
             {
-                PopupWindow.Show("Create Scene", "Scene can not be create in playmode", "OK");
+                m_wm.MessageBox("Create Scene", "Scene can not be create in playmode");
                 return;
             }
 
@@ -615,20 +566,9 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            /*
-            PopupWindow.Show("Create Scene", "Are you sure you want to create new scene?", "Yes",
-                args =>
-                {
-                    m_projectManager.CreateScene();
 
-                    if (BtnSave != null)
-                    {
-                        BtnSave.interactable = true;
-                        BtnSaveAs.interactable = true;
-                    }
-                    
-                }, "No");
-            */
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+            editor.NewScene(true);
         }
 
         private void OnUndoClick()
@@ -659,28 +599,16 @@ namespace Battlehub.RTEditor
             UpdateLoadSaveButtonsState();
         }
 
-        /*
-        private void OnSceneSaving(object sender, ProjectManagerEventArgs args)
-        {
-            
-        }
-
-        private void OnSceneSaved(object sender, ProjectManagerEventArgs args)
+        private void OnSceneSaved()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
 
-        private void OnSceneLoading(object sender, ProjectManagerEventArgs args)
-        {
-
-        }
-
-        private void OnSceneLoaded(object sender, ProjectManagerEventArgs args)
+        private void OnSceneLoaded()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
-        */
     }
 }

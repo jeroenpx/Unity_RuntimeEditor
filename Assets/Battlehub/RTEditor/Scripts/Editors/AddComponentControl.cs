@@ -12,7 +12,7 @@ namespace Battlehub.RTEditor
         public event Action<Type> ComponentSelected;
 
         [SerializeField]
-        private Dropdown m_dropDown;
+        private Dropdown m_dropDown = null;
 
         private VirtualizingTreeView m_treeView;
 

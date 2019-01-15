@@ -167,7 +167,6 @@ namespace Battlehub.RTEditor
 
         public void BuildEditor()
         {
-          
             foreach(Transform t in EditorsPanel)
             {
                 Destroy(t.gameObject);
@@ -318,7 +317,7 @@ namespace Battlehub.RTEditor
         {
             m_editor.UpdatePreview(material, assetItem =>
             {
-                if (m_image != null)
+                if (m_image != null && assetItem != null)
                 {
                     m_previewTexture.LoadImage(assetItem.Preview.PreviewData);
                     m_image.sprite = Sprite.Create(m_previewTexture, new Rect(0, 0, m_previewTexture.width, m_previewTexture.height), new Vector2(0.5f, 0.5f));

@@ -4,6 +4,7 @@ using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,11 +18,16 @@ namespace Battlehub.RTEditor
 {
     public interface IRuntimeEditor : IRTE
     {
+        event RTEEvent SceneLoading;
+        event RTEEvent SceneLoaded;
+        event RTEEvent SceneSaving;
+        event RTEEvent SceneSaved;
+
+        void NewScene(bool confirm = true);
+        void SaveScene();
+
         void CreateWindow(string window);
         void CreateOrActivateWindow(string window);
-
-        void NewScene();
-        void SaveScene();
 
         bool CmdGameObjectValidate(string cmd);
         void CmdGameObject(string cmd);
@@ -36,8 +42,13 @@ namespace Battlehub.RTEditor
     [RequireComponent(typeof(RTEObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
+        public event RTEEvent SceneLoading;
+        public event RTEEvent SceneLoaded;
+        public event RTEEvent SceneSaving;
+        public event RTEEvent SceneSaved;
+
         private IProject m_project;
-        
+        private IWindowManager m_wm;
 
         [SerializeField]
         private GameObject m_progressIndicator = null;
@@ -62,6 +73,13 @@ namespace Battlehub.RTEditor
       
             IOC.Resolve<IRTEAppearance>();
             m_project = IOC.Resolve<IProject>();
+            m_wm = IOC.Resolve<IWindowManager>();
+
+            m_project.NewSceneCreated += OnNewSceneCreated;
+            m_project.BeginSave += OnBeginSave;
+            m_project.BeginLoad += OnBeginLoad;
+            m_project.SaveCompleted += OnSaveCompleted;
+            m_project.LoadCompleted += OnLoadCompleted;
         }
 
         protected override void Start()
@@ -77,6 +95,14 @@ namespace Battlehub.RTEditor
         {
             base.OnDestroy();
 
+            if (m_project != null)
+            {
+                m_project.NewSceneCreated -= OnNewSceneCreated;
+                m_project.BeginSave -= OnBeginSave;
+                m_project.BeginLoad -= OnBeginLoad;
+                m_project.SaveCompleted -= OnSaveCompleted;
+                m_project.LoadCompleted -= OnLoadCompleted;
+            }
         }
 
         protected override void Update()
@@ -141,29 +167,25 @@ namespace Battlehub.RTEditor
 
         public void SetDefaultLayout()
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-            windowManager.SetDefaultLayout();
+            m_wm.SetDefaultLayout();
         }
 
         public virtual void CreateWindow(string windowTypeName)
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-            windowManager.CreateWindow(windowTypeName);
+            m_wm.CreateWindow(windowTypeName);
         }
 
         public virtual void CreateOrActivateWindow(string windowTypeName)
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-
-            if(!windowManager.CreateWindow(windowTypeName))
+            if(!m_wm.CreateWindow(windowTypeName))
             {
-                if (windowManager.Exists(windowTypeName))
+                if (m_wm.Exists(windowTypeName))
                 {
-                    if(!windowManager.IsActive(windowTypeName))
+                    if(!m_wm.IsActive(windowTypeName))
                     {
-                        windowManager.ActivateWindow(windowTypeName);
+                        m_wm.ActivateWindow(windowTypeName);
 
-                        Transform windowTransform = windowManager.GetWindow(windowTypeName);
+                        Transform windowTransform = m_wm.GetWindow(windowTypeName);
 
                         RuntimeWindow window = windowTransform.GetComponentInChildren<RuntimeWindow>();
                         if (window != null)
@@ -181,45 +203,45 @@ namespace Battlehub.RTEditor
 
             if(window != null)
             {
-                IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-                windowManager.ActivateWindow(window.transform);
+                m_wm.ActivateWindow(window.transform);
             }
         }
 
-        public virtual void NewScene()
+        public virtual void NewScene(bool confirm)
         {
-            m_project.CreateNewScene();
+            if(confirm)
+            {
+                m_wm.Confirmation("Create New Scene", "Do you want to create new scene?" + System.Environment.NewLine + "All unsaved changeds will be lost", (dialog, args) =>
+                {
+                    m_project.CreateNewScene();
+                }, (dialog, args) => { }, 
+                "Create",
+                "Cancel");
+            }
+            else
+            {
+                m_project.CreateNewScene();
+            }
         }
 
         public virtual void SaveScene()
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
             if (m_project.LoadedScene == null)
             {
-                windowManager.CreateWindow(RuntimeWindowType.SaveScene.ToString());
+                m_wm.CreateWindow(RuntimeWindowType.SaveScene.ToString());
             }
             else
             {
                 Undo.Purge();
                 IsBusy = true;
-                m_project.Delete(new[] { m_project.LoadedScene }, (deleteError, result) =>
+                m_project.Save(new[] { m_project.LoadedScene }, new[] { (object)SceneManager.GetActiveScene() }, (error, assetItem) =>
                 {
+                    m_project.LoadedScene = assetItem[0];
                     IsBusy = false;
-                    if (deleteError.HasError)
+                    if (error.HasError)
                     {
-                        windowManager.MessageBox("Unable to save scene", deleteError.ErrorText);
+                        m_wm.MessageBox("Unable to save scene", error.ErrorText);
                     }
-                    IsBusy = true;
-                    m_project.Create(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { m_project.LoadedScene.Name }, (error, assetItem) =>
-                    {
-                        m_project.LoadedScene = assetItem[0];
-
-                        IsBusy = false;
-                        if (error.HasError)
-                        {
-                            windowManager.MessageBox("Unable to save scene", error.ErrorText);
-                        }
-                    });
                 });
             }
         }
@@ -276,8 +298,7 @@ namespace Battlehub.RTEditor
         {
             if(!includeDependencies.HasValue)
             {
-                IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-                windowManager.Confirmation("Create Prefab", "Include dependencies?",
+                m_wm.Confirmation("Create Prefab", "Include dependencies?",
                     (sender, args) =>
                     {
                         CreatePrefabWithDependencies(dropTarget, dragObject, done);
@@ -345,13 +366,12 @@ namespace Battlehub.RTEditor
         private void CreatePrefab(ProjectItem dropTarget, byte[][] previewData, object[] objects, Action<AssetItem[]> done)
         {
             IsBusy = true;
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
-            m_project.Create(dropTarget, previewData, objects, null, (error, assetItems) =>
+            m_project.Save(dropTarget, previewData, objects, null, (error, assetItems) =>
             {
                 IsBusy = false;
                 if (error.HasError)
                 {
-                    windowManager.MessageBox("Unable to create prefab", error.ErrorText);
+                    m_wm.MessageBox("Unable to create prefab", error.ErrorText);
                     return;
                 }
 
@@ -364,7 +384,6 @@ namespace Battlehub.RTEditor
 
         public void SaveAsset(UnityObject obj, Action<AssetItem> done)
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
             IProject project = IOC.Resolve<IProject>();
             AssetItem assetItem = project.ToAssetItem(obj);
             if(assetItem == null)
@@ -382,7 +401,7 @@ namespace Battlehub.RTEditor
                 if (saveError.HasError)
                 {
                     IsBusy = false;
-                    windowManager.MessageBox("Unable to save asset", saveError.ErrorText);
+                    m_wm.MessageBox("Unable to save asset", saveError.ErrorText);
                     return;
                 }
 
@@ -399,7 +418,6 @@ namespace Battlehub.RTEditor
 
         private void UpdateDependantAssetPreviews(AssetItem assetItem, Action callback)
         {
-            IWindowManager windowManager = IOC.Resolve<IWindowManager>();
             IResourcePreviewUtility previewUtil = IOC.Resolve<IResourcePreviewUtility>();
             AssetItem[] dependantItems = m_project.GetDependantAssetItems(new[] { assetItem });
             if(dependantItems.Length > 0)
@@ -409,7 +427,7 @@ namespace Battlehub.RTEditor
                     if (loadError.HasError)
                     {
                         IsBusy = false;
-                        windowManager.MessageBox("Unable to load assets", loadError.ErrorText);
+                        m_wm.MessageBox("Unable to load assets", loadError.ErrorText);
                         return;
                     }
 
@@ -433,7 +451,7 @@ namespace Battlehub.RTEditor
                         if (savePreviewError.HasError)
                         {
                             IsBusy = false;
-                            windowManager.MessageBox("Unable to load assets", savePreviewError.ErrorText);
+                            m_wm.MessageBox("Unable to load assets", savePreviewError.ErrorText);
                             return;
                         }
 
@@ -464,6 +482,101 @@ namespace Battlehub.RTEditor
             }
         }
 
+
+        private void OnNewSceneCreated(Error error)
+        {
+            if(error.HasError)
+            {
+                return;
+            }
+
+            if(SceneLoading != null)
+            {
+                SceneLoading();
+            }
+            Undo.Purge();
+
+            StartCoroutine(CoNewSceneCreated());
+        }
+
+        private IEnumerator CoNewSceneCreated()
+        {
+            yield return new WaitForEndOfFrame();
+            if (SceneLoaded != null)
+            {
+                SceneLoaded();
+            }
+        }
+
+        private void RaiseIfIsScene(Error error, AssetItem[] assetItems, Action callback)
+        {
+            if (error.HasError)
+            {
+                return;
+            }
+            if (assetItems != null && assetItems.Length > 0)
+            {
+                AssetItem assetItem = assetItems[0];
+                if (assetItem != null && m_project.IsScene(assetItem))
+                {
+                    callback();
+                }
+            }
+        }
+
+        private void OnBeginLoad(Error error, AssetItem[] result)
+        {
+            RaiseIfIsScene(error, result, () =>
+            {
+                if (SceneLoading != null)
+                {
+                    SceneLoading();
+                }
+            });
+        }
+
+        private void OnBeginSave(Error error, object[] result)
+        {
+            if (error.HasError)
+            {
+                return;
+            }
+            if (result != null && result.Length > 0)
+            {
+                object obj = result[0];
+                if (obj != null && obj is Scene)
+                {
+                    if(SceneSaving != null)
+                    {
+                        SceneSaved();
+                    }
+                }
+            }
+        }
+
+     
+        
+        private void OnLoadCompleted(Error error, AssetItem[] result, UnityObject[] objects)
+        {
+            RaiseIfIsScene(error, result, () =>
+            {
+                if (SceneLoaded != null)
+                {
+                    SceneLoaded();
+                }
+            });
+        }
+
+        private void OnSaveCompleted(Error error, AssetItem[] result)
+        {
+            RaiseIfIsScene(error, result, () =>
+            {
+                if (SceneSaved != null)
+                {
+                    SceneSaved();
+                }
+            });
+        }
 
         #region Commented Out
         /*

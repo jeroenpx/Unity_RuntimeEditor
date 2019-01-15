@@ -25,7 +25,7 @@ namespace Battlehub.RTCommon
         event ObjectParentChangedEvent ParentChanged;
         event ObjectEvent<Component> ComponentAdded;
 
-        IEnumerable<ExposeToEditor> Get(bool rootsOnly);
+        IEnumerable<ExposeToEditor> Get(bool rootsOnly, bool useCache = true);
     }
 
     public class RTEObjects : MonoBehaviour, IRTEObjects
@@ -49,16 +49,29 @@ namespace Battlehub.RTCommon
         private HashSet<ExposeToEditor> m_editModeCache;
         private HashSet<ExposeToEditor> m_playModeCache;
 
-        public IEnumerable<ExposeToEditor> Get(bool rootsOnly)
+        public IEnumerable<ExposeToEditor> Get(bool rootsOnly, bool useCache)
         {
             if(rootsOnly)
             {
                 if (m_editor.IsPlaying)
                 {
+                    if(!useCache)
+                    {
+                        throw new System.InvalidOperationException("Operation is invalid in PlayeMode");
+                    }
                     return m_playModeCache.Where(o => o.Parent == null);
                 }
                 else
                 {
+                    if (!useCache)
+                    {
+                        List<ExposeToEditor> objects = FindAll();
+                        for (int i = 0; i < objects.Count; ++i)
+                        {
+                            objects[i].Init();
+                        }
+                        m_editModeCache = new HashSet<ExposeToEditor>(objects);
+                    }
                     return m_editModeCache.Where(o => o.Parent == null);
                 }
             }
