@@ -138,7 +138,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="descriptor">PersistentObject descriptor (initially root descriptor)</param>
         /// <param name="idToObj">Dictionary instanceId->UnityObject which will be populated with GameObjects and Components</param>
-        public void CreateGameObjectWithComponents(ITypeMap typeMap, PersistentDescriptor descriptor, Dictionary<int, UnityObject> idToObj, List<GameObject> createdGameObjects = null, Dictionary<long, UnityObject> decomposition = null)
+        public void CreateGameObjectWithComponents(ITypeMap typeMap, PersistentDescriptor descriptor, Dictionary<int, UnityObject> idToObj, Transform parent, List<GameObject> createdGameObjects = null, Dictionary<long, UnityObject> decomposition = null)
         {
             UnityObject objGo;
             GameObject go;
@@ -149,6 +149,10 @@ namespace Battlehub.RTSaveLoad2
             else
             {
                 go = new GameObject();
+                if(parent != null)
+                {
+                    go.transform.SetParent(parent, false);
+                }
                 idToObj.Add(m_assetDB.ToInt(descriptor.PersistentID), go);
             }
 
@@ -239,7 +243,7 @@ namespace Battlehub.RTSaveLoad2
                 for (int i = 0; i < descriptor.Children.Length; ++i)
                 {
                     PersistentDescriptor childDescriptor = descriptor.Children[i];
-                    CreateGameObjectWithComponents(typeMap, childDescriptor, idToObj, createdGameObjects, decomposition);
+                    CreateGameObjectWithComponents(typeMap, childDescriptor, idToObj, null, createdGameObjects, decomposition);
                 }
             }
         }

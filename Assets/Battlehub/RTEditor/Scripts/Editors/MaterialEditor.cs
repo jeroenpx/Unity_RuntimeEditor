@@ -157,6 +157,19 @@ namespace Battlehub.RTEditor
             BuildEditor();
         }
 
+        private void Update()
+        {   
+            if (Material == null)
+            {
+                return;
+            }
+            if (TxtMaterialName != null && TxtMaterialName.text != Material.name)
+            {
+                TxtMaterialName.text = Material.name;
+            }
+        }
+
+
         private void OnDestroy()
         {
             if(m_previewTexture != null)

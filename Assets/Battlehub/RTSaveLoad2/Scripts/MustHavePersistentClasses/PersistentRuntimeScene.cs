@@ -136,7 +136,7 @@ namespace Battlehub.RTSaveLoad2
                 PersistentDescriptor descriptor = Descriptors[i];
                 if(descriptor != null)
                 {
-                    CreateGameObjectWithComponents(m_typeMap, descriptor, idToUnityObj);
+                    CreateGameObjectWithComponents(m_typeMap, descriptor, idToUnityObj, null);
                 }
             }
 

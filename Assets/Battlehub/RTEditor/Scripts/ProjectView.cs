@@ -4,6 +4,7 @@ using Battlehub.RTCommon;
 using System.Linq;
 using Battlehub.UIControls;
 using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.UIControls.DockPanels;
 
 namespace Battlehub.RTEditor
 {
@@ -42,6 +43,12 @@ namespace Battlehub.RTEditor
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
             }
 
+            DockPanelsRoot dockPanelsRoot = GetComponent<DockPanelsRoot>();
+            if (dockPanelsRoot != null)
+            {
+                dockPanelsRoot.CursorHelper = Editor.CursorHelper;
+            }
+
             m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
             m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
             m_projectResources.ItemDeleted += OnProjectResourcesDeleted;
@@ -59,7 +66,7 @@ namespace Battlehub.RTEditor
             m_project.RenameCompleted += OnRenameCompleted;
             m_project.CreateCompleted += OnCreateCompleted;
             m_project.MoveCompleted += OnMoveCompleted;
-            m_project.SaveCompleted += OnPrefabCreateCompleted;
+            m_project.SaveCompleted += OnSaveCompleted;
          
             if (!m_project.IsOpened && !m_project.IsBusy)
             {
@@ -100,7 +107,7 @@ namespace Battlehub.RTEditor
                 m_project.RenameCompleted -= OnRenameCompleted;
                 m_project.CreateCompleted -= OnCreateCompleted;
                 m_project.MoveCompleted -= OnMoveCompleted;
-                m_project.SaveCompleted -= OnPrefabCreateCompleted;
+                m_project.SaveCompleted -= OnSaveCompleted;
             }
         }
 
@@ -224,7 +231,7 @@ namespace Battlehub.RTEditor
         }
 
      
-        private void OnPrefabCreateCompleted(Error createPrefabError, AssetItem[] result)
+        private void OnSaveCompleted(Error createPrefabError, AssetItem[] result)
         {
             Editor.IsBusy = false;
             m_projectResources.InsertItems(result);
@@ -249,8 +256,8 @@ namespace Battlehub.RTEditor
 
         private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)
         {
-            Editor.IsBusy = true;
-            m_project.Delete(e.ProjectItems);
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+            editor.DeleteAssets(e.ProjectItems);
         }
 
         private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
@@ -283,8 +290,7 @@ namespace Battlehub.RTEditor
 
         private void OnProjectResourcesRenamed(object sender, ProjectTreeRenamedEventArgs e)
         {
-            m_projectTree.UpdateProjectItem(e.ProjectItem);
-
+            m_projectTree.UpdateProjectItem(e.ProjectItem);            
             Editor.IsBusy = true;
             m_project.Rename(e.ProjectItem, e.OldName);
         }
@@ -329,8 +335,8 @@ namespace Battlehub.RTEditor
 
         private void OnProjectTreeItemDeleted(object sender, ProjectTreeEventArgs e)
         {
-            Editor.IsBusy = true;
-            m_project.Delete(e.ProjectItems);
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+            editor.DeleteAssets(e.ProjectItems);
         }
 
         private void CreateFolder()

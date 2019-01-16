@@ -136,6 +136,8 @@ namespace Battlehub.RTEditor
                 m_dialogManager = FindObjectOfType<DialogManager>();
             }
 
+            
+
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
@@ -156,6 +158,8 @@ namespace Battlehub.RTEditor
             m_editor = IOC.Resolve<IRTE>();
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
             SetDefaultLayout();
+
+            m_dockPanels.CursorHelper = m_editor.CursorHelper;
         }
 
         private void OnDestroy()

@@ -10,6 +10,7 @@ using UnityObject = UnityEngine.Object;
 using UnityEngine.UI;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Battlehub.RTEditor
 {
@@ -23,6 +24,9 @@ namespace Battlehub.RTEditor
         public Type ObjectType;
         [SerializeField]
         private VirtualizingTreeView m_treeView = null;
+        [SerializeField]
+        private Toggle m_toggleAssets;
+
         public bool IsNoneSelected
         {
             get;
@@ -34,7 +38,10 @@ namespace Battlehub.RTEditor
         private IProject m_project;
         private Guid m_noneGuid = Guid.NewGuid();
         private bool m_previewsCreated;
-        private AssetItem[] m_cache;
+        private AssetItem[] m_assetsCache;
+        private AssetItem[] m_sceneCache;
+        private Dictionary<long, UnityObject> m_sceneObjects;
+        
 
         protected override void AwakeOverride()
         {
@@ -50,6 +57,8 @@ namespace Battlehub.RTEditor
             m_parentDialog.OkText = "Select";
             m_parentDialog.CancelText = "Cancel";
             m_parentDialog.Ok += OnOk;
+
+            m_toggleAssets.onValueChanged.AddListener(OnAssetsTabSelectionChanged);
 
             m_project = IOC.Resolve<IProject>();
             m_windowManager = IOC.Resolve<IWindowManager>();
@@ -95,8 +104,32 @@ namespace Battlehub.RTEditor
                     }
                 }));
 
-                m_cache = assetItemsWithPreviews;
-                m_treeView.Items = m_cache;
+                m_assetsCache = assetItemsWithPreviews;
+                m_treeView.Items = m_assetsCache;
+
+                List<AssetItem> sceneCache = new List<AssetItem>();
+                sceneCache.Add(none);
+
+                m_sceneObjects = new Dictionary<long, UnityObject>();
+                ExposeToEditor[] sceneObjects = Editor.Object.Get(false, true).ToArray();
+                for(int i = 0; i < sceneObjects.Length; ++i)
+                {
+                    ExposeToEditor exposeToEditor = sceneObjects[i];
+                    UnityObject obj = (ObjectType == typeof(GameObject)) ? exposeToEditor.gameObject : (UnityObject)exposeToEditor.GetComponent(ObjectType);
+                    if(obj != null)
+                    {
+                        AssetItem assetItem = new AssetItem()
+                        {
+                            ItemID = m_project.ToID(exposeToEditor),
+                            Name = exposeToEditor.name,
+                            
+                        };
+                        assetItem.Preview = new Preview { ItemID = assetItem.ItemID, PreviewData = new byte[0] };
+                        sceneCache.Add(assetItem);
+                        m_sceneObjects.Add(assetItem.ItemID, obj);
+                    }
+                }
+                m_sceneCache = sceneCache.ToArray();
             });
         }
 
@@ -107,6 +140,11 @@ namespace Battlehub.RTEditor
             if (m_parentDialog != null)
             {
                 m_parentDialog.Ok -= OnOk;
+            }
+
+            if(m_toggleAssets != null)
+            {
+                m_toggleAssets.onValueChanged.RemoveListener(OnAssetsTabSelectionChanged);
             }
 
             if (m_treeView != null)
@@ -121,7 +159,6 @@ namespace Battlehub.RTEditor
                 m_filter.onValueChanged.RemoveListener(OnFilterValueChanged);
             }
         }
-
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
@@ -163,13 +200,21 @@ namespace Battlehub.RTEditor
             else
             {
                 IsNoneSelected = false;
+
                 if (assetItem != null)
                 {
-                    SelectedObject = null;
-                    m_project.Load(new[] { assetItem }, (error, obj) =>
+                    if (m_sceneObjects.ContainsKey(assetItem.ItemID))
                     {
-                        SelectedObject = obj[0];
-                    });
+                        SelectedObject = m_sceneObjects[assetItem.ItemID];
+                    }
+                    else
+                    {
+                        SelectedObject = null;
+                        m_project.Load(new[] { assetItem }, (error, obj) =>
+                        {
+                            SelectedObject = obj[0];
+                        });
+                    }
                 }
                 else
                 {
@@ -194,14 +239,22 @@ namespace Battlehub.RTEditor
                 IsNoneSelected = false;
                 if (assetItem != null)
                 {
-                    SelectedObject = null;
-                    Editor.IsBusy = true;
-                    m_project.Load(new[] { assetItem }, (error, obj) =>
+                    if(m_sceneObjects.ContainsKey(assetItem.ItemID))
                     {
-                        Editor.IsBusy = false;
-                        SelectedObject = obj[0];
+                        SelectedObject = m_sceneObjects[assetItem.ItemID];
                         m_parentDialog.Close(true);
-                    });
+                    }
+                    else
+                    {
+                        SelectedObject = null;
+                        Editor.IsBusy = true;
+                        m_project.Load(new[] { assetItem }, (error, obj) =>
+                        {
+                            Editor.IsBusy = false;
+                            SelectedObject = obj[0];
+                            m_parentDialog.Close(true);
+                        });
+                    }   
                 }
                 else
                 {
@@ -238,14 +291,25 @@ namespace Battlehub.RTEditor
         {
             yield return new WaitForSeconds(0.3f);
 
+            ApplyFilterImmediately(filter);
+        }
+
+        private void ApplyFilterImmediately(string filter)
+        {
             if (string.IsNullOrEmpty(filter))
             {
-                m_treeView.Items = m_cache;
+                m_treeView.Items = m_toggleAssets.isOn ? m_assetsCache : m_sceneCache;
             }
             else
             {
-                m_treeView.Items = m_cache.Where(item => item.Name.ToLower().Contains(filter.ToLower()));
+                AssetItem[] cache = m_toggleAssets.isOn ? m_assetsCache : m_sceneCache;
+                m_treeView.Items = cache.Where(item => item.Name.ToLower().Contains(filter.ToLower()));
             }
+        }
+
+        private void OnAssetsTabSelectionChanged(bool value)
+        {
+            ApplyFilterImmediately(m_filter.text);
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Battlehub.RTEditor
             }
 
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
+            CreateEditor();
         }
 
         protected override void UpdateOverride()
@@ -54,15 +55,15 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnEnable()
-        {
-            CreateEditor();
-        }
+        //private void OnEnable()
+        //{
+        //    CreateEditor();
+        //}
 
-        private void OnDisable()
-        {
-            DestroyEditor();
-        }
+        //private void OnDisable()
+        //{
+        //    DestroyEditor();
+        //}
 
         protected override void OnDestroyOverride()
         {

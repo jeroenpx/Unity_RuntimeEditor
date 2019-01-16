@@ -28,6 +28,7 @@ namespace Battlehub.RTEditor
             GameObject go = m_editor.Selection.activeGameObject;
             HashSet<Component> ignoreComponents = IgnoreComponents(go);
             InputName.text = go.name;
+            InputName.readOnly = true;
             TogEnableDisable.isOn = go.activeSelf;
 
             InputName.onEndEdit.AddListener(OnEndEditName);
@@ -37,6 +38,19 @@ namespace Battlehub.RTEditor
             {
                 Component component = components[i];
                 CreateComponentEditor(go, component, ignoreComponents);
+            }
+        }
+
+        private void Update()
+        {
+            GameObject go = m_editor.Selection.activeGameObject;
+            if(go == null)
+            {
+                return;
+            }
+            if (InputName != null && !InputName.isFocused && InputName.text != go.name)
+            {
+                InputName.text = go.name;
             }
         }
 

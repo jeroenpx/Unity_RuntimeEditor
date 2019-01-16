@@ -89,6 +89,7 @@ namespace Battlehub.UIControls.DockPanels
         public CursorHelper CursorHelper
         {
             get { return m_cursorHelper; }
+            set { m_cursorHelper = value; }
         }
 
         private int m_regionId;

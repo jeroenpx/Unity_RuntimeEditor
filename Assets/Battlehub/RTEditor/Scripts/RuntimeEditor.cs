@@ -36,6 +36,7 @@ namespace Battlehub.RTEditor
 
         void CreatePrefab(ProjectItem folder, ExposeToEditor dragObject, bool? includeDependencies = null, Action<AssetItem[]> done = null);
         void SaveAsset(UnityObject obj, Action<AssetItem> done = null);
+        void DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done = null);
         void UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
     }
 
@@ -116,9 +117,12 @@ namespace Battlehub.RTEditor
                 m_zAxis = Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z)));
             }
 
-            if (m_input.GetPointerDown(0) ||
-                m_input.GetPointerDown(1) ||
-                m_input.GetPointerDown(2) ||
+            bool pointerDownOrUp = m_input.GetPointerDown(0) ||
+              m_input.GetPointerDown(1) ||
+              m_input.GetPointerDown(2) ||
+              m_input.GetPointerUp(0);
+
+            if (pointerDownOrUp ||
                 mwheel ||
                 m_input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
             {
@@ -157,7 +161,10 @@ namespace Battlehub.RTEditor
                     {
                         if (m_windows.Contains(window.gameObject))
                         {
-                            ActivateWindow(window);
+                            if (pointerDownOrUp || window.ActivateOnAnyKey)
+                            {
+                                ActivateWindow(window);
+                            }
                             break;
                         }
                     }
@@ -405,7 +412,7 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
-                UpdateDependantAssetPreviews(saveResult[0], () =>
+                UpdateDependantAssetPreviews(saveResult, () =>
                 {
                     IsBusy = false;
                     if(done != null)
@@ -416,10 +423,40 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void UpdateDependantAssetPreviews(AssetItem assetItem, Action callback)
+        public void DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done)
+        {
+            IProject project = IOC.Resolve<IProject>();
+            AssetItem[] assetItems = projectItems.OfType<AssetItem>().ToArray();
+            ProjectItem[] folders = projectItems.Where(pi => pi.IsFolder).ToArray();
+            m_project.Delete(assetItems.Union(folders).ToArray(), (deleteError, deletedItems) =>
+            {
+                IsBusy = false;
+                if (deleteError.HasError)
+                {
+                    m_wm.MessageBox("Unable to delete folders", deleteError.ErrorText);
+                    return;
+                }
+
+                StartCoroutine(CoUpdateDependantAssetPreview(assetItems, () =>
+                {
+                    if (done != null)
+                    {
+                        done(projectItems);
+                    }
+                }));
+            });
+        }
+
+        private IEnumerator CoUpdateDependantAssetPreview(AssetItem[] assetItems, Action callback)
+        {
+            yield return new WaitForEndOfFrame();
+            UpdateDependantAssetPreviews(assetItems, callback);
+        }
+
+        private void UpdateDependantAssetPreviews(AssetItem[] assetItems, Action callback)
         {
             IResourcePreviewUtility previewUtil = IOC.Resolve<IResourcePreviewUtility>();
-            AssetItem[] dependantItems = m_project.GetDependantAssetItems(new[] { assetItem });
+            AssetItem[] dependantItems = m_project.GetDependantAssetItems(assetItems);
             if(dependantItems.Length > 0)
             {
                 m_project.Load(dependantItems, (loadError, loadedObjects) =>

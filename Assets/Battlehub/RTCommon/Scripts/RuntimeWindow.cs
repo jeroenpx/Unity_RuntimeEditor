@@ -30,6 +30,14 @@ namespace Battlehub.RTCommon
 
     public class RuntimeWindow : DragDropTarget
     {
+        [SerializeField]
+        private bool m_activateOnAnyKey = false;
+        public bool ActivateOnAnyKey
+        {
+            get { return m_activateOnAnyKey; }
+            set { m_activateOnAnyKey = true; }
+        }
+
         private bool m_isActivated;
         private IOCContainer m_container = new IOCContainer();
         public IOCContainer IOCContainer

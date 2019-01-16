@@ -13,9 +13,12 @@ namespace Battlehub.RTEditor
         private Plane m_dragPlane;
         private IProject m_project;
         private GameObject m_prefabInstance;
+        private GameObject m_dropTarget;
+        private AssetItem m_dragItem;
      
         protected override void AwakeOverride()
         {
+            ActivateOnAnyKey = true;
             WindowType = RuntimeWindowType.Scene;
             base.AwakeOverride();
             m_project = IOC.Resolve<IProject>();
@@ -51,13 +54,13 @@ namespace Battlehub.RTEditor
                     m_project.Load(new[] { assetItem }, (error, obj) =>
                     {
                         Editor.IsBusy = false;
-                        if(IsPointerOver)
+                        //if (IsPointerOver)
                         {
                             if (obj[0] is GameObject)
                             {
                                 IScenePivot scenePivot = IOCContainer.Resolve<IScenePivot>();
                                 Vector3 up = Vector3.up;
-                                if(Mathf.Abs(Vector3.Dot(Camera.transform.up, Vector3.up)) > Mathf.Cos(Mathf.Deg2Rad))
+                                if (Mathf.Abs(Vector3.Dot(Camera.transform.up, Vector3.up)) > Mathf.Cos(Mathf.Deg2Rad))
                                 {
                                     up = Vector3.Cross(Camera.transform.right, Vector3.up);
                                 }
@@ -66,7 +69,7 @@ namespace Battlehub.RTEditor
                                     up = Vector3.up;
                                 }
                                 m_dragPlane = new Plane(up, scenePivot.SecondaryPivot.position);
-                        
+
                                 GameObject prefab = (GameObject)obj[0];
                                 bool wasPrefabEnabled = prefab.activeSelf;
                                 prefab.SetActive(false);
@@ -86,6 +89,11 @@ namespace Battlehub.RTEditor
                             }
                         }
                     });
+                    m_dragItem = null;
+                }
+                else if (m_project.ToType(assetItem) == typeof(Material))
+                {
+                    m_dragItem = assetItem;
                 }
             }
         }
@@ -107,7 +115,33 @@ namespace Battlehub.RTEditor
                         m_prefabInstance.transform.position = hit.point;
                     }
                 }
-            }   
+            } 
+            
+            if(m_dragItem != null)
+            {
+                RaycastHit hitInfo;
+                if (Physics.Raycast(Pointer, out hitInfo, float.MaxValue, Editor.CameraLayerSettings.RaycastMask))
+                {
+                    MeshRenderer renderer = hitInfo.collider.GetComponentInChildren<MeshRenderer>();
+                    SkinnedMeshRenderer sRenderer = hitInfo.collider.GetComponentInChildren<SkinnedMeshRenderer>();
+
+                    if (renderer != null || sRenderer != null)
+                    {
+                        Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+                        m_dropTarget = hitInfo.transform.gameObject;
+                    }
+                    else
+                    {
+                        Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                        m_dropTarget = null;
+                    }
+                }
+                else
+                {
+                    Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                    m_dropTarget = null;
+                }
+            }
         }
 
         public override void Drop(object[] dragObjects, PointerEventData eventData)
@@ -116,6 +150,70 @@ namespace Battlehub.RTEditor
             {
                 RecordUndo();
                 m_prefabInstance = null;
+            }
+
+            if (m_dropTarget != null)
+            {
+                MeshRenderer renderer = m_dropTarget.GetComponentInChildren<MeshRenderer>();
+                SkinnedMeshRenderer sRenderer = m_dropTarget.GetComponentInChildren<SkinnedMeshRenderer>();
+
+                if (renderer != null || sRenderer != null)
+                {
+                    AssetItem assetItem = (AssetItem)Editor.DragDrop.DragObjects[0];
+                    Editor.IsBusy = true;
+                    m_project.Load(new[] { assetItem }, (error, material) =>
+                    {
+                        Editor.IsBusy = false;
+                        Editor.Undo.BeginRecord();
+
+                        if (renderer != null)
+                        {
+                            Editor.Undo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                            Material[] materials = renderer.sharedMaterials;
+                            for (int i = 0; i < materials.Length; ++i)
+                            {
+                                materials[i] = (Material)material[0];
+                            }
+                            renderer.sharedMaterials = materials;
+                        }
+
+                        if (sRenderer != null)
+                        {
+                            Editor.Undo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                            Material[] materials = sRenderer.sharedMaterials;
+                            for (int i = 0; i < materials.Length; ++i)
+                            {
+                                materials[i] = (Material)material[0];
+                            }
+                            sRenderer.sharedMaterials = materials;
+                        }
+
+                        if (renderer != null || sRenderer != null)
+                        {
+                            Editor.Undo.EndRecord();
+                        }
+
+                        if (renderer != null || sRenderer != null)
+                        {
+                            Editor.Undo.BeginRecord();
+                        }
+
+                        if (renderer != null)
+                        {
+                            Editor.Undo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                        }
+
+                        if (sRenderer != null)
+                        {
+                            Editor.Undo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                        }
+
+                        Editor.Undo.EndRecord();
+                    });
+                }
+
+                m_dropTarget = null;
+                m_dragItem = null;
             }
         }
 
@@ -148,6 +246,9 @@ namespace Battlehub.RTEditor
                 Destroy(m_prefabInstance);
                 m_prefabInstance = null;
             }
+
+            m_dragItem = null;
+            m_dropTarget = null;
         }
 
         private bool GetPointOnDragPlane(out Vector3 point)

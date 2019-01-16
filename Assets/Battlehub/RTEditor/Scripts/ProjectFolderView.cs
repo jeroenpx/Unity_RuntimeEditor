@@ -73,6 +73,14 @@ namespace Battlehub.RTEditor
                     m_listBox.Insert(i, sorted[i]);
                     selectItem = sorted[i];
                 }
+                else
+                {
+                    VirtualizingItemContainer itemContainer = m_listBox.GetItemContainer(sorted[i]);
+                    if(itemContainer != null)
+                    {
+                        m_listBox.DataBindItem(sorted[i], itemContainer);
+                    }
+                }
             }
             m_items = sorted;
 
@@ -709,7 +717,10 @@ namespace Battlehub.RTEditor
             IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
             byte[] preview = resourcePreview.CreatePreviewData(unityObject);
             Editor.IsBusy = true;
-            m_project.Save(parentFolder, new[] { preview }, new[] { unityObject }, null);
+            m_project.Save(parentFolder, new[] { preview }, new[] { unityObject }, null, (error, assetItems) =>
+            {
+                Destroy(unityObject);
+            });
         }
 
         private void Delete(string arg)

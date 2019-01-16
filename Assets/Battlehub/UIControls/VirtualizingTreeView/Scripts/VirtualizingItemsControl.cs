@@ -2013,7 +2013,7 @@ namespace Battlehub.UIControls
         {
             if(m_itemContainerData.ContainsKey(item))
             {
-                return null;
+                return m_itemContainerData[item];
             }
 
             ItemContainerData itemContainerData = InstantiateItemContainerData(item);

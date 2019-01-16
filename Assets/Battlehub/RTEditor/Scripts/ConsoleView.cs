@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.UIControls;
+using Battlehub.UIControls.DockPanels;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,9 +55,15 @@ namespace Battlehub.RTEditor
 
         protected override void AwakeOverride()
         {
+            WindowType = RuntimeWindowType.Console;
+
             base.AwakeOverride();
 
-            WindowType = RuntimeWindowType.Console;
+            DockPanelsRoot dockPanelsRoot = GetComponent<DockPanelsRoot>();
+            if(dockPanelsRoot != null)
+            {
+                dockPanelsRoot.CursorHelper = Editor.CursorHelper;
+            }
 
             m_treeView.CanDrag = false;
             m_treeView.CanReorder = false;

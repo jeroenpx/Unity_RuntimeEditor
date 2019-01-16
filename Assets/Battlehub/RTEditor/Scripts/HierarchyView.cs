@@ -789,7 +789,7 @@ namespace Battlehub.RTEditor
                                 bool wasPrefabEnabled = prefab.activeSelf;
                                 prefab.SetActive(false);
 
-                                GameObject prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity, ((GameObject)m_treeView.DropTarget).transform);
+                                GameObject prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity, ((ExposeToEditor)m_treeView.DropTarget).transform);
 
                                 prefab.SetActive(wasPrefabEnabled);
 

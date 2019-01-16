@@ -30,6 +30,14 @@ namespace Battlehub.RTCommon
         public int ResourcePreviewLayer;
         public int RuntimeGraphicsLayer;
         public int MaxGraphicsLayers;
+
+        public int RaycastMask
+        {
+            get
+            {
+                return ~(((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer);
+            }
+        }
         
         public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers)
         {
@@ -636,9 +644,13 @@ namespace Battlehub.RTCommon
 
             }
 
-            if (m_input.GetPointerDown(0) ||
+            bool pointerDownOrUp = m_input.GetPointerDown(0) ||
                 m_input.GetPointerDown(1) ||
                 m_input.GetPointerDown(2) ||
+                
+                m_input.GetPointerUp(0);
+
+            if (pointerDownOrUp ||
                 mwheel ||
                 m_input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
             {
@@ -658,8 +670,11 @@ namespace Battlehub.RTCommon
                     if (m_windows.Contains(result.gameObject))
                     {
                         RuntimeWindow editorWindow = result.gameObject.GetComponent<RuntimeWindow>();
-                        ActivateWindow(editorWindow);
-                        break;
+                        if(pointerDownOrUp || editorWindow.ActivateOnAnyKey)
+                        {
+                            ActivateWindow(editorWindow);
+                            break;
+                        }
                     }
                 }
             }

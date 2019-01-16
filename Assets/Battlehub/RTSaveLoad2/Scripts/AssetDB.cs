@@ -54,8 +54,12 @@ namespace Battlehub.RTSaveLoad2
         void UnregisterSceneObjects();
 
         void RegisterDynamicResource(int persistentID, UnityObject obj);
+        void UnregisterDynamicResource(int persistentID);
         void RegisterDynamicResources(Dictionary<int, UnityObject> idToObj);
+        void UnregisterDynamicResources(Dictionary<int, UnityObject> idToObj);
+        
         void UnregisterDynamicResources();
+        UnityObject[] GetDynamicResources();
         
         bool IsLibraryLoaded(int ordinal);
         bool AddLibrary(AssetLibraryAsset assetLib, int ordinal, bool IIDtoObj, bool PIDtoObj);
@@ -139,7 +143,6 @@ namespace Battlehub.RTSaveLoad2
             {
                 m_dynamicResourceIDToPersistentID[obj.GetInstanceID()] = persistentID;
             }
-
         }
         public void RegisterDynamicResources(Dictionary<int, UnityObject> idToObj)
         {
@@ -153,10 +156,37 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        public void UnregisterDynamicResources(Dictionary<int, UnityObject> idToObj)
+        {
+            foreach (KeyValuePair<int, UnityObject> kvp in idToObj)
+            {
+                m_persistentIDToDynamicResource.Remove(kvp.Key);
+                if (kvp.Value != null)
+                {
+                    m_dynamicResourceIDToPersistentID.Remove(kvp.Value.GetInstanceID());
+                }
+            }
+        }
+
+        public void UnregisterDynamicResource(int persistentID)
+        {
+            UnityObject obj;
+            if(m_persistentIDToDynamicResource.TryGetValue(persistentID, out obj))
+            {
+                m_persistentIDToDynamicResource.Remove(persistentID);
+                m_dynamicResourceIDToPersistentID.Remove(obj.GetInstanceID());
+            }
+        }
+
         public void UnregisterDynamicResources()
         {
             m_persistentIDToDynamicResource.Clear();
             m_dynamicResourceIDToPersistentID.Clear();
+        }
+
+        public UnityObject[] GetDynamicResources()
+        {
+            return m_persistentIDToDynamicResource.Values.Where(o => o != null).ToArray();
         }
 
         public bool IsLibraryLoaded(int ordinal)

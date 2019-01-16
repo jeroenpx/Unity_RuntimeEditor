@@ -38,7 +38,6 @@ namespace Battlehub.Utils
             {
                 texture = null;
             }
-            
             SetCursor(locker, texture, hotspot, mode);
         }
 
@@ -60,6 +59,7 @@ namespace Battlehub.Utils
             }
 
             m_locker = locker;
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             Cursor.SetCursor(texture, hotspot, mode);
         }
 

@@ -130,13 +130,18 @@ namespace Battlehub.RTEditor
                 Editor.DragDrop.Drop -= OnDrop;
                 Editor.DragDrop.Drop += OnDrop;
                 ShowDragHighlight();
+                Editor.DragDrop.SetCursor(Utils.KnownCursor.DropAllowed);
             }
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            HideDragHighlight();
             Editor.DragDrop.Drop -= OnDrop;
+            if(Editor.DragDrop.InProgress)
+            {
+                Editor.DragDrop.SetCursor(Utils.KnownCursor.DropNowAllowed);
+                HideDragHighlight();
+            }
         }
 
         private void ShowDragHighlight()
