@@ -708,7 +708,8 @@ namespace Battlehub.RTEditor
 
         private void OnRemove()
         {
-            Destroy(Component);
+            PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
+            Editor.Undo.DestroyComponent(Component, descriptors.Select(d => d.MemberInfo).ToArray());
         }
     }
 

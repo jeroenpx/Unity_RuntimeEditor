@@ -257,7 +257,10 @@ namespace Battlehub.UIControls
         {
             yield return new WaitForSeconds(0.5f);
             m_coBeginEdit = null;
-            IsEditing = CanEdit;
+            if(m_itemsControl.IsSelected && m_itemsControl.IsFocused)
+            {
+                IsEditing = CanEdit;
+            }
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)

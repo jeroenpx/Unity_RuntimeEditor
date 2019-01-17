@@ -9,14 +9,14 @@ namespace Battlehub.RTEditor
         {
             Array newArray = (Array)Activator.CreateInstance(MemberInfoType, size);
             Array arr = (Array)list;
-            if (arr != null)
+            if (arr != null && arr.Length > 0)
             {
                 for (int i = 0; i < newArray.Length; ++i)
                 {
                     newArray.SetValue(arr.GetValue(Math.Min(i, arr.Length - 1)), i);
                 }
             }
-            return arr;
+            return newArray;
         }
     }
 }

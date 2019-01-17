@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections;
 using System.Reflection;
 
+
 namespace Battlehub.RTCommon
 {
     public delegate bool ApplyCallback(Record record);
@@ -54,6 +55,16 @@ namespace Battlehub.RTCommon
         public void Purge()
         {
             m_purgeCallback(this);
+        }
+
+        public void ReplaceTarget(object target)
+        {
+            m_target = target;
+        }
+
+        public void ReplaceState(object state)
+        {
+            m_state = state;
         }
     }
 
@@ -165,6 +176,62 @@ namespace Battlehub.RTCommon
             }
         }
 
+        private int Wrap(int index, int length)
+        {
+            return (index + length) % length;
+        }
+
+        /*
+       public void Set(int index, T value)
+       {
+           m_buffer[index] = value;
+       }
+
+
+     public void Remove(int[] indices)
+     {
+         if (m_totalCount == 0)
+         {
+             return;
+         }
+
+         HashSet<int> indicesHs = new HashSet<int>(indices.Distinct());
+
+         int lastIndex = m_tosIndex + (m_totalCount - m_count);
+         int firstIndex = lastIndex - m_totalCount;
+
+         lastIndex = Wrap(lastIndex , m_buffer.Length);
+         firstIndex = Wrap(firstIndex, m_buffer.Length);
+
+         T[] newBuffer = new T[m_buffer.Length];
+         int newBufferIndex = 0;
+         while (firstIndex != lastIndex)
+         {
+             if (!indicesHs.Contains(firstIndex))
+             {
+                 newBuffer[newBufferIndex] = m_buffer[firstIndex];
+                 newBufferIndex++;
+             }
+             else
+             {
+                 m_totalCount--;
+                 if (newBufferIndex < m_count)
+                 {
+                     m_count--;
+                 }
+             }
+
+             firstIndex++;
+             if (firstIndex >= m_buffer.Length)
+             {
+                 firstIndex = 0;
+             }
+         }
+
+         m_tosIndex = m_count;
+         m_buffer = newBuffer;
+     }
+     */
         IEnumerator IEnumerable.GetEnumerator()
         {
             return m_buffer.GetEnumerator();
@@ -208,15 +275,22 @@ namespace Battlehub.RTCommon
         void BeginDestroyObject(GameObject g);
         void DestroyObject(GameObject g);
         void RecordValue(object target, MemberInfo memberInfo);
+        void RecordValues(object target, MemberInfo[] memberInfo);
         void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
         void RecordSelection();
-        void RecordComponent(MonoBehaviour component);
         void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null);
         void Redo();
         void Undo();
         void Purge();
         void Store();
-        void Restore(); 
+        void Restore();
+        void Replace(object obj, object replacement);
+        //void Remove(object obj);
+        void AddComponent(ExposeToEditor go, System.Type type);
+        void DestroyComponent(Component component, MemberInfo[] memberInfo);
+
+        [System.Obsolete("Use RecordValues")]
+        void RecordComponent(MonoBehaviour component);
     }
 
  
@@ -548,6 +622,26 @@ namespace Battlehub.RTCommon
             record => { });
         }
 
+        public void RecordValues(object target, MemberInfo[] memberInfo)
+        {
+            bool endRecord = false;
+            if (!IsRecording)
+            {
+                endRecord = true;
+                BeginRecord();
+            }
+
+            for (int i = 0; i < memberInfo.Length; ++i)
+            {
+                RecordValue(target, memberInfo[i]);
+            }
+
+            if (endRecord)
+            {
+                EndRecord();
+            }
+        }
+
         private class TransformRecord
         {
             public Vector3 position;
@@ -688,6 +782,7 @@ namespace Battlehub.RTCommon
 
         }
 
+        [System.Obsolete]
         public void RecordComponent(MonoBehaviour component)
         {
             System.Type type = component.GetType();
@@ -816,7 +911,7 @@ namespace Battlehub.RTCommon
             {
                 somethingHasChanged = false;
                 Record[] records = m_stack.Pop();
-                for (int i = 0; i < records.Length; ++i)
+                for (int i = records.Length - 1; i >= 0; --i)
                 {
                     Record record = records[i];
                     somethingHasChanged |= record.Apply();
@@ -891,6 +986,173 @@ namespace Battlehub.RTCommon
                 }
             }
         }   
+
+        public void Replace(object obj, object replacement)
+        {
+            if(m_stack != null)
+            {
+                foreach(Record[] records in m_stack)
+                {
+                    if(records == null)
+                    {
+                        continue;
+                    }
+                    for(int i = 0; i < records.Length; ++i)
+                    {
+                        Record record = records[i];
+                        if(record.Target == obj)
+                        {
+                            record.ReplaceTarget(replacement);
+                        }
+                        if(record.State == obj)
+                        {
+                            record.ReplaceState(replacement);
+                        }
+                    }
+                }
+
+                if(m_group != null)
+                {
+                    for(int i = 0; i < m_group.Count; ++i)
+                    {
+                        Record record = m_group[i];
+                        if (record.Target == obj)
+                        {
+                            record.ReplaceTarget(replacement);
+                        }
+                        if (record.State == obj)
+                        {
+                            record.ReplaceState(replacement);
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+        public void Remove(object obj)
+        {
+            //NOTE: SelectionRecords is not cleared
+
+            int index = 0;
+            List<int> removeIndices = new List<int>();
+            foreach(Record[] records in m_stack)
+            {
+                if(records == null)
+                {
+                    continue;
+                }
+
+                bool hasRecordsToBeRemoved = false;
+                for(int i = 0; i < records.Length; ++i)
+                {
+                    Record record = records[i];
+                    if(record.State == obj || record.Target == obj)
+                    {
+                        hasRecordsToBeRemoved = true;
+                        break;
+                    }
+                }
+
+                if (hasRecordsToBeRemoved)
+                {
+                    List<Record> clearedRecords = new List<Record>();
+                    for (int i = 0; i < records.Length; ++i)
+                    {
+                        Record record = records[i];
+                        if (record.State != obj && record.Target != obj)
+                        {
+                            clearedRecords.Add(record);
+                        }
+                    }
+                    m_stack.Set(index, clearedRecords.ToArray());
+                }
+                index++;
+            }
+
+            if (StateChanged != null)
+            {
+                StateChanged();
+            }
+        }
+        */
+
+        public void AddComponent(ExposeToEditor go, System.Type type)
+        {
+            Component component = AddComponent(type, go);
+            if (component != null)
+            {
+                object replacement = new object();
+                RecordObject(go, component, record =>
+                {
+                    object target = record.Target;
+                    object state = record.State;
+                    if (state != null && state != replacement)
+                    {
+                        Replace(state, replacement);
+                        Object.Destroy((Component)state);
+                    }
+                    else
+                    {
+                        object newComponent = AddComponent(type, (ExposeToEditor)target);
+                        Replace(replacement, newComponent);
+                    }
+                    return true;
+                });
+            }
+        }
+
+        public void DestroyComponent(Component component, MemberInfo[] memberInfo)
+        {
+            if (component != null)
+            {
+                ExposeToEditor exposeToEditor = component.GetComponent<ExposeToEditor>();
+                
+                bool wasRecording = IsRecording;
+                if(!wasRecording)
+                {
+                    BeginRecord();
+                }
+                
+                Object.Destroy(component);
+                System.Type type = component.GetType();
+                object replacement = new object();
+
+                RecordValues(component, memberInfo);
+                RecordObject(exposeToEditor, component, record =>
+                {
+                    object state = record.State;
+                    object target = record.Target;
+                    if (state != null && state != replacement)
+                    {
+                        Replace(state, replacement);
+                        Object.Destroy((Component)state);
+                    }
+                    else
+                    {
+                        object newComponent = AddComponent(type, (ExposeToEditor)target);
+                        Replace(replacement, newComponent);
+                    }
+                    return true;
+                });
+                Replace(component, replacement);
+                if(!wasRecording)
+                {
+                    EndRecord();
+                }
+            }
+        }
+
+        private static Component AddComponent(System.Type type, ExposeToEditor go)
+        {
+            Component component = go.AddComponent(type);
+            if (component is Rigidbody)
+            {
+                Rigidbody rb = (Rigidbody)component;
+                rb.isKinematic = true;
+            }
+            return component;
+        }
     }
 
     public class DisabledUndo : IRuntimeUndo
@@ -962,6 +1224,10 @@ namespace Battlehub.RTCommon
         {
         }
 
+        public void RecordValues(object target, MemberInfo[] memberInfo)
+        {
+        }
+
         public void Redo()
         {
         }
@@ -979,6 +1245,24 @@ namespace Battlehub.RTCommon
         }
 
         public void Undo()
+        {
+        }
+
+        public void Replace(object obj, object replacement)
+        {
+
+        }
+
+        public void Remove(object obj)
+        {
+
+        }
+
+        public void AddComponent(ExposeToEditor go, System.Type type)
+        {
+        }
+
+        public void DestroyComponent(Component component, MemberInfo[] memberInfo)
         {
         }
     }

@@ -40,6 +40,7 @@ namespace Battlehub.RTEditor
         void UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
     }
 
+    [DefaultExecutionOrder(-90)]
     [RequireComponent(typeof(RTEObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
@@ -145,27 +146,29 @@ namespace Battlehub.RTEditor
                         selectionComponentUI.Select();
                     }
                 }
-                
 
-                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
-                foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()))
+                if(!results.Any(r => r.gameObject.GetComponent<Menu>()))
                 {
-                    if(region == null)
+                    //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+                    foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()))
                     {
-                        continue;
-                    }
-
-                    RuntimeWindow window = region.ActiveContent != null ? region.ActiveContent.GetComponentInChildren<RuntimeWindow>() :
-                        region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
-                    if(window != null)
-                    {
-                        if (m_windows.Contains(window.gameObject))
+                        if (region == null)
                         {
-                            if (pointerDownOrUp || window.ActivateOnAnyKey)
+                            continue;
+                        }
+
+                        RuntimeWindow window = region.ActiveContent != null ? region.ActiveContent.GetComponentInChildren<RuntimeWindow>() :
+                            region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
+                        if (window != null)
+                        {
+                            if (m_windows.Contains(window.gameObject))
                             {
-                                ActivateWindow(window);
+                                if (pointerDownOrUp || window.ActivateOnAnyKey)
+                                {
+                                    ActivateWindow(window);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
@@ -427,6 +430,16 @@ namespace Battlehub.RTEditor
         {
             IProject project = IOC.Resolve<IProject>();
             AssetItem[] assetItems = projectItems.OfType<AssetItem>().ToArray();
+            //for(int i = 0; i < assetItems.Length; ++i)
+            //{
+            //    AssetItem assetItem = assetItems[i];
+            //    UnityObject obj = m_project.FromID<UnityObject>(assetItem.ItemID);
+            //    if(obj != null)
+            //    {
+            //        Undo.Remove(obj);
+            //    }
+            //}
+
             ProjectItem[] folders = projectItems.Where(pi => pi.IsFolder).ToArray();
             m_project.Delete(assetItems.Union(folders).ToArray(), (deleteError, deletedItems) =>
             {
@@ -504,12 +517,12 @@ namespace Battlehub.RTEditor
 
         public void UpdatePreview(UnityObject obj, Action<AssetItem> done)
         {
-            IResourcePreviewUtility resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
-            byte[] preview = resourcePreviewUtility.CreatePreviewData(obj);
             IProject project = IOC.Resolve<IProject>();
             AssetItem assetItem = project.ToAssetItem(obj);
             if (assetItem != null)
             {
+                IResourcePreviewUtility resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
+                byte[] preview = resourcePreviewUtility.CreatePreviewData(obj);
                 assetItem.Preview = new Preview { ItemID = assetItem.ItemID, PreviewData = preview };
             }
 

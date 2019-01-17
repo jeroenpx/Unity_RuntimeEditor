@@ -202,7 +202,14 @@ namespace Battlehub.UIControls
         /// </summary>
         public bool IsExpanded
         {
-            get { return m_treeViewItemData.IsExpanded; }
+            get
+            {
+                if (m_treeViewItemData == null)
+                {
+                    return false;
+                }
+                return m_treeViewItemData.IsExpanded;
+            }
             set
             {
                 if(m_treeViewItemData == null)

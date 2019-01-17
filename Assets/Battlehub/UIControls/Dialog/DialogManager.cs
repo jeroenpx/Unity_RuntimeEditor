@@ -21,6 +21,14 @@ namespace Battlehub.UIControls.Dialogs
             get { return m_dialogStack.Count > 0; }
         }
 
+        public void CloseDialog()
+        {
+            if(IsDialogOpened)
+            {
+                m_dialogStack.Peek().Close(false);
+            }
+        }
+
         public Dialog ShowDialog(Sprite icon, string header, Transform content,
              DialogAction<DialogCancelArgs> okAction = null, string okText = "OK",
              DialogAction<DialogCancelArgs> cancelAction = null, string cancelText = "Cancel",

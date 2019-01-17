@@ -974,7 +974,12 @@ namespace Battlehub.UIControls
             int lastIndex = firstIndex + VisibleItemsCount - 1;
             if(firstIndex <= index && index <= lastIndex)
             {
-                return m_containers.ElementAt(index - firstIndex);
+                int elementIndex = index - firstIndex;
+                if(elementIndex < 0 || elementIndex >= m_containers.Count)
+                {
+                    return null;
+                }
+                return m_containers.ElementAtOrDefault(index - firstIndex);
             }
 
             return null;

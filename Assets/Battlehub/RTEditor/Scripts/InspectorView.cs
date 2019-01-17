@@ -197,52 +197,13 @@ namespace Battlehub.RTEditor
         }
 
 
-        private class ComponentReference
-        {
-            public Component Component;
-            public ComponentReference(Component component)
-            {
-                Component = component;
-            }
-        }
-
         private void OnAddComponent(Type type)
         {
             IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
 
-            ExposeToEditor exposeToEditor = editor.Selection.activeGameObject.GetComponent<ExposeToEditor>();
+            GameObject go = editor.Selection.activeGameObject;
 
-            Component component = AddComponent(type, exposeToEditor);
-            if (component != null)
-            {
-                editor.Undo.RecordObject(exposeToEditor, new ComponentReference(component), record =>
-                {
-                    //Does not work properly. 
-                    ComponentReference state = (ComponentReference)record.State;
-                    if(state.Component != null)
-                    {
-                        Destroy(state.Component);
-                        state.Component = null;
-                    }
-                    else
-                    {
-                        state.Component = AddComponent(type, exposeToEditor);
-                    }
-                   
-                    return true;
-                });
-            }
-        }
-
-        private static Component AddComponent(Type type, ExposeToEditor exposeToEditor)
-        {
-            Component component = exposeToEditor.AddComponent(type);
-            if (component is Rigidbody)
-            {
-                Rigidbody rb = (Rigidbody)component;
-                rb.isKinematic = true;
-            }
-            return component;
+            editor.Undo.AddComponent(go.GetComponent<ExposeToEditor>(), type);
         }
     }
 }

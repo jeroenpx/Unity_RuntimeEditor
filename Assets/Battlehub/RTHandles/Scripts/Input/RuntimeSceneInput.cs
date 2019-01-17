@@ -15,6 +15,7 @@ namespace Battlehub.RTHandles
 
         private bool m_rotate;
         private bool m_pan;
+        private bool m_isActive;
 
         protected RuntimeSceneComponent SceneComponent
         {
@@ -69,6 +70,35 @@ namespace Battlehub.RTHandles
             IInput input = m_component.Editor.Input;
             float deltaZ = input.GetAxis(InputAxis.Z);
             return deltaZ;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            m_component.Editor.ActiveWindowChanged += Editor_ActiveWindowChanged;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if(m_component != null && m_component.Editor != null)
+            {
+                m_component.Editor.ActiveWindowChanged -= Editor_ActiveWindowChanged;
+            }
+        }
+
+        private void Editor_ActiveWindowChanged()
+        {
+            if(m_component != null)
+            {
+                if(m_isActive)
+                {
+                    SceneComponent.UpdateCursorState(false, false, false);
+                    m_pan = false;
+                    m_rotate = false;
+                }
+                m_isActive = m_component.IsWindowActive;
+            }
         }
 
         protected override void LateUpdate()

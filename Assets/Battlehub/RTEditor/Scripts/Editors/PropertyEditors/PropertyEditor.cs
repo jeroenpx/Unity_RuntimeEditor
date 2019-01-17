@@ -558,6 +558,12 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            
+            if(Target == null)
+            {
+                return;
+            }
+
             if(Target is UnityObject)
             {
                 UnityObject uobj = (UnityObject)Target;

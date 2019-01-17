@@ -162,6 +162,20 @@ namespace Battlehub.RTEditor
             m_dockPanels.CursorHelper = m_editor.CursorHelper;
         }
 
+        private void Update()
+        {
+            if(!m_editor.IsInputFieldActive)
+            {
+                if(m_dialogManager.IsDialogOpened)
+                {
+                    if(m_editor.Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        m_dialogManager.CloseDialog();
+                    }
+                }
+            }
+        }
+
         private void OnDestroy()
         {
             if(m_dockPanels != null)

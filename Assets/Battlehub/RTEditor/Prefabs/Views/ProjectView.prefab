@@ -368,9 +368,6 @@ MonoBehaviour:
   m_pointer: {fileID: 0}
   ListBoxPrefab: {fileID: 1651062113303506, guid: f4d9b253bcb78574fb946d44b6934649,
     type: 3}
-  RemoveKey: 127
-  RuntimeModifierKey: 306
-  EditorModifierKey: 304
 --- !u!222 &8756119972034287730
 CanvasRenderer:
   m_ObjectHideFlags: 0

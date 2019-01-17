@@ -81,6 +81,11 @@ namespace Battlehub.RTEditor
                         m_listBox.DataBindItem(sorted[i], itemContainer);
                     }
                 }
+
+                if(!m_idToItem.ContainsKey(sorted[i].ItemID))
+                {
+                    m_idToItem.Add(sorted[i].ItemID, sorted[i]);
+                }
             }
             m_items = sorted;
 
@@ -89,7 +94,6 @@ namespace Battlehub.RTEditor
                 m_listBox.SelectedItem = selectItem;
                 m_listBox.ScrollIntoView(selectItem);
             }
-            
         }
 
 
@@ -97,21 +101,6 @@ namespace Battlehub.RTEditor
         private GameObject ListBoxPrefab = null;
         private VirtualizingTreeView m_listBox;
         private bool m_lockSelection;
-
-        public KeyCode RemoveKey = KeyCode.Delete;
-        public KeyCode RuntimeModifierKey = KeyCode.LeftControl;
-        public KeyCode EditorModifierKey = KeyCode.LeftShift;
-        public KeyCode ModifierKey
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return EditorModifierKey;
-#else
-                return RuntimeModifierKey;
-#endif
-            }
-        }
 
 
         private void DataBind(bool clearItems)
@@ -135,76 +124,8 @@ namespace Battlehub.RTEditor
                 m_listBox.SelectedItems = null;
 
                 List<ProjectItem> itemsList = m_items.ToList();
-                //if (TypeFilter != null)
-                //{
-                //    for (int i = itemsList.Count - 1; i >= 0; i--)
-                //    {
-                //        ProjectItem item = itemsList[i];
-                //        if (item.IsFolder)
-                //        {
-                //            itemsList.Remove(item);
-                //        }
-                //        else
-                //        {
-                //            AssetItem assetItem = (AssetItem)item;
-                //            Type type = m_project.ToType(assetItem);
-                //            if (type == null)
-                //            {
-                //                itemsList.RemoveAt(i);
-                //            }
-                //            else if (!TypeFilter.IsAssignableFrom(type))
-                //            {
-                //                itemsList.RemoveAt(i);
-                //            }
-                //        }
-                //    }
-
-                //    if (typeof(GameObject) == TypeFilter)
-                //    {
-                //        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
-
-                //        foreach (ExposeToEditor obj in sceneObjects)
-                //        {
-                //            AssetItem sceneItem = new AssetItem();
-                //            sceneItem.ItemID = m_project.ToID(obj.gameObject);
-                //            sceneItem.Name = obj.gameObject.name;
-                //            sceneItem.Ext = m_project.GetExt(obj.gameObject);
-                //            sceneItem.TypeGuid = m_project.ToGuid(typeof(GameObject));
-                //            itemsList.Add(sceneItem);
-                //        }
-                //    }
-                //    else if (typeof(Component).IsAssignableFrom(TypeFilter))
-                //    {
-                //        IEnumerable<ExposeToEditor> sceneObjects = Editor.Object.Get(true);
-
-                //        foreach (ExposeToEditor obj in sceneObjects)
-                //        {
-                //            Component component = obj.GetComponent(TypeFilter);
-                //            Guid typeGuid = m_project.ToGuid(component.GetType());
-                //            if (component != null && typeGuid != Guid.Empty)
-                //            {
-                //                AssetItem sceneItem = new AssetItem();
-                //                sceneItem.ItemID = m_project.ToID(obj.gameObject);
-                //                sceneItem.Name = obj.gameObject.name;
-                //                sceneItem.Ext = m_project.GetExt(obj.gameObject);
-                //                sceneItem.TypeGuid = typeGuid;
-
-                //                itemsList.Add(sceneItem);
-                //            }
-                //        }
-                //    }
-                //    m_listBox.Items = itemsList;
-
-                //}
-                //else
-                //{
-                m_listBox.Items = itemsList;
-                //}
-
-                //if (m_selectedItems != null)
-                //{
-                //    m_listBox.SelectedItems = SelectionToProjectItemObjectPair(m_selectedItems);
-                //}
+             
+                m_listBox.Items = itemsList;  
             }
         }
 
@@ -220,7 +141,6 @@ namespace Battlehub.RTEditor
             }
 
             m_project = IOC.Resolve<IProject>();
-            //m_project.DeleteCompleted += OnDeleteCompleted;
             m_windowManager = IOC.Resolve<IWindowManager>();
 
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
@@ -292,15 +212,6 @@ namespace Battlehub.RTEditor
             if(Editor != null)
             {
                 Editor.Selection.SelectionChanged -= EditorSelectionChanged;
-            }
-        }
-
-        protected override void UpdateOverride()
-        {
-            base.UpdateOverride();
-            if(Editor.Input.GetKeyDown(RemoveKey) && Editor.ActiveWindow == this)
-            {
-                
             }
         }
 
@@ -384,7 +295,9 @@ namespace Battlehub.RTEditor
         {
             for(int i = 0; i < e.Items.Length; ++i)
             {
-                m_items.Remove((ProjectItem)e.Items[i]);
+                ProjectItem item = (ProjectItem)e.Items[i];
+                m_items.Remove(item);
+                m_idToItem.Remove(item.ItemID);               
             }
 
             if (ItemDeleted != null)
@@ -626,6 +539,14 @@ namespace Battlehub.RTEditor
                     menuItems.Add(createMaterial);
                 }
 
+                MenuItemInfo duplicate = new MenuItemInfo { Path = "Duplicate" };
+                duplicate.Action = new MenuItemEvent();
+                duplicate.Action.AddListener(Duplicate);
+                duplicate.Validate = new MenuItemValidationEvent();
+                duplicate.Validate.AddListener(DuplicateValidate);
+                menuItems.Add(duplicate);
+                
+                
                 MenuItemInfo deleteFolder = new MenuItemInfo { Path = "Delete" };
                 deleteFolder.Action = new MenuItemEvent();
                 deleteFolder.Action.AddListener(Delete);
@@ -719,8 +640,31 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = true;
             m_project.Save(parentFolder, new[] { preview }, new[] { unityObject }, null, (error, assetItems) =>
             {
+                if(!currentFolder)
+                {
+                    if (ItemDoubleClick != null)
+                    {
+                        ItemDoubleClick(this, new ProjectTreeEventArgs(new[] { parentFolder }));
+                    }
+                }
+
+                Editor.ActivateWindow(this);
                 Destroy(unityObject);
             });
+        }
+
+
+        private void DuplicateValidate(MenuItemValidationArgs args)
+        {
+            if (m_listBox.SelectedItems == null || m_listBox.SelectedItems.OfType<AssetItem>().FirstOrDefault() == null)
+            {
+                args.IsValid = false;
+            }
+        }
+
+        private void Duplicate(string arg)
+        {
+            
         }
 
         private void Delete(string arg)
@@ -742,6 +686,10 @@ namespace Battlehub.RTEditor
             m_windowManager.Confirmation("Delete Selected Assets", "You cannot undo this action", (sender, arg) =>
             {
                 m_listBox.RemoveSelectedItems();
+                bool wasEnabled = Editor.Undo.Enabled;
+                Editor.Undo.Enabled = false;
+                Editor.Selection.objects = null;
+                Editor.Undo.Enabled = wasEnabled;
             },
             (sender, arg) => { },
             "Delete");
@@ -751,14 +699,6 @@ namespace Battlehub.RTEditor
         {
             m_listBox.SelectedItems = m_listBox.Items;
         }
-
-        //private void OnDeleteCompleted(Error error, ProjectItem[] result)
-        //{
-        //    for(int i = 0; i < result.Length; ++i)
-        //    {
-        //        m_listBox.RemoveChild(null, result[i], m_listBox.ItemsCount == 1);
-        //    }
-        //}
 
     }
 }

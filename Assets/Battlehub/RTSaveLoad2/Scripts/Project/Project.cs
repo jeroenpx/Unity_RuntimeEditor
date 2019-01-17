@@ -1331,106 +1331,37 @@ namespace Battlehub.RTSaveLoad2
             return ao;
         }
 
-
-        /*
-        public ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback)
+        public ProjectAsyncOperation<AssetItem[]> Duplicate(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null)
         {
             if (IsBusy)
             {
                 throw new InvalidOperationException("IsBusy");
             }
             IsBusy = true;
-            if (BeginSave != null)
-            {
-                BeginSave(new Error(), assetItems);
-            }
-            return _Save(assetItems, objects, (error, result) =>
+            return _Duplicate(assetItems, (error, result) =>
             {
                 IsBusy = false;
                 if (callback != null)
                 {
-                    callback(error, result);
+                    callback(error, assetItems);
                 }
             });
         }
 
-        private ProjectAsyncOperation<AssetItem[]> _Save(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback)
+
+        private ProjectAsyncOperation<AssetItem[]> _Duplicate(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null)
         {
-            if (m_root == null)
-            {
-                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
-            }
-
-            if (objects == null)
-            {
-                throw new ArgumentNullException("objects");
-            }
-
-
             ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
-            LoadLibraryWithSceneDependencies(() =>
-            {
-                DoSave(assetItems, objects, callback, ao);
-            });
+
+            //LoadAssetItems()
+
+            //Copy assetItems with same parent
+
+            //Save assetItems
+            
             return ao;
         }
 
-        private void DoSave(AssetItem[] assetItems, object[] objects, ProjectEventHandler<AssetItem[]> callback, ProjectAsyncOperation<AssetItem[]> ao)
-        {
-
-            PersistentObject[] persistentObjects = new PersistentObject[assetItems.Length];
-            for (int i = 0; i < persistentObjects.Length; ++i)
-            {
-                object obj = objects[i];
-                Type persistentType = m_typeMap.ToPersistentType(obj.GetType());
-                if (persistentType == null)
-                {
-                    throw new ArgumentException(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
-                }
-
-                if (persistentType == typeof(PersistentGameObject))
-                {
-                    persistentType = typeof(PersistentRuntimePrefab);
-                }
-
-
-
-                PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                persistentObject.ReadFrom(objects[i]);
-
-                if (persistentObject is PersistentRuntimePrefab)
-                {
-                    PersistentRuntimePrefab persistentPrefab = (PersistentRuntimePrefab)persistentObject;
-                    if (persistentPrefab.Descriptors != null)
-                    {
-                        List<PrefabPart> prefabParts = new List<PrefabPart>();
-                        PersistentDescriptorsToPrefabPartItems(persistentPrefab.Descriptors, prefabParts);
-                        assetItems[i].Parts = prefabParts.ToArray();
-                    }
-                }
-
-                GetDepsContext getDepsCtx = new GetDepsContext();
-                persistentObject.GetDeps(getDepsCtx);
-                assetItems[i].Dependencies = getDepsCtx.Dependencies.ToArray();
-                persistentObjects[i] = persistentObject;
-            }
-
-            m_storage.Save(m_projectPath, assetItems.Select(ai => ai.Parent.ToString()).ToArray(), assetItems, persistentObjects, m_projectInfo, false, error =>
-            {
-                if (callback != null)
-                {
-                    callback(error, assetItems);
-                }
-                if (SaveCompleted != null)
-                {
-                    SaveCompleted(error, assetItems);
-                }
-                ao.Result = assetItems;
-                ao.Error = error;
-                ao.IsCompleted = true;
-            });
-        }
-        */
 
         /// <summary>
         /// Load asset
@@ -2777,12 +2708,15 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            UnityObject obj = m_assetDB.FromID<UnityObject>(assetItem.ItemID);
-            int itemID = m_assetDB.ToInt(assetItem.ItemID);
-            m_assetDB.UnregisterDynamicResource(itemID);
-            if(obj != null)
+            if(m_assetDB.IsDynamicResourceID(assetItem.ItemID))
             {
-                Destroy(obj);
+                UnityObject obj = m_assetDB.FromID<UnityObject>(assetItem.ItemID);
+                int itemID = m_assetDB.ToInt(assetItem.ItemID);
+                m_assetDB.UnregisterDynamicResource(itemID);
+                if (obj != null)
+                {
+                    Destroy(obj);
+                }
             }
         }
 

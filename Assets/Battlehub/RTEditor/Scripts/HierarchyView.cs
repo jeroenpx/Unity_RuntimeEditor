@@ -43,6 +43,7 @@ namespace Battlehub.RTEditor
             m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
             m_treeView.name = "HierarchyTreeView";
             m_treeView.CanSelectAll = false;
+            m_treeView.SelectOnPointerUp = true;
 
             RectTransform rt = (RectTransform)m_treeView.transform;
             rt.Stretch();

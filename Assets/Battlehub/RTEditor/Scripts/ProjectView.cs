@@ -182,9 +182,10 @@ namespace Battlehub.RTEditor
                 long selectedObjectId = m_project.ToID(Editor.Selection.activeObject);
                 if(result.Any(r => r.ItemID == selectedObjectId))
                 {
+                    bool wasEnabled = Editor.Undo.Enabled;
                     Editor.Undo.Enabled = false;
                     Editor.Selection.activeObject = null;
-                    Editor.Undo.Enabled = true;
+                    Editor.Undo.Enabled = wasEnabled;
                 }
             }
             
@@ -299,7 +300,7 @@ namespace Battlehub.RTEditor
         {
             if(e.ProjectItem != null)
             {
-                Debug.Log("Selected " + e.ProjectItem.ToString());
+                
                 if (!e.ProjectItem.IsFolder)
                 {
                     if(m_project.IsScene(e.ProjectItem))
@@ -317,14 +318,10 @@ namespace Battlehub.RTEditor
                     }
                 }   
                 else
-                {
+                {                    
                     Editor.Selection.activeObject = null;
                 }
             }
-            
-
-            
-            // e.ProjectItem
         }
 
         private void OnProjectTreeItemRenamed(object sender, ProjectTreeRenamedEventArgs e)
