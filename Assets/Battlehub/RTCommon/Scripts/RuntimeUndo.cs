@@ -270,20 +270,26 @@ namespace Battlehub.RTCommon
 
         void BeginRecord();
         void EndRecord();
+
         void BeginRegisterCreateObject(GameObject g);
         void RegisterCreatedObject(GameObject g);
         void BeginDestroyObject(GameObject g);
         void DestroyObject(GameObject g);
+
         void RecordValue(object target, MemberInfo memberInfo);
         void RecordValues(object target, MemberInfo[] memberInfo);
+
         void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
+
         void RecordSelection();
         void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null);
+
         void Redo();
         void Undo();
         void Purge();
         void Store();
         void Restore();
+
         void Replace(object obj, object replacement);
         //void Remove(object obj);
         void AddComponent(ExposeToEditor go, System.Type type);
@@ -911,7 +917,9 @@ namespace Battlehub.RTCommon
             {
                 somethingHasChanged = false;
                 Record[] records = m_stack.Pop();
-                for (int i = records.Length - 1; i >= 0; --i)
+
+                // for (int i = records.Length - 1; i >= 0; --i) //for components..
+                for (int i = 0; i < records.Length; ++i)
                 {
                     Record record = records[i];
                     somethingHasChanged |= record.Apply();

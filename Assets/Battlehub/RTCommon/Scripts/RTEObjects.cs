@@ -19,6 +19,7 @@ namespace Battlehub.RTCommon
         event ObjectEvent Disabled;
         event ObjectEvent Destroying;
         event ObjectEvent Destroyed;
+        event ObjectEvent MarkAsDestroyedChanging;
         event ObjectEvent MarkAsDestroyedChanged;
         event ObjectEvent TransformChanged;
         event ObjectEvent NameChanged;
@@ -36,6 +37,7 @@ namespace Battlehub.RTCommon
         public event ObjectEvent Disabled;
         public event ObjectEvent Destroying;
         public event ObjectEvent Destroyed;
+        public event ObjectEvent MarkAsDestroyedChanging;
         public event ObjectEvent MarkAsDestroyedChanged;
         public event ObjectEvent TransformChanged;
         public event ObjectEvent NameChanged;
@@ -113,6 +115,7 @@ namespace Battlehub.RTCommon
             ExposeToEditor._Disabled += OnDisabled;
             ExposeToEditor._Destroying += OnDestroying;
             ExposeToEditor._Destroyed += OnDestroyed;
+            ExposeToEditor._MarkAsDestroyedChanging += OnMarkAsDestroyedChanging;
             ExposeToEditor._MarkAsDestroyedChanged += OnMarkAsDestroyedChanged;
 
             ExposeToEditor._TransformChanged += OnTransformChanged;
@@ -120,8 +123,6 @@ namespace Battlehub.RTCommon
             ExposeToEditor._ParentChanged += OnParentChanged;
             ExposeToEditor._ComponentAdded += OnComponentAdded;
         }
-
-
 
         private void OnDestroy()
         {
@@ -137,6 +138,7 @@ namespace Battlehub.RTCommon
             ExposeToEditor._Disabled -= OnDisabled;
             ExposeToEditor._Destroying -= OnDestroying;
             ExposeToEditor._Destroyed -= OnDestroyed;
+            ExposeToEditor._MarkAsDestroyedChanging -= OnMarkAsDestroyedChanging;
             ExposeToEditor._MarkAsDestroyedChanged -= OnMarkAsDestroyedChanged;
 
             ExposeToEditor._TransformChanged -= OnTransformChanged;
@@ -467,7 +469,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void OnMarkAsDestroyedChanged(ExposeToEditor obj)
+        private void OnMarkAsDestroyedChanging(ExposeToEditor obj)
         {
             if (m_editor.IsPlaying)
             {
@@ -493,6 +495,14 @@ namespace Battlehub.RTCommon
                 }
             }
 
+            if(MarkAsDestroyedChanging != null)
+            {
+                MarkAsDestroyedChanging(obj);
+            }
+        }
+
+        private void OnMarkAsDestroyedChanged(ExposeToEditor obj)
+        {
             if (MarkAsDestroyedChanged != null)
             {
                 MarkAsDestroyedChanged(obj);

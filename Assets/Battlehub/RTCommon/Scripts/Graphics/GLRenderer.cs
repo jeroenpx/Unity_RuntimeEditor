@@ -45,6 +45,7 @@ namespace Battlehub.RTCommon
             {
                 Debug.LogWarning("Another instance of GLLinesRenderer aleready exist");
             }
+
             m_instance = this;
 
             m_renderObjects = new List<IGL>();

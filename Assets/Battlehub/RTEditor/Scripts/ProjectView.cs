@@ -67,6 +67,7 @@ namespace Battlehub.RTEditor
             m_project.CreateCompleted += OnCreateCompleted;
             m_project.MoveCompleted += OnMoveCompleted;
             m_project.SaveCompleted += OnSaveCompleted;
+            m_project.DuplicateCompleted += OnDuplicateCompleted;
          
             if (!m_project.IsOpened && !m_project.IsBusy)
             {
@@ -108,6 +109,7 @@ namespace Battlehub.RTEditor
                 m_project.CreateCompleted -= OnCreateCompleted;
                 m_project.MoveCompleted -= OnMoveCompleted;
                 m_project.SaveCompleted -= OnSaveCompleted;
+                m_project.DuplicateCompleted -= OnDuplicateCompleted;
             }
         }
 
@@ -237,12 +239,17 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             m_projectResources.InsertItems(result);
         }
-  
+
+        private void OnDuplicateCompleted(Error error, AssetItem[] result)
+        {
+            Editor.IsBusy = false;
+            m_projectResources.InsertItems(result);
+        }
+
         private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)
         {
             m_project.GetAssetItems(e.NewItems, (error, assets) =>
-            {
-                
+            {  
                 if (error.HasError)
                 {
                     m_windowManager.MessageBox("Can't GetAssets", error.ToString());

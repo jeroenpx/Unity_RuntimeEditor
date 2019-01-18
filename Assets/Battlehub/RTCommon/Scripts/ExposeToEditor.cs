@@ -32,6 +32,7 @@ namespace Battlehub.RTCommon
         public static event ExposeToEditorEvent _Awaked;
         public static event ExposeToEditorEvent _Destroying;
         public static event ExposeToEditorEvent _Destroyed;
+        public static event ExposeToEditorEvent _MarkAsDestroyedChanging;
         public static event ExposeToEditorEvent _MarkAsDestroyedChanged;
         public static event ExposeToEditorEvent _NameChanged;
         public static event ExposeToEditorEvent _TransformChanged;
@@ -91,6 +92,10 @@ namespace Battlehub.RTCommon
                 if (m_markAsDestroyed != value)
                 {
                     m_markAsDestroyed = value;
+                    if (_MarkAsDestroyedChanging != null)
+                    {
+                        _MarkAsDestroyedChanging(this);
+                    }
                     gameObject.SetActive(!m_markAsDestroyed);
                     if (_MarkAsDestroyedChanged != null)
                     {

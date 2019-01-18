@@ -9,8 +9,11 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         private GameObject m_noCamerasRenderingTxt = null;
-
         private List<GameViewCamera> m_gameCameras;
+
+        //When default layout button clicked Awake for new GameView invoked before OnDestroy for previous => camera disabled unintentionally
+        //This static variable (m_gameView) needed to fix this issue. Probably DestroyImmediate could do also...
+        private static GameView m_gameView;
 
         protected override void AwakeOverride()
         {
@@ -29,6 +32,8 @@ namespace Battlehub.RTEditor
             GameViewCamera._CameraEnabled += OnCameraComponentEnabled;
             GameViewCamera._CameraDisabled += OnCameraComponentDisabled;
 
+            m_gameView = this;
+            
             base.AwakeOverride();
         }
 
@@ -43,53 +48,50 @@ namespace Battlehub.RTEditor
             GameViewCamera._CameraEnabled -= OnCameraComponentEnabled;
             GameViewCamera._CameraDisabled -= OnCameraComponentDisabled;
 
-            for (int i = 0; i < m_gameCameras.Count; ++i)
-            {
-                GameViewCamera gameCamera = m_gameCameras[i];
-                if (gameCamera != null)
-                {
-                    gameCamera.Camera.depth = gameCamera.Depth;
-                    gameCamera.Camera.rect = gameCamera.Rect;
-                    if (Editor == null || !Editor.IsOpened)
-                    {
-                        if (gameCamera.Camera != null && m_wasCameraActive.ContainsKey(gameCamera.Camera))
-                        {
-                            gameCamera.Camera.enabled = m_wasCameraActive[gameCamera.Camera];
-                        }
-                    }
-                }
-            }
-        }
-
-        private Dictionary<Camera, bool> m_wasCameraActive;
-        protected virtual void OnEnable()
-        {
-            if(m_wasCameraActive != null)
+            if(m_gameView == this)
             {
                 for (int i = 0; i < m_gameCameras.Count; ++i)
                 {
                     GameViewCamera gameCamera = m_gameCameras[i];
-                    if (gameCamera.Camera != null && m_wasCameraActive.ContainsKey(gameCamera.Camera))
+                    if (gameCamera != null)
                     {
-                        gameCamera.Camera.enabled = m_wasCameraActive[gameCamera.Camera];
+                        gameCamera.Camera.depth = gameCamera.Depth;
+                        gameCamera.Camera.rect = gameCamera.Rect;
+                        if (Editor == null || !Editor.IsOpened)
+                        {
+                            gameCamera.Camera.enabled = gameCamera.IsCameraEnabled;
+                        }
                     }
                 }
-                m_wasCameraActive = null;
+                m_gameView = null;
+            }
+           
+        }
+
+        protected virtual void OnEnable()
+        {
+            for (int i = 0; i < m_gameCameras.Count; ++i)
+            {
+                GameViewCamera gameCamera = m_gameCameras[i];
+                gameCamera.enabled = true;
+                gameCamera.Camera.enabled = gameCamera.IsCameraEnabled;
             }
         }
 
         protected virtual void OnDisable()
         {
-            m_wasCameraActive = new Dictionary<Camera, bool>();
-            for (int i = 0; i < m_gameCameras.Count; ++i)
+            if (m_gameView == this)
             {
-                GameViewCamera gameCamera = m_gameCameras[i];
-                if (gameCamera.Camera != null)
+                for (int i = 0; i < m_gameCameras.Count; ++i)
                 {
-                    if(Editor.IsOpened)
+                    GameViewCamera gameCamera = m_gameCameras[i];
+                    if (gameCamera.Camera != null)
                     {
-                        m_wasCameraActive.Add(gameCamera.Camera, gameCamera.Camera.gameObject.activeSelf);
-                        gameCamera.Camera.enabled = false;
+                        if (Editor.IsOpened)
+                        {
+                            gameCamera.enabled = false;
+                            gameCamera.Camera.enabled = false;
+                        }
                     }
                 }
             }

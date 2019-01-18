@@ -247,7 +247,7 @@ namespace Battlehub.RTEditor
                 Editor.Undo.Purge();
 
                 Editor.IsBusy = true;
-                m_project.Save(m_project.Root, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { Input.text },  (error, assetItem) =>
+                m_project.Save(new[] { m_project.Root }, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { Input.text },  (error, assetItem) =>
                 {
                     Editor.IsBusy = false;
                     if (error.HasError)

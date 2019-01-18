@@ -25,7 +25,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private VirtualizingTreeView m_treeView = null;
         [SerializeField]
-        private Toggle m_toggleAssets;
+        private Toggle m_toggleAssets = null;
 
         public bool IsNoneSelected
         {

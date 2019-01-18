@@ -8631,6 +8631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5849259612858904848}
   - component: {fileID: 5849259612858904849}
+  - component: {fileID: 940736507}
   m_Layer: 0
   m_Name: HandlesComponent
   m_TagString: Untagged
@@ -8696,6 +8697,18 @@ MonoBehaviour:
   m_selectionMargin: 1
   m_invertZAxis: 0
   m_positionHandleArrowOnly: 0
+--- !u!114 &940736507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259612858904850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9928fd0134038942a72a74ea302ab63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5849259612951747672
 GameObject:
   m_ObjectHideFlags: 0

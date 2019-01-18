@@ -128,7 +128,7 @@ namespace Battlehub.RTEditor
                 go.transform.position = pivot;
                 go.AddComponent<ExposeToEditor>();
                 go.SetActive(true);
-                m_editor.RegisterCreatedObject(go);
+                m_editor.RegisterCreatedObjects(new[] { go });
             }
             
         }

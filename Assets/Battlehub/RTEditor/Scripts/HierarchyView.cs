@@ -163,6 +163,7 @@ namespace Battlehub.RTEditor
             Editor.Object.Disabled += OnObjectDisabled;
             Editor.Object.Destroying += OnObjectDestroying;
             Editor.Object.Destroyed += OnObjectDestroyed;
+            Editor.Object.MarkAsDestroyedChanging += OnObjectMarkAsDestoryedChanging;
             Editor.Object.MarkAsDestroyedChanged += OnObjectMarkAsDestroyedChanged;
             Editor.Object.ParentChanged += OnParentChanged;
             Editor.Object.NameChanged += OnNameChanged;
@@ -182,6 +183,7 @@ namespace Battlehub.RTEditor
                 Editor.Object.Disabled -= OnObjectDisabled;
                 Editor.Object.Destroying -= OnObjectDestroying;
                 Editor.Object.Destroyed -= OnObjectDestroyed;
+                Editor.Object.MarkAsDestroyedChanging -= OnObjectMarkAsDestoryedChanging;
                 Editor.Object.MarkAsDestroyedChanged -= OnObjectMarkAsDestroyedChanged;
                 Editor.Object.ParentChanged -= OnParentChanged;
                 Editor.Object.NameChanged -= OnNameChanged;
@@ -398,7 +400,7 @@ namespace Battlehub.RTEditor
         {
             if(e.IsExternal)
             {
-
+                
             }
             else
             {
@@ -409,7 +411,6 @@ namespace Battlehub.RTEditor
                     Transform dragT = exposed.transform;
                     Editor.Undo.RecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
                     Editor.Undo.RecordObject(exposed, m_treeView.IndexOf(exposed), RestoreIndexFromUndoRecord);
-
                 }
                 Editor.Undo.EndRecord();
             }
@@ -529,12 +530,14 @@ namespace Battlehub.RTEditor
 
         private void OnObjectAwaked(ExposeToEditor obj)
         {
+            /*
             if (m_isSpawningPrefab && m_treeView.DropAction != ItemDropAction.None)
             {
                 VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(m_treeView.DropTarget);
                 ExposeToEditor dropTarget = (ExposeToEditor)m_treeView.DropTarget;
                 if (m_treeView.DropAction == ItemDropAction.SetLastChild)
                 {
+                    obj.Parent = dropTarget;
                     obj.transform.SetParent(dropTarget.transform);
                     if (m_treeView.IndexOf(obj) == -1)
                     {
@@ -546,17 +549,21 @@ namespace Battlehub.RTEditor
                 else
                 {
                     int index;
+                    int siblingIndex;
                     if (m_treeView.DropAction == ItemDropAction.SetNextSibling)
                     {
                         index = m_treeView.IndexOf(dropTarget) + 1;
+                        siblingIndex = dropTarget.transform.GetSiblingIndex() + 1;
                     }
                     else
                     {
                         index = m_treeView.IndexOf(dropTarget);
+                        siblingIndex = dropTarget.transform.GetSiblingIndex();
                     }
 
+                    obj.Parent = dropTarget.Parent;
                     obj.transform.SetParent(dropTarget.transform.parent);
-                    obj.transform.SetSiblingIndex(index);
+                    obj.transform.SetSiblingIndex(siblingIndex);
 
                     TreeViewItemContainerData itemContainerData = (TreeViewItemContainerData)m_treeView.Insert(index, obj);
                     itemContainerData.Parent = treeViewItem.Parent;
@@ -577,6 +584,7 @@ namespace Battlehub.RTEditor
             }
 
             m_isSpawningPrefab = false;
+            */
         }
 
         private void OnObjectStarted(ExposeToEditor obj)
@@ -624,6 +632,18 @@ namespace Battlehub.RTEditor
            
         }
 
+        private void OnObjectMarkAsDestoryedChanging(ExposeToEditor o)
+        {
+            if (o.MarkAsDestroyed)
+            {
+               
+            }
+            else
+            {
+                                
+            }
+        }
+
         private void OnObjectMarkAsDestroyedChanged(ExposeToEditor o)
         {
             if (o.MarkAsDestroyed)
@@ -647,15 +667,13 @@ namespace Battlehub.RTEditor
                     parent = o.Parent;
                 }
 
-                ExposeToEditor nextSibling = o.NextSibling(Editor.Object.Get(true));
+                m_treeView.AddChild(parent, o); //TODO: replace with Insert 
 
-                m_treeView.AddChild(parent, o); //TODO: replace with Insert                    
-                 
+                ExposeToEditor nextSibling = o.NextSibling(Editor.Object.Get(true));
                 if(nextSibling != null)
                 {
                     m_treeView.SetPrevSibling(nextSibling, o);
-                }
-                
+                }   
             }
         }
 
@@ -728,11 +746,6 @@ namespace Battlehub.RTEditor
 
         private bool CanDrop(object[] dragObjects)
         {
-            if(m_treeView.DropTarget == null)
-            {
-                return false;
-            }
-
             IEnumerable<AssetItem> assetItems = dragObjects.OfType<AssetItem>();
 
             return assetItems.Count() > 0 && assetItems.Any(assetItem => m_project.ToType(assetItem) == typeof(GameObject));
@@ -769,52 +782,119 @@ namespace Battlehub.RTEditor
         public override void Drop(object[] dragObjects, PointerEventData pointerEventData)
         {
             base.Drop(dragObjects, pointerEventData);
-         
-            m_isSpawningPrefab = true;
-            if(CanDrop(dragObjects))
+
+            if (CanDrop(dragObjects))
             {
-                for (int i = 0; i < dragObjects.Length; ++i)
+                ExposeToEditor dropTarget = (ExposeToEditor)m_treeView.DropTarget;
+                VirtualizingTreeViewItem treeViewItem = null;
+                if (dropTarget != null)
                 {
-                    object dragObject = dragObjects[i];
-                    AssetItem assetItem = dragObject as AssetItem;
-                    
-                    if(assetItem != null && m_project.ToType(assetItem) == typeof(GameObject))
+                    treeViewItem = m_treeView.GetTreeViewItem(m_treeView.DropTarget);
+                }
+                
+                AssetItem[] loadAssetItems = dragObjects.Where(o => o is AssetItem && m_project.ToType((AssetItem)o) == typeof(GameObject)).Select(o => (AssetItem)o).ToArray();
+                if (loadAssetItems.Length > 0)
+                {
+                    m_isSpawningPrefab = true;
+                    Editor.IsBusy = true;
+                    m_project.Load(loadAssetItems, (error, objects) =>
                     {
-                        Editor.IsBusy = true;
-                        m_project.Load(new[] { assetItem }, (error, obj) =>
+                        Editor.IsBusy = false;
+                        if (error.HasError)
                         {
-                            Editor.IsBusy = false;
-                            if(obj[0] is GameObject)
+                            IWindowManager wm = IOC.Resolve<IWindowManager>();
+                            wm.MessageBox("Unable to load asset items.", error.ErrorText);
+                            return;
+                        }
+
+                        GameObject[] createdObjects = new GameObject[objects.Length];
+                        for (int i = 0; i < objects.Length; ++i)
+                        {
+                            GameObject prefab = (GameObject)objects[i];
+                            bool wasPrefabEnabled = prefab.activeSelf;
+                            prefab.SetActive(false);
+                            GameObject prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                            prefab.SetActive(wasPrefabEnabled);
+
+                            ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
+                            if (exposeToEditor == null)
                             {
-                                GameObject prefab = (GameObject)obj[0];
-                                bool wasPrefabEnabled = prefab.activeSelf;
-                                prefab.SetActive(false);
-
-                                GameObject prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity, ((ExposeToEditor)m_treeView.DropTarget).transform);
-
-                                prefab.SetActive(wasPrefabEnabled);
-
-                                ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
-                                if (exposeToEditor == null)
-                                {
-                                    exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
-                                }
-
-                                exposeToEditor.SetName(obj[0].name);
-                                exposeToEditor.Parent = (ExposeToEditor)m_treeView.DropTarget;
-                                prefabInstance.SetActive(true);
-
-                                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
-                                editor.RegisterCreatedObject(prefabInstance);
-                             
-                                m_isSpawningPrefab = false;
+                                exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
                             }
-                        });
-                    }
+
+                            exposeToEditor.SetName(prefab.name);
+                        
+                            if(dropTarget == null)
+                            {
+                                exposeToEditor.Parent = null;
+                                exposeToEditor.transform.SetParent(null);
+                                m_treeView.Add(exposeToEditor);
+                            }
+                            else
+                            {
+                                if (m_treeView.DropAction == ItemDropAction.SetLastChild)
+                                {
+                                    exposeToEditor.Parent = dropTarget;
+                                    exposeToEditor.transform.SetParent(dropTarget.transform);
+                                    m_treeView.AddChild(dropTarget, exposeToEditor);
+                                    treeViewItem.CanExpand = true;
+                                    treeViewItem.IsExpanded = true;
+                                }
+                                else if (m_treeView.DropAction != ItemDropAction.None)
+                                {
+                                    int index;
+                                    int siblingIndex;
+                                    if (m_treeView.DropAction == ItemDropAction.SetNextSibling)
+                                    {
+                                        index = m_treeView.IndexOf(dropTarget) + 1;
+                                        siblingIndex = dropTarget.transform.GetSiblingIndex() + 1;
+                                    }
+                                    else
+                                    {
+                                        index = m_treeView.IndexOf(dropTarget);
+                                        siblingIndex = dropTarget.transform.GetSiblingIndex();
+                                    }
+
+                                    exposeToEditor.Parent = dropTarget.Parent;
+                                    exposeToEditor.transform.SetParent(dropTarget.transform.parent != null ? dropTarget.transform.parent : null);
+                                    exposeToEditor.transform.SetSiblingIndex(siblingIndex);
+
+                                    TreeViewItemContainerData newTreeViewItemData = (TreeViewItemContainerData)m_treeView.Insert(index, exposeToEditor);
+                                    VirtualizingTreeViewItem newTreeViewItem = m_treeView.GetTreeViewItem(exposeToEditor);
+                                    if (newTreeViewItem != null)
+                                    {
+                                        newTreeViewItem.Parent = treeViewItem.Parent;
+                                    }
+                                    else
+                                    {
+                                        newTreeViewItemData.Parent = treeViewItem.Parent;
+                                    }
+                                }
+                            }
+
+                            prefabInstance.SetActive(true);
+                            createdObjects[i] = prefabInstance;
+                        }
+
+                        if(createdObjects.Length > 0)
+                        {
+                            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                            editor.RegisterCreatedObjects(createdObjects);
+                        }
+
+                        m_treeView.ExternalItemDrop();
+                        m_isSpawningPrefab = false;
+                    });
+                }
+                else
+                {
+                    m_treeView.ExternalItemDrop();
                 }
             }
-
-            m_treeView.ExternalItemDrop();
+            else
+            {
+                m_treeView.ExternalItemDrop();
+            }
         }
     }
 }

@@ -163,7 +163,7 @@ namespace Battlehub.RTCommon
         void RegisterWindow(RuntimeWindow window);
         void UnregisterWindow(RuntimeWindow window);
 
-        void RegisterCreatedObject(GameObject go);
+        void RegisterCreatedObjects(GameObject[] go);
         void Duplicate(GameObject[] go);
         void Delete(GameObject[] go);
         void Close();
@@ -753,20 +753,26 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void RegisterCreatedObject(GameObject go)
+        public void RegisterCreatedObjects(GameObject[] go)
         {
             Undo.BeginRecord();
             Undo.RecordSelection();
-            Undo.BeginRegisterCreateObject(go);
+            for(int i = 0; i < go.Length; ++i)
+            {
+                Undo.BeginRegisterCreateObject(go[i]);
+            }
             Undo.EndRecord();
 
             bool isEnabled = Undo.Enabled;
             Undo.Enabled = false;
-            Selection.activeGameObject = go;
+            Selection.objects = go;
             Undo.Enabled = isEnabled;
 
             Undo.BeginRecord();
-            Undo.RegisterCreatedObject(go);
+            for (int i = 0; i < go.Length; ++i)
+            {
+                Undo.RegisterCreatedObject(go[i]);
+            }
             Undo.RecordSelection();
             Undo.EndRecord();
         }

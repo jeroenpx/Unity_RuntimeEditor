@@ -39,6 +39,11 @@ namespace Battlehub.RTEditor
             private set;
         }
 
+        public bool IsCameraEnabled
+        {
+            get { return m_isEnabled; }
+        }
+
         private Camera m_camera;
         public Camera Camera
         {
@@ -104,6 +109,12 @@ namespace Battlehub.RTEditor
         private bool m_isEnabled;
         private void Update()
         {
+            if(Camera == null)
+            {
+                Destroy(this);
+                return;
+            }
+
             if(m_isEnabled != m_camera.enabled)
             {
                 m_isEnabled = m_camera.enabled;

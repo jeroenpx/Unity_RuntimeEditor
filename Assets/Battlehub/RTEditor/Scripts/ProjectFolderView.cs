@@ -638,7 +638,7 @@ namespace Battlehub.RTEditor
             IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
             byte[] preview = resourcePreview.CreatePreviewData(unityObject);
             Editor.IsBusy = true;
-            m_project.Save(parentFolder, new[] { preview }, new[] { unityObject }, null, (error, assetItems) =>
+            m_project.Save(new[] { parentFolder }, new[] { preview }, new[] { unityObject }, null, (error, assetItems) =>
             {
                 if(!currentFolder)
                 {
@@ -664,7 +664,9 @@ namespace Battlehub.RTEditor
 
         private void Duplicate(string arg)
         {
-            
+            AssetItem[] assetItems = m_listBox.SelectedItems.OfType<AssetItem>().ToArray();
+            Editor.IsBusy = true;
+            m_project.Duplicate(assetItems, (error, duplicates) => Editor.IsBusy = false);
         }
 
         private void Delete(string arg)

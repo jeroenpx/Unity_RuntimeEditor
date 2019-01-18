@@ -86,21 +86,32 @@ namespace Battlehub.RTSaveLoad2
                 return;
             }
 
-            GetDependenciesFrom((GameObject)obj, context);
+            //Prefab parts should not be considered as external dependencies. This list required to remove prefab parts (children and components) from dependencies collection. 
+            List<object> prefabParts = new List<object>();
+
+            GetDependenciesFrom((GameObject)obj, prefabParts, context);
+
+            for(int i = 0; i < prefabParts.Count; ++i)
+            {
+                context.Dependencies.Remove(prefabParts[i]);
+            }
         }
 
-        private void GetDependenciesFrom(GameObject go, GetDepsFromContext context)
+        private void GetDependenciesFrom(GameObject go, List<object> prefabParts, GetDepsFromContext context)
         {
             if (go.GetComponent<RTSL2Ignore>())
             {
                 //Do not save persistent ignore objects
                 return;
             }
+
             Type persistentType = m_typeMap.ToPersistentType(go.GetType());
             if (persistentType == null)
             {
                 return;
             }
+
+            prefabParts.Add(go);
 
             PersistentObject goData = (PersistentObject)Activator.CreateInstance(persistentType);
             goData.GetDepsFrom(go, context);
@@ -117,6 +128,8 @@ namespace Battlehub.RTSaveLoad2
                         continue;
                     }
 
+                    prefabParts.Add(component);
+
                     PersistentObject componentData = (PersistentObject)Activator.CreateInstance(persistentComponentType);
                     componentData.GetDepsFrom(component, context);
                 }
@@ -127,7 +140,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 foreach(Transform child in transform)
                 {
-                    GetDependenciesFrom(child.gameObject, context);
+                    GetDependenciesFrom(child.gameObject, prefabParts, context);
                 }
             }
         }
