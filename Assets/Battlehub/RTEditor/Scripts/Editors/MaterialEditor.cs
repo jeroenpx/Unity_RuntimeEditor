@@ -22,38 +22,29 @@ namespace Battlehub.RTEditor
     public class MaterialPropertyDescriptor
     {
         public object Target;
+        public object Accessor;
         public string Label;
         public RTShaderPropertyType Type;
-#if !UNITY_WEBGL && PROC_MATERIAL
-        public ProcPropertyDescription ProceduralDescription;
-#endif
+        public Action<object, object> EraseTargetCallback;
+
         public PropertyInfo PropertyInfo;
         public RuntimeShaderInfo.RangeLimits Limits;
         public TextureDimension TexDims;
         
         public PropertyEditorCallback ValueChangedCallback;
 
-        public MaterialPropertyDescriptor(object target, string label, RTShaderPropertyType type, PropertyInfo propertyInfo, RuntimeShaderInfo.RangeLimits limits, TextureDimension dims, PropertyEditorCallback callback)
+        public MaterialPropertyDescriptor(object target, object acessor, string label, RTShaderPropertyType type, PropertyInfo propertyInfo, RuntimeShaderInfo.RangeLimits limits, TextureDimension dims, PropertyEditorCallback callback, Action<object, object> eraseTargetCallback)
         {
             Target = target;
+            Accessor = acessor;
             Label = label;
             Type = type;
             PropertyInfo = propertyInfo;
             Limits = limits;
             TexDims = dims;
             ValueChangedCallback = callback;
+            EraseTargetCallback = eraseTargetCallback;
         }
-#if !UNITY_WEBGL && PROC_MATERIAL
-        public MaterialPropertyDescriptor(object target, string label, ProcPropertyDescription procDescription, PropertyInfo propertyInfo, PropertyEditorCallback callback)
-        {
-            Target = target;
-            Label = label;
-            Type = RTShaderPropertyType.Procedural;
-            ProceduralDescription = procDescription;
-            PropertyInfo = propertyInfo;
-            ValueChangedCallback = callback;
-        }
-#endif
     }
 
 
@@ -126,6 +117,8 @@ namespace Battlehub.RTEditor
         private void Start()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_editor.Undo.UndoCompleted += OnUndoCompleted;
+            m_editor.Undo.RedoCompleted += OnRedoCompleted;
             m_resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
 
             if (Material == null)
@@ -157,6 +150,8 @@ namespace Battlehub.RTEditor
             BuildEditor();
         }
 
+        
+
         private void Update()
         {   
             if (Material == null)
@@ -172,7 +167,13 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            if(m_previewTexture != null)
+            if(m_editor != null && m_editor.Undo != null)
+            {
+                m_editor.Undo.UndoCompleted -= OnUndoCompleted;
+                m_editor.Undo.RedoCompleted -= OnRedoCompleted;
+            }
+            
+            if (m_previewTexture != null)
             {
                 Destroy(m_previewTexture);
             }
@@ -204,83 +205,25 @@ namespace Battlehub.RTEditor
             {
                 MaterialPropertyDescriptor descriptor = descriptors[i];
                 PropertyEditor editor = null;
-                object target = descriptor.Target;
                 PropertyInfo propertyInfo = descriptor.PropertyInfo;
-#if !UNITY_WEBGL && PROC_MATERIAL
-                if(descriptor.ProceduralDescription == null)
-#endif
+
+                RTShaderPropertyType propertyType = descriptor.Type;
+
+                switch (propertyType)
                 {
-                    RTShaderPropertyType propertyType = descriptor.Type;
-
-                    switch (propertyType)
-                    {
-                        case RTShaderPropertyType.Range:
-                            if(RangeEditor != null)
-                            {
-                                RangeEditor range = Instantiate(RangeEditor);
-                                range.transform.SetParent(EditorsPanel, false);
-
-                                var rangeLimits = descriptor.Limits;
-                                range.Min = rangeLimits.Min;
-                                range.Max = rangeLimits.Max;
-                                editor = range;
-                            }
-                            break;
-                        default:
-                            if (EditorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
-                            {
-                                GameObject editorPrefab = EditorsMap.GetPropertyEditor(propertyInfo.PropertyType);
-                                GameObject instance = Instantiate(editorPrefab);
-                                instance.transform.SetParent(EditorsPanel, false);
-
-                                if (instance != null)
-                                {
-                                    editor = instance.GetComponent<PropertyEditor>();
-                                }
-                            }
-                            break;
-                    }
-                }
-#if !UNITY_WEBGL && PROC_MATERIAL
-                else
-                {
-                    ProcPropertyDescription input = descriptor.ProceduralDescription;
-                    if(input.hasRange)
-                    {
-                        if(input.type == ProcPropertyType.Float)
+                    case RTShaderPropertyType.Range:
+                        if (RangeEditor != null)
                         {
-                            if(RangeEditor != null)
-                            {
-                                RangeEditor range = Instantiate(RangeEditor);
-                                range.transform.SetParent(EditorsPanel, false);
-                                range.Min = input.minimum;
-                                range.Max = input.maximum;
-                                //TODO implement step on range editor // = input.step
-                                editor = range;
-                            }
+                            RangeEditor range = Instantiate(RangeEditor);
+                            range.transform.SetParent(EditorsPanel, false);
+
+                            var rangeLimits = descriptor.Limits;
+                            range.Min = rangeLimits.Min;
+                            range.Max = rangeLimits.Max;
+                            editor = range;
                         }
-                        else
-                        {
-                            //TODO: Implement range on vector editors
-
-                            if (EditorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
-                            {
-                                GameObject editorPrefab = EditorsMap.GetPropertyEditor(propertyInfo.PropertyType);
-                                GameObject instance = Instantiate(editorPrefab);
-                                instance.transform.SetParent(EditorsPanel, false);
-
-                                if (instance != null)
-                                {
-                                    editor = instance.GetComponent<PropertyEditor>();
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //if(input.type == ProceduralPropertyType.Enum)
-                        //TODO: Implement enum from string array editor. //input.enumOptions
-
+                        break;
+                    default:
                         if (EditorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
                         {
                             GameObject editorPrefab = EditorsMap.GetPropertyEditor(propertyInfo.PropertyType);
@@ -292,16 +235,16 @@ namespace Battlehub.RTEditor
                                 editor = instance.GetComponent<PropertyEditor>();
                             }
                         }
-                    }
+                        break;
                 }
-#endif
+                
 
                 if (editor == null)
                 {
                     continue;
                 }
 
-                editor.Init(target, propertyInfo, descriptor.Label, null, descriptor.ValueChangedCallback, () => 
+                editor.Init(descriptor.Target, descriptor.Accessor, propertyInfo, descriptor.EraseTargetCallback, descriptor.Label, null, descriptor.ValueChangedCallback, () => 
                 {
                     m_editor.IsDirty = true;
                     UpdatePreview(Material);
@@ -324,6 +267,22 @@ namespace Battlehub.RTEditor
             }
 
             return editor;
+        }
+
+        private void OnRedoCompleted()
+        {
+            if (Material != null)
+            {
+                UpdatePreview(Material);
+            }
+        }
+
+        private void OnUndoCompleted()
+        {
+            if (Material != null)
+            {
+                UpdatePreview(Material);
+            }
         }
 
         private void UpdatePreview(Material material)

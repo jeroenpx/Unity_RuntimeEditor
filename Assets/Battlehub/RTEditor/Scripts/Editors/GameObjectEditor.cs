@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Battlehub.RTCommon;
 using System;
 using Battlehub.RTSaveLoad2.Interface;
+using System.Reflection;
+using Battlehub.Utils;
 
 namespace Battlehub.RTEditor
 {
@@ -20,10 +22,41 @@ namespace Battlehub.RTEditor
 
         private IRuntimeEditor m_editor;
 
+        public bool IsGameObjectActive
+        {
+            get
+            {
+                GameObject go = m_editor.Selection.activeGameObject;
+                if(go == null)
+                {
+                    return false;
+                }
+                return go.activeSelf;
+            }
+            set
+            {
+                GameObject go = m_editor.Selection.activeGameObject;
+                if (go != null)
+                {
+                    go.SetActive(value);
+                    if (TogEnableDisable != null)
+                    {
+                        TogEnableDisable.onValueChanged.RemoveListener(OnEnableDisable);
+                    }
+                    TogEnableDisable.isOn = value;
+                    if (TogEnableDisable != null)
+                    {
+                        TogEnableDisable.onValueChanged.AddListener(OnEnableDisable);
+                    }
+                }
+            }
+        }
+
         private void Start()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_editor.Object.ComponentAdded += OnComponentAdded;
+            
 
             GameObject go = m_editor.Selection.activeGameObject;
             HashSet<Component> ignoreComponents = IgnoreComponents(go);
@@ -33,6 +66,7 @@ namespace Battlehub.RTEditor
 
             InputName.onEndEdit.AddListener(OnEndEditName);
             TogEnableDisable.onValueChanged.AddListener(OnEnableDisable);
+
             Component[] components = go.GetComponents<Component>();
             for (int i = 0; i < components.Length; ++i)
             {
@@ -57,7 +91,6 @@ namespace Battlehub.RTEditor
         private static HashSet<Component> IgnoreComponents(GameObject go)
         {
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
-            HierarchyItem hierarchyItem = go.GetComponent<HierarchyItem>();
             HashSet<Component> ignoreComponents = new HashSet<Component>();
             if (exposeToEditor != null)
             {
@@ -74,11 +107,6 @@ namespace Battlehub.RTEditor
                 }
 
                 ignoreComponents.Add(exposeToEditor);
-            }
-
-            if (hierarchyItem != null)
-            {
-                ignoreComponents.Add(hierarchyItem);
             }
 
             return ignoreComponents;
@@ -147,10 +175,14 @@ namespace Battlehub.RTEditor
             }
         }
 
+
         private void OnEnableDisable(bool enable)
         {
+            PropertyInfo prop = Strong.PropertyInfo((GameObjectEditor x) => x.IsGameObjectActive, "IsGameObjectActive");
             GameObject go = m_editor.Selection.activeGameObject;
+            m_editor.Undo.BeginRecordValue(go, this, prop);
             go.SetActive(enable);
+            m_editor.Undo.EndRecordValue(go, this, prop, null);
         }
 
         private void OnEndEditName(string name)
@@ -179,7 +211,7 @@ namespace Battlehub.RTEditor
                 HashSet<Component> components = IgnoreComponents(obj.gameObject);
                 if (!CreateComponentEditor(obj.gameObject, component, components))
                 {
-
+                    
                 }
             }
         }

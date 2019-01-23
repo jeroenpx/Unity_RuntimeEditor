@@ -939,12 +939,21 @@ namespace Battlehub.UIControls
             }
             else
             {
+                RectTransform lastContainer = GetContainer(prevSibling);
+
                 int prevSiblingIndex = m_items.IndexOf(prevSibling);
                 m_items.RemoveAt(prevSiblingIndex);
                 m_items.Insert(0, prevSibling);
 
-                RectTransform lastContainer = m_containers.Last.Value;
-                m_containers.RemoveLast();
+                if(lastContainer == null)
+                {
+                    lastContainer = m_containers.Last.Value;
+                    m_containers.RemoveLast();
+                }
+                else
+                {
+                    m_containers.Remove(lastContainer);
+                }
 
                 m_containers.AddFirst(lastContainer);
 
@@ -1028,7 +1037,7 @@ namespace Battlehub.UIControls
             {
                 horizontalNormalizedPosition = m_normalizedIndex;
             }
-        }
+        }  
     }
 }
 

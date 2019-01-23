@@ -29,7 +29,6 @@ namespace Battlehub.RTGizmos
             }
         }
 
-
         protected override void AwakeOverride()
         {
             if(m_collider == null)
@@ -43,15 +42,20 @@ namespace Battlehub.RTGizmos
             }
             
             base.AwakeOverride();
-            
         }
 
-        protected override void RecordOverride()
+        protected override void BeginRecordOverride()
         {
-            base.RecordOverride();
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((BoxCollider x) => x.center, "center"));
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((BoxCollider x) => x.size, "size"));
+            base.BeginRecordOverride();
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((BoxCollider x) => x.center, "center"));
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((BoxCollider x) => x.size, "size"));
+        }
+
+        protected override void EndRecordOverride()
+        {
+            base.EndRecordOverride();
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((BoxCollider x) => x.center, "center"));
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((BoxCollider x) => x.size, "size"));
         }
     }
-
 }

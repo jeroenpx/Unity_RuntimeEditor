@@ -629,33 +629,42 @@ namespace Battlehub.UIControls
             get { return m_scrollRect.Items; }
             set
             {
-                if (value == null)
-                {
-                    SelectedItems = null;
+                SetItems(value, true);
+            }
+        }
 
-                    m_scrollRect.Items = null;
-                    m_scrollRect.verticalNormalizedPosition = 1;
-                    m_scrollRect.horizontalNormalizedPosition = 0;
-                    m_itemContainerData = new Dictionary<object, ItemContainerData>();
+        public void SetItems(IEnumerable value, bool updateSelection)
+        {
+            if (value == null)
+            {
+                SelectedItems = null;
+
+                m_scrollRect.Items = null;
+                m_scrollRect.verticalNormalizedPosition = 1;
+                m_scrollRect.horizontalNormalizedPosition = 0;
+                m_itemContainerData = new Dictionary<object, ItemContainerData>();
+            }
+            else
+            {
+                List<object> items = value.OfType<object>().ToList();
+                if(updateSelection)
+                {
+                    if (m_selectedItemsHS != null)
+                    {
+                        //SelectedItems = items.Where(item => m_selectedItemsHS.Contains(item)).ToArray();
+                        m_selectedItems = items.Where(item => m_selectedItemsHS.Contains(item)).ToList();
+                    }
                 }
-                else
+
+                m_itemContainerData = new Dictionary<object, ItemContainerData>();
+                for (int i = 0; i < items.Count; ++i)
                 {
-                    
-                    List<object> items = value.OfType<object>().ToList();
+                    m_itemContainerData.Add(items[i], InstantiateItemContainerData(items[i]));
+                }
 
-                    if(m_selectedItemsHS != null)
-                    {
-                        SelectedItems = items.Where(item => m_selectedItemsHS.Contains(item)).ToArray();
-                    }
-
-                    m_itemContainerData = new Dictionary<object, ItemContainerData>();
-                    for(int i = 0; i < items.Count; ++i)
-                    {
-                        m_itemContainerData.Add(items[i], InstantiateItemContainerData(items[i]));
-                    }
-
-                    m_scrollRect.Items = items;
-
+                m_scrollRect.Items = items;
+                if (updateSelection)
+                {
                     if (IsFocused && SelectedIndex == -1)
                     {
                         SelectedIndex = 0;
@@ -663,6 +672,7 @@ namespace Battlehub.UIControls
                 }
             }
         }
+
 
         protected virtual ItemContainerData InstantiateItemContainerData(object item)
         {
@@ -681,6 +691,7 @@ namespace Battlehub.UIControls
             {
                 Debug.LogError("Scroll Rect is required");
             }
+            
             m_scrollRect.ItemDataBinding += OnScrollRectItemDataBinding;
             m_dropMarker = GetComponentInChildren<VirtualizingItemDropMarker>(true);
             
@@ -1047,13 +1058,13 @@ namespace Battlehub.UIControls
             }
 
             VirtualizingItemContainer.Unselected -= OnItemUnselected;
-            if (InputProvider.IsFunctional2ButtonPressed)
+            if (InputProvider.IsFunctionalButtonPressed)
             {
                 IList selectedItems = m_selectedItems != null ? m_selectedItems.ToList() : new List<object>();
                 selectedItems.Add(((VirtualizingItemContainer)sender).Item);
                 SelectedItems = selectedItems;
             }
-            else if (InputProvider.IsFunctionalButtonPressed)
+            else if (InputProvider.IsFunctional2ButtonPressed)
             {
                 SelectRange((VirtualizingItemContainer)sender);
             }
@@ -1208,18 +1219,16 @@ namespace Battlehub.UIControls
                     TryToSelect(sender);
                 }
             }
-            else
+
+            if (!InputProvider.IsFunctional2ButtonPressed && !InputProvider.IsFunctionalButtonPressed)
             {
-                if (!InputProvider.IsFunctional2ButtonPressed && !InputProvider.IsFunctionalButtonPressed)
+                if (m_selectedItems != null && m_selectedItems.Count > 1)
                 {
-                    if (m_selectedItems != null && m_selectedItems.Count > 1)
+                    if (SelectedItem == sender.Item)
                     {
-                        if (SelectedItem == sender.Item)
-                        {
-                            SelectedItem = null;
-                        }
-                        SelectedItem = sender.Item;
+                        SelectedItem = null;
                     }
+                    SelectedItem = sender.Item;
                 }
             }
         }
@@ -1843,7 +1852,7 @@ namespace Battlehub.UIControls
                 for (int i = 0; i < dragItems.Length; ++i)
                 {
                     ItemContainerData dragItemData = dragItems[i];
-                    SetPrevSibling(dropTargetData, dragItemData);
+                    SetPrevSiblingInternal(dropTargetData, dragItemData);
                 }
             }
             else if (action == ItemDropAction.SetNextSibling)
@@ -1863,7 +1872,7 @@ namespace Battlehub.UIControls
             m_scrollRect.SetNextSibling(sibling.Item, nextSibling.Item);
         }
 
-        protected virtual void SetPrevSibling(ItemContainerData sibling, ItemContainerData prevSibling)
+        protected virtual void SetPrevSiblingInternal(ItemContainerData sibling, ItemContainerData prevSibling)
         {
             m_scrollRect.SetPrevSibling(sibling.Item, prevSibling.Item);
         }

@@ -251,7 +251,12 @@ namespace Battlehub.RTGizmos
 
         }
 
-        protected virtual void RecordOverride()
+        protected virtual void BeginRecordOverride()
+        {
+
+        }
+
+        protected virtual void EndRecordOverride()
         {
 
         }
@@ -416,16 +421,7 @@ namespace Battlehub.RTGizmos
                 }
                 if (EnableUndo)
                 {
-                    bool isRecording = Window.Editor.Undo.IsRecording;
-                    if (!isRecording)
-                    {
-                        Window.Editor.Undo.BeginRecord();
-                    }
-                    RecordOverride();
-                    if (!isRecording)
-                    {
-                        Window.Editor.Undo.EndRecord();
-                    }
+                    BeginRecordOverride();
                 }
             }
         }
@@ -440,7 +436,7 @@ namespace Battlehub.RTGizmos
                 {
                     Window.Editor.Undo.BeginRecord();
                 }
-                RecordOverride();
+                EndRecordOverride();
                 if (!isRecording)
                 {
                     Window.Editor.Undo.EndRecord();

@@ -1,6 +1,4 @@
-﻿//#define SIMPLIFIED_MATERIAL
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -10,7 +8,6 @@ using Battlehub.RTSaveLoad2;
 
 namespace Battlehub.RTEditor
 {
-    #if !SIMPLIFIED_MATERIAL
     public class StandardMaterialValueConverter 
     {
         private enum WorkflowMode
@@ -196,31 +193,6 @@ namespace Battlehub.RTEditor
 
         private static void SetMaterialKeywords(Material material, WorkflowMode workflowMode)
         {
-
-            //  // Note: keywords must be based on Material value not on MaterialProperty due to multi-edit & material animation
-            // // (MaterialProperty value might come from renderer material property block)
-            // SetKeyword(material, "_NORMALMAP", material.GetTexture("_BumpMap") || material.GetTexture("_DetailNormalMap"));
-            // if (workflowMode == WorkflowMode.Specular)
-            //     SetKeyword(material, "_SPECGLOSSMAP", material.GetTexture("_SpecGlossMap"));
-            // else if (workflowMode == WorkflowMode.Metallic)
-            //     SetKeyword(material, "_METALLICGLOSSMAP", material.GetTexture("_MetallicGlossMap"));
-            // SetKeyword(material, "_PARALLAXMAP", material.GetTexture("_ParallaxMap"));
-            // SetKeyword(material, "_DETAIL_MULX2", material.GetTexture("_DetailAlbedoMap") || material.GetTexture("_DetailNormalMap"));
-
-            // // A material's GI flag internally keeps track of whether emission is enabled at all, it's enabled but has no effect
-            // // or is enabled and may be modified at runtime. This state depends on the values of the current flag and emissive color.
-            // // The fixup routine makes sure that the material is in the correct state if/when changes are made to the mode or color.
-            //// MaterialEditor.FixupEmissiveFlag(material);
-            // bool shouldEmissionBeEnabled = (material.globalIlluminationFlags & MaterialGlobalIlluminationFlags.EmissiveIsBlack) == 0;
-            // SetKeyword(material, "_EMISSION", shouldEmissionBeEnabled);
-
-            // if (material.HasProperty("_SmoothnessTextureChannel"))
-            // {
-            //     SetKeyword(material, "_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A", GetSmoothnessMapChannel(material) == SmoothnessMapChannel.AlbedoAlpha);
-            // }
-
-            // Note: keywords must be based on Material value not on MaterialProperty due to multi-edit & material animation
-            // (MaterialProperty value might come from renderer material property block)
             SetKeyword(material, "_NORMALMAP", material.GetTexture("_BumpMap") || material.GetTexture("_DetailNormalMap"));
             if (workflowMode == WorkflowMode.Specular)
                 SetKeyword(material, "_SPECGLOSSMAP", material.GetTexture("_SpecGlossMap"));
@@ -360,6 +332,20 @@ namespace Battlehub.RTEditor
             return converter;
         }
 
+        public void EraseAccessorTarget(object accessorRef, object target)
+        {
+            if(accessorRef is StandardMaterialValueConverter)
+            {
+                StandardMaterialValueConverter accessor = (StandardMaterialValueConverter)accessorRef;
+                accessor.Material = target as Material;
+            }
+            else if(accessorRef is MaterialPropertyAccessor)
+            {
+                MaterialPropertyAccessor accessor = (MaterialPropertyAccessor)accessorRef;
+                accessor.Material = target as Material;
+            }
+        }
+
         public MaterialPropertyDescriptor[] GetProperties(MaterialEditor editor, object converterObject)
         {
             PropertyEditorCallback valueChangedCallback = () => editor.BuildEditor();
@@ -384,72 +370,60 @@ namespace Battlehub.RTEditor
 
             BlendMode mode = GetBlendMode(editor.Material);
             List<MaterialPropertyDescriptor> properties = new List<MaterialPropertyDescriptor>();
-            properties.Add(new MaterialPropertyDescriptor(converter, "Rendering Mode", RTShaderPropertyType.Float, modeInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.None, valueChangedCallback));
-            properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _MainTex), "Albedo", RTShaderPropertyType.TexEnv, texInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.Tex2D, null));
-            properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _Color), "Albedo Color", RTShaderPropertyType.Color, colorInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.None, null));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Rendering Mode", RTShaderPropertyType.Float, modeInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.None, valueChangedCallback, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _MainTex), "Albedo", RTShaderPropertyType.TexEnv, texInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.Tex2D, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _Color), "Albedo Color", RTShaderPropertyType.Color, colorInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.None, null, EraseAccessorTarget));
             if (mode == BlendMode.Cutout)
             {
-                properties.Add(new MaterialPropertyDescriptor(converter, "Alpha Cutoff", RTShaderPropertyType.Range, cutoffInfo, new RuntimeShaderInfo.RangeLimits(0.5f, 0.0f, 1.0f), TextureDimension.None, null));
+                properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Alpha Cutoff", RTShaderPropertyType.Range, cutoffInfo, new RuntimeShaderInfo.RangeLimits(0.5f, 0.0f, 1.0f), TextureDimension.None, null, EraseAccessorTarget));
             }
 
-            properties.Add(new MaterialPropertyDescriptor(converter, "Metallic", RTShaderPropertyType.TexEnv, metallicMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Metallic", RTShaderPropertyType.TexEnv, metallicMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback, EraseAccessorTarget));
             bool hasGlossMap = IsMetallicGlossMapSet(editor.Material);
             if (!hasGlossMap)
             {
-                properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _Metallic), "Metallic", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 1.0f), TextureDimension.None, null));
+                properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _Metallic), "Metallic", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 1.0f), TextureDimension.None, null, EraseAccessorTarget));
                 if (StandardMaterialValueConverter.GetSmoothnessMapChannel(editor.Material) == StandardMaterialValueConverter.SmoothnessMapChannel.SpecularMetallicAlpha)
                 {
-                    properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _Glossiness), "Smoothness", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(0.5f, 0.0f, 1.0f), TextureDimension.None, null));
+                    properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _Glossiness), "Smoothness", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(0.5f, 0.0f, 1.0f), TextureDimension.None, null, EraseAccessorTarget));
                 }
                 else
                 {
-                    properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _GlossMapScale), "Smoothness", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(1.0f, 0.0f, 1.0f), TextureDimension.None, null));
+                    properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _GlossMapScale), "Smoothness", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(1.0f, 0.0f, 1.0f), TextureDimension.None, null, EraseAccessorTarget));
                 }
             }
             else
             {
-                properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _GlossMapScale), "Smoothness", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(1.0f, 0.0f, 1.0f), TextureDimension.None, null));
+                properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _GlossMapScale), "Smoothness", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(1.0f, 0.0f, 1.0f), TextureDimension.None, null, EraseAccessorTarget));
             }
 
 
-            properties.Add(new MaterialPropertyDescriptor(converter, "Normal Map", RTShaderPropertyType.TexEnv, bumpMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Normal Map", RTShaderPropertyType.TexEnv, bumpMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback, EraseAccessorTarget));
             if (converter.BumpMap != null)
             {
-                properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _BumpScale), "Normal Map Scale", RTShaderPropertyType.Float, floatInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.None, null));
+                properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _BumpScale), "Normal Map Scale", RTShaderPropertyType.Float, floatInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.None, null, EraseAccessorTarget));
             }
 
-            properties.Add(new MaterialPropertyDescriptor(converter, "Height Map", RTShaderPropertyType.TexEnv, parallaxMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Height Map", RTShaderPropertyType.TexEnv, parallaxMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback, EraseAccessorTarget));
             if (converter.ParallaxMap != null)
             {
-                properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _Parallax), "Height Map Scale", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(0.02f, 0.005f, 0.08f), TextureDimension.None, null));
+                properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _Parallax), "Height Map Scale", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(0.02f, 0.005f, 0.08f), TextureDimension.None, null, EraseAccessorTarget));
             }
 
-            properties.Add(new MaterialPropertyDescriptor(converter, "Occlusion Map", RTShaderPropertyType.TexEnv, occlusionMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Occlusion Map", RTShaderPropertyType.TexEnv, occlusionMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, valueChangedCallback, EraseAccessorTarget));
             if (converter.OcclusionMap != null)
             {
-                properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _OcclusionStrength), "Occlusion Strength", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(1.0f, 0, 1.0f), TextureDimension.None, null));
+                properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _OcclusionStrength), "Occlusion Strength", RTShaderPropertyType.Range, floatInfo, new RuntimeShaderInfo.RangeLimits(1.0f, 0, 1.0f), TextureDimension.None, null, EraseAccessorTarget));
             }
 
-            properties.Add(new MaterialPropertyDescriptor(converter, "Emission Map", RTShaderPropertyType.TexEnv, emissionMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null));
-            properties.Add(new MaterialPropertyDescriptor(converter, "Emission Color", RTShaderPropertyType.Color, emissionColorInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.None, null));
-            properties.Add(new MaterialPropertyDescriptor(converter, "Detail Mask", RTShaderPropertyType.TexEnv, detailMaskInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null));
-            properties.Add(new MaterialPropertyDescriptor(converter, "Detail Albedo Map", RTShaderPropertyType.TexEnv, detailAlbedoMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null));
-            properties.Add(new MaterialPropertyDescriptor(converter, "Detail Normal Map", RTShaderPropertyType.TexEnv, detailNormalMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null));
-            properties.Add(new MaterialPropertyDescriptor(new MaterialPropertyAccessor(editor.Material, _DetailNormalMapScale), "Detail Scale", RTShaderPropertyType.Float, floatInfo, new RuntimeShaderInfo.RangeLimits(0, 0, 0), TextureDimension.None, null));
-            //properties.Add(new MaterialPropertyDescriptor(converter, "UV Set", RTShaderPropertyType.Float, detailNormalMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null));
-
-#if !UNITY_WEBGL && PROC_MATERIAL
-            ProceduralMaterial procMaterial = editor.Material as ProceduralMaterial;
-            if(procMaterial != null)
-            {
-                MaterialDescriptor.GetProceduralMaterialDescriptors(procMaterial, properties);
-            }
-#endif
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Emission Map", RTShaderPropertyType.TexEnv, emissionMapInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Emission Color", RTShaderPropertyType.Color, emissionColorInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.None, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Detail Mask", RTShaderPropertyType.TexEnv, detailMaskInfo, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Detail Albedo Map", RTShaderPropertyType.TexEnv, detailAlbedoMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Detail Normal Map", RTShaderPropertyType.TexEnv, detailNormalMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _DetailNormalMapScale), "Detail Scale", RTShaderPropertyType.Float, floatInfo, new RuntimeShaderInfo.RangeLimits(0, 0, 0), TextureDimension.None, null, EraseAccessorTarget));
 
             return properties.ToArray();
         }
     }
-#endif
-
-
 }

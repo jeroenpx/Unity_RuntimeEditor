@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using System.Linq;
-using System.Collections.Generic;
-using Battlehub.Utils;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using System;
+using System.Collections.Generic;
 
 namespace Battlehub.RTCommon
 {
@@ -82,7 +79,6 @@ namespace Battlehub.RTCommon
         public bool CanSnap = true;
         public bool AddColliders = true;
 
-  
         private bool m_markAsDestroyed;
         public bool MarkAsDestroyed
         {
@@ -91,7 +87,7 @@ namespace Battlehub.RTCommon
             {
                 if (m_markAsDestroyed != value)
                 {
-                    m_markAsDestroyed = value;
+                    SetMarkAsDestroyed(this, value);
                     if (_MarkAsDestroyedChanging != null)
                     {
                         _MarkAsDestroyedChanging(this);
@@ -102,6 +98,15 @@ namespace Battlehub.RTCommon
                         _MarkAsDestroyedChanged(this);
                     }
                 }
+            }
+        }
+
+        private void SetMarkAsDestroyed(ExposeToEditor obj, bool value)
+        {
+            obj.m_markAsDestroyed = value;
+            foreach (ExposeToEditor child in obj.GetChildren(true))
+            {
+                SetMarkAsDestroyed(child, value);
             }
         }
 
@@ -161,100 +166,24 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private HierarchyItem m_hierarchyItem;
-        private List<ExposeToEditor> m_children = new List<ExposeToEditor>();
-        public int ChildCount
-        {
-            get { return m_children.Count; }
-        }
-
-        public int MarkedAsDestroyedChildCount
-        {
-            get
-            {
-                return m_children.Where(e => e.MarkAsDestroyed).Count();
-            }
-
-        }
-
-        public ExposeToEditor[] GetChildren()
-        {
-            return m_children.OrderBy(c => c.transform.GetSiblingIndex()).ToArray();
-        }
-
-        public ExposeToEditor NextSibling(IEnumerable<ExposeToEditor> objects)
-        {
-            if (Parent != null)
-            {
-                ExposeToEditor[] children = Parent.GetChildren();
-                int index = Array.IndexOf(children, this);
-                if (index < children.Length - 1)
-                {
-                    return children[index + 1];
-                }
-                return null;
-            }
-
-            IEnumerable<ExposeToEditor> exposedToEditor = objects.OrderBy(o => o.transform.GetSiblingIndex());
-            IEnumerator<ExposeToEditor> en = exposedToEditor.GetEnumerator();
-            while (en.MoveNext())
-            {
-                if (en.Current == this)
-                {
-                    en.MoveNext();
-                    return en.Current;
-                }
-            }
-            return null;
-        }
-
-        private ExposeToEditor m_parent;
-        public ExposeToEditor Parent
-        {
-            get { return m_parent; }
-            set
-            {
-                if (m_parent != value)
-                {
-                    ExposeToEditor oldParent = ChangeParent(value);
-
-                    if (_ParentChanged != null)
-                    {
-                        _ParentChanged(this, oldParent, m_parent);
-                    }
-                }
-            }
-        }
-
-        private ExposeToEditor ChangeParent(ExposeToEditor value)
-        {
-            ExposeToEditor oldParent = m_parent;
-            m_parent = value;
-
-            if (oldParent != null)
-            {
-                oldParent.m_children.Remove(this);
-            }
-
-            if (m_parent != null)
-            {
-                m_parent.m_children.Add(this);
-            }
-
-            return oldParent;
-        }
 
         private bool m_initialized;
-               
+        public void Init()
+        {
+            if (m_initialized)
+            {
+                return;
+            }
+            if (BoundsObject == null)
+            {
+                BoundsObject = gameObject;
+            }
+            m_initialized = true;
+        }
+
         private void Awake()
         {
             Init();
-
-            m_hierarchyItem = gameObject.GetComponent<HierarchyItem>();
-            if (m_hierarchyItem == null)
-            {
-                m_hierarchyItem = gameObject.AddComponent<HierarchyItem>();
-            }
 
             if (hideFlags != HideFlags.HideAndDontSave)
             {
@@ -265,41 +194,8 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void Init()
-        {
-            if (m_initialized)
-            {
-                return;
-            }
-            FindChildren(transform);
-            if (BoundsObject == null)
-            {
-                BoundsObject = gameObject;
-            }
-            m_initialized = true;
-        }
-
-        private void FindChildren(Transform parent)
-        {
-            foreach (Transform t in parent)
-            {
-                ExposeToEditor exposeToEditor = t.GetComponent<ExposeToEditor>();
-                if (exposeToEditor == null)
-                {
-                    FindChildren(t);
-                }
-                else
-                {
-                    exposeToEditor.m_parent = this;
-                    m_children.Add(exposeToEditor);
-                }
-            }
-        }
-
         private void Start()
         {
-          
-
             m_effectiveBoundsType = BoundsType;
             m_filter = BoundsObject.GetComponent<MeshFilter>();
             m_skinned = BoundsObject.GetComponent<SkinnedMeshRenderer>();
@@ -352,16 +248,6 @@ namespace Battlehub.RTCommon
                     }
                 }
 
-                if (m_parent != null)
-                {
-                    ChangeParent(null);
-                }
-
-                if (m_hierarchyItem != null)
-                {
-                    Destroy(m_hierarchyItem);
-                }
-
                 if (hideFlags != HideFlags.HideAndDontSave)
                 {
                     if (_Destroyed != null)
@@ -411,6 +297,27 @@ namespace Battlehub.RTCommon
             }
         }
 
+        private ExposeToEditor m_oldParent;
+
+        private void OnBeforeTransformParentChanged()
+        {
+            m_oldParent = GetParent();
+        }
+
+        private void OnTransformParentChanged()
+        {
+            ExposeToEditor newParent = GetParent();
+
+            if(m_oldParent != newParent)
+            {
+                if (_ParentChanged != null)
+                {
+                    _ParentChanged(this, m_oldParent, newParent);
+                }
+            }
+            m_oldParent = null;
+        }
+
         public void SetName(string name)
         {
             gameObject.name = name;
@@ -431,6 +338,81 @@ namespace Battlehub.RTCommon
                 _ComponentAdded(this, component);
             }
             return component;
+        }
+
+
+        public ExposeToEditor NextSibling(GameObject[] rootGameObjects)
+        {
+            int siblingIndex = transform.GetSiblingIndex();
+
+            Transform parent = transform.parent;
+            if (parent == null)
+            {
+                for (int i = siblingIndex + 1; i < rootGameObjects.Length; ++i)
+                {
+                    Transform child = rootGameObjects[i].transform;
+                    ExposeToEditor sibling = child.GetComponent<ExposeToEditor>();
+                    if (sibling != null && !sibling.MarkAsDestroyed)
+                    {
+                        return sibling;
+                    }
+                }
+            }
+            else
+            {
+                int childCount = parent.childCount;
+                for (int i = siblingIndex + 1; i < childCount; ++i)
+                {
+                    Transform child = parent.GetChild(i);
+                    ExposeToEditor sibling = child.GetComponent<ExposeToEditor>();
+                    if (sibling != null && !sibling.MarkAsDestroyed)
+                    {
+                        return sibling;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public ExposeToEditor GetParent()
+        {
+            if(transform.parent != null)
+            {
+                ExposeToEditor parent = transform.parent.GetComponent<ExposeToEditor>();
+                if (parent != null && !parent.MarkAsDestroyed)
+                {
+                    return parent;
+                }
+            }
+            return null;
+        }
+
+        public List<ExposeToEditor> GetChildren(bool includeDestroyed = false)
+        {
+            List<ExposeToEditor> children = new List<ExposeToEditor>();
+            foreach(Transform childTransform in transform)
+            {
+                ExposeToEditor child = childTransform.GetComponent<ExposeToEditor>();
+                if(child != null && (includeDestroyed || !child.MarkAsDestroyed))
+                {
+                    children.Add(child);
+                }
+            }
+            return children;
+        }
+
+        public bool HasChildren()
+        {
+            foreach (Transform childTransform in transform)
+            {
+                ExposeToEditor child = childTransform.GetComponent<ExposeToEditor>();
+                if (child != null && !child.MarkAsDestroyed)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

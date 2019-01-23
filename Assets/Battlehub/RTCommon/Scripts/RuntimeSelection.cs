@@ -120,28 +120,36 @@ namespace Battlehub.RTCommon
             get { return m_activeObject; }
             set
             {
-                if (m_activeObject != value || value != null && m_objects != null && m_objects.Length > 1)
+                if (value == null)
                 {
-                    if(!m_isEnabled)
-                    {
-                        return;
-                    }
-
-                    m_editor.Undo.RecordSelection();
-                    m_activeObject = value;
-                    Object[] unselectedObjects = m_objects;
-                    if (m_activeObject != null)
-                    {
-                        m_objects = new[] { value };
-                    }
-                    else
-                    {
-                        m_objects = new Object[0];
-                    }
-                    UpdateHS();
-                    m_editor.Undo.RecordSelection();
-                    RaiseSelectionChanged(unselectedObjects);
+                    objects = null;
                 }
+                else
+                {
+                    objects = new[] { value };
+                }
+
+                //if (m_activeObject != value || value != null && m_objects != null && m_objects.Length > 1)
+                //{
+                //    if(!m_isEnabled)
+                //    {
+                //        return;
+                //    }
+
+                //    m_activeObject = value;
+                //    Object[] unselectedObjects = m_objects;
+                //    if (m_activeObject != null)
+                //    {
+                //        m_objects = new[] { value };
+                //    }
+                //    else
+                //    {
+                //        m_objects = new Object[0];
+                //    }
+
+                //    UpdateHS();
+                //    RaiseSelectionChanged(unselectedObjects);
+                //}
             }
         }
 
@@ -158,9 +166,14 @@ namespace Battlehub.RTCommon
 
                 if (IsSelectionChanged(value))
                 {
-                    m_editor.Undo.RecordSelection();
-                    SetObjects(value);
-                    m_editor.Undo.RecordSelection();
+                    if(m_editor.Undo.Enabled)
+                    {
+                        m_editor.Undo.Select(value, null);
+                    }
+                    else
+                    {
+                        SetObjects(value);
+                    }
                 }
             }
         }
@@ -284,10 +297,8 @@ namespace Battlehub.RTCommon
         {
             if(IsSelectionChanged(selection))
             {
-                m_editor.Undo.RecordSelection();
                 m_activeObject = activeObject;
                 SetObjects(selection);
-                m_editor.Undo.RecordSelection();
             }
         }
     }

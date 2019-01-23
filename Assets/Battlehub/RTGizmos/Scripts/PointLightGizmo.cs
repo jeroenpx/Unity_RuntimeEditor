@@ -56,10 +56,17 @@ namespace Battlehub.RTGizmos
             base.AwakeOverride();
         }
 
-        protected override void RecordOverride()
+
+        protected override void BeginRecordOverride()
         {
-            base.RecordOverride();
-            Window.Editor.Undo.RecordValue(m_light, Strong.PropertyInfo((Light x) => x.range, "range"));
+            base.BeginRecordOverride();
+            Window.Editor.Undo.BeginRecordValue(m_light, Strong.PropertyInfo((Light x) => x.range, "range"));
+        }
+
+        protected override void EndRecordOverride()
+        {
+            base.EndRecordOverride();
+            Window.Editor.Undo.EndRecordValue(m_light, Strong.PropertyInfo((Light x) => x.range, "range"));
         }
 
         //protected override Matrix4x4 HandlesTransform

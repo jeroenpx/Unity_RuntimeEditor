@@ -305,7 +305,7 @@ namespace Battlehub.RTHandles
                         {
                             selection.Insert(0, hitGO);
                         }
-                        Editor.Selection.Select(hitGO, selection.ToArray());
+                        Editor.Undo.Select(selection.ToArray(), hitGO);
                     }
                     else
                     {

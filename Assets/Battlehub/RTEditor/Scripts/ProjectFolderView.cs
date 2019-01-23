@@ -100,8 +100,19 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject ListBoxPrefab = null;
         private VirtualizingTreeView m_listBox;
-        private bool m_lockSelection;
+        private bool m_raiseSelectionChange = true;
 
+        public ProjectItem[] SelectedItems
+        {
+            get { return m_listBox.SelectedItems != null ? m_listBox.SelectedItems.OfType<ProjectItem>().ToArray() : null; }
+        }
+
+        private bool m_handleEditorSelectionChange = true;
+        public bool HandleEditorSelectionChange
+        {
+            get { return m_handleEditorSelectionChange; }
+            set { m_handleEditorSelectionChange = value; }
+        }
 
         private void DataBind(bool clearItems)
         {
@@ -184,11 +195,6 @@ namespace Battlehub.RTEditor
         {
             base.OnDestroyOverride();
 
-            //if(m_project != null)
-            //{
-            //    m_project.DeleteCompleted -= OnDeleteCompleted;
-            //}
-
             if (m_listBox != null)
             {
                 m_listBox.ItemDataBinding -= OnItemDataBinding;
@@ -262,7 +268,7 @@ namespace Battlehub.RTEditor
             {
                 if (m_folders.All(f => f.Children == null || !f.Children.Contains(item)))
                 {
-                    m_listBox.RemoveChild(item.Parent, item, item.Parent.Children.Count == 1);
+                    m_listBox.RemoveChild(item.Parent, item);
                 }
             }
         }
@@ -381,6 +387,11 @@ namespace Battlehub.RTEditor
 
         private void OnSelectionChanged(object sender, SelectionChangedArgs e)
         {
+            if(!m_raiseSelectionChange)
+            {
+                return;
+            }
+
             if(SelectionChanged != null)
             {
                 ProjectItem[] selectedItems = e.NewItems == null ? new ProjectItem[0] : e.NewItems.OfType<ProjectItem>().ToArray();
@@ -468,35 +479,21 @@ namespace Battlehub.RTEditor
             m_listBox.ExternalItemDrop();
         }
 
-        private void EditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
+        private void EditorSelectionChanged(UnityObject[] unselectedObjects)
         {
-            if(m_listBox.SelectedItem != null)
+            if(!HandleEditorSelectionChange)
             {
-                ProjectItem selectedItem = (ProjectItem)m_listBox.SelectedItem;
-                if(unselectedObjects != null)
-                {
-                    for (int i = 0; i < unselectedObjects.Length; ++i)
-                    {
-                        UnityEngine.Object obj = unselectedObjects[i];
-                        if(obj != null)
-                        {
-                            if(selectedItem.ItemID == m_project.ToID(obj))
-                            {
-                                m_listBox.SelectedItem = null;
-                                break;
-                            }
-                        }
-                    }
-                }
+                return;
             }
 
-            UnityEngine.Object[] selectedObjects = Editor.Selection.objects;
+            m_raiseSelectionChange = false;
+            UnityObject[] selectedObjects = Editor.Selection.objects;
             if(selectedObjects != null)
             {
                 List<ProjectItem> selectedItems = new List<ProjectItem>();
                 for (int i = 0; i < selectedObjects.Length; ++i)
                 {
-                    UnityEngine.Object selectedObject = selectedObjects[i];
+                    UnityObject selectedObject = selectedObjects[i];
                     long id = m_project.ToID(selectedObject);
                     if(m_idToItem.ContainsKey(id))
                     {
@@ -504,15 +501,23 @@ namespace Battlehub.RTEditor
                         if(item != null)
                         {
                             selectedItems.Add(item);
-                            break;
                         }
                     }
                 }
                 if(selectedItems.Count > 0)
                 {
-                    m_listBox.SelectedItem = selectedItems.First();
+                    m_listBox.SelectedItems = selectedItems;
+                }
+                else if(m_listBox.SelectedItem != null)
+                {
+                    m_listBox.SelectedItem = null;
                 }
             }
+            else if (m_listBox.SelectedItem != null)
+            {
+                m_listBox.SelectedItem = null;
+            }
+            m_raiseSelectionChange = true;
         }
 
         private void OnItemClick(object sender, ItemArgs e)

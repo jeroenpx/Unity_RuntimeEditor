@@ -432,6 +432,34 @@ namespace Battlehub.RTEditor
         {
             IProject project = IOC.Resolve<IProject>();
             AssetItem[] assetItems = projectItems.OfType<AssetItem>().ToArray();
+            for(int i = 0; i < assetItems.Length; ++i)
+            {
+                AssetItem assetItem = assetItems[i];
+                UnityObject obj = m_project.FromID<UnityObject>(assetItem.ItemID);
+                
+                if (obj != null)
+                {
+                    if (obj is GameObject)
+                    {
+                        GameObject go = (GameObject)obj;
+                        Component[] components = go.GetComponentsInChildren<Component>(true);
+                        for(int j = 0; j < components.Length; ++j)
+                        {
+                            Component component = components[j];
+                            Undo.Erase(component, null);
+                            if(component is Transform)
+                            {
+                                Undo.Erase(component.gameObject, null);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Undo.Erase(obj, null);
+                    }
+                }
+            }
+
             ProjectItem[] folders = projectItems.Where(pi => pi.IsFolder).ToArray();
             m_project.Delete(assetItems.Union(folders).ToArray(), (deleteError, deletedItems) =>
             {

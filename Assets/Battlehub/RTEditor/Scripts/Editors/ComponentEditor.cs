@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using Battlehub.RTCommon;
+using Battlehub.RTSaveLoad2.Interface;
 
 namespace Battlehub.RTEditor
 {
@@ -184,7 +185,7 @@ namespace Battlehub.RTEditor
                 if (enabledProperty != null && (componentDescriptor == null || componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton))
                 {
                     EnabledEditor.gameObject.SetActive(true);
-                    EnabledEditor.Init(Component, enabledProperty, string.Empty, () => { },
+                    EnabledEditor.Init(Component, Component, enabledProperty, null, string.Empty, () => { },
                         () =>
                         {
                             if(IsComponentEnabled)
@@ -272,9 +273,14 @@ namespace Battlehub.RTEditor
         {
             get { return m_editor; }
         }
+
+        private IProject m_project;
+
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
+            m_project = IOC.Resolve<IProject>();
+
             AwakeOverride();
         }
 
@@ -419,18 +425,29 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if(ResetButton != null)
+            
+            if (ResetButton != null)
             {
                 ResetButton.gameObject.SetActive(componentDescriptor != null ?
                     componentDescriptor.GetHeaderDescriptor(m_editor).ShowResetButton :
                     m_editor.ComponentEditorSettings.ShowResetButton);
             }
 
-            if(RemoveButton != null)
+            if (RemoveButton != null)
             {
-                RemoveButton.gameObject.SetActive(componentDescriptor != null ?
+                bool showRemoveButton = componentDescriptor != null ?
                     componentDescriptor.GetHeaderDescriptor(m_editor).ShowRemoveButton :
-                    m_editor.ComponentEditorSettings.ShowRemoveButton);
+                    m_editor.ComponentEditorSettings.ShowRemoveButton;
+                if (showRemoveButton)
+                {
+                    bool canRemove = m_project == null || m_project.ToAssetItem(Component.gameObject) == null;
+                    if (!canRemove)
+                    {
+                        showRemoveButton = false;
+                    }
+                }
+
+                RemoveButton.gameObject.SetActive(showRemoveButton);
             }
 
             if (EnabledEditor != null && EnabledProperty != null)
@@ -499,7 +516,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void InitEditor(PropertyEditor editor, PropertyDescriptor descriptor)
         {
-            editor.Init(descriptor.Target, descriptor.MemberInfo, descriptor.Label, null, descriptor.ValueChangedCallback, EndEditCallback, true, descriptor.ChildDesciptors);
+            editor.Init(descriptor.Target, descriptor.Target, descriptor.MemberInfo, null, descriptor.Label, null, descriptor.ValueChangedCallback, EndEditCallback, true, descriptor.ChildDesciptors);
         }
 
         protected virtual void DestroyEditor()
@@ -628,8 +645,6 @@ namespace Battlehub.RTEditor
 
         private void OnResetClick()
         {
-            m_editor.Undo.BeginRecord();
-
             GameObject go = new GameObject();
             go.SetActive(false);
 
@@ -650,7 +665,7 @@ namespace Battlehub.RTEditor
                 {
                     PropertyInfo p = (PropertyInfo)memberInfo;
                     object defaultValue = p.GetValue(component, null);
-                    m_editor.Undo.RecordValue(Component, memberInfo);
+                    m_editor.Undo.BeginRecordValue(Component, memberInfo);
                     p.SetValue(Component, defaultValue, null);
                 }
                 else
@@ -661,7 +676,7 @@ namespace Battlehub.RTEditor
                         {
                             FieldInfo f = (FieldInfo)memberInfo;
                             object defaultValue = f.GetValue(component);
-                            m_editor.Undo.RecordValue(Component, memberInfo);
+                            m_editor.Undo.BeginRecordValue(Component, memberInfo);
                             f.SetValue(Component, defaultValue);
                         }
                     }
@@ -682,8 +697,6 @@ namespace Battlehub.RTEditor
 
             Destroy(go);
 
-            m_editor.Undo.EndRecord();
-
             m_editor.Undo.BeginRecord();
 
             for (int i = 0; i < descriptors.Length; ++i)
@@ -692,13 +705,13 @@ namespace Battlehub.RTEditor
                 MemberInfo memberInfo = descriptor.ComponentMemberInfo;
                 if (memberInfo is PropertyInfo)
                 {
-                    m_editor.Undo.RecordValue(Component, memberInfo);
+                    m_editor.Undo.EndRecordValue(Component, memberInfo);
                 }
                 else
                 {
                     if(isMonoBehavior)
                     {
-                        m_editor.Undo.RecordValue(Component, memberInfo);
+                        m_editor.Undo.EndRecordValue(Component, memberInfo);
                     }
                 }
             }

@@ -46,28 +46,28 @@ namespace Battlehub.RTHandles
                 //m_instance = Prefab.InstantiatePrefab(m_editor.Pivot, Quaternion.identity);
             }
 
-            ExposeToEditor exposeToEditor = m_instance.GetComponent<ExposeToEditor>();
-            if (!exposeToEditor)
-            {
-                exposeToEditor = m_instance.AddComponent<ExposeToEditor>();
-            }
-            exposeToEditor.SetName(Prefab.name);
-            m_instance.SetActive(true);
+            //ExposeToEditor exposeToEditor = m_instance.GetComponent<ExposeToEditor>();
+            //if (!exposeToEditor)
+            //{
+            //    exposeToEditor = m_instance.AddComponent<ExposeToEditor>();
+            //}
+            //exposeToEditor.SetName(Prefab.name);
+            //m_instance.SetActive(true);
             
-            m_editor.Undo.BeginRecord();
-            m_editor.Undo.RecordSelection();
-            m_editor.Undo.BeginRegisterCreateObject(m_instance);
-            m_editor.Undo.EndRecord();
+            //m_editor.Undo.BeginRecord();
+            //m_editor.Undo.RecordSelection();
+            //m_editor.Undo.BeginRegisterCreateObject(m_instance);
+            //m_editor.Undo.EndRecord();
 
-            bool isEnabled = m_editor.Undo.Enabled;
-            m_editor.Undo.Enabled = false;
-            m_editor.Selection.activeGameObject = m_instance;
-            m_editor.Undo.Enabled = isEnabled;
+            //bool isEnabled = m_editor.Undo.Enabled;
+            //m_editor.Undo.Enabled = false;
+            //m_editor.Selection.activeGameObject = m_instance;
+            //m_editor.Undo.Enabled = isEnabled;
 
-            m_editor.Undo.BeginRecord();
-            m_editor.Undo.RegisterCreatedObject(m_instance);
-            m_editor.Undo.RecordSelection();
-            m_editor.Undo.EndRecord();
+            //m_editor.Undo.BeginRecord();
+            //m_editor.Undo.RegisterCreatedObject(m_instance);
+            //m_editor.Undo.RecordSelection();
+            //m_editor.Undo.EndRecord();
         }
 
         private void Update()

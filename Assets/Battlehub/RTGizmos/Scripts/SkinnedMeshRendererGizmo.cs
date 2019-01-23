@@ -50,10 +50,16 @@ namespace Battlehub.RTGizmos
 
         }
 
-        protected override void RecordOverride()
+        protected override void BeginRecordOverride()
         {
-            base.RecordOverride();
-            Window.Editor.Undo.RecordValue(m_skinnedMeshRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.localBounds, "localBounds"));
+            base.BeginRecordOverride();
+            Window.Editor.Undo.BeginRecordValue(m_skinnedMeshRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.localBounds, "localBounds"));
+        }
+
+        protected override void EndRecordOverride()
+        {
+            base.EndRecordOverride();
+            Window.Editor.Undo.EndRecordValue(m_skinnedMeshRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.localBounds, "localBounds"));
         }
 
         private void Reset()

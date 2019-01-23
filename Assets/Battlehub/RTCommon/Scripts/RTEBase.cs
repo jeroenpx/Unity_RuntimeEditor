@@ -753,27 +753,12 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void RegisterCreatedObjects(GameObject[] go)
+        public void RegisterCreatedObjects(GameObject[] gameObjects)
         {
+            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
-            Undo.RecordSelection();
-            for(int i = 0; i < go.Length; ++i)
-            {
-                Undo.BeginRegisterCreateObject(go[i]);
-            }
-            Undo.EndRecord();
-
-            bool isEnabled = Undo.Enabled;
-            Undo.Enabled = false;
-            Selection.objects = go;
-            Undo.Enabled = isEnabled;
-
-            Undo.BeginRecord();
-            for (int i = 0; i < go.Length; ++i)
-            {
-                Undo.RegisterCreatedObject(go[i]);
-            }
-            Undo.RecordSelection();
+            Undo.RegisterCreatedObjects(exposeToEditor);
+            Selection.objects = gameObjects;
             Undo.EndRecord();
         }
 
@@ -797,7 +782,6 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            Undo.BeginRecord();
             GameObject[] duplicates = new GameObject[gameObjects.Length];
             for (int i = 0; i < gameObjects.Length; ++i)
             {
@@ -816,26 +800,12 @@ namespace Battlehub.RTCommon
                 }
 
                 duplicates[i] = duplicate;
-                Undo.BeginRegisterCreateObject(duplicate);
             }
-            Undo.RecordSelection();
-            Undo.EndRecord();
 
-            bool isEnabled = Undo.Enabled;
-            Undo.Enabled = false;
-            Selection.objects = duplicates;
-            Undo.Enabled = isEnabled;
-
+            ExposeToEditor[] exposeToEditor = duplicates.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
-            for (int i = 0; i < duplicates.Length; ++i)
-            {
-                GameObject selectedObj = duplicates[i];
-                if (selectedObj != null)
-                {
-                    Undo.RegisterCreatedObject(selectedObj);
-                }
-            }
-            Undo.RecordSelection();
+            Undo.RegisterCreatedObjects(exposeToEditor);
+            Selection.objects = duplicates;
             Undo.EndRecord();
         }
 
@@ -859,34 +829,21 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            Undo.BeginRecord();
-            for (int i = 0; i < gameObjects.Length; ++i)
-            {
-                GameObject go = gameObjects[i];
-                if (go != null)
-                {
-                    Undo.BeginDestroyObject(go);
-                }
-            }
-            Undo.RecordSelection();
-            Undo.EndRecord();
-
-            bool isEnabled = Undo.Enabled;
-            Undo.Enabled = false;
-            Selection.objects = null;
-            Undo.Enabled = isEnabled;
-
+            //Undo.BeginRecord();
+            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
 
-            for (int i = 0; i < gameObjects.Length; ++i)
+            List<Object> selection = Selection.objects.ToList();
+            for(int i = selection.Count - 1; i >= 0; --i)
             {
-                GameObject go = gameObjects[i];
-                if (go != null)
+                if (selection[i] == gameObjects[i])
                 {
-                    Undo.DestroyObject(go);
+                    selection.RemoveAt(i);
                 }
             }
-            Undo.RecordSelection();
+
+            Selection.objects = selection.ToArray();
+            Undo.DestroyObjects(exposeToEditor);
             Undo.EndRecord();
         }
 

@@ -243,9 +243,12 @@ namespace Battlehub.RTEditor
                         return;
                     }
 
-                    m_treeView.RemoveChild(null, selectedProject, projectInfo.Length == 1);
+                    //m_treeView.RemoveChild(null, selectedProject, projectInfo.Length == 1);
+                    //m_treeView.Remove(selectedProject);
 
-                    if((projectInfo.Length - 1) == index)
+                    m_treeView.RemoveChild(null, selectedProject);
+
+                    if ((projectInfo.Length - 1) == index)
                     {
                         m_treeView.SelectedIndex = (index - 1);
                     }

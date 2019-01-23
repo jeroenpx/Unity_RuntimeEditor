@@ -73,9 +73,7 @@ namespace Battlehub.UIControls
 
     public class TreeViewItemContainerData : ItemContainerData
     {
-
         public static event EventHandler<VirtualizingParentChangedEventArgs> ParentChanged;
-
 
         private TreeViewItemContainerData m_parent;
         public TreeViewItemContainerData Parent
@@ -94,6 +92,18 @@ namespace Battlehub.UIControls
                 {
                     ParentChanged(this, new VirtualizingParentChangedEventArgs(oldParent, m_parent));
                 }
+            }
+        }
+
+        public object ParentItem
+        {
+            get
+            {
+                if(m_parent == null)
+                {
+                    return null;
+                }
+                return m_parent.Item;
             }
         }
 
@@ -385,9 +395,48 @@ namespace Battlehub.UIControls
 
         public override void Remove(object item)
         {
-            throw new NotSupportedException("This method is not supported for TreeView use RemoveChild instead");
+            throw new NotSupportedException("Use RemoveChild method");
+            //TreeViewItemContainerData itemContainerData = GetItemContainerData(item) as TreeViewItemContainerData;
+            //if (itemContainerData != null)
+            //{
+            //    RemoveChild(itemContainerData.ParentItem, item);
+            //}
         }
 
+
+        public void RemoveChild(object parent, object item)
+        {
+            if (parent == null)
+            {
+                base.Remove(item);
+            }
+            else
+            {
+                if (GetItemContainer(item) != null)
+                {
+                    base.Remove(item);
+                }
+                else
+                {
+                    //Parent item is not expanded (if isLastChild just remove parent expander)
+                    TreeViewItemContainerData parentContainerData = (TreeViewItemContainerData)GetItemContainerData(parent);
+                    if(parentContainerData != null)
+                    {
+                        TreeViewItemContainerData childContainerData = parentContainerData.FirstChild(this);
+                        if (childContainerData == null || childContainerData.Item == item)
+                        {
+                            VirtualizingTreeViewItem parentContainer = (VirtualizingTreeViewItem)GetItemContainer(parent);
+                            if (parentContainer)
+                            {
+                                parentContainer.CanExpand = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Obsolete("Use RemoveChild(object parent, object item) instead")]
         public void RemoveChild(object parent, object item, bool isLastChild)
         {
             if (parent == null)
@@ -402,7 +451,7 @@ namespace Battlehub.UIControls
                 }
                 else
                 {
-                    //Parent item is not expanded (if isLastChild just remove parent expander
+                    //Parent item is not expanded (if isLastChild just remove parent expander)
                     if (isLastChild)
                     {
                         VirtualizingTreeViewItem parentContainer = (VirtualizingTreeViewItem)GetItemContainer(parent);
@@ -857,7 +906,7 @@ namespace Battlehub.UIControls
             {
                 for (int i = 0; i < dragItems.Length; ++i)
                 {
-                    SetPrevSibling(tvDropTarget, dragItems[i]);
+                    SetPrevSiblingInternal(tvDropTarget, dragItems[i]);
                 }
             }
             else if (action == ItemDropAction.SetNextSibling)
@@ -897,13 +946,14 @@ namespace Battlehub.UIControls
             }
         }
 
-        protected override void SetPrevSibling(ItemContainerData sibling, ItemContainerData prevSibling)
+
+        protected override void SetPrevSiblingInternal(ItemContainerData sibling, ItemContainerData prevSibling)
         {
             TreeViewItemContainerData tvSiblingData = (TreeViewItemContainerData)sibling;
             TreeViewItemContainerData tvItemData = (TreeViewItemContainerData)prevSibling;
             TreeViewItemContainerData tvDragItemChild = tvItemData.FirstChild(this);
 
-            base.SetPrevSibling(sibling, prevSibling);
+            base.SetPrevSiblingInternal(sibling, prevSibling);
 
             if (tvDragItemChild != null)
             {
@@ -981,5 +1031,6 @@ namespace Battlehub.UIControls
             VirtualizingScrollRect scrollRect = GetComponentInChildren<VirtualizingScrollRect>();
             scrollRect.Index = index;
         }
+
     }
 }

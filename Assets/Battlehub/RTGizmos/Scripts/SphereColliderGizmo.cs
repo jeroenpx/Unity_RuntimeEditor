@@ -65,11 +65,18 @@ namespace Battlehub.RTGizmos
             base.AwakeOverride();
         }
 
-        protected override void RecordOverride()
+        protected override void BeginRecordOverride()
         {
-            base.RecordOverride();
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((SphereCollider x) => x.center, "center"));
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((SphereCollider x) => x.radius, "radius"));
+            base.BeginRecordOverride();
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((SphereCollider x) => x.center, "center"));
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((SphereCollider x) => x.radius, "radius"));
+        }
+
+        protected override void EndRecordOverride()
+        {
+            base.EndRecordOverride();
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((SphereCollider x) => x.center, "center"));
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((SphereCollider x) => x.radius, "radius"));
         }
     }
 }

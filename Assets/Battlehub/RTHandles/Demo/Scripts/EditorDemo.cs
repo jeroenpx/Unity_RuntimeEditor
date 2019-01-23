@@ -290,8 +290,10 @@ namespace Battlehub.RTHandles
             Object.Destroyed -= OnDestroyed;
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
+        
             if (Input.GetKeyDown(EnterPlayModeKey))
             {
                 if (Input.GetKey(ModifierKey))
@@ -521,85 +523,85 @@ namespace Battlehub.RTHandles
 
         public void Duplicate()
         {
-            GameObject[] selection = Selection.gameObjects;
-            if(selection == null)
-            {
-                return;
-            }
+            //GameObject[] selection = Selection.gameObjects;
+            //if(selection == null)
+            //{
+            //    return;
+            //}
 
-            Undo.BeginRecord();
-            for (int i = 0; i < selection.Length; ++i)
-            {
-                GameObject selectedObj = selection[i];
-                if (selectedObj != null)
-                {
-                    Transform p = selectedObj.transform.parent;
-                    GameObject copy = Instantiate(selectedObj, selectedObj.transform.position, selectedObj.transform.rotation);
-                    copy.transform.SetParent(p, true);
+            //Undo.BeginRecord();
+            //for (int i = 0; i < selection.Length; ++i)
+            //{
+            //    GameObject selectedObj = selection[i];
+            //    if (selectedObj != null)
+            //    {
+            //        Transform p = selectedObj.transform.parent;
+            //        GameObject copy = Instantiate(selectedObj, selectedObj.transform.position, selectedObj.transform.rotation);
+            //        copy.transform.SetParent(p, true);
 
-                    selection[i] = copy;
-                    Undo.BeginRegisterCreateObject(copy);
-                }
-            }
-            Undo.RecordSelection();
-            Undo.EndRecord();
+            //        selection[i] = copy;
+            //        Undo.BeginRegisterCreateObject(copy);
+            //    }
+            //}
+            //Undo.RecordSelection();
+            //Undo.EndRecord();
 
-            bool isEnabled = Undo.Enabled;
-            Undo.Enabled = false;
-            Selection.objects = selection;
-            Undo.Enabled = isEnabled;
+            //bool isEnabled = Undo.Enabled;
+            //Undo.Enabled = false;
+            //Selection.objects = selection;
+            //Undo.Enabled = isEnabled;
 
-            Undo.BeginRecord();
+            //Undo.BeginRecord();
            
-            for (int i = 0; i < selection.Length; ++i)
-            {
-                GameObject selectedObj = selection[i];
-                if (selectedObj != null)
-                {
-                    Undo.RegisterCreatedObject(selectedObj);
-                }
-            }
-            Undo.RecordSelection();
-            Undo.EndRecord();
+            //for (int i = 0; i < selection.Length; ++i)
+            //{
+            //    GameObject selectedObj = selection[i];
+            //    if (selectedObj != null)
+            //    {
+            //        Undo.RegisterCreatedObject(selectedObj);
+            //    }
+            //}
+            //Undo.RecordSelection();
+            //Undo.EndRecord();
         }
 
         public void Delete()
         {
-            GameObject[] selection = Selection.gameObjects;
-            if (selection == null)
-            {
-                return;
-            }
+        //    GameObject[] selection = Selection.gameObjects;
+        //    if (selection == null)
+        //    {
+        //        return;
+        //    }
 
-            Undo.BeginRecord();
-            for (int i = 0; i < selection.Length; ++i)
-            {
-                GameObject selectedObj = selection[i];
-                if (selectedObj != null)
-                {
-                    Undo.BeginDestroyObject(selectedObj);
-                }
-            }
-            Undo.RecordSelection();
-            Undo.EndRecord();
+        //    Undo.BeginRecord();
+        //    for (int i = 0; i < selection.Length; ++i)
+        //    {
+        //        GameObject selectedObj = selection[i];
+        //        if (selectedObj != null)
+        //        {
+        //            Undo.BeginDestroyObject(selectedObj);
+        //        }
+        //    }
+        //    Undo.RecordSelection();
+        //    Undo.EndRecord();
 
-            bool isEnabled = Undo.Enabled;
-            Undo.Enabled = false;
-            Selection.objects = null;
-            Undo.Enabled = isEnabled;
+        //    bool isEnabled = Undo.Enabled;
+        //    Undo.Enabled = false;
+        //    Selection.objects = null;
+        //    Undo.Enabled = isEnabled;
 
-            Undo.BeginRecord();
+        //    Undo.BeginRecord();
 
-            for (int i = 0; i < selection.Length; ++i)
-            {
-                GameObject selectedObj = selection[i];
-                if (selectedObj != null)
-                {
-                    Undo.DestroyObject(selectedObj);
-                }
-            }
-            Undo.RecordSelection();
-            Undo.EndRecord();
+        //    for (int i = 0; i < selection.Length; ++i)
+        //    {
+        //        GameObject selectedObj = selection[i];
+        //        if (selectedObj != null)
+        //        {
+        //            Undo.DestroyObject(selectedObj);
+        //        }
+        //    }
+        //    Undo.RecordSelection();
+        //    Undo.EndRecord();
         }
 
         public void TogglePlayMode()

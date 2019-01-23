@@ -52,9 +52,9 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void InitOverride(object target, MemberInfo memberInfo, string label = null)
+        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            base.InitOverride(target, memberInfo, label);
+            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
            
             FieldInfo[] serializableFields = Reflection.GetSerializableFields(memberInfo.GetType());
 
@@ -147,7 +147,7 @@ namespace Battlehub.RTEditor
             if(accessor != null)
             {
                 editor.transform.SetParent(Panel, false);
-                editor.Init(accessor, accessor.GetType().GetProperty("Value"), accessor.Name, OnValueChanging, OnValueChanged, null, false);
+                editor.Init(accessor, accessor, accessor.GetType().GetProperty("Value"), null, accessor.Name, OnValueChanging, OnValueChanged, null, false);
             }
         }
 

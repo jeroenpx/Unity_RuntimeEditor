@@ -4,239 +4,378 @@ using System.Linq;
 
 using System.Collections;
 using System.Reflection;
+using System;
 
+using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTCommon
 {
-    public delegate bool ApplyCallback(Record record);
-    public delegate void PurgeCallback(Record record);
-
-    public class Record
+    public class UndoStack<T> : IEnumerable<UndoStack<T>.Node> where T : class
     {
-        private object m_state;
-        private object m_target;
-        private ApplyCallback m_applyCallback;
-        private PurgeCallback m_purgeCallback;
-
-        public object Target
+        public class Node
         {
-            get { return m_target; }
-        }
+            public Node Next;
+            public Node Prev;
+            public T Data;
 
-        public object State
-        {
-            get
+            public UndoStack<T> Stack
             {
-                return m_state;
+                get { return m_stack; }
+            }
+
+            private UndoStack<T> m_stack;
+            public Node(UndoStack<T> stack)
+            {
+                m_stack = stack;
             }
         }
 
-        public Record(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback)
-        {
-            if (applyCallback == null)
-            {
-                throw new System.ArgumentNullException("callback");
-            }
-
-            m_target = target;
-            m_applyCallback = applyCallback;
-            m_purgeCallback = purgeCallback;
-            if (state != null)
-            {
-                m_state = state;
-            }
-        }
-
-        public bool Apply()
-        {
-            return m_applyCallback(this);
-        }
-
-        public void Purge()
-        {
-            m_purgeCallback(this);
-        }
-
-        public void ReplaceTarget(object target)
-        {
-            m_target = target;
-        }
-
-        public void ReplaceState(object state)
-        {
-            m_state = state;
-        }
-    }
-
-    public class UndoStack<T> : IEnumerable
-    {
+        private Node m_first;
+        private Node m_last;
+        private Node m_tos;
         private int m_tosIndex;
-        private T[] m_buffer;
         private int m_count;
-        private int m_totalCount;
+        private T[] m_empty = new T[0];
 
         public int Count
         {
-            get
-            {
-                return m_count;
-            }
+            get { return m_count; }
         }
 
         public bool CanPop
         {
-            get { return m_count > 0; }
+            get { return m_tosIndex > 0; }
         }
 
         public bool CanRestore
         {
-            get { return m_count < m_totalCount; }
+            get { return m_tosIndex < m_count; }
         }
 
         public UndoStack(int size)
         {
-            if (size == 0)
+            if(size < 1)
             {
-                throw new System.ArgumentException("size should be greater than 0", "size");
+                throw new ArgumentOutOfRangeException("size", "size < 1");
             }
-            m_buffer = new T[size];
+
+            size = size + 1;
+
+            m_first = new Node(this);
+            
+            Node node = m_first;
+            for(int i = 1; i < size; ++i)
+            {
+                Node next = new Node(this)
+                {
+                    Prev = node,
+                };
+                node.Next = next;
+                node = next;
+            }
+
+            m_last = node;
+            m_last.Next = m_first;
+            m_first.Prev = m_last;
+
+            m_tos = m_first;
         }
 
-        public T Push(T item)
+        public void Push(T item, List<T> purgeList = null)
         {
-            T purge = m_buffer[m_tosIndex];
-            m_buffer[m_tosIndex] = item;
-            m_tosIndex++;
-            m_tosIndex %= m_buffer.Length;
-            if (m_count < m_buffer.Length)
+            if(item == null)
             {
-                m_count++;
-                purge = default(T);
+                throw new ArgumentNullException("item");
             }
-            m_totalCount = m_count;
-            return purge;
+
+            T[] purgeItems = m_empty;
+            if(m_tos == m_last)
+            {
+                m_last = m_last.Next;
+                m_first = m_first.Next;
+
+                if(purgeList != null)
+                {
+                    if(m_tos.Next.Data != null)
+                    {
+                        purgeList.Add(m_tos.Next.Data);
+                    }
+                }
+            }
+            else
+            {
+                if(purgeList != null)
+                {
+                    Node node = m_tos;
+                    for(int i = 0; i < (m_count - m_tosIndex); ++i)
+                    {
+                        if(node.Data != null)
+                        {
+                            purgeList.Add(node.Data);
+                        }
+                        
+                        node = node.Next;
+                    }
+                }
+
+                m_tosIndex++;
+                m_count = m_tosIndex;
+            }
+
+            m_tos.Data = item;
+            m_tos = m_tos.Next;
+            m_tos.Data = null;
+        }
+
+        public T Pop()
+        {
+            if (!CanPop)
+            {
+                throw new InvalidOperationException("Stack is empty");
+            }
+
+            m_tos = m_tos.Prev;
+            m_tosIndex--;
+            return m_tos.Data;
+        }
+
+        public T Peek()
+        {
+            if (!CanPop)
+            {
+                throw new InvalidOperationException("Stack is empty");
+            }
+
+            return m_tos.Prev.Data;
         }
 
         public T Restore()
         {
             if (!CanRestore)
             {
-                throw new System.InvalidOperationException("nothing to restore");
-            }
-            if (m_count < m_totalCount)
-            {
-                m_tosIndex++;
-                m_tosIndex %= m_buffer.Length;
-                m_count++;
-            }
-            return Peek();
-        }
-
-        public T Peek()
-        {
-            if (m_count == 0)
-            {
-                throw new System.InvalidOperationException("Stack is empty");
+                throw new InvalidOperationException("Nothing to restore");
             }
 
-            int index = m_tosIndex - 1;
-            if (index < 0)
-            {
-                index = m_buffer.Length - 1;
-            }
-
-            return m_buffer[index];
-        }
-
-        public T Pop()
-        {
-            if (m_count == 0)
-            {
-                throw new System.InvalidOperationException("Stack is empty");
-            }
-
-            m_count--;
-            m_tosIndex--;
-            if (m_tosIndex < 0)
-            {
-                m_tosIndex = m_buffer.Length - 1;
-            }
-            return m_buffer[m_tosIndex];
+            T restored = m_tos.Data;
+            m_tos = m_tos.Next;
+            m_tosIndex++;
+            return restored;
         }
 
         public void Clear()
         {
+            Node node = m_first;
+            do
+            {
+                node.Data = null;
+                node = node.Next;
+            }
+            while (node.Prev != m_last);
+
             m_tosIndex = 0;
             m_count = 0;
-            m_totalCount = 0;
-
-            for (int i = 0; i < m_buffer.Length; ++i)
-            {
-                m_buffer[i] = default(T);
-            }
+            m_tos = m_first;
         }
 
-        private int Wrap(int index, int length)
+        public Node Find(T data)
         {
-            return (index + length) % length;
+            Node node = m_first;
+            do
+            {
+                if (node.Data == data)
+                {
+                    return node;
+                }
+                node = node.Next;
+            }
+            while (node != m_first);
+            return null;
         }
 
-        /*
-       public void Set(int index, T value)
-       {
-           m_buffer[index] = value;
-       }
+        public T Purge(Node node)
+        {
+            if(node.Stack != this)
+            {
+                throw new ArgumentException("node does not belong to this stack");
+            }
 
+            if(m_count == 0)
+            {
+                throw new InvalidOperationException("stack is empty");
+            }
 
-     public void Remove(int[] indices)
-     {
-         if (m_totalCount == 0)
-         {
-             return;
-         }
+            if(node.Data == null)
+            {
+                return null;
+            }
 
-         HashSet<int> indicesHs = new HashSet<int>(indices.Distinct());
+            if(node != m_last) 
+            {
+                if (node == m_first)
+                {
+                    m_first = m_first.Next;
+                }
 
-         int lastIndex = m_tosIndex + (m_totalCount - m_count);
-         int firstIndex = lastIndex - m_totalCount;
+                if (m_tos == node)
+                {
+                    m_tos = m_tos.Next;
+                }
 
-         lastIndex = Wrap(lastIndex , m_buffer.Length);
-         firstIndex = Wrap(firstIndex, m_buffer.Length);
+                Node prev = node.Prev;
+                Node next = node.Next;
+                if(prev != next)
+                {
+                    prev.Next = next;
+                    next.Prev = prev;
+                }
 
-         T[] newBuffer = new T[m_buffer.Length];
-         int newBufferIndex = 0;
-         while (firstIndex != lastIndex)
-         {
-             if (!indicesHs.Contains(firstIndex))
-             {
-                 newBuffer[newBufferIndex] = m_buffer[firstIndex];
-                 newBufferIndex++;
-             }
-             else
-             {
-                 m_totalCount--;
-                 if (newBufferIndex < m_count)
-                 {
-                     m_count--;
-                 }
-             }
+                m_last.Next = node;
+                node.Prev = m_last;
 
-             firstIndex++;
-             if (firstIndex >= m_buffer.Length)
-             {
-                 firstIndex = 0;
-             }
-         }
+                m_last = node;
+                m_last.Next = m_first;
+                m_first.Prev = m_last;
+            }
 
-         m_tosIndex = m_count;
-         m_buffer = newBuffer;
-     }
-     */
+            m_count--;
+            if (m_count < m_tosIndex)
+            {
+                m_tosIndex = m_count;
+            }
+
+            T data = m_last.Data;
+            m_last.Data = null;
+            return data;
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return m_buffer.GetEnumerator();
+            return _GetEnumerator();
+        }
+
+        IEnumerator<Node> IEnumerable<Node>.GetEnumerator()
+        {
+            return _GetEnumerator();
+        }
+
+        private IEnumerator<Node> _GetEnumerator()
+        {
+            int index = 0;
+            Node node = m_first;
+            do
+            {
+                if(index == m_count)
+                {
+                    yield break;
+                }
+                index++;
+
+                yield return node;
+                node = node.Next;
+            }
+            while (node != m_first);
         }
     }
+
+    public delegate bool UndoRedoCallback(Record record);
+    public delegate void PurgeCallback(Record record);
+    public delegate bool EraseReferenceCallback(Record record, object oldRef, object newRef);
+
+    public class Record
+    {
+        private object m_oldState;
+        private object m_newState;
+        private object m_target;
+
+        /// <summary>
+        /// Apply changes to object. Return true if object state has been changed
+        /// </summary>
+        private UndoRedoCallback m_redoCallback;
+
+        /// <summary>
+        /// Revert object state changes. Return true if object state has been changed
+        /// </summary>
+        private UndoRedoCallback m_undoCallback;
+
+        /// <summary>
+        /// Cleanup. Record is removed from stack and object state could not be reverted anymore.
+        /// </summary>
+        private PurgeCallback m_purgeCallback;
+
+        /// <summary>
+        /// Erase/Repalce reference to object. Return false is record is still valid and can change object state, otherwise return true.
+        /// </summary>
+        private EraseReferenceCallback m_eraseCallback;
+
+        public object Target
+        {
+            get { return m_target; }
+            set { m_target = value; }
+        }
+
+        public object OldState
+        {
+            get { return m_oldState; }
+            set { m_oldState = value; }
+        }
+
+        public object NewState
+        {
+            get { return m_newState; }
+            set { m_newState = value; }
+        }
+
+        public Record(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback, EraseReferenceCallback eraseCallback)
+        {
+            if (redoCallback == null)
+            {
+                throw new ArgumentNullException("redoCallback");
+            }
+
+            if(undoCallback == null)
+            {
+                throw new ArgumentNullException("undoCallback");
+            }
+
+            m_target = target;
+            m_redoCallback = redoCallback;
+            m_undoCallback = undoCallback;
+            m_purgeCallback = purgeCallback;
+            m_eraseCallback = eraseCallback;
+            m_newState = newState;
+            m_oldState = oldState;
+        }
+
+        public bool Undo()
+        {
+            return m_undoCallback(this);
+        }
+
+        public bool Redo()
+        {
+            return m_redoCallback(this);
+        }
+
+        public void Purge()
+        {
+            if(m_purgeCallback != null)
+            {
+                m_purgeCallback(this);
+            }
+            
+        }
+
+        public bool Erase(object oldRef, object newRef)
+        {
+            bool result = false;
+            if(m_eraseCallback != null)
+            {
+               result = m_eraseCallback(this, oldRef, newRef);
+            }
+            return result;
+        }
+    }
+
 
     public delegate void RuntimeUndoEventHandler();
     public interface IRuntimeUndo
@@ -270,53 +409,91 @@ namespace Battlehub.RTCommon
 
         void BeginRecord();
         void EndRecord();
-
-        void BeginRegisterCreateObject(GameObject g);
-        void RegisterCreatedObject(GameObject g);
-        void BeginDestroyObject(GameObject g);
-        void DestroyObject(GameObject g);
-
-        void RecordValue(object target, MemberInfo memberInfo);
-        void RecordValues(object target, MemberInfo[] memberInfo);
-
-        void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
-
-        void RecordSelection();
-        void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null);
-
         void Redo();
         void Undo();
         void Purge();
+        void Erase(object oldRef, object newRef);
+
         void Store();
         void Restore();
 
-        void Replace(object obj, object replacement);
-        //void Remove(object obj);
-        void AddComponent(ExposeToEditor go, System.Type type);
-        void DestroyComponent(Component component, MemberInfo[] memberInfo);
+        Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null);
 
-        [System.Obsolete("Use RecordValues")]
-        void RecordComponent(MonoBehaviour component);
+        void Select(UnityObject[] objects, UnityObject activeObject);    
+
+        void RegisterCreatedObjects(ExposeToEditor[] createdObjects);
+        void DestroyObjects(ExposeToEditor[] destoryedObjects);
+        
+        //void RecordValues(object target, object accessor, MemberInfo[] memberInfo, object[] values, Action<object, object> targetErased);
+        //void RecordValues(object target, MemberInfo[] memberInfo, object[] values);
+        //void RecordValue(object target, object accessor, MemberInfo memberInfo, object value, Action<object, object> targetErased);
+        //void RecordValue(object target, MemberInfo memberInfo, object value);
+
+        void BeginRecordValue(object target, MemberInfo memberInfo);
+        void BeginRecordValue(object target, object accessor, MemberInfo memberInfo);
+        void EndRecordValue(object target, MemberInfo memberInfo);
+        void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased);
+
+        //void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
+        void BeginRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
+        void EndRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
+
+
+        void AddComponent(ExposeToEditor obj, Type type);
+        void DestroyComponent(Component destroy, MemberInfo[] memberInfo);
     }
 
- 
+
     /// <summary>
     /// Class for handling undo and redo operations
     /// </summary>
     public class RuntimeUndo : IRuntimeUndo
     {
-        public event RuntimeUndoEventHandler BeforeUndo;
-        public event RuntimeUndoEventHandler UndoCompleted;
-        public event RuntimeUndoEventHandler BeforeRedo;
-        public event RuntimeUndoEventHandler RedoCompleted;
-        public event RuntimeUndoEventHandler StateChanged;
+        private class SelectionState
+        {
+            public UnityObject ActiveObject;
+            public UnityObject[] Objects;
 
-        private List<Record> m_group;
-        private UndoStack<Record[]> m_stack;
-        private Stack<UndoStack<Record[]>> m_stacks;
+            public SelectionState(UnityObject[] objects, UnityObject activeObject)
+            {
+                Objects = objects;
+                ActiveObject = activeObject;
+            }
 
-        public const int Limit = 8192;
-        
+            public SelectionState(IRuntimeSelection selection)
+            {
+                ActiveObject = selection.activeObject;
+                if(selection.objects != null)
+                {
+                    Objects = selection.objects.ToArray();
+                }
+            }
+        }
+
+        public class SetValuesState
+        {
+            public object Accessor;
+            public MemberInfo[] MemberInfo;
+            public object[] Values;
+
+            public SetValuesState(object accessor, MemberInfo[] memberInfo, object[] values)
+            {
+                Accessor = accessor;
+                MemberInfo = memberInfo;
+                Values = values;
+            }
+        }
+
+        private class TransformState
+        {
+            public Vector3 position;
+            public Quaternion rotation;
+            public Vector3 scale;
+            public Transform parent;
+            public int siblingIndex = -1;
+            public bool applyOnRedo;
+        }
+
         public bool Enabled
         {
             get;
@@ -333,6 +510,26 @@ namespace Battlehub.RTCommon
             get { return m_stack.CanRestore; }
         }
 
+        public bool IsRecording
+        {
+            get { return m_group != null; }
+        }
+
+        public event RuntimeUndoEventHandler BeforeUndo;
+        public event RuntimeUndoEventHandler UndoCompleted;
+        public event RuntimeUndoEventHandler BeforeRedo;
+        public event RuntimeUndoEventHandler RedoCompleted;
+        public event RuntimeUndoEventHandler StateChanged;
+
+        public const int Limit = 8192;
+
+        private Dictionary<object, Dictionary<MemberInfo, object>> m_objToValue;
+
+        private List<Record> m_group;
+        private UndoStack<Record[]> m_stack;
+        private Stack<UndoStack<Record[]>> m_stacks;
+        private List<Record[]> m_purgeRecords;
+        private List<UndoStack<Record[]>.Node> m_purgeNodes;
         private IRTE m_rte;
         public RuntimeUndo(IRTE rte)
         {
@@ -346,11 +543,9 @@ namespace Battlehub.RTCommon
             m_group = null;
             m_stack = new UndoStack<Record[]>(Limit);
             m_stacks = new Stack<UndoStack<Record[]>>();
-        }
-
-        public bool IsRecording
-        {
-            get { return m_group != null; }
+            m_purgeRecords = new List<Record[]>();
+            m_purgeNodes = new List<UndoStack<Record[]>.Node>();
+            m_objToValue = new Dictionary<object, Dictionary<MemberInfo, object>>();
         }
 
         public void BeginRecord()
@@ -372,14 +567,20 @@ namespace Battlehub.RTCommon
 
             if (m_group != null)
             {
-                Record[] purgeItems = m_stack.Push(m_group.ToArray());
-                if (purgeItems != null)
+                m_stack.Push(m_group.ToArray(), m_purgeRecords);
+
+                for(int i = 0; i < m_purgeRecords.Count; ++i)
                 {
-                    for (int i = 0; i < purgeItems.Length; ++i)
+                    Record[] purgeRecords = m_purgeRecords[i];
+                    if (purgeRecords != null)
                     {
-                        purgeItems[i].Purge();
+                        for (int j = 0; j < purgeRecords.Length; ++j)
+                        {
+                            purgeRecords[j].Purge();
+                        }
                     }
                 }
+                m_purgeRecords.Clear();
 
                 if (StateChanged != null)
                 {
@@ -388,476 +589,6 @@ namespace Battlehub.RTCommon
             }
             m_group = null;
         }
-
-        private class BoolState
-        {
-            public bool value;
-            public BoolState(bool v)
-            {
-                value = v;
-            }
-        }
-        private void RecordActivateDeactivate(GameObject g, BoolState value)
-        {
-            RecordObject(g, value,
-               record =>
-               {
-                   GameObject target = (GameObject)record.Target;
-                   BoolState activate = (BoolState)record.State;
-                   if (target && target.activeSelf != activate.value)
-                   {
-                       ExposeToEditor exposeToEditor = target.GetComponent<ExposeToEditor>();
-                       if (exposeToEditor)
-                       {
-                           exposeToEditor.MarkAsDestroyed = !activate.value;
-                       }
-                       else
-                       {
-                           target.SetActive(activate.value);
-                       }
-                       return true;
-                   }
-                   return false;
-               },
-               record =>
-               {
-                   BoolState activate = (BoolState)record.State;
-                   if (activate.value)
-                   {
-                       return;
-                   }
-                   GameObject target = (GameObject)record.Target;
-                   if (target)
-                   {
-                       ExposeToEditor exposeToEditor = target.GetComponent<ExposeToEditor>();
-                       if (exposeToEditor)
-                       {
-                           if (exposeToEditor.MarkAsDestroyed)
-                           {
-                               Object.DestroyImmediate(target);
-                           }
-                       }
-                       else
-                       {
-                           if (!target.activeSelf)
-                           {
-                               Object.DestroyImmediate(target);
-                           }
-                       }
-                   }
-               });
-        }
-
-        public void BeginRegisterCreateObject(GameObject g)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-            RecordActivateDeactivate(g, new BoolState(false));
-        }
-
-        public void RegisterCreatedObject(GameObject g)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-
-            ExposeToEditor exposeToEditor = g.GetComponent<ExposeToEditor>();
-            if (exposeToEditor)
-            {
-                exposeToEditor.MarkAsDestroyed = false;
-            }
-            else
-            {
-                g.SetActive(true);
-            }
-
-            RecordActivateDeactivate(g, new BoolState(true));
-        }
-
-        public void BeginDestroyObject(GameObject g)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-            RecordActivateDeactivate(g, new BoolState(true));
-        }
-
-        public void DestroyObject(GameObject g)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-
-            ExposeToEditor exposeToEditor = g.GetComponent<ExposeToEditor>();
-            if (exposeToEditor)
-            {
-                exposeToEditor.MarkAsDestroyed = true;
-            }
-            else
-            {
-                g.SetActive(false);
-            }
-            RecordActivateDeactivate(g, new BoolState(false));
-        }
-
-
-        private object GetValue(object target, MemberInfo m)
-        {
-            PropertyInfo p = m as PropertyInfo;
-            if (p != null)
-            {
-                return p.GetValue(target, null);
-            }
-
-            FieldInfo f = m as FieldInfo;
-            if (f != null)
-            {
-                return f.GetValue(target);
-            }
-
-            throw new System.ArgumentException("member is not FieldInfo and is not PropertyInfo", "m");
-        }
-
-        private void SetValue(object target, MemberInfo m, object value)
-        {
-            PropertyInfo p = m as PropertyInfo;
-            if (p != null)
-            {
-                p.SetValue(target, value, null);
-                return;
-            }
-
-            FieldInfo f = m as FieldInfo;
-            if (f != null)
-            {
-                f.SetValue(target, value);
-                return;
-            }
-
-            throw new System.ArgumentException("member is not FieldInfo and is not PropertyInfo", "m");
-        }
-
-        private static System.Array DuplicateArray(System.Array array)
-        {
-            System.Array newArray = (System.Array)System.Activator.CreateInstance(array.GetType(), array.Length);
-            if (array != null)
-            {
-                for (int i = 0; i < newArray.Length; ++i)
-                {
-                    newArray.SetValue(array.GetValue(i), i);
-                }
-            }
-
-            return array;
-        }
-
-
-        public void RecordValue(object target, MemberInfo memberInfo)
-        {
-            // Debug.Log("Record Value " + target + " " + memberInfo.Name);
-            if (!Enabled)
-            {
-                return;
-            }
-
-            if (!(memberInfo is PropertyInfo) && !(memberInfo is FieldInfo))
-            {
-                Debug.LogWarning("Unable to record value");
-                return;
-            }
-
-            object val = GetValue(target, memberInfo);
-            if (val != null)
-            {
-                if (val is System.Array)
-                {
-                    object duplicate = DuplicateArray((System.Array)val);
-                    SetValue(target, memberInfo, duplicate);
-                }
-            }
-
-            RecordObject(target, val, record =>
-            {
-                object obj = record.Target;
-                if (obj == null)
-                {
-                    return false;
-                }
-
-                if (obj is Object)
-                {
-                    if (((Object)obj) == null)
-                    {
-                        return false;
-                    }
-                }
-
-                object state = record.State;
-                object value = GetValue(obj, memberInfo);
-
-                bool hasChanged = true;
-                if (state == null && value == null)
-                {
-                    hasChanged = false;
-                }
-                else if (state != null && value != null)
-                {
-                    if (state is IEnumerable<object>)
-                    {
-                        IEnumerable<object> eState = (IEnumerable<object>)state;
-                        IEnumerable<object> eValue = (IEnumerable<object>)value;
-                        hasChanged = !eState.SequenceEqual(eValue);
-                    }
-                    else
-                    {
-                        hasChanged = !state.Equals(value);
-                    }
-                }
-
-                if (hasChanged)
-                {
-                    SetValue(obj, memberInfo, state);
-                }
-                return hasChanged;
-            },
-            record => { });
-        }
-
-        public void RecordValues(object target, MemberInfo[] memberInfo)
-        {
-            bool endRecord = false;
-            if (!IsRecording)
-            {
-                endRecord = true;
-                BeginRecord();
-            }
-
-            for (int i = 0; i < memberInfo.Length; ++i)
-            {
-                RecordValue(target, memberInfo[i]);
-            }
-
-            if (endRecord)
-            {
-                EndRecord();
-            }
-        }
-
-        private class TransformRecord
-        {
-            public Vector3 position;
-            public Quaternion rotation;
-            public Vector3 scale;
-            public Transform parent;
-            public int siblingIndex = -1;
-        }
-
-        public void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-
-            TransformRecord transformRecord = new TransformRecord { position = target.position, rotation = target.rotation, scale = target.localScale };
-
-            transformRecord.parent = parent;
-            transformRecord.siblingIndex = siblingIndex;
-
-            RecordObject(target, transformRecord , record =>
-            {
-                Transform transform = (Transform)record.Target;
-                if (!transform)
-                {
-                    return false;
-                }
-
-                TransformRecord state = (TransformRecord)record.State;
-                bool hasChanged = transform.position != state.position ||
-                                  transform.rotation != state.rotation ||
-                                  transform.localScale != state.scale;
-
-                bool trsOnly = state.siblingIndex == -1;
-                if(!trsOnly)
-                {
-                    hasChanged = hasChanged || transform.parent != state.parent || transform.GetSiblingIndex() != state.siblingIndex;
-                }
-
-                if (hasChanged)
-                {
-                    Transform prevParent = transform.parent;
-                    if (!trsOnly)
-                    {
-                        transform.SetParent(state.parent, true);
-                        transform.SetSiblingIndex(state.siblingIndex);
-                    }
-
-                    transform.position = state.position;
-                    transform.rotation = state.rotation;
-                    transform.localScale = state.scale;
-                }
-                return hasChanged;
-            },
-            record => { });
-        }
-
-
-
-        private class SelectionRecord
-        {
-            public Object[] objects;
-            public Object activeObject;
-        }
-
-
-        public void RecordSelection()
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-
-            RecordObject(null, new SelectionRecord { objects = m_rte.Selection.objects, activeObject = m_rte.Selection.activeObject }, record =>
-            {
-                SelectionRecord state = (SelectionRecord)record.State;
-
-                bool hasChanged = false;
-                if (state.objects != null && m_rte.Selection.objects != null)
-                {
-                    if (state.objects.Length != m_rte.Selection.objects.Length)
-                    {
-                        hasChanged = true;
-                    }
-                    else
-                    {
-                        for (int i = 0; i < m_rte.Selection.objects.Length; ++i)
-                        {
-                            if (state.objects[i] != m_rte.Selection.objects[i])
-                            {
-                                hasChanged = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else if (state.objects == null)
-                {
-                    hasChanged = m_rte.Selection.objects != null && m_rte.Selection.objects.Length != 0;
-                }
-                else if (m_rte.Selection.objects == null)
-                {
-                    hasChanged = state.objects != null && state.objects.Length != 0;
-                }
-
-              
-                if (hasChanged)
-                {
-                    List<Object> selection = null;
-                    if (state.objects != null)
-                    {
-                        selection = state.objects.ToList();
-                        if (state.activeObject != null)
-                        {
-                            if (selection.Contains(state.activeObject))
-                            {
-                                selection.Remove(state.activeObject);
-                                selection.Insert(0, state.activeObject);
-                            }
-                            else
-                            {
-                                selection.Insert(0, state.activeObject);
-                            }
-                        }
-                        m_rte.Selection.INTERNAL_activeObjectProperty = state.activeObject;
-                        m_rte.Selection.INTERNAL_objectsProperty = selection.ToArray();
-                    }
-                    else
-                    {
-                        m_rte.Selection.INTERNAL_activeObjectProperty = null;
-                        m_rte.Selection.INTERNAL_objectsProperty = null;
-                    }
-                }
-                return hasChanged;
-            },
-            r => { });
-
-        }
-
-        [System.Obsolete]
-        public void RecordComponent(MonoBehaviour component)
-        {
-            System.Type type = component.GetType();
-            if(type == typeof(MonoBehaviour))
-            {
-                return;
-            }
-
-            List<FieldInfo> serializableFields = new List<FieldInfo>();
-            while(type != typeof(MonoBehaviour))
-            {
-                serializableFields.AddRange(type.GetSerializableFields());
-                type = type.BaseType();
-            }
-
-            
-            bool endRecord = false;
-            if(!IsRecording)
-            {
-                endRecord = true;
-                BeginRecord();
-            }
-            
-            for(int i = 0; i < serializableFields.Count; ++i)
-            {
-                RecordValue(component, serializableFields[i]);
-            }
-
-            if(endRecord)
-            {
-                EndRecord();
-            }
-        }
-
-        public void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null)
-        {
-            if (!Enabled)
-            {
-                return;
-            }
-
-            if(purgeCallback == null)
-            {
-                purgeCallback = record => { };
-            }
-
-            if (m_group != null)
-            {
-                m_group.Add(new Record(target, state, applyCallback, purgeCallback));
-            }
-            else
-            {
-                Record[] purgeItems = m_stack.Push(new[] { new Record(target, state, applyCallback, purgeCallback) });
-                if (purgeItems != null)
-                {
-                    for (int i = 0; i < purgeItems.Length; ++i)
-                    {
-                        purgeItems[i].Purge();
-                    }
-                }
-
-                if (StateChanged != null)
-                {
-                    StateChanged();
-                }
-            }
-        }
-
-       
 
         public void Redo()
         {
@@ -884,7 +615,7 @@ namespace Battlehub.RTCommon
                 for (int i = 0; i < records.Length; ++i)
                 {
                     Record record = records[i];
-                    somethingHasChanged |= record.Apply();
+                    somethingHasChanged |= record.Redo();
                 }
             }
             while (!somethingHasChanged && m_stack.CanRestore);
@@ -918,11 +649,10 @@ namespace Battlehub.RTCommon
                 somethingHasChanged = false;
                 Record[] records = m_stack.Pop();
 
-                // for (int i = records.Length - 1; i >= 0; --i) //for components..
-                for (int i = 0; i < records.Length; ++i)
+                for (int i = records.Length - 1; i >= 0; --i)
                 {
                     Record record = records[i];
-                    somethingHasChanged |= record.Apply();
+                    somethingHasChanged |= record.Undo();
                 }
             }
             while (!somethingHasChanged && m_stack.CanPop);
@@ -940,18 +670,80 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            foreach (Record[] records in m_stack)
+            foreach (UndoStack<Record[]>.Node node in m_stack)
             {
-                if (records != null)
+                if (node.Data != null)
                 {
-                    for (int i = 0; i < records.Length; ++i)
+                    for (int i = 0; i < node.Data.Length; ++i)
                     {
-                        Record record = records[i];
+                        Record record = node.Data[i];
                         record.Purge();
                     }
                 }
             }
             m_stack.Clear();
+            m_group = null;
+            if (m_objToValue.Count > 0)
+            {
+                Debug.LogWarning("Unifished RecordValue operations exists.");
+                m_objToValue = new Dictionary<object, Dictionary<MemberInfo, object>>();
+            }
+
+            if (StateChanged != null)
+            {
+                StateChanged();
+            }
+        }
+
+        public void Erase(object oldRef, object newRef)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            
+            if(m_objToValue.Count > 0)
+            {
+                Debug.LogWarning("Unifished RecordValue operations exists.");
+                m_objToValue = new Dictionary<object, Dictionary<MemberInfo, object>>();
+            }
+
+            foreach (UndoStack<Record[]>.Node node in m_stack)
+            {
+                if (node.Data != null)
+                {
+                    int erased = 0;
+                    for (int i = 0; i < node.Data.Length; ++i)
+                    {
+                        Record record = node.Data[i];
+                        if(record.Erase(oldRef, newRef))
+                        {
+                            erased++;
+                        }
+                    }
+
+                    if(node.Data.Length == erased)
+                    {
+                        m_purgeNodes.Add(node);
+                    }
+                }
+            }
+
+            for(int i = 0; i < m_purgeNodes.Count; ++i)
+            {
+                UndoStack<Record[]>.Node purgeNode = m_purgeNodes[i];
+                if (purgeNode != null)
+                {
+                    for (int j = 0; j < purgeNode.Data.Length; ++j)
+                    {
+                        purgeNode.Data[j].Purge();
+                    }
+                }
+
+                m_stack.Purge(purgeNode);
+            }
+
+            m_purgeNodes.Clear();
 
             if (StateChanged != null)
             {
@@ -985,7 +777,7 @@ namespace Battlehub.RTCommon
                 m_stack.Clear();
             }
 
-            if(m_stacks.Count > 0)
+            if (m_stacks.Count > 0)
             {
                 m_stack = m_stacks.Pop();
                 if (StateChanged != null)
@@ -993,173 +785,855 @@ namespace Battlehub.RTCommon
                     StateChanged();
                 }
             }
-        }   
+        }
 
-        public void Replace(object obj, object replacement)
+        public Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)
         {
-            if(m_stack != null)
+            if (!Enabled)
             {
-                foreach(Record[] records in m_stack)
+                return null;
+            }
+
+            if (purgeCallback == null)
+            {
+                purgeCallback = rec => { };
+            }
+
+            Record record = new Record(target, newState, oldState, redoCallback, undoCallback, purgeCallback, eraseCallback); 
+            if (m_group != null)
+            {
+                m_group.Add(record);
+            }
+            else
+            {
+                m_stack.Push(new[] { record }, m_purgeRecords);
+
+                for (int i = 0; i < m_purgeRecords.Count; ++i)
                 {
-                    if(records == null)
+                    Record[] purgeItems = m_purgeRecords[i];
+                    if (purgeItems != null)
                     {
-                        continue;
-                    }
-                    for(int i = 0; i < records.Length; ++i)
-                    {
-                        Record record = records[i];
-                        if(record.Target == obj)
+                        for (int j = 0; j < purgeItems.Length; ++j)
                         {
-                            record.ReplaceTarget(replacement);
-                        }
-                        if(record.State == obj)
-                        {
-                            record.ReplaceState(replacement);
+                            purgeItems[j].Purge();
                         }
                     }
                 }
 
-                if(m_group != null)
+                m_purgeRecords.Clear();
+
+                if (StateChanged != null)
                 {
-                    for(int i = 0; i < m_group.Count; ++i)
+                    StateChanged();
+                }
+            }
+            return record;
+        }
+
+        private static bool HasSelectionChanged(UnityObject[] newObjects, UnityObject newActiveObject, IRuntimeSelection selection)
+        {
+            return HasSelectionChanged(newObjects, newActiveObject, selection.objects, selection.activeObject);
+        }
+
+        private static bool HasSelectionChanged(UnityObject[] newObjects, UnityObject newActiveObject, UnityObject[] objects, UnityObject activeObject)
+        {
+            if(activeObject != newActiveObject)
+            {
+                return true;
+            }
+
+            if(objects == newObjects)
+            {
+                return false;
+            }
+
+            if(objects == null || newObjects == null)
+            {
+                return true;
+            }
+
+            if(objects.Length != newObjects.Length)
+            {
+                return true;
+            }
+
+            for(int i = 0; i < objects.Length; ++i)
+            {
+                if(objects[i] != newObjects[i])
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void EraseFromSelection(SelectionState state, object newReference, object oldReference)
+        {
+            if((object)state.ActiveObject == oldReference)
+            {
+                state.ActiveObject = newReference as UnityObject;
+            }
+
+            bool hasNulls = false;
+            if(state.Objects != null)
+            {
+                for(int i = 0; i < state.Objects.Length; ++i)
+                {
+                    object reference = state.Objects[i];
+                    if(reference == oldReference)
                     {
-                        Record record = m_group[i];
-                        if (record.Target == obj)
+                        state.Objects[i] = newReference as UnityObject;
+                        if(state.Objects[i] == null)
                         {
-                            record.ReplaceTarget(replacement);
-                        }
-                        if (record.State == obj)
-                        {
-                            record.ReplaceState(replacement);
+                            hasNulls = true;
                         }
                     }
                 }
             }
+
+            if(hasNulls)
+            {
+                state.Objects = state.Objects.Where(o => o != null).ToArray();
+                if(state.Objects.Length == 0)
+                {
+                    state.Objects = null;
+                }
+            }
         }
 
-        /*
-        public void Remove(object obj)
+        private bool ApplySelection(SelectionState state, IRuntimeSelection selection)
         {
-            //NOTE: SelectionRecords is not cleared
+            bool hasChanged = HasSelectionChanged(state.Objects, state.ActiveObject, selection);
 
-            int index = 0;
-            List<int> removeIndices = new List<int>();
-            foreach(Record[] records in m_stack)
+            if (hasChanged)
             {
-                if(records == null)
+                selection.Select(state.ActiveObject, state.Objects);
+            }
+
+            return hasChanged;
+        }
+
+        public void Select(UnityObject[] objects, UnityObject activeObject)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            if (!HasSelectionChanged(objects, activeObject, m_rte.Selection))
+            {
+                return;
+            }
+
+            Record newRecord = CreateRecord(m_rte.Selection,
+                new SelectionState(objects, activeObject),
+                new SelectionState(m_rte.Selection),
+                record => ApplySelection((SelectionState)record.NewState, (IRuntimeSelection)record.Target),
+                record => ApplySelection((SelectionState)record.OldState, (IRuntimeSelection)record.Target),
+                record => { /*do nothing*/ },
+                (record, oldReference, newReference) =>
+                {
+                    SelectionState newState = (SelectionState)record.NewState;
+                    SelectionState oldState = (SelectionState)record.OldState;
+                    EraseFromSelection(oldState, newReference, oldReference);
+                    EraseFromSelection(newState, newReference, oldReference);
+
+                    bool purge = false;
+                    if (!HasSelectionChanged(newState.Objects, newState.ActiveObject, oldState.Objects, oldState.ActiveObject))
+                    {
+                        purge = true;
+                    }
+                    return purge;
+                });
+
+            if(newRecord != null)
+            {
+                newRecord.Redo();
+            }
+        }
+
+        private static bool MarkAsDestroyed(Record record, bool destroyed)
+        {
+            ExposeToEditor[] objects = (ExposeToEditor[])record.Target;
+            for (int i = 0; i < objects.Length; ++i)
+            {
+                ExposeToEditor obj = objects[i];
+                if(obj != null)
+                {
+                    obj.MarkAsDestroyed = destroyed;
+                }
+            }
+            return true;
+        }
+
+        private static void PurgeMarkedAsDestoryed(Record record)
+        {
+            ExposeToEditor[] objects = (ExposeToEditor[])record.Target;
+            for (int i = 0; i < objects.Length; ++i)
+            {
+                ExposeToEditor obj = objects[i];
+                if (obj != null && obj.MarkAsDestroyed)
+                {
+                    UnityObject.DestroyImmediate(obj.gameObject);
+                }
+            }
+        }
+
+        private static bool EraseMarkedAsDestroyed(Record record, object newReference, object oldReference)
+        {
+            ExposeToEditor[] objects = (ExposeToEditor[])record.Target;
+            bool hasNulls = false;
+            for (int i = 0; i < objects.Length; ++i)
+            {
+                ExposeToEditor obj = objects[i];
+                if (obj == null)
                 {
                     continue;
                 }
-
-                bool hasRecordsToBeRemoved = false;
-                for(int i = 0; i < records.Length; ++i)
+                if (oldReference is GameObject)
                 {
-                    Record record = records[i];
-                    if(record.State == obj || record.Target == obj)
+                    if ((object)obj.gameObject == oldReference)
                     {
-                        hasRecordsToBeRemoved = true;
-                        break;
-                    }
-                }
-
-                if (hasRecordsToBeRemoved)
-                {
-                    List<Record> clearedRecords = new List<Record>();
-                    for (int i = 0; i < records.Length; ++i)
-                    {
-                        Record record = records[i];
-                        if (record.State != obj && record.Target != obj)
+                        objects[i] = null;
+                        GameObject newRef = newReference as GameObject;
+                        if (newRef != null)
                         {
-                            clearedRecords.Add(record);
+                            objects[i] = newRef.GetComponent<ExposeToEditor>();
                         }
                     }
-                    m_stack.Set(index, clearedRecords.ToArray());
                 }
-                index++;
+
+                if (objects[i] == null)
+                {
+                    hasNulls = true;
+                }
             }
 
-            if (StateChanged != null)
+            if (hasNulls)
             {
-                StateChanged();
+                objects = objects.Where(obj => obj != null).ToArray();
+                record.Target = objects;
+            }
+
+            return objects.Length == 0;
+        }
+
+        public void RegisterCreatedObjects(ExposeToEditor[] createdObjects)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            Record newRecord = CreateRecord(createdObjects, false, true,
+                record => MarkAsDestroyed(record, (bool)record.NewState),
+                record => MarkAsDestroyed(record, (bool)record.OldState),
+                record => PurgeMarkedAsDestoryed(record),
+                (record, oldReference, newReference) => EraseMarkedAsDestroyed(record, newReference, oldReference));
+
+            if(newRecord != null)
+            {
+                newRecord.Redo();
             }
         }
-        */
 
-        public void AddComponent(ExposeToEditor go, System.Type type)
+        public void DestroyObjects(ExposeToEditor[] destoryedObjects)
         {
-            Component component = AddComponent(type, go);
-            if (component != null)
+            if (!Enabled)
             {
-                object replacement = new object();
-                RecordObject(go, component, record =>
+                return;
+            }
+            Record newRecord = CreateRecord(destoryedObjects, true, false,
+               record => MarkAsDestroyed(record, (bool)record.NewState),
+               record => MarkAsDestroyed(record, (bool)record.OldState),
+               record => PurgeMarkedAsDestoryed(record),
+               (record, oldReference, newReference) => EraseMarkedAsDestroyed(record, newReference, oldReference));
+
+            if (newRecord != null)
+            {
+                newRecord.Redo();
+            }
+        }
+
+        private static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
+
+
+        private static Array DuplicateArray(Array array)
+        {
+            Array newArray = (Array)Activator.CreateInstance(array.GetType(), array.Length);
+            if (array != null)
+            {
+                for (int i = 0; i < newArray.Length; ++i)
                 {
-                    object target = record.Target;
-                    object state = record.State;
-                    if (state != null && state != replacement)
+                    newArray.SetValue(array.GetValue(i), i);
+                }
+            }
+
+            return array;
+        }
+
+        private object GetValue(object accessor, MemberInfo m)
+        {
+            PropertyInfo p = m as PropertyInfo;
+            if (p != null)
+            {
+                if (accessor == null || (accessor is UnityObject) && null == (UnityObject)accessor)
+                {
+                    return GetDefault(p.PropertyType);
+                }
+                object val = p.GetValue(accessor, null);
+                if (val is Array)
+                {
+                    val = DuplicateArray((Array)val);
+                }
+                return val;
+            }
+
+            FieldInfo f = m as FieldInfo;
+            if (f != null)
+            {
+                if (accessor == null || (accessor is UnityObject) && null == (UnityObject)accessor)
+                {
+                    return GetDefault(f.FieldType);
+                }
+                object val = f.GetValue(accessor);
+                if (val is Array)
+                {
+                    val = DuplicateArray((Array)val);
+                }
+                return val;
+            }
+
+            throw new ArgumentException("member is not FieldInfo and is not PropertyInfo", "m");
+        }
+
+        private object[] GetValues(object accessor, MemberInfo[] memberInfo)
+        {
+            object[] values = new object[memberInfo.Length];
+            for(int i = 0; i < memberInfo.Length; ++i)
+            {
+                values[i] = GetValue(accessor, memberInfo[i]);
+            }
+            return values;
+        }
+
+        private void AssignValue(object accessor, MemberInfo m, object value)
+        {
+            if(accessor == null || (accessor is UnityObject) && null == (UnityObject)accessor)
+            {
+                return;
+            }
+            PropertyInfo p = m as PropertyInfo;
+            if (p != null)
+            {
+                p.SetValue(accessor, value, null);
+                return;
+            }
+
+            FieldInfo f = m as FieldInfo;
+            if (f != null)
+            {
+                f.SetValue(accessor, value);
+                return;
+            }
+
+            throw new ArgumentException("member is not FieldInfo and is not PropertyInfo", "m");
+        }
+
+        private void AssingValues(object accessor, MemberInfo[] memberInfo, object[] values)
+        {
+            for (int i = 0; i < memberInfo.Length; ++i)
+            {
+                AssignValue(accessor, memberInfo[i], values[i]);
+            }
+        }
+
+        private bool AssignValues(SetValuesState state)
+        {
+            if(state.Accessor == null || (state.Accessor is UnityObject) && null == (UnityObject)state.Accessor)
+            {
+                return false;
+            }
+
+            for(int i = 0; i < state.Values.Length; ++i)
+            {
+                AssignValue(state.Accessor, state.MemberInfo[i], state.Values[i]);
+            }
+
+            return true;
+        }
+
+        
+
+        private void EraseFromSetValuesState(SetValuesState state, object newReference, object oldReference)
+        {
+            if(state.Accessor == oldReference)
+            {
+                state.Accessor = newReference;
+            }
+
+            bool hasNulls = false;
+            if(state.Values != null)
+            {
+                for(int i = 0; i< state.Values.Length; ++i)
+                {
+                    object reference = state.Values[i];
+                    if(reference == oldReference)
                     {
-                        Replace(state, replacement);
-                        Object.Destroy((Component)state);
+                        state.Values[i] = newReference;
+                        if (newReference == null)
+                        {
+                            state.MemberInfo[i] = null;
+                            hasNulls = true;
+                        }
                     }
-                    else
+                    else if(reference is IList)
                     {
-                        object newComponent = AddComponent(type, (ExposeToEditor)target);
-                        Replace(replacement, newComponent);
+                        IList list = (IList)reference;
+                        for(int j = 0; j < list.Count; ++j)
+                        {
+                            if(list[j] == oldReference)
+                            {
+                                list[j] = newReference;
+                            }
+                        }
                     }
-                    return true;
+                }
+            }
+
+            if(hasNulls)
+            {
+                state.Values = state.Values.Where(o => o != null).ToArray();
+                state.MemberInfo = state.MemberInfo.Where(o => o != null).ToArray();
+            }
+        }
+
+        private void RecordValues(object target, object accessor, MemberInfo[] memberInfo, object[] oldValues, Action<object, object> targetErased )
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            Record newRecord = CreateRecord(target,
+                new SetValuesState(accessor, memberInfo, GetValues(accessor, memberInfo)),
+                new SetValuesState(accessor, memberInfo, oldValues),
+                record => AssignValues((SetValuesState)record.NewState),
+                record => AssignValues((SetValuesState)record.OldState),
+                record => { },
+                (record, oldReference, newReference) =>
+                {
+                    if (record.Target == oldReference)
+                    {
+                        record.Target = newReference;
+                        if (targetErased != null)
+                        {
+                            targetErased(accessor, record.Target);
+                        }
+                        if (record.Target == null)
+                        {
+                            return true;
+                        }
+                    }
+
+                    SetValuesState newState = (SetValuesState)record.NewState;
+                    SetValuesState oldState = (SetValuesState)record.OldState;
+
+                    EraseFromSetValuesState(newState, newReference, oldReference);
+                    EraseFromSetValuesState(oldState, newReference, oldReference);
+
+                    if (newState.Values.Length == 0 && oldState.Values.Length == 0)
+                    {
+                        return true;
+                    }
+
+                    if(newState.Accessor == null)
+                    {
+                        return true;
+                    }
+
+                    return false;
                 });
-            }
         }
 
-        public void DestroyComponent(Component component, MemberInfo[] memberInfo)
+        private void RecordValues(object target, MemberInfo[] memberInfo, object[] oldValues)
         {
-            if (component != null)
+            RecordValues(target, target, memberInfo, oldValues, null);
+        }
+
+        private void RecordValue(object target, object accessor, MemberInfo memberInfo, object oldValue, Action<object, object> targetErased)
+        {
+            RecordValues(target, accessor, new[] { memberInfo }, new[] { oldValue }, targetErased);
+        }
+
+        //private void RecordValue(object target, MemberInfo memberInfo, object oldValue)
+        //{
+        //    RecordValue(target, target, memberInfo, oldValue, null);
+        //}
+
+        private bool ApplyRecordedValue(Record record, MemberInfo memberInfo)
+        {
+            object obj = record.Target;
+            if (obj == null)
             {
-                ExposeToEditor exposeToEditor = component.GetComponent<ExposeToEditor>();
-                
-                bool wasRecording = IsRecording;
-                if(!wasRecording)
-                {
-                    BeginRecord();
-                }
-                
-                Object.Destroy(component);
-                System.Type type = component.GetType();
-                object replacement = new object();
+                return false;
+            }
 
-                RecordValues(component, memberInfo);
-                RecordObject(exposeToEditor, component, record =>
+            if (obj is UnityObject)
+            {
+                if (((UnityObject)obj) == null)
                 {
-                    object state = record.State;
-                    object target = record.Target;
-                    if (state != null && state != replacement)
-                    {
-                        Replace(state, replacement);
-                        Object.Destroy((Component)state);
-                    }
-                    else
-                    {
-                        object newComponent = AddComponent(type, (ExposeToEditor)target);
-                        Replace(replacement, newComponent);
-                    }
-                    return true;
-                });
-                Replace(component, replacement);
-                if(!wasRecording)
-                {
-                    EndRecord();
+                    return false;
                 }
             }
+
+            object state = record.NewState;
+            object value = GetValue(obj, memberInfo);
+
+            bool hasChanged = true;
+            if (state == null && value == null)
+            {
+                hasChanged = false;
+            }
+            else if (state != null && value != null)
+            {
+                if (state is IEnumerable<object>)
+                {
+                    IEnumerable<object> eState = (IEnumerable<object>)state;
+                    IEnumerable<object> eValue = (IEnumerable<object>)value;
+                    hasChanged = !eState.SequenceEqual(eValue);
+                }
+                else
+                {
+                    hasChanged = !state.Equals(value);
+                }
+
+            }
+
+            if (hasChanged)
+            {
+                AssignValue(obj, memberInfo, state);
+            }
+            return hasChanged;
         }
 
-        private static Component AddComponent(System.Type type, ExposeToEditor go)
+        public void BeginRecordValue(object target, MemberInfo memberInfo)
         {
-            Component component = go.AddComponent(type);
+            BeginRecordValue(target, target, memberInfo);
+        }
+
+        public void BeginRecordValue(object target, object accessor, MemberInfo memberInfo)
+        {
+            if(!Enabled)
+            {
+                return;
+            }
+            Dictionary<MemberInfo, object> memberInfoToValue;
+            if(!m_objToValue.TryGetValue(target, out memberInfoToValue))
+            {
+                memberInfoToValue = new Dictionary<MemberInfo, object>();
+                m_objToValue.Add(target, memberInfoToValue);
+            }
+
+            if(memberInfoToValue.ContainsKey(memberInfo))
+            {
+                Debug.LogWarning("Unfinished record value operation for " + memberInfo.Name + " exist");
+            }
+
+            memberInfoToValue[memberInfo] = GetValue(accessor, memberInfo);
+        }
+
+        public void EndRecordValue(object target, MemberInfo memberInfo)
+        {
+            EndRecordValue(target, target, memberInfo, null);
+        }
+
+        public void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            Dictionary<MemberInfo, object> memberInfoToValue;
+            if (!m_objToValue.TryGetValue(target, out memberInfoToValue))
+            {
+                return;
+            }
+
+            object oldValue;
+            if(!memberInfoToValue.TryGetValue(memberInfo, out oldValue))
+            {
+                return;
+            }
+
+            memberInfoToValue.Remove(memberInfo);
+            if(memberInfoToValue.Count == 0)
+            {
+                m_objToValue.Remove(target);
+            }
+
+            RecordValue(target, accessor, memberInfo, oldValue, targetErased);
+        }
+
+        public void BeginRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        {
+            RecordTransform(false, target, parent, siblingIndex);
+        }
+
+        public void EndRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        {
+            RecordTransform(true, target, parent, siblingIndex);
+        }
+  
+        private void RecordTransform(bool applyOnRedo, Transform target, Transform parent = null, int siblingIndex = -1)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+
+            TransformState newState = new TransformState { position = target.position, rotation = target.rotation, scale = target.localScale };
+            newState.parent = parent;
+            newState.siblingIndex = siblingIndex;
+            newState.applyOnRedo = applyOnRedo;
+
+            CreateRecord(target, newState, null,
+                record => ApplyTransform(record, true),
+                record => ApplyTransform(record, false),
+                record => { },
+                (record, oldReference, newReference) =>
+                {
+                    return false;
+                });
+        }
+
+        private static bool ApplyTransform(Record record, bool isRedo)
+        {
+            Transform transform = (Transform)record.Target;
+            if (!transform)
+            {
+                return false;
+            }
+
+            TransformState state = (TransformState)record.NewState;
+            if(state.applyOnRedo != isRedo)
+            {
+                return false;
+            }
+            bool hasChanged = transform.position != state.position ||
+                              transform.rotation != state.rotation ||
+                              transform.localScale != state.scale;
+
+            bool trsOnly = state.siblingIndex == -1;
+            if (!trsOnly)
+            {
+                int siblingIndex = transform.GetSiblingIndex();
+                hasChanged = hasChanged || transform.parent != state.parent || siblingIndex != state.siblingIndex;
+            }
+
+            if (hasChanged)
+            {
+                //Transform prevParent = transform.parent;
+                if (!trsOnly)
+                {
+                    transform.SetParent(state.parent, true);
+                    transform.SetSiblingIndex(state.siblingIndex);
+                }
+
+                transform.position = state.position;
+                transform.rotation = state.rotation;
+                transform.localScale = state.scale;
+            }
+            return hasChanged;
+        }
+
+        private static Component AddComponent(GameObject go, Type type)
+        {
+            ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
+
+            Component component = exposeToEditor.AddComponent(type);
             if (component is Rigidbody)
             {
                 Rigidbody rb = (Rigidbody)component;
                 rb.isKinematic = true;
             }
             return component;
+        }
+
+        public void AddComponent(ExposeToEditor obj, Type type)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            Record newRecord = CreateRecord(obj, type, null,
+            record =>
+            {
+                ExposeToEditor target = (ExposeToEditor)record.Target;
+                if (target == null)
+                {
+                    return false;
+                }
+                Type componentType = (Type)record.NewState;
+                Component component = AddComponent(target.gameObject, componentType);
+                if (record.OldState != null)
+                {
+                    Erase(record.OldState, component);
+                }
+                record.OldState = component;
+                return true;
+            },
+            record =>
+            {
+                Component component = (Component)record.OldState;
+                object replacement = new object();
+                Erase(component, replacement);
+                if(component != null)
+                {
+                    UnityObject.Destroy(component);
+                }
+                record.OldState = replacement;
+                return true;
+            },
+            record =>
+            {
+                //if(record.OldState != null && (record.OldState is Component))
+                //{
+                //    Erase(record.OldState, null);
+                //}
+            },
+            (record, oldReference, newReference) =>
+            {
+                ExposeToEditor target = record.Target as ExposeToEditor;
+                if (target != null)
+                {
+                    if (target.gameObject == (object)oldReference)
+                    {
+                        GameObject newRef = newReference as GameObject;
+                        if (newRef == null)
+                        {
+                            record.Target = null;
+                        }
+                        else
+                        {
+                            record.Target = newRef.GetComponent<ExposeToEditor>();
+                        }
+                    }
+                }
+
+                if(record.OldState == oldReference)
+                {
+                    record.OldState = newReference;
+                }
+
+                if ((record.Target as ExposeToEditor) == null)
+                {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if(newRecord != null)
+            {
+                newRecord.Redo();
+            }
+        }
+
+        public void DestroyComponent(Component destroy, MemberInfo[] memberInfo)
+        {
+            if (!Enabled)
+            {
+                return;
+            }
+            Type componentType = destroy.GetType();
+            Record newRecord = CreateRecord(destroy.gameObject, null, destroy,
+            record =>
+            {
+                GameObject go = record.Target as GameObject;
+                Component component = record.OldState as Component;
+                object replacement = new object();
+                if (component)
+                {
+                    Erase(component, replacement);
+                }
+                record.OldState = replacement;
+                record.NewState = GetValues(component, memberInfo);
+                UnityObject.Destroy(component);
+                return true;
+            },
+            record =>
+            {
+                GameObject go = record.Target as GameObject;
+                Component component = AddComponent(go, componentType);
+                AssingValues(component, memberInfo, (object[])record.NewState);
+
+                object repacement = record.OldState;
+                Erase(repacement, component);
+                record.OldState = component;
+
+                return true;
+            },
+            record =>
+            {
+                //if (record.OldState != null && !(record.OldState is Component))
+                //{
+                //    Erase(record.OldState, null);
+                //}
+            },
+            (record, oldReference, newReference) =>
+            {
+                GameObject target = record.Target as GameObject;
+                if (target != null)
+                {
+                    if (target.gameObject == (object)oldReference)
+                    {
+                        GameObject newRef = newReference as GameObject;
+                        if (newRef == null)
+                        {
+                            record.Target = null;
+                        }
+                        else
+                        {
+                            record.Target = newRef;
+                        }
+                    }
+                }
+
+                if (record.OldState == oldReference)
+                {
+                    record.OldState = newReference;
+                }
+
+                if(record.NewState is object[])
+                {
+                    object[] values = (object[])record.NewState;
+                    for(int i = 0; i < values.Length; ++i)
+                    {
+                        if(values[i] == oldReference)
+                        {
+                            values[i] = newReference;
+                        }
+                    }
+                }
+
+                if ((record.Target as GameObject) == null)
+                {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if (newRecord != null)
+            {
+                newRecord.Redo();
+            }
         }
     }
 
@@ -1182,96 +1656,119 @@ namespace Battlehub.RTCommon
             StateChanged();
         }
 
+        public void BeginRecord()
+        {
+            
+        }
+
+        public void EndRecord()
+        {
+         
+        }
+
+        public void Redo()
+        {
+         
+        }
+
+        public void Undo()
+        {
+         
+        }
+
+        public void Purge()
+        {
+            
+        }
+
+        public void Erase(object oldRef, object newRef)
+        {
+            
+        }
+
+        public void Store()
+        {
+         
+        }
+
+        public void Restore()
+        {
+         
+        }
+
+        public Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)
+        {
+            return null;
+        }
+
+        public void Select(UnityObject[] objects, UnityObject activeObject)
+        {
+         
+        }
+
+        public void RegisterCreatedObjects(ExposeToEditor[] createdObjects)
+        {
+         
+        }
+
+        public void DestroyObjects(ExposeToEditor[] destoryedObjects)
+        {
+            
+        }
+
+
+      
+        public void BeginRecordValue(object target, MemberInfo memberInfo)
+        {
+           
+        }
+
+        public void BeginRecordValue(object target, object accessor, MemberInfo memberInfo)
+        {
+            
+        }
+
+        public void EndRecordValue(object target, MemberInfo memberInfo)
+        {
+            
+        }
+
+        public void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased)
+        {
+            
+        }
+
+        //public void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        //{
+
+        //}
+
+        public void BeginRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        {
+
+        }
+        public void EndRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
+        {
+
+        }
+
+        public void AddComponent(ExposeToEditor obj, Type type)
+        {
+
+        }
+
+        public void DestroyComponent(Component destroy, MemberInfo[] memberInfo)
+        {
+
+        }
+
+
         public event RuntimeUndoEventHandler BeforeUndo;
         public event RuntimeUndoEventHandler UndoCompleted;
         public event RuntimeUndoEventHandler BeforeRedo;
         public event RuntimeUndoEventHandler RedoCompleted;
         public event RuntimeUndoEventHandler StateChanged;
 
-        public void BeginDestroyObject(GameObject g)
-        {
-        }
-
-        public void BeginRecord()
-        {
-        }
-
-        public void BeginRegisterCreateObject(GameObject g)
-        {
-        }
-
-        public void DestroyObject(GameObject g)
-        {
-        }
-
-        public void EndRecord()
-        {
-        }
-
-        public void Purge()
-        {
-        }
-
-        public void RecordComponent(MonoBehaviour component)
-        {
-        }
-
-        public void RecordObject(object target, object state, ApplyCallback applyCallback, PurgeCallback purgeCallback = null)
-        {
-        }
-
-        public void RecordSelection()
-        {
-        }
-
-        public void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1)
-        {
-        }
-
-        public void RecordValue(object target, MemberInfo memberInfo)
-        {
-        }
-
-        public void RecordValues(object target, MemberInfo[] memberInfo)
-        {
-        }
-
-        public void Redo()
-        {
-        }
-
-        public void RegisterCreatedObject(GameObject g)
-        {
-        }
-
-        public void Restore()
-        {
-        }
-
-        public void Store()
-        {
-        }
-
-        public void Undo()
-        {
-        }
-
-        public void Replace(object obj, object replacement)
-        {
-
-        }
-
-        public void Remove(object obj)
-        {
-
-        }
-
-        public void AddComponent(ExposeToEditor go, System.Type type)
-        {
-        }
-
-        public void DestroyComponent(Component component, MemberInfo[] memberInfo)
-        {
-        }
+  
     }
 }

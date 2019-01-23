@@ -305,28 +305,27 @@ namespace Battlehub.RTEditor
 
         private void OnProjectResourcesSelectionChanged(object sender, ProjectTreeEventArgs e)
         {
-            if(e.ProjectItem != null)
+            if(m_projectResources.SelectedItems == null)
             {
-                
-                if (!e.ProjectItem.IsFolder)
+                Editor.Selection.activeObject = null;
+            }
+            else
+            {
+                AssetItem[] assetItems = m_projectResources.SelectedItems.OfType<AssetItem>().Where(o => !m_project.IsScene(o)).ToArray();
+                if(assetItems.Length == 0)
                 {
-                    if(m_project.IsScene(e.ProjectItem))
-                    {
-                        Editor.Selection.activeObject = null;
-                    }
-                    else
-                    {
-                        Editor.IsBusy = true;
-                        m_project.Load(new[] { (AssetItem)e.ProjectItem }, (error, obj) =>
-                        {
-                            Editor.IsBusy = false;
-                            Editor.Selection.activeObject = obj[0];
-                        });
-                    }
-                }   
-                else
-                {                    
                     Editor.Selection.activeObject = null;
+                }
+                else
+                {
+                    Editor.IsBusy = true;
+                    m_project.Load(assetItems, (error, objects) =>
+                    {
+                        Editor.IsBusy = false;
+                        m_projectResources.HandleEditorSelectionChange = false;
+                        Editor.Selection.objects = objects;
+                        m_projectResources.HandleEditorSelectionChange = true;
+                    });
                 }
             }
         }
@@ -343,9 +342,5 @@ namespace Battlehub.RTEditor
             editor.DeleteAssets(e.ProjectItems);
         }
 
-        private void CreateFolder()
-        {
-            Debug.LogWarning("CreateFolder");
-        }
     }
 }

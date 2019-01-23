@@ -1,4 +1,5 @@
 ﻿using Battlehub.Utils;
+using System;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,13 +60,13 @@ namespace Battlehub.RTEditor
             base.OnDestroyOverride();
         }
 
-        protected override void InitOverride(object target, MemberInfo memberInfo, string label = null)
+        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            base.InitOverride(target, memberInfo, label);
+            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
 
-            BoundsAccessor accessor = new BoundsAccessor(this);
-            m_center.Init(accessor, Strong.PropertyInfo((BoundsAccessor x) => x.Center, "Center"), "Center", OnValueChanging, null, OnEndEdit, false);
-            m_extents.Init(accessor, Strong.PropertyInfo((BoundsAccessor x) => x.Extents, "Extents"), "Extents", OnValueChanging, null, OnEndEdit, false);
+            BoundsAccessor boundsAccessor = new BoundsAccessor(this);
+            m_center.Init(boundsAccessor, boundsAccessor, Strong.PropertyInfo((BoundsAccessor x) => x.Center, "Center"), null, "Center", OnValueChanging, null, OnEndEdit, false);
+            m_extents.Init(boundsAccessor, boundsAccessor, Strong.PropertyInfo((BoundsAccessor x) => x.Extents, "Extents"), null, "Extents", OnValueChanging, null, OnEndEdit, false);
         }
 
         protected override void ReloadOverride()

@@ -61,7 +61,7 @@ namespace Battlehub.RTCommon
                     {
                         throw new System.InvalidOperationException("Operation is invalid in PlayeMode");
                     }
-                    return m_playModeCache.Where(o => o.Parent == null);
+                    return m_playModeCache.Where(o => o.GetParent() == null);
                 }
                 else
                 {
@@ -74,7 +74,7 @@ namespace Battlehub.RTCommon
                         }
                         m_editModeCache = new HashSet<ExposeToEditor>(objects);
                     }
-                    return m_editModeCache.Where(o => o.Parent == null);
+                    return m_editModeCache.Where(o => o.GetParent() == null);
                 }
             }
 
@@ -178,7 +178,7 @@ namespace Battlehub.RTCommon
                 List<GameObject> playmodeSelection = new List<GameObject>();
                 foreach(ExposeToEditor editorObj in m_editModeCache.OrderBy(eo => eo.transform.GetSiblingIndex()))
                 {
-                    if (editorObj.Parent != null)
+                    if (editorObj.GetParent() != null)
                     {
                         continue;
                     }

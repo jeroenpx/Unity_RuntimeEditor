@@ -717,7 +717,7 @@ namespace Battlehub.RTHandles
             if (m_isDragging)
             {
                 Editor.Tools.ActiveTool = this;
-                RecordTransform();
+                BeginRecordTransform();
             }
             else
             {
@@ -736,7 +736,7 @@ namespace Battlehub.RTHandles
             if (m_isDragging)
             {
                 OnDrop();
-                RecordTransform();
+                EndRecordTransform();
                 m_isDragging = false;
             }
         }
@@ -796,15 +796,26 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual void RecordTransform()
+        protected virtual void BeginRecordTransform()
         {
             Editor.Undo.BeginRecord();
             for (int i = 0; i < m_activeRealTargets.Length; ++i)
             {
-                Editor.Undo.RecordTransform(m_activeRealTargets[i]);
+                Editor.Undo.BeginRecordTransform(m_activeRealTargets[i]);
             }
             Editor.Undo.EndRecord();
         }
+
+        protected virtual void EndRecordTransform()
+        {
+            Editor.Undo.BeginRecord();
+            for (int i = 0; i < m_activeRealTargets.Length; ++i)
+            {
+                Editor.Undo.EndRecordTransform(m_activeRealTargets[i]);
+            }
+            Editor.Undo.EndRecord();
+        }
+
 
         private void OnRedoCompleted()
         {

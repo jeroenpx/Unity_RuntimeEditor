@@ -40,12 +40,12 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void InitOverride(object target, MemberInfo memberInfo, string label = null)
+        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            base.InitOverride(target, memberInfo, label);
+            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
-            Type enumType = GetEnumType(target);
+            Type enumType = GetEnumType(accessor);
             string[] names = Enum.GetNames(enumType);
 
             for (int i = 0; i < names.Length; ++i)
@@ -60,7 +60,7 @@ namespace Battlehub.RTEditor
         {
             int index = 0;
 
-            Type enumType = GetEnumType(Target);
+            Type enumType = GetEnumType(Accessor);
             index = Array.IndexOf(Enum.GetValues(enumType), value);
             
             m_input.value = index;
@@ -68,7 +68,7 @@ namespace Battlehub.RTEditor
 
         private void OnValueChanged(int index)
         {
-            Type enumType = GetEnumType(Target);
+            Type enumType = GetEnumType(Accessor);
             Enum value = (Enum)Enum.GetValues(enumType).GetValue(index);
             SetValue(value);
             EndEdit();

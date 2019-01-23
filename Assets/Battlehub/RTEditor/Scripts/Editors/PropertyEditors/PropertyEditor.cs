@@ -83,66 +83,6 @@ namespace Battlehub.RTEditor
         }
     }
 
-    //public class ArrayElementAccessor
-    //{
-    //    private int m_index;
-    //    private PropertyEditor<Array> m_editor;
-
-    //    public string Name
-    //    {
-    //        get;
-    //        private set;
-    //    }
-
-    //    public Type Type
-    //    {
-    //        get;
-    //        private set;
-    //    }
-
-    //    public object Value
-    //    {
-    //        get
-    //        {
-
-    //            Array arr = GetArray();
-    //            if (arr == null)
-    //            {
-    //                return null;
-    //            }
-    //            return arr.GetValue(m_index);
-    //        }
-    //        set
-    //        {
-    //            Array arr = GetArray();
-    //            arr.SetValue(value, m_index);
-    //            m_editor.SetValue(arr);
-    //        }
-    //    }
-
-    //    private Array GetArray()
-    //    {
-    //        return m_editor.GetValue();
-    //    }
-
-    //    public ArrayElementAccessor(PropertyEditor<Array> editor, int index, string name)
-    //    {
-    //        m_editor = editor;
-    //        m_index = index;
-    //        Name = name;
-    //        if (m_editor.MemberInfo is PropertyInfo)
-    //        {
-    //            PropertyInfo pInfo = (PropertyInfo)m_editor.MemberInfo;
-    //            Type = pInfo.PropertyType.GetElementType();
-    //        }
-    //        else
-    //        {
-    //            FieldInfo fInfo = (FieldInfo)m_editor.MemberInfo;
-    //            Type = fInfo.FieldType.GetElementType();
-    //        }
-    //    }
-    //}
-
     public class IListElementAccessor
     {
         private int m_index;
@@ -254,6 +194,15 @@ namespace Battlehub.RTEditor
             get;
             private set;
         }
+        
+        protected object Accessor
+        {
+            get;
+            private set;
+        }
+
+        private Action<object, object> m_eraseTargetCallback;
+
         public MemberInfo MemberInfo
         {
             get;
@@ -333,8 +282,9 @@ namespace Battlehub.RTEditor
 
         }
 
-        public void Init(object target,
+        public void Init(object target, object accessor,
             MemberInfo memberInfo,
+            Action<object, object> eraseTargetCallback = null,
             string label = null,
             PropertyEditorCallback valueChangingCallback = null,
             PropertyEditorCallback valueChangedCallback = null,
@@ -351,11 +301,11 @@ namespace Battlehub.RTEditor
                 m_childDescriptors = childDescriptors.ToDictionary(d => d.MemberInfo);
             }
             m_lockValue = true;
-            InitOverride(target, memberInfo, label);
+            InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             m_lockValue = false;
         }
 
-        protected virtual void InitOverride(object target, MemberInfo memberInfo, string label = null)
+        protected virtual void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
         {
             if(target == null)
             {
@@ -401,9 +351,11 @@ namespace Battlehub.RTEditor
                 
                 MemberInfoType = arrayElement.Type;
             }
-        
+
             Target = target;
-            MemberInfo = memberInfo; 
+            Accessor = accessor;
+            MemberInfo = memberInfo;
+            m_eraseTargetCallback = eraseTargetCallback;
         }
 
         public void Reload()
@@ -429,7 +381,7 @@ namespace Battlehub.RTEditor
             {
                 if(record)
                 {
-                    Record();
+                    BeginRecord();
                 }
                 
                 m_isEditing = true;
@@ -440,7 +392,7 @@ namespace Battlehub.RTEditor
         {
             if(m_isEditing && record)
             {
-                Record();
+                EndRecord();
                 if(m_endEditCallback != null)
                 {
                     m_endEditCallback();
@@ -451,18 +403,26 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnBeforeUndo()
         {
-            if(m_isEditing)
+            if (m_isEditing)
             {
-                Record();
+                EndRecord();
             }
             m_isEditing = false;
         }
 
-        protected void Record()
+        protected void BeginRecord()
         {
             if(m_enableUndo)
             {
-                Editor.Undo.RecordValue(Target, MemberInfo);
+                Editor.Undo.BeginRecordValue(Target, Accessor, MemberInfo);
+            }
+        }
+
+        protected void EndRecord()
+        {
+            if(m_enableUndo)
+            {
+                Editor.Undo.EndRecordValue(Target, Accessor, MemberInfo, m_eraseTargetCallback);
             }
         }
 
@@ -487,9 +447,9 @@ namespace Battlehub.RTEditor
     {
         protected T m_currentValue;
    
-        protected override void InitOverride(object target, MemberInfo memberInfo, string label = null)
+        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
         {
-            base.InitOverride(target, memberInfo, label);
+            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             SetInputField(GetValue());
         }
 
@@ -511,11 +471,11 @@ namespace Battlehub.RTEditor
             if (MemberInfo is PropertyInfo)
             {
                 PropertyInfo prop = (PropertyInfo)MemberInfo;
-                return (T)prop.GetValue(Target, null);
+                return (T)prop.GetValue(Accessor, null);
             }
 
             FieldInfo field = (FieldInfo)MemberInfo;
-            return (T)field.GetValue(Target);
+            return (T)field.GetValue(Accessor);
         }
 
         public void SetValue(T value)
@@ -524,18 +484,26 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
+            if (Target is UnityObject)
+            {
+                UnityObject obj = (UnityObject)Target;
+                if (obj == null)
+                {
+                    return;
+                }
+            }
 
             RaiseValueChanging();
             BeginEdit();
             if (MemberInfo is PropertyInfo)
             {
                 PropertyInfo prop = (PropertyInfo)MemberInfo;
-                prop.SetValue(Target, value, null);
+                prop.SetValue(Accessor, value, null);
             }
             else
             {
                 FieldInfo field = (FieldInfo)MemberInfo;
-                field.SetValue(Target, value);
+                field.SetValue(Accessor, value);
             }
 
             m_currentValue = value;

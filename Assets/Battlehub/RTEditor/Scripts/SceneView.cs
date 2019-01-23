@@ -161,54 +161,64 @@ namespace Battlehub.RTEditor
                 {
                     AssetItem assetItem = (AssetItem)Editor.DragDrop.DragObjects[0];
                     Editor.IsBusy = true;
-                    m_project.Load(new[] { assetItem }, (error, material) =>
+                    m_project.Load(new[] { assetItem }, (error, obj) =>
                     {
                         Editor.IsBusy = false;
-                        Editor.Undo.BeginRecord();
-
-                        if (renderer != null)
+                        
+                        if(error.HasError)
                         {
-                            Editor.Undo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
-                            Material[] materials = renderer.sharedMaterials;
-                            for (int i = 0; i < materials.Length; ++i)
+                            IWindowManager wm = IOC.Resolve<IWindowManager>();
+                            if(wm != null)
                             {
-                                materials[i] = (Material)material[0];
+                                wm.MessageBox("Unable to load asset item ", error.ErrorText);
                             }
-                            renderer.sharedMaterials = materials;
+                            return;
                         }
 
-                        if (sRenderer != null)
+                        if(obj[0] is Material)
                         {
-                            Editor.Undo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
-                            Material[] materials = sRenderer.sharedMaterials;
-                            for (int i = 0; i < materials.Length; ++i)
+                            if (renderer != null)
                             {
-                                materials[i] = (Material)material[0];
+                                Editor.Undo.BeginRecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                                Material[] materials = renderer.sharedMaterials;
+                                for (int i = 0; i < materials.Length; ++i)
+                                {
+                                    materials[i] = (Material)obj[0];
+                                }
+                                renderer.sharedMaterials = materials;
                             }
-                            sRenderer.sharedMaterials = materials;
-                        }
 
-                        if (renderer != null || sRenderer != null)
-                        {
-                            Editor.Undo.EndRecord();
-                        }
+                            if (sRenderer != null)
+                            {
+                                Editor.Undo.BeginRecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                                Material[] materials = sRenderer.sharedMaterials;
+                                for (int i = 0; i < materials.Length; ++i)
+                                {
+                                    materials[i] = (Material)obj[0];
+                                }
+                                sRenderer.sharedMaterials = materials;
+                            }
 
-                        if (renderer != null || sRenderer != null)
-                        {
-                            Editor.Undo.BeginRecord();
-                        }
+                            if (renderer != null || sRenderer != null)
+                            {
+                                Editor.Undo.BeginRecord();
+                            }
 
-                        if (renderer != null)
-                        {
-                            Editor.Undo.RecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
-                        }
+                            if (renderer != null)
+                            {
+                                Editor.Undo.EndRecordValue(renderer, Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                            }
 
-                        if (sRenderer != null)
-                        {
-                            Editor.Undo.RecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
-                        }
+                            if (sRenderer != null)
+                            {
+                                Editor.Undo.EndRecordValue(sRenderer, Strong.PropertyInfo((SkinnedMeshRenderer x) => x.sharedMaterials, "sharedMaterials"));
+                            }
 
-                        Editor.Undo.EndRecord();
+                            if (renderer != null || sRenderer != null)
+                            {
+                                Editor.Undo.EndRecord();
+                            }
+                        }
                     });
                 }
 
@@ -219,19 +229,11 @@ namespace Battlehub.RTEditor
 
         private void RecordUndo()
         {
-            Editor.Undo.BeginRecord();
-            Editor.Undo.RecordSelection();
-            Editor.Undo.BeginRegisterCreateObject(m_prefabInstance);
-            Editor.Undo.EndRecord();
+            ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
 
-            bool isEnabled = Editor.Undo.Enabled;
-            Editor.Undo.Enabled = false;
+            Editor.Undo.BeginRecord();
+            Editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
             Editor.Selection.activeGameObject = m_prefabInstance;
-            Editor.Undo.Enabled = isEnabled;
-
-            Editor.Undo.BeginRecord();
-            Editor.Undo.RegisterCreatedObject(m_prefabInstance);
-            Editor.Undo.RecordSelection();
             Editor.Undo.EndRecord();
         }
 

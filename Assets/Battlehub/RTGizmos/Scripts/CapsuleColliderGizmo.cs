@@ -104,12 +104,20 @@ namespace Battlehub.RTGizmos
             base.AwakeOverride();
         }
 
-        protected override void RecordOverride()
+        protected override void BeginRecordOverride()
         {
-            base.RecordOverride();
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.center, "center"));
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.height, "height"));
-            Window.Editor.Undo.RecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.direction, "direction"));
+            base.BeginRecordOverride();
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.center, "center"));
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.height, "height"));
+            Window.Editor.Undo.BeginRecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.direction, "direction"));
+        }
+
+        protected override void EndRecordOverride()
+        {
+            base.EndRecordOverride();
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.center, "center"));
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.height, "height"));
+            Window.Editor.Undo.EndRecordValue(m_collider, Strong.PropertyInfo((CapsuleCollider x) => x.direction, "direction"));
         }
     }
 }

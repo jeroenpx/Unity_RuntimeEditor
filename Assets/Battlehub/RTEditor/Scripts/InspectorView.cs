@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Battlehub.RTCommon;
 using UnityObject = UnityEngine.Object;
-using UnityEngine.UI;
+using Battlehub.RTSaveLoad2.Interface;
 
 namespace Battlehub.RTEditor
 {
@@ -54,16 +54,6 @@ namespace Battlehub.RTEditor
                 DestroyEditor();
             }
         }
-
-        //private void OnEnable()
-        //{
-        //    CreateEditor();
-        //}
-
-        //private void OnDisable()
-        //{
-        //    DestroyEditor();
-        //}
 
         protected override void OnDestroyOverride()
         {
@@ -154,12 +144,7 @@ namespace Battlehub.RTEditor
             }
 
             GameObject editorPrefab;
-
-#if !UNITY_WEBGL && PROC_MATERIAL
-            if (objType == typeof(Material) || objType == typeof(ProceduralMaterial))    
-#else
             if (objType == typeof(Material))
-#endif
             {
                 Material mat = selectedObjects[0] as Material;
                 if (mat.shader == null)
@@ -188,10 +173,14 @@ namespace Battlehub.RTEditor
             bool isExposedToEditor = Editor.Selection.activeGameObject != null && Editor.Selection.activeGameObject.GetComponent<ExposeToEditor>() != null;
             if (m_addComponentRoot != null && isExposedToEditor)
             {
-                m_addComponentRoot.SetActive(true);
-                if(m_addComponentControl != null)
+                IProject project = IOC.Resolve<IProject>();
+                if(project == null || project.ToAssetItem(Editor.Selection.activeGameObject) == null)
                 {
-                    m_addComponentControl.ComponentSelected += OnAddComponent;
+                    m_addComponentRoot.SetActive(true);
+                    if (m_addComponentControl != null)
+                    {
+                        m_addComponentControl.ComponentSelected += OnAddComponent;
+                    }
                 }
             }
         }
