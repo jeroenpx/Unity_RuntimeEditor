@@ -985,6 +985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
+  m_activateOnAnyKey: 0
   m_windowType: 51
   m_rectTransform: {fileID: 0}
   m_background: {fileID: 0}
@@ -2041,6 +2042,7 @@ MonoBehaviour:
   InputProvider: {fileID: 114488349424873486}
   SelectOnPointerUp: 0
   CanUnselectAll: 1
+  CanSelectAll: 1
   CanEdit: 1
   CanRemove: 1
   CanDrag: 1

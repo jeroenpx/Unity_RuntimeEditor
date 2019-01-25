@@ -26,7 +26,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         event ProjectEventHandler<AssetItem[]> ImportCompleted;
         event ProjectEventHandler<ProjectItem[]> BeforeDeleteCompleted;
         event ProjectEventHandler<ProjectItem[]> DeleteCompleted;
-        event ProjectEventHandler<ProjectItem[], ProjectItem> MoveCompleted;
+        event ProjectEventHandler<ProjectItem[], ProjectItem[]> MoveCompleted;
         event ProjectEventHandler<ProjectItem> RenameCompleted;
         event ProjectEventHandler<ProjectItem> CreateCompleted;
 
@@ -94,7 +94,7 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         ProjectAsyncOperation<ProjectItem> Create(ProjectItem projectItem, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
-        ProjectAsyncOperation<ProjectItem[], ProjectItem> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem> callback = null);
+        ProjectAsyncOperation<ProjectItem[], ProjectItem[]> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);
 
         ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);

@@ -702,8 +702,8 @@ namespace Battlehub.UIControls
 
                 VirtualizingTreeViewItem treeViewItem = (VirtualizingTreeViewItem)itemContainer;
                 treeViewItem.CanExpand = args.HasChildren;
-                treeViewItem.CanEdit = args.CanEdit;
-                treeViewItem.CanDrag = args.CanDrag;
+                treeViewItem.CanEdit = CanEdit && args.CanEdit;
+                treeViewItem.CanDrag = CanDrag && args.CanDrag;
                 treeViewItem.UpdateIndent();
             }
             else

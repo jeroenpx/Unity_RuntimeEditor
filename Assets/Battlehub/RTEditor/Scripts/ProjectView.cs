@@ -214,7 +214,7 @@ namespace Battlehub.RTEditor
             m_projectTree.SelectedFolder = result;
         }
 
-        private void OnMoveCompleted(Error error, ProjectItem[] projectItems, ProjectItem parent)
+        private void OnMoveCompleted(Error error, ProjectItem[] projectItems, ProjectItem[] oldParents)
         {
             if (error.HasError)
             {
@@ -225,10 +225,10 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < projectItems.Length; ++i)
             {
                 ProjectItem projectItem = projectItems[i];
-            
+                ProjectItem oldParent = oldParents[i];
                 if (!(projectItem is AssetItem))
                 {
-                    m_projectTree.ChangeParent(projectItems);
+                    m_projectTree.ChangeParent(projectItem, oldParent);
                 }
             }
         }

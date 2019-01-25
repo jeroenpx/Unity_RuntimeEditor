@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
+  m_activateOnAnyKey: 0
   m_windowType: 55
   m_rectTransform: {fileID: 0}
   m_background: {fileID: 0}

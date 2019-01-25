@@ -186,7 +186,6 @@ namespace Battlehub.UIControls
         /// </summary>
         public event EventHandler<ItemsRemovedArgs> ItemsRemoved;
 
-
         /// <summary>
         /// Raised when IsFocused value changed
         /// </summary>
@@ -194,6 +193,8 @@ namespace Battlehub.UIControls
         public event EventHandler Submit;
         public event EventHandler Cancel;
         public event EventHandler<PointerEventArgs> Click;
+        public event EventHandler<PointerEventArgs> PointerEnter;
+        public event EventHandler<PointerEventArgs> PointerExit;
 
         [SerializeField]
         public EventSystem m_eventSystem;
@@ -308,7 +309,9 @@ namespace Battlehub.UIControls
             Right
         }
         private ScrollDir m_scrollDir;
-        
+
+        private PointerEnterExitListener m_pointerEventsListener;
+
         /// <summary>
         /// ScrollView RectTransformChange listener
         /// </summary>
@@ -368,6 +371,10 @@ namespace Battlehub.UIControls
         /// </summary>
         private ItemContainerData[] m_dragItems;
         private object[] m_dragItemsData;
+        public object[] DragItems
+        {
+            get { return m_dragItems; }
+        }
 
         protected VirtualizingItemDropMarker DropMarker
         {
@@ -701,6 +708,13 @@ namespace Battlehub.UIControls
                 m_rtcListener.RectTransformChanged += OnViewportRectTransformChanged;
             }
 
+            m_pointerEventsListener = GetComponentInChildren<PointerEnterExitListener>();
+            if(m_pointerEventsListener != null)
+            {
+                m_pointerEventsListener.PointerEnter += OnViewportPointerEnter;
+                m_pointerEventsListener.PointerExit += OnViewportPointerExit;
+            }
+
             if (Camera == null)
             {
                 Canvas canvas = GetComponentInParent<Canvas>();
@@ -1004,6 +1018,12 @@ namespace Battlehub.UIControls
             if (m_rtcListener != null)
             {
                 m_rtcListener.RectTransformChanged -= OnViewportRectTransformChanged;
+            }
+
+            if (m_pointerEventsListener != null)
+            {
+                m_pointerEventsListener.PointerEnter -= OnViewportPointerEnter;
+                m_pointerEventsListener.PointerExit -= OnViewportPointerExit;
             }
 
             OnDestroyOverride();
@@ -1528,6 +1548,21 @@ namespace Battlehub.UIControls
                 }
             }
         }
+        private void OnViewportPointerEnter(object sender, PointerEventArgs e)
+        {
+            if(PointerEnter != null)
+            {
+                PointerEnter(this, e);
+            }
+        }
+
+        private void OnViewportPointerExit(object sender, PointerEventArgs e)
+        {
+            if(PointerExit != null)
+            {
+                PointerExit(this, e);
+            }
+        }
 
         private void SetContainersSize()
         {
@@ -1622,34 +1657,43 @@ namespace Battlehub.UIControls
             if (m_scrollRect.ItemsCount > 0)
             {
                 RectTransform rt = m_scrollRect.LastContainer();
-                if(rt != null)
+                if (rt != null)
                 {
                     m_dropTarget = rt.GetComponent<VirtualizingItemContainer>();
-                    m_dropMarker.Action = ItemDropAction.SetNextSibling;
-                }
-                
-            }
-
-            m_isDropInProgress = true; //Prevent ChangeParent operation
-            try
-            {
-                ItemContainerData data = GetItemContainerData(m_dropTarget.Item);
-                if (CanDrop(m_dragItems, data))
-                {
-                    Drop(m_dragItems, data, m_dropMarker.Action);
-                    if (ItemDrop != null)
+                    if (m_dropTarget.Item == m_scrollRect.Items[m_scrollRect.Items.Count - 1])
                     {
-                        ItemDrop(this, new ItemDropArgs(m_dragItemsData, m_dropTarget.Item, m_dropMarker.Action, false, eventData));
+                        m_dropMarker.Action = ItemDropAction.SetNextSibling;
+                    }
+                    else
+                    {
+                        m_dropTarget = null;
                     }
                 }
-
-                m_dropMarker.SetTarget(null);
-                m_dragItems = null;
-                m_dragItemsData = null;
             }
-            finally
+
+            if(m_dropTarget != null)
             {
-                m_isDropInProgress = false;
+                m_isDropInProgress = true; //Prevent ChangeParent operation
+                try
+                {
+                    ItemContainerData data = GetItemContainerData(m_dropTarget.Item);
+                    if (CanDrop(m_dragItems, data))
+                    {
+                        Drop(m_dragItems, data, m_dropMarker.Action);
+                        if (ItemDrop != null)
+                        {
+                            ItemDrop(this, new ItemDropArgs(m_dragItemsData, m_dropTarget.Item, m_dropMarker.Action, false, eventData));
+                        }
+                    }
+
+                    m_dropMarker.SetTarget(null);
+                    m_dragItems = null;
+                    m_dragItemsData = null;
+                }
+                finally
+                {
+                    m_isDropInProgress = false;
+                }
             }
         }
 
@@ -1786,6 +1830,7 @@ namespace Battlehub.UIControls
             }
             return container.GetComponent<VirtualizingItemContainer>();
         }
+
 
         public ItemContainerData GetItemContainerData(object item)
         {
@@ -2130,7 +2175,5 @@ namespace Battlehub.UIControls
                 Click(this, new PointerEventArgs(eventData));
             }
         }
-
-        
     }
 }

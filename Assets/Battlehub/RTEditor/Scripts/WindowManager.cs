@@ -426,17 +426,17 @@ namespace Battlehub.RTEditor
                     new LayoutInfo(true,
                         new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
                         new LayoutInfo(consoleContent.transform, consoleWd.Header, consoleWd.Icon),
-                        0.7f),
+                        0.5f),
                     new LayoutInfo(true,
                         new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
                         new LayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon),
-                        0.5f),
+                        0.75f),
                     0.25f),
                 new LayoutInfo(true,
                     new LayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
                     new LayoutInfo(projectContent.transform, projectWd.Header, projectWd.Icon),
                     0.5f),
-                1.0f);
+                0.75f);
 
             m_dockPanels.RootRegion.Build(layout);
 

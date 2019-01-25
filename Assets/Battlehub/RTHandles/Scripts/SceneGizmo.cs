@@ -12,6 +12,7 @@ namespace Battlehub.RTHandles
         public Button BtnProjection;
         public Transform Pivot;
         public Vector2 Size = new Vector2(96, 96);
+        public Vector2 Offset = new Vector2(0, 0);
         public Vector3 Up = Vector3.up;
         public RuntimeHandlesComponent Appearance;
 
@@ -389,7 +390,7 @@ namespace Battlehub.RTHandles
 
             if (m_aspect != m_camera.aspect)
             {
-                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y, Size.x, Size.y);
+                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x + Offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y + Offset.y, Size.x, Size.y);
                 m_aspect = m_camera.aspect;
             }
 
@@ -530,7 +531,7 @@ namespace Battlehub.RTHandles
             if (Window.Camera != null)
             {
                 bool initColliders = false;
-                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y, Size.x, Size.y);
+                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x + Offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y + Offset.y, Size.x, Size.y);
                 if (m_camera.pixelRect.height == 0 || m_camera.pixelRect.width == 0)
                 {
                    // enabled = false;
@@ -547,7 +548,7 @@ namespace Battlehub.RTHandles
                 m_camera.depth = Window.Camera.depth + 1;
                 m_aspect = m_camera.aspect;
 
-                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x / 2 - 17, (Screen.height - Window.Camera.pixelRect.yMax) + Size.y - 10.0f, 35, 14);
+                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x / 2 - 17 + Offset.x, (Screen.height - Window.Camera.pixelRect.yMax) + Size.y - Offset.y - 3, 35, 14);
                 
                 m_buttonStyle = new GUIStyle();
                 m_buttonStyle.alignment = TextAnchor.MiddleCenter;

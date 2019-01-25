@@ -1129,7 +1129,11 @@ namespace Battlehub.UIControls.DockPanels
             Region[] regions = m_root.GetComponentsInChildren<Region>();
             for(int i = 0; i < regions.Length; ++i)
             {
-                regions[i].m_frameImage.raycastTarget = value;
+                if(regions[i].m_frameImage != null)
+                {
+                    regions[i].m_frameImage.raycastTarget = value;
+                }
+                
             }
         }
 
@@ -1414,6 +1418,9 @@ namespace Battlehub.UIControls.DockPanels
                 Region targetRegion = tab.GetComponentInParent<Region>();
                 Move(tab, m_dragContent, tab.Index, targetRegion, m_splitType);
                 targetRegion.UpdateVisualState();
+
+                m_dragContent.localPosition = Vector3.zero;
+                ((RectTransform)m_dragContent).Stretch();
             }
 
             IEnumerable<Tab> children = m_beginDragRegion.m_tabPanel.transform.OfType<Transform>().Select(t => t.GetComponent<Tab>());

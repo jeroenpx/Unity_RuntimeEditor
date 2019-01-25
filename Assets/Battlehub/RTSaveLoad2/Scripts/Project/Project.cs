@@ -34,7 +34,7 @@ namespace Battlehub.RTSaveLoad2
         public event ProjectEventHandler<AssetItem[]> ImportCompleted;
         public event ProjectEventHandler<ProjectItem[]> BeforeDeleteCompleted;
         public event ProjectEventHandler<ProjectItem[]> DeleteCompleted;
-        public event ProjectEventHandler<ProjectItem[], ProjectItem> MoveCompleted;
+        public event ProjectEventHandler<ProjectItem[], ProjectItem[]> MoveCompleted;
         public event ProjectEventHandler<ProjectItem> RenameCompleted;
         public event ProjectEventHandler<ProjectItem> CreateCompleted;
         
@@ -3034,7 +3034,7 @@ namespace Battlehub.RTSaveLoad2
         /// <param name="target"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation<ProjectItem[], ProjectItem> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem> callback)
+        public ProjectAsyncOperation<ProjectItem[], ProjectItem[]> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem[]> callback)
         {
             if (m_root == null)
             {
@@ -3046,7 +3046,9 @@ namespace Battlehub.RTSaveLoad2
             }
             IsBusy = true;
 
-            ProjectAsyncOperation<ProjectItem[], ProjectItem> pao = new ProjectAsyncOperation<ProjectItem[], ProjectItem>();
+            ProjectItem[] oldParents = projectItems.Select(item => item.Parent).ToArray();
+
+            ProjectAsyncOperation<ProjectItem[], ProjectItem[]> pao = new ProjectAsyncOperation<ProjectItem[], ProjectItem[]>();
             m_storage.Move(m_projectPath, projectItems.Select(p => p.Parent.ToString()).ToArray(), projectItems.Select(p => p.NameExt).ToArray(), target.ToString(), error =>
             {
                 IsBusy = false;
@@ -3063,15 +3065,15 @@ namespace Battlehub.RTSaveLoad2
                 
                 if(callback != null)
                 {
-                    callback(error, projectItems, target);
+                    callback(error, projectItems, oldParents);
                 }
                 if(MoveCompleted != null)
                 {
-                    MoveCompleted(error, projectItems, target);
+                    MoveCompleted(error, projectItems, oldParents);
                 }
 
                 pao.Result = projectItems;
-                pao.Result2 = target;
+                pao.Result2 = oldParents;
                 pao.Error = error;
                 pao.IsCompleted = true;
             });
