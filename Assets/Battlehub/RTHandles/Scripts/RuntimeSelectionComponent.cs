@@ -248,13 +248,33 @@ namespace Battlehub.RTHandles
             Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
             Editor.Selection.SelectionChanged -= OnRuntimeSelectionChanged;
 
-            if(Window != null)
+            if (Window != null)
             {
                 RuntimeSelectionComponentUI ui = Window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
                 if (ui != null)
                 {
                     ui.Selected -= OnUISelected;
                     ui.Unselected -= OnUIUnselected;
+                }
+            }
+
+            GameObject[] selectedObjects = Editor.Selection.gameObjects;
+            if (selectedObjects != null)
+            {
+                for (int i = 0; i < selectedObjects.Length; ++i)
+                {
+                    GameObject go = selectedObjects[i];
+                    if (go != null)
+                    {
+                        SelectionGizmo[] selectionGizmo = go.GetComponents<SelectionGizmo>();
+                        for (int g = 0; g < selectionGizmo.Length; ++g)
+                        {
+                            if (selectionGizmo[g] != null && selectionGizmo[g].Window == Window)
+                            {
+                                Destroy(selectionGizmo[g]);
+                            }
+                        }
+                    }
                 }
             }
         }

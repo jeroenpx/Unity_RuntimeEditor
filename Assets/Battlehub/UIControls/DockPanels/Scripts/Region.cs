@@ -1410,6 +1410,13 @@ namespace Battlehub.UIControls.DockPanels
                 freeRegion.Fit();
 
                 freeRegion.RaiseDepthChanged();
+
+                Outline outline = freeRegion.GetComponent<Outline>();
+                if (outline != null)
+                {
+                    outline.enabled = true;
+                    m_frameImage.color = m_headerImage.color;
+                }
             }
             else
             {
@@ -1470,6 +1477,13 @@ namespace Battlehub.UIControls.DockPanels
             ForceUpdateLayoutImmediate(freeRegion.transform);
 
             freeRegion.IsSelected = true;
+
+            Outline outline = freeRegion.GetComponent<Outline>();
+            if(outline != null)
+            {
+                outline.enabled = true;
+                m_frameImage.color = m_headerImage.color;
+            }
 
             return rt;
         }

@@ -50,7 +50,7 @@ namespace Battlehub.RTEditor
                     SetValue(colorSelector.SelectedColor);
                     EndEdit();
                     SetInputField(colorSelector.SelectedColor);
-                }, (sender, args) => { }, 200, 450, 200, 450, false);
+                }, (sender, args) => { }, 200, 345, 200, 345, false);
 
             colorSelector = dialogTransform.GetComponentInChildren<SelectColorDialog>();
             colorSelector.SelectedColor = GetValue();

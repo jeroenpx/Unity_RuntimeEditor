@@ -82,8 +82,8 @@ namespace Battlehub.RTEditor
             m_externalTreeView.CanEdit = false;
             m_externalTreeView.CanUnselectAll = false;
 
-            m_externalTreeView.transform.parent.gameObject.SetActive(false);
-            m_builtInTreeView.transform.parent.gameObject.SetActive(true);
+            m_externalTreeView.transform.parent.parent.gameObject.SetActive(false);
+            m_builtInTreeView.transform.parent.parent.gameObject.SetActive(true);
 
             m_project = IOC.Resolve<IProject>();
             m_builtInTreeView.Items = m_project.AssetLibraries;

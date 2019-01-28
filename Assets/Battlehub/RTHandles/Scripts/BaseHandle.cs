@@ -915,7 +915,16 @@ namespace Battlehub.RTHandles
 
         protected virtual Plane GetDragPlane()
         {
-            Vector3 toCam = Window.Camera.cameraToWorldMatrix.MultiplyVector(Vector3.forward); //Camera.transform.position - transform.position;
+            Vector3 toCam;
+            if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(Window.Camera.transform.forward, transform.forward)), 1))
+            {
+                toCam = Window.Camera.transform.position - transform.position;
+            }
+            else
+            {
+                 toCam = Window.Camera.cameraToWorldMatrix.MultiplyVector(Vector3.forward); 
+            }
+            
             Plane dragPlane = new Plane(toCam.normalized, transform.position);
             return dragPlane;
         }

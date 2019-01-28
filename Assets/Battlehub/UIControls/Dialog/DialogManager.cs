@@ -32,8 +32,8 @@ namespace Battlehub.UIControls.Dialogs
         public Dialog ShowDialog(Sprite icon, string header, Transform content,
              DialogAction<DialogCancelArgs> okAction = null, string okText = "OK",
              DialogAction<DialogCancelArgs> cancelAction = null, string cancelText = "Cancel",
-             float minWidth = 150,
-             float minHeight = 150,
+             float minWidth = 420,
+             float minHeight = 200,
              float preferredWidth = 700, 
              float preferredHeight = 400, 
              bool canResize = true)
@@ -47,9 +47,9 @@ namespace Battlehub.UIControls.Dialogs
             DialogAction<DialogCancelArgs> okAction = null, string okText = "OK",
             DialogAction<DialogCancelArgs> cancelAction = null, string cancelText = "Cancel",
             float minWidth = 350, 
-            float minHeight = 150,
+            float minHeight = 115,
             float preferredWidth = 350,
-            float preferredHeight = 150,
+            float preferredHeight = 100,
             bool canResize = false)
         {
             if(m_dialogStack.Count > 0)
@@ -69,6 +69,7 @@ namespace Battlehub.UIControls.Dialogs
             {
                 dialog.CancelAction = cancelAction;
                 dialog.CancelText = cancelText;
+                dialog.IsCancelVisible = true;
             }
             else
             {

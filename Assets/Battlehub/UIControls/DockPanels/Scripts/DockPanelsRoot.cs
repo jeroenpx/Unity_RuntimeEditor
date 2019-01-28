@@ -531,6 +531,19 @@ namespace Battlehub.UIControls.DockPanels
 
             rt.anchoredPosition = rect.position;
             region.Fit();
+
+            Outline outline = region.GetComponent<Outline>();
+            if (outline != null)
+            {
+                outline.enabled = true;
+
+                Image image = content.GetComponentInChildren<Image>();
+                if(image != null)
+                {
+                    region.FrameImage.color = image.color;
+                }
+                
+            }
         }
 
      

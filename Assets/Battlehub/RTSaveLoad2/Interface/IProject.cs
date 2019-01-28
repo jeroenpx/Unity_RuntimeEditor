@@ -18,7 +18,7 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         event ProjectEventHandler<object[]> BeginSave;
-        event ProjectEventHandler<AssetItem[]> SaveCompleted;
+        event ProjectEventHandler<AssetItem[], bool> SaveCompleted;
         event ProjectEventHandler<AssetItem[]> BeginLoad;
         event ProjectEventHandler<AssetItem[], UnityObject[]> LoadCompleted;
         event ProjectEventHandler<AssetItem[]> DuplicateCompleted;

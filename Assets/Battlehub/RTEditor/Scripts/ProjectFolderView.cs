@@ -50,7 +50,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void InsertItems(ProjectItem[] items)
+        public void InsertItems(ProjectItem[] items, bool selectAndScrollIntoView)
         {
             if(m_folders == null)
             {
@@ -91,8 +91,11 @@ namespace Battlehub.RTEditor
 
             if(selectItem != null)
             {
-                m_listBox.SelectedItem = selectItem;
-                m_listBox.ScrollIntoView(selectItem);
+                if(selectAndScrollIntoView)
+                {
+                    m_listBox.SelectedItem = selectItem;
+                    m_listBox.ScrollIntoView(selectItem);
+                }
             }
         }
 
@@ -620,7 +623,7 @@ namespace Battlehub.RTEditor
 
             if(currentFolder)
             {
-                InsertItems(new[] { folder });
+                InsertItems(new[] { folder }, true);
             }
 
             Editor.IsBusy = true;

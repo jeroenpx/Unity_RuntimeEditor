@@ -222,7 +222,7 @@ namespace Battlehub.RTEditor
                 },
                 (sender, args) => { },
                 "Create",
-                "Cancel", 120, 120, 350, 120);
+                "Cancel", 120, 100, 350, 100);
         }
 
         private void OnDestroyProjectClick()

@@ -489,7 +489,7 @@ namespace Battlehub.RTEditor
         private void UpdateDependantAssetPreviews(AssetItem[] assetItems, Action callback)
         {
             IResourcePreviewUtility previewUtil = IOC.Resolve<IResourcePreviewUtility>();
-            AssetItem[] dependantItems = m_project.GetDependantAssetItems(assetItems);
+            AssetItem[] dependantItems = m_project.GetDependantAssetItems(assetItems).Where(item => !m_project.IsScene(item)).ToArray();
             if(dependantItems.Length > 0)
             {
                 m_project.Load(dependantItems, (loadError, loadedObjects) =>
@@ -645,7 +645,7 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void OnSaveCompleted(Error error, AssetItem[] result)
+        private void OnSaveCompleted(Error error, AssetItem[] result, bool isNew)
         {
             RaiseIfIsScene(error, result, () =>
             {

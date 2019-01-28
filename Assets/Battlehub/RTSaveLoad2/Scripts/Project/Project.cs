@@ -26,7 +26,7 @@ namespace Battlehub.RTSaveLoad2
 
         public event ProjectEventHandler<ProjectItem[]> GetAssetItemsCompleted;
         public event ProjectEventHandler<object[]> BeginSave;
-        public event ProjectEventHandler<AssetItem[]> SaveCompleted;
+        public event ProjectEventHandler<AssetItem[], bool> SaveCompleted;
         public event ProjectEventHandler<AssetItem[]> BeginLoad;
         public event ProjectEventHandler<AssetItem[], UnityObject[]> LoadCompleted;
         public event ProjectEventHandler<AssetItem[]> DuplicateCompleted;
@@ -979,7 +979,8 @@ namespace Battlehub.RTSaveLoad2
 
                 if (SaveCompleted != null)
                 {
-                    SaveCompleted(error, result);
+                    bool isNew = existingAssetItems == null;
+                    SaveCompleted(error, result, isNew);
                 }
             });
         }
@@ -1366,7 +1367,8 @@ namespace Battlehub.RTSaveLoad2
                 }
                 if (SaveCompleted != null)
                 {
-                    SaveCompleted(error, assetItems);
+                    const bool isNew = false;
+                    SaveCompleted(error, assetItems, isNew);
                 }
                 ao.Result = assetItems;
                 ao.Error = error;

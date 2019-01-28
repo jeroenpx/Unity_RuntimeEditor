@@ -115,7 +115,16 @@ namespace Battlehub.RTEditor
                 for(int i = 0; i < sceneObjects.Length; ++i)
                 {
                     ExposeToEditor exposeToEditor = sceneObjects[i];
-                    UnityObject obj = (ObjectType == typeof(GameObject)) ? exposeToEditor.gameObject : (UnityObject)exposeToEditor.GetComponent(ObjectType);
+                    UnityObject obj = null;
+                    if(ObjectType == typeof(GameObject))
+                    {
+                        obj = exposeToEditor.gameObject;
+                    }
+                    else if(ObjectType.IsSubclassOf(typeof(Component)))
+                    {
+                        obj = exposeToEditor.GetComponent(ObjectType);
+                    }
+                    
                     if(obj != null)
                     {
                         AssetItem assetItem = new AssetItem()
