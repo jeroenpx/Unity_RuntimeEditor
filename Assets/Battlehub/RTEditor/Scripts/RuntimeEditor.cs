@@ -564,6 +564,8 @@ namespace Battlehub.RTEditor
             {
                 SceneLoading();
             }
+
+            Selection.objects = null;
             Undo.Purge();
 
             StartCoroutine(CoNewSceneCreated());
@@ -608,6 +610,9 @@ namespace Battlehub.RTEditor
         {
             RaiseIfIsScene(error, result, () =>
             {
+                Selection.objects = null;
+                Undo.Purge();
+
                 if (SceneLoading != null)
                 {
                     SceneLoading();

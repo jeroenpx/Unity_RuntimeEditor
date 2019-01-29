@@ -22,10 +22,10 @@ namespace Battlehub.RTEditor
             bool remove = delta < 0;
 
             IList newList = (list != null) ?
-                (IList)Activator.CreateInstance(MemberInfoType, list):
-                (IList)Activator.CreateInstance(MemberInfoType);
+                (IList)Activator.CreateInstance(PropertyType, list):
+                (IList)Activator.CreateInstance(PropertyType);
 
-            Type elementType = MemberInfoType.GetGenericArguments()[0];
+            Type elementType = PropertyType.GetGenericArguments()[0];
 
             if (remove)
             {

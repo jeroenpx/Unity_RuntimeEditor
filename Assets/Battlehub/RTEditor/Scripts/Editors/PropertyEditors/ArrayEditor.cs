@@ -7,7 +7,7 @@ namespace Battlehub.RTEditor
     {
         protected override IList Resize(IList list, int size)
         {
-            Array newArray = (Array)Activator.CreateInstance(MemberInfoType, size);
+            Array newArray = (Array)Activator.CreateInstance(PropertyType, size);
             Array arr = (Array)list;
             if (arr != null && arr.Length > 0)
             {

@@ -73,8 +73,8 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < m_gameCameras.Count; ++i)
             {
                 GameViewCamera gameCamera = m_gameCameras[i];
-                gameCamera.enabled = true;
                 gameCamera.Camera.enabled = gameCamera.IsCameraEnabled;
+                gameCamera.enabled = true;   
             }
         }
 

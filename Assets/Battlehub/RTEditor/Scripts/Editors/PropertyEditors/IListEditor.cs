@@ -28,6 +28,16 @@ namespace Battlehub.RTEditor
         private PropertyEditor m_editorPrefab;
 
         private Type m_elementType;
+        public Type ElementType
+        {
+            get { return m_elementType; }
+        }
+
+        private Type m_propertyType;
+        public Type PropertyType
+        {
+            get { return m_propertyType; }
+        }
 
         public bool StartExpanded;
 
@@ -87,31 +97,55 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public Type GetElementType(object accessor, MemberInfo memberInfo)
+        {
+            CustomTypeFieldAccessor fieldAccessor = accessor as CustomTypeFieldAccessor;
+            if (fieldAccessor != null)
+            {
+                m_propertyType = fieldAccessor.Type;
+                m_elementType = fieldAccessor.Type.GetElementType();
+                if (m_elementType == null)
+                {
+                    if (m_propertyType.IsGenericType)
+                    {
+                        m_elementType = fieldAccessor.Type.GetGenericArguments()[0];
+                    }
+                }
+            }
+            else
+            {
+                if (memberInfo is PropertyInfo)
+                {
+                    m_propertyType = ((PropertyInfo)memberInfo).PropertyType;
+                    m_elementType = m_propertyType.GetElementType();
+                    if (m_elementType == null)
+                    {
+                        if (m_propertyType.IsGenericType)
+                        {
+                            m_elementType = m_propertyType.GetGenericArguments()[0];
+                        }
+                    }
+                }
+                else if (memberInfo is FieldInfo)
+                {
+                    m_propertyType = ((FieldInfo)memberInfo).FieldType;
+                    m_elementType = m_propertyType.GetElementType();
+                    if (m_elementType == null)
+                    {
+                        if (m_propertyType.IsGenericType)
+                        {
+                            m_elementType = m_propertyType.GetGenericArguments()[0];
+                        }
+                    }
+                }
+            }
+
+            return m_elementType;
+        }
+
         protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            if (memberInfo is PropertyInfo)
-            {
-                m_elementType = ((PropertyInfo)memberInfo).PropertyType.GetElementType();
-                if (m_elementType == null)
-                {
-                    if (((PropertyInfo)memberInfo).PropertyType.IsGenericType)
-                    {
-                        m_elementType = ((PropertyInfo)memberInfo).PropertyType.GetGenericArguments()[0];
-                    }
-                }
-            }
-            else if (memberInfo is FieldInfo)
-            {
-                m_elementType = ((FieldInfo)memberInfo).FieldType.GetElementType();
-                if (m_elementType == null)
-                {
-                    if (((FieldInfo)memberInfo).FieldType.IsGenericType)
-                    {
-                        m_elementType = ((FieldInfo)memberInfo).FieldType.GetGenericArguments()[0];
-                    }
-                }
-            }
-           
+            m_elementType = GetElementType(accessor, memberInfo);
 
             if (m_elementType != null)
             {
@@ -140,7 +174,8 @@ namespace Battlehub.RTEditor
 
             if (StartExpanded)
             {
-                Expander.isOn = GetValue().Count < 8;
+                IList value = GetValue();
+                Expander.isOn = value == null || value.Count < 8;
             }
         }
 
@@ -252,7 +287,8 @@ namespace Battlehub.RTEditor
         {
             if (value == null)
             {
-                IList newArray = (IList)Activator.CreateInstance(MemberInfoType);
+               
+                IList newArray = (IList)Activator.CreateInstance(PropertyType);
                 SetValue(newArray);
                 return;
             }

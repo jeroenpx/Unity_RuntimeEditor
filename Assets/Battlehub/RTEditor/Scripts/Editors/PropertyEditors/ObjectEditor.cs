@@ -104,6 +104,13 @@ namespace Battlehub.RTEditor
                 SetInputField((GameObject)dragObject);
                 HideDragHighlight();
             }
+            else if(dragObject is ExposeToEditor)
+            {
+                SetValue(((ExposeToEditor)dragObject).gameObject);
+                EndEdit();
+                SetInputField(((ExposeToEditor)dragObject).gameObject);
+                HideDragHighlight();
+            }
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)

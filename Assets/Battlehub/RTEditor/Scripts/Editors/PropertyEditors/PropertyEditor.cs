@@ -96,8 +96,7 @@ namespace Battlehub.RTEditor
 
         public Type Type
         {
-            get;
-            private set;
+            get { return m_editor.ElementType; }
         }
 
         public object Value
@@ -135,30 +134,6 @@ namespace Battlehub.RTEditor
             m_editor = editor;
             m_index = index;
             Name = name;
-            if(m_editor.MemberInfo is PropertyInfo)
-            {
-                PropertyInfo pInfo = (PropertyInfo)m_editor.MemberInfo;
-                Type =  pInfo.PropertyType.GetElementType();
-                if(Type == null)
-                {
-                    if(pInfo.PropertyType.IsGenericType)
-                    {
-                        Type = pInfo.PropertyType.GetGenericArguments()[0];
-                    }
-                }
-            }
-            else
-            {
-                FieldInfo fInfo = (FieldInfo)m_editor.MemberInfo;
-                Type = fInfo.FieldType.GetElementType();
-                if (Type == null)
-                {
-                    if (fInfo.FieldType.IsGenericType)
-                    {
-                        Type = fInfo.FieldType.GetGenericArguments()[0];
-                    }
-                }
-            }
         }
     }
 
@@ -468,11 +443,18 @@ namespace Battlehub.RTEditor
                 }
             }
 
+            if (Accessor == null)
+            {
+                Debug.LogWarning("Accessor is null");
+                return default(T);
+            }
+
             if (MemberInfo is PropertyInfo)
             {
                 PropertyInfo prop = (PropertyInfo)MemberInfo;
                 return (T)prop.GetValue(Accessor, null);
             }
+            
 
             FieldInfo field = (FieldInfo)MemberInfo;
             return (T)field.GetValue(Accessor);

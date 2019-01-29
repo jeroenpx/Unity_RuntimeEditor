@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -174,6 +175,22 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected override void ReloadOverride()
+        {
+            base.ReloadOverride();
+
+            object value = GetValue();
+            if (!EqualityComparer<object>.Default.Equals(m_currentValue, value))
+            {
+                value = Activator.CreateInstance(MemberInfoType);
+                SetValue(value);
+                m_currentValue = value;
+                SetInputField(value);
+                
+                BuildEditor();
+            }
+        }
+
         //protected override void ReloadOverride()
         //{
         //    if (!Expander.isOn)
@@ -215,7 +232,7 @@ namespace Battlehub.RTEditor
         //                BuildEditor();
         //            }
         //        }
-             
+
         //    }
         //}
 
