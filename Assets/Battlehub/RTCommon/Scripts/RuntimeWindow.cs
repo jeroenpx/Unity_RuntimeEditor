@@ -241,6 +241,7 @@ namespace Battlehub.RTCommon
                 if (!m_isActivated)
                 {
                     m_isActivated = true;
+                    m_background.raycastTarget = false;
                     OnActivated();
                 }
             }
@@ -249,6 +250,7 @@ namespace Battlehub.RTCommon
                 if (m_isActivated)
                 {
                     m_isActivated = false;
+                    m_background.raycastTarget = true;
                     OnDeactivated();
                 }
             }

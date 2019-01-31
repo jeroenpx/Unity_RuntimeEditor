@@ -9,6 +9,8 @@ namespace Battlehub.RTHandles
     /// </summary>
     public class SelectionGizmo : MonoBehaviour, IGL
     {
+        [HideInInspector]
+        public bool Internal_Destroyed = false;
         public bool DrawRay = true;
         public RuntimeHandlesComponent Appearance;
         private ExposeToEditor m_exposeToEditor;

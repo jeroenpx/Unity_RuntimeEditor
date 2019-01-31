@@ -164,6 +164,8 @@ namespace Battlehub.RTCommon
                     return;
                 }
 
+                
+
                 if (IsSelectionChanged(value))
                 {
                     if(m_editor.Undo.Enabled)
@@ -244,7 +246,8 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
-            Object[] oldObjects = m_objects;
+
+            Object[] oldObjects = m_objects != null ? m_objects.Where(obj => obj != null).ToArray() : m_objects;
             if (value == null)
             {
                 m_objects = null;
@@ -252,7 +255,7 @@ namespace Battlehub.RTCommon
             }
             else
             {
-                m_objects = value.ToArray();
+                m_objects = value.Where(v => v != null).ToArray();
                 if (m_activeObject == null || !m_objects.Contains(m_activeObject))
                 {
                     m_activeObject = m_objects.OfType<Object>().FirstOrDefault();

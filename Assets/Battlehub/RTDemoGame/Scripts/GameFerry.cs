@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Battlehub.Cubeman;
 
-namespace Battlehub.RTHandles
+namespace Battlehub.Cubeman
 {
     public class GameFerry : MonoBehaviour
     {

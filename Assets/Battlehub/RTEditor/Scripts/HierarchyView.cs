@@ -27,7 +27,7 @@ namespace Battlehub.RTEditor
         private bool m_isSpawningPrefab;
         //private bool m_isStarted;
 
-        private GameObject[] m_rootGameObjects;
+        private List<GameObject> m_rootGameObjects;
 
         private IProject m_project;
         private IRuntimeEditor m_editor;
@@ -165,18 +165,24 @@ namespace Battlehub.RTEditor
         {
             if (Editor != null)
             {
-                Editor.Selection.SelectionChanged -= OnRuntimeSelectionChanged;
+                if(Editor.Selection != null)
+                {
+                    Editor.Selection.SelectionChanged -= OnRuntimeSelectionChanged;
+                }
 
-                Editor.Object.Awaked -= OnObjectAwaked;
-                Editor.Object.Started -= OnObjectStarted;
-                Editor.Object.Enabled -= OnObjectEnabled;
-                Editor.Object.Disabled -= OnObjectDisabled;
-                Editor.Object.Destroying -= OnObjectDestroying;
-                Editor.Object.Destroyed -= OnObjectDestroyed;
-                Editor.Object.MarkAsDestroyedChanging -= OnObjectMarkAsDestoryedChanging;
-                Editor.Object.MarkAsDestroyedChanged -= OnObjectMarkAsDestroyedChanged;
-                Editor.Object.ParentChanged -= OnParentChanged;
-                Editor.Object.NameChanged -= OnNameChanged;
+                if(Editor.Object != null)
+                {
+                    Editor.Object.Awaked -= OnObjectAwaked;
+                    Editor.Object.Started -= OnObjectStarted;
+                    Editor.Object.Enabled -= OnObjectEnabled;
+                    Editor.Object.Disabled -= OnObjectDisabled;
+                    Editor.Object.Destroying -= OnObjectDestroying;
+                    Editor.Object.Destroyed -= OnObjectDestroyed;
+                    Editor.Object.MarkAsDestroyedChanging -= OnObjectMarkAsDestoryedChanging;
+                    Editor.Object.MarkAsDestroyedChanged -= OnObjectMarkAsDestroyedChanged;
+                    Editor.Object.ParentChanged -= OnParentChanged;
+                    Editor.Object.NameChanged -= OnNameChanged;
+                }
 
                 Editor.PlaymodeStateChanged -= OnPlaymodeStateChanged;
             }
@@ -653,24 +659,27 @@ namespace Battlehub.RTEditor
             else
             {
                 ExposeToEditor parent = o.GetParent();
-                m_treeView.AddChild(parent, o); //TODO: replace with Insert 
+                m_treeView.AddChild(parent, o); 
+                SetSiblingIndex(o);
+            }
+        }
 
-                if(o.transform.parent == null && m_rootGameObjects == null)
-                {
-                    m_rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects().OrderBy(g => g.transform.GetSiblingIndex()).ToArray();
-                }
+        private void SetSiblingIndex(ExposeToEditor o)
+        {
+            if (o.transform.parent == null && m_rootGameObjects == null)
+            {
+                m_rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects().OrderBy(g => g.transform.GetSiblingIndex()).ToList();
+            }
 
-                ExposeToEditor nextSibling = o.NextSibling(m_rootGameObjects);
-                if (nextSibling != null)
-                {
-                    m_treeView.SetPrevSibling(nextSibling, o);
-                }
+            ExposeToEditor nextSibling = o.NextSibling(m_rootGameObjects);
+            if (nextSibling != null)
+            {
+                m_treeView.SetPrevSibling(nextSibling, o);
             }
         }
 
         private void OnParentChanged(ExposeToEditor obj, ExposeToEditor oldParent, ExposeToEditor newParent)
         {
-            /* 
             if (Editor.IsPlaymodeStateChanging)
             {
                 return;
@@ -687,8 +696,8 @@ namespace Battlehub.RTEditor
             if (oldParent != null)
             {
                 TreeViewItemContainerData itemContainerData = (TreeViewItemContainerData)m_treeView.GetItemContainerData(oldParent);
-                
-                isLastChild = !itemContainerData.HasChildren(m_treeView);
+
+                isLastChild = !oldParent.HasChildren(); //!itemContainerData.HasChildren(m_treeView);
                 
                 isOldParentExpanded = m_treeView.IsExpanded(oldParent);
             }
@@ -722,7 +731,7 @@ namespace Battlehub.RTEditor
                 
                 m_treeView.RemoveChild(oldParent, obj);  
             }
-            */
+            
         }
 
         private void OnNameChanged(ExposeToEditor obj)

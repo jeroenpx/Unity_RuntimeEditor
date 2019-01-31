@@ -203,6 +203,8 @@ namespace Battlehub.RTHandles
                 {
                     m_colliders[i].isTrigger = true;
                 }
+
+                m_snappingCollider.isTrigger = true;
             }
         }
 

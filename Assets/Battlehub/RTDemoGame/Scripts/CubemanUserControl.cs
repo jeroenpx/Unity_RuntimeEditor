@@ -11,7 +11,7 @@ namespace Battlehub.Cubeman
     [RequireComponent(typeof (CubemanCharacter))]
     public class CubemanUserControl : MonoBehaviour
     {
-        public Transform Cam;                     // A reference to the main camera in the scenes transform
+        public Transform Cam;                     // A reference to the main camera in the scene transform
         private CubemanCharacter m_Character;     
         private Vector3 m_CamForward;             // The current forward direction of the camera
         private Vector3 m_Move;

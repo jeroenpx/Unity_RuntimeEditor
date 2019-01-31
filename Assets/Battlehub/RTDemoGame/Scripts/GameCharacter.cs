@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using Battlehub.Cubeman;
 using Battlehub.RTCommon;
-namespace Battlehub.RTHandles
-{
+namespace Battlehub.Cubeman
+{ 
     [DisallowMultipleComponent]
     public class GameCharacter : MonoBehaviour
     {
@@ -12,14 +12,14 @@ namespace Battlehub.RTHandles
         private Transform m_soul;
         private SkinnedMeshRenderer m_skinnedMeshRenderer;
         private InputLow m_inputController = new InputLow();
-
+        
         public Transform Camera
         {
             get { return m_userControl.Cam; }
             set { m_userControl.Cam = value; }
         }
 
-        public bool IsActive
+        public bool HandleInput
         {
             get { return m_userControl.HandleInput; }
             set
@@ -28,6 +28,28 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private bool m_isActive;
+        public bool IsActive
+        {
+            get { return m_isActive; }
+            set
+            {
+                m_isActive = value;
+                Rigidbody rig = gameObject.GetComponent<Rigidbody>();
+                if (rig)
+                {
+                    rig.isKinematic = !m_isActive;
+                }
+
+                CubemanCharacter cubemanCharacter = gameObject.GetComponent<CubemanCharacter>();
+                if (cubemanCharacter)
+                {
+                    cubemanCharacter.Enabled = m_isActive;
+                }
+            }
+        }
+
+     
         private void Awake()
         {
             m_userControl = GetComponent<CubemanUserControl>();
@@ -51,7 +73,6 @@ namespace Battlehub.RTHandles
 
         private void OnTriggerEnter(Collider other)
         {
-            /*
             if(other.tag == "Finish")
             {
                 Game.OnPlayerFinish(this);
@@ -65,12 +86,11 @@ namespace Battlehub.RTHandles
                 }
                 Destroy(gameObject, 2);
             }
-            */
         }
 
         private void Die()
         {
-            /*
+            enabled = false;
             Game.OnPlayerDie(this);
             if(m_skinnedMeshRenderer != null)
             {
@@ -89,9 +109,7 @@ namespace Battlehub.RTHandles
                 m_soul.gameObject.SetActive(true);
             }
             Destroy(gameObject, 2);
-            */
         }
-
     }
 }
 

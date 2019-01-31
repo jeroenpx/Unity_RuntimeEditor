@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-
-namespace Battlehub.RTHandles
+namespace Battlehub.Cubeman
 {
     public class GameGoal : MonoBehaviour
     {

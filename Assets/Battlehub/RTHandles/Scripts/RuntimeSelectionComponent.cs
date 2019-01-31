@@ -452,7 +452,9 @@ namespace Battlehub.RTHandles
                         {
                             if (selectionGizmo[g] != null && selectionGizmo[g].Window == Window)
                             {
-                                DestroyImmediate(selectionGizmo[g]);
+                                //DestroyImmediate(selectionGizmo[g]);
+                                selectionGizmo[g].Internal_Destroyed = true;
+                                Destroy(selectionGizmo[g]);
                             }
                         }
                        
@@ -478,7 +480,7 @@ namespace Battlehub.RTHandles
                     if (exposeToEditor && exposeToEditor.CanSelect && !selectedObj.IsPrefab() && !selectedObj.isStatic)
                     {
                         SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
-                        if (selectionGizmo == null || selectionGizmo.Window != Window)
+                        if (selectionGizmo == null || selectionGizmo.Internal_Destroyed || selectionGizmo.Window != Window)
                         {
                             selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
                         }

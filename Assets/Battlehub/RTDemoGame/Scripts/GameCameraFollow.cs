@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Battlehub.RTHandles
-{
-	public class RTHandlesDemoSmoothFollow : MonoBehaviour
-	{
+namespace Battlehub.Cubeman
+{ 
 
+    public class GameCameraFollow : MonoBehaviour
+	{
         // The target we are following
 
         private Transform m_target;
@@ -19,7 +19,10 @@ namespace Battlehub.RTHandles
                 float hdamping = heightDamping;
                 rotationDamping = float.MaxValue;
                 heightDamping = float.MaxValue;
-                Follow();
+                if(m_target != null)
+                {
+                    Follow();
+                }
                 heightDamping = hdamping;
                 rotationDamping = rdamping;
             }

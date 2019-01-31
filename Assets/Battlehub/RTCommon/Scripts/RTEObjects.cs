@@ -86,7 +86,6 @@ namespace Battlehub.RTCommon
             return m_editModeCache;
         }
 
-
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
@@ -96,7 +95,6 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-     
             List<ExposeToEditor> objects = FindAll();
             for(int i = 0; i < objects.Count; ++i)
             {
@@ -108,6 +106,7 @@ namespace Battlehub.RTCommon
             OnIsOpenedChanged();
             m_editor.PlaymodeStateChanging += OnPlaymodeStateChanging;
             m_editor.IsOpenedChanged += OnIsOpenedChanged;
+            m_editor.ActiveWindowChanged += OnActiveWindowChanged;
 
             ExposeToEditor._Awaked += OnAwaked;
             ExposeToEditor._Enabled += OnEnabled;
@@ -130,6 +129,7 @@ namespace Battlehub.RTCommon
             {
                 m_editor.PlaymodeStateChanging -= OnPlaymodeStateChanging;
                 m_editor.IsOpenedChanged -= OnIsOpenedChanged;
+                m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
             }
 
             ExposeToEditor._Awaked -= OnAwaked;
@@ -152,23 +152,57 @@ namespace Battlehub.RTCommon
         {
             if (m_editor.IsOpened)
             {
-                foreach(ExposeToEditor obj in m_editModeCache)
+                if(!m_editor.IsApplicationPaused)
                 {
-                    TryToAddColliders(obj);
+                    foreach (ExposeToEditor obj in m_editModeCache)
+                    {
+                        TryToAddColliders(obj);
+                        obj.SendMessage("OnRuntimeEditorOpened", SendMessageOptions.DontRequireReceiver);
+                    }
                 }
             }
             else
             {
-                foreach (ExposeToEditor obj in m_editModeCache)
+                if(!m_editor.IsApplicationPaused)
                 {
-                    TryToDestroyColliders(obj);
+                    foreach (ExposeToEditor obj in m_editModeCache.ToArray())
+                    {
+                        if (obj != null)
+                        {
+                            TryToDestroyColliders(obj);
+                            obj.SendMessage("OnRuntimeEditorClosed", SendMessageOptions.DontRequireReceiver);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnActiveWindowChanged()
+        {
+            if (!m_editor.IsPlaying)
+            {
+                return;
+            }
+
+            if (m_editor.ActiveWindow != null && m_editor.ActiveWindow.WindowType == RuntimeWindowType.Game)
+            {
+                foreach (ExposeToEditor playObj in m_playModeCache)
+                {
+                    playObj.SendMessage("OnRuntimeActivate", SendMessageOptions.DontRequireReceiver);
+                }
+            }
+            else
+            {
+                foreach (ExposeToEditor playObj in m_playModeCache)
+                {
+                    playObj.SendMessage("OnRuntimeDeactivate", SendMessageOptions.DontRequireReceiver);
                 }
             }
         }
 
         private void OnPlaymodeStateChanging()
         {
-            if (m_editor.IsPlaying)
+            if (m_editor.IsPlaying) 
             {
                 m_playModeCache = new HashSet<ExposeToEditor>();
                 m_enabledObjects = m_editModeCache.Where(eo => eo.gameObject.activeSelf).ToArray();
@@ -188,7 +222,7 @@ namespace Battlehub.RTCommon
                     playModeObj.SetName(editorObj.name);
                     playModeObj.Init();
                     m_playModeCache.Add(playModeObj);
-
+                    
                     ExposeToEditor[] editorObjAndChildren = editorObj.GetComponentsInChildren<ExposeToEditor>(true);
                     ExposeToEditor[] playModeObjAndChildren = instance.GetComponentsInChildren<ExposeToEditor>(true);
                     for (int j = 0; j < editorObjAndChildren.Length; j++)
@@ -208,12 +242,13 @@ namespace Battlehub.RTCommon
                 m_editor.Undo.Enabled = isEnabled;
                 m_editor.Undo.Store();
             }
-            else
+            else 
             {
                 foreach (ExposeToEditor playObj in m_playModeCache)
                 {
                     if(playObj != null)
                     {
+                        playObj.SendMessage("OnRuntimeDestroy", SendMessageOptions.DontRequireReceiver);
                         DestroyImmediate(playObj.gameObject);
                     }
                 }
@@ -414,13 +449,14 @@ namespace Battlehub.RTCommon
 
         private void OnAwaked(ExposeToEditor obj)
         {
-            if(m_editor.IsPlaying)
+            if(m_editor.IsPlaying || m_editor.IsPlaymodeStateChanging)
             {
-                if(!m_playModeCache.Contains(obj))
+                obj.SendMessage("RuntimeAwake", SendMessageOptions.DontRequireReceiver);
+
+                if (!m_playModeCache.Contains(obj))
                 {
                     m_playModeCache.Add(obj);
-                }
-                
+                }    
             }
             else
             {
@@ -456,13 +492,23 @@ namespace Battlehub.RTCommon
         {
             if (m_editor.IsPlaying)
             {
+                obj.SendMessage("OnRuntimeDestroy", SendMessageOptions.DontRequireReceiver);
                 m_playModeCache.Remove(obj);
             }
-            else
+            else 
             {
-                m_editModeCache.Remove(obj);
-                TryToDestroyColliders(obj);
+                if(m_editModeCache.Contains(obj))
+                {
+                    m_editModeCache.Remove(obj);
+                    TryToDestroyColliders(obj);
+                }
             }
+
+            if(m_editor.Selection.IsSelected(obj.gameObject))
+            {
+                m_editor.Selection.objects = m_editor.Selection.objects.Where(o => o != obj.gameObject).ToArray();
+            }
+
             if (Destroyed != null)
             {
                 Destroyed(obj);
@@ -519,6 +565,11 @@ namespace Battlehub.RTCommon
 
         private void OnStarted(ExposeToEditor obj)
         {
+            if (m_editor.IsPlaying)
+            {
+                obj.SendMessage("RuntimeStart", SendMessageOptions.DontRequireReceiver);
+            }
+
             if (Started != null)
             {
                 Started(obj);

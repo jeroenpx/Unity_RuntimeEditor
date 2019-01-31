@@ -1,4 +1,5 @@
 using Battlehub.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -136,6 +137,11 @@ namespace Battlehub.RTCommon
             set;
         }
 
+        bool IsApplicationPaused
+        {
+            get;
+        }
+
         Transform Root
         {
             get;
@@ -171,7 +177,7 @@ namespace Battlehub.RTCommon
 
     public delegate void RTEEvent();
     public delegate void RTEEvent<T>(T arg);
-    
+
     [DefaultExecutionOrder(-90)]
     public class RTEBase : MonoBehaviour, IRTE
     {
@@ -375,15 +381,17 @@ namespace Battlehub.RTCommon
             }
             set
             {
+
                 if (m_isPlaying != value)
                 {
+                    m_isPlayModeStateChanging = true;
                     m_isPlaying = value;
 
-                    m_isPlayModeStateChanging = true;
                     if (PlaymodeStateChanging != null)
                     {
                         PlaymodeStateChanging();
                     }
+                    
                     if (PlaymodeStateChanged != null)
                     {
                         PlaymodeStateChanged();
@@ -833,7 +841,7 @@ namespace Battlehub.RTCommon
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
 
-            List<Object> selection = Selection.objects.ToList();
+            List<UnityEngine.Object> selection = Selection.objects.ToList();
             for(int i = selection.Count - 1; i >= 0; --i)
             {
                 if (selection[i] == gameObjects[i])

@@ -341,21 +341,24 @@ namespace Battlehub.RTCommon
         }
 
 
-        public ExposeToEditor NextSibling(GameObject[] rootGameObjects)
+        public ExposeToEditor NextSibling(List<GameObject> rootGameObjects)
         {
             int siblingIndex = transform.GetSiblingIndex();
 
             Transform parent = transform.parent;
             if (parent == null)
             {
-                for (int i = siblingIndex + 1; i < rootGameObjects.Length; ++i)
+                for (int i = siblingIndex + 1; i < rootGameObjects.Count; ++i)
                 {
-                    Transform child = rootGameObjects[i].transform;
-                    ExposeToEditor sibling = child.GetComponent<ExposeToEditor>();
-                    if (sibling != null && !sibling.MarkAsDestroyed)
+                    if(rootGameObjects[i] != null)
                     {
-                        return sibling;
-                    }
+                        Transform child = rootGameObjects[i].transform;
+                        ExposeToEditor sibling = child.GetComponent<ExposeToEditor>();
+                        if (sibling != null && !sibling.MarkAsDestroyed)
+                        {
+                            return sibling;
+                        }
+                    }  
                 }
             }
             else

@@ -1,7 +1,7 @@
 ﻿#define BROKEN_IMPORT
 using UnityEngine;
 
-namespace Battlehub.RTHandles
+namespace Battlehub.Cubeman
 {
     #if BROKEN_IMPORT
     public class GameFerryBehavior : MonoBehaviour
