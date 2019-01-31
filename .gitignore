@@ -48,3 +48,5 @@ obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
 .vs/Unity_RuntimeEditor/v15/Browse.VC.opendb
 .vs/Unity_RuntimeEditor/v15/Browse.VC.db
 RuntimeEditor2.docx
+site/*
+!site/web.config
