@@ -1,6 +1,6 @@
 # Runtime Editor Docs
 
-Welcome to documentation of <a href="http://u3d.as/v9j" target="_blank"><strong>Runtime Editor</strong></a> the set of scripts and prefabs which help you to implement scene editor, game level editor or build your own modeling application. If you are new to this documentation you could proceed to [introduction](introduction.md) page to get an overview what Runtime Editor   
+Welcome to documentation of <a href="http://u3d.as/v9j" target="_blank"><strong>Runtime Editor</strong></a> the set of scripts and prefabs which help you to implement scene editor, game level editor or build your own modeling application. If you are new to this documentation you could proceed to [introduction](general.md#introduction) page to get an overview what Runtime Editor   
 and this documentation has to offer.
 	
 !!! note
@@ -92,7 +92,7 @@ The documentation is organized as following:
 ## [Save Load 2](save-load.md)
 *  [Overview](save-load.md#overview)
 *  [Asset Library](save-load.md#/asset-library)
-*  [How To: Create Asset Library](save_load.md#how-to-create-asset-library)
+*  [How To: Create Asset Library](save-load.md#how-to-create-asset-library)
 *  [Persistent Classes](save-load.md#persistent-classes)
 *  [Project Item](save-load.md#project-item)
 *  [Asset Item](save-load.md#asset-item)
