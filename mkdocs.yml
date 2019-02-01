@@ -6,14 +6,17 @@ copyright: Copyright © 2019 vadim.andriyanov@outlook.com
 nav:
     - Home: 'index.md'
     - General: 'general.md'
-    - Getting Started: 'getting_started.md'
-    - Transform Handles: 'transform_handles.md'
+    - Getting Started: 'get-started.md'
+    - Transform Handles: 'transform-handles.md'
     - Gizmos: 'gizmos.md'
-    - Gizmos And Handles rendering: 'gizmos_and_handles_rendering'
-        
-        
-      
-   
+    - Rendering: 'rendering.md'
+    - Common Infrastructure: 'infrastructure.md'
+    - Runtime Editor: 'runtime-editor.md'
+    - Save Load: 'save-load.md' 
+    - Dock Panels: 'dock-panels.md'
+    - Virtualizing Tree View: 'vtv.md'
+    - Menu Control: 'menu-control.md'
+ 
 theme: readthedocs
 markdown_extensions:
   - admonition
