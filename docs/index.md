@@ -10,11 +10,11 @@ and this documentation has to offer.
    
 The documentation is organized as following:
 
-##[General](general/introduction.md)
+##[General](general.md)
 
-*   [Introduction](general/introduction.md#section2)
-*   [List of Features](general/features.md)
-*   [About](general/about.md)
+*   [Introduction](general.md#introduction)
+*   [List of Features](general.md#features)
+*   [About](general.md#about)
 
 ## Getting Started
 *  [Minimal setup](getstarted/minmal.md)
