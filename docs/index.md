@@ -10,9 +10,9 @@ and this documentation has to offer.
    
 The documentation is organized as following:
 
-##General
+##[General](general/introduction.md)
 
-*   [Introduction](general/introduction.md)
+*   [Introduction](general/introduction.md#section2)
 *   [List of Features](general/features.md)
 *   [About](general/about.md)
 

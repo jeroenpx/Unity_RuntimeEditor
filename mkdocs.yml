@@ -5,10 +5,14 @@ site_author: vadim andriyanov
 copyright: Copyright © 2019 vadim.andriyanov@outlook.com 
 nav:
     - Home: 'index.md'
-    - General:
-        - Introduction: 'general/introduction.md'
-        - Features: 'general/features'
-        - About: 'general/about'
+    - General: 'general.md'
+    - Getting Started: 'getting_started.md'
+    - Transform Handles: 'transform_handles.md'
+    - Gizmos: 'gizmos.md'
+    - Gizmos And Handles rendering: 'gizmos_and_handles_rendering'
+        
+        
+      
    
 theme: readthedocs
 markdown_extensions:
