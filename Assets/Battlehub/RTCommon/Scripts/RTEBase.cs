@@ -98,7 +98,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        IRTEObjects Object
+        IRuntimeObjects Object
         {
             get;
         }
@@ -218,7 +218,7 @@ namespace Battlehub.RTCommon
         private CursorHelper m_cursorHelper = new CursorHelper();
         private IRuntimeUndo m_undo;
         private DragDrop m_dragDrop;
-        private IRTEObjects m_object;
+        private IRuntimeObjects m_object;
 
         protected GameObject m_currentSelectedGameObject;
         protected InputField m_currentInputField;
@@ -283,7 +283,7 @@ namespace Battlehub.RTCommon
             get { return m_cursorHelper; }
         }
 
-        public virtual IRTEObjects Object
+        public virtual IRuntimeObjects Object
         {
             get { return m_object; }
         }
@@ -546,7 +546,7 @@ namespace Battlehub.RTCommon
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
-            m_object = GetComponent<RTEObjects>();
+            m_object = GetComponent<RuntimeObjects>();
 
             if(IsVR)
             {

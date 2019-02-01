@@ -11,7 +11,7 @@ namespace Battlehub.RTCommon
     public delegate void ObjectEvent<T>(ExposeToEditor obj, T arg);
     public delegate void ObjectParentChangedEvent(ExposeToEditor obj, ExposeToEditor oldValue, ExposeToEditor newValue);
    
-    public interface IRTEObjects
+    public interface IRuntimeObjects
     {
         event ObjectEvent Awaked;
         event ObjectEvent Started;
@@ -29,7 +29,7 @@ namespace Battlehub.RTCommon
         IEnumerable<ExposeToEditor> Get(bool rootsOnly, bool useCache = true);
     }
 
-    public class RTEObjects : MonoBehaviour, IRTEObjects
+    public class RuntimeObjects : MonoBehaviour, IRuntimeObjects
     {
         public event ObjectEvent Awaked;
         public event ObjectEvent Started;

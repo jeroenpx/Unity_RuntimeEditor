@@ -1,6 +1,15 @@
 site_name: Runtime Editor
+site_url: http://rteditor.battlehub.net
+site_description: Documentation for Runtime Editor - runtime scene editor built with Unity3D
+site_author: vadim andriyanov
+copyright: Copyright © 2019 vadim.andriyanov@outlook.com 
 nav:
-    - Home: index.md
+    - Home: 'index.md'
+    - General:
+        - Introduction: 'general/introduction.md'
+        - Features: 'general/features'
+        - About: 'general/about'
+   
 theme: readthedocs
 markdown_extensions:
   - admonition

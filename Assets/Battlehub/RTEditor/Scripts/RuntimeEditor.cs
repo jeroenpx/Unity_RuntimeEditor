@@ -41,7 +41,7 @@ namespace Battlehub.RTEditor
     }
 
     [DefaultExecutionOrder(-90)]
-    [RequireComponent(typeof(RTEObjects))]
+    [RequireComponent(typeof(RuntimeObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
         public event RTEEvent SceneLoading;
