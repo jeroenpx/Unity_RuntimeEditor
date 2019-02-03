@@ -5,20 +5,24 @@ using System.Linq;
 using Battlehub.RTCommon;
 using Battlehub.Utils;
 
+
+
 namespace Battlehub.RTHandles
 {
     public static class RTHandlesMenu
     {
-        [MenuItem("Tools/Runtime Handles/Create")]
-        public static void CreateRuntimeEditor()
+        public static GameObject InstantiatePrefab(string name)
         {
-            GameObject go = new GameObject();
-            go.name = "RTHandles";
-            go.AddComponent<RuntimeSelectionComponent>();
-            go.AddComponent<RuntimeUndoInput>();
-            go.AddComponent<RuntimeToolsInput>();
+            UnityEngine.Object prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHPath.Root + "/RTHandles/Prefabs/" + name, typeof(GameObject));
+            return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        }
 
-            Undo.RegisterCreatedObjectUndo(go, "Battlehub.RTHandles.Create");
+        [MenuItem("Tools/Runtime Handles/Create")]
+        public static void CreateTransformHandles()
+        {
+            GameObject go = InstantiatePrefab("TransformHandles.prefab");
+           // PrefabUtility.UnpackPrefabInstance(go, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
+            Undo.RegisterCreatedObjectUndo(go, "Create Transform Handles");
         }
 
         [MenuItem("Tools/Runtime Handles/Enable Editing", validate = true)]
@@ -38,7 +42,7 @@ namespace Battlehub.RTHandles
                 ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
                 if (!exposeToEditor && !go.IsPrefab())
                 {
-                    Undo.RegisterCreatedObjectUndo(go.AddComponent<ExposeToEditor>(), "Battlehub.RTHandles.EnableEditing");
+                    Undo.RegisterCreatedObjectUndo(go.AddComponent<ExposeToEditor>(), "Enable Object Editing");
                 }   
             }
         }

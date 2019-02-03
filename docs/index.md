@@ -34,6 +34,7 @@ The documentation is organized as following:
 *  [Scale Handle](transform-handles.md#scale-handle)  
 *  [Locking Axes](transform-handles.md#lock-axes)
 *  [Scene Gizmo](transform-handles#scene-gizmo)
+*  [Selection Gizmo](transform-handles#selection-gizmo)
 *  [Grid](transform-handles.md#grid)
 *  [Box Selection](transform-handles.md#box-selection)
 *  [Runtime Handles Component](transform-handles.md#runtime-handles-component)

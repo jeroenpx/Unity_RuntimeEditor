@@ -25,6 +25,7 @@ namespace Battlehub.RTCommon
         public bool IsPointerOver
         {
             get { return m_isPointerOver; }
+            set { m_isPointerOver = value; }
         }
 
         private IRTE m_editor;

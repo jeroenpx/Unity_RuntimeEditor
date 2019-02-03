@@ -367,7 +367,7 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                if(LockObject.RotationX)
+                if(LockObject != null && LockObject.RotationX)
                 {
                     delta.x = 0.0f;
                 }
@@ -392,7 +392,7 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                if (LockObject.RotationY)
+                if (LockObject != null && LockObject.RotationY)
                 {
                     delta.y = 0.0f;
                 }
@@ -418,7 +418,7 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                if (LockObject.RotationZ)
+                if (LockObject != null && LockObject.RotationZ)
                 {
                     delta.z = 0.0f;
                 }
@@ -430,7 +430,7 @@ namespace Battlehub.RTHandles
             {
                 delta = StartingRotationInv * delta;
 
-                if(LockObject.RotationFree)
+                if(LockObject != null && LockObject.RotationFree)
                 {
                     delta.x = 0.0f;
                     delta.y = 0.0f;
@@ -461,7 +461,7 @@ namespace Battlehub.RTHandles
 
                 Vector3 axis = m_targetInverseMatrix.MultiplyVector(Window.Camera.cameraToWorldMatrix.MultiplyVector(-Vector3.forward));
 
-                if(!LockObject.RotationScreen)
+                if(LockObject == null || !LockObject.RotationScreen)
                 {
                     rotation = Quaternion.AngleAxis(delta.x, axis);
                 }

@@ -142,7 +142,7 @@ namespace Battlehub.RTHandles
                 {
                     offset.y = offset.z = 0.0f;
 
-                    if (!LockObject.ScaleX)
+                    if (LockObject == null || !LockObject.ScaleX)
                     {
                         m_scale.x += Mathf.Sign(offset.x) * mag;
                     }
@@ -150,7 +150,7 @@ namespace Battlehub.RTHandles
                 else if (SelectedAxis == RuntimeHandleAxis.Y)
                 {
                     offset.x = offset.z = 0.0f;
-                    if(!LockObject.ScaleY)
+                    if(LockObject == null || !LockObject.ScaleY)
                     {
                         m_scale.y += Mathf.Sign(offset.y) * mag;
                     }
@@ -158,7 +158,7 @@ namespace Battlehub.RTHandles
                 else if(SelectedAxis == RuntimeHandleAxis.Z)
                 {
                     offset.x = offset.y = 0.0f;
-                    if(!LockObject.ScaleZ)
+                    if(LockObject == null || !LockObject.ScaleZ)
                     {
                         m_scale.z += Mathf.Sign(offset.z) * mag;
                     }
@@ -167,19 +167,22 @@ namespace Battlehub.RTHandles
                 {
                     float sign = Mathf.Sign(offset.x + offset.y);
 
-                    if(!LockObject.ScaleX)
+                    if(LockObject != null)
                     {
-                        m_scale.x += sign * mag;
-                    }
-                    
-                    if(!LockObject.ScaleY)
-                    {
-                        m_scale.y += sign * mag;
-                    }
-                    
-                    if(!LockObject.ScaleZ)
-                    {
-                        m_scale.z += sign * mag;
+                        if (!LockObject.ScaleX)
+                        {
+                            m_scale.x += sign * mag;
+                        }
+
+                        if (!LockObject.ScaleY)
+                        {
+                            m_scale.y += sign * mag;
+                        }
+
+                        if (!LockObject.ScaleZ)
+                        {
+                            m_scale.z += sign * mag;
+                        }
                     }
                 }
 

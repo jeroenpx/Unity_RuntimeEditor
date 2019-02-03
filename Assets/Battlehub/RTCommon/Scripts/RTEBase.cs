@@ -448,6 +448,7 @@ namespace Battlehub.RTCommon
             scene.transform.SetParent(ui.transform, false);
 
             RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
+            sceneView.IsPointerOver = true;
             sceneView.WindowType = RuntimeWindowType.Scene;
             sceneView.Camera = Camera.main;
 
@@ -655,7 +656,6 @@ namespace Battlehub.RTCommon
             bool pointerDownOrUp = m_input.GetPointerDown(0) ||
                 m_input.GetPointerDown(1) ||
                 m_input.GetPointerDown(2) ||
-                
                 m_input.GetPointerUp(0);
 
             if (pointerDownOrUp ||
@@ -671,6 +671,16 @@ namespace Battlehub.RTCommon
 
                 //Raycast using the Graphics Raycaster and mouse click position
                 m_raycaster.Raycast(pointerEventData, results);
+
+                IEnumerable<Selectable> selectables = results.Select(r => r.gameObject.GetComponent<Selectable>()).Where(s => s != null);
+                if (selectables.Count() == 1)
+                {
+                    Selectable selectable = selectables.First() as Selectable;
+                    if (selectable != null)
+                    {
+                        selectable.Select();
+                    }
+                }
 
                 //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
                 foreach (RaycastResult result in results)
