@@ -1,6 +1,18 @@
 #Transform Handles Documentation
 ##Overview
 ##Getting Started
+![Screenshot](img/transform-handels/getting-started/selected-objects.png)
+
+
+``` C#
+	public static void  DoPositionHandle(Vector3  position,  
+		Quaternion rotation,
+		RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None,
+		bool snapMode = false, 
+		LockObject lockObject = null)
+	
+```
+
 ##Base Handle
 ##Position Handle
 ##Rotation Handle

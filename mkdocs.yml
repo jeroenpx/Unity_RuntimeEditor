@@ -18,6 +18,10 @@ nav:
     - Menu Control: 'menu-control.md'
  
 theme: readthedocs
+extra_css:
+  - css/extra.css
 markdown_extensions:
   - admonition
+  - codehilite:
+        linenums: true
 

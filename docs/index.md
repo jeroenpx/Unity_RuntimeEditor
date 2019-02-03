@@ -7,6 +7,12 @@ and this documentation has to offer.
 	
 	If you can't find something in documentation or have any questions I encourage you to send mail to [Battlehub@outlook](mailto:Battlehub@outlook) or ask it directly in this [support group](https://t.me/battlehub). 
 	
+!!! note
+	
+	Documentation is under construction
+	
+
+
    
 The documentation is organized as following:
 
