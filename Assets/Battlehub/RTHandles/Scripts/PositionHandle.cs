@@ -655,28 +655,37 @@ namespace Battlehub.RTHandles
             {
                 float s = 0.23f * scale;
 
-                if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale))
+                if(LockObject == null || !LockObject.PositionX && !LockObject.PositionZ)
                 {
-                    return RuntimeHandleAxis.XZ;
+                    if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale))
+                    {
+                        return RuntimeHandleAxis.XZ;
+                    }
                 }
 
-                if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale))
+                if (LockObject == null || !LockObject.PositionY && !LockObject.PositionZ)
                 {
-                    return RuntimeHandleAxis.YZ;
+                    if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale))
+                    {
+                        return RuntimeHandleAxis.YZ;
+                    }
                 }
 
-                if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale))
+                if (LockObject == null || !LockObject.PositionX && !LockObject.PositionY)
                 {
-                    return RuntimeHandleAxis.XY;
+                    if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale))
+                    {
+                        return RuntimeHandleAxis.XY;
+                    }
                 }
             }
-           
-            float distToYAxis;
-            float distToZAxis;
-            float distToXAxis;
-            bool hit = HitAxis(Vector3.up * Appearance.HandleScale, matrix, out distToYAxis);
-            hit |= HitAxis(Appearance.Forward * Appearance.HandleScale, matrix, out distToZAxis);
-            hit |= HitAxis(Vector3.right * Appearance.HandleScale, matrix, out distToXAxis);
+
+            float distToYAxis = float.MaxValue;
+            float distToZAxis = float.MaxValue;
+            float distToXAxis = float.MaxValue;
+            bool hit = (LockObject == null || !LockObject.PositionY) && HitAxis(Vector3.up * Appearance.HandleScale, matrix, out distToYAxis);
+            hit |= (LockObject == null || !LockObject.PositionZ) && HitAxis(Appearance.Forward * Appearance.HandleScale, matrix, out distToZAxis);
+            hit |= (LockObject == null || !LockObject.PositionX) && HitAxis(Vector3.right * Appearance.HandleScale, matrix, out distToXAxis);
 
             if (hit)
             {
@@ -728,7 +737,22 @@ namespace Battlehub.RTHandles
 
             if (SelectedAxis != RuntimeHandleAxis.None)
             {
-                DragPlane = GetDragPlane();
+                Vector3 axis = Vector3.zero;
+                switch (SelectedAxis)
+                {
+                    case RuntimeHandleAxis.X:
+                        axis = Vector3.right;
+                        break;
+                    case RuntimeHandleAxis.Y:
+                        axis = Vector3.up;
+                        break;
+                    case RuntimeHandleAxis.Z:
+                        axis = Vector3.forward;
+                        break;
+                }
+
+
+                DragPlane = GetDragPlane(axis);
                 bool result = GetPointOnDragPlane(Window.Pointer, out m_prevPoint);
                 if(!result)
                 {

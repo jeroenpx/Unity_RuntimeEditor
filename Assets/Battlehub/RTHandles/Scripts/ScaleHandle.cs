@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
@@ -106,7 +105,7 @@ namespace Battlehub.RTHandles
 
             if(SelectedAxis == RuntimeHandleAxis.Free)
             {
-                DragPlane = GetDragPlane();
+                DragPlane = GetDragPlane(Vector3.zero);
             }
             else if(SelectedAxis == RuntimeHandleAxis.None)
             {
@@ -120,7 +119,21 @@ namespace Battlehub.RTHandles
                 m_refScales[i] = rotation * ActiveTargets[i].localScale;
             }
 
-            DragPlane = GetDragPlane();
+            Vector3 axis = Vector3.zero;
+            switch (SelectedAxis)
+            {
+                case RuntimeHandleAxis.X:
+                    axis = Vector3.right;
+                    break;
+                case RuntimeHandleAxis.Y:
+                    axis = Vector3.up;
+                    break;
+                case RuntimeHandleAxis.Z:
+                    axis = Vector3.forward;
+                    break;
+            }
+
+            DragPlane = GetDragPlane(axis);
             bool result = GetPointOnDragPlane(Window.Pointer, out m_prevPoint);
             if(!result)
             {
@@ -183,6 +196,12 @@ namespace Battlehub.RTHandles
                         {
                             m_scale.z += sign * mag;
                         }
+                    }
+                    else
+                    {
+                        m_scale.x += sign * mag;
+                        m_scale.y += sign * mag;
+                        m_scale.z += sign * mag;
                     }
                 }
 

@@ -11,7 +11,6 @@ namespace Battlehub.RTHandles
     {
         [HideInInspector]
         public bool Internal_Destroyed = false;
-        public bool DrawRay = true;
         public RuntimeHandlesComponent Appearance;
         private ExposeToEditor m_exposeToEditor;
 

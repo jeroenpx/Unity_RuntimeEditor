@@ -5,13 +5,16 @@ using UnityEngine.EventSystems;
 
 using Battlehub.RTCommon;
 using Battlehub.Utils;
+using UnityEngine.Events;
 
 namespace Battlehub.RTHandles
 {
+    [System.Serializable]
+    public class BaseHandleUnityEvent : UnityEvent<BaseHandle> { }
+
     /// <summary>
     /// Base class for all handles (Position, Rotation and Scale)
     /// </summary>
-
     [DefaultExecutionOrder(-50)]
     public abstract class BaseHandle : RTEComponent, IGL
     {
@@ -346,6 +349,9 @@ namespace Battlehub.RTHandles
             set { m_unitSnapping = value; }
         }
 
+        public BaseHandleUnityEvent BeforeDrag;
+        public BaseHandleUnityEvent Drop;
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
@@ -357,14 +363,20 @@ namespace Battlehub.RTHandles
             {
                 var lockObject = LockObject;
                 Targets = m_targets;
-                LockObject = lockObject;
+                if(lockObject != null)
+                {
+                    LockObject = lockObject;
+                }
             }
 
             if (Targets == null || Targets.Length == 0)
             {
                 var lockObject = LockObject;
                 Targets = new[] { transform };
-                LockObject = lockObject;
+                if(lockObject != null)
+                {
+                    LockObject = lockObject;
+                }
             }
 
             if (GLRenderer.Instance == null)
@@ -691,6 +703,8 @@ namespace Battlehub.RTHandles
 
         public void BeginDrag()
         {
+            BeforeDrag.Invoke(this);
+
             m_isPointerDown = true;
 
             if (Editor.Tools.Current != Tool && Editor.Tools.Current != RuntimeTool.None || Editor.Tools.IsViewing)
@@ -739,6 +753,8 @@ namespace Battlehub.RTHandles
                 EndRecordTransform();
                 m_isDragging = false;
             }
+
+            Drop.Invoke(this);
         }
 
         /// Drag And Drop virtual methods
@@ -913,10 +929,10 @@ namespace Battlehub.RTHandles
             return plane;
         }
 
-        protected virtual Plane GetDragPlane()
+        protected virtual Plane GetDragPlane(Vector3 axis)
         {
             Vector3 toCam;
-            if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(Window.Camera.transform.forward, transform.forward)), 1))
+            if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(Window.Camera.transform.forward, Rotation * axis)), 1))
             {
                 toCam = Window.Camera.transform.position - transform.position;
             }

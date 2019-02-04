@@ -54,13 +54,13 @@ namespace Battlehub.RTHandles
 
         protected override void OnDestroyOverride()
         {
-            base.OnDestroyOverride();    
+            base.OnDestroyOverride();
             Editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
         }
 
         protected override void OnStartOverride()
         {
-            base.OnStartOverride();    
+            base.OnStartOverride();
             OnPivotRotationChanged();
         }
 
@@ -148,13 +148,27 @@ namespace Battlehub.RTHandles
             float scale = RuntimeHandlesComponent.GetScreenScale(Target.position, Window.Camera) * Appearance.HandleScale;
             if (Intersect(ray, Target.position, outerRadius * scale, out hit1Distance, out hit2Distance))
             {
-                Vector3 dpHitPoint;
-                GetPointOnDragPlane(GetDragPlane(), ray, out dpHitPoint);
-
-                RuntimeHandleAxis axis = HitAxis();
-                if (axis != RuntimeHandleAxis.None)
+                RuntimeHandleAxis selectedAxis = HitAxis();
+                Vector3 axis = Vector3.zero;
+                switch (SelectedAxis)
                 {
-                    return axis;
+                    case RuntimeHandleAxis.X:
+                        axis = Vector3.right;
+                        break;
+                    case RuntimeHandleAxis.Y:
+                        axis = Vector3.up;
+                        break;
+                    case RuntimeHandleAxis.Z:
+                        axis = Vector3.forward;
+                        break;
+                }
+
+                Vector3 dpHitPoint;
+                GetPointOnDragPlane(GetDragPlane(axis), ray, out dpHitPoint);
+
+                if (selectedAxis != RuntimeHandleAxis.None)
+                {
+                    return selectedAxis;
                 }
 
                 bool isInside = (dpHitPoint - Target.position).magnitude <= innerRadius * scale;
@@ -256,7 +270,7 @@ namespace Battlehub.RTHandles
 
         protected override bool OnBeginDrag()
         {
-            if(!base.OnBeginDrag())
+            if (!base.OnBeginDrag())
             {
                 return false;
             }
@@ -269,7 +283,7 @@ namespace Battlehub.RTHandles
 
             Vector2 point;
             if (Window.Pointer.XY(Target.position, out point))
-            {  
+            {
                 m_prevPointer = point;
             }
             else
@@ -298,7 +312,7 @@ namespace Battlehub.RTHandles
                 else
                 {
                     SelectedAxis = RuntimeHandleAxis.None;
-                }     
+                }
             }
             else
             {
@@ -367,7 +381,7 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                if(LockObject != null && LockObject.RotationX)
+                if (LockObject != null && LockObject.RotationX)
                 {
                     delta.x = 0.0f;
                 }
@@ -430,7 +444,7 @@ namespace Battlehub.RTHandles
             {
                 delta = StartingRotationInv * delta;
 
-                if(LockObject != null && LockObject.RotationFree)
+                if (LockObject != null && LockObject.RotationFree)
                 {
                     delta.x = 0.0f;
                     delta.y = 0.0f;
@@ -461,7 +475,7 @@ namespace Battlehub.RTHandles
 
                 Vector3 axis = m_targetInverseMatrix.MultiplyVector(Window.Camera.cameraToWorldMatrix.MultiplyVector(-Vector3.forward));
 
-                if(LockObject == null || !LockObject.RotationScreen)
+                if (LockObject == null || !LockObject.RotationScreen)
                 {
                     rotation = Quaternion.AngleAxis(delta.x, axis);
                 }
@@ -489,7 +503,7 @@ namespace Battlehub.RTHandles
         protected override void SyncModelTransform()
         {
             base.SyncModelTransform();
-            if(Target != null)
+            if (Target != null)
             {
                 Model.transform.rotation = Target.rotation * StartingRotationInv;
             }
