@@ -5,7 +5,7 @@ using Battlehub.RTCommon;
 
 namespace Battlehub.RTHandles
 {
-
+    [DefaultExecutionOrder(1)]
     public class PositionHandle : BaseHandle
     {
         public float GridSize = 1.0f;
@@ -87,16 +87,20 @@ namespace Battlehub.RTHandles
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            if (GetComponent<BaseHandleInput>() == null)
-            {
-                gameObject.AddComponent<PositionHandleInput>();
-            }
+            
         }
 
         protected override void OnEnableOverride()
         {
+            BaseHandleInput input = GetComponent<BaseHandleInput>();
+            if (input == null || input.Handle != this)
+            {
+                input = gameObject.AddComponent<PositionHandleInput>();
+                input.Handle = this;
+            }
+
             base.OnEnableOverride();
-        
+
             m_isInVertexSnappingMode = false;
             Editor.Tools.IsSnapping = false;
             m_handleOffset = Vector3.zero;

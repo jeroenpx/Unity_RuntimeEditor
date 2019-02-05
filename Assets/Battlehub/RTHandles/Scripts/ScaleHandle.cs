@@ -3,6 +3,7 @@
 using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
 {
+    [DefaultExecutionOrder(2)]
     public class ScaleHandle : BaseHandle
     {
         public float GridSize = 0.1f;

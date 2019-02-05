@@ -14,6 +14,10 @@ Scripts, prefabs and example scenes for transform handles can be found in __Asse
 Here is how transform handles and components rendered in the game view:
 ![Screenshot](img/transform-handels/overview/overview.png)
 
+All in one:
+
+![Screenshot](img/transform-handels/overview/all-in-one.png)
+
 
 ##Getting Started
 
@@ -36,7 +40,7 @@ Following actions available by default:
 Action       | Input
 ------------ | ------------- 
 Select   	 | Left-click
-Move         | Hold middle or right mouse button, then drag
+Move (Pan)   | Hold middle or right mouse button, then drag
 Orbit        | Hold Alt+left-click, then drag 
 Zoom         | Use the scroll wheel
 Undo		 | Shift + Z (Ctrl + Z in player)  
@@ -53,9 +57,9 @@ Redo		 | Shift + Y (Ctrl + Y in player)
 
 This is the base class of position, rotation and scale transform handles. Therefore all transform handles have following settings:
 
-   * `Window` - reference to the [window](infrastructure.md/#runtime-window) instance. Interaction with transform handle allowed only in case referenced window is active. 
+   * `Window` - reference to the [window](infrastructure.md#runtime-window). Interaction with transform handle allowed only in case referenced window is active. 
    * `HighlightOnHover` - bool value. If true then transform handles will be highlighted on pointer over. Set it to false if touch input is used. (default: true)
-   * `Appearance` - reference to the [runtime handles component](#runtime-handles-component) instance. Various visual settings.  
+   * `Appearance` - reference to the [runtime handles component](#runtime-handles-component). Various visual settings.  
    * `Model` - reference to the prefab with BaseHandle model component attached. If Model is set then default rendering procedure will be disabled and prefab instance will be rendered instead.
    * `Targets` - array of transforms to be modified by transform handle.
    * `GridSize` - float value used in unit-snapping mode. By default Unit-snapping mode is activated with 'Shift' key.
@@ -68,7 +72,7 @@ This is the base class of position, rotation and scale transform handles. Theref
 To create position handle do following:
 	
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/PositionHandle__ script.
+   2. Add __Assets/Battlehub/RTHandles/Scripts/PositionHandle__ component.
 
 ![Screenshot](img/transform-handels/position-handle/create-position-handle.png)
 
@@ -94,7 +98,7 @@ Adjustments example:
 To create rotation handle do following:
 
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/RotationHandle__ script.
+   2. Add __Assets/Battlehub/RTHandles/Scripts/RotationHandle__ component.
 
 ![Screenshot](img/transform-handels/rotation-handle/create-rotation-handle.png)
 
@@ -116,7 +120,7 @@ Adjustments example:
 To create scale handle do following:
 
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/ScaleHandle__ script.
+   2. Add __Assets/Battlehub/RTHandles/Scripts/ScaleHandle__ component.
    
 ![Screenshot](img/transform-handels/scale-handle/create-scale-handle.png)
 
@@ -144,18 +148,18 @@ __Assets/Battlehub/RTCommon/Scripts/LockAxes.cs__ script will prevent certain tr
 To create scene gizmo do following:
 
   1. Create Game Object.
-  2. Add __Assets/Battlehub/RTHandles/Scripts/SceneGizmo__ script.
+  2. Add __Assets/Battlehub/RTHandles/Scripts/SceneGizmo__ component.
   
   ![Screenshot](img/transform-handels/scene-gizmo/create-scene-gizmo.png)
   
 Scene gizmo script has following fields:
   
-   * `Window` - reference to the [window](infrastructure.md/#runtime-window)instance. Interaction with scene gizmo allowed only in case referenced window is active. 
+   * `Window` - reference to the [window](infrastructure.md#runtime-window). Interaction with scene gizmo allowed only in case referenced window is active. 
    * `Btn Projection` - UGUI button to switch between orthographic and perspective projection (default: None).
    * `Pivot` - transformation of the object around which the camera rotates.
    * `Size` - scene gizmo size (default: 96,96).
    * `Offset` - scene gizmo offset (default: 0,0).
-   * `Appearance` - reference to the [runtime handles component](#runtime-handles-component) instance. Various visual settings.   
+   * `Appearance` - reference to the [runtime handles component](#runtime-handles-component). Various visual settings.   
    * `Orientation Changing` -  event fires when camera rotation and position are about to be changed.
    * `Orientation Changed` - event fires when camera rotation and position are changed.
    * `Projection Changed` - event fires when camera projection changed.
@@ -172,7 +176,7 @@ Selection gizmo from __Assets/Battlehub/RTHandles/Scripts/SceneGizmo__ is automa
 To create grid do following:
   
    1. Select Camera
-   2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeGrid__ script.
+   2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeGrid__ component.
    
 ![Screenshot](img/transform-handels/grid/runtime-grid.png)
 
@@ -180,18 +184,156 @@ To change color of the grid use `Grid Color` field of [runtime handles component
    
 ##Runtime Handles Component
 
+Use this script to change appearance of transform handles:
+
+   1. Create Game Object.
+   2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeHandlesComponent__ component
+
+![Screenshot](img/transform-handels/runtime-handles-component/runtime-handles-component.png)
+   
+Runtime Handles Component script has following fields:
+
+   * `Colors` - transform handles, scene gizmo, selection gizmo and grid colors.
+   * `Handle Scale` - transform handles scale (default: 1).
+   * `Selection Margin` - scale of clickable area around transform handle axes (default: 1).
+   * `Invert Z Axis` - invert position handle z-axis (default: false).
+   * `Position Handle Arrows Only` - hide xy, yz and xz quads (default: false).
+   
+	
 
 ##Runtime Selection Component
+
+This is the implementation of default selection behavior.
+
+To enable default selection behavior:
+
+  1. Create Game Object. 
+  2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeSelectionComponent__.
+  3. Choose objects you want to make selectable and click __Tools->Runtime Handles->Enable Editing__.
+	   * Alternatively add [__Assets/Battlehub/RTCommon/Scripts/ExposeToEditor__](infrastructure.md#expose-to-editor)  component.
+	   
+![Screenshot](img/transform-handels/runtime-selection-component/runtime-selection-component.png)
+
+Following actions defined in __Assets/Battlehub/RTHandles/Scripts/Input/RuntimeSelectionInput__ :
+  
+Action          | Input
+-------------   | ------------- 
+Select   	    | Left-click
+Select multiple | Hold Shift + left-click (Ctrl + left-click in player)
+Select all      | Hold Shift + A (Ctrl + A in player)
+
+Runtime Selection Component script has following fields:
+
+  * `Window` - reference to the [window](infrastructure.md#runtime-window).
+  * `Position Handle` - reference to the [position-handle](#position-handle).
+  * `Rotation Handle` - reference to the [rotation-handle](#rotation-handle).
+  * `Scale Handle` - reference to the [scale-handle](#scale-handle).
+  * `Box Selection` - reference to the [box-selection](#box-selection).
+  * `Pivot` - Window.Camera will look at this object.
+  
+To switch between transform handles using Q W E R keys do following : 
+
+   1. Add __Battlehub\RTHandles\Scripts\Input\RuntimeToolsInput component__.
+
+!!! note
+
+	If you wish to switch between transform handles programmatically  proceed to [-> this <-](infrastructure.md#runtime-tools) section.
+
+!!! note
+
+	If you wish to change selection programmatically proceed to [-> this <-](infrastructure.md#runtime-selection) section.
+
 ##Box Selection
 
+To create Box Selection do following:
+  
+   1. Create Game Object. 
+   2. Add __Assets/Battlehub/RTHandles/Scripts/BoxSelection__ component.
+	
+![Screenshot](img/transform-handels/box-selection/create-box-selection.png)
 
+!!! note
+
+	Game Objects without [__ExposeToEditor__](infrastructure.md#expose-to-editor) component are invisible to Box Selection.
+	
+!!! note
+
+	Box Selection use [Runtime Selection API](infrastructure.md#runtime-selection) to store selected objects.
+	
+
+Box Selection has following fields:
+
+  * `Window` - reference to the [window](infrastructure.md#runtime-window).
+  * `Graphics` - sprite which is used to render box selection.
+  * `Use Camera Space` - use camera space for rendering (true) or screen space (false) (default:true)
+  * `Box Selection Method` - box selection method:
+	* _Loose Fitting_ - use renderer bounds and collider (default);
+	* _Bounds Center_ - use bounds center;
+	* _Transform Center_ - use transform center;
+
+Use following code to filter objects selected using Box Selection:
+	
 ``` C#
-	public static void  DoPositionHandle(Vector3  position,  
-		Quaternion rotation,
-		RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None,
-		bool snapMode = false, 
-		LockObject lockObject = null)
+ using UnityEditor;
+
+ //In this example objects with name "Capsule" are filtered out
+ 
+ public class FilteringBehaviour : MonoBehaviour
+ {
+	[SerializeField]
+    private BoxSelection m_boxSelection;
+
+    private void Start()
+    {
+        m_boxSelection.Filtering += OnFiltering;
+    }
+
+    private void OnDestroy()
+    {
+        if(m_boxSelection != null)
+        {
+            m_boxSelection.Filtering -= OnFiltering;
+        }
+    }
+
+    private void OnFiltering(object sender, FilteringArgs e)
+    {
+        if (e.Object.name == "Capsule")
+        {
+            e.Cancel = true;
+        }
+    }
+ }
 	
 ```
 
 ##Runtime Scene Component
+
+Runtime Scene Component extends [Runtime Selection Component](#runtime-selection-component) and enables mouse orbiting, movement and zoom.
+
+To create Runtime Scene Component do following:
+
+  1. Create Game Object
+  2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeSelectionComponent__.
+  
+![Screenshot](img/transform-handels/runtime-scene-component/create-runtime-scene-component.png)
+
+Runtime Scene Component has following fields:
+  
+  * `View Texture` - cursor which is visible during mouse orbiting.
+  * `Move Texture` - cursor which is visible during movement.
+  * `Grid Size` - used by Snap To Grid method.
+  * `Scene Gizmo` - reference to the [Scene Gizmo](#scene-gizmo).
+  * `Grid` - reference to the [Grid](#grid).
+  
+Following actions defined in __Assets/Battlehub/RTHandles/Scripts/Input/RuntimeSceneInput__ :
+  
+Action       | Input
+-------------| ------------- 
+Focus   	 | Press F
+Snap To Grid | Press Shift + S (Ctrl + S in player)
+Move (Pan)   | Hold middle or right mouse button, then drag
+Orbit        | Hold Alt+left-click, then drag 
+Zoom         | Use the scroll wheel
+
+  

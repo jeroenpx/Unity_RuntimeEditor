@@ -9,7 +9,7 @@ namespace Battlehub.RTHandles
         public KeyCode VertexSnappingToggleKey = KeyCode.LeftShift;
         public KeyCode SnapToGroundKey = KeyCode.G;
 
-        protected PositionHandle Handle
+        protected PositionHandle PositionHandle
         {
             get { return (PositionHandle)m_handle; }
         }
@@ -17,6 +17,11 @@ namespace Battlehub.RTHandles
         protected override void Update()
         {
             base.Update();
+
+            if(m_handle == null)
+            {
+                return;
+            }
 
             if (m_editor.Tools.IsViewing)
             {
@@ -28,11 +33,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            Handle.SnapToGround = SnapToGroundAction();
+            PositionHandle.SnapToGround = SnapToGroundAction();
 
             if (BeginVertexSnappingAction())
             {
-                Handle.IsInVertexSnappingMode = true;
+                PositionHandle.IsInVertexSnappingMode = true;
                 if(VertexSnappingToggleAction())
                 {
                     m_editor.Tools.IsSnapping = !m_editor.Tools.IsSnapping;
@@ -40,7 +45,7 @@ namespace Battlehub.RTHandles
             }
             else if (EndVertexSnappingAction())
             {
-                Handle.IsInVertexSnappingMode = false;
+                PositionHandle.IsInVertexSnappingMode = false;
             }
         }
 

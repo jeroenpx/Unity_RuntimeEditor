@@ -97,7 +97,7 @@ namespace Battlehub.RTCommon
             }
             if (m_fallbacks.ContainsKey(typeof(T)))
             {
-                Debug.LogWarning("fallback for type {0} already registered.");
+                Debug.LogWarningFormat("fallback for type {0} already registered.", typeof(T).FullName);
                 return;
             }
             m_fallbacks[typeof(T)] = new Item(func);
@@ -112,7 +112,7 @@ namespace Battlehub.RTCommon
             }
             if (m_fallbacks.ContainsKey(typeof(T)))
             {
-                Debug.LogWarning("type {0} already registered.");
+                Debug.LogWarningFormat("type {0} already registered.", typeof(T).FullName);
                 return;
             }
 

@@ -450,7 +450,18 @@ namespace Battlehub.RTCommon
             RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
             sceneView.IsPointerOver = true;
             sceneView.WindowType = RuntimeWindowType.Scene;
-            sceneView.Camera = Camera.main;
+            if(Camera.main == null)
+            {
+                GameObject camera = new GameObject();
+                camera.name = "RTE SceneView Camera";
+                sceneView.Camera = camera.AddComponent<Camera>();
+            }
+            else
+            {
+                sceneView.Camera = Camera.main;
+            }
+            
+            
 
             EventSystem eventSystem = FindObjectOfType<EventSystem>();
             if (eventSystem == null)
@@ -547,7 +558,8 @@ namespace Battlehub.RTCommon
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
-            m_object = GetComponent<RuntimeObjects>();
+            m_object = gameObject.GetComponent<RuntimeObjects>();
+            
 
             if(IsVR)
             {
@@ -570,6 +582,11 @@ namespace Battlehub.RTCommon
             if(GetComponent<RTEBaseInput>() == null)
             {
                 gameObject.AddComponent<RTEBaseInput>();
+            }
+
+            if (m_object == null)
+            {
+                m_object = gameObject.AddComponent<RuntimeObjects>();
             }
         }
 

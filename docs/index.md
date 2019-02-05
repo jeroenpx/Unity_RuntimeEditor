@@ -69,6 +69,7 @@ The documentation is organized as following:
 *  [Input](infrastructure.md#input)
 *  [IRTE interface](infrastructure.md#irte-interface)
 *  [RTE Component](infrastructure.md#rte-component)
+*  [Runtime Tools](infrastructure.md#runtime-tools)
 *  [Runtime Selection](infrastructure.md#runtime-selection)
 *  [Runtime Objects](infrastructure.md#runtime-objects)
 *  [Runtime Selection](infrastructure.md#runtime-selection)

@@ -65,7 +65,7 @@ Shader "Battlehub/RTHandles/VertexColorClip" {
 			float4 frag(vertexOutput input) : COLOR
 			{
 				UNITY_SETUP_INSTANCE_ID(input);
-				clip(dot(input.norm, float3(0, 0, 1)));
+				clip(dot(input.norm, float3(0, 0, 1)) + 0.005f);
 				return  input.color;
 			}	
 

@@ -48,6 +48,16 @@ MonoBehaviour:
   Appearance: {fileID: 0}
   Model: {fileID: 737, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
   m_targets: []
+  BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Drop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   GridSize: 0.1
 --- !u!1 &1192367540956640
 GameObject:
@@ -99,6 +109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a2b6a8055ce1a49851017a7848f0bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EditorModifierKey: 304
+  MultiselectKey: 306
+  MultiselectKey2: 305
+  RangeSelectKey: 304
   FocusKey: 102
   SnapToGridKey: 115
   RotateKey: 308
@@ -178,6 +192,16 @@ MonoBehaviour:
   Appearance: {fileID: 0}
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 3}
   m_targets: []
+  BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Drop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   GridSize: 1
 --- !u!1 &1310129391672340
 GameObject:
@@ -759,6 +783,16 @@ MonoBehaviour:
   Appearance: {fileID: 0}
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 3}
   m_targets: []
+  BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Drop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   GridSize: 15
   XSpeed: 1
   YSpeed: 1

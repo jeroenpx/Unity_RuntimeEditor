@@ -11,10 +11,10 @@
         {
             base.UpdateOverride();
 
-            if (SelectAllAction())
-            {
-                View.SelectAll();
-            }
+            //if (SelectAllAction())
+            //{
+            //    View.SelectAll();
+            //}
 
             if (DuplicateAction())
             {

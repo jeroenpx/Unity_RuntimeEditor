@@ -5,6 +5,7 @@ using Battlehub.RTCommon;
 
 namespace Battlehub.RTHandles
 {
+    [DefaultExecutionOrder(3)]
     public class RotationHandle : BaseHandle
     {
         public float GridSize = 15.0f;
@@ -73,6 +74,7 @@ namespace Battlehub.RTHandles
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
+
             if (Editor.Tools.IsViewing)
             {
                 SelectedAxis = RuntimeHandleAxis.None;
@@ -244,7 +246,7 @@ namespace Battlehub.RTHandles
 
                 Vector3 camPoint = Window.Camera.worldToCameraMatrix.MultiplyPoint(point);
 
-                if (camPoint.z > zeroCamPoint.z)
+                if (camPoint.z >= zeroCamPoint.z)
                 {
                     Vector3 screenVector = Window.Camera.WorldToScreenPoint(point) - Window.Camera.WorldToScreenPoint(prevPoint);
                     float screenVectorMag = screenVector.magnitude;
@@ -258,6 +260,7 @@ namespace Battlehub.RTHandles
                             {
                                 minDistance = distance;
                                 hit = true;
+                                break;
                             }
                         }
                     }
@@ -268,6 +271,74 @@ namespace Battlehub.RTHandles
             return hit;
         }
 
+        private bool ForceScreenRotationMode()
+        {
+            if (SelectedAxis == RuntimeHandleAxis.Free)
+            {
+                return false;
+            }
+
+            if (SelectedAxis == RuntimeHandleAxis.X)
+            {
+                return Mathf.Abs(Vector3.Dot(Window.Camera.transform.forward, (Target.rotation * StartingRotationInv) * Vector3.right)) > 0.8;
+            }
+            else if (SelectedAxis == RuntimeHandleAxis.Y)
+            {
+                return Mathf.Abs(Vector3.Dot(Window.Camera.transform.forward, (Target.rotation * StartingRotationInv) * Vector3.up)) > 0.8;
+            }
+            else if (SelectedAxis == RuntimeHandleAxis.Z)
+            {
+                return Mathf.Abs(Vector3.Dot(Window.Camera.transform.forward, (Target.rotation * StartingRotationInv) * Vector3.forward)) > 0.8;
+            }
+            return false;
+        }
+
+        private Quaternion ScreenRotation(Vector3 delta)
+        {
+            Vector3 cameraAxis = m_targetInverseMatrix.MultiplyVector(Window.Camera.cameraToWorldMatrix.MultiplyVector(-Vector3.forward));
+            if (SelectedAxis == RuntimeHandleAxis.Screen)
+            {
+                Quaternion rotation = Quaternion.AngleAxis(delta.x, cameraAxis);
+                if (LockObject == null || !LockObject.RotationScreen)
+                {
+                    return rotation;
+                }
+            }
+            else
+            {
+                if (SelectedAxis == RuntimeHandleAxis.X)
+                {
+                    Vector3 axis = Quaternion.Inverse(Target.rotation) * ((Target.rotation * StartingRotationInv) * Vector3.right);
+                    Quaternion rotation = Quaternion.AngleAxis(delta.x * Mathf.Sign(Vector3.Dot(axis, cameraAxis)), axis);
+                    if (LockObject == null || !LockObject.RotationX)
+                    {
+                        return rotation;
+                    }
+                }
+                else if (SelectedAxis == RuntimeHandleAxis.Y)
+                {
+                    Vector3 axis = Quaternion.Inverse(Target.rotation) * ((Target.rotation * StartingRotationInv) * Vector3.up);
+                    Quaternion rotation = Quaternion.AngleAxis(delta.x * Mathf.Sign(Vector3.Dot(axis, cameraAxis)), axis);
+                    if (LockObject == null || !LockObject.RotationY)
+                    {
+                        return rotation;
+                    }
+                }
+                else if (SelectedAxis == RuntimeHandleAxis.Z)
+                {
+                    Vector3 axis = Quaternion.Inverse(Target.rotation) * ((Target.rotation * StartingRotationInv) * Vector3.forward);
+                    Quaternion rotation = Quaternion.AngleAxis(delta.x * Mathf.Sign(Vector3.Dot(axis, cameraAxis)), axis);
+                    if (LockObject == null || !LockObject.RotationZ)
+                    {
+                        return rotation;
+                    }
+                }
+            }
+
+            return Quaternion.identity;
+        }
+
+        private bool m_forceScreenRotationMode;
         protected override bool OnBeginDrag()
         {
             if (!base.OnBeginDrag())
@@ -291,7 +362,8 @@ namespace Battlehub.RTHandles
                 SelectedAxis = RuntimeHandleAxis.None;
             }
 
-            if (SelectedAxis == RuntimeHandleAxis.Screen)
+            m_forceScreenRotationMode = ForceScreenRotationMode();
+            if (SelectedAxis == RuntimeHandleAxis.Screen || m_forceScreenRotationMode)
             {
                 Vector2 center;
 
@@ -363,7 +435,28 @@ namespace Battlehub.RTHandles
 
             Vector3 delta = StartingRotation * Quaternion.Inverse(Target.rotation) * toWorldMatrix.MultiplyVector(new Vector3(m_deltaY, -m_deltaX, 0));
             Quaternion rotation = Quaternion.identity;
-            if (SelectedAxis == RuntimeHandleAxis.X)
+
+            if (SelectedAxis == RuntimeHandleAxis.Screen || m_forceScreenRotationMode)
+            {
+                delta = m_targetInverse * new Vector3(m_deltaY, -m_deltaX, 0);
+                if (EffectiveGridUnitSize != 0.0f)
+                {
+                    if (Mathf.Abs(delta.x) >= EffectiveGridUnitSize)
+                    {
+                        delta.x = Mathf.Sign(delta.x) * EffectiveGridUnitSize;
+                        m_deltaX = 0.0f;
+                        m_deltaY = 0.0f;
+                    }
+                    else
+                    {
+                        delta.x = 0.0f;
+                    }
+                }
+
+                rotation = ScreenRotation(delta);
+            }
+
+            else if (SelectedAxis == RuntimeHandleAxis.X)
             {
                 Vector3 rotationAxis = Quaternion.Inverse(Target.rotation) * m_startingRotationAxis;
 
@@ -440,7 +533,7 @@ namespace Battlehub.RTHandles
                 rotation = Quaternion.AngleAxis(delta.z, rotationAxis);
 
             }
-            else if (SelectedAxis == RuntimeHandleAxis.Free)
+            else
             {
                 delta = StartingRotationInv * delta;
 
@@ -455,31 +548,7 @@ namespace Battlehub.RTHandles
                 m_deltaX = 0.0f;
                 m_deltaY = 0.0f;
             }
-            else
-            {
-                delta = m_targetInverse * new Vector3(m_deltaY, -m_deltaX, 0);
-                if (EffectiveGridUnitSize != 0.0f)
-                {
-                    if (Mathf.Abs(delta.x) >= EffectiveGridUnitSize)
-                    {
-                        delta.x = Mathf.Sign(delta.x) * EffectiveGridUnitSize;
-                        m_deltaX = 0.0f;
-                        m_deltaY = 0.0f;
-                    }
-                    else
-                    {
-                        delta.x = 0.0f;
-                    }
-                }
-
-
-                Vector3 axis = m_targetInverseMatrix.MultiplyVector(Window.Camera.cameraToWorldMatrix.MultiplyVector(-Vector3.forward));
-
-                if (LockObject == null || !LockObject.RotationScreen)
-                {
-                    rotation = Quaternion.AngleAxis(delta.x, axis);
-                }
-            }
+           
 
             if (EffectiveGridUnitSize == 0.0f)
             {

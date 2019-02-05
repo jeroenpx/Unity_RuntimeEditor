@@ -266,9 +266,5 @@ namespace Battlehub.RTEditor
             return false;
         }
 
-        public void SelectAll()
-        {
-            Editor.Selection.objects = Editor.Object.Get(false).Select(exposed => exposed.gameObject).ToArray();
-        }
     }
 }

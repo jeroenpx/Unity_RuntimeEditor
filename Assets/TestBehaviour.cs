@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,15 +61,43 @@ public class TestBehaviour : MonoBehaviour
     [SerializeField]
     private Bounds m_bounds;
 
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private GameObject m_selectObj;
+
+    [SerializeField]
+    private GameObject m_selectObj2;
+
+
+    private BoxSelection m_boxSelection;
+
+    private void Start()
     {
-        
+        m_boxSelection = GetComponent<BoxSelection>();
+        m_boxSelection.Filtering += OnFiltering;
     }
 
-    // Update is called once per frame
+    private void OnDestroy()
+    {
+        if(m_boxSelection != null)
+        {
+            m_boxSelection.Filtering -= OnFiltering;
+        }
+    }
+
+    private void OnFiltering(object sender, FilteringArgs e)
+    {
+        if (e.Object.name == "Capsule")
+        {
+            e.Cancel = true;
+        }
+    }
+
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            IRTE editor = IOC.Resolve<IRTE>();
+            editor.Tools.Current = RuntimeTool.Rotate;
+        }
     }
 }

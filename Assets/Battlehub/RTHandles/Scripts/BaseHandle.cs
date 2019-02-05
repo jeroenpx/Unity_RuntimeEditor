@@ -417,9 +417,11 @@ namespace Battlehub.RTHandles
 
         private void Start()
         {
-            if(GetComponent<BaseHandleInput>() == null)
+            BaseHandleInput input = GetComponent<BaseHandleInput>();
+            if (input == null || input.Handle != this)
             {
-                gameObject.AddComponent<BaseHandleInput>();
+                input = gameObject.AddComponent<BaseHandleInput>();
+                input.Handle = this;
             }
             OnStartOverride();
         }

@@ -161,10 +161,7 @@ namespace Battlehub.RTHandles
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
             Editor.Tools.ToolChanged += OnRuntimeToolChanged;
 
-            if (GetComponent<RuntimeSelectionInputBase>() == null)
-            {
-                gameObject.AddComponent<RuntimeSelectionInput>();
-            }
+            
 
             RuntimeSelectionComponentUI ui = Window.GetComponentInChildren<RuntimeSelectionComponentUI>(true);
             if (ui == null && !Editor.IsVR)
@@ -191,14 +188,16 @@ namespace Battlehub.RTHandles
             if (m_pivot == null)
             {
                 GameObject pivot = new GameObject("Pivot");
-                pivot.transform.SetParent(transform, false);
+                pivot.transform.SetParent(transform, true);
+                pivot.transform.position = Vector3.zero;
                 m_pivot = pivot.transform;
             }
 
             if (m_secondaryPivot == null)
             {
                 GameObject secondaryPivot = new GameObject("SecondaryPivot");
-                secondaryPivot.transform.SetParent(transform, false);
+                secondaryPivot.transform.SetParent(transform, true);
+                secondaryPivot.transform.position = Vector3.zero;
                 m_secondaryPivot = secondaryPivot.transform;
             }
 
@@ -210,6 +209,11 @@ namespace Battlehub.RTHandles
 
         protected virtual void Start()
         {
+            if (GetComponent<RuntimeSelectionInputBase>() == null)
+            {
+                gameObject.AddComponent<RuntimeSelectionInput>();
+            }
+
             if (m_positionHandle != null && !m_positionHandle.gameObject.activeSelf)
             {
                 m_positionHandle.gameObject.SetActive(true);
@@ -289,7 +293,7 @@ namespace Battlehub.RTHandles
             IsUISelected = false;
         }
 
-        public virtual void SelectGO(bool rangeSelect, bool multiselect)
+        public virtual void SelectGO(bool multiselect, bool allowUnselect)
         {
             Ray ray = Window.Pointer;
             RaycastHit hitInfo;
@@ -316,7 +320,7 @@ namespace Battlehub.RTHandles
                         if (selection.Contains(hitGO))
                         {
                             selection.Remove(hitGO);
-                            if (rangeSelect)
+                            if (!allowUnselect)
                             {
                                 selection.Insert(0, hitGO);
                             }
@@ -351,8 +355,7 @@ namespace Battlehub.RTHandles
 
         public virtual void SelectAll()
         {
-            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(true);
-            Editor.Selection.objects = objects.Select(o => o.gameObject).ToArray();
+            Editor.Selection.objects = Editor.Object.Get(false).Select(exposed => exposed.gameObject).ToArray();
         }
 
         private void OnRuntimeToolChanged()

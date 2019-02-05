@@ -200,7 +200,7 @@ namespace Battlehub.RTHandles
 
         protected override void UpdateModel()
         {
-            m_radius = Mathf.Max(0.01f, m_radius);
+            m_radius = Mathf.Max(0.001f, m_radius);
 
             Vector3 right = transform.rotation * Vector3.right * transform.localScale.x;
             Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;

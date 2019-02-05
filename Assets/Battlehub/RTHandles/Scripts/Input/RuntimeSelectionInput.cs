@@ -6,40 +6,40 @@ namespace Battlehub.RTHandles
     public class RuntimeSelectionInput : RuntimeSelectionInputBase
     {
 #if UNITY_EDITOR
-        private KeyCode EditorModifierKey = KeyCode.LeftShift;
+        public KeyCode m_modifierKey = KeyCode.LeftShift;
 #else
-        private KeyCode RuntimeModifierKey = KeyCode.LeftControl;
+        public KeyCode m_modifierKey = KeyCode.LeftControl;
 #endif
         protected KeyCode ModifierKey
         {
-            get
-            {
-#if UNITY_EDITOR
-                return EditorModifierKey;
-#else
-                return RuntimeModifierKey;
-#endif
-            }
+            get { return m_modifierKey; }
         }
 
-        private KeyCode MultiselectKey = KeyCode.LeftControl;
-        private KeyCode MultiselectKey2 = KeyCode.RightControl;
-        private KeyCode RangeSelectKey = KeyCode.LeftShift;
-
-        protected virtual bool RangeSelectAction()
-        {
-            return m_component.Editor.Input.GetKey(RangeSelectKey);
-        }
+        public KeyCode SelectAllKey = KeyCode.A;
 
         protected virtual bool MultiselectAction()
         {
             IInput input = m_component.Editor.Input;
-            return input.GetKey(MultiselectKey) || input.GetKey(MultiselectKey2) || input.GetKey(RangeSelectKey);
+            return input.GetKey(ModifierKey);
+        }
+
+        protected virtual bool SelectAllAction()
+        {
+            return Input.GetKeyDown(SelectAllKey) && Input.GetKey(ModifierKey);
+        }
+
+        protected override void LateUpdate()
+        {
+            base.LateUpdate();
+            if(SelectAllAction())
+            {
+                SelectAll();
+            }
         }
 
         protected override void OnSelectGO()
         {
-            m_component.SelectGO(RangeSelectAction(), MultiselectAction());
+            m_component.SelectGO(MultiselectAction(), true);
         }
        
     }

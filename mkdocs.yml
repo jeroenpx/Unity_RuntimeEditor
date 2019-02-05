@@ -22,6 +22,6 @@ extra_css:
   - css/extra.css
 markdown_extensions:
   - admonition
-  - codehilite:
-        linenums: true
+#  - codehilite:
+#        linenums: true
 

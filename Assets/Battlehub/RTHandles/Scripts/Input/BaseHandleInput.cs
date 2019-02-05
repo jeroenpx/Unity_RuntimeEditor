@@ -7,27 +7,53 @@ namespace Battlehub.RTHandles
     {
         [SerializeField]
         protected BaseHandle m_handle;
+        public virtual BaseHandle Handle
+        {
+            get { return m_handle; }
+            set { m_handle = value; }
+        }
+
         protected IRTE m_editor;
 
         private void Awake()
+        {
+            
+        }
+
+        private void OnEnable()
         {
             if (m_handle == null)
             {
                 m_handle = GetComponent<BaseHandle>();
             }
+
             m_editor = m_handle.Editor;
+
+            if(m_editor != null)
+            {
+                if (BeginDragAction())
+                {
+                    m_handle.BeginDrag();
+                }
+            }
         }
 
-        private void OnEnable()
+        protected virtual void Start()
         {
-            if (BeginDragAction())
+            if(m_editor == null)
             {
-                m_handle.BeginDrag();
+                m_editor = m_handle.Editor;
             }
         }
 
         protected virtual void Update()
         {
+            if(m_handle == null)
+            {
+                Destroy(this);
+                return;
+            }
+
             if (BeginDragAction())
             {
                 m_handle.BeginDrag();
@@ -37,7 +63,7 @@ namespace Battlehub.RTHandles
                 m_handle.EndDrag();
             }
 
-            if(m_handle.IsDragging)
+            if(m_handle != null && m_handle.IsDragging)
             {
                 m_handle.UnitSnapping = UnitSnappingAction();
             }

@@ -149,8 +149,6 @@ namespace Battlehub.RTHandles
                 SceneComponent.UpdateCursorState(true, m_pan, m_rotate);
             }
 
-          
-           
             if(m_rotate)
             {
                 if(canRotate)
@@ -186,6 +184,11 @@ namespace Battlehub.RTHandles
                     if (FocusAction())
                     {
                         SceneComponent.Focus();
+                    }
+
+                    if(SelectAllAction())
+                    {
+                        SceneComponent.SelectAll();
                     }
                 }   
             }

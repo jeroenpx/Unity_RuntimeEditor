@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System.Linq;
 using UnityEngine;
 
 namespace Battlehub.RTHandles
@@ -73,6 +74,11 @@ namespace Battlehub.RTHandles
         protected virtual void OnSelectGO()
         {
             m_component.SelectGO(false, false);
+        }
+
+        protected virtual void SelectAll()
+        {
+            m_component.SelectAll();
         }
     }
 

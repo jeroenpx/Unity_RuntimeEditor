@@ -35,6 +35,20 @@ namespace Battlehub.UIControls
         }
     }
 
+
+    public class VirtualizingItemCollapsedArgs : EventArgs
+    {
+        public object Item
+        {
+            get;
+            private set;
+        }
+        public VirtualizingItemCollapsedArgs(object item)
+        {
+            Item = item;
+        }
+    }
+
     /// <summary>
     /// TreeView data binding event arguments
     /// </summary>
@@ -303,6 +317,8 @@ namespace Battlehub.UIControls
         /// Raised on item expanding
         /// </summary>
         public event EventHandler<VirtualizingItemExpandingArgs> ItemExpanding;
+
+        public event EventHandler<VirtualizingItemCollapsedArgs> ItemCollapsed;
 
         /// <summary>
         /// Indent between parent and children
@@ -645,9 +661,12 @@ namespace Battlehub.UIControls
                 base.DestroyItems(itemsToDestroy.ToArray(), unselect);
             }
 
-            //SelectedIndex = IndexOf(SelectedItem);
-
             SelectedItems = SelectedItems;
+
+            if (ItemCollapsed != null)
+            {
+                ItemCollapsed(this, new VirtualizingItemCollapsedArgs(item));
+            }
         }
 
         private void Collapse(object[] items)
