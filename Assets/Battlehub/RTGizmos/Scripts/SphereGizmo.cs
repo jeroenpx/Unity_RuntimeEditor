@@ -21,7 +21,19 @@ namespace Battlehub.RTGizmos
         {
             get
             {
-                return Matrix4x4.TRS(Target.TransformPoint(Center), Target.rotation, Target.localScale * Radius);
+                Vector3 scale = Target.lossyScale;
+                scale = Vector3.one * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+                return Matrix4x4.TRS(Target.TransformPoint(Center), Target.rotation, scale * Radius);
+            }
+        }
+
+        protected override Matrix4x4 HandlesTransformInverse
+        {
+            get
+            {
+                Vector3 scale = Target.lossyScale;
+                scale = Vector3.one * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+                return Matrix4x4.TRS(Target.position, Target.rotation, scale).inverse;
             }
         }
 
@@ -45,13 +57,18 @@ namespace Battlehub.RTGizmos
                 return;
             }
 
-            Vector3 scale = Target.localScale * Radius;
+            Vector3 scale = Target.lossyScale * Radius;
+
+            scale = Vector3.one * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+
             RuntimeGizmos.DrawCubeHandles(Target.TransformPoint(Center) , Target.rotation, scale , HandlesColor);
             RuntimeGizmos.DrawWireSphereGL(Target.TransformPoint(Center), Target.rotation, scale, LineColor);
 
             if (IsDragging)
             {
-                RuntimeGizmos.DrawSelection(Target.TransformPoint(Center + HandlesPositions[DragIndex] * Radius), Target.rotation, Target.localScale, SelectionColor);
+                scale = Target.lossyScale;
+                scale = Vector3.one * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+                RuntimeGizmos.DrawSelection(HandlesTransform.MultiplyPoint(Center + HandlesPositions[DragIndex]), Target.rotation, scale, SelectionColor);
             }
         }
     }

@@ -9,25 +9,46 @@ namespace Battlehub.RTGizmos
         protected BaseGizmo m_gizmo;
         protected IRTE m_editor;
 
-        private void Awake()
+        public BaseGizmo Gizmo
+        {
+            get { return m_gizmo; }
+            set { m_gizmo = value; }
+        }
+
+        private void OnEnable()
         {
             if (m_gizmo == null)
             {
                 m_gizmo = GetComponent<BaseGizmo>();
             }
+
             m_editor = m_gizmo.Editor;
+
+            if (m_editor != null)
+            {
+                if (BeginDragAction())
+                {
+                    m_gizmo.BeginDrag();
+                }
+            }
         }
 
-        private void OnEnable()
+        protected virtual void Start()
         {
-            if (BeginDragAction())
+            if (m_editor == null)
             {
-                m_gizmo.BeginDrag();
+                m_editor = m_gizmo.Editor;
             }
         }
 
         protected virtual void Update()
         {
+            if(m_gizmo == null)
+            {
+                Destroy(this);
+                return;
+            }
+
             if (BeginDragAction())
             {
                 m_gizmo.BeginDrag();

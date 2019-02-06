@@ -15,10 +15,6 @@ namespace Battlehub.RTHandles
 
         protected IRTE m_editor;
 
-        private void Awake()
-        {
-            
-        }
 
         private void OnEnable()
         {

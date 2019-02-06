@@ -1,4 +1,4 @@
-#Transform Handles Documentation
+#Transform Handles Docs
 ##Overview
 
 __Runtime Transform Handles__ are the __runtime__ 3D controls that are used to manipulate items in the scene. There are three built-in transform tools to [position](#position-handle), [rotate](#rotation-handle) and [scale](#scale-handle) object via transform component. 

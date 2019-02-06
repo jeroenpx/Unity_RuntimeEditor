@@ -59,6 +59,7 @@ The documentation is organized as following:
 
 ## [Rendering](rendering.md)
 *  [IGL](rendering.md#igl)
+*  [GLRenderer](rendering.md#glrenderer)
 *  [GLCamera](rendering#glcamera)
 *  [Runtime Graphics Layer](rendering#runtime-graphics-layer)
 

@@ -35,6 +35,8 @@ namespace Battlehub.RTGizmos
             }
         }
 
+        
+
         protected override bool OnDrag(int index, Vector3 offset)
         {
             Vector3 axis;
@@ -65,7 +67,7 @@ namespace Battlehub.RTGizmos
             else
             {
                 float maxHs = GetMaxHorizontalScale(true);
-                Radius += (Vector3.Scale(offset, Target.localScale).magnitude / maxHs) * Mathf.Sign(Vector3.Dot(offset, HandlesNormals[index]));
+                Radius += (Vector3.Scale(offset, Target.lossyScale).magnitude / maxHs) * Mathf.Sign(Vector3.Dot(offset, HandlesNormals[index]));
                 
                 if(Radius < 0)
                 {
@@ -99,7 +101,7 @@ namespace Battlehub.RTGizmos
 
             if (IsDragging)
             {
-                RuntimeGizmos.DrawSelection(Target.TransformPoint(Center + Vector3.Scale(HandlesPositions[DragIndex], GetHandlesScale(false))), Target.rotation, Target.localScale, SelectionColor);
+                RuntimeGizmos.DrawSelection(HandlesTransform.MultiplyPoint(Center + HandlesPositions[DragIndex]), Target.rotation, Target.lossyScale, SelectionColor);
             }
         }
 
@@ -109,15 +111,15 @@ namespace Battlehub.RTGizmos
             float hs = GetMaxHorizontalScale(true);
             if (Direction == 0)
             {
-                s = Target.localScale.x;
+                s = Target.lossyScale.x;
             }
             else if (Direction == 1)
             {
-                s = Target.localScale.y;
+                s = Target.lossyScale.y;
             }
             else
             {
-                s = Target.localScale.z;
+                s = Target.lossyScale.z;
             }
 
             return Height * s / hs;
@@ -173,14 +175,14 @@ namespace Battlehub.RTGizmos
 
             if (Direction == 0)
             {
-                return MaxAbs(Target.localScale.x * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
+                return MaxAbs(Target.lossyScale.x * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
             }
             else if (Direction == 1)
             {
-                return MaxAbs(Target.localScale.y * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
+                return MaxAbs(Target.lossyScale.y * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
             }
 
-            return MaxAbs(Target.localScale.z * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
+            return MaxAbs(Target.lossyScale.z * Height / 2, Radius * GetMaxHorizontalScale(multiplyByTargetScale));
 
         }
 
@@ -193,14 +195,14 @@ namespace Battlehub.RTGizmos
 
             if(Direction == 0)
             {
-                return MaxAbs(Target.localScale.y, Target.localScale.z);
+                return MaxAbs(Target.lossyScale.y, Target.lossyScale.z);
             }
             else if(Direction == 1)
             {
-                return MaxAbs(Target.localScale.x, Target.localScale.z);
+                return MaxAbs(Target.lossyScale.x, Target.lossyScale.z);
             }
 
-            return MaxAbs(Target.localScale.x, Target.localScale.y);
+            return MaxAbs(Target.lossyScale.x, Target.lossyScale.y);
         }
 
         private float MaxAbs(float a, float b)

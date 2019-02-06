@@ -50,6 +50,11 @@ namespace Battlehub.RTGizmos
             get;
         }
 
+        protected virtual Matrix4x4 HandlesTransformInverse
+        {
+            get { return Matrix4x4.TRS(Target.position, Target.rotation, Target.lossyScale).inverse; }
+        }
+
         private Vector3[] m_handlesNormals;
         private Vector3[] m_handlesPositions;
         protected virtual Vector3[] HandlesPositions
@@ -78,9 +83,11 @@ namespace Battlehub.RTGizmos
 
         private void Start()
         {
-            if (GetComponent<BaseGizmoInput>() == null)
+            BaseGizmoInput input = GetComponent<BaseGizmoInput>();
+            if (input == null || input.Gizmo != this)
             {
-                gameObject.AddComponent<BaseGizmoInput>();
+                input = gameObject.AddComponent<BaseGizmoInput>();
+                input.Gizmo = this;
             }
 
             if (SceneCamera == null)
@@ -411,7 +418,7 @@ namespace Battlehub.RTGizmos
             if (m_dragIndex >= 0 && OnBeginDrag(m_dragIndex))
             {
                 m_handlesTransform = HandlesTransform;
-                m_handlesInverseTransform = Matrix4x4.TRS(Target.position, Target.rotation, Target.localScale).inverse;// m_handlesTransform.inverse;
+                m_handlesInverseTransform = HandlesTransformInverse;
                 m_dragPlane = GetDragPlane();
                 m_isDragging = GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out m_prevPoint);
                 m_normal = HandlesNormals[m_dragIndex].normalized;

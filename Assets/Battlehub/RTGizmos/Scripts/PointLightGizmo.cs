@@ -9,6 +9,7 @@ namespace Battlehub.RTGizmos
         [SerializeField]
         private Light m_light;
 
+       
         protected override Vector3 Center
         {
             get { return Vector3.zero; }
@@ -77,16 +78,7 @@ namespace Battlehub.RTGizmos
         //    }
         //}
 
-        protected override bool OnDrag(int index, Vector3 offset)
-        {
-            Radius += offset.magnitude * Mathf.Sign(Vector3.Dot(offset, HandlesNormals[index]));
-            if (Radius < 0)
-            {
-                Radius = 0;
-                return false;
-            }
-            return true;
-        }
+      
 
         //protected override void DrawOverride()
         //{

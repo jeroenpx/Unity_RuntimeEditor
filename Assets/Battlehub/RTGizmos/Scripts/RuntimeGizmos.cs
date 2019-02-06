@@ -307,10 +307,10 @@ namespace Battlehub.RTGizmos
 
         public static void DrawWireSphereGL(Vector3 position, Quaternion rotation, Vector3 scale, Color color)
         {
-            Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
-            Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
-            Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
-            Matrix4x4 objToWorld = Matrix4x4.TRS(position, rotation, scale);
+            Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
+            Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
+            Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.identity, Vector3.one);
+            Matrix4x4 objToWorld = Matrix4x4.TRS(position, Quaternion.identity, Vector3.one * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z)));
 
             LinesMaterial.SetPass(0);
             GL.PushMatrix();
