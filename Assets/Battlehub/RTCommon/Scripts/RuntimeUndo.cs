@@ -418,26 +418,18 @@ namespace Battlehub.RTCommon
         void Restore();
 
         Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null);
-
         void Select(UnityObject[] objects, UnityObject activeObject);    
 
         void RegisterCreatedObjects(ExposeToEditor[] createdObjects);
         void DestroyObjects(ExposeToEditor[] destoryedObjects);
         
-        //void RecordValues(object target, object accessor, MemberInfo[] memberInfo, object[] values, Action<object, object> targetErased);
-        //void RecordValues(object target, MemberInfo[] memberInfo, object[] values);
-        //void RecordValue(object target, object accessor, MemberInfo memberInfo, object value, Action<object, object> targetErased);
-        //void RecordValue(object target, MemberInfo memberInfo, object value);
-
         void BeginRecordValue(object target, MemberInfo memberInfo);
         void BeginRecordValue(object target, object accessor, MemberInfo memberInfo);
         void EndRecordValue(object target, MemberInfo memberInfo);
         void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased);
 
-        //void RecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
         void BeginRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
         void EndRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
-
 
         void AddComponent(ExposeToEditor obj, Type type);
         void DestroyComponent(Component destroy, MemberInfo[] memberInfo);

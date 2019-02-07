@@ -114,24 +114,24 @@ namespace Battlehub.RTEditor
             UpdateCurrentInputField();
 
             bool mwheel = false;
-            if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z))))
+            if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z))))
             {
                 mwheel = m_zAxis == 0;
-                m_zAxis = Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z)));
+                m_zAxis = Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z)));
             }
 
-            bool pointerDownOrUp = m_input.GetPointerDown(0) ||
-              m_input.GetPointerDown(1) ||
-              m_input.GetPointerDown(2) ||
-              m_input.GetPointerUp(0);
+            bool pointerDownOrUp = Input.GetPointerDown(0) ||
+              Input.GetPointerDown(1) ||
+              Input.GetPointerDown(2) ||
+              Input.GetPointerUp(0);
 
             if (pointerDownOrUp ||
                 mwheel ||
-                m_input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
+                Input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
             {
                 PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
                 //Set the Pointer Event Position to that of the mouse position
-                pointerEventData.position = m_input.GetPointerXY(0);
+                pointerEventData.position = Input.GetPointerXY(0);
 
                 //Create a list of Raycast Results
                 List<RaycastResult> results = new List<RaycastResult>();

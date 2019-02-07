@@ -212,7 +212,7 @@ namespace Battlehub.RTCommon
         public event RTEEvent IsDirtyChanged;
         public event RTEEvent IsBusyChanged;
 
-        protected InputLow m_input;
+        private IInput m_input;
         private RuntimeSelection m_selection;
         private RuntimeTools m_tools = new RuntimeTools();
         private CursorHelper m_cursorHelper = new CursorHelper();
@@ -260,7 +260,10 @@ namespace Battlehub.RTCommon
 
         public virtual IInput Input
         {
-            get { return m_input; }
+            get
+            {
+                return m_input;
+            }
         }
 
         public virtual IRuntimeSelectionInternal Selection
@@ -317,7 +320,13 @@ namespace Battlehub.RTCommon
             {
                 if (m_isOpened != value)
                 {
+                    if(IsBusy)
+                    {
+                        return;
+                    }
+
                     m_isOpened = value;
+                    SetInput();
                     if(!m_isOpened)
                     {
                         IsPlaying = false;
@@ -327,6 +336,12 @@ namespace Battlehub.RTCommon
                     {
                         ActivateWindow(GetWindow(RuntimeWindowType.Game));
                     }
+
+                    if(Root != null)
+                    {
+                        Root.gameObject.SetActive(m_isOpened);
+                    }
+
                     if (IsOpenedChanged != null)
                     {
                         IsOpenedChanged();
@@ -358,6 +373,7 @@ namespace Battlehub.RTCommon
                 if(m_isBusy != value)
                 {
                     m_isBusy = value;
+                    SetInput();
                     if (IsBusyChanged != null)
                     {
                         IsBusyChanged();
@@ -381,6 +397,15 @@ namespace Battlehub.RTCommon
             }
             set
             {
+                if (IsBusy)
+                {
+                    return;
+                }
+
+                if (!m_isOpened && value)
+                {
+                    return;
+                }
 
                 if (m_isPlaying != value)
                 {
@@ -539,7 +564,7 @@ namespace Battlehub.RTCommon
                 Debug.LogWarning("Another instance of RTE exists");
                 return;
             }
-            if(m_useBuiltinUndo)
+            if (m_useBuiltinUndo)
             {
                 m_undo = new RuntimeUndo(this);
             }
@@ -548,7 +573,7 @@ namespace Battlehub.RTCommon
                 m_undo = new DisabledUndo();
             }
 
-            if(m_raycaster == null)
+            if (m_raycaster == null)
             {
                 m_raycaster = GetComponent<GraphicRaycaster>();
             }
@@ -559,16 +584,8 @@ namespace Battlehub.RTCommon
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
             m_object = gameObject.GetComponent<RuntimeObjects>();
-            
 
-            if(IsVR)
-            {
-                m_input = new InputLowVR();
-            }
-            else
-            {
-                m_input = new InputLow();
-            }
+            SetInput();
 
             m_instance = this;
 
@@ -576,6 +593,9 @@ namespace Battlehub.RTCommon
             m_isOpened = !isOpened;
             IsOpened = isOpened;
         }
+
+
+        
 
         protected virtual void Start()
         {
@@ -609,7 +629,25 @@ namespace Battlehub.RTCommon
             }
         }
 
- 
+        private void SetInput()
+        {
+            if (!IsOpened || IsBusy)
+            {
+                m_input = new DisabledInput();
+            }
+            else
+            {
+                if (IsVR)
+                {
+                    m_input = new InputLowVR();
+                }
+                else
+                {
+                    m_input = new InputLow();
+                }
+            }
+        }
+
         public void RegisterWindow(RuntimeWindow window)
         {
             if(!m_windows.Contains(window.gameObject))
@@ -663,25 +701,25 @@ namespace Battlehub.RTCommon
             UpdateCurrentInputField();
 
             bool mwheel = false;
-            if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z))))
+            if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z))))
             {
                 mwheel = m_zAxis == 0;
-                m_zAxis = Mathf.CeilToInt(Mathf.Abs(m_input.GetAxis(InputAxis.Z)));
+                m_zAxis = Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z)));
 
             }
 
-            bool pointerDownOrUp = m_input.GetPointerDown(0) ||
-                m_input.GetPointerDown(1) ||
-                m_input.GetPointerDown(2) ||
-                m_input.GetPointerUp(0);
+            bool pointerDownOrUp = Input.GetPointerDown(0) ||
+                Input.GetPointerDown(1) ||
+                Input.GetPointerDown(2) ||
+                Input.GetPointerUp(0);
 
             if (pointerDownOrUp ||
                 mwheel ||
-                m_input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
+                Input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
             {
                 PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
                 //Set the Pointer Event Position to that of the mouse position
-                pointerEventData.position = m_input.GetPointerXY(0);
+                pointerEventData.position = Input.GetPointerXY(0);
 
                 //Create a list of Raycast Results
                 List<RaycastResult> results = new List<RaycastResult>();

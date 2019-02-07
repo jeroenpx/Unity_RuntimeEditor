@@ -71,7 +71,6 @@ The documentation is organized as following:
 *  [IRTE interface](infrastructure.md#irte-interface)
 *  [RTE Component](infrastructure.md#rte-component)
 *  [Runtime Tools](infrastructure.md#runtime-tools)
-*  [Runtime Selection](infrastructure.md#runtime-selection)
 *  [Runtime Objects](infrastructure.md#runtime-objects)
 *  [Runtime Selection](infrastructure.md#runtime-selection)
 *  [Runtime Undo](infrastructure.md#runtime-undo)
@@ -83,6 +82,7 @@ The documentation is organized as following:
 *  [Runtime Editor](runtime-editor.md#runtime-editor)
 *  [RTEDeps](runtime-editor.md#rtedeps)
 *  [Window Manager](runtime-editor.md#window-manager)
+*  [How To: How to add custom window to Window Manager](runtime-editor.md#how-to-add-custom-window-to-window-manager)
 *  [Inspector View](runtime-editor.md#inspector-view)
 *  [Game Object Editor](runtime-editor.md#game-object-editor)
 *  [Material Editor](runtime-editor.md#material-editor)
@@ -97,6 +97,7 @@ The documentation is organized as following:
 *  [Scene View](runtime-editor.md#scene-view)
 *  [Game View](runtime-editor.md#game-view)
 *  [Dialogs](runtime-editor.md#dialogs)
+
 
 ## [Save Load 2](save-load.md)
 *  [Overview](save-load.md#overview)

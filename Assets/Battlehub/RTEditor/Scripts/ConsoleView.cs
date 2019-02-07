@@ -238,6 +238,7 @@ namespace Battlehub.RTEditor
         private void OnClearClick()
         {
             m_console.Clear();
+            m_stackTrace.text = null;
         }
 
         private void OnTogInfoValueChanged(bool value)

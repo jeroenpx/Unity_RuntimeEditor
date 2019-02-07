@@ -26,6 +26,8 @@ namespace Battlehub.RTCommon
 
         SelectObject = 101,
         SelectColor = 102,
+
+        Custom = 1 << 16,
     }
 
     public class RuntimeWindow : DragDropTarget
@@ -232,8 +234,6 @@ namespace Battlehub.RTCommon
             }
         }
 
-       
-
         protected virtual void OnActiveWindowChanged()
         {
             if (Editor.ActiveWindow == this)
@@ -256,7 +256,6 @@ namespace Battlehub.RTCommon
             }
         }
 
-       
         protected virtual void OnRectTransformDimensionsChange()
         {
             HandleResize();
@@ -298,12 +297,10 @@ namespace Battlehub.RTCommon
 
         protected virtual void OnActivated()
         {
-            //Debug.Log("Activated");
         }
 
         protected virtual void OnDeactivated()
         {
-            //Debug.Log("Deactivated");
         }
 
         protected virtual void SetCullingMask()

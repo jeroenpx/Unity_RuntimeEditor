@@ -69,6 +69,65 @@ namespace Battlehub.RTCommon
         }
     }
 
+    public class DisabledInput : IInput
+    {
+        public MultitouchEmulator MultitouchEmulator { get { return null; } set { } }
+
+        public float GetAxis(InputAxis axis)
+        {
+            return 0;
+        }
+
+        public bool GetKey(KeyCode key)
+        {
+            return false;
+        }
+
+        public bool GetKeyDown(KeyCode key)
+        {
+            return false;
+        }
+
+        public bool GetKeyUp(KeyCode key)
+        {
+            return false;
+        }
+
+        public bool GetPointer(int button)
+        {
+            return false;
+        }
+
+        public bool GetPointerDown(int button)
+        {
+            return false;
+        }
+
+        public bool GetPointerUp(int button)
+        {
+            return false;
+        }
+
+        public Vector3 GetPointerXY(int pointer)
+        {
+            if (pointer == 0)
+            {
+                return Input.mousePosition;
+            }
+            else
+            {
+                Touch touch = Input.GetTouch(pointer);
+                return touch.position;
+            }
+        }
+
+        public bool IsAnyKeyDown()
+        {
+            return false;
+        }
+    }
+
+
     public class InputLow : IInput
     {
         private MultitouchEmulator m_multitouchEmulator;

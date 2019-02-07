@@ -30,8 +30,6 @@ namespace Battlehub.RTCommon
 
         void SetCursor(KnownCursor cursorType);
         
-        void ResetCursor();
-
         void RaiseBeginDrag(object source, object[] dragItems, PointerEventData pointerEventData);
 
         void RaiseDrag(PointerEventData eventData);
@@ -73,6 +71,7 @@ namespace Battlehub.RTCommon
         public void Reset()
         {
             DragObjects = null;
+            ResetCursor();
         }
 
         public object DragObject

@@ -168,6 +168,8 @@ namespace Battlehub.RTCommon
         }
     }
 
+
+
     public static class IOC
     {
         public static void Register<T>(Func<T> func)
@@ -179,7 +181,7 @@ namespace Battlehub.RTCommon
         {
             m_container.Register(instance);
         }
-
+        
         public static void Unregister<T>(Func<T> func)
         {
             m_container.Unregister(func);

@@ -3,6 +3,14 @@
 ##Runtime Editor
 ##RTEDeps
 ##Window Manager
+##How to: add custom window to Window Manager
+
+!!! note 
+
+    For information on how to create custom window please navigate to this -> [this](infrastructure.md#runtime-window) <- section
+     
+
+
 ##Inspector View
 ##Game Object Editor
 ##Material Editor

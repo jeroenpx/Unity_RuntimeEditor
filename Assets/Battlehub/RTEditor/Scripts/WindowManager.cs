@@ -64,6 +64,14 @@ namespace Battlehub.RTEditor
         public int Created = 0;
     }
 
+    [Serializable]
+    public class CustomWindowDescriptor
+    {
+        public string TypeName;
+        public bool IsDialog;
+        public WindowDescriptor Descriptor;
+    }
+
     public class WindowManager : MonoBehaviour, IWindowManager
     {
         [SerializeField]
@@ -109,6 +117,9 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_selectColorDialog = null;
 
         [SerializeField]
+        private CustomWindowDescriptor[] m_customWindows = null;
+
+        [SerializeField]
         private DockPanelsRoot m_dockPanels = null;
 
         [SerializeField]
@@ -116,6 +127,7 @@ namespace Battlehub.RTEditor
 
         private IRTE m_editor;
 
+        private readonly Dictionary<string, CustomWindowDescriptor> m_typeToCustomWindow = new Dictionary<string, CustomWindowDescriptor>();
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
         private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();        
 
@@ -137,7 +149,15 @@ namespace Battlehub.RTEditor
             }
 
             
-
+            for(int i = 0; i < m_customWindows.Length; ++i)
+            {
+                CustomWindowDescriptor customWindow = m_customWindows[i];
+                if(customWindow != null && customWindow.Descriptor != null && !m_typeToCustomWindow.ContainsKey(customWindow.TypeName))
+                {
+                    m_typeToCustomWindow.Add(customWindow.TypeName, customWindow);
+                }
+            }
+            
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
@@ -380,9 +400,22 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_selectColorDialog;
                 }
+                else
+                {
+                    CustomWindowDescriptor cwd;
+                    if(m_typeToCustomWindow.TryGetValue(windowTypeName, out cwd))
+                    {
+                        wd = cwd.Descriptor;
+                    }
+                }
 
-                wd.Created--;
-                Debug.Assert(wd.Created >= 0);
+                if(wd != null)
+                {
+                    wd.Created--;
+                    Debug.Assert(wd.Created >= 0);
+                }
+
+                
             }
         }
 
@@ -600,7 +633,6 @@ namespace Battlehub.RTEditor
             content = null;
             isDialog = false;
 
-
             if (windowTypeName == RuntimeWindowType.Scene.ToString().ToLower())
             {
                 wd = m_sceneWindow;
@@ -659,6 +691,15 @@ namespace Battlehub.RTEditor
             {
                 wd = m_selectColorDialog;
                 isDialog = true;
+            }
+            else
+            {
+                CustomWindowDescriptor cwd;
+                if(m_typeToCustomWindow.TryGetValue(windowTypeName, out cwd))
+                {
+                    wd = cwd.Descriptor;
+                    isDialog = cwd.IsDialog;
+                }
             }
 
             if (wd == null)

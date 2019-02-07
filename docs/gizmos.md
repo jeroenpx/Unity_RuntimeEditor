@@ -1,7 +1,7 @@
 #Gizmos Docs
 ##Overview
 
-__Runtime Gizmos__ are the runtime 3D controls that are used to manipulate items in the scene. Unlike [runtime transform handles](runtime-transform-handles.md),
+__Runtime Gizmos__ are the runtime 3D controls that are used to manipulate items in the scene. Unlike [transform handles](transform-handles.md),
 gizmos does not modify transformation of objects. They are used to modify colliders, bounding boxes and properties of light and audio sources instead.  All gizmos, their base classes,
 rendering classes and shaders can be found in __Assets/Battlehub/RTGizmos__ folder.
 
@@ -15,7 +15,7 @@ rendering classes and shaders can be found in __Assets/Battlehub/RTGizmos__ fold
  
  1. Create Cube __Create->3D Object->Cube__
  2. Select Cube.
- 3. Add __Assets/Battlehub/RTGizmos/BoxColliderGizmo__ component.
+ 3. Add Assets/Battlehub/RTGizmos/__BoxColliderGizmo__ component.
  4. Hit Play.
  5. Use mouse left-click + drag to resize Box Collider Gizmo.
  6. Observe that `Center` and `Size` properties of Box Collider were changed.
@@ -23,7 +23,7 @@ rendering classes and shaders can be found in __Assets/Battlehub/RTGizmos__ fold
  ![Screenshot](img/gizmos/getting-started/getting-started.png)
  
 ##Base Gizmo
-Source code of Base Gizmo can be found in __Assets/Battlehub/RTGizmos/Scripts/BaseGizmo.cs__. This is the base class of [Box Gizmo](#box-gizmo), [Sphere Gizmo](#sphere-gizmo), [Capsule Gizmo](#capsule-gizmo) and
+Source code of Base Gizmo can be found in Assets/Battlehub/RTGizmos/Scripts/__BaseGizmo.cs__. This is the base class of [Box Gizmo](#box-gizmo), [Sphere Gizmo](#sphere-gizmo), [Capsule Gizmo](#capsule-gizmo) and
 [Cone Gizmo](#cone-gizmo). Therefore all these gizmos have following settings:
 
  * `Grid Size` – step size used in unit snapping mode (default: 1.0).
@@ -36,7 +36,7 @@ Source code of Base Gizmo can be found in __Assets/Battlehub/RTGizmos/Scripts/Ba
 
 ##Box Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/BoxGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__BoxGizmo.cs__.  
 Base class for all gizmos that have box shape:
 
  * [Box Collider Gizmo](#box-collider-gizmo)
@@ -44,7 +44,7 @@ Base class for all gizmos that have box shape:
 
 ##Sphere Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/SphereGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__SphereGizmo.cs__.  
 Base class for all gizmos that have sphere shape:
 
  * [Sphere Collider Gizmo](#sphere-collidr-gizmo)
@@ -54,21 +54,21 @@ Base class for all gizmos that have sphere shape:
 
 ##Capsule Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/CapsuleGizmo.cs__.    
+Located in Assets/Battlehub/RTGizmos/Scripts/__CapsuleGizmo.cs__.    
 Base class for all gizmos that have capsule shape:
 
  * [Capsule Collider Gizmo](#capsule-collider-gizmo)
 
 ##Cone Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/ConeGizmo.cs__.
+Located in Assets/Battlehub/RTGizmos/Scripts/__ConeGizmo.cs__.
 Base class for all gizmos that have cone shape:
 
  * [Spotlight Gizmo](#spot-light-gizmo)
 
 ##Box Collider Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/BoxColliderGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__BoxColliderGizmo.cs__.  
 Box Collider Gizmo could be added to object with Box Collider:
 
  1. Create Game Object with Box Collider.
@@ -78,7 +78,7 @@ Box Collider Gizmo could be added to object with Box Collider:
  
 ##Sphere Collider Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/SphereColliderGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__SphereColliderGizmo.cs__.  
 Sphere Collider Gizmo could be added to object with Sphere Collider:
 
  1. Create Game Object with Sphere Collider.
@@ -88,7 +88,7 @@ Sphere Collider Gizmo could be added to object with Sphere Collider:
  
 ##Capsule Collider Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/CapsuleColliderGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__CapsuleColliderGizmo.cs__.  
 Capsule Collider Gizmo could be added to object with Capsule Collider:
 
  1. Create Game Object with Capsule Collider.
@@ -98,7 +98,7 @@ Capsule Collider Gizmo could be added to object with Capsule Collider:
  
 ##Point Light Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/PointLightGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__PointLightGizmo.cs__.  
 Point Light Gizmo could be added to Point Light:
 
  1. Create Point Light.
@@ -108,7 +108,7 @@ Point Light Gizmo could be added to Point Light:
 
 ##Spot Light Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/SpotLightGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__SpotLightGizmo.cs__.  
 Spot Light Gizmo could be added to Spot Light:
 
   1. Create Spot Light.
@@ -118,7 +118,7 @@ Spot Light Gizmo could be added to Spot Light:
 
 ##Directional Light Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/DirectionalLightGizmo.cs__. 
+Located in Assets/Battlehub/RTGizmos/Scripts/__DirectionalLightGizmo.cs__. 
 Directional Light Gizmo could be added to Directional Light
 
   1. Create Directional Light.
@@ -128,7 +128,7 @@ Directional Light Gizmo could be added to Directional Light
 
 ##Audio Source Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/AudioSourceGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__AudioSourceGizmo.cs__.  
 Audio Source Gizmo could be added to Audio Source
 
   1. Create Audio Source.
@@ -138,12 +138,12 @@ Audio Source Gizmo could be added to Audio Source
 
 ##Audio Reverb Zone Gimzo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/AudioReverbZoneGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__AudioReverbZoneGizmo.cs__.  
 Same as [AudioSouce Gizmo](#audio-source-gizmo)
 
 ##Skinned Mesh Renderer Gizmo
 
-Located in __Assets/Battlehub/RTGizmos/Scripts/SkinnedMeshRendererGizmo.cs__.  
+Located in Assets/Battlehub/RTGizmos/Scripts/__SkinnedMeshRendererGizmo.cs__.  
 Skinned Mesh Renderer Gizmo could be added to object with SkinnedMesh
 
   1. Create GameObject with SkinnedMeshRenderer.

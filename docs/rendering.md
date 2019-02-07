@@ -58,12 +58,12 @@ namespace Battlehub.RTCommon
 !!! note
 
 	It is possible that above code will not work with new [scriptable rendering pipeline](https://docs.unity3d.com/Manual/ScriptableRenderPipeline.html).  
-	In this case [Runtime Graphics Layer](#Runtime Graphic Layer) will be used to draw gizmos in future versions . 
+	In this case [Runtime Graphics Layer](#runtime-graphics-layer) will be used to draw gizmos in future versions . 
 	
 
 ##GLCamera
 Located in __Assets/Battlehub/RTCommon/Scripts/Graphics/GLCamera.cs__   
-Add __GLCamera__ script to Camera and it will render [IGL objects](#igl).
+Add __GLCamera__ component to Camera and it will render [IGL objects](#igl).
 
 
 ##Runtime Graphics Layer

@@ -4,7 +4,7 @@
 __Runtime Transform Handles__ are the __runtime__ 3D controls that are used to manipulate items in the scene. There are three built-in transform tools to [position](#position-handle), [rotate](#rotation-handle) and [scale](#scale-handle) object via transform component. 
 Supplementary controls such as [scene gizmo](#scene-gizmo), [selection gizmo](#selection-gizmo) and [grid](#grid) allows to change viewing angle and projection mode, identify selected objects and orientate in scene space. 
 Another important components: [selection component](#runtime-selection-component), [scene component](#runtime-scene-component) and [handles component](#runtime-handles-component) allows to select objects, navigate in scene and change transform handles appearance.
-Scripts, prefabs and example scenes for transform handles can be found in __Assets/Battlehub/RTHandles__ folder.
+Scripts, prefabs and example scenes for transform handles can be found in Assets/Battlehub/__RTHandles__ folder.
 
 !!! note
 
@@ -72,12 +72,12 @@ This is the base class of position, rotation and scale transform handles. Theref
 To create position handle do following:
 	
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/PositionHandle__ component.
+   2. Add Assets/Battlehub/RTHandles/Scripts/__PositionHandle__ component.
 
 ![Screenshot](img/transform-handels/position-handle/create-position-handle.png)
 
 It is possible to adjust color and scale of transform handles using [runtime handles component](#runtime-handles-component) while proportions of individual parts such as lines and arrows are adjustable using __Position Handle Model__ script attached to PositionHandleModel.prefab. 
-To change position handle proportions modify __Assets/Battlehub/RTHandles/Prefabs/PositionHandleModel.prefab__ and reference it by setting `Model` field of Position Handle.
+To change position handle proportions modify Assets/Battlehub/RTHandles/Prefabs/__PositionHandleModel.prefab__ and reference it by setting `Model` field of Position Handle.
 
 ![Screenshot](img/transform-handels/position-handle/set-model-field.png)
 
@@ -98,12 +98,12 @@ Adjustments example:
 To create rotation handle do following:
 
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/RotationHandle__ component.
+   2. Add Assets/Battlehub/RTHandles/Scripts/__RotationHandle__ component.
 
 ![Screenshot](img/transform-handels/rotation-handle/create-rotation-handle.png)
 
 It is possible to adjust color and scale of transform handles using [runtime handles component](#runtime-handles-component). Line thickness and proportions of individual parts are adjustable using __Rotation Handle Model__ script attached to RotationHandleModel.prefab. 
-To change rotation handle proportions modify __Assets/Battlehub/RTHandles/Prefabs/RotationHandleModel.prefab__ and reference it by setting `Model` field of Rotation Handle.
+To change rotation handle proportions modify Assets/Battlehub/RTHandles/Prefabs/__RotationHandleModel.prefab__ and reference it by setting `Model` field of Rotation Handle.
 
 ![Screenshot](img/transform-handels/rotation-handle/set-model-field.png)
 
@@ -120,12 +120,12 @@ Adjustments example:
 To create scale handle do following:
 
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/ScaleHandle__ component.
+   2. Add Assets/Battlehub/RTHandles/Scripts/__ScaleHandle__ component.
    
 ![Screenshot](img/transform-handels/scale-handle/create-scale-handle.png)
 
 It is possible to adjust color and scale of transform handles using [runtime handles component](#runtime-handles-component). Line thickness and proportions of individual parts are adjustable using __Scale Handle Model__ script attached to ScaleHandleModel.prefab. 
-To change scale handle proportions modify __Assets/Battlehub/RTHandles/Prefabs/ScaleHandleModel.prefab__ and reference it by setting `Model` field of Scale Handle.
+To change scale handle proportions modify Assets/Battlehub/RTHandles/Prefabs/__ScaleHandleModel.prefab__ and reference it by setting `Model` field of Scale Handle.
 
 ![Screenshot](img/transform-handels/scale-handle/set-model-field.png)
 
@@ -139,7 +139,7 @@ Adjustments example:
 ![Screenshot](img/transform-handels/scale-handle/scale-handle-model-adjustment.png)
 
 ##Locking Axes
-__Assets/Battlehub/RTCommon/Scripts/LockAxes.cs__ script will prevent certain transformations from being modified by [position](#position-handle), [rotation](#rotation-handle) or [scale](#scale-handle) handles. Attach it to [selectable](#runtime-selection-component) Game Object and choose axes you want to lock.
+Assets/Battlehub/RTCommon/Scripts/__LockAxes__ component will prevent certain transformations from being modified by [position](#position-handle), [rotation](#rotation-handle) or [scale](#scale-handle) handles. Attach it to [selectable](#runtime-selection-component) Game Object and choose axes you want to lock.
 
 ![Screenshot](img/transform-handels/lock-axes/position-handle-x-y-locked.png)
 
@@ -148,7 +148,7 @@ __Assets/Battlehub/RTCommon/Scripts/LockAxes.cs__ script will prevent certain tr
 To create scene gizmo do following:
 
   1. Create Game Object.
-  2. Add __Assets/Battlehub/RTHandles/Scripts/SceneGizmo__ component.
+  2. Add Assets/Battlehub/RTHandles/Scripts/__SceneGizmo__ component.
   
   ![Screenshot](img/transform-handels/scene-gizmo/create-scene-gizmo.png)
   
@@ -167,7 +167,7 @@ Scene gizmo script has following fields:
 
 ##Selection Gizmo
 
-Selection gizmo from __Assets/Battlehub/RTHandles/Scripts/SceneGizmo__ is automatically added to [selected](#runtime-selection-component) game object. To change color or hide selection gizmo use `Bounds Color` field of [runtime handles component](#runtime-handles-component).
+Selection gizmo from Assets/Battlehub/RTHandles/Scripts/__SceneGizmo__ is automatically added to [selected](#runtime-selection-component) game object. To change color or hide selection gizmo use `Bounds Color` field of [runtime handles component](#runtime-handles-component).
 
 ![Screenshot](img/transform-handels/selection-gizmo/selection-gizmo.png)
 
@@ -176,7 +176,7 @@ Selection gizmo from __Assets/Battlehub/RTHandles/Scripts/SceneGizmo__ is automa
 To create grid do following:
   
    1. Select Camera
-   2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeGrid__ component.
+   2. Add Assets/Battlehub/RTHandles/Scripts/__RuntimeGrid__ component.
    
 ![Screenshot](img/transform-handels/grid/runtime-grid.png)
 
@@ -187,7 +187,7 @@ To change color of the grid use `Grid Color` field of [runtime handles component
 Use this script to change appearance of transform handles:
 
    1. Create Game Object.
-   2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeHandlesComponent__ component
+   2. Add Assets/Battlehub/RTHandles/Scripts/__RuntimeHandlesComponent__ component
 
 ![Screenshot](img/transform-handels/runtime-handles-component/runtime-handles-component.png)
    
@@ -208,13 +208,13 @@ This is the implementation of default selection behavior.
 To enable default selection behavior:
 
   1. Create Game Object. 
-  2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeSelectionComponent__.
+  2. Add Assets/Battlehub/RTHandles/Scripts/__RuntimeSelectionComponent__.
   3. Choose objects you want to make selectable and click __Tools->Runtime Handles->Enable Editing__.
-	   * Alternatively add [__Assets/Battlehub/RTCommon/Scripts/ExposeToEditor__](infrastructure.md#expose-to-editor)  component.
+	   * Alternatively add [Assets/Battlehub/RTCommon/Scripts/__ExposeToEditor__](infrastructure.md#expose-to-editor)  component.
 	   
 ![Screenshot](img/transform-handels/runtime-selection-component/runtime-selection-component.png)
 
-Following actions defined in __Assets/Battlehub/RTHandles/Scripts/Input/RuntimeSelectionInput__ :
+Following actions defined in Assets/Battlehub/RTHandles/Scripts/Input/__RuntimeSelectionInput__ :
   
 Action          | Input
 -------------   | ------------- 
@@ -233,7 +233,7 @@ Runtime Selection Component script has following fields:
   
 To switch between transform handles using Q W E R keys do following : 
 
-   1. Add __Battlehub\RTHandles\Scripts\Input\RuntimeToolsInput component__.
+   1. Add Battlehub\RTHandles\Scripts\Input\__RuntimeToolsInput__ component.
 
 !!! note
 
@@ -248,7 +248,7 @@ To switch between transform handles using Q W E R keys do following :
 To create Box Selection do following:
   
    1. Create Game Object. 
-   2. Add __Assets/Battlehub/RTHandles/Scripts/BoxSelection__ component.
+   2. Add Assets/Battlehub/RTHandles/Scripts/__BoxSelection__ component.
 	
 ![Screenshot](img/transform-handels/box-selection/create-box-selection.png)
 
@@ -314,7 +314,7 @@ Runtime Scene Component extends [Runtime Selection Component](#runtime-selection
 To create Runtime Scene Component do following:
 
   1. Create Game Object
-  2. Add __Assets/Battlehub/RTHandles/Scripts/RuntimeSelectionComponent__.
+  2. Add Assets/Battlehub/RTHandles/Scripts/__RuntimeSelectionComponent__.
   
 ![Screenshot](img/transform-handels/runtime-scene-component/create-runtime-scene-component.png)
 
@@ -326,7 +326,7 @@ Runtime Scene Component has following fields:
   * `Scene Gizmo` - reference to the [Scene Gizmo](#scene-gizmo).
   * `Grid` - reference to the [Grid](#grid).
   
-Following actions defined in __Assets/Battlehub/RTHandles/Scripts/Input/RuntimeSceneInput__ :
+Following actions defined in Assets/Battlehub/RTHandles/Scripts/Input/__RuntimeSceneInput__ :
   
 Action       | Input
 -------------| ------------- 

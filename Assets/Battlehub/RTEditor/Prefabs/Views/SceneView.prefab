@@ -109,10 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a2b6a8055ce1a49851017a7848f0bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EditorModifierKey: 304
-  MultiselectKey: 306
-  MultiselectKey2: 305
-  RangeSelectKey: 304
+  m_modifierKey: 304
+  SelectAllKey: 97
   FocusKey: 102
   SnapToGridKey: 115
   RotateKey: 308
