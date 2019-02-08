@@ -76,7 +76,7 @@ namespace Battlehub.UIControls.DockPanels
                 Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, transform.position);
 
                 RectTransform rt = (RectTransform)transform;
-                Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, screenPoint, canvas.worldCamera, out m_adjustment));
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, screenPoint, canvas.worldCamera, out m_adjustment);
 
                 if (m_dx == 0 || m_dy == 0)
                 {

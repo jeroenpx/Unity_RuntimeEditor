@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 222474960090786010}
   - component: {fileID: 114896490672942560}
   m_Layer: 5
-  m_Name: DockPanels
+  m_Name: DockPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,10 +289,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 372, y: -245}
-  m_SizeDelta: {x: 744, y: 490}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &114888138365489308
 MonoBehaviour:
@@ -314,6 +314,7 @@ MonoBehaviour:
   m_free: {fileID: 224839416244312808}
   m_preview: {fileID: 224662097060297586}
   m_modal: {fileID: 3657745503551034573}
+  m_mask: {fileID: 0}
   m_allowDragOutside: 0
   m_minWidth: 0
   m_minHeight: 0

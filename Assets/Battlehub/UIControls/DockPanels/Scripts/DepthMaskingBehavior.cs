@@ -10,7 +10,7 @@ namespace Battlehub.UIControls.DockPanels
         [SerializeField]
         private Material m_depthMaskMaterial = null;
 
-        private DockPanelsRoot m_root;
+        private DockPanel m_root;
 
         private RectTransform m_depthMasks;
 
@@ -38,7 +38,7 @@ namespace Battlehub.UIControls.DockPanels
         
         private void Awake()
         {
-            m_root = GetComponent<DockPanelsRoot>();
+            m_root = GetComponent<DockPanel>();
 
             GameObject depthMasks = new GameObject();
             depthMasks.name = "DepthMasks";

@@ -7,7 +7,7 @@ namespace Battlehub.UIControls.Dialogs
     public class DialogManager : MonoBehaviour
     {
         [SerializeField]
-        private DockPanelsRoot m_dockPanels = null;
+        private DockPanel m_dockPanels = null;
 
         [SerializeField]
         private Dialog m_dialogPrefab = null;

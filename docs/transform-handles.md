@@ -233,7 +233,7 @@ Runtime Selection Component script has following fields:
   
 To switch between transform handles using Q W E R keys do following : 
 
-   1. Add Battlehub\RTHandles\Scripts\Input\__RuntimeToolsInput__ component.
+   1. Add Battlehub/RTHandles/Scripts/Input/__RuntimeToolsInput__ component.
 
 !!! note
 

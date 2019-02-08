@@ -20,7 +20,11 @@ namespace Battlehub.UIControls.DockPanels
         public Sprite Icon
         {
             get { return m_img.sprite; }
-            set { m_img.sprite = value; }
+            set
+            {
+                m_img.sprite = value;
+                m_img.gameObject.SetActive(value != null);
+            }
         }
 
         public string Text

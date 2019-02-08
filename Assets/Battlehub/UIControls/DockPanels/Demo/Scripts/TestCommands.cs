@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 
 using Battlehub.UIControls.Dialogs;
+using System.Linq;
 
 namespace Battlehub.UIControls.DockPanels
 {
@@ -9,6 +10,9 @@ namespace Battlehub.UIControls.DockPanels
     {
         [SerializeField]
         private DialogManager m_dialog = null;
+
+        [SerializeField]
+        private Button m_defaultLayout = null;
 
         [SerializeField]
         private Button m_addButton = null;
@@ -23,7 +27,7 @@ namespace Battlehub.UIControls.DockPanels
         private Button m_showPopup = null;
 
         [SerializeField]
-        private DockPanelsRoot m_dockPanels = null;
+        private DockPanel m_dockPanels = null;
 
         [SerializeField]
         private Sprite m_sprite = null;
@@ -37,19 +41,29 @@ namespace Battlehub.UIControls.DockPanels
         [SerializeField]
         private RegionSplitType m_splitType = RegionSplitType.None;
 
-
         private int m_counter;
 
         private void Awake()
         {
+            m_defaultLayout.onClick.AddListener(OnDefaultLayout);
             m_addButton.onClick.AddListener(OnAddClick);
             m_deleteButton.onClick.AddListener(OnDeleteClick);
             m_showMsgBox.onClick.AddListener(OnShowMsgBox);
             m_showPopup.onClick.AddListener(OnShowDialog);
         }
 
+        private void Start()
+        {
+            OnDefaultLayout();
+        }
+
         private void OnDestroy()
         {
+            if(m_defaultLayout != null)
+            {
+                m_defaultLayout.onClick.RemoveListener(OnDefaultLayout);
+            }
+
             if(m_addButton != null)
             {
                 m_addButton.onClick.RemoveListener(OnAddClick);
@@ -71,24 +85,33 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        private void SelectRegionIfRequired()
+        {
+            if (m_dockPanels.SelectedRegion == null || !m_dockPanels.SelectedRegion.CanAdd())
+            {
+                Region leafRegion = m_dockPanels.GetComponentsInChildren<Region>().Where(r => r.ChildrenPanel.childCount == 0).First();
+                leafRegion.IsSelected = true;
+            }
+        }
+
         private void OnAddClick()
         {
-            if(m_dockPanels.SelectedRegion != null)
+            SelectRegionIfRequired();
+
+            if (m_dockPanels.SelectedRegion != null)
             {
                 m_counter++;
 
                 Transform content = Instantiate(m_contentPrefab);
-
-                Text text = content.GetComponentInChildren<Text>();
-                text.text = "Content " + m_counter;
-
                 m_dockPanels.SelectedRegion.Add(m_sprite, m_headerText + " " + m_counter, content, false, m_splitType);
             }
         }
 
         private void OnDeleteClick()
         {
-            if(m_dockPanels.SelectedRegion != null)
+            SelectRegionIfRequired();
+
+            if (m_dockPanels.SelectedRegion != null)
             {
                 Region region = m_dockPanels.SelectedRegion;
                 region.RemoveAt(region.ActiveTabIndex);
@@ -99,12 +122,8 @@ namespace Battlehub.UIControls.DockPanels
         {
             m_counter++;
 
-            Transform content = Instantiate(m_contentPrefab);
-
-            Text text = content.GetComponentInChildren<Text>();
-            text.text = "Content " + m_counter;
-
-            Dialog dlg = m_dialog.ShowDialog(m_sprite, "Popup Test", content, (sender, okArgs) =>
+            Transform content = Instantiate(m_contentPrefab);             
+            Dialog dlg = m_dialog.ShowDialog(m_sprite, "Popup Test" + m_counter, content, (sender, okArgs) =>
             {
                 Debug.Log("YES");
 
@@ -119,7 +138,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnShowMsgBox()
         {
-            m_dialog.ShowDialog(m_sprite, "Msg Test", "Is everything ok?", (sender, okArgs) =>
+            m_dialog.ShowDialog(m_sprite, "Msg Test", "Your message", (sender, okArgs) =>
             {
                 Debug.Log("YES");
                 OnShowMsgBox();
@@ -129,6 +148,28 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Debug.Log("NO");
             }, "No");
+        }
+
+
+        private void OnDefaultLayout()
+        {
+            Region rootRegion = m_dockPanels.RootRegion;
+            rootRegion.Clear();
+            foreach (Transform child in m_dockPanels.Free)
+            {
+                Region region = child.GetComponent<Region>();
+                region.Clear();
+            }
+
+            LayoutInfo layout = new LayoutInfo(false,
+                new LayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
+                new LayoutInfo(true,
+                    new LayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
+                    new LayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
+                    0.5f),
+                0.75f);
+
+            m_dockPanels.RootRegion.Build(layout);
         }
     }
 }

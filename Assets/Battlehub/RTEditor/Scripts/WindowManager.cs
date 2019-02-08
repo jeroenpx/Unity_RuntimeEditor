@@ -120,7 +120,7 @@ namespace Battlehub.RTEditor
         private CustomWindowDescriptor[] m_customWindows = null;
 
         [SerializeField]
-        private DockPanelsRoot m_dockPanels = null;
+        private DockPanel m_dockPanels = null;
 
         [SerializeField]
         private Transform m_componentsRoot = null;
@@ -140,7 +140,7 @@ namespace Battlehub.RTEditor
         {
             if (m_dockPanels == null)
             {
-                m_dockPanels = FindObjectOfType<DockPanelsRoot>();
+                m_dockPanels = FindObjectOfType<DockPanel>();
             }
 
             if(m_dialogManager == null)

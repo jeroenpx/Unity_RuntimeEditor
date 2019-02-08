@@ -683,7 +683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_raycaster: {fileID: 0}
-  m_regionPrefab: {fileID: 114499747622984086, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0,
+  m_regionPrefab: {fileID: 4130894439911558076, guid: 0b6743e02eb89554bb2598ab31431ecf,
     type: 3}
   m_rootRegion: {fileID: 0}
   m_docked: {fileID: 220063214759377217}
@@ -5295,6 +5295,7 @@ MonoBehaviour:
     ComponentPrefabs: []
     MaxWindows: 1
     Created: 0
+  m_customWindows: []
   m_dockPanels: {fileID: 111226606771800033}
   m_componentsRoot: {fileID: 5849259612975468223}
 --- !u!114 &5849259614496068629

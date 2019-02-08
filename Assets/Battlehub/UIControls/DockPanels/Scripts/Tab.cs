@@ -32,7 +32,7 @@ namespace Battlehub.UIControls.DockPanels
         public event TabEventArgs<PointerEventData> EndDrag;
         public event TabEventArgs Close;
 
-        private DockPanelsRoot m_root;
+        private DockPanel m_root;
 
         [SerializeField]
         private TabPreview m_tabPreviewPrefab = null;
@@ -58,7 +58,11 @@ namespace Battlehub.UIControls.DockPanels
         public Sprite Icon
         {
             get { return m_img.sprite; }
-            set { m_img.sprite = value; }
+            set
+            {
+                m_img.sprite = value;
+                m_img.gameObject.SetActive(value != null);
+            }
         }
 
         public string Text
@@ -137,7 +141,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Start()
         {
-            m_root = GetComponentInParent<DockPanelsRoot>();
+            m_root = GetComponentInParent<DockPanel>();
         }
 
         private void OnDestroy()

@@ -358,6 +358,11 @@ namespace Battlehub.UIControls.Dialogs
         
         public void Hide()
         {
+            if(m_parentRegion == null)
+            {
+                m_parentRegion = GetComponentInParent<Region>();
+            }
+
             m_parentRegion.gameObject.SetActive(false);
         }
 

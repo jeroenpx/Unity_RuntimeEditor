@@ -43,7 +43,7 @@ namespace Battlehub.RTEditor
                 Debug.LogWarning("RTEDeps.Get.ResourcePreview is null");
             }
 
-            DockPanelsRoot dockPanelsRoot = GetComponent<DockPanelsRoot>();
+            DockPanel dockPanelsRoot = GetComponent<DockPanel>();
             if (dockPanelsRoot != null)
             {
                 dockPanelsRoot.CursorHelper = Editor.CursorHelper;

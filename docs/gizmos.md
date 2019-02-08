@@ -47,7 +47,7 @@ Base class for all gizmos that have box shape:
 Located in Assets/Battlehub/RTGizmos/Scripts/__SphereGizmo.cs__.  
 Base class for all gizmos that have sphere shape:
 
- * [Sphere Collider Gizmo](#sphere-collidr-gizmo)
+ * [Sphere Collider Gizmo](#sphere-collider-gizmo)
  * [Pointlight Gizmo](#point-light-gizmo)
  * [Audio Source Gizmo](#audio-source-gizmo)
  * [Audio Reverb Zone Gizmo](#audio-reverb-zone-gizmo)
@@ -136,7 +136,7 @@ Audio Source Gizmo could be added to Audio Source
   
   ![Screenshot](img/gizmos/audio-source-gizmo.png)
 
-##Audio Reverb Zone Gimzo
+##Audio Reverb Zone Gizmo
 
 Located in Assets/Battlehub/RTGizmos/Scripts/__AudioReverbZoneGizmo.cs__.  
 Same as [AudioSouce Gizmo](#audio-source-gizmo)

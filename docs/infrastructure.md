@@ -124,7 +124,7 @@ Properties:
         
 Methods:
 
-  * `void ActivateWindow(RuntimeWindow window);` - active window and associated [RTE Components](#rte-components) will receive user input.
+  * `void ActivateWindow(RuntimeWindow window);` - active window and associated [RTE Components](#rte-component) will receive user input.
   
   * `void RegisterCreatedObjects(GameObject[] go);` - register created game objects to undo stack.
   * `void Duplicate(GameObject[] go);` - duplicate objects and register created duplicates to undo stack.

@@ -109,13 +109,14 @@ The documentation is organized as following:
 *  [Project](save-load.md#project)
 
 
-## [Dock Panels](dock-panels.md)
+## [Dock Panel](dock-panels.md)
 *  [Overview](dock-panels.md#overview)
 *  [Getting Started](dock-panels.md#getting-started)
-*  [Dock Panels Root](dock-panels.md#dock-panels-root)
-*  [Tab & Tab Preview](dock-panels.md#tab-tab-preview)
+*  [Dock Panel](dock-panels.md#dock-panel)
+*  [Tab](dock-panels.md#tab)
+*  [Tab Preview](dock-panels.md#tab-preview)
 *  [Region](dock-panels#region)
-*  [Misc](dock-panels#misc)
+*  [Dialog Manager](dock-panels#dialog-manager)
 
 ## [Virtualizing TreeView](vtv.md)
 *  [Overview](vtv.md#overview)

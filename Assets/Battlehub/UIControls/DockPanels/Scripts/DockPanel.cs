@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
 {
- 
-    public class DockPanelsRoot : MonoBehaviour
+    public class DockPanel : MonoBehaviour
     {
         public event RegionEventHandler<Transform> TabActivated;
         public event RegionEventHandler<Transform> TabDeactivated;
@@ -98,8 +97,12 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_regionId; }
             set { m_regionId = value; }
         }
+        
+       
+        [HideInInspector, SerializeField]
+        private Mask m_mask;
 
-        [SerializeField]
+        [HideInInspector, SerializeField]
         private bool m_allowDragOutside = false;
         public bool AllowDragOutside
         {
@@ -166,6 +169,14 @@ namespace Battlehub.UIControls.DockPanels
             {
                 m_rootRegion = Instantiate(m_regionPrefab, m_docked);
                 m_rootRegion.name = "Root Region";
+            }
+        }
+
+        private void Start()
+        {
+            if(m_mask != null)
+            {
+                m_mask.enabled = !m_allowDragOutside;
             }
         }
 
@@ -244,7 +255,7 @@ namespace Battlehub.UIControls.DockPanels
 
             if (m_selectedRegion == region)
             {
-                m_selectedRegion = null;
+                m_selectedRegion.IsSelected = false;
             }
 
             if (TabClosed != null)
@@ -285,7 +296,7 @@ namespace Battlehub.UIControls.DockPanels
                 m_selectedRegion = null;
                 if (RegionUnselected != null)
                 {
-                    RegionUnselected(m_selectedRegion);
+                    RegionUnselected(region);
                 }
             }
         }
