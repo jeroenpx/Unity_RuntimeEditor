@@ -15,7 +15,8 @@ namespace Battlehub.UIControls.MenuControl
                 Canvas canvas = GetComponentInParent<Canvas>();
                 Vector3 position;
                 Vector2 pos = Input.mousePosition;
-                if(!RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, pos, canvas.worldCamera))
+
+                if(canvas.renderMode != RenderMode.ScreenSpaceOverlay && !RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, pos, canvas.worldCamera))
                 {
                     return;
                 }

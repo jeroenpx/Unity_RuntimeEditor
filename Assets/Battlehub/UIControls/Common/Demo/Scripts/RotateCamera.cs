@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Battlehub.UIControls.DockPanels.Demo
+namespace Battlehub.UIControls.Common.Demo
 {
-    public class Rotation : MonoBehaviour
+    public class RotateCamera : MonoBehaviour
     {
         private Vector3 m_rand;
         private float m_prevT;

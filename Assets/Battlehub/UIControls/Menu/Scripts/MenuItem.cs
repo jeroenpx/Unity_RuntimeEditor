@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -189,7 +190,7 @@ namespace Battlehub.UIControls.MenuControl
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             m_isPointerOver = false;
-            if(m_submenu == null)
+            if (m_submenu == null)
             {
                 if (m_coUnselect != null)
                 {
@@ -251,9 +252,9 @@ namespace Battlehub.UIControls.MenuControl
             m_coUnselect = null;
         }
 
-        public void Select(bool showSelectioOnly)
+        public void Select(bool showSelectionOnly)
         {
-            if(showSelectioOnly)
+            if(showSelectionOnly)
             {
                 m_selection.gameObject.SetActive(true);
                 return;
@@ -275,6 +276,12 @@ namespace Battlehub.UIControls.MenuControl
             m_selection.gameObject.SetActive(true);
 
             Menu menu = GetComponentInParent<Menu>();
+
+            if(menu.Child != null && menu.Child.Submenu != null)
+            {
+                menu.Child.m_submenu.Close();
+            }
+            
             menu.Child = this;
 
             if(menu.Parent != null)
@@ -365,6 +372,24 @@ namespace Battlehub.UIControls.MenuControl
 
             return false;
         }
+
+        //private bool IsPointerOverParentMenu(PointerEventData eventData)
+        //{
+        //    HashSet<GameObject> parentsHs = new HashSet<GameObject>(GetComponentsInParent<Menu>().Select(m => m.gameObject));
+
+        //    List<RaycastResult> raycastResultList = new List<RaycastResult>();
+        //    m_raycaster.Raycast(eventData, raycastResultList);
+        //    for (int i = 0; i < raycastResultList.Count; ++i)
+        //    {
+        //        RaycastResult raycastResult = raycastResultList[i];
+        //        if (parentsHs.Contains(raycastResult.gameObject))
+        //        {
+        //            return true;
+        //        }
+        //    }
+
+        //    return false;
+        //}
     }
 }
 

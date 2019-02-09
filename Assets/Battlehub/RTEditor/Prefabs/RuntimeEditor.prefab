@@ -690,6 +690,7 @@ MonoBehaviour:
   m_free: {fileID: 220052302703447445}
   m_preview: {fileID: 219879072331672591}
   m_modal: {fileID: 3661969667337733040}
+  m_mask: {fileID: 0}
   m_allowDragOutside: 0
   m_minWidth: 0
   m_minHeight: 0

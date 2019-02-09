@@ -30,25 +30,40 @@ namespace Battlehub.UIControls.MenuControl
                 m_selection = GetComponent<Image>();
             }
 
-            m_menu.Opened += OnOpened;
-            m_menu.Closed += OnClosed;
+            if(m_menu != null)
+            {
+                m_menu.Anchor = transform as RectTransform;
+                m_menu.Opened += OnOpened;
+                m_menu.Closed += OnClosed;
+
+                m_menu.gameObject.SetActive(false);
+
+            }
         }
 
         private void OnDestroy()
         {
-            m_menu.Opened -= OnOpened;
-            m_menu.Closed -= OnClosed;
+            if(m_menu != null)
+            {
+                m_menu.Opened -= OnOpened;
+                m_menu.Closed -= OnClosed;
+            }
         }
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
+            if(m_menu == null)
+            {
+                return;
+            }
+
             m_menu.Open();
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             m_isPointerOver = true;
-            if(m_menu.gameObject.activeSelf)
+            if(m_menu != null && m_menu.gameObject.activeSelf)
             {
                 m_selection.color = m_focusedColor;
             }
@@ -61,7 +76,7 @@ namespace Battlehub.UIControls.MenuControl
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             m_isPointerOver = false;
-            if (m_menu.gameObject.activeSelf)
+            if (m_menu != null && m_menu.gameObject.activeSelf)
             {
                 m_selection.color = m_focusedColor;
             }

@@ -129,10 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_items:
-  - Path: New Scene
-    Text: 
+  - Path: Item1
+    Text: Parent Item
     Icon: {fileID: 0}
-    Command: 
+    Command: Parent Cmd
     Action:
       m_PersistentCalls:
         m_Calls: []
@@ -143,10 +143,10 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Open Scene
-    Text: 
+  - Path: Item1/SubItem1
+    Text: Child Item
     Icon: {fileID: 0}
-    Command: 
+    Command: Child Cmd
     Action:
       m_PersistentCalls:
         m_Calls: []
@@ -157,80 +157,10 @@ MonoBehaviour:
         m_Calls: []
       m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Save Scene
-    Text: 
+  - Path: Item2
+    Text: Item
     Icon: {fileID: 0}
-    Command: 
-    Action:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Validate:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Save Scene As...
-    Text: 
-    Icon: {fileID: 0}
-    Command: 
-    Action:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Validate:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: New Project
-    Text: 
-    Icon: {fileID: 0}
-    Command: 
-    Action:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Validate:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Open Project
-    Text: 
-    Icon: {fileID: 0}
-    Command: 
-    Action:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Validate:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Save Project
-    Text: 
-    Icon: {fileID: 0}
-    Command: 
-    Action:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    Validate:
-      m_PersistentCalls:
-        m_Calls: []
-      m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: Exit
-    Text: 
-    Icon: {fileID: 0}
-    Command: 
+    Command: Item Cmd
     Action:
       m_PersistentCalls:
         m_Calls: []

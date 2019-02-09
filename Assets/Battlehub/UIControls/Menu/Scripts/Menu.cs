@@ -141,7 +141,6 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             m_root = transform.parent;
-
             if(m_canvasGroup != null)
             {
                 m_canvasGroup.alpha = 0;

@@ -126,15 +126,14 @@ Fields:
    * `Maximize Toggle` - expands owner region and hide others.
    * `Can Resize` - enables/disable ability to resize region.
    * `Layout Element` - reference to root Layout Element.
-   * `Tab Panel` - panel for child region [tabs](#tab).
+   * `Tab Panel` - panel for [tabs](#tab).
    * `Content Panel` - panel for content.
    * `Children Panel` - panel for child regions.
    * `Tab Prefab` - reference to [tab](#tab) prefab. 
    * `Root` - reference to [dock panel](#dock-panel).
    * `Header Image` - region header graphics.
    * `Frame Image` - region content frame graphics.
-   * `Force Rebuild Layout Immediately` - if set to true call LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform) on resize.
-
+   
 Methods:
 
   
@@ -158,7 +157,7 @@ Methods:
 		string header,
 		Transform content, 
 		bool isFree = false, 
-		RegionSplitType splitType = RegionSplitType.None)` - add new content to region.
+		RegionSplitType splitType = RegionSplitType.None)` - add content to region.
 	
 		Sprite icon = null;
 	    GameObject content = new GameObject();

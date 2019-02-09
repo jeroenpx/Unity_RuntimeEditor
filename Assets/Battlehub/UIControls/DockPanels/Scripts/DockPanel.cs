@@ -97,10 +97,10 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_regionId; }
             set { m_regionId = value; }
         }
-        
-       
+
+
         [HideInInspector, SerializeField]
-        private Mask m_mask;
+        private Mask m_mask = null;
 
         [HideInInspector, SerializeField]
         private bool m_allowDragOutside = false;
