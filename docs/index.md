@@ -123,10 +123,9 @@ The documentation is organized as following:
 *  [Getting Started](vtv#getting-started)
 *  [Virtualizing Scroll Rect](vtv#virtualizing-scroll-rect)
 *  [Virtualizing Items Control](vtv#virtualizing-items-control)
-*  [Virtualizing Item Container](vtv#virtualizing-items-container)
+*  [Virtualizing Drop Marker](vtv#virtualizing-drop-marker)
 *  [Virtualizing Tree View](vtv#virtualizing-tree-view)
 *  [Virtualizing Tree View Item](vtv#virtualizing-tree-view-item)
-*  [Misc](vtv#misc)
 
 ## [Menu Control](menu-control.md)
 *  [Overview](menu-control.md#overview)

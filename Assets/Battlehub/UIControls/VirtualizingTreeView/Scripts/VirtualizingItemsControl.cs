@@ -97,6 +97,8 @@ namespace Battlehub.UIControls
                 ItemDataBinding(this, args);
             }
         }
+
+      
     }
 
     public class ItemContainerData
@@ -146,8 +148,14 @@ namespace Battlehub.UIControls
         /// </summary>
         public event EventHandler<ItemDropCancelArgs> ItemDragEnter;
 
+        /// <summary>
+        /// Raised when pointer leaves drop area.
+        /// </summary>
         public event EventHandler ItemDragExit;
 
+        /// <summary>
+        /// Fired while dragging an item
+        /// </summary>
         public event EventHandler<ItemArgs> ItemDrag;
 
         /// <summary>
@@ -167,7 +175,7 @@ namespace Battlehub.UIControls
         public event EventHandler<SelectionChangedArgs> SelectionChanged;
 
         /// <summary>
-        /// Raised on item double click
+        /// triggered after double clicking on an item
         /// </summary>
         public event EventHandler<ItemArgs> ItemDoubleClick;
 
@@ -411,6 +419,7 @@ namespace Battlehub.UIControls
             }
             return m_selectedItemsHS.Contains(obj);
         }
+
 
         /// <summary>
         /// Selected DataItems
@@ -1728,9 +1737,18 @@ namespace Battlehub.UIControls
 
         }
 
-        public virtual void DataBindItem(object item, VirtualizingItemContainer itemContainer)
+        public virtual void DataBindItem(object item)
         {
 
+            VirtualizingItemContainer itemContainer = GetItemContainer(item);
+            if(itemContainer != null)
+            {
+                DataBindItem(item, itemContainer);
+            }
+        }
+
+        public virtual void DataBindItem(object item, VirtualizingItemContainer itemContainer)
+        {
         }
         
         private void OnScrollRectItemDataBinding(RectTransform container, object item)
@@ -2121,9 +2139,39 @@ namespace Battlehub.UIControls
             Drop(new[] { prevSiblingItemContainer }, itemContainer, ItemDropAction.SetPrevSibling);
         }
 
+        protected virtual void Remove(object[] items)
+        {
+            if (ItemsRemoving != null)
+            {
+                ItemsCancelArgs args = new ItemsCancelArgs(items.ToList());
+                ItemsRemoving(this, args);
+                if (args.Items == null)
+                {
+                    items = new object[0];
+                }
+                else
+                {
+                    items = args.Items.ToArray();
+                }
+            }
+
+
+            if (items.Length == 0)
+            {
+                return;
+            }
+
+            DestroyItems(items, true);
+
+            if (ItemsRemoved != null)
+            {
+                ItemsRemoved(this, new ItemsRemovedArgs(items));
+            }
+        }
+
         public virtual void Remove(object item)
         {
-            DestroyItems(new[] { item }, true);
+            Remove(new[] { item });
         }
 
         public object GetItemAt(int index)

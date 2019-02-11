@@ -306,7 +306,8 @@ namespace Battlehub.UIControls
 
         public override string ToString()
         {
-            return base.ToString();// "TVIDAT " + Indent + " " + IsSelected + " " + CanExpand + " " + IsExpanded;// + " " + 
+            return "Data: " + Item;
+            //return base.ToString();// "TVIDAT " + Indent + " " + IsSelected + " " + CanExpand + " " + IsExpanded;// + " " + 
                 //Item.ToString() + " " + Parent != null ? Parent.Item.ToString() : "parent null";
         }
     }
@@ -411,45 +412,13 @@ namespace Battlehub.UIControls
 
         public override void Remove(object item)
         {
-            throw new NotSupportedException("Use RemoveChild method");
-            //TreeViewItemContainerData itemContainerData = GetItemContainerData(item) as TreeViewItemContainerData;
-            //if (itemContainerData != null)
-            //{
-            //    RemoveChild(itemContainerData.ParentItem, item);
-            //}
+            throw new NotSupportedException("Use Remove Child instead");
         }
-
 
         public void RemoveChild(object parent, object item)
         {
-            if (parent == null)
-            {
-                base.Remove(item);
-            }
-            else
-            {
-                if (GetItemContainer(item) != null)
-                {
-                    base.Remove(item);
-                }
-                else
-                {
-                    //Parent item is not expanded (if isLastChild just remove parent expander)
-                    TreeViewItemContainerData parentContainerData = (TreeViewItemContainerData)GetItemContainerData(parent);
-                    if(parentContainerData != null)
-                    {
-                        TreeViewItemContainerData childContainerData = parentContainerData.FirstChild(this);
-                        if (childContainerData == null || childContainerData.Item == item)
-                        {
-                            VirtualizingTreeViewItem parentContainer = (VirtualizingTreeViewItem)GetItemContainer(parent);
-                            if (parentContainer)
-                            {
-                                parentContainer.CanExpand = false;
-                            }
-                        }
-                    }
-                }
-            }
+            base.Remove(item);
+            DataBindItem(parent);
         }
 
         [Obsolete("Use RemoveChild(object parent, object item) instead")]
@@ -522,7 +491,6 @@ namespace Battlehub.UIControls
                     Drop(dragItems, dropTarget, ItemDropAction.SetLastChild);
                 }
             }
-            
         }
 
         /// <summary>
@@ -540,7 +508,7 @@ namespace Battlehub.UIControls
             return itemContainerData.IsExpanded;
         }
 
-        public void Expand(object item)
+        public bool Expand(object item)
         {
             VirtualizingTreeViewItem tvi = GetTreeViewItem(item);
             if (tvi != null)
@@ -553,12 +521,14 @@ namespace Battlehub.UIControls
                 if(containerData == null)
                 {
                     Debug.LogWarning("Unable find container data for item " + item);
+                    return false;
                 }
                 else
                 {
                     Internal_Expand(item);
                 }
             }
+            return true;
         }
 
         /// <summary>
@@ -1050,6 +1020,126 @@ namespace Battlehub.UIControls
             VirtualizingScrollRect scrollRect = GetComponentInChildren<VirtualizingScrollRect>();
             scrollRect.Index = index;
         }
+    }
 
+    public static class VirtualizingTreeViewExtension
+    {
+        public static void ExpandTo<T>(this VirtualizingTreeView treeView, T item, Func<T,T> getParent)
+        {
+            if (item == null)
+            {
+                return;
+            }
+            ItemContainerData containerData = treeView.GetItemContainerData(item);
+            if (containerData == null)
+            {
+                treeView.ExpandTo(getParent(item), getParent);
+                treeView.Expand(item);
+            }
+            else
+            {
+                treeView.Expand(item);
+            }
+        }
+
+        public static void ExpandChildren<T>(this VirtualizingTreeView treeView, T item, Func<T, IEnumerable> getChildren)
+        {
+            IEnumerable children = getChildren(item);
+            if (children != null)
+            {
+                treeView.Expand(item);
+
+                foreach (T child in children)
+                {
+                    treeView.ExpandChildren(child, getChildren);
+                }
+            }
+        }
+
+        public static void ExpandAll<T>(this VirtualizingTreeView treeView, T item, Func<T,T> getParent, Func<T, IEnumerable> getChildren)
+        {
+            treeView.ExpandTo(getParent(item), getParent);
+            treeView.ExpandChildren(item, getChildren);
+        }
+
+        public static void ItemDropStdHandler<T>(this VirtualizingTreeView treeView, ItemDropArgs e,
+            Func<T, T> getParent,
+            Action<T, T> setParent,
+            Func<T, T, int> indexOfChild,
+            Action<T, T> removeChild,
+            Action<T, T, int> insertChild) where T : class
+        {
+
+            T dropTarget = (T)e.DropTarget;
+            //Set drag items as children of drop target
+            if (e.Action == ItemDropAction.SetLastChild)
+            {
+                for (int i = 0; i < e.DragItems.Length; ++i)
+                {
+                    T dragItem = (T)e.DragItems[i];
+                    removeChild(dragItem, getParent(dragItem));
+                    setParent(dragItem, dropTarget);
+                    insertChild(dragItem, getParent(dragItem), 0);
+                }
+            }
+
+            //Put drag items next to drop target
+            else if (e.Action == ItemDropAction.SetNextSibling)
+            {
+                for (int i = e.DragItems.Length - 1; i >= 0; --i)
+                {
+                    T dragItem = (T)e.DragItems[i];
+                    int dropTIndex = indexOfChild(dropTarget, getParent(dropTarget));
+                    if (getParent(dragItem) != getParent(dropTarget))
+                    {
+                        removeChild(dragItem, getParent(dragItem));
+                        setParent(dragItem, getParent(dropTarget));
+                        insertChild(dragItem, getParent(dragItem), dropTIndex + 1);
+                    }
+                    else
+                    {
+                        int dragTIndex = indexOfChild(dragItem, getParent(dragItem));
+                        if (dropTIndex < dragTIndex)
+                        {
+                            removeChild(dragItem, getParent(dragItem));
+                            insertChild(dragItem, getParent(dragItem), dropTIndex + 1);
+                        }
+                        else
+                        {
+                            removeChild(dragItem, getParent(dragItem));
+                            insertChild(dragItem, getParent(dragItem), dropTIndex);
+                        }
+                    }
+                }
+            }
+
+            //Put drag items before drop target
+            else if (e.Action == ItemDropAction.SetPrevSibling)
+            {
+                for (int i = 0; i < e.DragItems.Length; ++i)
+                {
+                    T dragItem = (T)e.DragItems[i];
+                    if (getParent(dragItem) != getParent(dropTarget))
+                    {
+                        removeChild(dragItem, getParent(dragItem));
+                        setParent(dragItem, getParent(dropTarget));
+                        insertChild(dragItem, getParent(dragItem), 0);
+                    }
+
+                    int dropTIndex = indexOfChild(dropTarget, getParent(dropTarget));
+                    int dragTIndex = indexOfChild(dragItem, getParent(dragItem));
+                    if (dropTIndex > dragTIndex)
+                    {
+                        removeChild(dragItem, getParent(dragItem));
+                        insertChild(dragItem, getParent(dragItem), dropTIndex - 1);
+                    }
+                    else
+                    {
+                        removeChild(dragItem, getParent(dragItem));
+                        insertChild(dragItem, getParent(dragItem), dropTIndex);
+                    }
+                }
+            }
+        }
     }
 }

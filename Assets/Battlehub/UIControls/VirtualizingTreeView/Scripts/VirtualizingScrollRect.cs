@@ -544,6 +544,7 @@ namespace Battlehub.UIControls
             }
         }
 
+
         /// <summary>
         /// handles normailzed index change
         /// </summary>
@@ -762,6 +763,13 @@ namespace Battlehub.UIControls
                     }
                 }
             }
+            else
+            {
+                if(index < firstIndex)
+                {
+                    UpdateScrollbar(firstIndex + 1);
+                }
+            }
         }
 
         public void RemoveItems(int[] indices, bool raiseItemDataBindingEvent = true)
@@ -778,6 +786,11 @@ namespace Battlehub.UIControls
                 }
 
                 m_items.RemoveAt(removeAtIndex);
+
+                if(removeAtIndex < index)
+                {
+                    index--;
+                }
             }
 
             if(index + VisibleItemsCount >= RoundedItemsCount)
@@ -790,7 +803,6 @@ namespace Battlehub.UIControls
             DataBind(index);
             OnVirtualContentTransformChaged();
         }
-
 
         public void SetNextSibling(object sibling, object nextSibling)
         { 
@@ -924,6 +936,8 @@ namespace Battlehub.UIControls
                     {
                         UpdateScrollbar(firstIndex - 1);
                     }
+                  
+                    
                 }
             }
         }
@@ -961,7 +975,7 @@ namespace Battlehub.UIControls
 
                 if(ItemDataBinding != null)
                 {
-                    ItemDataBinding(lastContainer, prevSibling);
+                    ItemDataBinding(lastContainer, sibling);
                 }
             }
         }

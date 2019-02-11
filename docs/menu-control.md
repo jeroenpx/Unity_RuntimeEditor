@@ -85,7 +85,7 @@ Fields:
   * `Anchor` - opened menu will be aligned with anchor.
   * `Panel` - parent of menu items.
   * `Canvas Group` - required to "fade-in" menu.
-  * `Fade in speed` - how much alpha property value changing per second.
+  * `Fade in speed` - how much the alpha property changes per second.
   
   
 

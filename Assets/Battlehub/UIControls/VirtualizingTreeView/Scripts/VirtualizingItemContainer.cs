@@ -14,9 +14,13 @@ namespace Battlehub.UIControls
     [RequireComponent(typeof(RectTransform), typeof(LayoutElement))]
     public class VirtualizingItemContainer : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler, IPointerClickHandler
     {
+        [HideInInspector]
         public bool CanDrag = true;
+        [HideInInspector]
         public bool CanEdit = true;
+        [HideInInspector]
         public bool CanDrop = true;
+        [HideInInspector]
         public bool CanSelect = true;
 
         public static event EventHandler Selected;

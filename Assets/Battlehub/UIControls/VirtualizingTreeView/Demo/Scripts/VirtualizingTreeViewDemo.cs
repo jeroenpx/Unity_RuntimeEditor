@@ -34,22 +34,12 @@ namespace Battlehub.UIControls
             }
         }
 
-
-        private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
-        {
-            //object dropTarget = e.DropTarget;
-            //if(e.Action == ItemDropAction.SetNextSibling || e.Action == ItemDropAction.SetPrevSibling)
-            //{
-            //    e.Cancel = true;
-            //}
-
-        }
-
         private void Start()
         {
             TreeView.ItemDataBinding += OnItemDataBinding;
             TreeView.SelectionChanged += OnSelectionChanged;
             TreeView.ItemsRemoved += OnItemsRemoved;
+
             TreeView.ItemExpanding += OnItemExpanding;
             TreeView.ItemBeginDrag += OnItemBeginDrag;
 
@@ -133,7 +123,7 @@ namespace Battlehub.UIControls
 
                 //Load icon from resources
                 Image icon = e.ItemPresenter.GetComponentsInChildren<Image>()[4];
-                icon.sprite = Resources.Load<Sprite>("cube");
+                icon.sprite = Resources.Load<Sprite>("IconNew");
 
                 //And specify whether data item has children (to display expander arrow if needed)
                 
@@ -142,20 +132,29 @@ namespace Battlehub.UIControls
             }
         }
 
+       
         private void OnItemBeginDrag(object sender, ItemArgs e)
         {
             //Could be used to change cursor
         }
 
+        private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
+        {
+        }
+
+        private void OnItemEndDrag(object sender, ItemArgs e)
+        {            
+        }
+
         private void OnItemDrop(object sender, ItemDropArgs e)
         {
-            if(e.DropTarget == null)
+            if (e.DropTarget == null)
             {
                 return;
             }
 
             Transform dropT = ((GameObject)e.DropTarget).transform;
-            
+
             //Set drag items as children of drop target
             if (e.Action == ItemDropAction.SetLastChild)
             {
@@ -190,7 +189,7 @@ namespace Battlehub.UIControls
                         {
                             dragT.SetSiblingIndex(dropTIndex);
                         }
-                    } 
+                    }
                 }
             }
 
@@ -207,7 +206,7 @@ namespace Battlehub.UIControls
 
                     int dropTIndex = dropT.GetSiblingIndex();
                     int dragTIndex = dragT.GetSiblingIndex();
-                    if(dropTIndex > dragTIndex)
+                    if (dropTIndex > dragTIndex)
                     {
                         dragT.SetSiblingIndex(dropTIndex - 1);
                     }
@@ -219,34 +218,5 @@ namespace Battlehub.UIControls
             }
         }
 
-        private void OnItemEndDrag(object sender, ItemArgs e)
-        {            
-        }
-
-
-        private int m_counter = 1;
-        public void AddItem()
-        {
-            GameObject go = new GameObject();
-            go.name = "GameObject " + m_counter;
-            m_counter++;
-            TreeView.Add(go);
-        }
-
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                object dataItem = TreeView.Items.OfType<object>().First();
-                if (TreeView.IsExpanded(dataItem))
-                {
-                    TreeView.Internal_Collapse(dataItem);
-                }
-                else
-                {
-                    TreeView.Internal_Expand(dataItem);
-                }
-            }
-        }
     }
 }
