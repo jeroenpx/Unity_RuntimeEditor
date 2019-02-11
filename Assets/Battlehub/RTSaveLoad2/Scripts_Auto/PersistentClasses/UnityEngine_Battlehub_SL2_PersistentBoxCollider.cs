@@ -7,7 +7,7 @@ using UnityEngine.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentBoxCollider : PersistentCollider
     {
         [ProtoMember(256)]
@@ -31,19 +31,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.center = center;
             uo.size = size;
             return uo;
-        }
-
-        public static implicit operator BoxCollider(PersistentBoxCollider surrogate)
-        {
-            if(surrogate == null) return default(BoxCollider);
-            return (BoxCollider)surrogate.WriteTo(new BoxCollider());
-        }
-        
-        public static implicit operator PersistentBoxCollider(BoxCollider obj)
-        {
-            PersistentBoxCollider surrogate = new PersistentBoxCollider();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

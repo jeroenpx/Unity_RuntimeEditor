@@ -1,5 +1,7 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.Utils;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,6 +33,8 @@ namespace Battlehub.RTCommon
         private Button m_createEditorButton = null;
         [SerializeField]
         private RTEBase m_editorPrefab = null;
+        [SerializeField]
+        private Splash m_splashPrefab = null;
 
         private RTEBase m_editor;
           
@@ -68,12 +72,26 @@ namespace Battlehub.RTCommon
 
         private void OnOpen()
         {
+            Debug.Log("OnOpen");
+            if(m_splashPrefab != null)
+            {
+                Instantiate(m_splashPrefab).Show(() => InstantiateRuntimeEditor());
+            }
+            else
+            {
+                InstantiateRuntimeEditor();
+            }
+        }
+
+        private void InstantiateRuntimeEditor()
+        {
             m_editor = Instantiate(m_editorPrefab);
             m_editor.name = "RuntimeEditor";
             m_editor.IsOpenedChanged += OnIsOpenedChanged;
             m_editor.transform.SetAsFirstSibling();
             gameObject.SetActive(false);
         }
+
 
         private void OnIsOpenedChanged()
         {

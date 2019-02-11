@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentTestBehaviour : PersistentMonoBehaviour
     {
         [ProtoMember(256)]
@@ -27,19 +27,6 @@ namespace Battlehub.SL2
             TestBehaviour uo = (TestBehaviour)obj;
             SetPrivate(uo, "m_color", m_color);
             return uo;
-        }
-
-        public static implicit operator TestBehaviour(PersistentTestBehaviour surrogate)
-        {
-            if(surrogate == null) return default(TestBehaviour);
-            return (TestBehaviour)surrogate.WriteTo(new TestBehaviour());
-        }
-        
-        public static implicit operator PersistentTestBehaviour(TestBehaviour obj)
-        {
-            PersistentTestBehaviour surrogate = new PersistentTestBehaviour();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

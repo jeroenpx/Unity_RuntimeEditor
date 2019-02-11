@@ -7,7 +7,7 @@ using UnityEngine.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentMesh : PersistentObject
     {
         [ProtoMember(257)]
@@ -91,19 +91,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.uv8 = Assign(uv8, v_ => (Vector2)v_);
             uo.colors = Assign(colors, v_ => (Color)v_);
             return uo;
-        }
-
-        public static implicit operator Mesh(PersistentMesh surrogate)
-        {
-            if(surrogate == null) return default(Mesh);
-            return (Mesh)surrogate.WriteTo(new Mesh());
-        }
-        
-        public static implicit operator PersistentMesh(Mesh obj)
-        {
-            PersistentMesh surrogate = new PersistentMesh();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

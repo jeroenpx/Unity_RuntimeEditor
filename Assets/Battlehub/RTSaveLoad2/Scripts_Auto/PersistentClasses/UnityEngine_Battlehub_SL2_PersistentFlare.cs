@@ -7,22 +7,9 @@ using UnityEngine.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentFlare : PersistentObject
     {
-        
-        public static implicit operator Flare(PersistentFlare surrogate)
-        {
-            if(surrogate == null) return default(Flare);
-            return (Flare)surrogate.WriteTo(new Flare());
-        }
-        
-        public static implicit operator PersistentFlare(Flare obj)
-        {
-            PersistentFlare surrogate = new PersistentFlare();
-            surrogate.ReadFrom(obj);
-            return surrogate;
-        }
-    }
+            }
 }
 

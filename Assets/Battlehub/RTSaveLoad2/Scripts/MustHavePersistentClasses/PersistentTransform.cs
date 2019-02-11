@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentTransform : PersistentComponent
     {
         [ProtoMember(256)]
@@ -32,6 +32,14 @@ namespace Battlehub.RTSaveLoad2
             uo.rotation = rotation;
             uo.localScale = localScale;
             return obj;
+        }
+
+    
+        public static implicit operator PersistentTransform(Transform obj)
+        {
+            PersistentTransform surrogate = new PersistentTransform();
+            surrogate.ReadFrom(obj);
+            return surrogate;
         }
     }
 }

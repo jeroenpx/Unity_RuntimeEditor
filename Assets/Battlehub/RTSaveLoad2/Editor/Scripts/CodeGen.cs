@@ -52,7 +52,7 @@ namespace Battlehub.RTSaveLoad2
             "using UnityObject = UnityEngine.Object;" + BR +
             "namespace {1}" + BR +
             "{{" + BR +
-            "    [ProtoContract(AsReferenceDefault = true)]" + BR +
+            "    [ProtoContract]" + BR +
             "    public partial class {2} : {3}" + BR +
             "    {{" + BR +
             "        {4}" +
@@ -823,8 +823,11 @@ namespace Battlehub.RTSaveLoad2
             {
                 if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)
                 {
-                    sb.Append(BR + TAB2);
-                    sb.AppendFormat(ImplicitOperatorsTemplate, mappedTypeName, PreparePersistentTypeName(mapping.PersistentTypeName));
+                    if(!mappingType.IsSubclassOf(typeof(UnityObject)))
+                    {
+                        sb.Append(BR + TAB2);
+                        sb.AppendFormat(ImplicitOperatorsTemplate, mappedTypeName, PreparePersistentTypeName(mapping.PersistentTypeName));
+                    }
                 }
             }
           

@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentPhysicMaterial : PersistentObject
     {
         [ProtoMember(256)]
@@ -47,19 +47,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.frictionCombine = frictionCombine;
             uo.bounceCombine = bounceCombine;
             return uo;
-        }
-
-        public static implicit operator PhysicMaterial(PersistentPhysicMaterial surrogate)
-        {
-            if(surrogate == null) return default(PhysicMaterial);
-            return (PhysicMaterial)surrogate.WriteTo(new PhysicMaterial());
-        }
-        
-        public static implicit operator PersistentPhysicMaterial(PhysicMaterial obj)
-        {
-            PersistentPhysicMaterial surrogate = new PersistentPhysicMaterial();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

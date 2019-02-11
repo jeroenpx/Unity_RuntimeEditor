@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentBehaviour : PersistentComponent
     {
         [ProtoMember(256)]
@@ -27,19 +27,6 @@ namespace UnityEngine.Battlehub.SL2
             Behaviour uo = (Behaviour)obj;
             uo.enabled = enabled;
             return uo;
-        }
-
-        public static implicit operator Behaviour(PersistentBehaviour surrogate)
-        {
-            if(surrogate == null) return default(Behaviour);
-            return (Behaviour)surrogate.WriteTo(new Behaviour());
-        }
-        
-        public static implicit operator PersistentBehaviour(Behaviour obj)
-        {
-            PersistentBehaviour surrogate = new PersistentBehaviour();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

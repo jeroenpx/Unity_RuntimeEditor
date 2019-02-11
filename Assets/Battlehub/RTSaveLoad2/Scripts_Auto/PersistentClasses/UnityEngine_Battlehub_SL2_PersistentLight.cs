@@ -10,7 +10,7 @@ using UnityEngine.Rendering.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentLight : PersistentBehaviour
     {
         [ProtoMember(256)]
@@ -149,19 +149,6 @@ namespace UnityEngine.Battlehub.SL2
             Light uo = (Light)obj;
             AddDep(uo.cookie, context);
             AddDep(uo.flare, context);
-        }
-
-        public static implicit operator Light(PersistentLight surrogate)
-        {
-            if(surrogate == null) return default(Light);
-            return (Light)surrogate.WriteTo(new Light());
-        }
-        
-        public static implicit operator PersistentLight(Light obj)
-        {
-            PersistentLight surrogate = new PersistentLight();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

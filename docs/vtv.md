@@ -169,14 +169,14 @@ Methods:
   * `void InsertItem(int index, object item, bool raiseDataBindingEvent = true)` - insert data item.
   * `void RemoveItems(int[] indices, bool raiseItemDataBindingEvent = true)` - remove data items.
   * `RectTransform GetContainer(object obj)` - returns the ui container for data item.
-  * `RectTransform FirstContainer()` - returns first the visible ui container.
+  * `RectTransform FirstContainer()` - returns the first visible ui container.
   * `RectTransform LastContainer()` - returns the last visible ui container.
   * `void ForEachContainer(System.Action<RectTransform> action)` - run action for each ui container.
   * `void SetNextSibling(object sibling, object nextSibling)` - reorder data items and ui containers.
   * `void SetPrevSibling(object sibling, object prevSibling)` - reorder data items and ui containers.
  
 ##Virtualizing Items Control
-This class implements drag and drop, insert, delete, reorder, and triggers many useful events. It also serves as the base class for controls, such as listbox and treeview.  
+This class implements drag and drop, insert, delete, reorder functions and triggers many useful events. It also serves as the base class for controls, such as listbox and treeview.  
 Implementation can be found in __/Battlehub/UIControls/VirtualizingTreeView/Scripts/__ folder.
 
 Events:
@@ -206,7 +206,7 @@ Events:
 Fields:
 
  * `bool SelectOnPointerUp` - select item on pointer up (default: false).
- * `bool CanUnselectAll` - can the user un-select all items? If set to false then at least one item has to be selected (default: true).
+ * `bool CanUnselectAll` - can the user unselect all items? If set to false then at least one item has to be selected (default: true).
  * `bool CanSelectAll` - can the user select all items? (default:true).
  * `bool CanEdit` - can the user edit items? (default: true).
  * `bool CanRemove` - can the user remove items? (default: true).

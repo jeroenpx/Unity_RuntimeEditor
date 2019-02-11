@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentMonoBehaviour : PersistentBehaviour
     {
         [ProtoMember(256)]
@@ -27,19 +27,6 @@ namespace UnityEngine.Battlehub.SL2
             MonoBehaviour uo = (MonoBehaviour)obj;
             uo.useGUILayout = useGUILayout;
             return uo;
-        }
-
-        public static implicit operator MonoBehaviour(PersistentMonoBehaviour surrogate)
-        {
-            if(surrogate == null) return default(MonoBehaviour);
-            return (MonoBehaviour)surrogate.WriteTo(new MonoBehaviour());
-        }
-        
-        public static implicit operator PersistentMonoBehaviour(MonoBehaviour obj)
-        {
-            PersistentMonoBehaviour surrogate = new PersistentMonoBehaviour();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

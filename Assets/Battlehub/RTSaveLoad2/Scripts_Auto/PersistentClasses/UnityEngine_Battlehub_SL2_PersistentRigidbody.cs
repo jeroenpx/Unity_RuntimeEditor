@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentRigidbody : PersistentComponent
     {
         [ProtoMember(256)]
@@ -47,12 +47,6 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(267)]
         public PersistentVector3 centerOfMass;
 
-        [ProtoMember(268)]
-        public PersistentQuaternion inertiaTensorRotation;
-
-        [ProtoMember(269)]
-        public PersistentVector3 inertiaTensor;
-
         [ProtoMember(270)]
         public bool detectCollisions;
 
@@ -74,7 +68,7 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(276)]
         public float maxAngularVelocity;
 
-        [ProtoMember(277)]
+        [ProtoMember(282)]
         public int solverVelocityIterations;
 
         protected override void ReadFromImpl(object obj)
@@ -93,8 +87,6 @@ namespace UnityEngine.Battlehub.SL2
             constraints = uo.constraints;
             collisionDetectionMode = uo.collisionDetectionMode;
             centerOfMass = uo.centerOfMass;
-            inertiaTensorRotation = uo.inertiaTensorRotation;
-            inertiaTensor = uo.inertiaTensor;
             detectCollisions = uo.detectCollisions;
             position = uo.position;
             rotation = uo.rotation;
@@ -121,8 +113,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.constraints = constraints;
             uo.collisionDetectionMode = collisionDetectionMode;
             uo.centerOfMass = centerOfMass;
-            uo.inertiaTensorRotation = inertiaTensorRotation;
-            uo.inertiaTensor = inertiaTensor;
             uo.detectCollisions = detectCollisions;
             uo.position = position;
             uo.rotation = rotation;
@@ -132,19 +122,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.maxAngularVelocity = maxAngularVelocity;
             uo.solverVelocityIterations = solverVelocityIterations;
             return uo;
-        }
-
-        public static implicit operator Rigidbody(PersistentRigidbody surrogate)
-        {
-            if(surrogate == null) return default(Rigidbody);
-            return (Rigidbody)surrogate.WriteTo(new Rigidbody());
-        }
-        
-        public static implicit operator PersistentRigidbody(Rigidbody obj)
-        {
-            PersistentRigidbody surrogate = new PersistentRigidbody();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

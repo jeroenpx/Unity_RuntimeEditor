@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentMeshCollider : PersistentCollider
     {
         [ProtoMember(256)]
@@ -50,19 +50,6 @@ namespace UnityEngine.Battlehub.SL2
             base.GetDepsFromImpl(obj, context);
             MeshCollider uo = (MeshCollider)obj;
             AddDep(uo.sharedMesh, context);
-        }
-
-        public static implicit operator MeshCollider(PersistentMeshCollider surrogate)
-        {
-            if(surrogate == null) return default(MeshCollider);
-            return (MeshCollider)surrogate.WriteTo(new MeshCollider());
-        }
-        
-        public static implicit operator PersistentMeshCollider(MeshCollider obj)
-        {
-            PersistentMeshCollider surrogate = new PersistentMeshCollider();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

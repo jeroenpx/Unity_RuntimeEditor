@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.SceneManagement.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentScene : PersistentSurrogate
     {
         

@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentCollider : PersistentComponent
     {
         [ProtoMember(256)]
@@ -55,19 +55,6 @@ namespace UnityEngine.Battlehub.SL2
             base.GetDepsFromImpl(obj, context);
             Collider uo = (Collider)obj;
             AddDep(uo.sharedMaterial, context);
-        }
-
-        public static implicit operator Collider(PersistentCollider surrogate)
-        {
-            if(surrogate == null) return default(Collider);
-            return (Collider)surrogate.WriteTo(new Collider());
-        }
-        
-        public static implicit operator PersistentCollider(Collider obj)
-        {
-            PersistentCollider surrogate = new PersistentCollider();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

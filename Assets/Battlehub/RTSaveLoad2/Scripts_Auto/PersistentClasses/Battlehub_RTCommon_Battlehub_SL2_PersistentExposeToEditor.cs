@@ -10,7 +10,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTCommon.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentExposeToEditor : PersistentMonoBehaviour
     {
         [ProtoMember(256)]
@@ -37,7 +37,7 @@ namespace Battlehub.RTCommon.Battlehub.SL2
         [ProtoMember(263)]
         public bool AddColliders;
 
-        [ProtoMember(267)]
+        [ProtoMember(266)]
         public long[] Colliders;
 
         protected override void ReadFromImpl(object obj)
@@ -88,19 +88,6 @@ namespace Battlehub.RTCommon.Battlehub.SL2
             AddSurrogateDeps(uo.Unselected, v_ => (PersistentExposeToEditorUnityEvent)v_, context);
             AddDep(uo.BoundsObject, context);
             AddDep(uo.Colliders, context);
-        }
-
-        public static implicit operator ExposeToEditor(PersistentExposeToEditor surrogate)
-        {
-            if(surrogate == null) return default(ExposeToEditor);
-            return (ExposeToEditor)surrogate.WriteTo(new ExposeToEditor());
-        }
-        
-        public static implicit operator PersistentExposeToEditor(ExposeToEditor obj)
-        {
-            PersistentExposeToEditor surrogate = new PersistentExposeToEditor();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

@@ -11,7 +11,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentRuntimeScene : PersistentRuntimePrefab
     {
         [ProtoMember(1)]

@@ -10,7 +10,7 @@ using UnityEngine.Rendering.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentRenderer : PersistentComponent
     {
         [ProtoMember(261)]
@@ -131,19 +131,6 @@ namespace UnityEngine.Battlehub.SL2
             AddDep(uo.lightProbeProxyVolumeOverride, context);
             AddDep(uo.probeAnchor, context);
             AddDep(uo.sharedMaterials, context);
-        }
-
-        public static implicit operator Renderer(PersistentRenderer surrogate)
-        {
-            if(surrogate == null) return default(Renderer);
-            return (Renderer)surrogate.WriteTo(new Renderer());
-        }
-        
-        public static implicit operator PersistentRenderer(Renderer obj)
-        {
-            PersistentRenderer surrogate = new PersistentRenderer();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

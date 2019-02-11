@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentMeshRenderer : PersistentRenderer
     {
         [ProtoMember(256)]
@@ -40,19 +40,6 @@ namespace UnityEngine.Battlehub.SL2
             base.GetDepsFromImpl(obj, context);
             MeshRenderer uo = (MeshRenderer)obj;
             AddDep(uo.additionalVertexStreams, context);
-        }
-
-        public static implicit operator MeshRenderer(PersistentMeshRenderer surrogate)
-        {
-            if(surrogate == null) return default(MeshRenderer);
-            return (MeshRenderer)surrogate.WriteTo(new MeshRenderer());
-        }
-        
-        public static implicit operator PersistentMeshRenderer(MeshRenderer obj)
-        {
-            PersistentMeshRenderer surrogate = new PersistentMeshRenderer();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

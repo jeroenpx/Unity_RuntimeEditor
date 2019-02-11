@@ -34,7 +34,9 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1031, typeof(PersistentShader))
                 .AddSubType(1032, typeof(PersistentTexture))
                 .AddSubType(1033, typeof(PersistentFlare))
-                .AddSubType(1034, typeof(PersistentPhysicMaterial));
+                .AddSubType(1034, typeof(PersistentPhysicMaterial))
+                .AddSubType(1035, typeof(PersistentAvatar))
+                .AddSubType(1036, typeof(PersistentRuntimeAnimatorController));
             model.Add(typeof(PersistentGameObject), true);
             model.Add(typeof(PersistentRenderer), true)
                 .AddSubType(1025, typeof(PersistentMeshRenderer))
@@ -51,10 +53,13 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentMeshCollider), true);
             model.Add(typeof(PersistentCamera), true);
             model.Add(typeof(PersistentLight), true);
+            model.Add(typeof(PersistentAnimator), true);
+            model.Add(typeof(PersistentAvatar), true);
             model.Add(typeof(PersistentBehaviour), true)
                 .AddSubType(1025, typeof(PersistentCamera))
                 .AddSubType(1026, typeof(PersistentLight))
-                .AddSubType(1027, typeof(PersistentMonoBehaviour));
+                .AddSubType(1027, typeof(PersistentMonoBehaviour))
+                .AddSubType(1028, typeof(PersistentAnimator));
             model.Add(typeof(PersistentCollider), true)
                 .AddSubType(1025, typeof(PersistentBoxCollider))
                 .AddSubType(1026, typeof(PersistentSphereCollider))
@@ -74,6 +79,7 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1028, typeof(PersistentGameViewCamera));
             model.Add(typeof(PersistentPhysicMaterial), true);
             model.Add(typeof(PersistentRenderTexture), true);
+            model.Add(typeof(PersistentRuntimeAnimatorController), true);
             model.Add(typeof(PersistentShader), true);
             model.Add(typeof(PersistentTexture), true)
                 .AddSubType(1025, typeof(PersistentRenderTexture))

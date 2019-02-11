@@ -8,7 +8,7 @@ using UnityEngine.Events.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTCommon.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentExposeToEditorUnityEvent : PersistentUnityEventBase
     {
         

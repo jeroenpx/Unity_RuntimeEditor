@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract]
-    public partial class PersistentTexture : PersistentObject
+    public partial class PersistentRuntimeAnimatorController : PersistentObject
     {
             }
 }

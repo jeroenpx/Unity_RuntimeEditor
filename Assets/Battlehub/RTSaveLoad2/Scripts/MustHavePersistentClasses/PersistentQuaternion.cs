@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentQuaternion : PersistentSurrogate
     {
         [ProtoMember(256)]
@@ -41,6 +41,7 @@ namespace Battlehub.RTSaveLoad2
 
         public static implicit operator Quaternion(PersistentQuaternion surrogate)
         {
+            if(surrogate == null) { return default(Quaternion); }
             return (Quaternion)surrogate.WriteTo(new Quaternion());
         }
         

@@ -7,7 +7,7 @@ using UnityEngine.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentRenderTexture : PersistentTexture
     {
             }

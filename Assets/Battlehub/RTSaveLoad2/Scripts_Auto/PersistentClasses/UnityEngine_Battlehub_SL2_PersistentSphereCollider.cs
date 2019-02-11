@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentSphereCollider : PersistentCollider
     {
         [ProtoMember(256)]
@@ -32,19 +32,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.center = center;
             uo.radius = radius;
             return uo;
-        }
-
-        public static implicit operator SphereCollider(PersistentSphereCollider surrogate)
-        {
-            if(surrogate == null) return default(SphereCollider);
-            return (SphereCollider)surrogate.WriteTo(new SphereCollider());
-        }
-        
-        public static implicit operator PersistentSphereCollider(SphereCollider obj)
-        {
-            PersistentSphereCollider surrogate = new PersistentSphereCollider();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

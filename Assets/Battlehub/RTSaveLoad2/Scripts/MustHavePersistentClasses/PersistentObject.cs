@@ -4,7 +4,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]    
+    [ProtoContract]    
     public class PersistentObject : PersistentSurrogate
     {
         [ProtoMember(1)]

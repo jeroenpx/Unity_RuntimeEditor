@@ -629,7 +629,7 @@ namespace Battlehub.RTSaveLoad2
 
         public void ClearDependencies()
         {
-            foreach (Type type in m_dependencyTypes.Keys)
+            foreach (Type type in m_dependencyTypes.Keys.ToArray())
             {
                 UnlockType(type);
             }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentVector3 : PersistentSurrogate
     {
         [ProtoMember(256)]
@@ -37,6 +37,7 @@ namespace Battlehub.RTSaveLoad2
    
         public static implicit operator Vector3(PersistentVector3 surrogate)
         {
+            if (surrogate == null) return default(Vector3);
             return (Vector3)surrogate.WriteTo(new Vector3());
         }
         

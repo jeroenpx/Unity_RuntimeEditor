@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentMeshFilter : PersistentComponent
     {
         [ProtoMember(256)]
@@ -40,19 +40,6 @@ namespace UnityEngine.Battlehub.SL2
             base.GetDepsFromImpl(obj, context);
             MeshFilter uo = (MeshFilter)obj;
             AddDep(uo.sharedMesh, context);
-        }
-
-        public static implicit operator MeshFilter(PersistentMeshFilter surrogate)
-        {
-            if(surrogate == null) return default(MeshFilter);
-            return (MeshFilter)surrogate.WriteTo(new MeshFilter());
-        }
-        
-        public static implicit operator PersistentMeshFilter(MeshFilter obj)
-        {
-            PersistentMeshFilter surrogate = new PersistentMeshFilter();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

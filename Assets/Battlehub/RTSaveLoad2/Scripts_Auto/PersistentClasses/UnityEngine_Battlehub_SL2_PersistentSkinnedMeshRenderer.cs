@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentSkinnedMeshRenderer : PersistentRenderer
     {
         [ProtoMember(256)]
@@ -74,19 +74,6 @@ namespace UnityEngine.Battlehub.SL2
             AddDep(uo.rootBone, context);
             AddDep(uo.bones, context);
             AddDep(uo.sharedMesh, context);
-        }
-
-        public static implicit operator SkinnedMeshRenderer(PersistentSkinnedMeshRenderer surrogate)
-        {
-            if(surrogate == null) return default(SkinnedMeshRenderer);
-            return (SkinnedMeshRenderer)surrogate.WriteTo(new SkinnedMeshRenderer());
-        }
-        
-        public static implicit operator PersistentSkinnedMeshRenderer(SkinnedMeshRenderer obj)
-        {
-            PersistentSkinnedMeshRenderer surrogate = new PersistentSkinnedMeshRenderer();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

@@ -8,7 +8,7 @@ using System;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentCapsuleCollider : PersistentCollider
     {
         [ProtoMember(256)]
@@ -42,19 +42,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.height = height;
             uo.direction = direction;
             return uo;
-        }
-
-        public static implicit operator CapsuleCollider(PersistentCapsuleCollider surrogate)
-        {
-            if(surrogate == null) return default(CapsuleCollider);
-            return (CapsuleCollider)surrogate.WriteTo(new CapsuleCollider());
-        }
-        
-        public static implicit operator PersistentCapsuleCollider(CapsuleCollider obj)
-        {
-            PersistentCapsuleCollider surrogate = new PersistentCapsuleCollider();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

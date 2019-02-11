@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentColor : PersistentSurrogate
     {
         [ProtoMember(256)]

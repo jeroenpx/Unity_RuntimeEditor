@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTSaveLoad2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentArgumentCache : PersistentSurrogate
     {
         [ProtoMember(1)]
@@ -142,7 +142,7 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentPersistentCall : PersistentSurrogate
     {
         [ProtoMember(1)]
@@ -278,7 +278,7 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentUnityEventBase : PersistentSurrogate
     {
         private static FieldInfo m_persistentCallGroupInfo;
@@ -427,11 +427,12 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public class PersistentUnityEvent : PersistentUnityEventBase
     {
         public static implicit operator UnityEvent(PersistentUnityEvent surrogate)
         {
+            if (surrogate == null) return default(UnityEvent);
             return (UnityEvent)surrogate.WriteTo(new UnityEvent());
         }
 

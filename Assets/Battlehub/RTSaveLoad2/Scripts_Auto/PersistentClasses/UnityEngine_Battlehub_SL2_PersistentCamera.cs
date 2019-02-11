@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
 {
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract]
     public partial class PersistentCamera : PersistentBehaviour
     {
         [ProtoMember(256)]
@@ -57,9 +57,6 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(269)]
         public float depth;
 
-        [ProtoMember(270)]
-        public float aspect;
-
         [ProtoMember(271)]
         public int cullingMask;
 
@@ -77,9 +74,6 @@ namespace UnityEngine.Battlehub.SL2
 
         [ProtoMember(276)]
         public bool useOcclusionCulling;
-
-        [ProtoMember(277)]
-        public PersistentMatrix4x4 cullingMatrix;
 
         [ProtoMember(278)]
         public PersistentColor backgroundColor;
@@ -117,18 +111,6 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(289)]
         public int targetDisplay;
 
-        [ProtoMember(290)]
-        public PersistentMatrix4x4 worldToCameraMatrix;
-
-        [ProtoMember(291)]
-        public PersistentMatrix4x4 projectionMatrix;
-
-        [ProtoMember(292)]
-        public PersistentMatrix4x4 nonJitteredProjectionMatrix;
-
-        [ProtoMember(293)]
-        public bool useJitteredProjectionMatrixForTransparentRendering;
-
         [ProtoMember(294)]
         public PersistentScene scene;
 
@@ -159,14 +141,12 @@ namespace UnityEngine.Battlehub.SL2
             transparencySortMode = uo.transparencySortMode;
             transparencySortAxis = uo.transparencySortAxis;
             depth = uo.depth;
-            aspect = uo.aspect;
             cullingMask = uo.cullingMask;
             eventMask = uo.eventMask;
             layerCullSpherical = uo.layerCullSpherical;
             cameraType = uo.cameraType;
             layerCullDistances = uo.layerCullDistances;
             useOcclusionCulling = uo.useOcclusionCulling;
-            cullingMatrix = uo.cullingMatrix;
             backgroundColor = uo.backgroundColor;
             clearFlags = uo.clearFlags;
             depthTextureMode = uo.depthTextureMode;
@@ -179,10 +159,6 @@ namespace UnityEngine.Battlehub.SL2
             pixelRect = uo.pixelRect;
             targetTexture = ToID(uo.targetTexture);
             targetDisplay = uo.targetDisplay;
-            worldToCameraMatrix = uo.worldToCameraMatrix;
-            projectionMatrix = uo.projectionMatrix;
-            nonJitteredProjectionMatrix = uo.nonJitteredProjectionMatrix;
-            useJitteredProjectionMatrixForTransparentRendering = uo.useJitteredProjectionMatrixForTransparentRendering;
             scene = uo.scene;
             stereoSeparation = uo.stereoSeparation;
             stereoConvergence = uo.stereoConvergence;
@@ -207,14 +183,12 @@ namespace UnityEngine.Battlehub.SL2
             uo.transparencySortMode = transparencySortMode;
             uo.transparencySortAxis = transparencySortAxis;
             uo.depth = depth;
-            uo.aspect = aspect;
             uo.cullingMask = cullingMask;
             uo.eventMask = eventMask;
             uo.layerCullSpherical = layerCullSpherical;
             uo.cameraType = cameraType;
             uo.layerCullDistances = layerCullDistances;
             uo.useOcclusionCulling = useOcclusionCulling;
-            uo.cullingMatrix = cullingMatrix;
             uo.backgroundColor = backgroundColor;
             uo.clearFlags = clearFlags;
             uo.depthTextureMode = depthTextureMode;
@@ -227,10 +201,6 @@ namespace UnityEngine.Battlehub.SL2
             uo.pixelRect = pixelRect;
             uo.targetTexture = FromID(targetTexture, uo.targetTexture);
             uo.targetDisplay = targetDisplay;
-            uo.worldToCameraMatrix = worldToCameraMatrix;
-            uo.projectionMatrix = projectionMatrix;
-            uo.nonJitteredProjectionMatrix = nonJitteredProjectionMatrix;
-            uo.useJitteredProjectionMatrixForTransparentRendering = useJitteredProjectionMatrixForTransparentRendering;
             uo.scene = scene;
             uo.stereoSeparation = stereoSeparation;
             uo.stereoConvergence = stereoConvergence;
@@ -249,19 +219,6 @@ namespace UnityEngine.Battlehub.SL2
             base.GetDepsFromImpl(obj, context);
             Camera uo = (Camera)obj;
             AddDep(uo.targetTexture, context);
-        }
-
-        public static implicit operator Camera(PersistentCamera surrogate)
-        {
-            if(surrogate == null) return default(Camera);
-            return (Camera)surrogate.WriteTo(new Camera());
-        }
-        
-        public static implicit operator PersistentCamera(Camera obj)
-        {
-            PersistentCamera surrogate = new PersistentCamera();
-            surrogate.ReadFrom(obj);
-            return surrogate;
         }
     }
 }

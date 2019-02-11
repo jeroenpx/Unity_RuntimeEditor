@@ -53,7 +53,16 @@ namespace Battlehub.Utils
             for (int i = 0; i < m_animations.Count; ++i)
             {
                 IAnimationInfo animation = m_animations[i];
-                animation.T += Time.deltaTime;
+
+                if(animation.Delay > 0)
+                {
+                    animation.Delay -= Time.deltaTime;
+                }
+                else
+                {
+                    animation.T += Time.deltaTime;
+                }
+
                 if (animation.T >= animation.Duration)
                 {
                     m_animations.Remove(animation);
@@ -178,6 +187,12 @@ namespace Battlehub.Utils
             }
         }
 
+        public float Delay
+        {
+            get;
+            set;
+        }
+        
         private TObj m_target;
         private TValue m_from;
         private TValue m_to;
@@ -219,6 +234,12 @@ namespace Battlehub.Utils
         }
         
         float T
+        {
+            get;
+            set;
+        }
+
+        float Delay
         {
             get;
             set;

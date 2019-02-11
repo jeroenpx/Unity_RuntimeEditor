@@ -173,11 +173,14 @@ namespace Battlehub.UIControls.MenuControl
                 if(this != null)
                 {
                     Menu menu = GetComponentInParent<Menu>();
-                    while (menu.Parent != null)
+                    if(menu != null)
                     {
-                        menu = menu.Parent.GetComponentInParent<Menu>();
+                        while (menu.Parent != null)
+                        {
+                            menu = menu.Parent.GetComponentInParent<Menu>();
+                        }
+                        menu.Close();
                     }
-                    menu.Close();
                 }
             }
         }
