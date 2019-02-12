@@ -108,6 +108,16 @@ namespace Battlehub.RTSaveLoad2
             GetDepsFromImpl(obj, context);
         }
 
+        protected void WriteSurrogateTo(IPersistentSurrogate from, object to)
+        {
+            if(from == null)
+            {
+                return;
+            }
+
+            from.WriteTo(to);
+        }
+
         protected void AddDep(long depenency, GetDepsContext context)
         {
             if (depenency > 0 && !m_assetDB.IsNullID(depenency) && !context.Dependencies.Contains(depenency))
@@ -158,6 +168,11 @@ namespace Battlehub.RTSaveLoad2
 
         protected void AddSurrogateDeps(PersistentSurrogate surrogate, GetDepsContext context)
         {
+            if(surrogate == null)
+            {
+                return;
+            }
+
             surrogate.GetDeps(context);
         }
 

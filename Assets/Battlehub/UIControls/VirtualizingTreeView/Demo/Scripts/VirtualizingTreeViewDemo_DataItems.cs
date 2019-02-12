@@ -225,8 +225,11 @@ namespace Battlehub.UIControls
 
         public void Expand()
         {
-            foreach(DataItem selectedItem in TreeView.SelectedItems)
+            
+
+            foreach (DataItem selectedItem in TreeView.SelectedItems)
             {
+                
                 TreeView.ExpandAll(selectedItem, item => item.Parent, item => item.Children);
             }
         }

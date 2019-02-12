@@ -7,16 +7,23 @@ namespace Battlehub.RTSaveLoad2.Internal
     {
         public readonly string ForType;
         public readonly string[] FieldNames;
-        public readonly Type[] RequiredTypes;
+        public readonly string[] RequiredTypes;
 
-        public PersistentTemplateAttribute(string forType, params string[] templateFields)
+        public PersistentTemplateAttribute(string forType)
+        {
+            ForType = forType;
+            FieldNames = new string[0];
+            RequiredTypes = new string[0];
+        }
+
+        public PersistentTemplateAttribute(string forType, string[] templateFields)
         {
             ForType = forType;
             FieldNames = templateFields;
-            RequiredTypes = new Type[0];
+            RequiredTypes = new string[0];
         }
 
-        public PersistentTemplateAttribute(string forType, string[] templateFields, Type[] requiredTypes)
+        public PersistentTemplateAttribute(string forType, string[] templateFields, string[] requiredTypes)
         {
             ForType = forType;
             FieldNames = templateFields;
@@ -48,6 +55,10 @@ namespace Battlehub.RTSaveLoad2.Internal
             throw new InvalidOperationException();
         }
 
+        protected void WriteSurrogateTo(object from, object to)
+        {
+        }
+
         protected void AddDep(long depenency, object context)
         {
             throw new InvalidOperationException();
@@ -74,6 +85,11 @@ namespace Battlehub.RTSaveLoad2.Internal
         }
 
         protected void AddSurrogateDeps<T>(T[] surrogateArray, object context)
+        {
+            throw new InvalidOperationException();
+        }
+
+        protected void AddSurrogateDeps<T>(T obj, Func<object, object> convert, GetDepsFromContext context)
         {
             throw new InvalidOperationException();
         }

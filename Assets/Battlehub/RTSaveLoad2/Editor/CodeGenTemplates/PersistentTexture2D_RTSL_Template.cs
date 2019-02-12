@@ -14,7 +14,7 @@ using UnityEngine;
 namespace Battlehub.RTSaveLoad2.Internal
 {
     [PersistentTemplate("UnityEngine.Texture2D")]
-    public class PersistentTexture2DTemplate : PersistentSurrogateTemplate
+    public class PersistentTexture2D_RTSL_Template : PersistentSurrogateTemplate
     {
 #if RTSL2_COMPILE_TEMPLATES
         //<TEMPLATE_BODY_START>

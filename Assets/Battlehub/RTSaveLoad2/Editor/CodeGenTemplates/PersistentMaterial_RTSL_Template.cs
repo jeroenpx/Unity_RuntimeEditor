@@ -12,13 +12,15 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
 {
-    [PersistentTemplate("UnityEngine.Material", new[] { "color", "mainTexture", "mainTextureOffset", "mainTextureScale", "shader" },
-        new System.Type[] {
-            typeof(Vector4),
-            typeof(Color) })]
-    public class PersistentMaterialTemplate : PersistentSurrogateTemplate
+    [PersistentTemplate("UnityEngine.Material", 
+        new[] { "color", "mainTexture", "mainTextureOffset", "mainTextureScale", "shader" },
+        new[] { "UnityEngine.Vector4", "UnityEngine.Color" })]
+    public class PersistentMaterial_RTSL_Template : PersistentSurrogateTemplate
     {
 #if RTSL2_COMPILE_TEMPLATES
+        public UnityEngine.Vector4 m_check1;
+        public UnityEngine.Color m_check2;
+
         //<TEMPLATE_BODY_START>
 
         [ProtoMember(1)]

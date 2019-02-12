@@ -97,9 +97,13 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(Vector4), false).SetSurrogate(typeof(PersistentVector4));
             model.Add(typeof(Color), false).SetSurrogate(typeof(PersistentColor));
             model.Add(typeof(Matrix4x4), false).SetSurrogate(typeof(PersistentMatrix4x4));
+            model.Add(typeof(AnimationCurve), false).SetSurrogate(typeof(PersistentAnimationCurve));
             model.Add(typeof(BoneWeight), false).SetSurrogate(typeof(PersistentBoneWeight));
             model.Add(typeof(Bounds), false).SetSurrogate(typeof(PersistentBounds));
+            model.Add(typeof(Keyframe), false).SetSurrogate(typeof(PersistentKeyframe));
+            model.Add(typeof(LayerMask), false).SetSurrogate(typeof(PersistentLayerMask));
             model.Add(typeof(LightBakingOutput), false).SetSurrogate(typeof(PersistentLightBakingOutput));
+            model.Add(typeof(ParticleSystem.MinMaxCurve), false).SetSurrogate(typeof(PersistentParticleSystemNestedMinMaxCurve));
             model.Add(typeof(Quaternion), false).SetSurrogate(typeof(PersistentQuaternion));
             model.Add(typeof(Rect), false).SetSurrogate(typeof(PersistentRect));
             model.Add(typeof(Scene), false).SetSurrogate(typeof(PersistentScene));

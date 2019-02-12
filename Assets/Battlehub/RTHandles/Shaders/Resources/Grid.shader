@@ -9,11 +9,20 @@ Shader "Battlehub/RTHandles/Grid" {
 		_ZTest("ZTest", Float) = 4.0
 		_Cull("Cull", Float) = 0.0
 		_FadeDistance("FadeDistance", Float) = 50.0
+
+		_StencilComp("Stencil Comparison", Float) = 5
+		_Stencil("Stencil ID", Float) = 99
+		_StencilOp("Stencil Operation", Float) = 0	
 	}
 	SubShader
 	{
-		
 		Tags{ "Queue" = "Transparent+5" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+		Stencil
+		{
+			Ref[_Stencil]
+			Comp NotEqual
+			Pass[_StencilOp]
+		}
 		Pass
 		{
 			Blend SrcAlpha OneMinusSrcAlpha

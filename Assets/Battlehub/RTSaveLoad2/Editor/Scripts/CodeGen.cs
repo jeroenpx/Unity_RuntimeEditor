@@ -645,7 +645,7 @@ namespace Battlehub.RTSaveLoad2
 
             template = template.Substring(startIndex, endIndex - startIndex);
             template = template.Replace("//<TEMPLATE_USINGS_START>", string.Empty);
-
+            
             result = template;
             return true;
         }
@@ -666,6 +666,7 @@ namespace Battlehub.RTSaveLoad2
             template = template.Replace("//<TEMPLATE_BODY_START>", string.Empty);
             template = template.Replace("#if RTSL2_COMPILE_TEMPLATES", string.Empty);
             template = template.Replace("#endif", string.Empty);
+            template = template.Replace("_RTSL_Template", string.Empty);
 
             result = template;
             return true;

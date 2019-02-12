@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
 {
-    [PersistentTemplate("UnityEngine.Mesh", "vertices", "subMeshCount", "indexFormat", "triangles")]
-    public class PersistentMeshTemplate : PersistentSurrogateTemplate
+    [PersistentTemplate("UnityEngine.Mesh", new[] { "vertices", "subMeshCount", "indexFormat", "triangles" })]
+    public class PersistentMesh_RTSL_Template : PersistentSurrogateTemplate
     {
 #if RTSL2_COMPILE_TEMPLATES
         //<TEMPLATE_BODY_START>
