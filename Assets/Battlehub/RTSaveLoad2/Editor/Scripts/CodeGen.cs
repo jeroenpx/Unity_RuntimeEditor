@@ -276,6 +276,11 @@ namespace Battlehub.RTSaveLoad2
             return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToArray();
         }
 
+        public MethodInfo[] GetMethods(Type type)
+        {
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
         public bool IsGenericList(Type type)
         {
             bool isList = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
@@ -481,20 +486,21 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
-                string mappedTypeName = mappingType.Name;
+                string mappedTypeName = PrepareMappedTypeName(TypeName(mappingType));
+                string persistentTypeName = PreparePersistentTypeName(mapping.PersistentTypeName);
                 if (mappedTypeName == "Object")
                 {
                     mappedTypeName = "UnityObject";
                 }
-                sb.AppendFormat(AddToPersistentTypeTemplate, mappedTypeName, mapping.PersistentTypeName);
+                sb.AppendFormat(AddToPersistentTypeTemplate, mappedTypeName, persistentTypeName);
                 sb.Append(TAB3);
-                sb.AppendFormat(AddToUnityTypeTemplate, mapping.PersistentTypeName, mappedTypeName);
+                sb.AppendFormat(AddToUnityTypeTemplate, persistentTypeName, mappedTypeName);
                 sb.Append(TAB3);
-                sb.AppendFormat(AddToGuidTemplate, mapping.PersistentTypeName, mapping.PersistentTypeGUID);
+                sb.AppendFormat(AddToGuidTemplate, persistentTypeName, mapping.PersistentTypeGUID);
                 sb.Append(TAB3);
                 sb.AppendFormat(AddToGuidTemplate, mappedTypeName, mapping.MappedTypeGUID);
                 sb.Append(TAB3);
-                sb.AppendFormat(AddToTypeTemplate, mapping.PersistentTypeGUID, mapping.PersistentTypeName);
+                sb.AppendFormat(AddToTypeTemplate, mapping.PersistentTypeGUID, persistentTypeName);
                 sb.Append(TAB3);
                 sb.AppendFormat(AddToTypeTemplate, mapping.MappedTypeGUID, mappedTypeName);
                 sb.Append(TAB3);
@@ -1220,6 +1226,7 @@ namespace Battlehub.RTSaveLoad2
         {
             PropertyInfo[] properties = GetAllProperties(type);
             FieldInfo[] fields = GetFields(type);
+            MethodInfo[] methods = GetMethods(type);
 
             for (int p = 0; p < properties.Length; ++p)
             {
@@ -1245,6 +1252,28 @@ namespace Battlehub.RTSaveLoad2
                     {
                         typesHS.Add(surrogateType);
                         GetTypesRecursive(surrogateType, typesHS);
+                    }
+                }
+            }
+
+            for(int m = 0; m < methods.Length; ++m)
+            {
+                MethodInfo mInfo = methods[m];
+                ParameterInfo[] parameters = mInfo.GetParameters();
+                if(parameters != null)
+                {
+                    for(int i = 0; i < parameters.Length; ++i)
+                    {
+                        ParameterInfo pInfo = parameters[i];
+                        if(pInfo != null && pInfo.ParameterType != null)
+                        {
+                            Type surrogateType = GetSurrogateType(pInfo.ParameterType);
+                            if (surrogateType != null &&  !string.IsNullOrEmpty(surrogateType.FullName) && surrogateType != typeof(object) && !typesHS.Contains(surrogateType))
+                            {
+                                typesHS.Add(surrogateType);
+                                GetTypesRecursive(surrogateType, typesHS);
+                            }
+                        }
                     }
                 }
             }

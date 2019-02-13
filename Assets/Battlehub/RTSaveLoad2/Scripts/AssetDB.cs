@@ -122,10 +122,13 @@ namespace Battlehub.RTSaveLoad2
                     m_persistentIDToSceneObject.Add(kvp.Key, kvp.Value);
                 }
 
-                int instanceId = kvp.Value.GetInstanceID();
-                if (!m_sceneObjectIDToPersistentID.ContainsKey(instanceId))
+                if(kvp.Value != null)
                 {
-                    m_sceneObjectIDToPersistentID.Add(instanceId, kvp.Key);
+                    int instanceId = kvp.Value.GetInstanceID();
+                    if (!m_sceneObjectIDToPersistentID.ContainsKey(instanceId))
+                    {
+                        m_sceneObjectIDToPersistentID.Add(instanceId, kvp.Key);
+                    }
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
@@ -45,6 +46,16 @@ namespace Battlehub.RTSaveLoad2.Internal
             throw new InvalidOperationException();
         }
 
+        public List<T> Assign<V, T>(List<V> list, Func<object, T> convert)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public T[] Assign<V, T>(V[] arr, Func<object, T> convert)
+        {
+            throw new InvalidOperationException();
+        }
+
         public virtual void GetDeps(GetDepsContext context)
         {
             throw new InvalidOperationException();
@@ -57,7 +68,14 @@ namespace Battlehub.RTSaveLoad2.Internal
 
         protected void WriteSurrogateTo(object from, object to)
         {
+            throw new InvalidOperationException();
         }
+
+        protected T ReadSurrogateFrom<T>(object obj)
+        {
+            throw new InvalidOperationException();
+        }
+
 
         protected void AddDep(long depenency, object context)
         {
@@ -89,7 +107,22 @@ namespace Battlehub.RTSaveLoad2.Internal
             throw new InvalidOperationException();
         }
 
+        protected void AddSurrogateDeps<T>(T obj, Func<object, object> convert, GetDepsContext context)
+        {
+            throw new InvalidOperationException();
+        }
+
+        protected void AddSurrogateDeps<T>(T[] objArray, Func<object, object> convert, GetDepsContext context)
+        {
+            throw new InvalidOperationException();
+        }
+
         protected void AddSurrogateDeps<T>(T obj, Func<object, object> convert, GetDepsFromContext context)
+        {
+            throw new InvalidOperationException();
+        }
+
+        protected void AddSurrogateDeps<T>(T[] objArray, Func<object, object> convert, GetDepsFromContext context)
         {
             throw new InvalidOperationException();
         }

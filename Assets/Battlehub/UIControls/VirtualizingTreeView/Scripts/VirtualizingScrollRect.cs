@@ -39,6 +39,8 @@ namespace Battlehub.UIControls
         [SerializeField]
         private RectTransform m_virtualContent = null;
 
+        private HorizontalOrVerticalLayoutGroup m_layoutGroup;
+
         /// <summary>
         /// Listen for virtualContent dimensions change
         /// </summary>
@@ -261,11 +263,11 @@ namespace Battlehub.UIControls
             {
                 if (m_mode == VirtualizingMode.Horizontal)
                 {
-                    return Mathf.Max(0, ContainerPrefab.rect.width + (m_useGrid ? m_gridSpacing.x : 0));
+                    return Mathf.Max(0, ContainerPrefab.rect.width + (m_useGrid ? m_gridSpacing.x : m_layoutGroup.spacing));
                 }
                 else if(m_mode == VirtualizingMode.Vertical)
                 {
-                    return Mathf.Max(0, ContainerPrefab.rect.height + (m_useGrid ? m_gridSpacing.y : 0));
+                    return Mathf.Max(0, ContainerPrefab.rect.height + (m_useGrid ? m_gridSpacing.y : m_layoutGroup.spacing));
                 }
 
                 throw new System.InvalidOperationException("Unable to eval container size in non-virtualizing mode");
@@ -357,6 +359,8 @@ namespace Battlehub.UIControls
                     horizontalLayout.childControlHeight = true;
                     horizontalLayout.childControlWidth = false;
                     horizontalLayout.childForceExpandWidth = false;
+
+                    m_layoutGroup = horizontalLayout;
                 }
                 else
                 {
@@ -381,6 +385,8 @@ namespace Battlehub.UIControls
                     verticalLayout.childControlWidth = true;
                     verticalLayout.childControlHeight = false;
                     verticalLayout.childForceExpandHeight = false;
+
+                    m_layoutGroup = verticalLayout;
                 }
             }
 

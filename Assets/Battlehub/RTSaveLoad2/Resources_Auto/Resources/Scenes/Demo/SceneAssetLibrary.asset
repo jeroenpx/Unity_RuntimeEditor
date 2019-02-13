@@ -16,7 +16,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 28
+    Identity: 35
     FolderIdentity: 4
     Folders:
     - m_ID: 0
@@ -170,6 +170,48 @@ MonoBehaviour:
         m_Name: FerryButton
         m_Depth: 0
         Object: {fileID: 9100000, guid: f069ff2ed705fd04caa9771dd58b96a9, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 28
+        m_Name: CubemapSoul
+        m_Depth: 0
+        Object: {fileID: 4300000, guid: 38516f7db6686c149867053e111bfa7b, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 29
+        m_Name: dust
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 14b0a74258b04674b904db4a31a508d7, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 30
+        m_Name: Soul
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 7197e9d1a71ec314b8f23d6ef53fcbe7, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 31
+        m_Name: glow
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 7484b202be7784240a83d1bb97e9f859, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 32
+        m_Name: central
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 988791c8539f6234e8d42889aa0aa6bd, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 33
+        m_Name: energy
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: 8509aadad4ecd064e9e64cfbfe007486, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 34
+        m_Name: smoke
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: b3447251bc65b704dabf20c3b7c78b02, type: 2}
         IsEnabled: 0
         PrefabParts: []
       IsEnabled: 1

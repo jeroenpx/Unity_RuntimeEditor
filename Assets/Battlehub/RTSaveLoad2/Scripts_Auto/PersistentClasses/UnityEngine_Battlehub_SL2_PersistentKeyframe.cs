@@ -3,6 +3,7 @@ using ProtoBuf;
 using Battlehub.RTSaveLoad2;
 using UnityEngine;
 using UnityEngine.Battlehub.SL2;
+using System;
 
 using UnityObject = UnityEngine.Object;
 namespace UnityEngine.Battlehub.SL2
@@ -10,7 +11,54 @@ namespace UnityEngine.Battlehub.SL2
     [ProtoContract]
     public partial class PersistentKeyframe : PersistentSurrogate
     {
-        
+        [ProtoMember(256)]
+        public float time;
+
+        [ProtoMember(257)]
+        public float value;
+
+        [ProtoMember(258)]
+        public float inTangent;
+
+        [ProtoMember(259)]
+        public float outTangent;
+
+        [ProtoMember(260)]
+        public float inWeight;
+
+        [ProtoMember(261)]
+        public float outWeight;
+
+        [ProtoMember(262)]
+        public WeightedMode weightedMode;
+
+        protected override void ReadFromImpl(object obj)
+        {
+            base.ReadFromImpl(obj);
+            Keyframe uo = (Keyframe)obj;
+            time = uo.time;
+            value = uo.value;
+            inTangent = uo.inTangent;
+            outTangent = uo.outTangent;
+            inWeight = uo.inWeight;
+            outWeight = uo.outWeight;
+            weightedMode = uo.weightedMode;
+        }
+
+        protected override object WriteToImpl(object obj)
+        {
+            obj = base.WriteToImpl(obj);
+            Keyframe uo = (Keyframe)obj;
+            uo.time = time;
+            uo.value = value;
+            uo.inTangent = inTangent;
+            uo.outTangent = outTangent;
+            uo.inWeight = inWeight;
+            uo.outWeight = outWeight;
+            uo.weightedMode = weightedMode;
+            return uo;
+        }
+
         public static implicit operator Keyframe(PersistentKeyframe surrogate)
         {
             if(surrogate == null) return default(Keyframe);

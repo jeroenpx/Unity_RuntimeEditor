@@ -1,4 +1,4 @@
-﻿#define RTSL2_COMPILE_TEMPLATES
+﻿//#define RTSL2_COMPILE_TEMPLATES
 #if RTSL2_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
 using ProtoBuf;
@@ -11,10 +11,13 @@ using UnityEngine;
 namespace Battlehub.RTSaveLoad2.Internal
 {
     [PersistentTemplate("UnityEngine.ParticleSystem+CollisionModule")]
-    public partial class PersistentCollisionModule_RTSL_Template : PersistentSurrogateTemplate
+    public partial class PersistentParticleSystemNestedCollisionModule_RTSL_Template : PersistentSurrogateTemplate
     {
 #if RTSL2_COMPILE_TEMPLATES
         //<TEMPLATE_BODY_START>
+
+        [ProtoMember(1)]
+        public long[] m_planes;
 
         public override object WriteTo(object obj)
         {
@@ -25,6 +28,21 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             ParticleSystem.CollisionModule o = (ParticleSystem.CollisionModule)obj;
+            if (m_planes == null)
+            {
+                for (int i = 0; i < o.maxPlaneCount; ++i)
+                {
+                    o.SetPlane(i, null);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Mathf.Min(o.maxPlaneCount, m_planes.Length); ++i)
+                {
+                    o.SetPlane(i, FromID<Transform>(m_planes[i]));
+                }
+            }
+
             return obj;
         }
 
@@ -37,12 +55,17 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             ParticleSystem.CollisionModule o = (ParticleSystem.CollisionModule)obj;
-
+            m_planes = new long[o.maxPlaneCount];
+            for (int i = 0; i < o.maxPlaneCount; ++i)
+            {
+                m_planes[i] = ToID(o.GetPlane(i));
+            }
         }
 
         public override void GetDeps(GetDepsContext context)
         {
             base.GetDeps(context);
+            AddDep(m_planes, context);
         }
 
         public override void GetDepsFrom(object obj, GetDepsFromContext context)
@@ -54,7 +77,10 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             ParticleSystem.CollisionModule o = (ParticleSystem.CollisionModule)obj;
-
+            for(int i = 0; i < o.maxPlaneCount; ++i)
+            {
+                AddDep(o.GetPlane(i), context);
+            }
         }
 
         //<TEMPLATE_BODY_END>

@@ -118,6 +118,13 @@ namespace Battlehub.RTSaveLoad2
             from.WriteTo(to);
         }
 
+        protected T ReadSurrogateFrom<T>(object obj) where T : IPersistentSurrogate, new()
+        {
+            T surrogate = new T();
+            surrogate.ReadFrom(obj);
+            return surrogate;
+        }
+
         protected void AddDep(long depenency, GetDepsContext context)
         {
             if (depenency > 0 && !m_assetDB.IsNullID(depenency) && !context.Dependencies.Contains(depenency))
@@ -128,6 +135,11 @@ namespace Battlehub.RTSaveLoad2
 
         protected void AddDep(long[] depenencies, GetDepsContext context)
         {
+            if(depenencies == null)
+            {
+                return;
+            }
+
             for (int i = 0; i < depenencies.Length; ++i)
             {
                 AddDep(depenencies[i], context);
@@ -201,6 +213,33 @@ namespace Battlehub.RTSaveLoad2
                 surrogate.GetDeps(context);
             }
         }
+
+        protected void AddSurrogateDeps<T>(T obj, Func<T, PersistentSurrogate> convert, GetDepsContext context)
+        {
+            if (obj != null)
+            {
+                PersistentSurrogate surrogate = convert(obj);
+                surrogate.GetDeps(context);
+            }
+        }
+
+        protected void AddSurrogateDeps<T>(T[] objArray, Func<T, PersistentSurrogate> convert, GetDepsContext context)
+        {
+            if (objArray == null)
+            {
+                return;
+            }
+            for (int i = 0; i < objArray.Length; ++i)
+            {
+                T obj = objArray[i];
+                if (obj != null)
+                {
+                    PersistentSurrogate surrogate = convert(obj);
+                    surrogate.GetDeps(context);
+                }
+            }
+        }
+
 
         protected void AddSurrogateDeps<T>(T obj, Func<T, PersistentSurrogate> convert, GetDepsFromContext context)
         {

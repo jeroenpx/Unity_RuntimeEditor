@@ -18,6 +18,7 @@ namespace Battlehub.RTSaveLoad2
         public HashSet<string> FieldNames;
         public HashSet<Type> RequiredTypes;
         public string Path;
+        public bool DependenciesLocked;
     }
 
 
@@ -240,34 +241,39 @@ namespace Battlehub.RTSaveLoad2
 
             EditorGUILayout.BeginHorizontal();
             //EditorGUI.BeginDisabledGroup(m_enableAll);
-            if (IsAllSelected)
-            {
-                EditorGUILayout.Toggle(true, GUILayout.MaxWidth(20));
-                EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
-            }
-            else if (IsNoneSelected)
-            {
-                EditorGUILayout.Toggle(false, GUILayout.MaxWidth(20));
-                EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
-
-            }
-            else
-            {
-                EditorGUILayout.Toggle(false, "ToggleMixed", GUILayout.MaxWidth(20));
-                EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
-            }
-
-            if (EditorGUI.EndChangeCheck())
+            bool allowSelectAll = false;
+            if(allowSelectAll)
             {
                 if (IsAllSelected)
                 {
-                    UnselectAll();
+                    EditorGUILayout.Toggle(true, GUILayout.MaxWidth(20));
+                    EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
+                }
+                else if (IsNoneSelected)
+                {
+                    EditorGUILayout.Toggle(false, GUILayout.MaxWidth(20));
+                    EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
+
                 }
                 else
                 {
-                    SelectAll();
+                    EditorGUILayout.Toggle(false, "ToggleMixed", GUILayout.MaxWidth(20));
+                    EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
+                }
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (IsAllSelected)
+                    {
+                        UnselectAll();
+                    }
+                    else
+                    {
+                        SelectAll();
+                    }
                 }
             }
+          
             //EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Separator();
@@ -465,8 +471,6 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-
-
         private bool m_tryingToLockType = false;
         public void TryLockType(Type mappedType)
         {
@@ -555,9 +559,16 @@ namespace Battlehub.RTSaveLoad2
                 return;
             }
 
+            
             PersistentTemplateInfo templateInfo;
             if (m_templates.TryGetValue(m_types[typeIndex], out templateInfo))
             {
+                if (templateInfo.DependenciesLocked)
+                {
+                    return;
+                }
+                templateInfo.DependenciesLocked = true;
+                
                 if (templateInfo.RequiredTypes != null)
                 {
                     foreach (Type requiredType in templateInfo.RequiredTypes)
@@ -578,6 +589,12 @@ namespace Battlehub.RTSaveLoad2
             PersistentTemplateInfo templateInfo;
             if (m_templates.TryGetValue(m_types[typeIndex], out templateInfo))
             {
+                if (!templateInfo.DependenciesLocked)
+                {
+                    return;
+                }
+                templateInfo.DependenciesLocked = false;
+
                 if (templateInfo.RequiredTypes != null)
                 {
                     foreach (Type requiredType in templateInfo.RequiredTypes)
@@ -588,7 +605,6 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-  
         private void LockType(Type type)
         {
             int index;
@@ -1084,10 +1100,26 @@ namespace Battlehub.RTSaveLoad2
                         {
                             GUILayout.Space(5 + 18 * indent);
 
+                            EditorGUI.BeginChangeCheck();
                             mappingInfo.CreateCustomImplementation = EditorGUILayout.Toggle(mappingInfo.CreateCustomImplementation, GUILayout.MaxWidth(20));
                             EditorGUILayout.LabelField("Custom Implementation", GUILayout.MaxWidth(230));
-
-                            if (mappingInfo.CreateCustomImplementation && mappingInfo.HasTemplate)
+                            if(EditorGUI.EndChangeCheck())
+                            {
+                                if(mappingInfo.HasTemplate)
+                                {
+                                    if (mappingInfo.CreateCustomImplementation)
+                                    {
+                                        TryLockTemplateDependencies(typeIndex);
+                                    }
+                                    else
+                                    {
+                                        TryUnlockTemplateDependencies(typeIndex);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (mappingInfo.CreateCustomImplementation && mappingInfo.HasTemplate)
                             {
                                 EditorGUI.BeginChangeCheck();
                                 bool useTemplate = EditorGUILayout.Popup(mappingInfo.UseTemplate ? 1 : 0, m_customImplementationOptions, GUILayout.MaxWidth(230)) == 1;
@@ -1105,6 +1137,8 @@ namespace Battlehub.RTSaveLoad2
                                     }
                                 }
                             }
+                            }
+                            
 
                         }
                         EditorGUILayout.EndHorizontal();
@@ -1220,11 +1254,23 @@ namespace Battlehub.RTSaveLoad2
                                 }
                             }
 
+                            int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
+
+                            bool isEnum = false;
+                            if(selectedIndex >= 0)
+                            {
+                                Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selectedIndex];
+                                if(mappedType != null && mappedType.IsEnum)
+                                {
+                                    isEnum = true;
+                                }
+                            }
+                            
+
                             m_guiContent.text = pMapping.PersistentName + (pMapping.IsNonPublic ? " (non-public)" : "");
-                            m_guiContent.tooltip = pMapping.PersistentTypeName;
+                            m_guiContent.tooltip = pMapping.MappedFullTypeName + (isEnum ? " Enum" : "");
                             EditorGUILayout.LabelField(m_guiContent, GUILayout.MaxWidth(230));
 
-                            int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
                             
                             int newPropertyIndex = selectedIndex >= 0 && mappingInfo.PropertyIsObsolete[propIndex][selectedIndex] ?
                                 EditorGUILayout.Popup(selectedIndex, mappingInfo.PropertyMappingsDisplayNames[propIndex], m_deprecatedPopupStyle) :
@@ -1777,6 +1823,11 @@ namespace Battlehub.RTSaveLoad2
                     if (typeNameToType.TryGetValue(templateAttrib.ForType, out mappedType))
                     {
                         MonoScript monoScript = MonoScript.FromScriptableObject(ScriptableObject.CreateInstance(templateType));
+                        if(monoScript == null)
+                        {
+                            Debug.LogWarning("Unable to find MonoScript for " + templateAttrib.ForType + ". Make sure file and type have same names");
+                            continue;
+                        }
                         string contents = monoScript.text;
                         string usings = contents.ToString();
                         if (m_codeGen.TryGetTemplateBody(contents, out contents) && m_codeGen.TryGetTemplateUsings(usings, out usings))
@@ -1915,7 +1966,7 @@ namespace Battlehub.RTSaveLoad2
             }
             EditorGUI.BeginChangeCheck();
 
-            GUILayout.Button("Create Persistent Objects", GUILayout.Height(20));
+            GUILayout.Button("Create Persistent Classes", GUILayout.Height(20));
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -1957,6 +2008,33 @@ namespace Battlehub.RTSaveLoad2
                 uoMappings = uoMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
                 surrogateMappings = surrogateMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
 
+                GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(FilePathStoragePath, typeof(GameObject));
+                if (storageGO == null)
+                {
+                    storageGO = new GameObject();
+                }
+                FilePathStorage filePathStorage = storageGO.GetComponent<FilePathStorage>();
+                if (filePathStorage == null)
+                {
+                    filePathStorage = storageGO.AddComponent<FilePathStorage>();
+                }
+
+                Dictionary<string, UnityObject> typeToScript = new Dictionary<string, UnityObject>();
+                if(filePathStorage.PathRecords != null)
+                {
+                    for(int i = 0; i < filePathStorage.PathRecords.Length; ++i)
+                    {
+                        FilePathRecord record = filePathStorage.PathRecords[i];
+                        if(record != null)
+                        {
+                            if(record.File != null && record.PeristentTypeName != null && !typeToScript.ContainsKey(record.PeristentTypeName))
+                            {
+                                typeToScript.Add(record.PeristentTypeName, record.File);
+                            }
+                        }
+                    }
+                }
+
                 HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => t.FullName));
                 CodeGen codeGen = new CodeGen();
                 for (int i = 0; i < uoMappings.Length; ++i)
@@ -1982,10 +2060,10 @@ namespace Battlehub.RTSaveLoad2
                             }
                             else
                             {
-                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping));
+                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping, typeToScript));
                             }
                         }
-                        CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, uoTemplates);
+                        CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, uoTemplates, typeToScript);
 
                     }
                 }
@@ -2015,11 +2093,11 @@ namespace Battlehub.RTSaveLoad2
                             }
                             else
                             {
-                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping));
+                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping, typeToScript));
                             }
                         }
 
-                        CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, surrogateTemplates);
+                        CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, surrogateTemplates, typeToScript);
                     }
                 }
 
@@ -2031,17 +2109,6 @@ namespace Battlehub.RTSaveLoad2
 
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
-                GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(FilePathStoragePath, typeof(GameObject));
-                if (storageGO == null)
-                {
-                    storageGO = new GameObject();
-                }
-
-                FilePathStorage filePathStorage = storageGO.GetComponent<FilePathStorage>();
-                if (filePathStorage == null)
-                {
-                    filePathStorage = storageGO.AddComponent<FilePathStorage>();
-                }
 
                 Dictionary<string, FilePathRecord> typeNameToExistingRecord = filePathStorage.PathRecords != null ?
                     filePathStorage.PathRecords.ToDictionary(r => r.PeristentTypeName) :
@@ -2106,10 +2173,10 @@ namespace Battlehub.RTSaveLoad2
             return persistentType != null && persistentType.GetCustomAttributes(typeof(CustomImplementationAttribute), false).Length > 0;
         }
 
-        private static void CreateCSFiles(string persistentClassesPath, string myPersistentClassesPath, CodeGen codeGen, PersistentClassMapping mapping, Dictionary<Type, PersistentTemplateInfo> templates)
+        private static void CreateCSFiles(string persistentClassesPath, string myPersistentClassesPath, CodeGen codeGen, PersistentClassMapping mapping, Dictionary<Type, PersistentTemplateInfo> templates, Dictionary<string, UnityObject> typeToScript)
         {
             string code = codeGen.CreatePersistentClass(mapping);
-            CreateCSFile(persistentClassesPath, mapping, code);
+            CreateCSFile(persistentClassesPath, mapping, code, null);
 
             if(mapping.CreateCustomImplementation)
             {
@@ -2122,7 +2189,7 @@ namespace Battlehub.RTSaveLoad2
                         template = null;
                     }
                     string customCode = codeGen.CreatePersistentClassCustomImplementation(mapping.PersistentNamespace, mapping.PersistentTypeName, template);
-                    CreateCSFile(myPersistentClassesPath, mapping, customCode);
+                    CreateCSFile(myPersistentClassesPath, mapping, customCode, typeToScript);
                 }
             }
         }
@@ -2149,14 +2216,20 @@ namespace Battlehub.RTSaveLoad2
             m_surrogatesMapperGUI.TryUnlockType(obj);
         }
 
-        private static void CreateCSFile(string persistentClassesPath, PersistentClassMapping mapping, string code)
+        private static void CreateCSFile(string persistentClassesPath, PersistentClassMapping mapping, string code, Dictionary<string, UnityObject> typeToScript)
         {
-            File.WriteAllText(GetCSFilePath(persistentClassesPath, mapping), code);
+            File.WriteAllText(GetCSFilePath(persistentClassesPath, mapping, typeToScript), code);
         }
 
-        private static string GetCSFilePath(string persistentClassesPath, PersistentClassMapping mapping)
+        private static string GetCSFilePath(string persistentClassesPath, PersistentClassMapping mapping, Dictionary<string, UnityObject> typeToScript)
         {
-            string path = persistentClassesPath + "/" + mapping.PersistentFullTypeName.Replace(".", "_") + ".cs";
+            UnityObject file;
+            if(typeToScript != null && typeToScript.TryGetValue(mapping.PersistentFullTypeName, out file))
+            {
+                return AssetDatabase.GetAssetPath(file);
+            }
+
+            string path = persistentClassesPath + "/" + mapping.PersistentFullTypeName.Replace(".", "_").Replace("+", "_") + ".cs";
             return path;
         }
 

@@ -1,4 +1,4 @@
-﻿#define RTSL2_COMPILE_TEMPLATES
+﻿//#define RTSL2_COMPILE_TEMPLATES
 #if RTSL2_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
 using ProtoBuf;
@@ -10,6 +10,22 @@ using UnityEngine;
 
 namespace Battlehub.RTSaveLoad2.Internal
 {
+    using PersistentParticleSystemNestedColorBySpeedModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedColorOverLifetimeModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedForceOverLifetimeModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedInheritVelocityModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedLightsModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedLimitVelocityOverLifetimeModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedMainModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedNoiseModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedRotationBySpeedModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedRotationOverLifetimeModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedShapeModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedSizeBySpeedModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedSizeOverLifetimeModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedTrailModule = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedVelocityOverLifetimeModule = PersistentSurrogateTemplate;
+
     [PersistentTemplate("UnityEngine.ParticleSystem", new string[0],
         new [] {
            "UnityEngine.ParticleSystem+CollisionModule",
@@ -36,76 +52,75 @@ namespace Battlehub.RTSaveLoad2.Internal
            "UnityEngine.ParticleSystem+VelocityOverLifetimeModule",
      })]
 
-
     public partial class PersistentParticleSystem_RTSL_Template : PersistentSurrogateTemplate
     {
 #if RTSL2_COMPILE_TEMPLATES
         //<TEMPLATE_BODY_START>
         [ProtoMember(1)]
-        public PersistentCollisionModule_RTSL_Template m_collisionModule;
+        public PersistentParticleSystemNestedCollisionModule_RTSL_Template m_collisionModule;
 
         [ProtoMember(2)]
-        public ParticleSystem.ColorBySpeedModule m_colorBySpeedModule;
+        public PersistentParticleSystemNestedColorBySpeedModule m_colorBySpeedModule;
 
         [ProtoMember(3)]
-        public ParticleSystem.ColorOverLifetimeModule m_colorOverLifetimeModule;
+        public PersistentParticleSystemNestedColorOverLifetimeModule m_colorOverLifetimeModule;
 
         [ProtoMember(4)]
-        public ParticleSystem.CustomDataModule m_customDataModule;
+        public PersistentParticleSystemNestedCustomDataModule_RTSL_Template m_customDataModule;
 
         [ProtoMember(5)]
-        public ParticleSystem.EmissionModule m_emissonModule;
+        public PersistentParticleSystemNestedEmissionModule_RTSL_Template m_emissonModule;
 
         [ProtoMember(6)]
-        public ParticleSystem.ExternalForcesModule m_externalForcesModule;
+        public PersistentParticleSystemNestedExternalForcesModule_RTSL_Template m_externalForcesModule;
 
         [ProtoMember(7)]
-        public ParticleSystem.ForceOverLifetimeModule m_forceOverlifeTimeModule;
+        public PersistentParticleSystemNestedForceOverLifetimeModule m_forceOverlifeTimeModule;
 
         [ProtoMember(8)]
-        public ParticleSystem.InheritVelocityModule m_inheritVelocityModule;
+        public PersistentParticleSystemNestedInheritVelocityModule m_inheritVelocityModule;
 
         [ProtoMember(9)]
-        public ParticleSystem.LightsModule m_lightsModule;
+        public PersistentParticleSystemNestedLightsModule m_lightsModule;
 
         [ProtoMember(10)]
-        public ParticleSystem.LimitVelocityOverLifetimeModule m_limitVelocityOverLifetimeModule;
+        public PersistentParticleSystemNestedLimitVelocityOverLifetimeModule m_limitVelocityOverLifetimeModule;
 
         [ProtoMember(11)]
-        public ParticleSystem.MainModule m_mainModule;
+        public PersistentParticleSystemNestedMainModule m_mainModule;
 
         [ProtoMember(12)]
-        public ParticleSystem.NoiseModule m_noiseModule;
+        public PersistentParticleSystemNestedNoiseModule m_noiseModule;
 
         [ProtoMember(13)]
-        public ParticleSystem.RotationBySpeedModule m_rotationBySpeedModule;
+        public PersistentParticleSystemNestedRotationBySpeedModule m_rotationBySpeedModule;
 
         [ProtoMember(14)]
-        public ParticleSystem.RotationOverLifetimeModule m_rotationOverlifetimeModule;
+        public PersistentParticleSystemNestedRotationOverLifetimeModule m_rotationOverlifetimeModule;
 
         [ProtoMember(15)]
-        public ParticleSystem.ShapeModule m_shapeModule;
+        public PersistentParticleSystemNestedShapeModule m_shapeModule;
 
         [ProtoMember(16)]
-        public ParticleSystem.SizeBySpeedModule m_sizeBySpeedModule;
+        public PersistentParticleSystemNestedSizeBySpeedModule m_sizeBySpeedModule;
 
         [ProtoMember(17)]
-        public ParticleSystem.SizeOverLifetimeModule m_sizeOverlifeTimeModuel;
+        public PersistentParticleSystemNestedSizeOverLifetimeModule m_sizeOverlifeTimeModule;
 
         [ProtoMember(18)]
-        public ParticleSystem.SubEmittersModule m_subEmittersModule;
+        public PersistentParticleSystemNestedSubEmittersModule_RTSL_Template m_subEmittersModule;
 
         [ProtoMember(19)]
-        public ParticleSystem.TextureSheetAnimationModule m_textureSheetAnimationModule;
+        public PersistentParticleSystemNestedTextureSheetAnimationModule_RTSL_Template m_textureSheetAnimationModule;
 
         [ProtoMember(20)]
-        public ParticleSystem.TrailModule m_trialModule;
+        public PersistentParticleSystemNestedTrailModule m_trialModule;
 
         [ProtoMember(21)]
-        public ParticleSystem.TriggerModule m_triggerModule;
+        public PersistentParticleSystemNestedTriggerModule_RTSL_Template m_triggerModule;
 
         [ProtoMember(22)]
-        public ParticleSystem.VelocityOverLifetimeModule m_velocityOverLifetimeModule;
+        public PersistentParticleSystemNestedVelocityOverLifetimeModule m_velocityOverLifetimeModule;
 
         public override object WriteTo(object obj)
         {
@@ -117,7 +132,27 @@ namespace Battlehub.RTSaveLoad2.Internal
 
             ParticleSystem o = (ParticleSystem)obj;
             WriteSurrogateTo(m_collisionModule, o.collision);
-
+            WriteSurrogateTo(m_colorBySpeedModule, o.colorBySpeed);
+            WriteSurrogateTo(m_colorOverLifetimeModule, o.colorOverLifetime);
+            WriteSurrogateTo(m_customDataModule, o.customData);
+            WriteSurrogateTo(m_emissonModule, o.emission);
+            WriteSurrogateTo(m_externalForcesModule, o.externalForces);
+            WriteSurrogateTo(m_forceOverlifeTimeModule, o.forceOverLifetime);
+            WriteSurrogateTo(m_inheritVelocityModule, o.inheritVelocity);
+            WriteSurrogateTo(m_lightsModule, o.lights);
+            WriteSurrogateTo(m_limitVelocityOverLifetimeModule, o.limitVelocityOverLifetime);
+            WriteSurrogateTo(m_mainModule, o.main);
+            WriteSurrogateTo(m_noiseModule, o.noise);
+            WriteSurrogateTo(m_rotationBySpeedModule, o.rotationBySpeed);
+            WriteSurrogateTo(m_rotationOverlifetimeModule, o.rotationOverLifetime);
+            WriteSurrogateTo(m_shapeModule, o.shape);
+            WriteSurrogateTo(m_sizeBySpeedModule, o.sizeBySpeed);
+            WriteSurrogateTo(m_sizeOverlifeTimeModule, o.sizeOverLifetime);
+            WriteSurrogateTo(m_subEmittersModule, o.subEmitters);
+            WriteSurrogateTo(m_textureSheetAnimationModule, o.textureSheetAnimation);
+            WriteSurrogateTo(m_trialModule, o.trails);
+            WriteSurrogateTo(m_triggerModule, o.trigger);
+            WriteSurrogateTo(m_velocityOverLifetimeModule, o.velocityOverLifetime);
             return obj;
         }
 
@@ -130,15 +165,55 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             ParticleSystem o = (ParticleSystem)obj;
-            m_collisionModule = new PersistentCollisionModule_RTSL_Template();
-            m_collisionModule.ReadFrom(o.collision);
-                
+            m_collisionModule = ReadSurrogateFrom<PersistentParticleSystemNestedCollisionModule_RTSL_Template>(o.collision);
+            m_colorBySpeedModule = ReadSurrogateFrom<PersistentParticleSystemNestedColorBySpeedModule>(o.colorBySpeed);
+            m_colorOverLifetimeModule = ReadSurrogateFrom<PersistentParticleSystemNestedColorOverLifetimeModule>(o.colorOverLifetime);
+            m_customDataModule = ReadSurrogateFrom<PersistentParticleSystemNestedCustomDataModule_RTSL_Template>(o.customData);
+            m_emissonModule = ReadSurrogateFrom<PersistentParticleSystemNestedEmissionModule_RTSL_Template>(o.emission);
+            m_externalForcesModule = ReadSurrogateFrom<PersistentParticleSystemNestedExternalForcesModule_RTSL_Template>(o.externalForces);
+            m_forceOverlifeTimeModule = ReadSurrogateFrom<PersistentParticleSystemNestedForceOverLifetimeModule>(o.forceOverLifetime);
+            m_inheritVelocityModule = ReadSurrogateFrom<PersistentParticleSystemNestedInheritVelocityModule>(o.inheritVelocity);
+            m_lightsModule = ReadSurrogateFrom<PersistentParticleSystemNestedLightsModule>(o.lights);
+            m_limitVelocityOverLifetimeModule = ReadSurrogateFrom<PersistentParticleSystemNestedLimitVelocityOverLifetimeModule>(o.limitVelocityOverLifetime);
+            m_mainModule = ReadSurrogateFrom<PersistentParticleSystemNestedMainModule>(o.main);
+            m_noiseModule = ReadSurrogateFrom<PersistentParticleSystemNestedNoiseModule>(o.noise);
+            m_rotationBySpeedModule = ReadSurrogateFrom<PersistentParticleSystemNestedRotationBySpeedModule>(o.rotationBySpeed);
+            m_rotationOverlifetimeModule = ReadSurrogateFrom<PersistentParticleSystemNestedRotationOverLifetimeModule>(o.rotationOverLifetime);
+            m_shapeModule = ReadSurrogateFrom<PersistentParticleSystemNestedShapeModule>(o.shape);
+            m_sizeBySpeedModule = ReadSurrogateFrom<PersistentParticleSystemNestedSizeBySpeedModule>(o.sizeBySpeed);
+            m_sizeOverlifeTimeModule = ReadSurrogateFrom<PersistentParticleSystemNestedSizeOverLifetimeModule>(o.sizeOverLifetime);
+            m_subEmittersModule = ReadSurrogateFrom<PersistentParticleSystemNestedSubEmittersModule_RTSL_Template>(o.subEmitters);
+            m_textureSheetAnimationModule = ReadSurrogateFrom<PersistentParticleSystemNestedTextureSheetAnimationModule_RTSL_Template>(o.textureSheetAnimation);
+            m_trialModule = ReadSurrogateFrom<PersistentParticleSystemNestedTrailModule>(o.trails);
+            m_triggerModule = ReadSurrogateFrom<PersistentParticleSystemNestedTriggerModule_RTSL_Template>(o.trigger);
+            m_velocityOverLifetimeModule = ReadSurrogateFrom<PersistentParticleSystemNestedVelocityOverLifetimeModule>(o.velocityOverLifetime);
         }
 
         public override void GetDeps(GetDepsContext context)
         {
             base.GetDeps(context);
             AddSurrogateDeps(m_collisionModule, context);
+            AddSurrogateDeps(m_colorBySpeedModule, context);
+            AddSurrogateDeps(m_colorOverLifetimeModule, context);
+            AddSurrogateDeps(m_customDataModule, context);
+            AddSurrogateDeps(m_emissonModule, context);
+            AddSurrogateDeps(m_externalForcesModule, context);
+            AddSurrogateDeps(m_forceOverlifeTimeModule, context);
+            AddSurrogateDeps(m_inheritVelocityModule, context);
+            AddSurrogateDeps(m_lightsModule, context);
+            AddSurrogateDeps(m_limitVelocityOverLifetimeModule, context);
+            AddSurrogateDeps(m_mainModule, context);
+            AddSurrogateDeps(m_noiseModule, context);
+            AddSurrogateDeps(m_rotationBySpeedModule, context);
+            AddSurrogateDeps(m_rotationOverlifetimeModule, context);
+            AddSurrogateDeps(m_shapeModule, context);
+            AddSurrogateDeps(m_sizeBySpeedModule, context);
+            AddSurrogateDeps(m_sizeOverlifeTimeModule, context);
+            AddSurrogateDeps(m_subEmittersModule, context);
+            AddSurrogateDeps(m_textureSheetAnimationModule, context);
+            AddSurrogateDeps(m_trialModule, context);
+            AddSurrogateDeps(m_triggerModule, context);
+            AddSurrogateDeps(m_velocityOverLifetimeModule, context);
         }
 
         public override void GetDepsFrom(object obj, GetDepsFromContext context)
@@ -150,7 +225,28 @@ namespace Battlehub.RTSaveLoad2.Internal
             }
 
             ParticleSystem o = (ParticleSystem)obj;
-            AddSurrogateDeps(o.collision, v_ => (PersistentCollisionModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.collision, v_ => (PersistentParticleSystemNestedCollisionModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.colorBySpeed, v_ => (PersistentParticleSystemNestedColorBySpeedModule)v_, context);
+            AddSurrogateDeps(o.colorOverLifetime, v_ => (PersistentParticleSystemNestedColorOverLifetimeModule)v_, context);
+            AddSurrogateDeps(o.customData, v_ => (PersistentParticleSystemNestedCustomDataModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.emission, v_ => (PersistentParticleSystemNestedEmissionModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.externalForces, v_ => (PersistentParticleSystemNestedExternalForcesModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.forceOverLifetime, v_ => (PersistentParticleSystemNestedForceOverLifetimeModule)v_, context);
+            AddSurrogateDeps(o.inheritVelocity, v_ => (PersistentParticleSystemNestedInheritVelocityModule)v_, context);
+            AddSurrogateDeps(o.lights, v_ => (PersistentParticleSystemNestedLightsModule)v_, context);
+            AddSurrogateDeps(o.limitVelocityOverLifetime, v_ => (PersistentParticleSystemNestedLimitVelocityOverLifetimeModule)v_, context);
+            AddSurrogateDeps(o.main, v_ => (PersistentParticleSystemNestedMainModule)v_, context);
+            AddSurrogateDeps(o.noise, v_ => (PersistentParticleSystemNestedNoiseModule)v_, context);
+            AddSurrogateDeps(o.rotationBySpeed, v_ => (PersistentParticleSystemNestedRotationBySpeedModule)v_, context);
+            AddSurrogateDeps(o.rotationOverLifetime, v_ => (PersistentParticleSystemNestedRotationOverLifetimeModule)v_, context);
+            AddSurrogateDeps(o.shape, v_ => (PersistentParticleSystemNestedShapeModule)v_, context);
+            AddSurrogateDeps(o.sizeBySpeed, v_ => (PersistentParticleSystemNestedSizeBySpeedModule)v_, context);
+            AddSurrogateDeps(o.sizeOverLifetime, v_ => (PersistentParticleSystemNestedSizeOverLifetimeModule)v_, context);
+            AddSurrogateDeps(o.subEmitters, v_ => (PersistentParticleSystemNestedSubEmittersModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.textureSheetAnimation, v_ => (PersistentParticleSystemNestedTextureSheetAnimationModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.trails, v_ => (PersistentParticleSystemNestedTrailModule)v_, context);
+            AddSurrogateDeps(o.trigger, v_ => (PersistentParticleSystemNestedTriggerModule_RTSL_Template)v_, context);
+            AddSurrogateDeps(o.velocityOverLifetime, v_ => (PersistentParticleSystemNestedVelocityOverLifetimeModule)v_, context);
         }
 
         //<TEMPLATE_BODY_END>
