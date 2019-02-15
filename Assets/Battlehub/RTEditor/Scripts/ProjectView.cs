@@ -283,6 +283,7 @@ namespace Battlehub.RTEditor
             {
                 if(m_project.IsScene(e.ProjectItem))
                 {
+                    Editor.IsPlaying = false;
                     Editor.IsBusy = true;
                     m_project.Load(new[] { (AssetItem)e.ProjectItem }, (error, obj) =>
                     {

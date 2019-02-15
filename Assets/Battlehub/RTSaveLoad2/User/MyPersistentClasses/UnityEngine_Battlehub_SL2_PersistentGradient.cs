@@ -10,7 +10,7 @@ namespace UnityEngine.Battlehub.SL2
 {
     [CustomImplementation]
     public partial class PersistentGradient
-    {        
+    {
 
         [ProtoMember(1, IsRequired = true)]
         public PersistentGradientColorKey[] colorKeys;
