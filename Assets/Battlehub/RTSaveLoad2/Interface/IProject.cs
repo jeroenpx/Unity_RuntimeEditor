@@ -9,6 +9,7 @@ namespace Battlehub.RTSaveLoad2.Interface
 
     public interface IProject
     {
+        event ProjectEventHandler NewSceneCreating;
         event ProjectEventHandler NewSceneCreated;
         event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
         event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;

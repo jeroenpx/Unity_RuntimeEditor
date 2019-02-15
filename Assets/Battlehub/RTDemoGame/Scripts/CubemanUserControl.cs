@@ -8,7 +8,6 @@ using UnityStandardAssets.CrossPlatformInput;
 
 namespace Battlehub.Cubeman
 {
-    [RequireComponent(typeof (CubemanCharacter))]
     public class CubemanUserControl : MonoBehaviour
     {
         public Transform Cam;                     // A reference to the main camera in the scene transform

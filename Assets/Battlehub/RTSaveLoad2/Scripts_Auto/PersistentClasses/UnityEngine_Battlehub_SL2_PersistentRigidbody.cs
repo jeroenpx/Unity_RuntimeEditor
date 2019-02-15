@@ -68,7 +68,7 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(276)]
         public float maxAngularVelocity;
 
-        [ProtoMember(282)]
+        [ProtoMember(277)]
         public int solverVelocityIterations;
 
         protected override void ReadFromImpl(object obj)

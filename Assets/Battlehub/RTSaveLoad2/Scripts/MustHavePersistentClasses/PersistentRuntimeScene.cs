@@ -140,6 +140,7 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
+            
             UnityObject[] assetInstances = null;
             if (AssetIdentifiers != null)
             {
@@ -152,7 +153,7 @@ namespace Battlehub.RTSaveLoad2
                     Type uoType = m_typeMap.ToUnityType(asset.GetType());
                     if (uoType != null)
                     {
-                        UnityObject assetInstance = factory.CreateInstance(uoType);
+                        UnityObject assetInstance = factory.CreateInstance(uoType, asset);
                         if(assetInstance != null)
                         {
                             assetInstances[i] = assetInstance;

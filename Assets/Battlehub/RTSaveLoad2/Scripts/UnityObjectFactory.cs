@@ -13,7 +13,7 @@ namespace Battlehub.RTSaveLoad2
             Debug.Assert(m_standardShader != null, "Standard shader is not found");
         }
 
-        public UnityObject CreateInstance(Type type)
+        public UnityObject CreateInstance(Type type, PersistentSurrogate surrogate)
         {
             if (type == typeof(Material))
             {
@@ -31,7 +31,23 @@ namespace Battlehub.RTSaveLoad2
                 return null;
             }
 
-            return (UnityObject)Activator.CreateInstance(type);
+            try
+            {
+                if (surrogate != null)
+                {
+                    return (UnityObject)surrogate.Instantiate(type);
+                }
+
+                return (UnityObject)Activator.CreateInstance(type);
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e);
+                Debug.LogWarning("Collecting scene dependencies could fix this exeption. Tools->Runtime Save Load->Collect Scene Dependencies"); 
+                return null;
+
+            }
+            
         }
     }
 

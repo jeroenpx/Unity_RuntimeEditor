@@ -641,7 +641,7 @@ namespace Battlehub.RTEditor
             }
 
             IUnityObjectFactory objectFactory = IOC.Resolve<IUnityObjectFactory>();
-            UnityObject unityObject = objectFactory.CreateInstance(typeof(Material));
+            UnityObject unityObject = objectFactory.CreateInstance(typeof(Material), null);
 
             IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
             byte[] preview = resourcePreview.CreatePreviewData(unityObject);

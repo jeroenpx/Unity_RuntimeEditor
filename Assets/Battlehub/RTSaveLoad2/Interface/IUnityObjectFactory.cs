@@ -5,6 +5,6 @@ namespace Battlehub.RTSaveLoad2.Interface
 {
     public interface IUnityObjectFactory
     {
-        UnityObject CreateInstance(Type type);
+        UnityObject CreateInstance(Type type, PersistentSurrogate surrogate);
     }
 }

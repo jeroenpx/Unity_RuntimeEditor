@@ -475,7 +475,7 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
-                if (!mapping.IsEnabled)
+                if (!mapping.IsOn)
                 {
                     continue;
                 }
@@ -526,7 +526,7 @@ namespace Battlehub.RTSaveLoad2
             for (int m = 0; m < mappings.Length; ++m)
             {
                 PersistentClassMapping mapping = mappings[m];
-                if(!mapping.IsEnabled)
+                if(!mapping.IsOn)
                 {
                     continue;
                 }
@@ -570,7 +570,7 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
 
-                if (!mapping.IsEnabled)
+                if (!mapping.IsOn)
                 {
                     continue;
                 }
@@ -590,8 +590,11 @@ namespace Battlehub.RTSaveLoad2
                 {
                     if (GetSurrogateType(mappingType) != null)
                     {
-                        endOfLine += string.Format(SetSerializationSurrogate, PreparePersistentTypeName(mapping.PersistentTypeName));
-                        hasSurrogate = true;
+                        if(!mappingType.IsSubclassOf(typeof(UnityEventBase)))
+                        {
+                            endOfLine += string.Format(SetSerializationSurrogate, PreparePersistentTypeName(mapping.PersistentTypeName));
+                            hasSurrogate = true;
+                        }
                     }
                 }
 
@@ -603,7 +606,7 @@ namespace Battlehub.RTSaveLoad2
                 }
                 else if(mappingType != null)
                 {
-                    if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject) || mappingType == typeof(UnityEventBase))
+                    if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject) || mappingType.IsSubclassOf(typeof(UnityEventBase)))
                     {
                         sb.AppendFormat(AddTypeTemplate, PreparePersistentTypeName(mapping.PersistentTypeName), "true", endOfLine);
                     }
@@ -621,7 +624,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 PersistentSubclass subclass = subclasses[i];
                 sb.Append(BR + TAB3 + TAB);
-                sb.AppendFormat(AddSubtypeTemplate, subclass.TypeName, subclass.PersistentTag + SubclassOffset);
+                sb.AppendFormat(AddSubtypeTemplate, PreparePersistentTypeName(subclass.TypeName), subclass.PersistentTag + SubclassOffset);
             }
 
             if (subclasses.Length > 0)
@@ -630,7 +633,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     PersistentSubclass subclass = subclasses[subclasses.Length - 1];
                     sb.Append(BR + TAB3 + TAB);
-                    sb.AppendFormat(AddSubtypeTemplate, subclass.TypeName, subclass.PersistentTag + SubclassOffset);
+                    sb.AppendFormat(AddSubtypeTemplate, PreparePersistentTypeName(subclass.TypeName), subclass.PersistentTag + SubclassOffset);
                 }
             }
 
@@ -708,7 +711,7 @@ namespace Battlehub.RTSaveLoad2
             string className = PreparePersistentTypeName(mapping.PersistentTypeName);
             string baseClassName = mapping.PersistentBaseTypeName != null ?
                  PreparePersistentTypeName(mapping.PersistentBaseTypeName) : null;
-            string body = mapping.IsEnabled ? CreatePersistentClassBody(mapping) : string.Empty;
+            string body = mapping.IsOn ? CreatePersistentClassBody(mapping) : string.Empty;
             return string.Format(PersistentClassTemplate, usings, ns, className, baseClassName, body);
         }
 
@@ -779,7 +782,7 @@ namespace Battlehub.RTSaveLoad2
                             }
                             else
                             {
-                                typeName = PreparePersistentTypeName(prop.PersistentTypeName);
+                                typeName = PrepareMappedTypeName(prop.MappedTypeName);
                             }
                         }
                         
@@ -880,11 +883,11 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (IsGenericList(prop.MappedType))
                         {
-                            sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetGenericArguments()[0].Name);
+                            sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, PreparePersistentTypeName("Persistent" + prop.MappedType.GetGenericArguments()[0].Name));
                         }
                         else if(prop.MappedType.IsArray)
                         {
-                            sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, "Persistent" + prop.MappedType.GetElementType().Name);
+                            sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, PreparePersistentTypeName("Persistent" + prop.MappedType.GetElementType().Name));
                         }
                         else
                         {
@@ -1074,8 +1077,9 @@ namespace Battlehub.RTSaveLoad2
 
                     if (prop.UseSurrogate)
                     {
+                        
                         sb.Append(TAB);
-                        sb.AppendFormat("AddSurrogateDeps(" + get + ", v_ => ({1})v_, context);", prop.MappedName, "Persistent" + prop.PersistentTypeName);
+                        sb.AppendFormat("AddSurrogateDeps(" + get + ", v_ => ({1})v_, context);", prop.MappedName, PreparePersistentTypeName("Persistent" + prop.PersistentTypeName));
                         sb.Append(BR + TAB2);
                     }
                     if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
@@ -1108,7 +1112,7 @@ namespace Battlehub.RTSaveLoad2
                     continue;
                 }
                 
-                if(mapping.IsEnabled)
+                if(mapping.IsOn)
                 {
                     if (!namespaces.Contains(mapping.MappedNamespace) && !string.IsNullOrEmpty(mapping.MappedNamespace))
                     {

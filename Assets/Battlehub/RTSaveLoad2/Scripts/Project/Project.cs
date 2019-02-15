@@ -9,6 +9,7 @@ using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.EditorTreeView;
 using System.IO;
+using System.Collections;
 
 namespace Battlehub.RTSaveLoad2
 {
@@ -17,6 +18,7 @@ namespace Battlehub.RTSaveLoad2
     /// </summary>
     public class Project : MonoBehaviour, IProject
     {
+        public event ProjectEventHandler NewSceneCreating;
         public event ProjectEventHandler NewSceneCreated;
         public event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
         public event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
@@ -125,6 +127,15 @@ namespace Battlehub.RTSaveLoad2
             get { return m_projectInfo != null; }
         }
 
+        private IEnumerator CoCallback(Action cb)
+        {
+            yield return new WaitForEndOfFrame();
+            if (cb != null)
+            {
+                cb();
+            }
+        }
+
         private void Awake()
         {
             if (string.IsNullOrEmpty(m_sceneDepsLibrary))
@@ -154,6 +165,7 @@ namespace Battlehub.RTSaveLoad2
 
         private void OnDestroy()
         {
+            StopAllCoroutines();
             UnloadUnregisterDestroy();
         }
 
@@ -299,6 +311,11 @@ namespace Battlehub.RTSaveLoad2
 
         public void CreateNewScene()
         {
+            if(NewSceneCreating != null)
+            {
+                NewSceneCreating(new Error(Error.OK));
+            }
+
             GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {
@@ -970,18 +987,21 @@ namespace Battlehub.RTSaveLoad2
             }
             return _Save(parents, previewData, objects, nameOverrides, existingAssetItems, (error, result) =>
             {
-                IsBusy = false;
-
-                if (callback != null)
+                StartCoroutine(CoCallback(() =>
                 {
-                    callback(error, result);
-                }
+                    IsBusy = false;
 
-                if (SaveCompleted != null)
-                {
-                    bool isNew = existingAssetItems == null;
-                    SaveCompleted(error, result, isNew);
-                }
+                    if (callback != null)
+                    {
+                        callback(error, result);
+                    }
+
+                    if (SaveCompleted != null)
+                    {
+                        bool isNew = existingAssetItems == null;
+                        SaveCompleted(error, result, isNew);
+                    }
+                }));
             });
         }
 
@@ -1579,23 +1599,26 @@ namespace Battlehub.RTSaveLoad2
 
             return _Load(assetItems, (error, result) =>
             {
-                if(!error.HasError)
+                StartCoroutine(CoCallback(() =>
                 {
-                    if(assetItems.Any(assetItem => ToType(assetItem) == typeof(Scene)))
+                    if (!error.HasError)
                     {
-                        m_loadedScene = assetItems.First(assetItem => ToType(assetItem) == typeof(Scene));
+                        if (assetItems.Any(assetItem => ToType(assetItem) == typeof(Scene)))
+                        {
+                            m_loadedScene = assetItems.First(assetItem => ToType(assetItem) == typeof(Scene));
+                        }
                     }
-                }
 
-                IsBusy = false;
-                if (callback != null)
-                {
-                    callback(error, result);
-                }
-                if (LoadCompleted != null)
-                {
-                    LoadCompleted(error, assetItems, result);
-                }
+                    IsBusy = false;
+                    if (callback != null)
+                    {
+                        callback(error, result);
+                    }
+                    if (LoadCompleted != null)
+                    {
+                        LoadCompleted(error, assetItems, result);
+                    }
+                }));
             });
         }
 
@@ -1933,8 +1956,11 @@ namespace Battlehub.RTSaveLoad2
                             else
                             {
                                 Type type = m_typeMap.ToType(assetItem.TypeGuid);
-                                UnityObject instance = m_factory.CreateInstance(type);
-                                m_assetDB.RegisterDynamicResource(m_assetDB.ToInt(assetItem.ItemID), instance);
+                                UnityObject instance = m_factory.CreateInstance(type, persistentObject);
+                                if(instance != null)
+                                {
+                                    m_assetDB.RegisterDynamicResource(m_assetDB.ToInt(assetItem.ItemID), instance);
+                                }
                             }
                         }
                     }

@@ -31,11 +31,22 @@ namespace Battlehub.RTSaveLoad2.Internal
 
         public override void ReadFrom(object obj)
         {
-            
             base.ReadFrom(obj);
             if(obj == null)
             {
                 return;
+            }
+            Gradient uo = (Gradient)obj;
+            colorKeys = Assign(colorKeys, v_ => (PersistentGradientColorKey)v_);
+            alphaKeys = Assign(alphaKeys, v_ => (PersistentGradientAlphaKey)v_);   
+        }
+
+        public override object WriteTo(object obj)
+        {
+            obj = base.WriteTo(obj);
+            if(obj == null)
+            {
+                return obj;
             }
             Gradient uo = (Gradient)obj;
             if(colorKeys != null)
@@ -46,19 +57,6 @@ namespace Battlehub.RTSaveLoad2.Internal
             {
                 uo.alphaKeys = Assign(alphaKeys, v_ => (GradientAlphaKey)v_);
             }
-            
-        }
-
-        public override object WriteTo(object obj)
-        {
-            obj = base.WriteTo(obj);
-            if(obj == null)
-            {
-                return;
-            }
-            Gradient uo = (Gradient)obj;
-            uo.colorKeys = Assign(colorKeys, v_ => (GradientColorKey)v_);
-            uo.alphaKeys = Assign(alphaKeys, v_ => (GradientAlphaKey)v_);
             return uo;
         }
 

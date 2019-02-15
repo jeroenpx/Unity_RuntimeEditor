@@ -23,6 +23,11 @@ namespace Battlehub.Cubeman
 
         [SerializeField]
         private GameCharacter[] m_storedCharacters;
+        public GameCharacter[] StoredCharacters
+        {
+            get { return m_storedCharacters; }
+            set { m_storedCharacters = value; }
+        }
         private GameCharacter m_current;
         private List<GameCharacter> m_activeCharacters;
         private GameCameraFollow m_playerCamera;
@@ -66,11 +71,13 @@ namespace Battlehub.Cubeman
         private void OnRuntimeEditorOpened()
         {
             StopGame();
+            enabled = false;
         }
 
         private void OnRuntimeEditorClosed()
         {
             StartGame();
+            enabled = true;
         }
 
         private void Awake()

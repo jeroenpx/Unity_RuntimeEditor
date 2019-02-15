@@ -9,12 +9,17 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Battlehub.SL2;
 using UnityEngine.SceneManagement;
 using UnityEngine.SceneManagement.Battlehub.SL2;
+using UnityEngine.UI;
+using UnityEngine.UI.Battlehub.SL2;
+using UnityEngine.EventSystems.Battlehub.SL2;
+using UnityEngine.EventSystems;
 using Battlehub.RTSaveLoad2.Battlehub.SL2;
+using Battlehub.Cubeman;
+using Battlehub.Cubeman.Battlehub.SL2;
 using Battlehub.RTCommon;
 using Battlehub.RTCommon.Battlehub.SL2;
 using Battlehub.RTEditor;
 using Battlehub.RTEditor.Battlehub.SL2;
-using Battlehub.SL2;
 using UnityEngine.Events.Battlehub.SL2;
 using UnityEngine.Events;
 
@@ -31,13 +36,13 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1028, typeof(PersistentMaterial))
                 .AddSubType(1029, typeof(PersistentComponent))
                 .AddSubType(1030, typeof(PersistentMesh))
-                .AddSubType(1031, typeof(PersistentShader))
                 .AddSubType(1032, typeof(PersistentTexture))
                 .AddSubType(1033, typeof(PersistentFlare))
                 .AddSubType(1034, typeof(PersistentPhysicMaterial))
-                .AddSubType(1035, typeof(PersistentAvatar))
-                .AddSubType(1036, typeof(PersistentRuntimeAnimatorController))
-                .AddSubType(1037, typeof(PersistentSprite));
+                .AddSubType(1037, typeof(PersistentSprite))
+                .AddSubType(1042, typeof(PersistentAvatar))
+                .AddSubType(1043, typeof(PersistentRuntimeAnimatorController))
+                .AddSubType(1044, typeof(PersistentFont));
             model.Add(typeof(PersistentGameObject), true);
             model.Add(typeof(PersistentRenderer), true)
                 .AddSubType(1025, typeof(PersistentMeshRenderer))
@@ -62,7 +67,10 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1025, typeof(PersistentCamera))
                 .AddSubType(1026, typeof(PersistentLight))
                 .AddSubType(1027, typeof(PersistentMonoBehaviour))
-                .AddSubType(1028, typeof(PersistentAnimator));
+                .AddSubType(1030, typeof(PersistentAnimator))
+                .AddSubType(1031, typeof(PersistentCanvas));
+            model.Add(typeof(PersistentButton), true);
+            model.Add(typeof(PersistentCanvas), true);
             model.Add(typeof(PersistentCollider), true)
                 .AddSubType(1025, typeof(PersistentBoxCollider))
                 .AddSubType(1026, typeof(PersistentSphereCollider))
@@ -78,46 +86,83 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1031, typeof(PersistentParticleSystem))
                 .AddSubType(1032, typeof(PersistentParticleSystemForceField));
             model.Add(typeof(PersistentFlare), true);
+            model.Add(typeof(PersistentFont), true);
+            model.Add(typeof(PersistentGraphic), true)
+                .AddSubType(1027, typeof(PersistentMaskableGraphic));
+            model.Add(typeof(PersistentImage), true);
+            model.Add(typeof(PersistentMaskableGraphic), true)
+                .AddSubType(1025, typeof(PersistentImage))
+                .AddSubType(1026, typeof(PersistentText));
             model.Add(typeof(PersistentMonoBehaviour), true)
                 .AddSubType(1026, typeof(PersistentExposeToEditor))
-                .AddSubType(1027, typeof(PersistentTestBehaviour))
-                .AddSubType(1028, typeof(PersistentGameViewCamera));
+                .AddSubType(1027, typeof(PersistentGameCameraFollow))
+                .AddSubType(1028, typeof(PersistentGameViewCamera))
+                .AddSubType(1030, typeof(PersistentCubemanCharacter))
+                .AddSubType(1031, typeof(PersistentCubemanUserControl))
+                .AddSubType(1032, typeof(PersistentCubemenGame))
+                .AddSubType(1034, typeof(PersistentGameCharacter))
+                .AddSubType(1035, typeof(PersistentGameFerry))
+                .AddSubType(1036, typeof(PersistentGameFerryBehavior))
+                .AddSubType(1037, typeof(PersistentGameFerryButton))
+                .AddSubType(1038, typeof(PersistentGameGoal))
+                .AddSubType(1039, typeof(PersistentUIBehaviour));
             model.Add(typeof(PersistentParticleSystem), true);
             model.Add(typeof(PersistentParticleSystemRenderer), true);
             model.Add(typeof(PersistentPhysicMaterial), true);
+            model.Add(typeof(PersistentRectTransform), true);
             model.Add(typeof(PersistentRenderTexture), true);
             model.Add(typeof(PersistentRuntimeAnimatorController), true);
-            model.Add(typeof(PersistentShader), true);
+            model.Add(typeof(PersistentSelectable), true)
+                .AddSubType(1025, typeof(PersistentButton));
             model.Add(typeof(PersistentSprite), true);
             model.Add(typeof(PersistentSpriteRenderer), true);
+            model.Add(typeof(PersistentText), true);
             model.Add(typeof(PersistentTexture), true)
                 .AddSubType(1025, typeof(PersistentRenderTexture))
                 .AddSubType(1026, typeof(PersistentTexture2D))
                 .AddSubType(1027, typeof(PersistentTexture3D));
             model.Add(typeof(PersistentTexture2D), true);
             model.Add(typeof(PersistentTexture3D), true);
-            model.Add(typeof(PersistentTransform), true);
+            model.Add(typeof(PersistentTransform), true)
+                .AddSubType(1025, typeof(PersistentRectTransform));
+            model.Add(typeof(PersistentUIBehaviour), true)
+                .AddSubType(1025, typeof(PersistentGraphic))
+                .AddSubType(1026, typeof(PersistentSelectable));
             model.Add(typeof(PersistentRuntimePrefab), true)
                 .AddSubType(1025, typeof(PersistentRuntimeScene));
             model.Add(typeof(PersistentRuntimeScene), true);
+            model.Add(typeof(PersistentCubemanCharacter), true);
+            model.Add(typeof(PersistentCubemanUserControl), true);
             model.Add(typeof(PersistentExposeToEditor), true);
-            model.Add(typeof(PersistentParticleSystemForceField), true);
+            model.Add(typeof(PersistentCubemenGame), true);
+            model.Add(typeof(PersistentGameCameraFollow), true);
+            model.Add(typeof(PersistentGameCharacter), true);
+            model.Add(typeof(PersistentGameFerry), true);
+            model.Add(typeof(PersistentGameFerryBehavior), true);
+            model.Add(typeof(PersistentGameFerryButton), true);
+            model.Add(typeof(PersistentGameGoal), true);
             model.Add(typeof(PersistentGameViewCamera), true);
-            model.Add(typeof(PersistentTestBehaviour), true);
+            model.Add(typeof(PersistentParticleSystemForceField), true);
             model.Add(typeof(Vector2), false).SetSurrogate(typeof(PersistentVector2));
             model.Add(typeof(Vector3), false).SetSurrogate(typeof(PersistentVector3));
             model.Add(typeof(Vector4), false).SetSurrogate(typeof(PersistentVector4));
             model.Add(typeof(Color), false).SetSurrogate(typeof(PersistentColor));
+            model.Add(typeof(Color32), false).SetSurrogate(typeof(PersistentColor32));
             model.Add(typeof(Matrix4x4), false).SetSurrogate(typeof(PersistentMatrix4x4));
             model.Add(typeof(AnimationCurve), false).SetSurrogate(typeof(PersistentAnimationCurve));
+            model.Add(typeof(AnimationTriggers), false).SetSurrogate(typeof(PersistentAnimationTriggers));
             model.Add(typeof(BoneWeight), false).SetSurrogate(typeof(PersistentBoneWeight));
             model.Add(typeof(Bounds), false).SetSurrogate(typeof(PersistentBounds));
+            model.Add(typeof(PersistentButtonNestedButtonClickedEvent), true);
+            model.Add(typeof(ColorBlock), false).SetSurrogate(typeof(PersistentColorBlock));
             model.Add(typeof(Gradient), false).SetSurrogate(typeof(PersistentGradient));
             model.Add(typeof(GradientAlphaKey), false).SetSurrogate(typeof(PersistentGradientAlphaKey));
             model.Add(typeof(GradientColorKey), false).SetSurrogate(typeof(PersistentGradientColorKey));
             model.Add(typeof(Keyframe), false).SetSurrogate(typeof(PersistentKeyframe));
             model.Add(typeof(LayerMask), false).SetSurrogate(typeof(PersistentLayerMask));
             model.Add(typeof(LightBakingOutput), false).SetSurrogate(typeof(PersistentLightBakingOutput));
+            model.Add(typeof(PersistentMaskableGraphicNestedCullStateChangedEvent), true);
+            model.Add(typeof(Navigation), false).SetSurrogate(typeof(PersistentNavigation));
             model.Add(typeof(ParticleSystem.CollisionModule), false).SetSurrogate(typeof(PersistentParticleSystemNestedCollisionModule));
             model.Add(typeof(ParticleSystem.ColorBySpeedModule), false).SetSurrogate(typeof(PersistentParticleSystemNestedColorBySpeedModule));
             model.Add(typeof(ParticleSystem.ColorOverLifetimeModule), false).SetSurrogate(typeof(PersistentParticleSystemNestedColorOverLifetimeModule));
@@ -145,11 +190,10 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(Quaternion), false).SetSurrogate(typeof(PersistentQuaternion));
             model.Add(typeof(Rect), false).SetSurrogate(typeof(PersistentRect));
             model.Add(typeof(Scene), false).SetSurrogate(typeof(PersistentScene));
-            model.Add(typeof(ExposeToEditorUnityEvent), false).SetSurrogate(typeof(PersistentExposeToEditorUnityEvent));
-            model.Add(typeof(UnityEvent), false).SetSurrogate(typeof(PersistentUnityEvent));
-            model.Add(typeof(PersistentUnityEventBase), true)
-                .AddSubType(1025, typeof(PersistentUnityEvent))
-                .AddSubType(1026, typeof(PersistentExposeToEditorUnityEvent));
+            model.Add(typeof(SpriteState), false).SetSurrogate(typeof(PersistentSpriteState));
+            model.Add(typeof(PersistentExposeToEditorUnityEvent), true);
+            model.Add(typeof(PersistentUnityEvent), true)
+                .AddSubType(1032, typeof(PersistentButtonNestedButtonClickedEvent));
             model.Add(typeof(ParticleSystem.Burst), false).SetSurrogate(typeof(PersistentParticleSystemNestedBurst));
             
        }
@@ -159,10 +203,12 @@ namespace UnityEngine.Battlehub.SL2 {}
 namespace System.Battlehub.SL2 {}
 namespace UnityEngine.Rendering.Battlehub.SL2 {}
 namespace UnityEngine.SceneManagement.Battlehub.SL2 {}
+namespace UnityEngine.UI.Battlehub.SL2 {}
+namespace UnityEngine.EventSystems.Battlehub.SL2 {}
 namespace Battlehub.RTSaveLoad2.Battlehub.SL2 {}
+namespace Battlehub.Cubeman.Battlehub.SL2 {}
 namespace Battlehub.RTCommon.Battlehub.SL2 {}
 namespace Battlehub.RTEditor.Battlehub.SL2 {}
-namespace Battlehub.SL2 {}
 namespace UnityEngine.Events.Battlehub.SL2 {}
 
 

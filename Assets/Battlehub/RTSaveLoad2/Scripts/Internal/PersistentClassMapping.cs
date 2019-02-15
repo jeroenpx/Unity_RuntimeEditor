@@ -134,7 +134,13 @@ namespace Battlehub.RTSaveLoad2
             get { return MappedFullTypeName + "," + MappedAssemblyName; }
         }
 
-        public bool IsEnabled;
+        public bool IsSelected;
+        public bool IsLocked;
+        public bool IsOn
+        {
+            get { return IsSelected || IsLocked; }
+        }
+        
         public int PersistentPropertyTag;
         public int PersistentSubclassTag;
         public string MappedAssemblyName;

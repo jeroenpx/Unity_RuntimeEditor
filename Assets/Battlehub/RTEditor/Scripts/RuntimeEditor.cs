@@ -77,12 +77,15 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
             m_wm = IOC.Resolve<IWindowManager>();
 
+            m_project.NewSceneCreating += OnNewSceneCreating;
             m_project.NewSceneCreated += OnNewSceneCreated;
             m_project.BeginSave += OnBeginSave;
             m_project.BeginLoad += OnBeginLoad;
             m_project.SaveCompleted += OnSaveCompleted;
             m_project.LoadCompleted += OnLoadCompleted;
         }
+
+   
 
         protected override void Start()
         {
@@ -101,6 +104,7 @@ namespace Battlehub.RTEditor
 
             if (m_project != null)
             {
+                m_project.NewSceneCreating -= OnNewSceneCreating;
                 m_project.NewSceneCreated -= OnNewSceneCreated;
                 m_project.BeginSave -= OnBeginSave;
                 m_project.BeginLoad -= OnBeginLoad;
@@ -552,17 +556,26 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private void OnNewSceneCreating(Error error)
+        {
+            if (error.HasError)
+            {
+                return;
+            }
+
+            IsPlaying = false;
+
+            if (SceneLoading != null)
+            {
+                SceneLoading();
+            }
+        }
 
         private void OnNewSceneCreated(Error error)
         {
             if(error.HasError)
             {
                 return;
-            }
-
-            if(SceneLoading != null)
-            {
-                SceneLoading();
             }
 
             Selection.objects = null;
@@ -601,7 +614,8 @@ namespace Battlehub.RTEditor
                 AssetItem assetItem = assetItems[0];
                 if (assetItem != null && m_project.IsScene(assetItem))
                 {
-                    StartCoroutine(CoCallback(callback));
+                    callback();
+                    //StartCoroutine(CoCallback(callback));
                 }
             }
         }
@@ -609,7 +623,9 @@ namespace Battlehub.RTEditor
         private void OnBeginLoad(Error error, AssetItem[] result)
         {
             RaiseIfIsScene(error, result, () =>
-            {
+            { 
+                IsPlaying = false;
+
                 Selection.objects = null;
                 Undo.Purge();
 
@@ -628,12 +644,14 @@ namespace Battlehub.RTEditor
             }
             if (result != null && result.Length > 0)
             {
+                IsPlaying = false;
+
                 object obj = result[0];
                 if (obj != null && obj is Scene)
                 {
                     if(SceneSaving != null)
                     {
-                        SceneSaved();
+                        SceneSaving();
                     }
                 }
             }

@@ -79,6 +79,12 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(285)]
         public LightShadowCasterMode lightShadowCasterMode;
 
+        [ProtoMember(286)]
+        public float shadowRadius;
+
+        [ProtoMember(287)]
+        public float shadowAngle;
+
         protected override void ReadFromImpl(object obj)
         {
             base.ReadFromImpl(obj);
@@ -105,6 +111,8 @@ namespace UnityEngine.Battlehub.SL2
             bakingOutput = uo.bakingOutput;
             cullingMask = uo.cullingMask;
             lightShadowCasterMode = uo.lightShadowCasterMode;
+            shadowRadius = uo.shadowRadius;
+            shadowAngle = uo.shadowAngle;
         }
 
         protected override object WriteToImpl(object obj)
@@ -133,6 +141,8 @@ namespace UnityEngine.Battlehub.SL2
             uo.bakingOutput = bakingOutput;
             uo.cullingMask = cullingMask;
             uo.lightShadowCasterMode = lightShadowCasterMode;
+            uo.shadowRadius = shadowRadius;
+            uo.shadowAngle = shadowAngle;
             return uo;
         }
 

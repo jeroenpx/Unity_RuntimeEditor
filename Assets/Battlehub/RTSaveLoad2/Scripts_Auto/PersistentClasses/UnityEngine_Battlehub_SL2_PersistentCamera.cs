@@ -75,6 +75,9 @@ namespace UnityEngine.Battlehub.SL2
         [ProtoMember(276)]
         public bool useOcclusionCulling;
 
+        [ProtoMember(277)]
+        public PersistentMatrix4x4 cullingMatrix;
+
         [ProtoMember(278)]
         public PersistentColor backgroundColor;
 
@@ -147,6 +150,7 @@ namespace UnityEngine.Battlehub.SL2
             cameraType = uo.cameraType;
             layerCullDistances = uo.layerCullDistances;
             useOcclusionCulling = uo.useOcclusionCulling;
+            cullingMatrix = uo.cullingMatrix;
             backgroundColor = uo.backgroundColor;
             clearFlags = uo.clearFlags;
             depthTextureMode = uo.depthTextureMode;
@@ -189,6 +193,7 @@ namespace UnityEngine.Battlehub.SL2
             uo.cameraType = cameraType;
             uo.layerCullDistances = layerCullDistances;
             uo.useOcclusionCulling = useOcclusionCulling;
+            uo.cullingMatrix = cullingMatrix;
             uo.backgroundColor = backgroundColor;
             uo.clearFlags = clearFlags;
             uo.depthTextureMode = depthTextureMode;

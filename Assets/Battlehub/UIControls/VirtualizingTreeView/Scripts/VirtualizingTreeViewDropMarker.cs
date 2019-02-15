@@ -49,7 +49,7 @@ namespace Battlehub.UIControls
             }
 
             VirtualizingTreeViewItem tvItem = (VirtualizingTreeViewItem)item;
-            if(tvItem != null)
+            if (tvItem != null)
             {
                 m_siblingGraphicsRectTransform.offsetMin = new Vector2(tvItem.Indent, m_siblingGraphicsRectTransform.offsetMin.y);
             }
@@ -59,9 +59,10 @@ namespace Battlehub.UIControls
             }
         }
 
+
         public override void SetPosition(Vector2 position)
         {
-            if(Item == null)
+            if (Item == null)
             {
                 return;
             }
@@ -77,7 +78,7 @@ namespace Battlehub.UIControls
 
             Vector2 sizeDelta = m_rectTransform.sizeDelta;
             sizeDelta.y = rt.rect.height;
-            if(m_useGrid)
+            if (m_useGrid)
             {
                 sizeDelta.x = rt.rect.width;
             }
@@ -85,12 +86,12 @@ namespace Battlehub.UIControls
 
             Vector2 localPoint;
             Camera camera = null;
-            if(ParentCanvas.renderMode == RenderMode.WorldSpace || ParentCanvas.renderMode == RenderMode.ScreenSpaceCamera)
+            if (ParentCanvas.renderMode == RenderMode.WorldSpace || ParentCanvas.renderMode == RenderMode.ScreenSpaceCamera)
             {
                 camera = m_treeView.Camera;
             }
 
-            if(!m_treeView.CanReorder)
+            if (!m_treeView.CanReorder)
             {
                 if (!tvItem.CanDrop)
                 {
@@ -112,7 +113,7 @@ namespace Battlehub.UIControls
                     else if (localPoint.y < rt.rect.height / 4 - rt.rect.height && !tvItem.HasChildren)
                     {
                         Action = ItemDropAction.SetNextSibling;
-                        RectTransform.position = rt.position + Vector3.Scale(Vector3.down * rt.rect.height, ParentCanvas.transform.localScale);
+                        RectTransform.position = rt.TransformPoint(Vector3.down * rt.rect.height);
                     }
                     else
                     {
@@ -126,11 +127,7 @@ namespace Battlehub.UIControls
                     }
                 }
             }
-           
-
-           
         }
-       
     }
 }
 

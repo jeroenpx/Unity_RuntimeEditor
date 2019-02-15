@@ -457,7 +457,6 @@ MonoBehaviour:
   CamOffset: 0
   AutoCamOffset: 1
   GridOffset: {x: 0, y: 0, z: 0}
-  UseUIStencilMask: 0
 --- !u!1 &1619293956684658
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,7 +566,6 @@ MonoBehaviour:
   CamOffset: 0
   AutoCamOffset: 1
   GridOffset: {x: 0, y: 0, z: 0}
-  UseUIStencilMask: 1
 --- !u!1 &1692183878400578
 GameObject:
   m_ObjectHideFlags: 0

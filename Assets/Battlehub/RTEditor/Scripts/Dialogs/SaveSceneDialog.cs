@@ -105,6 +105,12 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            if(Editor.IsPlaying)
+            {
+                m_windowManager.MessageBox("Unable to save scene", "Unable to save scene in play mode");
+                return;
+            }
+
             if (string.IsNullOrEmpty(Input.text))
             {
                 args.Cancel = true;
@@ -118,6 +124,7 @@ namespace Battlehub.RTEditor
                 args.Cancel = true;
                 return;
             }
+
 
             if (!ProjectItem.IsValidName(Input.text))
             {

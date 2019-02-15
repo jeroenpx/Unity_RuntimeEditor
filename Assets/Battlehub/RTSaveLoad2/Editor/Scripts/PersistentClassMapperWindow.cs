@@ -18,7 +18,6 @@ namespace Battlehub.RTSaveLoad2
         public HashSet<string> FieldNames;
         public HashSet<Type> RequiredTypes;
         public string Path;
-        public bool DependenciesLocked;
     }
 
 
@@ -62,14 +61,14 @@ namespace Battlehub.RTSaveLoad2
         private Dictionary<Type, int> m_typeToIndex;
         private string[] m_customImplementationOptions;
 
-        private bool IsAllSelected
+        private bool IsAllOn
         {
-            get { return m_mappings.Count(m => m.IsEnabled) == m_mappings.Length; }
+            get { return m_mappings.Count(m => m.IsOn) == m_mappings.Length; }
         }
 
-        private bool IsNoneSelected
+        private bool IsAllOff
         {
-            get { return m_mappings.Count(m => m.IsEnabled) == 0; }
+            get { return m_mappings.Count(m => m.IsOn) == 0; }
         }
 
 
@@ -90,20 +89,28 @@ namespace Battlehub.RTSaveLoad2
             public string TypeName;
         }
 
-        //private int m_selectedCount;
         private int[] m_filteredTypeIndices;
         private class ClassMappingInfo
         {
-            public bool IsAlwaysEnabled;
             public ObsoleteAttribute ObsoleteAttribute;
             public int PersistentPropertyTag;
             public int PersistentSubclassTag;
 
-            private bool m_isEnabled;
-            public bool IsEnabled
+            public bool IsSelected
             {
-                get { return m_isEnabled || IsAlwaysEnabled; }
-                set { m_isEnabled = value; }
+                get;
+                set;
+            }
+
+            public bool IsLocked
+            {
+                get;
+                set;
+            }
+
+            public bool IsOn
+            {
+                get { return IsLocked || IsSelected; }
             }
 
             public bool IsExpanded;
@@ -111,7 +118,13 @@ namespace Battlehub.RTSaveLoad2
             public int ExpandedCounter;
             public PersistentPropertyMapping[] PropertyMappings;
             public PersistentSubclass[] Subclasses;
-            public bool[] IsPropertyMappingEnabled;
+            public bool[] IsPropertySelected;
+            public int[] PropertyMappingSelection;
+
+            public bool IsPropertyOn(int index)
+            {
+                return IsPropertySelected[index] && PropertyMappingSelection[index] >= 0;
+            }
 
             public string[][] PropertyMappingNames; //per property
             public GUIContent[][] PropertyMappingsDisplayNames;
@@ -120,7 +133,7 @@ namespace Battlehub.RTSaveLoad2
             public string[][] PropertyMappingTypeNames; //per property
             public string[][] PropertyMappingNamespaces;
             public string[][] PropertyMappingAssemblyNames;
-            public int[] PropertyMappingSelection;
+            
 
             public bool IsSupportedPlaftormsSectionExpanded;
             public HashSet<RuntimePlatform> UnsupportedPlatforms;
@@ -130,7 +143,6 @@ namespace Battlehub.RTSaveLoad2
             public bool HasTemplate;
             public bool UseTemplate;
         }
-
 
         private Dictionary<Type, PersistentTemplateInfo> m_templates;
         private Dictionary<Type, int> m_dependencyTypes;
@@ -143,7 +155,6 @@ namespace Battlehub.RTSaveLoad2
 
         private GUIStyle m_deprecatedPopupStyle;
         private GUIStyle m_deprecatedFoldoutStyle;
-
 
         public string EditorGUILayoutTextField(string header, string text)
         {
@@ -208,17 +219,32 @@ namespace Battlehub.RTSaveLoad2
             m_customImplementationOptions = new[] { "Create new", "Create from template" };
         }
 
-        public void OnGUI()
+        public bool InitializeAndLoadMappings()
         {
             if (m_mappings == null)
             {
                 Initialize();
                 LoadMappings();
+                return true;
             }
+            return false;
+        }
 
-            // EditorGUILayout.Separator();
+        public void LockTypes()
+        {
+            for (int i = 0; i < m_mappings.Length; ++i)
+            {
+                ClassMappingInfo mappingInfo = m_mappings[i];
+                if (mappingInfo.IsSelected)
+                {
+                    OnTypeLock(i);
+                }
+            }
+        }
+
+        public void OnGUI()
+        {
             EditorGUI.BeginChangeCheck();
-
             if (m_useGroupFilterText)
             {
                 m_groupFilterText = EditorGUILayoutTextField(m_groupLabel, m_groupFilterText);
@@ -230,26 +256,22 @@ namespace Battlehub.RTSaveLoad2
 
             m_namespaceFilterText = EditorGUILayoutTextField("Namespace Filter:", m_namespaceFilterText);
             m_filterText = EditorGUILayoutTextField("Type Filter:", m_filterText);
-
-
             if (EditorGUI.EndChangeCheck())
             {
                 ApplyFilter();
             }
 
             EditorGUI.BeginChangeCheck();
-
             EditorGUILayout.BeginHorizontal();
-            //EditorGUI.BeginDisabledGroup(m_enableAll);
             bool allowSelectAll = false;
             if(allowSelectAll)
             {
-                if (IsAllSelected)
+                if (IsAllOn)
                 {
                     EditorGUILayout.Toggle(true, GUILayout.MaxWidth(20));
                     EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
                 }
-                else if (IsNoneSelected)
+                else if (IsAllOff)
                 {
                     EditorGUILayout.Toggle(false, GUILayout.MaxWidth(20));
                     EditorGUILayout.LabelField("Select All Types", GUILayout.MaxWidth(230));
@@ -263,7 +285,7 @@ namespace Battlehub.RTSaveLoad2
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (IsAllSelected)
+                    if (IsAllOn)
                     {
                         UnselectAll();
                     }
@@ -273,13 +295,21 @@ namespace Battlehub.RTSaveLoad2
                     }
                 }
             }
-          
-            //EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Collapse All", GUILayout.Width(80)))
+            {
+                for(int i = 0; i < m_mappings.Length; ++i)
+                {
+                    m_mappings[i].IsExpanded = false;
+                }
+            }               
+            EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.Separator();
 
             m_scrollViewPosition = EditorGUILayout.BeginScrollView(m_scrollViewPosition);
-
             EditorGUILayout.BeginVertical();
             {
                 for (int i = 0; i < m_filteredTypeIndices.Length; ++i)
@@ -289,30 +319,12 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
             EditorGUILayout.EndVertical();
-
             EditorGUILayout.EndScrollView();
         }
 
-        private void ApplyFilter()
+        public void OnEnable()
         {
-            
-            List<int> filteredTypeIndices = new List<int>();
-            for (int i = 0; i < m_types.Length; ++i)
-            {
-                Type type = m_types[i];
 
-                bool matchNs = string.IsNullOrEmpty(type.Namespace) && string.IsNullOrEmpty(m_namespaceFilterText) || !string.IsNullOrEmpty(type.Namespace) && type.Namespace.ToLower().Contains(m_namespaceFilterText.ToLower());
-
-                bool groupFilterPassed = m_useGroupFilterText ?
-                     m_groupFilter(type, m_groupFilterText) :
-                    (m_selectedGroupIndex == 0 || m_selectedGroupIndex >= 0 && m_selectedGroupIndex < m_groupNames.Length && m_groupFilter(type, m_groupNames[m_selectedGroupIndex]));
-
-                if (matchNs && m_codeGen.TypeName(type).ToLower().Contains(m_filterText.ToLower()) && groupFilterPassed)
-                {
-                    filteredTypeIndices.Add(i);
-                }
-            }
-            m_filteredTypeIndices = filteredTypeIndices.ToArray();
         }
 
         public void OnDisable()
@@ -401,132 +413,38 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
+        private void ApplyFilter()
+        {
+            List<int> filteredTypeIndices = new List<int>();
+            for (int i = 0; i < m_types.Length; ++i)
+            {
+                Type type = m_types[i];
+
+                bool matchNs = string.IsNullOrEmpty(type.Namespace) && string.IsNullOrEmpty(m_namespaceFilterText) || !string.IsNullOrEmpty(type.Namespace) && type.Namespace.ToLower().Contains(m_namespaceFilterText.ToLower());
+
+                bool groupFilterPassed = m_useGroupFilterText ?
+                     m_groupFilter(type, m_groupFilterText) :
+                    (m_selectedGroupIndex == 0 || m_selectedGroupIndex >= 0 && m_selectedGroupIndex < m_groupNames.Length && m_groupFilter(type, m_groupNames[m_selectedGroupIndex]));
+
+                if (matchNs && m_codeGen.TypeName(type).ToLower().Contains(m_filterText.ToLower()) && groupFilterPassed)
+                {
+                    filteredTypeIndices.Add(i);
+                }
+            }
+            m_filteredTypeIndices = filteredTypeIndices.ToArray();
+        }
+
         private void SelectAll()
         {
-            for (int i = 0; i < m_mappings.Length; ++i)
-            {
-                EnableMappingInfo(m_mappings[i]);
-                TryExpandType(i);
-            }
-            //m_selectedCount = m_mappings.Length;
         }
 
         private void UnselectAll()
         {
-            for (int i = 0; i < m_mappings.Length; ++i)
-            {
-                DisableMappingInfo(m_mappings[i]);
-                TryExpandType(i);
-            }
-            //m_selectedCount = 0;
         }
 
-        private void EnableMappingInfo(ClassMappingInfo mappingInfo)
+        private Type MappedType(Type mappedType)
         {
-            if(mappingInfo.IsEnabled)
-            {
-                return;
-            }
-            mappingInfo.IsEnabled = true;
-            if (mappingInfo.IsPropertyMappingEnabled == null)
-            {
-                return;
-            }
-            for (int propIndex = 0; propIndex < mappingInfo.IsPropertyMappingEnabled.Length; ++propIndex)
-            {
-                if (mappingInfo.IsPropertyMappingEnabled[propIndex])
-                {
-                    int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
-                    if (selectedIndex >= 0 && mappingInfo.IsEnabled)
-                    {
-                        Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selectedIndex];
-                        TryLockType(mappedType);
-                    }
-                }
-            }
-        }
-
-        private void DisableMappingInfo(ClassMappingInfo mappingInfo)
-        {
-            if (!mappingInfo.IsEnabled)
-            {
-                return;
-            }
-            mappingInfo.IsEnabled = false;
-            if (mappingInfo.IsPropertyMappingEnabled == null)
-            {
-                return;
-            }
-            for (int propIndex = 0; propIndex < mappingInfo.IsPropertyMappingEnabled.Length; ++propIndex)
-            {
-                if (mappingInfo.IsPropertyMappingEnabled[propIndex])
-                {
-                    int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
-                    if (selectedIndex >= 0)
-                    {
-                        Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selectedIndex];
-                        TryUnlockType(mappedType);
-                    }
-                }
-            }
-        }
-
-        private bool m_tryingToLockType = false;
-        public void TryLockType(Type mappedType)
-        {
-            if(m_tryingToLockType)
-            {
-                return;
-            }
-            if (m_mappings == null)
-            {
-                Initialize();
-                LoadMappings();
-            }
-
             if(mappedType.IsArray)
-            {
-                mappedType = mappedType.GetElementType();
-            }
-            else if(m_codeGen.IsGenericList(mappedType))
-            {
-                mappedType = mappedType.GetGenericArguments()[0];
-            }
-
-            if (!m_dependencyTypes.ContainsKey(mappedType))
-            {
-                m_dependencyTypes.Add(mappedType, 0);
-                LockType(mappedType);
-
-                if(m_typeToIndex.ContainsKey(mappedType))
-                {
-                    ExpandType(m_typeToIndex[mappedType]);
-                }
-
-                m_tryingToLockType = true;
-                if (TypeLocked != null)
-                {
-                    TypeLocked(mappedType);
-                }
-                m_tryingToLockType = false;
-            }
-            m_dependencyTypes[mappedType]++;   
-        }
-
-        private bool m_tryingToUnlockType = false;
-        public void TryUnlockType(Type mappedType)
-        {
-            if(m_tryingToUnlockType)
-            {
-                return;
-            }
-            if (m_mappings == null)
-            {
-                Initialize();
-                LoadMappings();
-            }
-
-            if (mappedType.IsArray)
             {
                 mappedType = mappedType.GetElementType();
             }
@@ -534,124 +452,368 @@ namespace Battlehub.RTSaveLoad2
             {
                 mappedType = mappedType.GetGenericArguments()[0];
             }
+            return mappedType;
+        }
 
+        /// <summary>
+        /// Returns true if locked
+        /// </summary>
+        /// <param name="typeIndex"></param>
+        /// <returns></returns>
+        private bool LockType(int typeIndex)
+        {
+            bool locked = false;
+            Type mappedType = m_types[typeIndex];
+            if (!m_dependencyTypes.ContainsKey(mappedType))
+            {
+                m_dependencyTypes.Add(mappedType, 0);
+                m_mappings[typeIndex].IsLocked = true;
+                ExpandType(typeIndex);
+                locked = true;
+            }
+            m_dependencyTypes[mappedType]++;
+            return locked;
+        }
+
+        /// <summary>
+        /// Returns true if unlocked
+        /// </summary>
+        /// <param name="typeIndex"></param>
+        /// <returns></returns>
+        private bool UnlockType(int typeIndex)
+        {
+            bool unlocked = false;
+            Type mappedType = m_types[typeIndex];
             if (m_dependencyTypes.ContainsKey(mappedType))
             {
                 m_dependencyTypes[mappedType]--;
                 if (m_dependencyTypes[mappedType] <= 0)
                 {
-                    UnlockType(mappedType);
+                    m_mappings[typeIndex].IsLocked = false;
                     m_dependencyTypes.Remove(mappedType);
-                    m_tryingToUnlockType = true;
-                    if (TypeUnlocked != null)
+                    unlocked = true;
+                }
+            }
+            return unlocked;
+        }
+
+        private void ToPropertyTypeIndex(ClassMappingInfo mappingInfo, int propIndex, int selection, Action<int> callback, Action<Type> missingCallback)
+        {
+            Type propertyType = mappingInfo.PropertyMappingTypes[propIndex][selection];
+            propertyType = MappedType(propertyType);
+
+            int propertyTypeIndex;
+            if (m_typeToIndex.TryGetValue(propertyType, out propertyTypeIndex))
+            {
+                if (callback != null)
+                {
+                    callback(propertyTypeIndex);
+                }
+            }
+            else
+            {
+                missingCallback(propertyType);
+            }
+        }
+
+        private void ForEachEnabledProperty(int typeIndex, Action<int> callback, Action<Type> missingCallback)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            for (int propIndex = 0; propIndex < mappingInfo.PropertyMappings.Length; ++propIndex)
+            {
+                if (mappingInfo.IsPropertySelected[propIndex])
+                {
+                    int selection = mappingInfo.PropertyMappingSelection[propIndex];
+                    if (selection > -1)
                     {
-                        TypeUnlocked(mappedType);
+                        ToPropertyTypeIndex(mappingInfo, propIndex, selection, callback, missingCallback);
                     }
-                    m_tryingToUnlockType = false;
                 }
             }
         }
 
-        private void TryLockTemplateDependencies(int typeIndex)
+        private void ForEachRequiredType(int typeIndex, Action<int> callback, Action<Type> missingCallback)
         {
-            if(!m_mappings[typeIndex].UseTemplate)
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (mappingInfo.HasTemplate)
+            {
+                PersistentTemplateInfo templateInfo;
+                if (m_templates.TryGetValue(m_types[typeIndex], out templateInfo))
+                {
+                    if (templateInfo.RequiredTypes != null)
+                    {
+                        foreach (Type requiredType in templateInfo.RequiredTypes)
+                        {
+                            int requiredTypeIndex;
+                            if (m_typeToIndex.TryGetValue(requiredType, out requiredTypeIndex))
+                            {
+                                callback(requiredTypeIndex);
+                            }
+                            else
+                            {
+                                missingCallback(requiredType);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnTypeLock(int typeIndex)
+        {
+            ForEachRequiredType(typeIndex, requiredTypeIndex =>
+            {
+                if(LockType(requiredTypeIndex))
+                {
+                    OnTypeLock(requiredTypeIndex);
+                }
+            }, 
+            TypeLocked);
+
+            ForEachEnabledProperty(typeIndex, propertyTypeIndex =>
+            {
+                if(LockType(propertyTypeIndex))
+                {
+                    OnTypeLock(propertyTypeIndex);
+                }
+            },
+            TypeLocked);
+        }
+
+        private void OnTypeUnlock(int typeIndex)
+        {
+            ForEachRequiredType(typeIndex, requiredTypeIndex =>
+            {
+                if (UnlockType(requiredTypeIndex))
+                {
+                    OnTypeUnlock(requiredTypeIndex);
+                }
+            },
+            TypeUnlocked);
+
+            ForEachEnabledProperty(typeIndex, propertyTypeIndex =>
+            {
+                if (UnlockType(propertyTypeIndex))
+                {
+                    OnTypeUnlock(propertyTypeIndex);
+                }
+            },
+            TypeUnlocked);
+        }
+
+        public void LockType(Type type)
+        {
+            int typeIndex;
+            if(m_typeToIndex.TryGetValue(type, out typeIndex))
+            {
+                if(LockType(typeIndex))
+                {
+                    OnTypeLock(typeIndex);
+                }
+            }
+        }
+
+        public void UnlockType(Type type)
+        {
+            int typeIndex;
+            if(m_typeToIndex.TryGetValue(type, out typeIndex))
+            {
+                if(UnlockType(typeIndex))
+                {
+                    OnTypeUnlock(typeIndex);
+                }
+            }
+        }
+
+        private void Select(int typeIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if(!mappingInfo.IsSelected)
+            {
+                mappingInfo.IsSelected = true;
+                OnTypeLock(typeIndex);
+            }
+        }
+
+        private void Unselect(int typeIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if(mappingInfo.IsSelected)
+            {
+                mappingInfo.IsSelected = false;
+                OnTypeUnlock(typeIndex);
+            }
+        }
+
+        private void SelectProperty(int typeIndex, int propIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if(!mappingInfo.IsPropertySelected[propIndex])
+            {
+                mappingInfo.IsPropertySelected[propIndex] = true;
+
+                if (mappingInfo.IsOn && mappingInfo.IsPropertyOn(propIndex))
+                {
+                    int propMappingIndex = mappingInfo.PropertyMappingSelection[propIndex];
+                    if(propMappingIndex >= 0)
+                    {
+                        ToPropertyTypeIndex(mappingInfo, propIndex, propMappingIndex, propTypeIndex =>
+                        {
+                            if (LockType(propTypeIndex))
+                            {
+                                OnTypeLock(propTypeIndex);
+                            }
+                        },
+                        TypeLocked);
+                    }
+                }
+            }
+        }
+
+        private void UnselectProperty(int typeIndex, int propIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (mappingInfo.IsPropertySelected[propIndex])
+            {
+                mappingInfo.IsPropertySelected[propIndex] = false;
+
+                if (mappingInfo.IsOn && !mappingInfo.IsPropertyOn(propIndex))
+                {
+                    int propMappingIndex = mappingInfo.PropertyMappingSelection[propIndex];
+                    if (propMappingIndex >= 0)
+                    {
+                        ToPropertyTypeIndex(mappingInfo, propIndex, propMappingIndex, propTypeIndex =>
+                        {
+                            if (UnlockType(propTypeIndex))
+                            {
+                                OnTypeUnlock(propTypeIndex);
+                            }
+                        },
+                        TypeUnlocked);
+                    }
+                }
+            }
+        }
+
+        private void ChangePropertyMapping(int typeIndex, int propIndex, int newSelectedIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (mappingInfo.IsOn && mappingInfo.PropertyMappingSelection[propIndex] != newSelectedIndex)
+            {
+                if (mappingInfo.IsPropertyOn(propIndex))
+                {
+                    ToPropertyTypeIndex(mappingInfo, propIndex, newSelectedIndex, propTypeIndex =>
+                    {
+                        if (UnlockType(propTypeIndex))
+                        {
+                            OnTypeUnlock(propTypeIndex);
+                        }
+                    },
+                    TypeUnlocked);
+                }
+
+                mappingInfo.PropertyMappingSelection[propIndex] = newSelectedIndex;
+                if (mappingInfo.IsPropertyOn(propIndex))
+                {
+                    ToPropertyTypeIndex(mappingInfo, propIndex, newSelectedIndex, propTypeIndex =>
+                    {
+                        if (LockType(propTypeIndex))
+                        {
+                            OnTypeLock(propTypeIndex);
+                        }
+                    },
+                    TypeLocked);
+                }
+            }
+        }
+
+        private void TryLockRequiredTypes(int typeIndex, ClassMappingInfo mappingInfo)
+        {
+            if (mappingInfo.IsOn && mappingInfo.CreateCustomImplementation && mappingInfo.UseTemplate)
+            {
+                ForEachRequiredType(typeIndex, requiredTypeIndex =>
+                {
+                    if (LockType(requiredTypeIndex))
+                    {
+                        OnTypeLock(requiredTypeIndex);
+                    }
+                },
+                TypeLocked);
+            }
+        }
+
+        private void TryUnlockRequiredTypes(int typeIndex, ClassMappingInfo mappingInfo)
+        {
+            if (mappingInfo.IsOn && mappingInfo.CreateCustomImplementation && !mappingInfo.UseTemplate)
+            {
+                ForEachRequiredType(typeIndex, requiredTypeIndex =>
+                {
+                    if (UnlockType(requiredTypeIndex))
+                    {
+                        OnTypeUnlock(requiredTypeIndex);
+                    }
+                },
+                TypeUnlocked);
+            }
+        }
+
+        private void UseTemplate(int typeIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (mappingInfo.UseTemplate)
+            {
+                return;
+            }
+            mappingInfo.UseTemplate = true;
+            TryLockRequiredTypes(typeIndex, mappingInfo);
+        }
+
+        private void DisuseTemplate(int typeIndex)
+        {
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (!mappingInfo.UseTemplate)
             {
                 return;
             }
 
-            
-            PersistentTemplateInfo templateInfo;
-            if (m_templates.TryGetValue(m_types[typeIndex], out templateInfo))
-            {
-                if (templateInfo.DependenciesLocked)
-                {
-                    return;
-                }
-                templateInfo.DependenciesLocked = true;
-                
-                if (templateInfo.RequiredTypes != null)
-                {
-                    foreach (Type requiredType in templateInfo.RequiredTypes)
-                    {
-                        TryLockType(requiredType);
-                    }
-                }
-            }
+            mappingInfo.UseTemplate = false;
+            TryUnlockRequiredTypes(typeIndex, mappingInfo);
         }
 
-        private void TryUnlockTemplateDependencies(int typeIndex)
+        private void UseCustomImplementation(int typeIndex)
         {
-            if (!m_mappings[typeIndex].UseTemplate)
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (mappingInfo.CreateCustomImplementation)
             {
                 return;
             }
-
-            PersistentTemplateInfo templateInfo;
-            if (m_templates.TryGetValue(m_types[typeIndex], out templateInfo))
-            {
-                if (!templateInfo.DependenciesLocked)
-                {
-                    return;
-                }
-                templateInfo.DependenciesLocked = false;
-
-                if (templateInfo.RequiredTypes != null)
-                {
-                    foreach (Type requiredType in templateInfo.RequiredTypes)
-                    {
-                        TryUnlockType(requiredType);
-                    }
-                }
-            }
+            mappingInfo.CreateCustomImplementation = true;
+            TryLockRequiredTypes(typeIndex, mappingInfo);
         }
 
-        private void LockType(Type type)
+        private void DisuseCustomImplementation(int typeIndex)
         {
-            int index;
-            if (m_typeToIndex.TryGetValue(type, out index))
+            ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+            if (!mappingInfo.CreateCustomImplementation)
             {
-                bool wasAlwaysEnabled = m_mappings[index].IsAlwaysEnabled;
-                m_mappings[index].IsAlwaysEnabled = true;
-                EnableMappingInfo(m_mappings[index]);
-
-                if(!wasAlwaysEnabled)
-                {
-                    TryLockTemplateDependencies(index);
-                }
+                return;
             }
-        }
-
-        private void UnlockType(Type type)
-        {
-            int index;
-            if (m_typeToIndex.TryGetValue(type, out index))
-            {
-                bool wasAlwaysEnabled = m_mappings[index].IsAlwaysEnabled;
-                m_mappings[index].IsAlwaysEnabled = false;
-
-                if(wasAlwaysEnabled)
-                {
-                    TryUnlockTemplateDependencies(index);
-                }
-            }
+            mappingInfo.CreateCustomImplementation = false;
+            TryUnlockRequiredTypes(typeIndex, mappingInfo);
         }
 
         public void Reset()
         {
-            for (int typeIndex = 0; typeIndex < m_mappings.Length; ++typeIndex)
-            {
-                UnselectAllProperties(typeIndex);
-            }
-            UnselectAll();
+            //for (int typeIndex = 0; typeIndex < m_mappings.Length; ++typeIndex)
+            //{
+            //    UnselectAllProperties(typeIndex);
+            //}
+            //UnselectAll();
             LoadMappings();
         }
 
         public void ClearDependencies()
         {
-            foreach (Type type in m_dependencyTypes.Keys.ToArray())
-            {
-                UnlockType(type);
-            }
             m_dependencyTypes.Clear();
         }
 
@@ -672,35 +834,18 @@ namespace Battlehub.RTSaveLoad2
                     ClassMappingInfo mappingInfo = m_mappings[typeIndex];
                     mappingInfo.PropertyMappings = pMappings;
                     mappingInfo.Subclasses = subclasses;
-                    mappingInfo.IsEnabled = classMapping.IsEnabled;
+                    mappingInfo.IsLocked = classMapping.IsLocked;
+                    mappingInfo.IsSelected = classMapping.IsSelected;
                     mappingInfo.PersistentPropertyTag = classMapping.PersistentPropertyTag;
                     mappingInfo.PersistentSubclassTag = classMapping.PersistentSubclassTag;
                     mappingInfo.CreateCustomImplementation = classMapping.CreateCustomImplementation;
                     mappingInfo.UseTemplate = classMapping.UseTemplate;
 
-                    if(classMapping.IsEnabled)
-                    {
-                        TryLockTemplateDependencies(typeIndex);
-                    }
-
                     ExpandType(typeIndex);
-
-                    for (int propIndex = 0; propIndex < mappingInfo.PropertyMappings.Length; ++propIndex)
-                    {
-                        if (mappingInfo.IsPropertyMappingEnabled[propIndex])
-                        {
-                            int selection = mappingInfo.PropertyMappingSelection[propIndex];
-                            if (selection > -1 && mappingInfo.IsEnabled)
-                            {
-                                Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selection];
-                                TryLockType(mappedType);
-                            }
-                        }
-                    }
                 }
             }
 
-            ExpandType(0);
+            ExpandType(0);          
         }
 
         public Dictionary<Type, PersistentTemplateInfo> GetTemplates()
@@ -761,7 +906,22 @@ namespace Battlehub.RTSaveLoad2
                         subclass.IsEnabled = false;
                     }
 
-                    subclassDictionary = mappingInfo.Subclasses.ToDictionary(s => s.FullTypeName);
+                    subclassDictionary = new Dictionary<string, PersistentSubclass>();
+                    for(int i = 0; i < mappingInfo.Subclasses.Length; ++i)
+                    {
+                        PersistentSubclass subclass = mappingInfo.Subclasses[i];
+                        if(subclass != null)
+                        {
+                            if (subclassDictionary.ContainsKey(subclass.FullTypeName))
+                            {
+                                Debug.LogWarningFormat("Subclass dictionary already contains {0}, BaseType {1}", subclass.FullTypeName, m_types[typeIndex].FullName);
+                            }
+                            else
+                            {
+                                subclassDictionary.Add(subclass.FullTypeName, subclass);
+                            }
+                        }
+                    } 
                 }
 
                 typeIndexToSubclasses.Add(typeIndex, subclassDictionary);
@@ -773,10 +933,11 @@ namespace Battlehub.RTSaveLoad2
                 Type type = m_types[typeIndex];
                 if(HideMustHaveTypes.Contains(type))
                 {
-                    mappingInfo.IsEnabled = true;
+                    mappingInfo.IsSelected = true;
+                    mappingInfo.IsLocked = false;
                 }
 
-                if (!mappingInfo.IsEnabled)
+                if (!mappingInfo.IsOn)
                 {
                     continue;
                 }
@@ -792,7 +953,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     ClassMappingInfo baseClassMapping = m_mappings[baseTypeIndex];
                     string ns = PersistentClassMapping.ToPersistentNamespace(m_types[typeIndex].Namespace);
-                    string typeName = PersistentClassMapping.ToPersistentName(m_types[typeIndex].Name);
+                    string typeName = PersistentClassMapping.ToPersistentName(m_codeGen.TypeName(m_types[typeIndex]));
                     string fullTypeName = string.Format("{0}.{1}", ns, typeName);
 
                     Dictionary<string, PersistentSubclass> subclassDictionary = typeIndexToSubclasses[baseTypeIndex];
@@ -843,7 +1004,6 @@ namespace Battlehub.RTSaveLoad2
                     templateInfo = null;
                 }
 
-
                 List<PersistentPropertyMapping> selectedPropertyMappings = new List<PersistentPropertyMapping>();
                 PersistentPropertyMapping[] propertyMappings = mappingInfo.PropertyMappings;
                 if(propertyMappings != null)
@@ -853,7 +1013,7 @@ namespace Battlehub.RTSaveLoad2
                     {
                         PersistentPropertyMapping propertyMapping = propertyMappings[propIndex];
                         bool hasPropertyInTemplate = templateInfo != null && templateInfo.FieldNames.Contains(propertyMapping.PersistentName);
-                        propertyMapping.IsEnabled = mappingInfo.IsPropertyMappingEnabled[propIndex];
+                        propertyMapping.IsEnabled = mappingInfo.IsPropertySelected[propIndex];
                         propertyMapping.HasPropertyInTemplate = hasPropertyInTemplate;
                         if (propertyMappingsSelection[propIndex] >= 0 && !hasPropertyInTemplate)
                         {
@@ -876,7 +1036,8 @@ namespace Battlehub.RTSaveLoad2
                 mappingInfo.PropertyMappings = selectedPropertyMappings.ToArray();
                 ExpandType(typeIndex);
 
-                classMapping.IsEnabled = mappingInfo.IsEnabled;
+                classMapping.IsSelected = mappingInfo.IsSelected;
+                classMapping.IsLocked = mappingInfo.IsLocked;
                 classMapping.PersistentPropertyTag = mappingInfo.PersistentPropertyTag;
                 classMapping.PersistentSubclassTag = mappingInfo.PersistentSubclassTag;
                 classMapping.PropertyMappings = selectedPropertyMappings.ToArray();
@@ -934,7 +1095,7 @@ namespace Battlehub.RTSaveLoad2
                 int baseIndex;
                 if (m_typeToIndex.TryGetValue(type, out baseIndex))
                 {
-                    if (m_mappings[baseIndex].IsEnabled)
+                    if (m_mappings[baseIndex].IsOn)
                     {
                         baseType = type;
                         break;
@@ -990,22 +1151,21 @@ namespace Battlehub.RTSaveLoad2
                 GUILayout.Space(5 + 18 * (indent - 1));
                 EditorGUI.BeginChangeCheck();
 
-                EditorGUI.BeginDisabledGroup(mappingInfo.IsAlwaysEnabled);
+                EditorGUI.BeginDisabledGroup(mappingInfo.IsLocked);
                 bool isEnabled;
                 EditorGUI.BeginChangeCheck();
-                isEnabled = EditorGUILayout.Toggle(mappingInfo.IsEnabled, GUILayout.MaxWidth(15));
+                isEnabled = EditorGUILayout.Toggle(mappingInfo.IsOn, GUILayout.MaxWidth(15));
                 if(EditorGUI.EndChangeCheck())
                 {
                     if (isEnabled)
                     {
-                        EnableMappingInfo(mappingInfo);
+                        Select(typeIndex);
                     }
                     else
                     {
-                        DisableMappingInfo(mappingInfo);
+                        Unselect(typeIndex);
                     }
                 }
-                
                 
                 EditorGUI.EndDisabledGroup();
 
@@ -1026,7 +1186,6 @@ namespace Battlehub.RTSaveLoad2
             }
             EditorGUILayout.EndHorizontal();
        
-
             if (isExpandedChanged || isSelectionChanged)
             {
                 if (isExpandedChanged)
@@ -1036,19 +1195,19 @@ namespace Battlehub.RTSaveLoad2
                         mappingInfo.ExpandedCounter - 1;
                 }
 
-                if (isSelectionChanged)
-                {
-                    if (mappingInfo.IsEnabled)
-                    {
-                        TryLockTemplateDependencies(typeIndex);
-                        //m_selectedCount++;
-                    }
-                    else
-                    {
-                        TryUnlockTemplateDependencies(typeIndex);
-                        //m_selectedCount--;
-                    }
-                }
+                //if (isSelectionChanged)
+                //{
+                //    if (mappingInfo.IsEnabled)
+                //    {
+                //        TryLockTemplateDependencies(typeIndex);
+                //        //m_selectedCount++;
+                //    }
+                //    else
+                //    {
+                //        TryUnlockTemplateDependencies(typeIndex);
+                //        //m_selectedCount--;
+                //    }
+                //}
 
                 TryExpandType(typeIndex);
             }
@@ -1101,45 +1260,38 @@ namespace Battlehub.RTSaveLoad2
                             GUILayout.Space(5 + 18 * indent);
 
                             EditorGUI.BeginChangeCheck();
-                            mappingInfo.CreateCustomImplementation = EditorGUILayout.Toggle(mappingInfo.CreateCustomImplementation, GUILayout.MaxWidth(20));
+                            bool createCustomImplementation = EditorGUILayout.Toggle(mappingInfo.CreateCustomImplementation, GUILayout.MaxWidth(20));
                             EditorGUILayout.LabelField("Custom Implementation", GUILayout.MaxWidth(230));
-                            if(EditorGUI.EndChangeCheck())
+                            if (EditorGUI.EndChangeCheck())
                             {
-                                if(mappingInfo.HasTemplate)
+                                if (createCustomImplementation)
                                 {
-                                    if (mappingInfo.CreateCustomImplementation)
-                                    {
-                                        TryLockTemplateDependencies(typeIndex);
-                                    }
-                                    else
-                                    {
-                                        TryUnlockTemplateDependencies(typeIndex);
-                                    }
+                                    UseCustomImplementation(typeIndex);
+                                }
+                                else
+                                {
+                                    DisuseCustomImplementation(typeIndex);
                                 }
                             }
                             else
                             {
-                                if (mappingInfo.CreateCustomImplementation && mappingInfo.HasTemplate)
-                            {
-                                EditorGUI.BeginChangeCheck();
-                                bool useTemplate = EditorGUILayout.Popup(mappingInfo.UseTemplate ? 1 : 0, m_customImplementationOptions, GUILayout.MaxWidth(230)) == 1;
-                                if(EditorGUI.EndChangeCheck())
+                                if (mappingInfo.HasTemplate)
                                 {
-                                    if (useTemplate)
+                                    EditorGUI.BeginChangeCheck();
+                                    bool useTemplate = EditorGUILayout.Popup(mappingInfo.UseTemplate ? 1 : 0, m_customImplementationOptions, GUILayout.MaxWidth(230)) == 1;
+                                    if (EditorGUI.EndChangeCheck())
                                     {
-                                        mappingInfo.UseTemplate = useTemplate;
-                                        TryLockTemplateDependencies(typeIndex);
-                                    }
-                                    else
-                                    {
-                                        TryUnlockTemplateDependencies(typeIndex);
-                                        mappingInfo.UseTemplate = useTemplate;
+                                        if (useTemplate)
+                                        {
+                                            UseTemplate(typeIndex);
+                                        }
+                                        else
+                                        {
+                                            DisuseTemplate(typeIndex);
+                                        }
                                     }
                                 }
                             }
-                            }
-                            
-
                         }
                         EditorGUILayout.EndHorizontal();
                     }
@@ -1179,8 +1331,8 @@ namespace Battlehub.RTSaveLoad2
                     {
                         GUILayout.Space(5 + 18 * indent);
 
-                        int selectedPropertiesCount = mappingInfo.IsPropertyMappingEnabled.Count(enabled => enabled);
-                        bool isAllPropertiesSelected = selectedPropertiesCount == mappingInfo.IsPropertyMappingEnabled.Length;
+                        int selectedPropertiesCount = mappingInfo.IsPropertySelected.Count(enabled => enabled);
+                        bool isAllPropertiesSelected = selectedPropertiesCount == mappingInfo.IsPropertySelected.Length;
                         if (isAllPropertiesSelected)
                         {
                             EditorGUILayout.Toggle(true, GUILayout.MaxWidth(20));
@@ -1231,31 +1383,20 @@ namespace Battlehub.RTSaveLoad2
                             GUILayout.Space(5 + 18 * indent);
 
                             EditorGUI.BeginChangeCheck();
-                            mappingInfo.IsPropertyMappingEnabled[propIndex] = EditorGUILayout.Toggle(mappingInfo.IsPropertyMappingEnabled[propIndex], GUILayout.MaxWidth(20));
+                            bool isPropertySelected = EditorGUILayout.Toggle(mappingInfo.IsPropertySelected[propIndex], GUILayout.MaxWidth(20));
                             if(EditorGUI.EndChangeCheck())
                             {
-                                if (mappingInfo.IsPropertyMappingEnabled[propIndex])
+                                if (isPropertySelected)
                                 {
-                                    int propSelection = mappingInfo.PropertyMappingSelection[propIndex];
-                                    if(propSelection >= 0 && mappingInfo.IsEnabled)
-                                    {
-                                        Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][propSelection];
-                                        TryLockType(mappedType);
-                                    }
+                                    SelectProperty(typeIndex, propIndex);
                                 }
                                 else
                                 {
-                                    int propSelection = mappingInfo.PropertyMappingSelection[propIndex];
-                                    if (propSelection >= 0)
-                                    {
-                                        Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][propSelection];
-                                        TryUnlockType(mappedType);
-                                    }
+                                    UnselectProperty(typeIndex, propIndex);
                                 }
                             }
 
                             int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
-
                             bool isEnum = false;
                             if(selectedIndex >= 0)
                             {
@@ -1266,42 +1407,24 @@ namespace Battlehub.RTSaveLoad2
                                 }
                             }
                             
-
                             m_guiContent.text = pMapping.PersistentName + (pMapping.IsNonPublic ? " (non-public)" : "");
                             m_guiContent.tooltip = pMapping.MappedFullTypeName + (isEnum ? " Enum" : "");
                             EditorGUILayout.LabelField(m_guiContent, GUILayout.MaxWidth(230));
 
-                            
-                            int newPropertyIndex = selectedIndex >= 0 && mappingInfo.PropertyIsObsolete[propIndex][selectedIndex] ?
+                            int newSelectedIndex = selectedIndex >= 0 && mappingInfo.PropertyIsObsolete[propIndex][selectedIndex] ?
                                 EditorGUILayout.Popup(selectedIndex, mappingInfo.PropertyMappingsDisplayNames[propIndex], m_deprecatedPopupStyle) :
                                 EditorGUILayout.Popup(selectedIndex, mappingInfo.PropertyMappingsDisplayNames[propIndex]);
-                            mappingInfo.PropertyMappingSelection[propIndex] = newPropertyIndex;
-
-                            if(selectedIndex != newPropertyIndex)
+                            
+                            if(selectedIndex != newSelectedIndex)
                             {
-                                if(selectedIndex >= 0)
-                                {
-                                    Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selectedIndex];
-                                    TryUnlockType(mappedType);
-                                }
-
-                                if(newPropertyIndex >= 0 && mappingInfo.IsEnabled)
-                                {
-                                    Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][newPropertyIndex];
-                                    TryLockType(mappedType);
-                                }
+                                ChangePropertyMapping(typeIndex, propIndex, newSelectedIndex);
                             }
 
                             EditorGUI.BeginChangeCheck();
                             GUILayout.Button("X", GUILayout.Width(20));
                             if (EditorGUI.EndChangeCheck())
                             {
-                                if (newPropertyIndex >= 0)
-                                {
-                                    Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][newPropertyIndex];
-                                    TryUnlockType(mappedType);
-                                }
-                                mappingInfo.PropertyMappingSelection[propIndex] = -1;
+                                ChangePropertyMapping(typeIndex, newSelectedIndex, -1);
                             }
 
                             EditorGUILayout.LabelField("Slot: " + pMapping.PersistentTag, GUILayout.Width(60));
@@ -1330,46 +1453,26 @@ namespace Battlehub.RTSaveLoad2
         private void SelectAllProperties(int typeIndex)
         {
             ClassMappingInfo mappingInfo = m_mappings[typeIndex];
-            if (mappingInfo.IsPropertyMappingEnabled == null)
+            if (mappingInfo.IsPropertySelected == null)
             {
                 return;
             }
-            for (int propIndex = 0; propIndex < mappingInfo.IsPropertyMappingEnabled.Length; ++propIndex)
+            for (int propIndex = 0; propIndex < mappingInfo.IsPropertySelected.Length; ++propIndex)
             {
-                if (!mappingInfo.IsPropertyMappingEnabled[propIndex])
-                {
-                    mappingInfo.IsPropertyMappingEnabled[propIndex] = true;
-
-                    int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
-                    if(selectedIndex >= 0 && mappingInfo.IsEnabled)
-                    {
-                        Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selectedIndex];
-                        TryLockType(mappedType);
-                    }
-                }
+                SelectProperty(typeIndex, propIndex);
             }
         }
 
         private void UnselectAllProperties(int typeIndex)
         {
             ClassMappingInfo mappingInfo = m_mappings[typeIndex];
-            if (mappingInfo.IsPropertyMappingEnabled == null)
+            if (mappingInfo.IsPropertySelected == null)
             {
                 return;
             }
-            for (int propIndex = 0; propIndex < mappingInfo.IsPropertyMappingEnabled.Length; ++propIndex)
+            for (int propIndex = 0; propIndex < mappingInfo.IsPropertySelected.Length; ++propIndex)
             {
-                if (mappingInfo.IsPropertyMappingEnabled[propIndex])
-                {
-                    mappingInfo.IsPropertyMappingEnabled[propIndex] = false;
-
-                    int selectedIndex = mappingInfo.PropertyMappingSelection[propIndex];
-                    if (selectedIndex >= 0)
-                    {
-                        Type mappedType = mappingInfo.PropertyMappingTypes[propIndex][selectedIndex];
-                        TryUnlockType(mappedType);
-                    }
-                }
+                UnselectProperty(typeIndex, propIndex);
             }
         }
 
@@ -1380,7 +1483,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 return;
             }
-            if (mappingInfo.ExpandedCounter > 0 || mappingInfo.IsEnabled)
+            if (mappingInfo.ExpandedCounter > 0 || mappingInfo.IsOn)
             {
                 ExpandType(typeIndex);
             }
@@ -1554,7 +1657,7 @@ namespace Battlehub.RTSaveLoad2
 
 
             mappingInfo.PropertyMappings = pMappings.ToArray();
-            mappingInfo.IsPropertyMappingEnabled = pMappingsEnabled.ToArray();
+            mappingInfo.IsPropertySelected = pMappingsEnabled.ToArray();
             mappingInfo.PropertyMappingNames = new string[pMappings.Count][];
             mappingInfo.PropertyMappingsDisplayNames = new GUIContent[pMappings.Count][];
             mappingInfo.PropertyIsObsolete = new bool[pMappings.Count][];
@@ -1895,7 +1998,7 @@ namespace Battlehub.RTSaveLoad2
                 }
 
   
-                m_uoMapperGUI = new PersistentClassMapperGUI(GetInstanceID(),
+                m_uoMapperGUI = new PersistentClassMapperGUI(/*GetInstanceID()*/0,
                     m_codeGen, 
                     ClassMappingsStoragePath, 
                     ClassMappingsTemplatePath,
@@ -1907,6 +2010,7 @@ namespace Battlehub.RTSaveLoad2
                     "Assembly",
                     false,
                     (type, groupName) => type.Assembly.GetName().Name == groupName);
+
                 m_uoMapperGUI.TypeLocked += OnUOTypeLocked;
                 m_uoMapperGUI.TypeUnlocked += OnUOTypeUnlocked;
             }
@@ -1914,7 +2018,7 @@ namespace Battlehub.RTSaveLoad2
             if(m_surrogatesMapperGUI == null)
             {
                 
-                m_surrogatesMapperGUI = new PersistentClassMapperGUI(GetInstanceID() + 1,
+                m_surrogatesMapperGUI = new PersistentClassMapperGUI(/*GetInstanceID() + 1*/1,
                     m_codeGen, 
                     SurrogatesMappingsStoragePath, 
                     SurrogatesMappingsTemplatePath,
@@ -1929,6 +2033,18 @@ namespace Battlehub.RTSaveLoad2
 
                 m_surrogatesMapperGUI.TypeLocked += OnSurrogateTypeLocked;
                 m_surrogatesMapperGUI.TypeUnlocked += OnSurrogateTypeUnlocked;
+            }
+
+            bool uoInitialized = m_uoMapperGUI.InitializeAndLoadMappings();
+            bool surrInitialized = m_surrogatesMapperGUI.InitializeAndLoadMappings();
+
+            if(uoInitialized)
+            {
+                m_uoMapperGUI.LockTypes();
+            }
+            if(surrInitialized)
+            {
+                m_surrogatesMapperGUI.LockTypes();
             }
 
             EditorGUILayout.Separator();
@@ -1963,6 +2079,8 @@ namespace Battlehub.RTSaveLoad2
                 m_surrogatesMapperGUI.ClearDependencies();
                 m_uoMapperGUI.Reset();
                 m_surrogatesMapperGUI.Reset();
+                m_uoMapperGUI.LockTypes();
+                m_surrogatesMapperGUI.LockTypes();
             }
             EditorGUI.BeginChangeCheck();
 
@@ -2042,7 +2160,7 @@ namespace Battlehub.RTSaveLoad2
                     PersistentClassMapping mapping = uoMappings[i];
                     if (mapping != null)
                     {
-                        if (!mapping.IsEnabled)
+                        if (!mapping.IsOn)
                         {
                             continue;
                         }
@@ -2073,12 +2191,10 @@ namespace Battlehub.RTSaveLoad2
                     PersistentClassMapping mapping = surrogateMappings[i];
                     if (mapping != null)
                     {
-                        if (!mapping.IsEnabled)
+                        if (!mapping.IsOn)
                         {
                             continue;
                         }
-
-
 
                         if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
                         {
@@ -2194,26 +2310,24 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-    
-
-        private void OnSurrogateTypeLocked(Type obj)
-        {
-            m_uoMapperGUI.TryLockType(obj);
-        }
-
-        private void OnSurrogateTypeUnlocked(Type obj)
-        {
-            m_uoMapperGUI.TryUnlockType(obj);
-        }
-
         private void OnUOTypeLocked(Type obj)
         {
-            m_surrogatesMapperGUI.TryLockType(obj);
+            m_surrogatesMapperGUI.LockType(obj);
         }
 
         private void OnUOTypeUnlocked(Type obj)
         {
-            m_surrogatesMapperGUI.TryUnlockType(obj);
+            m_surrogatesMapperGUI.UnlockType(obj);
+        }
+
+        private void OnSurrogateTypeLocked(Type obj)
+        {
+            m_uoMapperGUI.LockType(obj);
+        }
+
+        private void OnSurrogateTypeUnlocked(Type obj)
+        {
+            m_uoMapperGUI.UnlockType(obj);
         }
 
         private static void CreateCSFile(string persistentClassesPath, PersistentClassMapping mapping, string code, Dictionary<string, UnityObject> typeToScript)

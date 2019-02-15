@@ -1122,6 +1122,10 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabClose(Tab sender)
         {
+            if(IsMaximized)
+            {
+                Maximize(false);
+            }
             RemoveAt(sender.Index);
         }
 

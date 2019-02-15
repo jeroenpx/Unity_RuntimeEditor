@@ -16,7 +16,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 35
+    Identity: 39
     FolderIdentity: 4
     Folders:
     - m_ID: 0
@@ -212,6 +212,30 @@ MonoBehaviour:
         m_Name: smoke
         m_Depth: 0
         Object: {fileID: 2100000, guid: b3447251bc65b704dabf20c3b7c78b02, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 35
+        m_Name: Camera
+        m_Depth: 0
+        Object: {fileID: 0}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 36
+        m_Name: Default UI Material
+        m_Depth: 0
+        Object: {fileID: 0}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 37
+        m_Name: FontOpenSansBold
+        m_Depth: 0
+        Object: {fileID: 12800000, guid: 64294437bfa54d745b7e36d10f12441b, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 38
+        m_Name: Restart
+        m_Depth: 0
+        Object: {fileID: 21300000, guid: b75c36364154660429ec4409a57d37ea, type: 3}
         IsEnabled: 0
         PrefabParts: []
       IsEnabled: 1

@@ -26,15 +26,14 @@ namespace UnityEngine.Battlehub.SL2
                 return;
             }
             Gradient uo = (Gradient)obj;
-            colorKeys = Assign(uo.colorKeys, v_ => (PersistentGradientColorKey)v_);
-            alphaKeys = Assign(uo.alphaKeys, v_ => (PersistentGradientAlphaKey)v_);
-            
+            colorKeys = Assign(colorKeys, v_ => (PersistentGradientColorKey)v_);
+            alphaKeys = Assign(alphaKeys, v_ => (PersistentGradientAlphaKey)v_);   
         }
 
         public override object WriteTo(object obj)
         {
             obj = base.WriteTo(obj);
-            if (obj == null)
+            if(obj == null)
             {
                 return obj;
             }
