@@ -244,7 +244,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public PropertyInfo[] GetProperties(Type type)
+        public static PropertyInfo[] GetProperties(Type type)
         {
             return GetAllProperties(type).Where(p => p.GetGetMethod() != null && p.GetSetMethod() != null).ToArray();
         }
@@ -254,7 +254,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public PropertyInfo[] GetAllProperties(Type type)
+        public static PropertyInfo[] GetAllProperties(Type type)
         {
             return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(p => (!p.PropertyType.IsGenericType || IsGenericList(p.PropertyType)) && p.GetIndexParameters().Length == 0).ToArray();
@@ -265,7 +265,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public FieldInfo[] GetFields(Type type)
+        public static FieldInfo[] GetFields(Type type)
         {
             if(type.IsSubclassOf(typeof(MonoBehaviour)))
             {
@@ -276,12 +276,12 @@ namespace Battlehub.RTSaveLoad2
             return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToArray();
         }
 
-        public MethodInfo[] GetMethods(Type type)
+        public static MethodInfo[] GetMethods(Type type)
         {
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        public bool IsGenericList(Type type)
+        public static bool IsGenericList(Type type)
         {
             bool isList = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
             return isList;
@@ -292,7 +292,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Type GetSurrogateType(Type type)
+        public static Type GetSurrogateType(Type type)
         {
             if (type.IsArray)
             {
@@ -421,7 +421,7 @@ namespace Battlehub.RTSaveLoad2
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public string TypeName(Type type)
+        public static string TypeName(Type type)
         {
             if (type.DeclaringType == null)
             {
@@ -640,7 +640,7 @@ namespace Battlehub.RTSaveLoad2
             return sb.ToString();
         }
 
-        public bool TryGetTemplateUsings(string template, out string result)
+        public static bool TryGetTemplateUsings(string template, out string result)
         {
             result = string.Empty;
 
@@ -659,7 +659,7 @@ namespace Battlehub.RTSaveLoad2
             return true;
         }
 
-        public bool TryGetTemplateBody(string template, out string result)
+        public static bool TryGetTemplateBody(string template, out string result)
         {
             result = string.Empty;
 
@@ -1203,7 +1203,7 @@ namespace Battlehub.RTSaveLoad2
             return null;
         }
 
-        public void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
+        public static void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
         {
             //assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
             assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.Contains("UnityEditor") && !a.FullName.Contains("Assembly-CSharp-Editor")).OrderBy(a => a.FullName).ToArray();
@@ -1226,7 +1226,7 @@ namespace Battlehub.RTSaveLoad2
             assemblies = new Assembly[] { null }.Union(assembliesList.OrderBy(a => a.FullName)).ToArray();
         }
 
-        private void GetTypesRecursive(Type type, HashSet<Type> typesHS)
+        private static void GetTypesRecursive(Type type, HashSet<Type> typesHS)
         {
             PropertyInfo[] properties = GetAllProperties(type);
             FieldInfo[] fields = GetFields(type);
@@ -1283,7 +1283,7 @@ namespace Battlehub.RTSaveLoad2
             }
         }
 
-        public void GetSurrogateAssembliesAndTypes(Type[] uoTypes, out Dictionary<string, HashSet<Type>> declaredIn, out Type[] types)
+        public static void GetSurrogateAssembliesAndTypes(Type[] uoTypes, out Dictionary<string, HashSet<Type>> declaredIn, out Type[] types)
         {
             HashSet<Type> allTypesHS = new HashSet<Type>();
             declaredIn = new Dictionary<string, HashSet<Type>>();

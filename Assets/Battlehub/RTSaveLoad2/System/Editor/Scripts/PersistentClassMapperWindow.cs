@@ -426,7 +426,7 @@ namespace Battlehub.RTSaveLoad2
                      m_groupFilter(type, m_groupFilterText) :
                     (m_selectedGroupIndex == 0 || m_selectedGroupIndex >= 0 && m_selectedGroupIndex < m_groupNames.Length && m_groupFilter(type, m_groupNames[m_selectedGroupIndex]));
 
-                if (matchNs && m_codeGen.TypeName(type).ToLower().Contains(m_filterText.ToLower()) && groupFilterPassed)
+                if (matchNs && CodeGen.TypeName(type).ToLower().Contains(m_filterText.ToLower()) && groupFilterPassed)
                 {
                     filteredTypeIndices.Add(i);
                 }
@@ -448,7 +448,7 @@ namespace Battlehub.RTSaveLoad2
             {
                 mappedType = mappedType.GetElementType();
             }
-            else if (m_codeGen.IsGenericList(mappedType))
+            else if (CodeGen.IsGenericList(mappedType))
             {
                 mappedType = mappedType.GetGenericArguments()[0];
             }
@@ -855,10 +855,15 @@ namespace Battlehub.RTSaveLoad2
 
         public PersistentClassMapping[] GetMappings()
         {
-            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingStoragePath, typeof(GameObject));
+            return GetMappings(m_mappingStoragePath, m_mappingTemplateStoragePath);
+        }
+
+        public static PersistentClassMapping[] GetMappings(string mappingStoragePath, string mappingTemplateStoragePath)
+        {
+            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(mappingStoragePath, typeof(GameObject));
             if (storageGO == null)
             {
-                storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingTemplateStoragePath, typeof(GameObject));
+                storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(mappingTemplateStoragePath, typeof(GameObject));
             }
 
             if (storageGO != null)
@@ -953,7 +958,7 @@ namespace Battlehub.RTSaveLoad2
                 {
                     ClassMappingInfo baseClassMapping = m_mappings[baseTypeIndex];
                     string ns = PersistentClassMapping.ToPersistentNamespace(m_types[typeIndex].Namespace);
-                    string typeName = PersistentClassMapping.ToPersistentName(m_codeGen.TypeName(m_types[typeIndex]));
+                    string typeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(m_types[typeIndex]));
                     string fullTypeName = string.Format("{0}.{1}", ns, typeName);
 
                     Dictionary<string, PersistentSubclass> subclassDictionary = typeIndexToSubclasses[baseTypeIndex];
@@ -962,7 +967,7 @@ namespace Battlehub.RTSaveLoad2
                         PersistentSubclass subclass = new PersistentSubclass();
                         subclass.IsEnabled = true;
                         subclass.Namespace = PersistentClassMapping.ToPersistentNamespace(type.Namespace);
-                        subclass.TypeName = PersistentClassMapping.ToPersistentName(m_codeGen.TypeName(type));
+                        subclass.TypeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(type));
                         baseClassMapping.PersistentSubclassTag++;
                         subclass.PersistentTag = baseClassMapping.PersistentSubclassTag;
 
@@ -1047,10 +1052,10 @@ namespace Battlehub.RTSaveLoad2
                 }
                 classMapping.MappedAssemblyName = m_types[typeIndex].Assembly.FullName.Split(',')[0];
                 classMapping.MappedNamespace = m_types[typeIndex].Namespace;
-                classMapping.MappedTypeName = m_codeGen.TypeName(m_types[typeIndex]);
+                classMapping.MappedTypeName = CodeGen.TypeName(m_types[typeIndex]);
                     
                 classMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(classMapping.MappedNamespace);
-                classMapping.PersistentTypeName = PersistentClassMapping.ToPersistentName(m_codeGen.TypeName(m_types[typeIndex]));
+                classMapping.PersistentTypeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(m_types[typeIndex]));
 
                 Type baseType = GetEnabledBaseType(typeIndex);
                 if (baseType == null || baseType == typeof(object))
@@ -1061,13 +1066,14 @@ namespace Battlehub.RTSaveLoad2
                 else
                 {
                     classMapping.PersistentBaseNamespace = PersistentClassMapping.ToPersistentNamespace(baseType.Namespace);
-                    classMapping.PersistentBaseTypeName = PersistentClassMapping.ToPersistentName(m_codeGen.TypeName(baseType));
+                    classMapping.PersistentBaseTypeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(baseType));
                 }
 
                 classMapping.CreateCustomImplementation = mappingInfo.CreateCustomImplementation;
                 classMapping.UseTemplate = mappingInfo.UseTemplate;
             }
 
+   
             EditorUtility.SetDirty(storageGO);
             PrefabUtility.SaveAsPrefabAsset(storageGO, m_mappingStoragePath);
             ///PrefabUtility.CreatePrefab(m_mappingStoragePath, storageGO);
@@ -1525,10 +1531,10 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            FieldInfo[] fields = m_codeGen.GetFields(type);
+            FieldInfo[] fields = CodeGen.GetFields(type);
             HashSet<string> fieldHs = new HashSet<string>(fields.Select(fInfo => fInfo.FieldType.FullName + " " + fInfo.Name));
 
-            PropertyInfo[] properties = m_codeGen.GetProperties(type);
+            PropertyInfo[] properties = CodeGen.GetProperties(type);
             HashSet<string> propertyHs = new HashSet<string>(properties.Select(pInfo => pInfo.PropertyType.FullName + " " + pInfo.Name));
 
             for (int i = 0; i < fieldMappings.Length; ++i)
@@ -1549,7 +1555,7 @@ namespace Battlehub.RTSaveLoad2
                 else
                 {
                     mapping.IsNonPublic = type.GetField(mapping.MappedName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) != null;
-                    mapping.UseSurrogate = m_codeGen.GetSurrogateType(mapping.MappedType) != null;
+                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType) != null;
                     mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
@@ -1564,7 +1570,7 @@ namespace Battlehub.RTSaveLoad2
 
                 string key = string.Format("{0}.{1}",
                     PersistentClassMapping.ToPersistentNamespace(fInfo.FieldType.Namespace),
-                    m_codeGen.TypeName(fInfo.FieldType)) + " " + fInfo.Name;
+                    CodeGen.TypeName(fInfo.FieldType)) + " " + fInfo.Name;
 
                 if (fieldMappingsHs.Contains(key))
                 {
@@ -1573,16 +1579,16 @@ namespace Battlehub.RTSaveLoad2
 
                 PersistentPropertyMapping pMapping = new PersistentPropertyMapping();
                 pMapping.PersistentName = fInfo.Name;
-                pMapping.PersistentTypeName = m_codeGen.TypeName(fInfo.FieldType);
+                pMapping.PersistentTypeName = CodeGen.TypeName(fInfo.FieldType);
                 pMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(fInfo.FieldType.Namespace);
 
                 pMapping.MappedName = fInfo.Name;
-                pMapping.MappedTypeName = m_codeGen.TypeName(fInfo.FieldType);
+                pMapping.MappedTypeName = CodeGen.TypeName(fInfo.FieldType);
                 pMapping.MappedNamespace = fInfo.FieldType.Namespace;
                 pMapping.MappedAssemblyName = fInfo.FieldType.Assembly.FullName.Split(',')[0];
                 pMapping.IsProperty = false;
 
-                pMapping.UseSurrogate = m_codeGen.GetSurrogateType(fInfo.FieldType) != null;
+                pMapping.UseSurrogate = CodeGen.GetSurrogateType(fInfo.FieldType) != null;
                 pMapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(fInfo.FieldType);
                 pMapping.IsNonPublic = !fInfo.IsPublic;
 
@@ -1614,7 +1620,7 @@ namespace Battlehub.RTSaveLoad2
                 }
                 else
                 {
-                    mapping.UseSurrogate = m_codeGen.GetSurrogateType(mapping.MappedType) != null;
+                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType) != null;
                     mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
 
                     pMappingsEnabled.Add(mapping.IsEnabled);
@@ -1629,7 +1635,7 @@ namespace Battlehub.RTSaveLoad2
 
                 string key = string.Format("{0}.{1}",
                     PersistentClassMapping.ToPersistentNamespace(pInfo.PropertyType.Namespace),
-                    m_codeGen.TypeName(pInfo.PropertyType)) + " " + pInfo.Name;
+                    CodeGen.TypeName(pInfo.PropertyType)) + " " + pInfo.Name;
 
                 if (propertyMappingsHs.Contains(key))
                 {
@@ -1639,16 +1645,16 @@ namespace Battlehub.RTSaveLoad2
                 PersistentPropertyMapping pMapping = new PersistentPropertyMapping();
 
                 pMapping.PersistentName = pInfo.Name;       //property name of mapping
-                pMapping.PersistentTypeName = m_codeGen.TypeName(pInfo.PropertyType);
+                pMapping.PersistentTypeName = CodeGen.TypeName(pInfo.PropertyType);
                 pMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(pInfo.PropertyType.Namespace);
 
                 pMapping.MappedName = pInfo.Name;           //property name of unity type
-                pMapping.MappedTypeName = m_codeGen.TypeName(pInfo.PropertyType);
+                pMapping.MappedTypeName = CodeGen.TypeName(pInfo.PropertyType);
                 pMapping.MappedNamespace = pInfo.PropertyType.Namespace;
                 pMapping.MappedAssemblyName = pInfo.PropertyType.Assembly.FullName.Split(',')[0];
                 pMapping.IsProperty = true;
 
-                pMapping.UseSurrogate = m_codeGen.GetSurrogateType(pInfo.PropertyType) != null;
+                pMapping.UseSurrogate = CodeGen.GetSurrogateType(pInfo.PropertyType) != null;
                 pMapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(pInfo.PropertyType);
 
                 pMappingsEnabled.Add(false);
@@ -1684,7 +1690,7 @@ namespace Battlehub.RTSaveLoad2
                         Name = f.Name,
                         ObsoleteAttribute = f.GetCustomAttributes(false).OfType<ObsoleteAttribute>().FirstOrDefault(),
                         Type = f.FieldType,
-                        TypeName = m_codeGen.TypeName(f.FieldType),
+                        TypeName = CodeGen.TypeName(f.FieldType),
                         Namespace = f.FieldType.Namespace,
                         Assembly = f.FieldType.Assembly.FullName.Split(',')[0] })
                     .Union(GetSuitableProperties(properties, ns + pMapping.PersistentTypeName)
@@ -1692,7 +1698,7 @@ namespace Battlehub.RTSaveLoad2
                         Name = p.Name,
                         ObsoleteAttribute = p.GetCustomAttributes(false).OfType<ObsoleteAttribute>().FirstOrDefault(),
                         Type = p.PropertyType,
-                        TypeName = m_codeGen.TypeName(p.PropertyType),
+                        TypeName = CodeGen.TypeName(p.PropertyType),
                         Namespace = p.PropertyType.Namespace,
                         Assembly = p.PropertyType.Assembly.FullName.Split(',')[0] }))
                     .OrderBy(p => p.Name)
@@ -1729,12 +1735,6 @@ namespace Battlehub.RTSaveLoad2
 
     public class PersistentClassMapperWindow : EditorWindow
     {
-        [MenuItem("Tools/Runtime SaveLoad2/Persistent Classes")]
-        public static void ShowMenuItem()
-        {
-            ShowWindow();
-        }
-
         public static void ShowWindow()
         {
             PersistentClassMapperWindow prevWindow = GetWindow<PersistentClassMapperWindow>();
@@ -1749,7 +1749,7 @@ namespace Battlehub.RTSaveLoad2
             window.position = new Rect(20, 40, 1280, 768);
         }
 
-        private Type[] m_mostImportantUOTypes =
+        private static readonly Type[] m_mostImportantUOTypes =
         {
             typeof(UnityObject),
             typeof(GameObject),
@@ -1770,7 +1770,7 @@ namespace Battlehub.RTSaveLoad2
             typeof(Light),
         };
 
-        private Type[] m_mostImportantSurrogateTypes =
+        private static readonly Type[] m_mostImportantSurrogateTypes =
         {
             typeof(object),
             typeof(Vector2),
@@ -1784,24 +1784,7 @@ namespace Battlehub.RTSaveLoad2
         };
 
         
-        public const string SaveLoadRoot = @"/" + BHPath.Root + @"/RTSaveLoad2";
-
-        public const string UserRoot = SaveLoadRoot + "/User";
-        public const string SystemRoot = SaveLoadRoot + "/System";
-        
-        public const string EditorPrefabsPath = SystemRoot + "/Editor/Prefabs";
-        public const string UserPrefabsPath = UserRoot + "/Mappings/Editor";
-
-        public const string FilePathStoragePath = "Assets" + UserPrefabsPath + @"/FilePathStorage.prefab";
-        public const string ClassMappingsStoragePath = "Assets" + UserPrefabsPath + @"/ClassMappingsStorage.prefab";
-        public const string ClassMappingsTemplatePath = "Assets" + EditorPrefabsPath + @"/ClassMappingsTemplate.prefab";
-        public const string SurrogatesMappingsStoragePath = "Assets" + UserPrefabsPath + @"/SurrogatesMappingsStorage.prefab";
-        public const string SurrogatesMappingsTemplatePath = "Assets" + EditorPrefabsPath + @"/SurrogatesMappingsTemplate.prefab";
-
-        public const string ScriptsAutoFolder = "Autogenerated";
-        //public const string ScriptsFolder = "Scripts";
-        public const string PersistentClassesFolder = "PersistentClasses";
-        public const string PersistentCustomImplementationClasessFolder = "MyPersistentClasses";
+     
 
         private Type[] m_uoTypes;
         private PersistentClassMapperGUI m_uoMapperGUI;
@@ -1809,36 +1792,7 @@ namespace Battlehub.RTSaveLoad2
         private FilePathStorage m_filePathStorage;
         private CodeGen m_codeGen = new CodeGen();
 
-
-        private void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
-        {
-            m_codeGen.GetUOAssembliesAndTypes(out assemblies, out types);
-
-            List<Type> allUOTypes = new List<Type>(types);
-            for (int i = 0; i < m_mostImportantUOTypes.Length; ++i)
-            {
-                allUOTypes.Remove(m_mostImportantUOTypes[i]);
-            }
-
-            types = m_mostImportantUOTypes.Union(allUOTypes.OrderBy(t => m_codeGen.TypeName(t))).ToArray();
-        }
-
-        private void GetSurrogateAssembliesAndTypes(Type[] uoTypes, out Dictionary<string, HashSet<Type>> declaredIn, out Type[] types)
-        {
-            m_codeGen.GetSurrogateAssembliesAndTypes(uoTypes, out declaredIn, out types);
-
-            List<Type> allTypes = new List<Type>(types);
-
-            for (int i = 0; i < m_mostImportantSurrogateTypes.Length; ++i)
-            {
-                allTypes.Remove(m_mostImportantSurrogateTypes[i]);
-            }
-
-            allTypes.Add(typeof(UnityEventBase));
-
-            types = m_mostImportantSurrogateTypes.Union(allTypes.OrderBy(t => t.Name)).ToArray();
-        }
-
+      
         float m_resizerPosition;
         bool m_resize = false;
 
@@ -1920,83 +1874,14 @@ namespace Battlehub.RTSaveLoad2
                 GetSurrogateAssembliesAndTypes(m_uoTypes, out declaredIn, out types);
                 Type[] allTypes = uoTypes.Union(types).ToArray();
 
-                templates = new Dictionary<Type, PersistentTemplateInfo>();
-                Dictionary<string, Type> typeNameToType = allTypes.ToDictionary(t => t.FullName);
-                Type[] templateTypes = Assembly.GetAssembly(GetType()).GetTypes().Where(t => t.GetCustomAttributes(typeof(PersistentTemplateAttribute), false).Length != 0).ToArray();
-                for (int i = 0; i < templateTypes.Length; ++i)
-                {
-                    Type templateType = templateTypes[i];
-                    PersistentTemplateAttribute templateAttrib = (PersistentTemplateAttribute)templateType.GetCustomAttributes(typeof(PersistentTemplateAttribute), false)[0];
-
-                    Type mappedType;
-                    if (typeNameToType.TryGetValue(templateAttrib.ForType, out mappedType))
-                    {
-                        MonoScript monoScript = MonoScript.FromScriptableObject(ScriptableObject.CreateInstance(templateType));
-                        if(monoScript == null)
-                        {
-                            Debug.LogWarning("Unable to find MonoScript for " + templateAttrib.ForType + ". Make sure file and type have same names");
-                            continue;
-                        }
-                        string contents = monoScript.text;
-                        string usings = contents.ToString();
-                        if (m_codeGen.TryGetTemplateBody(contents, out contents) && m_codeGen.TryGetTemplateUsings(usings, out usings))
-                        {
-                            PersistentTemplateInfo templateInfo = new PersistentTemplateInfo
-                            {
-                                Body = contents,
-                                FieldNames = new HashSet<string>(),
-                                RequiredTypes = new HashSet<Type>(),
-                                Usings = usings,
-                                Path = AssetDatabase.GetAssetPath(monoScript),
-                            };
-
-                            if (templateAttrib.FieldNames != null)
-                            {
-                                for (int n = 0; n < templateAttrib.FieldNames.Length; ++n)
-                                {
-                                    string fieldName = templateAttrib.FieldNames[n];
-                                    if (!templateInfo.FieldNames.Contains(fieldName))
-                                    {
-                                        templateInfo.FieldNames.Add(fieldName);
-                                    }
-                                }
-                            }
-
-                            if (templateAttrib.RequiredTypes != null)
-                            {
-                                for (int n = 0; n < templateAttrib.RequiredTypes.Length; ++n)
-                                {
-                                    Type requiredType;
-                                    if (typeNameToType.TryGetValue(templateAttrib.RequiredTypes[n], out requiredType) && !templateInfo.RequiredTypes.Contains(requiredType))
-                                    {
-                                        templateInfo.RequiredTypes.Add(requiredType);
-                                    }
-                                }
-                            }
-
-                            if (templates.ContainsKey(mappedType))
-                            {
-                                Debug.LogWarning("m_templates dictionary already contains " + mappedType.FullName);
-                            }
-                            else
-                            {
-                                templates.Add(mappedType, templateInfo);
-                            }
-                        }
-                        else
-                        {
-                            string path = AssetDatabase.GetAssetPath(monoScript);
-                            Debug.LogWarningFormat("Template {0} has invalid format", path);
-                        }
-                    }
-                }
+                templates = GetPersistentTemplates(allTypes);
             }
-            
+
             if (m_uoMapperGUI == null)
             {
                 if (m_filePathStorage == null)
                 {
-                    GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(FilePathStoragePath); 
+                    GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(RTSL2Path.FilePathStoragePath); 
                     if(go != null)
                     {
                         m_filePathStorage = go.GetComponent<FilePathStorage>();
@@ -2005,9 +1890,9 @@ namespace Battlehub.RTSaveLoad2
 
   
                 m_uoMapperGUI = new PersistentClassMapperGUI(/*GetInstanceID()*/0,
-                    m_codeGen, 
-                    ClassMappingsStoragePath, 
-                    ClassMappingsTemplatePath,
+                    m_codeGen,
+                    RTSL2Path.ClassMappingsStoragePath,
+                    RTSL2Path.ClassMappingsTemplatePath,
                     m_filePathStorage,
                     typeof(object),
                     uoTypes,
@@ -2023,11 +1908,10 @@ namespace Battlehub.RTSaveLoad2
 
             if(m_surrogatesMapperGUI == null)
             {
-                
                 m_surrogatesMapperGUI = new PersistentClassMapperGUI(/*GetInstanceID() + 1*/1,
-                    m_codeGen, 
-                    SurrogatesMappingsStoragePath, 
-                    SurrogatesMappingsTemplatePath,
+                    m_codeGen,
+                    RTSL2Path.SurrogatesMappingsStoragePath,
+                    RTSL2Path.SurrogatesMappingsTemplatePath,
                     m_filePathStorage,
                     typeof(object),
                     types, 
@@ -2094,194 +1978,15 @@ namespace Battlehub.RTSaveLoad2
 
             if (EditorGUI.EndChangeCheck())
             {
+                if (!Directory.Exists(Application.dataPath + RTSL2Path.UserPrefabsPath))
+                {
+                    Directory.CreateDirectory(Application.dataPath + RTSL2Path.UserPrefabsPath);
+                }
+
                 m_uoMapperGUI.SaveMappings();
                 m_surrogatesMapperGUI.SaveMappings();
 
-                Dictionary<string, string> persistentFileTypeToPath = new Dictionary<string, string>();
-
-                PersistentClassMapping[] uoMappings = m_uoMapperGUI.GetMappings();
-                Dictionary<Type, PersistentTemplateInfo> uoTemplates = m_uoMapperGUI.GetTemplates();
-                PersistentClassMapping[] surrogateMappings = m_surrogatesMapperGUI.GetMappings();
-                Dictionary<Type, PersistentTemplateInfo> surrogateTemplates = m_surrogatesMapperGUI.GetTemplates();
-
-                string scriptsAutoPath = Application.dataPath + UserRoot;
-                if (!Directory.Exists(scriptsAutoPath))
-                {
-                    Directory.CreateDirectory(scriptsAutoPath);
-                }
-
-                scriptsAutoPath = scriptsAutoPath + "/" + ScriptsAutoFolder;
-                if (Directory.Exists(scriptsAutoPath))
-                {
-                    Directory.Delete(scriptsAutoPath, true);
-                }
-
-                Directory.CreateDirectory(scriptsAutoPath);
-                string persistentClassesPath = scriptsAutoPath + "/" + PersistentClassesFolder;
-                if (!Directory.Exists(persistentClassesPath))
-                {
-                    Directory.CreateDirectory(persistentClassesPath);
-                }
-
-                string scriptsPath = Application.dataPath + UserRoot;
-                string myPersistentClassesPath = scriptsPath + "/" + PersistentCustomImplementationClasessFolder;
-                if (!Directory.Exists(myPersistentClassesPath))
-                {
-                    Directory.CreateDirectory(myPersistentClassesPath);
-                }
-
-                uoMappings = uoMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
-                surrogateMappings = surrogateMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
-
-                GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(FilePathStoragePath, typeof(GameObject));
-                if (storageGO == null)
-                {
-                    storageGO = new GameObject();
-                }
-                FilePathStorage filePathStorage = storageGO.GetComponent<FilePathStorage>();
-                if (filePathStorage == null)
-                {
-                    filePathStorage = storageGO.AddComponent<FilePathStorage>();
-                }
-
-                Dictionary<string, UnityObject> typeToScript = new Dictionary<string, UnityObject>();
-                if(filePathStorage.PathRecords != null)
-                {
-                    for(int i = 0; i < filePathStorage.PathRecords.Length; ++i)
-                    {
-                        FilePathRecord record = filePathStorage.PathRecords[i];
-                        if(record != null)
-                        {
-                            if(record.File != null && record.PeristentTypeName != null && !typeToScript.ContainsKey(record.PeristentTypeName))
-                            {
-                                typeToScript.Add(record.PeristentTypeName, record.File);
-                            }
-                        }
-                    }
-                }
-
-                HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => t.FullName));
-                CodeGen codeGen = new CodeGen();
-                for (int i = 0; i < uoMappings.Length; ++i)
-                {
-                    PersistentClassMapping mapping = uoMappings[i];
-                    if (mapping != null)
-                    {
-                        if (!mapping.IsOn)
-                        {
-                            continue;
-                        }
-
-                        if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
-                        {
-                            continue;
-                        }
-
-                        if (mapping.CreateCustomImplementation)
-                        {
-                            if (HasCustomImplementation(codeGen, mapping))
-                            {
-                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, null);
-                            }
-                            else
-                            {
-                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping, typeToScript));
-                            }
-                        }
-                        CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, uoTemplates, typeToScript);
-
-                    }
-                }
-
-                for (int i = 0; i < surrogateMappings.Length; ++i)
-                {
-                    PersistentClassMapping mapping = surrogateMappings[i];
-                    if (mapping != null)
-                    {
-                        if (!mapping.IsOn)
-                        {
-                            continue;
-                        }
-
-                        if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
-                        {
-                            continue;
-                        }
-
-                        if (mapping.CreateCustomImplementation)
-                        {
-                            if (HasCustomImplementation(codeGen, mapping))
-                            {
-                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, null);
-                            }
-                            else
-                            {
-                                persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping, typeToScript));
-                            }
-                        }
-
-                        CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, surrogateTemplates, typeToScript);
-                    }
-                }
-
-                string typeModelCreatorCode = codeGen.CreateTypeModelCreator(uoMappings.Union(surrogateMappings).ToArray());
-                File.WriteAllText(scriptsAutoPath + "/TypeModelCreator.cs", typeModelCreatorCode);
-
-                string typeMapCode = codeGen.CreateTypeMap(uoMappings.Union(surrogateMappings).ToArray());
-                File.WriteAllText(scriptsAutoPath + "/TypeMap.cs", typeMapCode);
-
-                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
-
-                Dictionary<string, FilePathRecord> typeNameToExistingRecord = filePathStorage.PathRecords != null ?
-                    filePathStorage.PathRecords.ToDictionary(r => r.PeristentTypeName) :
-                    new Dictionary<string, FilePathRecord>();
-
-                List<FilePathRecord> records = new List<FilePathRecord>();
-                foreach (string fullTypeName in persistentFileTypeToPath.Keys)
-                {
-                    string filePath = persistentFileTypeToPath[fullTypeName];
-                    if (filePath != null)
-                    {
-                        int indexOfAssets = filePath.IndexOf("Assets");
-
-                        filePath = filePath.Substring(indexOfAssets);
-
-                        UnityObject asset = AssetDatabase.LoadAssetAtPath<UnityObject>(filePath);
-
-                        FilePathRecord record = new FilePathRecord
-                        {
-                            File = asset,
-                            PeristentTypeName = fullTypeName
-                        };
-                        records.Add(record);
-                    }
-                    else
-                    {
-                        FilePathRecord record;
-                        if (typeNameToExistingRecord.TryGetValue(fullTypeName, out record))
-                        {
-                            if (record.File == null)
-                            {
-                                Debug.LogWarningFormat("FilePathRecord for type {0} is broken", fullTypeName);
-                            }
-
-                            records.Add(record);
-                        }
-                        else
-                        {
-                            Debug.LogWarningFormat("FilePathRecord for type {0} does not exist", fullTypeName);
-                        }
-                    }
-                }
-
-                DestroyImmediate(storageGO, true);
-                storageGO = new GameObject();
-                filePathStorage = storageGO.AddComponent<FilePathStorage>();
-                filePathStorage.PathRecords = records.ToArray();
-                PrefabUtility.SaveAsPrefabAsset(storageGO, FilePathStoragePath);
-                //PrefabUtility.CreatePrefab(FilePathStoragePath, storageGO);
-                DestroyImmediate(storageGO);
+                CreatePersistentClasses();
             }
 
             EditorGUILayout.EndHorizontal();
@@ -2289,7 +1994,316 @@ namespace Battlehub.RTSaveLoad2
             EditorGUILayout.Separator();
         }
 
-     
+        public static void CreatePersistentClasses()
+        {
+            Type[] types = GetAllTypes();
+            PersistentClassMapping[] uoMappings = PersistentClassMapperGUI.GetMappings(RTSL2Path.ClassMappingsStoragePath, RTSL2Path.ClassMappingsTemplatePath);
+            PersistentClassMapping[] surrogateMappings = PersistentClassMapperGUI.GetMappings(RTSL2Path.SurrogatesMappingsStoragePath, RTSL2Path.SurrogatesMappingsTemplatePath);
+            Dictionary<Type, PersistentTemplateInfo> templates = GetPersistentTemplates(types);
+            CreatePersistentClasses(uoMappings, templates, surrogateMappings, templates);
+        }
+
+        private static Type[] GetAllTypes()
+        {
+            Type[] uoTypes;
+            Assembly[] assemblies;
+            Dictionary<string, HashSet<Type>> declaredIn;
+            Type[] types;
+            GetUOAssembliesAndTypes(out assemblies, out uoTypes);
+            uoTypes = uoTypes.Union(new[] { typeof(RuntimePrefab), typeof(RuntimeScene) }).ToArray();
+            GetSurrogateAssembliesAndTypes(uoTypes, out declaredIn, out types);
+            return uoTypes.Union(types).ToArray();
+        }
+
+        public static void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
+        {
+            CodeGen.GetUOAssembliesAndTypes(out assemblies, out types);
+
+            List<Type> allUOTypes = new List<Type>(types);
+            for (int i = 0; i < m_mostImportantUOTypes.Length; ++i)
+            {
+                allUOTypes.Remove(m_mostImportantUOTypes[i]);
+            }
+
+            types = m_mostImportantUOTypes.Union(allUOTypes.OrderBy(t => CodeGen.TypeName(t))).ToArray();
+        }
+
+        public static void GetSurrogateAssembliesAndTypes(Type[] uoTypes, out Dictionary<string, HashSet<Type>> declaredIn, out Type[] types)
+        {
+            CodeGen.GetSurrogateAssembliesAndTypes(uoTypes, out declaredIn, out types);
+
+            List<Type> allTypes = new List<Type>(types);
+
+            for (int i = 0; i < m_mostImportantSurrogateTypes.Length; ++i)
+            {
+                allTypes.Remove(m_mostImportantSurrogateTypes[i]);
+            }
+
+            allTypes.Add(typeof(UnityEventBase));
+
+            types = m_mostImportantSurrogateTypes.Union(allTypes.OrderBy(t => t.Name)).ToArray();
+        }
+
+
+        private static void CreatePersistentClasses(PersistentClassMapping[] uoMappings, Dictionary<Type, PersistentTemplateInfo> uoTemplates, PersistentClassMapping[] surrogateMappings, Dictionary<Type, PersistentTemplateInfo> surrogateTemplates)
+        {
+            Dictionary<string, string> persistentFileTypeToPath = new Dictionary<string, string>();
+            string scriptsAutoPath = Application.dataPath + RTSL2Path.UserRoot;
+            scriptsAutoPath = scriptsAutoPath + "/" + RTSL2Path.ScriptsAutoFolder;
+            if (Directory.Exists(scriptsAutoPath))
+            {
+                Directory.Delete(scriptsAutoPath, true);
+            }
+
+            Directory.CreateDirectory(scriptsAutoPath);
+            string persistentClassesPath = scriptsAutoPath + "/" + RTSL2Path.PersistentClassesFolder;
+            if (!Directory.Exists(persistentClassesPath))
+            {
+                Directory.CreateDirectory(persistentClassesPath);
+            }
+
+            string scriptsPath = Application.dataPath + RTSL2Path.UserRoot;
+            string myPersistentClassesPath = scriptsPath + "/" + RTSL2Path.PersistentCustomImplementationClasessFolder;
+            if (!Directory.Exists(myPersistentClassesPath))
+            {
+                Directory.CreateDirectory(myPersistentClassesPath);
+            }
+
+            uoMappings = uoMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
+            surrogateMappings = surrogateMappings.Where(m => Type.GetType(m.MappedAssemblyQualifiedName) != null).ToArray();
+
+            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(RTSL2Path.FilePathStoragePath, typeof(GameObject));
+            if (storageGO == null)
+            {
+                storageGO = new GameObject();
+            }
+            FilePathStorage filePathStorage = storageGO.GetComponent<FilePathStorage>();
+            if (filePathStorage == null)
+            {
+                filePathStorage = storageGO.AddComponent<FilePathStorage>();
+            }
+
+            Dictionary<string, UnityObject> typeToScript = new Dictionary<string, UnityObject>();
+            if (filePathStorage.PathRecords != null)
+            {
+                for (int i = 0; i < filePathStorage.PathRecords.Length; ++i)
+                {
+                    FilePathRecord record = filePathStorage.PathRecords[i];
+                    if (record != null)
+                    {
+                        if (record.File != null && record.PeristentTypeName != null && !typeToScript.ContainsKey(record.PeristentTypeName))
+                        {
+                            typeToScript.Add(record.PeristentTypeName, record.File);
+                        }
+                    }
+                }
+            }
+
+            HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => t.FullName));
+            CodeGen codeGen = new CodeGen();
+            for (int i = 0; i < uoMappings.Length; ++i)
+            {
+                PersistentClassMapping mapping = uoMappings[i];
+                if (mapping != null)
+                {
+                    if (!mapping.IsOn)
+                    {
+                        continue;
+                    }
+
+                    if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
+                    {
+                        continue;
+                    }
+
+                    if (mapping.CreateCustomImplementation)
+                    {
+                        if (HasCustomImplementation(codeGen, mapping))
+                        {
+                            persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, null);
+                        }
+                        else
+                        {
+                            persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping, typeToScript));
+                        }
+                    }
+                    CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, uoTemplates, typeToScript);
+
+                }
+            }
+
+            for (int i = 0; i < surrogateMappings.Length; ++i)
+            {
+                PersistentClassMapping mapping = surrogateMappings[i];
+                if (mapping != null)
+                {
+                    if (!mapping.IsOn)
+                    {
+                        continue;
+                    }
+
+                    if (hideMustHaveTypes.Contains(mapping.MappedFullTypeName))
+                    {
+                        continue;
+                    }
+
+                    if (mapping.CreateCustomImplementation)
+                    {
+                        if (HasCustomImplementation(codeGen, mapping))
+                        {
+                            persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, null);
+                        }
+                        else
+                        {
+                            persistentFileTypeToPath.Add(mapping.PersistentFullTypeName, GetCSFilePath(myPersistentClassesPath, mapping, typeToScript));
+                        }
+                    }
+
+                    CreateCSFiles(persistentClassesPath, myPersistentClassesPath, codeGen, mapping, surrogateTemplates, typeToScript);
+                }
+            }
+
+            string typeModelCreatorCode = codeGen.CreateTypeModelCreator(uoMappings.Union(surrogateMappings).ToArray());
+            File.WriteAllText(scriptsAutoPath + "/TypeModelCreator.cs", typeModelCreatorCode);
+
+            string typeMapCode = codeGen.CreateTypeMap(uoMappings.Union(surrogateMappings).ToArray());
+            File.WriteAllText(scriptsAutoPath + "/TypeMap.cs", typeMapCode);
+
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+            Dictionary<string, FilePathRecord> typeNameToExistingRecord = filePathStorage.PathRecords != null ?
+                filePathStorage.PathRecords.ToDictionary(r => r.PeristentTypeName) :
+                new Dictionary<string, FilePathRecord>();
+
+            List<FilePathRecord> records = new List<FilePathRecord>();
+            foreach (string fullTypeName in persistentFileTypeToPath.Keys)
+            {
+                string filePath = persistentFileTypeToPath[fullTypeName];
+                if (filePath != null)
+                {
+                    int indexOfAssets = filePath.IndexOf("Assets");
+
+                    filePath = filePath.Substring(indexOfAssets);
+
+                    UnityObject asset = AssetDatabase.LoadAssetAtPath<UnityObject>(filePath);
+
+                    FilePathRecord record = new FilePathRecord
+                    {
+                        File = asset,
+                        PeristentTypeName = fullTypeName
+                    };
+                    records.Add(record);
+                }
+                else
+                {
+                    FilePathRecord record;
+                    if (typeNameToExistingRecord.TryGetValue(fullTypeName, out record))
+                    {
+                        if (record.File == null)
+                        {
+                            Debug.LogWarningFormat("FilePathRecord for type {0} is broken", fullTypeName);
+                        }
+
+                        records.Add(record);
+                    }
+                    //else
+                    //{
+                    //    Debug.LogWarningFormat("FilePathRecord for type {0} does not exist", fullTypeName);
+                    //}
+                }
+            }
+
+            DestroyImmediate(storageGO, true);
+            storageGO = new GameObject();
+            filePathStorage = storageGO.AddComponent<FilePathStorage>();
+            filePathStorage.PathRecords = records.ToArray();
+
+            if(!Directory.Exists(Application.dataPath + RTSL2Path.UserPrefabsPath))
+            {
+                Directory.CreateDirectory(Application.dataPath + RTSL2Path.UserPrefabsPath);
+            }
+
+            PrefabUtility.SaveAsPrefabAsset(storageGO, RTSL2Path.FilePathStoragePath);
+            //PrefabUtility.CreatePrefab(FilePathStoragePath, storageGO);
+            DestroyImmediate(storageGO);
+        }
+
+        private static Dictionary<Type, PersistentTemplateInfo> GetPersistentTemplates(Type[] allTypes)
+        {
+            Dictionary<Type, PersistentTemplateInfo> templates = new Dictionary<Type, PersistentTemplateInfo>();
+            Dictionary<string, Type> typeNameToType = allTypes.ToDictionary(t => t.FullName);
+            Type[] templateTypes = Assembly.GetAssembly(typeof(PersistentClassMapperWindow)).GetTypes().Where(t => t.GetCustomAttributes(typeof(PersistentTemplateAttribute), false).Length != 0).ToArray();
+            for (int i = 0; i < templateTypes.Length; ++i)
+            {
+                Type templateType = templateTypes[i];
+                PersistentTemplateAttribute templateAttrib = (PersistentTemplateAttribute)templateType.GetCustomAttributes(typeof(PersistentTemplateAttribute), false)[0];
+
+                Type mappedType;
+                if (typeNameToType.TryGetValue(templateAttrib.ForType, out mappedType))
+                {
+                    MonoScript monoScript = MonoScript.FromScriptableObject(ScriptableObject.CreateInstance(templateType));
+                    if (monoScript == null)
+                    {
+                        Debug.LogWarning("Unable to find MonoScript for " + templateAttrib.ForType + ". Make sure file and type have same names");
+                        continue;
+                    }
+                    string contents = monoScript.text;
+                    string usings = contents.ToString();
+                    if (CodeGen.TryGetTemplateBody(contents, out contents) && CodeGen.TryGetTemplateUsings(usings, out usings))
+                    {
+                        PersistentTemplateInfo templateInfo = new PersistentTemplateInfo
+                        {
+                            Body = contents,
+                            FieldNames = new HashSet<string>(),
+                            RequiredTypes = new HashSet<Type>(),
+                            Usings = usings,
+                            Path = AssetDatabase.GetAssetPath(monoScript),
+                        };
+
+                        if (templateAttrib.FieldNames != null)
+                        {
+                            for (int n = 0; n < templateAttrib.FieldNames.Length; ++n)
+                            {
+                                string fieldName = templateAttrib.FieldNames[n];
+                                if (!templateInfo.FieldNames.Contains(fieldName))
+                                {
+                                    templateInfo.FieldNames.Add(fieldName);
+                                }
+                            }
+                        }
+
+                        if (templateAttrib.RequiredTypes != null)
+                        {
+                            for (int n = 0; n < templateAttrib.RequiredTypes.Length; ++n)
+                            {
+                                Type requiredType;
+                                if (typeNameToType.TryGetValue(templateAttrib.RequiredTypes[n], out requiredType) && !templateInfo.RequiredTypes.Contains(requiredType))
+                                {
+                                    templateInfo.RequiredTypes.Add(requiredType);
+                                }
+                            }
+                        }
+
+                        if (templates.ContainsKey(mappedType))
+                        {
+                            Debug.LogWarning("m_templates dictionary already contains " + mappedType.FullName);
+                        }
+                        else
+                        {
+                            templates.Add(mappedType, templateInfo);
+                        }
+                    }
+                    else
+                    {
+                        string path = AssetDatabase.GetAssetPath(monoScript);
+                        Debug.LogWarningFormat("Template {0} has invalid format", path);
+                    }
+                }
+            }
+
+            return templates;
+        }
+
         private static bool HasCustomImplementation(CodeGen codeGen, PersistentClassMapping mapping)
         {
             Type persistentType = codeGen.GetPersistentType(mapping.PersistentFullTypeName);

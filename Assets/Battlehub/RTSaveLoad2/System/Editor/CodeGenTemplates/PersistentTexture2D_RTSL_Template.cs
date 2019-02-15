@@ -20,10 +20,10 @@ namespace Battlehub.RTSaveLoad2.Internal
         //<TEMPLATE_BODY_START>
 
         [ProtoMember(1)]
-        private byte[] m_bytes;
+        public byte[] m_bytes;
 
         [ProtoMember(2)]
-        private bool m_isReadable;
+        public bool m_isReadable;
 
         public override void ReadFrom(object obj)
         {

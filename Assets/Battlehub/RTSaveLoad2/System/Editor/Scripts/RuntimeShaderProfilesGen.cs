@@ -21,21 +21,27 @@ namespace Battlehub.RTSaveLoad2
         public static void CreateProfile()
         {
             RuntimeShaderProfilesAsset asset = Create();
-            string dir = BHPath.Root + "/RTSaveLoad2";
-            string dataPath = Application.dataPath + "/";
+            string dir = RTSL2Path.UserRoot;
+            string dataPath = Application.dataPath;
 
-            if (!Directory.Exists(dataPath + dir + "/Resources_Auto"))
+            if (!Directory.Exists(dataPath + dir))
             {
-                AssetDatabase.CreateFolder("Assets/" + dir, "Resources_Auto");
+                Directory.CreateDirectory(dataPath + dir);
             }
 
-            dir = dir + "/Resources_Auto";
+            if (!Directory.Exists(dataPath + dir + "/" + RTSL2Path.LibrariesFolder))
+            {
+                AssetDatabase.CreateFolder("Assets" + dir, RTSL2Path.LibrariesFolder);
+            }
+
+            dir = dir + "/" + RTSL2Path.LibrariesFolder;
             if (!Directory.Exists(dataPath + dir + "/Resources"))
             {
-                AssetDatabase.CreateFolder("Assets/" + dir, "Resources");
+                AssetDatabase.CreateFolder("Assets" + dir, "Resources");
             }
 
-            string path = "Assets/" + BHPath.Root + "/RTSaveLoad2/Resources_Auto/Resources/RTSL2ShaderProfiles.asset";
+            dir = dir + "/Resources";
+            string path = "Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/RTSL2ShaderProfiles.asset";
             AssetDatabase.DeleteAsset(path);
             AssetDatabase.CreateAsset(asset, path);
             AssetDatabase.SaveAssets();

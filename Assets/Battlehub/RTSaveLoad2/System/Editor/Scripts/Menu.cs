@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTCommon.EditorTreeView;
 using Battlehub.Utils;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,88 @@ namespace Battlehub.RTSaveLoad2
 {
     public static class Menu
     {
-      
+        [MenuItem("Tools/Runtime SaveLoad2/Persistent Classes/Create ")]
+        private static void CreatePersistentClasses()
+        {
+            PersistentClassMapperWindow.CreatePersistentClasses();
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad2/Persistent Classes/Edit")]
+        public static void EditPersistentClasses()
+        {
+            PersistentClassMapperWindow.ShowWindow();
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Collect Scene Dependencies")]
+        private static void CreateAssetLibraryForActiveScene()
+        {
+            CreateBuiltInAssetLibrary();
+
+            Scene scene = SceneManager.GetActiveScene();
+
+            int index;
+            AssetLibraryAsset asset;
+            AssetFolderInfo folder;
+            HashSet<UnityObject> hs = ReadFromBuiltInAssetLibraries(out index, out asset, out folder);
+            HashSet<UnityObject> hs2 = ReadFromSceneAssetLibraries(scene, out index, out asset, out folder);
+
+            foreach(UnityObject obj in hs)
+            {
+                if(!hs2.Contains(obj))
+                {
+                    hs2.Add(obj);
+                }
+            }
+
+            CreateAssetLibraryForScene(scene, index, asset, folder, hs2);
+        }
+
+
+        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Create Built-In Assets Library")]
+        private static void CreateBuiltInAssetLibrary()
+        {
+            int index;
+            AssetLibraryAsset asset;
+            AssetFolderInfo folder;
+            HashSet<UnityObject> hs = ReadFromBuiltInAssetLibraries(out index, out asset, out folder);
+            CreateBuiltInAssetLibrary(index, asset, folder, hs);
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Create Shader Profiles")]
+        private static void CreateShaderProfiles()
+        {
+            RuntimeShaderProfilesGen.CreateProfile();
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad2/Build Type Model")]
+        private static void BuildTypeModel()
+        {
+            RuntimeTypeModel model = TypeModelCreator.Create();
+            string dllName = "RTTypeModel.dll";
+
+            model.Compile(new RuntimeTypeModel.CompilerOptions() { OutputPath = dllName, TypeName = "RTTypeModel" });
+
+            string srcPath = Application.dataPath.Remove(Application.dataPath.LastIndexOf("Assets")) + dllName;
+            string dstPath = Application.dataPath + RTSL2Path.UserRoot + "/" + dllName;
+            Debug.LogFormat("Done! Move {0} to {1} ...", srcPath, dstPath);
+            File.Delete(dstPath);
+            File.Move(srcPath, dstPath);
+
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad2/Build All")]
+        private static void BuildAll()
+        {
+            CreatePersistentClasses();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            Debug.Log("Persistent Classes Created");
+            CreateAssetLibraryForActiveScene();
+            Debug.Log("Asset Libraries Created");
+            CreateShaderProfiles();
+            Debug.Log("Shader Profiles Created");
+            BuildTypeModel();
+        }
 
         private static HashSet<UnityObject> ReadFromAssetLibraries(string[] guids, out int index, out AssetLibraryAsset asset, out AssetFolderInfo folder)
         {
@@ -38,7 +120,7 @@ namespace Battlehub.RTSaveLoad2
                                 hs.Add(assetInfo.Object);
                             }
 
-                            if(assetInfo.PrefabParts != null)
+                            if (assetInfo.PrefabParts != null)
                             {
                                 foreach (PrefabPartInfo prefabPart in assetInfo.PrefabParts)
                                 {
@@ -59,7 +141,7 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
 
-            if(assetLibraries.Count == 0)
+            if (assetLibraries.Count == 0)
             {
                 asset = ScriptableObject.CreateInstance<AssetLibraryAsset>();
                 index = 0;
@@ -71,7 +153,7 @@ namespace Battlehub.RTSaveLoad2
             }
 
             folder = asset.AssetLibrary.Folders.Where(f => f.depth == 0).First();
-            if(folder.Assets == null)
+            if (folder.Assets == null)
             {
                 folder.Assets = new List<AssetInfo>();
             }
@@ -81,7 +163,7 @@ namespace Battlehub.RTSaveLoad2
         private static void CreateAssetLibrary(object[] objects, string folderName, string assetLibraryName, int index, AssetLibraryAsset asset, AssetFolderInfo folder, HashSet<UnityObject> hs)
         {
             int identity = asset.AssetLibrary.Identity;
-            
+
             foreach (UnityObject obj in objects)
             {
                 if (!obj)
@@ -91,7 +173,7 @@ namespace Battlehub.RTSaveLoad2
 
                 if (hs.Contains(obj))
                 {
-                    continue; 
+                    continue;
                 }
 
                 if (obj is GameObject)
@@ -131,29 +213,32 @@ namespace Battlehub.RTSaveLoad2
                         assetInfo.Folder = folder;
                     }
                 }
-                else 
+                else
                 {
-                    AssetInfo assetInfo = new AssetInfo(obj.name, 0, identity);
-                    assetInfo.Object = obj;
-                    identity++;
-
-                    if (identity >= AssetLibraryInfo.MAX_ASSETS)
+                    if(!(obj is Component) || ((Component)obj).gameObject.IsPrefab())
                     {
-                        SaveAssetLibrary(asset, folderName, assetLibraryName, index);
-                        index++;
+                        AssetInfo assetInfo = new AssetInfo(obj.name, 0, identity);
+                        assetInfo.Object = obj;
+                        identity++;
 
-                        asset = ScriptableObject.CreateInstance<AssetLibraryAsset>();
-                        folder = asset.AssetLibrary.Folders.Where(f => f.depth == 0).First();
-                        if(folder.Assets == null)
+                        if (identity >= AssetLibraryInfo.MAX_ASSETS)
                         {
-                            folder.Assets = new List<AssetInfo>();
-                        }
-                        identity = asset.AssetLibrary.Identity;
-                    }
+                            SaveAssetLibrary(asset, folderName, assetLibraryName, index);
+                            index++;
 
-                    asset.AssetLibrary.Identity = identity;
-                    folder.Assets.Add(assetInfo);
-                    assetInfo.Folder = folder;
+                            asset = ScriptableObject.CreateInstance<AssetLibraryAsset>();
+                            folder = asset.AssetLibrary.Folders.Where(f => f.depth == 0).First();
+                            if (folder.Assets == null)
+                            {
+                                folder.Assets = new List<AssetInfo>();
+                            }
+                            identity = asset.AssetLibrary.Identity;
+                        }
+
+                        asset.AssetLibrary.Identity = identity;
+                        folder.Assets.Add(assetInfo);
+                        assetInfo.Folder = folder;
+                    }
                 }
             }
 
@@ -166,18 +251,23 @@ namespace Battlehub.RTSaveLoad2
 
         private static void SaveAssetLibrary(AssetLibraryAsset asset, string folderName, string assetLibraryName, int index)
         {
-            string dir = BHPath.Root + "/RTSaveLoad2";
-            string dataPath = Application.dataPath + "/";
+            string dir = RTSL2Path.UserRoot;
+            string dataPath = Application.dataPath;
 
-            if (!Directory.Exists(dataPath + dir + "/Resources_Auto"))
+            if (!Directory.Exists(dataPath + dir))
             {
-                AssetDatabase.CreateFolder("Assets/" + dir, "Resources_Auto");
+                Directory.CreateDirectory(dataPath + dir);
             }
 
-            dir = dir + "/Resources_Auto";
+            if (!Directory.Exists(dataPath + dir + "/" + RTSL2Path.LibrariesFolder))
+            {
+                AssetDatabase.CreateFolder("Assets" + dir, RTSL2Path.LibrariesFolder);
+            }
+
+            dir = dir + "/" + RTSL2Path.LibrariesFolder;
             if (!Directory.Exists(dataPath + dir + "/Resources"))
             {
-                AssetDatabase.CreateFolder("Assets/" + dir, "Resources");
+                AssetDatabase.CreateFolder("Assets" + dir, "Resources");
             }
 
             dir = dir + "/Resources";
@@ -189,36 +279,40 @@ namespace Battlehub.RTSaveLoad2
 
                 if (!Directory.Exists(dataPath + dir + "/" + folderNamePart))
                 {
-                    AssetDatabase.CreateFolder("Assets/" + dir, folderNamePart);
+                    AssetDatabase.CreateFolder("Assets" + dir, folderNamePart);
                 }
 
                 dir = dir + "/" + folderNamePart;
             }
-            
+
             if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(asset)))
             {
                 if (index == 0)
                 {
 
-                    AssetDatabase.CreateAsset(asset, "Assets/" + dir + "/" + assetLibraryName + ".asset");
+                    AssetDatabase.CreateAsset(asset, "Assets" + dir + "/" + assetLibraryName + ".asset");
                 }
                 else
                 {
-                    AssetDatabase.CreateAsset(asset, "Assets/" + dir + "/" + assetLibraryName + (index + 1) + ".asset");
+                    AssetDatabase.CreateAsset(asset, "Assets" + dir + "/" + assetLibraryName + (index + 1) + ".asset");
                 }
             }
-            
+
             EditorUtility.SetDirty(asset);
             AssetDatabase.SaveAssets();
         }
 
         private static HashSet<UnityObject> ReadFromSceneAssetLibraries(Scene scene, out int index, out AssetLibraryAsset asset, out AssetFolderInfo folder)
         {
-            string[] guids = AssetDatabase.FindAssets("", new[] { "Assets/" + BHPath.Root + "/RTSaveLoad2/Resources_Auto/Resources/Scenes/" + scene.name });
+            if (!Directory.Exists(Application.dataPath + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder))
+            {
+                return ReadFromAssetLibraries(new string[0], out index, out asset, out folder);
+            }
+            string[] guids = AssetDatabase.FindAssets("", new[] { "Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/Scenes/" + scene.name });
             return ReadFromAssetLibraries(guids, out index, out asset, out folder);
         }
 
-        private static void CreateAssetLibraryFromScene(Scene scene, int index, AssetLibraryAsset asset, AssetFolderInfo folder, HashSet<UnityObject> hs)
+        private static void CreateAssetLibraryForScene(Scene scene, int index, AssetLibraryAsset asset, AssetFolderInfo folder, HashSet<UnityObject> hs)
         {
             TypeMap typeMap = new TypeMap();
             AssetDB assetDB = new AssetDB();
@@ -239,7 +333,11 @@ namespace Battlehub.RTSaveLoad2
 
         private static HashSet<UnityObject> ReadFromBuiltInAssetLibraries(out int index, out AssetLibraryAsset asset, out AssetFolderInfo folder)
         {
-            string[] guids = AssetDatabase.FindAssets("", new[] { "Assets/" + BHPath.Root + "/RTSaveLoad2/Resources_Auto/Resources/BuiltInAssets"});
+            if (!Directory.Exists(Application.dataPath + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder))
+            {
+                return ReadFromAssetLibraries(new string[0], out index, out asset, out folder);
+            }
+            string[] guids = AssetDatabase.FindAssets("", new[] { "Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/BuiltInAssets" });
             return ReadFromAssetLibraries(guids, out index, out asset, out folder);
         }
 
@@ -274,10 +372,10 @@ namespace Battlehub.RTSaveLoad2
             };
 
             List<object> builtInAssets = new List<object>();
-            foreach(KeyValuePair<string, Type> kvp in builtInExtra)
+            foreach (KeyValuePair<string, Type> kvp in builtInExtra)
             {
                 UnityObject obj = AssetDatabase.GetBuiltinExtraResource(kvp.Value, kvp.Key);
-                if(obj != null)
+                if (obj != null)
                 {
                     builtInAssets.Add(obj);
                 }
@@ -292,54 +390,6 @@ namespace Battlehub.RTSaveLoad2
                 }
             }
             CreateAssetLibrary(builtInAssets.ToArray(), "BuiltInAssets", "BuiltInAssetLibrary", index, asset, folder, hs);
-        }
-
-        [MenuItem("Tools/Runtime SaveLoad2/Persistent Classes")]
-        private static void ShowMenuItem()
-        {
-            PersistentClassMapperWindow.ShowWindow();
-        }
-
-        [MenuItem("Tools/Runtime SaveLoad2/Collect Scene Dependencies")]
-        private static void AssetLibraryFromScene()
-        {
-            CreateBuiltInAssetLibrary();
-
-            Scene scene = SceneManager.GetActiveScene();
-
-            int index;
-            AssetLibraryAsset asset;
-            AssetFolderInfo folder;
-            HashSet<UnityObject> hs = ReadFromBuiltInAssetLibraries(out index, out asset, out folder);
-            HashSet<UnityObject> hs2 = ReadFromSceneAssetLibraries(scene, out index, out asset, out folder);
-
-            foreach(UnityObject obj in hs)
-            {
-                if(!hs2.Contains(obj))
-                {
-                    hs2.Add(obj);
-                }
-            }
-
-            CreateAssetLibraryFromScene(scene, index, asset, folder, hs2);
-        }
-
-
-        [MenuItem("Tools/Runtime SaveLoad2/Create BuiltInAssetLibrary")]
-        private static void CreateBuiltInAssetLibrary()
-        {
-            int index;
-            AssetLibraryAsset asset;
-            AssetFolderInfo folder;
-            HashSet<UnityObject> hs = ReadFromBuiltInAssetLibraries(out index, out asset, out folder);
-            CreateBuiltInAssetLibrary(index, asset, folder, hs);
-        }
-
-
-        [MenuItem("Tools/Runtime SaveLoad2/Create Shader Profiles")]
-        private static void CreateShaderProfiles()
-        {
-            RuntimeShaderProfilesGen.CreateProfile();
         }
     }
 

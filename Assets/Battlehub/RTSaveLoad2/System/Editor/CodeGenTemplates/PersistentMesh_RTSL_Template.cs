@@ -23,7 +23,7 @@ namespace Battlehub.RTSaveLoad2.Internal
         public IntArray[] m_tris;
 
         [ProtoMember(4)]
-        private UnityEngine.Rendering.IndexFormat indexFormat;
+        public UnityEngine.Rendering.IndexFormat indexFormat;
 
         public override object WriteTo(object obj)
         {
