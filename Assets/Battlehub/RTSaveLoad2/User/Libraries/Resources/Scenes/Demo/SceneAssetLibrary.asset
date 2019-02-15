@@ -16,7 +16,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 38
+    Identity: 40
     FolderIdentity: 4
     Folders:
     - m_ID: 0
@@ -230,6 +230,18 @@ MonoBehaviour:
         m_Name: smoke
         m_Depth: 0
         Object: {fileID: 2100000, guid: b3447251bc65b704dabf20c3b7c78b02, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 38
+        m_Name: Sky
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: f70eafef8958ff04abf086cfc61f98f5, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 39
+        m_Name: Default UI Material
+        m_Depth: 0
+        Object: {fileID: 0}
         IsEnabled: 0
         PrefabParts: []
       IsEnabled: 1

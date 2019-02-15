@@ -239,6 +239,12 @@ namespace Battlehub.RTSaveLoad2
             m_toGuid.Add(typeof(Selectable), new System.Guid("457aed80-d61b-4d55-ba3a-be8c59029c99"));
             m_toType.Add(new System.Guid("34f2fc8d-15d7-4423-8856-cd88ca45ad65"), typeof(PersistentSelectable));
             m_toType.Add(new System.Guid("457aed80-d61b-4d55-ba3a-be8c59029c99"), typeof(Selectable));
+            m_toPeristentType.Add(typeof(Skybox), typeof(PersistentSkybox));
+            m_toUnityType.Add(typeof(PersistentSkybox), typeof(Skybox));
+            m_toGuid.Add(typeof(PersistentSkybox), new System.Guid("0e21bf45-4e5d-45b6-8520-d33e3e1937f7"));
+            m_toGuid.Add(typeof(Skybox), new System.Guid("55d196ce-e96d-4307-bd92-5cf4a66271a5"));
+            m_toType.Add(new System.Guid("0e21bf45-4e5d-45b6-8520-d33e3e1937f7"), typeof(PersistentSkybox));
+            m_toType.Add(new System.Guid("55d196ce-e96d-4307-bd92-5cf4a66271a5"), typeof(Skybox));
             m_toPeristentType.Add(typeof(Sprite), typeof(PersistentSprite));
             m_toUnityType.Add(typeof(PersistentSprite), typeof(Sprite));
             m_toGuid.Add(typeof(PersistentSprite), new System.Guid("9136e7d9-9326-4d80-b77c-dfb8c178d16b"));

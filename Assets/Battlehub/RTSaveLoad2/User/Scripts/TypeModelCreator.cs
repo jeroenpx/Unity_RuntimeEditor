@@ -68,7 +68,8 @@ namespace Battlehub.RTSaveLoad2
                 .AddSubType(1026, typeof(PersistentLight))
                 .AddSubType(1027, typeof(PersistentMonoBehaviour))
                 .AddSubType(1030, typeof(PersistentAnimator))
-                .AddSubType(1031, typeof(PersistentCanvas));
+                .AddSubType(1031, typeof(PersistentCanvas))
+                .AddSubType(1032, typeof(PersistentSkybox));
             model.Add(typeof(PersistentButton), true);
             model.Add(typeof(PersistentCanvas), true);
             model.Add(typeof(PersistentCollider), true)
@@ -114,6 +115,7 @@ namespace Battlehub.RTSaveLoad2
             model.Add(typeof(PersistentRuntimeAnimatorController), true);
             model.Add(typeof(PersistentSelectable), true)
                 .AddSubType(1025, typeof(PersistentButton));
+            model.Add(typeof(PersistentSkybox), true);
             model.Add(typeof(PersistentSprite), true);
             model.Add(typeof(PersistentSpriteRenderer), true);
             model.Add(typeof(PersistentText), true);
