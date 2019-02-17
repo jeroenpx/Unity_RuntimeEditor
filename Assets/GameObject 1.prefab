@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7383303975992391972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1429472937011481764}
+  - component: {fileID: 267014141937155580}
+  - component: {fileID: 5050706302822505136}
+  m_Layer: 0
+  m_Name: GameObject 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1429472937011481764
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7383303975992391972}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.706291, y: 1.9596854, z: -16.550411}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &267014141937155580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7383303975992391972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342006ed4ae18064ab1ec6125595aa71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Component: {fileID: 0}
+  m_color: {r: 0, g: 0, b: 0, a: 0}
+  m_gameObject: {fileID: 0}
+  m_vector2Field: {x: 0, y: 0}
+  m_vector4Field: {x: 0, y: 0, z: 0, w: 0}
+  m_vector4FieldVeryLLLLLongLabel: {x: 0, y: 0, z: 0, w: 0}
+  m_string: 
+  m_quat: {x: 0, y: 0, z: 0, w: 0}
+  m_object: {fileID: 0}
+  floatList: []
+  gameObjectsList: []
+  m_intValue: 0
+  m_floatValue: 0
+  m_customType:
+    m_list: []
+    intValue: 0
+  m_bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_selectObj: {fileID: 0}
+  m_selectObj2: {fileID: 0}
+--- !u!33 &5050706302822505136
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7383303975992391972}
+  m_Mesh: {fileID: 4300000, guid: 97c5be9074eeeaf499c373f8dd0131c6, type: 3}

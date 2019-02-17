@@ -263,7 +263,10 @@ namespace Battlehub.RTEditor
                     }
                     else
                     {
-                        m_project.LoadedScene = assetItem[0];
+                        if(assetItem.Length > 0)
+                        {
+                            m_project.LoadedScene = assetItem[0];
+                        }
                     }
                 });
             }
