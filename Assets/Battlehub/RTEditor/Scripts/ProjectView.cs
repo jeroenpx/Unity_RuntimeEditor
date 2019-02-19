@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using Battlehub.RTCommon;
 using System.Linq;
 using Battlehub.UIControls;
-using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTSL.Interface;
 using Battlehub.UIControls.DockPanels;
 
 namespace Battlehub.RTEditor
@@ -32,7 +32,7 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
             if(m_project == null)
             {
-                Debug.LogWarning("RTSL2Deps.Get.Project is null");
+                Debug.LogWarning("RTSLDeps.Get.Project is null");
                 Destroy(gameObject);
                 return;
             }

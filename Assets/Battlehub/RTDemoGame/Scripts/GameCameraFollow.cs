@@ -28,13 +28,13 @@ namespace Battlehub.Cubeman
             }
         }
 		// The distance in the x-z plane to the target
-		public float distance = 10.0f;
+		public float distance = 5.0f;
 		// the height we want the camera to be above the target
 		public float height = 5.0f;
 
-		public float rotationDamping;
+		public float rotationDamping = 12.0f;
 
-        public float heightDamping;
+        public float heightDamping = 2.0f;
 
 		// Use this for initialization
 		void Start()

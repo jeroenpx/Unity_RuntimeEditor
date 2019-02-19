@@ -171,7 +171,7 @@ namespace Battlehub.UIControls
         }
 
         private bool m_canDrop = true;
-        public bool CanDrop
+        public bool CanBeParent
         {
             get { return m_canDrop; }
             set { m_canDrop = value; }
@@ -348,7 +348,7 @@ namespace Battlehub.UIControls
             RaiseItemDataBinding(args);
             itemContainer.CanEdit = args.CanEdit;
             itemContainer.CanDrag = args.CanDrag;
-            itemContainer.CanDrop = args.CanDrop;
+            itemContainer.CanDrop = args.CanBeParent;
         }
 
         protected void RaiseItemDataBinding(TDataBindingArgs args)

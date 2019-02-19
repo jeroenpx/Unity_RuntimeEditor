@@ -1,5 +1,5 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTSL.Interface;
 using Battlehub.UIControls;
 using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
@@ -627,7 +627,7 @@ namespace Battlehub.RTEditor
             }
 
             Editor.IsBusy = true;
-            m_project.Create(folder, (error, projectItem) => Editor.IsBusy = false);
+            m_project.CreateFolder(folder, (error, projectItem) => Editor.IsBusy = false);
         }
 
         private void CreateMaterial(string arg)

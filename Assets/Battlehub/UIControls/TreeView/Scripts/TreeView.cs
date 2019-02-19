@@ -351,7 +351,7 @@ namespace Battlehub.UIControls
             treeViewItem.CanExpand = args.HasChildren;
             treeViewItem.CanEdit = args.CanEdit;
             treeViewItem.CanDrag = args.CanDrag;
-            treeViewItem.CanDrop = args.CanDrop;
+            treeViewItem.CanDrop = args.CanBeParent;
         }
 
         protected override bool CanDrop(ItemContainer[] dragItems, ItemContainer dropTarget)

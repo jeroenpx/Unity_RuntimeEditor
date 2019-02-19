@@ -693,6 +693,7 @@ namespace Battlehub.UIControls
                 treeViewItem.CanExpand = args.HasChildren;
                 treeViewItem.CanEdit = CanEdit && args.CanEdit;
                 treeViewItem.CanDrag = CanDrag && args.CanDrag;
+                treeViewItem.CanBeParent = args.CanBeParent;
                 treeViewItem.UpdateIndent();
             }
             else

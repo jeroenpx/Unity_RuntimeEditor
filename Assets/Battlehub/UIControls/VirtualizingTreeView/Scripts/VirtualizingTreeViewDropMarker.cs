@@ -93,7 +93,7 @@ namespace Battlehub.UIControls
 
             if (!m_treeView.CanReorder)
             {
-                if (!tvItem.CanDrop)
+                if (!tvItem.CanBeParent)
                 {
                     return;
                 }
@@ -117,7 +117,7 @@ namespace Battlehub.UIControls
                     }
                     else
                     {
-                        if (!tvItem.CanDrop)
+                        if (!tvItem.CanBeParent)
                         {
                             return;
                         }

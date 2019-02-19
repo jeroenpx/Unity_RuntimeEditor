@@ -41,7 +41,7 @@ namespace Battlehub.Cubeman
 
         private void RuntimeStart()
         {
-            StartGame();
+            StartCoroutine(StartGame());
         }
 
         private void OnRuntimeDestroy()
@@ -77,18 +77,12 @@ namespace Battlehub.Cubeman
         private void OnRuntimeEditorClosed()
         {
             enabled = true;
-            StartGame();
+            StartCoroutine(StartGame());
         }
 
-        private void Awake()
+        private void Start()
         {
             m_rteState = IOC.Resolve<IRTEState>();
-            if(m_rteState == null)
-            {
-                Debug.LogWarning("Unable to resolve IRTEState");
-                Destroy(gameObject);
-                return;
-            }
 
             if (BtnReplay != null)
             {
@@ -98,11 +92,11 @@ namespace Battlehub.Cubeman
             {
                 GameUI.SetActive(false);
             }
-        
-            if (!m_rteState.IsCreated)
+
+            if (m_rteState == null || !m_rteState.IsCreated)
             {
-                StartGame();
-            }        
+                StartCoroutine(StartGame());
+            }
         }
 
         private void OnDestroy()
@@ -125,14 +119,35 @@ namespace Battlehub.Cubeman
             }
         }
 
-        private void StartGame()
+        private IEnumerator StartGame()
         {
+            DestroyStoredCharacters();
+
+            yield return new WaitForEndOfFrame();
+
             if (GameUI != null)
             {
                 GameUI.SetActive(true);
             }
 
-            if(m_storedCharacters != null)
+            GameCharacter[] characters = FindObjectsOfType<GameCharacter>().Where(g => {
+                ExposeToEditor obj = g.GetComponent<ExposeToEditor>();
+                return obj != null && !obj.MarkAsDestroyed;
+            }).OrderBy(c => c.name).ToArray();
+
+            for (int i = 0; i < characters.Length; ++i)
+            {
+                characters[i].Game = this;
+                characters[i].IsActive = true;
+            }
+
+            SaveCharactersInInitalState(characters);
+            InitializeGame(characters);
+        }
+
+        private void DestroyStoredCharacters()
+        {
+            if (m_storedCharacters != null)
             {
                 for (int i = 0; i < m_storedCharacters.Length; ++i)
                 {
@@ -143,15 +158,6 @@ namespace Battlehub.Cubeman
                     }
                 }
             }
-            
-            GameCharacter[] characters = FindObjectsOfType<GameCharacter>().Where(g => g.GetComponent<ExposeToEditor>() != null).OrderBy(c => c.name).ToArray();
-            for(int i = 0; i < characters.Length; ++i)
-            {
-                characters[i].Game = this;
-                characters[i].IsActive = true;
-            }
-            SaveCharactersInInitalState(characters);
-            InitializeGame(characters);
         }
 
         private void StopGame()
@@ -195,6 +201,14 @@ namespace Battlehub.Cubeman
         {
             m_gameOver = false;
             m_playerCamera = FindObjectOfType<GameCameraFollow>();
+            if(m_playerCamera == null)
+            {
+                if(Camera.main != null)
+                {
+                    m_playerCamera = Camera.main.gameObject.AddComponent<GameCameraFollow>();
+                }
+            }
+
             if (m_playerCamera != null)
             {
                 Canvas canvas = GetComponentInChildren<Canvas>();

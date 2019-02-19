@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
-using Battlehub.RTSaveLoad2.Interface;
+using Battlehub.RTSL.Interface;
 using Battlehub.Utils;
 using Battlehub.UIControls.MenuControl;
 using System.Collections.Generic;
@@ -743,7 +743,7 @@ namespace Battlehub.RTEditor
             AddItem(parentFolder, folder, existingNames);
 
             Editor.IsBusy = true;
-            m_project.Create(folder, (error, projectItem) => Editor.IsBusy = false);
+            m_project.CreateFolder(folder, (error, projectItem) => Editor.IsBusy = false);
         }
 
         private void DeleteFolder(string arg)

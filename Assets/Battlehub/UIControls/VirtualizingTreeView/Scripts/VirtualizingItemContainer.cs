@@ -19,7 +19,7 @@ namespace Battlehub.UIControls
         [HideInInspector]
         public bool CanEdit = true;
         [HideInInspector]
-        public bool CanDrop = true;
+        public bool CanBeParent = true;
         [HideInInspector]
         public bool CanSelect = true;
 

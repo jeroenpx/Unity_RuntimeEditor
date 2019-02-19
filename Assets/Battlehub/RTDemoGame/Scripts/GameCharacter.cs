@@ -49,10 +49,14 @@ namespace Battlehub.Cubeman
             }
         }
 
-     
         private void Awake()
         {
             m_userControl = GetComponent<CubemanUserControl>();
+        }
+
+        private void Start()
+        {
+            
             m_soul = transform.Find("Soul");
             m_skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             m_rigidBody = GetComponent<Rigidbody>();

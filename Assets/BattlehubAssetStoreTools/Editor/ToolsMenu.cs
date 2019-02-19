@@ -1,4 +1,4 @@
-﻿using Battlehub.RTSaveLoad2;
+﻿using Battlehub.RTSL;
 using System.IO;
 using UnityEditor;
 
@@ -9,10 +9,10 @@ namespace Battlehub.AssetStoreTools
         [MenuItem("Asset Store Tools/ RT SaveLoad Clean")]
         public static void Clean()
         {
-            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSaveLoad2_Data/CustomImplementation");
-            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSaveLoad2_Data/Mappings");
-            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSaveLoad2_Data/Scripts");
-            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSaveLoad2_Data/RTSLTypeModel.dll");
+            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/CustomImplementation");
+            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/Mappings");
+            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/Scripts");
+            AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/RTSLTypeModel.dll");
 
         }
     }

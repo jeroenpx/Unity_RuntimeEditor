@@ -116,7 +116,7 @@ namespace Battlehub.RTEditor
         {
             if (m_instance != null)
             {
-                Debug.LogWarning("AnotherInstance of RTSL2 exists");
+                Debug.LogWarning("AnotherInstance of RTSL exists");
             }
             m_instance = this;
             AwakeOverride();
