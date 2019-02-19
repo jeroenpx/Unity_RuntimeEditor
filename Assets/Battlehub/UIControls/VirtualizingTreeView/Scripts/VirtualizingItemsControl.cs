@@ -2141,6 +2141,12 @@ namespace Battlehub.UIControls
 
         protected virtual void Remove(object[] items)
         {
+            items = items.Where(item => m_scrollRect.Items.Contains(item)).ToArray();
+            if(items.Length == 0)
+            {
+                return;
+            }
+
             if (ItemsRemoving != null)
             {
                 ItemsCancelArgs args = new ItemsCancelArgs(items.ToList());

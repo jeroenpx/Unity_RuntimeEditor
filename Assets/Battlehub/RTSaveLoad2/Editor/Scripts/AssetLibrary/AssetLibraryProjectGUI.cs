@@ -259,6 +259,9 @@ namespace Battlehub.RTSaveLoad2
                 {
               
                     string path = AssetDatabase.GetAssetPath(dragged_object);
+
+                    
+
                     if (!string.IsNullOrEmpty(path) && File.Exists(path))
                     {
                         if (!outside)
@@ -330,7 +333,7 @@ namespace Battlehub.RTSaveLoad2
             foreach (string assetGuid in assetGuids)
             {
                 string assetPath = AssetDatabase.GUIDToAssetPath(assetGuid);
-                if (path == Path.GetDirectoryName(assetPath))
+                if (Path.GetFullPath(path) == Path.GetFullPath(Path.GetDirectoryName(assetPath)))
                 {
                     UnityObject asset = AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityObject));
                     assets.Add(asset);

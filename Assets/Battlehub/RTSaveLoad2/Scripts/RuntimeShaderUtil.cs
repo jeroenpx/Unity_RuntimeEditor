@@ -15,7 +15,7 @@ namespace Battlehub.RTSaveLoad2
         
         public RuntimeShaderUtil()
         {
-            RuntimeShaderProfilesAsset asset = Resources.Load<RuntimeShaderProfilesAsset>("RTSL2ShaderProfiles");
+            RuntimeShaderProfilesAsset asset = Resources.Load<RuntimeShaderProfilesAsset>("Lists/ShaderProfiles");
             if(asset == null)
             {
                 Debug.LogError("Unable to find RuntimeShaderProfilesAsset. Click Tools->Runtime SaveLoad2->Libraries->Create Shader Profiles");

@@ -45,7 +45,7 @@ namespace Battlehub.RTSaveLoad2
         {
             if(Asset != null)
             {
-                if(!EditorApplication.isPlayingOrWillChangePlaymode)
+                //if(!EditorApplication.isPlayingOrWillChangePlaymode)
                 {
                     SaveAsset();
                 }

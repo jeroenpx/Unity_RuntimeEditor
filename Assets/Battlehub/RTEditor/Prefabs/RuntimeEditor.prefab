@@ -3761,7 +3761,7 @@ MonoBehaviour:
   m_colors:
     DisabledColor:
       serializedVersion: 2
-      rgba: 2155905152
+      rgba: 2189459584
     XColor:
       serializedVersion: 2
       rgba: 4281157307
@@ -5353,12 +5353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302b7c7acc0328f499e38885f86c1aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_assetLibaries:
-  - Library1
-  - Library2
-  - Library3
-  - Library4
-  - Library5
+  m_staticAssetLibraries: {fileID: 0}
   m_sceneDepsLibrary: 
   m_builtInLibrary: 
   m_dynamicPrefabsRoot: {fileID: 0}

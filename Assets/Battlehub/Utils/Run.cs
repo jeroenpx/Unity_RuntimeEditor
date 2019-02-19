@@ -34,7 +34,7 @@ namespace Battlehub.Utils
         {
             if (m_instance != null)
             {
-                Debug.LogWarning("Another instance of Animation already exist");
+                Debug.Log("Another instance of Animation already exist");
             }
             m_instance = this;
             m_animations = new List<IAnimationInfo>();

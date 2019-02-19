@@ -26,16 +26,17 @@ namespace Battlehub.RTHandles
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
-            m_editor.IsOpenedChanged += OnIsOpeneChanged;
+            m_editor.IsOpenedChanged += OnIsOpenedChanged;
             m_exposeToEditor = GetComponent<ExposeToEditor>();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
         }
+
 
         private void OnDestroy()
         {
             if(m_editor != null)
             {
-                m_editor.IsOpenedChanged -= OnIsOpeneChanged;
+                m_editor.IsOpenedChanged -= OnIsOpenedChanged;
             }
         }
 
@@ -105,13 +106,15 @@ namespace Battlehub.RTHandles
         }
 
 
-        private void OnIsOpeneChanged()
+        private void OnIsOpenedChanged()
         {
             if (m_editor != null && !m_editor.IsOpened)
             {
                 Destroy(this);
             }
         }
+
+      
 
     }
 }

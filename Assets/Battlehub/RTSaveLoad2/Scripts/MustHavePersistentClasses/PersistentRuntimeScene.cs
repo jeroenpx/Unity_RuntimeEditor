@@ -153,11 +153,18 @@ namespace Battlehub.RTSaveLoad2
                     Type uoType = m_typeMap.ToUnityType(asset.GetType());
                     if (uoType != null)
                     {
-                        UnityObject assetInstance = factory.CreateInstance(uoType, asset);
-                        if(assetInstance != null)
+                        if(factory.CanCreateInstance(uoType, asset))
                         {
-                            assetInstances[i] = assetInstance;
-                            idToUnityObj.Add(AssetIdentifiers[i], assetInstance);
+                            UnityObject assetInstance = factory.CreateInstance(uoType, asset);
+                            if (assetInstance != null)
+                            {
+                                assetInstances[i] = assetInstance;
+                                idToUnityObj.Add(AssetIdentifiers[i], assetInstance);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Unable to create object of type " + uoType.ToString());
                         }
                     }
                     else

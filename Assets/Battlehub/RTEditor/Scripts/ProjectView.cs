@@ -172,11 +172,12 @@ namespace Battlehub.RTEditor
             {
                 m_windowManager.MessageBox("Unable to remove", error.ErrorText);
             }
-            m_projectTree.RemoveProjectItemsFromTree(result);
+           
         }
 
         private void OnDeleteCompleted(Error error, ProjectItem[] result)
         {
+            m_projectTree.RemoveProjectItemsFromTree(result);
             m_projectTree.SelectRootIfNothingSelected();
 
             if(Editor.Selection.activeObject != null)
@@ -257,7 +258,11 @@ namespace Battlehub.RTEditor
                 }
 
                 StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, m_resourcePreview));
+
+                bool wasEnabled = Editor.Selection.Enabled;
+                Editor.Selection.Enabled = false;
                 m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
+                Editor.Selection.Enabled = true;
             });
 
         }

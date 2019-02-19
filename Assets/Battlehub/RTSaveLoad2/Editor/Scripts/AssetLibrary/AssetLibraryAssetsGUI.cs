@@ -641,6 +641,8 @@ namespace Battlehub.RTSaveLoad2
                             else
                             {
                                 bool moveToNewLocation = MoveToNewLocationDialog(new[] { m_pickedObject }, m_folders[0]);
+
+
                                 AddAssetToFolder(new[] { m_pickedObject }, m_folders[0], moveToNewLocation);
                             }
                         }

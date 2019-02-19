@@ -73,7 +73,7 @@ namespace Battlehub.RTSaveLoad2
         }
 
 
-        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Create Built-In Assets Library")]
+        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Update Built-In Assets Library")]
         private static void CreateBuiltInAssetLibrary()
         {
             int index;
@@ -83,16 +83,39 @@ namespace Battlehub.RTSaveLoad2
             CreateBuiltInAssetLibrary(index, asset, folder, hs);
         }
 
-        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Create Shader Profiles")]
+        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Update Shader Profiles")]
         private static void CreateShaderProfiles()
         {
             RuntimeShaderProfilesGen.CreateProfile();
         }
 
-        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Create Asset Libraries List")]
+        [MenuItem("Tools/Runtime SaveLoad2/Libraries/Update Asset Libraries List")]
         private static void CreateAssetLibrariesList()
         {
-            AssetLibrariesListGen.CreateList();
+            AssetLibrariesListAsset asset = AssetLibrariesListGen.UpdateList();
+            Selection.activeObject = asset;
+            EditorGUIUtility.PingObject(asset);
+        }
+
+        [MenuItem("Assets/Create/Runtime Asset Library", priority = 0)]
+        private static void CreateAssetLibrary()
+        {
+            AssetLibraryAsset asset = ScriptableObject.CreateInstance<AssetLibraryAsset>();
+
+            int identity = AssetLibrariesListGen.GetIdentity();
+            asset.Ordinal = identity;
+
+            string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+            string name = "/AssetLibrary" + ((identity == 0) ? "" : identity.ToString());
+            string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + name + ".asset");
+
+            AssetDatabase.CreateAsset(asset, assetPathAndName);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+                        
+            Selection.activeObject = asset;
+
+            AssetLibrariesListGen.UpdateList(identity + 1);
         }
 
         [DidReloadScripts]
@@ -103,13 +126,13 @@ namespace Battlehub.RTSaveLoad2
                 EditorPrefs.SetBool("RTSLBuildAll", false);
 
                 CreateAssetLibraryForActiveScene();
-                Debug.Log("Asset Libraries Created");
+                Debug.Log("Asset Libraries Updated");
 
                 CreateAssetLibrariesList();
-                Debug.Log("Asset Libraries List Created");
+                Debug.Log("Asset Libraries List Updated");
 
                 CreateShaderProfiles();
-                Debug.Log("Shader Profiles Created");
+                Debug.Log("Shader Profiles Updated");
 
                 EditorUtility.DisplayProgressBar("Build All", "Building Type Model...", 0.66f);
                 BuildTypeModel();
@@ -129,7 +152,7 @@ namespace Battlehub.RTSaveLoad2
             Selection.activeObject = AssetDatabase.LoadAssetAtPath("Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.ScriptsAutoFolder, typeof(UnityObject));
             EditorGUIUtility.PingObject(Selection.activeObject);
 
-            EditorUtility.DisplayProgressBar("Build All", "Creating asset libraries and shader profiles", 0.33f);
+            EditorUtility.DisplayProgressBar("Build All", "Updating asset libraries and shader profiles", 0.33f);
             EditorPrefs.SetBool("RTSLBuildAll", true);
         }
 

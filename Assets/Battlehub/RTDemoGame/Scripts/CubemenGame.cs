@@ -76,8 +76,8 @@ namespace Battlehub.Cubeman
 
         private void OnRuntimeEditorClosed()
         {
-            StartGame();
             enabled = true;
+            StartGame();
         }
 
         private void Awake()
@@ -209,6 +209,7 @@ namespace Battlehub.Cubeman
                 GameCharacter character = characters[i];
                 character.transform.SetParent(null);
                 character.gameObject.SetActive(true);
+                character.HandleInput = false;
 
                 ExposeToEditor exposeToEditor = character.GetComponent<ExposeToEditor>();
                 if (!exposeToEditor)

@@ -14,32 +14,13 @@ namespace Battlehub.RTSaveLoad2
             RegisterAutoTypes(model);
             RegisterUserDefinedTypes(model);
 
-            Type[] serializableTypes = Reflection.GetAllFromCurrentAssembly()
-              .Where(type => type.IsDefined(typeof(ProtoContractAttribute), false)).ToArray();
-
             MetaType primitiveContract = model.Add(typeof(PrimitiveContract), false);
-
             int fieldNumber = 16;
-            foreach (Type type in serializableTypes)
-            {
-                if (type.IsGenericType())
-                {
-                    continue;
-                }
-                Type derivedType = typeof(PrimitiveContract<>).MakeGenericType(type.MakeArrayType());
-                primitiveContract.AddSubType(fieldNumber, derivedType);
-                fieldNumber++;
-                model.Add(derivedType, true);
+           
+            //NOTE: Items should be added to TypeModel in exactly the same order!!!
+            //It is allowed to append new types, but not to insert new types in the middle.
 
-                derivedType = typeof(PrimitiveContract<>).MakeGenericType(type);
-                primitiveContract.AddSubType(fieldNumber, derivedType);
-                fieldNumber++;
-                model.Add(derivedType, true);
-
-                model.Add(typeof(List<>).MakeGenericType(type), true);
-            }
-
-            Type[] primitiveTypes = new[] {
+            Type[] types = new[] {
                 typeof(bool),
                 typeof(char),
                 typeof(byte),
@@ -52,9 +33,11 @@ namespace Battlehub.RTSaveLoad2
                 typeof(string),
                 typeof(float),
                 typeof(double),
-                typeof(decimal) };
+                typeof(decimal),
+                typeof(PersistentColor),
+                typeof(PersistentVector4)};
 
-            foreach (Type type in primitiveTypes)
+            foreach (Type type in types)
             {
                 if (type.IsGenericType())
                 {

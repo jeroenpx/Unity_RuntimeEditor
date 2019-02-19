@@ -7,8 +7,32 @@ namespace Battlehub.RTSaveLoad2
 {
     public class AssetLibrariesListGen
     {
-        public static void CreateList()
+        public static int GetIdentity()
         {
+            string path = "Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/Lists/AssetLibrariesList.asset";
+            AssetLibrariesListAsset list = AssetDatabase.LoadAssetAtPath<AssetLibrariesListAsset>(path);
+            if(list == null)
+            {
+                return 0;
+            }
+
+            if(list.Identity >= AssetLibraryInfo.STATICLIB_LAST)
+            {
+                Debug.LogError("Asset Lib identifiers exhausted");
+                return 0;
+            }
+
+            return list.Identity;
+        }
+
+
+        public static AssetLibrariesListAsset UpdateList(int identity = 0)
+        {
+            if(identity == 0)
+            {
+                identity = GetIdentity();
+            }
+            
             string dir = RTSL2Path.UserRoot;
             string dataPath = Application.dataPath;
 
@@ -29,70 +53,62 @@ namespace Battlehub.RTSaveLoad2
             }
 
             dir = dir + "/Resources";
-            string path = "Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/RTSL2AssetLibrariesList.asset";
 
-            AssetLibrariesListAsset asset = Create(path);
+            if (!Directory.Exists(dataPath + dir + "/Lists"))
+            {
+                AssetDatabase.CreateFolder("Assets" + dir, "Lists");
+            }
+            dir = dir + "/Lists";
+
+            string path = "Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/Lists/AssetLibrariesList.asset";
+
+            AssetLibrariesListAsset asset = Create();
+            asset.Identity = identity;
+            
             AssetDatabase.DeleteAsset(path);
             AssetDatabase.CreateAsset(asset, path);
             AssetDatabase.SaveAssets();
 
-            Selection.activeObject = asset;
-            EditorGUIUtility.PingObject(asset);
+            return asset;
         }
 
-        private static AssetLibrariesListAsset Create(string path)
+        private static AssetLibrariesListAsset Create()
         {
-            AssetLibrariesListAsset asset = AssetDatabase.LoadAssetAtPath<AssetLibrariesListAsset>(path);
-            if(asset == null)
-            {
-                asset = ScriptableObject.CreateInstance<AssetLibrariesListAsset>();
-                asset.List = new List<AssetLibraryListEntry>();
-            }
+            AssetLibrariesListAsset asset = ScriptableObject.CreateInstance<AssetLibrariesListAsset>();
+            asset.List = new List<AssetLibraryListEntry>();
 
-            Dictionary<AssetLibraryAsset, int> assetLibToOrdinal = new Dictionary<AssetLibraryAsset, int>();
-            for(int i = 0; i < asset.List.Count; ++i)
-            {
-                AssetLibraryListEntry entry = asset.List[i];
-                if(entry.Library != null)
-                {
-                    if(!assetLibToOrdinal.ContainsKey(entry.Library))
-                    {
-                        assetLibToOrdinal.Add(entry.Library, entry.Ordinal);
-                    }
-                }
-            }
-            
             string[] assetLibraries = AssetDatabase.FindAssets("t:AssetLibraryAsset");
             for(int i = 0; i < assetLibraries.Length; ++i)
             {
-                //string assetLib = assetLibraries[i];
+                string assetLib = assetLibraries[i];
 
-                //assetLib = AssetDatabase.GUIDToAssetPath(assetLib);
-
-                //if(assetLib.StartsWith("Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/Scenes/"))
-                //{
-                //    continue;
-                //}
-
-                //if (assetLib.StartsWith("Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/BuiltInAssets"))
-                //{
-                //    continue;
-                //}
-
-                //if(assetLib.Contains("/Resources/"))
-                //{
-                //    Debug.LogWarning("Move " + assetLib + " to Resources folder");
-                //    continue;
-                //}
-
-                //int index = assetLib.IndexOf("/Resources/");
-                //assetLib = assetLib.Remove(0, index + 11);
+                assetLib = AssetDatabase.GUIDToAssetPath(assetLib);
 
                 
+                
 
-                //asset.List.Add(entry);
+                if (assetLib.StartsWith("Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/Scenes/"))
+                {
+                    continue;
+                }
 
-                //Debug.Log(assetLib);
+                if (assetLib.StartsWith("Assets" + RTSL2Path.UserRoot + "/" + RTSL2Path.LibrariesFolder + "/Resources/BuiltInAssets"))
+                {
+                    continue;
+                }
+
+                if (!assetLib.Contains("/Resources/"))
+                {
+                    Debug.LogWarning("Move " + assetLib + " to Resources folder");
+                    continue;
+                }
+
+                AssetLibraryAsset assetLibAsset = AssetDatabase.LoadAssetAtPath<AssetLibraryAsset>(assetLib);
+
+                int index = assetLib.IndexOf("/Resources/");
+                assetLib = assetLib.Remove(0, index + 11);
+
+                asset.List.Add(new AssetLibraryListEntry { Library = assetLib, Ordinal = assetLibAsset.Ordinal });
             }
 
             return asset;

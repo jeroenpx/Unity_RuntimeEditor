@@ -68,10 +68,11 @@ namespace Battlehub.RTSaveLoad2
         }
     }
 
-    [CreateAssetMenu(fileName = "AssetLibrary", menuName = "Runtime Asset Library/Create")]
     public class AssetLibraryAsset : ScriptableObject
     {
+        [SerializeField]
         private int m_offset;
+        [SerializeField]
         private int m_ordinal;
         public int Ordinal
         {

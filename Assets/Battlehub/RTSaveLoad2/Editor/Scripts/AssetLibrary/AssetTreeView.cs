@@ -24,7 +24,7 @@ namespace Battlehub.RTSaveLoad2
         {
             Name,
             PersistentID,
-            ExposeToEditor,
+           // ExposeToEditor,
         }
 
         private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropInside;
@@ -154,14 +154,14 @@ namespace Battlehub.RTSaveLoad2
                         EditorGUI.LabelField(cellRect, item.data.PersistentID.ToString());
                     }
                     break;
-                case Columns.ExposeToEditor:
-                    {
-                        if(item.data.depth == 0)
-                        {
-                            item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
-                        }
-                    }
-                    break;
+                //case Columns.ExposeToEditor:
+                //    {
+                //        if(item.data.depth == 0)
+                //        {
+                //            item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
+                //        }
+                //    }
+                    //break;
             }
         }
 
@@ -338,17 +338,17 @@ namespace Battlehub.RTSaveLoad2
                     allowToggleVisibility = false
                 },
 
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("Visible"),
-                    headerTextAlignment = TextAlignment.Left,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Center,
-                    width = 70,
-                    minWidth = 70,
-                    autoResize = false,
-                    allowToggleVisibility = false
-                },
+                //new MultiColumnHeaderState.Column
+                //{
+                //    headerContent = new GUIContent("Visible"),
+                //    headerTextAlignment = TextAlignment.Left,
+                //    sortedAscending = true,
+                //    sortingArrowAlignment = TextAlignment.Center,
+                //    width = 70,
+                //    minWidth = 70,
+                //    autoResize = false,
+                //    allowToggleVisibility = false
+                //},
 
             };
 

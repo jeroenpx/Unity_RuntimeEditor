@@ -340,7 +340,7 @@ namespace Battlehub.RTCommon
             if (obj.Colliders == null || obj.Colliders.Length == 0)
             {
                 List<Collider> colliders = new List<Collider>();
-                Rigidbody rigidBody = obj.BoundsObject.GetComponent<Rigidbody>();
+                Rigidbody rigidBody = obj.BoundsObject.GetComponentInParent<Rigidbody>();
 
                 bool isRigidBody = rigidBody != null;
                 if (obj.EffectiveBoundsType == BoundsType.Any)

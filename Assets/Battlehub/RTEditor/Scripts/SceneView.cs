@@ -13,6 +13,7 @@ namespace Battlehub.RTEditor
         private Plane m_dragPlane;
         private IProject m_project;
         private GameObject m_prefabInstance;
+        private Vector3 m_point;
         private GameObject m_dropTarget;
         private AssetItem m_dragItem;
      
@@ -43,7 +44,11 @@ namespace Battlehub.RTEditor
 
         public override void DragEnter(object[] dragObjects, PointerEventData eventData)
         {
-            base.DragEnter(dragObjects, eventData);
+            if (m_prefabInstance != null)
+            {
+                return;
+            }
+
             if(Editor.DragDrop.DragObjects[0] is AssetItem)
             {
                 AssetItem assetItem = (AssetItem)Editor.DragDrop.DragObjects[0];
@@ -74,7 +79,16 @@ namespace Battlehub.RTEditor
                                 bool wasPrefabEnabled = prefab.activeSelf;
                                 prefab.SetActive(false);
 
-                                m_prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                                Vector3 point;
+                                if (GetPointOnDragPlane(out point))
+                                {
+                                    m_prefabInstance = Instantiate(prefab, point, Quaternion.identity);
+                                }
+                                else
+                                {
+                                    m_prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                                }
+                                
 
                                 prefab.SetActive(wasPrefabEnabled);
 
@@ -98,24 +112,49 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public override void DragLeave(PointerEventData eventData)
+        {
+            base.DragLeave(eventData);
+            Debug.Log("Drag Leave");
+
+            if(!Editor.IsBusy)
+            {
+                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            }
+            
+
+            if (m_prefabInstance != null)
+            {
+                Destroy(m_prefabInstance);
+                m_prefabInstance = null;
+            }
+
+            m_dragItem = null;
+            m_dropTarget = null;
+        }
+
+
         public override void Drag(object[] dragObjects, PointerEventData eventData)
         {
             base.Drag(dragObjects, eventData);
 
-            if(m_prefabInstance != null)
+            Vector3 point;
+            if (GetPointOnDragPlane(out point))
             {
-                Vector3 point;
-                if (GetPointOnDragPlane(out point))
+                m_point = point;
+                if (m_prefabInstance != null)
                 {
-                    m_prefabInstance.transform.position = point;
-                    
+
+                    m_prefabInstance.transform.position = m_point;
+
                     RaycastHit hit = Physics.RaycastAll(Pointer).Where(h => h.transform != m_prefabInstance.transform).FirstOrDefault();
                     if (hit.transform != null)
                     {
                         m_prefabInstance.transform.position = hit.point;
                     }
+
                 }
-            } 
+            }
             
             if(m_dragItem != null)
             {
@@ -237,25 +276,10 @@ namespace Battlehub.RTEditor
             Editor.Undo.EndRecord();
         }
 
-        public override void DragLeave(PointerEventData eventData)
-        {
-            base.DragLeave(eventData);
-            Debug.Log("Drag Leave");
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
-
-            if(m_prefabInstance != null)
-            {
-                Destroy(m_prefabInstance);
-                m_prefabInstance = null;
-            }
-
-            m_dragItem = null;
-            m_dropTarget = null;
-        }
-
+    
         private bool GetPointOnDragPlane(out Vector3 point)
         {
-            Ray ray = Camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Pointer;
             float distance;
             if (m_dragPlane.Raycast(ray, out distance))
             {

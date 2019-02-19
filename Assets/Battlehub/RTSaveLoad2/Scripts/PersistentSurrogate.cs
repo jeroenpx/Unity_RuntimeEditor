@@ -69,6 +69,11 @@ namespace Battlehub.RTSaveLoad2
         protected virtual void GetDepsImpl(GetDepsContext context) { }
         protected virtual void GetDepsFromImpl(object obj, GetDepsFromContext context) { }
 
+        public virtual bool CanInstantiate(Type type)
+        {
+            return false;
+        }
+
         public virtual object Instantiate(Type type)
         {
             return Activator.CreateInstance(type);

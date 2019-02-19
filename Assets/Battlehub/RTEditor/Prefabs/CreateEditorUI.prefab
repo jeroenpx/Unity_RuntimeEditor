@@ -61,7 +61,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &2992654425466272129
 MonoBehaviour:
@@ -129,7 +129,8 @@ MonoBehaviour:
   m_createEditorButton: {fileID: 2992654426444236583}
   m_editorPrefab: {fileID: 5849259614496068626, guid: ccb1c342d6e97ea41b81b385fbb955b8,
     type: 3}
-  m_splashPrefab: {fileID: 0}
+  m_splashPrefab: {fileID: 9000805389497110581, guid: 1ef9962af6848144994f367bae644b8e,
+    type: 3}
 --- !u!1 &2992654425546139184
 GameObject:
   m_ObjectHideFlags: 0

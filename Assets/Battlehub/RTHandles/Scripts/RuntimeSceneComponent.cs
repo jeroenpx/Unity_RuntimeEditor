@@ -27,13 +27,10 @@ namespace Battlehub.RTHandles
         {
             base.AwakeOverride();
 
-            if (Run.Instance == null)
-            {
-                GameObject runGO = new GameObject("Run");
-                runGO.transform.SetParent(transform, false);
-                runGO.name = "Run";
-                runGO.AddComponent<Run>();
-            }
+            GameObject runGO = new GameObject("Run");
+            runGO.transform.SetParent(transform, false);
+            runGO.name = "Run";
+            runGO.AddComponent<Run>();
 
             if (ViewTexture == null)
             {

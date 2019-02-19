@@ -15,7 +15,7 @@ namespace Battlehub.RTEditor
         private VirtualizingTreeView TreeViewPrefab = null;
 
         [SerializeField]
-        private Text m_txtNoItemsToImport = null;
+        private GameObject m_txtNoItemsToImport = null;
         
         private Dialog m_parentDialog;
         private VirtualizingTreeView m_treeView;
@@ -105,7 +105,7 @@ namespace Battlehub.RTEditor
                     {
                         if (m_txtNoItemsToImport != null)
                         {
-                            m_txtNoItemsToImport.gameObject.SetActive(false);
+                            m_txtNoItemsToImport.SetActive(false);
                         }
                         m_treeView.gameObject.SetActive(true);
                         m_treeView.Items = new[] { root };
@@ -132,7 +132,7 @@ namespace Battlehub.RTEditor
 
                         if (m_txtNoItemsToImport != null)
                         {
-                            m_txtNoItemsToImport.gameObject.SetActive(true);
+                            m_txtNoItemsToImport.SetActive(true);
                         }
 
                         m_treeView.gameObject.SetActive(false);

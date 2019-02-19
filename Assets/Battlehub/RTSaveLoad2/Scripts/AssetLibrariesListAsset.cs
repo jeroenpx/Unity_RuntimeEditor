@@ -7,8 +7,8 @@ namespace Battlehub.RTSaveLoad2
     [Serializable]
     public struct AssetLibraryListEntry
     {
+        public string Library;
         public int Ordinal;
-        public AssetLibraryAsset Library;
     }
 
     public class AssetLibrariesListAsset : ScriptableObject

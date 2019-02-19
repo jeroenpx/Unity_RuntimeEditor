@@ -185,6 +185,15 @@ namespace Battlehub.RTCommon
         {
             Init();
 
+            m_effectiveBoundsType = BoundsType;
+            m_filter = BoundsObject.GetComponent<MeshFilter>();
+            m_skinned = BoundsObject.GetComponent<SkinnedMeshRenderer>();
+
+            if (m_filter == null && m_skinned == null)
+            {
+                m_spriteRenderer = BoundsObject.GetComponent<SpriteRenderer>();
+            }
+
             if (hideFlags != HideFlags.HideAndDontSave)
             {
                 if (_Awaked != null)
@@ -196,15 +205,7 @@ namespace Battlehub.RTCommon
 
         private void Start()
         {
-            m_effectiveBoundsType = BoundsType;
-            m_filter = BoundsObject.GetComponent<MeshFilter>();
-            m_skinned = BoundsObject.GetComponent<SkinnedMeshRenderer>();
-
-            if(m_filter == null && m_skinned == null)
-            {
-                m_spriteRenderer = BoundsObject.GetComponent<SpriteRenderer>();
-            }
-            
+           
             if (hideFlags != HideFlags.HideAndDontSave)
             {
                 if (_Started != null)

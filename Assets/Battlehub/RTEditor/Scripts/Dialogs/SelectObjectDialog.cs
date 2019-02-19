@@ -64,7 +64,12 @@ namespace Battlehub.RTEditor
             m_windowManager = IOC.Resolve<IWindowManager>();
 
             IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
-            AssetItem[] assetItems = m_project.Root.Flatten(true, false).Where(item => m_project.ToType((AssetItem)item) == ObjectType).OfType<AssetItem>().ToArray();
+            AssetItem[] assetItems = m_project.Root.Flatten(true, false).Where(item =>
+            {
+                Type type = m_project.ToType((AssetItem)item);
+                return type == ObjectType || type.IsSubclassOf(ObjectType);
+
+            }).OfType<AssetItem>().ToArray();
 
             m_treeView.SelectionChanged += OnSelectionChanged;
             m_treeView.ItemDataBinding += OnItemDataBinding;

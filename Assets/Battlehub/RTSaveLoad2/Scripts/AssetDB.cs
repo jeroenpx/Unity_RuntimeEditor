@@ -239,14 +239,14 @@ namespace Battlehub.RTSaveLoad2
                     {
                         if (ordinal - AssetLibraryInfo.BUILTIN_FIRST == 0)
                         {
-                            Debug.LogWarningFormat("Asset Library was not found : {0}. Click Tools->Runtime SaveLoad2->Libraries->Create Built-in asset library", assetLibrary);
+                            Debug.LogWarningFormat("Asset Library was not found : {0}. Click Tools->Runtime SaveLoad2->Libraries->Create Built-in asset library.", assetLibrary);
                         }
                     }
                     else if(IsSceneLibrary(ordinal))
                     {
                         if (ordinal - AssetLibraryInfo.SCENELIB_FIRST == 0)
                         {
-                            Debug.LogWarningFormat("Asset Library was not found : {0}. Click Tools->Runtime SaveLoad2->Libraries->Collect Scene Dependencies", assetLibrary);
+                            Debug.LogWarningFormat("Asset Library was not found : {0}. Click Tools->Runtime SaveLoad2->Libraries->Collect Scene Dependencies.", assetLibrary);
                         }
                     }
                     else

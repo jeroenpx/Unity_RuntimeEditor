@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSaveLoad2.Interface
@@ -47,11 +48,7 @@ namespace Battlehub.RTSaveLoad2.Interface
             set;
         }
 
-        string[] AssetLibraries
-        {
-            get;
-        }
-
+        
         bool IsStatic(ProjectItem projectItem);
         bool IsScene(ProjectItem projectItem);
         Type ToType(AssetItem assetItem);
@@ -87,7 +84,7 @@ namespace Battlehub.RTSaveLoad2.Interface
 
         ProjectAsyncOperation<AssetItem[]> SavePreview(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null); 
         ProjectAsyncOperation<UnityObject[]> Load(AssetItem[] assetItems, ProjectEventHandler<UnityObject[]> callback = null);
-        AsyncOperation Unload(ProjectEventHandler completedCallback = null);
+        ProjectAsyncOperation Unload(ProjectEventHandler completedCallback = null);
 
         ProjectAsyncOperation<ProjectItem> LoadImportItems(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);
         void UnloadImportItems(ProjectItem importItemsRoot);
@@ -99,6 +96,7 @@ namespace Battlehub.RTSaveLoad2.Interface
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);
 
         ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);
+        Dictionary<int, string> GetStaticAssetLibraries();
     }
 
     public class ProjectAsyncOperation : CustomYieldInstruction

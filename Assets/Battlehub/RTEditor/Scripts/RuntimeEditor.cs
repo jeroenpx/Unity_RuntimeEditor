@@ -367,6 +367,9 @@ namespace Battlehub.RTEditor
                     objects = deps;
                 }
 
+                IUnityObjectFactory uoFactory = IOC.Resolve<IUnityObjectFactory>();
+                objects = objects.Where(obj => uoFactory.CanCreateInstance(obj.GetType())).ToArray();
+            
                 byte[][] previewData = new byte[objects.Length][];
                 for (int i = 0; i < objects.Length; ++i)
                 {

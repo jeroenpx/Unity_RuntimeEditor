@@ -2,6 +2,7 @@
 using Battlehub.RTSaveLoad2.Interface;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -86,7 +87,7 @@ namespace Battlehub.RTEditor
             m_builtInTreeView.transform.parent.parent.gameObject.SetActive(true);
 
             m_project = IOC.Resolve<IProject>();
-            m_builtInTreeView.Items = m_project.AssetLibraries;
+            m_builtInTreeView.Items = m_project.GetStaticAssetLibraries().Values.Distinct().ToArray();
             m_builtInTreeView.SelectedIndex = 0;
 
             IRTE editor = IOC.Resolve<IRTE>();

@@ -200,7 +200,10 @@ namespace Battlehub.RTEditor
                     }
                 }
 
-                yield return new WaitForSeconds(0.005f);
+                if(i % 10 == 0)
+                {
+                    yield return new WaitForSeconds(0.005f);
+                }
             }
 
             if(done != null)

@@ -485,9 +485,17 @@ namespace Battlehub.RTHandles
                         SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
                         if (selectionGizmo == null || selectionGizmo.Internal_Destroyed || selectionGizmo.Window != Window)
                         {
-                            selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
+                            if(!Editor.IsPlaymodeStateChanging || !Editor.IsPlaying)
+                            {
+                                selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
+                            }
+                            
                         }
-                        selectionGizmo.Window = Window;
+                        if(selectionGizmo != null)
+                        {
+                            selectionGizmo.Window = Window;
+                        }
+                        
                         if (exposeToEditor.Selected != null)
                         {
                             exposeToEditor.Selected.Invoke(exposeToEditor);

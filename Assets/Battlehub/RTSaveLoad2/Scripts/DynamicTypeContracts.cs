@@ -41,12 +41,12 @@ namespace Battlehub.RTSaveLoad2
             return new PrimitiveContract<T>(value);
         }
 
-        public static PrimitiveContract Create(Type type)
-        {
-            Type d1 = typeof(PrimitiveContract<>);
-            Type constructed = d1.MakeGenericType(type);
-            return (PrimitiveContract)Activator.CreateInstance(constructed);
-        }
+        //public static PrimitiveContract Create(Type type)
+        //{
+        //    Type d1 = typeof(PrimitiveContract<>);
+        //    Type constructed = d1.MakeGenericType(type);
+        //    return (PrimitiveContract)Activator.CreateInstance(constructed);
+        //}
 
         public object ValueBase
         {
