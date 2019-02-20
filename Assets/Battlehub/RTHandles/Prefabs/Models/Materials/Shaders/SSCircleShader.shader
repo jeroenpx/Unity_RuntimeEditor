@@ -9,11 +9,13 @@ Shader "Battlehub/RTHandles/Models/SSCircleShader"
 	}
 	SubShader
 	{
+		
 		Tags{ "Queue" = "Transparent-1" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		LOD 100
 
 		Pass
 		{
+			Blend SrcAlpha OneMinusSrcAlpha
 			ZTest[_ZTest]
 			CGPROGRAM
 

@@ -22,7 +22,7 @@ namespace Battlehub.RTSL
         private enum Columns
         {
             Name,
-            ExposeToEditor,
+            //ExposeToEditor,
         }
 
         private Func<TreeViewItem, int, bool, DragAndDropVisualMode> m_externalDropInside;
@@ -107,15 +107,15 @@ namespace Battlehub.RTSL
                         base.RowGUI(args);
                     }
                     break; 
-                case Columns.ExposeToEditor:
-                    {
-                        if(item.depth != 0)
-                        {
-                            item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
-                        }
+                //case Columns.ExposeToEditor:
+                //    {
+                //        if(item.depth != 0)
+                //        {
+                //            item.data.IsEnabled = EditorGUI.Toggle(cellRect, item.data.IsEnabled);
+                //        }
                         
-                    }
-                    break;
+                //    }
+                 //   break;
             }
         }
 
@@ -295,17 +295,17 @@ namespace Battlehub.RTSL
                     allowToggleVisibility = false
                 },
             
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("Visible"),
-                    headerTextAlignment = TextAlignment.Left,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Center,
-                    width = 70,
-                    minWidth = 70,
-                    autoResize = false,
-                    allowToggleVisibility = false
-                },
+                //new MultiColumnHeaderState.Column
+                //{
+                //    headerContent = new GUIContent("Visible"),
+                //    headerTextAlignment = TextAlignment.Left,
+                //    sortedAscending = true,
+                //    sortingArrowAlignment = TextAlignment.Center,
+                //    width = 70,
+                //    minWidth = 70,
+                //    autoResize = false,
+                //    allowToggleVisibility = false
+                //},
                
             };
 

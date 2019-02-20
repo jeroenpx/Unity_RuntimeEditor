@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSL.Interface
 {
@@ -140,6 +139,56 @@ namespace Battlehub.RTSL.Interface
 
     public static class IProjectExtensions
     {
+        public static string[] Find<T>(this IProject project, string filter = null, bool allowSubclasses = false)
+        {
+            List<string> result = new List<string>();
+            ProjectItem[] projectItems = project.Root.Flatten(true);
+            for (int i = 0; i < projectItems.Length; ++i)
+            {
+                AssetItem assetItem = (AssetItem)projectItems[i];
+                Type type = project.ToType(assetItem);
+                if (type == null)
+                {
+                    continue;
+                }
+
+                if (type != typeof(T))
+                {
+                    if(!allowSubclasses || !type.IsSubclassOf(typeof(T)))
+                    {
+                        continue;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filter) && !assetItem.Name.Contains(filter))
+                {
+                    continue;
+                }
+
+                result.Add(assetItem.RelativePath(allowSubclasses));
+            }
+            return result.ToArray();
+        }
+
+        public static string[] FindFolders(this IProject project, string filter = null)
+        {
+            List<string> result = new List<string>();
+            ProjectItem[] projectItems = project.Root.Flatten(false, true);
+            for (int i = 0; i < projectItems.Length; ++i)
+            {
+                ProjectItem projectItem = projectItems[i];
+                Debug.Assert(projectItem.IsFolder);
+
+                if (!string.IsNullOrEmpty(filter) && !projectItem.Name.Contains(filter))
+                {
+                    continue;
+                }
+
+                result.Add(projectItem.RelativePath(false));
+            }
+            return result.ToArray();
+        }
+
         public static ProjectItem Get<T>(this IProject project, string path)
         {
             if (!project.IsOpened)
@@ -161,6 +210,23 @@ namespace Battlehub.RTSL.Interface
             return project.CreateFolder(folder);
         }
 
+        public static ProjectAsyncOperation DeleteFolder(this IProject project, string path)
+        {
+            if (!project.IsOpened)
+            {
+                throw new InvalidOperationException("OpenProject first");
+            }
+
+            path = string.Format("{0}/{1}", project.Root.Name, path);
+            ProjectItem projectItem = project.Root.Get(path) as ProjectItem;
+            if (projectItem == null)
+            {
+                throw new ArgumentException("not found", "path");
+            }
+
+            return project.Delete(new[] { projectItem });
+        }
+
         public static ProjectAsyncOperation Save(this IProject project, string path, object obj)
         {
             if (!project.IsOpened)
@@ -170,7 +236,7 @@ namespace Battlehub.RTSL.Interface
 
             string name = Path.GetFileName(path);
             path = Path.GetDirectoryName(path).Replace(@"\", "/");
-            path = string.Format("{0}/{1}", project.Root.Name, path);
+            path = !string.IsNullOrEmpty(path) ? string.Format("{0}/{1}", project.Root.Name, path) : project.Root.Name;
 
             string ext = project.GetExt(obj.GetType());
             ProjectItem item = project.Root.Get(path + "/" + name + ext);
@@ -205,6 +271,24 @@ namespace Battlehub.RTSL.Interface
             }
 
             return project.Load(new[] { assetItem });
+        }
+
+        public static ProjectAsyncOperation Delete<T>(this IProject project, string path)
+        {
+            if (!project.IsOpened)
+            {
+                throw new InvalidOperationException("OpenProject first");
+            }
+
+            path = string.Format("{0}/{1}", project.Root.Name, path);
+
+            AssetItem projectItem = project.Root.Get(path + project.GetExt(typeof(T))) as AssetItem;
+            if (projectItem == null)
+            {
+                throw new ArgumentException("not found", "path");
+            }
+
+            return project.Delete(new[] { projectItem });
         }
     }
 }

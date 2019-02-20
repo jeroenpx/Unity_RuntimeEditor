@@ -127,7 +127,7 @@ namespace Battlehub.RTSL
                     continue;
                 }
 
-                UnityObject.Destroy(rootGO);
+                UnityObject.DestroyImmediate(rootGO);
             }
 
             Dictionary<int, UnityObject> idToUnityObj = new Dictionary<int, UnityObject>();

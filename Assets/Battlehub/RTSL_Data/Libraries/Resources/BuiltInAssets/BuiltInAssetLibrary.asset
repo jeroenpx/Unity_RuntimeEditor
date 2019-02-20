@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
   m_Name: BuiltInAssetLibrary
   m_EditorClassIdentifier: 
-  m_offset: 0
-  m_ordinal: 0
+  m_offset: 1376256000
+  m_ordinal: 21000
   m_assetLibrary:
     m_ID: 0
     m_Name: Root

@@ -580,7 +580,6 @@ namespace Battlehub.RTSL
                     endOfLine = CreateAddSubtypesBody(mapping);
                 }
 
-                bool hasSurrogate = false;
                 Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
                 if (mappingType == null)
                 {
@@ -588,29 +587,21 @@ namespace Battlehub.RTSL
                 }
                 else
                 {
+                    //if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject) || mappingType.IsSubclassOf(typeof(UnityEventBase)))
+                    {
+                        sb.AppendFormat(AddTypeTemplate, PreparePersistentTypeName(mapping.PersistentTypeName), "true", endOfLine + SEMICOLON + BR + TAB3);
+                    }
+
                     if (GetSurrogateType(mappingType) != null)
                     {
-                        if(!mappingType.IsSubclassOf(typeof(UnityEventBase)))
+                        if (!mappingType.IsSubclassOf(typeof(UnityEventBase)))
                         {
-                            endOfLine += string.Format(SetSerializationSurrogate, PreparePersistentTypeName(mapping.PersistentTypeName));
-                            hasSurrogate = true;
+                            endOfLine = string.Format(SetSerializationSurrogate, PreparePersistentTypeName(mapping.PersistentTypeName));
+                            sb.AppendFormat(AddTypeTemplate, PrepareMappedTypeName(mapping.MappedTypeName), "false", endOfLine + SEMICOLON + BR + TAB3);
                         }
                     }
+                    
                 }
-
-                endOfLine += SEMICOLON + BR + TAB3;
-
-                if (hasSurrogate)
-                {
-                    sb.AppendFormat(AddTypeTemplate, PrepareMappedTypeName(mapping.MappedTypeName), "false", endOfLine);
-                }
-                else if(mappingType != null)
-                {
-                    if (mappingType.IsSubclassOf(typeof(UnityObject)) || mappingType == typeof(UnityObject) || mappingType.IsSubclassOf(typeof(UnityEventBase)))
-                    {
-                        sb.AppendFormat(AddTypeTemplate, PreparePersistentTypeName(mapping.PersistentTypeName), "true", endOfLine);
-                    }
-                } 
             }
 
             return sb.ToString();

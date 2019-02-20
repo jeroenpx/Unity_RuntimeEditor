@@ -7,6 +7,7 @@ using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 using UnityEngine.UI;
 using System.IO;
+using System.Linq;
 
 namespace Battlehub.RTSL
 {
@@ -17,6 +18,12 @@ namespace Battlehub.RTSL
 
         [SerializeField]
         private Button m_btnLoad = null;
+
+        [SerializeField]
+        private CanvasGroup m_progress = null;
+
+        [SerializeField]
+        private Text m_progressText = null;
 
         private IProject m_project;
 
@@ -31,9 +38,9 @@ namespace Battlehub.RTSL
             m_project = IOC.Resolve<IProject>();
 
             yield return m_project.OpenProject(m_projectName);
-            yield return m_project.CreateFolder(Path.GetDirectoryName(m_scenePath).Replace(@"\", "/"));   
-            
-            if(m_btnSave != null)
+            yield return m_project.CreateFolder(Path.GetDirectoryName(m_scenePath).Replace(@"\", "/"));
+
+            if (m_btnSave != null)
             {
                 m_btnSave.onClick.AddListener(OnSaveClick);
             }
@@ -73,10 +80,42 @@ namespace Battlehub.RTSL
             }
         }
 
+        private WaitForEndOfFrame m_waitForEndOfFrame = new WaitForEndOfFrame();
+
+        IEnumerator FadeInProgress()
+        {
+            if (m_progress != null)
+            {
+                m_progress.gameObject.SetActive(true);
+                while (m_progress.alpha < 1)
+                {
+                    m_progress.alpha += Time.deltaTime;
+                    yield return m_waitForEndOfFrame;
+                }
+            }
+        }
+
+        IEnumerator FadeOutProgress()
+        {
+            if (m_progress != null)
+            {
+                while (m_progress.alpha > 0)
+                {
+                    m_progress.alpha -= Time.deltaTime;
+                    yield return m_waitForEndOfFrame;
+                }
+                m_progress.gameObject.SetActive(false);
+            }
+        }
+
         IEnumerator SaveScene()
         {
+            if(m_progressText != null) { m_progressText.text = "Saving ..."; }
+
+            yield return FadeInProgress();
             ProjectAsyncOperation ao = m_project.Save(m_scenePath, SceneManager.GetActiveScene());
             yield return ao;
+            yield return FadeOutProgress();
 
             if (ao.Error.HasError)
             {
@@ -88,14 +127,20 @@ namespace Battlehub.RTSL
                 {
                     m_btnLoad.interactable = m_project.Exist<Scene>(m_scenePath);
                 }
-                
             }
         }
 
         IEnumerator LoadScene()
         {
+            if (m_progressText != null) { m_progressText.text = "Loading ..."; }
+
+           
+            yield return FadeInProgress();
             ProjectAsyncOperation ao = m_project.Load<Scene>(m_scenePath);
             yield return ao;
+            yield return FadeOutProgress();
+          
+            if (m_progress != null) { m_progress.gameObject.SetActive(false); }
 
             if (ao.Error.HasError)
             {

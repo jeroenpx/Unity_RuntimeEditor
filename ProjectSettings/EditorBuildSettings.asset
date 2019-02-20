@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Battlehub/RTEditor/Demo/Demo.unity
+    path: Assets/Battlehub/RTEditor/Demo/RTEditor.unity
     guid: 4215a0f4652834c40978a0dc505ae257
   - enabled: 0
     path: 

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Linq;
 
 using Battlehub.RTCommon;
+using System;
 
 namespace Battlehub.Cubeman
 {
@@ -28,7 +29,15 @@ namespace Battlehub.Cubeman
             get { return m_storedCharacters; }
             set { m_storedCharacters = value; }
         }
+
         private GameCharacter m_current;
+        private int m_currentIndex = -1;
+        public int CurrentIndex
+        {
+            get { return m_currentIndex; }
+            set { m_currentIndex = value; }
+        }
+
         private List<GameCharacter> m_activeCharacters;
         private GameCameraFollow m_playerCamera;
 
@@ -142,7 +151,7 @@ namespace Battlehub.Cubeman
             }
 
             SaveCharactersInInitalState(characters);
-            InitializeGame(characters);
+            InitializeGame(characters, m_currentIndex);
         }
 
         private void DestroyStoredCharacters()
@@ -194,10 +203,10 @@ namespace Battlehub.Cubeman
             
             GameCharacter[] characters = m_storedCharacters;
             SaveCharactersInInitalState(characters);
-            InitializeGame(characters);
+            InitializeGame(characters, -1);
         }
 
-        private void InitializeGame(GameCharacter[] characters)
+        private void InitializeGame(GameCharacter[] characters, int activeCharacterIndex)
         {
             m_gameOver = false;
             m_playerCamera = FindObjectOfType<GameCameraFollow>();
@@ -259,7 +268,23 @@ namespace Battlehub.Cubeman
                 TxtCompleted.gameObject.SetActive(false);
                 TxtScore.gameObject.SetActive(true);
                 UpdateScore();
-                SwitchPlayer(null, 0.0f, true);
+
+                if(activeCharacterIndex >= 0)
+                {
+                    m_current = m_activeCharacters[activeCharacterIndex];
+                    if (m_current != null)
+                    {
+                        ActivatePlayer();
+                    }
+                    else
+                    {
+                        SwitchPlayer(null, 0.0f, true);
+                    }
+                }
+                else
+                {
+                    SwitchPlayer(null, 0.0f, true);
+                }
             }
         }
 
@@ -346,30 +371,37 @@ namespace Battlehub.Cubeman
                 return;
             }
 
-            int index = 0;
             if (current != null)
             {
                 current.HandleInput = false;
-                index = m_activeCharacters.IndexOf(current);
+                m_currentIndex = m_activeCharacters.IndexOf(current);
                 if (next)
                 {
-                    index++;
-                    if (index >= m_activeCharacters.Count)
+                    m_currentIndex++;
+                    if (m_currentIndex >= m_activeCharacters.Count)
                     {
-                        index = 0;
+                        m_currentIndex = 0;
                     }
                 }
                 else
                 {
-                    index--;
-                    if (index < 0)
+                    m_currentIndex--;
+                    if (m_currentIndex < 0)
                     {
-                        index = m_activeCharacters.Count - 1;
+                        m_currentIndex = m_activeCharacters.Count - 1;
                     }
                 }
+
+                
             }
 
-            m_current = m_activeCharacters[index];
+            if(m_currentIndex < 0)
+            {
+                m_currentIndex = 0;
+            }
+
+            m_current = m_activeCharacters[m_currentIndex];
+
             if (current == null)
             {
                 ActivatePlayer();
@@ -404,6 +436,7 @@ namespace Battlehub.Cubeman
             if (m_playerCamera != null)
             {
                 m_playerCamera.target = m_current.transform;
+                m_playerCamera.Follow();
                 m_current.Camera = m_playerCamera.transform; 
             }
            

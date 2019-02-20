@@ -125,7 +125,6 @@ GameObject:
   - component: {fileID: 105871329}
   - component: {fileID: 105871328}
   - component: {fileID: 105871327}
-  - component: {fileID: 105871332}
   m_Layer: 0
   m_Name: Cube2
   m_TagString: Untagged
@@ -236,29 +235,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &105871332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105871326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b641c1196b3f51047829f90a5696ae5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PositionX: 0
-  PositionY: 0
-  PositionZ: 0
-  RotationX: 0
-  RotationY: 0
-  RotationZ: 0
-  RotationFree: 0
-  RotationScreen: 0
-  ScaleX: 0
-  ScaleY: 0
-  ScaleZ: 0
 --- !u!1 &114465187
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,6 +975,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873884716367775183, guid: 093f7837d7a6b2942ba94eef4f7cdfc6,
+        type: 3}
+      propertyPath: m_colors.DisabledColor.rgba
+      value: 2155905152
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873884717921956358, guid: 093f7837d7a6b2942ba94eef4f7cdfc6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 093f7837d7a6b2942ba94eef4f7cdfc6, type: 3}

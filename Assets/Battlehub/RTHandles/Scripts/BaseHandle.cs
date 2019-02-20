@@ -408,10 +408,17 @@ namespace Battlehub.RTHandles
                 model.Window = Window;
 
                 Model.gameObject.SetActive(activeSelf);
-                model.gameObject.SetActive(true);
 
-                Model = model;
-                Model.SetLock(LockObject);
+                if(enabled)
+                {
+                    model.gameObject.SetActive(true);
+                    Model = model;
+                    Model.SetLock(LockObject);
+                }
+                else
+                {
+                    Model = model;
+                }
             }
         }
 

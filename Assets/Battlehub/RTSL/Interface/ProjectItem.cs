@@ -19,8 +19,6 @@ namespace Battlehub.RTSL.Interface
 
         [ProtoMember(3)]
         public int ParentId;
-
-
     }
 
     [ProtoContract]
@@ -243,6 +241,28 @@ namespace Battlehub.RTSL.Interface
                 projectItem = projectItem.Parent;
             }
             return false;
+        }
+
+        public string RelativePath(bool includeExt)
+        {
+            StringBuilder sb = new StringBuilder();
+            ProjectItem parent = this;
+            while (parent.Parent != null)
+            {
+                sb.Insert(0, parent.Name);
+                sb.Insert(0, "/");
+                parent = parent.Parent;
+            }
+            string ext = null;
+            if (includeExt)
+            {
+                ext = Ext;
+            }
+            if (string.IsNullOrEmpty(ext))
+            {
+                return sb.ToString();
+            }
+            return string.Format("{0}{1}", sb.ToString(), Ext);
         }
 
         public override string ToString()

@@ -103,10 +103,10 @@ The documentation is organized as following:
 *  [Overview](save-load.md#overview)
 *  [Getting Started](save-load.md#getting-started)
 *  [Persistent Classes](save-load.md#persistent-classes)
+*  [How To: Create Custom Persistent Class](save-load.md#how-to-create-custom-persistent-class)
 *  [Asset Library](save-load.md#/asset-library)
 *  [How To: Create Asset Library](save-load.md#how-to-create-asset-library)
-*  [Project Item](save-load.md#project-item)
-*  [Asset Item](save-load.md#asset-item)
+*  [Project Item & Asset Item](save-load.md#project-item-asset-item)
 *  [Project](save-load.md#project)
 
 

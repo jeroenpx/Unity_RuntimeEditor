@@ -19,10 +19,6 @@ namespace Battlehub.Cubeman
                 float hdamping = heightDamping;
                 rotationDamping = float.MaxValue;
                 heightDamping = float.MaxValue;
-                if(m_target != null)
-                {
-                    Follow();
-                }
                 heightDamping = hdamping;
                 rotationDamping = rdamping;
             }
@@ -52,7 +48,7 @@ namespace Battlehub.Cubeman
             Follow();
         }
 
-        private void Follow()
+        public void Follow()
         {
             // Calculate the current rotation angles
             var wantedRotationAngle = target.eulerAngles.y;

@@ -79,6 +79,10 @@ namespace Battlehub.RTSL
             for (int i = 0; i < components.Length; ++i)
             {
                 Component component = components[i];
+                if(component == null)
+                {
+                    continue;
+                }
                 PrefabPartInfo part;
                 if (objToParts.TryGetValue(component, out part))
                 {
@@ -167,6 +171,10 @@ namespace Battlehub.RTSL
             for(int i = 0; i < components.Length; ++i)
             {
                 Component component = components[i];
+                if(component == null)
+                {
+                    return true;
+                }
                 PrefabPartInfo part;
                 if(!objToParts.TryGetValue(component, out part))
                 {

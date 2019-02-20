@@ -2671,6 +2671,7 @@ namespace Battlehub.RTSL
 
             pao.Result = result;
             pao.IsCompleted = true;
+            pao.Error = error;
 
             if (!m_assetDB.IsLibraryLoaded(ordinal))
             {
@@ -2866,7 +2867,7 @@ namespace Battlehub.RTSL
             {
                 if (importItems[i].Preview == null)
                 {
-                    throw new InvalidOperationException("Preview is null. Import item: " + importItems[i].Name + " Id: " + importItems[i].ItemID);
+                    Debug.LogWarning("Preview is null. Import item: " + importItems[i].Name + " Id: " + importItems[i].ItemID);
                 }
 
                 Debug.Assert(importItems[i].Object == null);
