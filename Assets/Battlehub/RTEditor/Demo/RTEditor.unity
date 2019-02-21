@@ -435,6 +435,35 @@ Skybox:
   m_GameObject: {fileID: 878578351}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 2100000, guid: f70eafef8958ff04abf086cfc61f98f5, type: 2}
+--- !u!1 &1492595203 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1285032117495518241, guid: 4c109d3ea16741141a43286324be75c4,
+    type: 3}
+  m_PrefabInstance: {fileID: 486390448}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1492595205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492595203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b641c1196b3f51047829f90a5696ae5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PositionX: 1
+  PositionY: 1
+  PositionZ: 0
+  RotationX: 1
+  RotationY: 1
+  RotationZ: 0
+  RotationFree: 0
+  RotationScreen: 0
+  ScaleX: 1
+  ScaleY: 1
+  ScaleZ: 0
 --- !u!1001 &2992654425875381720
 PrefabInstance:
   m_ObjectHideFlags: 0

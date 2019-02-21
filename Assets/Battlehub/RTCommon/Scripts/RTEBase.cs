@@ -373,12 +373,29 @@ namespace Battlehub.RTCommon
                 if(m_isBusy != value)
                 {
                     m_isBusy = value;
+                    if (m_isBusy)
+                    {
+                        Application.logMessageReceived += OnApplicationLogMessageReceived;
+                    }
+                    else
+                    {
+                        Application.logMessageReceived -= OnApplicationLogMessageReceived;
+                    }
+
                     SetInput();
                     if (IsBusyChanged != null)
                     {
                         IsBusyChanged();
-                    }           
+                    }
                 }
+            }
+        }
+
+        private void OnApplicationLogMessageReceived(string condition, string stackTrace, LogType type)
+        {
+            if (type == LogType.Exception)
+            {
+                IsBusy = false;
             }
         }
 

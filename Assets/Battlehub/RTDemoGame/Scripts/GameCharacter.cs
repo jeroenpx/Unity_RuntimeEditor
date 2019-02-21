@@ -12,6 +12,8 @@ namespace Battlehub.Cubeman
         private Transform m_soul;
         private SkinnedMeshRenderer m_skinnedMeshRenderer;
         private InputLow m_inputController = new InputLow();
+
+
         
         public Transform Camera
         {
@@ -64,7 +66,12 @@ namespace Battlehub.Cubeman
 
         private void Update()
         {
-            if(transform.position.y < -10.0f)
+            if (!Game.IsGameRunning)
+            {
+                return;
+            }
+
+            if (transform.position.y < -10.0f)
             {
                 Die();
             }
@@ -77,6 +84,11 @@ namespace Battlehub.Cubeman
 
         private void OnTriggerEnter(Collider other)
         {
+            if(!Game.IsGameRunning)
+            {
+                return;
+            }
+
             if(other.tag == "Finish")
             {
                 Game.OnPlayerFinish(this);

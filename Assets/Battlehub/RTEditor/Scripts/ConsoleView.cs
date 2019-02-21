@@ -227,7 +227,7 @@ namespace Battlehub.RTEditor
             if(e.NewItem != null)
             {
                 ConsoleLogEntry logEntry = (ConsoleLogEntry)e.NewItem;
-                m_stackTrace.text = logEntry.StackTrace;
+                m_stackTrace.text = logEntry.Condition + " " + logEntry.StackTrace;
             }
             else
             {

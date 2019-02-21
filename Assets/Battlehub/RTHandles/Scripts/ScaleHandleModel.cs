@@ -142,6 +142,7 @@ namespace Battlehub.RTHandles
             if (m_lockObj.ScaleZ)
             {
                 m_materials[m_zMatIndex].color = Colors.DisabledColor;
+                m_materials[m_zArrowMatIndex].color = Colors.DisabledColor;
             }
             else
             {

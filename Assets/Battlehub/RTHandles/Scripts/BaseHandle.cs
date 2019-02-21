@@ -45,11 +45,24 @@ namespace Battlehub.RTHandles
         /// Configurable model
         /// </summary>
         public BaseHandleModel Model;
-        
+
+        private LockObject m_lockObject;
         protected LockObject LockObject
         {
-            get { return Editor.Tools.LockAxes; }
-            set { Editor.Tools.LockAxes = value; }
+            get { return m_lockObject; }
+            set
+            {
+                m_lockObject = value;
+                if(m_lockObject != null && Editor != null && Editor.Tools.LockAxes != null)
+                {
+                    m_lockObject.SetGlobalLock(Editor.Tools.LockAxes);
+                }
+                
+                if (Model != null && !Model.gameObject.IsPrefab())
+                {
+                    Model.SetLock(LockObject);
+                }
+            }
         }
 
         protected virtual Vector3 HandlePosition
@@ -58,17 +71,14 @@ namespace Battlehub.RTHandles
             set { transform.position = value; }
         }
 
-      
-
         /// <summary>
         /// Target objects which will be affected by handle (for example if m_targets array containes O1 and O2 objects, and O1 is parent of O2 then m_activeTargets array will contain only O1 object)
         /// </summary>
         private Transform[] m_activeTargets;
-        protected Transform[] ActiveTargets
+        public Transform[] ActiveTargets
         {
             get { return m_activeTargets; }
         }
-
 
         private Transform[] m_activeRealTargets;
         private Transform[] m_realTargets;
@@ -705,6 +715,8 @@ namespace Battlehub.RTHandles
             float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera);
             if(!float.IsInfinity(screenScale) && !float.IsNaN(screenScale))
             {
+                screenScale = Mathf.Max(0, screenScale);
+
                 Model.transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
             }
             
@@ -712,7 +724,10 @@ namespace Battlehub.RTHandles
 
         public void BeginDrag()
         {
-            BeforeDrag.Invoke(this);
+            if (BeforeDrag != null)
+            {
+                BeforeDrag.Invoke(this);
+            }
 
             m_isPointerDown = true;
 
@@ -763,7 +778,10 @@ namespace Battlehub.RTHandles
                 m_isDragging = false;
             }
 
-            Drop.Invoke(this);
+            if(Drop != null)
+            {
+                Drop.Invoke(this);
+            }
         }
 
         /// Drag And Drop virtual methods
@@ -812,6 +830,11 @@ namespace Battlehub.RTHandles
 
         private void OnLockAxesChanged()
         {
+            if(LockObject != null)
+            {
+                LockObject.SetGlobalLock(Editor.Tools.LockAxes);
+            }
+
             if(Model != null)
             {
                 if (!Model.gameObject.IsPrefab())

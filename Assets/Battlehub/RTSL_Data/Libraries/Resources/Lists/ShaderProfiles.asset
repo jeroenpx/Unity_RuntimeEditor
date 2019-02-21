@@ -54,6 +54,88 @@ MonoBehaviour:
       Max: 1
     PropertyTexDims: 020000000100000001000000
     IsHidden: 000000
+  - Name: ARCore/DiffuseWithLightEstimation
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Base (RGB)
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
+  - Name: ARCore/PlaneGrid
+    PropertyCount: 4
+    PropertyDescriptions:
+    - Texture
+    - Grid Color
+    - Plane Normal
+    - UV Rotation
+    PropertyNames:
+    - _MainTex
+    - _GridColor
+    - _PlaneNormal
+    - _UvRotation
+    PropertyTypes: 04000000000000000100000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 30
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000010000000100000001000000
+    IsHidden: 00000000
+  - Name: ARCore/PointCloud
+    PropertyCount: 2
+    PropertyDescriptions:
+    - Point Size
+    - PointCloud Color
+    PropertyNames:
+    - _PointSize
+    - _Color
+    PropertyTypes: 0200000000000000
+    PropertyRangeLimits:
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 0.121
+      Min: 0.737
+      Max: 0.823
+    PropertyTexDims: 0100000001000000
+    IsHidden: 0000
+  - Name: ARCore/SpecularWithLightEstimation
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Shininess
+    - Base (RGB) Gloss (A)
+    - Normalmap
+    PropertyNames:
+    - _Shininess
+    - _MainTex
+    - _BumpMap
+    PropertyTypes: 030000000400000004000000
+    PropertyRangeLimits:
+    - Def: 0.078125
+      Min: 0.03
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000200000002000000
+    IsHidden: 000000
   - Name: Autodesk Interactive
     PropertyCount: 26
     PropertyDescriptions:
@@ -588,6 +670,19 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
     IsHidden: 000000000000000000
+  - Name: EdgeDetectionBackground
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Texture
+    PropertyNames:
+    - _ImageTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
   - Name: FX/Flare
     PropertyCount: 1
     PropertyDescriptions:

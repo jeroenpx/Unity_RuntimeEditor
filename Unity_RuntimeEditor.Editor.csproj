@@ -311,6 +311,12 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="AssetStoreTools">
+      <HintPath>Assets/AssetStoreTools/Editor/AssetStoreTools.dll</HintPath>
+    </Reference>
+    <Reference Include="AssetStoreToolsExtra">
+      <HintPath>Assets/AssetStoreTools/Editor/AssetStoreToolsExtra.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>Assets/Battlehub/Deps/protobuf-net.dll</HintPath>
     </Reference>
@@ -334,6 +340,18 @@
     </Reference>
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.VersionHandler">
+      <HintPath>Assets/PlayServicesResolver/Editor/Google.VersionHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.JarResolver_v1.2.88.0">
+      <HintPath>Assets/PlayServicesResolver/Editor/Google.JarResolver_v1.2.88.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.VersionHandlerImpl_v1.2.88.0">
+      <HintPath>Assets/PlayServicesResolver/Editor/Google.VersionHandlerImpl_v1.2.88.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.IOSResolver_v1.2.88.0">
+      <HintPath>Assets/PlayServicesResolver/Editor/Google.IOSResolver_v1.2.88.0.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -726,6 +744,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Battlehub\HSVPicker\Editor\BoxSliderEditor.cs" />
     <Compile Include="Assets\Battlehub\ObjectToTexture\Scripts\Editor\ObjectToTextureEditor.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\Editor\TreeViewDataModel\TreeViewWithTreeModel.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\EditorsMapGen.cs" />
@@ -733,27 +752,39 @@
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorEditor.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\RuntimeEditorMenu.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editor\SelectFolderDialog.cs" />
-    <Compile Include="Assets\Battlehub\RTHandles\Demo\Scripts\Editor\RTHandlesMenuDemo.cs" />
     <Compile Include="Assets\Battlehub\RTHandles\Scripts\Editor\RTHandlesMenu.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentMaterialTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentMeshTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentSurrogateTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\CodeGenTemplates\PersistentTexture2DTemplate.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetFolderTreeView.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryAssetsGUI.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryEditor.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetLibraryProjectGUI.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\AssetLibrary\AssetTreeView.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\CodeGen.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\Menu.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\PersistentClassMapperWindow.cs" />
-    <Compile Include="Assets\Battlehub\RTSaveLoad2\Editor\Scripts\RuntimeShaderProfilesGen.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedCollisionModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedCustomDataModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedEmissionModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedExternalForcesModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedSubEmittersModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedTextureSheetAnimationModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\ParticleSystemModules\PersistentParticleSystemNestedTriggerModule_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\PersistentGradient_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\PersistentMaterial_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\PersistentMesh_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\PersistentParticleSystem_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\PersistentSurrogate_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\CodeGenTemplates\PersistentTexture2D_RTSL_Template.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\AssetLibrariesListGen.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\AssetLibrary\AssetFolderTreeView.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\AssetLibrary\AssetLibraryAssetsGUI.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\AssetLibrary\AssetLibraryEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\AssetLibrary\AssetLibraryProjectGUI.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\AssetLibrary\AssetTreeView.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\CodeGen.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\ConfigWindow.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\Menu.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\PersistentClassMapperWindow.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\RTSLPath.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Editor\Scripts\RuntimeShaderProfilesGen.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\Editor\MenuEditor.cs" />
     <Compile Include="Assets\Battlehub\UIControls\VirtualizingTreeView\Scripts\Editor\VirtualizingScrollRectEditor.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\EnumFlagsDrawer.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\ExposeProperties.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\ReadonlyDrawer.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\ReadonlyPropertyDrawer.cs" />
+    <Compile Include="Assets\BattlehubAssetStoreTools\Editor\ToolsMenu.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\ARCoreIOSSupportHelper.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\ARCoreIOSSupportPreprocessBuild.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\ARCoreProjectSettingsWindow.cs" />
@@ -768,9 +799,9 @@
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\ExamplePreprocessBuild.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\PreprocessBuildBase.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\RequiredOptionalPreprocessBuild.cs" />
-    <Compile Include="Assets\HSVPicker\Editor\BoxSliderEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Battlehub\HSVPicker\Resources\Shaders\Compute\GenerateSVTexture.compute" />
     <None Include="Assets\Battlehub\RTCommon\Resources\Billboard.shader" />
     <None Include="Assets\Battlehub\RTCommon\Resources\MobileDiffuseZTestAlways.shader" />
     <None Include="Assets\Battlehub\RTCommon\Resources\SpritesZTestAlways.shader" />
@@ -791,8 +822,14 @@
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorClip.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorClipUsingClipPlane.shader" />
     <None Include="Assets\Battlehub\UIControls\DockPanels\Shaders\DepthMask.shader" />
+    <None Include="Assets\GoogleARCore\Editor\ARCoreiOSDependencies.template" />
+    <None Include="Assets\GoogleARCore\Examples\Common\Materials\Shaders\MobileDiffuseWithLightEstimation.shader" />
+    <None Include="Assets\GoogleARCore\Examples\Common\Materials\Shaders\MobileSpecularWithLightEstimation.shader" />
+    <None Include="Assets\GoogleARCore\Examples\Common\Materials\Shaders\PlaneGrid.shader" />
+    <None Include="Assets\GoogleARCore\Examples\Common\Materials\Shaders\PointCloud.shader" />
+    <None Include="Assets\GoogleARCore\Examples\ComputerVision\Materials\EdgeDetectionBackground.shader" />
     <None Include="Assets\GoogleARCore\SDK\Materials\ARBackground.shader" />
-    <None Include="Assets\HSVPicker\Resources\Shaders\Compute\GenerateSVTexture.compute" />
+    <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver_v1.2.88.0.txt" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryCommon.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryDark.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryLight.uss" />

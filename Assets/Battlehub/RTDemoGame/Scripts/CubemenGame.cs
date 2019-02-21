@@ -43,6 +43,11 @@ namespace Battlehub.Cubeman
 
         private IRTE m_rte;
         private IRTEState m_rteState;
+
+        public bool IsGameRunning
+        {
+            get { return enabled; }
+        }
         
         private void RuntimeAwake()
         {

@@ -187,6 +187,8 @@ namespace Battlehub.RTHandles
             {
                 GameObject colliders = new GameObject("Colliders");
                 colliders.transform.SetParent(transform, false);
+                //colliders.transform.localScale = Vector3.one;
+
                 colliders.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
 
                 m_xCollider = colliders.AddComponent<BoxCollider>();
@@ -259,7 +261,7 @@ namespace Battlehub.RTHandles
 
         private void OnVertexSnappingModeChaged()
         {
-            m_normalModeArrows.SetActive(!m_isVertexSnapping && !m_lockObj.IsPositionLocked);
+            m_normalModeArrows.SetActive(!m_isVertexSnapping);
             m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping && !m_lockObj.IsPositionLocked);
         }
 

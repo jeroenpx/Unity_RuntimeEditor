@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85a37e76ce395ad4a9d0c4633bbe6e21, type: 3}
+  m_Name: SceneAssetLibrary
+  m_EditorClassIdentifier: 
+  m_offset: 0
+  m_ordinal: 0
+  m_assetLibrary:
+    m_ID: 0
+    m_Name: Root
+    m_Depth: -1
+    Identity: 11
+    FolderIdentity: 4
+    Folders:
+    - m_ID: 0
+      m_Name: Root
+      m_Depth: -1
+      Assets: []
+      IsEnabled: 0
+    - m_ID: 3
+      m_Name: Assets
+      m_Depth: 0
+      Assets:
+      - m_ID: 4
+        m_Name: PointCloud
+        m_Depth: 0
+        Object: {fileID: 2100000, guid: fb4fbd1b92e244df2bc6f43deb7a57a2, type: 2}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 5
+        m_Name: Roboto-Regular
+        m_Depth: 0
+        Object: {fileID: 12800000, guid: f66655b38428d40769e9e41ee237cbdc, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 6
+        m_Name: Hand
+        m_Depth: 0
+        Object: {fileID: 21300000, guid: e7560e1976c37294a96022efe8218e4a, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 7
+        m_Name: FontOpenSansBold
+        m_Depth: 0
+        Object: {fileID: 12800000, guid: 64294437bfa54d745b7e36d10f12441b, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 8
+        m_Name: Move
+        m_Depth: 0
+        Object: {fileID: 21300000, guid: 53dcff94955b03f46add019d5f0424e8, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 9
+        m_Name: Rotate
+        m_Depth: 0
+        Object: {fileID: 21300000, guid: 5d86ab9182930734e92c999260390053, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 10
+        m_Name: Scale
+        m_Depth: 0
+        Object: {fileID: 21300000, guid: 2d08e8ef372f4594dbb6e6c66de77d2d, type: 3}
+        IsEnabled: 0
+        PrefabParts: []
+      IsEnabled: 1

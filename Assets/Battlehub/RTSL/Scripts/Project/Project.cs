@@ -1206,7 +1206,7 @@ namespace Battlehub.RTSL
                 Type persistentType = m_typeMap.ToPersistentType(objType);
                 if (persistentType == null)
                 {
-                    Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
+                    Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist. Tools->Runtime SaveLoad->Persistent Classes->Edit", obj.GetType()), "obj");
                     continue;
                 }
 
@@ -1328,7 +1328,7 @@ namespace Battlehub.RTSL
                 Type persistentType = m_typeMap.ToPersistentType(objType);
                 if (persistentType == null)
                 {
-                    Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist", obj.GetType()), "obj");
+                    Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist. Tools->Runtime SaveLoad->Persistent Classes->Edit", obj.GetType()), "obj");
                     continue;
                 }
 

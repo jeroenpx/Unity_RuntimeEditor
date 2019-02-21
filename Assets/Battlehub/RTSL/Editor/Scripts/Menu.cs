@@ -125,18 +125,24 @@ namespace Battlehub.RTSL
             {
                 EditorPrefs.SetBool("RTSLBuildAll", false);
 
-                CreateAssetLibraryForActiveScene();
-                Debug.Log("Asset Libraries Updated");
+                try
+                {
+                    CreateAssetLibraryForActiveScene();
+                    Debug.Log("Asset Libraries Updated");
 
-                CreateAssetLibrariesList();
-                Debug.Log("Asset Libraries List Updated");
+                    CreateAssetLibrariesList();
+                    Debug.Log("Asset Libraries List Updated");
 
-                CreateShaderProfiles();
-                Debug.Log("Shader Profiles Updated");
+                    CreateShaderProfiles();
+                    Debug.Log("Shader Profiles Updated");
 
-                EditorUtility.DisplayProgressBar("Build All", "Building Type Model...", 0.66f);
-                BuildTypeModel();
-                EditorUtility.ClearProgressBar();
+                    EditorUtility.DisplayProgressBar("Build All", "Building Type Model...", 0.66f);
+                    BuildTypeModel();
+                }
+                finally
+                {
+                    EditorUtility.ClearProgressBar();
+                }
             }
         }
 

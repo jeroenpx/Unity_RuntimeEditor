@@ -10,8 +10,11 @@ EditorBuildSettings:
     guid: 4215a0f4652834c40978a0dc505ae257
   - enabled: 0
     path: 
-    guid: b9d5641b76555884b91064119a422b2e
-  - enabled: 1
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Battlehub/UIControls/DockPanels/Demo/Demo.unity
     guid: 3bfc0768ab0e86344acac13608f784f6
+  - enabled: 1
+    path: Assets/Battlehub/RTHandles/Demo/RTHHelloAR.unity
+    guid: b9d5641b76555884b91064119a422b2e
   m_configObjects: {}

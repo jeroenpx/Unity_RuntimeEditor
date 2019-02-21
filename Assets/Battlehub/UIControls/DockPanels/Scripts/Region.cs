@@ -428,7 +428,10 @@ namespace Battlehub.UIControls.DockPanels
             {
                 if (parent.parent == m_root.Free || parent.parent == m_root.Modal)
                 {
-                    return parent;
+                    if (parent.parent != null)
+                    {
+                        return parent;
+                    }
                 }
 
                 parent = parent.parent;

@@ -163,6 +163,7 @@ namespace Battlehub.RTSL
             "   {{" + BR +
             "       static partial void RegisterAutoTypes(RuntimeTypeModel model)" + BR +
             "       {{" + BR +
+            "            m_createDefaultTypeModel = false;" + BR +
             "            {1}" + BR +
             "       }}" + BR +
             "   }}" + BR +
@@ -188,13 +189,17 @@ namespace Battlehub.RTSL
             "{{" + BR +
             "    public partial class TypeMap" + BR +
             "    {{" + BR +
-            "        public TypeMap()" + BR +
+            "        partial void RegisterAutoTypes()" + BR +
             "        {{" + BR +
+            "            m_registerDefault = false;" + BR +
             "            {1}" +
-            "            OnConstructed();" + BR +
             "        }}" + BR +
             "    }}" + BR +
             "}}" + END;
+
+        
+        
+            
 
         private static readonly string AddToPersistentTypeTemplate = 
             "m_toPeristentType.Add(typeof({0}), typeof({1}));" + BR;
