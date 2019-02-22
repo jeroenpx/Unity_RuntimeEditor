@@ -160,6 +160,7 @@ namespace Battlehub.UIControls.MenuControl
         {
             if (HasChildren)
             {
+                Select(false);
                 return;
             }
             
@@ -212,7 +213,7 @@ namespace Battlehub.UIControls.MenuControl
                 m_selection.gameObject.SetActive(false);
             }
             else
-            {
+            { 
                 if (!IsPointerOverSubmenu(eventData))
                 {
                     Unselect();
@@ -280,12 +281,16 @@ namespace Battlehub.UIControls.MenuControl
 
             Menu menu = GetComponentInParent<Menu>();
 
-            if(menu.Child != null && menu.Child.Submenu != null)
+            if(menu.Child != this)
             {
-                menu.Child.m_submenu.Close();
+                if (menu.Child != null && menu.Child.Submenu != null)
+                {
+                    menu.Child.m_submenu.Close();
+                }
+
+                menu.Child = this;
             }
             
-            menu.Child = this;
 
             if(menu.Parent != null)
             {

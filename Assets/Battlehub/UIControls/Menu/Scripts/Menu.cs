@@ -65,7 +65,15 @@ namespace Battlehub.UIControls.MenuControl
             get { return m_items; }
             set
             {
-                m_items = value;
+                SetMenuItems(value, true);
+            }
+        }
+
+        public void SetMenuItems(MenuItemInfo[] menuItems, bool databind = true)
+        {
+            m_items = menuItems;
+            if(databind)
+            {
                 DataBind();
             }
         }

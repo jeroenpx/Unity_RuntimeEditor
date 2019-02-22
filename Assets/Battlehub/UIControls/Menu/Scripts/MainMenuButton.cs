@@ -8,6 +8,11 @@ namespace Battlehub.UIControls.MenuControl
     {
         [SerializeField]
         private Menu m_menu = null;
+        public Menu Menu
+        {
+            get { return m_menu; }
+            set { m_menu = value; }
+        }
 
         [SerializeField]
         private Image m_selection = null;
@@ -38,6 +43,14 @@ namespace Battlehub.UIControls.MenuControl
 
                 m_menu.gameObject.SetActive(false);
 
+            }
+        }
+
+        private void Start()
+        {
+            if(m_menu != null && (m_menu.Items == null || m_menu.Items.Length == 0))
+            {
+                gameObject.SetActive(false);
             }
         }
 

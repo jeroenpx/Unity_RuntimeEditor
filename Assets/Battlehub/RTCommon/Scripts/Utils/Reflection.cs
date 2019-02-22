@@ -2,7 +2,8 @@
 using System.Reflection;
 using System.Linq;
 using UnityEngine;
-
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Battlehub
 {
@@ -13,6 +14,19 @@ namespace Battlehub
 
     public static class Reflection
     {
+        
+
+        public static IEnumerable<Type> GetTypesWithAttribute(this Assembly assembly, Type attribute)
+        {
+            foreach (Type type in assembly.GetTypes())
+            {
+                if (type.GetCustomAttributes(attribute, true).Length > 0)
+                {
+                    yield return type;
+                }
+            }
+        }
+
         public static object GetDefault(Type type)
         {
             if(type == typeof(string))
@@ -79,6 +93,7 @@ namespace Battlehub
             return types.ToArray();
         }
 
+
         public static Type[] GetAssignableFromTypes(Type type)
         {
 #if !UNITY_WINRT || UNITY_EDITOR
@@ -91,6 +106,7 @@ namespace Battlehub
 #endif
             return types.ToArray();
         }
+
 
 
 #if UNITY_WINRT && !UNITY_EDITOR

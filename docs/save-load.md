@@ -12,7 +12,7 @@ The __Runtime Save & Load__ (RTSL) subsystem is required for saving and managing
 
        RTSL use [protobuf.net](https://github.com/mgravell/protobuf-net) for serialization.
 	   
-![Screenshot](img/save-load/get-started/demo.png)
+![Screenshot](img/save-load/get-started/demo2.png)
 	   
 ##Getting Started
 

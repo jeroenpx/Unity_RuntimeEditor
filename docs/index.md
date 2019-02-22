@@ -4,16 +4,13 @@ Welcome to documentation of <a href="http://u3d.as/v9j" target="_blank"><strong>
 and this documentation has to offer.
 	
 !!! note
-	
-	If you can't find something in documentation or have any questions I encourage you to send mail to [Battlehub@outlook](mailto:Battlehub@outlook) or ask it directly in this [support group](https://t.me/battlehub). 
+		
+If you cannot find something in the documentation or have any questions, send an email to  [Battlehub@outlook](mailto:Battlehub@outlook) or ask them directly in this [support group](https://t.me/battlehub). 
 	
 !!! note
 	
 	Documentation is under construction
 	
-
-
-   
 The documentation is organized as following:
 
 ##[General](general.md)
@@ -80,6 +77,7 @@ The documentation is organized as following:
 ## [Runtime Editor](runtime-editor.md)
 *  [Overview](runtime-editor.md#overview)
 *  [Runtime Editor](runtime-editor.md#runtime-editor)
+*  [Main & Context Menu](runtime-editor.md#main-context-menu)
 *  [RTEDeps](runtime-editor.md#rtedeps)
 *  [Window Manager](runtime-editor.md#window-manager)
 *  [How To: How to add custom window to Window Manager](runtime-editor.md#how-to-add-custom-window-to-window-manager)

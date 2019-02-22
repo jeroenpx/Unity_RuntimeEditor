@@ -8,7 +8,6 @@ namespace Battlehub.RTEditor
     public class RTEDeps : MonoBehaviour
     {
         private IRuntimeConsole m_console;
-        private IScenePivot m_scenePivot;
         private IResourcePreviewUtility m_resourcePreview;
         private IRTEAppearance m_rteAppearance;
         private IRuntimeEditor m_rte;
@@ -16,11 +15,6 @@ namespace Battlehub.RTEditor
         private IGameObjectCmd m_gameObjectCmd;
         private IEditCmd m_editCmd;
         private IContextMenu m_contextMenu;
-
-        protected virtual IScenePivot ScenePivot
-        {
-            get { return FindObjectOfType<RuntimeSelectionComponent>(); }
-        }
 
         protected virtual IResourcePreviewUtility ResourcePreview
         {
@@ -116,7 +110,7 @@ namespace Battlehub.RTEditor
         {
             if (m_instance != null)
             {
-                Debug.LogWarning("AnotherInstance of RTSL exists");
+                Debug.LogWarning("AnotherInstance of RTEDeps exists");
             }
             m_instance = this;
             AwakeOverride();
@@ -128,7 +122,6 @@ namespace Battlehub.RTEditor
             IOC.Register<IRTE>(m_rte);
             IOC.Register(m_rte);
 
-            m_scenePivot = ScenePivot;
             m_resourcePreview = ResourcePreview;
             m_rteAppearance = RTEAppearance;
             m_windowManager = WindowManager;
@@ -186,7 +179,6 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_console);
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
-            IOC.RegisterFallback(() => Instance.m_scenePivot);
             IOC.RegisterFallback(() => Instance.m_windowManager);
             IOC.RegisterFallback(() => Instance.m_gameObjectCmd);
             IOC.RegisterFallback(() => Instance.m_editCmd);

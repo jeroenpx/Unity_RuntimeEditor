@@ -981,7 +981,7 @@ namespace Battlehub.UIControls
 
                 if(ItemDataBinding != null)
                 {
-                    ItemDataBinding(lastContainer, sibling);
+                    ItemDataBinding(lastContainer, prevSibling);
                 }
             }
         }
