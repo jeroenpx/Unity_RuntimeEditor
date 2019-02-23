@@ -34,10 +34,10 @@ namespace Battlehub.RTEditor
         bool CmdEditValidate(string cmd);
         void CmdEdit(string cmd);
 
-        void CreatePrefab(ProjectItem folder, ExposeToEditor dragObject, bool? includeDependencies = null, Action<AssetItem[]> done = null);
-        void SaveAsset(UnityObject obj, Action<AssetItem> done = null);
-        void DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done = null);
-        void UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
+        ProjectAsyncOperation<AssetItem[]> CreatePrefab(ProjectItem folder, ExposeToEditor obj, bool? includeDependencies = null, Action<AssetItem[]> done = null);
+        ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done = null);
+        ProjectAsyncOperation<ProjectItem[]> DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done = null);
+        ProjectAsyncOperation<AssetItem> UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
     }
 
     [DefaultExecutionOrder(-90)]
@@ -310,18 +310,19 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, bool? includeDependencies, Action<AssetItem[]> done)
+        public ProjectAsyncOperation<AssetItem[]> CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, bool? includeDependencies, Action<AssetItem[]> done)
         {
-            if(!includeDependencies.HasValue)
+            ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
+            if (!includeDependencies.HasValue)
             {
                 m_wm.Confirmation("Create Prefab", "Include dependencies?",
                     (sender, args) =>
                     {
-                        CreatePrefabWithDependencies(dropTarget, dragObject, done);
+                        CreatePrefabWithDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
                     },
                     (sender, args) =>
                     {
-                        CreatePrefabWithoutDependencies(dropTarget, dragObject, done);
+                        CreatePrefabWithoutDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
                     },
                     "Yes",
                     "No");
@@ -330,13 +331,27 @@ namespace Battlehub.RTEditor
             {
                 if(includeDependencies.Value)
                 {
-                    CreatePrefabWithDependencies(dropTarget, dragObject, done);
+                    CreatePrefabWithDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
                 }
                 else
                 {
-                    CreatePrefabWithoutDependencies(dropTarget, dragObject, done);
+                    CreatePrefabWithoutDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
                 }
             }
+
+            return ao;
+        }
+
+        private void OnCreatePrefabWithDepenenciesCompleted(AssetItem[] result, ProjectAsyncOperation<AssetItem[]> ao, Action<AssetItem[]> callback)
+        {
+            if (callback != null)
+            {
+                callback(result);
+            }
+
+            ao.Error = new Error();
+            ao.Result = result;
+            ao.IsCompleted = true;
         }
 
         private void CreatePrefabWithoutDependencies(ProjectItem dropTarget, ExposeToEditor dragObject, Action<AssetItem[]> done)
@@ -401,8 +416,10 @@ namespace Battlehub.RTEditor
             });
         }
 
-        public void SaveAsset(UnityObject obj, Action<AssetItem> done)
+        public ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done)
         {
+            ProjectAsyncOperation<AssetItem> ao = new ProjectAsyncOperation<AssetItem>();
+
             IProject project = IOC.Resolve<IProject>();
             AssetItem assetItem = project.ToAssetItem(obj);
             if(assetItem == null)
@@ -411,7 +428,10 @@ namespace Battlehub.RTEditor
                 {
                     done(null);
                 }
-                return;
+
+                ao.Error = new Error();
+                ao.IsCompleted = true;
+                return ao;
             }
 
             IsBusy = true;
@@ -421,6 +441,14 @@ namespace Battlehub.RTEditor
                 {
                     IsBusy = false;
                     m_wm.MessageBox("Unable to save asset", saveError.ErrorText);
+
+                    if (done != null)
+                    {
+                        done(null);
+                    }
+
+                    ao.Error = saveError;
+                    ao.IsCompleted = true;
                     return;
                 }
 
@@ -431,12 +459,19 @@ namespace Battlehub.RTEditor
                     {
                         done(saveResult[0]);
                     }
+                    ao.Error = new Error();
+                    ao.Result = saveResult[0];
+                    ao.IsCompleted = true;
                 });
             });
+
+            return ao;
         }
 
-        public void DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done)
+        public ProjectAsyncOperation<ProjectItem[]> DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done)
         {
+            ProjectAsyncOperation<ProjectItem[]> ao = new ProjectAsyncOperation<ProjectItem[]> ();
+
             IProject project = IOC.Resolve<IProject>();
             AssetItem[] assetItems = projectItems.OfType<AssetItem>().ToArray();
             for(int i = 0; i < assetItems.Length; ++i)
@@ -474,6 +509,14 @@ namespace Battlehub.RTEditor
                 if (deleteError.HasError)
                 {
                     m_wm.MessageBox("Unable to delete folders", deleteError.ErrorText);
+
+                    if (done != null)
+                    {
+                        done(null);
+                    }
+
+                    ao.Error = deleteError;
+                    ao.IsCompleted = true;
                     return;
                 }
 
@@ -483,8 +526,14 @@ namespace Battlehub.RTEditor
                     {
                         done(projectItems);
                     }
+
+                    ao.Error = new Error();
+                    ao.Result = projectItems;
+                    ao.IsCompleted = true;
                 }));
             });
+
+            return ao;
         }
 
         private IEnumerator CoUpdateDependantAssetPreview(AssetItem[] assetItems, Action callback)
@@ -542,8 +591,10 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void UpdatePreview(UnityObject obj, Action<AssetItem> done)
+        public ProjectAsyncOperation<AssetItem> UpdatePreview(UnityObject obj, Action<AssetItem> done)
         {
+            ProjectAsyncOperation<AssetItem> ao = new ProjectAsyncOperation<AssetItem>();
+
             IProject project = IOC.Resolve<IProject>();
             AssetItem assetItem = project.ToAssetItem(obj);
             if (assetItem != null)
@@ -557,6 +608,11 @@ namespace Battlehub.RTEditor
             {
                 done(assetItem);
             }
+
+            ao.Error = new Error();
+            ao.Result = assetItem;
+            ao.IsCompleted = true;
+            return ao;
         }
 
         private void OnNewSceneCreating(Error error)

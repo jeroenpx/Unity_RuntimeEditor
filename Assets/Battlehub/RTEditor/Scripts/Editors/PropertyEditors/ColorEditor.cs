@@ -44,7 +44,7 @@ namespace Battlehub.RTEditor
         private void OnSelect()
         {
             SelectColorDialog colorSelector = null;
-            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialog(RuntimeWindowType.SelectColor.ToString(), "Select " + MemberInfoType.Name,
+            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectColor.ToString(), "Select " + MemberInfoType.Name,
                 (sender, args) =>
                 {
                     SetValue(colorSelector.SelectedColor);

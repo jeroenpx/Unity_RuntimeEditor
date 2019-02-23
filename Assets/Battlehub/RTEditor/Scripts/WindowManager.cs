@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
@@ -19,6 +18,8 @@ namespace Battlehub.RTEditor
             get;
         }
 
+        bool RegisterWindow(CustomWindowDescriptor desc);
+
         Transform GetWindow(string windowTypeName);
         bool Exists(string windowTypeName);
         bool IsActive(string windowType);
@@ -26,7 +27,7 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
         Transform CreateWindow(string windowTypeName);
-        Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
+        Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
              float minWidth = 250,
              float minHeight = 250,
              float preferredWidth = 700,
@@ -57,7 +58,7 @@ namespace Battlehub.RTEditor
         public Sprite Icon;
         public string Header;
         public GameObject ContentPrefab;
-        public GameObject[] ComponentPrefabs;
+        public GameObject[] ComponentPrefabs = new GameObject[0];
         [ReadOnly]
         public int MaxWindows = 1;
         [ReadOnly]
@@ -419,6 +420,17 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public bool RegisterWindow(CustomWindowDescriptor desc)
+        {
+            if(m_typeToCustomWindow.ContainsKey(desc.TypeName.ToLower()))
+            {
+                return false;
+            }
+
+            m_typeToCustomWindow.Add(desc.TypeName.ToLower(), desc);
+            return true;
+        }
+
         public void SetDefaultLayout()
         {
             Region rootRegion = m_dockPanels.RootRegion;
@@ -584,7 +596,7 @@ namespace Battlehub.RTEditor
             return window;
         }
 
-        public Transform CreateDialog(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction,
+        public Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction,
              float minWidth,
              float minHeight,
              float preferredWidth,

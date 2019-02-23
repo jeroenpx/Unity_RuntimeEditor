@@ -180,6 +180,8 @@ namespace Battlehub.RTEditor
             m_projectTree.RemoveProjectItemsFromTree(result);
             m_projectTree.SelectRootIfNothingSelected();
 
+            m_projectResources.OnDeleted(result.OfType<AssetItem>().ToArray());
+
             if(Editor.Selection.activeObject != null)
             {
                 long selectedObjectId = m_project.ToID(Editor.Selection.activeObject);
@@ -209,6 +211,7 @@ namespace Battlehub.RTEditor
             if (error.HasError)
             {
                 m_windowManager.MessageBox("Unable to create folder", error.ToString());
+                return;
             }
 
             m_projectTree.AddItem(result.Parent, result);

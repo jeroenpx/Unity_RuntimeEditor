@@ -52,7 +52,7 @@ namespace Battlehub.RTEditor
         private void OnSelect()
         {
             SelectObjectDialog objectSelector = null;
-            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialog(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
+            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
                  (sender, args) =>
                  {
                      if (objectSelector.IsNoneSelected)

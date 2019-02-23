@@ -199,6 +199,21 @@ namespace Battlehub.RTSL.Interface
             return project.Root.Get(string.Format("{0}/{1}{2}", project.Root.Name, path, project.GetExt(typeof(T))));
         }
 
+        public static ProjectItem GetFolder(this IProject project, string path = null, bool forceCreate = false)
+        {
+            if (!project.IsOpened)
+            {
+                throw new InvalidOperationException("OpenProject first");
+            }
+
+            if(string.IsNullOrEmpty(path))
+            {
+                return project.Root;
+            }
+
+            return project.Root.Get(string.Format("{0}/{1}", project.Root.Name, path), forceCreate);
+        }
+
         public static bool Exist<T>(this IProject project, string path)
         {
             return project.Get<T>(path) != null;

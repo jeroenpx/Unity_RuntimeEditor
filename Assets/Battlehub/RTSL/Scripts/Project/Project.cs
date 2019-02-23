@@ -1135,7 +1135,7 @@ namespace Battlehub.RTSL
                     {
                         if (existingAssetItems[i].ItemID != m_assetDB.ToID((UnityObject)obj))
                         {
-                            throw new ArgumentException("assetItem.ItemID != obj persistent id");
+                            throw new ArgumentException("Unable to override item with different object:  assetItem.ItemID != obj persistent id. Either delete the Asset Item, or load the Object before updating.");
                         }
                     }
                 }

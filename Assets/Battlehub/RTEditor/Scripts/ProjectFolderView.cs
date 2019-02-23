@@ -104,6 +104,7 @@ namespace Battlehub.RTEditor
         private GameObject ListBoxPrefab = null;
         private VirtualizingTreeView m_listBox;
         private bool m_raiseSelectionChange = true;
+        private bool m_raiseItemDeletedEvent = true;
 
         public ProjectItem[] SelectedItems
         {
@@ -271,7 +272,15 @@ namespace Battlehub.RTEditor
             {
                 if (m_folders.All(f => f.Children == null || !f.Children.Contains(item)))
                 {
-                    m_listBox.RemoveChild(item.Parent, item);
+                    m_raiseItemDeletedEvent = false;
+                    try
+                    {
+                        m_listBox.RemoveChild(item.Parent, item);
+                    }
+                    finally
+                    {
+                        m_raiseItemDeletedEvent = true;
+                    }   
                 }
             }
         }
@@ -309,9 +318,12 @@ namespace Battlehub.RTEditor
                 m_idToItem.Remove(item.ItemID);               
             }
 
-            if (ItemDeleted != null)
+            if(m_raiseItemDeletedEvent)
             {
-                ItemDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                if (ItemDeleted != null)
+                {
+                    ItemDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                }
             }
         }
 
@@ -703,6 +715,14 @@ namespace Battlehub.RTEditor
             },
             (sender, arg) => { },
             "Delete");
+        }
+
+        public void OnDeleted(ProjectItem[] projectItems)
+        {
+            for(int i = 0; i < projectItems.Length; ++i)
+            {
+                m_listBox.RemoveChild(null, projectItems[i]);
+            }
         }
 
         public void SelectAll()

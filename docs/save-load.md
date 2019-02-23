@@ -465,7 +465,7 @@ using Battlehub.RTSL.Interface;
 IEnumerator Start()
 {
 	IProject project = IOC.Resolve<IProject>();
-	yield return m_project.OpenProject("My Project");
+	yield return project.OpenProject("My Project");
 }
 
 ```
@@ -479,19 +479,19 @@ m_project.CloseProject();
 <br/>
 Delete project:
 ``` C#
-yield return m_project.DeleteProject("My Project");
+yield return project.DeleteProject("My Project");
 ```
 
 <br/>
 Create folder:
 ``` C#
-yield return m_project.CreateFolder("My Scenes");   
+yield return project.CreateFolder("My Scenes");   
 ```
 
 <br/>
 Delete folder:
 ``` C#
-yield return m_project.DeleteFolder("My Scenes");
+yield return project.DeleteFolder("My Scenes");
 ```
 
 <br/>
@@ -510,7 +510,7 @@ IEnumerator Start()
 {
 	//...
 	
-	ProjectAsyncOperation ao = m_project.Save("My Scenes/Scene 1", SceneManager.GetActiveScene());
+	ProjectAsyncOperation ao = project.Save("My Scenes/Scene 1", SceneManager.GetActiveScene());
 	yield return ao;
             
 	if (ao.Error.HasError)
@@ -536,7 +536,7 @@ IEnumerator Start()
 {
 	//...
 	
-	ProjectAsyncOperation ao = m_project.Load<Scene>("My Scenes/Scene 1");
+	ProjectAsyncOperation ao = project.Load<Scene>("My Scenes/Scene 1");
 	yield return ao;
             
 	if (ao.Error.HasError)
@@ -550,14 +550,14 @@ IEnumerator Start()
 <br/>
 Delete scene:
 ``` C#
-yield return m_project.Delete<Scene>("My Scenes/Scene 1");
+yield return project.Delete<Scene>("My Scenes/Scene 1");
 ```
 
 
 <br/>
 Find objects of type:
 ``` C#
-foreach(string scene in m_project.Find<Scene>("Scene 1"))
+foreach(string scene in project.Find<Scene>("Scene 1"))
 {
 	Debug.Log(scene);
 }
@@ -568,14 +568,14 @@ foreach(string scene in m_project.Find<Scene>("Scene 1"))
 Create Prefab:
 ``` C# 
 GameObject primitive = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-yield return m_project.Save("Capsule", primitive);
+yield return project.Save("Capsule", primitive);
 Destroy(primitive);
 ```
 
 <br/>
 Load and instantiate Prefab:
 ``` C# 
-ProjectAsyncOperation<Object[]> ao = m_project.Load<GameObject>("Capsule");
+ProjectAsyncOperation<Object[]> ao = project.Load<GameObject>("Capsule");
 yield return ao;
 
 if(!ao.Error.HasError)
@@ -589,11 +589,11 @@ Import all assets from asset bundle:
 ``` C#
 
 //get names of asset bundles from Assets/StreamingAssets folder.
-ProjectAsyncOperation<string[]> ao = m_project.GetAssetBundles();
+ProjectAsyncOperation<string[]> ao = project.GetAssetBundles();
 yield return ao;
 
 //load ImportItems from first asset bundle
-ProjectAsyncOperation<ProjectItem> loadAo = m_project.LoadImportItems(ao.Result[0], false);
+ProjectAsyncOperation<ProjectItem> loadAo = project.LoadImportItems(ao.Result[0], false);
 yield return loadAo;
 
 
@@ -601,14 +601,14 @@ if (!loadAo.Error.HasError)
 {
 	//create previews here...
 	//then unload asset bundle assets
-	m_project.UnloadImportItems(loadAo.Result);
+	project.UnloadImportItems(loadAo.Result);
 
 	//import all
-	yield return m_project.Import(loadAo.Result.Flatten(true).OfType<ImportItem>().ToArray());
+	yield return project.Import(loadAo.Result.Flatten(true).OfType<ImportItem>().ToArray());
 }
 
 //log all asset items in project
-foreach(string path in m_project.Find<object>(string.Empty, true))
+foreach(string path in project.Find<object>(string.Empty, true))
 {
 	Debug.Log(path);
 }
