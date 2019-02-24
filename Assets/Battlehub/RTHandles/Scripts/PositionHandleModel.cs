@@ -207,6 +207,8 @@ namespace Battlehub.RTHandles
                 }
 
                 m_snappingCollider.isTrigger = true;
+
+                m_xCollider.transform.gameObject.SetActive(false);
             }
         }
 
@@ -242,6 +244,21 @@ namespace Battlehub.RTHandles
             if (index >= 0)
             {
                 UpdateColliders(index);
+            }
+
+            if(m_useColliders)
+            {
+                m_xCollider.transform.gameObject.SetActive(true);
+            }   
+        }
+
+        protected override void OnWindowDeactivated()
+        {
+            base.OnWindowDeactivated();
+
+            if (m_xCollider != null)
+            {
+                m_xCollider.transform.gameObject.SetActive(false);
             }
         }
 
@@ -578,8 +595,7 @@ namespace Battlehub.RTHandles
             Collider collider = null;
             float minDistance = float.MaxValue;
 
-           // m_xCollider.transform.gameObject.SetActive(true);
-
+        
             if(m_isVertexSnapping)
             {
                 RaycastHit hit;
@@ -628,8 +644,7 @@ namespace Battlehub.RTHandles
                 }
             }
            
-            //m_xCollider.transform.gameObject.SetActive(false);
-
+          
             if (collider == m_xCollider)
             {
                 return RuntimeHandleAxis.X;
@@ -706,6 +721,8 @@ namespace Battlehub.RTHandles
             }
         }
 
+
+        
         
     }
 }

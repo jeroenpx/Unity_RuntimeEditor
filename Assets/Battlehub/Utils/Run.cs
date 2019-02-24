@@ -32,10 +32,10 @@ namespace Battlehub.Utils
 
         private void Awake()
         {
-            if (m_instance != null)
-            {
-                Debug.Log("Another instance of Animation already exist");
-            }
+            //if (m_instance != null)
+            //{
+            //    Debug.Log("Another instance of Animation already exist");
+            //}
             m_instance = this;
             m_animations = new List<IAnimationInfo>();
         }

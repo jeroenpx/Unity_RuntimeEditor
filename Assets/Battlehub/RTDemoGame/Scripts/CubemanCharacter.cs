@@ -43,8 +43,9 @@ namespace Battlehub.Cubeman
         }
 
         private void Start()
-		{    
-            if(Enabled)
+		{
+            
+            if (Enabled)
             {
                 CheckGroundStatus();
             }
@@ -191,8 +192,10 @@ namespace Battlehub.Cubeman
 			// check whether conditions are right to allow a jump:
 			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
 			{
-				// jump!
-				m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
+                // jump!
+
+                m_OrigGroundCheckDistance = m_GroundCheckDistance;
+                m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
 				m_IsGrounded = false;
 				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
@@ -235,8 +238,9 @@ namespace Battlehub.Cubeman
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
 			if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, m_GroundCheckDistance))
-			{
-				m_GroundNormal = hitInfo.normal;
+            {
+                m_GroundCheckDistance = m_OrigGroundCheckDistance;
+                m_GroundNormal = hitInfo.normal;
 				m_IsGrounded = true;
 				m_Animator.applyRootMotion = true;
 			}

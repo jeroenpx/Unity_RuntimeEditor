@@ -12,12 +12,10 @@ namespace Battlehub.Cubeman
 
         private void Start()
         {
-            
-
             Transform parent = transform.parent;
             while(parent != null)
             {
-                GameFerry ferry = parent.GetComponentInChildren<GameFerry>(); 
+                GameFerry ferry = parent.GetComponentInChildren<GameFerry>(true); 
                 if(ferry != null)
                 {
                     m_ferryAnimator = ferry.GetComponent<Animator>();

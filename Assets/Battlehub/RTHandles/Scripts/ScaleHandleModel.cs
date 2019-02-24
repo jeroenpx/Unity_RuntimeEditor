@@ -92,6 +92,8 @@ namespace Battlehub.RTHandles
                 {
                     m_colliders[i].isTrigger = true;
                 }
+
+                m_xCollider.gameObject.SetActive(false);
             }
         }
 
@@ -101,6 +103,24 @@ namespace Battlehub.RTHandles
 
             UpdateModel();
             SetColors();
+        }
+
+        protected override void OnWindowActivated()
+        {
+            base.OnWindowActivated();
+            if(m_useColliders)
+            {
+                m_xCollider.gameObject.SetActive(true);
+            }
+        }
+
+        protected override void OnWindowDeactivated()
+        {
+            base.OnWindowDeactivated();
+            if(m_xCollider != null)
+            {
+                m_xCollider.gameObject.SetActive(false);
+            }
         }
 
         public override void SetLock(LockObject lockObj)

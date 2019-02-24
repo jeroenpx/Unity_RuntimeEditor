@@ -248,6 +248,12 @@ namespace Battlehub.RTEditor
             }
             else
             {
+                if(IsPlaying)
+                {
+                    m_wm.MessageBox("Unable to save scene", "Unable to save scene in play mode");
+                    return;
+                }
+
                 Undo.Purge();
                 IsBusy = true;
                 m_project.Save(new[] { m_project.LoadedScene }, new[] { (object)SceneManager.GetActiveScene() }, (error, assetItem) =>

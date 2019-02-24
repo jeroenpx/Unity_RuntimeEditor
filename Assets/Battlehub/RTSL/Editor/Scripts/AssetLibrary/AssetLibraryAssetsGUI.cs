@@ -527,10 +527,12 @@ namespace Battlehub.RTSL
                             
                             assets.Add(prefabPartAssetInfo.id, prefabPartAssetInfo);
 
-                            TreeElement parent = assets[prefabPart.ParentPersistentID];
-                            prefabPartAssetInfo.parent = parent;
-
-                            result.Add(prefabPartAssetInfo);
+                            if(assets.ContainsKey(prefabPart.ParentPersistentID))
+                            {
+                                TreeElement parent = assets[prefabPart.ParentPersistentID];
+                                prefabPartAssetInfo.parent = parent;
+                                result.Add(prefabPartAssetInfo);
+                            }
                         }
                     }
 

@@ -18,11 +18,16 @@ namespace Battlehub.RTHandles
             m_editor = m_boxSelection.Editor;
         }
 
+        private bool m_pointerPressed = false;
         private void LateUpdate()
         {
-            if (m_editor.Input.GetPointerUp(MouseButton))
+            if (!m_editor.Input.GetPointer(MouseButton))
             {
-                m_boxSelection.EndSelect();
+                if(m_pointerPressed)
+                {
+                    m_pointerPressed = false;
+                    m_boxSelection.EndSelect();
+                }
             }
 
             if (!m_boxSelection.IsWindowActive)
@@ -37,6 +42,7 @@ namespace Battlehub.RTHandles
 
             if (m_editor.Input.GetPointerDown(MouseButton))
             {
+                m_pointerPressed = true;
                 m_boxSelection.BeginSelect();
             }
            

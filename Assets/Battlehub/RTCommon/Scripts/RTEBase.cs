@@ -650,6 +650,7 @@ namespace Battlehub.RTCommon
         {
             if (!IsOpened || IsBusy)
             {
+                //m_input = new InputLow();
                 m_input = new DisabledInput();
             }
             else

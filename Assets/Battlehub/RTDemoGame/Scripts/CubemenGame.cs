@@ -272,6 +272,7 @@ namespace Battlehub.Cubeman
             {
                 TxtCompleted.gameObject.SetActive(false);
                 TxtScore.gameObject.SetActive(true);
+                TxtTip.gameObject.SetActive(true);
                 UpdateScore();
 
                 if(activeCharacterIndex >= 0)
