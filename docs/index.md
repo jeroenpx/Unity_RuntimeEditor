@@ -5,12 +5,9 @@ and this documentation has to offer.
 	
 !!! note
 		
-If you cannot find something in the documentation or have any questions, send an email to  [Battlehub@outlook](mailto:Battlehub@outlook) or ask them directly in this [support group](https://t.me/battlehub). 
+	If you cannot find something in the documentation or have any questions, send an email to [Battlehub@outlook](mailto:Battlehub@outlook) or ask directly in this [support group](https://t.me/battlehub). 
 	
-!!! note
-	
-	Documentation is under construction
-	
+
 The documentation is organized as following:
 
 ##[General](general.md)
@@ -18,9 +15,15 @@ The documentation is organized as following:
 *   [List of Features](general.md#list-of-features)
 *   [About](general.md#about)
 
-## [Getting Started](get-started.md)
-*  [Minimal setup](get-started.md#minimal-setup)
-*  [How to create and use Runtime Editor](get-started.md#how-to-create-and-use-runtime-editor)
+## __Getting Started__
+*  [Getting Started with Transform Handles](transform-handles.md#getting-started)
+*  [Getting Started with Runtime Editor](runtime-editor.md#getting-started)
+*  [Getting Started with Save & Load](save-load.md#getting-started)
+*  [Expose To Editor](infrastructure.md#expose-to-editor)
+*  [Event methods](infrastructure.md#event-methods)
+*  [IOC](infrastructure.md#ioc)
+*  [Runtime Selection](infrastructure.md#runtime-selection)
+*  [Runtime Undo](infrastructure.md#runtime-undo)
 
 ## [Transform Handles](transform-handles.md)
 *  [Overview](transform-handles.md#overview)
@@ -38,6 +41,49 @@ The documentation is organized as following:
 *  [Runtime Selection Component](transform-handles.md#runtime-selection-component)
 *  [Runtime Scene Component](transform-handles.md#runtime-scene-component)
 
+## [Common Infrastructure](infrastructure.md)
+*  [Overview](infrastructure.md#overview)
+*  [Expose To Editor](infrastructure.md#expose-to-editor)
+*  [Event methods](infrastructure.md#event-methods)
+*  [IOC](infrastructure.md#ioc)
+*  [Input](infrastructure.md#input)
+*  [IRTE interface](infrastructure.md#irte-interface)
+*  [RTE Component](infrastructure.md#rte-component)
+*  [Runtime Tools](infrastructure.md#runtime-tools)
+*  [Runtime Objects](infrastructure.md#runtime-objects)
+*  [Runtime Selection](infrastructure.md#runtime-selection)
+*  [Runtime Undo](infrastructure.md#runtime-undo)
+*  [Drag And Drop](infrastructure.md#drag-and-drop)
+*  [Runtime Window](infrastructure.md#runtime-window)
+
+## [Runtime Editor](runtime-editor.md)
+*  [Overview](runtime-editor.md#overview)
+*  [Getting Started](runtime-editor.md#getting-started)
+*  [Runtime Editor](runtime-editor.md#runtime-editor)
+*  [Main & Context Menu](runtime-editor.md#main-context-menu)
+*  [RTEDeps](runtime-editor.md#rtedeps)
+*  [Window Manager](runtime-editor.md#window-manager)
+*  [How To: How to add custom window to Window Manager](runtime-editor.md#how-to-add-custom-window-to-window-manager)
+*  [Inspector View](runtime-editor.md#inspector-view)
+*  [How To: Configure Editors](runtime-editor.md#how-to-configure-editors)
+*  [How To: Select Component Properties](runtime-editor.md#how-to-select-component-properties)
+
+## [Save Load](save-load.md)
+*  [Overview](save-load.md#overview)
+*  [Getting Started](save-load.md#getting-started)
+*  [Persistent Classes](save-load.md#persistent-classes)
+*  [How To: Create Custom Persistent Class](save-load.md#how-to-create-custom-persistent-class)
+*  [Asset Library](save-load.md#/asset-library)
+*  [How To: Create Asset Library](save-load.md#how-to-create-asset-library)
+*  [Project Item & Asset Item](save-load.md#project-item-asset-item)
+*  [Project](save-load.md#project)
+
+## [Rendering](rendering.md)
+*  [IGL](rendering.md#igl)
+*  [GLRenderer](rendering.md#glrenderer)
+*  [GLCamera](rendering#glcamera)
+*  [Runtime Graphics Layer](rendering#runtime-graphics-layer)
+
 ## [Gizmos](gizmos.md)
 *  [Overview](gizmos.md#overview)
 *  [Getting Started With Gizmos](gizmos.md#getting-started)
@@ -54,54 +100,7 @@ The documentation is organized as following:
 *  [Audio Reverb Zone Gimzo](gizmos.md#audio-reverb-zone-gizmo)
 *  [Skinned Mesh Renderer Gizmo](gizmos.md#skinned-mesh-renderer-gizmo)
 
-## [Rendering](rendering.md)
-*  [IGL](rendering.md#igl)
-*  [GLRenderer](rendering.md#glrenderer)
-*  [GLCamera](rendering#glcamera)
-*  [Runtime Graphics Layer](rendering#runtime-graphics-layer)
 
-## [Common Infrastructure](infrastructure.md)
-*  [Overview](infrastructure.md#overview)
-*  [Expose To Editor](infrastructure.md#expose-to-editor)
-*  [IOC](infrastructure.md#ioc)
-*  [Input](infrastructure.md#input)
-*  [IRTE interface](infrastructure.md#irte-interface)
-*  [RTE Component](infrastructure.md#rte-component)
-*  [Runtime Tools](infrastructure.md#runtime-tools)
-*  [Runtime Objects](infrastructure.md#runtime-objects)
-*  [Runtime Selection](infrastructure.md#runtime-selection)
-*  [Runtime Undo](infrastructure.md#runtime-undo)
-*  [Drag And Drop](infrastructure.md#drag-and-drop)
-*  [Runtime Window](infrastructure.md#runtime-window)
-
-## [Runtime Editor](runtime-editor.md)
-*  [Overview](runtime-editor.md#overview)
-*  [Runtime Editor](runtime-editor.md#runtime-editor)
-*  [Main & Context Menu](runtime-editor.md#main-context-menu)
-*  [RTEDeps](runtime-editor.md#rtedeps)
-*  [Window Manager](runtime-editor.md#window-manager)
-*  [How To: How to add custom window to Window Manager](runtime-editor.md#how-to-add-custom-window-to-window-manager)
-*  [Inspector View](runtime-editor.md#inspector-view)
-*  [How To: Configure Editors](runtime-editor.md#how-to-configure-editors)
-*  [How To: Select Component Properties](runtime-editor.md#how-to-select-component-properties)
-*  [How To: Create Component Editor](runtime-editor.md#how-to-create-component-edtitor)
-*  [Hierarchy View](runtime-editor.md#hierarchy-view)
-*  [Project View](runtime-editor.md#project-view)
-*  [Console View](runtime-editor.md#console-view)
-*  [Scene View](runtime-editor.md#scene-view)
-*  [Game View](runtime-editor.md#game-view)
-*  [Dialogs](runtime-editor.md#dialogs)
-
-
-## [Save Load](save-load.md)
-*  [Overview](save-load.md#overview)
-*  [Getting Started](save-load.md#getting-started)
-*  [Persistent Classes](save-load.md#persistent-classes)
-*  [How To: Create Custom Persistent Class](save-load.md#how-to-create-custom-persistent-class)
-*  [Asset Library](save-load.md#/asset-library)
-*  [How To: Create Asset Library](save-load.md#how-to-create-asset-library)
-*  [Project Item & Asset Item](save-load.md#project-item-asset-item)
-*  [Project](save-load.md#project)
 
 
 ## [Dock Panel](dock-panels.md)

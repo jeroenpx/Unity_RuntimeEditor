@@ -5,23 +5,22 @@ It supports [drag & drop](infrastructure.md#drag-and-drop), [undo & redo](infras
 To implement user interface and core functions runtime editor use [transform-handles](transform-handles.md), [gizmos](gizmos.md), [save load subsystem](save-load.md) and three controls: [menu](menu-control.md), [virtualizing tree view](vtv.md)  and [dock panels](dock-panels.md).
 Out of the box it has six Views:
   
-  * [Scene View](#scene-view) to manipulate objects in the scene.
-  * [Hierarchy View](#hierarchy-view) for displaying and manipulating the object tree.
-  * [Project View](#project-view) to manage assets and scenes.
+  * __Scene View__ to manipulate objects in the scene.
+  * __Hierarchy View__ for displaying and manipulating the object tree.
+  * __Project View__ to manage assets and scenes.
   * [Inspector View](#inspector-view) to display and edit object properties.
-  * [Console View](#console-view) to display information, warnings and errors.
-  * [Game View](#game-view) for the game.
+  * __Console View__ to display information, warnings and errors.
+  * __Game View__ for the game.
   * [Add More...](#how-to-add-custom-window-to-window-manager)
   
-The Runtime Editor has many ready-to-use [property](#property-editor) and [component](#component-editor) editors and it is relatively easy [to create new ones](#how-to-create-component-editor). __"Add Component"__ drop-down button allows you to add components at runtime.
-There are also several important [dialogs](#dialogs) included:
+The Runtime Editor has many ready-to-use property and component editors and it is relatively easy [to create new ones](#how-to-select-component-properties). __"Add Component"__ drop-down button allows you to add components at runtime.
+There are also several important dialogs included:
   
-  * Save Scene Dialog.
-  * Object Picker.
-  * Color Picker.
-  * Asset Bundles and Libraries Importer.
-  * Manage Projects Dialog.
-
+  * __Save Scene Dialog__.
+  * __Object Picker__.
+  * __Color Picker__.
+  * __Asset Bundles and Libraries Importer__.
+  * __Manage Projects Dialog__.
 
 ![Screenshot](img/rteditor/overview/overview.png)
 
@@ -182,7 +181,6 @@ public static class MyContextMenu
 ```
 
 
-
 ![Screenshot](img/rteditor/menu/my-context-menu.png)
 
 Built-in context menu populated and opened from Assets/Battlehub/RTEditor/Scripts/__ProjectFolderView.cs__ and __ProjectTreeView.cs__
@@ -197,8 +195,8 @@ The main purpose of the Assets/Battlehub/RTEditor/__RTEDeps.cs__ class is to reg
 * [IResourcePreviewUtility](#resource-preview-utility) - create preview for Game Object or asset.
 * [IWindowManager](#window-manager) - manage build-in and custom windows.
 * [IContextMenu](#main-context-menu) - create and show context menu.
-* [IRuntimeConsole](#runtime-console) - log messages cache
-* [IRuntimeEditor](#iruntimeeditor) - the main interface of the RuntimeEditor
+* __IRuntimeConsole__ - log messages cache.
+* [IRuntimeEditor](#iruntimeeditor) - the main interface of the RuntimeEditor.
 	
 ##IRuntimeEditor
 
@@ -298,7 +296,7 @@ public class IRuntimeEditorMethodsUsageExample : MonoBehaviour
 ##Window Manager
 
 Window Manager allows you to create complex windows, such as an inspector or scene, and simple dialogs, such as a message box or confirmation.
-The difference between dialog and window is rather subtle. The content of the dialog can be anything, and it can not be docked. To be considered as a window or dialog window, a [Runtime Window](structure.md#runtime-window) component must be attached to the game object.
+The difference between dialog and window is rather subtle. The content of the dialog can be anything, and it can not be docked. To be considered as a window or dialog window, a [Runtime Window](infrastructure.md#runtime-window) component must be attached to the game object.
 When the runtime window is activated, the other windows are deactivated. The dialog cannot deactivate the window.
 
 !!! note
@@ -377,7 +375,6 @@ Set default layout:
 IWindowManager wm = IOC.Resolve<IWindowManager>();
 wm.SetDefaultLayout();
 ```
-
 
 ##How to: add custom window to Window Manager
 
@@ -472,7 +469,6 @@ Prefabs:
 
 ![Screenshot](img/rteditor/inspector-view/property-editors.png)
 
-
 ##How To: Configure Editors
 
 To select the editors to be used by the inspector, click __Tools->Runtime Editor->Configuration__
@@ -494,14 +490,119 @@ After you select and enable the desired component editors, click the __Save Edit
 
 ##How To: Select Component Properties
 
+In order to select the properties displayed by the component editor, you need to create a class and inherit it from __ComponentDescriptorBase<<T>>__.
+After that, you need to implement the __GetProperties__ method. It must return __PropertyDescriptors__ for all properties that will be present in the component editor ui.
+Here is the example of __TransformComponentDescriptor__:
+```C#
 
-##How To: Create Component Editor
-##How To: Extend Menu
-##Hierarchy View
-##Project View
-##Console View
-##Scene View
-##Game View
-##Dialogs
+using UnityEngine;
+using System.Reflection;
+using Battlehub.Utils;
+
+namespace Battlehub.RTEditor
+{
+    public class TransformComponentDescriptor : ComponentDescriptorBase<Transform>
+    {
+        public override object CreateConverter(ComponentEditor editor)
+        {
+            TransformPropertyConverter converter = new TransformPropertyConverter();
+            converter.Component = (Transform)editor.Component;
+            return converter;
+        }
+
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
+        {
+            TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
+
+            MemberInfo position = Strong.PropertyInfo((Transform x) => x.position);
+            MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.rotation);
+            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.Rotation);
+            MemberInfo scale = Strong.PropertyInfo((Transform x) => x.localScale);
+
+            return new[]
+                {
+                    new PropertyDescriptor( "Position", editor.Component, position) ,
+                    new PropertyDescriptor( "Rotation", converter, rotationConverted, rotation),
+                    new PropertyDescriptor( "Scale", editor.Component, scale)
+                };
+        }
+    }
+
+    public class TransformPropertyConverter 
+    {
+        public Vector3 Rotation
+        {
+            get
+            {
+                if(Component == null)
+                {
+                    return Vector3.zero;
+                }
+                return Component.rotation.eulerAngles;
+            }
+            set
+            {
+                if (Component == null)
+                {
+                    return;
+                }
+                Component.rotation = Quaternion.Euler(value);
+            }
+        }
+
+        public Transform Component
+        {
+            get;
+            set;
+        }
+    }
+}
+
+```
+
+__TransformPropertyConverter__ is used to convert a quaternion to Euler angles. This is needed for Vector3Editor to be used instead of QuaternionEditor.
+
+!!! note 
+
+     The remaining built-in component descriptors are in the __Assets/Battlehub/RTEditor/Scripts/Editors/ComponentDescriptors__ folder.
+	
+
 ##Resource Preview Utility
-##Runtime Console
+
+The resource preview utility is used to create previews for objects. Here is how to used it:
+
+```C#
+using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using UnityEngine;
+
+public class CreatePreviewExample : MonoBehaviour
+{
+	[SerializeField]
+    Image m_image = null;
+	
+	Texture2D m_previewTexture;
+
+    void Start()
+    {
+		m_previewTexture = new Texture2D(1, 1, TextureFormat.ARGB32, true);	
+
+        IResourcePreviewUtility resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
+        byte[] previewData = resourcePreviewUtility.CreatePreviewData(gameObject);
+		
+		m_previewTexture.LoadImage(assetItem.Preview.PreviewData);
+		m_image.sprite = Sprite.Create(m_previewTexture, 
+			new Rect(0, 0, m_previewTexture.width, m_previewTexture.height),
+			new Vector2(0.5f, 0.5f));
+    }
+	
+	void OnDestroy()
+	{		
+		if (m_previewTexture != null)
+		{
+			Destroy(m_previewTexture);
+		}
+	}
+}
+```
+

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Reflection;
-using System;
 using Battlehub.Utils;
 
 namespace Battlehub.RTEditor

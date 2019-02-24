@@ -26,7 +26,58 @@ Fields & Properties:
 	   * _Custom_ – user defined bounds.
 	   * _Any_ – any of the above.
 	   
-	
+##Event methods
+
+Event methods are called for all scripts of game objects with the [Expose To Editor](#expose-to-editor) component attached. 
+
+!!! note
+   
+     RuntimeAwake, RuntimeStart, OnRuntimeDestroy,  OnRuntimeActivate, OnRuntimeDeactivate are called in play mode only. 
+	 See `IsPlaying` property of [IRTE interface](#irte-interface)
+
+
+```C#
+using UnityEngine;
+
+public class ScriptEventsExample : MonoBehaviour
+{
+    private void RuntimeAwake()
+    {
+        Debug.Log("Awake in play mode");
+    }
+
+    private void RuntimeStart()
+    {
+        Debug.Log("Start in play mode");
+    }
+
+    private void OnRuntimeDestroy()
+    {
+        Debug.Log("Destroy in play mode");
+    }
+
+    private void OnRuntimeActivate()
+    {
+        Debug.Log("Game View activated");
+    }
+
+    private void OnRuntimeDeactivate()
+    {
+        Debug.Log("Game View deactivated");
+    }
+
+    private void OnRuntimeEditorOpened()
+    {
+        Debug.Log("Editor Opened");
+    }
+
+    private void OnRuntimeEditorClosed()
+    {
+        Debug.Log("Editor Closed");
+    }
+}
+```
+
 ##IOC
 
 Assets/Battlehub/RTCommon/Scripts/Utis/__IOC__ is used for implementing simple dependency injection.

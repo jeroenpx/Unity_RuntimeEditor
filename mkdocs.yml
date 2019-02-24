@@ -6,7 +6,6 @@ copyright: Copyright © 2019 vadim.andriyanov@outlook.com
 nav:
     - Home: 'index.md'
     - General: 'general.md'
-    - Getting Started: 'get-started.md'
     - Transform Handles: 'transform-handles.md'
     - Gizmos: 'gizmos.md'
     - Rendering: 'rendering.md'
