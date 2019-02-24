@@ -923,16 +923,20 @@ namespace Battlehub.RTCommon
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
 
-            List<UnityEngine.Object> selection = Selection.objects.ToList();
-            for(int i = selection.Count - 1; i >= 0; --i)
+            if(Selection.objects != null)
             {
-                if (selection[i] == gameObjects[i])
+                List<UnityEngine.Object> selection = Selection.objects.ToList();
+                for (int i = selection.Count - 1; i >= 0; --i)
                 {
-                    selection.RemoveAt(i);
+                    if (selection[i] == gameObjects[i])
+                    {
+                        selection.RemoveAt(i);
+                    }
                 }
-            }
 
-            Selection.objects = selection.ToArray();
+                Selection.objects = selection.ToArray();
+            }
+           
             Undo.DestroyObjects(exposeToEditor);
             Undo.EndRecord();
         }

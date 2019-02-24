@@ -392,6 +392,7 @@ namespace Battlehub.RTCommon
             set;
         }
 
+    
         bool CanUndo
         {
             get;
@@ -448,8 +449,15 @@ namespace Battlehub.RTCommon
 
             public SelectionState(UnityObject[] objects, UnityObject activeObject)
             {
-                Objects = objects;
                 ActiveObject = activeObject;
+                if (objects != null)
+                {
+                    Objects = objects.ToArray();
+                }
+                else
+                {
+                    Objects = null;
+                }
             }
 
             public SelectionState(IRuntimeSelection selection)
@@ -458,6 +466,10 @@ namespace Battlehub.RTCommon
                 if(selection.objects != null)
                 {
                     Objects = selection.objects.ToArray();
+                }
+                else
+                {
+                    Objects = null;
                 }
             }
         }
@@ -492,6 +504,12 @@ namespace Battlehub.RTCommon
             set;
         }
 
+        protected bool Locked
+        {
+            get;
+            private set;
+        }
+
         public bool CanUndo
         {
             get { return m_stack.CanPop; }
@@ -514,7 +532,7 @@ namespace Battlehub.RTCommon
         public event RuntimeUndoEventHandler StateChanged;
 
         public const int Limit = 8192;
-
+        
         private Dictionary<object, Dictionary<MemberInfo, object>> m_objToValue;
 
         private List<Record> m_group;
@@ -546,6 +564,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if(Locked)
+            {
+                return;
+            }
 
             m_group = new List<Record>();
         }
@@ -553,6 +575,10 @@ namespace Battlehub.RTCommon
         public void EndRecord()
         {
             if (!Enabled)
+            {
+                return;
+            }
+            if (Locked)
             {
                 return;
             }
@@ -588,12 +614,29 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
 
             if (!m_stack.CanRestore)
             {
                 return;
             }
 
+            try
+            {
+                Locked = true;
+                DoRedo();
+            }
+            finally
+            {
+                Locked = false;
+            } 
+        }
+
+        private void DoRedo()
+        {
             if (BeforeRedo != null)
             {
                 BeforeRedo();
@@ -624,12 +667,29 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
 
             if (!m_stack.CanPop)
             {
                 return;
             }
 
+            try
+            {
+                Locked = true;
+                DoUndo();
+            }
+            finally
+            {
+                Locked = false;
+            }
+        }
+
+        private void DoUndo()
+        {
             if (BeforeUndo != null)
             {
                 BeforeUndo();
@@ -658,6 +718,10 @@ namespace Battlehub.RTCommon
         public void Purge()
         {
             if (!Enabled)
+            {
+                return;
+            }
+            if (Locked)
             {
                 return;
             }
@@ -693,8 +757,12 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
-            
-            if(m_objToValue.Count > 0)
+            if (Locked)
+            {
+                return;
+            }
+
+            if (m_objToValue.Count > 0)
             {
                 Debug.LogWarning("Unifished RecordValue operations exists.");
                 m_objToValue = new Dictionary<object, Dictionary<MemberInfo, object>>();
@@ -749,6 +817,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
             m_stacks.Push(m_stack);
             m_stack = new UndoStack<Record[]>(Limit);
             if (StateChanged != null)
@@ -760,6 +832,10 @@ namespace Battlehub.RTCommon
         public void Restore()
         {
             if (!Enabled)
+            {
+                return;
+            }
+            if (Locked)
             {
                 return;
             }
@@ -782,6 +858,10 @@ namespace Battlehub.RTCommon
         public Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)
         {
             if (!Enabled)
+            {
+                return null;
+            }
+            if (Locked)
             {
                 return null;
             }
@@ -912,6 +992,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
             if (!HasSelectionChanged(objects, activeObject, m_rte.Selection))
             {
                 return;
@@ -1016,6 +1100,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
             Record newRecord = CreateRecord(createdObjects, false, true,
                 record => MarkAsDestroyed(record, (bool)record.NewState),
                 record => MarkAsDestroyed(record, (bool)record.OldState),
@@ -1031,6 +1119,10 @@ namespace Battlehub.RTCommon
         public void DestroyObjects(ExposeToEditor[] destoryedObjects)
         {
             if (!Enabled)
+            {
+                return;
+            }
+            if (Locked)
             {
                 return;
             }
@@ -1212,6 +1304,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
             Record newRecord = CreateRecord(target,
                 new SetValuesState(accessor, memberInfo, GetValues(accessor, memberInfo)),
                 new SetValuesState(accessor, memberInfo, oldValues),
@@ -1325,6 +1421,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
             Dictionary<MemberInfo, object> memberInfoToValue;
             if(!m_objToValue.TryGetValue(target, out memberInfoToValue))
             {
@@ -1348,6 +1448,10 @@ namespace Battlehub.RTCommon
         public void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased)
         {
             if (!Enabled)
+            {
+                return;
+            }
+            if (Locked)
             {
                 return;
             }
@@ -1388,7 +1492,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
-
+            if (Locked)
+            {
+                return;
+            }
             TransformState newState = new TransformState { position = target.position, rotation = target.rotation, scale = target.localScale };
             newState.parent = parent;
             newState.siblingIndex = siblingIndex;
@@ -1487,6 +1594,10 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+            if (Locked)
+            {
+                return;
+            }
             Record newRecord = CreateRecord(obj, type, null,
             record =>
             {
@@ -1564,6 +1675,10 @@ namespace Battlehub.RTCommon
         public void DestroyComponent(Component destroy, MemberInfo[] memberInfo)
         {
             if (!Enabled)
+            {
+                return;
+            }
+            if (Locked)
             {
                 return;
             }

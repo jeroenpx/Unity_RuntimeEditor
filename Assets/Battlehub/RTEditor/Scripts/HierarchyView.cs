@@ -592,7 +592,7 @@ namespace Battlehub.RTEditor
         {
             if(!m_isSpawningPrefab)
             {
-                if (m_treeView.IndexOf(obj) == -1)
+                if (!obj.MarkAsDestroyed && m_treeView.IndexOf(obj) == -1)
                 {
                     ExposeToEditor parent = obj.GetParent();
                     m_treeView.AddChild(parent, obj);
