@@ -1448,9 +1448,33 @@ namespace Battlehub.RTCommon
         {
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
 
+            if (type == typeof(Rigidbody))
+            {
+                ExposeToEditor[] children = go.GetComponentsInChildren<ExposeToEditor>(true);
+                for (int i = 0; i < children.Length; ++i)
+                {
+                    Collider[] colliders = children[i].Colliders;
+                    if (colliders == null)
+                    {
+                        continue;
+                    }
+
+                    for (int j = 0; j < colliders.Length; ++j)
+                    {
+                        Collider collider = colliders[j];
+                        if (collider is MeshCollider)
+                        {
+                            MeshCollider mc = (MeshCollider)collider;
+                            mc.convex = true;
+                        }
+                    }
+                }
+            }
+
             Component component = exposeToEditor.AddComponent(type);
             if (component is Rigidbody)
             {
+
                 Rigidbody rb = (Rigidbody)component;
                 rb.isKinematic = true;
             }

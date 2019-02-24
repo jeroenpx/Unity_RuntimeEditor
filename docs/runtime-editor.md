@@ -77,6 +77,11 @@ Few more steps:
 
 	![Screenshot](img/rteditor/get-started/after-import.png)
 	<br/><br/>
+	
+	
+!!! note
+	Demo scene can be found in __Assets/Battlehub/RTEditor/Demo__
+	
 
 
 ##Main & Context Menu

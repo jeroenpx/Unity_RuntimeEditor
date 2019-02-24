@@ -2,6 +2,7 @@
 using Battlehub.RTHandles;
 using Battlehub.RTSL.Interface;
 using Battlehub.Utils;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +14,7 @@ namespace Battlehub.RTEditor
         private Plane m_dragPlane;
         private IProject m_project;
         private GameObject m_prefabInstance;
+        private HashSet<Transform> m_prefabInstanceTransforms;
         private Vector3 m_point;
         private GameObject m_dropTarget;
         private AssetItem m_dragItem;
@@ -33,13 +35,13 @@ namespace Battlehub.RTEditor
         protected override void OnActivated()
         {
             base.OnActivated();
-            Debug.Log("On SceneView activated");
+            //Debug.Log("On SceneView activated");
         }
 
         protected override void OnDeactivated()
         {
             base.OnDeactivated();
-            Debug.Log("On SceneView deactivated");
+            //Debug.Log("On SceneView deactivated");
         }
 
         public override void DragEnter(object[] dragObjects, PointerEventData eventData)
@@ -88,7 +90,8 @@ namespace Battlehub.RTEditor
                                 {
                                     m_prefabInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
                                 }
-                                
+
+                                m_prefabInstanceTransforms = new HashSet<Transform>(m_prefabInstance.GetComponentsInChildren<Transform>(true));
 
                                 prefab.SetActive(wasPrefabEnabled);
 
@@ -115,7 +118,7 @@ namespace Battlehub.RTEditor
         public override void DragLeave(PointerEventData eventData)
         {
             base.DragLeave(eventData);
-            Debug.Log("Drag Leave");
+            //Debug.Log("Drag Leave");
 
             if(!Editor.IsBusy)
             {
@@ -127,6 +130,7 @@ namespace Battlehub.RTEditor
             {
                 Destroy(m_prefabInstance);
                 m_prefabInstance = null;
+                m_prefabInstanceTransforms = null;
             }
 
             m_dragItem = null;
@@ -147,7 +151,7 @@ namespace Battlehub.RTEditor
 
                     m_prefabInstance.transform.position = m_point;
 
-                    RaycastHit hit = Physics.RaycastAll(Pointer).Where(h => h.transform != m_prefabInstance.transform).FirstOrDefault();
+                    RaycastHit hit = Physics.RaycastAll(Pointer).Where(h => !m_prefabInstanceTransforms.Contains(h.transform)).FirstOrDefault();
                     if (hit.transform != null)
                     {
                         m_prefabInstance.transform.position = hit.point;
@@ -189,6 +193,7 @@ namespace Battlehub.RTEditor
             {
                 RecordUndo();
                 m_prefabInstance = null;
+                m_prefabInstanceTransforms = null;
             }
 
             if (m_dropTarget != null)

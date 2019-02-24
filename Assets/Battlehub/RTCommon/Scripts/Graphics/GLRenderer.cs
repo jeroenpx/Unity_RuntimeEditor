@@ -41,10 +41,10 @@ namespace Battlehub.RTCommon
 
         private void Awake()
         {
-            if(m_instance != null)
-            {
-                Debug.LogWarning("Another instance of GLLinesRenderer already exist");
-            }
+            //if(m_instance != null)
+            //{
+               // Debug.LogWarning("Another instance of GLLinesRenderer already exist");
+            //}
 
             m_instance = this;
 

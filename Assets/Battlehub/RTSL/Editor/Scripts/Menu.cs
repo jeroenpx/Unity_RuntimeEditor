@@ -54,7 +54,12 @@ namespace Battlehub.RTSL
             CreateBuiltInAssetLibrary();
 
             Scene scene = SceneManager.GetActiveScene();
-            
+            if (scene == null || string.IsNullOrEmpty(scene.name))
+            {
+                Debug.Log("Unable to create AssetLibrary for scene with no name");
+                return;
+            }
+
             int index;
             AssetLibraryAsset asset;
             AssetFolderInfo folder;

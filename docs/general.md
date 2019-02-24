@@ -3,7 +3,7 @@
 ![Screenshot](img/rteditor/overview/overview.png)
 
 This documentation covers most important parts of Runtime Editor. Unlike previous versions of the documentation, 
-I tried to concentrate more on examples rather then documenting each property of each script. [Let me know](mailto:Battlehub@outlook) what examples you would like to see.
+I tried to concentrate more on examples rather then documenting each property of each script. [Let me know](mailto:Battlehub@outlook.com) what examples you would like to see.
 
 Start with following sections:
 
@@ -47,9 +47,9 @@ Start with following sections:
 ##Upgrade note
 
 Many breaking changes have been made since version 1.3.2u3. Runtime Save Load and some other parts were completely rewritten because they were too tightly coupled, difficult to extend and maintain.
-I suggest you to start with new version. For those of you who are stuck in the middle of development and cannot just start from scratch, please [let me know](mailto:Battlehub@outlook) I will try to do my best to help.
+I suggest you to start with new version. Those of you who are in the middle of development and cannot just start from scratch, please [let me know](mailto:Battlehub@outlook.com) I will try to do my best to help.
 
   
 ##About
-Hi, I am [Vadym](https://www.facebook.com/vadim.andriyanov). I made a lot of efforts creating Runtime Editor but this was interesting and rewarding experience. First version of Runtime editor was released in august 2016 and was pretty simplistic. Current version is much more sophisticated but in the same time much more flexible and contains a lot of useful features. 
-If you have any questions or suggestions send an email to [Battlehub@outlook](mailto:Battlehub@outlook) or join this [support group](https://t.me/battlehub). I hope you will enjoy using Runtime Editor and it will be helpful.
+Hi, I am [Vadym](https://www.facebook.com/vadim.andriyanov). I made a lot of efforts creating Runtime Editor but this was interesting and rewarding experience. First version of Runtime editor was released in June 2016 and was pretty simplistic. Current version is much more sophisticated but in the same time much more flexible and contains a lot of useful features. 
+If you have any questions or suggestions send an email to [Battlehub@outlook.com](mailto:Battlehub@outlook.com) or join this [support group](https://t.me/battlehub). I hope you will enjoy using Runtime Editor and it will be helpful.

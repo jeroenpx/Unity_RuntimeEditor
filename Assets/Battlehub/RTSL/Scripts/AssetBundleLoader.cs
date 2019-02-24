@@ -19,14 +19,21 @@ namespace Battlehub.RTSL
         {
             List<string> result = new List<string>();
 
-            string[] manifestFiles = Directory.GetFiles(Application.streamingAssetsPath, "*.manifest");
-            for(int i = 0; i < manifestFiles.Length; ++i)
+            if(Directory.Exists(Application.streamingAssetsPath))
             {
-                string assetBundleFile = Path.GetDirectoryName(manifestFiles[i]) + "/" + Path.GetFileNameWithoutExtension(manifestFiles[i]);
-                if(File.Exists(assetBundleFile))
+                string[] manifestFiles = Directory.GetFiles(Application.streamingAssetsPath, "*.manifest");
+                for (int i = 0; i < manifestFiles.Length; ++i)
                 {
-                    result.Add(Path.GetFileName(assetBundleFile));
+                    string assetBundleFile = Path.GetDirectoryName(manifestFiles[i]) + "/" + Path.GetFileNameWithoutExtension(manifestFiles[i]);
+                    if (File.Exists(assetBundleFile))
+                    {
+                        result.Add(Path.GetFileName(assetBundleFile));
+                    }
                 }
+            }
+            else
+            {
+                Debug.Log("StreamingAssets folder does not exists. No asset bundles to load.");
             }
 
             callback(result.ToArray());

@@ -3054,7 +3054,16 @@ namespace Battlehub.RTSL
 
                 parent.AddChild(assetItem);
                 assetItems[i] = assetItem;
-                objects[i] = m_assetDB.FromID<UnityObject>(importItem.ItemID);
+
+                UnityObject obj = m_assetDB.FromID<UnityObject>(importItem.ItemID);
+                objects[i] = obj;
+                if(obj != null)
+                {
+                    if (m_assetDB.TryToReplaceID(obj, importItem.ItemID))
+                    {
+                        Debug.Log("Object  " + obj + " is present in asset db. This means that it was already loaded from different asset library (SceneAssetLibrary for example). -> PersistentID replaced with " + importItem.ItemID);
+                    }
+                }
             }
 
             m_storage.Delete(m_projectPath, removePathHs.ToArray(), deleteError =>

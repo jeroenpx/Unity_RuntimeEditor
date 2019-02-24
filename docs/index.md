@@ -5,7 +5,7 @@ and this documentation has to offer.
 	
 !!! note
 		
-	If you cannot find something in the documentation or have any questions, send an email to [Battlehub@outlook](mailto:Battlehub@outlook) or ask directly in this [support group](https://t.me/battlehub). 
+	If you cannot find something in the documentation or have any questions, send an email to [Battlehub@outlook.com](mailto:Battlehub@outlook.com) or ask directly in this [support group](https://t.me/battlehub). 
 	
 
 The documentation is organized as following:

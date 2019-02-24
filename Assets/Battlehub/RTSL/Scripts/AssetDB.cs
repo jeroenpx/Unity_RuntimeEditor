@@ -33,6 +33,7 @@ namespace Battlehub.RTSL
         long ToSceneID(int ordinal, int id);
 
         bool IsMapped(UnityObject uo);
+        bool TryToReplaceID(UnityObject uo, long persistentID);
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
         long[] ToID<T>(List<T> uo) where T : UnityObject;
@@ -475,6 +476,27 @@ namespace Battlehub.RTSL
             return false;
         }
 
+
+        public bool TryToReplaceID(UnityObject uo, long persistentID)
+        {
+            if (uo == null)
+            {
+                return false;
+            }
+
+            int instanceID = uo.GetInstanceID();
+            if (m_mapping.InstanceIDtoPID.ContainsKey(instanceID))
+            {
+                int id = ToInt(persistentID);
+                if(id != m_mapping.InstanceIDtoPID[instanceID])
+                {
+                    m_mapping.InstanceIDtoPID[instanceID] = id;
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public long ToID(UnityObject uo)
         {

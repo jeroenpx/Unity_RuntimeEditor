@@ -112,7 +112,7 @@ MonoBehaviour:
   m_modifierKey: 304
   SelectAllKey: 97
   FocusKey: 102
-  SnapToGridKey: 115
+  SnapToGridKey: 99
   RotateKey: 308
   RotateKey2: 307
   RotateKey3: 313

@@ -32,10 +32,12 @@ namespace Battlehub.RTSL
         public bool CanCreateInstance(Type type, PersistentSurrogate surrogate)
         {
             return type == typeof(Material) ||
-               type == typeof(Texture2D) ||
-               type.IsSubclassOf(typeof(ScriptableObject)) ||
-               type == typeof(GameObject) ||
-               surrogate != null && surrogate.CanInstantiate(type);
+                type == typeof(Texture2D) ||
+                type == typeof(Mesh) ||
+                type == typeof(PhysicMaterial) ||
+                type.IsSubclassOf(typeof(ScriptableObject)) ||
+                type == typeof(GameObject) ||
+                surrogate != null && surrogate.CanInstantiate(type);
         }
 
         public UnityObject CreateInstance(Type type)
