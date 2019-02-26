@@ -38,12 +38,30 @@ namespace Battlehub.UIControls.Dialogs
              float preferredHeight = 400, 
              bool canResize = true)
         {
-            Dialog dialog = ShowDialog(icon, header, string.Empty, okAction, okText, cancelAction, cancelText, minWidth, minHeight, preferredWidth, preferredHeight, canResize);
+            Dialog dialog = ShowDialog(icon, header,  okAction, okText, cancelAction, cancelText, minWidth, minHeight, preferredWidth, preferredHeight, canResize);
             dialog.Content = content;
+            m_dockPanels.AddModalRegion(dialog.HeaderRoot, dialog.transform, minWidth, minHeight, new Rect(0, 0, preferredWidth, preferredHeight), true, canResize);
+            m_dialogStack.Push(dialog);
             return dialog;
         }
 
         public Dialog ShowDialog(Sprite icon, string header, string content,
+            DialogAction<DialogCancelArgs> okAction = null, string okText = "OK",
+            DialogAction<DialogCancelArgs> cancelAction = null, string cancelText = "Cancel",
+            float minWidth = 350,
+            float minHeight = 115,
+            float preferredWidth = 350,
+            float preferredHeight = 100,
+            bool canResize = false)
+        {
+            Dialog dialog = ShowDialog(icon, header, okAction, okText, cancelAction, cancelText, minWidth, minHeight, preferredWidth, preferredHeight, canResize);
+            dialog.ContentText = content;
+            m_dockPanels.AddModalRegion(dialog.HeaderRoot, dialog.transform, minWidth, minHeight, new Rect(0, 0, preferredWidth, preferredHeight), true, canResize);
+            m_dialogStack.Push(dialog);
+            return dialog;
+        }
+
+        private Dialog ShowDialog(Sprite icon, string header,
             DialogAction<DialogCancelArgs> okAction = null, string okText = "OK",
             DialogAction<DialogCancelArgs> cancelAction = null, string cancelText = "Cancel",
             float minWidth = 350, 
@@ -62,7 +80,7 @@ namespace Battlehub.UIControls.Dialogs
             dialog.name = "Dialog " + header;
             dialog.Icon = icon;
             dialog.HeaderText = header;
-            dialog.ContentText = content;
+            
             dialog.OkAction = okAction;
             dialog.OkText = okText;
             if(cancelAction != null)
@@ -77,9 +95,6 @@ namespace Battlehub.UIControls.Dialogs
             }
             
             dialog.Closed += OnDestroyed;
-            m_dockPanels.AddModalRegion(dialog.HeaderRoot, dialog.transform, minWidth, minHeight, new Rect(0, 0, preferredWidth, preferredHeight), true, canResize);
-            m_dialogStack.Push(dialog);
-
             return dialog;      
         }
 

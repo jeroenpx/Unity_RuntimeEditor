@@ -1829,7 +1829,7 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        private void RaiseDepthChanged()
+        public void RaiseDepthChanged()
         {
             Transform dragRegionTransform = GetDragRegion();
             if (dragRegionTransform != null)

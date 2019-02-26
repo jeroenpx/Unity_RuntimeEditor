@@ -658,7 +658,7 @@ namespace Battlehub.RTEditor
 
         private void OnRegionDepthChanged(Region region, int depth)
         {
-            RuntimeWindow[] windows = region.GetComponentsInChildren<RuntimeWindow>();
+            RuntimeWindow[] windows = region.GetComponentsInChildren<RuntimeWindow>(true);
             for (int i = 0; i < windows.Length; ++i)
             {
                 RuntimeWindow window = windows[i];

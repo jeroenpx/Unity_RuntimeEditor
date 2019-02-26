@@ -56,6 +56,8 @@ namespace Battlehub.UIControls.DockPanels
                 CreateDepthMask(region);
             }
 
+            m_root.RegionEnabled += OnRegionEnabled;
+            m_root.RegionDisabled += OnRegionDisabled;
             m_root.RegionCreated += OnRegionCreated;
             m_root.RegionDestroyed += OnRegionDestroyed;
             m_root.RegionBeginResize += OnRegionBeginResize;
@@ -84,6 +86,8 @@ namespace Battlehub.UIControls.DockPanels
 
             if(m_root != null)
             {
+                m_root.RegionEnabled -= OnRegionEnabled;
+                m_root.RegionDisabled -= OnRegionDisabled;
                 m_root.RegionCreated -= OnRegionCreated;
                 m_root.RegionDestroyed -= OnRegionDestroyed;
                 m_root.RegionBeginResize -= OnRegionBeginResize;
@@ -154,6 +158,31 @@ namespace Battlehub.UIControls.DockPanels
         {
             DestroyDepthMask(region);
         }
+
+        private void OnRegionEnabled(Region region)
+        {
+            DepthMask depthMask;
+            if (m_regionToDepthMask.TryGetValue(region, out depthMask))
+            {
+                if (depthMask != null)
+                {
+                    depthMask.Transform.gameObject.SetActive(true);
+                }
+            }
+        }
+
+        private void OnRegionDisabled(Region region)
+        {
+            DepthMask depthMask;
+            if (m_regionToDepthMask.TryGetValue(region, out depthMask))
+            {
+                if(depthMask != null)
+                {
+                    depthMask.Transform.gameObject.SetActive(false);
+                }
+            }
+        }
+
 
         private void OnRegionDepthChanged(Region region, int depth)
         {

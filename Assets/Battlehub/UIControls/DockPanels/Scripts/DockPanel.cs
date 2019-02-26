@@ -544,6 +544,7 @@ namespace Battlehub.UIControls.DockPanels
             region.CanResize = canResize;
             region.MinWidth = minWidth;
             region.MinHeight = minHeight;
+            
 
             if (rect.width > m_modal.rect.width - margin * 2)
             {
@@ -573,6 +574,7 @@ namespace Battlehub.UIControls.DockPanels
 
             rt.anchoredPosition = rect.position;
             region.Fit();
+            region.RaiseDepthChanged();
 
             Outline outline = region.GetComponent<Outline>();
             if (outline != null)

@@ -39,11 +39,13 @@ namespace Battlehub.RTEditor
 				{ typeof(UnityEngine.MonoBehaviour), new EditorDescriptor(17, false, false) },
 				{ typeof(UnityEngine.Rigidbody), new EditorDescriptor(17, true, false) },
 				{ typeof(UnityEngine.SkinnedMeshRenderer), new EditorDescriptor(17, true, false) },
+				{ typeof(UnityEngine.Skybox), new EditorDescriptor(17, true, false) },
 				{ typeof(UnityEngine.SphereCollider), new EditorDescriptor(18, true, false) },
 				{ typeof(UnityEngine.SpringJoint), new EditorDescriptor(17, true, false) },
 				{ typeof(UnityEngine.Transform), new EditorDescriptor(19, true, false) },
 				{ typeof(Cubeman.CubemanCharacter), new EditorDescriptor(17, true, false) },
 				{ typeof(Cubeman.CubemanUserControl), new EditorDescriptor(17, true, false) },
+				{ typeof(Cubeman.GameCameraFollow), new EditorDescriptor(17, true, false) },
 				{ typeof(Cubeman.GameCharacter), new EditorDescriptor(17, true, false) },
 			};
 		}
