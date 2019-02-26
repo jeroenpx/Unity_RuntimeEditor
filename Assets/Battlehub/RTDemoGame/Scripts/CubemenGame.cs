@@ -24,11 +24,11 @@ namespace Battlehub.Cubeman
 
         [SerializeField]
         private GameCharacter[] m_storedCharacters;
-        public GameCharacter[] StoredCharacters
-        {
-            get { return m_storedCharacters; }
-            set { m_storedCharacters = value; }
-        }
+        //public GameCharacter[] StoredCharacters
+        //{
+        //    get { return m_storedCharacters; }
+        //    set { m_storedCharacters = value; }
+        //}
 
         private GameCharacter m_current;
         private int m_currentIndex = -1;
@@ -43,15 +43,22 @@ namespace Battlehub.Cubeman
 
         private IRTE m_rte;
         private IRTEState m_rteState;
-        private bool m_isActive = true;
-
+        private bool m_isGameRunning;
         public bool IsGameRunning
         {
-            get { return enabled; }
+            get { return m_isGameRunning; }
         }
-        
+
+        private static CubemenGame m_instance;
         private void RuntimeAwake()
         {
+            if(m_instance != null)
+            {
+                Debug.LogWarning("Another instance of Cubemen game exist");
+                Destroy(m_instance);
+                return;
+            }
+            m_instance = this;
         }
 
         private void RuntimeStart()
@@ -61,11 +68,15 @@ namespace Battlehub.Cubeman
 
         private void OnRuntimeDestroy()
         {
+            if(m_instance == this)
+            {
+                m_instance = null;
+            }
         }
 
         private void OnRuntimeActivate()
         {
-            m_isActive = true;
+            m_isGameRunning = true;
 
             if(m_current != null)
             {
@@ -75,7 +86,7 @@ namespace Battlehub.Cubeman
 
         private void OnRuntimeDeactivate()
         {
-            m_isActive = false;
+            m_isGameRunning = false;
 
             if (m_current != null)
             {
@@ -86,12 +97,12 @@ namespace Battlehub.Cubeman
         private void OnRuntimeEditorOpened()
         {
             StopGame();
-            m_isActive = false;
+            m_isGameRunning = false;
         }
 
         private void OnRuntimeEditorClosed()
         {
-            m_isActive = true;
+            m_isGameRunning = true;
             StartCoroutine(StartGame());
         }
 
@@ -99,6 +110,11 @@ namespace Battlehub.Cubeman
         {
             m_rteState = IOC.Resolve<IRTEState>();
 
+            if(!m_rteState.IsCreated)
+            {
+                m_isGameRunning = true;
+            }
+            
             if (BtnReplay != null)
             {
                 BtnReplay.onClick.AddListener(RestartGame);
@@ -116,7 +132,12 @@ namespace Battlehub.Cubeman
 
         private void OnDestroy()
         {
-            if(BtnReplay != null)
+            if (m_instance == this)
+            {
+                m_instance = null;
+            }
+
+            if (BtnReplay != null)
             {
                 BtnReplay.onClick.RemoveListener(RestartGame);
             }
@@ -124,7 +145,7 @@ namespace Battlehub.Cubeman
 
         private void Update()
         {
-            if(!m_isActive)
+            if(!m_isGameRunning)
             {
                 return;
             }
@@ -232,6 +253,7 @@ namespace Battlehub.Cubeman
             if (m_playerCamera != null)
             {
                 Canvas canvas = GetComponentInChildren<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 Camera cam = m_playerCamera.GetComponent<Camera>();
                 canvas.worldCamera = cam;
                 canvas.planeDistance = cam.nearClipPlane + 0.01f;
@@ -440,7 +462,7 @@ namespace Battlehub.Cubeman
         {
             if (m_current != null)
             {
-                if(enabled)
+                if(IsGameRunning)
                 {
                     m_current.HandleInput = true;
                 }

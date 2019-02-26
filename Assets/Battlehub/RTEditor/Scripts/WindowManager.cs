@@ -346,6 +346,7 @@ namespace Battlehub.RTEditor
                 RectTransform activeRectTransform = GetRegionTransform(ActiveWindow);
                 bool activeWindowContainsScreenPoint = activeRectTransform != null && RectTransformUtility.RectangleContainsScreenPoint(activeRectTransform, Input.GetPointerXY(0), Raycaster.eventCamera);
 
+
                 if (!results.Any(r => r.gameObject.GetComponent<Menu>()))
                 {
                     foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z))
@@ -640,6 +641,8 @@ namespace Battlehub.RTEditor
             {
                 arg.Cancel = true;
             }
+
+
         }
 
 
@@ -684,7 +687,7 @@ namespace Battlehub.RTEditor
         {
             Region rootRegion = m_dockPanels.RootRegion;
             ClearRegion(rootRegion);
-            foreach(Transform child in m_dockPanels.Free)
+            foreach (Transform child in m_dockPanels.Free)
             {
                 Region region = child.GetComponent<Region>();
                 ClearRegion(region);
@@ -740,6 +743,15 @@ namespace Battlehub.RTEditor
             ActivateContent(projectWd, projectContent);
             ActivateContent(hierarchyWd, hierarchyContent);
             ActivateContent(inspectorWd, inspectorContent);
+
+            m_editor.ActivateWindow(RuntimeWindowType.Scene);
+
+            RuntimeWindow[] windows = Windows;
+            for (int i = 0; i < windows.Length; ++i)
+            {
+                windows[i].EnableRaycasts();
+            }
+
         }
 
         private void ClearRegion(Region rootRegion)
@@ -821,6 +833,7 @@ namespace Battlehub.RTEditor
                     }
                 }
             }
+            
 
             Tab tab = Region.FindTab(content);
             if (tab == null)

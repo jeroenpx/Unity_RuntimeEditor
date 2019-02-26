@@ -54,8 +54,7 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private GameObject m_progressIndicator = null;
-        //private bool m_isPointerOverActiveWindow = true;
-
+      
         public override bool IsBusy
         {
             get { return base.IsBusy; }
@@ -119,150 +118,6 @@ namespace Battlehub.RTEditor
             
         }
 
-
-        //private RectTransform GetRegionTransform(RuntimeWindow window)
-        //{
-        //    if(window == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    Region region = window.GetComponentInParent<Region>();
-        //    if(region == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    return region.GetDragRegion() as RectTransform;
-        //}
-
-
-        //public bool IsOverlapped(RuntimeWindow testWindow)
-        //{
-        //    for (int i = 0; i < m_windowsArray.Length; ++i)
-        //    {
-        //        RuntimeWindow window = m_windowsArray[i];
-        //        if (window == testWindow)
-        //        {
-        //            continue;
-        //        }
-
-        //        if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)window.transform, Input.GetPointerXY(0), m_raycaster.eventCamera))
-        //        {
-        //            if(testWindow.Depth < window.Depth)
-        //            {
-        //                return true;
-        //            }
-        //        }
-        //    }
-        //    return false;
-        //}
-
-        //private void EnableOrDisableRaycasts()
-        //{
-        //    if (ActiveWindow != null)
-        //    {
-        //        if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)ActiveWindow.transform, Input.GetPointerXY(0), m_raycaster.eventCamera) && !IsOverlapped(ActiveWindow))
-        //        {
-        //            if (!m_isPointerOverActiveWindow)
-        //            {
-        //                m_isPointerOverActiveWindow = true;
-
-        //                for(int i = 0; i < m_windowsArray.Length; ++i)
-        //                {
-        //                    RuntimeWindow window = m_windowsArray[i];
-        //                    window.DisableRaycasts();
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (m_isPointerOverActiveWindow)
-        //            {
-        //                m_isPointerOverActiveWindow = false;
-
-        //                for (int i = 0; i < m_windowsArray.Length; ++i)
-        //                {
-        //                    RuntimeWindow window = m_windowsArray[i];
-        //                    window.EnableRaycasts();
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //protected override void Update()
-        //{
-        //    UpdateCurrentInputField();
-        //    EnableOrDisableRaycasts();
-
-        //    bool mwheel = false;
-        //    if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z))))
-        //    {
-        //        mwheel = m_zAxis == 0;
-        //        m_zAxis = Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z)));
-        //    }
-
-        //    bool pointerDownOrUp = Input.GetPointerDown(0) ||
-        //      Input.GetPointerDown(1) ||
-        //      Input.GetPointerDown(2) ||
-        //      Input.GetPointerUp(0);
-
-        //    bool canActivate = pointerDownOrUp ||
-        //        mwheel ||
-        //        Input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused);
-
-        //    if (canActivate)
-        //    {
-        //        PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
-        //        pointerEventData.position = Input.GetPointerXY(0);
-
-        //        List<RaycastResult> results = new List<RaycastResult>();
-        //        m_raycaster.Raycast(pointerEventData, results);
-
-        //        RectTransform activeRectTransform = GetRegionTransform(ActiveWindow);
-        //        bool activeWindowContainsScreenPoint = activeRectTransform != null && RectTransformUtility.RectangleContainsScreenPoint(activeRectTransform, Input.GetPointerXY(0), m_raycaster.eventCamera);
-
-        //        if (!results.Any(r => r.gameObject.GetComponent<Menu>()))
-        //        {
-        //            foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z))
-        //            {
-        //                RuntimeWindow window = region.ActiveContent != null ? region.ActiveContent.GetComponentInChildren<RuntimeWindow>() : region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
-        //                if (window != null && (!activeWindowContainsScreenPoint || window.Depth >= ActiveWindow.Depth))
-        //                {
-        //                    if (m_windows.Contains(window.gameObject))
-        //                    {
-        //                        if (pointerDownOrUp || window.ActivateOnAnyKey)
-        //                        {
-        //                            if (window != null && window.WindowType == RuntimeWindowType.Scene)
-        //                            {
-        //                                IEnumerable<Selectable> selectables = results.Select(r => r.gameObject.GetComponent<Selectable>()).Where(s => s != null);
-        //                                int count = selectables.Count();
-        //                                if (count >= 1)
-        //                                {
-        //                                    RuntimeSelectionComponentUI selectionComponentUI = selectables.First() as RuntimeSelectionComponentUI;
-        //                                    if (selectionComponentUI != null)
-        //                                    {
-        //                                        selectionComponentUI.Select();
-        //                                    }
-        //                                }
-        //                            }
-
-        //                            if (window != ActiveWindow)
-        //                            {
-        //                                ActivateWindow(window);
-        //                                region.MoveRegionToForeground();
-        //                            }
-        //                        }
-        //                        break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-
         public void SetDefaultLayout()
         {
             m_wm.SetDefaultLayout();
@@ -301,20 +156,6 @@ namespace Battlehub.RTEditor
 
             if (window != null)
             {
-                //Region region = window.GetComponentInParent<Region>();
-                //if (region != null)
-                //{
-                //    region.MoveRegionToForeground();
-                //    m_isPointerOverActiveWindow = RectTransformUtility.RectangleContainsScreenPoint((RectTransform)region.transform, Input.GetPointerXY(0), m_raycaster.eventCamera);
-                //    if (m_isPointerOverActiveWindow)
-                //    {
-                //        for (int i = 0; i < m_windowsArray.Length; ++i)
-                //        {
-                //            m_windowsArray[i].DisableRaycasts();
-                //        }
-                //    }
-                //}
-
                 m_wm.ActivateWindow(window.transform);
             }
         }

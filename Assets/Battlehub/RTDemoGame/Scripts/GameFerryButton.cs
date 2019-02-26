@@ -19,6 +19,7 @@ namespace Battlehub.Cubeman
                 if(ferry != null)
                 {
                     m_ferryAnimator = ferry.GetComponent<Animator>();
+                    break;
                 }
 
                 parent = parent.parent;

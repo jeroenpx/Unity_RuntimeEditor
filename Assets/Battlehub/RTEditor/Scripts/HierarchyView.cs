@@ -630,7 +630,15 @@ namespace Battlehub.RTEditor
         private void OnObjectDestroying(ExposeToEditor o)
         {
             ExposeToEditor parent = o.GetParent();
-            m_treeView.RemoveChild(parent, o);
+            try
+            {
+                m_treeView.ItemsRemoved -= OnItemsRemoved;
+                m_treeView.RemoveChild(parent, o);
+            }
+            finally
+            {
+                m_treeView.ItemsRemoved += OnItemsRemoved;
+            }    
         }
 
         private void OnObjectDestroyed(ExposeToEditor o)

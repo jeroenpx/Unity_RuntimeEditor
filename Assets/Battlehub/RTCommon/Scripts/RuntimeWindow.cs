@@ -285,10 +285,10 @@ namespace Battlehub.RTCommon
             {
                 if (!m_isActivated)
                 {
-                    if (m_canvasGroup != null)
-                    {
-                        m_canvasGroup.blocksRaycasts = true;
-                    }
+                    //if (m_canvasGroup != null)
+                    //{
+                    //    m_canvasGroup.blocksRaycasts = true;
+                    //}
                     m_isActivated = true;
                     m_background.raycastTarget = false;
                     OnActivated();
@@ -298,10 +298,10 @@ namespace Battlehub.RTCommon
             {
                 if (m_isActivated)
                 {
-                    if (m_canvasGroup != null)
-                    {
-                        m_canvasGroup.blocksRaycasts = false;
-                    }
+                    //if (m_canvasGroup != null)
+                    //{
+                    //    m_canvasGroup.blocksRaycasts = false;
+                    //}
                     
                     m_isActivated = false;
                     m_background.raycastTarget = true;

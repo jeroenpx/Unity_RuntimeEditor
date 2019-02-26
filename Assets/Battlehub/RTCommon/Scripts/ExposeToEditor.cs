@@ -406,12 +406,12 @@ namespace Battlehub.RTCommon
             return children;
         }
 
-        public bool HasChildren()
+        public bool HasChildren(bool includeDestroyed = false)
         {
             foreach (Transform childTransform in transform)
             {
                 ExposeToEditor child = childTransform.GetComponent<ExposeToEditor>();
-                if (child != null && !child.MarkAsDestroyed)
+                if (child != null && (includeDestroyed || !child.MarkAsDestroyed))
                 {
                     return true;
                 }

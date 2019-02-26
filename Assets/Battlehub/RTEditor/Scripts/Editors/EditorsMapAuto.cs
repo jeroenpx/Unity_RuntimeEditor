@@ -43,7 +43,8 @@ namespace Battlehub.RTEditor
 				{ typeof(UnityEngine.SpringJoint), new EditorDescriptor(17, true, false) },
 				{ typeof(UnityEngine.Transform), new EditorDescriptor(19, true, false) },
 				{ typeof(Cubeman.CubemanCharacter), new EditorDescriptor(17, true, false) },
-				{ typeof(Cubeman.CubemanUserControl), new EditorDescriptor(17, true, false) }
+				{ typeof(Cubeman.CubemanUserControl), new EditorDescriptor(17, true, false) },
+				{ typeof(Cubeman.GameCharacter), new EditorDescriptor(17, true, false) },
 			};
 		}
 	}

@@ -415,7 +415,10 @@ namespace Battlehub.RTEditor
                 if(Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.Scene)
                 {
                     RuntimeWindow sceneView = Editor.GetWindow(RuntimeWindowType.Scene);
-                    Editor.ActivateWindow(sceneView);
+                    if(sceneView != null)
+                    {
+                        Editor.ActivateWindow(sceneView);
+                    }
                 }   
             }
             

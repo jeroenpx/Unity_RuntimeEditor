@@ -1177,7 +1177,7 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             m_isDraggingTab = true;
-            m_root.CursorHelper.SetCursor(this, null);
+            
         }
 
         private void SetRaycastTargets(bool value)
@@ -1199,7 +1199,8 @@ namespace Battlehub.UIControls.DockPanels
             {
                 return;
             }
-           
+
+            m_root.CursorHelper.SetCursor(this, null);
 
             m_pointerOverTab = null;
             m_isFree = false;
@@ -1428,14 +1429,14 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabEndDrag(Tab tab, PointerEventData args)
         {
+            m_root.CursorHelper.ResetCursor(this);
+
             if (!m_isDraggingTab)
             {
                 return;
             }
 
             m_isDraggingTab = false;
-
-            m_root.CursorHelper.ResetCursor(this);
 
             if (m_isFree)
             {

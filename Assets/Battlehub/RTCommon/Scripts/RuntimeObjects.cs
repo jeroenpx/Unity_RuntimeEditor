@@ -205,7 +205,7 @@ namespace Battlehub.RTCommon
             if (m_editor.IsPlaying) 
             {
                 m_playModeCache = new HashSet<ExposeToEditor>();
-                m_enabledObjects = m_editModeCache.Where(eo => eo.gameObject.activeSelf).ToArray();
+                m_enabledObjects = m_editModeCache.Where(eo => eo.gameObject.activeSelf && !eo.MarkAsDestroyed).ToArray();
                 m_selectedObjects = m_editor.Selection.objects;
 
                 HashSet<GameObject> selectionHS = new HashSet<GameObject>(m_editor.Selection.gameObjects != null ? m_editor.Selection.gameObjects : new GameObject[0]);
@@ -519,26 +519,73 @@ namespace Battlehub.RTCommon
         {
             if (m_editor.IsPlaying)
             {
-                if (obj.MarkAsDestroyed)
+                if(obj.HasChildren(true))
                 {
-                    m_playModeCache.Remove(obj);
+                    ExposeToEditor[] children = obj.GetComponentsInChildren<ExposeToEditor>(true);
+                    if(obj.MarkAsDestroyed)
+                    {
+                        for (int i = 0; i < children.Length; ++i)
+                        {
+                            ExposeToEditor child = children[i];
+                            m_playModeCache.Remove(child);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < children.Length; ++i)
+                        {
+                            ExposeToEditor child = children[i];
+                            m_playModeCache.Add(child);
+                        }
+                    }
                 }
                 else
                 {
-                    m_playModeCache.Add(obj);
+                    if (obj.MarkAsDestroyed)
+                    {
+                        m_playModeCache.Remove(obj);
+                    }
+                    else
+                    {
+                        m_playModeCache.Add(obj);
+                    }
                 }
 
             }
             else
             {
-                if (obj.MarkAsDestroyed)
+                if (obj.HasChildren(true))
                 {
-                    m_editModeCache.Remove(obj);
+                    ExposeToEditor[] children = obj.GetComponentsInChildren<ExposeToEditor>(true);
+                    if (obj.MarkAsDestroyed)
+                    {
+                        for (int i = 0; i < children.Length; ++i)
+                        {
+                            ExposeToEditor child = children[i];
+                            m_editModeCache.Remove(child);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < children.Length; ++i)
+                        {
+                            ExposeToEditor child = children[i];
+                            m_editModeCache.Add(child);
+                        }
+                    }
                 }
                 else
                 {
-                    m_editModeCache.Add(obj);
+                    if (obj.MarkAsDestroyed)
+                    {
+                        m_editModeCache.Remove(obj);
+                    }
+                    else
+                    {
+                        m_editModeCache.Add(obj);
+                    }
                 }
+               
             }
 
             if(MarkAsDestroyedChanging != null)

@@ -13,8 +13,6 @@ namespace Battlehub.Cubeman
         private SkinnedMeshRenderer m_skinnedMeshRenderer;
         private InputLow m_inputController = new InputLow();
 
-
-        
         public Transform Camera
         {
             get { return m_userControl.Cam; }
@@ -62,16 +60,26 @@ namespace Battlehub.Cubeman
             m_soul = transform.Find("Soul");
             m_skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             m_rigidBody = GetComponent<Rigidbody>();
+
+            if (Game == null)
+            {
+                Game = FindObjectOfType<CubemenGame>();
+            }
         }
 
         private void Update()
         {
+            if (Game == null)
+            {
+                return;
+            }
+
             if (!Game.IsGameRunning)
             {
                 return;
             }
 
-            if (transform.position.y < -10.0f)
+            if (transform.position.y < -25.0f)
             {
                 Die();
             }
