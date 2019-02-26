@@ -47,12 +47,22 @@ namespace Battlehub.UIControls.DockPanels
     public delegate void RegionEventHandler(Region region);
     public delegate void RegionEventHandler<T>(Region region, T arg);
 
+    public class CancelArgs
+    {
+        public bool Cancel
+        {
+            get;
+            set;
+        }
+    }
+
     public class Region : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public static event RegionEventHandler Created;
         public static event RegionEventHandler Destroyed;
         public static event RegionEventHandler Selected;
         public static event RegionEventHandler Unselected;
+        public static event RegionEventHandler<CancelArgs> BeforeBeginDrag;
         public static event RegionEventHandler BeginDrag;
         public static event RegionEventHandler Enabled;
         public static event RegionEventHandler Disabled;
@@ -62,8 +72,10 @@ namespace Battlehub.UIControls.DockPanels
         public static event RegionEventHandler<Transform> TabActivated;
         public static event RegionEventHandler<Transform> TabDeactivated;
         public static event RegionEventHandler<Transform> TabClosed;
+        public static event RegionEventHandler<CancelArgs> BeforeDepthChanged;
         public static event RegionEventHandler<int> DepthChanged;
         public static event RegionEventHandler<bool> Maximized;
+        
 
         [SerializeField]
         private Toggle m_maximizeToggle = null;
@@ -439,7 +451,31 @@ namespace Battlehub.UIControls.DockPanels
             return null;
         }
 
-        public bool IsFree()
+        public bool IsModal()
+        {
+            if (transform.parent != null)
+            {
+                if (transform.parent.GetComponentInParent<Region>() != null)
+                {
+                    return false;
+                }
+            }
+
+            Transform parent = transform;
+            while (parent != null)
+            {
+                if (parent.parent == m_root.Modal)
+                {
+                    return true;
+                }
+
+                parent = parent.parent;
+            }
+
+            return false;
+        }
+
+        public bool IsFreeOrModal()
         {
             if(transform.parent != null)
             {
@@ -1671,9 +1707,20 @@ namespace Battlehub.UIControls.DockPanels
         private Transform m_dragRegion;
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
+            if (BeforeBeginDrag != null)
+            {
+                CancelArgs cancelArgs = new CancelArgs();
+                BeforeBeginDrag(this, cancelArgs);
+                if(cancelArgs.Cancel)
+                {
+                    return;
+                }
+            }
+
             m_root.CursorHelper.SetCursor(this, null);
             m_dragRegion = GetDragRegion();
 
+           
             if (m_dragRegion)
             {
                 if (m_root.Modal != null && m_root.Modal.childCount > 0 && m_dragRegion.parent != m_root.Modal)
@@ -1754,8 +1801,18 @@ namespace Battlehub.UIControls.DockPanels
             IsSelected = true;
         }
 
-        private void MoveRegionToForeground()
+        public void MoveRegionToForeground()
         {
+            if(BeforeDepthChanged != null)
+            {
+                CancelArgs args = new CancelArgs();
+                BeforeDepthChanged(this, args);
+                if(args.Cancel)
+                {
+                    return;
+                }
+            }
+
             if(m_root.Free != null || m_root.Modal != null)
             {
                 Transform dragRegion = GetDragRegion();

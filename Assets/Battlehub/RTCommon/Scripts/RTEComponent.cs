@@ -84,7 +84,7 @@ namespace Battlehub.RTCommon
 
         }
 
-        protected virtual void OnActiveWindowChanged()
+        protected virtual void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
             if (m_editor.ActiveWindow == Window)
             {

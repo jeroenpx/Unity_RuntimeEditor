@@ -1,11 +1,15 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
 using Battlehub.UIControls.Dialogs;
 using Battlehub.UIControls.DockPanels;
+using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
@@ -24,8 +28,10 @@ namespace Battlehub.RTEditor
         bool Exists(string windowTypeName);
         bool IsActive(string windowType);
         bool IsActive(Transform content);
+
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
+        
         Transform CreateWindow(string windowTypeName);
         Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
              float minWidth = 250,
@@ -73,6 +79,7 @@ namespace Battlehub.RTEditor
         public WindowDescriptor Descriptor;
     }
 
+    [DefaultExecutionOrder(-89)]
     public class WindowManager : MonoBehaviour, IWindowManager
     {
         [SerializeField]
@@ -130,7 +137,36 @@ namespace Battlehub.RTEditor
 
         private readonly Dictionary<string, CustomWindowDescriptor> m_typeToCustomWindow = new Dictionary<string, CustomWindowDescriptor>();
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
-        private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();        
+        private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();
+
+        private IInput Input
+        {
+            get { return m_editor.Input; }
+        }
+
+        private float m_zAxis;
+        private bool m_isPointerOverActiveWindow = true;
+        private bool m_skipUpdate;
+
+        private RuntimeWindow ActiveWindow
+        {
+            get { return m_editor.ActiveWindow; }
+        }
+
+        private RuntimeWindow[] Windows
+        {
+            get { return m_editor.Windows; }
+        }
+
+        private GraphicRaycaster Raycaster
+        {
+            get { return m_editor.Raycaster; }
+        }
+
+        private InputField CurrentInputField
+        {
+            get { return m_editor.CurrentInputField; }
+        }
 
         public bool IsDialogOpened
         {
@@ -149,7 +185,6 @@ namespace Battlehub.RTEditor
                 m_dialogManager = FindObjectOfType<DialogManager>();
             }
 
-            
             for(int i = 0; i < m_customWindows.Length; ++i)
             {
                 CustomWindowDescriptor customWindow = m_customWindows[i];
@@ -162,12 +197,16 @@ namespace Battlehub.RTEditor
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
+            m_dockPanels.RegionBeforeDepthChanged += OnRegionBeforeDepthChanged;
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
             m_dockPanels.RegionSelected += OnRegionSelected;
             m_dockPanels.RegionUnselected += OnRegionUnselected;
             m_dockPanels.RegionEnabled += OnRegionEnabled;
             m_dockPanels.RegionDisabled += OnRegionDisabled;
             m_dockPanels.RegionMaximized += OnRegionMaximized;
+            m_dockPanels.RegionBeforeBeginDrag += OnRegionBeforeBeginDrag;
+            m_dockPanels.RegionBeginResize += OnBeginResize;
+            m_dockPanels.RegionEndResize += OnRegionEndResize;
 
             m_dialogManager.DialogDestroyed += OnDialogDestroyed;
 
@@ -183,19 +222,169 @@ namespace Battlehub.RTEditor
             m_dockPanels.CursorHelper = m_editor.CursorHelper;
         }
 
+        private RectTransform GetRegionTransform(RuntimeWindow window)
+        {
+            if (window == null)
+            {
+                return null;
+            }
+
+            Region region = window.GetComponentInParent<Region>();
+            if (region == null)
+            {
+                return null;
+            }
+
+            return region.GetDragRegion() as RectTransform;
+        }
+
+
+        public bool IsOverlapped(RuntimeWindow testWindow)
+        {
+            for (int i = 0; i < Windows.Length; ++i)
+            {
+                RuntimeWindow window = Windows[i];
+                if (window == testWindow)
+                {
+                    continue;
+                }
+
+                if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)window.transform, Input.GetPointerXY(0), Raycaster.eventCamera))
+                {
+                    if (testWindow.Depth < window.Depth)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void EnableOrDisableRaycasts()
+        {
+            if (ActiveWindow != null)
+            {
+                if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)ActiveWindow.transform, Input.GetPointerXY(0), Raycaster.eventCamera) && !IsOverlapped(ActiveWindow))
+                {
+                    if (!m_isPointerOverActiveWindow)
+                    {
+                        m_isPointerOverActiveWindow = true;
+
+                        RuntimeWindow[] windows = Windows;
+
+                        for (int i = 0; i < windows.Length; ++i)
+                        {
+                            RuntimeWindow window = windows[i];
+                            window.DisableRaycasts();
+                        }
+                    }
+                }
+                else
+                {
+                    if (m_isPointerOverActiveWindow)
+                    {
+                        m_isPointerOverActiveWindow = false;
+
+                        RuntimeWindow[] windows = Windows;
+
+                        for (int i = 0; i < windows.Length; ++i)
+                        {
+                            RuntimeWindow window = windows[i];
+                            window.EnableRaycasts();
+                        }
+                    }
+                }
+            }
+        }
+
         private void Update()
         {
-            if(!m_editor.IsInputFieldActive)
+            if (m_skipUpdate)
             {
-                if(m_dialogManager.IsDialogOpened)
+                m_skipUpdate = false;
+                return;
+            }
+
+            if (!m_editor.IsInputFieldActive)
+            {
+                if (m_dialogManager.IsDialogOpened)
                 {
-                    if(m_editor.Input.GetKeyDown(KeyCode.Escape))
+                    if (m_editor.Input.GetKeyDown(KeyCode.Escape))
                     {
                         m_dialogManager.CloseDialog();
                     }
                 }
             }
+
+            m_editor.UpdateCurrentInputField();
+            EnableOrDisableRaycasts();
+
+            bool mwheel = false;
+            if (m_zAxis != Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z))))
+            {
+                mwheel = m_zAxis == 0;
+                m_zAxis = Mathf.CeilToInt(Mathf.Abs(Input.GetAxis(InputAxis.Z)));
+            }
+
+            bool pointerDownOrUp = Input.GetPointerDown(0) ||
+              Input.GetPointerDown(1) ||
+              Input.GetPointerDown(2) ||
+              Input.GetPointerUp(0);
+
+            bool canActivate = pointerDownOrUp ||
+                mwheel ||
+                Input.IsAnyKeyDown() && (CurrentInputField == null || !CurrentInputField.isFocused);
+
+            if (canActivate)
+            {
+                PointerEventData pointerEventData = new PointerEventData(m_editor.EventSystem);
+                pointerEventData.position = Input.GetPointerXY(0);
+
+                List<RaycastResult> results = new List<RaycastResult>();
+                Raycaster.Raycast(pointerEventData, results);
+
+                RectTransform activeRectTransform = GetRegionTransform(ActiveWindow);
+                bool activeWindowContainsScreenPoint = activeRectTransform != null && RectTransformUtility.RectangleContainsScreenPoint(activeRectTransform, Input.GetPointerXY(0), Raycaster.eventCamera);
+
+                if (!results.Any(r => r.gameObject.GetComponent<Menu>()))
+                {
+                    foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z))
+                    {
+                        RuntimeWindow window = region.ActiveContent != null ? region.ActiveContent.GetComponentInChildren<RuntimeWindow>() : region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
+                        if (window != null && (!activeWindowContainsScreenPoint || window.Depth >= ActiveWindow.Depth))
+                        {
+                            if (m_editor.Contains(window))
+                            {
+                                if (pointerDownOrUp || window.ActivateOnAnyKey)
+                                {
+                                    if (window != null && window.WindowType == RuntimeWindowType.Scene)
+                                    {
+                                        IEnumerable<Selectable> selectables = results.Select(r => r.gameObject.GetComponent<Selectable>()).Where(s => s != null);
+                                        int count = selectables.Count();
+                                        if (count >= 1)
+                                        {
+                                            RuntimeSelectionComponentUI selectionComponentUI = selectables.First() as RuntimeSelectionComponentUI;
+                                            if (selectionComponentUI != null)
+                                            {
+                                                selectionComponentUI.Select();
+                                            }
+                                        }
+                                    }
+
+                                    if (window != ActiveWindow)
+                                    {
+                                        m_editor.ActivateWindow(window);
+                                        region.MoveRegionToForeground();
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
+
 
         private void OnDestroy()
         {
@@ -204,12 +393,16 @@ namespace Battlehub.RTEditor
                 m_dockPanels.TabActivated -= OnTabActivated;
                 m_dockPanels.TabDeactivated -= OnTabDeactivated;
                 m_dockPanels.TabClosed -= OnTabClosed;
+                m_dockPanels.RegionBeforeDepthChanged -= OnRegionBeforeDepthChanged;
                 m_dockPanels.RegionDepthChanged -= OnRegionDepthChanged;
                 m_dockPanels.RegionSelected -= OnRegionSelected;
                 m_dockPanels.RegionUnselected -= OnRegionUnselected;
                 m_dockPanels.RegionEnabled -= OnRegionEnabled;
                 m_dockPanels.RegionDisabled -= OnRegionDisabled;
                 m_dockPanels.RegionMaximized -= OnRegionMaximized;
+                m_dockPanels.RegionBeforeBeginDrag -= OnRegionBeforeBeginDrag;
+                m_dockPanels.RegionBeginResize -= OnBeginResize;
+                m_dockPanels.RegionEndResize -= OnRegionEndResize;
             }
 
             if(m_dialogManager != null)
@@ -218,6 +411,7 @@ namespace Battlehub.RTEditor
             }
         }
 
+      
 
         private void OnDialogDestroyed(Dialog dialog)
         {
@@ -229,7 +423,7 @@ namespace Battlehub.RTEditor
             RuntimeWindow window = region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
             if (window != null)
             {
-                window.Editor.ActivateWindow(window);
+                //window.Editor.ActivateWindow(window);
             }
         }
 
@@ -237,6 +431,17 @@ namespace Battlehub.RTEditor
         {
 
         }
+
+        private void OnBeginResize(Resizer resizer, Region region)
+        {
+            
+        }
+
+        private void OnRegionEndResize(Resizer resizer, Region region)
+        {
+            m_skipUpdate = true;
+        }
+
 
         private void OnTabActivated(Region region, Transform content)
         {
@@ -277,7 +482,6 @@ namespace Battlehub.RTEditor
         {
             OnContentDestroyed(content);
         }
-
 
         private void OnRegionDisabled(Region region)
         {
@@ -414,9 +618,54 @@ namespace Battlehub.RTEditor
                 {
                     wd.Created--;
                     Debug.Assert(wd.Created >= 0);
-                }
+                } 
+            }
+        }
 
-                
+       
+        private void CancelIfRegionIsNotActive(Region region, CancelArgs arg)
+        {
+            if (m_editor.ActiveWindow == null)
+            {
+                return;
+            }
+
+            Region activeRegion = m_editor.ActiveWindow.GetComponentInParent<Region>();
+            if (activeRegion == null)
+            {
+                return;
+            }
+
+            if (activeRegion.GetDragRegion() != region.GetDragRegion())
+            {
+                arg.Cancel = true;
+            }
+        }
+
+
+        private void OnRegionBeforeBeginDrag(Region region, CancelArgs arg)
+        {
+            CancelIfRegionIsNotActive(region, arg);
+        }
+
+        private void OnRegionBeforeDepthChanged(Region region, CancelArgs arg)
+        {
+            CancelIfRegionIsNotActive(region, arg);
+        }
+
+        private void OnRegionDepthChanged(Region region, int depth)
+        {
+            RuntimeWindow[] windows = region.GetComponentsInChildren<RuntimeWindow>();
+            for (int i = 0; i < windows.Length; ++i)
+            {
+                RuntimeWindow window = windows[i];
+                window.SetCameraDepth(10 + depth * 5);
+
+                window.Depth = (region.IsModal() ? 2048 + depth : depth) * 5;
+                if(window.GetComponentsInChildren<RuntimeWindow>().Length > 1)
+                {
+                    window.Depth -= 1;
+                }
             }
         }
 
@@ -558,6 +807,21 @@ namespace Battlehub.RTEditor
 
         public bool ActivateWindow(Transform content)
         {
+            Region region = content.GetComponentInParent<Region>();
+            if (region != null)
+            {
+                region.MoveRegionToForeground();
+                m_isPointerOverActiveWindow = RectTransformUtility.RectangleContainsScreenPoint((RectTransform)region.transform, Input.GetPointerXY(0), Raycaster.eventCamera);
+                if (m_isPointerOverActiveWindow)
+                {
+                    RuntimeWindow[] windows = Windows;
+                    for (int i = 0; i < windows.Length; ++i)
+                    {
+                        windows[i].DisableRaycasts();
+                    }
+                }
+            }
+
             Tab tab = Region.FindTab(content);
             if (tab == null)
             {
@@ -791,16 +1055,7 @@ namespace Battlehub.RTEditor
             content.SetActive(true);
         }
 
-        private void OnRegionDepthChanged(Region region, int depth)
-        {
-            RuntimeWindow[] windows = region.GetComponentsInChildren<RuntimeWindow>();
-            for(int i = 0; i < windows.Length; ++i)
-            {
-                RuntimeWindow window = windows[i];
-                window.SetCameraDepth(10 + depth * 5);
-            }
-        }
-
+       
         public void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null)
         {
             m_dialogManager.ShowDialog(null, header, text, ok);

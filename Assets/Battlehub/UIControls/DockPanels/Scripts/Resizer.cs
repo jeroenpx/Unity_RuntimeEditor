@@ -69,7 +69,7 @@ namespace Battlehub.UIControls.DockPanels
         private IEnumerator CoUpdateState()
         {
             yield return new WaitForEndOfFrame();
-            m_isEnabled = m_isFree = m_region.IsFree();
+            m_isEnabled = m_isFree = m_region.IsFreeOrModal();
             if (!m_isFree)
             {
                 Canvas canvas = GetComponentInParent<Canvas>();

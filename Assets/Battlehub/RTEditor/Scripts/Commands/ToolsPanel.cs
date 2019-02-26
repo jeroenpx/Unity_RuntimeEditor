@@ -387,6 +387,18 @@ namespace Battlehub.RTEditor
             Editor.IsPlaying = value;
         }
 
+        protected override void OnActivated()
+        {
+            base.OnActivated();
+            Debug.Log("On Tools Activated");
+        }
+
+        protected override void OnDeactivated()
+        {
+            base.OnDeactivated();
+            Debug.Log("On Tools Deactivated");
+        }
+
         private void OnPlaymodeStateChanged()
         {
             if(Editor.IsPlaying)

@@ -62,16 +62,25 @@ namespace Battlehub.RTCommon
             }
         }
 
+       
         private int m_index;
         public virtual int Index
         {
             get { return m_index; }
         }
 
+        private int m_depth;
+        public int Depth
+        {
+            get { return m_depth; }
+            set { m_depth = value; }
+        }
+
         private Vector3 m_position;
         private Rect m_rect;
-        [SerializeField]
         private RectTransform m_rectTransform;
+        private CanvasGroup m_canvasGroup;        
+
         private Canvas m_canvas;
         [SerializeField]
         private Image m_background;
@@ -175,9 +184,24 @@ namespace Battlehub.RTCommon
                     m_pointer = gameObject.AddComponent<Pointer>();
                 }
             }
-
+            
             m_rectTransform = GetComponent<RectTransform>();
             m_canvas = GetComponentInParent<Canvas>();
+            m_canvasGroup = GetComponent<CanvasGroup>();
+            if(m_canvasGroup == null)
+            {
+                m_canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+
+            if(m_canvasGroup != null)
+            {
+                m_canvasGroup.blocksRaycasts = false;
+                m_canvasGroup.ignoreParentGroups = true;
+            }
+            
+
+
+
 
             Editor.ActiveWindowChanged += OnActiveWindowChanged;
 
@@ -227,19 +251,44 @@ namespace Battlehub.RTCommon
             {
                 if(m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
                 {
-                    OnRectTransformDimensionsChange();
+                    //OnRectTransformDimensionsChange();
+                    HandleResize();
                     m_rect = m_rectTransform.rect;
                     m_position = m_rectTransform.position;
                 }
             }
         }
 
-        protected virtual void OnActiveWindowChanged()
+        public void EnableRaycasts()
+        {
+            if(m_canvasGroup != null)
+            {
+                m_canvasGroup.blocksRaycasts = true;
+            }
+            
+        }
+
+        public void DisableRaycasts()
+        {
+            if(!m_isActivated)
+            {
+                if (m_canvasGroup != null)
+                {
+                    m_canvasGroup.blocksRaycasts = false;
+                }
+            }
+        }
+
+        protected virtual void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
             if (Editor.ActiveWindow == this)
             {
                 if (!m_isActivated)
                 {
+                    if (m_canvasGroup != null)
+                    {
+                        m_canvasGroup.blocksRaycasts = true;
+                    }
                     m_isActivated = true;
                     m_background.raycastTarget = false;
                     OnActivated();
@@ -249,6 +298,11 @@ namespace Battlehub.RTCommon
             {
                 if (m_isActivated)
                 {
+                    if (m_canvasGroup != null)
+                    {
+                        m_canvasGroup.blocksRaycasts = false;
+                    }
+                    
                     m_isActivated = false;
                     m_background.raycastTarget = true;
                     OnDeactivated();
@@ -258,7 +312,7 @@ namespace Battlehub.RTCommon
 
         protected virtual void OnRectTransformDimensionsChange()
         {
-            HandleResize();
+            //HandleResize();
         }
 
         public void HandleResize()

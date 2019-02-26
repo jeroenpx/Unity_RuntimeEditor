@@ -81,6 +81,7 @@ namespace Battlehub.RTEditor
             }   
         }
 
+
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
@@ -111,6 +112,18 @@ namespace Battlehub.RTEditor
                 m_project.SaveCompleted -= OnSaveCompleted;
                 m_project.DuplicateCompleted -= OnDuplicateCompleted;
             }
+        }
+
+        protected override void OnActivated()
+        {
+            base.OnActivated();
+            Debug.Log("OnProjectView activated");
+        }
+
+        protected override void OnDeactivated()
+        {
+            base.OnDeactivated();
+            Debug.Log("OnProjectView deactivated");
         }
 
         private void OnProjectOpenCompleted(Error error, ProjectInfo projectInfo)

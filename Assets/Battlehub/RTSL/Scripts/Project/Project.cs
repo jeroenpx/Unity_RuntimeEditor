@@ -2265,7 +2265,18 @@ namespace Battlehub.RTSL
 
             if (isBuiltIn)
             {
-                int ordinal = Array.IndexOf(GetStaticAssetLibraries().Values.ToArray(), libraryName);
+                int ordinal = -1;
+
+                Dictionary<int, string> ordinalToStaticAssetLibrary = GetStaticAssetLibraries();
+                foreach (KeyValuePair<int, string> kvp in m_ordinalToStaticAssetLibrary)
+                {
+                    if(kvp.Value == libraryName)
+                    {
+                        ordinal = kvp.Key;
+                        break;
+                    }
+                }
+
                 if (ordinal < 0)
                 {
                     Error error = new Error(Error.E_NotFound);

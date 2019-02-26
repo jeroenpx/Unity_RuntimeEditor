@@ -43,6 +43,7 @@ namespace Battlehub.Cubeman
 
         private IRTE m_rte;
         private IRTEState m_rteState;
+        private bool m_isActive = true;
 
         public bool IsGameRunning
         {
@@ -64,7 +65,7 @@ namespace Battlehub.Cubeman
 
         private void OnRuntimeActivate()
         {
-            enabled = true;
+            m_isActive = true;
 
             if(m_current != null)
             {
@@ -74,7 +75,7 @@ namespace Battlehub.Cubeman
 
         private void OnRuntimeDeactivate()
         {
-            enabled = false;
+            m_isActive = false;
 
             if (m_current != null)
             {
@@ -85,12 +86,12 @@ namespace Battlehub.Cubeman
         private void OnRuntimeEditorOpened()
         {
             StopGame();
-            enabled = false;
+            m_isActive = false;
         }
 
         private void OnRuntimeEditorClosed()
         {
-            enabled = true;
+            m_isActive = true;
             StartCoroutine(StartGame());
         }
 
@@ -123,6 +124,11 @@ namespace Battlehub.Cubeman
 
         private void Update()
         {
+            if(!m_isActive)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 SwitchPlayer(m_current, 0.0f, true);

@@ -87,7 +87,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void Editor_ActiveWindowChanged()
+        private void Editor_ActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
             if(m_component != null)
             {

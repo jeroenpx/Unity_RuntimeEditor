@@ -52,7 +52,7 @@ namespace Battlehub.RTCommon
     {
         event RTEEvent PlaymodeStateChanging;
         event RTEEvent PlaymodeStateChanged;
-        event RTEEvent ActiveWindowChanged;
+        event RTEEvent<RuntimeWindow> ActiveWindowChanged;
         event RTEEvent<RuntimeWindow> WindowRegistered;
         event RTEEvent<RuntimeWindow> WindowUnregistered;
         event RTEEvent IsOpenedChanged;
@@ -64,6 +64,16 @@ namespace Battlehub.RTCommon
         }
 
         CameraLayerSettings CameraLayerSettings
+        {
+            get;
+        }
+
+        GraphicRaycaster Raycaster
+        {
+            get;
+        }
+
+        EventSystem EventSystem
         {
             get;
         }
@@ -152,6 +162,13 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        InputField CurrentInputField
+        {
+            get;
+        }
+
+        void UpdateCurrentInputField();
+
         RuntimeWindow ActiveWindow
         {
             get;
@@ -161,6 +178,8 @@ namespace Battlehub.RTCommon
         {
             get;
         }
+
+        bool Contains(RuntimeWindow window);
 
         int GetIndex(RuntimeWindowType windowType);
         RuntimeWindow GetWindow(RuntimeWindowType windowType);
@@ -205,7 +224,7 @@ namespace Battlehub.RTCommon
 
         public event RTEEvent PlaymodeStateChanging;
         public event RTEEvent PlaymodeStateChanged;
-        public event RTEEvent ActiveWindowChanged;
+        public event RTEEvent<RuntimeWindow> ActiveWindowChanged;
         public event RTEEvent<RuntimeWindow> WindowRegistered;
         public event RTEEvent<RuntimeWindow> WindowUnregistered;
         public event RTEEvent IsOpenedChanged;
@@ -224,10 +243,26 @@ namespace Battlehub.RTCommon
         protected InputField m_currentInputField;
         protected float m_zAxis;
 
+        public GraphicRaycaster Raycaster
+        {
+            get { return m_raycaster; }
+        }
+
+        public EventSystem EventSystem
+        {
+            get { return m_eventSystem; }
+        }
+
         protected readonly HashSet<GameObject> m_windows = new HashSet<GameObject>();
+        protected RuntimeWindow[] m_windowsArray;
         public bool IsInputFieldActive
         {
             get { return m_currentInputField != null; }
+        }
+
+        public InputField CurrentInputField
+        {
+            get { return m_currentInputField; }
         }
 
         private RuntimeWindow m_activeWindow;
@@ -238,7 +273,12 @@ namespace Battlehub.RTCommon
 
         public virtual RuntimeWindow[] Windows
         {
-            get { return m_windows.Where(go => go != null).Select(go => go.GetComponent<RuntimeWindow>()).Where(w => w != null).ToArray(); }
+            get { return m_windowsArray; }
+        }
+
+        public bool Contains(RuntimeWindow window)
+        {
+            return m_windows.Contains(window.gameObject);
         }
 
         public virtual ComponentEditorSettings ComponentEditorSettings
@@ -682,6 +722,8 @@ namespace Battlehub.RTCommon
             {
                 ActivateWindow(window);
             }
+
+            m_windowsArray = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).ToArray();
         }
 
         public void UnregisterWindow(RuntimeWindow window)
@@ -711,6 +753,8 @@ namespace Battlehub.RTCommon
                     ActivateWindow(activeWindow);
                 }
             }
+
+            m_windowsArray = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).ToArray();
         }
 
 
@@ -736,13 +780,9 @@ namespace Battlehub.RTCommon
                 Input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
             {
                 PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
-                //Set the Pointer Event Position to that of the mouse position
                 pointerEventData.position = Input.GetPointerXY(0);
 
-                //Create a list of Raycast Results
                 List<RaycastResult> results = new List<RaycastResult>();
-
-                //Raycast using the Graphics Raycaster and mouse click position
                 m_raycaster.Raycast(pointerEventData, results);
 
                 IEnumerable<Selectable> selectables = results.Select(r => r.gameObject.GetComponent<Selectable>()).Where(s => s != null);
@@ -754,8 +794,7 @@ namespace Battlehub.RTCommon
                         selectable.Select();
                     }
                 }
-
-                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+                
                 foreach (RaycastResult result in results)
                 {
                     if (m_windows.Contains(result.gameObject))
@@ -771,7 +810,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        protected void UpdateCurrentInputField()
+        public void UpdateCurrentInputField()
         {
             if (m_eventSystem.currentSelectedGameObject != null && m_eventSystem.currentSelectedGameObject.activeInHierarchy)
             {
@@ -836,10 +875,12 @@ namespace Battlehub.RTCommon
         {
             if (m_activeWindow != window)
             {
+                RuntimeWindow deactivatedWindow = m_activeWindow;
+
                 m_activeWindow = window;
                 if (ActiveWindowChanged != null)
                 {
-                    ActiveWindowChanged();
+                    ActiveWindowChanged(deactivatedWindow);
                 }
             }
         }

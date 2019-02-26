@@ -268,7 +268,7 @@ namespace Battlehub.RTGizmos
 
         }
 
-        protected override void OnActiveWindowChanged()
+        protected override void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
             if (Editor.ActiveWindow != null && Editor.ActiveWindow.WindowType == RuntimeWindowType.Scene)
             {
@@ -276,7 +276,7 @@ namespace Battlehub.RTGizmos
                 SceneCamera = Window.Camera;
             }
 
-            base.OnActiveWindowChanged();
+            base.OnActiveWindowChanged(deactivatedWindow);
         }
 
 

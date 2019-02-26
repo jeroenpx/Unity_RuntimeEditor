@@ -14,12 +14,14 @@ namespace Battlehub.UIControls.DockPanels
         public event RegionEventHandler RegionSelected;
         public event RegionEventHandler RegionUnselected;
         public event RegionEventHandler RegionCreated;
+        public event RegionEventHandler<CancelArgs> RegionBeforeDepthChanged;
         public event RegionEventHandler<int> RegionDepthChanged;
         public event RegionEventHandler RegionDestroyed;
         public event RegionEventHandler RegionEnabled;
         public event RegionEventHandler RegionDisabled;
         public event RegionEventHandler<bool> RegionMaximized;
 
+        public event RegionEventHandler<CancelArgs> RegionBeforeBeginDrag;
         public event RegionEventHandler RegionBeginDrag;
         public event RegionEventHandler RegionDrag;
         public event RegionEventHandler RegionEndDrag;
@@ -141,12 +143,14 @@ namespace Battlehub.UIControls.DockPanels
             Region.Selected += OnRegionSelected;
             Region.Unselected += OnRegionUnselected;
             Region.Created += OnRegionCreated;
+            Region.BeforeDepthChanged += OnRegionBeforeDepthChanged;
             Region.DepthChanged += OnRegionDepthChanged;
             Region.Destroyed += OnRegionDestroyed;
             Region.Enabled += OnRegionEnabled;
             Region.Disabled += OnRegionDisabled;
             Region.Maximized += OnRegionMaximized;
 
+            Region.BeforeBeginDrag += OnRegionBeforeBeginDrag;
             Region.BeginDrag += OnRegionBeginDrag;
             Region.Drag += OnRegionDrag;
             Region.EndDrag += OnRegionEndDrag;
@@ -185,12 +189,14 @@ namespace Battlehub.UIControls.DockPanels
             Region.Selected -= OnRegionSelected;
             Region.Unselected -= OnRegionUnselected;
             Region.Created -= OnRegionCreated;
+            Region.BeforeDepthChanged -= OnRegionBeforeDepthChanged;
             Region.DepthChanged -= OnRegionDepthChanged;
             Region.Destroyed -= OnRegionDestroyed;
             Region.Enabled -= OnRegionEnabled;
             Region.Disabled -= OnRegionDisabled;
             Region.Maximized -= OnRegionMaximized;
 
+            Region.BeforeBeginDrag -= OnRegionBeforeBeginDrag;
             Region.BeginDrag -= OnRegionBeginDrag;
             Region.Drag -= OnRegionDrag;
             Region.EndDrag -= OnRegionEndDrag;
@@ -299,6 +305,19 @@ namespace Battlehub.UIControls.DockPanels
                     RegionUnselected(region);
                 }
             }
+        }
+
+        private void OnRegionBeforeDepthChanged(Region region, CancelArgs arg)
+        {
+            if(region.Root != this)
+            {
+                return;
+            }
+
+            if(RegionBeforeDepthChanged != null)
+            {
+                RegionBeforeDepthChanged(region, arg);
+            }   
         }
 
         private void OnRegionDepthChanged(Region region, int depth)
@@ -424,6 +443,18 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        private void OnRegionBeforeBeginDrag(Region region, CancelArgs args)
+        {
+            if (region.Root != this)
+            {
+                return;
+            }
+
+            if (RegionBeforeBeginDrag != null)
+            {
+                RegionBeforeBeginDrag(region, args);
+            }
+        }
 
         private void OnRegionBeginDrag(Region region)
         {

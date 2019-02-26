@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Identity: 2
   List:
-  - Library: AssetLibrary1.asset
+  - Library: AssetLibrary.asset
     Ordinal: 1

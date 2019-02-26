@@ -114,7 +114,6 @@ MonoBehaviour:
   m_dragDropTargetGO: {fileID: 0}
   m_activateOnAnyKey: 0
   m_windowType: 8
-  m_rectTransform: {fileID: 0}
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}
@@ -189,10 +188,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7176562610682322028}
     m_Modifications:
-    - target: {fileID: 1783882218524766, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0, type: 3}
-      propertyPath: m_Name
-      value: Region
-      objectReference: {fileID: 0}
     - target: {fileID: 114499747622984086, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0,
         type: 3}
       propertyPath: m_minHeight
@@ -202,6 +197,10 @@ PrefabInstance:
         type: 3}
       propertyPath: m_minWidth
       value: 192
+      objectReference: {fileID: 0}
+    - target: {fileID: 1783882218524766, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0, type: 3}
+      propertyPath: m_Name
+      value: Region
       objectReference: {fileID: 0}
     - target: {fileID: 224229381736212742, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0,
         type: 3}

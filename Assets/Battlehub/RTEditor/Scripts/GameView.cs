@@ -64,8 +64,19 @@ namespace Battlehub.RTEditor
                     }
                 }
                 m_gameView = null;
-            }
-           
+            }  
+        }
+
+        protected override void OnActivated()
+        {
+            base.OnActivated();
+            Debug.Log("On GameView activated");
+        }
+
+        protected override void OnDeactivated()
+        {
+            base.OnDeactivated();
+            Debug.Log("On GameView deactivated");
         }
 
         protected virtual void OnEnable()

@@ -177,7 +177,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void OnActiveWindowChanged()
+        private void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
             if (!m_editor.IsPlaying)
             {
