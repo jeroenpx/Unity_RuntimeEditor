@@ -3061,6 +3061,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CreateBtn
       objectReference: {fileID: 0}
+    - target: {fileID: 1576359651798874395, guid: 1be7fd7097f3f134f90719c32a56aca7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6580745045170208955, guid: 1be7fd7097f3f134f90719c32a56aca7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3359,6 +3364,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FileBtn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1576359651798874395, guid: 1be7fd7097f3f134f90719c32a56aca7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6580745045170208955, guid: 1be7fd7097f3f134f90719c32a56aca7,
         type: 3}
@@ -3972,6 +3982,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SetBtn
+      objectReference: {fileID: 0}
+    - target: {fileID: 1576359651798874395, guid: 1be7fd7097f3f134f90719c32a56aca7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6580745045170208955, guid: 1be7fd7097f3f134f90719c32a56aca7,
         type: 3}

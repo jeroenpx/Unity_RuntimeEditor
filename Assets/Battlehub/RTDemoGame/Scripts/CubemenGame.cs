@@ -105,7 +105,7 @@ namespace Battlehub.Cubeman
         {
             m_rteState = IOC.Resolve<IRTEState>();
 
-            if(!m_rteState.IsCreated)
+            if(m_rteState == null || !m_rteState.IsCreated)
             {
                 m_isGameRunning = true;
             }

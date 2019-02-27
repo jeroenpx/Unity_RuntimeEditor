@@ -197,6 +197,7 @@ namespace Battlehub.RTEditor
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
+
             m_dockPanels.RegionBeforeDepthChanged += OnRegionBeforeDepthChanged;
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
             m_dockPanels.RegionSelected += OnRegionSelected;
@@ -394,6 +395,7 @@ namespace Battlehub.RTEditor
                 m_dockPanels.TabActivated -= OnTabActivated;
                 m_dockPanels.TabDeactivated -= OnTabDeactivated;
                 m_dockPanels.TabClosed -= OnTabClosed;
+                
                 m_dockPanels.RegionBeforeDepthChanged -= OnRegionBeforeDepthChanged;
                 m_dockPanels.RegionDepthChanged -= OnRegionDepthChanged;
                 m_dockPanels.RegionSelected -= OnRegionSelected;
@@ -411,8 +413,6 @@ namespace Battlehub.RTEditor
                 m_dialogManager.DialogDestroyed -= OnDialogDestroyed;
             }
         }
-
-      
 
         private void OnDialogDestroyed(Dialog dialog)
         {

@@ -183,7 +183,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             get
             {
-                if(ActiveTabIndex >= 0)
+                if(ActiveTabIndex >= 0 && ActiveTabIndex < m_contentPanel.childCount)
                 {
                     return m_contentPanel.GetChild(ActiveTabIndex);
                 }
@@ -1275,7 +1275,10 @@ namespace Battlehub.UIControls.DockPanels
         {
             Vector2 tabScreenPos = RectTransformUtility.WorldToScreenPoint(args.pressEventCamera, tab.transform.position);
             RectTransform tabPanelRT = (RectTransform)region.m_tabPanel.transform;
-            Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(tabPanelRT, tabScreenPos, args.pressEventCamera, out m_beginDragTabPos));
+            if(!RectTransformUtility.ScreenPointToLocalPointInRectangle(tabPanelRT, tabScreenPos, args.pressEventCamera, out m_beginDragTabPos))
+            {
+                Debug.Assert(false);
+            }
 
             tab.transform.SetParent(region.m_tabPanel.transform, false);
         }
@@ -1453,7 +1456,10 @@ namespace Battlehub.UIControls.DockPanels
                 rt.sizeDelta = size;
 
                 Vector3 worldPos = Vector3.zero;
-                Debug.Assert(RectTransformUtility.ScreenPointToWorldPointInRectangle(rt, args.position, args.pressEventCamera, out worldPos));
+                if(!RectTransformUtility.ScreenPointToWorldPointInRectangle(rt, args.position, args.pressEventCamera, out worldPos))
+                {
+                    Debug.Assert(false);
+                }
                 freeRegion.transform.position = worldPos;
 
                 Unsubscribe(tab, this);
@@ -1769,7 +1775,9 @@ namespace Battlehub.UIControls.DockPanels
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
-            if(m_dragRegion == null)
+            m_root.CursorHelper.ResetCursor(this);
+
+            if (m_dragRegion == null)
             {
                 return;
             }
@@ -1780,7 +1788,6 @@ namespace Battlehub.UIControls.DockPanels
                 region.Fit();
             }
 
-            m_root.CursorHelper.ResetCursor(this);
             m_dragRegion = null;
 
             if(m_isDragging)

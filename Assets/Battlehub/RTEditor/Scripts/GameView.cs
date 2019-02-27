@@ -12,7 +12,7 @@ namespace Battlehub.RTEditor
         private List<GameViewCamera> m_gameCameras;
 
         //When default layout button clicked Awake for new GameView invoked before OnDestroy for previous => camera disabled unintentionally
-        //This static variable (m_gameView) needed to fix this issue. Probably DestroyImmediate could do also...
+        //This static variable (m_gameView) needed to fix this issue. Probably DestroyImmediate also could work...
         private static GameView m_gameView;
 
         protected override void AwakeOverride()
@@ -65,18 +65,6 @@ namespace Battlehub.RTEditor
                 }
                 m_gameView = null;
             }  
-        }
-
-        protected override void OnActivated()
-        {
-            base.OnActivated();
-            Debug.Log("On GameView activated");
-        }
-
-        protected override void OnDeactivated()
-        {
-            base.OnDeactivated();
-            Debug.Log("On GameView deactivated");
         }
 
         protected virtual void OnEnable()

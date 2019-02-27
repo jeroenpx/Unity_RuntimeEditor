@@ -114,18 +114,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void OnActivated()
-        {
-            base.OnActivated();
-            Debug.Log("OnProjectView activated");
-        }
-
-        protected override void OnDeactivated()
-        {
-            base.OnDeactivated();
-            Debug.Log("OnProjectView deactivated");
-        }
-
         private void OnProjectOpenCompleted(Error error, ProjectInfo projectInfo)
         {
             Editor.IsBusy = false;

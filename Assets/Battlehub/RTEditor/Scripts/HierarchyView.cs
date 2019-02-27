@@ -571,11 +571,6 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            //if(m_treeView.SelectedItem != null)
-            //{
-            //    m_treeView.ScrollIntoView(m_treeView.SelectedItem);
-            //}
-            
             return false;
         }
 

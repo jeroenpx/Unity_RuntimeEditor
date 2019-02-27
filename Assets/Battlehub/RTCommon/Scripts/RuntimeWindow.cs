@@ -259,6 +259,12 @@ namespace Battlehub.RTCommon
             }
         }
 
+        private void OnTransformParentChanged()
+        {
+            EnableRaycasts();
+        }
+
+
         public void EnableRaycasts()
         {
             if(m_canvasGroup != null)
@@ -310,6 +316,7 @@ namespace Battlehub.RTCommon
             }
         }
 
+      
         protected virtual void OnRectTransformDimensionsChange()
         {
             //HandleResize();

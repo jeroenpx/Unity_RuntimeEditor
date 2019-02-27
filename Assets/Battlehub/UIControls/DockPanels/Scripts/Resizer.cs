@@ -163,7 +163,7 @@ namespace Battlehub.UIControls.DockPanels
                 Camera camera = eventData.pressEventCamera;
 
                 RectTransform rt = (RectTransform)transform;
-                Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, position, camera, out m_adjustment));
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, position, camera, out m_adjustment);
             }
             if (m_forceRebuildLayoutImmediate)
             {
@@ -218,7 +218,7 @@ namespace Battlehub.UIControls.DockPanels
                 RectTransform freePanelRt = (RectTransform)m_region.Root.Free;
 
                 Vector2 point = Vector2.zero;
-                Debug.Assert(RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out point));
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(freePanelRt, eventData.position, eventData.pressEventCamera, out point);
 
                 Vector2 pivotOffset = Vector2.Scale(freePanelRt.rect.size, freePanelRt.pivot);
                 pivotOffset.y *= -1;

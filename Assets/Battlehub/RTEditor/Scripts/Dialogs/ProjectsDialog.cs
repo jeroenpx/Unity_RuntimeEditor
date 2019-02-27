@@ -62,6 +62,8 @@ namespace Battlehub.RTEditor
 
             m_treeView.ItemDataBinding += OnItemDataBinding;
             m_treeView.ItemDoubleClick += OnItemDoubleClick;
+
+            m_treeView.CanRemove = false;
             m_treeView.CanDrag = false;
             m_treeView.CanEdit = false;
             m_treeView.CanUnselectAll = false;
