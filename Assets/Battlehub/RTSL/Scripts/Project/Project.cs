@@ -450,7 +450,7 @@ namespace Battlehub.RTSL
         {
             if (m_projectInfo != null && project == m_projectInfo.Name)
             {
-                CloseProject();
+                CloseProject();        
             }
             m_storage.DeleteProject(project, error =>
             {
@@ -507,6 +507,7 @@ namespace Battlehub.RTSL
             }
             else
             {
+                
                 IsBusy = true;
                 _OpenProject(project, callback, ao);
             }

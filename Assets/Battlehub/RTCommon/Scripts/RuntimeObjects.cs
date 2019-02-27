@@ -205,7 +205,7 @@ namespace Battlehub.RTCommon
             if (m_editor.IsPlaying) 
             {
                 m_playModeCache = new HashSet<ExposeToEditor>();
-                m_enabledObjects = m_editModeCache.Where(eo => eo.gameObject.activeSelf && !eo.MarkAsDestroyed).ToArray();
+                m_enabledObjects = m_editModeCache.Where(eo => eo != null && eo.gameObject.activeSelf && !eo.MarkAsDestroyed).ToArray();
                 m_selectedObjects = m_editor.Selection.objects;
 
                 HashSet<GameObject> selectionHS = new HashSet<GameObject>(m_editor.Selection.gameObjects != null ? m_editor.Selection.gameObjects : new GameObject[0]);

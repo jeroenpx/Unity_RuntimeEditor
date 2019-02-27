@@ -24,12 +24,7 @@ namespace Battlehub.Cubeman
 
         [SerializeField]
         private GameCharacter[] m_storedCharacters;
-        //public GameCharacter[] StoredCharacters
-        //{
-        //    get { return m_storedCharacters; }
-        //    set { m_storedCharacters = value; }
-        //}
-
+    
         private GameCharacter m_current;
         private int m_currentIndex = -1;
         public int CurrentIndex
@@ -331,7 +326,7 @@ namespace Battlehub.Cubeman
                 bool isActive = character.gameObject.activeSelf;
                 character.gameObject.SetActive(false);
 
-                GameCharacter stored = Instantiate(character);
+                GameCharacter stored = Instantiate(character, character.transform.position, character.transform.rotation);
                 stored.name = character.name;
                 character.gameObject.SetActive(isActive);
 

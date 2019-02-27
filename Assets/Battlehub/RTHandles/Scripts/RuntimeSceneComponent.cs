@@ -197,6 +197,7 @@ namespace Battlehub.RTHandles
             }
 
             Transform activeTransform = selection[0].transform;
+            
             Vector3 position = activeTransform.position;
             if (GridSize < 0.01)
             {
@@ -207,10 +208,14 @@ namespace Battlehub.RTHandles
             position.z = Mathf.Round(position.z / GridSize) * GridSize;
             Vector3 offset = position - activeTransform.position;
 
+            Editor.Undo.BeginRecord();
             for (int i = 0; i < selection.Length; ++i)
             {
+                Editor.Undo.BeginRecordTransform(selection[i].transform);
                 selection[i].transform.position += offset;
+                Editor.Undo.EndRecordTransform(selection[i].transform);
             }
+            Editor.Undo.EndRecord();
         }
 
         public void Focus()

@@ -136,6 +136,7 @@ namespace Battlehub.RTEditor
             }
             
             m_projectTree.LoadProject(m_project.Root);
+            m_projectTree.SelectedFolder = null;
             m_projectTree.SelectedFolder = m_project.Root;
         }
 
@@ -170,6 +171,11 @@ namespace Battlehub.RTEditor
 
             if (!string.IsNullOrEmpty(path))
             {
+                if (m_projectTree.SelectedFolder == m_project.Root)
+                {
+                    m_projectTree.SelectedFolder = null;
+                }
+
                 m_projectTree.SelectedFolder = m_project.Root.Get(path);
             }
             else

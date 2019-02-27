@@ -195,7 +195,7 @@ namespace Battlehub.RTCommon
 
             if(m_canvasGroup != null)
             {
-                m_canvasGroup.blocksRaycasts = false;
+                m_canvasGroup.blocksRaycasts = true;
                 m_canvasGroup.ignoreParentGroups = true;
             }
             

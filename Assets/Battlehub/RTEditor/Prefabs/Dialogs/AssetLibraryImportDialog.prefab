@@ -809,7 +809,6 @@ MonoBehaviour:
   m_dragDropTargetGO: {fileID: 0}
   m_activateOnAnyKey: 0
   m_windowType: 53
-  m_rectTransform: {fileID: 0}
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}

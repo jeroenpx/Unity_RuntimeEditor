@@ -166,6 +166,7 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
+                    Editor.IsPlaying = false;
                     Editor.IsBusy = true;
                     m_project.OpenProject(selectedProject.Name, (error, result) =>
                     {
@@ -228,6 +229,11 @@ namespace Battlehub.RTEditor
         private void OnDestroyProjectClick()
         {
             ProjectInfo selectedProject = (ProjectInfo)m_treeView.SelectedItem;
+            if(selectedProject == null)
+            {
+                return;
+            }
+
             m_windowManager.Confirmation("Delete Project", "Delete " + selectedProject.Name  + " project?", (sender, args) =>
             {
                 ProjectInfo[] projectInfo = m_treeView.Items.OfType<ProjectInfo>().ToArray();
