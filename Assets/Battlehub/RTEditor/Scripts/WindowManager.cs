@@ -756,7 +756,7 @@ namespace Battlehub.RTEditor
 
         private void ClearRegion(Region rootRegion)
         {
-            Region[] regions = rootRegion.GetComponentsInChildren<Region>();
+            Region[] regions = rootRegion.GetComponentsInChildren<Region>(true);
             for (int i = 0; i < regions.Length; ++i)
             {
                 Region region = regions[i];
