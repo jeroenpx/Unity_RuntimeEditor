@@ -17,8 +17,8 @@ namespace Battlehub.RTEditor
         {
             TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
 
-            MemberInfo position = Strong.PropertyInfo((Transform x) => x.position, "position");
-            MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.rotation, "rotation");
+            MemberInfo position = Strong.PropertyInfo((Transform x) => x.localPosition, "position");
+            MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.localRotation, "rotation");
             MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.Rotation, "Rotation");
             MemberInfo scale = Strong.PropertyInfo((Transform x) => x.localScale, "localScale");
 
@@ -41,7 +41,7 @@ namespace Battlehub.RTEditor
                 {
                     return Vector3.zero;
                 }
-                return Component.rotation.eulerAngles;
+                return Component.localRotation.eulerAngles;
             }
             set
             {
@@ -49,7 +49,7 @@ namespace Battlehub.RTEditor
                 {
                     return;
                 }
-                Component.rotation = Quaternion.Euler(value);
+                Component.localRotation = Quaternion.Euler(value);
             }
         }
 

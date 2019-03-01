@@ -58,6 +58,8 @@ namespace Battlehub.Cubeman
 
         private void RuntimeStart()
         {
+            m_isGameRunning = true;
+
             StartCoroutine(StartGame());
         }
 
@@ -104,8 +106,7 @@ namespace Battlehub.Cubeman
         private void Start()
         {
             m_rteState = IOC.Resolve<IRTEState>();
-
-            if(m_rteState == null || !m_rteState.IsCreated)
+            if(m_rteState != null && !m_rteState.IsCreated)
             {
                 m_isGameRunning = true;
             }
@@ -119,7 +120,7 @@ namespace Battlehub.Cubeman
                 GameUI.SetActive(false);
             }
 
-            if (m_rteState == null || !m_rteState.IsCreated)
+            if (IsGameRunning)
             {
                 StartCoroutine(StartGame());
             }

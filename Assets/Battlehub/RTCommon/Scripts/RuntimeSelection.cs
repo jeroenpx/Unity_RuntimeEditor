@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Battlehub.RTCommon
 {
     public delegate void RuntimeSelectionChanged(Object[] unselectedObjects);
-    public interface IRuntimeSelection
+    public interface IRuntimeSelection : IEnumerable
     {
         event RuntimeSelectionChanged SelectionChanged;
         bool Enabled
@@ -35,6 +36,11 @@ namespace Battlehub.RTCommon
         }
 
         Transform activeTransform
+        {
+            get;
+        }
+
+        int Length
         {
             get;
         }
@@ -128,28 +134,6 @@ namespace Battlehub.RTCommon
                 {
                     objects = new[] { value };
                 }
-
-                //if (m_activeObject != value || value != null && m_objects != null && m_objects.Length > 1)
-                //{
-                //    if(!m_isEnabled)
-                //    {
-                //        return;
-                //    }
-
-                //    m_activeObject = value;
-                //    Object[] unselectedObjects = m_objects;
-                //    if (m_activeObject != null)
-                //    {
-                //        m_objects = new[] { value };
-                //    }
-                //    else
-                //    {
-                //        m_objects = new Object[0];
-                //    }
-
-                //    UpdateHS();
-                //    RaiseSelectionChanged(unselectedObjects);
-                //}
             }
         }
 
@@ -177,6 +161,18 @@ namespace Battlehub.RTCommon
                         SetObjects(value);
                     }
                 }
+            }
+        }
+
+        public int Length
+        {
+            get
+            {
+                if(m_objects == null)
+                {
+                    return 0;
+                }
+                return m_objects.Length;
             }
         }
 
@@ -303,6 +299,16 @@ namespace Battlehub.RTCommon
                 m_activeObject = activeObject;
                 SetObjects(selection);
             }
+        }
+
+        private Object[] m_empty = new Object[0];
+        public IEnumerator GetEnumerator()
+        {
+            if(m_objects != null)
+            {
+                return m_objects.GetEnumerator();
+            }
+            return m_empty.GetEnumerator();
         }
     }
 }

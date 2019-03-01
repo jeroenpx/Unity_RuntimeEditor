@@ -45,6 +45,8 @@ namespace Battlehub.RTHandles
         {
             get;
         }
+
+        void Focus();
     }
 
     [DefaultExecutionOrder(-55)]
@@ -533,6 +535,11 @@ namespace Battlehub.RTHandles
         protected virtual Transform[] GetTargets()
         {
             return Editor.Selection.gameObjects.Select(g => g.transform).OrderByDescending(g => Editor.Selection.activeTransform == g).ToArray();
+        }
+
+        public virtual void Focus()
+        {
+
         }
     }
 }

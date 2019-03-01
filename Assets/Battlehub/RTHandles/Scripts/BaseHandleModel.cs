@@ -108,12 +108,5 @@ namespace Battlehub.RTHandles
         {
 
         }
-
-        //protected virtual void OnWillRenderObject()
-        //{
-        //    float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Camera.current);
-        //    transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
-        //}
     }
-
 }

@@ -31,8 +31,17 @@ namespace Battlehub.RTHandles.Demo
         private Button m_redoButton = null;
 
         private IRTE m_editor;
+        protected IRTE Editor
+        {
+            get { return m_editor; }
+        }
 
-        private void Start()
+        protected virtual void Awake()
+        {
+
+        }
+
+        protected virtual void Start()
         {
             m_editor = IOC.Resolve<IRTE>();
 
@@ -49,7 +58,7 @@ namespace Battlehub.RTHandles.Demo
             UpdateUndoRedoButtons();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (m_editor != null)
             {
@@ -65,7 +74,7 @@ namespace Battlehub.RTHandles.Demo
             UnsubscribeUIEvents();
         }
 
-        private void SubscribeUIEvents()
+        protected virtual void SubscribeUIEvents()
         {
             if (m_viewToggle) m_viewToggle.onValueChanged.AddListener(OnViewToggle);
             if (m_positionToggle) m_positionToggle.onValueChanged.AddListener(OnPositionToggle);
@@ -79,7 +88,7 @@ namespace Battlehub.RTHandles.Demo
             if (m_redoButton) m_redoButton.onClick.AddListener(OnRedoClick);
         }
 
-        private void UnsubscribeUIEvents()
+        protected virtual void UnsubscribeUIEvents()
         {
             if (m_viewToggle) m_viewToggle.onValueChanged.RemoveListener(OnViewToggle);
             if (m_positionToggle) m_positionToggle.onValueChanged.RemoveListener(OnPositionToggle);

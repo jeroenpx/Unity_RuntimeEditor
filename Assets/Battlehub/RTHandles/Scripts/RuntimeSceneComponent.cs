@@ -26,7 +26,7 @@ namespace Battlehub.RTHandles
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-
+            
             GameObject runGO = new GameObject("Run");
             runGO.transform.SetParent(transform, false);
             runGO.name = "Run";
@@ -218,7 +218,7 @@ namespace Battlehub.RTHandles
             Editor.Undo.EndRecord();
         }
 
-        public void Focus()
+        public override void Focus()
         {
             if (m_lockInput)
             {
