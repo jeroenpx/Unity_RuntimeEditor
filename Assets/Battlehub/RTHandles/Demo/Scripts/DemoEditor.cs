@@ -1,4 +1,7 @@
 ﻿
+using Battlehub.RTCommon;
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,25 +10,38 @@ namespace Battlehub.RTHandles.Demo
     public class DemoEditor : SimpleEditor
     {
         [SerializeField]
-        private Button m_focusButton;
+        private Button m_focusButton = null;
 
         [SerializeField]
-        private Button m_play;
+        private Button m_play = null;
 
         [SerializeField]
-        private Button m_stop;
+        private Button m_stop = null;
 
         [SerializeField]
-        private GameObject m_components;
+        private GameObject m_components = null;
 
         [SerializeField]
-        private GameObject m_ui;
+        private GameObject m_ui = null;
 
         [SerializeField]
-        private GameObject m_editorCamera;
+        private GameObject m_prefabSpawners = null;
 
         [SerializeField]
-        private GameObject m_gameCamera;
+        private GameObject m_editorCamera = null;
+
+        [SerializeField]
+        private GameObject m_gameCamera = null;
+
+        private ResourcePreviewUtility m_resourcePreview;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            m_resourcePreview = gameObject.AddComponent<ResourcePreviewUtility>();
+            IOC.Register<IResourcePreviewUtility>(m_resourcePreview);
+        }
 
         protected override void Start()
         {
@@ -33,6 +49,7 @@ namespace Battlehub.RTHandles.Demo
             Editor.IsOpened = true;
             Editor.IsPlaying = false;
             OnPlaymodeStateChanged();
+
             Editor.PlaymodeStateChanged += OnPlaymodeStateChanged;
             Editor.Selection.SelectionChanged += OnSelectionChanged;
         }
@@ -44,6 +61,28 @@ namespace Battlehub.RTHandles.Demo
             {
                 Editor.PlaymodeStateChanged -= OnPlaymodeStateChanged;
                 Editor.Selection.SelectionChanged -= OnSelectionChanged;
+            }
+
+            IOC.Unregister<IResourcePreviewUtility>(m_resourcePreview);
+        }
+
+        protected virtual void Update()
+        {
+            if(Editor.Input.GetKeyDown(KeyCode.Delete))
+            {
+                if(Editor.Selection.Length > 0)
+                {
+                    ExposeToEditor[] exposed = Editor.Selection.gameObjects
+                        .Where(o => o != null)
+                        .Select(o => o.GetComponent<ExposeToEditor>())
+                        .Where(o => o != null)
+                        .ToArray();
+
+                    Editor.Undo.BeginRecord();
+                    Editor.Selection.objects = null;
+                    Editor.Undo.DestroyObjects(exposed);
+                    Editor.Undo.EndRecord();
+                }
             }
         }
 
@@ -93,6 +132,10 @@ namespace Battlehub.RTHandles.Demo
             {
                 m_ui.SetActive(!Editor.IsPlaying);
             }
+            if(m_prefabSpawners != null)
+            {
+                m_prefabSpawners.SetActive(!Editor.IsPlaying);
+            }
             if(m_stop != null)
             {
                 m_stop.gameObject.SetActive(Editor.IsPlaying);
@@ -117,12 +160,19 @@ namespace Battlehub.RTHandles.Demo
 
         private void OnFocusClick()
         {
-            IScenePivot scenePivot = Editor.ActiveWindow.IOCContainer.Resolve<IScenePivot>();
+            IScenePivot scenePivot = Editor.GetWindow(RuntimeWindowType.Scene).IOCContainer.Resolve<IScenePivot>();
             scenePivot.Focus();
         }
 
         private void OnPlayClick()
         {
+            Editor.Undo.Purge();
+            StartCoroutine(CoPlay());
+        }
+
+        private IEnumerator CoPlay()
+        {
+            yield return new WaitForEndOfFrame(); 
             Editor.IsPlaying = true;
         }
 

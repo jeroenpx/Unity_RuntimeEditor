@@ -1,15 +1,14 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTSL.Interface;
 using Battlehub.Utils;
 using UnityEngine;
 
 using UnityObject = UnityEngine.Object;
-namespace Battlehub.RTEditor
+namespace Battlehub.RTCommon
 {
     public interface IResourcePreviewUtility
     {
         byte[] CreatePreviewData(UnityObject obj);
-        //byte[] CreatePreviewData(AssetItem projectItem);
+        Texture2D TakeSnapshot(GameObject go);
     }
 
     public class ResourcePreviewUtility : MonoBehaviour, IResourcePreviewUtility
@@ -20,12 +19,10 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject m_fallbackPrefab = null;
 
- 
         [SerializeField]
         private Vector3 m_scale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private Shader m_unlitTexShader;
-
 
         private void Awake()
         {
@@ -72,12 +69,9 @@ namespace Battlehub.RTEditor
          
         }
 
-        private byte[] TakeSnapshot(GameObject obj)
+        private byte[] TakeSnapshotBytes(GameObject obj)
         {
-            m_objectToTextureCamera.defaultScale = m_scale;
-            m_objectToTextureCamera.gameObject.SetActive(true);
-            Texture2D texture = m_objectToTextureCamera.TakeObjectSnapshot(obj, m_fallbackPrefab);
-            m_objectToTextureCamera.gameObject.SetActive(false);
+            Texture2D texture = TakeSnapshot(obj);
 
             byte[] result;
             if (texture != null)
@@ -93,13 +87,22 @@ namespace Battlehub.RTEditor
             return result;
         }
 
+        public Texture2D TakeSnapshot(GameObject obj)
+        {
+            m_objectToTextureCamera.defaultScale = m_scale;
+            m_objectToTextureCamera.gameObject.SetActive(true);
+            Texture2D texture = m_objectToTextureCamera.TakeObjectSnapshot(obj, m_fallbackPrefab);
+            m_objectToTextureCamera.gameObject.SetActive(false);
+            return texture;
+        }
+
         public byte[] CreatePreviewData(UnityObject obj)
         {
             byte[] previewData = new byte[0];
             if(obj is GameObject)
             {
                 GameObject go = (GameObject)obj;
-                previewData = TakeSnapshot(go);
+                previewData = TakeSnapshotBytes(go);
             }
             else if(obj is Material)
             {
@@ -117,7 +120,7 @@ namespace Battlehub.RTEditor
                 MeshRenderer renderer = materialSphere.GetComponent<MeshRenderer>();
                 renderer.sharedMaterial = material;
 
-                previewData = TakeSnapshot(materialSphere);
+                previewData = TakeSnapshotBytes(materialSphere);
                 DestroyImmediate(materialSphere);
 
                 if(replaceParticlesShader)
@@ -164,11 +167,6 @@ namespace Battlehub.RTEditor
 
             return previewData;
         }
-
-        //public byte[] CreatePreviewData(AssetItem projectItem)
-        //{
-        //    return new byte[0];
-        //}
     }
 }
 

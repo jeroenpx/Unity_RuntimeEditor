@@ -7968,6 +7968,7 @@ GameObject:
   - component: {fileID: 11417020}
   - component: {fileID: 11459330}
   - component: {fileID: 114000012087550298}
+  - component: {fileID: 1792287101373332074}
   m_Layer: 0
   m_Name: Cubeman
   m_TagString: Untagged
@@ -8107,6 +8108,19 @@ MonoBehaviour:
   CanSelect: 1
   CanSnap: 1
   AddColliders: 1
+--- !u!114 &1792287101373332074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93631b49c47a14f449486e221a7b35cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Game: {fileID: 0}
 --- !u!1 &129970
 GameObject:
   m_ObjectHideFlags: 0

@@ -144,7 +144,6 @@ namespace Battlehub.RTEditor
                     {
                         m_prefabInstance.transform.position = hit.point;
                     }
-
                 }
             }
             
