@@ -429,6 +429,9 @@ namespace Battlehub.RTHandles
                 {
                     Model = model;
                 }
+
+                Model.ModelScale = Appearance.HandleScale;
+                Model.SelectionMargin = Appearance.SelectionMargin;
             }
         }
 
@@ -466,6 +469,7 @@ namespace Battlehub.RTHandles
                 {
                     Model.SetLock(LockObject);
                 }
+        
             }
             else
             {

@@ -244,6 +244,7 @@ namespace Battlehub.RTHandles
 
                                 LayerMask layerMask = (1 << Physics.IgnoreRaycastLayer);
                                 layerMask = ~layerMask;
+                                layerMask &= Editor.CameraLayerSettings.RaycastMask;
 
                                 for (int i = 0; i < m_snapTargets.Length; ++i)
                                 {

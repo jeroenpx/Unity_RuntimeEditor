@@ -4359,7 +4359,7 @@ MonoBehaviour:
     GridColor:
       serializedVersion: 2
       rgba: 436207615
-  m_handleScale: 1
+  m_handleScale: 1.3
   m_selectionMargin: 1
   m_invertZAxis: 0
   m_positionHandleArrowOnly: 0

@@ -152,12 +152,7 @@ namespace Battlehub.RTHandles
         protected override void Start()
         {
             base.Start();
-
-            UpdateXYZ(m_xyz.sharedMesh, m_majorRadius, m_minorRadius);
-            UpdateCircle(m_inner.sharedMesh, m_innerCircleMesh, m_inner.transform, m_majorRadius, m_minorRadius);
-            UpdateCircle(m_outer.sharedMesh, m_outerCircleMesh, m_outer.transform, m_outerRadius, m_minorRadius);
-            UpdateColliders();
-
+            UpdateModel();
             SetColors();
         }
 
