@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
 using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,117 @@ namespace Battlehub.RTSL
 {
     public static class Menu
     {
+        private static string GetRelativePath(string filespec, string folder)
+        {
+            Uri pathUri = new Uri(filespec);
+            // Folders must end in a slash
+            if (!folder.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                folder += Path.DirectorySeparatorChar;
+            }
+            Uri folderUri = new Uri(folder);
+            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
+        }
+
+        [MenuItem("Tools/Runtime SaveLoad/Open Scene")]
+        public static void OpenScene()
+        {
+            if(Application.isPlaying)
+            {
+                EditorUtility.DisplayDialog("Unable to open scene", "Unable to open scene in play mode", "OK");
+                return;
+            }
+
+            string path = EditorUtility.OpenFilePanel("Open Scene", Application.persistentDataPath, "rtscene");
+            if (path.Length != 0)
+            {
+                GameObject projGo = new GameObject();
+                IAssetBundleLoader bundleLoader = new AssetBundleLoader();
+                IOC.Register(bundleLoader);
+
+                ITypeMap typeMap = new TypeMap();
+                IOC.Register(typeMap);
+
+                IUnityObjectFactory objFactory = new UnityObjectFactory();
+                IOC.Register(objFactory);
+                
+                ISerializer serializer = new ProtobufSerializer();
+                IOC.Register(serializer);
+
+                IStorage storage = new FileSystemStorage();
+                IOC.Register(storage);
+
+                IRuntimeShaderUtil shaderUtil = new RuntimeShaderUtil();  
+                IOC.Register(shaderUtil);
+
+                IAssetDB assetDB = new AssetDB();
+                IOC.Register<IIDMap>(assetDB);
+                IOC.Register(assetDB);
+
+                Project project = projGo.AddComponent<Project>();
+                project.Awake_Internal();
+
+                DirectoryInfo root = new DirectoryInfo(Application.persistentDataPath);
+                string rootPath = root.ToString().ToLower();
+
+                DirectoryInfo parent = Directory.GetParent(path);
+                while (true)
+                {
+                    if (parent == null)
+                    {
+                        EditorUtility.DisplayDialog("Unable to open scene", "Project.rtmeta was not found", "OK");
+                        UnityObject.DestroyImmediate(projGo);
+                        IOC.ClearAll();
+                        return;
+                    }
+
+                    string projectPath = parent.FullName.ToLower();
+                    if (rootPath == projectPath)
+                    {
+                        EditorUtility.DisplayDialog("Unable to open scene", "Project.rtmeta was not found", "OK");
+                        UnityObject.DestroyImmediate(projGo);
+                        IOC.ClearAll();
+                        return;
+                    }
+
+                    string projectFile = Path.Combine(projectPath, "Project.rtmeta");
+                    if (File.Exists(projectFile))
+                    {
+                        string projectFileName = Path.GetFileNameWithoutExtension(projectPath);
+
+                        project.OpenProject(projectFileName, (error, result) =>
+                        {
+                            if (error.HasError)
+                            {
+                                EditorUtility.DisplayDialog("Unable to open scene", "Project " + projectFileName + " can not be loaded", "OK");
+                                UnityObject.DestroyImmediate(projGo);
+                                IOC.ClearAll();
+                                return;
+                            }
+
+                            string relativePath = GetRelativePath(path, projectPath);
+                            relativePath = relativePath.Replace('\\', '/');
+                            AssetItem scene = (AssetItem)project.Root.Get(relativePath);
+                            project.Load(new[] { scene }, (loadError, loadedObjects) =>
+                            {
+                                IOC.ClearAll();
+                                if (loadError.HasError)
+                                {
+                                    EditorUtility.DisplayDialog("Unable to open scene", loadError.ToString(), "OK");
+                                    UnityObject.DestroyImmediate(projGo);
+                                    return;
+                                }
+                            });
+                        });
+
+                        return;
+                    }
+
+                    parent = parent.Parent;
+                }
+            }
+        }
+
         [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Create")]
         private static void CreatePersistentClasses()
         {

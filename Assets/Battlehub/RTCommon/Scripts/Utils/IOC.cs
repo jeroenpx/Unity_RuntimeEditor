@@ -237,6 +237,11 @@ namespace Battlehub.RTCommon
                 m_container.Clear();
             }
         }
+
+        public static void ClearAll()
+        {
+            m_container.Clear();
+        }
     }
 
 

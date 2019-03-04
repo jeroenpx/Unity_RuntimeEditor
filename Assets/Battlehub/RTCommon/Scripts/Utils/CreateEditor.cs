@@ -7,22 +7,11 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
 {
-    public interface IRTEState
-    {
-        bool IsCreated
-        {
-            get;
-        }
-
-        event Action<IRTE> Created;
-        event Action<IRTE> Destroyed;
-    }
-
     [DefaultExecutionOrder(-100)]
     public class CreateEditor : MonoBehaviour, IRTEState
     {
-        public event Action<IRTE> Created;
-        public event Action<IRTE> Destroyed;
+        public event Action<object> Created;
+        public event Action<object> Destroyed;
 
         public bool IsCreated
         {

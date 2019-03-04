@@ -7,7 +7,7 @@ using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 using UnityEngine.UI;
 using System.IO;
-using System.Linq;
+using System;
 
 namespace Battlehub.RTSL
 {
@@ -18,6 +18,9 @@ namespace Battlehub.RTSL
 
         [SerializeField]
         private Button m_btnLoad = null;
+
+        [SerializeField]
+        private Button m_btnDestroy = null;
 
         [SerializeField]
         private CanvasGroup m_progress = null;
@@ -50,6 +53,12 @@ namespace Battlehub.RTSL
                 m_btnLoad.interactable = m_project.Exist<Scene>(m_scenePath);
                 m_btnLoad.onClick.AddListener(OnLoadClick);
             }
+
+            if(m_btnDestroy != null)
+            {
+                m_btnDestroy.interactable = m_project.Exist<Scene>(m_scenePath);
+                m_btnDestroy.onClick.AddListener(OnDestroyClick);
+            }
         }
 
         private void OnDestroy()
@@ -62,6 +71,11 @@ namespace Battlehub.RTSL
             if (m_btnLoad != null)
             {
                 m_btnLoad.onClick.RemoveListener(OnLoadClick);
+            }
+
+            if(m_btnDestroy != null)
+            {
+                m_btnDestroy.onClick.RemoveListener(OnDestroyClick);
             }
 
             StopAllCoroutines();
@@ -77,6 +91,18 @@ namespace Battlehub.RTSL
             if (m_project.Exist<Scene>(m_scenePath))
             {
                 StartCoroutine(LoadScene());
+            }
+        }
+
+        private void OnDestroyClick()
+        {
+            if(m_project.Exist<Scene>(m_scenePath))
+            {
+                m_project.CreateNewScene();
+
+                GameObject go = new GameObject();
+                go.name = "Camera";
+                go.AddComponent<Camera>();
             }
         }
 
@@ -126,6 +152,11 @@ namespace Battlehub.RTSL
                 if(m_btnLoad != null)
                 {
                     m_btnLoad.interactable = m_project.Exist<Scene>(m_scenePath);
+                }
+
+                if(m_btnDestroy != null)
+                {
+                    m_btnDestroy.interactable = m_project.Exist<Scene>(m_scenePath);
                 }
             }
         }

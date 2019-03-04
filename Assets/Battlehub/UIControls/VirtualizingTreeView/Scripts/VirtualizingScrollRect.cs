@@ -755,7 +755,7 @@ namespace Battlehub.UIControls
                 }
                 else
                 {
-                    RectTransform prevContainer = m_containers.ElementAt(index - firstIndex - 1);
+                    RectTransform prevContainer = m_containers.ElementAtOrDefault(index - firstIndex - 1);
                     LinkedListNode<RectTransform> prevNode = m_containers.Find(prevContainer);
                     m_containers.AddAfter(prevNode, container);
                     container.SetSiblingIndex(index - firstIndex);

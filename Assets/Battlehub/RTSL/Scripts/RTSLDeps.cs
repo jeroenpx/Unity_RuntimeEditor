@@ -130,6 +130,11 @@ namespace Battlehub.RTSL
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
+            if(!Application.isPlaying)
+            {
+                return;
+            }
+
             IOC.RegisterFallback(() => Instance.m_assetBundleLoader);
             IOC.RegisterFallback(() => Instance.m_typeMap);
             IOC.RegisterFallback(() => Instance.m_objectFactory);

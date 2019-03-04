@@ -7,6 +7,7 @@ using System.Linq;
 
 using Battlehub.RTCommon;
 using System;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.Cubeman
 {
@@ -36,8 +37,6 @@ namespace Battlehub.Cubeman
         private List<GameCharacter> m_activeCharacters;
         private GameCameraFollow m_playerCamera;
 
-        private IRTE m_rte;
-        private IRTEState m_rteState;
         private bool m_isGameRunning;
         public bool IsGameRunning
         {
@@ -105,10 +104,17 @@ namespace Battlehub.Cubeman
 
         private void Start()
         {
-            m_rteState = IOC.Resolve<IRTEState>();
-            if(m_rteState != null && !m_rteState.IsCreated)
+            IRTEState rteState = IOC.Resolve<IRTEState>();
+            if(rteState == null || !rteState.IsCreated)
             {
                 m_isGameRunning = true;
+            }
+
+            EventSystem eventSystem = FindObjectOfType<EventSystem>();
+            if(eventSystem == null && GameUI != null)
+            {
+                GameUI.AddComponent<EventSystem>();
+                GameUI.AddComponent<StandaloneInputModule>();
             }
             
             if (BtnReplay != null)

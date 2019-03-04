@@ -32,7 +32,6 @@ namespace Battlehub.RTEditor
             set { m_depth = value; }
         }
 
-        
         public bool IsAwaked
         {
             get;
@@ -64,7 +63,7 @@ namespace Battlehub.RTEditor
                 Destroy(gameObject);
                 return;
             }
-            
+
             IsAwaked = true;
 
             if(_Awaked != null)

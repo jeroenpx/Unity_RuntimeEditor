@@ -2021,6 +2021,15 @@ namespace Battlehub.RTSL
             CodeGen.GetUOAssembliesAndTypes(out assemblies, out types);
 
             List<Type> allUOTypes = new List<Type>(types);
+            HashSet<Type> mustHaveTypes = PersistentClassMapperGUI.HideMustHaveTypes;
+            foreach(Type mustHaveType in mustHaveTypes)
+            {
+                if(mustHaveType.IsSubclassOf(typeof(UnityObject)) && !allUOTypes.Contains(mustHaveType))
+                {
+                    allUOTypes.Add(mustHaveType);
+                }
+            }
+
             for (int i = 0; i < m_mostImportantUOTypes.Length; ++i)
             {
                 allUOTypes.Remove(m_mostImportantUOTypes[i]);
@@ -2034,6 +2043,18 @@ namespace Battlehub.RTSL
             CodeGen.GetSurrogateAssembliesAndTypes(uoTypes, out declaredIn, out types);
 
             List<Type> allTypes = new List<Type>(types);
+            HashSet<Type> mustHaveTypes = PersistentClassMapperGUI.HideMustHaveTypes;
+            foreach (Type mustHaveType in mustHaveTypes)
+            {
+                if(mustHaveType == typeof(UnityObject))
+                {
+                    continue;
+                }
+                if (!mustHaveType.IsSubclassOf(typeof(UnityObject)) && !allTypes.Contains(mustHaveType))
+                {
+                    allTypes.Add(mustHaveType);
+                }
+            }
 
             for (int i = 0; i < m_mostImportantSurrogateTypes.Length; ++i)
             {
@@ -2041,7 +2062,6 @@ namespace Battlehub.RTSL
             }
 
             allTypes.Add(typeof(UnityEventBase));
-
             types = m_mostImportantSurrogateTypes.Union(allTypes.OrderBy(t => t.Name)).ToArray();
         }
 

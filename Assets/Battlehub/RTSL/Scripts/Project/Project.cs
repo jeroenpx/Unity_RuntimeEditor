@@ -141,6 +141,11 @@ namespace Battlehub.RTSL
 
         private void Awake()
         {
+            Awake_Internal();
+        }
+
+        public void Awake_Internal()
+        {
             if (string.IsNullOrEmpty(m_sceneDepsLibrary))
             {
                 m_sceneDepsLibrary = "Scenes/" + SceneManager.GetActiveScene().name + "/SceneAssetLibrary";
@@ -967,9 +972,7 @@ namespace Battlehub.RTSL
                     dependencies = getDepsFromCtx.Dependencies.ToArray();
                 }
 
-                RaiseGetDependenciesCompleted(callback, ao, dependencies);
-
-               
+                RaiseGetDependenciesCompleted(callback, ao, dependencies);  
             });
         }
 
@@ -1754,7 +1757,27 @@ namespace Battlehub.RTSL
 
             _Load(assetItems, callback, ao, () =>
             {
-                StartCoroutine(CoCallback(() =>
+                if(Application.isPlaying)
+                {
+                    StartCoroutine(CoCallback(() =>
+                    {
+                        if (!ao.Error.HasError)
+                        {
+                            if (assetItems.Any(assetItem => ToType(assetItem) == typeof(Scene)))
+                            {
+                                m_loadedScene = assetItems.First(assetItem => ToType(assetItem) == typeof(Scene));
+                            }
+                        }
+
+                        if (LoadCompleted != null)
+                        {
+                            LoadCompleted(ao.Error, assetItems, ao.Result);
+                        }
+
+                        IsBusy = false;
+                    }));
+                }
+                else
                 {
                     if (!ao.Error.HasError)
                     {
@@ -1770,7 +1793,7 @@ namespace Battlehub.RTSL
                     }
 
                     IsBusy = false;
-                }));
+                } 
             });
         }
 

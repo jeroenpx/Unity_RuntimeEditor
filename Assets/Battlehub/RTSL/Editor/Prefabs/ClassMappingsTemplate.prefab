@@ -6190,7 +6190,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 32
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -45596,7 +45596,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8404060515519941663}
   m_Layer: 0
-  m_Name: ClassMappingsStorage
+  m_Name: ClassMappingsTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,5 +1,4 @@
-﻿
-using Battlehub.RTCommon;
+﻿using Battlehub.RTCommon;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +6,8 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTHandles.Demo
 {
-    public class DemoEditor : SimpleEditor
+    [DefaultExecutionOrder(-10)]
+    public class DemoEditor : SimpleEditor, IRTEState
     {
         [SerializeField]
         private Button m_focusButton = null;
@@ -35,10 +35,16 @@ namespace Battlehub.RTHandles.Demo
 
         private ResourcePreviewUtility m_resourcePreview;
 
+        public bool IsCreated
+        {
+            get { return true; }
+        }
+
         protected override void Awake()
         {
             base.Awake();
 
+            IOC.Register<IRTEState>(this);
             m_resourcePreview = gameObject.AddComponent<ResourcePreviewUtility>();
             IOC.Register<IResourcePreviewUtility>(m_resourcePreview);
         }
@@ -63,6 +69,7 @@ namespace Battlehub.RTHandles.Demo
                 Editor.Selection.SelectionChanged -= OnSelectionChanged;
             }
 
+            IOC.Unregister<IRTEState>(this);
             IOC.Unregister<IResourcePreviewUtility>(m_resourcePreview);
         }
 
@@ -180,6 +187,16 @@ namespace Battlehub.RTHandles.Demo
         {
             Editor.IsPlaying = false;
         }
+
+        #region IRTEState implementation
+        public event System.Action<object> Created;
+        public event System.Action<object> Destroyed;
+        private void Use()
+        {
+            Created(null);
+            Destroy(null);
+        }
+        #endregion
     }
 
 }

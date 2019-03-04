@@ -147,7 +147,10 @@ namespace Battlehub.RTSL
                         for (int j = 0; j < folder.Assets.Count; ++j)
                         {
                             AssetInfo asset = folder.Assets[j];
-                            LoadIDMappingTo(asset, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
+                            if (asset.Object != null)
+                            {
+                                LoadIDMappingTo(asset, mapping, instanceIDs, persistentIDs, IIDtoPID, PIDtoObj);
+                            }
                         }
                     }
                 }
