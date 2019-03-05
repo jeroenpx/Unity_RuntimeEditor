@@ -135,6 +135,11 @@ namespace Battlehub.UIControls.MenuControl
             }
         }
 
+        public int ActualItemsCount
+        {
+            get { return m_panel.childCount; }
+        }
+
         [SerializeField]
         private CanvasGroup m_canvasGroup = null;
 

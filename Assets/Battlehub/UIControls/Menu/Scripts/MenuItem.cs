@@ -339,7 +339,7 @@ namespace Battlehub.UIControls.MenuControl
             RectTransform rootRT = (RectTransform)m_root;
             RectTransform rt = (RectTransform)transform;
 
-            Vector2 size = new Vector2(rt.rect.width, rt.rect.height * Children.Length);
+            Vector2 size = new Vector2(rt.rect.width, rt.rect.height * m_submenu.ActualItemsCount);
 
             Vector3 position = -Vector2.Scale(rt.rect.size, rt.pivot);
             position.y = -position.y;
