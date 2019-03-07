@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="vadim andriyanov">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Dock Panels - Runtime Editor</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Dock Panels";
+    var mkdocs_page_input_path = "dock-panels.md";
+    var mkdocs_page_url = "/dock-panels/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Runtime Editor</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../general/">General</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../transform-handles/">Transform Handles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../gizmos/">Gizmos</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../rendering/">Rendering</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../infrastructure/">Common Infrastructure</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../runtime-editor/">Runtime Editor</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../save-load/">Save Load</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Dock Panels</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#dock-panel-docs">Dock Panel Docs</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#overview">Overview</a></li>
+        
+            <li><a class="toctree-l3" href="#getting-started">Getting Started</a></li>
+        
+            <li><a class="toctree-l3" href="#dock-panel">Dock Panel</a></li>
+        
+            <li><a class="toctree-l3" href="#tab">Tab</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l2"><a href="#tab-preview">Tab Preview</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#region">Region</a></li>
+        
+            <li><a class="toctree-l3" href="#dialog-manager">Dialog Manager</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../vtv/">Virtualizing Tree View</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../menu-control/">Menu Control</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Runtime Editor</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Dock Panels</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="dock-panel-docs">Dock Panel Docs</h1>
+<h2 id="overview">Overview</h2>
+<p>The <a href="#dock-panel"><strong>Dock Panel</strong></a> is a control, that provides an easy docking of content <a href="#region">regions</a> to the left, right, top, bottom or center of the panel. The control also allow region to become an independent floating window, modal popup or dialog.</p>
+<p><img alt="Screenshot" src="../img/dock-panels/overview/dock-panels.png" /></p>
+<h2 id="getting-started">Getting Started</h2>
+<ol>
+<li>Create Canvas.</li>
+<li>Add <strong>DockPanel.prefab</strong> from <strong>Assets/Battelhub/UIControls/DockPanels/Prefabs</strong> to hierarchy.</li>
+<li>Create <strong>GettingStarted.cs script</strong> and add it to <strong>DockPanel</strong> Game Object.</li>
+<li>Hit Play.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/dock-panels/get-started/create-dock-panel.png" />  </p>
+<pre><code class="C#">using Battlehub.UIControls.DockPanels;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GettingStarted : MonoBehaviour
+{
+    DockPanel m_dockPanel;
+
+    void Start()
+    {
+        m_dockPanel = GetComponent&lt;DockPanel&gt;();
+
+        GameObject testContent = new GameObject();
+        testContent.AddComponent&lt;Image&gt;().color = new Color(0.2f, 0.2f, 0.2f, 1.0f);
+
+        LayoutInfo layout = new LayoutInfo(false,
+            new LayoutInfo(testContent.transform, &quot;Tab 1&quot;),
+                new LayoutInfo(
+                    isVertical: true,
+                        child0: new LayoutInfo(Instantiate(testContent).transform, &quot;Tab 2&quot;),
+                        child1: new LayoutInfo(Instantiate(testContent).transform, &quot;Tab 3&quot;),
+                        ratio: 0.5f),
+                0.5f);
+
+        m_dockPanel.RootRegion.Build(layout);
+    }              
+}
+
+</code></pre>
+
+<p><img alt="Screenshot" src="../img/dock-panels/get-started/get-started-result.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Full demo can be found in  <strong>Assets/Battelhub/UIControls/DockPanels/Demo</strong> folder</p>
+</div>
+<h2 id="dock-panel">Dock Panel</h2>
+<p>Structure:
+<img alt="Screenshot" src="../img/dock-panels/dock-panel/structure.png" /></p>
+<p>Prefab: Assets/Battelhub/UIControls/DockPanels/Prefabs/<strong>DockPanel.prefab</strong> <br />
+Script: Assets/Battelhub/UIControls/DockPanels/Scripts/<strong>DockPanel.cs</strong>   </p>
+<p>Fields:</p>
+<ul>
+<li><code>Mask</code> - masking everything outside of DockPanel (image with Mask Component)</li>
+<li><code>Docked</code> - parent for docked <a href="#region">regions</a></li>
+<li><code>Free</code> - parent for floating <a href="#region">regions</a></li>
+<li><code>Preview</code> - parent for <a href="#tab-preview">tab preview</a> visible during <a href="#tab">tab</a> re-parenting operation.</li>
+<li><code>Modal</code> - parent for modal pop-ups and dialogs.</li>
+<li><code>Region Prefab</code> - reference to <a href="#region">region</a> prefab.</li>
+</ul>
+<h2 id="tab">Tab</h2>
+<p>Default Style:<br />
+<img alt="Screenshot" src="../img/dock-panels/tab/tab.png" /></p>
+<p>Structure:
+<img alt="Screenshot" src="../img/dock-panels/tab/structure.png" /></p>
+<p>Prefab: Assets/Battelhub/UIControls/DockPanels/Prefabs/<strong>Tab.prefab</strong> <br />
+Script: Assets/Battelhub/UIControls/DockPanels/Scripts/<strong>Tab.cs</strong>   </p>
+<p>Fields:</p>
+<ul>
+<li><code>Tab Preivew Prefab</code> - reference to <a href="#tab-preview">tab-preview.prefab</a>.</li>
+<li><code>Canvas Group</code> - required to hide tab but preserve occupied space during rearrangements.</li>
+<li><code>Img</code> - tab icon.</li>
+<li><code>Text</code> - tab header text.</li>
+<li><code>Close Button</code> - tab close button.</li>
+<li><code>Toggle</code> - reference to toggle control (tab have 2 states 'selected' and 'unselected').</li>
+</ul>
+<h1 id="tab-preview">Tab Preview</h1>
+<p>Tab Preview become visible during tab rearrangements.</p>
+<p>Default Style:<br />
+<img alt="Screenshot" src="../img/dock-panels/tab-preview/tab-preview.png" /></p>
+<p>Structure:
+<img alt="Screenshot" src="../img/dock-panels/tab-preview/structure.png" /></p>
+<p>Prefab: Assets/Battelhub/UIControls/DockPanels/Prefabs/<strong>TabPreview.prefab</strong> <br />
+Script: Assets/Battelhub/UIControls/DockPanels/Scripts/<strong>TabPreview.cs</strong>   </p>
+<p>Fields:</p>
+<ul>
+<li><code>Img</code> - tab preview icon (replaced with tab sprite during rearrangements).</li>
+<li><code>Text</code> - tab preview text (replaced with tab text during rearrangements).</li>
+<li><code>Content Part</code> - content preview (resized according to available space during rearrangements).</li>
+</ul>
+<h2 id="region">Region</h2>
+<p>Default Style:<br />
+<img alt="Screenshot" src="../img/dock-panels/region/region.png" /></p>
+<p>Structure:
+<img alt="Screenshot" src="../img/dock-panels/region/structure.png" /></p>
+<p>Prefab: Assets/Battelhub/UIControls/DockPanels/Prefabs/<strong>Region.prefab</strong> <br />
+Script: Assets/Battelhub/UIControls/DockPanels/Scripts/<strong>Region.cs</strong>   </p>
+<p>Fields:</p>
+<ul>
+<li><code>Maximize Toggle</code> - expands owner region and hide others.</li>
+<li><code>Can Resize</code> - enables/disable ability to resize region.</li>
+<li><code>Layout Element</code> - reference to root Layout Element.</li>
+<li><code>Tab Panel</code> - panel for <a href="#tab">tabs</a>.</li>
+<li><code>Content Panel</code> - panel for content.</li>
+<li><code>Children Panel</code> - panel for child regions.</li>
+<li><code>Tab Prefab</code> - reference to <a href="#tab">tab</a> prefab. </li>
+<li><code>Root</code> - reference to <a href="#dock-panel">dock panel</a>.</li>
+<li><code>Header Image</code> - region header graphics.</li>
+<li><code>Frame Image</code> - region content frame graphics.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li>
+<p><code>void Build(LayoutInfo layoutInfo)</code> - build layout.</p>
+<pre><code>GameObject content1 = new GameObject();
+content1.AddComponent&lt;Image&gt;().color = Color.red;
+
+GameObject content2 = new GameObject();
+content2.AddComponent&lt;Image&gt;().color = Color.yellow;
+
+m_region.Build(new LayoutInfo(
+    isVertical: false,
+    child0: new LayoutInfo(content1.transform, "Header 1"),
+    child1: new LayoutInfo(content2.transform, "Header 2"), 
+    ratio: 0.25f));
+</code></pre>
+</li>
+<li>
+<p><code>void RemoveAt(int index)</code> - remove content at index.</p>
+</li>
+<li><code>void Add(Sprite icon, 
+        string header,
+        Transform content, 
+        bool isFree = false, 
+        RegionSplitType splitType = RegionSplitType.None)</code> - add content to region.<pre><code>Sprite icon = null;
+GameObject content = new GameObject();
+content.AddComponent&lt;Image&gt;().color = Color.green;
+
+//1. Add content
+m_region.Add(icon, "Header1", content.transform, false, RegionSplitType.None);
+
+//2. Add content to the left
+m_region.Add(icon, "Header2", content.transform, false, RegionSplitType.Left);
+
+//3. Add content to the right
+m_region.Add(icon, "Header3", content.transform, false, RegionSplitType.Right);
+
+//4. Add content on the top
+m_region.Add(icon, "Header4", content.transform, false, RegionSplitType.Top);
+
+//5. Add content to the bottom
+m_region.Add(icon, "Header5", content.transform, false, RegionSplitType.Bottom);
+
+//6. Add content to floating region
+m_region.Add(icon, "Tab 3", content.transform, true);
+</code></pre>
+</li>
+</ul>
+<h2 id="dialog-manager">Dialog Manager</h2>
+<p>Dialog manager allows you to create various dialogs and pop-ups. Dialogs are created as a modal floating regions of <a href="#dock-panel">dock panel</a>.
+<img alt="Screenshot" src="../img/dock-panels/dialog-manager/dialog-manager.png" /></p>
+<p>To use dialog manager do following:</p>
+<ol>
+<li>Add Assets/Battelhub/UIControls/Dialog/Scripts/<strong>DialogManager</strong> component</li>
+<li>Set <code>Dock Panel</code> field</li>
+<li>Set <code>Dialog</code> field to Assets/Battelhub/UIControls/Dialog/Prefabs/<strong>Dialog.prefab</strong></li>
+</ol>
+<p><img alt="Screenshot" src="../img/dock-panels/dialog-manager/usage.png" /></p>
+<pre><code class="C#">using Battlehub.UIControls.Dialogs;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class DialogManagerExamples : MonoBehaviour
+{
+    [SerializeField]
+    DialogManager m_dialogManager;
+
+    [SerializeField]
+    Sprite m_icon;
+
+    void Start()
+    {
+        //Show message box with &quot;OK&quot; button
+        m_dialogManager.ShowDialog(m_icon, &quot;Message Header&quot;, &quot;Message Text&quot;);
+
+        //Show confirmation with &quot;Yes&quot; and &quot;No&quot; buttons
+        m_dialogManager.ShowDialog(m_icon, &quot;Scene has been modified&quot;, &quot;Do you want to save changed you made in the scene?&quot;,
+            (dialog, cancelArgs) =&gt; 
+            {
+                Debug.Log(&quot;Yes clicked&quot;);
+            }, &quot;Yes&quot;,
+            (dialog, cancelArgs) =&gt;
+            {
+                Debug.Log(&quot;No clicked&quot;);
+            }, &quot;No&quot;);
+
+        //Show popup with custom content
+        GameObject content = new GameObject();
+        content.AddComponent&lt;Image&gt;().color = Color.red;
+        m_dialogManager.ShowDialog(m_icon, &quot;Popup&quot;, content.transform);
+    }           
+}
+
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../vtv/" class="btn btn-neutral float-right" title="Virtualizing Tree View">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../save-load/" class="btn btn-neutral" title="Save Load"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 vadim.andriyanov@outlook.com</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../save-load/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../vtv/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

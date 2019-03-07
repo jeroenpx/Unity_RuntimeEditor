@@ -34,8 +34,6 @@ namespace Battlehub.RTCommon
             get { return m_editor; }
         }
 
-
-        // Use this for initialization
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
@@ -67,10 +65,8 @@ namespace Battlehub.RTCommon
             OnDestroyOverride();
         }
 
-
         protected virtual void AwakeOverride()
         {
-
         }
         
         protected virtual void OnDestroyOverride()
@@ -89,10 +85,7 @@ namespace Battlehub.RTCommon
                 m_editor.DragDrop.BeginDrag += OnBeginDrag;
                 m_editor.DragDrop.Drag += OnDrag;
                 m_editor.DragDrop.Drop += OnDrop;
-
-                //Debug.Log("Pointer Enter");
             }
-
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
@@ -105,8 +98,6 @@ namespace Battlehub.RTCommon
             if (m_editor.DragDrop.InProgress && m_editor.DragDrop.Source != (object)this)
             {
                 DragLeave(eventData);
-
-                //Debug.Log("Pointer Exit");
             }
         }
 

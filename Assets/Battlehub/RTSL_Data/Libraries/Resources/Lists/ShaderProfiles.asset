@@ -34,7 +34,7 @@ MonoBehaviour:
   - Name: ARCore/ARBackground
     PropertyCount: 3
     PropertyDescriptions:
-    - Texture
+    - Main Texture
     - UV of top corners
     - UV of bottom corners
     PropertyNames:
@@ -54,6 +54,14 @@ MonoBehaviour:
       Max: 1
     PropertyTexDims: 020000000100000001000000
     IsHidden: 000000
+  - Name: ARCore/AugmentedFaceOccluder
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
   - Name: ARCore/DiffuseWithLightEstimation
     PropertyCount: 1
     PropertyDescriptions:
@@ -96,23 +104,28 @@ MonoBehaviour:
     PropertyTexDims: 02000000010000000100000001000000
     IsHidden: 00000000
   - Name: ARCore/PointCloud
-    PropertyCount: 2
+    PropertyCount: 3
     PropertyDescriptions:
-    - Point Size
     - PointCloud Color
+    - 
+    - 
     PropertyNames:
-    - _PointSize
     - _Color
-    PropertyTypes: 0200000000000000
+    - _ScreenWidth
+    - _ScreenHeight
+    PropertyTypes: 000000000200000002000000
     PropertyRangeLimits:
-    - Def: 5
-      Min: 0
-      Max: 0
     - Def: 0.121
       Min: 0.737
       Max: 0.823
-    PropertyTexDims: 0100000001000000
-    IsHidden: 0000
+    - Def: 1440
+      Min: 0
+      Max: 0
+    - Def: 2560
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000101
   - Name: ARCore/SpecularWithLightEstimation
     PropertyCount: 3
     PropertyDescriptions:

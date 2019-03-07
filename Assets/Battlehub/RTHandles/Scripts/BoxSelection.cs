@@ -108,6 +108,7 @@ namespace Battlehub.RTHandles
                 scaler = m_canvas.gameObject.AddComponent<CanvasScaler>();
             }
             scaler.referencePixelsPerUnit = 1;
+            
 
             if(!GetComponent<BoxSelectionInput>())
             {

@@ -64,6 +64,8 @@ The documentation is organized as following:
 *  [RTEDeps](runtime-editor.md#rtedeps)
 *  [Window Manager](runtime-editor.md#window-manager)
 *  [How To: How to add custom window to Window Manager](runtime-editor.md#how-to-add-custom-window-to-window-manager)
+*  [How to: override default layout](runtime-editor.md#how-to-override-default-layout)
+*  [How to: override tools panels](runtime-editor.md#hot-to-override-tools-panel)
 *  [Inspector View](runtime-editor.md#inspector-view)
 *  [How To: Configure Editors](runtime-editor.md#how-to-configure-editors)
 *  [How To: Select Component Properties](runtime-editor.md#how-to-select-component-properties)
@@ -99,9 +101,6 @@ The documentation is organized as following:
 *  [Audio Source Gizmo](gizmos.md#audio-source-gizmo.md)
 *  [Audio Reverb Zone Gimzo](gizmos.md#audio-reverb-zone-gizmo)
 *  [Skinned Mesh Renderer Gizmo](gizmos.md#skinned-mesh-renderer-gizmo)
-
-
-
 
 ## [Dock Panel](dock-panels.md)
 *  [Overview](dock-panels.md#overview)

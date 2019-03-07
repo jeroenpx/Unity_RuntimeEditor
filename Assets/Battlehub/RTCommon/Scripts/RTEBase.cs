@@ -718,12 +718,12 @@ namespace Battlehub.RTCommon
                 WindowRegistered(window);
             }
 
-            if(m_windows.Count == 1)
+            m_windowsArray = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).ToArray();
+
+            if (m_windows.Count == 1)
             {
                 ActivateWindow(window);
-            }
-
-            m_windowsArray = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).ToArray();
+            }   
         }
 
         public void UnregisterWindow(RuntimeWindow window)
@@ -961,7 +961,6 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            //Undo.BeginRecord();
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
 

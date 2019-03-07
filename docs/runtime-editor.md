@@ -454,6 +454,139 @@ public class Initialization : MonoBehaviour
 	
 ![Screenshot](img/rteditor/window-manager/custom-window-created.png)
 
+##How to: override default layout
+
+To override default layout do following:
+
+1. Create LayoutOverride script.
+2. Modify `DefaultLayout` method.
+3. Create game object and add LayoutOverride component.
+4. To prevent the game object from being destroyed by [Save & Load](save-load.md) add __RTSLIgnore__ component.
+
+
+![Screenshot](img/rteditor/window-manager/layout-override.png)
+
+``` C# 
+using Battlehub.RTCommon;
+using Battlehub.UIControls.DockPanels;
+using Battlehub.RTEditor;
+using UnityEngine;
+
+public class LayoutOverride : EditorOverride
+{
+    protected override void OnEditorCreated(object obj)
+    {
+        OverrideDefaultLayout();
+    }
+
+    protected override void OnEditorExist()
+    {
+        OverrideDefaultLayout();
+
+        IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+        if (editor.IsOpened)
+        {
+            IWindowManager wm = IOC.Resolve<IWindowManager>();
+            wm.SetLayout(DefaultLayout, RuntimeWindowType.Scene.ToString());
+        }
+    }
+
+    private void OverrideDefaultLayout()
+    {
+        IWindowManager wm = IOC.Resolve<IWindowManager>();
+        wm.OverrideDefaultLayout(DefaultLayout, RuntimeWindowType.Scene.ToString());
+    }
+
+    static LayoutInfo DefaultLayout(IWindowManager wm)
+    {
+        bool isDialog;
+
+        WindowDescriptor sceneWd;
+        GameObject sceneContent;
+        wm.CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent, out isDialog);
+
+        WindowDescriptor inspectorWd;
+        GameObject inspectorContent;
+        wm.CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent, out isDialog);
+
+        WindowDescriptor hierarchyWd;
+        GameObject hierarchyContent;
+        wm.CreateWindow(RuntimeWindowType.Hierarchy.ToString(), out hierarchyWd, out hierarchyContent, out isDialog);
+
+        LayoutInfo layout = new LayoutInfo(isVertical: false,
+            new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
+            new LayoutInfo(isVertical: true,
+                new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
+                new LayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
+                ratio: 0.5f),
+            ratio: 0.75f);
+
+        return layout;
+    }
+}
+```
+
+You should see following:
+
+![Screenshot](img/rteditor/window-manager/layout-override-result.png)
+
+##How to: override tools panels
+
+To override tools panel do following:
+
+1. Create ToolsPanelOverride script.
+2. Create game object and add ToolsPanelOverride component.
+3. Set Tools Prefab field
+4. To prevent the game object from being destroyed by [Save & Load](save-load.md) add __RTSLIgnore__ component.
+
+![Screenshot](img/rteditor/window-manager/tools-override.png)
+
+``` C# 
+using Battlehub.RTCommon;
+using UnityEngine;
+using Battlehub.RTEditor;
+
+public class ToolsPanelOverride : EditorOverride
+{
+	[SerializeField]
+	private Transform m_toolsPrefab;
+
+	protected override void OnEditorCreated(object obj)
+	{
+		OverrideTools();
+	}
+
+	protected override void OnEditorExist()
+	{
+		OverrideTools();
+
+		IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+		if (editor.IsOpened)
+		{
+			IWindowManager wm = IOC.Resolve<IWindowManager>();
+			if (m_toolsPrefab != null)
+			{
+				wm.SetTools(Instantiate(m_toolsPrefab));
+			}
+		}
+	}
+
+	private void OverrideTools()
+	{
+		IWindowManager wm = IOC.Resolve<IWindowManager>();
+		if (m_toolsPrefab != null)
+		{
+			wm.OverrideTools(m_toolsPrefab);
+		}
+	}
+}
+
+```
+
+You should see following:
+
+![Screenshot](img/rteditor/window-manager/tools-override-result.png)
+
 ##Inspector View
 
 The main purpose of the inspector is to create different editors depending on the type of selected object and its components.

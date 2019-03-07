@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="vadim andriyanov">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Transform Handles - Runtime Editor</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Transform Handles";
+    var mkdocs_page_input_path = "transform-handles.md";
+    var mkdocs_page_url = "/transform-handles/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Runtime Editor</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../general/">General</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Transform Handles</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#transform-handles-docs">Transform Handles Docs</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#overview">Overview</a></li>
+        
+            <li><a class="toctree-l3" href="#getting-started">Getting Started</a></li>
+        
+            <li><a class="toctree-l3" href="#base-handle">Base Handle</a></li>
+        
+            <li><a class="toctree-l3" href="#position-handle">Position Handle</a></li>
+        
+            <li><a class="toctree-l3" href="#rotation-handle">Rotation Handle</a></li>
+        
+            <li><a class="toctree-l3" href="#scale-handle">Scale Handle</a></li>
+        
+            <li><a class="toctree-l3" href="#locking-axes">Locking Axes</a></li>
+        
+            <li><a class="toctree-l3" href="#scene-gizmo">Scene Gizmo</a></li>
+        
+            <li><a class="toctree-l3" href="#selection-gizmo">Selection Gizmo</a></li>
+        
+            <li><a class="toctree-l3" href="#grid">Grid</a></li>
+        
+            <li><a class="toctree-l3" href="#runtime-handles-component">Runtime Handles Component</a></li>
+        
+            <li><a class="toctree-l3" href="#runtime-selection-component">Runtime Selection Component</a></li>
+        
+            <li><a class="toctree-l3" href="#box-selection">Box Selection</a></li>
+        
+            <li><a class="toctree-l3" href="#runtime-scene-component">Runtime Scene Component</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../gizmos/">Gizmos</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../rendering/">Rendering</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../infrastructure/">Common Infrastructure</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../runtime-editor/">Runtime Editor</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../save-load/">Save Load</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../dock-panels/">Dock Panels</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../vtv/">Virtualizing Tree View</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../menu-control/">Menu Control</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Runtime Editor</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Transform Handles</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="transform-handles-docs">Transform Handles Docs</h1>
+<h2 id="overview">Overview</h2>
+<p><strong>Runtime Transform Handles</strong> are the <strong>runtime</strong> 3D controls that are used to manipulate items in the scene. There are three built-in transform tools to <a href="#position-handle">position</a>, <a href="#rotation-handle">rotate</a> and <a href="#scale-handle">scale</a> object via transform component. 
+Supplementary controls such as <a href="#scene-gizmo">scene gizmo</a>, <a href="#selection-gizmo">selection gizmo</a> and <a href="#grid">grid</a> allows to change viewing angle and projection mode, identify selected objects and orientate in scene space. 
+Another important components: <a href="#runtime-selection-component">selection component</a>, <a href="#runtime-scene-component">scene component</a> and <a href="#runtime-handles-component">handles component</a> allows to select objects, navigate in scene and change transform handles appearance.
+Scripts, prefabs and example scenes for transform handles can be found in Assets/Battlehub/<strong>RTHandles</strong> folder.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Runtime Transform Handles are simply referred as transform handles through this text</p>
+</div>
+<p>Here is how transform handles and components rendered in the game view:
+<img alt="Screenshot" src="../img/transform-handels/overview/overview.png" /></p>
+<p>All in one:</p>
+<p><img alt="Screenshot" src="../img/transform-handels/overview/all-in-one.png" /></p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Here are four simple steps to get started with transform handles:</p>
+<ol>
+<li>Create transform handles using <strong>Tools-&gt;Runtime Handles-&gt;Create</strong>.
+    <img alt="Screenshot" src="../img/transform-handels/getting-started/step1-create-transform-handles.png" />
+ &nbsp;</li>
+<li>Create and select Game Object.
+    <img alt="Screenshot" src="../img/transform-handels/getting-started/step2-create-object.png" />
+    &nbsp;</li>
+<li>Enable object editing using <strong>Tools-&gt;Runtime Handles-&gt;Enable Editing</strong>.
+    <img alt="Screenshot" src="../img/transform-handels/getting-started/step3-enable-editing.png" />
+    &nbsp;</li>
+<li>Hit play. After clicking on the Game Object in game view you should see following:
+    <img alt="Screenshot" src="../img/transform-handels/getting-started/step4-hit-play.png" /></li>
+</ol>
+<p>Following actions available by default:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Select</td>
+<td>Left-click</td>
+</tr>
+<tr>
+<td>Move (Pan)</td>
+<td>Hold middle or right mouse button, then drag</td>
+</tr>
+<tr>
+<td>Orbit</td>
+<td>Hold Alt+left-click, then drag</td>
+</tr>
+<tr>
+<td>Zoom</td>
+<td>Use the scroll wheel</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td>Shift + Z (Ctrl + Z in player)</td>
+</tr>
+<tr>
+<td>Redo</td>
+<td>Shift + Y (Ctrl + Y in player)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Example scenes can be found in Assets/Battlehub/RTHandles/Demo </p>
+</div>
+<h2 id="base-handle">Base Handle</h2>
+<p>This is the base class of position, rotation and scale transform handles. Therefore all transform handles have following settings:</p>
+<ul>
+<li><code>Window</code> - reference to the <a href="../infrastructure/#runtime-window">window</a>. Interaction with transform handle allowed only in case referenced window is active. </li>
+<li><code>HighlightOnHover</code> - bool value. If true then transform handles will be highlighted on pointer over. Set it to false if touch input is used. (default: true)</li>
+<li><code>Appearance</code> - reference to the <a href="#runtime-handles-component">runtime handles component</a>. Various visual settings.  </li>
+<li><code>Model</code> - reference to the prefab with BaseHandle model component attached. If Model is set then default rendering procedure will be disabled and prefab instance will be rendered instead.</li>
+<li><code>Targets</code> - array of transforms to be modified by transform handle.</li>
+<li><code>GridSize</code> - float value used in unit-snapping mode. By default Unit-snapping mode is activated with 'Shift' key.</li>
+<li><code>BeforeDrag</code> - event raised before transform handle drag.</li>
+<li><code>Drop</code> - event raised when drag and drop operation completed.</li>
+</ul>
+<h2 id="position-handle">Position Handle</h2>
+<p>To create position handle do following:</p>
+<ol>
+<li>Create Game Object.</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>PositionHandle</strong> component.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/position-handle/create-position-handle.png" /></p>
+<p>It is possible to adjust color and scale of transform handles using <a href="#runtime-handles-component">runtime handles component</a> while proportions of individual parts such as lines and arrows are adjustable using <strong>Position Handle Model</strong> script attached to PositionHandleModel.prefab. 
+To change position handle proportions modify Assets/Battlehub/RTHandles/Prefabs/<strong>PositionHandleModel.prefab</strong> and reference it by setting <code>Model</code> field of Position Handle.</p>
+<p><img alt="Screenshot" src="../img/transform-handels/position-handle/set-model-field.png" /></p>
+<p>Position Handle Model script has following fields:</p>
+<ul>
+<li><code>Radius</code> - line thickness (default: 0,01).</li>
+<li><code>Length</code> - line length (default: 1).</li>
+<li><code>Arrow Radius</code> - radius of the arrow cone base (default 0,075).</li>
+<li><code>Arrow Length</code> - height of the arrow (default 0,2).</li>
+<li><code>Quad Length</code> - light of side of xy, xz and yz quads (default 0,2).</li>
+</ul>
+<p>Adjustments example:
+<img alt="Screenshot" src="../img/transform-handels/position-handle/position-handle-model-adjustment.png" /></p>
+<h2 id="rotation-handle">Rotation Handle</h2>
+<p>To create rotation handle do following:</p>
+<ol>
+<li>Create Game Object.</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>RotationHandle</strong> component.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/rotation-handle/create-rotation-handle.png" /></p>
+<p>It is possible to adjust color and scale of transform handles using <a href="#runtime-handles-component">runtime handles component</a>. Line thickness and proportions of individual parts are adjustable using <strong>Rotation Handle Model</strong> script attached to RotationHandleModel.prefab. 
+To change rotation handle proportions modify Assets/Battlehub/RTHandles/Prefabs/<strong>RotationHandleModel.prefab</strong> and reference it by setting <code>Model</code> field of Rotation Handle.</p>
+<p><img alt="Screenshot" src="../img/transform-handels/rotation-handle/set-model-field.png" /></p>
+<p>Rotation Handle Model script has following fields:</p>
+<ul>
+<li><code>Minor Radius</code> - line thickness (default: 0,0075).</li>
+<li><code>Major Radius</code> - x-axis, y-axis, z-axis, inner camera-forward-axis circle radius (default: 1).</li>
+<li><code>Outer Radius</code> - outer camera-forward-axis circle radius (default: 1,11).</li>
+</ul>
+<p>Adjustments example:
+<img alt="Screenshot" src="../img/transform-handels/rotation-handle/rotation-handle-model-adjustment.png" /></p>
+<h2 id="scale-handle">Scale Handle</h2>
+<p>To create scale handle do following:</p>
+<ol>
+<li>Create Game Object.</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>ScaleHandle</strong> component.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/scale-handle/create-scale-handle.png" /></p>
+<p>It is possible to adjust color and scale of transform handles using <a href="#runtime-handles-component">runtime handles component</a>. Line thickness and proportions of individual parts are adjustable using <strong>Scale Handle Model</strong> script attached to ScaleHandleModel.prefab. 
+To change scale handle proportions modify Assets/Battlehub/RTHandles/Prefabs/<strong>ScaleHandleModel.prefab</strong> and reference it by setting <code>Model</code> field of Scale Handle.</p>
+<p><img alt="Screenshot" src="../img/transform-handels/scale-handle/set-model-field.png" /></p>
+<p>Scale Handle Model script has following fields:</p>
+<ul>
+<li><code>Radius</code> - line thickness (default: 0,01).</li>
+<li><code>Length</code> - line length (default: 1).</li>
+<li><code>Arrow Radius</code> - cap size (default: 0,05).</li>
+</ul>
+<p>Adjustments example:
+<img alt="Screenshot" src="../img/transform-handels/scale-handle/scale-handle-model-adjustment.png" /></p>
+<h2 id="locking-axes">Locking Axes</h2>
+<p>Assets/Battlehub/RTCommon/Scripts/<strong>LockAxes</strong> component will prevent certain transformations from being modified by <a href="#position-handle">position</a>, <a href="#rotation-handle">rotation</a> or <a href="#scale-handle">scale</a> handles. Attach it to <a href="#runtime-selection-component">selectable</a> Game Object and choose axes you want to lock.</p>
+<p><img alt="Screenshot" src="../img/transform-handels/lock-axes/position-handle-x-y-locked.png" /></p>
+<h2 id="scene-gizmo">Scene Gizmo</h2>
+<p>To create scene gizmo do following:</p>
+<ol>
+<li>Create Game Object.</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>SceneGizmo</strong> component.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/scene-gizmo/create-scene-gizmo.png" /></p>
+<p>Scene gizmo script has following fields:</p>
+<ul>
+<li><code>Window</code> - reference to the <a href="../infrastructure/#runtime-window">window</a>. Interaction with scene gizmo allowed only in case referenced window is active. </li>
+<li><code>Btn Projection</code> - UGUI button to switch between orthographic and perspective projection (default: None).</li>
+<li><code>Pivot</code> - transformation of the object around which the camera rotates.</li>
+<li><code>Size</code> - scene gizmo size (default: 96,96).</li>
+<li><code>Offset</code> - scene gizmo offset (default: 0,0).</li>
+<li><code>Appearance</code> - reference to the <a href="#runtime-handles-component">runtime handles component</a>. Various visual settings.   </li>
+<li><code>Orientation Changing</code> -  event fires when camera rotation and position are about to be changed.</li>
+<li><code>Orientation Changed</code> - event fires when camera rotation and position are changed.</li>
+<li><code>Projection Changed</code> - event fires when camera projection changed.</li>
+</ul>
+<h2 id="selection-gizmo">Selection Gizmo</h2>
+<p>Selection gizmo from Assets/Battlehub/RTHandles/Scripts/<strong>SceneGizmo</strong> is automatically added to <a href="#runtime-selection-component">selected</a> game object. To change color or hide selection gizmo use <code>Bounds Color</code> field of <a href="#runtime-handles-component">runtime handles component</a>.</p>
+<p><img alt="Screenshot" src="../img/transform-handels/selection-gizmo/selection-gizmo.png" /></p>
+<h2 id="grid">Grid</h2>
+<p>To create grid do following:</p>
+<ol>
+<li>Select Camera</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>RuntimeGrid</strong> component.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/grid/runtime-grid.png" /></p>
+<p>To change color of the grid use <code>Grid Color</code> field of <a href="#runtime-handles-component">runtime handles component</a>.</p>
+<h2 id="runtime-handles-component">Runtime Handles Component</h2>
+<p>Use this script to change appearance of transform handles:</p>
+<ol>
+<li>Create Game Object.</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>RuntimeHandlesComponent</strong> component</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/runtime-handles-component/runtime-handles-component.png" /></p>
+<p>Runtime Handles Component script has following fields:</p>
+<ul>
+<li><code>Colors</code> - transform handles, scene gizmo, selection gizmo and grid colors.</li>
+<li><code>Handle Scale</code> - transform handles scale (default: 1).</li>
+<li><code>Selection Margin</code> - scale of clickable area around transform handle axes (default: 1).</li>
+<li><code>Invert Z Axis</code> - invert position handle z-axis (default: false).</li>
+<li><code>Position Handle Arrows Only</code> - hide xy, yz and xz quads (default: false).</li>
+</ul>
+<h2 id="runtime-selection-component">Runtime Selection Component</h2>
+<p>This is the implementation of default selection behavior.</p>
+<p>To enable default selection behavior:</p>
+<ol>
+<li>Create Game Object. </li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>RuntimeSelectionComponent</strong>.</li>
+<li>Choose objects you want to make selectable and click <strong>Tools-&gt;Runtime Handles-&gt;Enable Editing</strong>.<ul>
+<li>Alternatively add <a href="../infrastructure/#expose-to-editor">Assets/Battlehub/RTCommon/Scripts/<strong>ExposeToEditor</strong></a>  component.</li>
+</ul>
+</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/runtime-selection-component/runtime-selection-component.png" /></p>
+<p>Following actions defined in Assets/Battlehub/RTHandles/Scripts/Input/<strong>RuntimeSelectionInput</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Select</td>
+<td>Left-click</td>
+</tr>
+<tr>
+<td>Select multiple</td>
+<td>Hold Shift + left-click (Ctrl + left-click in player)</td>
+</tr>
+<tr>
+<td>Select all</td>
+<td>Hold Shift + A (Ctrl + A in player)</td>
+</tr>
+</tbody>
+</table>
+<p>Runtime Selection Component script has following fields:</p>
+<ul>
+<li><code>Window</code> - reference to the <a href="../infrastructure/#runtime-window">window</a>.</li>
+<li><code>Position Handle</code> - reference to the <a href="#position-handle">position-handle</a>.</li>
+<li><code>Rotation Handle</code> - reference to the <a href="#rotation-handle">rotation-handle</a>.</li>
+<li><code>Scale Handle</code> - reference to the <a href="#scale-handle">scale-handle</a>.</li>
+<li><code>Box Selection</code> - reference to the <a href="#box-selection">box-selection</a>.</li>
+<li><code>Pivot</code> - Window.Camera will look at this object.</li>
+</ul>
+<p>To switch between transform handles using Q W E R keys do following : </p>
+<ol>
+<li>Add Battlehub/RTHandles/Scripts/Input/<strong>RuntimeToolsInput</strong> component.</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you wish to switch between transform handles programmatically  proceed to <a href="../infrastructure/#runtime-tools">-&gt; this &lt;-</a> section.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you wish to change selection programmatically proceed to <a href="../infrastructure/#runtime-selection">-&gt; this &lt;-</a> section.</p>
+</div>
+<h2 id="box-selection">Box Selection</h2>
+<p>To create Box Selection do following:</p>
+<ol>
+<li>Create Game Object. </li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>BoxSelection</strong> component.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/box-selection/create-box-selection.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Game Objects without <a href="../infrastructure/#expose-to-editor"><strong>ExposeToEditor</strong></a> component are invisible to Box Selection.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Box Selection use <a href="../infrastructure/#runtime-selection">Runtime Selection API</a> to store selected objects.</p>
+</div>
+<p>Box Selection has following fields:</p>
+<ul>
+<li><code>Window</code> - reference to the <a href="../infrastructure/#runtime-window">window</a>.</li>
+<li><code>Graphics</code> - sprite which is used to render box selection.</li>
+<li><code>Use Camera Space</code> - use camera space for rendering (true) or screen space (false) (default:true)</li>
+<li><code>Box Selection Method</code> - box selection method:<ul>
+<li><em>Loose Fitting</em> - use renderer bounds and collider (default);</li>
+<li><em>Bounds Center</em> - use bounds center;</li>
+<li><em>Transform Center</em> - use transform center;</li>
+</ul>
+</li>
+</ul>
+<p>Use following code to filter objects selected using Box Selection:</p>
+<pre><code class="C#"> using UnityEditor;
+
+ //In this example objects with name &quot;Capsule&quot; are filtered out
+
+ public class FilteringBehaviour : MonoBehaviour
+ {
+    [SerializeField]
+    private BoxSelection m_boxSelection;
+
+    private void Start()
+    {
+        m_boxSelection.Filtering += OnFiltering;
+    }
+
+    private void OnDestroy()
+    {
+        if(m_boxSelection != null)
+        {
+            m_boxSelection.Filtering -= OnFiltering;
+        }
+    }
+
+    private void OnFiltering(object sender, FilteringArgs e)
+    {
+        if (e.Object.name == &quot;Capsule&quot;)
+        {
+            e.Cancel = true;
+        }
+    }
+ }
+
+</code></pre>
+
+<h2 id="runtime-scene-component">Runtime Scene Component</h2>
+<p>Runtime Scene Component extends <a href="#runtime-selection-component">Runtime Selection Component</a> and enables mouse orbiting, movement and zoom.</p>
+<p>To create Runtime Scene Component do following:</p>
+<ol>
+<li>Create Game Object</li>
+<li>Add Assets/Battlehub/RTHandles/Scripts/<strong>RuntimeSelectionComponent</strong>.</li>
+</ol>
+<p><img alt="Screenshot" src="../img/transform-handels/runtime-scene-component/create-runtime-scene-component.png" /></p>
+<p>Runtime Scene Component has following fields:</p>
+<ul>
+<li><code>View Texture</code> - cursor which is visible during mouse orbiting.</li>
+<li><code>Move Texture</code> - cursor which is visible during movement.</li>
+<li><code>Grid Size</code> - used by Snap To Grid method.</li>
+<li><code>Scene Gizmo</code> - reference to the <a href="#scene-gizmo">Scene Gizmo</a>.</li>
+<li><code>Grid</code> - reference to the <a href="#grid">Grid</a>.</li>
+</ul>
+<p>Following actions defined in Assets/Battlehub/RTHandles/Scripts/Input/<strong>RuntimeSceneInput</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Focus</td>
+<td>Press F</td>
+</tr>
+<tr>
+<td>Snap To Grid</td>
+<td>Press Shift + S (Ctrl + S in player)</td>
+</tr>
+<tr>
+<td>Move (Pan)</td>
+<td>Hold middle or right mouse button, then drag</td>
+</tr>
+<tr>
+<td>Orbit</td>
+<td>Hold Alt+left-click, then drag</td>
+</tr>
+<tr>
+<td>Zoom</td>
+<td>Use the scroll wheel</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../gizmos/" class="btn btn-neutral float-right" title="Gizmos">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../general/" class="btn btn-neutral" title="General"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 vadim.andriyanov@outlook.com</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../general/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../gizmos/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

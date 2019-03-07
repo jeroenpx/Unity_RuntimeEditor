@@ -199,10 +199,6 @@ namespace Battlehub.RTCommon
                 m_canvasGroup.ignoreParentGroups = true;
             }
             
-
-
-
-
             Editor.ActiveWindowChanged += OnActiveWindowChanged;
 
             m_index = Editor.GetIndex(WindowType);
@@ -251,7 +247,6 @@ namespace Battlehub.RTCommon
             {
                 if(m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
                 {
-                    //OnRectTransformDimensionsChange();
                     HandleResize();
                     m_rect = m_rectTransform.rect;
                     m_position = m_rectTransform.position;
@@ -290,25 +285,19 @@ namespace Battlehub.RTCommon
             if (Editor.ActiveWindow == this)
             {
                 if (!m_isActivated)
-                {
-                    //if (m_canvasGroup != null)
-                    //{
-                    //    m_canvasGroup.blocksRaycasts = true;
-                    //}
+                {                    
                     m_isActivated = true;
-                    m_background.raycastTarget = false;
+                    if(WindowType == RuntimeWindowType.Game)
+                    {
+                        m_background.raycastTarget = false;  // allow to interact with world space ui
+                    }
                     OnActivated();
                 }
             }
             else
             {
                 if (m_isActivated)
-                {
-                    //if (m_canvasGroup != null)
-                    //{
-                    //    m_canvasGroup.blocksRaycasts = false;
-                    //}
-                    
+                {   
                     m_isActivated = false;
                     m_background.raycastTarget = true;
                     OnDeactivated();
@@ -316,10 +305,8 @@ namespace Battlehub.RTCommon
             }
         }
 
-      
         protected virtual void OnRectTransformDimensionsChange()
         {
-            //HandleResize();
         }
 
         public void HandleResize()

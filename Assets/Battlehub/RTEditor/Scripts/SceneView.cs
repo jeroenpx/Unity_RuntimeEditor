@@ -106,8 +106,7 @@ namespace Battlehub.RTEditor
         public override void DragLeave(PointerEventData eventData)
         {
             base.DragLeave(eventData);
-            //Debug.Log("Drag Leave");
-
+            
             if(!Editor.IsBusy)
             {
                 Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
@@ -281,6 +280,5 @@ namespace Battlehub.RTEditor
             point = Vector3.zero;
             return false;
         }
-
     }
 }

@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 114465190}
   - component: {fileID: 114465189}
   - component: {fileID: 114465188}
+  - component: {fileID: 114465192}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -203,6 +204,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114465192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114465187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92243744f566c614fbb88a7e54153e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_window: {fileID: 0}
+  Appearance: {fileID: 0}
+  CamOffset: 0
+  AutoCamOffset: 1
+  GridOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &360730708
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,6 +393,16 @@ MonoBehaviour:
   Appearance: {fileID: 0}
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 3}
   m_targets: []
+  BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Drop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   GridSize: 1
 --- !u!4 &394367927
 Transform:
@@ -1401,6 +1429,16 @@ MonoBehaviour:
   Appearance: {fileID: 0}
   Model: {fileID: 114244960618619326, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
   m_targets: []
+  BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Drop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   GridSize: 0.1
 --- !u!4 &1564471776
 Transform:
@@ -1450,6 +1488,16 @@ MonoBehaviour:
   Appearance: {fileID: 0}
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 3}
   m_targets: []
+  BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Drop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   GridSize: 15
   XSpeed: 1
   YSpeed: 1
@@ -1666,6 +1714,7 @@ MonoBehaviour:
   BtnProjection: {fileID: 1651967076}
   Pivot: {fileID: 0}
   Size: {x: 256, y: 256}
+  Offset: {x: 0, y: 0}
   Up: {x: 0, y: 1, z: 0}
   Appearance: {fileID: 0}
   OrientationChanging:

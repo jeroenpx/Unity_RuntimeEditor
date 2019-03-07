@@ -15,9 +15,21 @@ EditorBuildSettings:
     path: Assets/Battlehub/UIControls/DockPanels/Demo/Demo.unity
     guid: 3bfc0768ab0e86344acac13608f784f6
   - enabled: 0
-    path: Assets/Battlehub/RTHandles/Demo/RTHHelloAR.unity
-    guid: b9d5641b76555884b91064119a422b2e
-  - enabled: 1
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Battlehub/RTHandles/Demo/RTHandles.unity
     guid: 486e7a8839af68b42923ba8833fa237a
+  - enabled: 1
+    path: Assets/Battlehub/ARCore/RTHandles/Demo/RTHandlesAR.unity
+    guid: 773bc21ee352a2942aeb5f5ac20524b3
+  - enabled: 0
+    path: Assets/PointerEnterExitTest.unity
+    guid: 65e82dbb7a3db53418a9020c19ea4d66
+  - enabled: 0
+    path: Assets/Battlehub/RTHandles/Demo/Mobile3_BasicWithSceneComponent.unity
+    guid: 9fa22473c39f8e84695fd75b24dc4e38
+  - enabled: 0
+    path: Assets/MobileSceneTest.unity
+    guid: f40cf5463629ed345923613e900438b6
   m_configObjects: {}

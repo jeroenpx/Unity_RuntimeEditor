@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="vadim andriyanov">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Rendering - Runtime Editor</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Rendering";
+    var mkdocs_page_input_path = "rendering.md";
+    var mkdocs_page_url = "/rendering/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Runtime Editor</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../general/">General</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../transform-handles/">Transform Handles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../gizmos/">Gizmos</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Rendering</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#rendering-notes">Rendering Notes</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#igl">IGL</a></li>
+        
+            <li><a class="toctree-l3" href="#glrenderer">GLRenderer</a></li>
+        
+            <li><a class="toctree-l3" href="#glcamera">GLCamera</a></li>
+        
+            <li><a class="toctree-l3" href="#runtime-graphics-layer">Runtime Graphics Layer</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../infrastructure/">Common Infrastructure</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../runtime-editor/">Runtime Editor</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../save-load/">Save Load</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../dock-panels/">Dock Panels</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../vtv/">Virtualizing Tree View</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../menu-control/">Menu Control</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Runtime Editor</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Rendering</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="rendering-notes">Rendering Notes</h1>
+<h2 id="igl">IGL</h2>
+<p>All transform handles and gizmos implement IGL interface in order to be rendered in the scene</p>
+<pre><code class="C#">
+namespace Battlehub.RTCommon
+{
+    public interface IGL
+    {
+        void Draw(int cullingMask);
+    }
+}
+
+</code></pre>
+
+<h2 id="glrenderer">GLRenderer</h2>
+<p>Located in <strong>Assets/Battlehub/RTCommon/Scripts/Graphics/GLRenderer.cs</strong> , GLRenderer is a singleton used by <a href="#glcamera">GLCamera</a> script to render all registered <a href="#igl">IGL</a> objects.
+To register object for rendering call <code>void Add(IGL gl)</code> method. To cancel object rendering call  <code>void Remove(IGL gl)</code> method.</p>
+<p>Here is how to create and register gizmo for rendering:</p>
+<pre><code class="C#">
+namespace Battlehub.RTCommon
+{
+    public class MyGizmo : MonoBehaviour, IGL
+    {
+        [SerializeField]
+        private Material m_material;
+
+        private void OnEnable() 
+        {
+            if (GLRenderer.Instance != null) 
+            {
+                GLRenderer.Instance.Add(this);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (GLRenderer.Instance != null) 
+            {
+                GLRenderer.Instance.Remove(this);
+            }
+        }
+
+        private void Draw(int cullingMask)
+        {
+            m_material.SetPass(0);
+            RuntimeGraphics.DrawQuad(transform.localToWorldMatrix);
+        }
+    }
+}
+
+</code></pre>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is possible that above code will not work with new <a href="https://docs.unity3d.com/Manual/ScriptableRenderPipeline.html">scriptable rendering pipeline</a>.<br />
+In this case <a href="#runtime-graphics-layer">Runtime Graphics Layer</a> will be used to draw gizmos in future versions . </p>
+</div>
+<h2 id="glcamera">GLCamera</h2>
+<p>Located in <strong>Assets/Battlehub/RTCommon/Scripts/Graphics/GLCamera.cs</strong> <br />
+Add <strong>GLCamera</strong> component to Camera and it will render <a href="#igl">IGL objects</a>.</p>
+<h2 id="runtime-graphics-layer">Runtime Graphics Layer</h2>
+<p>Located in <strong>Assets/Battlehub/RTCommon/Scripts/Graphics/RuntimeGraphicsLayer.cs</strong>.<br />
+This component is created automatically in case if <a href="../transform-handles/#position-handle">position handle</a>, <a href="../transform-handles/#rotation-handle">rotation handle</a> or
+<a href="../transform-handles/#scale-handle">scale handle</a> has reference to corresponding model (<code>Model</code> field is not null). This script will create Graphics Layer Camera parented to scene camera (main camera by default)
+and will set <code>Clear Flags</code> to the <em>Depth only</em> and <code>Culling Mask</code> to the <em>RuntimeGraphicsLayer</em>. At the same time <em>RuntimeGraphicsLayer</em> will be excluded
+from <code>Culling Mask</code> of scene camera. Transform handle models belong to <em>RuntimeGraphicsLayer</em> and therefore they will be renderer by Graphics Layer Camera only.</p>
+<p><img alt="Screenshot" src="../img/rendering/runtime-graphics-layer.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a href="../runtime-editor/">Runtime Editor</a> use 6 layers [19-24]: for ui, for asset previews and for runtime graphics. </p>
+</div>
+<p><img alt="Screenshot" src="../img/rendering/layers-used-by-runtime-editor.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../infrastructure/" class="btn btn-neutral float-right" title="Common Infrastructure">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../gizmos/" class="btn btn-neutral" title="Gizmos"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 vadim.andriyanov@outlook.com</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../gizmos/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../infrastructure/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

@@ -31,10 +31,10 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (!m_component.IsUISelected && !m_component.Editor.IsVR)
-            {
-                return;
-            }
+            //if (!m_component.IsUISelected && !m_component.Editor.IsVR)
+            //{
+            //    return;
+            //}
 
             if (SelectAction())
             {

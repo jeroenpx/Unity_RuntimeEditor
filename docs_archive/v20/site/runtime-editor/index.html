@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="vadim andriyanov">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Runtime Editor - Runtime Editor</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Runtime Editor";
+    var mkdocs_page_input_path = "runtime-editor.md";
+    var mkdocs_page_url = "/runtime-editor/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Runtime Editor</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../general/">General</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../transform-handles/">Transform Handles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../gizmos/">Gizmos</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../rendering/">Rendering</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../infrastructure/">Common Infrastructure</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Runtime Editor</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#runtime-editor-docs">Runtime Editor Docs</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#overview">Overview</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l2"><a href="#getting-started">Getting Started</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#main-context-menu">Main &amp; Context Menu</a></li>
+        
+            <li><a class="toctree-l3" href="#rtedeps">RTEDeps</a></li>
+        
+            <li><a class="toctree-l3" href="#iruntimeeditor">IRuntimeEditor</a></li>
+        
+            <li><a class="toctree-l3" href="#window-manager">Window Manager</a></li>
+        
+            <li><a class="toctree-l3" href="#how-to-add-custom-window-to-window-manager">How to: add custom window to Window Manager</a></li>
+        
+            <li><a class="toctree-l3" href="#inspector-view">Inspector View</a></li>
+        
+            <li><a class="toctree-l3" href="#how-to-configure-editors">How To: Configure Editors</a></li>
+        
+            <li><a class="toctree-l3" href="#how-to-select-component-properties">How To: Select Component Properties</a></li>
+        
+            <li><a class="toctree-l3" href="#resource-preview-utility">Resource Preview Utility</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../save-load/">Save Load</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../dock-panels/">Dock Panels</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../vtv/">Virtualizing Tree View</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../menu-control/">Menu Control</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Runtime Editor</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Runtime Editor</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="runtime-editor-docs">Runtime Editor Docs</h1>
+<h2 id="overview">Overview</h2>
+<p><a href="http://u3d.as/v9j" target="_blank"><strong>Runtime Editor</strong></a> is the set of scripts and prefabs which help you to create scene editor, game level editor or build your own modeling application.
+It supports <a href="../infrastructure/#drag-and-drop">drag &amp; drop</a>, <a href="../infrastructure/#runtime-undo">undo &amp; redo</a> and <a href="../infrastructure/#runtime-selection">selection</a> api.
+To implement user interface and core functions runtime editor use <a href="../transform-handles/">transform-handles</a>, <a href="../gizmos/">gizmos</a>, <a href="../save-load/">save load subsystem</a> and three controls: <a href="../menu-control/">menu</a>, <a href="../vtv/">virtualizing tree view</a>  and <a href="../dock-panels/">dock panels</a>.
+Out of the box it has six Views:</p>
+<ul>
+<li><strong>Scene View</strong> to manipulate objects in the scene.</li>
+<li><strong>Hierarchy View</strong> for displaying and manipulating the object tree.</li>
+<li><strong>Project View</strong> to manage assets and scenes.</li>
+<li><a href="#inspector-view">Inspector View</a> to display and edit object properties.</li>
+<li><strong>Console View</strong> to display information, warnings and errors.</li>
+<li><strong>Game View</strong> for the game.</li>
+<li><a href="#how-to-add-custom-window-to-window-manager">Add More...</a></li>
+</ul>
+<p>The Runtime Editor has many ready-to-use property and component editors and it is relatively easy <a href="#how-to-select-component-properties">to create new ones</a>. <strong>"Add Component"</strong> drop-down button allows you to add components at runtime.
+There are also several important dialogs included:</p>
+<ul>
+<li><strong>Save Scene Dialog</strong>.</li>
+<li><strong>Object Picker</strong>.</li>
+<li><strong>Color Picker</strong>.</li>
+<li><strong>Asset Bundles and Libraries Importer</strong>.</li>
+<li><strong>Manage Projects Dialog</strong>.</li>
+</ul>
+<p><img alt="Screenshot" src="../img/rteditor/overview/overview.png" /></p>
+<h1 id="getting-started">Getting Started</h1>
+<p>To get started with Runtime Editor do following:</p>
+<ol>
+<li>Create new scene and <strong>save</strong> it.</li>
+<li>
+<p>Click Tools-&gt;Runtime Editor-&gt;Create</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/create-runtime-editor.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Add Battlehub/RTEditor/Scripts/<strong>Game View Camera</strong> component to <strong>Main Camera</strong></p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/game-view-camera.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Create several Game Objects and add <a href="#infrastructure.md#expose-to-editor"><strong>Expose To Editor</strong></a> component.</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/expose-to-editor.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Click <a href="../save-load/"><strong>Tools-&gt;Runtime SaveLoad-&gt;Build All</strong></a></p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/build-all.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Hit Play</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/runtime-editor.png" />
+<br/><br/></p>
+</li>
+</ol>
+<p>Few more steps:</p>
+<ol>
+<li><a href="../save-load/#how-to-create-asset-library">Create Asset Library</a></li>
+<li>
+<p>Launch runtime editor and click <strong>File-&gt;Import Assets</strong>.</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/file-import-assets.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Select the built-in asset library created in step 1.</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/select-asset-library.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Import assets.</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/import-assets.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>You will see the imported assets in the project window.</p>
+<p><img alt="Screenshot" src="../img/rteditor/get-started/after-import.png" />
+<br/><br/></p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Demo scene can be found in <strong>Assets/Battlehub/RTEditor/Demo</strong></p>
+</div>
+<h2 id="main-context-menu">Main &amp; Context Menu</h2>
+<p>Runtime Editor use <a href="../menu-control/">Menu control</a> to implement main and context-menu. To extend main menu create static class with <strong>[MenuDefinition]</strong> attribute and add static methods with <strong>[MenuCommand]</strong> attribute.</p>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using Battlehub.UIControls.MenuControl;
+using UnityEngine;
+
+[MenuDefinition]
+public static class MyMenu
+{
+    /// add new command to exising menu
+    [MenuCommand(&quot;MenuWindow/Create My Window&quot;)]
+    public static void CreateMyWindow()
+    {
+        Debug.Log(&quot;Create My Window&quot;);
+    }
+
+    /// add new command to new menu
+    [MenuCommand(&quot;My Menu/My Submenu/My Command&quot;)]
+    public static void CreateMyMenu()
+    {
+        Debug.Log(&quot;Create My Menu&quot;);
+    }
+
+    /// disable menu item
+    [MenuCommand(&quot;My Menu/My Submenu/My Command&quot;, validate: true)]
+    public static bool ValidateMyCommand()
+    {
+        Debug.Log(&quot;Disable My Command&quot;);
+        return false;
+    }
+
+    /// replace existing menu item
+    [MenuCommand(&quot;MenuFile/Close&quot;)]
+    public static void Close()
+    {
+        Debug.Log(&quot;Intercepted&quot;);
+
+        IRuntimeEditor rte = IOC.Resolve&lt;IRuntimeEditor&gt;();
+        rte.Close();
+    }
+
+    /// Hide existing menu item    
+    [MenuCommand(&quot;MenuHelp/About RTE&quot;, hide: true)]
+    public static void HideAbout() { }
+}
+
+</code></pre>
+
+<p><img alt="Screenshot" src="../img/rteditor/menu/main-menu.png" /></p>
+<p>To open context menu with custom commands do following:</p>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using Battlehub.UIControls.MenuControl;
+using UnityEngine;
+
+
+public static class MyContextMenu
+{
+    public static void OpenContextMenu()
+    {
+        IContextMenu contextMenu = IOC.Resolve&lt;IContextMenu&gt;();
+
+        MenuItemInfo cmd1 = new MenuItemInfo { Path = &quot;My Command 1&quot; };
+        cmd1.Action = new MenuItemEvent();
+        cmd1.Action.AddListener((args) =&gt;
+        {
+            Debug.Log(&quot;Run My Command1&quot;);
+
+            IRuntimeEditor editor = IOC.Resolve&lt;IRuntimeEditor&gt;();
+            Debug.Log(editor.Selection.activeGameObject);
+        });
+
+        MenuItemInfo cmd2 = new MenuItemInfo { Path = &quot;My Command 2&quot; };
+        cmd2.Validate = new MenuItemValidationEvent();
+        cmd2.Action = new MenuItemEvent();
+        cmd2.Validate.AddListener((args) =&gt;
+        {
+            args.IsValid = false;
+        });
+
+        cmd2.Action.AddListener((args) =&gt;
+        {
+            Debug.Log(&quot;Run My Command2&quot;);
+        });
+
+        contextMenu.Open(new[]
+        {
+            cmd1, cmd2
+        });
+    }
+}
+
+</code></pre>
+
+<p><img alt="Screenshot" src="../img/rteditor/menu/my-context-menu.png" /></p>
+<p>Built-in context menu populated and opened from Assets/Battlehub/RTEditor/Scripts/<strong>ProjectFolderView.cs</strong> and <strong>ProjectTreeView.cs</strong></p>
+<p><img alt="Screenshot" src="../img/rteditor/menu/context-menu.png" /></p>
+<h2 id="rtedeps">RTEDeps</h2>
+<p>The main purpose of the Assets/Battlehub/RTEditor/<strong>RTEDeps.cs</strong> class is to register various services into <a href="../infrastructure/#ioc">IOC</a>:</p>
+<ul>
+<li><a href="#resource-preview-utility">IResourcePreviewUtility</a> - create preview for Game Object or asset.</li>
+<li><a href="#window-manager">IWindowManager</a> - manage build-in and custom windows.</li>
+<li><a href="#main-context-menu">IContextMenu</a> - create and show context menu.</li>
+<li><strong>IRuntimeConsole</strong> - log messages cache.</li>
+<li><a href="#iruntimeeditor">IRuntimeEditor</a> - the main interface of the RuntimeEditor.</li>
+</ul>
+<h2 id="iruntimeeditor">IRuntimeEditor</h2>
+<p>IRuntimeEditor inherits the <a href="../infrastructure/#irte-interface">IRTE interface</a> and adds several important methods and events. </p>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using UnityEngine;
+
+public class GetRuntimeEditor : MonoBehaviour
+{
+    void Start()
+    {
+        IRuntimeEditor editor = IOC.Resolve&lt;IRuntimeEditor&gt;();
+    }
+}
+
+</code></pre>
+
+<p>Events:</p>
+<ul>
+<li><code>event RTEEvent SceneLoading</code> - fired before loading the scene.</li>
+<li><code>event RTEEvent SceneLoaded</code> - fired after loading the scene.</li>
+<li><code>event RTEEvent SceneSaving</code> - fired before saving the scene.</li>
+<li><code>event RTEEvent SceneSaved</code> - fired before saving the scene.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>void NewScene(bool confirm = true)</code> - create a new scene (show the confirmation dialog by default).</li>
+<li>
+<p><code>void SaveScene()</code> - save the current scene. If the scene is new, the save scene dialog will appear.</p>
+</li>
+<li>
+<p><code>void CreateWindow(string window)</code> - call corresponding method of  <a href="#window-manager">window manager</a>.</p>
+</li>
+<li>
+<p><code>void CreateOrActivateWindow(string window)</code> - this method creates a window only if it does not exist.</p>
+</li>
+<li>
+<p><code>ProjectAsyncOperation&lt;AssetItem[]&gt; CreatePrefab(ProjectItem folder, ExposeToEditor obj, bool? includeDeps = null)</code> - create prefab with preview.</p>
+</li>
+<li><code>ProjectAsyncOperation&lt;AssetItem&gt; SaveAsset(UnityObject obj)</code> - save asset.</li>
+<li><code>ProjectAsyncOperation&lt;ProjectItem[]&gt; DeleteAssets(ProjectItem[] projectItems)</code> - delete assets.</li>
+<li><code>ProjectAsyncOperation&lt;AssetItem&gt; UpdatePreview(UnityObject obj)</code> - update asset preview.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using Battlehub.RTSL.Interface;
+using System.Collections;
+using UnityEngine;
+
+public class IRuntimeEditorMethodsUsageExample : MonoBehaviour
+{
+    IEnumerator Start()
+    {
+         //Get runtime editor
+        IRuntimeEditor editor = IOC.Resolve&lt;IRuntimeEditor&gt;();
+
+        //Use IProject interface if editor is not opened or does not exist. 
+        //See save-load/#project for details
+        Debug.Assert(editor.IsOpened);
+
+        //Create Prefabs folder
+        IProject project = IOC.Resolve&lt;IProject&gt;();
+        yield return project.CreateFolder(&quot;Prefabs&quot;);
+        ProjectItem folder = project.GetFolder(&quot;Prefabs&quot;);
+
+        //Create new object and hide it from hierarchy
+        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        go.hideFlags = HideFlags.HideAndDontSave;
+        go.SetActive(false);
+
+        //Create prefab with preview and destroy source object 
+        yield return editor.CreatePrefab(folder, go.AddComponent&lt;ExposeToEditor&gt;(), true);
+        Destroy(go);
+
+        //Load prefab
+        ProjectAsyncOperation&lt;Object[]&gt; load = project.Load&lt;GameObject&gt;(&quot;Prefabs/Sphere&quot;);
+        yield return load;
+        GameObject loadedGO = load.Result[0] as GameObject;
+
+        //... Make changes
+
+        //Update preview
+        yield return editor.UpdatePreview(loadedGO);
+
+        //Save changes
+        yield return editor.SaveAsset(loadedGO);
+
+        //Get corresponding project item
+        ProjectItem projectItem = project.Get&lt;GameObject&gt;(&quot;Prefabs/Sphere&quot;);
+
+        //Delete prefab and clear undo stack
+        yield return editor.DeleteAssets(new[] { projectItem });
+    }
+}
+
+</code></pre>
+
+<h2 id="window-manager">Window Manager</h2>
+<p>Window Manager allows you to create complex windows, such as an inspector or scene, and simple dialogs, such as a message box or confirmation.
+The difference between dialog and window is rather subtle. The content of the dialog can be anything, and it can not be docked. To be considered as a window or dialog window, a <a href="../infrastructure/#runtime-window">Runtime Window</a> component must be attached to the game object.
+When the runtime window is activated, the other windows are deactivated. The dialog cannot deactivate the window.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Default windows and dialogs can be found in Assets/Battlehub/RTEditor/<strong>Prefabs</strong></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Window Manager use <a href="../dock-panels/">dock panels</a> control.</p>
+</div>
+<p>Get window manager:</p>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using UnityEngine;
+
+public class GetWindowManager : MonoBehaviour
+{
+    void Start()
+    { 
+        IWindowManager wm = IOC.Resolve&lt;IWindowManager&gt;();
+    }
+}
+
+</code></pre>
+
+<p><br/>
+Show message box:</p>
+<pre><code class="C#">wm.MessageBox(&quot;Header&quot;, &quot;Text&quot;, (sender, args) =&gt;
+{
+    Debug.Log(&quot;OK Click&quot;);
+});
+</code></pre>
+
+<p><br/>
+Show confirmation:</p>
+<pre><code class="C#">wm.Confirmation(&quot;Header&quot;, &quot;Text&quot;,  
+    (sender, args) =&gt;
+    {
+        Debug.Log(&quot;Yes click&quot;);
+    }, 
+    (sender, args) =&gt;
+    {
+        Debug.Log(&quot;No click&quot;);
+    },
+    &quot;Yes&quot;, &quot;No&quot;);
+</code></pre>
+
+<p><br/>
+Activate window:</p>
+<pre><code class="C#">wm.ActivateWindow(RuntimeWindowType.Scene.ToString());
+</code></pre>
+
+<p><br/>
+Create window:</p>
+<pre><code class="C#">wm.CreateWindow(RuntimeWindowType.Scene.ToString());
+</code></pre>
+
+<p><br/>
+Create dialog window:</p>
+<pre><code class="C#">IWindowManager wm = IOC.Resolve&lt;IWindowManager&gt;();
+wm.CreateDialogWindow(RuntimeWindowType.Scene.ToString(), &quot;Header&quot;,
+    (sender, args) =&gt; { Debug.Log(&quot;OK&quot;); }, 
+    (sender, args) =&gt; { Debug.Log(&quot;Cancel&quot;); });
+</code></pre>
+
+<p><br/>
+Set default layout:</p>
+<pre><code class="C#">IWindowManager wm = IOC.Resolve&lt;IWindowManager&gt;();
+wm.SetDefaultLayout();
+</code></pre>
+
+<h2 id="how-to-add-custom-window-to-window-manager">How to: add custom window to Window Manager</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For information on how to create custom window please navigate to this -&gt; <a href="../infrastructure/#runtime-window">this</a> &lt;- section     </p>
+</div>
+<ol>
+<li>Create class derived from Runtime Window</li>
+<li>Duplicate Assets/Battlehub/RTEditor/Prefabs/Views/Resources/<strong>TemplateWindow.prefab</strong>. </li>
+<li>Add <strong>CustomWindow</strong> component created in step 1.</li>
+<li>
+<p>Set <code>Window Type</code> to <em>Custom</em>.</p>
+<p><img alt="Screenshot" src="../img/rteditor/window-manager/custom-window.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Create Initialization script and add it to game object in the scene.</p>
+</li>
+</ol>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using Battlehub.UIControls.MenuControl;
+using UnityEngine;
+
+[MenuDefinition]
+public class Initialization : MonoBehaviour
+{
+    private IRuntimeEditor m_editor;
+    void Start()
+    {
+        m_editor = IOC.Resolve&lt;IRuntimeEditor&gt;();
+        m_editor.IsOpenedChanged += RegisterWindows;
+        RegisterWindows();
+    }
+
+    void OnDestroy()
+    {
+        if(m_editor != null)
+        {
+            m_editor.IsOpenedChanged -= RegisterWindows;
+        }
+    }
+
+    private void RegisterWindows()
+    {
+        if (!m_editor.IsOpened)
+        {
+            return;
+        }
+
+        IWindowManager wm = IOC.Resolve&lt;IWindowManager&gt;();
+        wm.RegisterWindow(new CustomWindowDescriptor
+        {
+            IsDialog = false,
+            TypeName = &quot;MyWindow&quot;,
+            Descriptor = new WindowDescriptor
+            {
+                Header = &quot;My Window&quot;,
+                MaxWindows = 1,
+                Icon = Resources.Load&lt;Sprite&gt;(&quot;IconNew&quot;),
+                ContentPrefab = Resources.Load&lt;GameObject&gt;(&quot;CustomWindow&quot;)
+            }
+        });
+    }
+
+    [MenuCommand(&quot;MenuWindow/CustomWindow&quot;)]
+    public static void ShowCustomWindow()
+    {
+        IWindowManager wm = IOC.Resolve&lt;IWindowManager&gt;();
+        wm.CreateWindow(&quot;MyWindow&quot;);
+    }
+}
+</code></pre>
+
+<p><img alt="Screenshot" src="../img/rteditor/window-manager/custom-window-created.png" /></p>
+<h2 id="inspector-view">Inspector View</h2>
+<p>The main purpose of the inspector is to create different editors depending on the type of selected object and its components.
+Here is a general idea of what is happening:</p>
+<ul>
+<li>The user selects a Game Object, and the inspector creates a GameObject editor.</li>
+<li>The game object editor creates component editors.</li>
+<li>Each component editor creates property editors.</li>
+</ul>
+<p><img alt="Screenshot" src="../img/rteditor/inspector-view/structure.png" /></p>
+<p>Prefabs:</p>
+<ul>
+<li><strong>InspectorView</strong> can be found in Assets/Battlehub/RTEditor/Prefabs folder,</li>
+<li><strong>GameObject</strong>, <strong>Material</strong> and <strong>Component editors</strong> in Assets/Battlehub/RTEditor/Prefabs/Editors,</li>
+<li><strong>Property editors</strong> in Assets/Battlehub/RTEditor/Prefabs/Editors/PropertyEditors.</li>
+</ul>
+<p><img alt="Screenshot" src="../img/rteditor/inspector-view/property-editors.png" /></p>
+<h2 id="how-to-configure-editors">How To: Configure Editors</h2>
+<p>To select the editors to be used by the inspector, click <strong>Tools-&gt;Runtime Editor-&gt;Configuration</strong></p>
+<p><img alt="Screenshot" src="../img/rteditor/editors-config/open-config-window.png" /></p>
+<p>There are five sections in configuration window:</p>
+<ul>
+<li><strong>Object Editors</strong> - select which editor to use for Game Object.</li>
+<li><strong>Property Editors</strong> - select which editors to use for component properties.</li>
+<li><strong>Material Editors</strong> - select which editors to use for materials</li>
+<li><strong>Standard Component Editors</strong> – select which editors to use for standard components.</li>
+<li><strong>Script Editors</strong> – select which editors to use for scripts.</li>
+</ul>
+<p>After you select and enable the desired component editors, click the <strong>Save Editors Map</strong> button</p>
+<p><img alt="Screenshot" src="../img/rteditor/editors-config/config-window.png" /></p>
+<h2 id="how-to-select-component-properties">How To: Select Component Properties</h2>
+<p>In order to select the properties displayed by the component editor, you need to create a class and inherit it from <strong>ComponentDescriptorBase&lt;<T>&gt;</strong>.
+After that, you need to implement the <strong>GetProperties</strong> method. It must return <strong>PropertyDescriptors</strong> for all properties that will be present in the component editor ui.
+Here is the example of <strong>TransformComponentDescriptor</strong>:</p>
+<pre><code class="C#">
+using UnityEngine;
+using System.Reflection;
+using Battlehub.Utils;
+
+namespace Battlehub.RTEditor
+{
+    public class TransformComponentDescriptor : ComponentDescriptorBase&lt;Transform&gt;
+    {
+        public override object CreateConverter(ComponentEditor editor)
+        {
+            TransformPropertyConverter converter = new TransformPropertyConverter();
+            converter.Component = (Transform)editor.Component;
+            return converter;
+        }
+
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
+        {
+            TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
+
+            MemberInfo position = Strong.PropertyInfo((Transform x) =&gt; x.position);
+            MemberInfo rotation = Strong.PropertyInfo((Transform x) =&gt; x.rotation);
+            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) =&gt; x.Rotation);
+            MemberInfo scale = Strong.PropertyInfo((Transform x) =&gt; x.localScale);
+
+            return new[]
+                {
+                    new PropertyDescriptor( &quot;Position&quot;, editor.Component, position) ,
+                    new PropertyDescriptor( &quot;Rotation&quot;, converter, rotationConverted, rotation),
+                    new PropertyDescriptor( &quot;Scale&quot;, editor.Component, scale)
+                };
+        }
+    }
+
+    public class TransformPropertyConverter 
+    {
+        public Vector3 Rotation
+        {
+            get
+            {
+                if(Component == null)
+                {
+                    return Vector3.zero;
+                }
+                return Component.rotation.eulerAngles;
+            }
+            set
+            {
+                if (Component == null)
+                {
+                    return;
+                }
+                Component.rotation = Quaternion.Euler(value);
+            }
+        }
+
+        public Transform Component
+        {
+            get;
+            set;
+        }
+    }
+}
+
+</code></pre>
+
+<p><strong>TransformPropertyConverter</strong> is used to convert a quaternion to Euler angles. This is needed for Vector3Editor to be used instead of QuaternionEditor.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The remaining built-in component descriptors are in the <strong>Assets/Battlehub/RTEditor/Scripts/Editors/ComponentDescriptors</strong> folder.</p>
+</div>
+<h2 id="resource-preview-utility">Resource Preview Utility</h2>
+<p>The resource preview utility is used to create previews for objects. Here is how to used it:</p>
+<pre><code class="C#">using Battlehub.RTCommon;
+using Battlehub.RTEditor;
+using UnityEngine;
+
+public class CreatePreviewExample : MonoBehaviour
+{
+    [SerializeField]
+    Image m_image = null;
+
+    Texture2D m_previewTexture;
+
+    void Start()
+    {
+        m_previewTexture = new Texture2D(1, 1, TextureFormat.ARGB32, true); 
+
+        IResourcePreviewUtility resourcePreviewUtility = IOC.Resolve&lt;IResourcePreviewUtility&gt;();
+        byte[] previewData = resourcePreviewUtility.CreatePreviewData(gameObject);
+
+        m_previewTexture.LoadImage(assetItem.Preview.PreviewData);
+        m_image.sprite = Sprite.Create(m_previewTexture, 
+            new Rect(0, 0, m_previewTexture.width, m_previewTexture.height),
+            new Vector2(0.5f, 0.5f));
+    }
+
+    void OnDestroy()
+    {       
+        if (m_previewTexture != null)
+        {
+            Destroy(m_previewTexture);
+        }
+    }
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../save-load/" class="btn btn-neutral float-right" title="Save Load">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../infrastructure/" class="btn btn-neutral" title="Common Infrastructure"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 vadim.andriyanov@outlook.com</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../infrastructure/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../save-load/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

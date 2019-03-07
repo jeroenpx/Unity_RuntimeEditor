@@ -100,8 +100,6 @@ namespace Battlehub.RTHandles
         protected override void Start()
         {
             base.Start();
-
-            UpdateModel();
             SetColors();
         }
 
@@ -216,7 +214,10 @@ namespace Battlehub.RTHandles
         {
             base.SetScale(scale);
             m_scale = scale;
-            UpdateModel();
+            if(enabled)
+            {
+                UpdateModel();
+            }
         }
 
         protected override void UpdateModel()

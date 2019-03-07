@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="vadim andriyanov">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Save Load - Runtime Editor</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Save Load";
+    var mkdocs_page_input_path = "save-load.md";
+    var mkdocs_page_url = "/save-load/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Runtime Editor</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../general/">General</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../transform-handles/">Transform Handles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../gizmos/">Gizmos</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../rendering/">Rendering</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../infrastructure/">Common Infrastructure</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../runtime-editor/">Runtime Editor</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Save Load</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#save-load-docs">Save Load Docs</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#overview">Overview</a></li>
+        
+            <li><a class="toctree-l3" href="#getting-started">Getting Started</a></li>
+        
+            <li><a class="toctree-l3" href="#persistent-classes">Persistent Classes</a></li>
+        
+            <li><a class="toctree-l3" href="#how-to-create-custom-persistent-class">How To: Create Custom Persistent Class</a></li>
+        
+            <li><a class="toctree-l3" href="#asset-library">Asset Library</a></li>
+        
+            <li><a class="toctree-l3" href="#how-to-create-asset-library">How To: Create Asset Library</a></li>
+        
+            <li><a class="toctree-l3" href="#project-item-asset-item">Project Item &amp; Asset Item</a></li>
+        
+            <li><a class="toctree-l3" href="#project">Project</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../dock-panels/">Dock Panels</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../vtv/">Virtualizing Tree View</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../menu-control/">Menu Control</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Runtime Editor</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Save Load</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="save-load-docs">Save Load Docs</h1>
+<h2 id="overview">Overview</h2>
+<p>The <strong>Runtime Save &amp; Load</strong> (RTSL) subsystem is required for saving and managing scenes, assets and projects at runtime and consists of three main parts:</p>
+<ul>
+<li><a href="#persistent-classes">Persistent Classes</a> - this part allows you to choose what to serialize and generate persistent classes for serialization. </li>
+<li><a href="#asset-library">Asset Libraries</a> - this part allows you to create and manage assets, as well as provide information to the RTSL to identify these assets.</li>
+<li><a href="#project">Project</a> - this part provides api to interact with RTSL.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>RTSL use <a href="https://github.com/mgravell/protobuf-net">protobuf.net</a> for serialization.</p>
+</div>
+<p><img alt="Screenshot" src="../img/save-load/get-started/demo2.png" /></p>
+<h2 id="getting-started">Getting Started</h2>
+<p>After importing RTSL you will see the configuration window:</p>
+<p><img alt="Screenshot" src="../img/save-load/get-started/config-window.png" /></p>
+<p>After clicking "Build All", several folders will be created under <strong>/Battlehub/RTSL_Data</strong></p>
+<p><img alt="Screenshot" src="../img/save-load/get-started/folders.png" /></p>
+<ul>
+<li><strong>Scripts</strong> for <a href="#persistent-classes">serializable persistent classes</a>.</li>
+<li><strong>Custom Implementation</strong> for user defined persistent classes.</li>
+<li><strong>Mappings</strong> for mappings between types that must be stored and serializable persistent types. </li>
+<li><strong>Libraries</strong> for <a href="#asset-library">asset libraries and shader profiles</a>.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>RTSLTypeModel.dll</strong> contains <a href="https://github.com/mgravell/protobuf-net">protobuf-net</a> type model. Due to <a href="https://docs.unity3d.com/Manual/ScriptingRestrictions.html">unity scripting restrictions</a>, runtime type model need to be pre-complied before
+using at runtime.</p>
+</div>
+<ol>
+<li>Create new scene</li>
+<li>
+<p>Drag and Drop <strong>Assets/Battlehub/RTDemoGame/Prefabs/Game.prefab</strong> to hierarchy.</p>
+<p><img alt="Screenshot" src="../img/save-load/get-started/game-prefab.png" />
+ <br/><br/></p>
+</li>
+<li>
+<p>Click Tools-&gt;Runtime SaveLoad-&gt;Libraries-&gt;<strong>Collect Scene Dependencies</strong></p>
+<p><img alt="Screenshot" src="../img/save-load/get-started/collect-scene-dependencies.png" />
+ <br/><br/></p>
+</li>
+<li>
+<p>Create Game Object, then add Assets/Battlehub/RTSL/Interface/<strong>Project</strong> and Assets/Battlehub/RTSL/Interface/<strong>RTSLIgnore</strong> components. </p>
+<p><img alt="Screenshot" src="../img/save-load/get-started/project.png" />
+ <br/><br/></p>
+</li>
+<li>
+<p>Create <strong>RTSLTest</strong> script.</p>
+</li>
+<li>Hit play.</li>
+<li>Save scene using 'M' key.</li>
+<li>Load scene using 'L' key.</li>
+</ol>
+<pre><code class="C#">
+using System.Collections;
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+
+
+public class RTSLTest : MonoBehaviour
+{
+    IProject m_project;
+
+    IEnumerator Start()
+    {
+        m_project = IOC.Resolve&lt;IProject&gt;();
+
+        yield return m_project.OpenProject(&quot;My Project&quot;);
+        yield return m_project.CreateFolder(&quot;Scenes/Demo&quot;);           
+    }
+
+    IEnumerator SaveScene()
+    {
+        ProjectAsyncOperation ao = m_project.Save(&quot;Scenes/Demo/Scene&quot;, SceneManager.GetActiveScene());
+        yield return ao;
+
+        if(ao.Error.HasError)
+        {
+            Debug.LogError(ao.Error.ToString());
+        }
+    }
+
+    IEnumerator LoadScene()
+    {
+        ProjectAsyncOperation ao = m_project.Load&lt;Scene&gt;(&quot;Scenes/Demo/Scene&quot;);
+        yield return ao;
+
+        if (ao.Error.HasError)
+        {
+            Debug.LogError(ao.Error.ToString());
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            StartCoroutine(SaveScene());
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {   
+            if (m_project.Exist&lt;Scene&gt;(&quot;Scenes/Demo/Scene&quot;))
+            {
+                StartCoroutine(LoadScene());
+            }
+        }
+    }
+}
+
+</code></pre>
+
+<p>Saved scene can be found in <a href="https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html"><strong>PersistentDataPath</strong></a><strong>/My Project/Assets/Scenes/Demo folder</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only few persistent classes enabled and could be saved by default. Use <a href="#persistent-classes">Persistent Classes Editor Window</a> to enable more.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Demo scene can be found in <strong>Assets/Battlehub/RTSL/Demo</strong> folder.</p>
+</div>
+<h2 id="persistent-classes">Persistent Classes</h2>
+<p><strong>Persistent Class</strong> is a class derived from <strong>Persistent Surrogate</strong> and having the  <strong>[ProtoContract]</strong> attribute. The main purpose of the persistent classes is to give you full control over what and how to save, without having to use reflection and without writing a lot of code.</p>
+<p>To open persistent classes editor, click Tools-&gt;Runtime SaveLoad-&gt;<strong>Persistent Classes-&gt;Edit</strong>.</p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/open-persistent-classes-editor.png" /></p>
+<p>Here is the persistent classes editor window:</p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/editor.png" /></p>
+<p>This window allow you:</p>
+<ul>
+<li>Search for types you want to save.</li>
+<li>Select properties you want to save.</li>
+<li>Generate C# code of persistent classes.</li>
+</ul>
+<p>After clicking the <strong>"Create Persistent Classes"</strong> button the following will occur:</p>
+<ol>
+<li>
+<p>Persistent classes will be created in 
+<strong>Assets/Battlehub/RTSL_Data/Scripts/PersistentClasses</strong>.</p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/persistent-classes-folder.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>The editor window state will be saved in
+<strong>Assets/Battlehub/RTSL_Data/Mappings/Editor</strong>.</p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/mappings-folder.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Custom Implementation will be created in <strong>.../RTSL_Data/Scripts/CustomImplementation</strong>.</p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/custom-implementation-folder.png" />
+<br/><br/></p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To ensure forward compatibility of saved files, never delete the <strong>ClassMappingStorage</strong> and <strong>SurrogatesMappingsStorage</strong> prefabs !!!</p>
+</div>
+<h2 id="how-to-create-custom-persistent-class">How To: Create Custom Persistent Class</h2>
+<p>In some cases, it is not possible to get all the data to be saved using public properties and fields. For example, data can only be obtained using the methods.
+If you have to write your own code to save and load data, follow these steps:</p>
+<ol>
+<li>Open Persistent Classes Editor.</li>
+<li>Find and select required type.</li>
+<li>
+<p>Select <strong>"Custom Implementation"</strong></p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/create-custom-implementation.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>Click <strong>Create Persistent Classes</strong> button.</p>
+</li>
+<li>
+<p>Click <strong>Edit Custom Implementation</strong> button.</p>
+<p><img alt="Screenshot" src="../img/save-load/persistent-classes/edit-custom-implementation.png" />
+<br/><br/></p>
+</li>
+<li>
+<p>You should see following:</p>
+</li>
+</ol>
+<pre><code class="C#">#if !RTSL_MAINTENANCE
+using Battlehub.RTSL;
+namespace UnityEngine.Battlehub.SL2
+{
+    [CustomImplementation]
+    public partial class PersistentJoint
+    {
+        /*
+        public override void ReadFrom(object obj)
+        {
+            base.ReadFrom(obj);
+        }
+
+        public override object WriteTo(object obj)
+        {
+            return base.WriteTo(obj);
+        }
+
+        public override void GetDeps(GetDepsContext context)
+        {
+            base.GetDeps(context);
+        }
+
+        public override void GetDepsFrom(object obj, GetDepsFromContext context)
+        {
+            base.GetDepsFrom(obj, context);
+        }
+        */
+    }
+}
+#endif
+
+</code></pre>
+
+<p>There are four methods that can be implemented:</p>
+<ul>
+<li><code>void ReadFrom(object obj)</code> - invoked before serialization. Read the data from obj and save it to the fields of the persistent object.</li>
+<li><code>object WriteTo(object obj)</code> - invoked after deserialization. Write stored data to obj.</li>
+<li><code>void GetDeps(GetDepsContext context)</code> - return identifiers of dependencies.</li>
+<li><code>void GetDepsFrom(object obj, GetDepsFromContext context)</code> - get dependencies from obj.</li>
+</ul>
+<p>Implementation of PersistentJoint may look like this:</p>
+<pre><code class="C#">
+#if !RTSL_MAINTENANCE
+using Battlehub.RTSL;
+namespace UnityEngine.Battlehub.SL2
+{
+    [CustomImplementation]
+    public partial class PersistentJoint
+    {
+        [ProtoBuf.ProtoMember(1)]
+        private long m_connectedBody;
+
+        [ProtoBuf.ProtoMember(2)]
+        private PersistentVector3 m_anchor;
+
+        //..... more fields
+
+        public override void ReadFrom(object obj)
+        {
+            base.ReadFrom(obj);
+
+            Joint joint = (Joint)obj;
+            if(joint == null)
+            {
+                return;
+            }
+
+            m_connectedBody = ToID(joint.connectedBody);
+            m_anchor = joint.anchor;
+
+            //... read other fields
+        }
+
+        public override object WriteTo(object obj)
+        {
+            obj = base.WriteTo(obj);
+
+            Joint joint = (Joint)obj;
+            if (joint == null)
+            {
+                return obj;
+            }
+
+            joint.connectedBody = FromID&lt;Rigidbody&gt;(m_connectedBody);
+            joint.anchor = m_anchor;
+
+            //... write other fields
+
+            return joint;
+        }
+
+        public override void GetDeps(GetDepsContext context)
+        {
+            base.GetDeps(context);
+
+            AddDep(m_connectedBody, context);
+
+            //... get other dependencies
+        }
+
+        public override void GetDepsFrom(object obj, GetDepsFromContext context)
+        {
+            base.GetDepsFrom(obj, context);
+
+            Joint joint = (Joint)obj;
+            if (joint == null)
+            {
+                return;
+            }
+
+            AddDep(joint.connectedBody, context);
+
+            //... get other dependencies
+        }
+    }
+}
+#endif
+
+
+</code></pre>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <strong>Tools-&gt; Runtime SaveLoad-&gt; Build All</strong> each time you have finished making changes to persistent classes and are ready to build the application.</p>
+</div>
+<h2 id="asset-library">Asset Library</h2>
+<p>Game objects in any scene refer assets such as materials, meshes, textures, etc.
+Identifiers of these assets obtained using GetInstanceID() method do not remain constant and can change.  <br />
+In contrast, <strong>Asset libraries</strong> are used to store unique asset identifiers that never change.</p>
+<p>There are two special asset libraries:</p>
+<ul>
+<li>Built-in asset library - contains Unity build-in assets.</li>
+<li>Scene asset library - contains assets referenced by scene Game Objects.</li>
+</ul>
+<p>The former library created automatically by clicking <strong>Tools-&gt;Runtime SaveLoad-&gt;Libraries-&gt;Update Built-In Asset Library</strong> <br />
+The latter created by opening scene and clicking <strong>Tools-&gt;Runtime SaveLoad-&gt;Libraries-&gt;Collect Scene Dependencies</strong></p>
+<p><img alt="Screenshot" src="../img/save-load/asset-libraries/special-asset-libraries.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Scene asset libraries are referenced using the scene name. This means that scenes must have unique names.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <strong>Tools-&gt;Runtime SaveLoad-&gt;Libraries-&gt;Collect Scene Dependencies</strong> each time you have finished making changes to scene and are ready to run the application.</p>
+</div>
+<h2 id="how-to-create-asset-library">How To: Create Asset Library</h2>
+<p>If the built-in asset library and scene dependency library are not sufficient,
+ and the new resources must be <a href="https://docs.unity3d.com/ScriptReference/Resources.Load.html">Resource.Loaded</a> at runtime, you can create 
+a new asset library by clicking <br />
+<strong>Create-&gt; Runtime Asset Library</strong> in the context menu.</p>
+<p><img alt="Screenshot" src="../img/save-load/asset-libraries/create-asset-library.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An asset library must be created inside the <strong>Resources</strong> folder.</p>
+</div>
+<p>Use drag &amp; drop to add assets to asset library</p>
+<p><img alt="Screenshot" src="../img/save-load/asset-libraries/populate-asset-library.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One asset library can contain no more than <strong>65535</strong> assets.</p>
+</div>
+<p>If you change one or more prefabs, you will be asked to synchronize the assets library. Do it by clicking <strong>Synchronize</strong> button.</p>
+<p><img alt="Screenshot" src="../img/save-load/asset-libraries/synchronize-asset-library.png" /></p>
+<h2 id="project-item-asset-item">Project Item &amp; Asset Item</h2>
+<p><strong>Project Items</strong> are used to create tree structures representing the project tree.</p>
+<pre><code class="C#">    [ProtoContract]
+    [ProtoInclude(1, typeof(AssetItem))]
+    public class ProjectItem
+    {
+        [ProtoMember(2)]
+        public long ItemID;
+
+        public string Name;
+        public string Ext;
+
+        public ProjectItem Parent;
+        public List&lt;ProjectItem&gt; Children;
+
+        // ...
+
+</code></pre>
+
+<p><strong>Asset Items</strong> are meta representations of assets in a project. They are stored in *.rtmeta files.</p>
+<pre><code class="C#">
+    [ProtoContract]
+    public class AssetItem : ProjectItem
+    {
+        public event EventHandler PreviewDataChanged;
+
+        [ProtoMember(1)]
+        public Guid TypeGuid;
+
+        [ProtoMember(2)]
+        public PrefabPart[] Parts;
+
+        [ProtoMember(3)]
+        public long[] Dependencies;
+
+        private Preview m_preview;
+        public Preview Preview
+        {
+            get { return m_preview; }
+            set
+            {
+                if (m_preview != value)
+                {
+                    m_preview = value;
+                    if (PreviewDataChanged != null)
+                    {
+                        PreviewDataChanged(this, EventArgs.Empty);
+                    }
+                }
+            }
+        }
+
+        public override bool IsFolder
+        {
+            get { return false; }
+        }
+
+    }
+
+</code></pre>
+
+<h2 id="project">Project</h2>
+<p><strong>IProject</strong> is the main interface of the RTSL library. Here is how to access it:</p>
+<pre><code class="C#">
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+
+void Awake()
+{
+    IProject project = IOC.Resolve&lt;IProject&gt;();
+}
+
+</code></pre>
+
+<p><br/>
+Open project:</p>
+<pre><code class="C#">
+using System.Collections;
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+
+IEnumerator Start()
+{
+    IProject project = IOC.Resolve&lt;IProject&gt;();
+    yield return project.OpenProject(&quot;My Project&quot;);
+}
+
+</code></pre>
+
+<p><br/>
+Close project:</p>
+<pre><code class="C#">m_project.CloseProject();
+</code></pre>
+
+<p><br/>
+Delete project:</p>
+<pre><code class="C#">yield return project.DeleteProject(&quot;My Project&quot;);
+</code></pre>
+
+<p><br/>
+Create folder:</p>
+<pre><code class="C#">yield return project.CreateFolder(&quot;My Scenes&quot;);   
+</code></pre>
+
+<p><br/>
+Delete folder:</p>
+<pre><code class="C#">yield return project.DeleteFolder(&quot;My Scenes&quot;);
+</code></pre>
+
+<p><br/>
+Save scene:</p>
+<pre><code class="C#">
+using System.Collections;
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+
+IEnumerator Start()
+{
+    //...
+
+    ProjectAsyncOperation ao = project.Save(&quot;My Scenes/Scene 1&quot;, SceneManager.GetActiveScene());
+    yield return ao;
+
+    if (ao.Error.HasError)
+    {
+        Debug.LogError(ao.Error.ToString());
+    }
+}
+
+</code></pre>
+
+<p><br/>
+Load scene:</p>
+<pre><code class="C#">
+using System.Collections;
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+
+IEnumerator Start()
+{
+    //...
+
+    ProjectAsyncOperation ao = project.Load&lt;Scene&gt;(&quot;My Scenes/Scene 1&quot;);
+    yield return ao;
+
+    if (ao.Error.HasError)
+    {
+        Debug.LogError(ao.Error.ToString());
+    }
+}
+
+</code></pre>
+
+<p><br/>
+Delete scene:</p>
+<pre><code class="C#">yield return project.Delete&lt;Scene&gt;(&quot;My Scenes/Scene 1&quot;);
+</code></pre>
+
+<p><br/>
+Find objects of type:</p>
+<pre><code class="C#">foreach(string scene in project.Find&lt;Scene&gt;(&quot;Scene 1&quot;))
+{
+    Debug.Log(scene);
+}
+
+</code></pre>
+
+<p><br/>
+Create Prefab:</p>
+<pre><code class="C#">GameObject primitive = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+yield return project.Save(&quot;Capsule&quot;, primitive);
+Destroy(primitive);
+</code></pre>
+
+<p><br/>
+Load and instantiate Prefab:</p>
+<pre><code class="C#">ProjectAsyncOperation&lt;Object[]&gt; ao = project.Load&lt;GameObject&gt;(&quot;Capsule&quot;);
+yield return ao;
+
+if(!ao.Error.HasError)
+{
+    Instantiate(ao.Result[0]);
+}
+</code></pre>
+
+<p><br/>
+Import all assets from asset bundle:</p>
+<pre><code class="C#">
+//get names of asset bundles from Assets/StreamingAssets folder.
+ProjectAsyncOperation&lt;string[]&gt; ao = project.GetAssetBundles();
+yield return ao;
+
+//load ImportItems from first asset bundle
+ProjectAsyncOperation&lt;ProjectItem&gt; loadAo = project.LoadImportItems(ao.Result[0], false);
+yield return loadAo;
+
+
+if (!loadAo.Error.HasError)
+{
+    //create previews here...
+    //then unload asset bundle assets
+    project.UnloadImportItems(loadAo.Result);
+
+    //import all
+    yield return project.Import(loadAo.Result.Flatten(true).OfType&lt;ImportItem&gt;().ToArray());
+}
+
+//log all asset items in project
+foreach(string path in project.Find&lt;object&gt;(string.Empty, true))
+{
+    Debug.Log(path);
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../dock-panels/" class="btn btn-neutral float-right" title="Dock Panels">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../runtime-editor/" class="btn btn-neutral" title="Runtime Editor"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 vadim.andriyanov@outlook.com</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../runtime-editor/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../dock-panels/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

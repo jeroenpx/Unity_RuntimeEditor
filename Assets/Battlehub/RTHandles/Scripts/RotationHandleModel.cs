@@ -152,7 +152,6 @@ namespace Battlehub.RTHandles
         protected override void Start()
         {
             base.Start();
-            UpdateModel();
             SetColors();
         }
 

@@ -267,16 +267,22 @@ namespace Battlehub.RTSL
         public static void BuildAll()
         {
             EditorUtility.DisplayProgressBar("Build All", "Creating persistent classes", 0.0f);
+            try
+            {
+                CreatePersistentClasses();
+                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+                Debug.Log("Persistent Classes Created");
 
-            CreatePersistentClasses();
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-            Debug.Log("Persistent Classes Created");
+                Selection.activeObject = AssetDatabase.LoadAssetAtPath("Assets" + RTSLPath.UserRoot + "/" + RTSLPath.ScriptsAutoFolder, typeof(UnityObject));
+                EditorGUIUtility.PingObject(Selection.activeObject);
 
-            Selection.activeObject = AssetDatabase.LoadAssetAtPath("Assets" + RTSLPath.UserRoot + "/" + RTSLPath.ScriptsAutoFolder, typeof(UnityObject));
-            EditorGUIUtility.PingObject(Selection.activeObject);
-
-            EditorUtility.DisplayProgressBar("Build All", "Updating asset libraries and shader profiles", 0.33f);
-            EditorPrefs.SetBool("RTSLBuildAll", true);
+                EditorUtility.DisplayProgressBar("Build All", "Updating asset libraries and shader profiles", 0.33f);
+                EditorPrefs.SetBool("RTSLBuildAll", true);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }   
         }
 
         private static HashSet<UnityObject> ReadFromAssetLibraries(string[] guids, out int index, out AssetLibraryAsset asset, out AssetFolderInfo folder)

@@ -108,7 +108,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            bool isPointerOverAndSelected =  m_component.Window.IsPointerOver && m_component.IsUISelected;
+            bool isPointerOverAndSelected = m_component.Window.IsPointerOver;// && m_component.IsUISelected;
 
             IInput input = m_component.Editor.Input;
             RuntimeTools tools = m_component.Editor.Tools;

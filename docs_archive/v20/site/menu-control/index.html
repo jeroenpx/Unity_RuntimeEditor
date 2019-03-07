@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="vadim andriyanov">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Menu Control - Runtime Editor</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../css/extra.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Menu Control";
+    var mkdocs_page_input_path = "menu-control.md";
+    var mkdocs_page_url = "/menu-control/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Runtime Editor</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../general/">General</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../transform-handles/">Transform Handles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../gizmos/">Gizmos</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../rendering/">Rendering</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../infrastructure/">Common Infrastructure</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../runtime-editor/">Runtime Editor</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../save-load/">Save Load</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../dock-panels/">Dock Panels</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../vtv/">Virtualizing Tree View</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Menu Control</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#menu-control-docs">Menu Control Docs</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#overview">Overview</a></li>
+        
+            <li><a class="toctree-l3" href="#getting-started">Getting Started</a></li>
+        
+            <li><a class="toctree-l3" href="#menu-item">Menu Item</a></li>
+        
+            <li><a class="toctree-l3" href="#menu">Menu</a></li>
+        
+            <li><a class="toctree-l3" href="#main-menu-button">Main Menu Button</a></li>
+        
+            <li><a class="toctree-l3" href="#context-menu-trigger">Context Menu Trigger</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Runtime Editor</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Menu Control</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="menu-control-docs">Menu Control Docs</h1>
+<h2 id="overview">Overview</h2>
+<p>The <a href="#menu">Menu control</a> allows hierarchal organization of elements associated with commands. It can be used to implement main and context menu of an application.</p>
+<p><img alt="Screenshot" src="../img/menu/overview/menu.png" />    </p>
+<h2 id="getting-started">Getting Started</h2>
+<ol>
+<li>Create Canvas</li>
+<li>Add <strong>MenuButton.prefab</strong> from <strong>Assets/Battelhub/UIControls/Menu/Prefabs</strong> to hierarchy.</li>
+<li>Add <strong>Menu.prefab</strong> from <strong>Assets/Battelhub/UIControls/Menu/Prefabs</strong> to hierarchy</li>
+<li>
+<p>Set <code>Menu</code> field of the Menu Button:</p>
+<p><img alt="Screenshot" src="../img/menu/get-started/set-menu-field.png" /> <br />
+<br/></p>
+</li>
+<li>
+<p>Create Empty Game Object and name it <strong>Command Handler</strong></p>
+</li>
+<li>
+<p>Create <strong>MenuCmdHandler</strong> script and add it to the <strong>Command Handler</strong>:</p>
+<pre><code>using UnityEngine;
+using Battlehub.UIControls.MenuControl;
+
+public class MenuCmdHandler : MonoBehaviour
+{
+    public void OnValidateCmd(MenuItemValidationArgs args)
+    {
+        Debug.Log("Validate Command: " + args.Command);
+
+        if(args.Command == "Item Cmd")
+        {
+            args.IsValid = false;
+        }
+    }
+
+    public void OnCmd(string cmd)
+    {
+        Debug.Log("Run Cmd: " + cmd);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>Set <code>Action</code> and <code>Validate</code> event handlers of each entry in <code>Items</code> array of the Menu:</p>
+<p><img alt="Screenshot" src="../img/menu/get-started/set-event-handlers.png" /><br />
+<br/>              </p>
+</li>
+<li>
+<p>Hit Play, open the Menu and click <em>Child Item</em>. You should see following output:</p>
+<p><img alt="Screenshot" src="../img/menu/get-started/results.png" />      </p>
+</li>
+</ol>
+<h2 id="menu-item">Menu Item</h2>
+<p>Structure:</p>
+<p><img alt="Screenshot" src="../img/menu/menu-item/structure.png" />   </p>
+<p>Prefab: Assets/Battelhub/UIControls/Menu/Prefabs/<strong>MenuItem.prefab</strong><br />
+Script: Assets/Battelhub/UIControls/Menu/Scripts/<strong>MenuItem.cs</strong></p>
+<p>Fields:</p>
+<ul>
+<li><code>Selection Color</code> - highlighted color.</li>
+<li><code>Text Color</code> - text color.</li>
+<li><code>Disabled Selection Color</code> - highlighted color of disabled menu item.</li>
+<li><code>Disabled Text Color</code> - text color of disabled menu item.</li>
+<li><code>Icon</code> - image.</li>
+<li><code>Text</code> - text.</li>
+<li><code>Expander</code> - image visible if menu item has sub-menu.</li>
+<li><code>Selection</code> - image visible when pointer is over menu item.</li>
+</ul>
+<h2 id="menu">Menu</h2>
+<p>Structure:</p>
+<p><img alt="Screenshot" src="../img/menu/menu/structure.png" />   </p>
+<p>Prefab: Assets/Battelhub/UIControls/Menu/Prefabs/<strong>Menu.prefab</strong><br />
+Script: Assets/Battelhub/UIControls/Menu/Scripts/<strong>Menu.cs</strong></p>
+<p>Fields:</p>
+<ul>
+<li><code>Items</code> - array of Menu Item Info.</li>
+<li><code>Menu Item Prefab</code> - reference to <a href="#menu-item">menu item</a> prefab.</li>
+<li><code>Anchor</code> - opened menu will be aligned with anchor.</li>
+<li><code>Panel</code> - parent of menu items.</li>
+<li><code>Canvas Group</code> - required to "fade-in" menu.</li>
+<li><code>Fade in speed</code> - how much the alpha property changes per second.</li>
+</ul>
+<pre><code class="C#">[Serializable]
+public class MenuItemInfo
+{
+    public string Path; //path to menu item e.g. Create/3DObject/Cube
+    public string Text; //menu item text 
+    public Sprite Icon; //menu item icon
+
+    public string Command; //argument passed to Action event handler and Validate event handler
+    public MenuItemEvent Action; //raised when menu item clicked
+    public MenuItemValidationEvent Validate; //event raised when menu opened
+}
+</code></pre>
+
+<h2 id="main-menu-button">Main Menu Button</h2>
+<p>This button can be used to open menu. It has three states: normal, pointer over and focused.  The transition to the focused state occurs when the menu is opened. The transition to the normal state occurs when the menu is closed. </p>
+<p>Prefab: Assets/Battelhub/UIControls/Menu/Prefabs/<strong>MenuButton.prefab</strong><br />
+Script: Assets/Battelhub/UIControls/Menu/Scripts/<strong>MenuButton.cs</strong></p>
+<h2 id="context-menu-trigger">Context Menu Trigger</h2>
+<p>This script opens the menu when you click the right mouse button.  </p>
+<p><img alt="Screenshot" src="../img/menu/context-menu-trigger/context-menu.png" />   </p>
+<p>Script: Assets/Battelhub/UIControls/Menu/Scripts/<strong>СontextMenuTrigger.cs</strong></p>
+<p><img alt="Screenshot" src="../img/menu/context-menu-trigger/context-menu-trigger.png" />   </p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../vtv/" class="btn btn-neutral" title="Virtualizing Tree View"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 vadim.andriyanov@outlook.com</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../vtv/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

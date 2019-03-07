@@ -26,7 +26,10 @@ namespace Battlehub.RTHandles
                 if(m_modelScale != value)
                 {
                     m_modelScale = value;
-                    UpdateModel();
+                    if(enabled && gameObject.activeSelf)
+                    {
+                        UpdateModel();
+                    }
                 }   
             }
         }
@@ -40,14 +43,17 @@ namespace Battlehub.RTHandles
                 if(m_selectionMargin != value)
                 {
                     m_selectionMargin = value;
-                    UpdateModel();   
+                    if(enabled && gameObject.activeSelf)
+                    {
+                        UpdateModel();
+                    }
                 }
             }
         }
 
         protected RuntimeHandleAxis m_selectedAxis = RuntimeHandleAxis.None;
         protected LockObject m_lockObj = new LockObject();
-
+        
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
@@ -95,9 +101,17 @@ namespace Battlehub.RTHandles
 
         protected virtual void Start()
         {
-
         }
 
+        protected virtual void OnEnable()
+        {
+            UpdateModel();
+        }
+
+        protected virtual void OnDisable()
+        {
+
+        }
 
         protected virtual void Update()
         {

@@ -33,15 +33,11 @@ namespace Battlehub.RTCommon
             m_editor = (RTEBase)FindObjectOfType(m_editorPrefab.GetType());
             if(m_editor != null)
             {
-                if(m_editor.IsOpened)
+                if (m_editor.IsOpened)
                 {
                     m_editor.IsOpenedChanged += OnIsOpenedChanged;
                     gameObject.SetActive(false);
                 }
-            }
-            if(Created != null)
-            {
-                Created(m_editor);
             }
             m_createEditorButton.onClick.AddListener(OnOpen);
         }
@@ -78,6 +74,10 @@ namespace Battlehub.RTCommon
             m_editor.name = "RuntimeEditor";
             m_editor.IsOpenedChanged += OnIsOpenedChanged;
             m_editor.transform.SetAsFirstSibling();
+            if (Created != null)
+            {
+                Created(m_editor);
+            }
             gameObject.SetActive(false);
         }
 

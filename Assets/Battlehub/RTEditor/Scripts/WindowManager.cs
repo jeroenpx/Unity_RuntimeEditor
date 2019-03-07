@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
+using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
 using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
@@ -15,12 +16,17 @@ namespace Battlehub.RTEditor
 {
     public interface IWindowManager
     {
-        void SetDefaultLayout();
-
         bool IsDialogOpened
         {
             get;
         }
+
+        void OverrideDefaultLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
+        void SetDefaultLayout();
+        void SetLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
+
+        void OverrideTools(Transform contentPrefab);
+        void SetTools(Transform content);
 
         bool RegisterWindow(CustomWindowDescriptor desc);
 
@@ -31,7 +37,8 @@ namespace Battlehub.RTEditor
 
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
-        
+
+        Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
         Transform CreateWindow(string windowTypeName);
         Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
              float minWidth = 250,
@@ -113,6 +120,9 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_selectAssetLibraryDialog = null;
 
         [SerializeField]
+        private WindowDescriptor m_toolsWindow = null;
+
+        [SerializeField]
         private WindowDescriptor m_importAssetsDialog = null;
 
         [SerializeField]
@@ -133,12 +143,17 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Transform m_componentsRoot = null;
 
+        [SerializeField]
+        private RectTransform m_toolsRoot = null;
+       
         private IRTE m_editor;
+        private Func<IWindowManager, LayoutInfo> m_overrideLayoutCallback;
+        private string m_activateWindowOfType;
 
         private readonly Dictionary<string, CustomWindowDescriptor> m_typeToCustomWindow = new Dictionary<string, CustomWindowDescriptor>();
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
         private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();
-
+        
         private IInput Input
         {
             get { return m_editor.Input; }
@@ -218,7 +233,19 @@ namespace Battlehub.RTEditor
 
             m_editor = IOC.Resolve<IRTE>();
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
+
+            
             SetDefaultLayout();
+
+            WindowDescriptor wd;
+            GameObject content;
+            bool isDialog;
+
+            Transform tools = CreateWindow(RuntimeWindowType.ToolsPanel.ToString().ToLower(), out wd, out content, out isDialog);
+            if (tools != null)
+            {
+                SetTools(tools);
+            }
 
             m_dockPanels.CursorHelper = m_editor.CursorHelper;
         }
@@ -421,11 +448,6 @@ namespace Battlehub.RTEditor
 
         private void OnRegionSelected(Region region)
         {
-            RuntimeWindow window = region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
-            if (window != null)
-            {
-                //window.Editor.ActivateWindow(window);
-            }
         }
 
         private void OnRegionUnselected(Region region)
@@ -586,6 +608,10 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_openProjectDialog;
                 }
+                else if(windowTypeName == RuntimeWindowType.ToolsPanel.ToString().ToLower())
+                {
+                    wd = m_toolsWindow;
+                }
                 else if(windowTypeName == RuntimeWindowType.SelectAssetLibrary.ToString().ToLower())
                 {
                     wd = m_selectAssetLibraryDialog;
@@ -623,7 +649,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-       
         private void CancelIfRegionIsNotActive(Region region, CancelArgs arg)
         {
             if (m_editor.ActiveWindow == null)
@@ -641,10 +666,7 @@ namespace Battlehub.RTEditor
             {
                 arg.Cancel = true;
             }
-
-
         }
-
 
         private void OnRegionBeforeBeginDrag(Region region, CancelArgs arg)
         {
@@ -683,40 +705,50 @@ namespace Battlehub.RTEditor
             return true;
         }
 
+        public void OverrideDefaultLayout(Func<IWindowManager, LayoutInfo> buildLayoutCallback, string activateWindowOfType = null)
+        {
+            m_overrideLayoutCallback = buildLayoutCallback;
+            m_activateWindowOfType = activateWindowOfType;
+        }
+
         public void SetDefaultLayout()
         {
-            Region rootRegion = m_dockPanels.RootRegion;
-            ClearRegion(rootRegion);
-            foreach (Transform child in m_dockPanels.Free)
+            if(m_overrideLayoutCallback != null)
             {
-                Region region = child.GetComponent<Region>();
-                ClearRegion(region);
+                SetLayout(m_overrideLayoutCallback, m_activateWindowOfType);
             }
+            else
+            {
+                SetLayout(BuiltInDefaultLayout, RuntimeWindowType.Scene.ToString().ToLower());
+            }
+        }
 
+        private static LayoutInfo BuiltInDefaultLayout(IWindowManager wm)
+        {
             WindowDescriptor sceneWd;
             GameObject sceneContent;
             bool isDialog;
-            CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent, out isDialog);
+            wm.CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent, out isDialog);
 
             WindowDescriptor gameWd;
             GameObject gameContent;
-            CreateWindow(RuntimeWindowType.Game.ToString(), out gameWd, out gameContent, out isDialog);
+            wm.CreateWindow(RuntimeWindowType.Game.ToString(), out gameWd, out gameContent, out isDialog);
 
             WindowDescriptor inspectorWd;
             GameObject inspectorContent;
-            CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent, out isDialog);
+            wm.CreateWindow(RuntimeWindowType.Inspector.ToString(), out inspectorWd, out inspectorContent, out isDialog);
 
             WindowDescriptor consoleWd;
             GameObject consoleContent;
-            CreateWindow(RuntimeWindowType.Console.ToString(), out consoleWd, out consoleContent, out isDialog);
+            wm.CreateWindow(RuntimeWindowType.Console.ToString(), out consoleWd, out consoleContent, out isDialog);
 
             WindowDescriptor hierarchyWd;
             GameObject hierarchyContent;
-            CreateWindow(RuntimeWindowType.Hierarchy.ToString(), out hierarchyWd, out hierarchyContent, out isDialog);
+            wm.CreateWindow(RuntimeWindowType.Hierarchy.ToString(), out hierarchyWd, out hierarchyContent, out isDialog);
 
             WindowDescriptor projectWd;
             GameObject projectContent;
-            CreateWindow(RuntimeWindowType.Project.ToString(), out projectWd, out projectContent, out isDialog);
+            wm.CreateWindow(RuntimeWindowType.Project.ToString(), out projectWd, out projectContent, out isDialog);
 
             LayoutInfo layout = new LayoutInfo(false,
                 new LayoutInfo(false,
@@ -735,23 +767,81 @@ namespace Battlehub.RTEditor
                     0.5f),
                 0.75f);
 
+            return layout;
+        }
+
+        public void OverrideTools(Transform contentPrefab)
+        {
+            if(contentPrefab == null)
+            {
+                m_toolsWindow.ContentPrefab = null;
+                return;
+            }
+            m_toolsWindow.ContentPrefab = contentPrefab.gameObject;
+        }
+
+        public void SetTools(Transform tools)
+        {
+            Transform window = GetWindow(RuntimeWindowType.ToolsPanel.ToString().ToLower());
+            if(window != null)
+            {
+                OnContentDestroyed(window);
+            }
+            
+            if (m_toolsRoot != null)
+            {
+                foreach(Transform child in m_toolsRoot)
+                {
+                    Destroy(child.gameObject);
+                }
+            }
+
+            if(tools != null)
+            {
+                tools.SetParent(m_toolsRoot, false);
+
+                RectTransform rt = tools as RectTransform;
+                if (rt != null)
+                {
+                    rt.Stretch();
+                }
+
+                tools.gameObject.SetActive(true);
+            }  
+        }
+
+        public void SetLayout(Func<IWindowManager, LayoutInfo> buildLayoutCallback, string activateWindowOfType = null)
+        {
+            Region rootRegion = m_dockPanels.RootRegion;
+            if(rootRegion == null)
+            {
+                return;
+            }
+            if(m_editor == null)
+            {
+                return;
+            }
+
+            ClearRegion(rootRegion);
+            foreach (Transform child in m_dockPanels.Free)
+            {
+                Region region = child.GetComponent<Region>();
+                ClearRegion(region);
+            }
+
+            LayoutInfo layout = buildLayoutCallback(this);
             m_dockPanels.RootRegion.Build(layout);
 
-            ActivateContent(sceneWd, sceneContent);
-            ActivateContent(consoleWd, consoleContent);
-            ActivateContent(gameWd, gameContent);
-            ActivateContent(projectWd, projectContent);
-            ActivateContent(hierarchyWd, hierarchyContent);
-            ActivateContent(inspectorWd, inspectorContent);
-
-            m_editor.ActivateWindow(RuntimeWindowType.Scene);
-
+            if(!string.IsNullOrEmpty(activateWindowOfType))
+            {
+                ActivateWindow(activateWindowOfType);
+            }
+            
             RuntimeWindow[] windows = Windows;
             for (int i = 0; i < windows.Length; ++i)
             {
                 windows[i].EnableRaycasts();
             }
-
         }
 
         private void ClearRegion(Region rootRegion)
@@ -823,7 +913,7 @@ namespace Battlehub.RTEditor
             if (region != null)
             {
                 region.MoveRegionToForeground();
-                m_isPointerOverActiveWindow = RectTransformUtility.RectangleContainsScreenPoint((RectTransform)region.transform, Input.GetPointerXY(0), Raycaster.eventCamera);
+                m_isPointerOverActiveWindow = m_editor != null && RectTransformUtility.RectangleContainsScreenPoint((RectTransform)region.transform, Input.GetPointerXY(0), Raycaster.eventCamera);
                 if (m_isPointerOverActiveWindow)
                 {
                     RuntimeWindow[] windows = Windows;
@@ -833,7 +923,6 @@ namespace Battlehub.RTEditor
                     }
                 }
             }
-            
 
             Tab tab = Region.FindTab(content);
             if (tab == null)
@@ -910,7 +999,7 @@ namespace Battlehub.RTEditor
             return window;
         }
 
-        private Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)
+        public Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)
         {
             if (m_dockPanels == null)
             {
@@ -945,6 +1034,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
             {
                 wd = m_consoleWindow;
+            }
+            else if(windowTypeName == RuntimeWindowType.ToolsPanel.ToString().ToLower())
+            {
+                wd = m_toolsWindow;
             }
             else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
             {
@@ -1020,7 +1113,6 @@ namespace Battlehub.RTEditor
                         component.transform.SetParent(m_componentsRoot, false);
                     }
                 }
-
 
                 List<Transform> extraComponents = new List<Transform>();
                 for (int i = 0; i < children.Length; ++i)

@@ -55,7 +55,6 @@ namespace Battlehub.Cubeman
 
         private void Start()
         {
-            
             m_soul = transform.Find("Soul");
             m_skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             m_rigidBody = GetComponent<Rigidbody>();

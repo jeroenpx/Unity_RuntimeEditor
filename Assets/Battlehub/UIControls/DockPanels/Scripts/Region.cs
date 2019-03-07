@@ -830,7 +830,6 @@ namespace Battlehub.UIControls.DockPanels
                     if(childRegion.m_contentPanel.childCount == 0)
                     {
                         childRegion.MoveChildrenToParentRegion(this);
-
                     }
                     else
                     {

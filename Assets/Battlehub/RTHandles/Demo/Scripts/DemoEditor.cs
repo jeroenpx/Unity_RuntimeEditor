@@ -13,6 +13,9 @@ namespace Battlehub.RTHandles.Demo
         private Button m_focusButton = null;
 
         [SerializeField]
+        private Button m_deleteButton = null;
+
+        [SerializeField]
         private Button m_play = null;
 
         [SerializeField]
@@ -25,7 +28,7 @@ namespace Battlehub.RTHandles.Demo
         private GameObject m_ui = null;
 
         [SerializeField]
-        private GameObject m_prefabSpawners = null;
+        private GameObject m_prefabSpawnPoints = null;
 
         [SerializeField]
         private GameObject m_editorCamera = null;
@@ -77,22 +80,9 @@ namespace Battlehub.RTHandles.Demo
         {
             if(Editor.Input.GetKeyDown(KeyCode.Delete))
             {
-                if(Editor.Selection.Length > 0)
-                {
-                    ExposeToEditor[] exposed = Editor.Selection.gameObjects
-                        .Where(o => o != null)
-                        .Select(o => o.GetComponent<ExposeToEditor>())
-                        .Where(o => o != null)
-                        .ToArray();
-
-                    Editor.Undo.BeginRecord();
-                    Editor.Selection.objects = null;
-                    Editor.Undo.DestroyObjects(exposed);
-                    Editor.Undo.EndRecord();
-                }
+                DeleteSelected();
             }
         }
-
         protected override void SubscribeUIEvents()
         {
             base.SubscribeUIEvents();
@@ -109,6 +99,10 @@ namespace Battlehub.RTHandles.Demo
             {
                 m_focusButton.onClick.AddListener(OnFocusClick);
             }  
+            if(m_deleteButton != null)
+            {
+                m_deleteButton.onClick.AddListener(OnDeleteClick);
+            }
         }
 
         protected override void UnsubscribeUIEvents()
@@ -127,6 +121,10 @@ namespace Battlehub.RTHandles.Demo
             {
                 m_focusButton.onClick.RemoveListener(OnFocusClick);
             }
+            if(m_deleteButton != null)
+            {
+                m_deleteButton.onClick.RemoveListener(OnDeleteClick);
+            }
         }
 
         private void OnPlaymodeStateChanged()
@@ -139,9 +137,9 @@ namespace Battlehub.RTHandles.Demo
             {
                 m_ui.SetActive(!Editor.IsPlaying);
             }
-            if(m_prefabSpawners != null)
+            if(m_prefabSpawnPoints != null)
             {
-                m_prefabSpawners.SetActive(!Editor.IsPlaying);
+                m_prefabSpawnPoints.SetActive(!Editor.IsPlaying);
             }
             if(m_stop != null)
             {
@@ -162,6 +160,11 @@ namespace Battlehub.RTHandles.Demo
             if(m_focusButton != null)
             {
                 m_focusButton.interactable = Editor.Selection.Length > 0;
+            }
+
+            if(m_deleteButton != null)
+            {
+                m_deleteButton.interactable = Editor.Selection.Length > 0;
             }
         }
 
@@ -188,13 +191,35 @@ namespace Battlehub.RTHandles.Demo
             Editor.IsPlaying = false;
         }
 
+        private void OnDeleteClick()
+        {
+            DeleteSelected();
+        }
+
+        private void DeleteSelected()
+        {
+            if (Editor.Selection.Length > 0)
+            {
+                ExposeToEditor[] exposed = Editor.Selection.gameObjects
+                    .Where(o => o != null)
+                    .Select(o => o.GetComponent<ExposeToEditor>())
+                    .Where(o => o != null)
+                    .ToArray();
+
+                Editor.Undo.BeginRecord();
+                Editor.Selection.objects = null;
+                Editor.Undo.DestroyObjects(exposed);
+                Editor.Undo.EndRecord();
+            }
+        }
+
         #region IRTEState implementation
         public event System.Action<object> Created;
         public event System.Action<object> Destroyed;
         private void Use()
         {
             Created(null);
-            Destroy(null);
+            Destroyed(null);
         }
         #endregion
     }

@@ -215,11 +215,12 @@ namespace Battlehub.RTHandles
         protected override void Start()
         {
             base.Start();
-            UpdateModel();
+            SetColors();
         }
 
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             if(IsWindowActive)
             {
                 m_prevRotation = transform.rotation;
@@ -229,8 +230,7 @@ namespace Battlehub.RTHandles
                 if(index >= 0)
                 {
                     UpdateColliders(index);
-                }
-                
+                }   
             }
         }
 

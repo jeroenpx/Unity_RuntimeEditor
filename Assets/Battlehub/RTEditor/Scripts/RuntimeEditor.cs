@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
 using Battlehub.RTSL.Interface;
+using Battlehub.UIControls;
 using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
 using System;
@@ -54,7 +55,7 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private GameObject m_progressIndicator = null;
-      
+
         public override bool IsBusy
         {
             get { return base.IsBusy; }
@@ -84,8 +85,6 @@ namespace Battlehub.RTEditor
             m_project.SaveCompleted += OnSaveCompleted;
             m_project.LoadCompleted += OnLoadCompleted;
         }
-
-   
 
         protected override void Start()
         {
