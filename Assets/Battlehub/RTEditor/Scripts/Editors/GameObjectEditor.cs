@@ -21,6 +21,7 @@ namespace Battlehub.RTEditor
         private Transform ComponentsPanel = null;
 
         private IRuntimeEditor m_editor;
+        private IEditorsMap m_editorsMap;
 
         public bool IsGameObjectActive
         {
@@ -56,6 +57,8 @@ namespace Battlehub.RTEditor
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_editor.Object.ComponentAdded += OnComponentAdded;
+
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
             
 
             GameObject go = m_editor.Selection.activeGameObject;
@@ -129,9 +132,9 @@ namespace Battlehub.RTEditor
                 return false;
             }
 
-            if (EditorsMap.IsObjectEditorEnabled(component.GetType()))
+            if (m_editorsMap.IsObjectEditorEnabled(component.GetType()))
             {
-                GameObject editorPrefab = EditorsMap.GetObjectEditor(component.GetType());
+                GameObject editorPrefab = m_editorsMap.GetObjectEditor(component.GetType());
                 if (editorPrefab != null)
                 {
                     ComponentEditor componentEditorPrefab = editorPrefab.GetComponent<ComponentEditor>();

@@ -276,10 +276,13 @@ namespace Battlehub.RTEditor
 
         private IProject m_project;
 
+        private IEditorsMap m_editorsMap;
+
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
             m_project = IOC.Resolve<IProject>();
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
 
             AwakeOverride();
         }
@@ -567,13 +570,13 @@ namespace Battlehub.RTEditor
                 return null;
             }
 
-            GameObject editorGo = EditorsMap.GetPropertyEditor(descriptor.MemberType);
+            GameObject editorGo = m_editorsMap.GetPropertyEditor(descriptor.MemberType);
             if (editorGo == null)
             {
                 return null;
             }
 
-            if (!EditorsMap.IsPropertyEditorEnabled(descriptor.MemberType))
+            if (!m_editorsMap.IsPropertyEditorEnabled(descriptor.MemberType))
             {
                 return null;
             }

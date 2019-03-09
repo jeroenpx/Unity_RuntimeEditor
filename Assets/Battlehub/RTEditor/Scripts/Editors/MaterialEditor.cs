@@ -113,6 +113,7 @@ namespace Battlehub.RTEditor
         private IRuntimeEditor m_editor;
         private IResourcePreviewUtility m_resourcePreviewUtility;
         private Texture2D m_previewTexture;
+        private IEditorsMap m_editorsMap;
 
         private void Start()
         {
@@ -120,6 +121,7 @@ namespace Battlehub.RTEditor
             m_editor.Undo.UndoCompleted += OnUndoCompleted;
             m_editor.Undo.RedoCompleted += OnRedoCompleted;
             m_resourcePreviewUtility = IOC.Resolve<IResourcePreviewUtility>();
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
 
             if (Material == null)
             {
@@ -224,9 +226,9 @@ namespace Battlehub.RTEditor
                         }
                         break;
                     default:
-                        if (EditorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
+                        if (m_editorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
                         {
-                            GameObject editorPrefab = EditorsMap.GetPropertyEditor(propertyInfo.PropertyType);
+                            GameObject editorPrefab = m_editorsMap.GetPropertyEditor(propertyInfo.PropertyType);
                             GameObject instance = Instantiate(editorPrefab);
                             instance.transform.SetParent(EditorsPanel, false);
 
@@ -256,9 +258,9 @@ namespace Battlehub.RTEditor
         private PropertyEditor InstantiateEditor( PropertyInfo propertyInfo)
         {
             PropertyEditor editor = null;
-            if (EditorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
+            if (m_editorsMap.IsPropertyEditorEnabled(propertyInfo.PropertyType))
             {
-                GameObject prefab = EditorsMap.GetPropertyEditor(propertyInfo.PropertyType);
+                GameObject prefab = m_editorsMap.GetPropertyEditor(propertyInfo.PropertyType);
                 if (prefab != null)
                 {
                     editor = Instantiate(prefab).GetComponent<PropertyEditor>();

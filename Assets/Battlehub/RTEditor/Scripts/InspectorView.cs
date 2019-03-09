@@ -27,6 +27,8 @@ namespace Battlehub.RTEditor
 
         private GameObject m_editor;
 
+        private IEditorsMap m_editorsMap;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Hierarchy;
@@ -40,6 +42,8 @@ namespace Battlehub.RTEditor
             {
                 Debug.LogError("MaterialEditor is not set");
             }
+
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
 
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
             CreateEditor();
@@ -152,15 +156,15 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
-                editorPrefab = EditorsMap.GetMaterialEditor(mat.shader);
+                editorPrefab = m_editorsMap.GetMaterialEditor(mat.shader);
             }
             else
             {
-                if (!EditorsMap.IsObjectEditorEnabled(objType))
+                if (!m_editorsMap.IsObjectEditorEnabled(objType))
                 {
                     return;
                 }
-                editorPrefab = EditorsMap.GetObjectEditor(objType);
+                editorPrefab = m_editorsMap.GetObjectEditor(objType);
             }
 
             if (editorPrefab != null)

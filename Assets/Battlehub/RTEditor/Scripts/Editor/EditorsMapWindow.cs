@@ -2,7 +2,6 @@
 using UnityEditor;
 
 using System.Linq;
-using Battlehub.Utils;
 using System;
 using System.Reflection;
 using System.Collections.Generic;
@@ -77,7 +76,6 @@ namespace Battlehub.RTEditor
 
         private void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
         {
-            //assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
             assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.Contains("UnityEditor") && !a.FullName.Contains("Assembly-CSharp-Editor")).OrderBy(a => a.FullName).ToArray();
 
             List<Type> allUOTypes = new List<Type>();
@@ -102,8 +100,12 @@ namespace Battlehub.RTEditor
         private void Init()
         {
             m_map = Resources.Load<EditorsMapStorage>(EditorsMapStorage.EditorsMapPrefabName);
-            EditorsMap.LoadMap();
-
+            if(m_map == null)
+            {
+                m_map = Resources.Load<EditorsMapStorage>(EditorsMapStorage.EditorsMapTemplateName);
+            }
+            EditorsMap editorsMap = new EditorsMap();
+            
             Assembly[] allAssemblies;
             Type[] types;
             GetUOAssembliesAndTypes(out allAssemblies, out types);
@@ -113,18 +115,18 @@ namespace Battlehub.RTEditor
 
             m_objectEditorDescriptors = new[] { typeof(GameObject) }
                 .Where(t => t.IsPublic && !t.IsGenericType)
-                .Select(t => new EditorDescriptor(t, m_map != null && EditorsMap.IsObjectEditorEnabled(t), m_map != null ? EditorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
+                .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
             m_propertyEditorDescriptors = new[] { typeof(object), typeof(UnityEngine.Object), typeof(bool), typeof(Enum), typeof(List<>), typeof(Array), typeof(string), typeof(int), typeof(float), typeof(Range), typeof(Vector2), typeof(Vector3), typeof(Vector4), typeof(Quaternion), typeof(Color), typeof(Bounds) }
                 .Where(t =>  t.IsPublic)
-                .Select(t => new EditorDescriptor(t, m_map != null && EditorsMap.IsPropertyEditorEnabled(t), m_map != null ? EditorsMap.GetPropertyEditor(t, true) : null, true)).ToArray();
+                .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsPropertyEditorEnabled(t), m_map != null ? editorsMap.GetPropertyEditor(t, true) : null, true)).ToArray();
             m_stdComponentEditorDescriptors = unityAssemblies.SelectMany(a => a.GetTypes())
                 .Where(t => typeof(Component).IsAssignableFrom(t) && t.IsPublic && !t.IsGenericType)
                 .OrderBy(t => (t == typeof(Component)) ? string.Empty : t.Name)
-                .Select(t => new EditorDescriptor(t, m_map != null && EditorsMap.IsObjectEditorEnabled(t), m_map != null ? EditorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
+                .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
             m_scriptEditorDescriptors = otherAssemblies.SelectMany(a => a.GetTypes())
                 .Where(t => typeof(MonoBehaviour).IsAssignableFrom(t) && t.IsPublic && !t.IsGenericType)
                 .OrderBy(t => t.FullName)
-                .Select(t => new EditorDescriptor(t, m_map != null && EditorsMap.IsObjectEditorEnabled(t), m_map != null ? EditorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
+                .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
 
             List<Material> materials = new List<Material>();
             string[] assets = AssetDatabase.GetAllAssetPaths();
@@ -150,7 +152,7 @@ namespace Battlehub.RTEditor
             MaterialEditorDescriptor[] materialDescriptors = materials.Where(m => m.shader != null && !m.shader.name.StartsWith("Hidden/"))
                 .Select(m => m.shader).Distinct()
                 .OrderBy(s => s.name.StartsWith("Standard") ? string.Empty : s.name)
-                .Select(s => new MaterialEditorDescriptor(s, m_map != null && EditorsMap.IsMaterialEditorEnabled(s), m_map != null ? EditorsMap.GetMaterialEditor(s, true) : null)).ToArray();
+                .Select(s => new MaterialEditorDescriptor(s, m_map != null && editorsMap.IsMaterialEditorEnabled(s), m_map != null ? editorsMap.GetMaterialEditor(s, true) : null)).ToArray();
 
             m_materialDescriptors = defaultDescriptors.Union(materialDescriptors).ToArray();
         }

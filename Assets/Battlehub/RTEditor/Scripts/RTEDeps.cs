@@ -16,6 +16,7 @@ namespace Battlehub.RTEditor
         private IGameObjectCmd m_gameObjectCmd;
         private IEditCmd m_editCmd;
         private IContextMenu m_contextMenu;
+        private IEditorsMap m_editorsMap;
 
         protected virtual IResourcePreviewUtility ResourcePreview
         {
@@ -119,6 +120,14 @@ namespace Battlehub.RTEditor
             }
         }
 
+        protected virtual IEditorsMap EditorsMap
+        {
+            get
+            {
+                return new EditorsMap();
+            }
+        }
+
 
         private void Awake()
         {
@@ -144,6 +153,7 @@ namespace Battlehub.RTEditor
             m_editCmd = EditCmd;
             m_contextMenu = ContextMenu;
             m_runtimeHandlesComponent = RuntimeHandlesComponent;
+            m_editorsMap = EditorsMap;
         }
 
         private void OnDestroy()
@@ -166,6 +176,7 @@ namespace Battlehub.RTEditor
             m_editCmd = null;
             m_contextMenu = null;
             m_runtimeHandlesComponent = null;
+            m_editorsMap = null;
         }
 
         protected virtual void OnDestroyOverride()
@@ -202,6 +213,7 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_editCmd);
             IOC.RegisterFallback(() => Instance.m_contextMenu);
             IOC.RegisterFallback(() => Instance.m_runtimeHandlesComponent);
+            IOC.RegisterFallback(() => Instance.m_editorsMap);
         }
     }
 }

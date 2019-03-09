@@ -4,7 +4,9 @@ namespace Battlehub.RTEditor
 {
     public class EditorsMapStorage : MonoBehaviour
     {
-        public const string EditorsMapPrefabName = "Battlehub_EditorsMap";
+        public const string EditorsMapPrefabName = "Battlehub_EditorsMapAuto";
+        public const string EditorsMapTemplateName = "Battlehub_EditorsMapTemplate";
+
         [HideInInspector]
         public GameObject[] Editors;
 

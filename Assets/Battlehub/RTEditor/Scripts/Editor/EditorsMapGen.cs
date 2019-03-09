@@ -11,8 +11,8 @@ namespace Battlehub.RTEditor
 {
     public static class EditorsMapGen
     {
-        public const string ScriptsPath = @"/" + BHPath.Root + @"/RTEditor/Scripts/Editors";
-        public const string PrefabsPath = @"/" + BHPath.Root + @"/RTEditor/Prefabs/Editors";
+        public const string ScriptsPath = @"/" + BHPath.Root + @"/RTEditor_Data/Scripts/Editors";
+        public const string PrefabsPath = @"/" + BHPath.Root + @"/RTEditor_Data/Prefabs/Editors";
         public const string ScriptName = "EditorsMapAuto.cs";
 
         public static void Generate(EditorDescriptor[] descriptors, MaterialEditorDescriptor[] materialDescriptors)
@@ -21,7 +21,7 @@ namespace Battlehub.RTEditor
 
             if (!Directory.Exists(Application.dataPath + PrefabsPath + "/Resources"))
             {
-                AssetDatabase.CreateFolder("Assets" + PrefabsPath, "Resources");
+                Directory.CreateDirectory(Application.dataPath + PrefabsPath + "/Resources");
             }
 
             GameObject go = new GameObject();
@@ -60,13 +60,10 @@ namespace Battlehub.RTEditor
             editorsMap.IsMaterialEditorEnabled = materialEditorsEnabled.ToArray();
 
             string path = "Assets" + PrefabsPath + "/Resources/" + EditorsMapStorage.EditorsMapPrefabName + ".prefab";
-            //PrefabUtility.CreatePrefab(path, go);
             PrefabUtility.SaveAsPrefabAsset(go, path);
             UnityEngine.Object.DestroyImmediate(go);
 
             AssetDatabase.ImportAsset("Assets" + ScriptsPath, ImportAssetOptions.ImportRecursive);
-
-
         }
 
         private static Dictionary<GameObject, int> CreateComponentEditorMap(EditorDescriptor[] descriptors)
@@ -84,7 +81,7 @@ namespace Battlehub.RTEditor
             builder.AppendLine("{");
             builder.AppendLine("\tpublic partial class " + type.Name);
             builder.AppendLine("\t{");
-            builder.AppendLine("\t\tprotected static void InitEditorsMap()");
+            builder.AppendLine("\t\tpartial void InitEditorsMap()");
             builder.AppendLine("\t\t{");
             builder.AppendLine("\t\t\tm_map = new Dictionary<Type, EditorDescriptor>");
             builder.AppendLine("\t\t\t{");

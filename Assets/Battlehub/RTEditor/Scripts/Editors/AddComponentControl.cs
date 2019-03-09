@@ -1,4 +1,5 @@
-﻿using Battlehub.UIControls;
+﻿using Battlehub.RTCommon;
+using Battlehub.UIControls;
 using System;
 using System.Collections;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace Battlehub.RTEditor
 
         private void OnOpened()
         {
-            Type[] editableTypes = EditorsMap.GetEditableTypes();
+            Type[] editableTypes = IOC.Resolve<IEditorsMap>().GetEditableTypes();
 
             m_filter = GetComponentInChildren<InputField>();
             if(m_filter != null)

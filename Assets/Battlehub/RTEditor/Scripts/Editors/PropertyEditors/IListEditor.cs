@@ -41,9 +41,14 @@ namespace Battlehub.RTEditor
 
         public bool StartExpanded;
 
+        private IEditorsMap m_editorsMap;
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
+
             Expander.onValueChanged.AddListener(OnExpanded);
             SizeInput.onValueChanged.AddListener(OnSizeValueChanged);
             SizeInput.onEndEdit.AddListener(OnSizeEndEdit);
@@ -149,8 +154,8 @@ namespace Battlehub.RTEditor
 
             if (m_elementType != null)
             {
-                GameObject editor = EditorsMap.GetPropertyEditor(m_elementType);
-                if (EditorsMap.IsPropertyEditorEnabled(m_elementType))
+                GameObject editor = m_editorsMap.GetPropertyEditor(m_elementType);
+                if (m_editorsMap.IsPropertyEditorEnabled(m_elementType))
                 {
                     m_editorPrefab = editor.GetComponent<PropertyEditor>();
                 }
