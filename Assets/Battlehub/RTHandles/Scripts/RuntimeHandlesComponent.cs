@@ -35,16 +35,58 @@ namespace Battlehub.RTHandles
         public Color32 GridColor = new Color(1, 1, 1, 0.1f);
     }
 
+    public interface IRuntimeHandlesComponent
+    {
+        RTHColors Colors
+        {
+            get;
+            set;
+        }
+
+        float HandleScale
+        {
+            get;
+            set;
+        }
+
+        float SelectionMargin
+        {
+            get;
+            set;
+        }
+        
+        bool InvertZAxis
+        {
+            get;
+            set;
+        }
+        
+        bool PositionHandleArrowOnly
+        {
+            get;
+            set;
+        }
+
+        float SceneGizmoScale
+        {
+            get;
+            set;
+        }
+
+        void ApplySettings();
+    }
+
     /// <summary>
     /// GL Drawing routines for all handles, gizmos and grid
     /// </summary>
-    public class RuntimeHandlesComponent : MonoBehaviour
+    public class RuntimeHandlesComponent : MonoBehaviour, IRuntimeHandlesComponent
     {
         [SerializeField]
         private RTHColors m_colors = new RTHColors();
         public RTHColors Colors
         {
             get { return m_colors; }
+            set { m_colors = value; }
         }
 
         [SerializeField]
@@ -52,6 +94,7 @@ namespace Battlehub.RTHandles
         public float HandleScale
         {
             get { return m_handleScale; }
+            set { m_handleScale = value; }
         }
 
         [SerializeField]
@@ -59,6 +102,7 @@ namespace Battlehub.RTHandles
         public float SelectionMargin
         {
             get { return m_selectionMargin * m_handleScale; }
+            set { m_selectionMargin = value; }
         }
 
         [SerializeField]
@@ -66,13 +110,24 @@ namespace Battlehub.RTHandles
         public bool InvertZAxis
         {
             get { return m_invertZAxis; }
+            set { m_invertZAxis = value; }
+
         }
 
         [SerializeField]
-        public bool m_positionHandleArrowOnly = false;
+        private bool m_positionHandleArrowOnly = false;
         public bool PositionHandleArrowOnly
         {
             get { return m_positionHandleArrowOnly; }
+            set { m_positionHandleArrowOnly = value; }
+        }
+
+        [SerializeField]
+        private float m_sceneGizmoScale;
+        public float SceneGizmoScale
+        {
+            get { return m_sceneGizmoScale; }
+            set { m_sceneGizmoScale = value; }
         }
         
         public Vector3 Forward
@@ -152,7 +207,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void OnDestroy()
         {
-            if(m_instance == this)
+            if (m_instance == this)
             {
                 m_instance = null;
             }
@@ -165,9 +220,14 @@ namespace Battlehub.RTHandles
             {
                 m_oldHandleScale = m_handleScale;
                 m_oldInvertZAxis = m_invertZAxis;
-                Cleanup();
-                Initialize();
+                ApplySettings();
             }
+        }
+
+        public void ApplySettings()
+        {
+            Cleanup();
+            Initialize();
         }
 
         private void Initialize()

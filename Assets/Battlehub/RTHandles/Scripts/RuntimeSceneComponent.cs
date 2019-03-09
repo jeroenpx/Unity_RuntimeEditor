@@ -20,8 +20,6 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private SceneGizmo m_sceneGizmo;
 
-        [SerializeField]
-        private RuntimeGrid m_grid;
 
         protected override void AwakeOverride()
         {
@@ -69,19 +67,6 @@ namespace Battlehub.RTHandles
                 m_sceneGizmo.OrientationChanged.AddListener(OnSceneGizmoOrientationChanged);
                 m_sceneGizmo.ProjectionChanged.AddListener(OnSceneGizmoProjectionChanged);
                 m_sceneGizmo.Pivot = Pivot;
-            }
-
-            if(m_grid == null)
-            {
-                m_grid = GetComponentInChildren<RuntimeGrid>(true);
-            }
-
-            if(m_grid != null)
-            {
-                if(m_grid.Window == null)
-                {
-                    m_grid.Window = Window;
-                }
             }
         }
 

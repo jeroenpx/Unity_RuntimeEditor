@@ -20,6 +20,7 @@ namespace Battlehub.RTHandles
         public UnityEvent OrientationChanged;
         public UnityEvent ProjectionChanged;
 
+        private float m_scale;
         private Rect m_cameraPixelRect;
         private float m_aspect;
         private Camera m_camera;
@@ -176,7 +177,7 @@ namespace Battlehub.RTHandles
 
         private void OnPostRender()
         {
-            Appearance.DoSceneGizmo(GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y / 96, m_xAlpha, m_yAlpha, m_zAlpha);
+            Appearance.DoSceneGizmo(GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_xAlpha, m_yAlpha, m_zAlpha);
         }
 
         private void OnGUI()
@@ -380,17 +381,20 @@ namespace Battlehub.RTHandles
                 m_rotation = transform.rotation;
             }
 
-            if (m_screenHeight != Screen.height || m_screenWidth != Screen.width || m_cameraPixelRect != Window.Camera.pixelRect)
+            if (m_screenHeight != Screen.height || m_screenWidth != Screen.width || m_cameraPixelRect != Window.Camera.pixelRect || m_scale != Appearance.SceneGizmoScale)
             {
                 m_screenHeight = Screen.height;
                 m_screenWidth = Screen.width;
                 m_cameraPixelRect = Window.Camera.pixelRect;
+                m_scale = Appearance.SceneGizmoScale;
                 UpdateLayout();
             }
 
             if (m_aspect != m_camera.aspect)
             {
-                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x + Offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y + Offset.y, Size.x, Size.y);
+                Vector2 size = Size * Appearance.SceneGizmoScale;
+                Vector2 offset = Offset * Appearance.SceneGizmoScale;
+                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x + offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - size.y + offset.y, size.x, size.y);
                 m_aspect = m_camera.aspect;
             }
 
@@ -460,7 +464,7 @@ namespace Battlehub.RTHandles
         private void InitColliders()
         {
             m_gizmoPosition = GetGizmoPosition();
-            float sScale = RuntimeHandlesComponent.GetScreenScale(m_gizmoPosition, m_camera) * Size.y / 96;
+            float sScale = RuntimeHandlesComponent.GetScreenScale(m_gizmoPosition, m_camera) * Size.y * Appearance.SceneGizmoScale / 96;
 
             m_collidersGO.transform.rotation = Quaternion.identity;
             m_collidersGO.transform.position = GetGizmoPosition();
@@ -531,7 +535,10 @@ namespace Battlehub.RTHandles
             if (Window.Camera != null)
             {
                 bool initColliders = false;
-                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x + Offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - Size.y + Offset.y, Size.x, Size.y);
+
+                Vector2 size = Size * Appearance.SceneGizmoScale;
+                Vector2 offset = Offset * Appearance.SceneGizmoScale;
+                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x + offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - size.y + offset.y, size.x, size.y);
                 if (m_camera.pixelRect.height == 0 || m_camera.pixelRect.width == 0)
                 {
                    // enabled = false;
@@ -548,7 +555,7 @@ namespace Battlehub.RTHandles
                 m_camera.depth = Window.Camera.depth + 1;
                 m_aspect = m_camera.aspect;
 
-                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - Size.x / 2 - 17 + Offset.x, (Screen.height - Window.Camera.pixelRect.yMax) + Size.y - Offset.y - 3, 35, 14);
+                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x / 2 - 17 + offset.x, (Screen.height - Window.Camera.pixelRect.yMax) + size.y - offset.y - 3, 35, 14);
                 
                 m_buttonStyle = new GUIStyle();
                 m_buttonStyle.alignment = TextAnchor.MiddleCenter;

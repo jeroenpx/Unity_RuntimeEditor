@@ -5,60 +5,102 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
     public interface IRTEAppearance
     {
+        RTECursor[] CursorSettings
+        {
+            get;
+            set;
+        }
 
+        CanvasScaler UIBackgroundScaler
+        {
+            get;
+        }
+
+        CanvasScaler UIForegroundScaler
+        {
+            get;
+        }
+
+    }
+
+    [Serializable]
+    public struct RTECursor
+    {
+        public string Name;
+        public KnownCursor Type;
+        public Texture2D Texture;
     }
 
     public class RTEAppearance : MonoBehaviour, IRTEAppearance
     {
-        [Serializable]
-        public struct Cursor
+        [SerializeField]
+        private RTECursor[] m_cursorSettings = null;
+        public RTECursor[] CursorSettings
         {
-            public string Name;
-            public KnownCursor Type;
-            public Texture2D Texture;
+            get { return m_cursorSettings; }
+            set
+            {
+                m_cursorSettings = value;
+                if (m_editor != null && m_editor.IsOpened)
+                {
+                    ApplyCursorSettings();
+                }
+            }
         }
 
         [SerializeField]
-        private Cursor[] CursorSettings;       
-        private IRTE m_editor;
+        private CanvasScaler m_uiBackgroundScaler = null;
+        public CanvasScaler UIBackgroundScaler
+        {
+            get { return m_uiBackgroundScaler; }
+        }
 
+        [SerializeField]
+        private CanvasScaler m_uiForegroundScaler = null;
+        public CanvasScaler UIForegroundScaler
+        {
+            get { return m_uiForegroundScaler; }
+        }
+
+        private IRTE m_editor;
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
 
-            List<Cursor> cursorSettings;
-            if (CursorSettings == null)
+            List<RTECursor> cursorSettings;
+            if (m_cursorSettings == null)
             {
-                cursorSettings = new List<Cursor>();
+                cursorSettings = new List<RTECursor>();
             }
             else
             {
-                cursorSettings = CursorSettings.ToList();
+                cursorSettings = m_cursorSettings.ToList();
             }
-            
+
             AddCursorIfRequired(cursorSettings, KnownCursor.DropAllowed, "Drag & Drop Allowed", "RTE_DropAllowed_Cursor");
             AddCursorIfRequired(cursorSettings, KnownCursor.DropNowAllowed, "Drag & Drop Not Allowed", "RTE_DropNotAllowed_Cursor");
             AddCursorIfRequired(cursorSettings, KnownCursor.HResize, "Horizontal Resize", "RTE_HResize_Cursor");
             AddCursorIfRequired(cursorSettings, KnownCursor.VResize, "Vertical Resize", "RTE_VResize_Cursor");
-            CursorSettings = cursorSettings.ToArray();
+            m_cursorSettings = cursorSettings.ToArray();
 
             m_editor.IsOpenedChanged += OnIsOpenedChanged;
             if (m_editor.IsOpened)
             {
-                ApplySettings();
+                ApplyCursorSettings();
             }
         }
 
-        private static void AddCursorIfRequired(List<Cursor> cursorSettings, KnownCursor cursorType, string name, string texture)
+        private static void AddCursorIfRequired(List<RTECursor> cursorSettings, KnownCursor cursorType, string name, string texture)
         {
             if (!cursorSettings.Any(c => c.Type == cursorType))
             {
-                Cursor dropAllowedCursor = new Cursor
+                RTECursor dropAllowedCursor = new RTECursor
                 {
                     Name = name,
                     Type = cursorType,
@@ -70,7 +112,7 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            if(m_editor != null)
+            if (m_editor != null)
             {
                 m_editor.IsOpenedChanged -= OnIsOpenedChanged;
             }
@@ -78,21 +120,20 @@ namespace Battlehub.RTEditor
 
         private void OnIsOpenedChanged()
         {
-            if(m_editor.IsOpened)
+            if (m_editor.IsOpened)
             {
-                ApplySettings();
+                ApplyCursorSettings();
             }
         }
 
-        private void ApplySettings()
+        private void ApplyCursorSettings()
         {
-            for (int i = 0; i < CursorSettings.Length; ++i)
+            for (int i = 0; i < m_cursorSettings.Length; ++i)
             {
-                Cursor cursor = CursorSettings[i];
+                RTECursor cursor = m_cursorSettings[i];
                 m_editor.CursorHelper.Map(cursor.Type, cursor.Texture);
             }
         }
-
     }
 
 }

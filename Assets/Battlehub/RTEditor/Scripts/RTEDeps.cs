@@ -10,6 +10,7 @@ namespace Battlehub.RTEditor
         private IRuntimeConsole m_console;
         private IResourcePreviewUtility m_resourcePreview;
         private IRTEAppearance m_rteAppearance;
+        private IRuntimeHandlesComponent m_runtimeHandlesComponent;
         private IRuntimeEditor m_rte;
         private IWindowManager m_windowManager;
         private IGameObjectCmd m_gameObjectCmd;
@@ -39,6 +40,19 @@ namespace Battlehub.RTEditor
                     rteAppearance = gameObject.AddComponent<RTEAppearance>();
                 }
                 return rteAppearance;
+            }
+        }
+
+        protected virtual IRuntimeHandlesComponent RuntimeHandlesComponent
+        {
+            get
+            {
+                IRuntimeHandlesComponent runtimeHandles = FindObjectOfType<RuntimeHandlesComponent>();
+                if(runtimeHandles == null)
+                {
+                    runtimeHandles = gameObject.AddComponent<RuntimeHandlesComponent>();
+                }
+                return runtimeHandles;
             }
         }
 
@@ -129,6 +143,7 @@ namespace Battlehub.RTEditor
             m_gameObjectCmd = GameObjectCmd;
             m_editCmd = EditCmd;
             m_contextMenu = ContextMenu;
+            m_runtimeHandlesComponent = RuntimeHandlesComponent;
         }
 
         private void OnDestroy()
@@ -145,9 +160,12 @@ namespace Battlehub.RTEditor
 
             m_resourcePreview = null;
             m_rteAppearance = null;
-            m_rte = null;
             m_windowManager = null;
+            m_console = null;
+            m_gameObjectCmd = null;
+            m_editCmd = null;
             m_contextMenu = null;
+            m_runtimeHandlesComponent = null;
         }
 
         protected virtual void OnDestroyOverride()
@@ -183,6 +201,7 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_gameObjectCmd);
             IOC.RegisterFallback(() => Instance.m_editCmd);
             IOC.RegisterFallback(() => Instance.m_contextMenu);
+            IOC.RegisterFallback(() => Instance.m_runtimeHandlesComponent);
         }
     }
 }

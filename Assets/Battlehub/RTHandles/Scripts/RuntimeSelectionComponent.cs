@@ -53,17 +53,19 @@ namespace Battlehub.RTHandles
     public class RuntimeSelectionComponent : RTEComponent, IScenePivot
     {
         [SerializeField]
-        private PositionHandle m_positionHandle;
+        private PositionHandle m_positionHandle = null;
         [SerializeField]
-        private RotationHandle m_rotationHandle;
+        private RotationHandle m_rotationHandle = null;
         [SerializeField]
-        private ScaleHandle m_scaleHandle;
+        private ScaleHandle m_scaleHandle = null;
         [SerializeField]
-        private BoxSelection m_boxSelection;
+        private BoxSelection m_boxSelection = null;
         [SerializeField]
-        private Transform m_pivot;
+        private RuntimeGrid m_grid = null;
         [SerializeField]
-        private Transform m_secondaryPivot;
+        private Transform m_pivot = null;
+        [SerializeField]
+        private Transform m_secondaryPivot = null;
 
         public Transform Pivot
         {
@@ -144,6 +146,14 @@ namespace Battlehub.RTHandles
                 }
                 m_scaleHandle.gameObject.SetActive(true);
                 m_scaleHandle.gameObject.SetActive(false);
+            }
+
+            if (m_grid != null)
+            {
+                if (m_grid.Window == null)
+                {
+                    m_grid.Window = Window;
+                }
             }
 
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;

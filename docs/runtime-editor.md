@@ -530,7 +530,7 @@ You should see following:
 
 ![Screenshot](img/rteditor/window-manager/layout-override-result.png)
 
-##How to: override tools panels
+##How to: override tools panel
 
 To override tools panel do following:
 
@@ -586,6 +586,51 @@ public class ToolsPanelOverride : EditorOverride
 You should see following:
 
 ![Screenshot](img/rteditor/window-manager/tools-override-result.png)
+
+##How to: override ui scale
+
+To override ui scale do following:
+
+1. Create UIScaleOverride script.
+2. Create game object and add UIScaleOverride component.
+3. Set desired `Scale`
+4. To prevent the game object from being destroyed by [Save & Load](save-load.md) add __RTSLIgnore__ component.
+
+```C#
+using Battlehub.RTCommon;
+using Battlehub.RTHandles;
+using Battlehub.RTEditor;
+using UnityEngine;
+
+
+public class UIScaleOverride : EditorOverride
+{
+	[SerializeField]
+	private float Scale = 2;
+
+	protected override void OnEditorExist()
+	{
+		IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+		appearance.UIBackgroundScaler.scaleFactor = Scale;
+		appearance.UIForegroundScaler.scaleFactor = Scale;
+
+		IRuntimeHandlesComponent handles = IOC.Resolve<IRuntimeHandlesComponent>();
+		handles.HandleScale = Scale;
+		handles.SceneGizmoScale = Scale;
+	}
+}
+
+```
+
+Before:
+
+![Screenshot](img/rteditor/window-manager/ui-scale-before-override.png)
+
+After:
+
+![Screenshot](img/rteditor/window-manager/ui-scale-after-override.png)
+
+
 
 ##Inspector View
 

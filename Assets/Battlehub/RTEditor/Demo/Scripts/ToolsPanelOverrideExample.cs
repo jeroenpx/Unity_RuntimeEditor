@@ -6,7 +6,7 @@ namespace Battlehub.RTEditor.Demo
     public class ToolsPanelOverrideExample : EditorOverride
     {
         [SerializeField]
-        private Transform m_toolsPrefab;
+        private Transform m_toolsPrefab = null;
 
         protected override void OnEditorCreated(object obj)
         {
