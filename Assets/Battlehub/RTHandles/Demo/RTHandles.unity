@@ -1178,7 +1178,7 @@ MonoBehaviour:
   m_stop: {fileID: 586539643}
   m_components: {fileID: 4866243396948816327}
   m_ui: {fileID: 8731711203240905586}
-  m_prefabSpawnPoints: {fileID: 0}
+  m_prefabSpawnPoints: {fileID: 1115507038}
   m_editorCamera: {fileID: 1594768721}
   m_gameCamera: {fileID: 1111759780}
 --- !u!1 &726377114
@@ -5191,6 +5191,7 @@ MonoBehaviour:
   m_selectionMargin: 1
   m_invertZAxis: 0
   m_positionHandleArrowOnly: 0
+  m_sceneGizmoScale: 1
 --- !u!4 &4873884716025731561
 Transform:
   m_ObjectHideFlags: 0
@@ -5380,13 +5381,13 @@ MonoBehaviour:
   m_rotationHandle: {fileID: 0}
   m_scaleHandle: {fileID: 0}
   m_boxSelection: {fileID: 4873884717718742015}
+  m_grid: {fileID: 0}
   m_pivot: {fileID: 0}
   m_secondaryPivot: {fileID: 0}
   ViewTexture: {fileID: 0}
   MoveTexture: {fileID: 0}
   GridSize: 1
   m_sceneGizmo: {fileID: 0}
-  m_grid: {fileID: 0}
 --- !u!114 &4873884717376568504
 MonoBehaviour:
   m_ObjectHideFlags: 0
