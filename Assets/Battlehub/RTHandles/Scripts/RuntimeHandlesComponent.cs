@@ -123,7 +123,7 @@ namespace Battlehub.RTHandles
         }
 
         [SerializeField]
-        private float m_sceneGizmoScale;
+        private float m_sceneGizmoScale = 1.0f;
         public float SceneGizmoScale
         {
             get { return m_sceneGizmoScale; }
