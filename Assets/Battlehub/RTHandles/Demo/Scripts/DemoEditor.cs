@@ -127,7 +127,7 @@ namespace Battlehub.RTHandles.Demo
             }
         }
 
-        private void OnPlaymodeStateChanged()
+        protected virtual void OnPlaymodeStateChanged()
         {
             if (m_components != null)
             {

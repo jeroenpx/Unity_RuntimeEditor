@@ -24,12 +24,15 @@ EditorBuildSettings:
     path: Assets/Battlehub/ARCore/RTHandles/Demo/RTHandlesAR.unity
     guid: 773bc21ee352a2942aeb5f5ac20524b3
   - enabled: 0
-    path: Assets/PointerEnterExitTest.unity
-    guid: 65e82dbb7a3db53418a9020c19ea4d66
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Battlehub/RTHandles/Demo/Mobile3_BasicWithSceneComponent.unity
     guid: 9fa22473c39f8e84695fd75b24dc4e38
   - enabled: 0
-    path: Assets/MobileSceneTest.unity
-    guid: f40cf5463629ed345923613e900438b6
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/GoogleARCore/Examples/ObjectManipulation/Scenes/ObjectManipulation.unity
+    guid: 9dba7e74f4d2b410f90b920f80528d44
   m_configObjects: {}

@@ -1,4 +1,5 @@
 ﻿using GoogleARCore;
+using GoogleARCore.Examples.Common;
 using UnityEngine;
 
 namespace Battlehub.RTHandles.Demo.ARCore
@@ -14,6 +15,32 @@ namespace Battlehub.RTHandles.Demo.ARCore
         /// True if the app is in the process of quitting due to an ARCore connection error, otherwise false.
         /// </summary>
         private bool m_IsQuitting = false;
+
+        [SerializeField]
+        private DetectedPlaneGenerator m_planeGen = null;
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
+        protected override void OnPlaymodeStateChanged()
+        {
+            base.OnPlaymodeStateChanged();
+            if(Editor.IsPlaying)
+            {
+                Cubeman.CubemenGame game = FindObjectOfType<Cubeman.CubemenGame>();
+                if(game != null)
+                {
+                    game.CameraFollow = false;
+                }
+            }
+
+            if(m_planeGen != null)
+            {
+                m_planeGen.gameObject.SetActive(!Editor.IsPlaying);
+            }
+        }
 
         protected override void Update()
         {
@@ -33,7 +60,7 @@ namespace Battlehub.RTHandles.Demo.ARCore
             }
 
             // Only allow the screen to sleep when not tracking.
-            if (GoogleARCore.Session.Status != SessionStatus.Tracking)
+            if (Session.Status != SessionStatus.Tracking)
             {
                 const int lostTrackingSleepTimeout = 15;
                 Screen.sleepTimeout = lostTrackingSleepTimeout;

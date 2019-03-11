@@ -37,6 +37,14 @@ namespace Battlehub.Cubeman
         private List<GameCharacter> m_activeCharacters;
         private GameCameraFollow m_playerCamera;
 
+        [SerializeField]
+        private bool m_cameraFollow = true;
+        public bool CameraFollow
+        {
+            get { return m_cameraFollow; }
+            set { m_cameraFollow = value; }
+        }
+        
         private bool m_isGameRunning;
         public bool IsGameRunning
         {
@@ -243,23 +251,27 @@ namespace Battlehub.Cubeman
         private void InitializeGame(GameCharacter[] characters, int activeCharacterIndex)
         {
             m_gameOver = false;
-            m_playerCamera = FindObjectOfType<GameCameraFollow>();
-            if(m_playerCamera == null)
+            if(m_cameraFollow)
             {
-                if(Camera.main != null)
+                m_playerCamera = FindObjectOfType<GameCameraFollow>();
+                if (m_playerCamera == null)
                 {
-                    m_playerCamera = Camera.main.gameObject.AddComponent<GameCameraFollow>();
+                    if (Camera.main != null)
+                    {
+                        m_playerCamera = Camera.main.gameObject.AddComponent<GameCameraFollow>();
+                    }
+                }
+
+                if (m_playerCamera != null)
+                {
+                    Canvas canvas = GetComponentInChildren<Canvas>();
+                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    Camera cam = m_playerCamera.GetComponent<Camera>();
+                    canvas.worldCamera = cam;
+                    canvas.planeDistance = cam.nearClipPlane + 0.01f;
                 }
             }
-
-            if (m_playerCamera != null)
-            {
-                Canvas canvas = GetComponentInChildren<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                Camera cam = m_playerCamera.GetComponent<Camera>();
-                canvas.worldCamera = cam;
-                canvas.planeDistance = cam.nearClipPlane + 0.01f;
-            }
+            
 
             m_activeCharacters = new List<GameCharacter>();
             for (int i = 0; i < characters.Length; ++i)

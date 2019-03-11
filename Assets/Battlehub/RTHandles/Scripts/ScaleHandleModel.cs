@@ -224,11 +224,6 @@ namespace Battlehub.RTHandles
         {
             m_radius = Mathf.Max(0.001f, m_radius);
 
-            Vector3 right = transform.rotation * Vector3.right * transform.localScale.x;
-            Vector3 up = transform.rotation * Vector3.up * transform.localScale.y;
-            Vector3 forward = transform.rotation * Vector3.forward * transform.localScale.z;
-            Vector3 p = transform.position;
-
             float radius = m_radius * ModelScale;
             float arrowRadius = m_arrowRadius * ModelScale;
             float length = m_length * ModelScale;
@@ -239,21 +234,21 @@ namespace Battlehub.RTHandles
             m_b0.localScale = Vector3.one * arrowScale;// * 2;
             m_b3z.localScale = m_b3y.localScale = m_b3x.localScale = Vector3.one * arrowScale;
 
-            m_b1x.position = p + right * arrowRadius;
-            m_b1y.position = p + up * arrowRadius;
-            m_b1z.position = p + forward * arrowRadius;
+            m_b1x.position = transform.TransformPoint(Vector3.right * arrowRadius);
+            m_b1y.position = transform.TransformPoint(Vector3.up * arrowRadius);
+            m_b1z.position = transform.TransformPoint(Vector3.forward * arrowRadius);
 
-            m_b2x.position = p + right * (length * m_scale.x - arrowRadius); 
-            m_b2y.position = p + up * (length * m_scale.y - arrowRadius);
-            m_b2z.position = p + forward * (length * m_scale.z - arrowRadius);
+            m_b2x.position = transform.TransformPoint(Vector3.right * (length * m_scale.x - arrowRadius));
+            m_b2y.position = transform.TransformPoint(Vector3.up * (length * m_scale.y - arrowRadius));
+            m_b2z.position = transform.TransformPoint(Vector3.forward * (length * m_scale.z - arrowRadius));
 
             m_b2x.localScale = m_b1x.localScale = new Vector3(1, scale, scale);
             m_b2y.localScale = m_b1y.localScale = new Vector3(scale, scale, 1);
             m_b2z.localScale = m_b1z.localScale = new Vector3(scale, 1, scale);
 
-            m_b3x.position = p + right * length * m_scale.x;
-            m_b3y.position = p + up * length * m_scale.y;
-            m_b3z.position = p + forward * length * m_scale.z;
+            m_b3x.position = transform.TransformPoint(Vector3.right * length * m_scale.x);
+            m_b3y.position = transform.TransformPoint(Vector3.up * length * m_scale.y);
+            m_b3z.position = transform.TransformPoint(Vector3.forward * length * m_scale.z);
 
             UpdateColliders();
         }

@@ -426,13 +426,13 @@ namespace Battlehub.RTHandles
                 m_armatures[i].localScale = m_defaultArmaturesScale[i] * scale;
                 m_ssQuadArmature.localScale = Vector3.one * scale;
 
-                m_b3x[i].position = p + right * length;
-                m_b3y[i].position = p + up * length;
-                m_b3z[i].position = p + forward * length;
+                m_b3x[i].position = transform.TransformPoint(Vector3.right * length);
+                m_b3y[i].position = transform.TransformPoint(Vector3.up * length);
+                m_b3z[i].position = transform.TransformPoint(Vector3.forward * length);
 
-                m_b2x[i].position = p + right * (length - arrowLength);
-                m_b2y[i].position = p + up * (length - arrowLength);
-                m_b2z[i].position = p + forward * (length - arrowLength);
+                m_b2x[i].position = transform.TransformPoint(Vector3.right * (length - arrowLength));
+                m_b2y[i].position = transform.TransformPoint(Vector3.up * (length - arrowLength));
+                m_b2z[i].position = transform.TransformPoint(Vector3.forward * (length - arrowLength));
 
                 m_b3x[i].localScale = Vector3.right * arrowScale +
                     new Vector3(0, 1, 1) * arrowRadiusScale;
@@ -441,9 +441,9 @@ namespace Battlehub.RTHandles
                 m_b3z[i].localScale = Vector3.up * arrowScale +
                     new Vector3(1, 0, 1) * arrowRadiusScale;
 
-                m_b1x[i].position = p + Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * right * quadLength;
-                m_b1y[i].position = p + Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * up * quadLength;
-                m_b1z[i].position = p + Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * forward * quadLength;
+                m_b1x[i].position = transform.TransformPoint(Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * Vector3.right * quadLength);
+                m_b1y[i].position = transform.TransformPoint(Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * Vector3.up * quadLength);
+                m_b1z[i].position = transform.TransformPoint(Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * Vector3.forward * quadLength);
 
                 m_bSx[i].position = p + (m_b1y[i].position - p) + (m_b1z[i].position - p);
                 m_bSy[i].position = p + (m_b1x[i].position - p) + (m_b1z[i].position - p);

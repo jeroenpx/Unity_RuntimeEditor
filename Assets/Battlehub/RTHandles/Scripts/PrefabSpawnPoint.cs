@@ -29,11 +29,21 @@ namespace Battlehub.RTHandles
         private Sprite m_sprite;
 
         private GameObject m_prefabInstance;
+        protected GameObject PrefabInstance
+        {
+            get { return m_prefabInstance; }
+            set { m_prefabInstance = value; }
+        }
+
         private HashSet<Transform> m_prefabInstanceTransforms;
         private Plane m_dragPlane;
                 
         private IRTE m_editor;
         private RuntimeWindow m_scene;
+        protected RuntimeWindow Scene
+        {
+            get { return m_scene; }
+        }
         
         protected virtual void Start()
         {

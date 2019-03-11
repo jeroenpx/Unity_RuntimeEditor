@@ -17,6 +17,12 @@ namespace Battlehub.RTHandles
         {
             m_tool = UnityEditor.Tools.current;
         }
+
+        #else
+        void Use()
+        {
+            ToolChanged();
+        }
         #endif
 
         public static void Update()

@@ -721,7 +721,13 @@ namespace Battlehub.RTHandles
             {
                 screenScale = Mathf.Max(0, screenScale);
 
-                Model.transform.localScale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
+                Vector3 scale = Appearance.InvertZAxis ? new Vector3(1, 1, -1) * screenScale : Vector3.one * screenScale;
+                Vector3 lossyScale = transform.lossyScale;
+                lossyScale.x = 1 / Mathf.Max(0.00001f, lossyScale.x);
+                lossyScale.y = 1 / Mathf.Max(0.00001f, lossyScale.y);
+                lossyScale.z = 1 / Mathf.Max(0.00001f, lossyScale.z);
+
+                Model.transform.localScale = Vector3.Scale(scale, lossyScale);
             }
             
         }

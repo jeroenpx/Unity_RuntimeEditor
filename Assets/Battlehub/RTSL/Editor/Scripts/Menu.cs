@@ -158,6 +158,7 @@ namespace Battlehub.RTSL
             PluginImporter importer = AssetImporter.GetAtPath("Assets" + RTSLPath.UserRoot + "/" + dllName) as PluginImporter;
             importer.SetCompatibleWithAnyPlatform(true);
             importer.SetExcludeEditorFromAnyPlatform(true);
+            importer.SaveAndReimport();
         }
 
         [MenuItem("Tools/Runtime SaveLoad/Libraries/Collect Scene Dependencies")]
@@ -279,7 +280,7 @@ namespace Battlehub.RTSL
                 EditorUtility.DisplayProgressBar("Build All", "Updating asset libraries and shader profiles", 0.33f);
                 EditorPrefs.SetBool("RTSLBuildAll", true);
             }
-            finally
+            catch
             {
                 EditorUtility.ClearProgressBar();
             }   

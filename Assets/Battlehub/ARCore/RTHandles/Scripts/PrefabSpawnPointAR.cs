@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using GoogleARCore;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.RTHandles.ARCore
 {
@@ -22,25 +23,11 @@ namespace Battlehub.RTHandles.ARCore
 
             if (Frame.Raycast(pointer.ScreenPoint.x, pointer.ScreenPoint.y, raycastFilter, out m_hit))
             {
-                rotation = m_hit.Pose.rotation;
+                rotation = Quaternion.identity; //m_hit.Pose.rotation;
                 point = m_hit.Pose.position;
                 return true;
             }
             return base.GetPointOnDragPlane(camera, pointer, out point, out rotation);
-        }
-
-        protected override GameObject InstantiatePrefab(GameObject prefab, Vector3 point, Quaternion rotation)
-        {
-            if(m_hit.Trackable != null)
-            {
-                Anchor anchor = m_hit.Trackable.CreateAnchor(m_hit.Pose);
-               
-                GameObject instance = Instantiate(prefab, m_hit.Pose.position, m_hit.Pose.rotation);
-                instance.transform.parent = anchor.transform;
-                instance.transform.localScale = Vector3.Scale(instance.transform.localScale, PrefabScale);
-                return anchor.gameObject;
-            }
-            return base.InstantiatePrefab(prefab, point, rotation);
         }
 
         protected override ExposeToEditor ExposeToEditor(GameObject prefabInstance)
@@ -53,6 +40,37 @@ namespace Battlehub.RTHandles.ARCore
             }
             return exposedToEditor;
         }
+
+        public override void OnEndDrag(PointerEventData eventData)
+        {
+            bool anchorCreated = false;
+            Vector3 point;
+            Quaternion rotation;
+            if (GetPointOnDragPlane(Scene.Camera, Scene.Pointer, out point, out rotation))
+            {
+                if (m_hit.Trackable != null && PrefabInstance != null)
+                {
+                    Anchor anchor = m_hit.Trackable.CreateAnchor(m_hit.Pose);
+                    PrefabInstance.transform.parent = anchor.transform;
+                    PrefabInstance.transform.localScale = Vector3.Scale(PrefabInstance.transform.localScale, PrefabScale);
+                    anchorCreated = true;
+                }
+            }
+
+            if(!anchorCreated)
+            {
+                if(PrefabInstance != null)
+                {
+                    Destroy(PrefabInstance);
+                    PrefabInstance = null;
+                }
+            }
+
+            base.OnEndDrag(eventData);
+
+        }
+
+
     }
 
 }
