@@ -3748,7 +3748,7 @@ MonoBehaviour:
   m_selectionMargin: 1
   m_invertZAxis: 0
   m_positionHandleArrowOnly: 0
-  m_sceneGizmoScale: 0
+  m_sceneGizmoScale: 1
 --- !u!114 &940736507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4101,7 +4101,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5849259613572350662}
   - component: {fileID: 5849259613572350660}
-  - component: {fileID: 5849259613572350661}
   m_Layer: 19
   m_Name: UICameraForeground
   m_TagString: Untagged
@@ -4158,21 +4157,13 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &5849259613572350661
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5849259613572350663}
-  m_Enabled: 1
 --- !u!1 &5849259613723729081
 GameObject:
   m_ObjectHideFlags: 0
@@ -4965,7 +4956,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5849259614492109119}
   - component: {fileID: 5849259614492109113}
-  - component: {fileID: 5849259614492109112}
   m_Layer: 5
   m_Name: UICamera
   m_TagString: Untagged
@@ -5022,21 +5012,13 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &5849259614492109112
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5849259614492109114}
-  m_Enabled: 1
 --- !u!1 &5849259614496068639
 GameObject:
   m_ObjectHideFlags: 0
