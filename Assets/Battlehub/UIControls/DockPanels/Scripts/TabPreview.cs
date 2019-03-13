@@ -17,6 +17,9 @@ namespace Battlehub.UIControls.DockPanels
         [SerializeField]
         private RectTransform m_rt = null;
 
+        [SerializeField]
+        private Button m_closeButton = null;
+
         public Sprite Icon
         {
             get { return m_img.sprite; }
@@ -60,6 +63,25 @@ namespace Battlehub.UIControls.DockPanels
                 m_contentPart.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, value.x);
                 m_contentPart.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, value.y);
                 m_rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Min(value.x, m_maxWidth));
+            }
+        }
+
+        public bool IsCloseButtonVisible
+        {
+            get
+            {
+                if (m_closeButton != null)
+                {
+                    return m_closeButton.gameObject.activeSelf;
+                }
+                return false;
+            }
+            set
+            {
+                if (m_closeButton != null)
+                {
+                    m_closeButton.gameObject.SetActive(value);
+                }
             }
         }
 

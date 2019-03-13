@@ -40,6 +40,14 @@ namespace Battlehub.RTCommon
             set { m_activateOnAnyKey = true; }
         }
 
+        [SerializeField]
+        private bool m_canActivate = true;
+        public bool CanActivate
+        {
+            get { return m_canActivate; }
+            set { m_canActivate = value; }
+        }
+
         private bool m_isActivated;
         private IOCContainer m_container = new IOCContainer();
         public IOCContainer IOCContainer

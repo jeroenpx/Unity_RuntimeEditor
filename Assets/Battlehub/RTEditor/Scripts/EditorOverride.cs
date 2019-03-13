@@ -1,4 +1,6 @@
 ﻿using Battlehub.RTCommon;
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -66,6 +68,17 @@ namespace Battlehub.RTEditor
         protected virtual void OnEditorOpened()
         {
 
+        }
+
+        protected void RunNextFrame(Action action)
+        {
+            StartCoroutine(CoWaitForEndOfFrame(action));
+        }
+
+        private IEnumerator CoWaitForEndOfFrame(Action action)
+        {
+            yield return new WaitForEndOfFrame();
+            action();
         }
     }
 }

@@ -559,6 +559,13 @@ namespace Battlehub.RTEditor
                     menuItems.Add(createMaterial);
                 }
 
+                MenuItemInfo open = new MenuItemInfo { Path = "Open" };
+                open.Action = new MenuItemEvent();
+                open.Action.AddListener(Open);
+                open.Validate = new MenuItemValidationEvent();
+                open.Validate.AddListener(OpenValidate);
+                menuItems.Add(open);
+
                 MenuItemInfo duplicate = new MenuItemInfo { Path = "Duplicate" };
                 duplicate.Action = new MenuItemEvent();
                 duplicate.Action.AddListener(Duplicate);
@@ -673,6 +680,23 @@ namespace Battlehub.RTEditor
             });
         }
 
+        private void OpenValidate(MenuItemValidationArgs args)
+        {
+            ProjectItem selectedItem = (ProjectItem)m_listBox.SelectedItem;
+            if (m_listBox.SelectedItemsCount != 1 || !selectedItem.IsFolder && !m_project.IsScene(selectedItem))
+            {
+                args.IsValid = false;
+            }
+        }
+
+        private void Open(string arg)
+        {
+            ProjectItem selectedItem = (ProjectItem)m_listBox.SelectedItem;
+            if (ItemDoubleClick != null)
+            {
+                ItemDoubleClick(this, new ProjectTreeEventArgs(new[] { selectedItem }));
+            }
+        }
 
         private void DuplicateValidate(MenuItemValidationArgs args)
         {

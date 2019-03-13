@@ -31,13 +31,16 @@ namespace Battlehub.RTEditor
         bool RegisterWindow(CustomWindowDescriptor desc);
 
         Transform GetWindow(string windowTypeName);
+        Transform[] GetWindows(string windowTypeName);
+        Transform[] GetComponents(Transform content);
+
         bool Exists(string windowTypeName);
         bool IsActive(string windowType);
         bool IsActive(Transform content);
 
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
-
+        
         Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
         Transform CreateWindow(string windowTypeName);
         Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
@@ -841,6 +844,7 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < windows.Length; ++i)
             {
                 windows[i].EnableRaycasts();
+                windows[i].HandleResize();
             }
         }
 
@@ -871,6 +875,26 @@ namespace Battlehub.RTEditor
                 return hs.FirstOrDefault();
             }
             return null;
+        }
+
+        public Transform[] GetWindows(string windowTypeName)
+        {
+            HashSet<Transform> hs;
+            if (m_windows.TryGetValue(windowTypeName.ToLower(), out hs))
+            {
+                return hs.ToArray();
+            }
+            return new Transform[0];
+        }
+
+        public Transform[] GetComponents(Transform content)
+        {
+            List<Transform> extraComponents;
+            if (m_extraComponents.TryGetValue(content, out extraComponents))
+            {
+                return extraComponents.ToArray();
+            }
+            return new Transform[0];
         }
 
         public bool IsActive(string windowTypeName)

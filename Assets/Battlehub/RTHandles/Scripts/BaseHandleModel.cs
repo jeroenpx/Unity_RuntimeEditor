@@ -118,7 +118,7 @@ namespace Battlehub.RTHandles
 
         }
 
-        protected virtual void UpdateModel()
+        public virtual void UpdateModel()
         {
 
         }

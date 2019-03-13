@@ -28,6 +28,8 @@ namespace Battlehub.UIControls.DockPanels
         public LayoutInfo Child1;
         public float Ratio;
 
+        public LayoutInfo[] TabGroup;
+
         public LayoutInfo(Transform content, string header = null, Sprite icon = null)
         {
             Content = content;
@@ -41,6 +43,11 @@ namespace Battlehub.UIControls.DockPanels
             Child0 = child0;
             Child1 = child1;
             Ratio = ratio;
+        }
+
+        public LayoutInfo(params LayoutInfo[] tabGroup)
+        {
+            TabGroup = tabGroup;
         }
     }
 
@@ -375,7 +382,16 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Build(LayoutInfo layout, Region region)
         {
-            if (layout.Child0 != null && layout.Child1 != null)
+            if(layout.TabGroup != null)
+            {
+                for(int i = 0; i < layout.TabGroup.Length; ++i)
+                {
+                    LayoutInfo tab = layout.TabGroup[i];
+                    region.Add(tab.Icon, tab.Header, tab.Content);
+                    ((RectTransform)tab.Content).Stretch();
+                }
+            }
+            else if (layout.Child0 != null && layout.Child1 != null)
             {
                 if(layout.IsVertical)
                 {
@@ -671,7 +687,16 @@ namespace Battlehub.UIControls.DockPanels
             {
                 return null;
             }
-            if(content.parent != region.m_contentPanel)
+
+            if(content.parent == null)
+            {
+                return null;
+            }
+            while(content.parent != null && content.parent != region.m_contentPanel)
+            {
+                content = content.parent;
+            }
+            if(content == null)
             {
                 return null;
             }

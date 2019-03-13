@@ -50,6 +50,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            if(!m_handle.enabled)
+            {
+                return;
+            }
+
             if (BeginDragAction())
             {
                 m_handle.BeginDrag();

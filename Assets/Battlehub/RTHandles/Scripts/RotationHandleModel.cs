@@ -376,7 +376,6 @@ namespace Battlehub.RTHandles
             Camera camera = Window.Camera;// Editor.ActiveWindow.Camera;
             if (Editor.IsVR)
             {
-                
                 m_innerCollider.transform.LookAt(m_innerCollider.transform.position - (camera.transform.position - m_innerCollider.transform.position), Vector3.up);
                 m_outerCollider.transform.LookAt(m_outerCollider.transform.position - (camera.transform.position - m_outerCollider.transform.position), Vector3.up);
             }
@@ -394,12 +393,12 @@ namespace Battlehub.RTHandles
                 RaycastHit hit;
                 if (m_colliders[i].Raycast(ray, out hit, camera.farClipPlane))
                 {
-                    if(m_lockObj.RotationFree)
+                    if (m_lockObj.RotationFree)
                     {
-                        if(hit.collider == m_innerCollider)
+                        if (hit.collider == m_innerCollider)
                         {
                             continue;
-                        }
+                        }                        
                     }
 
                     if (m_lockObj.RotationX)
@@ -437,6 +436,7 @@ namespace Battlehub.RTHandles
                         minDistance = hit.distance;
                     }
                 }
+
                 m_colliders[i].gameObject.SetActive(false);
             }
             
@@ -482,7 +482,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void UpdateModel()
+        public override void UpdateModel()
         {
             float majorRadius = m_majorRadius * ModelScale;
             float minorRadius = m_minorRadius * ModelScale;

@@ -83,7 +83,6 @@ namespace Battlehub.RTHandles
             get { return m_secondaryPivot; }
         }
 
-
         public BoxSelection BoxSelection
         {
             get { return m_boxSelection; }

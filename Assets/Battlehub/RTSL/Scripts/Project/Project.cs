@@ -1180,9 +1180,12 @@ namespace Battlehub.RTSL
                         callback(error, new AssetItem[0]);
                     }
 
-                    ao.Error = error;
-                    ao.Result = new AssetItem[0];
-                    ao.IsCompleted = true;
+                    if(!ao.IsCompleted)
+                    {
+                        ao.Error = error;
+                        ao.Result = new AssetItem[0];
+                        ao.IsCompleted = true;
+                    }
 
                     done();
                     return;
@@ -1658,6 +1661,16 @@ namespace Battlehub.RTSL
             }
 
             copy.ItemID = m_assetDB.ToSceneID(ordinal, id);
+            if (copy.Preview != null)
+            {
+                copy.Preview.ItemID = copy.ItemID;
+            }
+
+            if (!m_idToAssetItem.ContainsKey(copy.ItemID))
+            {
+                m_idToAssetItem.Add(copy.ItemID, copy);
+            }
+
             return copy;
         }
 

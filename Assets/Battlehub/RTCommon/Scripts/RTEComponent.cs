@@ -33,6 +33,10 @@ namespace Battlehub.RTCommon
         }
 
         private bool m_awaked;
+        protected bool IsAwaked
+        {
+            get { return m_awaked; }
+        }
         
         private void Awake()
         {

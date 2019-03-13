@@ -220,7 +220,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void UpdateModel()
+        public override void UpdateModel()
         {
             m_radius = Mathf.Max(0.001f, m_radius);
 

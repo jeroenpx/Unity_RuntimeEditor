@@ -400,7 +400,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void UpdateModel()
+        public override void UpdateModel()
         {
             float quadLength = Mathf.Abs(QuadLength);
             m_radius = Mathf.Max(0.01f, m_radius);

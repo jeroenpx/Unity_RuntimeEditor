@@ -70,6 +70,43 @@ namespace Battlehub.RTEditor
             }
         }
 
+
+        public override bool IsPlaying
+        {
+            get
+            {
+                return base.IsPlaying;
+            }
+            set
+            {
+                if(value != base.IsPlaying)
+                {
+                    if (!IsPlaying)
+                    {
+                        RuntimeWindow gameView = GetWindow(RuntimeWindowType.Game);
+                        if (gameView != null)
+                        {
+                            ActivateWindow(gameView);
+                        }
+                    }
+
+                    base.IsPlaying = value;
+
+                    if (!IsPlaying)
+                    {
+                        if (ActiveWindow == null || ActiveWindow.WindowType != RuntimeWindowType.Scene)
+                        {
+                            RuntimeWindow sceneView = GetWindow(RuntimeWindowType.Scene);
+                            if (sceneView != null)
+                            {
+                                ActivateWindow(sceneView);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         protected override void Awake()
         {
             base.Awake();

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
+    [DefaultExecutionOrder(-65)]
     public class PositionHandleInput : BaseHandleInput
     {
         public KeyCode VertexSnappingKey = KeyCode.V;
@@ -19,6 +20,11 @@ namespace Battlehub.RTHandles
             base.Update();
 
             if(m_handle == null)
+            {
+                return;
+            }
+
+            if (!m_handle.enabled)
             {
                 return;
             }

@@ -387,29 +387,9 @@ namespace Battlehub.RTEditor
             Editor.IsPlaying = value;
         }
 
+
         private void OnPlaymodeStateChanged()
         {
-            if(Editor.IsPlaying)
-            {
-                RuntimeWindow gameView = Editor.GetWindow(RuntimeWindowType.Game);
-                if(gameView != null)
-                {
-                    Editor.ActivateWindow(gameView);
-                }
-                
-            }
-            else
-            {
-                if(Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.Scene)
-                {
-                    RuntimeWindow sceneView = Editor.GetWindow(RuntimeWindowType.Scene);
-                    if(sceneView != null)
-                    {
-                        Editor.ActivateWindow(sceneView);
-                    }
-                }   
-            }
-            
             if(PlayToggle != null)
             {
                 PlayToggle.isOn = Editor.IsPlaying;

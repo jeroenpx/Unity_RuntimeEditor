@@ -98,6 +98,7 @@ namespace Battlehub.RTHandles
         private Transform[] m_commonCenterTarget;
 
         private static List<BaseHandle> m_allHandles = new List<BaseHandle>();
+        private BaseHandleInput m_input;
 
         private void GetActiveRealTargets()
         {
@@ -265,6 +266,11 @@ namespace Battlehub.RTHandles
                 if(m_activeTargets != null && m_activeTargets.Length > 0)
                 {
                     transform.position = m_activeTargets[0].position;
+                }
+
+                if(IsAwaked && Model != null)
+                {
+                    SyncModelTransform();
                 }
             }
         }
@@ -437,11 +443,11 @@ namespace Battlehub.RTHandles
 
         private void Start()
         {
-            BaseHandleInput input = GetComponent<BaseHandleInput>();
-            if (input == null || input.Handle != this)
+            m_input = GetComponent<BaseHandleInput>();
+            if (m_input == null || m_input.Handle != this)
             {
-                input = gameObject.AddComponent<BaseHandleInput>();
-                input.Handle = this;
+                m_input = gameObject.AddComponent<BaseHandleInput>();
+                m_input.Handle = this;
             }
             OnStartOverride();
         }
@@ -460,6 +466,11 @@ namespace Battlehub.RTHandles
             Editor.Undo.RedoCompleted += OnRedoCompleted;
 
             OnEnableOverride();
+
+            if(m_input != null)
+            {
+                m_input.enabled = true;
+            }
 
             if (Model != null)
             {
@@ -508,6 +519,16 @@ namespace Battlehub.RTHandles
                 Model.gameObject.SetActive(false);
             }
 
+            if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
+            {
+                Editor.Tools.ActiveTool = null;
+            }
+
+            if (m_input != null)
+            {
+                m_input.enabled = false;
+            }
+
             OnDisableOverride();
         }
 
@@ -539,10 +560,7 @@ namespace Battlehub.RTHandles
 
             if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {
-                if (Editor.Tools.ActiveTool == this)
-                {
-                    Editor.Tools.ActiveTool = null;
-                }
+                Editor.Tools.ActiveTool = null;
             }
         }
 
@@ -551,10 +569,7 @@ namespace Battlehub.RTHandles
             base.OnWindowDeactivated();
             if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {
-                if (Editor.Tools.ActiveTool == this)
-                {
-                    Editor.Tools.ActiveTool = null;
-                }
+                Editor.Tools.ActiveTool = null;
             }
         }
 
@@ -727,9 +742,16 @@ namespace Battlehub.RTHandles
                 lossyScale.y = 1 / Mathf.Max(0.00001f, lossyScale.y);
                 lossyScale.z = 1 / Mathf.Max(0.00001f, lossyScale.z);
 
-                Model.transform.localScale = Vector3.Scale(scale, lossyScale);
+                Vector3 prevScale = Model.transform.localScale;
+                Vector3 newScale =  Vector3.Scale(scale, lossyScale);
+                Model.transform.localScale = newScale;
+                if (prevScale == Vector3.zero && prevScale != newScale)
+                {
+                    Model.UpdateModel();
+                }
+
             }
-            
+
         }
 
         public void BeginDrag()

@@ -50,6 +50,7 @@ namespace Battlehub.RTCommon
 
     public interface IRTE
     {
+        event RTEEvent BeforePlaymodeStateChange;
         event RTEEvent PlaymodeStateChanging;
         event RTEEvent PlaymodeStateChanged;
         event RTEEvent<RuntimeWindow> ActiveWindowChanged;
@@ -180,7 +181,6 @@ namespace Battlehub.RTCommon
         }
 
         bool Contains(RuntimeWindow window);
-
         int GetIndex(RuntimeWindowType windowType);
         RuntimeWindow GetWindow(RuntimeWindowType windowType);
         void ActivateWindow(RuntimeWindowType window);
@@ -222,6 +222,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private UnityEvent IsClosedEvent = null;
 
+        public event RTEEvent BeforePlaymodeStateChange;
         public event RTEEvent PlaymodeStateChanging;
         public event RTEEvent PlaymodeStateChanged;
         public event RTEEvent<RuntimeWindow> ActiveWindowChanged;
@@ -466,6 +467,11 @@ namespace Battlehub.RTCommon
 
                 if (m_isPlaying != value)
                 {
+                    if (BeforePlaymodeStateChange != null)
+                    {
+                        BeforePlaymodeStateChange();
+                    }
+
                     m_isPlayModeStateChanging = true;
                     m_isPlaying = value;
 
@@ -873,7 +879,7 @@ namespace Battlehub.RTCommon
 
         public virtual void ActivateWindow(RuntimeWindow window)
         {
-            if (m_activeWindow != window)
+            if (m_activeWindow != window && window.CanActivate)
             {
                 RuntimeWindow deactivatedWindow = m_activeWindow;
 

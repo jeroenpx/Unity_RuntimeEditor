@@ -85,6 +85,7 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+     
         public bool IsOn
         {
             get { return m_toggle.isOn; }
@@ -95,6 +96,25 @@ namespace Battlehub.UIControls.DockPanels
         {
             get { return transform.GetSiblingIndex(); }
             set { transform.SetSiblingIndex(value); }
+        }
+
+        public bool IsCloseButtonVisible
+        {
+            get
+            {
+                if(m_closeButton != null)
+                {
+                    return m_closeButton.gameObject.activeSelf;
+                }
+                return false;
+            }
+            set
+            {
+                if(m_closeButton != null)
+                {
+                    m_closeButton.gameObject.SetActive(value);
+                }
+            }
         }
 
         public Vector3 PreviewPosition
@@ -185,6 +205,7 @@ namespace Battlehub.UIControls.DockPanels
             
             m_tabPreview.Icon = Icon;
             m_tabPreview.Text = Text;
+            m_tabPreview.IsCloseButtonVisible = IsCloseButtonVisible;
 
             m_canvasGroup.alpha = 0;
 

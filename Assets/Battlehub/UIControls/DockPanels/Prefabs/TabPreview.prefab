@@ -380,6 +380,7 @@ MonoBehaviour:
   m_text: {fileID: 114203572388712496}
   m_contentPart: {fileID: 224116317134556558}
   m_rt: {fileID: 0}
+  m_closeButton: {fileID: 114703326869597678}
 --- !u!1 &1618901455502212
 GameObject:
   m_ObjectHideFlags: 0
