@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 114000014156735454}
   - component: {fileID: 222000013937893062}
   - component: {fileID: 114000011336429170}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 224000010295834488}
   - component: {fileID: 114000011931825056}
   - component: {fileID: 222000012682767428}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: CustomTypeEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 222000012306638080}
   - component: {fileID: 114000011214918850}
   - component: {fileID: 114000012254224194}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 224000013426984128}
   - component: {fileID: 222000012379459906}
   - component: {fileID: 114000012524989610}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -417,7 +417,7 @@ GameObject:
   - component: {fileID: 224000013374106258}
   - component: {fileID: 222000013229754606}
   - component: {fileID: 114000012697438146}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Expanded
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 114000014015578790}
   - component: {fileID: 114000010681101246}
   - component: {fileID: 114080514615923160}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: CustomTypeEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -590,7 +590,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224000011368629104}
   - component: {fileID: 114000012441469824}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 224000012962741096}
   - component: {fileID: 222000011855238698}
   - component: {fileID: 114000011902921142}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Collapsed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

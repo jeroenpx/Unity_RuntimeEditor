@@ -72,11 +72,10 @@ namespace Battlehub.RTGizmos
         }
 
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            base.DrawOverride();
+            base.DrawOverride(camera);
 
-            
             RuntimeGizmos.DrawConeHandles(Target.TransformPoint(Vector3.forward * Height), Target.rotation, Scale, HandlesColor);
             RuntimeGizmos.DrawWireConeGL(Height, Radius, Target.position, Target.rotation, Vector3.one, LineColor);
 

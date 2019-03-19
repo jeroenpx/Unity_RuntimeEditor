@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 224000011861376662}
   - component: {fileID: 114000012681907294}
   - component: {fileID: 114000010001088734}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 224000010892167078}
   - component: {fileID: 222000012989291800}
   - component: {fileID: 114000013589381338}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 114000012029900156}
   - component: {fileID: 114000013435136368}
   - component: {fileID: 114000010881545646}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: RangeEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224147666798497944}
   - component: {fileID: 114881873666114476}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -376,6 +376,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slider
       objectReference: {fileID: 0}
+    - target: {fileID: 378400109069824359, guid: 42f42c732ef2b6d4eabe23b9cf5eb91a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 378400111145906979, guid: 42f42c732ef2b6d4eabe23b9cf5eb91a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 378400107828609415, guid: 42f42c732ef2b6d4eabe23b9cf5eb91a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -480,16 +490,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 378400109069824359, guid: 42f42c732ef2b6d4eabe23b9cf5eb91a,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 378400111145906979, guid: 42f42c732ef2b6d4eabe23b9cf5eb91a,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42f42c732ef2b6d4eabe23b9cf5eb91a, type: 3}
@@ -676,6 +676,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Range
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -780,11 +785,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Range
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}

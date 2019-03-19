@@ -257,9 +257,9 @@ namespace Battlehub.RTGizmos
 
         }
 
-        public static void DrawDirectionalLight(Vector3 position, Quaternion rotation, Vector3 scale, Color color)
+        public static void DrawDirectionalLight(Camera camera, Vector3 position, Quaternion rotation, Vector3 scale, Color color)
         {
-            float sScale = RuntimeGraphics.GetScreenScale(position, Camera.current);
+            float sScale = RuntimeGraphics.GetScreenScale(position, camera);
 
             Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, rotation, Vector3.one);
             Matrix4x4 objToWorld = Matrix4x4.TRS(position, Quaternion.identity, scale * sScale);
@@ -305,7 +305,7 @@ namespace Battlehub.RTGizmos
             GL.PopMatrix();
         }
 
-        public static void DrawWireSphereGL(Vector3 position, Quaternion rotation, Vector3 scale, Color color)
+        public static void DrawWireSphereGL(Camera camera, Vector3 position, Quaternion rotation, Vector3 scale, Color color)
         {
             Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
             Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
@@ -321,19 +321,19 @@ namespace Battlehub.RTGizmos
             RuntimeGraphics.DrawCircleGL(xTranform, 1);
             RuntimeGraphics.DrawCircleGL(yTranform, 1);
             RuntimeGraphics.DrawCircleGL(zTranform, 1);
-            if(Camera.current.orthographic)
+            if(camera.orthographic)
             {
-                Matrix4x4 outTransform = Matrix4x4.TRS(Vector3.zero, Camera.current.transform.rotation, Vector3.one);
+                Matrix4x4 outTransform = Matrix4x4.TRS(Vector3.zero, camera.transform.rotation, Vector3.one);
                 RuntimeGraphics.DrawCircleGL(outTransform, 1);
             }
             else
             {
-                Vector3 toCam = Camera.current.transform.position - position;
+                Vector3 toCam = camera.transform.position - position;
                 Vector3 toCamNorm = toCam.normalized;
-                if (Vector3.Dot(toCamNorm, Camera.current.transform.forward) < 0)
+                if (Vector3.Dot(toCamNorm, camera.transform.forward) < 0)
                 {
                     float m = toCam.magnitude;
-                    Matrix4x4 outTransform = Matrix4x4.TRS(toCamNorm * 0.56f * scale.x / m, Quaternion.LookRotation(toCamNorm, Camera.current.transform.up), Vector3.one);
+                    Matrix4x4 outTransform = Matrix4x4.TRS(toCamNorm * 0.56f * scale.x / m, Quaternion.LookRotation(toCamNorm, camera.transform.up), Vector3.one);
                     RuntimeGraphics.DrawCircleGL(outTransform, 1);
                 }
             }

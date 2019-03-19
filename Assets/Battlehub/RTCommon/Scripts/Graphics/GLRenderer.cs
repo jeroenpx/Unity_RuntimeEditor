@@ -6,7 +6,7 @@ namespace Battlehub.RTCommon
 {
     public interface IGL
     {
-        void Draw(int cullingMask);
+        void Draw(int cullingMask, Camera camera);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void Draw(int cullingMask)
+        public void Draw(int cullingMask, Camera camera)
         {
             if(m_renderObjects == null)
             {
@@ -73,7 +73,7 @@ namespace Battlehub.RTCommon
                 for (int i = 0; i < m_renderObjects.Count; ++i)
                 {
                     IGL line = m_renderObjects[i];
-                    line.Draw(cullingMask); 
+                    line.Draw(cullingMask, camera); 
                 }
             }
             finally

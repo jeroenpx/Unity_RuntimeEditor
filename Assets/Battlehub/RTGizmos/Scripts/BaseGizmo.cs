@@ -296,7 +296,7 @@ namespace Battlehub.RTGizmos
 
         }
 
-        void IGL.Draw(int cullingMask)
+        void IGL.Draw(int cullingMask, Camera camera)
         {
             //RTLayer layer = RTLayer.SceneView;
             //if ((cullingMask & (int)layer) == 0)
@@ -309,10 +309,10 @@ namespace Battlehub.RTGizmos
                 return;
             }
 
-            DrawOverride();
+            DrawOverride(camera);
         }
 
-        protected virtual void DrawOverride()
+        protected virtual void DrawOverride(Camera camera)
         {
             
         }

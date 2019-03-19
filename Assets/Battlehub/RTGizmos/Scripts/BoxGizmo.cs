@@ -32,9 +32,9 @@ namespace Battlehub.RTGizmos
         }
 
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            base.DrawOverride();
+            base.DrawOverride(camera);
 
             Bounds b = Bounds;
             Vector3 scale = Vector3.Scale(Vector3.Scale(b.extents, Target.localScale), Target.parent.lossyScale);

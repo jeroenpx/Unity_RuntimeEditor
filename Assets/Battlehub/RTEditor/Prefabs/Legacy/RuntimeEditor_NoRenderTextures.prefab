@@ -5119,6 +5119,7 @@ MonoBehaviour:
   m_cursorSettings: []
   m_uiBackgroundScaler: {fileID: 2391296701540230532}
   m_uiForegroundScaler: {fileID: 9174941219733222014}
+  m_uiScaler: {fileID: 9174941219733222014}
 --- !u!114 &5849259614496068631
 MonoBehaviour:
   m_ObjectHideFlags: 0

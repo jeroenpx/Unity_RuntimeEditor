@@ -182,7 +182,7 @@ namespace Battlehub.RTCommon
             texture = new RenderTexture(Mathf.Max(1, sizeX), Mathf.Max(1, sizeY), 24, RenderTextureFormat.ARGB32);
             texture.name = m_camera.name + " RenderTexture";
             texture.filterMode = FilterMode.Point;
-            texture.antiAliasing = m_allowMSAA ? QualitySettings.antiAliasing : 1;
+            texture.antiAliasing = m_allowMSAA ? Mathf.Max(1, QualitySettings.antiAliasing) : 1;
             m_camera.targetTexture = texture;
             m_output.texture = texture;
 

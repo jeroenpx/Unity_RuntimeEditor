@@ -14,32 +14,56 @@ namespace Battlehub.RTHandles
         public float CamOffset = 0.0f;
         public bool AutoCamOffset = true;
         public Vector3 GridOffset;
-      //  public bool UseUIStencilMask = false;
+
+        private Camera m_camera;
+
+        protected override void AwakeOverride()
+        {
+            base.AwakeOverride();
+            m_camera = GetComponent<Camera>();
+            #if UNITY_2019_1_OR_NEWER
+            RenderPipelineManager.endCameraRendering += OnEndCameraRendering;
+            #endif
+        }
+
+        protected override void OnDestroyOverride()
+        {
+            base.OnDestroyOverride();
+            #if UNITY_2019_1_OR_NEWER
+            RenderPipelineManager.endCameraRendering -= OnEndCameraRendering;
+            #endif
+        }
+
+        #if UNITY_2019_1_OR_NEWER
+        private void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            if(camera == m_camera)
+            {
+                DrawGrid(camera);
+            }
+        }
+        #endif
 
         protected virtual void Start()
         {
-            //if(UseUIStencilMask)
-            //{
-            //    Material material = Canvas.GetDefaultCanvasMaterial();
-            //    material.SetFloat("_Stencil", 99);
-            //    material.SetFloat("_StencilComp", (float)CompareFunction.Always);
-            //    material.SetFloat("_StencilOp", (float)StencilOp.Replace);
-            //}
-            
-       
-            
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
         }
 
         private void OnPostRender()
-        { 
-            if(AutoCamOffset)
+        {
+            Camera camera = Camera.current;
+            DrawGrid(camera);
+        }
+
+        private void DrawGrid(Camera camera)
+        {
+            if (AutoCamOffset)
             {
-                Appearance.DrawGrid(GridOffset, Camera.current.transform.position.y);
+                Appearance.DrawGrid(camera, GridOffset, camera.transform.position.y);
             }
             else
             {
-                Appearance.DrawGrid(GridOffset, CamOffset);
+                Appearance.DrawGrid(camera, GridOffset, CamOffset);
             }
         }
     }

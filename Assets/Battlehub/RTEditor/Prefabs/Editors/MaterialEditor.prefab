@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 222000010950874236}
   - component: {fileID: 114000012043652528}
   - component: {fileID: 114000011615817706}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: TxtShader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 224000014182403492}
   - component: {fileID: 114000013595699834}
   - component: {fileID: 114000012083362204}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: EditorsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 222000010926117622}
   - component: {fileID: 114000010777040364}
   - component: {fileID: 114000010099812214}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Separator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 222000012091376132}
   - component: {fileID: 114000010339901306}
   - component: {fileID: 114000011851952110}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Preview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -382,7 +382,7 @@ GameObject:
   - component: {fileID: 222000010304604718}
   - component: {fileID: 114000010522413284}
   - component: {fileID: 114000012587644110}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: TxtName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -481,7 +481,7 @@ GameObject:
   - component: {fileID: 224000012186146532}
   - component: {fileID: 114000010862606626}
   - component: {fileID: 114000012311132280}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: MaterialEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -562,7 +562,7 @@ GameObject:
   - component: {fileID: 224000011099796186}
   - component: {fileID: 114000012824913780}
   - component: {fileID: 114000012160209654}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -644,7 +644,7 @@ GameObject:
   - component: {fileID: 224000013911385598}
   - component: {fileID: 114000013061926662}
   - component: {fileID: 114000013016506576}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}

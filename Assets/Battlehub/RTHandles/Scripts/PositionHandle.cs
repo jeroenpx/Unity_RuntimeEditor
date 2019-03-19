@@ -857,9 +857,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            Appearance.DoPositionHandle(HandlePosition, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
+            Appearance.DoPositionHandle(camera, HandlePosition, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
         }
     }
 

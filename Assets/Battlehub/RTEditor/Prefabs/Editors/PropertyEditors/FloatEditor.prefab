@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 224000011359223836}
   - component: {fileID: 114000010995399064}
   - component: {fileID: 114000011642439366}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 224000011148383912}
   - component: {fileID: 222000012257166210}
   - component: {fileID: 114000011879388318}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 114000012323015688}
   - component: {fileID: 114000013527702560}
   - component: {fileID: 114000010248129414}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: FloatEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -246,6 +246,18 @@ MonoBehaviour:
   Indent: 10
   m_input: {fileID: 4265654195915855024}
   m_dragField: {fileID: 4123332395827805196}
+--- !u!114 &6696578626812093939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4225548588385603222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 491a4f834891b5b4c976e9f08bbe7fa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7141227302156259154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,18 +278,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &6696578626812093939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4225548588385603222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 491a4f834891b5b4c976e9f08bbe7fa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4123332395827805196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +314,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Label
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Float
       objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
@@ -419,11 +424,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Float
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}

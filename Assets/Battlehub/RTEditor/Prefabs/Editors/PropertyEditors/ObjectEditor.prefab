@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224000010498897492}
   - component: {fileID: 114000010534245296}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: InputWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 224000013054596874}
   - component: {fileID: 222000014054745998}
   - component: {fileID: 114000010279387646}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 114000013746737844}
   - component: {fileID: 114000012554267272}
   - component: {fileID: 114000013490485262}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: BntSelect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 114000013516641080}
   - component: {fileID: 114000014207216240}
   - component: {fileID: 114000011613021252}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ObjectEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 224000012755222464}
   - component: {fileID: 114000010748810436}
   - component: {fileID: 114000012063383980}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -477,6 +477,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InputFieldWithDropArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400936266270582830, guid: 4c79914f1c3ad504f98d16655910337c,
+        type: 3}
+      propertyPath: m_ReadOnly
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8689677484417888633, guid: 4c79914f1c3ad504f98d16655910337c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5223390867846358792, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
@@ -583,25 +593,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 5400936266270582830, guid: 4c79914f1c3ad504f98d16655910337c,
-        type: 3}
-      propertyPath: m_ReadOnly
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5223390860073273616, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5223390867849891056, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8689677484417888633, guid: 4c79914f1c3ad504f98d16655910337c,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c79914f1c3ad504f98d16655910337c, type: 3}

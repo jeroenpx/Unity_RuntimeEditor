@@ -153,7 +153,10 @@ namespace Battlehub.RTCommon
                 m_graphicsLayerCamera.gameObject.SetActive(m_editorWindow.Camera.gameObject.activeSelf);
             }
 
+            
             //if(m_trackedPoseDriver != null)
+
+            if (m_editorWindow.Camera.pixelWidth > 0 && m_editorWindow.Camera.pixelHeight > 0)
             {
                 m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix; //ARCore
             }

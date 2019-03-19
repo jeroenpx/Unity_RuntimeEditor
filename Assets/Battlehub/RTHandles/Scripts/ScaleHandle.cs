@@ -243,9 +243,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            Appearance.DoScaleHandle(m_roundedScale, Target.position, Rotation,  SelectedAxis, LockObject);
+            Appearance.DoScaleHandle(camera, m_roundedScale, Target.position, Rotation,  SelectedAxis, LockObject);
         }
     }
 }

@@ -539,11 +539,10 @@ namespace Battlehub.RTHandles
         }
 
         
-        public void DoPositionHandle(Vector3 position, Quaternion rotation, 
+        public void DoPositionHandle(Camera camera, Vector3 position, Quaternion rotation, 
             RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, bool snapMode = false, LockObject lockObject = null)
         {
-            float screenScale = GetScreenScale(position, Camera.current);
-            
+            float screenScale = GetScreenScale(position, camera);
             Matrix4x4 transform = Matrix4x4.TRS(position, rotation, new Vector3(screenScale, screenScale, screenScale));
 
             m_linesMaterial.SetPass(0);
@@ -605,7 +604,6 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-                    Camera camera = Camera.current;
                     Vector3 toCam = transform.inverse.MultiplyVector(camera.transform.position - position);
 
                     float fx = Mathf.Sign(Vector3.Dot(toCam, x)) * m_handleScale;
@@ -777,9 +775,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void DoRotationHandle(Quaternion rotation, Vector3 position, RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, LockObject lockObject = null, bool cameraFacingBillboardMode = true)
+        public void DoRotationHandle(Camera camera, Quaternion rotation, Vector3 position, RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, LockObject lockObject = null, bool cameraFacingBillboardMode = true)
         {
-            float screenScale = GetScreenScale(position, Camera.current);
+            float screenScale = GetScreenScale(position, camera);
             float radius = m_handleScale;
             Vector3 scale = new Vector3(screenScale, screenScale, screenScale);
             Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
@@ -797,7 +795,7 @@ namespace Battlehub.RTHandles
             {
                 m_linesMaterial.SetPass(0);
                 GL.PushMatrix();
-                GL.MultMatrix(Matrix4x4.TRS(position, Quaternion.LookRotation(Camera.current.transform.position - position), scale));
+                GL.MultMatrix(Matrix4x4.TRS(position, Quaternion.LookRotation(camera.transform.position - position), scale));
             }
             else
             {
@@ -856,9 +854,9 @@ namespace Battlehub.RTHandles
 
         }
 
-        public void DoScaleHandle(Vector3 scale, Vector3 position, Quaternion rotation, RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, LockObject lockObject = null)
+        public void DoScaleHandle(Camera camera, Vector3 scale, Vector3 position, Quaternion rotation, RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, LockObject lockObject = null)
         {
-            float sScale = GetScreenScale(position, Camera.current);
+            float sScale = GetScreenScale(position, camera);
             Matrix4x4 linesTransform = Matrix4x4.TRS(position, rotation, scale * sScale);
 
             m_linesMaterial.SetPass(0);
@@ -914,14 +912,14 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void DoSceneGizmo(Vector3 position, Quaternion rotation, Vector3 selection, float gizmoScale, float xAlpha = 1.0f, float yAlpha = 1.0f, float zAlpha = 1.0f)
+        public void DoSceneGizmo(Camera camera, Vector3 position, Quaternion rotation, Vector3 selection, float gizmoScale, float xAlpha = 1.0f, float yAlpha = 1.0f, float zAlpha = 1.0f)
         {
-            float sScale = GetScreenScale(position, Camera.current) * gizmoScale;
+            float sScale = GetScreenScale(position, camera) * gizmoScale;
             Vector3 screenScale = new Vector3(sScale, sScale, sScale);
 
             const float billboardScale = 0.125f;
             float billboardOffset = 0.4f;
-            if (Camera.current.orthographic)
+            if (camera.orthographic)
             {
                 billboardOffset = 0.42f;
             }
@@ -1012,27 +1010,27 @@ namespace Battlehub.RTHandles
             
             m_xMaterial.color = new Color(1, 1, 1, xAlpha);
             m_xMaterial.SetPass(0);
-            DragSceneGizmoAxis(position, rotation, Vector3.right, gizmoScale, billboardScale, billboardOffset, sScale);
+            DragSceneGizmoAxis(camera, position, rotation, Vector3.right, gizmoScale, billboardScale, billboardOffset, sScale);
             
             m_yMaterial.color = new Color(1, 1, 1, yAlpha);
             m_yMaterial.SetPass(0);
-            DragSceneGizmoAxis(position, rotation, Vector3.up, gizmoScale, billboardScale, billboardOffset, sScale);
+            DragSceneGizmoAxis(camera, position, rotation, Vector3.up, gizmoScale, billboardScale, billboardOffset, sScale);
 
             m_zMaterial.color = new Color(1, 1, 1, zAlpha);
             m_zMaterial.SetPass(0);
-            DragSceneGizmoAxis(position, rotation, Forward, gizmoScale, billboardScale, billboardOffset, sScale);
+            DragSceneGizmoAxis(camera, position, rotation, Forward, gizmoScale, billboardScale, billboardOffset, sScale);
 
         }
 
-        private void DragSceneGizmoAxis(Vector3 position, Quaternion rotation, Vector3 axis, float gizmoScale, float billboardScale, float billboardOffset, float sScale)
+        private void DragSceneGizmoAxis(Camera camera, Vector3 position, Quaternion rotation, Vector3 axis, float gizmoScale, float billboardScale, float billboardOffset, float sScale)
         {
             Vector3 reflectionOffset;
 
-            reflectionOffset = Vector3.Reflect(Camera.current.transform.forward, axis) * 0.1f;
-            float dotAxis = Vector3.Dot(Camera.current.transform.forward, axis);
+            reflectionOffset = Vector3.Reflect(camera.transform.forward, axis) * 0.1f;
+            float dotAxis = Vector3.Dot(camera.transform.forward, axis);
             if (dotAxis > 0)
             {
-                if(Camera.current.orthographic)
+                if(camera.orthographic)
                 {
                     reflectionOffset += axis * dotAxis * 0.4f;
                 }
@@ -1044,7 +1042,7 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                if (Camera.current.orthographic)
+                if (camera.orthographic)
                 {
                     reflectionOffset -= axis * dotAxis * 0.1f;
                 }
@@ -1056,20 +1054,20 @@ namespace Battlehub.RTHandles
 
 
             Vector3 pos = position + (axis + reflectionOffset) * billboardOffset * sScale;
-            float scale = GetScreenScale(pos, Camera.current) * gizmoScale;
+            float scale = GetScreenScale(pos, camera) * gizmoScale;
             Vector3 scaleVector = new Vector3(scale, scale, scale);
             Graphics.DrawMeshNow(SceneGizmoQuad, Matrix4x4.TRS(pos, rotation, scaleVector * billboardScale));
         }
 
-        public static float GetGridFarPlane()
+        public static float GetGridFarPlane(Camera camera)
         {
-            float h = Camera.current.transform.position.y;
+            float h = camera.transform.position.y;
             float d = CountOfDigits(h);
             float spacing = Mathf.Pow(10, d - 1);
             return spacing * 150;
         }
 
-        public void DrawGrid(Vector3 gridOffset, float camOffset = 0.0f)
+        public void DrawGrid(Camera camera, Vector3 gridOffset, float camOffset = 0.0f)
         {
             float h = camOffset;
             h = Mathf.Abs(h);
@@ -1085,7 +1083,7 @@ namespace Battlehub.RTHandles
             float alpha = 1.0f - (h - spacing) / (nextSpacing - spacing);
             float alpha2 = (h * 10 - nextSpacing) / (nextNextSpacing - nextSpacing);
 
-            Vector3 cameraPosition = Camera.current.transform.position;
+            Vector3 cameraPosition = camera.transform.position;
             DrawGrid(cameraPosition, gridOffset, spacing, alpha, h * 20);
             DrawGrid(cameraPosition, gridOffset, nextSpacing, alpha2, h * 20);
         }
@@ -1121,7 +1119,7 @@ namespace Battlehub.RTHandles
             GL.End();
         }
 
-        public void DrawBounds(ref Bounds bounds, Vector3 position, Quaternion rotation, Vector3 scale)
+        public void DrawBounds(Camera camera, ref Bounds bounds, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             m_linesMaterialZTest.SetPass(0);
 
@@ -1140,7 +1138,7 @@ namespace Battlehub.RTHandles
                     {
                         Vector3 p = bounds.center + new Vector3(bounds.extents.x * i, bounds.extents.y * j, bounds.extents.z * k);
                         Vector3 pt = transform.MultiplyPoint(p);
-                        float sScale = Mathf.Max(GetScreenScale(pt, Camera.current), 0.1f);
+                        float sScale = Mathf.Max(GetScreenScale(pt, camera), 0.1f);
                         Vector3 size = Vector3.one * 0.2f * sScale;
 
                         Vector3 sizeX = new Vector3(Mathf.Min(size.x / Mathf.Abs(scale.x), bounds.extents.x), 0, 0);

@@ -13,14 +13,14 @@ namespace Battlehub.RTGizmos
             }
         }
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            base.DrawOverride();
+            base.DrawOverride(camera);
             if (Target == null)
             {
                 return;
             }
-            RuntimeGizmos.DrawDirectionalLight(Target.position, Target.rotation, Vector3.one, LineColor);
+            RuntimeGizmos.DrawDirectionalLight(camera, Target.position, Target.rotation, Vector3.one, LineColor);
 
         }
 

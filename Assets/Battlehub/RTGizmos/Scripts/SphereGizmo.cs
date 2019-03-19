@@ -48,9 +48,9 @@ namespace Battlehub.RTGizmos
             return true;
         }
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            base.DrawOverride();
+            base.DrawOverride(camera);
 
             if(Target == null)
             {
@@ -62,7 +62,7 @@ namespace Battlehub.RTGizmos
             scale = Vector3.one * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
 
             RuntimeGizmos.DrawCubeHandles(Target.TransformPoint(Center) , Target.rotation, scale , HandlesColor);
-            RuntimeGizmos.DrawWireSphereGL(Target.TransformPoint(Center), Target.rotation, scale, LineColor);
+            RuntimeGizmos.DrawWireSphereGL(camera, Target.TransformPoint(Center), Target.rotation, scale, LineColor);
 
             if (IsDragging)
             {

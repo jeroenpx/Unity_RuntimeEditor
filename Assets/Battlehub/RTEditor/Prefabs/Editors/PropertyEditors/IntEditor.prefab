@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 224000011359223836}
   - component: {fileID: 114000010995399064}
   - component: {fileID: 114000011642439366}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 224000011148383912}
   - component: {fileID: 222000012257166210}
   - component: {fileID: 114000011879388318}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 114000012323015688}
   - component: {fileID: 114000013527702560}
   - component: {fileID: 114924160143883322}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: IntEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,6 +315,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Int
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -419,11 +424,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Int
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}

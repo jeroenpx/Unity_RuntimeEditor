@@ -578,9 +578,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            Appearance.DoRotationHandle(Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject, Editor.IsVR);
+            Appearance.DoRotationHandle(camera, Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject, Editor.IsVR);
         }
     }
 }

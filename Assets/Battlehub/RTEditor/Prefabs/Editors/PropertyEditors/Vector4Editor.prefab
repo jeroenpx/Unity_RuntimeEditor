@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 114000010444226472}
   - component: {fileID: 222000010013852542}
   - component: {fileID: 114000013592262318}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 224000012727053598}
   - component: {fileID: 114000010172886390}
   - component: {fileID: 114000011890229560}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: WEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 224000010586208572}
   - component: {fileID: 114000014228425552}
   - component: {fileID: 114000011589066146}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224000010703913502}
   - component: {fileID: 114000011097385352}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 224000011980347940}
   - component: {fileID: 222000012275782258}
   - component: {fileID: 114000010030866804}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -482,7 +482,7 @@ GameObject:
   - component: {fileID: 224000010420943174}
   - component: {fileID: 114000012839954412}
   - component: {fileID: 222000013429764352}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Vector4Editor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 224000013864160236}
   - component: {fileID: 114000013174778544}
   - component: {fileID: 114000014077813336}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: XEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -630,7 +630,7 @@ GameObject:
   - component: {fileID: 224000010878242258}
   - component: {fileID: 222000010991816312}
   - component: {fileID: 114000011126450648}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -697,7 +697,7 @@ GameObject:
   - component: {fileID: 222000011903137632}
   - component: {fileID: 114000014290091634}
   - component: {fileID: 114000012980916114}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -789,7 +789,7 @@ GameObject:
   - component: {fileID: 224000012527259322}
   - component: {fileID: 114000012232499402}
   - component: {fileID: 114000013833507286}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ZEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -871,7 +871,7 @@ GameObject:
   - component: {fileID: 224000013807219602}
   - component: {fileID: 222000013877962890}
   - component: {fileID: 114000012905247224}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Expanded
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -946,7 +946,7 @@ GameObject:
   - component: {fileID: 114000010466270630}
   - component: {fileID: 114000013144677730}
   - component: {fileID: 114000013025501616}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Vector4Editor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1056,7 +1056,7 @@ GameObject:
   - component: {fileID: 224000014096288450}
   - component: {fileID: 222000010063506482}
   - component: {fileID: 114000013801450000}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1122,7 +1122,7 @@ GameObject:
   - component: {fileID: 224000013707047054}
   - component: {fileID: 114000012146071552}
   - component: {fileID: 114000013978419394}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: YEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1204,7 +1204,7 @@ GameObject:
   - component: {fileID: 224000012282874746}
   - component: {fileID: 222000013007944188}
   - component: {fileID: 114000011702371144}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Collapsed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1278,7 +1278,7 @@ GameObject:
   - component: {fileID: 224000011006448016}
   - component: {fileID: 114000014171431470}
   - component: {fileID: 114000013235462630}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1359,7 +1359,7 @@ GameObject:
   - component: {fileID: 224000010542985162}
   - component: {fileID: 222000013101416838}
   - component: {fileID: 114000012168372588}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1425,7 +1425,7 @@ GameObject:
   - component: {fileID: 224000012244463358}
   - component: {fileID: 114000013914722120}
   - component: {fileID: 114000012860339452}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1506,7 +1506,7 @@ GameObject:
   - component: {fileID: 224000013097801068}
   - component: {fileID: 114000011336791336}
   - component: {fileID: 114000010599342896}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1587,7 +1587,7 @@ GameObject:
   - component: {fileID: 224000010627172762}
   - component: {fileID: 222000010692329658}
   - component: {fileID: 114000011234741936}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1962,6 +1962,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Y
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2066,11 +2071,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Y
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}
@@ -2098,6 +2098,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Z
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2202,11 +2207,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Z
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}
@@ -2806,6 +2806,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: W
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2911,11 +2916,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: W
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}
 --- !u!1 &1262884899985566382 stripped
@@ -2941,6 +2941,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Label
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Vector4
       objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
@@ -3046,11 +3051,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Vector4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}
@@ -3084,6 +3084,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: X
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3188,11 +3193,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: X
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 224471659643902804}
   - component: {fileID: 114974144612231366}
   - component: {fileID: 114201169535405662}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ColliderEditToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 224706516669099994}
   - component: {fileID: 222994182526721256}
   - component: {fileID: 114841478248329628}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 224121376137774892}
   - component: {fileID: 222513604148137708}
   - component: {fileID: 114780539905382502}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 224072353613592666}
   - component: {fileID: 222379161984436164}
   - component: {fileID: 114218774017510998}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}

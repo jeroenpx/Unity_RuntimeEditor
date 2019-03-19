@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 224000011269172174}
   - component: {fileID: 114000011886648044}
   - component: {fileID: 114000011479443320}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 114000010376843580}
   - component: {fileID: 114000013137867466}
   - component: {fileID: 222000012496593994}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ComponentsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 222000010459251284}
   - component: {fileID: 114000011912517554}
   - component: {fileID: 114000012456648988}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Separator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 114000013445876576}
   - component: {fileID: 114000013316878596}
   - component: {fileID: 114000011075181902}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: GameObjectEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -426,6 +426,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toggle
       objectReference: {fileID: 0}
+    - target: {fileID: 8727470473772357811, guid: db514993469563f478affaca922b79a3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8792846670009147559, guid: db514993469563f478affaca922b79a3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -530,6 +535,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8727470473006148923, guid: db514993469563f478affaca922b79a3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8727470474120431257, guid: db514993469563f478affaca922b79a3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db514993469563f478affaca922b79a3, type: 3}
@@ -569,6 +584,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: InputField
       objectReference: {fileID: 0}
+    - target: {fileID: 5432877179632202248, guid: d9792cc2f1ad09443b2d3c14a8020285,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5223390867846358792, guid: d9792cc2f1ad09443b2d3c14a8020285,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -673,6 +693,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5432877179229674632, guid: d9792cc2f1ad09443b2d3c14a8020285,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5432877179575228942, guid: d9792cc2f1ad09443b2d3c14a8020285,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9792cc2f1ad09443b2d3c14a8020285, type: 3}

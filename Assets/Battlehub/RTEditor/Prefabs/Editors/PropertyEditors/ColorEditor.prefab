@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 114000011036388990}
   - component: {fileID: 114000011949072012}
   - component: {fileID: 114000010341436922}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: MainColor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 222000013129093372}
   - component: {fileID: 114000012196506546}
   - component: {fileID: 114000011622182952}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Alpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 114000013281447222}
   - component: {fileID: 114000012887273210}
   - component: {fileID: 114000013554154278}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: AlphaBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 114000011215419854}
   - component: {fileID: 114000010684621920}
   - component: {fileID: 114000012546663910}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ColorButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -482,7 +482,7 @@ GameObject:
   - component: {fileID: 224000010810155968}
   - component: {fileID: 222000012905068410}
   - component: {fileID: 114000012529359368}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -549,7 +549,7 @@ GameObject:
   - component: {fileID: 114000010397137842}
   - component: {fileID: 114000014025720854}
   - component: {fileID: 114000010834781166}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ColorEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -78,9 +78,9 @@ namespace Battlehub.RTGizmos
             return true;
         }
 
-        protected override void DrawOverride()
+        protected override void DrawOverride(Camera camera)
         {
-            base.DrawOverride();
+            base.DrawOverride(camera);
 
            
             float hs = GetMaxHorizontalScale(true);

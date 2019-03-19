@@ -90,7 +90,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void Draw(int cullingMask)
+        public void Draw(int cullingMask, Camera camera)
         {
             if (m_editor.Tools.ShowSelectionGizmos)
             {
@@ -101,7 +101,7 @@ namespace Battlehub.RTHandles
 
                 Bounds bounds = m_exposeToEditor.Bounds;
                 Transform trform = m_exposeToEditor.BoundsObject.transform;
-                Appearance.DrawBounds(ref bounds, trform.position, trform.rotation, trform.lossyScale);
+                Appearance.DrawBounds(camera, ref bounds, trform.position, trform.rotation, trform.lossyScale);
             }
         }
 

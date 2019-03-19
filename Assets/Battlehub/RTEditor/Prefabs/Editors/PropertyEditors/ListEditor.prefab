@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 114000014156735454}
   - component: {fileID: 222000013937893062}
   - component: {fileID: 114000011336429170}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 224000011275388578}
   - component: {fileID: 114000011625083250}
   - component: {fileID: 114000013980451374}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: SizeEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 224000010295834488}
   - component: {fileID: 114000011931825056}
   - component: {fileID: 222000012682767428}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ArrayEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 222000012306638080}
   - component: {fileID: 114000011214918850}
   - component: {fileID: 114000012254224194}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 224000013426984128}
   - component: {fileID: 222000012379459906}
   - component: {fileID: 114000012524989610}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 224000013374106258}
   - component: {fileID: 222000013229754606}
   - component: {fileID: 114000012697438146}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Expanded
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -574,7 +574,7 @@ GameObject:
   - component: {fileID: 114000014015578790}
   - component: {fileID: 114000010681101246}
   - component: {fileID: 114921658928245712}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: ListEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 224000011194376982}
   - component: {fileID: 222000011487999814}
   - component: {fileID: 114000012401395714}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -742,7 +742,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224000011368629104}
   - component: {fileID: 114000012441469824}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -800,7 +800,7 @@ GameObject:
   - component: {fileID: 224000012962741096}
   - component: {fileID: 222000011855238698}
   - component: {fileID: 114000011902921142}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Collapsed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -907,6 +907,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: Size
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1011,11 +1016,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: Size
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}
@@ -1192,6 +1192,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Label
       objectReference: {fileID: 0}
+    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+        type: 3}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1296,11 +1301,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
-        type: 3}
-      propertyPath: m_Text
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}

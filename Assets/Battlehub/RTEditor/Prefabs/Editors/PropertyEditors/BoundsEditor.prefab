@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 114000010444226472}
   - component: {fileID: 222000010013852542}
   - component: {fileID: 114000013592262318}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224000010703913502}
   - component: {fileID: 114000011097385352}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: LabelWrapper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 224000011980347940}
   - component: {fileID: 222000012275782258}
   - component: {fileID: 114000010030866804}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 224000010420943174}
   - component: {fileID: 114000012839954412}
   - component: {fileID: 222000013429764352}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Vector4Editor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -386,7 +386,7 @@ GameObject:
   - component: {fileID: 222000011903137632}
   - component: {fileID: 114000014290091634}
   - component: {fileID: 114000012980916114}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 224000013807219602}
   - component: {fileID: 222000013877962890}
   - component: {fileID: 114000012905247224}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Expanded
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -551,7 +551,7 @@ GameObject:
   - component: {fileID: 114000010466270630}
   - component: {fileID: 114000013144677730}
   - component: {fileID: 114000013889568050}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: BoundsEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -649,7 +649,7 @@ GameObject:
   - component: {fileID: 224000012282874746}
   - component: {fileID: 222000013007944188}
   - component: {fileID: 114000011702371144}
-  m_Layer: 19
+  m_Layer: 5
   m_Name: Collapsed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -722,6 +722,10 @@ PrefabInstance:
     - target: {fileID: 1000014011597448, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
       propertyPath: m_Name
       value: Vector3Editor
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000014011597448, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 224000012289588936, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
         type: 3}
@@ -878,13 +882,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4559112702510589737, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
+    - target: {fileID: 1000013103021506, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010318466794, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4559112702510589737, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
         type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4559112702510589737, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
+        type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
@@ -962,6 +974,18 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1616711721253712, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922470890595110, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1684208105978418, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
@@ -1136,6 +1160,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Vector3Editor
       objectReference: {fileID: 0}
+    - target: {fileID: 1000014011597448, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 224000012289588936, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1291,13 +1319,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4559112702510589737, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
+    - target: {fileID: 1000013103021506, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010318466794, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4559112702510589737, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
         type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4559112702510589737, guid: ce1efab434cbb3041bf5f67fd2d43e3b,
+        type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
@@ -1375,6 +1411,18 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1616711721253712, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922470890595110, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1684208105978418, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce1efab434cbb3041bf5f67fd2d43e3b, type: 3}

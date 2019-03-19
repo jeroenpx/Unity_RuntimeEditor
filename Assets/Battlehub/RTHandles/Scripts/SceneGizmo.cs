@@ -1,9 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Battlehub.Utils;
 using Battlehub.RTCommon;
+
 namespace Battlehub.RTHandles
 {
     [RequireComponent(typeof(Camera))]
@@ -174,6 +176,9 @@ namespace Battlehub.RTHandles
             {
                 gameObject.AddComponent<SceneGizmoInput>();
             }
+            #if UNITY_2019_1_OR_NEWER
+            RenderPipelineManager.endCameraRendering += OnEndCameraRendering;
+            #endif
         }
 
         protected virtual void Start()
@@ -196,6 +201,9 @@ namespace Battlehub.RTHandles
                     Editor.Tools.ActiveTool = null;
                 }
             }
+            #if UNITY_2019_1_OR_NEWER
+            RenderPipelineManager.endCameraRendering -= OnEndCameraRendering;
+            #endif
         }
 
         private void OnBtnModeClick()
@@ -203,9 +211,19 @@ namespace Battlehub.RTHandles
             IsOrthographic = !Window.Camera.orthographic;
         }
 
+#if UNITY_2019_1_OR_NEWER
+        private void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            if(m_camera == camera)
+            {
+                Appearance.DoSceneGizmo(camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_xAlpha, m_yAlpha, m_zAlpha);
+            }
+        }
+#endif
+
         private void OnPostRender()
         {
-            Appearance.DoSceneGizmo(GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_xAlpha, m_yAlpha, m_zAlpha);
+            Appearance.DoSceneGizmo(Camera.current, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_xAlpha, m_yAlpha, m_zAlpha);
         }
 
         private void OnGUI()

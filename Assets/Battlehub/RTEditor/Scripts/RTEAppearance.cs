@@ -17,16 +17,22 @@ namespace Battlehub.RTEditor
             set;
         }
 
+        [Obsolete("Use UIScaler instead")]
         CanvasScaler UIBackgroundScaler
         {
             get;
         }
 
+        [Obsolete("Use UIScaler instead")]
         CanvasScaler UIForegroundScaler
         {
             get;
         }
 
+        CanvasScaler UIScaler
+        {
+            get;
+        }
     }
 
     [Serializable]
@@ -56,6 +62,7 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private CanvasScaler m_uiBackgroundScaler = null;
+        [Obsolete("Use UIScaler instead")]
         public CanvasScaler UIBackgroundScaler
         {
             get { return m_uiBackgroundScaler; }
@@ -63,9 +70,17 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private CanvasScaler m_uiForegroundScaler = null;
+        [Obsolete("Use UIScaler instead")]
         public CanvasScaler UIForegroundScaler
         {
             get { return m_uiForegroundScaler; }
+        }
+
+        [SerializeField]
+        private CanvasScaler m_uiScaler = null;
+        public CanvasScaler UIScaler
+        {
+            get { return m_uiScaler; }
         }
 
         private IRTE m_editor;

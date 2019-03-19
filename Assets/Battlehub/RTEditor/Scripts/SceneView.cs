@@ -2,6 +2,7 @@
 using Battlehub.RTHandles;
 using Battlehub.RTSL.Interface;
 using Battlehub.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace Battlehub.RTEditor
             if(!GetComponent<SceneViewInput>())
             {
                 gameObject.AddComponent<SceneViewInput>();
-            }
+            }    
         }
 
         public override void DragEnter(object[] dragObjects, PointerEventData eventData)

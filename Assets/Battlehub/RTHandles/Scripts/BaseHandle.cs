@@ -1044,7 +1044,7 @@ namespace Battlehub.RTHandles
             return new Vector2(-vector2.y, vector2.x);
         }
 
-        void IGL.Draw(int cullingMask)
+        void IGL.Draw(int cullingMask, Camera camera)
         {
             if((cullingMask & (1 << (Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index))) == 0)
             {
@@ -1053,11 +1053,11 @@ namespace Battlehub.RTHandles
 
             if(Model == null)
             {
-                DrawOverride();
+                DrawOverride(camera);
             }
         }
 
-        protected virtual void DrawOverride()
+        protected virtual void DrawOverride(Camera camera)
         {
 
         }
