@@ -244,7 +244,7 @@ namespace Battlehub.RTHandles
                 case RuntimeHandleAxis.Free:
                     if(!m_lockObj.RotationFree)
                     {
-                        m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0.1f);
+                        m_innerCircleMaterials[m_innerCircleFillMatIndex].color = Colors.SelectionAltColor;
                     }
                     break;
                 case RuntimeHandleAxis.Screen:

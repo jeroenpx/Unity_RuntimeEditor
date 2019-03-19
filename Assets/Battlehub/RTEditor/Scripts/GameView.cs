@@ -10,6 +10,10 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject m_noCamerasRenderingTxt = null;
         private List<GameViewCamera> m_gameCameras;
+        private List<RenderTextureCamera> m_renderTextureCameras;
+
+        [SerializeField]
+        private RectTransform m_renderTextureOutput = null;
 
         //When default layout button clicked Awake for new GameView invoked before OnDestroy for previous => camera disabled unintentionally
         //This static variable (m_gameView) needed to fix this issue. Probably DestroyImmediate also could work...
@@ -19,10 +23,22 @@ namespace Battlehub.RTEditor
         {
             WindowType = RuntimeWindowType.Game;
             m_gameCameras = Editor.Object.Get(false).Select(obj => obj.GetComponent<GameViewCamera>()).Where(obj => obj != null && obj.IsAwaked).ToList();
-            if(m_gameCameras.Count > 0)
+            
+            if (m_gameCameras.Count > 0)
             {
                 m_camera = m_gameCameras[0].Camera;
             }
+            
+            if (m_renderTextureOutput != null)
+            {
+                m_renderTextureCameras = new List<RenderTextureCamera>();
+                for (int i = 0; i < m_gameCameras.Count; ++i)
+                {
+                    GameViewCamera gameViewCamera = m_gameCameras[i];
+                    CreateRenderTextureCamera(gameViewCamera);
+                }
+            }
+            
             UpdateVisualState();
 
             GameViewCamera._Awaked += OnCameraAwaked;
@@ -64,6 +80,18 @@ namespace Battlehub.RTEditor
                     }
                 }
                 m_gameView = null;
+
+                if(m_renderTextureCameras != null)
+                {
+                    for(int i = 0; i < m_renderTextureCameras.Count; ++i)
+                    {
+                        RenderTextureCamera renderTextureCamera = m_renderTextureCameras[i];
+                        if(renderTextureCamera != null)
+                        {
+                            Destroy(renderTextureCamera);
+                        }
+                    }
+                }
             }  
         }
 
@@ -111,10 +139,16 @@ namespace Battlehub.RTEditor
         {
             gameCamera.Camera.depth = CameraDepth + gameCamera.Depth;
             m_gameCameras.Add(gameCamera);
+            if(m_renderTextureCameras != null)
+            {
+                CreateRenderTextureCamera(gameCamera);
+            }
+            
             if (Camera == null)
             {
                 Camera = gameCamera.Camera;
             }
+
             UpdateVisualState();
             if(Editor.IsOpened && gameCamera.Camera != null)
             {
@@ -128,24 +162,30 @@ namespace Battlehub.RTEditor
             UpdateVisualState();
         }
 
-        private void OnCameraDisabled(GameViewCamera camera)
+        private void OnCameraDisabled(GameViewCamera gameCamera)
         {
             UpdateVisualState();
         }
 
-        private void OnCameraComponentEnabled(GameViewCamera camera)
+        private void OnCameraComponentEnabled(GameViewCamera gameCamera)
         {
             UpdateVisualState();
         }
 
-        private void OnCameraComponentDisabled(GameViewCamera camera)
+        private void OnCameraComponentDisabled(GameViewCamera gameCamera)
         {
             UpdateVisualState();
         }
 
         private void OnCameraDestroyed(GameViewCamera camera)
         {
-            m_gameCameras.Remove(camera);
+            int index = m_gameCameras.IndexOf(camera);
+            m_gameCameras.RemoveAt(index);
+            if(m_renderTextureCameras != null)
+            {
+                m_renderTextureCameras.RemoveAt(index);
+            }
+            
             if (m_gameCameras.Count > 0)
             {
                 Camera = m_gameCameras[0].Camera;
@@ -175,7 +215,7 @@ namespace Battlehub.RTEditor
 
         protected override void ResizeCamera(Rect pixelRect)
         {
-            for(int i = 0; i < m_gameCameras.Count; ++i)
+            for (int i = 0; i < m_gameCameras.Count; ++i)
             {
                 GameViewCamera gameCamera = m_gameCameras[i];
                 Rect r = gameCamera.Rect;
@@ -186,6 +226,19 @@ namespace Battlehub.RTEditor
         private void UpdateVisualState()
         {
             m_noCamerasRenderingTxt.SetActive(m_gameCameras.Count == 0 || m_gameCameras.All(c => !c.gameObject.activeSelf || !c.Camera || !c.Camera.enabled));
+        }
+
+        private void CreateRenderTextureCamera(GameViewCamera gameViewCamera)
+        {
+            GameObject gameViewCameraGo = gameViewCamera.gameObject;
+            bool wasActive = gameViewCameraGo.activeSelf;
+            gameViewCameraGo.SetActive(false);
+
+            RenderTextureCamera renderTextureCamera = gameViewCameraGo.AddComponent<RenderTextureCamera>();
+            renderTextureCamera.OutputRoot = m_renderTextureOutput;
+            m_renderTextureCameras.Add(renderTextureCamera);
+
+            gameViewCameraGo.SetActive(wasActive);
         }
     }
 

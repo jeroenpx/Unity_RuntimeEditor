@@ -70,7 +70,6 @@ namespace Battlehub.RTCommon
             }
         }
 
-       
         private int m_index;
         public virtual int Index
         {
@@ -317,8 +316,9 @@ namespace Battlehub.RTCommon
         {
         }
 
-        public void HandleResize()
+        public virtual void HandleResize()
         {
+      
             if (m_camera != null && m_rectTransform != null)
             {
                 if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)

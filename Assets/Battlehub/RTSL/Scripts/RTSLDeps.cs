@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTSL
 {
@@ -135,6 +136,12 @@ namespace Battlehub.RTSL
                 return;
             }
 
+            RegisterRTSL();
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+        }
+
+        private static void RegisterRTSL()
+        {
             IOC.RegisterFallback(() => Instance.m_assetBundleLoader);
             IOC.RegisterFallback(() => Instance.m_typeMap);
             IOC.RegisterFallback(() => Instance.m_objectFactory);
@@ -144,6 +151,11 @@ namespace Battlehub.RTSL
             IOC.RegisterFallback<IIDMap>(() => Instance.m_assetDB);
             IOC.RegisterFallback(() => Instance.m_project);
             IOC.RegisterFallback(() => Instance.m_shaderUtil);
+        }
+
+        private static void OnSceneUnloaded(Scene arg0)
+        {
+            m_instance = null;
         }
     }
 }

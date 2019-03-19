@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224154404041186762}
   m_Layer: 5
-  m_Name: GameView
+  m_Name: GameView_NoRenderTextures
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 6765843764211026530}
   - {fileID: 3420010333323923591}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -171,7 +170,7 @@ MonoBehaviour:
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}
   m_noCamerasRenderingTxt: {fileID: 4266394884733193861}
-  m_renderTextureOutput: {fileID: 6765843764211026530}
+  m_renderTextureOutput: {fileID: 0}
 --- !u!222 &4947775628952255891
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -240,7 +239,7 @@ RectTransform:
   m_Children:
   - {fileID: 1129335033447866378}
   m_Father: {fileID: 224154404041186762}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -359,41 +358,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!1 &5771566374458634705
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6765843764211026530}
-  m_Layer: 5
-  m_Name: Output
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6765843764211026530
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5771566374458634705}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 224154404041186762}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
 --- !u!1 &8041896155501490675
 GameObject:
   m_ObjectHideFlags: 0

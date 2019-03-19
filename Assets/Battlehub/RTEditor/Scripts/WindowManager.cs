@@ -74,7 +74,6 @@ namespace Battlehub.RTEditor
         public Sprite Icon;
         public string Header;
         public GameObject ContentPrefab;
-        public GameObject[] ComponentPrefabs = new GameObject[0];
         [ReadOnly]
         public int MaxWindows = 1;
         [ReadOnly]
@@ -1127,12 +1126,11 @@ namespace Battlehub.RTEditor
                 content.name = windowTypeName;
 
                 Transform[] children = content.transform.OfType<Transform>().ToArray();
-                for (int i = 0; i < wd.ComponentPrefabs.Length; ++i)
+                for(int i = 0; i < children.Length; ++i)
                 {
-                    GameObject componentPrefab = wd.ComponentPrefabs[i];
-                    if (componentPrefab != null)
+                    Transform component = children[i];
+                    if (!(component is RectTransform))
                     {
-                        Transform component = children[componentPrefab.transform.GetSiblingIndex()];
                         component.gameObject.SetActive(false);
                         component.transform.SetParent(m_componentsRoot, false);
                     }

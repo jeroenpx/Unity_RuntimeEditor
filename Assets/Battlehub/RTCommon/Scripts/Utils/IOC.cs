@@ -160,15 +160,12 @@ namespace Battlehub.RTCommon
             return default(T);
         }
 
-        public bool ClearOnSceneUnloaded = true;
         public void Clear()
         {
             m_registered.Clear();
             m_fallbacks.Clear();  
         }
     }
-
-
 
     public static class IOC
     {
@@ -181,7 +178,7 @@ namespace Battlehub.RTCommon
         {
             m_container.Register(instance);
         }
-        
+
         public static void Unregister<T>(Func<T> func)
         {
             m_container.Unregister(func);
@@ -217,25 +214,11 @@ namespace Battlehub.RTCommon
             return m_container.Resolve<T>();
         }
 
-        public static bool ClearOnSceneUnloaded
-        {
-            get { return m_container.ClearOnSceneUnloaded; }
-            set { m_container.ClearOnSceneUnloaded = value; }
-        }
-
         private static IOCContainer m_container;
+
         static IOC()
         {
             m_container = new IOCContainer();
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-        }
-
-        private static void OnSceneUnloaded(Scene arg0)
-        {
-            if (m_container.ClearOnSceneUnloaded)
-            {
-                m_container.Clear();
-            }
         }
 
         public static void ClearAll()

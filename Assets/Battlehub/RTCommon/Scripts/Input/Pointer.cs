@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
 {
@@ -6,14 +7,17 @@ namespace Battlehub.RTCommon
     {
         public virtual Ray Ray
         {
-            get { return m_window.Camera.ScreenPointToRay(m_window.Editor.Input.GetPointerXY(0)); }
+            get { return m_window.Camera.ScreenPointToRay(ScreenPoint); }
         }
 
         public virtual Vector2 ScreenPoint
         {
-            get { return m_window.Editor.Input.GetPointerXY(0); }
+            get { return ScreenPointToViewPoint(m_window.Editor.Input.GetPointerXY(0)); }
         }
 
+        private RenderTextureCamera m_renderTextureCamera;
+        private CanvasScaler m_canvasScaler;
+        
         [SerializeField]
         protected RuntimeWindow m_window;
         private void Awake()
@@ -22,17 +26,45 @@ namespace Battlehub.RTCommon
             {
                 m_window = GetComponent<RuntimeWindow>();
             }
+
+            if(m_window.Camera != null)
+            {
+                m_renderTextureCamera = m_window.Camera.GetComponent<RenderTextureCamera>();
+                if(m_renderTextureCamera != null)
+                {
+                    m_canvasScaler = GetComponentInParent<CanvasScaler>();
+                }
+            }
+        }
+
+        private Vector2 ScreenPointToViewPoint(Vector2 screenPoint)
+        {
+            if(m_renderTextureCamera == null)
+            {
+                return screenPoint;
+            }
+
+            Vector2 viewPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransorm, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
+
+            if(m_canvasScaler != null)
+            {
+                viewPoint *= m_canvasScaler.scaleFactor;
+            }
+
+            return viewPoint;
         }
 
         public virtual bool WorldToScreenPoint(Vector3 worldPoint, Vector3 point, out Vector2 result)
         {
             result = m_window.Camera.WorldToScreenPoint(point);
+            result = ScreenPointToViewPoint(result);
             return true;
         }
 
         public virtual bool XY(Vector3 worldPoint, out Vector2 result)
         {
-            result = m_window.Editor.Input.GetPointerXY(0);
+            result = ScreenPoint;
             return true;
         }
 

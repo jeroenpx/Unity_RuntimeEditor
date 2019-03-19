@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
-using UnityEngine.SpatialTracking;
+//using UnityEngine.SpatialTracking;
 
 namespace Battlehub.RTCommon
 {
@@ -11,9 +11,9 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private Camera m_graphicsLayerCamera;
 
+        private RenderTextureCamera m_renderTextureCamera;
+        
         private RuntimeWindow m_editorWindow;
-
-        private TrackedPoseDriver m_trackedPoseDriver;
 
         public RuntimeWindow Window
         {
@@ -24,12 +24,10 @@ namespace Battlehub.RTCommon
         {
             m_editorWindow = GetComponent<RuntimeWindow>();
             PrepareGraphicsLayerCamera();
-            //m_graphicsLayerCamera.usePhysicalProperties = true;
         }
 
         private void Start()
         {
-           // m_graphicsLayerCamera.usePhysicalProperties = false;
             if (m_editorWindow.Index >= m_editorWindow.Editor.CameraLayerSettings.MaxGraphicsLayers)
             {
                 Debug.LogError("m_editorWindow.Index >= m_editorWindow.Editor.CameraLayerSettings.MaxGraphicsLayers");
@@ -42,19 +40,23 @@ namespace Battlehub.RTCommon
             {
                 Destroy(m_graphicsLayerCamera.gameObject);
             }
+
+            if(m_renderTextureCamera != null && m_renderTextureCamera.OverlayMaterial != null)
+            {
+                Destroy(m_renderTextureCamera.OverlayMaterial);
+            }
         }
 
         private void PrepareGraphicsLayerCamera()
         {
-            m_trackedPoseDriver = m_editorWindow.Camera.GetComponent<TrackedPoseDriver>();
+            bool wasActive = m_editorWindow.Camera.gameObject.activeSelf;
+            m_editorWindow.Camera.gameObject.SetActive(false);
+
+            //m_trackedPoseDriver = m_editorWindow.Camera.GetComponent<TrackedPoseDriver>();
             if (m_editorWindow.Editor.IsVR && m_editorWindow.Camera.stereoEnabled && m_editorWindow.Camera.stereoTargetEye == StereoTargetEyeMask.Both )
             {
-                bool wasActive = m_editorWindow.Camera.gameObject.activeSelf;
-                m_editorWindow.Camera.gameObject.SetActive(false);
                 m_graphicsLayerCamera = Instantiate(m_editorWindow.Camera, m_editorWindow.Camera.transform.parent);
                 m_graphicsLayerCamera.transform.SetSiblingIndex(m_editorWindow.Camera.transform.GetSiblingIndex() + 1);
-                m_editorWindow.Camera.gameObject.SetActive(wasActive);
-                m_graphicsLayerCamera.gameObject.SetActive(wasActive);
             }
             else
             {
@@ -78,11 +80,14 @@ namespace Battlehub.RTCommon
                 {
                     continue;
                 }
-             
+                if(component is RenderTextureCamera)
+                {
+                    continue;
+                }
+
                 Destroy(component);
             }
 
-            m_graphicsLayerCamera.clearFlags = CameraClearFlags.Depth;
             m_graphicsLayerCamera.transform.localPosition = Vector3.zero;
             m_graphicsLayerCamera.transform.localRotation = Quaternion.identity;
             m_graphicsLayerCamera.transform.localScale = Vector3.one;
@@ -90,12 +95,25 @@ namespace Battlehub.RTCommon
             m_graphicsLayerCamera.depth = m_editorWindow.Camera.depth + 1;
             m_graphicsLayerCamera.cullingMask = 1 << (m_editorWindow.Editor.CameraLayerSettings.RuntimeGraphicsLayer + m_editorWindow.Index);
 
-            m_graphicsLayerCamera.allowHDR = false; //fix strange screen blinking bug...
-
-            if(m_trackedPoseDriver != null)
+            m_renderTextureCamera = m_graphicsLayerCamera.GetComponent<RenderTextureCamera>();
+            if (m_renderTextureCamera == null)
             {
-                m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix;
+                m_graphicsLayerCamera.clearFlags = CameraClearFlags.Depth;
             }
+            else
+            {
+                m_renderTextureCamera.OverlayMaterial = new Material(Shader.Find("Battlehub/RTCommon/RenderTextureOverlay"));
+                m_graphicsLayerCamera.clearFlags = CameraClearFlags.SolidColor;
+                m_graphicsLayerCamera.backgroundColor = new Color(0, 0, 0, 0);
+            }
+
+            m_graphicsLayerCamera.allowHDR = false; //fix strange screen blinking bug...
+            m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix; //for ARCore
+            
+            
+            m_editorWindow.Camera.gameObject.SetActive(wasActive);
+            m_graphicsLayerCamera.gameObject.SetActive(wasActive);
+
         }
 
         private void LateUpdate()
@@ -135,9 +153,9 @@ namespace Battlehub.RTCommon
                 m_graphicsLayerCamera.gameObject.SetActive(m_editorWindow.Camera.gameObject.activeSelf);
             }
 
-            if(m_trackedPoseDriver != null)
+            //if(m_trackedPoseDriver != null)
             {
-                m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix;
+                m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix; //ARCore
             }
         }
     }

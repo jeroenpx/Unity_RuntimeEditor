@@ -15,7 +15,10 @@ namespace Battlehub.RTHandles
         public Vector2 Offset = new Vector2(0, 0);
         public Vector3 Up = Vector3.up;
         public RuntimeHandlesComponent Appearance;
-
+        public RectTransform m_output;
+        private CanvasScaler m_canvasScaler;
+        private Canvas m_canvas;
+        
         public UnityEvent OrientationChanging;
         public UnityEvent OrientationChanged;
         public UnityEvent ProjectionChanged;
@@ -24,7 +27,8 @@ namespace Battlehub.RTHandles
         private Rect m_cameraPixelRect;
         private float m_aspect;
         private Camera m_camera;
-        
+        private RenderTextureCamera m_renderTextureCamera;
+
         private float m_xAlpha = 1.0f;
         private float m_yAlpha = 1.0f;
         private float m_zAlpha = 1.0f;
@@ -115,10 +119,34 @@ namespace Battlehub.RTHandles
             DisableColliders();
 
             m_camera = GetComponent<Camera>();
-            m_camera.clearFlags = CameraClearFlags.Depth;
-            m_camera.renderingPath = RenderingPath.Forward;
-            m_camera.allowMSAA = false;
-            m_camera.allowHDR = false;
+            m_renderTextureCamera = GetComponent<RenderTextureCamera>();
+            if(m_renderTextureCamera == null)
+            {
+                m_camera.clearFlags = CameraClearFlags.Depth;
+                m_camera.renderingPath = RenderingPath.Forward;
+                m_camera.allowMSAA = false;
+                m_camera.allowHDR = false;  
+                
+                if(BtnProjection != null)
+                {
+                    m_canvas = BtnProjection.GetComponentInParent<Canvas>();
+                }
+            }
+            else
+            {
+                m_camera.clearFlags = CameraClearFlags.SolidColor;
+                m_camera.backgroundColor = new Color(0, 0, 0, 0);
+                if (m_output != null)
+                {
+                    Vector2 size = Size;
+                    m_output.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
+                    m_output.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+
+                    m_canvasScaler = m_output.GetComponentInParent<CanvasScaler>();
+                    m_canvas = m_output.GetComponentInParent<Canvas>();
+                }
+            }
+
             m_camera.cullingMask = 0;
             m_camera.orthographic = Window.Camera.orthographic;
 
@@ -150,7 +178,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void Start()
         {
-            IsOrthographic = Window.Camera.orthographic;
+            IsOrthographic = Window.Camera.orthographic;   
         }
 
         protected override void OnDestroyOverride()
@@ -202,7 +230,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-
         protected override void OnWindowDeactivated()
         {
             base.OnWindowDeactivated();
@@ -236,7 +263,9 @@ namespace Battlehub.RTHandles
 
             Vector2 guiMousePositon = Window.Pointer.ScreenPoint;
             guiMousePositon.y = Screen.height - guiMousePositon.y;
-            bool isMouseOverButton = m_buttonRect.Contains(guiMousePositon, true);
+            bool isMouseOverButton = BtnProjection != null ?
+                RectTransformUtility.RectangleContainsScreenPoint((RectTransform)BtnProjection.transform, m_editor.Input.GetPointerXY(0), m_canvas.worldCamera)  : 
+                m_buttonRect.Contains(guiMousePositon, true);
             if(isMouseOverButton)
             {
                 Editor.Tools.ActiveTool = this;
@@ -249,7 +278,17 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (m_camera.pixelRect.Contains(Window.Pointer.ScreenPoint) && Editor.ActiveWindow == Window && Window.IsPointerOver)
+            bool pointerOverSceneGizmo;
+            if(m_renderTextureCamera == null)
+            {
+                pointerOverSceneGizmo = m_camera.pixelRect.Contains(Window.Pointer.ScreenPoint);
+            }
+            else
+            {
+                pointerOverSceneGizmo = RectTransformUtility.RectangleContainsScreenPoint(m_renderTextureCamera.RectTransorm, m_editor.Input.GetPointerXY(0), m_canvas.worldCamera);
+            }
+
+            if (pointerOverSceneGizmo && Editor.ActiveWindow == Window && Window.IsPointerOver)
             {
                 if (!m_mouseOver || updateAlpha)
                 {
@@ -392,9 +431,21 @@ namespace Battlehub.RTHandles
 
             if (m_aspect != m_camera.aspect)
             {
-                Vector2 size = Size * Appearance.SceneGizmoScale;
-                Vector2 offset = Offset * Appearance.SceneGizmoScale;
-                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x + offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - size.y + offset.y, size.x, size.y);
+                if(m_renderTextureCamera == null)
+                {
+                    Vector2 size = Size * Appearance.SceneGizmoScale;
+                    Vector2 offset = Offset * Appearance.SceneGizmoScale;
+                    m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x + offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - size.y + offset.y, size.x, size.y);
+                }
+                else
+                {
+                    if(m_output != null)
+                    {
+                        m_output.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Size.x);
+                        m_output.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Size.y);
+                    }
+                }
+
                 m_aspect = m_camera.aspect;
             }
 
@@ -434,9 +485,28 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private Vector2 ScreenPointToViewPoint(Vector2 screenPoint)
+        {
+            if (m_renderTextureCamera == null)
+            {
+                return screenPoint;
+            }
+
+            Vector2 viewPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransorm, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
+
+            if (m_canvasScaler != null)
+            {
+                viewPoint *= m_canvasScaler.scaleFactor;
+            }
+
+            return viewPoint;
+        }
+
         private Collider HitTest()
         {
-            Ray ray = m_camera.ScreenPointToRay(Window.Pointer.ScreenPoint);
+            Ray ray = m_camera.ScreenPointToRay(ScreenPointToViewPoint(m_window.Editor.Input.GetPointerXY(0)));
+
             float minDistance = float.MaxValue;
             Collider result = null;
             for(int i = 0; i < m_colliders.Length; ++i)
@@ -536,9 +606,21 @@ namespace Battlehub.RTHandles
             {
                 bool initColliders = false;
 
-                Vector2 size = Size * Appearance.SceneGizmoScale;
-                Vector2 offset = Offset * Appearance.SceneGizmoScale;
-                m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x + offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - size.y + offset.y, size.x, size.y);
+                if(m_renderTextureCamera == null)
+                {
+                    Vector2 size = Size * Appearance.SceneGizmoScale;
+                    Vector2 offset = Offset * Appearance.SceneGizmoScale;
+                    m_camera.pixelRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x + offset.x, Window.Camera.pixelRect.min.y + Window.Camera.pixelHeight - size.y + offset.y, size.x, size.y);
+                }
+                else
+                {
+                    if (m_output != null)
+                    {
+                        m_output.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Size.x);
+                        m_output.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Size.y);
+                    }
+                }
+
                 if (m_camera.pixelRect.height == 0 || m_camera.pixelRect.width == 0)
                 {
                    // enabled = false;
@@ -555,7 +637,12 @@ namespace Battlehub.RTHandles
                 m_camera.depth = Window.Camera.depth + 1;
                 m_aspect = m_camera.aspect;
 
-                m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x / 2 - 17 + offset.x, (Screen.height - Window.Camera.pixelRect.yMax) + size.y - offset.y - 3, 35, 14);
+                if(m_renderTextureCamera == null)
+                {
+                    Vector2 size = Size * Appearance.SceneGizmoScale;
+                    Vector2 offset = Offset * Appearance.SceneGizmoScale;
+                    m_buttonRect = new Rect(Window.Camera.pixelRect.min.x + Window.Camera.pixelWidth - size.x / 2 - 17 + offset.x, (Screen.height - Window.Camera.pixelRect.yMax) + size.y - offset.y - 3, 35, 14);
+                }
                 
                 m_buttonStyle = new GUIStyle();
                 m_buttonStyle.alignment = TextAnchor.MiddleCenter;

@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.UIControls.DockPanels;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -99,8 +100,13 @@ namespace Battlehub.RTEditor
             }            
         }
 
-        protected virtual void Start()
+        protected virtual IEnumerator Start()
         {
+            //Waiting several frames to prevent writes to console during initial layout 
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
             m_console = IOC.Resolve<IRuntimeConsole>();
             m_console.MessageAdded += OnMessageAdded;
             m_console.MessagesRemoved += OnMessageRemoved;

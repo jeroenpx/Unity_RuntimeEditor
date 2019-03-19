@@ -18,7 +18,7 @@ namespace Battlehub.RTEditor
         private Vector3 m_point;
         private GameObject m_dropTarget;
         private AssetItem m_dragItem;
-     
+             
         protected override void AwakeOverride()
         {
             ActivateOnAnyKey = true;

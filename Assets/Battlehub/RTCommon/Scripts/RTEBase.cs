@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
@@ -499,16 +500,24 @@ namespace Battlehub.RTCommon
         private static void Init()
         {
             Debug.Log("RTE Initialized");
-            IOC.RegisterFallback<IRTE>(() =>
+            IOC.RegisterFallback<IRTE>(RegisterRTE);
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+        }
+
+        private static RTEBase RegisterRTE()
+        {
+            if (m_instance == null)
             {
-                if (m_instance == null)
-                {
-                    GameObject editor = new GameObject("RTE");
-                    editor.AddComponent<RTEBase>();
-                    m_instance.BuildUp(editor);
-                }
-                return m_instance;
-            });
+                GameObject editor = new GameObject("RTE");
+                editor.AddComponent<RTEBase>();
+                m_instance.BuildUp(editor);
+            }
+            return m_instance;
+        }
+
+        private static void OnSceneUnloaded(Scene arg0)
+        {
+            m_instance = null;
         }
 
         protected virtual void BuildUp(GameObject editor)
@@ -879,7 +888,7 @@ namespace Battlehub.RTCommon
 
         public virtual void ActivateWindow(RuntimeWindow window)
         {
-            if (m_activeWindow != window && window.CanActivate)
+            if (window != null && m_activeWindow != window && window.CanActivate)
             {
                 RuntimeWindow deactivatedWindow = m_activeWindow;
 
