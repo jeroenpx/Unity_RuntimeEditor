@@ -123,7 +123,7 @@ namespace Battlehub.RTEditor
                 IScenePivot scenePivot = GetScenePivot();
                 if (scenePivot != null)
                 {
-                    pivot = scenePivot.SecondaryPivot.position;
+                    pivot = scenePivot.SecondaryPivot;
                 }
                 go.transform.position = pivot;
                 go.AddComponent<ExposeToEditor>();

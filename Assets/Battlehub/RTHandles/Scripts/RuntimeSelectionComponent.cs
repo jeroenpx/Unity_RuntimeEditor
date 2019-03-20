@@ -42,21 +42,94 @@ namespace Battlehub.RTHandles
 
     public interface IScenePivot
     {
-        Transform Pivot
+        Vector3 Pivot
         {
             get;
+            set;
         }
 
-        Transform SecondaryPivot
+        Vector3 SecondaryPivot
         {
             get;
+            set;
+        }
+
+        Vector3 CameraPosition
+        {
+            get;
+            set;
+        }
+
+        bool IsOrthographic
+        {
+            get;
+            set;
         }
 
         void Focus();
     }
 
+    public interface IRuntimeSelectionComponent : IScenePivot
+    {
+        PositionHandle PositionHandle
+        {
+            get;
+        }
+
+        RotationHandle RotationHandle
+        {
+            get;
+        }
+
+        ScaleHandle ScaleHandle
+        {
+            get;
+        }
+
+        BoxSelection BoxSelection
+        {
+            get;
+        }
+
+        bool IsPositionHandleEnabled
+        {
+            get;
+            set;
+        }
+
+        bool IsRotationHandleEnabled
+        {
+            get;
+            set;
+        }
+
+        bool IsScaleHandleEnabled
+        {
+            get;
+            set;
+        }
+
+        bool IsBoxSelectionEnabled
+        {
+            get;
+            set;
+        }
+
+        bool CanSelect
+        {
+            get;
+            set;
+        }
+        
+        bool CanSelectAll
+        {
+            get;
+            set;
+        }
+    }
+
     [DefaultExecutionOrder(-55)]
-    public class RuntimeSelectionComponent : RTEComponent, IScenePivot
+    public class RuntimeSelectionComponent : RTEComponent, IRuntimeSelectionComponent
     {
         [SerializeField]
         private PositionHandle m_positionHandle = null;
@@ -73,14 +146,59 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private Transform m_secondaryPivot = null;
 
-        public Transform Pivot
+        [SerializeField]
+        private bool m_isPositionHandleEnabled = true;
+        [SerializeField]
+        private bool m_isRotationHandleEnabled = true;
+        [SerializeField]
+        private bool m_isScaleHandleEnabled = true;
+        [SerializeField]
+        private bool m_isBoxSelectionEnabled = true;
+        [SerializeField]
+        private bool m_canSelect = true;
+        [SerializeField]
+        private bool m_canSelectAll = true;
+     
+        protected Transform PivotTransform
         {
             get { return m_pivot; }
         }
 
-        public Transform SecondaryPivot
+        protected Transform SecondaryPivotTransform
         {
             get { return m_secondaryPivot; }
+        }
+
+        public bool IsOrthographic
+        {
+            get { return Window.Camera.orthographic; }
+            set { Window.Camera.orthographic = value; }
+        }
+
+        public virtual Vector3 CameraPosition
+        {
+            get { return Window.Camera.transform.position; }
+            set
+            {
+                Window.Camera.transform.position = value;
+                Window.Camera.transform.LookAt(Pivot);
+            }
+        }
+
+        public virtual Vector3 Pivot
+        {
+            get { return m_pivot.transform.position; }
+            set
+            {
+                m_pivot.transform.position = value;
+                Window.Camera.transform.LookAt(Pivot);
+            }
+        }
+
+        public virtual Vector3 SecondaryPivot
+        {
+            get { return m_secondaryPivot.transform.position; }
+            set { m_secondaryPivot.transform.position = value; }
         }
 
         public BoxSelection BoxSelection
@@ -88,11 +206,91 @@ namespace Battlehub.RTHandles
             get { return m_boxSelection; }
         }
 
+        public PositionHandle PositionHandle
+        {
+            get { return m_positionHandle; }
+        }
+
+        public RotationHandle RotationHandle
+        {
+            get { return m_rotationHandle; }
+        }
+
+        public ScaleHandle ScaleHandle
+        {
+            get { return m_scaleHandle; }
+        }
+
+        public bool IsPositionHandleEnabled
+        {
+            get { return m_isPositionHandleEnabled && m_positionHandle != null; }
+            set
+            {
+                m_isPositionHandleEnabled = value;
+                if (m_positionHandle != null)
+                {
+                    m_positionHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Move);
+                }
+            }
+        }
+
+        public bool IsRotationHandleEnabled
+        {
+            get { return m_isRotationHandleEnabled && m_rotationHandle != null; }
+            set
+            {
+                m_isRotationHandleEnabled = value;
+                if (m_rotationHandle != null)
+                {
+                    m_rotationHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Rotate);
+                }
+            }
+        }
+
+        public bool IsScaleHandleEnabled
+        {
+            get { return m_isScaleHandleEnabled && m_scaleHandle != null; }
+            set
+            {
+                m_isScaleHandleEnabled = value; 
+                if(m_scaleHandle != null)
+                {
+                    m_scaleHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Scale);
+                }
+            }
+        }
+
+        public bool IsBoxSelectionEnabled
+        {
+            get { return m_isBoxSelectionEnabled && m_boxSelection != null; }
+            set
+            {
+                m_isBoxSelectionEnabled = value;
+                if(m_boxSelection != null)
+                {
+                    m_boxSelection.enabled = value && Editor.ActiveWindow == Window;
+                }
+            }
+        }
+
+        public bool CanSelect
+        {
+            get { return m_canSelect; }
+            set { m_canSelect = value; }
+        }
+
+        public bool CanSelectAll
+        {
+            get { return m_canSelectAll; }
+            set { m_canSelectAll = value; }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-
+            
             Window.IOCContainer.RegisterFallback<IScenePivot>(this);
+            Window.IOCContainer.RegisterFallback<IRuntimeSelectionComponent>(this);
 
             if(m_boxSelection == null)
             {
@@ -221,6 +419,7 @@ namespace Battlehub.RTHandles
             base.OnDestroyOverride();
 
             Window.IOCContainer.UnregisterFallback<IScenePivot>(this);
+            Window.IOCContainer.UnregisterFallback<IRuntimeSelectionComponent>(this);
 
             if (m_boxSelection != null)
             {
@@ -256,7 +455,7 @@ namespace Battlehub.RTHandles
             base.OnWindowActivated();
             if (m_boxSelection != null)
             {
-                m_boxSelection.enabled = true;
+                m_boxSelection.enabled = true && IsBoxSelectionEnabled;
             }
         }
 
@@ -271,13 +470,18 @@ namespace Battlehub.RTHandles
 
         public virtual void SelectGO(bool multiselect, bool allowUnselect)
         {
+            if(!CanSelect)
+            {
+                return;
+            }
+
             Ray ray = Window.Pointer;
             RaycastHit hitInfo;
 
             if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
             {
                 GameObject hitGO = hitInfo.collider.gameObject;
-                bool canSelect = CanSelect(hitGO);
+                bool canSelect = CanSelectObject(hitGO);
                 if (canSelect)
                 {
                     hitGO = hitGO.GetComponentInParent<ExposeToEditor>().gameObject;
@@ -331,6 +535,10 @@ namespace Battlehub.RTHandles
 
         public virtual void SelectAll()
         {
+            if(!CanSelect || !CanSelectAll)
+            {
+                return;
+            }
             Editor.Selection.objects = Editor.Object.Get(false).Select(exposed => exposed.gameObject).ToArray();
         }
 
@@ -343,7 +551,7 @@ namespace Battlehub.RTHandles
 
             if (m_positionHandle != null)
             {
-                if (Editor.Tools.Current == RuntimeTool.Move)
+                if (Editor.Tools.Current == RuntimeTool.Move && IsPositionHandleEnabled)
                 {
                     m_positionHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_positionHandle.Targets = GetTargets();
@@ -356,7 +564,7 @@ namespace Battlehub.RTHandles
             }
             if (m_rotationHandle != null)
             {   
-                if (Editor.Tools.Current == RuntimeTool.Rotate)
+                if (Editor.Tools.Current == RuntimeTool.Rotate && IsRotationHandleEnabled)
                 {
                     m_rotationHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_rotationHandle.Targets = GetTargets();
@@ -369,7 +577,7 @@ namespace Battlehub.RTHandles
             }
             if (m_scaleHandle != null)
             {
-                if (Editor.Tools.Current == RuntimeTool.Scale)
+                if (Editor.Tools.Current == RuntimeTool.Scale && IsScaleHandleEnabled)
                 {
                     m_scaleHandle.transform.position = Editor.Selection.activeTransform.position;
                     m_scaleHandle.Targets = GetTargets();
@@ -405,7 +613,7 @@ namespace Battlehub.RTHandles
 
         private void OnBoxSelectionFiltering(object sender, FilteringArgs e)
         {
-            if (e.Object == null)
+            if (e.Object == null || !CanSelect)
             {
                 e.Cancel = true;
             }
@@ -501,7 +709,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual bool CanSelect(GameObject go)
+        protected virtual bool CanSelectObject(GameObject go)
         {
             return go.GetComponentInParent<ExposeToEditor>();
         }

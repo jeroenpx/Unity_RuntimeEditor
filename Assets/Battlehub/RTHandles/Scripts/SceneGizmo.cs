@@ -206,6 +206,32 @@ namespace Battlehub.RTHandles
             #endif
         }
 
+        protected virtual void OnEnable()
+        {
+            if(m_output != null)
+            {
+                m_output.gameObject.SetActive(true);
+            }
+
+            if(BtnProjection != null)
+            {
+                BtnProjection.gameObject.SetActive(true);
+            }
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (m_output != null)
+            {
+                m_output.gameObject.SetActive(false);
+            }
+
+            if (BtnProjection != null)
+            {
+                BtnProjection.gameObject.SetActive(false);
+            }
+        }
+
         private void OnBtnModeClick()
         {
             IsOrthographic = !Window.Camera.orthographic;

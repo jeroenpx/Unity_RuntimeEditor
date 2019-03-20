@@ -64,7 +64,7 @@ namespace Battlehub.RTEditor
                                 {
                                     up = Vector3.up;
                                 }
-                                m_dragPlane = new Plane(up, scenePivot.SecondaryPivot.position);
+                                m_dragPlane = new Plane(up, scenePivot.SecondaryPivot);
 
                                 GameObject prefab = (GameObject)obj[0];
                                 bool wasPrefabEnabled = prefab.activeSelf;

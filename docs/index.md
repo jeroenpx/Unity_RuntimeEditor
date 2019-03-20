@@ -8,6 +8,12 @@ and this documentation has to offer.
 	If you cannot find something in the documentation or have any questions, send an email to [Battlehub@outlook.com](mailto:Battlehub@outlook.com) or ask directly in this [support group](https://t.me/battlehub). 
 	
 
+Previous Versions:
+
+* [v 2.00](http://rteditor.battlehub.net/v20/)
+* [v 2.03](http://rteditor.battlehub.net/v203/)
+* [v 2.04](http://rteditor.battlehub.net/v204/)
+
 The documentation is organized as following:
 
 ##[General](general.md)
@@ -65,6 +71,7 @@ The documentation is organized as following:
 *  [Window Manager](runtime-editor.md#window-manager)
 *  [How To: How to add custom window to Window Manager](runtime-editor.md#how-to-add-custom-window-to-window-manager)
 *  [How to: override default layout](runtime-editor.md#how-to-override-default-layout)
+*  [How to: override scene parameters](runtime-editor.md#how-to-override-scene-parameters)
 *  [How to: override tools panels](runtime-editor.md#how-to-override-tools-panel)
 *  [How to: override ui scale](runtime-editor.md#how-to-override-ui-scale)
 *  [Inspector View](runtime-editor.md#inspector-view)

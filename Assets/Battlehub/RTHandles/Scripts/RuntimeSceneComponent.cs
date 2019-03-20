@@ -3,7 +3,40 @@ using Battlehub.Utils;
 using Battlehub.RTCommon;
 namespace Battlehub.RTHandles
 {
-    public class RuntimeSceneComponent : RuntimeSelectionComponent
+    public interface IRuntimeSceneComponent : IRuntimeSelectionComponent
+    {
+        bool IsSceneGizmoEnabled
+        {
+            get;
+            set;
+        }
+
+        bool CanPan
+        {
+            get;
+            set;
+        }
+
+        bool CanZoom
+        {
+            get;
+            set;
+        }
+
+        bool CanOrbit
+        {
+            get;
+            set;
+        }
+
+        float SizeOfGrid
+        {
+            get;
+            set;
+        }
+    }
+
+    public class RuntimeSceneComponent : RuntimeSelectionComponent, IRuntimeSceneComponent
     {
         public Texture2D ViewTexture;
         public Texture2D MoveTexture;
@@ -20,11 +53,85 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private SceneGizmo m_sceneGizmo;
 
+        [SerializeField]
+        private bool m_isSceneGizmoEnabled = true;
+        [SerializeField]
+        private bool m_canPan = true;
+        [SerializeField]
+        private bool m_canZoom = true;
+        [SerializeField]
+        private bool m_canOrbit = true;
+        
+        public bool IsSceneGizmoEnabled
+        {
+            get { return m_isSceneGizmoEnabled && m_sceneGizmo != null; }
+            set
+            {
+                m_isSceneGizmoEnabled = value;
+                if(m_sceneGizmo != null)
+                {
+                    m_sceneGizmo.gameObject.SetActive(value);
+                }
+            }
+        }
+
+        public bool CanPan
+        {
+            get { return m_canPan; }
+            set { m_canPan = value; }
+        }
+        public bool CanZoom
+        {
+            get { return m_canZoom; }
+            set
+            {
+                m_canZoom = value;
+                m_mouseOrbit.CanZoom = value;
+            }
+        }
+
+        public bool CanOrbit
+        {
+            get { return m_canOrbit; }
+            set
+            {
+                m_canZoom = value;
+                m_mouseOrbit.CanOrbit = value;
+            }
+        }
+
+        public float SizeOfGrid
+        {
+            get { return GridSize; }
+            set { GridSize = value; }
+        }
+
+        public override Vector3 Pivot
+        {
+            get { return base.Pivot; }
+            set
+            {
+                base.Pivot = value;
+                m_mouseOrbit.SyncAngles();
+            }
+        }
+
+        public override Vector3 CameraPosition
+        {
+            get { return base.CameraPosition; }
+            set
+            { 
+                base.CameraPosition = value;
+                m_mouseOrbit.SyncAngles();
+            }
+        }
 
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            
+
+            Window.IOCContainer.RegisterFallback<IRuntimeSceneComponent>(this);
+
             GameObject runGO = new GameObject("Run");
             runGO.transform.SetParent(transform, false);
             runGO.name = "Run";
@@ -49,8 +156,10 @@ namespace Battlehub.RTHandles
             {
                 m_mouseOrbit = Window.Camera.gameObject.AddComponent<MouseOrbit>();
             }
-            m_mouseOrbit.Target = Pivot;
-            m_mouseOrbit.SecondaryTarget = SecondaryPivot;
+            m_mouseOrbit.Target = PivotTransform;
+            m_mouseOrbit.SecondaryTarget = SecondaryPivotTransform;
+            m_mouseOrbit.CanZoom = CanZoom;
+            m_mouseOrbit.CanOrbit = CanOrbit;
 
             if(m_sceneGizmo == null)
             {
@@ -66,14 +175,21 @@ namespace Battlehub.RTHandles
                 m_sceneGizmo.OrientationChanging.AddListener(OnSceneGizmoOrientationChanging);
                 m_sceneGizmo.OrientationChanged.AddListener(OnSceneGizmoOrientationChanged);
                 m_sceneGizmo.ProjectionChanged.AddListener(OnSceneGizmoProjectionChanged);
-                m_sceneGizmo.Pivot = Pivot;
+                m_sceneGizmo.Pivot = PivotTransform;
+                if(!IsSceneGizmoEnabled)
+                {
+                    m_sceneGizmo.gameObject.SetActive(false);
+                }
             }
         }
 
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
-            if(m_mouseOrbit != null)
+
+            Window.IOCContainer.UnregisterFallback<IRuntimeSceneComponent>(this);
+
+            if (m_mouseOrbit != null)
             {
                 Destroy(m_mouseOrbit);
             }
@@ -126,7 +242,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override bool CanSelect(GameObject go)
+        protected override bool CanSelectObject(GameObject go)
         {
             ExposeToEditor exposeToEditor = go.GetComponentInParent<ExposeToEditor>();
             return exposeToEditor != null && exposeToEditor.CanSelect;
@@ -140,7 +256,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (pan)
+            if (pan && CanPan)
             {
                 if (rotate && Editor.Tools.Current == RuntimeTool.View)
                 {
@@ -151,20 +267,13 @@ namespace Battlehub.RTHandles
                     Editor.CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
                 }
             }
-            else if (rotate)
+            else if (rotate && CanOrbit)
             {
                 Editor.CursorHelper.SetCursor(this, ViewTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
             }
             else
             {
-                //if (Editor.Tools.Current == RuntimeTool.View)
-                //{
-                //    Editor.CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
-                //}
-                //else
-                {
-                    Editor.CursorHelper.ResetCursor(this);
-                }
+                Editor.CursorHelper.ResetCursor(this);
             }
         }
 
@@ -260,7 +369,7 @@ namespace Battlehub.RTHandles
 
         public void BeginPan(Vector3 mousePosition)
         {
-            if (m_lockInput)
+            if (m_lockInput || !CanPan)
             {
                 return;
             }
@@ -270,7 +379,7 @@ namespace Battlehub.RTHandles
 
         public void Pan(Vector3 mousePosition)
         {
-            if (m_lockInput)
+            if (m_lockInput || !CanPan)
             {
                 return;
             }
@@ -289,7 +398,7 @@ namespace Battlehub.RTHandles
 
         public void Orbit(float deltaX, float deltaY, float deltaZ)
         {
-            if (m_lockInput)
+            if (m_lockInput || !CanOrbit)
             {
                 return;
             }

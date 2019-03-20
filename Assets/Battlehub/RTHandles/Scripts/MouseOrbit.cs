@@ -21,6 +21,9 @@ namespace Battlehub.RTCommon
         protected float m_x = 0.0f;
         protected float m_y = 0.0f;
 
+        public bool CanOrbit;
+        public bool CanZoom;
+
         private void Awake()
         {
             m_camera = GetComponent<Camera>();
@@ -44,6 +47,11 @@ namespace Battlehub.RTCommon
 
         protected virtual void Zoom(float deltaZ)
         {
+            if(!CanZoom)
+            {
+                deltaZ = 0;
+            }
+
             Quaternion rotation = Quaternion.Euler(m_y, m_x, 0);
             transform.rotation = rotation;
 
@@ -64,6 +72,12 @@ namespace Battlehub.RTCommon
 
         public virtual void Orbit(float deltaX, float deltaY, float deltaZ)
         {
+            if(!CanOrbit)
+            {
+                deltaX = 0;
+                deltaY = 0;
+            }
+
             if(m_camera == null)
             {
                 return;

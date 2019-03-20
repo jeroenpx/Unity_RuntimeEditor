@@ -138,7 +138,7 @@ namespace Battlehub.RTHandles
             }
 
             IScenePivot scenePivot = m_scene.IOCContainer.Resolve<IScenePivot>();
-            m_dragPlane = GetDragPlane(m_scene.Camera, m_scene.Pointer, scenePivot.SecondaryPivot.position);
+            m_dragPlane = GetDragPlane(m_scene.Camera, m_scene.Pointer, scenePivot.SecondaryPivot);
 
             bool wasPrefabEnabled = m_prefab.activeSelf;
             m_prefab.SetActive(false);

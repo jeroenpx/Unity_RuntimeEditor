@@ -107,7 +107,10 @@ namespace Battlehub.RTCommon
             
             RectTransform rt = outputGo.GetComponent<RectTransform>();
             rt.SetParent(m_outputRoot, false);
-            rt.Stretch();
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
             rt.pivot = Vector2.zero;
             
             m_canvas = m_outputRoot.GetComponentInParent<Canvas>();

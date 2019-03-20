@@ -21,10 +21,11 @@ namespace Battlehub.RTEditor
             get;
         }
 
+        event Action<IWindowManager> AfterLayout;
         void OverrideDefaultLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
         void SetDefaultLayout();
         void SetLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
-
+        
         void OverrideTools(Transform contentPrefab);
         void SetTools(Transform content);
 
@@ -91,6 +92,8 @@ namespace Battlehub.RTEditor
     [DefaultExecutionOrder(-89)]
     public class WindowManager : MonoBehaviour, IWindowManager
     {
+        public event Action<IWindowManager> AfterLayout;
+
         [SerializeField]
         private DialogManager m_dialogManager = null;
 
@@ -151,7 +154,7 @@ namespace Battlehub.RTEditor
         private IRTE m_editor;
         private Func<IWindowManager, LayoutInfo> m_overrideLayoutCallback;
         private string m_activateWindowOfType;
-
+        
         private readonly Dictionary<string, CustomWindowDescriptor> m_typeToCustomWindow = new Dictionary<string, CustomWindowDescriptor>();
         private readonly Dictionary<string, HashSet<Transform>> m_windows = new Dictionary<string, HashSet<Transform>>();
         private readonly Dictionary<Transform, List<Transform>> m_extraComponents = new Dictionary<Transform, List<Transform>>();
@@ -236,7 +239,6 @@ namespace Battlehub.RTEditor
             m_editor = IOC.Resolve<IRTE>();
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
 
-            
             SetDefaultLayout();
 
             WindowDescriptor wd;
@@ -844,6 +846,11 @@ namespace Battlehub.RTEditor
             {
                 windows[i].EnableRaycasts();
                 windows[i].HandleResize();
+            }
+
+            if(AfterLayout != null)
+            {
+                AfterLayout(this);
             }
         }
 
