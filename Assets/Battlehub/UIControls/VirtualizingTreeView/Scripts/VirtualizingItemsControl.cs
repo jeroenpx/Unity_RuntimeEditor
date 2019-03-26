@@ -669,6 +669,19 @@ namespace Battlehub.UIControls
                     {
                         //SelectedItems = items.Where(item => m_selectedItemsHS.Contains(item)).ToArray();
                         m_selectedItems = items.Where(item => m_selectedItemsHS.Contains(item)).ToList();
+                        if (m_selectedItems.Count > 0)
+                        {
+                            m_selectedIndex = IndexOf(m_selectedItems.First());
+                        }
+                        else
+                        {
+                            m_selectedIndex = -1;
+                        }
+                        
+                    }
+                    else
+                    {
+                        m_selectedIndex = -1;
                     }
                 }
 
@@ -679,9 +692,9 @@ namespace Battlehub.UIControls
                 }
 
                 m_scrollRect.Items = items;
-                if (updateSelection)
+                if (updateSelection && !CanUnselectAll)
                 {
-                    if (IsFocused && SelectedIndex == -1)
+                    if (IsFocused && SelectedIndex == -1 && m_selectedItems != null && m_selectedItems.Count > 0)
                     {
                         SelectedIndex = 0;
                     }

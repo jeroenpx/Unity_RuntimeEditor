@@ -139,8 +139,7 @@ namespace Battlehub.RTEditor
                 m_listBox.SelectedItems = null;
 
                 List<ProjectItem> itemsList = m_items.ToList();
-             
-                m_listBox.Items = itemsList;  
+                m_listBox.Items = itemsList;
             }
         }
 
@@ -193,6 +192,11 @@ namespace Battlehub.RTEditor
             {
                 gameObject.AddComponent<ProjectFolderViewInput>();
             }
+        }
+
+        private void Start()
+        {
+                
         }
 
         protected override void OnDestroyOverride()

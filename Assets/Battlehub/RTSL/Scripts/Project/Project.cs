@@ -318,6 +318,28 @@ namespace Battlehub.RTSL
             return PathHelper.GetUniqueName(name, names.ToList());
         }
 
+        public string GetUniqueName(string name, Type type, ProjectItem folder)
+        {
+            if(folder.Children == null)
+            {
+                return name;
+            }
+
+            string ext = GetExt(type);
+
+            List<string> existingNames = folder.Children.Where(c => !c.IsFolder).Select(c => c.NameExt).ToList();
+            return PathHelper.GetUniqueName(name, ext, existingNames);
+        }
+
+        public string GetUniquePath(string path, Type type, ProjectItem folder)
+        {
+            string name = Path.GetFileName(path);
+            name = GetUniqueName(name, type, folder);
+
+            path = Path.GetDirectoryName(path).Replace(@"\", "/");
+            
+            return path + (path.EndsWith("/") ? name : "/" + name);
+        }
 
         public void CreateNewScene()
         {

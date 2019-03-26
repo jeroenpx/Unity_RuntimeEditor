@@ -395,10 +395,6 @@ namespace Battlehub.UIControls
             scrollSensitivity = ContainerSize;// * ContainersPerGroup;
         }
 
-        protected override void Start()
-        {
-            base.Start();
-        }
 
         protected override void OnDestroy()
         {

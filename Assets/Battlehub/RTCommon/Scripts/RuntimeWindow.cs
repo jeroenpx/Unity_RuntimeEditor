@@ -18,6 +18,7 @@ namespace Battlehub.RTCommon
 
         ToolsPanel = 21,
 
+        ImportFile = 50,
         OpenProject = 51,
         SelectAssetLibrary = 52,
         ImportAssets = 53,

@@ -74,8 +74,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: -3
     m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Top: 3
+    m_Bottom: 3
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanDrag: 1
   CanEdit: 1
-  CanDrop: 1
+  CanBeParent: 1
   CanSelect: 1
   ItemPresenter: {fileID: 1014062533193862}
   EditorPresenter: {fileID: 1801793456933662}
@@ -1296,8 +1296,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: -3
     m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Top: 3
+    m_Bottom: 3
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 0

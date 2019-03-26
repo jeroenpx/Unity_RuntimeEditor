@@ -63,6 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
   m_activateOnAnyKey: 0
+  m_canActivate: 1
   m_windowType: 2
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
@@ -270,7 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09411765, g: 0.09411765, b: 0.09411765, a: 1}
+  m_Color: {r: 0.12941177, g: 0.12941177, b: 0.12941177, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -627,7 +628,7 @@ PrefabInstance:
     - target: {fileID: 114712616192744262, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_Size
-      value: 0.995
+      value: 0.945
       objectReference: {fileID: 0}
     - target: {fileID: 224607099563474646, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
@@ -646,17 +647,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1877980026545904, guid: f4d9b253bcb78574fb946d44b6934649, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224603220739788910, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224603220739788910, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224826685575019958, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}

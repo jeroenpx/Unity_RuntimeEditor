@@ -160,7 +160,15 @@ namespace Battlehub.RTEditor
         }
     }
 
-    public class ProjectTreeView : RuntimeWindow
+    public interface IProjectTree
+    {
+        ProjectItem SelectedFolder
+        {
+            get;
+        }
+    }
+
+    public class ProjectTreeView : RuntimeWindow, IProjectTree
     {
         public event EventHandler<SelectionChangedArgs<ProjectItem>> SelectionChanged;
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
@@ -308,6 +316,8 @@ namespace Battlehub.RTEditor
             {
                 gameObject.AddComponent<ProjectTreeViewInput>();
             }
+
+            IOC.RegisterFallback<IProjectTree>(this);
         }
 
         private void OnItemClick(object sender, ItemArgs e)
@@ -342,6 +352,7 @@ namespace Battlehub.RTEditor
         {
             base.OnDestroyOverride();
             Unsubscribe();
+            IOC.UnregisterFallback<IProjectTree>(this);
         }
     
         private void Unsubscribe()

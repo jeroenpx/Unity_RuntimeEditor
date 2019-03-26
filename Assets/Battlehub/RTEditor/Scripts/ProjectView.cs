@@ -5,6 +5,7 @@ using System.Linq;
 using Battlehub.UIControls;
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls.DockPanels;
+using System.Collections;
 
 namespace Battlehub.RTEditor
 {
@@ -268,13 +269,24 @@ namespace Battlehub.RTEditor
                 }
 
                 StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, m_resourcePreview));
-
-                bool wasEnabled = Editor.Selection.Enabled;
-                Editor.Selection.Enabled = false;
-                m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
-                Editor.Selection.Enabled = true;
+                StartCoroutine(CoSetItems(e, assets));
             });
+        }
 
+        private void SetItems(SelectionChangedArgs<ProjectItem> e, ProjectItem[] assets)
+        {
+            bool wasEnabled = Editor.Selection.Enabled;
+            Editor.Selection.Enabled = false;
+            m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
+            Editor.Selection.Enabled = true;
+        }
+
+        private IEnumerator CoSetItems(SelectionChangedArgs<ProjectItem> e, ProjectItem[] assets)
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            SetItems(e, assets);
         }
 
         private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)

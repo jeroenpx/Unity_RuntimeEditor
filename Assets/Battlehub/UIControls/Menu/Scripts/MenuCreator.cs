@@ -71,13 +71,18 @@ namespace Battlehub.UIControls.MenuControl
 
         private void Awake()
         {
-            var asName = new AssemblyName();
-            asName.Name = "Assembly-CSharp";
-            Assembly csAssembly = Assembly.Load(asName);
-            if(csAssembly == null)
+            List<Assembly> assemblies = new List<Assembly>();
+            foreach(string assemblyName in BHPath.RootAssemblies)
             {
-                Debug.LogWarning("Unable to load Assembly-CSharp");
-                return;
+                var asName = new AssemblyName();
+                asName.Name = assemblyName;
+                Assembly asm = Assembly.Load(asName);
+                if (asm == null)
+                {
+                    Debug.LogWarning("Unable to load " + assemblyName);
+                    continue;
+                }
+                assemblies.Add(asm);
             }
 
             if (m_menuPanel == null)
@@ -124,9 +129,8 @@ namespace Battlehub.UIControls.MenuControl
                     }
                 }
             }
-            
 
-            Type[] menuDefinitions = csAssembly.GetTypesWithAttribute(typeof(MenuDefinitionAttribute)).ToArray();
+            Type[] menuDefinitions = assemblies.SelectMany(asm => asm.GetTypesWithAttribute(typeof(MenuDefinitionAttribute))).ToArray();
             foreach(Type menuDef in menuDefinitions)
             {
                 MethodInfo[] methods = menuDef.GetMethods(BindingFlags.Static | BindingFlags.Public);

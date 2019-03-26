@@ -62,7 +62,9 @@ namespace Battlehub.RTSL.Interface
         string GetExt(object obj);
         string GetExt(Type type);
         string GetUniqueName(string name, string[] names);
-        
+        string GetUniqueName(string name, Type type, ProjectItem folder);
+        string GetUniquePath(string path, Type type, ProjectItem folder);
+
         bool IsOpened
         {
             get;
@@ -242,7 +244,7 @@ namespace Battlehub.RTSL.Interface
             return project.Delete(new[] { projectItem });
         }
 
-        public static ProjectAsyncOperation Save(this IProject project, string path, object obj)
+        public static ProjectAsyncOperation Save(this IProject project, string path, object obj, byte[] preview = null)
         {
             if (!project.IsOpened)
             {
@@ -267,7 +269,12 @@ namespace Battlehub.RTSL.Interface
                 throw new ArgumentException("directory cannot be found", "path");
             }
 
-            return project.Save(new[] { folder }, new[] { new byte[0] }, new[] { obj }, new[] { name });
+            if(preview == null)
+            {
+                preview = new byte[0];
+            }
+
+            return project.Save(new[] { folder }, new[] { preview }, new[] { obj }, new[] { name });
         }
 
         public static ProjectAsyncOperation<UnityObject[]> Load<T>(this IProject project, string path)

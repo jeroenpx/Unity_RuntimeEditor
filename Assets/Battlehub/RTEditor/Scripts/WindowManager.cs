@@ -75,7 +75,7 @@ namespace Battlehub.RTEditor
         public Sprite Icon;
         public string Header;
         public GameObject ContentPrefab;
-        [ReadOnly]
+        
         public int MaxWindows = 1;
         [ReadOnly]
         public int Created = 0;

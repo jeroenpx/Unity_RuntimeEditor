@@ -305,6 +305,59 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 0100000002000000
     IsHidden: 0000
+  - Name: Battlehub/RTCommon/RenderTextureOverlay
+    PropertyCount: 9
+    PropertyDescriptions:
+    - Sprite Texture
+    - Tint
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    - Use Alpha Clip
+    PropertyNames:
+    - _MainTex
+    - _Color
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    - _UseUIAlphaClip
+    PropertyTypes: 040000000000000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 000000000000000000
   - Name: Battlehub/RTEditor/Demo/NewSurfaceShader
     PropertyCount: 4
     PropertyDescriptions:
@@ -1757,6 +1810,210 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 01000000020000000100000001000000010000000100000001000000010000000100000001000000
     IsHidden: 00000000000000010101
+  - Name: Hidden/ProBuilder/EdgePicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Hidden/ProBuilder/FaceHighlight
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color Tint
+    - Dithering
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Dither
+    - _HandleZTest
+    PropertyTypes: 000000000200000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Hidden/ProBuilder/FacePicker
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Tint
+    PropertyNames:
+    - _Tint
+    PropertyTypes: 00000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    PropertyTexDims: 01000000
+    IsHidden: 00
+  - Name: Hidden/ProBuilder/HideVertices
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Hidden/ProBuilder/LineBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 7
+      Min: 0
+      Max: 20
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Hidden/ProBuilder/NormalPreview
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Hidden/ProBuilder/PointBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 7
+      Min: 0
+      Max: 20
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Hidden/ProBuilder/ScrollHighlight
+    PropertyCount: 5
+    PropertyDescriptions:
+    - Highlight
+    - Base
+    - Speed
+    - EditorTime
+    - LineDistance
+    PropertyNames:
+    - _Highlight
+    - _Base
+    - _Speed
+    - _EditorTime
+    - _LineDistance
+    PropertyTypes: 0000000000000000030000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0.07843138
+      Min: 0.3921569
+      Max: 0.7843137
+    - Def: 0.5
+      Min: 0.5
+      Max: 0.5
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 18
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0100000001000000010000000100000001000000
+    IsHidden: 0000000000
+  - Name: Hidden/ProBuilder/SelectionPicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Hidden/ProBuilder/SmoothingPreview
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Opacity
+    PropertyNames:
+    - _Opacity
+    PropertyTypes: 02000000
+    PropertyRangeLimits:
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    PropertyTexDims: 01000000
+    IsHidden: 00
+  - Name: Hidden/ProBuilder/TransparentOverlay
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Texture
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
+  - Name: Hidden/ProBuilder/VertexPicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Hidden/ProBuilder/VertexShader
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Scale
+    - Color
+    - _HandleZTest
+    PropertyNames:
+    - _Scale
+    - _Color
+    - _HandleZTest
+    PropertyTypes: 030000000000000002000000
+    PropertyRangeLimits:
+    - Def: 3.3
+      Min: 1
+      Max: 7
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
   - Name: Hidden/TerrainEngine/BillboardTree
     PropertyCount: 1
     PropertyDescriptions:
@@ -4993,6 +5250,109 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 020000000100000001000000010000000200000001000000020000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
     IsHidden: 000000000000000000000000000101010101010101010101010101010101
+  - Name: ProBuilder/Diffuse Texture Blend
+    PropertyCount: 4
+    PropertyDescriptions:
+    - Texture
+    - Texture
+    - Texture
+    - Texture
+    PropertyNames:
+    - _FirstTex
+    - _SecondTex
+    - _ThirdTex
+    - _FourthTex
+    PropertyTypes: 04000000040000000400000004000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000020000000200000002000000
+    IsHidden: 00000000
+  - Name: ProBuilder/Diffuse Vertex Color
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Texture
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
+  - Name: ProBuilder/Reference Unlit
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Texture
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
+  - Name: ProBuilder/Standard Vertex Color
+    PropertyCount: 4
+    PropertyDescriptions:
+    - Color
+    - Albedo (RGB)
+    - Smoothness
+    - Metallic
+    PropertyNames:
+    - _Color
+    - _MainTex
+    - _Glossiness
+    - _Metallic
+    PropertyTypes: 00000000040000000300000003000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    PropertyTexDims: 01000000020000000100000001000000
+    IsHidden: 00000000
+  - Name: ProBuilder/Unlit Solid Color
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Color Tint
+    PropertyNames:
+    - _Color
+    PropertyTypes: 00000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    PropertyTexDims: 01000000
+    IsHidden: 00
+  - Name: ProBuilder/UnlitVertexColor
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
   - Name: Skybox/6 Sided
     PropertyCount: 9
     PropertyDescriptions:
