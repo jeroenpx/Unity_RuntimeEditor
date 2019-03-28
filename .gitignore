@@ -50,3 +50,10 @@ obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
 RuntimeEditor2.docx
 site/*
 !site/web.config
+obj/Debug/Unity.ProBuilder.Examples.csproj.FileListAbsolute.txt
+obj/Debug/Unity.ProBuilder.Examples.csprojAssemblyReference.cache
+obj/Debug/Unity.ProBuilder.Examples.dll
+obj/Debug/Unity.ProBuilder.Examples.Editor.csprojAssemblyReference.cache
+obj/Debug/Unity.ProBuilder.Examples.Editor.dll
+obj/Debug/Unity.ProBuilder.Examples.Editor.pdb
+obj/Debug/Unity.ProBuilder.Examples.pdb
