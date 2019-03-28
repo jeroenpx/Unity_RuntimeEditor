@@ -18,9 +18,7 @@ namespace Battlehub.RTEditor
         private ProjectTreeView m_projectTree = null;
         [SerializeField]
         private ProjectFolderView m_projectResources = null;
-        [SerializeField]
-        private string ProjectName = "DefaultProject";
-
+        
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Project;
@@ -70,16 +68,11 @@ namespace Battlehub.RTEditor
             m_project.SaveCompleted += OnSaveCompleted;
             m_project.DuplicateCompleted += OnDuplicateCompleted;
          
-            if (!m_project.IsOpened && !m_project.IsBusy)
-            {
-                Editor.IsBusy = true;
-                m_project.OpenProject(ProjectName);
-            }
-            else
+            if (m_project.IsOpened)
             {
                 m_projectTree.LoadProject(m_project.Root);
                 m_projectTree.SelectedFolder = m_project.Root;
-            }   
+            }
         }
 
 

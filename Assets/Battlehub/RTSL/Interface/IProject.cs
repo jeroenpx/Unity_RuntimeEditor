@@ -38,6 +38,16 @@ namespace Battlehub.RTSL.Interface
             get;
         }
 
+        bool IsOpened
+        {
+            get;
+        }
+
+        ProjectInfo ProjectInfo
+        {
+            get;
+        }
+
         ProjectItem Root
         {
             get;
@@ -49,7 +59,6 @@ namespace Battlehub.RTSL.Interface
             set;
         }
 
-        
         bool IsStatic(ProjectItem projectItem);
         bool IsScene(ProjectItem projectItem);
         Type ToType(AssetItem assetItem);
@@ -64,11 +73,6 @@ namespace Battlehub.RTSL.Interface
         string GetUniqueName(string name, string[] names);
         string GetUniqueName(string name, Type type, ProjectItem folder);
         string GetUniquePath(string path, Type type, ProjectItem folder);
-
-        bool IsOpened
-        {
-            get;
-        }
 
         void CreateNewScene();
         ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);

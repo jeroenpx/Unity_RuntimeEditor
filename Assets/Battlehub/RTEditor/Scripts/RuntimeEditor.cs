@@ -1,17 +1,11 @@
-﻿using Battlehub.RTCommon;
-using Battlehub.RTHandles;
-using Battlehub.RTSL.Interface;
-using Battlehub.UIControls;
-using Battlehub.UIControls.DockPanels;
-using Battlehub.UIControls.MenuControl;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+using Battlehub.UIControls.MenuControl;
 
 using UnityObject = UnityEngine.Object;
 
@@ -55,6 +49,9 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private GameObject m_progressIndicator = null;
+
+        [SerializeField]
+        private string m_defaultProjectName = null;
 
         public override bool IsBusy
         {
@@ -121,6 +118,19 @@ namespace Battlehub.RTEditor
             m_project.BeginLoad += OnBeginLoad;
             m_project.SaveCompleted += OnSaveCompleted;
             m_project.LoadCompleted += OnLoadCompleted;
+            m_project.OpenProjectCompleted += OnProjectOpened;
+            m_project.DeleteProjectCompleted += OnProjectDeleted;
+
+            if(string.IsNullOrEmpty(m_defaultProjectName))
+            {
+                m_defaultProjectName = PlayerPrefs.GetString("RuntimeEditor.DefaultProject", "DefaultProject");
+            }
+
+            IsBusy = true;
+            m_project.OpenProject(m_defaultProjectName, (error, projectInfo) =>
+            {
+                IsBusy = false;
+            });
         }
 
         protected override void Start()
@@ -146,6 +156,8 @@ namespace Battlehub.RTEditor
                 m_project.BeginLoad -= OnBeginLoad;
                 m_project.SaveCompleted -= OnSaveCompleted;
                 m_project.LoadCompleted -= OnLoadCompleted;
+                m_project.OpenProjectCompleted -= OnProjectOpened;
+                m_project.DeleteProjectCompleted -= OnProjectDeleted;
             }
         }
 
@@ -157,6 +169,16 @@ namespace Battlehub.RTEditor
         public void SetDefaultLayout()
         {
             m_wm.SetDefaultLayout();
+        }
+
+        public void CmdCreateWindowValidate(MenuItemValidationArgs args)
+        {
+            #if !(UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
+            if (args.Command.ToLower() == RuntimeWindowType.ImportFile.ToString().ToLower())
+            {
+                args.IsVisible = false;          
+            }
+            #endif
         }
 
         public virtual void CreateWindow(string windowTypeName)
@@ -616,6 +638,27 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            if(m_project.ToGuid(typeof(Light)) != Guid.Empty)
+            {
+                GameObject lightGO = new GameObject("Directional Light");
+                lightGO.transform.position = Vector3.up * 3;
+                lightGO.transform.rotation = Quaternion.Euler(50, -30, 0);
+
+                Light light = lightGO.AddComponent<Light>();
+                light.type = LightType.Directional;
+                lightGO.AddComponent<ExposeToEditor>();
+            }
+
+            if(m_project.ToGuid(typeof(Camera)) != Guid.Empty)
+            {
+                GameObject cameraGO = new GameObject("Camera");
+                cameraGO.transform.position = new Vector3(0, 1, -10);
+
+                cameraGO.AddComponent<Camera>();
+                cameraGO.AddComponent<ExposeToEditor>();
+                cameraGO.AddComponent<GameViewCamera>();
+            }
+
             Selection.objects = null;
             Undo.Purge();
 
@@ -715,6 +758,19 @@ namespace Battlehub.RTEditor
                     SceneSaved();
                 }
             });
+        }
+
+        private void OnProjectOpened(Error error, ProjectInfo result)
+        {
+            PlayerPrefs.SetString("RuntimeEditor.DefaultProject", result.Name);
+        }
+
+        private void OnProjectDeleted(Error error, string projectName)
+        {
+            if(projectName == PlayerPrefs.GetString("RuntimeEditor.DefaultProject"))
+            {
+                PlayerPrefs.DeleteKey("RuntimeEditor.DefaultProject");
+            }
         }
     }
 }

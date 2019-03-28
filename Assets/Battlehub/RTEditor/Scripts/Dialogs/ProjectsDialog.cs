@@ -90,7 +90,15 @@ namespace Battlehub.RTEditor
                 m_treeView.Items = projectInfo.OrderBy(p => p.Name).ToArray();
                 if(projectInfo != null && projectInfo.Length > 0)
                 {
-                    m_treeView.SelectedIndex = 0;
+                    if(m_project.ProjectInfo != null)
+                    {
+                        m_treeView.SelectedItem = m_treeView.Items.OfType<ProjectInfo>().Where(p => p.Name == m_project.ProjectInfo.Name).FirstOrDefault();
+                    }
+                    
+                    if (m_treeView.SelectedItem == null)
+                    {
+                        m_treeView.SelectedIndex = 0;
+                    }
                 }
 
                 if (m_btnNew != null)
@@ -184,7 +192,6 @@ namespace Battlehub.RTEditor
 
         private void OnCreateProjectClick()
         {
-
             InputDialog input = Instantiate(m_inputDialogPrefab);
             input.transform.position = Vector3.zero;
 

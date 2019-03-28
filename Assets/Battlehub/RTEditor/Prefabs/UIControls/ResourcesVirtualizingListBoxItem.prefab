@@ -205,6 +205,7 @@ MonoBehaviour:
   m_folder: {fileID: 21300000, guid: ebfe9cdb856f7b1409d42f180b249230, type: 3}
   m_readonlyFolder: {fileID: 21300000, guid: c496b60be2e8cf345ba432998f80c12e, type: 3}
   m_scene: {fileID: 21300000, guid: 5ef4477f9f2c0f649a6af1d0c5c9f3e2, type: 3}
+  m_mesh: {fileID: 21300000, guid: a513968507c9fcb42892e1a634cd5298, type: 3}
   m_defaultPrefab: {fileID: 21300000, guid: 6324110ea1efba34faee4869655308d5, type: 3}
   m_none: {fileID: 21300000, guid: a8bbb5491ce0cfa449afd696461f1e94, type: 3}
 --- !u!1 &1269421535156280
@@ -777,7 +778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanDrag: 1
   CanEdit: 1
-  CanDrop: 1
+  CanBeParent: 1
   CanSelect: 1
   ItemPresenter: {fileID: 1236361541564308}
   EditorPresenter: {fileID: 1956878271013460}

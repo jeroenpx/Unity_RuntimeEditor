@@ -126,11 +126,17 @@ namespace Battlehub.RTSL
             AssetBundleInfo[] result = new AssetBundleInfo[0];
             if (!File.Exists(projectPath))
             {
-                projectInfo = new ProjectInfo
+                Directory.CreateDirectory(projectDir);
+                using (FileStream fs = File.OpenWrite(projectDir + "/Project.rtmeta"))
                 {
-                    Name = projectName,
-                    LastWriteTime = DateTime.UtcNow,
-                };
+                    projectInfo = new ProjectInfo
+                    {
+                        Name = projectName,
+                        LastWriteTime = DateTime.UtcNow
+                    };
+
+                    serializer.Serialize(projectInfo, fs);
+                }
             }
             else
             {

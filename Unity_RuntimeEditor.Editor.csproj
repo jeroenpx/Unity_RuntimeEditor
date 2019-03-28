@@ -353,9 +353,6 @@
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>Assets/Battlehub/Deps/Roslyn/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
@@ -725,6 +722,14 @@
       <Project>{50328339-1E9B-7E3D-F605-8810123E718D}</Project>
       <Name>Unity_RuntimeEditor</Name>
     </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.AssetIdRemapUtility.csproj">
+      <Project>{C5787DEC-881B-2C00-2475-6C021075DC12}</Project>
+      <Name>Unity.ProBuilder.AssetIdRemapUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.Examples.Editor.csproj">
+      <Project>{4B5CC0F6-B7A6-8E38-A479-1C070859675A}</Project>
+      <Name>Unity.ProBuilder.Examples.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
       <Project>{3A848AB7-9891-EDDA-D555-BF184C2F81F4}</Project>
       <Name>Unity.TextMeshPro.Editor</Name>
@@ -736,6 +741,14 @@
     <ProjectReference Include="Unity.CollabProxy.Editor.csproj">
       <Project>{C12CEEC6-100C-58A2-DE36-314E4DE5E40B}</Project>
       <Name>Unity.CollabProxy.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.Examples.csproj">
+      <Project>{AA254127-81F3-6141-6BA2-E662B04242AD}</Project>
+      <Name>Unity.ProBuilder.Examples</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.AddOns.Editor.csproj">
+      <Project>{E8F6AEC7-C558-7A8C-1B77-5EF90B9AD9FD}</Project>
+      <Name>Unity.ProBuilder.AddOns.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.TextMeshPro.csproj">
       <Project>{07A21C90-D344-AE1A-8456-9910C203B41A}</Project>
@@ -807,6 +820,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Battlehub\HSVPicker\Resources\Shaders\Compute\GenerateSVTexture.compute" />
+    <None Include="Assets\Battlehub\ProBuilderIntegration\Runtime\Icosphere FFT\README.txt" />
     <None Include="Assets\Battlehub\README.txt" />
     <None Include="Assets\Battlehub\README_DOCKPANEL.txt" />
     <None Include="Assets\Battlehub\README_MENU.txt" />
@@ -856,6 +870,25 @@
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageManagerWindow.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageSearchToolbar.uxml" />
     <None Include="Packages\com.unity.package-manager-ui\Editor\Resources\Templates\PackageStatusBar.uxml" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\DiffuseTextureBlend.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\DiffuseVertexColor.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\EdgePicker.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\FaceHighlight.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\FacePicker.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\HideVertices.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\LineBillboard.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\NormalPreview.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\PointBillboard.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\ReferenceUnlit.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\ScrollHighlight.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\SelectionPicker.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\SmoothingPreview.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\StandardVertexColor.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\TransparentOverlay.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\UnlitSolidColor.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\UnlitVertexColor.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\VertexPicker.shader" />
+    <None Include="Packages\com.unity.probuilder\Content\Shader\VertexShader.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

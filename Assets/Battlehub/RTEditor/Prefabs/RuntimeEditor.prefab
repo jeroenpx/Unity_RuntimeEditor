@@ -2059,7 +2059,18 @@ MonoBehaviour:
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     Validate:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 5849259614496068626}
+          m_MethodName: CmdCreateWindowValidate
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - Path: Manage Projects
@@ -4976,9 +4987,7 @@ GameObject:
   - component: {fileID: 3214422774527365804}
   - component: {fileID: 848462208471534376}
   - component: {fileID: 9058800277652670137}
-  - component: {fileID: 5849259614496068627}
   - component: {fileID: 5849259614496068636}
-  - component: {fileID: 5849259614496068637}
   - component: {fileID: 5849259614496068625}
   m_Layer: 0
   m_Name: RuntimeEditor
@@ -5243,6 +5252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2cbc35edb251049b0589730891cdfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &848462208471534376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5269,22 +5279,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_menu: {fileID: 233234377}
   m_contextMenuArea: {fileID: 5849259612951747679}
---- !u!114 &5849259614496068627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5849259614496068639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 302b7c7acc0328f499e38885f86c1aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_staticAssetLibraries: {fileID: 0}
-  m_sceneDepsLibrary: 
-  m_builtInLibrary: 
-  m_dynamicPrefabsRoot: {fileID: 0}
 --- !u!114 &5849259614496068636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5295,18 +5289,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc53d47bdd913364ab588f6a2988559a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5849259614496068637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5849259614496068639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0c313619cbc2924aa7f3e0ffd848850, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5849259614496068625

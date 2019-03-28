@@ -15,6 +15,12 @@ namespace Battlehub.UIControls.MenuControl
             set;
         }
 
+        public bool IsVisible
+        {
+            get;
+            set;
+        }
+
         public string Command
         {
             get;
@@ -24,6 +30,7 @@ namespace Battlehub.UIControls.MenuControl
         public MenuItemValidationArgs(string command)
         {
             IsValid = true;
+            IsVisible = true;
             Command = command;
         }
     }

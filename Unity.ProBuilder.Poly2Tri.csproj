@@ -5,9 +5,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D6E266C6-3D1F-28C8-9FEB-2A01E44DBF77}</ProjectGuid>
+    <ProjectGuid>{C2040568-B8B1-C506-5297-5109C597CE5F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Unity.Analytics.DataPrivacy</AssemblyName>
+    <AssemblyName>Unity.ProBuilder.Poly2Tri</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
@@ -307,48 +307,6 @@
     </Reference>
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
-    </Reference>
-    <Reference Include="AssetStoreTools">
-      <HintPath>Assets/AssetStoreTools/Editor/AssetStoreTools.dll</HintPath>
-    </Reference>
-    <Reference Include="AssetStoreToolsExtra">
-      <HintPath>Assets/AssetStoreTools/Editor/AssetStoreToolsExtra.dll</HintPath>
-    </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>Assets/Battlehub/Deps/protobuf-net.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.IOSResolver_v1.2.95.0">
-      <HintPath>Assets/PlayServicesResolver/Editor/Google.IOSResolver_v1.2.95.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.JarResolver_v1.2.95.0">
-      <HintPath>Assets/PlayServicesResolver/Editor/Google.JarResolver_v1.2.95.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.VersionHandler">
-      <HintPath>Assets/PlayServicesResolver/Editor/Google.VersionHandler.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.VersionHandlerImpl_v1.2.95.0">
-      <HintPath>Assets/PlayServicesResolver/Editor/Google.VersionHandlerImpl_v1.2.95.0.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Advertisements">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.ads@2.3.1/Editor/UnityEditor.Advertisements.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Advertisements.Editor">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.Editor">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Purchasing">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.purchasing@2.0.3/Editor/UnityEditor.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>D:/Program Files/Unity_2018_3_0_f2/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -706,9 +664,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Packages\com.unity.analytics\DataPrivacy\AssemblyInfo.cs" />
-    <Compile Include="Packages\com.unity.analytics\DataPrivacy\DataPrivacy.cs" />
-    <Compile Include="Packages\com.unity.analytics\DataPrivacy\DataPrivacyButton.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\AssemblyInfo.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\P2T.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Polygon\Polygon.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Polygon\PolygonPoint.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Polygon\PolygonSet.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\DelaunayTriangle.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\AdvancingFront.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\AdvancingFrontNode.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweep.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweepBasin.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweepConstraint.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweepContext.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweepDebugContext.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweepEdgeEvent.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\DTSweepPointComparator.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Delaunay\Sweep\PointOnEdgeException.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\ITriangulatable.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Orientation.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Sets\ConstrainedPointSet.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Sets\PointSet.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationAlgorithm.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationConstraint.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationContext.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationDebugContext.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationMode.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationPoint.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\TriangulationUtil.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Util\PointGenerator.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Triangulation\Util\PolygonGenerator.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Utility\FixedArray3.cs" />
+    <Compile Include="Packages\com.unity.probuilder\External\Poly2Tri\Utility\FixedBitArray3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Battlehub\HSVPicker\Resources\Shaders\Compute\GenerateSVTexture.compute" />

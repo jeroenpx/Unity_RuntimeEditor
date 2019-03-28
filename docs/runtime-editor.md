@@ -694,6 +694,67 @@ After:
 
 ![Screenshot](img/rteditor/window-manager/ui-scale-after-override.png)
 
+##File Importers
+
+__File importers__ are used during file import procedure to convert external file format to format supported by Runtime Editor. 
+For example __.png__ images should be converted to __UnityEngine.Texture2D__ before import. There are two build-in importers:
+
+* PngImporter;
+* FastObjImporter;
+
+Built-in importers be found in __Assets\Battlehub\RTEditor\Scripts\Importers__.
+
+FileBrowser with importers can be opened using __File->Import From File__ menu item
+![Screenshot](img/rteditor/file-importers/menu-item.png)
+
+To write custom importer do following. Create new script and inherit your class from FileImporter:
+
+```C#
+using Battlehub.RTEditor;
+using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
+using System.Collections;
+using System.IO;
+using UnityEngine;
+
+public class JpgImporterExample : FileImporter
+{
+	public override string FileExt
+	{
+		get { return ".jpg"; }
+	}
+
+	public override string IconPath
+	{
+		get { return "Importers/Jpg"; }
+	}
+
+	public override IEnumerator Import(string filePath, string targetPath)
+	{
+		byte[] bytes = File.ReadAllBytes(filePath);
+
+		Texture2D texture = new Texture2D(4, 4);
+		if (texture.LoadImage(bytes, false))
+		{
+			IProject project = IOC.Resolve<IProject>();
+			IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
+			byte[] preview = previewUtility.CreatePreviewData(texture);
+			yield return project.Save(targetPath, texture, preview);
+		}
+		else
+		{
+			Debug.LogError("Unable to load image " + filePath);
+		}
+
+		Object.Destroy(texture);
+	}
+}
+
+```
+
+!!! note
+
+    Currently __File Browser__ supported on __Windows__ platform only
 
 
 ##Inspector View

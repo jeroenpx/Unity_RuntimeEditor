@@ -185,16 +185,7 @@ namespace Battlehub.RTSL.Interface
                     }
                 }
 
-                ProjectItem nextItem;
-                if (i == pathParts.Length - 1)
-                {
-                    nextItem = item.Children.Where(child => child.NameExt == pathPart).FirstOrDefault();
-                }
-                else
-                {
-                    nextItem = item.Children.Where(child => child.Name == pathPart).FirstOrDefault();
-                }
-
+                ProjectItem nextItem = item.Children.Where(child => child.NameExt == pathPart).FirstOrDefault();
                 if (nextItem == null)
                 {
                     if (forceCreate)

@@ -23,7 +23,26 @@ namespace Battlehub.RTEditor
             get;
         }
 
+        int Priority
+        {
+            get;
+        }
+
         IEnumerator Import(string filePath, string targetPath);
+    }
+
+    public abstract class FileImporter : IFileImporter
+    {
+        public abstract string FileExt { get; }
+
+        public abstract string IconPath { get; }
+
+        public virtual int Priority
+        {
+            get { return 0; }
+        }
+
+        public abstract IEnumerator Import(string filePath, string targetPath);
     }
 
     public class ImportFileDialog : RuntimeWindow
@@ -32,7 +51,7 @@ namespace Battlehub.RTEditor
         private FileBrowser m_fileBrowser;
 
         private Dictionary<string, IFileImporter> m_extToFileImporter = new Dictionary<string, IFileImporter>();
-
+        
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.ImportFile;
@@ -55,14 +74,28 @@ namespace Battlehub.RTEditor
                 assemblies.Add(asm);
             }
 
+            m_parentDialog = GetComponentInParent<Dialog>();
+            m_parentDialog.Ok += OnOk;
+            m_parentDialog.OkText = "Open";
+            m_parentDialog.IsOkVisible = true;
+            m_parentDialog.CancelText = "Cancel";
+            m_parentDialog.IsCancelVisible = true;
+
             m_fileBrowser = GetComponent<FileBrowser>();
             m_fileBrowser.DoubleClick += OnFileBrowserDoubleClick;
+            m_fileBrowser.SelectionChanged += OnFileBrowserSelectionChanged;
+
             List<string> allowedExts = new List<string>();
             List<FileIcon> icons = new List<FileIcon>();
 
             Type[] importerTypes = assemblies.SelectMany(asm => asm.GetTypes().Where(t => t != null && t.IsClass && typeof(IFileImporter).IsAssignableFrom(t))).ToArray();
             foreach (Type importerType in importerTypes)
             {
+                if(importerType.IsAbstract)
+                {
+                    continue;
+                }
+
                 try
                 {
                     IFileImporter fileImporter = (IFileImporter)Activator.CreateInstance(importerType);
@@ -75,10 +108,12 @@ namespace Battlehub.RTEditor
 
                     if (m_extToFileImporter.ContainsKey(ext))
                     {
-                        Debug.LogWarning("Importer for " + ext + " already exist");
-                        continue;
+                        if(m_extToFileImporter[ext].Priority > fileImporter.Priority)
+                        {
+                            continue;
+                        }
                     }
-                    m_extToFileImporter.Add(ext, fileImporter);
+                    m_extToFileImporter[ext] = fileImporter;
 
                     allowedExts.Add(ext);
                     icons.Add(new FileIcon { Ext = ext, Icon = Resources.Load<Sprite>(fileImporter.IconPath) });
@@ -91,13 +126,6 @@ namespace Battlehub.RTEditor
 
             m_fileBrowser.AllowedExt = allowedExts;
             m_fileBrowser.Icons = icons;
-
-            m_parentDialog = GetComponentInParent<Dialog>();
-            m_parentDialog.Ok += OnOk;
-            m_parentDialog.OkText = "Open";
-            m_parentDialog.IsOkVisible = true;
-            m_parentDialog.CancelText = "Cancel";
-            m_parentDialog.IsCancelVisible = true;
         }
 
         protected override void OnDestroyOverride()
@@ -111,6 +139,8 @@ namespace Battlehub.RTEditor
             if(m_fileBrowser != null)
             {
                 m_fileBrowser.DoubleClick -= OnFileBrowserDoubleClick;
+                m_fileBrowser.SelectionChanged -= OnFileBrowserSelectionChanged;
+
             }
         }
 
@@ -132,6 +162,18 @@ namespace Battlehub.RTEditor
             TryImport(path);
         }
 
+        private void OnFileBrowserSelectionChanged(string path)
+        {
+            if (File.Exists(path))
+            {
+                m_parentDialog.OkText = "Import";
+            }
+            else
+            {
+                m_parentDialog.OkText = "Open";
+            }
+        }
+
         private void OnFileBrowserDoubleClick(string path)
         {
             if(File.Exists(path))
@@ -140,7 +182,7 @@ namespace Battlehub.RTEditor
                 TryImport(path);
             }
         }
-
+        
         private void TryImport(string path)
         {
             string ext = Path.GetExtension(path);

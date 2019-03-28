@@ -1,6 +1,7 @@
 ﻿using ProtoBuf.Meta;
 using System;
 using System.IO;
+using UnityEngine;
 
 namespace Battlehub.RTSL
 {
@@ -25,13 +26,11 @@ namespace Battlehub.RTSL
     public class ProtobufSerializer : ISerializer
     {
 #if !UNITY_EDITOR 
-       // private static RTSLTypeModel model = new RTSLTypeModel();
-
-       private static RuntimeTypeModel model = null;
+        private static RTSLTypeModel model = new RTSLTypeModel();
 #else
         private static RuntimeTypeModel model = TypeModelCreator.Create();
 #endif
-        /*
+
         static ProtobufSerializer()
         {
             model.DynamicTypeFormatting += (sender, args) =>
@@ -51,7 +50,7 @@ namespace Battlehub.RTSL
             model.CompileInPlace();
 #endif
         }
-        */
+
 
         public TData DeepClone<TData>(TData data)
         {

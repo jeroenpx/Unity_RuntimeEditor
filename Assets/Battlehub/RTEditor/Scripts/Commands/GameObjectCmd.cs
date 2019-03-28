@@ -14,6 +14,9 @@ namespace Battlehub.RTEditor
     {
         private IRuntimeEditor m_editor;
 
+        [SerializeField]
+        private Material m_defaultMaterial;
+
         private IScenePivot GetScenePivot()
         {
             if(m_editor.ActiveWindow != null)
@@ -66,21 +69,27 @@ namespace Battlehub.RTEditor
                     break;
                 case "cube":
                     go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    go.GetComponent<Renderer>().sharedMaterial = m_defaultMaterial;
                     break;
                 case "sphere":
                     go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    go.GetComponent<Renderer>().sharedMaterial = m_defaultMaterial;
                     break;
                 case "capsule":
                     go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    go.GetComponent<Renderer>().sharedMaterial = m_defaultMaterial;
                     break;
                 case "cylinder":
                     go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    go.GetComponent<Renderer>().sharedMaterial = m_defaultMaterial;
                     break;
                 case "plane":
                     go = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                    go.GetComponent<Renderer>().sharedMaterial = m_defaultMaterial;
                     break;
                 case "quad":
                     go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                    go.GetComponent<Renderer>().sharedMaterial = m_defaultMaterial;
                     break;
                 case "directionallight":
                     {

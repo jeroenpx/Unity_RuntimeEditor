@@ -38,6 +38,7 @@ namespace Battlehub.RTEditor
     public class FileBrowser : MonoBehaviour
     {
         public event Action<string> DoubleClick;
+        public event Action<string> SelectionChanged;
 
         [SerializeField]
         private InputField Input = null;
@@ -85,6 +86,12 @@ namespace Battlehub.RTEditor
                     try
                     {
                         m_currentDir = NormalizePath(value);
+                        BindDataItems(m_currentDir);
+                    }
+                    catch(UnauthorizedAccessException)
+                    {
+                        m_windowManager.MessageBox(Path.GetFileName(value), "You Don’t Currently Have Permission to Access this Folder");
+                        m_currentDir = oldDir;
                         BindDataItems(m_currentDir);
                     }
                     catch(Exception e)
@@ -259,6 +266,20 @@ namespace Battlehub.RTEditor
                         break;
                 }
             }
+
+            if(SelectionChanged != null)
+            {
+                FsEntry entry = (FsEntry)e.NewItem;
+                if(entry != null)
+                {
+                    SelectionChanged(entry.Path);
+                }
+                else
+                {
+                    SelectionChanged(null);
+                }
+                
+            }
         }
 
         private void OnItemDoubleClick(object sender, ItemArgs args)
@@ -360,6 +381,13 @@ namespace Battlehub.RTEditor
                 if (!m_extToIcon.TryGetValue(fsEntry.Ext, out icon))
                 {
                     icon = FileIcon;
+                }
+                else
+                {
+                    if(icon == null)
+                    {
+                        icon = FileIcon;
+                    }
                 }
                 fsEntry.Icon = icon;
                 fsEntry.Path = file;

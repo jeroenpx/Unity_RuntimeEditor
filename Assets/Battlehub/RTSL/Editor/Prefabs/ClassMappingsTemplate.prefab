@@ -6204,7 +6204,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 33
     PersistentNamespace: UnityEngine.Battlehub.SL2

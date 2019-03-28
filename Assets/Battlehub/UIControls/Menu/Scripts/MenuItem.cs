@@ -127,33 +127,39 @@ namespace Battlehub.UIControls.MenuControl
                 m_expander.SetActive(false);
             }
 
-            if(IsValid())
+
+            var validationResult = IsValid();
+            if(validationResult.IsVisible)
             {
-                m_text.color = m_textColor;
-                m_selection.color = m_selectionColor;
+                if (validationResult.IsValid)
+                {
+                    m_text.color = m_textColor;
+                    m_selection.color = m_selectionColor;
+                }
+                else
+                {
+                    m_text.color = m_disableTextColor;
+                    m_selection.color = m_disabledSelectionColor;
+                }
             }
-            else
-            {
-                m_text.color = m_disableTextColor;
-                m_selection.color = m_disabledSelectionColor;
-            }
+            gameObject.SetActive(validationResult.IsVisible);
         }
 
-        private bool IsValid()
+        private MenuItemValidationArgs IsValid()
         {
             if(m_item == null)
             {
-                return false;
+                return new MenuItemValidationArgs(m_item.Command) { IsValid = false, IsVisible = false };
             }
 
             if(m_item.Validate == null)
             {
-                return true;
+                return new MenuItemValidationArgs(m_item.Command) { IsValid = true, IsVisible = true };
             }
 
             MenuItemValidationArgs args = new MenuItemValidationArgs(m_item.Command);
             m_item.Validate.Invoke(args);
-            return args.IsValid;
+            return args;
         }
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
@@ -163,8 +169,9 @@ namespace Battlehub.UIControls.MenuControl
                 Select(false);
                 return;
             }
-            
-            if(IsValid())
+
+            var validationResult = IsValid();
+            if (validationResult.IsValid)
             {
                 if (m_item.Action != null)
                 {

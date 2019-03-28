@@ -121,8 +121,17 @@ namespace Battlehub.RTSL
             {
                 if(m_instance == null)
                 {
-                    GameObject go = new GameObject("RTSL");
-                    go.AddComponent<RTSLDeps>();
+                    RTSLDeps deps = FindObjectOfType<RTSLDeps>();
+                    if (deps == null)
+                    {
+                        GameObject go = new GameObject("RTSL");
+                        go.AddComponent<RTSLDeps>();
+                        go.transform.SetSiblingIndex(0);
+                    }   
+                    else
+                    {
+                        m_instance = deps;
+                    }
                 }
                 return m_instance;
             }    

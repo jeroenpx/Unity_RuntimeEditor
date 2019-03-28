@@ -55,8 +55,12 @@ namespace Battlehub.RTSL
         [SerializeField]
         private string m_builtInLibrary = null;
 
-        private ProjectInfo m_projectInfo;
         private string m_projectPath;
+        private ProjectInfo m_projectInfo;
+        public ProjectInfo ProjectInfo
+        {
+            get { return m_projectInfo; }
+        }
 
         private ProjectItem m_root;
         public ProjectItem Root
