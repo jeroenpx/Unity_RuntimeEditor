@@ -15,7 +15,7 @@ namespace Battlehub.RTEditor
         private IRuntimeEditor m_editor;
 
         [SerializeField]
-        private Material m_defaultMaterial;
+        private Material m_defaultMaterial = null;
 
         private IScenePivot GetScenePivot()
         {

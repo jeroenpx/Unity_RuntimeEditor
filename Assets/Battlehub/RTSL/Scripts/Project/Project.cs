@@ -179,6 +179,8 @@ namespace Battlehub.RTSL
         {
             StopAllCoroutines();
             UnloadUnregisterDestroy();
+            m_projectPath = null;
+            m_projectInfo = null;
             m_actionsQueue.Clear();
         }
 
@@ -190,6 +192,10 @@ namespace Battlehub.RTSL
             m_assetDB.UnregisterDynamicResources();
             foreach (UnityObject dynamicResource in dynamicResources)
             {
+                if(dynamicResource is Transform)
+                {
+                    continue;
+                }
                 Destroy(dynamicResource);
             }
 
@@ -514,6 +520,7 @@ namespace Battlehub.RTSL
             }
             m_projectInfo = null;
             m_root = null;
+            m_projectPath = null;
 
             CreateNewScene();
 
@@ -547,43 +554,52 @@ namespace Battlehub.RTSL
 
         private void _OpenProject(string project, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
         {
-            if(m_projectInfo != null && m_projectPath != project)
+            if(m_projectPath == project)
+            {
+                Debug.Assert(m_projectInfo != null);
+                RaiseOpenProjectCompleted(callback, ao, new Error(Error.OK), m_projectInfo);
+                return;
+            }
+
+            if (m_projectInfo != null)
             {
                 CreateNewScene();
             }
 
-            UnloadUnregisterDestroy();
-
+            //UnloadUnregisterDestroy();
             m_projectInfo = null;
             m_root = null;
 
-            m_projectPath = project;
-
-            m_storage.GetProject(m_projectPath, (error, projectInfo, assetBundleInfo) =>
+            m_storage.GetProject(project, (error, projectInfo, assetBundleInfo) =>
             {
                 if (error.HasError)
                 {
-                    if (callback != null)
-                    {
-                        callback(error, projectInfo);
-                    }
-                    
-                    ao.Result = projectInfo;
-                    ao.Error = error;
-                    ao.IsCompleted = true;
-
-                    if (OpenProjectCompleted != null)
-                    {
-                        OpenProjectCompleted(error, projectInfo);
-                    }
-
-                    IsBusy = false;
+                    RaiseOpenProjectCompleted(callback, ao, error, projectInfo);
                     return;
                 }
 
                 m_ordinalToAssetBundleInfo = assetBundleInfo.ToDictionary(info => info.Ordinal);
                 OnOpened(project, projectInfo, ao, callback);
             });
+        }
+
+        private void RaiseOpenProjectCompleted(ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao, Error error, ProjectInfo projectInfo)
+        {
+            if (callback != null)
+            {
+                callback(error, projectInfo);
+            }
+
+            ao.Result = projectInfo;
+            ao.Error = error;
+            ao.IsCompleted = true;
+
+            if (OpenProjectCompleted != null)
+            {
+                OpenProjectCompleted(error, projectInfo);
+            }
+
+            IsBusy = false;
         }
 
         private void OnOpened(string project, ProjectInfo projectInfo, ProjectAsyncOperation<ProjectInfo> ao, ProjectEventHandler<ProjectInfo> callback)
@@ -593,6 +609,7 @@ namespace Battlehub.RTSL
                 projectInfo = new ProjectInfo();
             }
 
+            m_projectPath = project;
             m_projectInfo = projectInfo;
             GetProjectTree(project, ao, callback);
         }

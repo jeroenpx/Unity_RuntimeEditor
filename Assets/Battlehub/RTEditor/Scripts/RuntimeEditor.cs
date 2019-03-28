@@ -763,6 +763,8 @@ namespace Battlehub.RTEditor
         private void OnProjectOpened(Error error, ProjectInfo result)
         {
             PlayerPrefs.SetString("RuntimeEditor.DefaultProject", result.Name);
+
+           // m_wm.MessageBox("MB", "MB");
         }
 
         private void OnProjectDeleted(Error error, string projectName)
