@@ -11,6 +11,7 @@ using Battlehub.RTCommon;
 using UnityObject = UnityEngine.Object;
 using System.Linq;
 using System.Collections;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -152,7 +153,7 @@ namespace Battlehub.RTEditor
         }
 
         [SerializeField]
-        protected Text Label;
+        protected TextMeshProUGUI Label;
         [SerializeField]
         protected int Indent = 10;
         private int m_effectiveIndent;

@@ -1,15 +1,16 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
     public class FloatValidator : MonoBehaviour
     {
-        private InputField m_inputField;
+        private TMP_InputField m_inputField;
 
         private void Start()
         {
-            m_inputField = GetComponent<InputField>();
+            m_inputField = GetComponent<TMP_InputField>();
             m_inputField.onValidateInput += OnValidateInput;
         }
         

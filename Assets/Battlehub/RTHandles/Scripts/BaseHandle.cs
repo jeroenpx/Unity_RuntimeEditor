@@ -666,7 +666,8 @@ namespace Battlehub.RTHandles
 
                         target.transform.position = commonCenterTarget.position;
                         target.transform.rotation = commonCenterTarget.rotation;
-                        target.transform.localScale = commonCenterTarget.localScale;
+                        target.transform.localScale = commonCenterTarget.lossyScale;
+                        //Debug.Log(commonCenterTarget.localScale);
                     }
                 }   
 

@@ -43,6 +43,7 @@ namespace Battlehub.RTEditor
         public Texture2D Texture;
     }
 
+
     public class RTEAppearance : MonoBehaviour, IRTEAppearance
     {
         [SerializeField]

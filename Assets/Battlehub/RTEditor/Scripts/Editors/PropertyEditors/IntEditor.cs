@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
@@ -6,7 +7,7 @@ namespace Battlehub.RTEditor
     public class IntEditor : PropertyEditor<int>
     {
         [SerializeField]
-        protected InputField m_input;
+        protected TMP_InputField m_input;
         [SerializeField]
         protected DragField m_dragField;
 

@@ -132,10 +132,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 224000012771514784}
     m_Modifications:
-    - target: {fileID: 157272, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
-      propertyPath: m_Name
-      value: Picker 2.0
-      objectReference: {fileID: 0}
     - target: {fileID: 22448498, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -219,6 +215,10 @@ PrefabInstance:
     - target: {fileID: 22448498, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 157272, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
+      propertyPath: m_Name
+      value: Picker 2.0
       objectReference: {fileID: 0}
     - target: {fileID: 22489814, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
       propertyPath: m_SizeDelta.y

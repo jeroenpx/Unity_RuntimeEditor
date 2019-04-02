@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ namespace Battlehub.RTEditor
     public class InputDialog : RuntimeWindow
     {
         [SerializeField]
-        private InputField m_inputField = null;
+        private TMP_InputField m_inputField = null;
 
         public string Text
         {

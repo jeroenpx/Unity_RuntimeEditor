@@ -37,7 +37,9 @@ namespace Battlehub.RTGizmos
             base.DrawOverride(camera);
 
             Bounds b = Bounds;
-            Vector3 scale = Vector3.Scale(Vector3.Scale(b.extents, Target.localScale), Target.parent.lossyScale);
+
+            Vector3 parentScale = Target.parent == null ? Vector3.one : Target.parent.lossyScale;
+            Vector3 scale = Vector3.Scale(Vector3.Scale(b.extents, Target.localScale), parentScale);
             RuntimeGizmos.DrawCubeHandles(Target.TransformPoint(b.center) , Target.rotation, scale, HandlesColor);
             RuntimeGizmos.DrawWireCubeGL(ref b, Target.TransformPoint(b.center), Target.rotation, Target.lossyScale, LineColor);
 

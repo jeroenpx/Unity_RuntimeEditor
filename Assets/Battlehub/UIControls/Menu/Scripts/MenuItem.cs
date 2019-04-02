@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -27,7 +28,7 @@ namespace Battlehub.UIControls.MenuControl
         private Image m_icon = null;
 
         [SerializeField]
-        private Text m_text = null;
+        private TextMeshProUGUI m_text = null;
 
         [SerializeField]
         private GameObject m_expander = null;

@@ -6,6 +6,7 @@ using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -234,9 +235,28 @@ namespace Battlehub.RTEditor
             Editor.DragDrop.RaiseBeginDrag(this, e.Items, e.PointerEventData);
         }
 
+        private bool FolderContainsItemWithSameName(object dropTarget, object[] dragItems)
+        {
+            ProjectItem folder = (ProjectItem)dropTarget;
+            if(folder.Children == null || folder.Children.Count == 0)
+            {
+                return false;
+            }
+
+            foreach(ProjectItem projectItem in dragItems)
+            {
+                if(folder.Children.Any(child => child.NameExt == projectItem.NameExt))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
         {
-            if (e.DropTarget == null || e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget))
+            if (e.DropTarget == null || e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget) || FolderContainsItemWithSameName(e.DropTarget, e.DragItems))
             {
                 Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
                 e.Cancel = true;
@@ -294,14 +314,14 @@ namespace Battlehub.RTEditor
             ProjectItem projectItem = e.Item as ProjectItem;
             if (projectItem == null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = null;
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
                 itemView.ProjectItem = null;
             }
             else
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = projectItem.Name;
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
                 itemView.ProjectItem = projectItem;
@@ -347,7 +367,7 @@ namespace Battlehub.RTEditor
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
             {
-                InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
+                TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
                 inputField.text = item.Name;
                 inputField.ActivateInputField();
                 inputField.Select();
@@ -357,8 +377,8 @@ namespace Battlehub.RTEditor
                 image.sprite = itemImage.sprite;
                 image.gameObject.SetActive(true);
 
-                
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
                 LayoutElement layout = inputField.GetComponent<LayoutElement>();
@@ -372,8 +392,8 @@ namespace Battlehub.RTEditor
 
         private void OnItemEndEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
-            InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+            TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
+            TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
 
             ProjectItem projectItem = (ProjectItem)e.Item;
             string oldName = projectItem.Name;

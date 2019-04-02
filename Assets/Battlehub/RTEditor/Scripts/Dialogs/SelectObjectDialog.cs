@@ -11,13 +11,14 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
     public class SelectObjectDialog : RuntimeWindow
     {
         [SerializeField]
-        private InputField m_filter = null;
+        private TMP_InputField m_filter = null;
         [HideInInspector]
         public UnityObject SelectedObject;
         [HideInInspector]
@@ -179,14 +180,14 @@ namespace Battlehub.RTEditor
             ProjectItem projectItem = e.Item as ProjectItem;
             if (projectItem == null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = null;
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
                 itemView.ProjectItem = null;
             }
             else
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = projectItem.Name;
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
                 itemView.ProjectItem = projectItem;

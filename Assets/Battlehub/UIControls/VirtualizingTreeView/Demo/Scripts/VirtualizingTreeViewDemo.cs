@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -116,9 +117,9 @@ namespace Battlehub.UIControls
         {
             GameObject dataItem = e.Item as GameObject;
             if (dataItem != null)
-            {   
+            {
                 //We display dataItem.name using UI.Text 
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = dataItem.name;
 
                 //Load icon from resources

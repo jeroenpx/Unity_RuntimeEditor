@@ -1,17 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
-using System;
-using UnityEngine.UI;
 using UnityEngine.Events;
-using Battlehub.Utils;
 using Battlehub.RTCommon;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
     public class DragField : MonoBehaviour, IDragHandler, IBeginDragHandler, IDropHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        public InputField Field;
+        public TMP_InputField Field;
         public float IncrementFactor = 0.1f;
         public Texture2D DragCursor;
         public UnityEvent BeginDrag;

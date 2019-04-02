@@ -4,13 +4,14 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
     public class EnumEditor : PropertyEditor<Enum>
     {
         [SerializeField]
-        private Dropdown m_input = null;
+        private TMP_Dropdown m_input = null;
 
         protected override void AwakeOverride()
         {
@@ -43,14 +44,14 @@ namespace Battlehub.RTEditor
         protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
             base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
-            List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
 
             Type enumType = GetEnumType(accessor);
             string[] names = Enum.GetNames(enumType);
 
             for (int i = 0; i < names.Length; ++i)
             {
-                options.Add(new Dropdown.OptionData(names[i]));
+                options.Add(new TMP_Dropdown.OptionData(names[i]));
             }
 
             m_input.options = options;

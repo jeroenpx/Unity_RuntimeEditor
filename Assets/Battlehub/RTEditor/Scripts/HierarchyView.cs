@@ -11,6 +11,7 @@ using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 using Battlehub.Utils;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -303,7 +304,7 @@ namespace Battlehub.RTEditor
             ExposeToEditor dataItem = (ExposeToEditor)e.Item;
             if (dataItem != null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = dataItem.name;
                 if (dataItem.gameObject.activeInHierarchy)
                 {
@@ -333,13 +334,13 @@ namespace Battlehub.RTEditor
             ExposeToEditor dataItem = (ExposeToEditor)e.Item;
             if (dataItem != null)
             {
-                InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
+                TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
                 inputField.text = dataItem.name;
                 inputField.ActivateInputField();
                 inputField.Select();
                 LayoutElement layout = inputField.GetComponent<LayoutElement>();
 
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = dataItem.name;
 
                 RectTransform rt = text.GetComponent<RectTransform>();
@@ -353,11 +354,11 @@ namespace Battlehub.RTEditor
             if (dataItem != null)
             {
 
-                InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
+                TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
                 if (!string.IsNullOrEmpty(inputField.text))
                 {
                     dataItem.name = inputField.text;
-                    Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                    TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                     text.text = dataItem.name;
                 }
                 else
@@ -607,7 +608,7 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            Text text = tvItem.GetComponentInChildren<Text>();
+            TextMeshProUGUI text = tvItem.GetComponentInChildren<TextMeshProUGUI>();
             text.color = EnabledItemColor;
         }
 
@@ -618,7 +619,7 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            Text text = tvItem.GetComponentInChildren<Text>();
+            TextMeshProUGUI text = tvItem.GetComponentInChildren<TextMeshProUGUI>();
             text.color = DisabledItemColor;
         }
 
@@ -744,7 +745,7 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            Text text = tvItem.GetComponentInChildren<Text>();
+            TextMeshProUGUI text = tvItem.GetComponentInChildren<TextMeshProUGUI>();
             text.text = obj.name;
         }
 

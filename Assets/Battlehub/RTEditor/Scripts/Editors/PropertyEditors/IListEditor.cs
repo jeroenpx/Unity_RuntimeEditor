@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 
 using System.Reflection;
@@ -8,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 using Battlehub.RTCommon;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -16,9 +16,9 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject SizeEditor = null;
         [SerializeField]
-        private InputField SizeInput = null;
+        private TMP_InputField SizeInput = null;
         [SerializeField]
-        private Text SizeLabel = null;
+        private TextMeshProUGUI SizeLabel = null;
 
         [SerializeField]
         private Transform Panel = null;

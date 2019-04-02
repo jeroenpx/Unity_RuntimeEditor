@@ -319,4 +319,3 @@ E:\Development\GitHub\Unity_RuntimeEditor\obj\Debug\Unity.ProBuilder.Examples.cs
 E:\Development\GitHub\Unity_RuntimeEditor\obj\Debug\Unity.ProBuilder.Examples.csproj.CopyComplete
 E:\Development\GitHub\Unity_RuntimeEditor\obj\Debug\Unity.ProBuilder.Examples.dll
 E:\Development\GitHub\Unity_RuntimeEditor\obj\Debug\Unity.ProBuilder.Examples.pdb
-E:\Development\GitHub\Unity_RuntimeEditor\Temp\bin\Debug\Boo.Lang.dll

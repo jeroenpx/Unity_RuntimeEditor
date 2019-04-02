@@ -3,6 +3,7 @@ using Battlehub.UIControls;
 using System;
 using System.Collections;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,11 +14,11 @@ namespace Battlehub.RTEditor
         public event Action<Type> ComponentSelected;
 
         [SerializeField]
-        private Dropdown m_dropDown = null;
+        private TMP_Dropdown m_dropDown = null;
 
         private VirtualizingTreeView m_treeView;
 
-        private InputField m_filter = null;
+        private TMP_InputField m_filter = null;
 
         private Type[] m_cache;
         private string m_filterText;
@@ -46,7 +47,7 @@ namespace Battlehub.RTEditor
         {
             Type[] editableTypes = IOC.Resolve<IEditorsMap>().GetEditableTypes();
 
-            m_filter = GetComponentInChildren<InputField>();
+            m_filter = GetComponentInChildren<TMP_InputField>();
             if(m_filter != null)
             {
                 m_filter.onValueChanged.AddListener(OnFilterValueChanged);
@@ -78,7 +79,7 @@ namespace Battlehub.RTEditor
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             Type type = (Type)e.Item;
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+            TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
             text.text = type.Name;
         }
 

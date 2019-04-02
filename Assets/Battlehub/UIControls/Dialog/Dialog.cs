@@ -1,4 +1,5 @@
 ﻿using Battlehub.UIControls.DockPanels;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,10 +41,10 @@ namespace Battlehub.UIControls.Dialogs
         private Image m_headerIcon = null;
 
         [SerializeField]
-        private Text m_headerText = null;
+        private TextMeshProUGUI m_headerText = null;
 
         [SerializeField]
-        private Text m_contentText = null;
+        private TextMeshProUGUI m_contentText = null;
 
         [SerializeField]
         private Transform m_buttonsRoot = null;
@@ -129,7 +130,7 @@ namespace Battlehub.UIControls.Dialogs
             {
                 if(m_okButton != null)
                 {
-                    Text okButtonText = m_okButton.GetComponentInChildren<Text>(true);
+                    TextMeshProUGUI okButtonText = m_okButton.GetComponentInChildren<TextMeshProUGUI>(true);
                     if(okButtonText != null)
                     {
                         okButtonText.text = value;
@@ -144,7 +145,7 @@ namespace Battlehub.UIControls.Dialogs
             {
                 if (m_cancelButton != null)
                 {
-                    Text cancelButtonText = m_cancelButton.GetComponentInChildren<Text>(true);
+                    TextMeshProUGUI cancelButtonText = m_cancelButton.GetComponentInChildren<TextMeshProUGUI>(true);
                     if (cancelButtonText != null)
                     {
                         cancelButtonText.text = value;

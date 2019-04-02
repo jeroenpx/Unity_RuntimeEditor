@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using TMPro;
+using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
     public class FloatEditor : PropertyEditor<float>
     {
         [SerializeField]
-        protected InputField m_input;
+        protected TMP_InputField m_input;
         [SerializeField]
         protected DragField m_dragField;
 
@@ -15,7 +15,10 @@ namespace Battlehub.RTEditor
             base.AwakeOverride();
             m_input.onValueChanged.AddListener(OnValueChanged);
             m_input.onEndEdit.AddListener(OnEndEdit);
-            m_dragField.EndDrag.AddListener(OnEndDrag); 
+            if(m_dragField != null)
+            {
+                m_dragField.EndDrag.AddListener(OnEndDrag);
+            }
         }
 
         protected override void OnDestroyOverride()

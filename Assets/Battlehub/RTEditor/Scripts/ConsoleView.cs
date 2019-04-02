@@ -3,6 +3,7 @@ using Battlehub.UIControls;
 using Battlehub.UIControls.DockPanels;
 using System.Collections;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,9 +23,9 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Toggle m_togError = null;
 
-        private Text m_txtInfoCount;
-        private Text m_txtWarningCount;
-        private Text m_txtErrorCount;
+        private TextMeshProUGUI m_txtInfoCount;
+        private TextMeshProUGUI m_txtWarningCount;
+        private TextMeshProUGUI m_txtErrorCount;
 
         [SerializeField]
         private Sprite m_infoIcon = null;
@@ -48,7 +49,7 @@ namespace Battlehub.RTEditor
         private VirtualizingTreeView m_treeView = null;
 
         [SerializeField]
-        private InputField m_stackTrace = null;
+        private TMP_InputField m_stackTrace = null;
 
         private IRuntimeConsole m_console;
 
@@ -83,19 +84,19 @@ namespace Battlehub.RTEditor
 
             if(m_togInfo != null)
             {
-                m_txtInfoCount = m_togInfo.GetComponentInChildren<Text>();
+                m_txtInfoCount = m_togInfo.GetComponentInChildren<TextMeshProUGUI>();                
                 m_togInfo.onValueChanged.AddListener(OnTogInfoValueChanged);
             }
 
             if(m_togWarning != null)
             {
-                m_txtWarningCount = m_togWarning.GetComponentInChildren<Text>();
+                m_txtWarningCount = m_togWarning.GetComponentInChildren<TextMeshProUGUI>();
                 m_togWarning.onValueChanged.AddListener(OnTogWarningValueChange);
             }
 
             if(m_togError != null)
             {
-                m_txtErrorCount = m_togError.GetComponentInChildren<Text>();
+                m_txtErrorCount = m_togError.GetComponentInChildren<TextMeshProUGUI>();
                 m_togError.onValueChanged.AddListener(OnTogErrorValueChanged);
             }            
         }
@@ -106,6 +107,11 @@ namespace Battlehub.RTEditor
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+
+            if(m_stackTrace != null)
+            {
+                m_stackTrace.scrollSensitivity = 0;
+            }
 
             m_console = IOC.Resolve<IRuntimeConsole>();
             m_console.MessageAdded += OnMessageAdded;
@@ -203,7 +209,7 @@ namespace Battlehub.RTEditor
         {
             ConsoleLogEntry logEntry = (ConsoleLogEntry)e.Item;
 
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+            TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
             text.text = logEntry.Condition;
 
             Image icon = e.ItemPresenter.GetComponentsInChildren<Image>(true)[2];

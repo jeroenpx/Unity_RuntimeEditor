@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Battlehub.RTCommon;
 using Battlehub.RTSL;
 using Battlehub.RTSL.Interface;
+using TMPro;
 #if PROC_MATERIAL
 using ProcPropertyDescription = UnityEngine.ProceduralPropertyDescription;
 using ProcPropertyType = UnityEngine.ProceduralPropertyType;
@@ -100,9 +101,9 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Image m_image = null;
         [SerializeField]
-        private Text TxtMaterialName = null;
+        private TextMeshProUGUI TxtMaterialName = null;
         [SerializeField]
-        private Text TxtShaderName = null;
+        private TextMeshProUGUI TxtShaderName = null;
 
         [SerializeField]
         private Transform EditorsPanel = null;

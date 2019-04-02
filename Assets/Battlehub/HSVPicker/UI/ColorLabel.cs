@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Text))]
+[RequireComponent(typeof(TextMeshProUGUI))]
 public class ColorLabel : MonoBehaviour
 {
     public ColorPicker picker;
@@ -14,11 +15,11 @@ public class ColorLabel : MonoBehaviour
 
     public int precision = 0;
 
-    private Text label;
+    private TextMeshProUGUI label;
 
     private void Awake()
     {
-        label = GetComponent<Text>();
+        label = GetComponent<TextMeshProUGUI>();
 
     }
 
@@ -43,7 +44,7 @@ public class ColorLabel : MonoBehaviour
 #if UNITY_EDITOR
     private void OnValidate()
     {
-        label = GetComponent<Text>();
+        label = GetComponent<TextMeshProUGUI>();
         UpdateValue();
     }
 #endif

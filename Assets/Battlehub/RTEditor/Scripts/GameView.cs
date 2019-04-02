@@ -234,7 +234,13 @@ namespace Battlehub.RTEditor
             bool wasActive = gameViewCameraGo.activeSelf;
             gameViewCameraGo.SetActive(false);
 
-            RenderTextureCamera renderTextureCamera = gameViewCameraGo.AddComponent<RenderTextureCamera>();
+            RenderTextureCamera renderTextureCamera = gameViewCameraGo.GetComponent<RenderTextureCamera>();
+            if(renderTextureCamera != null)
+            {
+                Destroy(renderTextureCamera);
+            }
+
+            renderTextureCamera = gameViewCameraGo.AddComponent<RenderTextureCamera>();
             renderTextureCamera.OutputRoot = m_renderTextureOutput;
             m_renderTextureCameras.Add(renderTextureCamera);
 

@@ -3,6 +3,7 @@ using Battlehub.RTSL.Interface;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -119,6 +120,12 @@ namespace Battlehub.RTEditor
                 m_builtInTreeView.ItemDataBinding -= OnItemDataBinding;
                 m_builtInTreeView.ItemDoubleClick -= OnItemDoubleClick;
             }
+
+            if (m_externalTreeView != null)
+            {
+                m_externalTreeView.ItemDataBinding -= OnItemDataBinding;
+                m_externalTreeView.ItemDoubleClick -= OnItemDoubleClick;
+            }
         }
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -126,7 +133,7 @@ namespace Battlehub.RTEditor
             string item = e.Item as string;
             if (item != null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);

@@ -5978,6 +5978,1899 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 010000000200000001000000010000000100000001000000010000000200000001000000010000000100000002000000010000000200000001000000020000000100000002000000020000000200000001000000020000000100000001000000010000000100000001000000
     IsHidden: 000000000000000000000000000000000000000000000001010101
+  - Name: TextMeshPro/Bitmap
+    PropertyCount: 14
+    PropertyDescriptions:
+    - Font Atlas
+    - Font Texture
+    - Text Color
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Clip Rect
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _MainTex
+    - _FaceTex
+    - _FaceColor
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _ClipRect
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 0400000004000000000000000200000002000000020000000200000001000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 0000000000000000000000000000
+  - Name: TextMeshPro/Bitmap Custom Atlas
+    PropertyCount: 15
+    PropertyDescriptions:
+    - Font Atlas
+    - Font Texture
+    - Text Color
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Clip Rect
+    - Padding
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _MainTex
+    - _FaceTex
+    - _FaceColor
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _ClipRect
+    - _Padding
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 040000000400000000000000020000000200000002000000020000000100000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 000000000000000000000000000000
+  - Name: TextMeshPro/Distance Field
+    PropertyCount: 64
+    PropertyDescriptions:
+    - Face Texture
+    - Face UV Speed X
+    - Face UV Speed Y
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Texture
+    - Outline UV Speed X
+    - Outline UV Speed Y
+    - Outline Thickness
+    - Outline Softness
+    - Bevel
+    - Bevel Offset
+    - Bevel Width
+    - Bevel Clamp
+    - Bevel Roundness
+    - Light Angle
+    - Specular
+    - Specular
+    - Reflectivity
+    - Diffuse
+    - Ambient
+    - Normal map
+    - Bump Outline
+    - Bump Face
+    - Reflection Color
+    - Reflection Color
+    - Reflection Cubemap
+    - Texture Rotation
+    - Border Color
+    - Border OffsetX
+    - Border OffsetY
+    - Border Dilate
+    - Border Softness
+    - Color
+    - Offset
+    - Inner
+    - Outer
+    - Falloff
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Mask Coordinates
+    - Clip Rect
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _FaceTex
+    - _FaceUVSpeedX
+    - _FaceUVSpeedY
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineTex
+    - _OutlineUVSpeedX
+    - _OutlineUVSpeedY
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _Bevel
+    - _BevelOffset
+    - _BevelWidth
+    - _BevelClamp
+    - _BevelRoundness
+    - _LightAngle
+    - _SpecularColor
+    - _SpecularPower
+    - _Reflectivity
+    - _Diffuse
+    - _Ambient
+    - _BumpMap
+    - _BumpOutline
+    - _BumpFace
+    - _ReflectFaceColor
+    - _ReflectOutlineColor
+    - _Cube
+    - _EnvMatrixRotation
+    - _UnderlayColor
+    - _UnderlayOffsetX
+    - _UnderlayOffsetY
+    - _UnderlayDilate
+    - _UnderlaySoftness
+    - _GlowColor
+    - _GlowOffset
+    - _GlowInner
+    - _GlowOuter
+    - _GlowPower
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _MaskCoord
+    - _ClipRect
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 04000000030000000300000000000000030000000000000004000000030000000300000003000000030000000300000003000000030000000300000003000000030000000000000003000000030000000300000003000000040000000300000003000000000000000000000004000000010000000000000003000000030000000300000003000000000000000300000003000000030000000300000002000000020000000200000002000000020000000200000004000000020000000200000002000000020000000200000003000000020000000200000001000000010000000200000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: -0.5
+      Max: 0.5
+    - Def: 0
+      Min: -0.5
+      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 3.1416
+      Min: 0
+      Max: 6.2831855
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 2
+      Min: 0
+      Max: 4
+    - Def: 10
+      Min: 5
+      Max: 15
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0.5
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.75
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 32767
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000004000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Distance Field (Surface)
+    PropertyCount: 46
+    PropertyDescriptions:
+    - Fill Texture
+    - Face UV Speed X
+    - Face UV Speed Y
+    - Fill Color
+    - Face Dilate
+    - Outline Color
+    - Outline Texture
+    - Outline UV Speed X
+    - Outline UV Speed Y
+    - Outline Thickness
+    - Outline Softness
+    - Bevel
+    - Bevel Offset
+    - Bevel Width
+    - Bevel Clamp
+    - Bevel Roundness
+    - Normalmap
+    - Bump Outline
+    - Bump Face
+    - Face Color
+    - Outline Color
+    - Reflection Cubemap
+    - Texture Rotation
+    - Specular Color
+    - Face Shininess
+    - Outline Shininess
+    - Color
+    - Offset
+    - Inner
+    - Outer
+    - Falloff
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    PropertyNames:
+    - _FaceTex
+    - _FaceUVSpeedX
+    - _FaceUVSpeedY
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineTex
+    - _OutlineUVSpeedX
+    - _OutlineUVSpeedY
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _Bevel
+    - _BevelOffset
+    - _BevelWidth
+    - _BevelClamp
+    - _BevelRoundness
+    - _BumpMap
+    - _BumpOutline
+    - _BumpFace
+    - _ReflectFaceColor
+    - _ReflectOutlineColor
+    - _Cube
+    - _EnvMatrixRotation
+    - _SpecColor
+    - _FaceShininess
+    - _OutlineShininess
+    - _GlowColor
+    - _GlowOffset
+    - _GlowInner
+    - _GlowOuter
+    - _GlowPower
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    PropertyTypes: 04000000030000000300000000000000030000000000000004000000030000000300000003000000030000000300000003000000030000000300000003000000040000000300000003000000000000000000000004000000010000000000000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: -0.5
+      Max: 0.5
+    - Def: 0
+      Min: -0.5
+      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.75
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000004000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Distance Field Overlay
+    PropertyCount: 64
+    PropertyDescriptions:
+    - Face Texture
+    - Face UV Speed X
+    - Face UV Speed Y
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Texture
+    - Outline UV Speed X
+    - Outline UV Speed Y
+    - Outline Thickness
+    - Outline Softness
+    - Bevel
+    - Bevel Offset
+    - Bevel Width
+    - Bevel Clamp
+    - Bevel Roundness
+    - Light Angle
+    - Specular
+    - Specular
+    - Reflectivity
+    - Diffuse
+    - Ambient
+    - Normal map
+    - Bump Outline
+    - Bump Face
+    - Reflection Color
+    - Reflection Color
+    - Reflection Cubemap
+    - Texture Rotation
+    - Border Color
+    - Border OffsetX
+    - Border OffsetY
+    - Border Dilate
+    - Border Softness
+    - Color
+    - Offset
+    - Inner
+    - Outer
+    - Falloff
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Mask Coordinates
+    - Clip Rect
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _FaceTex
+    - _FaceUVSpeedX
+    - _FaceUVSpeedY
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineTex
+    - _OutlineUVSpeedX
+    - _OutlineUVSpeedY
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _Bevel
+    - _BevelOffset
+    - _BevelWidth
+    - _BevelClamp
+    - _BevelRoundness
+    - _LightAngle
+    - _SpecularColor
+    - _SpecularPower
+    - _Reflectivity
+    - _Diffuse
+    - _Ambient
+    - _BumpMap
+    - _BumpOutline
+    - _BumpFace
+    - _ReflectFaceColor
+    - _ReflectOutlineColor
+    - _Cube
+    - _EnvMatrixRotation
+    - _UnderlayColor
+    - _UnderlayOffsetX
+    - _UnderlayOffsetY
+    - _UnderlayDilate
+    - _UnderlaySoftness
+    - _GlowColor
+    - _GlowOffset
+    - _GlowInner
+    - _GlowOuter
+    - _GlowPower
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _MaskCoord
+    - _ClipRect
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 04000000030000000300000000000000030000000000000004000000030000000300000003000000030000000300000003000000030000000300000003000000030000000000000003000000030000000300000003000000040000000300000003000000000000000000000004000000010000000000000003000000030000000300000003000000000000000300000003000000030000000300000002000000020000000200000002000000020000000200000004000000020000000200000002000000020000000200000003000000020000000200000001000000010000000200000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: -5
+      Max: 5
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: -0.5
+      Max: 0.5
+    - Def: 0
+      Min: -0.5
+      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 3.1416
+      Min: 0
+      Max: 6.2831855
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 2
+      Min: 0
+      Max: 4
+    - Def: 10
+      Min: 5
+      Max: 15
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0.5
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.75
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 32767
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000004000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Mobile/Bitmap
+    PropertyCount: 14
+    PropertyDescriptions:
+    - Font Atlas
+    - Text Color
+    - Diffuse Power
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Clip Rect
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _MainTex
+    - _Color
+    - _DiffusePower
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _ClipRect
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 0400000000000000030000000200000002000000020000000200000001000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 1
+      Min: 1
+      Max: 4
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 0000000000000000000000000000
+  - Name: TextMeshPro/Mobile/Distance Field
+    PropertyCount: 34
+    PropertyDescriptions:
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Thickness
+    - Outline Softness
+    - Border Color
+    - Border OffsetX
+    - Border OffsetY
+    - Border Dilate
+    - Border Softness
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Clip Rect
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _UnderlayColor
+    - _UnderlayOffsetX
+    - _UnderlayOffsetY
+    - _UnderlayDilate
+    - _UnderlaySoftness
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _ClipRect
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 00000000030000000000000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000010000000200000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Mobile/Distance Field - Masking
+    PropertyCount: 39
+    PropertyDescriptions:
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Thickness
+    - Outline Softness
+    - Border Color
+    - Border OffsetX
+    - Border OffsetY
+    - Border Dilate
+    - Border Softness
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Clip Rect
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Mask Texture
+    - Inverse
+    - Edge Color
+    - Edge Softness
+    - Wipe Position
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _UnderlayColor
+    - _UnderlayOffsetX
+    - _UnderlayOffsetY
+    - _UnderlayDilate
+    - _UnderlaySoftness
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _ClipRect
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _MaskTex
+    - _MaskInverse
+    - _MaskEdgeColor
+    - _MaskEdgeSoftness
+    - _MaskWipeControl
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 000000000300000000000000030000000300000000000000030000000300000003000000030000000200000002000000020000000200000002000000020000000400000002000000020000000200000002000000020000000300000002000000020000000100000002000000020000000400000002000000000000000300000003000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0.01
+      Min: 0
+      Max: 1
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 000000000000000000000000000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Mobile/Distance Field (Surface)
+    PropertyCount: 27
+    PropertyDescriptions:
+    - Fill Texture
+    - Fill Color
+    - Face Dilate
+    - Outline Color
+    - Outline Texture
+    - Outline Thickness
+    - Outline Softness
+    - Color
+    - Offset
+    - Inner
+    - Outer
+    - Falloff
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    PropertyNames:
+    - _FaceTex
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineTex
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _GlowColor
+    - _GlowOffset
+    - _GlowInner
+    - _GlowOuter
+    - _GlowPower
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    PropertyTypes: 040000000000000003000000000000000400000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.05
+      Min: 0
+      Max: 1
+    - Def: 0.75
+      Min: 1
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000100000001000000010000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Mobile/Distance Field Overlay
+    PropertyCount: 34
+    PropertyDescriptions:
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Thickness
+    - Outline Softness
+    - Border Color
+    - Border OffsetX
+    - Border OffsetY
+    - Border Dilate
+    - Border Softness
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Perspective Correction
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Clip Rect
+    - Mask SoftnessX
+    - Mask SoftnessY
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    PropertyNames:
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _UnderlayColor
+    - _UnderlayOffsetX
+    - _UnderlayOffsetY
+    - _UnderlayDilate
+    - _UnderlaySoftness
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _PerspectiveFilter
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _ClipRect
+    - _MaskSoftnessX
+    - _MaskSoftnessY
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    PropertyTypes: 00000000030000000000000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000010000000200000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 512
+      Min: 0
+      Max: 0
+    - Def: 5
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0.875
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000
+  - Name: TextMeshPro/Sprite
+    PropertyCount: 10
+    PropertyDescriptions:
+    - Sprite Texture
+    - Tint
+    - Stencil Comparison
+    - Stencil ID
+    - Stencil Operation
+    - Stencil Write Mask
+    - Stencil Read Mask
+    - Color Mask
+    - Clip Rect
+    - Use Alpha Clip
+    PropertyNames:
+    - _MainTex
+    - _Color
+    - _StencilComp
+    - _Stencil
+    - _StencilOp
+    - _StencilWriteMask
+    - _StencilReadMask
+    - _ColorMask
+    - _ClipRect
+    - _UseUIAlphaClip
+    PropertyTypes: 04000000000000000200000002000000020000000200000002000000020000000100000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 8
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 255
+      Min: 0
+      Max: 0
+    - Def: 15
+      Min: 0
+      Max: 0
+    - Def: -32767
+      Min: -32767
+      Max: 32767
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 00000000000000000000
   - Name: UI/Default
     PropertyCount: 9
     PropertyDescriptions:

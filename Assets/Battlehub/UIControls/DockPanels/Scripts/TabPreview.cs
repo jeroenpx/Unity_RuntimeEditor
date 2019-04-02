@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
@@ -9,7 +10,7 @@ namespace Battlehub.UIControls.DockPanels
         private Image m_img = null;
 
         [SerializeField]
-        private Text m_text = null;
+        private TextMeshProUGUI m_text = null;
 
         [SerializeField]
         private RectTransform m_contentPart = null;

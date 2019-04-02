@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -41,7 +42,7 @@ namespace Battlehub.RTEditor
         public event Action<string> SelectionChanged;
 
         [SerializeField]
-        private InputField Input = null;
+        private TMP_InputField Input = null;
 
         [SerializeField]
         private List<FileIcon> m_icons = null;
@@ -237,7 +238,7 @@ namespace Battlehub.RTEditor
             FsEntry item = e.Item as FsEntry;
             if (item != null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);

@@ -316,10 +316,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f62c42d6a1bc764b969e39476188117, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: {fileID: 2417454086976452495}
+  Label: {fileID: 5476199072812527099}
   Indent: 10
   DragHighlight: {fileID: 1418547424471642499}
-  Input: {fileID: 648402270290616601}
+  Input: {fileID: 6481823160589566006}
   BtnSelect: {fileID: 114000012554267272}
 --- !u!114 &114000014207216240
 MonoBehaviour:
@@ -473,20 +473,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 224000010498897492}
     m_Modifications:
-    - target: {fileID: 5432877179632202248, guid: 4c79914f1c3ad504f98d16655910337c,
-        type: 3}
-      propertyPath: m_Name
-      value: InputFieldWithDropArea
-      objectReference: {fileID: 0}
     - target: {fileID: 5400936266270582830, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
       propertyPath: m_ReadOnly
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8689677484417888633, guid: 4c79914f1c3ad504f98d16655910337c,
+    - target: {fileID: 5432877179632202248, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 1
+      propertyPath: m_Name
+      value: InputFieldWithDropArea
       objectReference: {fileID: 0}
     - target: {fileID: 5223390867846358792, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
@@ -593,6 +588,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8689677484417888633, guid: 4c79914f1c3ad504f98d16655910337c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5223390860073273616, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
       propertyPath: m_RootOrder
@@ -617,16 +617,16 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4759298232321804599}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &648402270290616601 stripped
+--- !u!114 &6481823160589566006 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5400936266270582830, guid: 4c79914f1c3ad504f98d16655910337c,
+  m_CorrespondingSourceObject: {fileID: 2015470046791911681, guid: 4c79914f1c3ad504f98d16655910337c,
     type: 3}
   m_PrefabInstance: {fileID: 4759298232321804599}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 678101275331672895}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 575553740, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1418547424471642499 stripped
@@ -760,15 +760,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8366439595939301223}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2417454086976452495 stripped
+--- !u!114 &5476199072812527099 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6167422211322130664, guid: 40696930dbd30444fa8eec7f34d8235e,
+  m_CorrespondingSourceObject: {fileID: 4604031728785943196, guid: 40696930dbd30444fa8eec7f34d8235e,
     type: 3}
   m_PrefabInstance: {fileID: 8366439595939301223}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

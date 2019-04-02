@@ -4,6 +4,7 @@ using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
 using System.Collections;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -183,7 +184,7 @@ namespace Battlehub.RTEditor
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);

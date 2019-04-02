@@ -1,13 +1,11 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 using Battlehub.RTCommon;
-using System;
-using Battlehub.RTSL.Interface;
 using System.Reflection;
 using Battlehub.Utils;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -16,7 +14,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Toggle TogEnableDisable = null;
         [SerializeField]
-        private InputField InputName = null;
+        private TMP_InputField InputName = null;
         [SerializeField]
         private Transform ComponentsPanel = null;
 

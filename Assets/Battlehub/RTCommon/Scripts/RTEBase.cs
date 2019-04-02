@@ -2,6 +2,7 @@ using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -164,7 +165,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        InputField CurrentInputField
+        TMP_InputField CurrentInputField
         {
             get;
         }
@@ -242,7 +243,7 @@ namespace Battlehub.RTCommon
         private IRuntimeObjects m_object;
 
         protected GameObject m_currentSelectedGameObject;
-        protected InputField m_currentInputField;
+        protected TMP_InputField m_currentInputField;
         protected float m_zAxis;
 
         public GraphicRaycaster Raycaster
@@ -262,7 +263,7 @@ namespace Battlehub.RTCommon
             get { return m_currentInputField != null; }
         }
 
-        public InputField CurrentInputField
+        public TMP_InputField CurrentInputField
         {
             get { return m_currentInputField; }
         }
@@ -834,7 +835,7 @@ namespace Battlehub.RTCommon
                     m_currentSelectedGameObject = m_eventSystem.currentSelectedGameObject;
                     if (m_currentSelectedGameObject != null)
                     {
-                        m_currentInputField = m_currentSelectedGameObject.GetComponent<InputField>();
+                        m_currentInputField = m_currentSelectedGameObject.GetComponent<TMP_InputField>();
                     }
                     else
                     {

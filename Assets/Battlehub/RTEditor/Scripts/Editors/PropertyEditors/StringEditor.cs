@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using TMPro;
+using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
     public class StringEditor : PropertyEditor<string>
     {
         [SerializeField]
-        protected InputField m_input;
+        protected TMP_InputField m_input;
 
         protected override void AwakeOverride()
         {

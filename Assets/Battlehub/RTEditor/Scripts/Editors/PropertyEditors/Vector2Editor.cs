@@ -1,15 +1,14 @@
-﻿using System;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
     public class Vector2Editor : PropertyEditor<Vector2>
     {
         [SerializeField]
-        private InputField m_xInput = null;
+        private TMP_InputField m_xInput = null;
         [SerializeField]
-        private InputField m_yInput = null;
+        private TMP_InputField m_yInput = null;
         [SerializeField]
         protected DragField[] m_dragFields = null;
 

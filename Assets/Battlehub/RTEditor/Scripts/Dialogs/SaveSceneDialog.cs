@@ -7,13 +7,14 @@ using Battlehub.RTCommon;
 using Battlehub.UIControls.Dialogs;
 using Battlehub.RTSL.Interface;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
     public class SaveSceneDialog : RuntimeWindow
     {
         [SerializeField]
-        private InputField Input = null;
+        private TMP_InputField Input = null;
         [SerializeField]
         private Sprite FolderIcon = null;
         [SerializeField]
@@ -188,7 +189,7 @@ namespace Battlehub.RTEditor
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);

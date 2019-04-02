@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.UI;
 using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -139,7 +140,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private BoolEditor EnabledEditor = null;
         [SerializeField]
-        private Text Header = null;
+        private TextMeshProUGUI Header = null;
         [SerializeField]
         private Toggle Expander = null;
         [SerializeField]

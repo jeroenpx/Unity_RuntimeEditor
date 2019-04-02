@@ -1,7 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
-using Battlehub.UIControls;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,7 +14,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject DragHighlight = null;
         [SerializeField]
-        private InputField Input = null;
+        private TMP_InputField Input = null;
         [SerializeField]
         private Button BtnSelect = null;
         protected override void SetInputField(UnityObject value)

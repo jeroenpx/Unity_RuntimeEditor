@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using System;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
     public abstract class FourFloatEditor<T> : PropertyEditor<T>
     {
         [SerializeField]
-        private InputField m_xInput = null;
+        private TMP_InputField m_xInput = null;
         [SerializeField]
-        private InputField m_yInput = null;
+        private TMP_InputField m_yInput = null;
         [SerializeField]
-        private InputField m_zInput = null;
+        private TMP_InputField m_zInput = null;
         [SerializeField]
-        private InputField m_wInput = null;
+        private TMP_InputField m_wInput = null;
         [SerializeField]
         private RectTransform m_expander = null;
         [SerializeField]

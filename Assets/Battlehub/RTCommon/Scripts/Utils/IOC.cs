@@ -44,10 +44,9 @@ namespace Battlehub.RTCommon
             if(m_registered.ContainsKey(typeof(T)))
             {
                 Debug.LogWarning("type {0} already registered.");
-                return;
             }
 
-            m_registered.Add(typeof(T), new Item(func));
+            m_registered[typeof(T)] = new Item(func);
         }
 
         public void Register<T>(T instance)
@@ -59,10 +58,9 @@ namespace Battlehub.RTCommon
             if(m_registered.ContainsKey(typeof(T)))
             {
                 Debug.LogWarningFormat("type {0} already registered.", typeof(T).FullName);
-                return;
             }
 
-            m_registered.Add(typeof(T), new Item(instance));
+            m_registered[typeof(T)] = new Item(instance);
         }
 
         public void Unregister<T>(Func<T> func)
@@ -98,7 +96,6 @@ namespace Battlehub.RTCommon
             if (m_fallbacks.ContainsKey(typeof(T)))
             {
                 Debug.LogWarningFormat("fallback for type {0} already registered.", typeof(T).FullName);
-                return;
             }
             m_fallbacks[typeof(T)] = new Item(func);
         }
@@ -113,10 +110,9 @@ namespace Battlehub.RTCommon
             if (m_fallbacks.ContainsKey(typeof(T)))
             {
                 Debug.LogWarningFormat("type {0} already registered.", typeof(T).FullName);
-                return;
             }
 
-            m_fallbacks.Add(typeof(T), new Item(instance));
+            m_fallbacks[typeof(T)] = new Item(instance);
         }
 
         public void UnregisterFallback<T>(Func<T> func)

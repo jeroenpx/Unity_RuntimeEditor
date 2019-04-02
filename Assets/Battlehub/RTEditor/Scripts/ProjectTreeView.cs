@@ -11,6 +11,7 @@ using Battlehub.RTSL.Interface;
 using Battlehub.Utils;
 using Battlehub.UIControls.MenuControl;
 using System.Collections.Generic;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -316,7 +317,10 @@ namespace Battlehub.RTEditor
             {
                 gameObject.AddComponent<ProjectTreeViewInput>();
             }
+        }
 
+        protected virtual void Start()
+        {
             IOC.RegisterFallback<IProjectTree>(this);
         }
 
@@ -484,7 +488,7 @@ namespace Battlehub.RTEditor
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
             {
-                InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
+                TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
                 inputField.text = item.Name;
                 inputField.ActivateInputField();
                 inputField.Select();
@@ -503,7 +507,7 @@ namespace Battlehub.RTEditor
 
                 LayoutElement layout = inputField.GetComponent<LayoutElement>();
 
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
                 RectTransform rt = text.GetComponent<RectTransform>();
@@ -513,8 +517,8 @@ namespace Battlehub.RTEditor
 
         private void OnItemEndEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
-            InputField inputField = e.EditorPresenter.GetComponentInChildren<InputField>(true);
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+            TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
+            TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
 
             ProjectItem projectItem = (ProjectItem)e.Item;
             string oldName = projectItem.Name;
@@ -599,7 +603,7 @@ namespace Battlehub.RTEditor
             ProjectItem item = e.Item as ProjectItem;
             if (item != null)
             {
-                Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+                TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
                 Image image = e.ItemPresenter.GetComponentInChildren<Image>(true);

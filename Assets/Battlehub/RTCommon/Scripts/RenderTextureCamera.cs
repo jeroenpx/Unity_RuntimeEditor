@@ -138,6 +138,11 @@ namespace Battlehub.RTCommon
 
         private void LateUpdate()
         {
+            if(m_output == null)
+            {
+
+            }
+
             bool resizeRenderTexture = m_outputRect != m_output.rectTransform.rect || m_screenWidth != Screen.width || m_screenHeight != Screen.height;
             bool resizeOutput = resizeRenderTexture || m_output.rectTransform.position != m_position;
 

@@ -8,6 +8,7 @@ using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -183,7 +184,7 @@ namespace Battlehub.RTEditor
             get { return m_editor.Raycaster; }
         }
 
-        private InputField CurrentInputField
+        private TMP_InputField CurrentInputField
         {
             get { return m_editor.CurrentInputField; }
         }
@@ -835,7 +836,7 @@ namespace Battlehub.RTEditor
 
             LayoutInfo layout = buildLayoutCallback(this);
             m_dockPanels.RootRegion.Build(layout);
-
+            
             if(!string.IsNullOrEmpty(activateWindowOfType))
             {
                 ActivateWindow(activateWindowOfType);

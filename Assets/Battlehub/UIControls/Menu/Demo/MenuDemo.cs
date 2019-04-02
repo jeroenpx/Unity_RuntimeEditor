@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using TMPro;
+using UnityEngine;
 
 namespace Battlehub.UIControls.MenuControl
 {
     public class MenuDemo : MonoBehaviour
     {
         [SerializeField]
-        private Text m_output = null;
+        private TextMeshProUGUI m_output = null;
 
         public void OnValidateCmd(MenuItemValidationArgs args)
         {
