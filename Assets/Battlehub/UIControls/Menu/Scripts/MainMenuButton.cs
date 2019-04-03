@@ -19,12 +19,47 @@ namespace Battlehub.UIControls.MenuControl
 
         [SerializeField]
         private Color m_pointerOverColor = new Color32(0x00, 0x97, 0xFF, 0x7F);
+        public Color PointerOverColor
+        {
+            get { return m_pointerOverColor; }
+            set
+            {
+                m_pointerOverColor = value;
+                if (m_selection != null)
+                {
+                    if (m_isPointerOver)
+                    {
+                        m_selection.color = m_pointerOverColor;
+                    }
+                }
+            }
+        }
 
         [SerializeField]
         private Color m_focusedColor = new Color32(0x00, 0x97, 0xFF, 0xFF);
+        public Color FocusedColor
+        {
+            get { return m_focusedColor; }
+            set { m_focusedColor = value; }
+        }
 
         [SerializeField]
         private Color m_normalColor = new Color32(0xFF, 0xFF, 0xFF, 0x00);
+        public Color NormalColor
+        {
+            get { return m_normalColor; }
+            set
+            {
+                m_normalColor = value;
+                if(m_selection != null)
+                {
+                    if(!m_isPointerOver)
+                    {
+                        m_selection.color = m_normalColor;
+                    }
+                }
+            }
+        }
 
         private bool m_isPointerOver;
 

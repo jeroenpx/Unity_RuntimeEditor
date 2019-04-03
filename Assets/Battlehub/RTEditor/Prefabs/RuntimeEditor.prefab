@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 233234377}
   - component: {fileID: 233234372}
   - component: {fileID: 233234371}
+  - component: {fileID: 738640506203153950}
+  - component: {fileID: 1243416425763597687}
   m_Layer: 5
   m_Name: MenuContext
   m_TagString: Untagged
@@ -312,6 +314,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &738640506203153950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233234369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
+--- !u!114 &1243416425763597687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233234369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &974272048
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,6 +352,7 @@ GameObject:
   - component: {fileID: 974272052}
   - component: {fileID: 974272051}
   - component: {fileID: 974272050}
+  - component: {fileID: 8445549651274000422}
   m_Layer: 5
   m_Name: Border
   m_TagString: Untagged
@@ -371,7 +400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.103773594, g: 0.09643112, b: 0.09643112, a: 1}
+  m_Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -407,6 +436,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8445549651274000422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 974272048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border2Color
 --- !u!1 &1638548487
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,6 +461,7 @@ GameObject:
   - component: {fileID: 1638548491}
   - component: {fileID: 1638548490}
   - component: {fileID: 1638548489}
+  - component: {fileID: 441601681697100595}
   m_Layer: 5
   m_Name: Border
   m_TagString: Untagged
@@ -502,6 +545,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &441601681697100595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638548487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border3
 --- !u!1 &6005130086743319
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,7 +697,6 @@ GameObject:
   - component: {fileID: 111226606771800033}
   - component: {fileID: 109649121520202351}
   - component: {fileID: 217687811992305575}
-  - component: {fileID: 111239355110341277}
   m_Layer: 5
   m_Name: DockPanels
   m_TagString: Untagged
@@ -721,35 +776,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6090313584520543}
   m_CullTransparentMesh: 0
---- !u!114 &111239355110341277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6090313584520543}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
-  m_RaycastTarget: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
 --- !u!1 &6198067185533749
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,6 +919,8 @@ GameObject:
   - component: {fileID: 109295648347768002}
   - component: {fileID: 109272289787078166}
   - component: {fileID: 230625903091272210}
+  - component: {fileID: 2261186189424876136}
+  - component: {fileID: 5721558705243371511}
   m_Layer: 5
   m_Name: MenuGameObject
   m_TagString: Untagged
@@ -1471,6 +1499,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &2261186189424876136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628002230241596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
+--- !u!114 &5721558705243371511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628002230241596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &6628002339904746
 GameObject:
   m_ObjectHideFlags: 0
@@ -1487,6 +1541,8 @@ GameObject:
   - component: {fileID: 109295648440357140}
   - component: {fileID: 109272289962767296}
   - component: {fileID: 230625903234326468}
+  - component: {fileID: 3026775864848623790}
+  - component: {fileID: 6751674447310912749}
   m_Layer: 5
   m_Name: MenuWindow
   m_TagString: Untagged
@@ -1808,6 +1864,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3026775864848623790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628002339904746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
+--- !u!114 &6751674447310912749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628002339904746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &6628002834633741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1824,6 +1906,8 @@ GameObject:
   - component: {fileID: 109295647878126067}
   - component: {fileID: 109272290525133607}
   - component: {fileID: 230625902621628195}
+  - component: {fileID: 4428406858280129891}
+  - component: {fileID: 7073854175091552718}
   m_Layer: 5
   m_Name: MenuFile
   m_TagString: Untagged
@@ -2156,6 +2240,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4428406858280129891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628002834633741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
+--- !u!114 &7073854175091552718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628002834633741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &6628003434247066
 GameObject:
   m_ObjectHideFlags: 0
@@ -2172,6 +2282,8 @@ GameObject:
   - component: {fileID: 109295649560100452}
   - component: {fileID: 109272290990546096}
   - component: {fileID: 230625902139535540}
+  - component: {fileID: 7640985986943665684}
+  - component: {fileID: 1669282379953503534}
   m_Layer: 5
   m_Name: MenuEdit
   m_TagString: Untagged
@@ -2534,6 +2646,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &7640985986943665684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628003434247066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
+--- !u!114 &1669282379953503534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628003434247066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &6628003494965360
 GameObject:
   m_ObjectHideFlags: 0
@@ -2550,6 +2688,8 @@ GameObject:
   - component: {fileID: 109295649570291086}
   - component: {fileID: 109272290716245850}
   - component: {fileID: 230625901696545630}
+  - component: {fileID: 6693398870484018209}
+  - component: {fileID: 5739393886029636483}
   m_Layer: 5
   m_Name: MenuComponent
   m_TagString: Untagged
@@ -2710,6 +2850,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &6693398870484018209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628003494965360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
+--- !u!114 &5739393886029636483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628003494965360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &6628003763748597
 GameObject:
   m_ObjectHideFlags: 0
@@ -2726,6 +2892,8 @@ GameObject:
   - component: {fileID: 109295648765555467}
   - component: {fileID: 109272291520811487}
   - component: {fileID: 230625901428817371}
+  - component: {fileID: 1041393930635422144}
+  - component: {fileID: 3689712072999425034}
   m_Layer: 5
   m_Name: MenuHelp
   m_TagString: Untagged
@@ -2897,80 +3065,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!1 &1291167456044012070
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8173837361428664869}
-  - component: {fileID: 9058800277652670135}
-  - component: {fileID: 9058800277652670134}
-  m_Layer: 5
-  m_Name: Background
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &8173837361428664869
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1291167456044012070}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5849259614124329400}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &9058800277652670135
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1291167456044012070}
-  m_CullTransparentMesh: 0
---- !u!114 &9058800277652670134
+--- !u!114 &1041393930635422144
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1291167456044012070}
+  m_GameObject: {fileID: 6628003763748597}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 0337b5547dcbc3d4ea4b803d55e5d744, type: 3}
-  m_Type: 2
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
+  Name: PrimaryColor
+--- !u!114 &3689712072999425034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6628003763748597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4
 --- !u!1 &1777419699227269927
 GameObject:
   m_ObjectHideFlags: 0
@@ -3682,6 +3802,7 @@ GameObject:
   - component: {fileID: 3661969667337733040}
   - component: {fileID: 2479318248405338867}
   - component: {fileID: 7521297420743326562}
+  - component: {fileID: 6785321503464155150}
   m_Layer: 5
   m_Name: Modal
   m_TagString: Untagged
@@ -3729,7 +3850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.23137255}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.2509804}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3745,6 +3866,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &6785321503464155150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358519200071905049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ModalOverlayColor
 --- !u!1 &5849259612615065805
 GameObject:
   m_ObjectHideFlags: 0
@@ -3861,6 +3995,7 @@ GameObject:
   - component: {fileID: 5849259612640306640}
   - component: {fileID: 5849259612640306641}
   - component: {fileID: 194363483}
+  - component: {fileID: 542523821362138760}
   m_Layer: 5
   m_Name: MainMenuBar
   m_TagString: Untagged
@@ -3883,7 +4018,7 @@ RectTransform:
   - {fileID: 6236831816304581951}
   - {fileID: 974272049}
   m_Father: {fileID: 5849259614124329400}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -3968,6 +4103,19 @@ MonoBehaviour:
     type: 3}
   m_menuPrefab: {fileID: 114641633655484212, guid: 324d427cdfc17f147a6f5fe5a3063f06,
     type: 3}
+--- !u!114 &542523821362138760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259612640306653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: MainMenuBarColor
 --- !u!1 &5849259612728396455
 GameObject:
   m_ObjectHideFlags: 0
@@ -4313,6 +4461,7 @@ GameObject:
   - component: {fileID: 5849259613376326655}
   - component: {fileID: 5849259613376326654}
   - component: {fileID: 3585920918779202565}
+  - component: {fileID: 5233282974871770727}
   m_Layer: 5
   m_Name: BtnEdit
   m_TagString: Untagged
@@ -4437,6 +4586,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &5233282974871770727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259613376326649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: MainMenuButtonColor
 --- !u!1 &5849259614052136176
 GameObject:
   m_ObjectHideFlags: 0
@@ -4451,6 +4613,7 @@ GameObject:
   - component: {fileID: 5849259614052136182}
   - component: {fileID: 5849259614052136181}
   - component: {fileID: 8077136230047967497}
+  - component: {fileID: 585769096235810216}
   m_Layer: 5
   m_Name: BtnGameObject
   m_TagString: Untagged
@@ -4575,6 +4738,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &585769096235810216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614052136176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: MainMenuButtonColor
 --- !u!1 &5849259614124329401
 GameObject:
   m_ObjectHideFlags: 0
@@ -4586,6 +4762,7 @@ GameObject:
   - component: {fileID: 5849259614124329400}
   - component: {fileID: 5849259614124329406}
   - component: {fileID: 5849259614124329407}
+  - component: {fileID: 1943746261003307767}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -4604,7 +4781,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 79.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8173837361428664869}
   - {fileID: 5849259612640306652}
   m_Father: {fileID: 5849259612615065804}
   m_RootOrder: 0
@@ -4651,6 +4827,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &1943746261003307767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614124329401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
 --- !u!1 &5849259614183290823
 GameObject:
   m_ObjectHideFlags: 0
@@ -4665,6 +4854,7 @@ GameObject:
   - component: {fileID: 5849259614183290821}
   - component: {fileID: 5849259614183290820}
   - component: {fileID: 8699228782476089258}
+  - component: {fileID: 4200369494453234116}
   m_Layer: 5
   m_Name: BtnWindow
   m_TagString: Untagged
@@ -4789,6 +4979,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &4200369494453234116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614183290823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: MainMenuButtonColor
 --- !u!1 &5849259614191065369
 GameObject:
   m_ObjectHideFlags: 0
@@ -4801,6 +5004,7 @@ GameObject:
   - component: {fileID: 5849259614191065373}
   - component: {fileID: 5849259614191065374}
   - component: {fileID: 5849259614191065375}
+  - component: {fileID: 5498805238802277706}
   m_Layer: 5
   m_Name: BusyIndicator
   m_TagString: Untagged
@@ -4878,6 +5082,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_graphics: {fileID: 5849259614191065368}
   m_interval: 0.05
+--- !u!114 &5498805238802277706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614191065369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Text
 --- !u!1 &5849259614214296019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4892,6 +5109,7 @@ GameObject:
   - component: {fileID: 5849259614214296017}
   - component: {fileID: 5849259614214296016}
   - component: {fileID: 6173097361273975014}
+  - component: {fileID: 1651579493188428449}
   m_Layer: 5
   m_Name: BtnFile
   m_TagString: Untagged
@@ -5016,6 +5234,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &1651579493188428449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614214296019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: MainMenuButtonColor
 --- !u!1 &5849259614313223314
 GameObject:
   m_ObjectHideFlags: 0
@@ -5308,6 +5539,26 @@ MonoBehaviour:
   m_uiBackgroundScaler: {fileID: 9174941219733222014}
   m_uiForegroundScaler: {fileID: 9174941219733222014}
   m_uiScaler: {fileID: 9174941219733222014}
+  m_colors:
+    Primary: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+    Secondary: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+    Border: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+    Border2: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 1}
+    Border3: {r: 0.32156864, g: 0.29803923, b: 0.29803923, a: 1}
+    Border4: {r: 135, g: 135, b: 135, a: 255}
+    Accent: {r: 0, g: 0.5921569, b: 1, a: 0.7529412}
+    Text: {r: 1, g: 1, b: 1, a: 1}
+    ModalOverlay: {r: 0, g: 0, b: 0, a: 0}
+    MainMenuBar: {r: 0.43529412, g: 0.43529412, b: 0.43529412, a: 1}
+    MainMenuButton:
+      Normal: {r: 1, g: 1, b: 1, a: 0}
+      Highlight: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
+      Pressed: {r: 0, g: 0.5921569, b: 1, a: 1}
+      Disabled: {r: 0, g: 0, b: 0, a: 0}
+    HierarchyColors:
+      NormalItem: {r: 1, g: 1, b: 1, a: 1}
+      DisabledItem: {r: 0.5764706, g: 0.57254905, b: 0.57254905, a: 1}
+    ProjectFolderColor: {r: 72, g: 72, b: 72, a: 255}
 --- !u!114 &5849259614496068631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5629,6 +5880,7 @@ GameObject:
   - component: {fileID: 5849259614669755913}
   - component: {fileID: 5849259614669755912}
   - component: {fileID: 8917869522317704742}
+  - component: {fileID: 8029700606591390574}
   m_Layer: 5
   m_Name: BtnHelp
   m_TagString: Untagged
@@ -5753,6 +6005,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &8029700606591390574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5849259614669755915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: MainMenuButtonColor
 --- !u!1 &6236831816304581948
 GameObject:
   m_ObjectHideFlags: 0

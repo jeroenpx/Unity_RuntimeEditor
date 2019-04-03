@@ -617,6 +617,7 @@ GameObject:
   - component: {fileID: 5186639825075379523}
   - component: {fileID: 5186639825075379581}
   - component: {fileID: 6068377244510557996}
+  - component: {fileID: 3964878220720119558}
   m_Layer: 5
   m_Name: InspectorView
   m_TagString: Untagged
@@ -704,6 +705,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &3964878220720119558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5186639825075379583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
 --- !u!1 &5186639825138370871
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +857,7 @@ GameObject:
   - component: {fileID: 3952300693900458041}
   - component: {fileID: 7470756366137332726}
   - component: {fileID: 4264408394120540178}
+  - component: {fileID: 2832049448191391612}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -906,6 +921,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &2832049448191391612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7554853854598844124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: 20
 --- !u!1 &8412184985857286542
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,6 +1020,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
   m_activateOnAnyKey: 0
+  m_canActivate: 1
   m_windowType: 7
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
@@ -1119,6 +1148,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5309860889226198690, guid: 818bb09a77b0a8d449a8ceef5395e3cb,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 818bb09a77b0a8d449a8ceef5395e3cb, type: 3}
@@ -1279,15 +1313,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
---- !u!224 &1607008063750014045 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8708297900551949110, guid: d19d5f723624d1a4aa5ec987e956675b,
-    type: 3}
-  m_PrefabInstance: {fileID: 7968886016946720619}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3933709747141899472 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6341195478718069691, guid: d19d5f723624d1a4aa5ec987e956675b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7968886016946720619}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1607008063750014045 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8708297900551949110, guid: d19d5f723624d1a4aa5ec987e956675b,
     type: 3}
   m_PrefabInstance: {fileID: 7968886016946720619}
   m_PrefabAsset: {fileID: 0}

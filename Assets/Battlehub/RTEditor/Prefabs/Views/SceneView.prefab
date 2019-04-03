@@ -223,6 +223,7 @@ GameObject:
   - component: {fileID: 6898960901341884732}
   - component: {fileID: 5252423299992472042}
   - component: {fileID: 2398540392954679348}
+  - component: {fileID: 2109597063451165262}
   m_Layer: 5
   m_Name: SceneView
   m_TagString: Untagged
@@ -330,6 +331,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &2109597063451165262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310129391672340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
 --- !u!1 &1318562017134982
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,6 +855,7 @@ GameObject:
   - component: {fileID: 7743731309703048252}
   - component: {fileID: 8408686908089636564}
   - component: {fileID: 5733273256298437692}
+  - component: {fileID: 4473407897918149253}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -990,6 +1005,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4473407897918149253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3948407172526894247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &6911562475532189792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,6 +1104,7 @@ GameObject:
   - component: {fileID: 7671291537780091029}
   - component: {fileID: 1033612193056199884}
   - component: {fileID: 7352527663443153471}
+  - component: {fileID: 1397098861393456807}
   m_Layer: 5
   m_Name: InnerFrame
   m_TagString: Untagged
@@ -1140,3 +1169,16 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &1397098861393456807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094019275735313339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor

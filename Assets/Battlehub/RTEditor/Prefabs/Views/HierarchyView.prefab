@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1759652137917595894}
   - component: {fileID: 6852351706692445496}
   - component: {fileID: 7596701048400447895}
+  - component: {fileID: 5722384106404178903}
   m_Layer: 5
   m_Name: HierarchyView
   m_TagString: Untagged
@@ -75,6 +76,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &5722384106404178903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3710511170453618499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
 --- !u!1 &5364521605086247318
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,6 +101,8 @@ GameObject:
   - component: {fileID: 1532862808970535891}
   - component: {fileID: 1925004940618416624}
   - component: {fileID: 3670039580754860542}
+  - component: {fileID: 4334995958442982307}
+  - component: {fileID: 8604471876399107678}
   m_Layer: 5
   m_Name: View
   m_TagString: Untagged
@@ -127,6 +143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
   m_activateOnAnyKey: 0
+  m_canActivate: 1
   m_windowType: 3
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
@@ -177,6 +194,32 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &4334995958442982307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5364521605086247318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: SecondaryColor
+--- !u!114 &8604471876399107678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5364521605086247318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: HierarchyColor
 --- !u!1001 &7151223685023199718
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -336,6 +379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8589392802444031637, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
+    - {fileID: 750779789771275320, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
 --- !u!224 &2009826717145184976 stripped
 RectTransform:
