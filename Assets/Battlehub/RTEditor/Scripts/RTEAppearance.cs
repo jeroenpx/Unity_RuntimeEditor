@@ -394,6 +394,7 @@ namespace Battlehub.RTEditor
         {
             if (Colors.IsDefault)
             {
+                Debug.Log("Using default colors");
                 return;
             }
 
