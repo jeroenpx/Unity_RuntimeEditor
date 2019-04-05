@@ -5650,6 +5650,7 @@ MonoBehaviour:
       Pressed: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
       Disabled: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
       Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    ScrollBarBackground: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
     Toggle:
       Normal: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
       Highlight: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
@@ -5761,6 +5762,11 @@ MonoBehaviour:
   - {fileID: 1310129391672340, guid: fc7e99f83709bc248a5d6f8bfb3d3b38, type: 3}
   - {fileID: 3345052165328761166, guid: 272769975f3467f499fe3fb36ccf0d24, type: 3}
   - {fileID: 7899130958649889614, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
+  - {fileID: 7631353936166827149, guid: 2d2f70c0ea0c68d479b472fa88c86bac, type: 3}
+  - {fileID: 5291077066712620994, guid: 3a7bd2f40d69a264d94b083414c7d677, type: 3}
+  - {fileID: 6235332028712555590, guid: d95561211dd22b54a9c2b9d191897485, type: 3}
+  - {fileID: 2988903589737829857, guid: ff633b48cfc26fa40bb4e2f72b927818, type: 3}
+  - {fileID: 6214601539033552238, guid: c2729ee08e8494a4cb122d0a4b831d2e, type: 3}
 --- !u!114 &5849259614496068631
 MonoBehaviour:
   m_ObjectHideFlags: 0

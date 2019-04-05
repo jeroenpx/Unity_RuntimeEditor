@@ -570,4 +570,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Button2
+  Name: Button2Color
