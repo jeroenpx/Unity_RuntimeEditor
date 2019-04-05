@@ -430,9 +430,11 @@ namespace Battlehub.RTEditor
                         break;
                     case "TextColor":
                         style.ApplyTextColor(Colors.Text);
+                        style.ApplyImageColor(Colors.Text);
                         break;
                     case "Text2Color":
                         style.ApplyTextColor(Colors.Text2);
+                        style.ApplyImageColor(Colors.Text2);
                         break;
                     case "ModalOverlayColor":
                         style.ApplyImageColor(Colors.ModalOverlay);
