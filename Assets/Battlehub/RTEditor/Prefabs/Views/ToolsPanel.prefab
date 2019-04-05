@@ -1976,7 +1976,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3345052166054892613
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2065,7 +2065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: BorderColor
+  Name: Border4Color
 --- !u!1 &3345052166070029183
 GameObject:
   m_ObjectHideFlags: 0
@@ -2572,6 +2572,7 @@ GameObject:
   - component: {fileID: 3345052166378016008}
   - component: {fileID: 3345052166378016009}
   - component: {fileID: 3345052166378016010}
+  - component: {fileID: 7211607706036190289}
   m_Layer: 5
   m_Name: Separator
   m_TagString: Untagged
@@ -2619,7 +2620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.68235296, g: 0.68235296, b: 0.68235296, a: 0.41960785}
+  m_Color: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 0.41960785}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2655,6 +2656,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7211607706036190289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3345052166378016012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border4Color
 --- !u!1 &3345052166385055100
 GameObject:
   m_ObjectHideFlags: 0
