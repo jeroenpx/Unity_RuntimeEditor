@@ -1015,6 +1015,7 @@ GameObject:
   - component: {fileID: 5381663565683349528}
   - component: {fileID: 8475305013200928077}
   - component: {fileID: 4991733915327866299}
+  - component: {fileID: 5936084454261844825}
   m_Layer: 5
   m_Name: ContentFrame
   m_TagString: Untagged
@@ -1063,7 +1064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  m_Color: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1079,6 +1080,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &5936084454261844825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6911562475532189792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: SecondaryColor
 --- !u!1 &7094019275735313339
 GameObject:
   m_ObjectHideFlags: 0

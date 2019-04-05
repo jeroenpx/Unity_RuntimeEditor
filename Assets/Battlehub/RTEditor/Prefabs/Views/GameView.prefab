@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 1129335033447866378}
   - component: {fileID: 7746741015744568403}
   - component: {fileID: 274930462378744480}
+  - component: {fileID: 6473366142328107363}
   m_Layer: 5
   m_Name: InnerFrame
   m_TagString: Untagged
@@ -96,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  m_Color: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -112,6 +113,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &6473366142328107363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552491170500829988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: SecondaryColor
 --- !u!1 &1060329140221654883
 GameObject:
   m_ObjectHideFlags: 0
