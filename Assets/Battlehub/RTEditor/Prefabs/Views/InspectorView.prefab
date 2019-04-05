@@ -411,6 +411,8 @@ GameObject:
   - component: {fileID: 5186639824400606751}
   - component: {fileID: 5186639824400606750}
   - component: {fileID: 5186639824400606745}
+  - component: {fileID: 2651332263399310498}
+  - component: {fileID: 1768446235975776243}
   m_Layer: 5
   m_Name: Scrollbar Horizontal
   m_TagString: Untagged
@@ -526,6 +528,32 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &2651332263399310498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5186639824400606747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarColor
+--- !u!114 &1768446235975776243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5186639824400606747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarBackgroundColor
 --- !u!1 &5186639824417527662
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,6 +759,8 @@ GameObject:
   - component: {fileID: 5186639825138370875}
   - component: {fileID: 5186639825138370874}
   - component: {fileID: 5186639825138370869}
+  - component: {fileID: 7388054395898835302}
+  - component: {fileID: 5219143351922215037}
   m_Layer: 5
   m_Name: Scrollbar Vertical
   m_TagString: Untagged
@@ -846,6 +876,32 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &7388054395898835302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5186639825138370871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarColor
+--- !u!114 &5219143351922215037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5186639825138370871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarBackgroundColor
 --- !u!1 &7554853854598844124
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,12 +1212,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 818bb09a77b0a8d449a8ceef5395e3cb, type: 3}
---- !u!224 &8563723890583077766 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3691591459988196697, guid: 818bb09a77b0a8d449a8ceef5395e3cb,
-    type: 3}
-  m_PrefabInstance: {fileID: 5035973666614890207}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8563723890583077763 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3691591459988196700, guid: 818bb09a77b0a8d449a8ceef5395e3cb,
@@ -1174,6 +1224,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de7444d087e47af4094a29b88600fa27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &8563723890583077766 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3691591459988196697, guid: 818bb09a77b0a8d449a8ceef5395e3cb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5035973666614890207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7968886016946720619
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1313,15 +1369,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
---- !u!224 &3933709747141899472 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6341195478718069691, guid: d19d5f723624d1a4aa5ec987e956675b,
-    type: 3}
-  m_PrefabInstance: {fileID: 7968886016946720619}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1607008063750014045 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8708297900551949110, guid: d19d5f723624d1a4aa5ec987e956675b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7968886016946720619}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &3933709747141899472 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6341195478718069691, guid: d19d5f723624d1a4aa5ec987e956675b,
     type: 3}
   m_PrefabInstance: {fileID: 7968886016946720619}
   m_PrefabAsset: {fileID: 0}

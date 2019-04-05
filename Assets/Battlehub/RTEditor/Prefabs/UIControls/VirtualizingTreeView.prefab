@@ -530,6 +530,7 @@ GameObject:
   - component: {fileID: 114844422921430598}
   - component: {fileID: 114640489998699784}
   - component: {fileID: 8802781393558725200}
+  - component: {fileID: 7755269609630178780}
   m_Layer: 5
   m_Name: Scrollbar Horizontal
   m_TagString: Untagged
@@ -654,6 +655,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: ScrollBarColor
+--- !u!114 &7755269609630178780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1649775483792546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarBackgroundColor
 --- !u!1 &1673018284646312
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,6 +1060,7 @@ GameObject:
   - component: {fileID: 114748541371619634}
   - component: {fileID: 114393156819851530}
   - component: {fileID: 3154913125784916453}
+  - component: {fileID: 1729012879728522018}
   m_Layer: 5
   m_Name: Scrollbar Vertical
   m_TagString: Untagged
@@ -1170,3 +1185,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: ScrollBarColor
+--- !u!114 &1729012879728522018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812419194018620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarBackgroundColor

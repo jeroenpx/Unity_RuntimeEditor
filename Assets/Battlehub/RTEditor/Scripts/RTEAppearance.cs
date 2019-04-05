@@ -159,6 +159,7 @@ namespace Battlehub.RTEditor
         public static readonly Color DefaultProjectFolder = new Color32(0x48, 0x48, 0x48, 0xFF);
         public static readonly RTESelectableColors DefaultConsoleButton = new RTESelectableColors(DefaultPrimary, DefaultPrimary, DefaultSecondary, new Color32(0xC8, 0xC8, 0xC8, 0x7F));
         public static readonly RTESelectableColors DefaultScrollBar = new RTESelectableColors(DefaultPrimary, DefaultPrimary, DefaultSecondary, new Color32(0xC8, 0xC8, 0xC8, 0x7F));
+        public static readonly Color DefaultScrollBarBackground = new Color32(0xB2, 0xB2, 0xB2, 0xFF);
         public static readonly RTESelectableColors DefaultToggle = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F));
         public static readonly RTESelectableColors DefaultToggleButton = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x38, 0x38, 0x38, 0xFF), new Color32(0x27, 0x27, 0x27, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0x7F));
         public static readonly RTESelectableColors DefaultInputField = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x5C, 0x5C, 0x5C, 0x7F), new Color32(0, 0x97, 0xFF, 0xFF));
@@ -187,6 +188,7 @@ namespace Battlehub.RTEditor
         public Color ProjectFolder;
         public RTESelectableColors ConsoleButton;
         public RTESelectableColors ScrollBar;
+        public Color ScrollBarBackground;
         public RTESelectableColors Toggle;
         public RTESelectableColors ToggleButton;
         public RTESelectableColors InputField;
@@ -217,6 +219,7 @@ namespace Battlehub.RTEditor
             ProjectFolder = DefaultProjectFolder;
             ConsoleButton = DefaultConsoleButton;
             ScrollBar = DefaultScrollBar;
+            ScrollBarBackground = DefaultScrollBarBackground;
             Toggle = DefaultToggle;
             ToggleButton = DefaultToggleButton;
             InputField = DefaultInputField;
@@ -251,6 +254,7 @@ namespace Battlehub.RTEditor
                     ProjectFolder == DefaultProjectFolder &&
                     ConsoleButton.EqualTo(DefaultConsoleButton) &&
                     ScrollBar.EqualTo(DefaultScrollBar) &&
+                    ScrollBarBackground == DefaultScrollBarBackground &&
                     Toggle.EqualTo(DefaultToggle) &&
                     ToggleButton.EqualTo(DefaultToggleButton) &&
                     InputField.EqualTo(DefaultInputField) &&
@@ -469,6 +473,9 @@ namespace Battlehub.RTEditor
                         break;
                     case "ScrollBarColor":
                         style.ApplySelectableColor(Colors.ScrollBar.Normal, Colors.ScrollBar.Highlight, Colors.ScrollBar.Pressed, Colors.ScrollBar.Disabled);
+                        break;
+                    case "ScrollBarBackgroundColor":
+                        style.ApplyImageColor(Colors.ScrollBarBackground);
                         break;
                     case "ToggleColor":
                         style.ApplySelectableColor(Colors.Toggle.Normal, Colors.Toggle.Highlight, Colors.Toggle.Pressed, Colors.Toggle.Disabled);

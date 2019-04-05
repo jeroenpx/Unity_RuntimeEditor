@@ -386,19 +386,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: BorderColor
---- !u!114 &7155888716790348308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8583192321688612281}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: ScrollBarColor
 --- !u!114 &7136699962675377331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,19 +399,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: TextColor
---- !u!114 &1553553466824854149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8583354994941090343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: ScrollBarColor
 --- !u!114 &8475445604382718356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,11 +614,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: m_eventSystem
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 224889818864426658, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -749,6 +718,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: m_eventSystem
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 224681516250508226, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
@@ -834,18 +808,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8582716926959187589}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8583354994941090343 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1649775483792546, guid: 370f94e0ffbc8b645974abea347d3405,
-    type: 3}
-  m_PrefabInstance: {fileID: 8582716926959187589}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8583192321688612281 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1812419194018620, guid: 370f94e0ffbc8b645974abea347d3405,
-    type: 3}
-  m_PrefabInstance: {fileID: 8582716926959187589}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9144309462255761122
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -857,6 +819,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InputField
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4026937081627534330, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
@@ -962,16 +934,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_firstOverflowCharacterIndex
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_firstOverflowCharacterIndex
-      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f43d236fa1937fc44829764302e692ed, type: 3}
