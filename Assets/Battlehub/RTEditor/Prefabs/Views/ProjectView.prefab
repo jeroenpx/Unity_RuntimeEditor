@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: ProjectFolderColor
+  Name: SecondaryColor
 --- !u!1 &5722689055272331426
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: ProjectFolderColor
+  Name: PrimaryColor
 --- !u!114 &8825055982953730405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -858,6 +858,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Region
       objectReference: {fileID: 0}
+    - target: {fileID: 8756119972034287731, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.15294118
+      objectReference: {fileID: 0}
+    - target: {fileID: 8756119972034287731, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.15294118
+      objectReference: {fileID: 0}
+    - target: {fileID: 8756119972034287731, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.15294118
+      objectReference: {fileID: 0}
     - target: {fileID: 510826135400063239, guid: 67b1cdabb309b244bb5f39f4b208b419,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -992,6 +1007,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 405323875632866041, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 405323875632866041, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.21960784
+      objectReference: {fileID: 0}
+    - target: {fileID: 405323875632866041, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.21960784
+      objectReference: {fileID: 0}
+    - target: {fileID: 405323875632866041, guid: 67b1cdabb309b244bb5f39f4b208b419,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.21960784
       objectReference: {fileID: 0}
     - target: {fileID: 404596647408095357, guid: 67b1cdabb309b244bb5f39f4b208b419,
         type: 3}

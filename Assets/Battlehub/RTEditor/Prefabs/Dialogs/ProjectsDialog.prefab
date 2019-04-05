@@ -189,6 +189,7 @@ GameObject:
   - component: {fileID: 114988260771948030}
   - component: {fileID: 222906846435533302}
   - component: {fileID: 114397677982036940}
+  - component: {fileID: 9101458433876015083}
   m_Layer: 5
   m_Name: Hierarchy
   m_TagString: Untagged
@@ -257,7 +258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09411765, g: 0.09411765, b: 0.09411765, a: 1}
+  m_Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -273,6 +274,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &9101458433876015083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100729755753518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Border
 --- !u!1 &1108860015738486
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,6 +335,7 @@ GameObject:
   - component: {fileID: 222333454560228274}
   - component: {fileID: 114607824954747742}
   - component: {fileID: 114112953935907440}
+  - component: {fileID: 6252479690036837511}
   m_Layer: 5
   m_Name: Scrollbar Horizontal
   m_TagString: Untagged
@@ -407,8 +422,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
     m_HighlightedColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
-    m_PressedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_PressedColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -432,6 +447,19 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &6252479690036837511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146431558704176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarColor
 --- !u!1 &1175879733514774
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,6 +955,7 @@ GameObject:
   - component: {fileID: 222722567164654324}
   - component: {fileID: 114447206998150254}
   - component: {fileID: 114092911020022936}
+  - component: {fileID: 7134665635024044425}
   m_Layer: 5
   m_Name: Scrollbar Vertical
   m_TagString: Untagged
@@ -1013,8 +1042,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
     m_HighlightedColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
-    m_PressedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_PressedColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1038,6 +1067,19 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &7134665635024044425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433318839536556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ScrollBarColor
 --- !u!1 &1712138508649344
 GameObject:
   m_ObjectHideFlags: 0
@@ -1236,6 +1278,7 @@ GameObject:
   - component: {fileID: 114578843061047602}
   - component: {fileID: 114145870192396426}
   - component: {fileID: 114488349424873486}
+  - component: {fileID: 4890396124148102265}
   m_Layer: 5
   m_Name: VirtualizingTreeView
   m_TagString: Untagged
@@ -1286,7 +1329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.12941177, g: 0.12941177, b: 0.12941177, a: 1}
+  m_Color: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1410,6 +1453,19 @@ MonoBehaviour:
   RangeselectKey: 304
   SelectAllKey: 97
   DeleteKey: 127
+--- !u!114 &4890396124148102265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960547420900764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: SecondaryColor
 --- !u!1001 &972246061513221414
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1421,6 +1477,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BtnCreate
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.a
+      value: 0.49803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 2870649190769780950, guid: 3a7bd2f40d69a264d94b083414c7d677,
         type: 3}
@@ -1574,6 +1640,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a7bd2f40d69a264d94b083414c7d677, type: 3}
+--- !u!224 &3073852561973628400 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2870649190769780950, guid: 3a7bd2f40d69a264d94b083414c7d677,
+    type: 3}
+  m_PrefabInstance: {fileID: 972246061513221414}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5949541395068457407 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
@@ -1586,12 +1658,6 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &3073852561973628400 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2870649190769780950, guid: 3a7bd2f40d69a264d94b083414c7d677,
-    type: 3}
-  m_PrefabInstance: {fileID: 972246061513221414}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4888215307773427874
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1603,6 +1669,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BtnDelete
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.a
+      value: 0.49803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 2870649190769780950, guid: 3a7bd2f40d69a264d94b083414c7d677,
         type: 3}

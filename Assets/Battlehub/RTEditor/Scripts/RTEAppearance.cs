@@ -59,6 +59,7 @@ namespace Battlehub.RTEditor
         public Color Highlight;
         public Color Pressed;
         public Color Disabled;
+        public Color Selected;
 
         public RTESelectableColors(Color normal, Color highlight, Color pressed, Color disabled)
         {
@@ -66,7 +67,18 @@ namespace Battlehub.RTEditor
             Highlight = highlight;
             Pressed = pressed;
             Disabled = disabled;
+            Selected = new Color32(0, 0x97, 0xFF, 0xFF);
         }
+
+        public RTESelectableColors(Color normal, Color highlight, Color pressed, Color disabled, Color32 selected)
+        {
+            Normal = normal;
+            Highlight = highlight;
+            Pressed = pressed;
+            Disabled = disabled;
+            Selected = selected;
+        }
+
 
         public bool EqualTo(RTESelectableColors c)
         {
@@ -74,7 +86,8 @@ namespace Battlehub.RTEditor
                 c.Normal == Normal &&
                 c.Highlight == Highlight &&
                 c.Pressed == Pressed &&
-                c.Disabled == Disabled;
+                c.Disabled == Disabled &&
+                c.Selected == Selected;
         }
     }
 
@@ -99,6 +112,32 @@ namespace Battlehub.RTEditor
     }
 
     [Serializable]
+    public struct RTEMenuItemColors
+    {
+        public Color SelectionColor;
+        public Color TextColor;
+        public Color DisabledSelectionColor;
+        public Color DisabledTextColor;
+
+        public RTEMenuItemColors(Color selectionColor, Color textColor, Color disabledSelectionColor, Color disabledTextColor)
+        {
+            SelectionColor = selectionColor;
+            TextColor = textColor;
+            DisabledSelectionColor = disabledSelectionColor;
+            DisabledTextColor = disabledTextColor;
+        }
+
+        public bool EqualTo(RTEMenuItemColors c)
+        {
+            return
+                c.SelectionColor == SelectionColor &&
+                c.TextColor == TextColor &&
+                c.DisabledSelectionColor == DisabledSelectionColor &&
+                c.DisabledTextColor == DisabledTextColor;
+        }
+    }
+
+    [Serializable]
     public class RTEColors
     {
         public static readonly Color DefaultPrimary = new Color32(0x38, 0x38, 0x38, 0xFF);
@@ -109,11 +148,23 @@ namespace Battlehub.RTEditor
         public static readonly Color DefaultBorder4 = new Color(0x87, 0x87, 0x87, 0xFF);
         public static readonly Color DefaultAccent = new Color32(0x0, 0x97, 0xFF, 0xC0);
         public static readonly Color DefaultText = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
+        public static readonly Color DefaultText2 = new Color32(0xFF, 0xFF, 0xFF, 0x7F);
         public static readonly Color DefaultModalOverlay = new Color32(0x00, 0x00, 0x00, 0x40);
         public static readonly Color DefaultMainMenuBar = new Color32(0x6F, 0x6F, 0x6F, 0xFF);
         public static readonly RTESelectableColors DefaultMainMenuButton = new RTESelectableColors(new Color32(0xff, 0xff, 0xff, 0x00), new Color32(0x0, 0x97, 0xFF, 0x7F), new Color32(0x0, 0x97, 0xFF, 0xFF), new Color32(0, 0, 0, 0));
-        public static readonly RTEHierarchyColors DefaultHierarchyColors = new RTEHierarchyColors(Color.white, new Color32(0x93, 0x92, 0x92, 0xFF));
-        public static readonly Color DefaultProjectFolderColor = new Color(0x48, 0x48, 0x48, 0xFF);
+        public static readonly RTEMenuItemColors DefaultMenuItem = new RTEMenuItemColors(new Color32(0x00, 0x97, 0xFF, 0xFF), new Color32(0xFF, 0xFF, 0xFF, 0xFF), new Color32(0x95, 0x93, 0x93, 0x7F), new Color32(0x71, 0x71, 0x71, 0xFF));
+        public static readonly RTEHierarchyColors DefaultHierarchy = new RTEHierarchyColors(Color.white, new Color32(0x93, 0x92, 0x92, 0xFF));
+        public static readonly Color DefaultProjectFolder = new Color32(0x48, 0x48, 0x48, 0xFF);
+        public static readonly RTESelectableColors DefaultConsoleButton = new RTESelectableColors(DefaultPrimary, DefaultPrimary, DefaultSecondary, new Color32(0xC8, 0xC8, 0xC8, 0x7F));
+        public static readonly RTESelectableColors DefaultScrollBar = new RTESelectableColors(DefaultPrimary, DefaultPrimary, DefaultSecondary, new Color32(0xC8, 0xC8, 0xC8, 0x7F));
+        public static readonly RTESelectableColors DefaultToggle = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F));
+        public static readonly RTESelectableColors DefaultToggleButton = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x38, 0x38, 0x38, 0xFF), new Color32(0x27, 0x27, 0x27, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0x7F));
+        public static readonly RTESelectableColors DefaultInputField = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x5C, 0x5C, 0x5C, 0x7F), new Color32(0, 0x97, 0xFF, 0xFF));
+        public static readonly RTESelectableColors DefaultInputField2 = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x5C, 0x5C, 0x5C, 0x7F), new Color32(0x20, 0x20, 0x20, 0xFF));
+        public static readonly RTESelectableColors DefaultButton = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x55, 0x55, 0x55, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F), new Color32(0x5C, 0x5C, 0x5C, 0x66));
+        public static readonly RTESelectableColors DefaultButton2 = new RTESelectableColors(new Color(0xFF, 0xFF, 0xFF, 0xFF), new Color32(0xF5, 0xF5, 0xF5, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0x7F));
+        public static readonly RTESelectableColors DefaultSlider = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x55, 0x55, 0x55, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F), new Color32(0x5C, 0x5C, 0x5C, 0x66));
+        public static readonly RTESelectableColors DefaultDropdown = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x55, 0x55, 0x55, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F), new Color32(0x5C, 0x5C, 0x5C, 0x66));
 
         public Color Primary;
         public Color Secondary;
@@ -123,11 +174,23 @@ namespace Battlehub.RTEditor
         public Color Border4;
         public Color Accent;
         public Color Text;
+        public Color Text2;
         public Color ModalOverlay;
         public Color MainMenuBar;
         public RTESelectableColors MainMenuButton;
-        public RTEHierarchyColors HierarchyColors;
-        public Color ProjectFolderColor;
+        public RTEMenuItemColors MenuItem;
+        public RTEHierarchyColors Hierarchy;
+        public Color ProjectFolder;
+        public RTESelectableColors ConsoleButton;
+        public RTESelectableColors ScrollBar;
+        public RTESelectableColors Toggle;
+        public RTESelectableColors ToggleButton;
+        public RTESelectableColors InputField;
+        public RTESelectableColors InputField2;
+        public RTESelectableColors Button;
+        public RTESelectableColors Button2;
+        public RTESelectableColors Slider;
+        public RTESelectableColors Dropdown;
         
         public RTEColors()
         {
@@ -139,11 +202,23 @@ namespace Battlehub.RTEditor
             Border4 = DefaultBorder4;
             Accent = DefaultAccent;
             Text = DefaultText;
+            Text2 = DefaultText2;
             ModalOverlay = DefaultModalOverlay;
             MainMenuBar = DefaultMainMenuBar;
             MainMenuButton = DefaultMainMenuButton;
-            HierarchyColors = DefaultHierarchyColors;
-            ProjectFolderColor = DefaultProjectFolderColor;
+            MenuItem = DefaultMenuItem;
+            Hierarchy = DefaultHierarchy;
+            ProjectFolder = DefaultProjectFolder;
+            ConsoleButton = DefaultConsoleButton;
+            ScrollBar = DefaultScrollBar;
+            Toggle = DefaultToggle;
+            ToggleButton = DefaultToggleButton;
+            InputField = DefaultInputField;
+            InputField2 = DefaultInputField2;
+            Button = DefaultButton;
+            Button2 = DefaultButton2;
+            Slider = DefaultSlider;
+            Dropdown = DefaultDropdown;
         }
 
         public bool IsDefault
@@ -159,15 +234,29 @@ namespace Battlehub.RTEditor
                     Border4 == DefaultBorder4 &&
                     Accent == DefaultAccent &&
                     Text == DefaultText &&
+                    Text2 == DefaultText2 &&
                     ModalOverlay == DefaultModalOverlay &&
                     MainMenuBar == DefaultMainMenuBar &&
                     MainMenuButton.EqualTo(DefaultMainMenuButton) &&
-                    HierarchyColors.EqualTo(DefaultHierarchyColors) &&
-                    ProjectFolderColor == DefaultProjectFolderColor;
+                    MenuItem.EqualTo(DefaultMenuItem) &&
+                    Hierarchy.EqualTo(DefaultHierarchy) &&
+                    ProjectFolder == DefaultProjectFolder &&
+                    ConsoleButton.EqualTo(DefaultConsoleButton) &&
+                    ScrollBar.EqualTo(DefaultScrollBar) &&
+                    Toggle.EqualTo(DefaultToggle) &&
+                    ToggleButton.EqualTo(DefaultToggleButton) &&
+                    InputField.EqualTo(DefaultInputField) &&
+                    InputField2.EqualTo(DefaultInputField2) &&
+                    Button.EqualTo(DefaultButton) &&
+                    Button2.EqualTo(DefaultButton2) &&
+                    Slider.EqualTo(DefaultSlider) &&
+                    Dropdown.EqualTo(DefaultDropdown);
+                    
             }
         }
     }
 
+    [DefaultExecutionOrder(-90)]
     public class RTEAppearance : MonoBehaviour, IRTEAppearance
     {
         [SerializeField]
@@ -219,6 +308,9 @@ namespace Battlehub.RTEditor
                 ApplyColors();
             }
         }
+
+        [SerializeField]
+        private GameObject[] m_prefabs = null;
 
         private IRTE m_editor;
         private void Awake()
@@ -301,7 +393,8 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            UIStyle[] styles = root.GetComponentsInChildren<UIStyle>(true);
+            UIStyle[] styles = root.GetComponentsInChildren<UIStyle>(true)
+                .Union(m_prefabs.Where(p => p != null).SelectMany(p => p.GetComponentsInChildren<UIStyle>(true))).ToArray();
             for(int i = 0; i < styles.Length; ++i)
             {
                 UIStyle style = styles[i];
@@ -321,8 +414,10 @@ namespace Battlehub.RTEditor
                         break;
                     case "Border3Color":
                         style.ApplyImageColor(Colors.Border3);
+                        style.ApplyOutlineColor(Colors.Border3);
                         break;
                     case "Border4Color":
+                        style.ApplyImageColor(Colors.Border4);
                         style.ApplyOutlineColor(Colors.Border4);
                         break;
                     case "AccentColor":
@@ -330,6 +425,9 @@ namespace Battlehub.RTEditor
                         break;
                     case "TextColor":
                         style.ApplyTextColor(Colors.Text);
+                        break;
+                    case "Text2Color":
+                        style.ApplyTextColor(Colors.Text2);
                         break;
                     case "ModalOverlayColor":
                         style.ApplyImageColor(Colors.ModalOverlay);
@@ -340,11 +438,44 @@ namespace Battlehub.RTEditor
                     case "MainMenuButtonColor":
                         style.ApplyMainButtonColor(Colors.MainMenuButton.Normal, Colors.MainMenuButton.Highlight, Colors.MainMenuButton.Pressed);
                         break;
+                    case "MenuItemColor":
+                        style.ApplyMenuItemColor(Colors.MenuItem.SelectionColor, Colors.MenuItem.TextColor, Colors.MenuItem.DisabledSelectionColor, Colors.MenuItem.DisabledTextColor);
+                        break;
                     case "HierarchyColor":
-                        style.ApplyHierarchyColors(Colors.HierarchyColors.NormalItem, Colors.HierarchyColors.DisabledItem);
+                        style.ApplyHierarchyColors(Colors.Hierarchy.NormalItem, Colors.Hierarchy.DisabledItem);
                         break;
                     case "ProjectFolderColor":
-                        style.ApplyImageColor(Colors.ProjectFolderColor);
+                        style.ApplyImageColor(Colors.ProjectFolder);
+                        break;
+                    case "ConsoleButtonColor":
+                        style.ApplySelectableColor (Colors.ConsoleButton.Normal, Colors.ConsoleButton.Highlight, Colors.ConsoleButton.Pressed, Colors.ConsoleButton.Disabled);
+                        break;
+                    case "ScrollBarColor":
+                        style.ApplySelectableColor(Colors.ScrollBar.Normal, Colors.ScrollBar.Highlight, Colors.ScrollBar.Pressed, Colors.ScrollBar.Disabled);
+                        break;
+                    case "ToggleColor":
+                        style.ApplySelectableColor(Colors.Toggle.Normal, Colors.Toggle.Highlight, Colors.Toggle.Pressed, Colors.Toggle.Disabled);
+                        break;
+                    case "ToggleButtonColor":
+                        style.ApplySelectableColor(Colors.ToggleButton.Normal, Colors.ToggleButton.Highlight, Colors.ToggleButton.Pressed, Colors.ToggleButton.Disabled);
+                        break;
+                    case "InputFieldColor":
+                        style.ApplyInputFieldColor(Colors.InputField.Normal, Colors.InputField.Highlight, Colors.InputField.Pressed, Colors.InputField.Disabled, Colors.InputField.Selected);
+                        break;
+                    case "InputField2Color":
+                        style.ApplyInputFieldColor(Colors.InputField2.Normal, Colors.InputField2.Highlight, Colors.InputField2.Pressed, Colors.InputField2.Disabled, Colors.InputField2.Selected);
+                        break;
+                    case "ButtonColor":
+                        style.ApplySelectableColor(Colors.Button.Normal, Colors.Button.Highlight, Colors.Button.Pressed, Colors.Button.Disabled);
+                        break;
+                    case "Button2Color":
+                        style.ApplySelectableColor(Colors.Button2.Normal, Colors.Button2.Highlight, Colors.Button2.Pressed, Colors.Button2.Disabled);
+                        break;
+                    case "SliderColor":
+                        style.ApplySelectableColor(Colors.Slider.Normal, Colors.Slider.Highlight, Colors.Slider.Pressed, Colors.Slider.Disabled);
+                        break;
+                    case "DropdownColor":
+                        style.ApplySelectableColor(Colors.Dropdown.Normal, Colors.Dropdown.Highlight, Colors.Dropdown.Pressed, Colors.Dropdown.Disabled);
                         break;
                 }
             }

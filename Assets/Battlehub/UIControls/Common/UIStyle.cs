@@ -42,5 +42,47 @@ namespace Battlehub.UIControls
                 }
             }
         }
+
+        public void ApplyInputFieldColor(Color normalColor, Color highlighedColor, Color pressedColor, Color disabledColor, Color selectedColor)
+        {
+            TMP_InputField inputField = GetComponent<TMP_InputField>();
+            if(inputField != null)
+            {
+                ColorBlock colors = inputField.colors;
+                colors.normalColor = normalColor;
+                colors.highlightedColor = highlighedColor;
+                colors.pressedColor = pressedColor;
+                colors.disabledColor = disabledColor;
+                inputField.colors = colors;
+                inputField.selectionColor = selectedColor;
+            }
+            else
+            {
+                InputField uiInputField = GetComponent<InputField>();
+
+                ColorBlock colors = uiInputField.colors;
+                colors.normalColor = normalColor;
+                colors.highlightedColor = highlighedColor;
+                colors.pressedColor = pressedColor;
+                colors.disabledColor = disabledColor;
+                uiInputField.colors = colors;
+                uiInputField.selectionColor = selectedColor;
+            }
+        }
+
+        public void ApplySelectableColor(Color normalColor, Color highlighedColor, Color pressedColor, Color disabledColor)
+        {
+            Selectable selectable = GetComponent<Selectable>();
+            if(selectable != null)
+            {
+                ColorBlock colors = selectable.colors;
+                colors.normalColor = normalColor;
+                colors.highlightedColor = highlighedColor;
+                colors.pressedColor = pressedColor;
+                colors.disabledColor = disabledColor;
+                selectable.colors = colors;
+                
+            }
+        }
     }
 }

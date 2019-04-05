@@ -342,6 +342,7 @@ GameObject:
   - component: {fileID: 114370054708164334}
   - component: {fileID: 114554454216007080}
   - component: {fileID: 114377027237061714}
+  - component: {fileID: 8541847930299997408}
   m_Layer: 5
   m_Name: StatusImage
   m_TagString: Untagged
@@ -441,6 +442,19 @@ MonoBehaviour:
   m_statusNew: {fileID: 21300000, guid: cedf8d5ba60cf1e47835c31f3e8f02c7, type: 3}
   m_statusWarning: {fileID: 21300000, guid: 762b67bcfd5251a4fb5a96df2a6f4b44, type: 3}
   m_statusOverwrite: {fileID: 21300000, guid: 0fa07736be1d30d47a3dbc02bf7f858c, type: 3}
+--- !u!114 &8541847930299997408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155890344341208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &1402118384106398
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,6 +614,7 @@ GameObject:
   - component: {fileID: 224549594479434842}
   - component: {fileID: 222772494748422250}
   - component: {fileID: 114496833190701214}
+  - component: {fileID: 3911104552752173500}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -663,6 +678,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &3911104552752173500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405718462457964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &1446213354697098
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,6 +1346,7 @@ GameObject:
   - component: {fileID: 114064244912421838}
   - component: {fileID: 114287871899747180}
   - component: {fileID: 114630856030623848}
+  - component: {fileID: 4026944556289457966}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -1365,10 +1394,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-    m_HighlightedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-    m_PressedColor: {r: 0.06666667, g: 0.06666667, b: 0.06666667, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_NormalColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+    m_HighlightedColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+    m_PressedColor: {r: 0.12941177, g: 0.12941177, b: 0.12941177, a: 1}
+    m_DisabledColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
   m_SpriteState:
@@ -1423,6 +1452,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6a28d9733edc8848866387848f1f586, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4026944556289457966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1628580134577670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ToggleColor
 --- !u!1 &1682896656366132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1846,6 +1888,7 @@ GameObject:
   - component: {fileID: 7821773191105463929}
   - component: {fileID: 1380114592672908077}
   - component: {fileID: 2351473831663077798}
+  - component: {fileID: 1601740768622965399}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2015,3 +2058,16 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1601740768622965399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2577020258634069130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor

@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 5187272468267438159}
   - component: {fileID: 5185400018084109875}
   - component: {fileID: 5004977983583398087}
+  - component: {fileID: 7137639409540976309}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -150,6 +151,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &7137639409540976309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4964418111361521903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: SecondaryColor
 --- !u!1 &4964585891035153497
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,6 +175,7 @@ GameObject:
   - component: {fileID: 5187368348241652973}
   - component: {fileID: 5005302451592495399}
   - component: {fileID: 5004955371454511095}
+  - component: {fileID: 7549216612521397413}
   m_Layer: 5
   m_Name: HeaderToggle
   m_TagString: Untagged
@@ -265,6 +280,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7549216612521397413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4964585891035153497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ToggleButton
 --- !u!1 &7571407477535479293
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,6 +304,7 @@ GameObject:
   - component: {fileID: 3514972240882984555}
   - component: {fileID: 3748614313835997531}
   - component: {fileID: 1003250788332044206}
+  - component: {fileID: 7366326156834231816}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -425,3 +454,16 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7366326156834231816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571407477535479293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor

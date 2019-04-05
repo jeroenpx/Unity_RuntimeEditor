@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 114000013746737844}
   - component: {fileID: 114000012554267272}
   - component: {fileID: 114000013490485262}
+  - component: {fileID: 3919505160970401008}
   m_Layer: 5
   m_Name: BntSelect
   m_TagString: Untagged
@@ -264,6 +265,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3919505160970401008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013433265834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Button2Color
 --- !u!1 &1000014028562918
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,11 +487,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 224000010498897492}
     m_Modifications:
-    - target: {fileID: 5400936266270582830, guid: 4c79914f1c3ad504f98d16655910337c,
-        type: 3}
-      propertyPath: m_ReadOnly
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5432877179632202248, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}
       propertyPath: m_Name
@@ -587,6 +596,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400936266270582830, guid: 4c79914f1c3ad504f98d16655910337c,
+        type: 3}
+      propertyPath: m_ReadOnly
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8689677484417888633, guid: 4c79914f1c3ad504f98d16655910337c,
         type: 3}

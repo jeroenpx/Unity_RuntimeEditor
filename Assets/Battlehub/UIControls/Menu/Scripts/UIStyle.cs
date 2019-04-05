@@ -15,5 +15,17 @@ namespace Battlehub.UIControls
                 mainMenuButton.FocusedColor = focused;
             }
         }
+
+        public void ApplyMenuItemColor(Color selectionColor, Color textColor, Color disabledSelectionColor, Color disabledTextColor)
+        {
+            MenuItem menuItem = GetComponent<MenuItem>();
+            if(menuItem != null)
+            {
+                menuItem.SelectionColor = selectionColor;
+                menuItem.TextColor = textColor;
+                menuItem.DisabledSelectionColor = disabledSelectionColor;
+                menuItem.DisableTextColor = disabledTextColor;
+            }
+        }
     }
 }

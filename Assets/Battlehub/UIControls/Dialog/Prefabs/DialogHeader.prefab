@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5362489988042417176}
   - component: {fileID: 2885788771768463453}
   - component: {fileID: 3923987844507205915}
+  - component: {fileID: 1899427380333985478}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -95,6 +96,19 @@ MonoBehaviour:
   m_FlexibleWidth: 0
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1899427380333985478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3150596347554859917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &3247817516414587101
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,6 +121,7 @@ GameObject:
   - component: {fileID: 3491674394029948343}
   - component: {fileID: 7661327216923142058}
   - component: {fileID: 9155791682341675906}
+  - component: {fileID: 7440343843860498813}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -276,6 +291,19 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7440343843860498813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3247817516414587101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &6214601539033552238
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,6 +316,7 @@ GameObject:
   - component: {fileID: 6214601539033552225}
   - component: {fileID: 6214601539033552224}
   - component: {fileID: 6214601539033552226}
+  - component: {fileID: 7148606716895733107}
   m_Layer: 5
   m_Name: DialogHeader
   m_TagString: Untagged
@@ -377,6 +406,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &7148606716895733107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6214601539033552238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: PrimaryColor
 --- !u!1 &6214601539109769808
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,6 +432,7 @@ GameObject:
   - component: {fileID: 6214601539109769812}
   - component: {fileID: 6214601539109769811}
   - component: {fileID: 6214601539109769810}
+  - component: {fileID: 3336748645235599711}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -515,3 +558,16 @@ MonoBehaviour:
   m_FlexibleWidth: 0
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3336748645235599711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6214601539109769808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Button2

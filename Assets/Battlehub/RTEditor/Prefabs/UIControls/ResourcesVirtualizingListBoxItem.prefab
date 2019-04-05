@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 224036014600594410}
   - component: {fileID: 222552040360456710}
   - component: {fileID: 6164253612469201253}
+  - component: {fileID: 2823289820273784332}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -468,6 +469,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2823289820273784332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283169667510970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &1287040243819706
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,6 +568,7 @@ GameObject:
   - component: {fileID: 222069616149143004}
   - component: {fileID: 114053703158780190}
   - component: {fileID: 114033810345927496}
+  - component: {fileID: 831261472230846692}
   m_Layer: 5
   m_Name: Selection
   m_TagString: Untagged
@@ -637,6 +652,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &831261472230846692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356956047251918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: AccentColor
 --- !u!1 &1779855925843524
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,6 +965,7 @@ GameObject:
   - component: {fileID: 6183350620030721410}
   - component: {fileID: 1445237056255921795}
   - component: {fileID: 2512878592348304208}
+  - component: {fileID: 8675333671185467361}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1086,6 +1115,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8675333671185467361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3422426676605014578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &4277767290553969833
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,6 +1139,7 @@ GameObject:
   - component: {fileID: 9034893562875760655}
   - component: {fileID: 4671003173418624116}
   - component: {fileID: 1064097829172837033}
+  - component: {fileID: 800420381582625659}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -1246,6 +1289,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &800420381582625659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4277767290553969833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Text2Color
 --- !u!1 &7019169714458881954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,6 +1363,7 @@ GameObject:
   - component: {fileID: 8907338516909588748}
   - component: {fileID: 1640987795459381731}
   - component: {fileID: 4954997652521418214}
+  - component: {fileID: 4681147805201811228}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -1455,3 +1512,16 @@ MonoBehaviour:
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 1
   m_InputValidator: {fileID: 0}
+--- !u!114 &4681147805201811228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7915961338557723420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: InputField2Color

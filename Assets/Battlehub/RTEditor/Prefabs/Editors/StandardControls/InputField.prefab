@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5220317754471432042}
   - component: {fileID: 5400936267363467578}
   - component: {fileID: 144677547665079172}
+  - component: {fileID: 979197361957416331}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -178,6 +179,19 @@ MonoBehaviour:
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 1
   m_InputValidator: {fileID: 0}
+--- !u!114 &979197361957416331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5432877179632202248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: InputFieldColor
 --- !u!1 &5435239763369346577
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +203,7 @@ GameObject:
   - component: {fileID: 1546711164016612186}
   - component: {fileID: 8705760229959812616}
   - component: {fileID: 8866702016599460665}
+  - component: {fileID: 857023909999463671}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -338,6 +353,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &857023909999463671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5435239763369346577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Text2Color
 --- !u!1 &7574984471289905002
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,6 +427,7 @@ GameObject:
   - component: {fileID: 8474336126474998023}
   - component: {fileID: 4329514851869732369}
   - component: {fileID: 675307001163350374}
+  - component: {fileID: 5583367341008889161}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -548,3 +577,16 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5583367341008889161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7823215562713986182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor

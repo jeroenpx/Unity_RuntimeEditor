@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8792846670378688121}
   - component: {fileID: 8793571237468235415}
   - component: {fileID: 8685398320680658205}
+  - component: {fileID: 7591477726937794462}
   m_Layer: 5
   m_Name: Checkmark
   m_TagString: Untagged
@@ -74,6 +75,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &7591477726937794462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8727470473006148923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &8727470473772357811
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,6 +98,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8792846670009147559}
   - component: {fileID: 8685398378163197385}
+  - component: {fileID: 3417020343261264285}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -133,7 +148,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
     m_HighlightedColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
-    m_PressedColor: {r: 0.12941177, g: 0.12941177, b: 0.12941177, a: 1}
+    m_PressedColor: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
     m_DisabledColor: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.43529412}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
@@ -157,6 +172,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_IsOn: 0
+--- !u!114 &3417020343261264285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8727470473772357811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: ToggleColor
 --- !u!1 &8727470474120431257
 GameObject:
   m_ObjectHideFlags: 0

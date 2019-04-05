@@ -417,6 +417,7 @@ GameObject:
   - component: {fileID: 224000013374106258}
   - component: {fileID: 222000013229754606}
   - component: {fileID: 114000012697438146}
+  - component: {fileID: 2988774417605232964}
   m_Layer: 5
   m_Name: Expanded
   m_TagString: Untagged
@@ -480,6 +481,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &2988774417605232964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000012881043038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &1000013047643290
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +662,7 @@ GameObject:
   - component: {fileID: 224000012962741096}
   - component: {fileID: 222000011855238698}
   - component: {fileID: 114000011902921142}
+  - component: {fileID: 7383902449461229617}
   m_Layer: 5
   m_Name: Collapsed
   m_TagString: Untagged
@@ -711,6 +726,19 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &7383902449461229617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013989875816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1001 &6422133004710336719
 PrefabInstance:
   m_ObjectHideFlags: 0

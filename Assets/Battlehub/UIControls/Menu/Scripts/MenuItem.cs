@@ -14,12 +14,35 @@ namespace Battlehub.UIControls.MenuControl
     {
         [SerializeField]
         private Color m_selectionColor = new Color32(0x00, 0x97, 0xFF, 0xFF);
+        public Color SelectionColor
+        {
+            get { return m_selectionColor; }
+            set { m_selectionColor = value; }
+        }
+
         [SerializeField]
-        private Color m_textColor = new Color32(0x32, 0x32, 0x32, 0x7F);
+        private Color m_textColor = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
+        public Color TextColor
+        {
+            get { return m_textColor; }
+            set { m_textColor = value; }
+        }
+
         [SerializeField]
         private Color m_disabledSelectionColor = new Color32(0xC5, 0xBF, 0xBF, 0x7F);
+        public Color DisabledSelectionColor
+        {
+            get { return m_disabledSelectionColor; }
+            set { m_disabledSelectionColor = value; }
+        }
+
         [SerializeField]
         private Color m_disableTextColor = new Color32(0x32, 0x32, 0x32, 0xFF);
+        public Color DisableTextColor
+        {
+            get { return m_disableTextColor; }
+            set { m_disableTextColor = value; }
+        }
         
         [SerializeField]
         private Menu m_menuPrefab = null;
