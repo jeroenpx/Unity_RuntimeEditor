@@ -413,7 +413,7 @@ namespace Battlehub.RTCommon
         void Redo();
         void Undo();
         void Purge();
-        void Erase(object oldRef, object newRef);
+        void Erase(object oldRef, object newRef, bool ignoreLock = false);
 
         void Store();
         void Restore();
@@ -751,13 +751,13 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void Erase(object oldRef, object newRef)
+        public void Erase(object oldRef, object newRef, bool ignoreLock = false)
         {
             if (!Enabled)
             {
                 return;
             }
-            if (Locked)
+            if (Locked && !ignoreLock)
             {
                 return;
             }
@@ -1611,7 +1611,7 @@ namespace Battlehub.RTCommon
                 Component component = AddComponent(target.gameObject, componentType);
                 if (record.OldState != null)
                 {
-                    Erase(record.OldState, component);
+                    Erase(record.OldState, component, true);
                 }
                 record.OldState = component;
                 return true;
@@ -1620,8 +1620,8 @@ namespace Battlehub.RTCommon
             {
                 Component component = (Component)record.OldState;
                 object replacement = new object();
-                Erase(component, replacement);
-                if(component != null)
+                Erase(component, replacement, true);
+                if (component != null)
                 {
                     UnityObject.Destroy(component);
                 }
@@ -1692,7 +1692,7 @@ namespace Battlehub.RTCommon
                 object replacement = new object();
                 if (component)
                 {
-                    Erase(component, replacement);
+                    Erase(component, replacement, true);
                 }
                 record.OldState = replacement;
                 record.NewState = GetValues(component, memberInfo);
@@ -1706,7 +1706,7 @@ namespace Battlehub.RTCommon
                 AssingValues(component, memberInfo, (object[])record.NewState);
 
                 object repacement = record.OldState;
-                Erase(repacement, component);
+                Erase(repacement, component, true);
                 record.OldState = component;
 
                 return true;
@@ -1813,7 +1813,7 @@ namespace Battlehub.RTCommon
             
         }
 
-        public void Erase(object oldRef, object newRef)
+        public void Erase(object oldRef, object newRef, bool ignoreLock)
         {
             
         }
