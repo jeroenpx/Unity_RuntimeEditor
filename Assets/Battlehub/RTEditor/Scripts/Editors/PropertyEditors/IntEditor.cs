@@ -16,7 +16,10 @@ namespace Battlehub.RTEditor
             base.AwakeOverride();
             m_input.onValueChanged.AddListener(OnValueChanged);
             m_input.onEndEdit.AddListener(OnEndEdit);
-            m_dragField.EndDrag.AddListener(OnEndDrag);
+            if (m_dragField != null)
+            {
+                m_dragField.EndDrag.AddListener(OnEndDrag);
+            }
         }
 
         protected override void OnDestroyOverride()

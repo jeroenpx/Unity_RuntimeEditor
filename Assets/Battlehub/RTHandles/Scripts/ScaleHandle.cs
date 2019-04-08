@@ -6,7 +6,9 @@ namespace Battlehub.RTHandles
     [DefaultExecutionOrder(2)]
     public class ScaleHandle : BaseHandle
     {
+        public bool AbsouluteGrid = false;
         public float GridSize = 0.1f;
+        public Vector3 MinScale = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         private Vector3 m_prevPoint;
         private Matrix4x4 m_matrix;
         private Matrix4x4 m_inverse;
@@ -206,27 +208,61 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                m_roundedScale = m_scale;
-
-                if(EffectiveGridUnitSize > 0.01)
+                if(AbsouluteGrid)
                 {
-                    m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
-                    m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / EffectiveGridUnitSize) * EffectiveGridUnitSize;
-                    m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / EffectiveGridUnitSize) * EffectiveGridUnitSize;
-                }
+                    for (int i = 0; i < m_refScales.Length; ++i)
+                    {
+                        Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
 
-                if (Model != null)
-                {
-                    Model.SetScale(m_roundedScale);
-                }
+                        m_roundedScale = Vector3.Scale(m_refScales[i], m_scale);
+                        if (EffectiveGridUnitSize > 0.01)
+                        {
+                            m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                            m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                            m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                        }
 
-                for (int i = 0; i < m_refScales.Length; ++i)
-                {
-                    Quaternion rotation =  Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
-                    
-                    ActiveTargets[i].localScale = Quaternion.Inverse(rotation) * Vector3.Scale(m_refScales[i], m_roundedScale);
+                        Vector3 scale = Quaternion.Inverse(rotation) * m_roundedScale;
+                        scale.x = Mathf.Max(MinScale.x, scale.x);
+                        scale.y = Mathf.Max(MinScale.y, scale.y);
+                        scale.z = Mathf.Max(MinScale.z, scale.z);
+                        ActiveTargets[i].localScale = scale;
+                    }
+
+                    if (Model != null)
+                    {
+                        Model.SetScale(m_scale);
+                    }
                 }
-                
+                else
+                {
+                    m_roundedScale = m_scale;
+
+                    if (EffectiveGridUnitSize > 0.01)
+                    {
+                        m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                        m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                        m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                    }
+
+                    if (Model != null)
+                    {
+                        Model.SetScale(m_roundedScale);
+                    }
+
+                    for (int i = 0; i < m_refScales.Length; ++i)
+                    {
+                        Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
+
+                        Vector3 scale = Quaternion.Inverse(rotation) * Vector3.Scale(m_refScales[i], m_roundedScale);
+                        scale.x = Mathf.Max(MinScale.x, scale.x);
+                        scale.y = Mathf.Max(MinScale.y, scale.y);
+                        scale.z = Mathf.Max(MinScale.z, scale.z);
+                        ActiveTargets[i].localScale = scale;
+                    }
+                }
+               
+                m_prevPoint = point;
                 m_prevPoint = point;
             }
         }

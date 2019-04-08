@@ -118,6 +118,13 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        private bool m_canDrag = true;
+        public bool CanDrag
+        {
+            get { return m_canDrag; }
+            set { m_canDrag = value; }
+        }
+
         public Vector3 PreviewPosition
         {
             get { return m_tabPreview.transform.position; }
@@ -188,6 +195,11 @@ namespace Battlehub.UIControls.DockPanels
 
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
+            if(!m_canDrag)
+            {
+                return;
+            }
+
             if(InitializePotentialDrag != null)
             {
                 InitializePotentialDrag(this, eventData);
@@ -196,6 +208,11 @@ namespace Battlehub.UIControls.DockPanels
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
+            if (!m_canDrag)
+            {
+                return;
+            }
+
             m_tabPreview = Instantiate(m_tabPreviewPrefab, m_root.Preview);
 
             RectTransform previewTransform = (RectTransform)m_tabPreview.transform;
@@ -218,14 +235,22 @@ namespace Battlehub.UIControls.DockPanels
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            if(Drag != null)
+            if (!m_canDrag)
+            {
+                return;
+            }
+            if (Drag != null)
             {
                 Drag(this, eventData);
             }
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-        {          
+        {
+            if (!m_canDrag)
+            {
+                return;
+            }
             m_canvasGroup.alpha = 1;
 
             if (EndDrag != null)

@@ -2,31 +2,28 @@
 
 namespace Battlehub.RTEditor
 {
-    public class Range
+    public class RangeInt : Range
     {
-        public float Min;
-        public float Max;
-
-        public Range(float min, float max)
+        public RangeInt(int min, int max) : base(min, max)
         {
-            Min = min;
-            Max = max;
+
         }
     }
-   
-    public class RangeEditor : FloatEditor
+
+    public class RangeIntEditor : IntEditor
     {
         [SerializeField]
         private SliderOverride m_slider = null;
 
-        public float Min = 0.0f;
-        public float Max = 1.0f;
+        public int Min = 0;
+        public int Max = 1;
 
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
             m_slider.onValueChanged.AddListener(OnSliderValueChanged);
             m_slider.onEndEdit.AddListener(OnSliderEndEdit);
+            m_slider.wholeNumbers = true;
         }
 
         protected override void StartOverride()
@@ -36,7 +33,7 @@ namespace Battlehub.RTEditor
             m_slider.maxValue = Max;
         }
 
-        protected override void SetInputField(float value)
+        protected override void SetInputField(int value)
         {
             base.SetInputField(value);
             m_slider.minValue = Min;
@@ -47,7 +44,7 @@ namespace Battlehub.RTEditor
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
-            if(m_slider != null)
+            if (m_slider != null)
             {
                 m_slider.onValueChanged.RemoveListener(OnSliderValueChanged);
                 m_slider.onEndEdit.RemoveListener(OnSliderEndEdit);
@@ -61,10 +58,10 @@ namespace Battlehub.RTEditor
 
         protected override void OnValueChanged(string value)
         {
-            float val;
-            if (float.TryParse(value, out val))
+            int val;
+            if (int.TryParse(value, out val))
             {
-                if(Min <= val && val <= Max)
+                if (Min <= val && val <= Max)
                 {
                     SetValue(val);
                     m_slider.value = val;

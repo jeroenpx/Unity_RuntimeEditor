@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4956895925750448383
+--- !u!1 &1449855885672345200
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 856890029288445664}
-  - component: {fileID: 1758276679661937816}
+  - component: {fileID: 7896757955576391266}
+  - component: {fileID: 8089202853151841972}
   m_Layer: 0
-  m_Name: Battlehub_EditorsMap
+  m_Name: Battlehub_EditorsMapAuto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &856890029288445664
+--- !u!4 &7896757955576391266
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4956895925750448383}
+  m_GameObject: {fileID: 1449855885672345200}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1758276679661937816
+--- !u!114 &8089202853151841972
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4956895925750448383}
+  m_GameObject: {fileID: 1449855885672345200}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4c556f3441c2c342a2b1779dd1a8c59, type: 3}
@@ -61,6 +61,7 @@ MonoBehaviour:
   - {fileID: 1000010301640976, guid: a28b14176ccd9eb459849ee58b6ba3a7, type: 3}
   - {fileID: 1000013698204324, guid: eca87d2c3ae2cd040a38796b85e02739, type: 3}
   - {fileID: 1000012088153226, guid: 6177c63e05390c745b5a906a8e178499, type: 3}
+  - {fileID: 1000014075958742, guid: 170419b146f9c42489bc303f2ce38b36, type: 3}
   - {fileID: 1000013256475392, guid: daf1985b0ff70be4f949269449ad5ab1, type: 3}
   - {fileID: 1000013256475392, guid: b3869b72d165b1a4bbc0a2af36147707, type: 3}
   - {fileID: 1000013256475392, guid: 2291aaf81204cc74ebdc34c552e56fa6, type: 3}

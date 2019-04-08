@@ -1506,16 +1506,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BtnCreate
       objectReference: {fileID: 0}
-    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
-        type: 3}
-      propertyPath: m_Colors.m_PressedColor.a
-      value: 0.49803922
-      objectReference: {fileID: 0}
-    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
-        type: 3}
-      propertyPath: m_Colors.m_DisabledColor.a
-      value: 0.4
-      objectReference: {fileID: 0}
     - target: {fileID: 2870649190769780950, guid: 3a7bd2f40d69a264d94b083414c7d677,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1621,6 +1611,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.a
+      value: 0.49803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 3354502808491346413, guid: 3a7bd2f40d69a264d94b083414c7d677,
         type: 3}
       propertyPath: m_firstOverflowCharacterIndex
@@ -1697,16 +1697,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BtnDelete
-      objectReference: {fileID: 0}
-    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
-        type: 3}
-      propertyPath: m_Colors.m_PressedColor.a
-      value: 0.49803922
-      objectReference: {fileID: 0}
-    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
-        type: 3}
-      propertyPath: m_Colors.m_DisabledColor.a
-      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 2870649190769780950, guid: 3a7bd2f40d69a264d94b083414c7d677,
         type: 3}
@@ -1822,6 +1812,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.a
+      value: 0.49803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912771184191681689, guid: 3a7bd2f40d69a264d94b083414c7d677,
+        type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 3354502808491346413, guid: 3a7bd2f40d69a264d94b083414c7d677,
         type: 3}

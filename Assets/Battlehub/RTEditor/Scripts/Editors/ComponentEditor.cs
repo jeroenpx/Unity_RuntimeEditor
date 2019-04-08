@@ -53,7 +53,7 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = null;
-            Range = null;
+            Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
         }
 
@@ -64,7 +64,7 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = null;
-            Range = null;
+            Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
         }
 
@@ -75,7 +75,7 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = valueChangedCallback;
-            Range = null;
+            Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
         }
 
@@ -89,9 +89,27 @@ namespace Battlehub.RTEditor
             Range = range;
             ChildDesciptors = null;
         }
+
+        private static Range TryGetRange(MemberInfo memberInfo)
+        {
+            RangeAttribute range = memberInfo.GetCustomAttribute<RangeAttribute>();
+            if (range != null)
+            {
+                if (memberInfo.GetUnderlyingType() == typeof(int))
+                {
+                    return new RangeInt((int)range.min, (int)range.max);
+                }
+                else if (memberInfo.GetUnderlyingType() == typeof(float))
+                {
+                    return new Range(range.min, range.max);
+                }
+            }
+            return null;
+        }
+
     }
 
-  
+
     public class ComponentEditor : MonoBehaviour
     {
         private static Dictionary<Type, IComponentDescriptor> m_componentDescriptors;
@@ -510,9 +528,18 @@ namespace Battlehub.RTEditor
             }
             if (descriptor.Range != null)
             {
-                RangeEditor rangeEditor = editor as RangeEditor;
-                rangeEditor.Min = descriptor.Range.Min;
-                rangeEditor.Max = descriptor.Range.Max;
+                if(descriptor.Range is RangeInt)
+                {
+                    RangeIntEditor rangeEditor = editor as RangeIntEditor;
+                    rangeEditor.Min = (int)descriptor.Range.Min;
+                    rangeEditor.Max = (int)descriptor.Range.Max;
+                }
+                else
+                {
+                    RangeEditor rangeEditor = editor as RangeEditor;
+                    rangeEditor.Min = descriptor.Range.Min;
+                    rangeEditor.Max = descriptor.Range.Max;
+                }   
             }
 
             InitEditor(editor, descriptor);

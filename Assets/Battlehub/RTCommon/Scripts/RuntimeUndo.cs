@@ -1171,6 +1171,7 @@ namespace Battlehub.RTCommon
                 {
                     return GetDefault(p.PropertyType);
                 }
+
                 object val = p.GetValue(accessor, null);
                 if (val is Array)
                 {
