@@ -694,6 +694,45 @@ After:
 
 ![Screenshot](img/rteditor/window-manager/ui-scale-after-override.png)
 
+##How to: change runtime editor colors
+
+RTE Appearance editor allows you to change colors of runtime editor. Reset Colors button will revert colors to default.
+
+![Screenshot](img/rteditor/change-colors/rte-appearance.png)
+
+Following resources must be modified also:
+
+![Screenshot](img/rteditor/change-colors/rte-resources.png)
+
+To override ui colors programmatically do following:
+
+1. Create UIColorsOverride script.
+2. Create game object and add UIColorsOverride component.
+3. To prevent the game object from being destroyed by [Save & Load](save-load.md) add __RTSLIgnore__ component.
+
+```C#
+using Battlehub.RTCommon;
+using UnityEngine;
+
+namespace Battlehub.RTEditor.Demo
+{
+    public class UIColorsOverride : EditorOverride
+    {
+        protected override void OnEditorExist()
+        {
+            RTEColors colors = new RTEColors();
+            colors.Primary = Color.red;
+
+            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+            appearance.Colors = colors; 
+        }
+    }
+}
+
+
+```
+
+
 ##File Importers
 
 __File importers__ are used during file import procedure to convert external file format to format supported by Runtime Editor. 
@@ -702,7 +741,7 @@ For example __.png__ images should be converted to __UnityEngine.Texture2D__ bef
 * PngImporter;
 * FastObjImporter;
 
-Built-in importers be found in __Assets\Battlehub\RTEditor\Scripts\Importers__.
+Built-in importers can be found in __Assets\Battlehub\RTEditor\Scripts\Importers__.
 
 FileBrowser with importers can be opened using __File->Import From File__ menu item
 ![Screenshot](img/rteditor/file-importers/menu-item.png)

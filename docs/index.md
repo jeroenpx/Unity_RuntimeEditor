@@ -13,6 +13,7 @@ Previous Versions:
 * [v 2.00](http://rteditor.battlehub.net/v20/)
 * [v 2.03](http://rteditor.battlehub.net/v203/)
 * [v 2.04](http://rteditor.battlehub.net/v204/)
+* [v 2.05](http://rteditor.battlehub.net/v205/)
 
 The documentation is organized as following:
 
@@ -74,6 +75,8 @@ The documentation is organized as following:
 *  [How to: override scene parameters](runtime-editor.md#how-to-override-scene-parameters)
 *  [How to: override tools panels](runtime-editor.md#how-to-override-tools-panel)
 *  [How to: override ui scale](runtime-editor.md#how-to-override-ui-scale)
+*  [How to: change runtime editor colors](runtime-editor.md#how-to-change-runtime-editor-colors)
+*  [File Importers](runtime-editor.md#file-importers)
 *  [Inspector View](runtime-editor.md#inspector-view)
 *  [How To: Configure Editors](runtime-editor.md#how-to-configure-editors)
 *  [How To: Select Component Properties](runtime-editor.md#how-to-select-component-properties)
