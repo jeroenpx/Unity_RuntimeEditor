@@ -317,7 +317,7 @@ namespace Battlehub.RTEditor
             set
             {
                 m_colors = value;
-                ApplyColors();
+                ApplyColors(gameObject);
             }
         }
 
@@ -395,17 +395,16 @@ namespace Battlehub.RTEditor
 
         private void ApplyColors()
         {
-            ApplyColors(gameObject);
-        }
-
-        public void ApplyColors(GameObject root)
-        {
             if (Colors.IsDefault)
             {
                 Debug.Log("Using default colors");
                 return;
             }
+            ApplyColors(gameObject);
+        }
 
+        public void ApplyColors(GameObject root)
+        {
             UIStyle[] styles = root.GetComponentsInChildren<UIStyle>(true)
                 .Union(m_prefabs.Where(p => p != null).SelectMany(p => p.GetComponentsInChildren<UIStyle>(true))).ToArray();
             for(int i = 0; i < styles.Length; ++i)
