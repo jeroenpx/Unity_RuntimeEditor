@@ -58,7 +58,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  AbsouluteGrid: 0
   GridSize: 0.1
+  MinScale: {x: -3.4028235e+38, y: -3.4028235e+38, z: -3.4028235e+38}
 --- !u!1 &1192367540956640
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,6 +136,8 @@ MonoBehaviour:
   m_rotationHandle: {fileID: 114886837775755408}
   m_scaleHandle: {fileID: 114885577000948754}
   m_boxSelection: {fileID: 114487925011074116}
+  m_selectionGizmoPrefab: {fileID: 6067171312614553746, guid: 6592e08fe953c634e99820fdbde20b6d,
+    type: 3}
   m_grid: {fileID: 8583460168460398088}
   m_pivot: {fileID: 0}
   m_secondaryPivot: {fileID: 0}

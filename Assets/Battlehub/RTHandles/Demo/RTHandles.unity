@@ -5181,6 +5181,9 @@ MonoBehaviour:
     SelectionColor:
       serializedVersion: 2
       rgba: 4282445551
+    SelectionAltColor:
+      serializedVersion: 2
+      rgba: 419430400
     BoundsColor:
       serializedVersion: 2
       rgba: 4278255360
@@ -5381,13 +5384,25 @@ MonoBehaviour:
   m_rotationHandle: {fileID: 0}
   m_scaleHandle: {fileID: 0}
   m_boxSelection: {fileID: 4873884717718742015}
+  m_selectionGizmoPrefab: {fileID: 6067171312614553746, guid: 6592e08fe953c634e99820fdbde20b6d,
+    type: 3}
   m_grid: {fileID: 0}
   m_pivot: {fileID: 0}
   m_secondaryPivot: {fileID: 0}
+  m_isPositionHandleEnabled: 1
+  m_isRotationHandleEnabled: 1
+  m_isScaleHandleEnabled: 1
+  m_isBoxSelectionEnabled: 1
+  m_canSelect: 1
+  m_canSelectAll: 1
   ViewTexture: {fileID: 0}
   MoveTexture: {fileID: 0}
   GridSize: 1
   m_sceneGizmo: {fileID: 0}
+  m_isSceneGizmoEnabled: 1
+  m_canPan: 1
+  m_canZoom: 1
+  m_canOrbit: 1
 --- !u!114 &4873884717376568504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5407,6 +5422,7 @@ MonoBehaviour:
   Offset: {x: 0, y: 0}
   Up: {x: 0, y: 1, z: 0}
   Appearance: {fileID: 0}
+  m_output: {fileID: 0}
   OrientationChanging:
     m_PersistentCalls:
       m_Calls: []

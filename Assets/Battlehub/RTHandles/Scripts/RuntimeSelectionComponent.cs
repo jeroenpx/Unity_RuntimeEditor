@@ -91,6 +91,7 @@ namespace Battlehub.RTHandles
             get;
         }
 
+  
         bool IsPositionHandleEnabled
         {
             get;
@@ -140,12 +141,13 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private BoxSelection m_boxSelection = null;
         [SerializeField]
+        private GameObject m_selectionGizmoPrefab;
+        [SerializeField]
         private RuntimeGrid m_grid = null;
         [SerializeField]
         private Transform m_pivot = null;
         [SerializeField]
         private Transform m_secondaryPivot = null;
-
         [SerializeField]
         private bool m_isPositionHandleEnabled = true;
         [SerializeField]
@@ -672,6 +674,10 @@ namespace Battlehub.RTHandles
                             if(!Editor.IsPlaymodeStateChanging || !Editor.IsPlaying)
                             {
                                 selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
+                                if(m_selectionGizmoPrefab != null)
+                                {
+                                    selectionGizmo.SelectionGizmoModel = Instantiate(m_selectionGizmoPrefab, selectionGizmo.transform);
+                                }
                             }
                             
                         }

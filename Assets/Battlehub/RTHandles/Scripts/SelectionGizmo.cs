@@ -21,6 +21,28 @@ namespace Battlehub.RTHandles
             set { m_window = value; }
         }
 
+        [SerializeField]
+        private GameObject m_selectionGizmoModel;
+        public GameObject SelectionGizmoModel
+        {
+            get { return m_selectionGizmoModel; }
+            set
+            {
+                m_selectionGizmoModel = value;
+                if(m_selectionGizmoModel != null)
+                {
+                    Bounds bounds = m_exposeToEditor.Bounds;
+                    m_selectionGizmoModel.transform.localScale = bounds.size;
+                    m_selectionGizmoModel.transform.localPosition = bounds.center;
+
+                    if (GLRenderer.Instance != null)
+                    {
+                        GLRenderer.Instance.Remove(this);
+                    }
+                }
+            }
+        }
+
         private IRTE m_editor;
 
         private void Awake()
@@ -31,12 +53,16 @@ namespace Battlehub.RTHandles
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
         }
 
-
         private void OnDestroy()
         {
             if(m_editor != null)
             {
                 m_editor.IsOpenedChanged -= OnIsOpenedChanged;
+            }
+
+            if(m_selectionGizmoModel != null)
+            {
+                Destroy(m_selectionGizmoModel);
             }
         }
 
@@ -53,16 +79,19 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (GLRenderer.Instance == null)
+            if (m_selectionGizmoModel == null)
             {
-                GameObject glRenderer = new GameObject();
-                glRenderer.name = "GLRenderer";
-                glRenderer.AddComponent<GLRenderer>();
-            }
+                if (GLRenderer.Instance == null)
+                {
+                    GameObject glRenderer = new GameObject();
+                    glRenderer.name = "GLRenderer";
+                    glRenderer.AddComponent<GLRenderer>();
+                }
 
-            if (m_exposeToEditor != null)
-            {
-                GLRenderer.Instance.Add(this);
+                if (m_exposeToEditor != null)
+                {
+                    GLRenderer.Instance.Add(this);
+                }
             }
 
             if (!m_editor.Selection.IsSelected(gameObject))
@@ -73,11 +102,14 @@ namespace Battlehub.RTHandles
 
         private void OnEnable()
         {
-            if (m_exposeToEditor != null)
+            if (m_selectionGizmoModel == null)
             {
-                if (GLRenderer.Instance != null)
+                if (m_exposeToEditor != null)
                 {
-                    GLRenderer.Instance.Add(this);
+                    if (GLRenderer.Instance != null)
+                    {
+                        GLRenderer.Instance.Add(this);
+                    }
                 }
             }
         }
