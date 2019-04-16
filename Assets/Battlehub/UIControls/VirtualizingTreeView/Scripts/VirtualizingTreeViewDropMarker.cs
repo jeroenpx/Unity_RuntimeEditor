@@ -67,7 +67,7 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            if (!m_treeView.CanReparent)
+            if (!m_treeView.CanReparent || !Item.CanChangeParent)
             {
                 base.SetPosition(position);
                 return;

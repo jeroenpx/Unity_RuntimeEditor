@@ -64,3 +64,5 @@ obj/Debug/Unity.ProBuilder.Examples.Editor.csprojAssemblyReference.cache
 obj/Debug/Unity.ProBuilder.Examples.Editor.dll
 obj/Debug/Unity.ProBuilder.Examples.Editor.pdb
 obj/Debug/Unity.ProBuilder.Examples.pdb
+Assets/StreamingAssets/credentials.json
+Assets/StreamingAssets/credentials.json.meta

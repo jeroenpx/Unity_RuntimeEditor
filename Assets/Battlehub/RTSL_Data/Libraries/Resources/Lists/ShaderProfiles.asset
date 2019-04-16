@@ -287,6 +287,39 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 0100000002000000010000000100000002000000010000000200000001000000010000000100000002000000010000000200000001000000020000000100000002000000020000000200000001000000020000000100000001000000010000000100000001000000
     IsHidden: 0000000000000000000000000000000000000000000001010101
+  - Name: Battlehub/Projectors/Wireframe
+    PropertyCount: 5
+    PropertyDescriptions:
+    - Texture
+    - Color
+    - SelectedColor
+    - Thickness
+    - __zt
+    PropertyNames:
+    - _MainTex
+    - _Color
+    - _SelectedColor
+    - _Thickness
+    - _ZTest
+    PropertyTypes: 0400000000000000000000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.2
+      Min: 0.2
+      Max: 0.2
+    - Def: 1
+      Min: 0.5
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000001000000010000000100000001000000
+    IsHidden: 0000000001
   - Name: Battlehub/RTCommon/Billboard
     PropertyCount: 2
     PropertyDescriptions:
@@ -568,6 +601,39 @@ MonoBehaviour:
       Max: 1
     PropertyTexDims: 01000000
     IsHidden: 00
+  - Name: Battlehub/RTHandles/Outline
+    PropertyCount: 5
+    PropertyDescriptions:
+    - Texture
+    - Color
+    - Thickness
+    - Smoothness
+    - __zt
+    PropertyNames:
+    - _MainTex
+    - _Color
+    - _Thickness
+    - _Smoothness
+    - _ZTest
+    PropertyTypes: 0400000000000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.2
+      Min: 0.2
+      Max: 0.2
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000001000000010000000100000001000000
+    IsHidden: 0000000001
   - Name: Battlehub/RTHandles/Shape
     PropertyCount: 6
     PropertyDescriptions:
@@ -736,6 +802,44 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
     IsHidden: 000000000000000000
+  - Name: Battlehub/Wireframe
+    PropertyCount: 6
+    PropertyDescriptions:
+    - Texture
+    - Color
+    - SelectedColor
+    - Thickness Font
+    - Thickness Back
+    - __zt
+    PropertyNames:
+    - _MainTex
+    - _Color
+    - _SelectedColor
+    - _ThicknessFront
+    - _ThicknessBack
+    - _ZTest
+    PropertyTypes: 040000000000000000000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.2
+      Min: 0.2
+      Max: 0.2
+    - Def: 1
+      Min: 0.5
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000100000001000000010000000100000001000000
+    IsHidden: 000000000001
   - Name: EdgeDetectionBackground
     PropertyCount: 1
     PropertyDescriptions:

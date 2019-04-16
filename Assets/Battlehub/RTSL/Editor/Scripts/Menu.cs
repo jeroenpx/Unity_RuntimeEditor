@@ -41,7 +41,16 @@ namespace Battlehub.RTSL
             if (path.Length != 0)
             {
                 GameObject projGo = new GameObject();
-                IAssetBundleLoader bundleLoader = new AssetBundleLoader();
+                IAssetBundleLoader bundleLoader;
+                if (File.Exists(Application.streamingAssetsPath + "/credentials.json"))
+                {
+                    bundleLoader = new GoogleDriveAssetBundleLoader();
+                }
+                else
+                {
+                    bundleLoader = new AssetBundleLoader();
+                }
+                
                 IOC.Register(bundleLoader);
 
                 ITypeMap typeMap = new TypeMap();

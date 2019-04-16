@@ -141,7 +141,7 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private BoxSelection m_boxSelection = null;
         [SerializeField]
-        private GameObject m_selectionGizmoPrefab;
+        private GameObject m_selectionGizmoPrefab = null;
         [SerializeField]
         private RuntimeGrid m_grid = null;
         [SerializeField]

@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,7 +21,21 @@ namespace Battlehub.RTSL
 
         protected virtual IAssetBundleLoader AssetBundleLoader
         {
-            get { return new AssetBundleLoader(); }
+            get
+            {
+                if(File.Exists(Application.streamingAssetsPath + "/credentials.json"))
+                {
+                    if(gameObject.GetComponent<Dispatcher.Dispatcher>() == null)
+                    {
+                        gameObject.AddComponent<Dispatcher.Dispatcher>();
+                    }
+                    return new GoogleDriveAssetBundleLoader();
+                }
+                else
+                {
+                    return new AssetBundleLoader();
+                }
+            }
         }
 
         protected virtual IRuntimeShaderUtil ShaderUtil

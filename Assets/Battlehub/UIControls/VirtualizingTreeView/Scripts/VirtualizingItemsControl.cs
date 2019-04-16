@@ -81,12 +81,14 @@ namespace Battlehub.UIControls
                 itemContainer.CanEdit = args.CanEdit;
                 itemContainer.CanDrag = args.CanDrag;
                 itemContainer.CanBeParent = args.CanBeParent;
+                itemContainer.CanChangeParent = args.CanChangeParent;
             }
             else
             {
                 itemContainer.CanEdit = false;
                 itemContainer.CanDrag = false;
                 itemContainer.CanBeParent = false;
+                itemContainer.CanChangeParent = false;
             }
         }
 

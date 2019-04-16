@@ -553,7 +553,6 @@ namespace Battlehub.UIControls
         /// <param name="newValue"></param>
         private void OnNormalizedIndexChanged(float newValue)
         {
-
             //clamp newValue to be in [0,1]
             newValue = Mathf.Clamp01(newValue);
             

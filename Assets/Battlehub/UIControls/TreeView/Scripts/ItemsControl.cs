@@ -176,6 +176,13 @@ namespace Battlehub.UIControls
             get { return m_canDrop; }
             set { m_canDrop = value; }
         }
+
+        private bool m_canReparent = true;
+        public bool CanChangeParent
+        {
+            get { return m_canReparent; }
+            set { m_canReparent = value; }
+        }
     }
 
 

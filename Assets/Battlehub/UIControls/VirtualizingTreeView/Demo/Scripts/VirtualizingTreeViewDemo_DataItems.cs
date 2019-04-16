@@ -83,6 +83,7 @@ namespace Battlehub.UIControls
                 //Populate children collection
                 e.Children = dataItem.Children;
             }
+
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedArgs e)
@@ -134,7 +135,6 @@ namespace Battlehub.UIControls
                 //And specify whether data item has children (to display expander arrow if needed)
 
                 e.HasChildren = dataItem.Children.Count > 0;
-                
             }
         }
 
