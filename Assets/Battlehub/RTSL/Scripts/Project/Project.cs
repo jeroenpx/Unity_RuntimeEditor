@@ -3579,5 +3579,132 @@ namespace Battlehub.RTSL
 
             return m_ordinalToStaticAssetLibrary;
         }
+
+        public ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) where T : new()
+        {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+
+            ProjectAsyncOperation<T> ao = new ProjectAsyncOperation<T>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _GetValue(key, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _GetValue(key,  callback, ao);
+            }
+
+            return ao;
+        }
+
+        private void _GetValue<T>(string key, ProjectEventHandler<T> callback, ProjectAsyncOperation<T> ao) where T : new()
+        {
+            Type objType = typeof(T);
+            Type persistentType = m_typeMap.ToPersistentType(objType);
+            if (persistentType == null)
+            {
+                Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist. To create or edit persistent classes click Tools->Runtime SaveLoad->Persistent Classes->Edit.", objType), "obj");
+                RaiseGetValueCompleted(default(T), callback, ao, new Error(Error.E_NotFound));
+                return;
+            }
+
+            m_storage.GetValue(m_projectPath, key + GetExt(objType), persistentType, (getValueError, persistentObject) =>
+            {
+                if (getValueError.HasError)
+                {
+                    RaiseGetValueCompleted(default(T), callback, ao, getValueError);
+                    return;
+                }
+
+                object result = null;
+                if (typeof(T).IsSubclassOf(typeof(ScriptableObject)))
+                {
+                    result = ScriptableObject.CreateInstance(typeof(T));
+                }
+                else
+                {
+                    result = new T();
+                }
+                 
+                persistentObject.WriteTo(result);
+                RaiseGetValueCompleted((T)result, callback, ao, getValueError);
+            });
+        }
+
+        private void RaiseGetValueCompleted<T>(T result, ProjectEventHandler<T> callback, ProjectAsyncOperation<T> ao, Error error)
+        {
+            if (callback != null)
+            {
+                callback(error, result);
+            }
+
+            ao.Result = result;
+            ao.Error = error;
+            ao.IsCompleted = true;
+            IsBusy = false;
+        }
+
+        public ProjectAsyncOperation SetValue<T>(string key, T obj, ProjectEventHandler callback = null)
+        {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+
+            ProjectAsyncOperation ao = new ProjectAsyncOperation();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _SetValue(key, obj, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _SetValue(key, obj, callback, ao);
+            }
+
+            return ao;
+        }
+
+        private void _SetValue<T>(string key, T obj, ProjectEventHandler callback, ProjectAsyncOperation ao)
+        {
+            Type objType = obj.GetType();
+            Type persistentType = m_typeMap.ToPersistentType(objType);
+            if (persistentType == null)
+            {
+                Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist. To create or edit persistent classes click Tools->Runtime SaveLoad->Persistent Classes->Edit.", obj.GetType()), "obj");
+                RaiseSetValueCompleted(callback, ao, new Error(Error.E_NotFound));
+                return;
+            }
+
+            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+            persistentObject.ReadFrom(obj);
+            m_storage.SetValue(m_projectPath, key + GetExt(objType), persistentObject, (setValueError) =>
+            {
+                if (setValueError.HasError)
+                {
+                    RaiseSetValueCompleted(callback, ao, setValueError);
+                    return;
+                }
+
+                RaiseSetValueCompleted(callback, ao, new Error(Error.OK));
+            });
+        }
+
+        private void RaiseSetValueCompleted(ProjectEventHandler callback, ProjectAsyncOperation ao, Error error)
+        {
+            if(callback != null)
+            {
+                callback(error);
+            }
+            
+            ao.Error = error;
+            ao.IsCompleted = true;
+
+            IsBusy = false;
+        }
     }
 }

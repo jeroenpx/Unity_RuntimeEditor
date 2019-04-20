@@ -105,6 +105,9 @@ namespace Battlehub.RTSL.Interface
 
         ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);
         Dictionary<int, string> GetStaticAssetLibraries();
+
+        ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) where T : new();
+        ProjectAsyncOperation SetValue<T>(string key, T obj, ProjectEventHandler callback = null);
     }
 
     public class ProjectAsyncOperation : CustomYieldInstruction

@@ -30,6 +30,8 @@ namespace Battlehub.RTSL
         void Move(string projectPath, string[] paths, string[] names, string targetPath, StorageEventHandler callback);
         void Rename(string projectPath, string[] paths, string[] oldNames, string[] names, StorageEventHandler callback);
         void Create(string projectPath, string[] paths, string[] names, StorageEventHandler callback);
+        void SetValue(string projectPath, string key, PersistentObject persistentObject, StorageEventHandler callback);
+        void GetValue(string projectPath, string key, Type type, StorageEventHandler<PersistentObject> callback);
     }
 
     public class FileSystemStorage : IStorage
@@ -575,6 +577,49 @@ namespace Battlehub.RTSL
                 }
             }
             callback(new Error(Error.OK));
+        }
+
+        public void SetValue(string projectPath, string key, PersistentObject persistentObject, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            string path = fullPath + "/" + key;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+
+            if(File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            
+            using (FileStream fs = File.Create(path))
+            {
+                serializer.Serialize(persistentObject, fs);
+            }
+            serializer.Serialize(persistentObject);
+
+            callback(new Error(Error.OK));
+        }
+
+        public void GetValue(string projectPath, string key, Type type, StorageEventHandler<PersistentObject> callback)
+        {
+            string fullPath = FullPath(projectPath);
+            string path = fullPath + "/" + key;
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+
+            if (File.Exists(path))
+            {
+                object result = null;
+                using (FileStream fs = File.OpenRead(path))
+                {
+                    result = serializer.Deserialize(fs, type);
+                }
+
+                callback(new Error(Error.OK), (PersistentObject)result);
+            }
+            else
+            {
+                callback(new Error(Error.E_NotFound), null);
+                return;
+            }
         }
     }
 }
