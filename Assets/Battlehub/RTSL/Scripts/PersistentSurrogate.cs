@@ -250,6 +250,23 @@ namespace Battlehub.RTSL
             }
         }
 
+        protected void AddSurrogateDeps<T>(List<T> objArray, Func<T, PersistentSurrogate> convert, GetDepsContext context)
+        {
+            if (objArray == null)
+            {
+                return;
+            }
+            for (int i = 0; i < objArray.Count; ++i)
+            {
+                T obj = objArray[i];
+                if (obj != null)
+                {
+                    PersistentSurrogate surrogate = convert(obj);
+                    surrogate.GetDeps(context);
+                }
+            }
+        }
+
 
         protected void AddSurrogateDeps<T>(T obj, Func<T, PersistentSurrogate> convert, GetDepsFromContext context)
         {

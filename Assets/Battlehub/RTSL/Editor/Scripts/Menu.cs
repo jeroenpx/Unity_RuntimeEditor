@@ -148,6 +148,18 @@ namespace Battlehub.RTSL
             PersistentClassMapperWindow.ShowWindow();
         }
 
+        [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Clean")]
+        public static void CleanPersistentClasses()
+        {
+            if(EditorUtility.DisplayDialog("Clean", "Do you want to remove persistent classes and type model?", "Yes", "No"))
+            {
+                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/CustomImplementation");
+                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/Mappings");
+                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/Scripts");
+                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/RTSLTypeModel.dll");
+            }
+        }
+
         [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Build Type Model")]
         private static void BuildTypeModel()
         {

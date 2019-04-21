@@ -1100,7 +1100,24 @@ namespace Battlehub.RTSL
                     {
                         
                         sb.Append(TAB);
-                        sb.AppendFormat("AddSurrogateDeps(" + get + ", v_ => ({1})v_, context);", prop.MappedName, PreparePersistentTypeName("Persistent" + prop.PersistentTypeName));
+
+                        string persistentTypeName;
+                        if(prop.MappedType != null && IsGenericList(prop.MappedType))
+                        {
+                            Type type = prop.MappedType.GetGenericArguments()[0];
+                            persistentTypeName = PreparePersistentTypeName("Persistent" + type.Name);
+                        }
+                        else if(prop.MappedType != null && prop.MappedType.IsArray)
+                        {
+                            Type type = prop.MappedType.GetElementType();
+                            persistentTypeName = PreparePersistentTypeName("Persistent" + type.Name);
+                        }
+                        else
+                        {
+                            persistentTypeName = PreparePersistentTypeName("Persistent" + prop.PersistentTypeName);
+                        }
+                        
+                        sb.AppendFormat("AddSurrogateDeps(" + get + ", v_ => ({1})v_, context);", prop.MappedName, persistentTypeName);
                         sb.Append(BR + TAB2);
                     }
                     if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) ||
