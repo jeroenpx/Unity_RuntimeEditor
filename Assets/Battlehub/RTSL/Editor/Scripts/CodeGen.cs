@@ -1098,7 +1098,6 @@ namespace Battlehub.RTSL
 
                     if (prop.UseSurrogate)
                     {
-                        
                         sb.Append(TAB);
 
                         string persistentTypeName;
@@ -1165,6 +1164,11 @@ namespace Battlehub.RTSL
                     if (!namespaces.Contains(mapping.PersistentBaseNamespace))
                     {
                         namespaces.Add(mapping.PersistentBaseNamespace);
+                    }
+
+                    if(!namespaces.Contains("Battlehub.SL2"))
+                    {
+                        namespaces.Add("Battlehub.SL2");
                     }
 
                     for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
