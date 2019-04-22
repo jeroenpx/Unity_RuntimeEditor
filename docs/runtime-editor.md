@@ -403,31 +403,16 @@ using Battlehub.UIControls.MenuControl;
 using UnityEngine;
 
 [MenuDefinition]
-public class Initialization : MonoBehaviour
+public class RegisterCustomWindows : EditorOverride
 {
-    private IRuntimeEditor m_editor;
-    void Start()
+    protected override void OnEditorExist()
     {
-        m_editor = IOC.Resolve<IRuntimeEditor>();
-        m_editor.IsOpenedChanged += RegisterWindows;
+        base.OnEditorExist();
         RegisterWindows();
-    }
-
-    void OnDestroy()
-    {
-        if(m_editor != null)
-        {
-            m_editor.IsOpenedChanged -= RegisterWindows;
-        }
     }
 
     private void RegisterWindows()
     {
-        if (!m_editor.IsOpened)
-        {
-            return;
-        }
-
         IWindowManager wm = IOC.Resolve<IWindowManager>();
         wm.RegisterWindow(new CustomWindowDescriptor
         {

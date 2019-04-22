@@ -1166,11 +1166,6 @@ namespace Battlehub.RTSL
                         namespaces.Add(mapping.PersistentBaseNamespace);
                     }
 
-                    if(!namespaces.Contains("Battlehub.SL2"))
-                    {
-                        namespaces.Add("Battlehub.SL2");
-                    }
-
                     for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
                     {
                         PersistentPropertyMapping propertyMapping = mapping.PropertyMappings[i];
@@ -1184,28 +1179,34 @@ namespace Battlehub.RTSL
                         }
 
                         Type type = propertyMapping.MappedType;
-                        if(type == null)
+                        if (type != null)
                         {
-                            Debug.LogWarning("Unable to resolve type: " + propertyMapping.MappedAssemblyQualifiedName);
-                            continue;
-                        }
-                        Type replacementType = GetReplacementType(type);
-                        if (replacementType != null)
-                        {
-                            if (!namespaces.Contains(replacementType.Namespace))
+                            AddNamespace(type, namespaces, propertyMapping.PersistentNamespace);
+
+                            if (type != null && IsGenericList(type))
                             {
-                                namespaces.Add(replacementType.Namespace);
+                                type = type.GetGenericArguments()[0];
+                                if (!namespaces.Contains(type.Namespace) && !string.IsNullOrEmpty(type.Namespace))
+                                {
+                                    namespaces.Add(type.Namespace);
+                                }
+
+                                AddNamespace(type, namespaces, PersistentClassMapping.ToPersistentNamespace(type.Namespace));
+                            }
+                            else if (type != null && type.IsArray)
+                            {
+                                type = type.GetElementType();
+                                if (!namespaces.Contains(type.Namespace) && !string.IsNullOrEmpty(type.Namespace))
+                                {
+                                    namespaces.Add(type.Namespace);
+                                }
+
+                                AddNamespace(type, namespaces, PersistentClassMapping.ToPersistentNamespace(type.Namespace));
                             }
                         }
                         else
                         {
-                            if(!type.FullName.Contains("System"))
-                            {
-                                if (!namespaces.Contains(propertyMapping.PersistentNamespace))
-                                {
-                                    namespaces.Add(propertyMapping.PersistentNamespace);
-                                }
-                            }
+                            Debug.LogWarning("Unable to resolve type: " + propertyMapping.MappedAssemblyQualifiedName);
                         }
                     }
                 }
@@ -1216,6 +1217,28 @@ namespace Battlehub.RTSL
             }
 
             return sb.ToString();
+        }
+
+        public void AddNamespace(Type type, HashSet<string> namespaces, string persistentNamespace)
+        {
+            Type replacementType = GetReplacementType(type);
+            if (replacementType != null)
+            {
+                if (!namespaces.Contains(replacementType.Namespace))
+                {
+                    namespaces.Add(replacementType.Namespace);
+                }
+            }
+            else
+            {
+                if (!type.FullName.Contains("System"))
+                {
+                    if (!namespaces.Contains(persistentNamespace))
+                    {
+                        namespaces.Add(persistentNamespace);
+                    }
+                }
+            }
         }
 
         private Type GetReplacementType(Type type)
