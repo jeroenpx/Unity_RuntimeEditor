@@ -9,8 +9,6 @@ namespace Battlehub.RTEditor.Demo
 
         protected override void OnEditorCreated(object obj)
         {
-           
-
             IWindowManager wm = IOC.Resolve<IWindowManager>();
 
             if(wm.LayoutExist(LayoutName))
