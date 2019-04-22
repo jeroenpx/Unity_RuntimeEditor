@@ -50,6 +50,10 @@ namespace Battlehub.UIControls.DockPanels
         public LayoutInfo(params LayoutInfo[] tabGroup)
         {
             TabGroup = tabGroup;
+            if(TabGroup != null && TabGroup.Length == 0)
+            {
+                TabGroup = null;
+            }
         }
     }
 
@@ -242,6 +246,11 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public bool HasChildren
+        {
+            get { return ChildrenPanel.childCount > 0; }
+        }
+
         private bool m_isDraggingTab;
         private bool m_isDraggingOutside;
         private Vector2 m_beginDragTabPos;
@@ -360,6 +369,11 @@ namespace Battlehub.UIControls.DockPanels
             {
                 m_activeTab = null;
             }
+        }
+
+        public Region GetChild(int index)
+        {
+            return m_childrenPanel.GetChild(index).GetComponent<Region>();
         }
 
         public void Clear(bool destroy = true)
@@ -1601,11 +1615,6 @@ namespace Battlehub.UIControls.DockPanels
             {
                 m_headerImage.enabled = m_childrenPanel.childCount == expectedChildrenCount;
             }
-
-            //if (m_frameImage != null)
-            //{
-            //    m_frameImage.enabled = m_childrenPanel.childCount == expectedChildrenCount;
-            //}
 
             if(m_maximizeToggle != null)
             {

@@ -41,22 +41,23 @@ namespace Battlehub.RTEditor
         protected virtual void OnEditorExist()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_editor.IsOpenedChanged += OnIsOpenedChanged;
+            if (m_editor.IsOpened)
+            {
+                OnEditorOpened();
+            }
+        }
+
+        private void OnIsOpenedChanged()
+        {
             if (m_editor.IsOpened)
             {
                 OnEditorOpened();
             }
             else
             {
-                m_editor.IsOpenedChanged += OnIsOpenedChanged;
-            }
-        }
-
-        private void OnIsOpenedChanged()
-        {
-            m_editor.IsOpenedChanged -= OnIsOpenedChanged;
-            if(m_editor.IsOpened)
-            {
-                OnEditorOpened();
+                m_editor.IsOpenedChanged -= OnIsOpenedChanged;
+                OnEditorClosed();
             }
         }
 
@@ -66,6 +67,11 @@ namespace Battlehub.RTEditor
         }
 
         protected virtual void OnEditorOpened()
+        {
+
+        }
+
+        protected virtual void OnEditorClosed()
         {
 
         }

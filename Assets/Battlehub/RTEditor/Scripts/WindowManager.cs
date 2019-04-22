@@ -8,6 +8,7 @@ using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -68,6 +69,11 @@ namespace Battlehub.RTEditor
              float minHeight = 150,
              float preferredWidth = 700,
              float preferredHeight = 400);
+
+        bool LayoutExist(string name);
+        void SaveLayout(string name);
+        LayoutInfo GetLayout(string name);
+        void LoadLayout(string name);
     }
 
     [Serializable]
@@ -88,6 +94,18 @@ namespace Battlehub.RTEditor
         public string TypeName;
         public bool IsDialog;
         public WindowDescriptor Descriptor;
+    }
+
+    [Serializable]
+    public class PersistentLayoutInfo
+    {
+        public string WindowType;
+        public bool IsVertical;
+        public PersistentLayoutInfo Child0 = null;
+        public PersistentLayoutInfo Child1 = null;
+        public float Ratio;
+        public bool CanDrag = true;
+        public PersistentLayoutInfo[] TabGroup;
     }
 
     [DefaultExecutionOrder(-89)]
@@ -1227,6 +1245,175 @@ namespace Battlehub.RTEditor
              float preferredHeight = 400)
         {
             m_dialogManager.ShowDialog(icon, header, content, ok, okText, cancel, cancelText, minWidth, minHeight, preferredWidth, preferredHeight); 
+        }
+
+     
+
+        public bool LayoutExist(string name)
+        {
+            return PlayerPrefs.HasKey("Battlehub.RTEditor.Layout" + name);
+        }
+
+        public void SaveLayout(string name)
+        {
+            PersistentLayoutInfo layoutInfo = new PersistentLayoutInfo();
+            ToPersistentLayout(m_dockPanels.RootRegion, layoutInfo);
+
+            string serializedLayout = XmlUtility.ToXml(layoutInfo);
+            PlayerPrefs.SetString("Battlehub.RTEditor.Layout" + name, serializedLayout);
+            PlayerPrefs.Save();
+        }
+
+        private void ToPersistentLayout(Region region, PersistentLayoutInfo layoutInfo)
+        {    
+            if (region.HasChildren)
+            {
+                Region childRegion0 = region.GetChild(0);
+                Region childRegion1 = region.GetChild(1);
+                
+                RectTransform rt0 = (RectTransform)childRegion0.transform;
+                RectTransform rt1 = (RectTransform)childRegion1.transform;
+
+                Vector3 delta = rt0.localPosition - rt1.localPosition;
+                layoutInfo.IsVertical = Mathf.Abs(delta.x) < Mathf.Abs(delta.y);
+
+                if(layoutInfo.IsVertical)
+                {
+                    float y0 = Mathf.Max(0.000000001f, rt0.sizeDelta.y - childRegion0.MinHeight);
+                    float y1 = Mathf.Max(0.000000001f, rt1.sizeDelta.y - childRegion1.MinHeight);
+
+                    layoutInfo.Ratio = y0 / (y0 + y1);
+                }
+                else
+                {
+                    float x0 = Mathf.Max(0.000000001f, rt0.sizeDelta.x - childRegion0.MinWidth);
+                    float x1 = Mathf.Max(0.000000001f, rt1.sizeDelta.x - childRegion1.MinWidth);
+
+                    layoutInfo.Ratio = x0 / (x0 + x1);
+                }
+
+                layoutInfo.Child0 = new PersistentLayoutInfo();
+                layoutInfo.Child1 = new PersistentLayoutInfo();
+
+                ToPersistentLayout(childRegion0, layoutInfo.Child0);
+                ToPersistentLayout(childRegion1, layoutInfo.Child1);
+            }
+            else
+            {
+                if(region.ContentPanel.childCount > 1)
+                {
+                    layoutInfo.TabGroup = new PersistentLayoutInfo[region.ContentPanel.childCount];
+                    for(int i = 0; i < region.ContentPanel.childCount; ++i)
+                    {
+                        Transform content = region.ContentPanel.GetChild(i);
+
+                        PersistentLayoutInfo tabLayout = new PersistentLayoutInfo();
+                        ToPersistentLayout(content, tabLayout);
+                        layoutInfo.TabGroup[i] = tabLayout;
+                    }
+                }
+                else if(region.ContentPanel.childCount == 1)
+                {
+                    Transform content = region.ContentPanel.GetChild(0);
+                    ToPersistentLayout(content, layoutInfo);
+                }
+            }
+        }
+
+        private void ToPersistentLayout(Transform content, PersistentLayoutInfo layoutInfo)
+        {
+            foreach (KeyValuePair<string, HashSet<Transform>> kvp in m_windows)
+            {
+                if (kvp.Value.Contains(content))
+                {
+                    layoutInfo.WindowType = kvp.Key;
+
+                    Tab tab = Region.FindTab(content);
+                    if(tab != null)
+                    {
+                        layoutInfo.CanDrag = tab.CanDrag;
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        public LayoutInfo GetLayout(string name)
+        {
+            string serializedLayout = PlayerPrefs.GetString("Battlehub.RTEditor.Layout" + name);
+            if (serializedLayout == null)
+            {
+                Debug.LogWarningFormat("Layout {0} does not exist ", name);
+                return null;
+            }
+
+            PersistentLayoutInfo persistentLayoutInfo = XmlUtility.FromXml<PersistentLayoutInfo>(serializedLayout);
+            LayoutInfo layoutInfo = new LayoutInfo();
+            ToLayout(persistentLayoutInfo, layoutInfo);
+            return layoutInfo;
+        }
+
+        public void LoadLayout(string name)
+        {
+            LayoutInfo layoutInfo = GetLayout(name);
+            if(layoutInfo == null)
+            {
+                return;
+            }
+
+            ClearRegion(m_dockPanels.RootRegion);
+            foreach (Transform child in m_dockPanels.Free)
+            {
+                Region region = child.GetComponent<Region>();
+                ClearRegion(region);
+            }
+
+            RuntimeWindow[] windows = Windows;
+            for (int i = 0; i < windows.Length; ++i)
+            {
+                windows[i].EnableRaycasts();
+                windows[i].HandleResize();
+            }
+        }
+
+        private void ToLayout(PersistentLayoutInfo persistentLayoutInfo, LayoutInfo layoutInfo)
+        {
+            if(!string.IsNullOrEmpty(persistentLayoutInfo.WindowType))
+            {
+                WindowDescriptor wd;
+                GameObject content;
+                bool isDialog;
+                CreateWindow(persistentLayoutInfo.WindowType, out wd, out content, out isDialog);
+
+                layoutInfo.Content = content.transform;
+                layoutInfo.Header = wd.Header;
+                layoutInfo.Icon = wd.Icon;
+                layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
+            }
+            else
+            {
+                if(persistentLayoutInfo.TabGroup != null)
+                {
+                    layoutInfo.TabGroup = new LayoutInfo[persistentLayoutInfo.TabGroup.Length];
+                    for(int i = 0; i < persistentLayoutInfo.TabGroup.Length; ++i)
+                    {
+                        LayoutInfo tabLayoutInfo = new LayoutInfo();
+                        ToLayout(persistentLayoutInfo.TabGroup[i], tabLayoutInfo);
+                        layoutInfo.TabGroup[i] = tabLayoutInfo;
+                    }
+                }
+                else
+                {
+                    layoutInfo.IsVertical = persistentLayoutInfo.IsVertical;
+                    layoutInfo.Child0 = new LayoutInfo();
+                    layoutInfo.Child1 = new LayoutInfo();
+                    layoutInfo.Ratio = persistentLayoutInfo.Ratio;
+
+                    ToLayout(persistentLayoutInfo.Child0, layoutInfo.Child0);
+                    ToLayout(persistentLayoutInfo.Child1, layoutInfo.Child1);
+                }
+            }
         }
     }
 }
