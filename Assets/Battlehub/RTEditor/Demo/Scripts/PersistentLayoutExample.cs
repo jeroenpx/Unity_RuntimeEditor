@@ -7,16 +7,6 @@ namespace Battlehub.RTEditor.Demo
     {
         public const string LayoutName = "Default";
 
-        protected override void OnEditorCreated(object obj)
-        {
-            IWindowManager wm = IOC.Resolve<IWindowManager>();
-
-            if(wm.LayoutExist(LayoutName))
-            {
-                wm.OverrideDefaultLayout(DefaultLayout, RuntimeWindowType.Scene.ToString());
-            }
-        }
-
         protected override void OnEditorExist()
         {
           //  UnityEngine.PlayerPrefs.DeleteAll();

@@ -36,6 +36,11 @@ namespace Battlehub.RTEditor
             {
                 m_rteState.Created -= OnEditorCreated;
             }
+
+            if(m_editor != null)
+            {
+                m_editor.IsOpenedChanged -= OnIsOpenedChanged;
+            }
         }
 
         protected virtual void OnEditorExist()

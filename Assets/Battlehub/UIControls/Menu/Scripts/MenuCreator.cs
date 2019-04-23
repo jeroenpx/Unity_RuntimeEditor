@@ -51,7 +51,7 @@ namespace Battlehub.UIControls.MenuControl
             IconPath = iconPath;
         }
 
-       
+
     }
 
     [DefaultExecutionOrder(-25)]
@@ -72,7 +72,7 @@ namespace Battlehub.UIControls.MenuControl
         private void Awake()
         {
             List<Assembly> assemblies = new List<Assembly>();
-            foreach(string assemblyName in BHPath.RootAssemblies)
+            foreach (string assemblyName in BHPath.RootAssemblies)
             {
                 var asName = new AssemblyName();
                 asName.Name = assemblyName;
@@ -90,18 +90,18 @@ namespace Battlehub.UIControls.MenuControl
                 m_menuPanel = gameObject;
             }
 
-            if(m_topMenu == null)
+            if (m_topMenu == null)
             {
                 m_topMenu = gameObject;
             }
 
-            if(m_menuButtonPrefab == null)
+            if (m_menuButtonPrefab == null)
             {
                 Debug.LogError("Set Menu Button Prefab");
                 return;
             }
 
-            if(m_menuPrefab == null)
+            if (m_menuPrefab == null)
             {
                 Debug.LogError("Set Menu Prefab");
                 return;
@@ -113,13 +113,13 @@ namespace Battlehub.UIControls.MenuControl
             Dictionary<string, Menu> menuDictionary = new Dictionary<string, Menu>();
             Dictionary<string, List<MenuItemInfo>> menuItemsDictionary = new Dictionary<string, List<MenuItemInfo>>();
             Menu[] menus = m_menuPanel.GetComponentsInChildren<Menu>(true);
-            for(int i = 0; i < menus.Length; ++i)
+            for (int i = 0; i < menus.Length; ++i)
             {
-                if(!menuDictionary.ContainsKey(menus[i].name))
+                if (!menuDictionary.ContainsKey(menus[i].name))
                 {
                     menuDictionary.Add(menus[i].name, menus[i]);
 
-                    if(menus[i].Items != null)
+                    if (menus[i].Items != null)
                     {
                         menuItemsDictionary.Add(menus[i].name, menus[i].Items.ToList());
                     }
@@ -131,7 +131,7 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             Type[] menuDefinitions = assemblies.SelectMany(asm => asm.GetTypesWithAttribute(typeof(MenuDefinitionAttribute))).ToArray();
-            foreach(Type menuDef in menuDefinitions)
+            foreach (Type menuDef in menuDefinitions)
             {
                 MethodInfo[] methods = menuDef.GetMethods(BindingFlags.Static | BindingFlags.Public);
                 for (int i = 0; i < methods.Length; ++i)
@@ -144,7 +144,7 @@ namespace Battlehub.UIControls.MenuControl
                     }
 
                     string[] pathParts = cmd.Path.Split('/');
-                    if (pathParts.Length < 2)
+                    if (pathParts.Length < 1)
                     {
                         continue;
                     }
@@ -180,6 +180,19 @@ namespace Battlehub.UIControls.MenuControl
                         menu = menuDictionary[menuName];
                     }
 
+                    if (pathParts.Length == 1)
+                    {
+                        if (cmd.Hide)
+                        {
+                            menuItemsDictionary[menuName].Clear();
+                        }
+                    }
+
+                    if (pathParts.Length < 2)
+                    {
+                        continue;
+                    }
+
                     string path = string.Join("/", pathParts.Skip(1));
                     List<MenuItemInfo> menuItems = menuItemsDictionary[menuName];
                     MenuItemInfo menuItem = menuItems.Where(item => item.Path == path).FirstOrDefault();
@@ -193,10 +206,10 @@ namespace Battlehub.UIControls.MenuControl
                     menuItem.Icon = !string.IsNullOrEmpty(cmd.IconPath) ? Resources.Load<Sprite>(cmd.IconPath) : null;
                     menuItem.Text = pathParts.Last();
 
-                    if(cmd.Validate)
+                    if (cmd.Validate)
                     {
                         Func<bool> validate = (Func<bool>)Delegate.CreateDelegate(typeof(Func<bool>), mi, false);
-                        if(validate == null)
+                        if (validate == null)
                         {
                             Debug.LogWarning("method signature is invalid. bool Func() is expected. " + string.Join("/", pathParts));
                         }
@@ -220,7 +233,7 @@ namespace Battlehub.UIControls.MenuControl
                         }
                     }
 
-                    if(cmd.Hide)
+                    if (cmd.Hide)
                     {
                         menuItems.Remove(menuItem);
                     }
@@ -230,7 +243,7 @@ namespace Battlehub.UIControls.MenuControl
                 m_menuButtonPrefab.gameObject.SetActive(wasButtonPrefabActive);
             }
 
-            foreach(KeyValuePair<string, List<MenuItemInfo>> kvp in menuItemsDictionary)
+            foreach (KeyValuePair<string, List<MenuItemInfo>> kvp in menuItemsDictionary)
             {
                 menuDictionary[kvp.Key].SetMenuItems(kvp.Value.ToArray(), false);
             }
