@@ -120,6 +120,7 @@ namespace Battlehub.RTHandles
                 m_isVertexSnapping = value;
                 OnVertexSnappingModeChaged();
                 SetColors();
+                UpdateColliders();
             }
         }
 
@@ -216,6 +217,7 @@ namespace Battlehub.RTHandles
         {
             base.Start();
             SetColors();
+            UpdateColliders();
         }
 
         protected override void OnEnable()
@@ -267,6 +269,7 @@ namespace Battlehub.RTHandles
             base.SetLock(lockObj);
             OnVertexSnappingModeChaged();
             SetColors();
+            UpdateColliders();
         }
 
         public override void Select(RuntimeHandleAxis axis)
@@ -274,6 +277,7 @@ namespace Battlehub.RTHandles
             base.Select(axis);
             OnVertexSnappingModeChaged();
             SetColors();
+            UpdateColliders();
         }
 
         private void OnVertexSnappingModeChaged()
@@ -331,6 +335,17 @@ namespace Battlehub.RTHandles
             m_materials[m_zQuadMatIndex].color = zQuadColor;
 
             m_ssQuadMaterial.color = Colors.AltColor;
+        }
+
+        private void UpdateColliders()
+        {
+            m_xCollider.enabled = !m_lockObj.PositionX;
+            m_yCollider.enabled = !m_lockObj.PositionY;
+            m_zCollider.enabled = !m_lockObj.PositionZ;
+
+            m_xyCollider.enabled = !m_lockObj.PositionX && !m_lockObj.PositionY;
+            m_xzCollider.enabled = !m_lockObj.PositionX && !m_lockObj.PositionZ;
+            m_yzCollider.enabled = !m_lockObj.PositionY && !m_lockObj.PositionZ;
         }
 
         private void SetColors()
