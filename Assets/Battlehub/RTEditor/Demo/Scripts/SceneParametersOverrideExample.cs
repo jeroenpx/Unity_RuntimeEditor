@@ -31,7 +31,7 @@ namespace Battlehub.RTEditor.Demo
             scene.SizeOfGrid = 2;
 
             scene.IsScaleHandleEnabled = false;
-            scene.IsSceneGizmoEnabled = false;
+            scene.IsSceneGizmoEnabled = true;
             scene.IsBoxSelectionEnabled = false;
 
             scene.CanSelect = true;
@@ -43,6 +43,10 @@ namespace Battlehub.RTEditor.Demo
 
             Tab tab = Region.FindTab(window.transform);
             tab.IsCloseButtonVisible = false;
+
+            scene.SceneGizmoTransform.anchorMax = new Vector2(1, 0);
+            scene.SceneGizmoTransform.anchorMin = new Vector2(1, 0);
+            scene.SceneGizmoTransform.pivot = new Vector2(1, 0);
         }
     }
 }

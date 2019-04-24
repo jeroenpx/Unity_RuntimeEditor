@@ -5,10 +5,12 @@ Library
 .vs/Unity_RuntimeEditor/v14/.suo
 
 Temp
+obj
 Assets/GoogleARCore
 Assets/GoogleARCore.meta
 Assets/PlayServicesResolver
 Assets/PlayServicesResolver.meta
+
 Assets/Battlehub/Cubeman.meta
 Blender/Arrows14.blend
 Blender/Arrows14.blend

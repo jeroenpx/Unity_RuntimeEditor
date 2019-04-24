@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Battlehub.Utils;
 using Battlehub.RTCommon;
+using TMPro;
 
 namespace Battlehub.RTHandles
 {
@@ -79,6 +80,21 @@ namespace Battlehub.RTHandles
                         else
                         {
                             txt.text = "Persp";
+                        }
+                    }
+                    else
+                    {
+                        TextMeshProUGUI txtPro = BtnProjection.GetComponentInChildren<TextMeshProUGUI>();
+                        if(txtPro != null)
+                        {
+                            if(value)
+                            {
+                                txtPro.text = "Ortho";
+                            }
+                            else
+                            {
+                                txtPro.text = "Persp";
+                            }
                         }
                     }
                 }

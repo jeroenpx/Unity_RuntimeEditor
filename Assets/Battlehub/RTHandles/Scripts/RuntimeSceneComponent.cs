@@ -5,6 +5,11 @@ namespace Battlehub.RTHandles
 {
     public interface IRuntimeSceneComponent : IRuntimeSelectionComponent
     {
+        RectTransform SceneGizmoTransform
+        {
+            get;
+        }
+
         bool IsSceneGizmoEnabled
         {
             get;
@@ -54,6 +59,9 @@ namespace Battlehub.RTHandles
         private SceneGizmo m_sceneGizmo;
 
         [SerializeField]
+        private RectTransform m_sceneGizmoTransform;
+
+        [SerializeField]
         private bool m_isSceneGizmoEnabled = true;
         [SerializeField]
         private bool m_canPan = true;
@@ -73,6 +81,11 @@ namespace Battlehub.RTHandles
                     m_sceneGizmo.gameObject.SetActive(value);
                 }
             }
+        }
+
+        public RectTransform SceneGizmoTransform
+        {
+            get { return m_sceneGizmoTransform; }
         }
 
         public bool CanPan
