@@ -59,7 +59,7 @@ namespace Battlehub.RTHandles
         private SceneGizmo m_sceneGizmo;
 
         [SerializeField]
-        private RectTransform m_sceneGizmoTransform;
+        private RectTransform m_sceneGizmoTransform = null;
 
         [SerializeField]
         private bool m_isSceneGizmoEnabled = true;

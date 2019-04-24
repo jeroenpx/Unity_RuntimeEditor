@@ -28,16 +28,18 @@ namespace Battlehub.UIControls.DockPanels
         public LayoutInfo Child1;
         public float Ratio;
         public bool CanDrag = true;
+        public bool CanClose = true;
         public bool IsHeaderVisible = true;
 
         public LayoutInfo[] TabGroup;
 
-        public LayoutInfo(Transform content, string header = null, Sprite icon = null, bool canDrag = true)
+        public LayoutInfo(Transform content, string header = null, Sprite icon = null, bool canDrag = true, bool canClose = true)
         {
             Content = content;
             Header = header;
             Icon = icon;
             CanDrag = canDrag;
+            CanClose = canClose;
         }
 
         public LayoutInfo(bool isVertical, LayoutInfo child0, LayoutInfo child1, float ratio = 0.5f)
@@ -425,7 +427,7 @@ namespace Battlehub.UIControls.DockPanels
                 for (int i = 0; i < layout.TabGroup.Length; ++i)
                 {
                     LayoutInfo tab = layout.TabGroup[i];
-                    region.Add(tab.Icon, tab.Header, tab.Content, false, RegionSplitType.None, layout.CanDrag);
+                    region.Add(tab.Icon, tab.Header, tab.Content, false, RegionSplitType.None, tab.CanDrag, tab.CanClose);
                     ((RectTransform)tab.Content).Stretch();
                 }
             }
@@ -456,7 +458,7 @@ namespace Battlehub.UIControls.DockPanels
             }
             else
             {
-                region.Add(layout.Icon, layout.Header, layout.Content, false, RegionSplitType.None, layout.CanDrag);
+                region.Add(layout.Icon, layout.Header, layout.Content, false, RegionSplitType.None, layout.CanDrag, layout.CanClose);
                 ((RectTransform)layout.Content).Stretch();
             }
 
@@ -753,7 +755,7 @@ namespace Battlehub.UIControls.DockPanels
             return !(m_childrenPanel.childCount > 0 && !isFree);
         }
 
-        public void Add(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, bool canDrag = true)
+        public void Add(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, bool canDrag = true, bool canClose = true)
         {
             if (m_childrenPanel.childCount > 0 && !isFree)
             {
@@ -762,6 +764,7 @@ namespace Battlehub.UIControls.DockPanels
 
             Tab tab = Instantiate(m_tabPrefab);
             tab.CanDrag = canDrag;
+            tab.IsCloseButtonVisible = canClose;
             tab.name = "Tab " + header;
             tab.Icon = icon;
             tab.Text = header;

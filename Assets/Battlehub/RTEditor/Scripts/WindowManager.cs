@@ -28,6 +28,7 @@ namespace Battlehub.RTEditor
         void SetDefaultLayout();
         void SetLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
 
+        void OverrideWindow(string windowTypeName, WindowDescriptor descriptor);
         void OverrideTools(Transform contentPrefab);
         void SetTools(Transform content);
         void SetLeftBar(Transform tools);
@@ -109,6 +110,7 @@ namespace Battlehub.RTEditor
         public PersistentLayoutInfo Child1 = null;
         public float Ratio;
         public bool CanDrag = true;
+        public bool CanClose = true;
         public bool IsHeaderVisible = true;
         public PersistentLayoutInfo[] TabGroup;
     }
@@ -811,6 +813,68 @@ namespace Battlehub.RTEditor
             return layout;
         }
 
+        public void OverrideWindow(string windowTypeName, WindowDescriptor descriptor)
+        {
+            windowTypeName = windowTypeName.ToLower();
+
+            if (windowTypeName == RuntimeWindowType.Scene.ToString().ToLower())
+            {
+                m_sceneWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.Game.ToString().ToLower())
+            {
+                m_gameWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.Hierarchy.ToString().ToLower())
+            {
+                m_hierarchyWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.Inspector.ToString().ToLower())
+            {
+                m_inspectorWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.Project.ToString().ToLower())
+            {
+                m_projectWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
+            {
+                m_consoleWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
+            {
+                m_saveSceneDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
+            {
+                m_openProjectDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.ToolsPanel.ToString().ToLower())
+            {
+                m_toolsWindow = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.SelectAssetLibrary.ToString().ToLower())
+            {
+                m_selectAssetLibraryDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.ImportAssets.ToString().ToLower())
+            {
+                m_importAssetsDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.About.ToString().ToLower())
+            {
+                m_aboutDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.SelectObject.ToString().ToLower())
+            {
+                m_selectObjectDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.SelectColor.ToString().ToLower())
+            {
+                m_selectColorDialog = descriptor;
+            }
+        }
+
         public void OverrideTools(Transform contentPrefab)
         {
             if (contentPrefab == null)
@@ -1218,7 +1282,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                Debug.LogWarningFormat("{0} WindowDescriptor.ContentPrefab is null", windowTypeName);
+                //Debug.LogWarningFormat("{0} WindowDescriptor.ContentPrefab is null", windowTypeName);
 
                 content = new GameObject();
                 content.AddComponent<RectTransform>();
@@ -1433,6 +1497,7 @@ namespace Battlehub.RTEditor
                 layoutInfo.Header = wd.Header;
                 layoutInfo.Icon = wd.Icon;
                 layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
+                layoutInfo.CanClose = persistentLayoutInfo.CanClose;
             }
             else
             {
