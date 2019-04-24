@@ -17,6 +17,20 @@ namespace Battlehub.UIControls.DockPanels
         Bottom,
     }
 
+    [Serializable]
+    public class PersistentLayoutInfo
+    {
+        public string WindowType;
+        public bool IsVertical;
+        public PersistentLayoutInfo Child0 = null;
+        public PersistentLayoutInfo Child1 = null;
+        public float Ratio;
+        public bool CanDrag = true;
+        public bool CanClose = true;
+        public bool IsHeaderVisible = true;
+        public PersistentLayoutInfo[] TabGroup;
+    }
+
     public class LayoutInfo
     {
         public Sprite Icon;

@@ -101,19 +101,6 @@ namespace Battlehub.RTEditor
         public WindowDescriptor Descriptor;
     }
 
-    [Serializable]
-    public class PersistentLayoutInfo
-    {
-        public string WindowType;
-        public bool IsVertical;
-        public PersistentLayoutInfo Child0 = null;
-        public PersistentLayoutInfo Child1 = null;
-        public float Ratio;
-        public bool CanDrag = true;
-        public bool CanClose = true;
-        public bool IsHeaderVisible = true;
-        public PersistentLayoutInfo[] TabGroup;
-    }
 
     [DefaultExecutionOrder(-89)]
     public class WindowManager : MonoBehaviour, IWindowManager
@@ -1439,6 +1426,7 @@ namespace Battlehub.RTEditor
                     if (tab != null)
                     {
                         layoutInfo.CanDrag = tab.CanDrag;
+                        layoutInfo.CanClose = tab.IsCloseButtonVisible;
                     }
                     layoutInfo.IsHeaderVisible = region.IsHeaderVisible;
                     break;
@@ -1475,6 +1463,8 @@ namespace Battlehub.RTEditor
                 Region region = child.GetComponent<Region>();
                 ClearRegion(region);
             }
+
+            SetLayout(wm => layoutInfo);
 
             RuntimeWindow[] windows = Windows;
             for (int i = 0; i < windows.Length; ++i)
