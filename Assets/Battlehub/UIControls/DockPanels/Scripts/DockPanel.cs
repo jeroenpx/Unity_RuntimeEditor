@@ -128,13 +128,13 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Awake()
         {
-            if(m_raycaster == null)
+            if (m_raycaster == null)
             {
                 m_raycaster = GetComponentInParent<GraphicRaycaster>();
-                if(m_raycaster == null)
+                if (m_raycaster == null)
                 {
                     Canvas canvas = GetComponentInParent<Canvas>();
-                    if(canvas)
+                    if (canvas)
                     {
                         m_raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
                     }
@@ -169,7 +169,7 @@ namespace Battlehub.UIControls.DockPanels
                 m_rootRegion = GetComponentInChildren<Region>();
             }
 
-            if(m_rootRegion == null)
+            if (m_rootRegion == null)
             {
                 m_rootRegion = Instantiate(m_regionPrefab, m_docked);
                 m_rootRegion.name = "Root Region";
@@ -178,7 +178,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Start()
         {
-            if(m_mask != null)
+            if (m_mask != null)
             {
                 m_mask.enabled = !m_allowDragOutside;
             }
@@ -213,7 +213,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRectTransformDimensionsChange()
         {
-            if(Free != null)
+            if (Free != null)
             {
                 foreach (Transform child in Free)
                 {
@@ -233,7 +233,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(TabActivated != null)
+            if (TabActivated != null)
             {
                 TabActivated(region, arg);
             }
@@ -254,7 +254,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnTabClosed(Region region, Transform arg)
         {
-            if(region.Root != this)
+            if (region.Root != this)
             {
                 return;
             }
@@ -277,14 +277,14 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(m_selectedRegion != null)
+            if (m_selectedRegion != null)
             {
                 m_selectedRegion.IsSelected = false;
             }
 
             m_selectedRegion = region;
 
-            if(RegionSelected != null)
+            if (RegionSelected != null)
             {
                 RegionSelected(m_selectedRegion);
             }
@@ -292,12 +292,12 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRegionUnselected(Region region)
         {
-            if(region.Root != this)
+            if (region.Root != this)
             {
                 return;
             }
 
-            if(m_selectedRegion == region)
+            if (m_selectedRegion == region)
             {
                 m_selectedRegion = null;
                 if (RegionUnselected != null)
@@ -309,25 +309,25 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRegionBeforeDepthChanged(Region region, CancelArgs arg)
         {
-            if(region.Root != this)
+            if (region.Root != this)
             {
                 return;
             }
 
-            if(RegionBeforeDepthChanged != null)
+            if (RegionBeforeDepthChanged != null)
             {
                 RegionBeforeDepthChanged(region, arg);
-            }   
+            }
         }
 
         private void OnRegionDepthChanged(Region region, int depth)
         {
-            if(region.Root != this)
+            if (region.Root != this)
             {
                 return;
             }
 
-            if(RegionDepthChanged != null)
+            if (RegionDepthChanged != null)
             {
                 RegionDepthChanged(region, depth);
             }
@@ -340,7 +340,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionCreated != null)
+            if (RegionCreated != null)
             {
                 RegionCreated(region);
             }
@@ -372,7 +372,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRegionEnabled(Region region)
         {
-            if(RegionEnabled != null)
+            if (RegionEnabled != null)
             {
                 RegionEnabled(region);
             }
@@ -380,7 +380,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRegionDisabled(Region region)
         {
-            if(RegionDisabled != null)
+            if (RegionDisabled != null)
             {
                 RegionDisabled(region);
             }
@@ -389,7 +389,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRegionMaximized(Region region, bool maximized)
         {
-            if(RegionMaximized != null)
+            if (RegionMaximized != null)
             {
                 RegionMaximized(region, maximized);
             }
@@ -411,7 +411,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionBeginResize != null)
+            if (RegionBeginResize != null)
             {
                 RegionBeginResize(resizer, region);
             }
@@ -424,7 +424,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionResize != null)
+            if (RegionResize != null)
             {
                 RegionResize(resizer, region);
             }
@@ -437,7 +437,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionEndResize != null)
+            if (RegionEndResize != null)
             {
                 RegionEndResize(resizer, region);
             }
@@ -463,7 +463,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionBeginDrag != null)
+            if (RegionBeginDrag != null)
             {
                 RegionBeginDrag(region);
             }
@@ -476,7 +476,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionDrag != null)
+            if (RegionDrag != null)
             {
                 RegionDrag(region);
             }
@@ -489,7 +489,7 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
 
-            if(RegionEndDrag != null)
+            if (RegionEndDrag != null)
             {
                 RegionEndDrag(region);
             }
@@ -509,7 +509,7 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        public void AddModalRegion(Transform headerContent, Transform content,  float ratio = 0.7f, bool canResize = true)
+        public void AddModalRegion(Transform headerContent, Transform content, float ratio = 0.7f, bool canResize = true)
         {
             AddModalRegion(headerContent, content, m_modal.rect.width * ratio, m_modal.rect.height * ratio);
         }
@@ -544,24 +544,24 @@ namespace Battlehub.UIControls.DockPanels
             region.CanResize = canResize;
             region.MinWidth = minWidth;
             region.MinHeight = minHeight;
-            
+
 
             if (rect.width > m_modal.rect.width - margin * 2)
             {
                 rect.width = m_modal.rect.width - margin * 2;
             }
 
-            if(rect.height > m_modal.rect.height - margin * 2)
+            if (rect.height > m_modal.rect.height - margin * 2)
             {
                 rect.height = m_modal.rect.height - margin * 2;
             }
-            
-            rect.width = Mathf.Max(rect.width , minWidth);
+
+            rect.width = Mathf.Max(rect.width, minWidth);
             rect.height = Mathf.Max(rect.height, minHeight);
 
             if (center)
             {
-                rect.position = new Vector2(Mathf.Max(0, m_modal.rect.width  - rect.width) / 2,
+                rect.position = new Vector2(Mathf.Max(0, m_modal.rect.width - rect.width) / 2,
                                            -Mathf.Max(0, m_modal.rect.height - rect.height) / 2);
             }
 
@@ -582,15 +582,22 @@ namespace Battlehub.UIControls.DockPanels
                 outline.enabled = true;
 
                 Image image = content.GetComponentInChildren<Image>();
-                if(image != null)
+                if (image != null)
                 {
                     region.FrameImage.color = image.color;
                 }
-                
+
             }
         }
 
-     
+        public void ForceUpdateLayout()
+        {
+            HorizontalOrVerticalLayoutGroup[] layoutGroups = transform.GetComponentsInChildren<HorizontalOrVerticalLayoutGroup>();
+            for (int i = 0; i < layoutGroups.Length; ++i)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)layoutGroups[i].transform);
+            }
+        }
     }
 
 }

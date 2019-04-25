@@ -6,6 +6,7 @@ using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -50,7 +51,7 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(Transform content);
 
         Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
-        Transform CreateWindow(string windowTypeName);
+        Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f);
         Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
              float minWidth = 250,
              float minHeight = 250,
@@ -1077,7 +1078,7 @@ namespace Battlehub.RTEditor
             return true;
         }
 
-        public Transform CreateWindow(string windowTypeName)
+        public Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f)
         {
             WindowDescriptor wd;
             GameObject content;
@@ -1097,13 +1098,18 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, true);
+                m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, isFree, splitType, flexibleSize);                
+                if(!isFree)
+                {
+                    m_dockPanels.ForceUpdateLayout();
+                }
             }
 
             ActivateContent(wd, content);
-
             return window;
         }
+
+        
 
         public Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction,
              float minWidth,

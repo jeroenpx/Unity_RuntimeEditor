@@ -16,6 +16,12 @@ namespace Battlehub.RTCommon
     [DefaultExecutionOrder(-50)]
     public class DragDropTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragDropTarget
     {
+        public event DragDropEventHander BeginDragEvent;
+        public event DragDropEventHander DragEnterEvent;
+        public event DragDropEventHander DragLeaveEvent;
+        public event DragDropEventHander DragEvent;
+        public event DragDropEventHander DropEvent;
+
         [SerializeField]
         public GameObject m_dragDropTargetGO;
 
@@ -149,24 +155,42 @@ namespace Battlehub.RTCommon
 
         public virtual void BeginDrag(object[] dragObjects, PointerEventData eventData)
         {
-
+            if(BeginDragEvent != null)
+            {
+                BeginDragEvent(eventData);
+            }
         }
 
         public virtual void DragEnter(object[] dragObjects, PointerEventData eventData)
         {    
+            if(DragEnterEvent != null)
+            {
+                DragEnterEvent(eventData);
+            }
         }
 
         public virtual void Drag(object[] dragObjects, PointerEventData eventData)
         {
-
+            if (DragEvent != null)
+            {
+                DragEvent(eventData);
+            }
         }
 
         public virtual void DragLeave(PointerEventData eventData)
         {
+            if (DragLeaveEvent != null)
+            {
+                DragLeaveEvent(eventData);
+            }
         }
 
         public virtual void Drop(object[] dragObjects, PointerEventData eventData)
-        { 
+        {
+            if (DropEvent != null)
+            {
+                DropEvent(eventData);
+            }
         }
 
     }

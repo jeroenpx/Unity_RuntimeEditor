@@ -441,7 +441,7 @@ namespace Battlehub.UIControls.DockPanels
                 for (int i = 0; i < layout.TabGroup.Length; ++i)
                 {
                     LayoutInfo tab = layout.TabGroup[i];
-                    region.Add(tab.Icon, tab.Header, tab.Content, false, RegionSplitType.None, tab.CanDrag, tab.CanClose);
+                    region.Add(tab.Icon, tab.Header, tab.Content, false, RegionSplitType.None, 0.3f, tab.CanDrag, tab.CanClose);
                     ((RectTransform)tab.Content).Stretch();
                 }
             }
@@ -472,7 +472,7 @@ namespace Battlehub.UIControls.DockPanels
             }
             else
             {
-                region.Add(layout.Icon, layout.Header, layout.Content, false, RegionSplitType.None, layout.CanDrag, layout.CanClose);
+                region.Add(layout.Icon, layout.Header, layout.Content, false, RegionSplitType.None, 0.3f, layout.CanDrag, layout.CanClose);
                 ((RectTransform)layout.Content).Stretch();
             }
 
@@ -769,7 +769,7 @@ namespace Battlehub.UIControls.DockPanels
             return !(m_childrenPanel.childCount > 0 && !isFree);
         }
 
-        public void Add(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, bool canDrag = true, bool canClose = true)
+        public void Add(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, bool canDrag = true, bool canClose = true)
         {
             if (m_childrenPanel.childCount > 0 && !isFree)
             {
@@ -791,7 +791,7 @@ namespace Battlehub.UIControls.DockPanels
             }
             else
             {
-                Insert(m_tabPanel.transform.childCount, tab, content, splitType);
+                Insert(m_tabPanel.transform.childCount, tab, content, splitType, flexibleSize);
                 ((RectTransform)content).Stretch();
             }
 
@@ -934,7 +934,7 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        private void Insert(int index, Tab tab, Transform content, RegionSplitType splitType = RegionSplitType.None)
+        private void Insert(int index, Tab tab, Transform content, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f)
         {
             switch (splitType)
             {
@@ -947,16 +947,16 @@ namespace Battlehub.UIControls.DockPanels
 
                     break;
                 case RegionSplitType.Left:
-                    SplitLeft(tab, content);
+                    SplitLeft(tab, content, flexibleSize);
                     break;
                 case RegionSplitType.Top:
-                    SplitTop(tab, content);
+                    SplitTop(tab, content, flexibleSize);
                     break;
                 case RegionSplitType.Right:
-                    SplitRight(tab, content);
+                    SplitRight(tab, content, flexibleSize);
                     break;
                 case RegionSplitType.Bottom:
-                    SplitBottom(tab, content);
+                    SplitBottom(tab, content, flexibleSize);
                     break;
             }
         }
@@ -980,13 +980,13 @@ namespace Battlehub.UIControls.DockPanels
             IsSelected = true;
         }
 
-        private void SplitTop(Tab tab, Transform content)
+        private void SplitTop(Tab tab, Transform content, float flexibleSize)
         {
-            tab.transform.SetParent(m_root.transform);
-            content.transform.SetParent(m_root.transform);
+            tab.transform.SetParent(m_root.transform, false);
+            content.transform.SetParent(m_root.transform, false);
 
             MoveContentsToChildRegion();
-            Region region = CreateVerticalRegion(tab, content);
+            Region region = CreateVerticalRegion(tab, content, flexibleSize);
 
             CreateVerticalLayoutGroup(this);
 
@@ -995,14 +995,14 @@ namespace Battlehub.UIControls.DockPanels
             ((RectTransform)content).Stretch();
         }
 
-        private void SplitBottom(Tab tab, Transform content)
+        private void SplitBottom(Tab tab, Transform content, float flexibleSize)
         {
-            tab.transform.SetParent(m_root.transform);
-            content.transform.SetParent(m_root.transform);
+            tab.transform.SetParent(m_root.transform, false);
+            content.transform.SetParent(m_root.transform, false);
 
             MoveContentsToChildRegion();
 
-            Region region = CreateVerticalRegion(tab, content);
+            Region region = CreateVerticalRegion(tab, content, flexibleSize);
 
             CreateVerticalLayoutGroup(this);
 
@@ -1011,14 +1011,14 @@ namespace Battlehub.UIControls.DockPanels
             ((RectTransform)content).Stretch();
         }
 
-        private void SplitLeft(Tab tab, Transform content)
+        private void SplitLeft(Tab tab, Transform content, float flexibleSize)
         {
-            tab.transform.SetParent(m_root.transform);
-            content.transform.SetParent(m_root.transform);
+            tab.transform.SetParent(m_root.transform, false);
+            content.transform.SetParent(m_root.transform, false);
 
             MoveContentsToChildRegion();
 
-            Region region = CreateHorizontalRegion(tab, content);
+            Region region = CreateHorizontalRegion(tab, content, flexibleSize);
 
             CreateHorizontalLayoutGroup(this);
 
@@ -1027,14 +1027,14 @@ namespace Battlehub.UIControls.DockPanels
             ((RectTransform)content).Stretch();
         }
 
-        private void SplitRight(Tab tab, Transform content)
+        private void SplitRight(Tab tab, Transform content, float flexibleSize)
         {
-            tab.transform.SetParent(m_root.transform);
-            content.transform.SetParent(m_root.transform);
+            tab.transform.SetParent(m_root.transform, false);
+            content.transform.SetParent(m_root.transform, false);
 
             MoveContentsToChildRegion();
 
-            Region region = CreateHorizontalRegion(tab, content);
+            Region region = CreateHorizontalRegion(tab, content, flexibleSize);
 
             CreateHorizontalLayoutGroup(this);
 
@@ -1087,27 +1087,27 @@ namespace Battlehub.UIControls.DockPanels
             region.m_layoutGroup = lg;
         }
 
-        private Region CreateVerticalRegion(Tab tab, Transform content)
+        private Region CreateVerticalRegion(Tab tab, Transform content, float flexibleHeight)
         {
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
             region.name = "Region " + m_root.RegionId++;
 
             region.m_layoutElement.preferredHeight = -1;
             region.m_layoutElement.preferredWidth = -1;
-            region.m_layoutElement.flexibleHeight = 0.3f;
+            region.m_layoutElement.flexibleHeight = flexibleHeight;
             region.m_layoutElement.flexibleWidth = -1;
             region.Insert(0, tab, content);
             return region;
         }
 
-        private Region CreateHorizontalRegion(Tab tab, Transform content)
+        private Region CreateHorizontalRegion(Tab tab, Transform content, float flexibleWidth)
         {
             Region region = Instantiate(m_root.RegionPrefab, m_childrenPanel, false);
             region.name = "Region " + m_root.RegionId++;
 
             region.m_layoutElement.preferredWidth = -1;
             region.m_layoutElement.preferredHeight = -1;
-            region.m_layoutElement.flexibleWidth = 0.3f;
+            region.m_layoutElement.flexibleWidth = flexibleWidth;
             region.m_layoutElement.flexibleHeight = -1;
             region.Insert(0, tab, content);
             return region;
@@ -1633,6 +1633,7 @@ namespace Battlehub.UIControls.DockPanels
 
             return rt;
         }
+
 
         private void ForceUpdateLayoutImmediate(Transform transform)
         {

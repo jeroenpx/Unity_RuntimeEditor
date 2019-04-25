@@ -35,6 +35,8 @@ namespace Battlehub.RTEditor
 
         public override void DragEnter(object[] dragObjects, PointerEventData eventData)
         {
+            base.DragEnter(dragObjects, eventData);
+
             if (m_prefabInstance != null)
             {
                 return;
@@ -176,7 +178,9 @@ namespace Battlehub.RTEditor
 
         public override void Drop(object[] dragObjects, PointerEventData eventData)
         {
-            if(m_prefabInstance != null)
+            base.Drop(dragObjects, eventData);
+
+            if (m_prefabInstance != null)
             {
                 RecordUndo();
                 m_prefabInstance = null;
