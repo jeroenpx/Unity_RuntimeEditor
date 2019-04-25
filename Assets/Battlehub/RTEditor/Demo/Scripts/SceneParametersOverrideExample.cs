@@ -47,6 +47,8 @@ namespace Battlehub.RTEditor.Demo
             scene.SceneGizmoTransform.anchorMax = new Vector2(1, 0);
             scene.SceneGizmoTransform.anchorMin = new Vector2(1, 0);
             scene.SceneGizmoTransform.pivot = new Vector2(1, 0);
+
+            
         }
     }
 }
