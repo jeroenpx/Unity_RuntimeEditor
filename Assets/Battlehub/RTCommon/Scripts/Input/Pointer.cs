@@ -17,20 +17,20 @@ namespace Battlehub.RTCommon
 
         private RenderTextureCamera m_renderTextureCamera;
         private CanvasScaler m_canvasScaler;
-        
+
         [SerializeField]
         protected RuntimeWindow m_window;
-        private void Awake()
+        private void Start()
         {
-            if(m_window == null)
+            if (m_window == null)
             {
                 m_window = GetComponent<RuntimeWindow>();
             }
 
-            if(m_window.Camera != null)
+            if (m_window.Camera != null)
             {
                 m_renderTextureCamera = m_window.Camera.GetComponent<RenderTextureCamera>();
-                if(m_renderTextureCamera != null)
+                if (m_renderTextureCamera != null)
                 {
                     m_canvasScaler = GetComponentInParent<CanvasScaler>();
                 }
@@ -39,15 +39,15 @@ namespace Battlehub.RTCommon
 
         private Vector2 ScreenPointToViewPoint(Vector2 screenPoint)
         {
-            if(m_renderTextureCamera == null)
+            if (m_renderTextureCamera == null)
             {
                 return screenPoint;
             }
 
             Vector2 viewPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransorm, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransform, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
 
-            if(m_canvasScaler != null)
+            if (m_canvasScaler != null)
             {
                 viewPoint *= m_canvasScaler.scaleFactor;
             }

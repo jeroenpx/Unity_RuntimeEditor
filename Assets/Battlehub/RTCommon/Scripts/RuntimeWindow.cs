@@ -31,8 +31,12 @@ namespace Battlehub.RTCommon
         Custom = 1 << 16,
     }
 
+    [DefaultExecutionOrder(-60)]
     public class RuntimeWindow : DragDropTarget
     {
+        [SerializeField]
+        private bool m_resizeCamera = true;
+
         [SerializeField]
         private bool m_activateOnAnyKey = false;
         public bool ActivateOnAnyKey
@@ -319,8 +323,7 @@ namespace Battlehub.RTCommon
 
         public virtual void HandleResize()
         {
-      
-            if (m_camera != null && m_rectTransform != null)
+            if (m_camera != null && m_rectTransform != null && m_resizeCamera)
             {
                 if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
                 {

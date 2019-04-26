@@ -345,7 +345,7 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                pointerOverSceneGizmo = RectTransformUtility.RectangleContainsScreenPoint(m_renderTextureCamera.RectTransorm, m_editor.Input.GetPointerXY(0), m_canvas.worldCamera);
+                pointerOverSceneGizmo = RectTransformUtility.RectangleContainsScreenPoint(m_renderTextureCamera.RectTransform, m_editor.Input.GetPointerXY(0), m_canvas.worldCamera);
             }
 
             if (pointerOverSceneGizmo && Editor.ActiveWindow == Window && Window.IsPointerOver)
@@ -553,7 +553,7 @@ namespace Battlehub.RTHandles
             }
 
             Vector2 viewPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransorm, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransform, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
 
             if (m_canvasScaler != null)
             {

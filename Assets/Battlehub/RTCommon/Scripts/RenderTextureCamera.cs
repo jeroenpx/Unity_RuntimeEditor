@@ -69,7 +69,7 @@ namespace Battlehub.RTCommon
         private Camera m_camera;
         private RawImage m_output;
 
-        public RectTransform RectTransorm
+        public RectTransform RectTransform
         {
             get { return m_output.rectTransform; }
         }
