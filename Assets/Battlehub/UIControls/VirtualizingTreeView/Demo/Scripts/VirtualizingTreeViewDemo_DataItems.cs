@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls
 {
+    public class TreeViewState : ScriptableObject
+    {
+        public List<DataItem> Items;
+    }
+
     public class DataItem
     {
         public string Name;
@@ -13,6 +18,9 @@ namespace Battlehub.UIControls
         public DataItem Parent;
 
         public List<DataItem> Children;
+
+        public DataItem()
+        { }
 
         public DataItem(string name)
         {
@@ -35,8 +43,15 @@ namespace Battlehub.UIControls
 
         private List<DataItem> m_dataItems;
 
+        /*
+        private IProject m_project;*/
+
+        //private IEnumerator Start()
         private void Start()
         {
+            /*m_project = IOC.Resolve<IProject>();
+            yield return m_project.OpenProject("Test");*/
+
             TreeView.ItemDataBinding += OnItemDataBinding;
             TreeView.SelectionChanged += OnSelectionChanged;
             TreeView.ItemsRemoved += OnItemsRemoved;
@@ -174,7 +189,8 @@ namespace Battlehub.UIControls
                 (item, parent) => item.Parent = parent,
                 (item, parent) => ChildrenOf(parent).IndexOf(item),
                 (item, parent) => ChildrenOf(parent).Remove(item),
-                (item, parent, i) => ChildrenOf(parent).Insert(i, item));
+                (item, parent, i) => ChildrenOf(parent).Insert(i, item),
+                (item, parent) => ChildrenOf(parent).Add(item));
         }
 
         [SerializeField]
@@ -226,15 +242,78 @@ namespace Battlehub.UIControls
 
         public void Expand()
         {
-            
-
             foreach (DataItem selectedItem in TreeView.SelectedItems)
             {
-                
                 TreeView.ExpandAll(selectedItem, item => item.Parent, item => item.Children);
             }
         }
 
+        /*
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                StartCoroutine(Save());
+            }
+
+            if (Input.GetKey(KeyCode.L))
+            {
+                StartCoroutine(Load());
+            }
+        }
+
+        private IEnumerator Save()
+        {
+            TreeViewState state = ScriptableObject.CreateInstance<TreeViewState>();
+            state.Items = m_dataItems;
+
+            yield return m_project.SetValue("TreeViewState", state);
+            Destroy(state);
+        }
+
+        private IEnumerator Load()
+        {
+            ProjectAsyncOperation<TreeViewState> getValue = m_project.GetValue<TreeViewState>("TreeViewState");
+            yield return getValue;
+
+            if (getValue.Error.HasError)
+            {
+                Debug.LogError(getValue.Error.ToString());
+            }
+            else
+            {
+                m_dataItems = getValue.Result.Items;
+                for (int i = 0; i < m_dataItems.Count; ++i)
+                {
+                    SetParents(m_dataItems[i]);
+                }
+                TreeView.Items = m_dataItems;
+
+                foreach (DataItem dataItem in m_dataItems)
+                {
+                    TreeView.ExpandAll(dataItem, item => item.Parent, item => item.Children);
+                }
+
+                Destroy(getValue.Result);
+            }
+        }
+
+        private void SetParents(DataItem dataItem)
+        {
+            if (dataItem.Children != null)
+            {
+                for (int i = 0; i < dataItem.Children.Count; ++i)
+                {
+                    dataItem.Children[i].Parent = dataItem;
+                    SetParents(dataItem.Children[i]);
+                }
+            }
+            else
+            {
+                dataItem.Children = new List<DataItem>();
+            }
+        }
+        */
 
     }
 }

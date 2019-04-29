@@ -210,9 +210,9 @@ namespace Battlehub.RTEditor
             get { return m_editor.Raycaster; }
         }
 
-        private TMP_InputField CurrentInputField
+        private bool IsInputFieldFocused
         {
-            get { return m_editor.CurrentInputField; }
+            get { return m_editor.IsInputFieldFocused; }
         }
 
         public bool IsDialogOpened
@@ -392,7 +392,7 @@ namespace Battlehub.RTEditor
 
             bool canActivate = pointerDownOrUp ||
                 mwheel ||
-                Input.IsAnyKeyDown() && (CurrentInputField == null || !CurrentInputField.isFocused);
+                Input.IsAnyKeyDown() && !IsInputFieldFocused;
 
             if (canActivate)
             {

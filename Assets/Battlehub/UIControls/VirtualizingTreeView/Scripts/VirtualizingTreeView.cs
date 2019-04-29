@@ -1071,7 +1071,8 @@ namespace Battlehub.UIControls
             Action<T, T> setParent,
             Func<T, T, int> indexOfChild,
             Action<T, T> removeChild,
-            Action<T, T, int> insertChild) where T : class
+            Action<T, T, int> insertChild,
+            Action<T, T> addChild = null) where T : class
         {
 
             T dropTarget = (T)e.DropTarget;
@@ -1083,7 +1084,14 @@ namespace Battlehub.UIControls
                     T dragItem = (T)e.DragItems[i];
                     removeChild(dragItem, getParent(dragItem));
                     setParent(dragItem, dropTarget);
-                    insertChild(dragItem, getParent(dragItem), 0);
+                    if(addChild != null)
+                    {
+                        addChild(dragItem, getParent(dragItem));
+                    }
+                    else
+                    {
+                        insertChild(dragItem, getParent(dragItem), 0);
+                    }
                 }
             }
 

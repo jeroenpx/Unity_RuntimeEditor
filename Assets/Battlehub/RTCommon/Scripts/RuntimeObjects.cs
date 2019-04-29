@@ -210,21 +210,32 @@ namespace Battlehub.RTCommon
 
                 HashSet<GameObject> selectionHS = new HashSet<GameObject>(m_editor.Selection.gameObjects != null ? m_editor.Selection.gameObjects : new GameObject[0]);
                 List<GameObject> playmodeSelection = new List<GameObject>();
-                foreach(ExposeToEditor editorObj in m_editModeCache.OrderBy(eo => eo.transform.GetSiblingIndex()))
+
+                GameObject fakeRoot = new GameObject("FakeRoot");
+                fakeRoot.SetActive(false);
+                foreach (ExposeToEditor editorObj in m_editModeCache.OrderBy(eo => eo.transform.GetSiblingIndex()))
                 {
                     if (editorObj.GetParent() != null)
                     {
                         continue;
                     }
 
-                    GameObject instance = Instantiate(editorObj.gameObject, editorObj.transform.position, editorObj.transform.rotation);
-                    ExposeToEditor playModeObj = instance.GetComponent<ExposeToEditor>();
+                    editorObj.gameObject.SetActive(false);
+                    editorObj.transform.SetParent(fakeRoot.transform);
+                }
+
+                GameObject fakeRootPlayMode = Instantiate(fakeRoot);
+                for(int i = 0; i < fakeRootPlayMode.transform.childCount; ++i)
+                {
+                    ExposeToEditor playModeObj = fakeRootPlayMode.transform.GetChild(i).GetComponent<ExposeToEditor>();
+                    ExposeToEditor editorObj = fakeRoot.transform.GetChild(i).GetComponent<ExposeToEditor>();
+
                     playModeObj.SetName(editorObj.name);
                     playModeObj.Init();
                     m_playModeCache.Add(playModeObj);
-                    
+
                     ExposeToEditor[] editorObjAndChildren = editorObj.GetComponentsInChildren<ExposeToEditor>(true);
-                    ExposeToEditor[] playModeObjAndChildren = instance.GetComponentsInChildren<ExposeToEditor>(true);
+                    ExposeToEditor[] playModeObjAndChildren = playModeObj.GetComponentsInChildren<ExposeToEditor>(true);
                     for (int j = 0; j < editorObjAndChildren.Length; j++)
                     {
                         if (selectionHS.Contains(editorObjAndChildren[j].gameObject))
@@ -232,8 +243,17 @@ namespace Battlehub.RTCommon
                             playmodeSelection.Add(playModeObjAndChildren[j].gameObject);
                         }
                     }
+                }
 
-                    editorObj.gameObject.SetActive(false);
+                
+                fakeRoot.transform.DetachChildren();
+                fakeRootPlayMode.transform.DetachChildren();
+                Destroy(fakeRoot);
+                Destroy(fakeRootPlayMode);
+
+                foreach(ExposeToEditor playModeObj in m_playModeCache.ToArray())
+                {
+                    playModeObj.gameObject.SetActive(true);
                 }
 
                 bool isEnabled = m_editor.Undo.Enabled;

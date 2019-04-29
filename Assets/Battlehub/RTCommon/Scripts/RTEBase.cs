@@ -165,7 +165,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        TMP_InputField CurrentInputField
+        bool IsInputFieldFocused
         {
             get;
         }
@@ -243,7 +243,8 @@ namespace Battlehub.RTCommon
         private IRuntimeObjects m_object;
 
         protected GameObject m_currentSelectedGameObject;
-        protected TMP_InputField m_currentInputField;
+        protected TMP_InputField m_currentInputFieldTMP;
+        protected InputField m_currentInputFieldUI;
         protected float m_zAxis;
 
         public GraphicRaycaster Raycaster
@@ -260,12 +261,24 @@ namespace Battlehub.RTCommon
         protected RuntimeWindow[] m_windowsArray;
         public bool IsInputFieldActive
         {
-            get { return m_currentInputField != null; }
+            get { return m_currentInputFieldTMP != null || m_currentInputFieldUI != null; }
         }
 
-        public TMP_InputField CurrentInputField
+        public bool IsInputFieldFocused
         {
-            get { return m_currentInputField; }
+            get
+            {
+                if(m_currentInputFieldTMP != null)
+                {
+                    return m_currentInputFieldTMP.isFocused;
+                }
+                if(m_currentInputFieldUI != null)
+                {
+                    return m_currentInputFieldUI.isFocused;
+                }
+                return false;
+            }
+                
         }
 
         private RuntimeWindow m_activeWindow;
@@ -793,7 +806,7 @@ namespace Battlehub.RTCommon
 
             if (pointerDownOrUp ||
                 mwheel ||
-                Input.IsAnyKeyDown() && (m_currentInputField == null || !m_currentInputField.isFocused))
+                Input.IsAnyKeyDown() && !IsInputFieldFocused)
             {
                 PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
                 pointerEventData.position = Input.GetPointerXY(0);
@@ -835,26 +848,42 @@ namespace Battlehub.RTCommon
                     m_currentSelectedGameObject = m_eventSystem.currentSelectedGameObject;
                     if (m_currentSelectedGameObject != null)
                     {
-                        m_currentInputField = m_currentSelectedGameObject.GetComponent<TMP_InputField>();
+                        m_currentInputFieldTMP = m_currentSelectedGameObject.GetComponent<TMP_InputField>();
+                        if(m_currentInputFieldTMP == null)
+                        {
+                            m_currentInputFieldUI = m_currentSelectedGameObject.GetComponent<InputField>();
+                        }
                     }
                     else
                     {
-                        if(m_currentInputField != null)
+                        if(m_currentInputFieldTMP != null)
                         {
-                            m_currentInputField.DeactivateInputField();
+                            m_currentInputFieldTMP.DeactivateInputField();
                         }
-                        m_currentInputField = null;
+                        m_currentInputFieldTMP = null;
+
+                        if(m_currentInputFieldUI != null)
+                        {
+                            m_currentInputFieldUI.DeactivateInputField();
+                        }
+                        m_currentInputFieldUI = null;
                     }
                 }
             }
             else
             {
                 m_currentSelectedGameObject = null;
-                if(m_currentInputField != null)
+                if(m_currentInputFieldTMP != null)
                 {
-                    m_currentInputField.DeactivateInputField();
+                    m_currentInputFieldTMP.DeactivateInputField();
                 }
-                m_currentInputField = null;
+                m_currentInputFieldTMP = null;
+
+                if (m_currentInputFieldUI != null)
+                {
+                    m_currentInputFieldUI.DeactivateInputField();
+                }
+                m_currentInputFieldUI = null;
             }
         }
 
