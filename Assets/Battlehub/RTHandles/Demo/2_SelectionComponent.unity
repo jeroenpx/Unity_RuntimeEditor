@@ -1064,8 +1064,7 @@ MonoBehaviour:
   m_rotationHandle: {fileID: 346817308}
   m_scaleHandle: {fileID: 1557706257}
   m_boxSelection: {fileID: 123330181}
-  m_selectionGizmoPrefab: {fileID: 6067171312614553746, guid: 6592e08fe953c634e99820fdbde20b6d,
-    type: 3}
+  m_selectionGizmoPrefab: {fileID: 0}
   m_grid: {fileID: 0}
   m_pivot: {fileID: 0}
   m_secondaryPivot: {fileID: 0}

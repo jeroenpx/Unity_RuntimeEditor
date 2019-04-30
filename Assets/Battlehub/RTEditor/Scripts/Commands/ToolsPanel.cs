@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using Battlehub.UIControls;
 using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 
@@ -37,14 +36,14 @@ namespace Battlehub.RTEditor
         private IProject m_project;
         private IRuntimeEditor m_editor;
         private IWindowManager m_wm;
-
+        
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.ToolsPanel;
             base.AwakeOverride();
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             m_project = IOC.Resolve<IProject>();
             m_editor = IOC.Resolve<IRuntimeEditor>();
@@ -149,7 +148,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if(Editor != null)
             {
@@ -240,7 +239,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnViewToggleValueChanged(bool value)
+        protected virtual void OnViewToggleValueChanged(bool value)
         {
             if(!m_handleValueChange)
             {
@@ -288,7 +287,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnRotateToggleValueChanged(bool value)
+        protected virtual void OnRotateToggleValueChanged(bool value)
         {
             if (!m_handleValueChange)
             {
@@ -313,7 +312,7 @@ namespace Battlehub.RTEditor
 
         }
 
-        private void OnScaleToggleValueChanged(bool value)
+        protected virtual void OnScaleToggleValueChanged(bool value)
         {
             if (!m_handleValueChange)
             {
@@ -337,7 +336,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnPivotRotationToggleValueChanged(bool value)
+        protected virtual void OnPivotRotationToggleValueChanged(bool value)
         {
             if(value)
             {
@@ -350,7 +349,7 @@ namespace Battlehub.RTEditor
         }
 
 
-        private void OnPivotModeToggleValueChanged(bool value)
+        protected virtual void OnPivotModeToggleValueChanged(bool value)
         {
             if (value)
             {
@@ -362,33 +361,32 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnWireframeToggleValueChanged(bool value)
+        protected virtual void OnWireframeToggleValueChanged(bool value)
         {
             //NOT IMPLEMENTED
         }
 
-        private void OnAutoFocusToggleValueChanged(bool value)
+        protected virtual void OnAutoFocusToggleValueChanged(bool value)
         {
             Editor.Tools.AutoFocus = value;
         }
 
-        private void OnUnitSnappingToggleValueChanged(bool value)
+        protected virtual void OnUnitSnappingToggleValueChanged(bool value)
         {
             Editor.Tools.UnitSnapping = value;
         }
 
-        private void OnBoundingBoxSnappingToggleValueChanged(bool value)
+        protected virtual void OnBoundingBoxSnappingToggleValueChanged(bool value)
         {
             Editor.Tools.IsSnapping = value;
         }
 
-        private void OnPlayToggleValueChanged(bool value)
+        protected virtual void OnPlayToggleValueChanged(bool value)
         {
             Editor.IsPlaying = value;
         }
 
-
-        private void OnPlaymodeStateChanged()
+        protected virtual void OnPlaymodeStateChanged()
         {
             if(PlayToggle != null)
             {
@@ -398,7 +396,7 @@ namespace Battlehub.RTEditor
             UpdateLoadSaveButtonsState();
         }
 
-        private void OnPivotRotationChanged()
+        protected virtual void OnPivotRotationChanged()
         {
             if(PivotRotationToggle != null)
             {
@@ -413,7 +411,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnPivotModeChanged()
+        protected virtual void OnPivotModeChanged()
         {
             if (PivotModeToggle != null)
             {
@@ -428,7 +426,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnRuntimeToolChanged()
+        protected virtual void OnRuntimeToolChanged()
         {
             if(!m_handleValueChange)
             {
@@ -452,7 +450,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnAutoFocusChanged()
+        protected virtual void OnAutoFocusChanged()
         {
             if(AutoFocusToggle != null)
             {
@@ -460,7 +458,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnUnitSnappingChanged()
+        protected virtual void OnUnitSnappingChanged()
         {
             if(UnitSnappingToggle != null)
             {
@@ -468,7 +466,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnBoundingBoxSnappingChanged()
+        protected virtual void OnBoundingBoxSnappingChanged()
         {
             if(VertexSnappingToggle != null)
             {
@@ -476,7 +474,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void UpdateLoadSaveButtonsState()
+        protected virtual void UpdateLoadSaveButtonsState()
         {
             if(BtnSave != null)
             {
@@ -494,7 +492,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void UpdateUndoRedoButtonsState()
+        protected virtual void UpdateUndoRedoButtonsState()
         {
             if (BtnUndo != null)
             {
@@ -507,7 +505,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnSaveClick()
+        protected virtual void OnSaveClick()
         {
             if (Editor.IsPlaying)
             {
@@ -518,7 +516,7 @@ namespace Battlehub.RTEditor
             m_editor.SaveScene();
         }
 
-        private void OnSaveAsClick()
+        protected virtual void OnSaveAsClick()
         {
             if (Editor.IsPlaying)
             {
@@ -535,7 +533,7 @@ namespace Battlehub.RTEditor
             m_editor.CreateOrActivateWindow("SaveScene");
         }
 
-        private void OnNewClick()
+        protected virtual void OnNewClick()
         {
             if (Editor.IsPlaying)
             {
@@ -554,41 +552,41 @@ namespace Battlehub.RTEditor
             editor.NewScene(true);
         }
 
-        private void OnUndoClick()
+        protected virtual void OnUndoClick()
         {
             Editor.Undo.Undo();
         }
 
-        private void OnRedoClick()
+        protected virtual void OnRedoClick()
         {
             Editor.Undo.Redo();
         }
 
-        private void OnStateChanged()
+        protected virtual void OnStateChanged()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
 
-        private void OnRedoCompleted()
+        protected virtual void OnRedoCompleted()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
 
-        private void OnUndoCompleted()
+        protected virtual void OnUndoCompleted()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
 
-        private void OnSceneSaved()
+        protected virtual void OnSceneSaved()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();
         }
 
-        private void OnSceneLoaded()
+        protected virtual void OnSceneLoaded()
         {
             UpdateUndoRedoButtonsState();
             UpdateLoadSaveButtonsState();

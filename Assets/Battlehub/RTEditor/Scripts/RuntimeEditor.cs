@@ -8,6 +8,7 @@ using Battlehub.RTSL.Interface;
 using Battlehub.UIControls.MenuControl;
 
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTHandles;
 
 namespace Battlehub.RTEditor
 {
@@ -313,17 +314,35 @@ namespace Battlehub.RTEditor
 
         public ProjectAsyncOperation<AssetItem[]> CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, bool? includeDependencies, Action<AssetItem[]> done)
         {
+            SelectionGizmoModel gizmo = dragObject.GetComponentInChildren<SelectionGizmoModel>();
+            if (gizmo != null)
+            {
+                gizmo.transform.SetParent(null);
+                gizmo.gameObject.SetActive(false);
+            }
+
+            Action<AssetItem[]> callback = assetItems =>
+            {
+                if (gizmo != null)
+                {
+                    gizmo.transform.SetParent(dragObject.transform);
+                    gizmo.gameObject.SetActive(true);
+                }
+
+                done(assetItems);
+            };
+
             ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
             if (!includeDependencies.HasValue)
             {
                 m_wm.Confirmation("Create Prefab", "Include dependencies?",
                     (sender, args) =>
                     {
-                        CreatePrefabWithDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
+                        CreatePrefabWithDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, callback));
                     },
                     (sender, args) =>
                     {
-                        CreatePrefabWithoutDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
+                        CreatePrefabWithoutDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, callback));
                     },
                     "Yes",
                     "No");
@@ -332,11 +351,11 @@ namespace Battlehub.RTEditor
             {
                 if(includeDependencies.Value)
                 {
-                    CreatePrefabWithDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
+                    CreatePrefabWithDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, callback));
                 }
                 else
                 {
-                    CreatePrefabWithoutDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, done));
+                    CreatePrefabWithoutDependencies(dropTarget, dragObject, result => OnCreatePrefabWithDepenenciesCompleted(result, ao, callback));
                 }
             }
 

@@ -62,6 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
+  m_resizeCamera: 1
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 2
@@ -313,16 +314,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToggleAssets
       objectReference: {fileID: 0}
-    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
-        type: 3}
-      propertyPath: m_IsOn
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
-        type: 3}
-      propertyPath: m_Group
-      value: 
-      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 5187368348241652973, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -428,6 +419,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
+        type: 3}
+      propertyPath: m_IsOn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 1003250788332044206, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_text
@@ -493,31 +494,6 @@ PrefabInstance:
     - target: {fileID: 1651062113303506, guid: f4d9b253bcb78574fb946d44b6934649, type: 3}
       propertyPath: m_Name
       value: ResourcesVirtualizingListBox
-      objectReference: {fileID: 0}
-    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 3}
-      propertyPath: m_eventSystem
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 3}
-      propertyPath: CanEdit
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 3}
-      propertyPath: CanRemove
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 3}
-      propertyPath: CanDrag
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
-        type: 3}
-      propertyPath: CanReparent
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224750716281733168, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
@@ -649,6 +625,31 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
+        type: 3}
+      propertyPath: m_eventSystem
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
+        type: 3}
+      propertyPath: CanEdit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
+        type: 3}
+      propertyPath: CanRemove
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
+        type: 3}
+      propertyPath: CanDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114255404305442068, guid: f4d9b253bcb78574fb946d44b6934649,
+        type: 3}
+      propertyPath: CanReparent
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224576582140345890, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -755,21 +756,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Input
       objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Colors.m_PressedColor.r
-      value: 0.1254902
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Colors.m_PressedColor.g
-      value: 0.1254902
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Colors.m_PressedColor.b
-      value: 0.1254902
-      objectReference: {fileID: 0}
     - target: {fileID: 4026937081627534330, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -875,6 +861,41 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3849523574531396536, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_PreferredHeight
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3849523574531396536, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_FlexibleWidth
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3849523574531396536, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_FlexibleHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.r
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.g
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.b
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_firstOverflowCharacterIndex
@@ -909,26 +930,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.wordCount
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_firstOverflowCharacterIndex
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3849523574531396536, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_PreferredHeight
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3849523574531396536, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_FlexibleWidth
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3849523574531396536, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_FlexibleHeight
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3849523574099065142, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
@@ -1022,11 +1023,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToggleScene
       objectReference: {fileID: 0}
-    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
-        type: 3}
-      propertyPath: m_Group
-      value: 
-      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 5187368348241652973, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1132,6 +1128,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 1003250788332044206, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_text

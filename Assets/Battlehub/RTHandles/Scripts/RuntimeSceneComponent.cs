@@ -39,6 +39,11 @@ namespace Battlehub.RTHandles
             get;
             set;
         }
+
+        GameObject GameObject
+        {
+            get;
+        }
     }
 
     public class RuntimeSceneComponent : RuntimeSelectionComponent, IRuntimeSceneComponent
@@ -137,6 +142,11 @@ namespace Battlehub.RTHandles
                 base.CameraPosition = value;
                 m_mouseOrbit.SyncAngles();
             }
+        }
+
+        public GameObject GameObject
+        {
+            get { return gameObject; }
         }
 
         protected override void AwakeOverride()

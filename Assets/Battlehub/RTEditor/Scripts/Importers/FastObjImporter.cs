@@ -66,12 +66,17 @@ namespace Battlehub.RTEditor
              */
             for (int i = 0; i < faceData.Count; i++)
             {
-                newVerts[i] = vertices[faceData[i].x - 1];
-                if (faceData[i].y >= 1)
-                    newUVs[i] = uv[faceData[i].y - 1];
+                int vertIndex = faceData[i].x - 1;
+                if(vertIndex >= 0 && vertIndex < vertices.Count)
+                    newVerts[i] = vertices[vertIndex];
 
-                if (faceData[i].z >= 1)
-                    newNormals[i] = normals[faceData[i].z - 1];
+                int uvIndex = faceData[i].y - 1;
+                if (faceData[i].y >= 1 && uvIndex >= 0 && uvIndex < uv.Count)
+                    newUVs[i] = uv[uvIndex];
+
+                int normalIndex = faceData[i].z - 1;
+                if (faceData[i].z >= 1 && normalIndex >= 0 && normalIndex < normals.Count)
+                    newNormals[i] = normals[normalIndex];
             }
 
             Mesh mesh = new Mesh();

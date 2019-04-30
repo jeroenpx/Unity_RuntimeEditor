@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
+  m_resizeCamera: 1
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 54
@@ -382,16 +383,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: InputField
       objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_SelectionColor.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_SelectionColor.g
-      value: 0.5921569
-      objectReference: {fileID: 0}
     - target: {fileID: 4026937081627534330, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -497,22 +488,32 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_SelectionColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_SelectionColor.g
+      value: 0.5921569
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 0
@@ -547,11 +548,6 @@ PrefabInstance:
     - target: {fileID: 1733655225862514, guid: 370f94e0ffbc8b645974abea347d3405, type: 3}
       propertyPath: m_Name
       value: VirtualizingTreeView
-      objectReference: {fileID: 0}
-    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: m_eventSystem
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 224889818864426658, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
@@ -657,6 +653,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: m_eventSystem
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 224681516250508226, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}

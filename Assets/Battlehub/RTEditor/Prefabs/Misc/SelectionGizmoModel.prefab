@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 5466539871322817035}
   - component: {fileID: 1127074258104485214}
   - component: {fileID: 6257966663532476364}
-  - component: {fileID: 8592098130866281782}
+  - component: {fileID: 7981795584197195655}
+  - component: {fileID: 4040642326877636810}
   m_Layer: 0
   m_Name: SelectionGizmoModel
   m_TagString: Untagged
@@ -78,7 +79,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8592098130866281782
+--- !u!114 &7981795584197195655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6067171312614553746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ea087bcd0e3f0418cf1b4d8a6e0d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4040642326877636810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

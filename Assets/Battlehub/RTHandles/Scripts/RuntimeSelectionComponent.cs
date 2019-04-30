@@ -673,13 +673,16 @@ namespace Battlehub.RTHandles
                         {
                             if(!Editor.IsPlaymodeStateChanging || !Editor.IsPlaying)
                             {
-                                selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
-                                if(m_selectionGizmoPrefab != null)
+                                if(selectedObj.hideFlags != HideFlags.HideAndDontSave)
                                 {
-                                    selectionGizmo.SelectionGizmoModel = Instantiate(m_selectionGizmoPrefab, selectionGizmo.transform);
-                                }
+                                    selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
+                                    if (m_selectionGizmoPrefab != null)
+                                    {
+                                        selectionGizmo.SelectionGizmoModel = Instantiate(m_selectionGizmoPrefab, selectionGizmo.transform);
+                                        //selectionGizmo.SelectionGizmoModel.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer;
+                                    }
+                                } 
                             }
-                            
                         }
                         if(selectionGizmo != null)
                         {
