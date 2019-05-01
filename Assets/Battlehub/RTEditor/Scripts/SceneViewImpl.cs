@@ -48,6 +48,7 @@ namespace Battlehub.RTEditor
         protected Plane DragPlane
         {
             get { return m_dragPlane; }
+            set { m_dragPlane = value; }
         }
 
         protected virtual void Start()

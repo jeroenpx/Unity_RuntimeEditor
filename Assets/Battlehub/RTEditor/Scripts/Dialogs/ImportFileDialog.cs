@@ -101,6 +101,8 @@ namespace Battlehub.RTEditor
                     IFileImporter fileImporter = (IFileImporter)Activator.CreateInstance(importerType);
 
                     string ext = fileImporter.FileExt;
+                    ext = ext.ToLower();
+
                     if(!ext.StartsWith("."))
                     {
                         ext = "." + ext;
@@ -186,6 +188,7 @@ namespace Battlehub.RTEditor
         private void TryImport(string path)
         {
             string ext = Path.GetExtension(path);
+            ext = ext.ToLower();
 
             IFileImporter importer;
             if(!m_extToFileImporter.TryGetValue(ext, out importer))

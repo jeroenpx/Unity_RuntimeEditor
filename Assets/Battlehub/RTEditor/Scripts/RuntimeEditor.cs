@@ -16,6 +16,7 @@ namespace Battlehub.RTEditor
     {
         event RTEEvent SceneLoading;
         event RTEEvent SceneLoaded;
+
         event RTEEvent SceneSaving;
         event RTEEvent SceneSaved;
 
@@ -42,6 +43,7 @@ namespace Battlehub.RTEditor
     {
         public event RTEEvent SceneLoading;
         public event RTEEvent SceneLoaded;
+
         public event RTEEvent SceneSaving;
         public event RTEEvent SceneSaved;
 

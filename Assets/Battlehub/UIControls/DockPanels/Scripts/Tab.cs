@@ -105,7 +105,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 if(m_closeButton != null)
                 {
-                    return m_closeButton.gameObject.activeSelf;
+                    return m_closeButton.transform.parent.gameObject.activeSelf;
                 }
                 return false;
             }
@@ -113,7 +113,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 if(m_closeButton != null)
                 {
-                    m_closeButton.gameObject.SetActive(value);
+                    m_closeButton.transform.parent.gameObject.SetActive(value);
                 }
             }
         }

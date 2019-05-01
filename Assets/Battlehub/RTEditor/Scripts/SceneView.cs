@@ -9,20 +9,19 @@ namespace Battlehub.RTEditor
             ActivateOnAnyKey = true;
             WindowType = RuntimeWindowType.Scene;
             base.AwakeOverride();
-           
-            if(!GetComponent<SceneViewInput>())
+        }
+
+        protected virtual void Start()
+        {
+            if (!GetComponent<SceneViewInput>())
             {
                 gameObject.AddComponent<SceneViewInput>();
-            }    
+            }
 
-            if(!GetComponent<SceneViewImpl>())
+            if (!GetComponent<SceneViewImpl>())
             {
                 gameObject.AddComponent<SceneViewImpl>();
             }
         }
-
-       
-
-        
     }
 }

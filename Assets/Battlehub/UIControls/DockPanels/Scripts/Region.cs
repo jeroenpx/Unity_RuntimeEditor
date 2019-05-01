@@ -351,6 +351,10 @@ namespace Battlehub.UIControls.DockPanels
                 {
                     parent.DestroyChildRegion(transform.GetSiblingIndex());
                     parent.UpdateVisualState(1);
+
+                    parent.CanResize = CanResize;
+                    parent.IsHeaderVisible = IsHeaderVisible;
+                    
                     parent.RaiseDepthChanged();
 
                     UpdateResizers();
@@ -793,6 +797,12 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Insert(m_tabPanel.transform.childCount, tab, content, splitType, flexibleSize);
                 ((RectTransform)content).Stretch();
+
+                if (this == m_root.RootRegion)
+                {
+                    CanResize = true;
+                    IsHeaderVisible = true;
+                }
             }
 
             UpdateResizers();
@@ -944,7 +954,6 @@ namespace Battlehub.UIControls.DockPanels
                         throw new InvalidOperationException("Unable to Add content. Region has children and is not a \"leaf\" region.");
                     }
                     Insert(index, tab, content);
-
                     break;
                 case RegionSplitType.Left:
                     SplitLeft(tab, content, flexibleSize);
@@ -1138,6 +1147,8 @@ namespace Battlehub.UIControls.DockPanels
             else
             {
                 Tab[] tabs = MoveContentsToRegion(region);
+                region.IsHeaderVisible = IsHeaderVisible;
+                region.CanResize = CanResize;
 
                 Tab selectTab = tabs.OrderBy(t => t.Index).FirstOrDefault();
                 if (selectTab != null)
@@ -1531,7 +1542,6 @@ namespace Battlehub.UIControls.DockPanels
                 Region freeRegion = Instantiate(m_root.RegionPrefab, m_root.Free);
                 freeRegion.name = "Region " + m_root.RegionId++;
 
-
                 RectTransform rt = (RectTransform)freeRegion.transform;
                 RectTransform beginRt = (RectTransform)m_beginDragRegion.transform;
                 Vector2 size = beginRt.rect.size;
@@ -1768,7 +1778,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 RaycastResult result = m_raycastResults[i];
                 region = result.gameObject.GetComponent<Region>();
-                if (region != null && region.m_root == m_root)
+                if (region != null && region.m_root == m_root && region.IsHeaderVisible)
                 {
                     break;
                 }

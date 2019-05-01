@@ -418,6 +418,26 @@ namespace Battlehub.RTCommon
             }
             return false;
         }
+
+        public Bounds CalculateBounds(float minBoundsSize = 0.1f)
+        {
+            Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
+            Vector3 scale = gameObject.transform.localScale;
+            gameObject.transform.localScale = Vector3.one;
+
+            if(renderers.Length == 0)
+            {
+                return new Bounds(transform.position, Vector2.one * minBoundsSize);
+            }
+            Bounds bounds = renderers[0].bounds;
+            foreach (Renderer r in renderers)
+            {
+                bounds.Encapsulate(r.bounds);
+            }
+
+            gameObject.transform.localScale = scale;
+            return bounds;
+        }
     }
 }
 

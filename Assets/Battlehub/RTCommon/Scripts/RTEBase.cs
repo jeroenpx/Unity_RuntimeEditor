@@ -17,7 +17,7 @@ namespace Battlehub.RTCommon
         public bool ShowExpander;
         public bool ShowEnableButton;
         public bool ShowRemoveButton;
-      
+
         public ComponentEditorSettings(bool showExpander, bool showResetButton, bool showEnableButton, bool showRemoveButton)
         {
             ShowResetButton = showResetButton;
@@ -41,7 +41,7 @@ namespace Battlehub.RTCommon
                 return ~(((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer);
             }
         }
-        
+
         public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers)
         {
             ResourcePreviewLayer = resourcePreviewLayer;
@@ -213,7 +213,7 @@ namespace Battlehub.RTCommon
         private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4);
         [SerializeField]
         private bool m_useBuiltinUndo = true;
-        
+
         [SerializeField]
         private bool m_enableVRIfAvailable = false;
 
@@ -268,17 +268,17 @@ namespace Battlehub.RTCommon
         {
             get
             {
-                if(m_currentInputFieldTMP != null)
+                if (m_currentInputFieldTMP != null)
                 {
                     return m_currentInputFieldTMP.isFocused;
                 }
-                if(m_currentInputFieldUI != null)
+                if (m_currentInputFieldUI != null)
                 {
                     return m_currentInputFieldUI.isFocused;
                 }
                 return false;
             }
-                
+
         }
 
         private RuntimeWindow m_activeWindow;
@@ -358,17 +358,17 @@ namespace Battlehub.RTCommon
             get { return m_isDirty; }
             set
             {
-                if(m_isDirty != value)
+                if (m_isDirty != value)
                 {
                     m_isDirty = value;
-                    if(IsDirtyChanged != null)
+                    if (IsDirtyChanged != null)
                     {
                         IsDirtyChanged();
                     }
                 }
             }
         }
-      
+
         public virtual bool IsOpened
         {
             get { return m_isOpened; }
@@ -376,14 +376,14 @@ namespace Battlehub.RTCommon
             {
                 if (m_isOpened != value)
                 {
-                    if(IsBusy)
+                    if (IsBusy)
                     {
                         return;
                     }
 
                     m_isOpened = value;
                     SetInput();
-                    if(!m_isOpened)
+                    if (!m_isOpened)
                     {
                         IsPlaying = false;
                     }
@@ -393,7 +393,7 @@ namespace Battlehub.RTCommon
                         ActivateWindow(GetWindow(RuntimeWindowType.Game));
                     }
 
-                    if(Root != null)
+                    if (Root != null)
                     {
                         Root.gameObject.SetActive(m_isOpened);
                     }
@@ -404,7 +404,7 @@ namespace Battlehub.RTCommon
                     }
                     if (m_isOpened)
                     {
-                        if(IsOpenedEvent != null)
+                        if (IsOpenedEvent != null)
                         {
                             IsOpenedEvent.Invoke();
                         }
@@ -426,7 +426,7 @@ namespace Battlehub.RTCommon
             get { return m_isBusy; }
             set
             {
-                if(m_isBusy != value)
+                if (m_isBusy != value)
                 {
                     m_isBusy = value;
                     if (m_isBusy)
@@ -494,7 +494,7 @@ namespace Battlehub.RTCommon
                     {
                         PlaymodeStateChanging();
                     }
-                    
+
                     if (PlaymodeStateChanged != null)
                     {
                         PlaymodeStateChanged();
@@ -561,7 +561,7 @@ namespace Battlehub.RTCommon
             RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
             sceneView.IsPointerOver = true;
             sceneView.WindowType = RuntimeWindowType.Scene;
-            if(Camera.main == null)
+            if (Camera.main == null)
             {
                 GameObject camera = new GameObject();
                 camera.name = "RTE SceneView Camera";
@@ -571,8 +571,8 @@ namespace Battlehub.RTCommon
             {
                 sceneView.Camera = Camera.main;
             }
-            
-            
+
+
 
             EventSystem eventSystem = FindObjectOfType<EventSystem>();
             if (eventSystem == null)
@@ -631,7 +631,7 @@ namespace Battlehub.RTCommon
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            if(Application.isEditor)
+            if (Application.isEditor)
             {
                 return;
             }
@@ -665,7 +665,6 @@ namespace Battlehub.RTCommon
             }
 
 
-
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
@@ -679,15 +678,24 @@ namespace Battlehub.RTCommon
             m_isOpened = !isOpened;
             IsOpened = isOpened;
         }
-
-
         
-
         protected virtual void Start()
         {
-            if(GetComponent<RTEBaseInput>() == null)
+            if (GetComponent<RTEBaseInput>() == null)
             {
                 gameObject.AddComponent<RTEBaseInput>();
+            }
+
+            if (m_eventSystem == null)
+            {
+                m_eventSystem = FindObjectOfType<EventSystem>();
+                if (m_eventSystem == null)
+                {
+                    GameObject eventSystem = new GameObject("EventSystem");
+                    eventSystem.transform.SetParent(transform, false);
+                    eventSystem.AddComponent<StandaloneInputModule>();
+                    m_eventSystem = eventSystem.AddComponent<EventSystem>();
+                }
             }
 
             if (m_object == null)
@@ -700,16 +708,16 @@ namespace Battlehub.RTCommon
         {
             IsOpened = false;
 
-            if(m_object != null)
+            if (m_object != null)
             {
                 m_object = null;
             }
-        
-            if(m_dragDrop != null)
+
+            if (m_dragDrop != null)
             {
                 m_dragDrop.Reset();
             }
-            if(m_instance == this)
+            if (m_instance == this)
             {
                 m_instance = null;
             }
@@ -737,12 +745,12 @@ namespace Battlehub.RTCommon
 
         public void RegisterWindow(RuntimeWindow window)
         {
-            if(!m_windows.Contains(window.gameObject))
+            if (!m_windows.Contains(window.gameObject))
             {
                 m_windows.Add(window.gameObject);
             }
 
-            if(WindowRegistered != null)
+            if (WindowRegistered != null)
             {
                 WindowRegistered(window);
             }
@@ -752,32 +760,32 @@ namespace Battlehub.RTCommon
             if (m_windows.Count == 1)
             {
                 ActivateWindow(window);
-            }   
+            }
         }
 
         public void UnregisterWindow(RuntimeWindow window)
         {
             m_windows.Remove(window.gameObject);
 
-            if(IsApplicationPaused)
+            if (IsApplicationPaused)
             {
                 return;
             }
 
-            if(WindowUnregistered != null)
+            if (WindowUnregistered != null)
             {
                 WindowUnregistered(window);
             }
 
-            if(m_activeWindow == window)
+            if (m_activeWindow == window)
             {
                 RuntimeWindow activeWindow = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).Where(w => w.WindowType == window.WindowType).FirstOrDefault();
-                if(activeWindow == null)
+                if (activeWindow == null)
                 {
                     activeWindow = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).FirstOrDefault();
                 }
-                    
-                if(IsOpened)
+
+                if (IsOpened)
                 {
                     ActivateWindow(activeWindow);
                 }
@@ -823,13 +831,13 @@ namespace Battlehub.RTCommon
                         selectable.Select();
                     }
                 }
-                
+
                 foreach (RaycastResult result in results)
                 {
                     if (m_windows.Contains(result.gameObject))
                     {
                         RuntimeWindow editorWindow = result.gameObject.GetComponent<RuntimeWindow>();
-                        if(pointerDownOrUp || editorWindow.ActivateOnAnyKey)
+                        if (pointerDownOrUp || editorWindow.ActivateOnAnyKey)
                         {
                             ActivateWindow(editorWindow);
                             break;
@@ -849,20 +857,20 @@ namespace Battlehub.RTCommon
                     if (m_currentSelectedGameObject != null)
                     {
                         m_currentInputFieldTMP = m_currentSelectedGameObject.GetComponent<TMP_InputField>();
-                        if(m_currentInputFieldTMP == null)
+                        if (m_currentInputFieldTMP == null)
                         {
                             m_currentInputFieldUI = m_currentSelectedGameObject.GetComponent<InputField>();
                         }
                     }
                     else
                     {
-                        if(m_currentInputFieldTMP != null)
+                        if (m_currentInputFieldTMP != null)
                         {
                             m_currentInputFieldTMP.DeactivateInputField();
                         }
                         m_currentInputFieldTMP = null;
 
-                        if(m_currentInputFieldUI != null)
+                        if (m_currentInputFieldUI != null)
                         {
                             m_currentInputFieldUI.DeactivateInputField();
                         }
@@ -873,7 +881,7 @@ namespace Battlehub.RTCommon
             else
             {
                 m_currentSelectedGameObject = null;
-                if(m_currentInputFieldTMP != null)
+                if (m_currentInputFieldTMP != null)
                 {
                     m_currentInputFieldTMP.DeactivateInputField();
                 }
@@ -891,9 +899,9 @@ namespace Battlehub.RTCommon
         {
             IEnumerable<RuntimeWindow> windows = m_windows.Select(w => w.GetComponent<RuntimeWindow>()).Where(w => w.WindowType == windowType).OrderBy(w => w.Index);
             int freeIndex = 0;
-            foreach(RuntimeWindow window in windows)
+            foreach (RuntimeWindow window in windows)
             {
-                if(window.Index != freeIndex)
+                if (window.Index != freeIndex)
                 {
                     return freeIndex;
                 }
@@ -910,7 +918,7 @@ namespace Battlehub.RTCommon
         public virtual void ActivateWindow(RuntimeWindowType windowType)
         {
             RuntimeWindow window = GetWindow(windowType);
-            if(window != null)
+            if (window != null)
             {
                 ActivateWindow(window);
             }
@@ -1009,7 +1017,7 @@ namespace Battlehub.RTCommon
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             Undo.BeginRecord();
 
-            if(Selection.objects != null)
+            if (Selection.objects != null)
             {
                 List<UnityEngine.Object> selection = Selection.objects.ToList();
                 for (int i = selection.Count - 1; i >= 0; --i)
@@ -1022,7 +1030,7 @@ namespace Battlehub.RTCommon
 
                 Selection.objects = selection.ToArray();
             }
-           
+
             Undo.DestroyObjects(exposeToEditor);
             Undo.EndRecord();
         }
