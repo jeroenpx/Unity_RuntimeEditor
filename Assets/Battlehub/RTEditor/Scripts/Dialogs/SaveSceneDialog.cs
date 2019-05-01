@@ -126,7 +126,6 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-
             if (!ProjectItem.IsValidName(Input.text))
             {
                 m_windowManager.MessageBox("Scene name is invalid", "Scene name contains invalid characters");
@@ -161,21 +160,15 @@ namespace Battlehub.RTEditor
             {
                 yes.Cancel = true;
                 m_parentDialog.gameObject.SetActive(false);
-                Editor.Undo.Purge();
-                Editor.IsBusy = true;
-                m_project.Save(new[] { selectedItem }, new[] { (object)SceneManager.GetActiveScene() }, (error, assetItem) =>
+
+                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                editor.OverwriteScene(selectedItem, error =>
                 {
                     sender.Close(null);
-                    Editor.IsBusy = false;
                     if (error.HasError)
                     {
                         m_windowManager.MessageBox("Unable to save scene", error.ErrorText);
                     }
-                    else
-                    {
-                        m_project.LoadedScene = assetItem[0];
-                    }
-                    
                     m_parentDialog.Close(null);
                 });
             },
@@ -252,23 +245,12 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                Editor.Undo.Purge();
-
-                Editor.IsBusy = true;
-
-                m_project.Save(new[] { folder }, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { Input.text },  (error, assetItem) =>
+                IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+                editor.SaveSceneToFolder(folder, Input.text, error =>
                 {
-                    Editor.IsBusy = false;
                     if (error.HasError)
                     {
                         m_windowManager.MessageBox("Unable to save scene", error.ErrorText);
-                    }
-                    else
-                    {
-                        if(assetItem.Length > 0)
-                        {
-                            m_project.LoadedScene = assetItem[0];
-                        }
                     }
                 });
             }

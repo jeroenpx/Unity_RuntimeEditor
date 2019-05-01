@@ -9,19 +9,24 @@ using Battlehub.UIControls.MenuControl;
 
 using UnityObject = UnityEngine.Object;
 using Battlehub.RTHandles;
+using Battlehub.UIControls;
 
 namespace Battlehub.RTEditor
 {
     public interface IRuntimeEditor : IRTE
     {
-        event RTEEvent SceneLoading;
-        event RTEEvent SceneLoaded;
-
+        event RTEEvent<CancelArgs> BeforeSceneSave;
         event RTEEvent SceneSaving;
         event RTEEvent SceneSaved;
 
+        event RTEEvent SceneLoading;
+        event RTEEvent SceneLoaded;
+
         void NewScene(bool confirm = true);
         void SaveScene();
+        void SaveSceneAs();
+        void OverwriteScene(AssetItem scene, Action<Error> callback = null);
+        void SaveSceneToFolder(ProjectItem folder, string name, Action<Error> callback = null);
 
         void CreateWindow(string window);
         void CreateOrActivateWindow(string window);
@@ -41,11 +46,12 @@ namespace Battlehub.RTEditor
     [RequireComponent(typeof(RuntimeObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
     {
-        public event RTEEvent SceneLoading;
-        public event RTEEvent SceneLoaded;
-
+        public event RTEEvent<CancelArgs> BeforeSceneSave;
         public event RTEEvent SceneSaving;
         public event RTEEvent SceneSaved;
+
+        public event RTEEvent SceneLoading;
+        public event RTEEvent SceneLoaded;
 
         private IProject m_project;
         private IWindowManager m_wm;
@@ -252,19 +258,102 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
-                Undo.Purge();
-                IsBusy = true;
-                m_project.Save(new[] { m_project.LoadedScene }, new[] { (object)SceneManager.GetActiveScene() }, (error, assetItem) =>
+                AssetItem scene = m_project.LoadedScene;
+                OverwriteScene(scene, error =>
                 {
-                    m_project.LoadedScene = assetItem[0];
-                    IsBusy = false;
                     if (error.HasError)
                     {
                         m_wm.MessageBox("Unable to save scene", error.ErrorText);
                     }
-                });
+                });    
             }
         }
+
+        public void OverwriteScene(AssetItem scene, Action<Error> callback)
+        {
+            if(BeforeSceneSave != null)
+            {
+                CancelArgs args = new CancelArgs();
+                BeforeSceneSave(args);
+                if(args.Cancel)
+                {
+                    if(callback != null)
+                    {
+                        callback(new Error(Error.OK));
+                    }
+                    return;
+                }
+            }
+
+            Undo.Purge();
+            IsBusy = true;
+            m_project.Save(new[] { scene }, new[] { (object)SceneManager.GetActiveScene() }, (error, assetItem) =>
+            {
+                if(!error.HasError)
+                {
+                    m_project.LoadedScene = assetItem[0];
+                }
+                IsBusy = false;
+                if(callback != null)
+                {
+                    callback(error);
+                }
+            });
+        }
+
+        public void SaveSceneToFolder(ProjectItem folder, string name, Action<Error> callback)
+        {
+            if (BeforeSceneSave != null)
+            {
+                CancelArgs args = new CancelArgs();
+                BeforeSceneSave(args);
+                if (args.Cancel)
+                {
+                    if (callback != null)
+                    {
+                        callback(new Error(Error.OK));
+                    }
+                    return;
+                }
+            }
+
+            Undo.Purge();
+            IsBusy = true;
+            m_project.Save(new[] { folder }, new[] { new byte[0] }, new[] { (object)SceneManager.GetActiveScene() }, new[] { name }, (error, assetItem) =>
+            {
+                IsBusy = false;
+                if (!error.HasError)
+                {
+                    if (assetItem.Length > 0)
+                    {
+                        m_project.LoadedScene = assetItem[0];
+                    }
+                }
+                if(callback != null)
+                {
+                    callback(error);
+                }
+            });
+        }
+
+        public virtual void SaveSceneAs()
+        {
+            if (IsPlaying)
+            {
+                m_wm.MessageBox("Save Scene", "Scene can not be saved in playmode");
+                return;
+            }
+
+            if (m_project == null)
+            {
+                Debug.LogError("Project Manager is null");
+                return;
+            }
+
+            CreateOrActivateWindow("SaveScene");
+        }
+
+
 
         public void CmdGameObjectValidate(MenuItemValidationArgs args)
         {

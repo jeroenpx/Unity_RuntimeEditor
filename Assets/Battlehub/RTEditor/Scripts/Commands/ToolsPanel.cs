@@ -518,19 +518,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnSaveAsClick()
         {
-            if (Editor.IsPlaying)
-            {
-                m_wm.MessageBox("Save Scene", "Scene can not be saved in playmode");
-                return;
-            }
-
-            if (m_project == null)
-            {
-                Debug.LogError("Project Manager is null");
-                return;
-            }
-
-            m_editor.CreateOrActivateWindow("SaveScene");
+            m_editor.SaveSceneAs();
         }
 
         protected virtual void OnNewClick()

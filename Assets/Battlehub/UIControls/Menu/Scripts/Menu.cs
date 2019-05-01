@@ -147,12 +147,19 @@ namespace Battlehub.UIControls.MenuControl
             get { return m_panel.childCount; }
         }
 
+        public bool IsOpened
+        {
+            get { return gameObject.activeSelf; }
+        }
+
         [SerializeField]
         private CanvasGroup m_canvasGroup = null;
 
         [SerializeField]
         private float FadeInSpeed = 2;
-     
+
+        private bool m_skipUpdate;
+
         private void Awake()
         {
             if(m_panel == null)
@@ -257,6 +264,8 @@ namespace Battlehub.UIControls.MenuControl
 
         public void Open()
         {
+            m_skipUpdate = true;
+
             gameObject.SetActive(true);
 
             RectTransform anchor = m_anchor;
@@ -332,6 +341,12 @@ namespace Battlehub.UIControls.MenuControl
 
         private void LateUpdate()
         {
+            if(m_skipUpdate)
+            {
+                m_skipUpdate = false;
+                return;
+            }
+
             if(m_canvasGroup != null && m_canvasGroup.alpha < 1)
             {
                 m_canvasGroup.alpha += Time.deltaTime * FadeInSpeed;

@@ -19,7 +19,7 @@ namespace Battlehub.RTEditor.Demo
 
             const int windowNumber = 0;
             RuntimeWindow window = wm.GetWindows(RuntimeWindowType.Scene.ToString())[windowNumber].GetComponent<RuntimeWindow>();
-
+            
             IRuntimeSceneComponent scene = window.IOCContainer.Resolve<IRuntimeSceneComponent>();
 
             scene.Pivot = new Vector3(5, 0, 0);

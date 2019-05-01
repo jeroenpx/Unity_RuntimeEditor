@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls.MenuControl
 {
-    public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     {
         [SerializeField]
         private Menu m_menu = null;
@@ -77,7 +77,6 @@ namespace Battlehub.UIControls.MenuControl
                 m_menu.Closed += OnClosed;
 
                 m_menu.gameObject.SetActive(false);
-
             }
         }
 
@@ -98,14 +97,22 @@ namespace Battlehub.UIControls.MenuControl
             }
         }
 
-        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            if(m_menu == null)
+            if (m_menu == null)
             {
                 return;
             }
 
-            m_menu.Open();
+            if(m_menu.IsOpened)
+            {
+                m_menu.Close();
+            }
+            else
+            {
+                m_menu.Open();
+            }
+            
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -151,6 +158,7 @@ namespace Battlehub.UIControls.MenuControl
             m_selection.color = m_focusedColor;
         }
 
+     
     }
 
 }

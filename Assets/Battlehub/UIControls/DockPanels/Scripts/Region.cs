@@ -77,15 +77,6 @@ namespace Battlehub.UIControls.DockPanels
     public delegate void RegionEventHandler(Region region);
     public delegate void RegionEventHandler<T>(Region region, T arg);
 
-    public class CancelArgs
-    {
-        public bool Cancel
-        {
-            get;
-            set;
-        }
-    }
-
     public class Region : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public static event RegionEventHandler Created;
