@@ -766,7 +766,7 @@ namespace Battlehub.UIControls.DockPanels
 
         public void Add(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, bool canDrag = true, bool canClose = true)
         {
-            if (m_childrenPanel.childCount > 0 && !isFree)
+            if (m_childrenPanel.childCount > 0 && !isFree && splitType == RegionSplitType.None)
             {
                 throw new InvalidOperationException("Unable to Add content. Region has children and is not a \"leaf\" region.");
             }
