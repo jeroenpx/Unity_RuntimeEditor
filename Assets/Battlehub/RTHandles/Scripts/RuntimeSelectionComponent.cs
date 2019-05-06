@@ -621,7 +621,7 @@ namespace Battlehub.RTHandles
             }
 
             ExposeToEditor exposeToEditor = e.Object.GetComponent<ExposeToEditor>();
-            if (!exposeToEditor || !exposeToEditor.CanSelect)
+            if (!exposeToEditor || !exposeToEditor.CanEdit)
             {
                 e.Cancel = true;
             }
@@ -666,7 +666,7 @@ namespace Battlehub.RTHandles
                 {
                     GameObject selectedObj = selected[i];
                     ExposeToEditor exposeToEditor = selectedObj.GetComponent<ExposeToEditor>();
-                    if (exposeToEditor && exposeToEditor.CanSelect && !selectedObj.IsPrefab() && !selectedObj.isStatic)
+                    if (exposeToEditor && exposeToEditor.CanEdit && !selectedObj.IsPrefab() && !selectedObj.isStatic)
                     {
                         SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
                         if (selectionGizmo == null || selectionGizmo.Internal_Destroyed || selectionGizmo.Window != Window)

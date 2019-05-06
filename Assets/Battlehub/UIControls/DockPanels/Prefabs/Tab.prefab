@@ -532,7 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 45
+  m_MinWidth: 90
   m_MinHeight: -1
   m_PreferredWidth: 200
   m_PreferredHeight: 30
@@ -558,6 +558,8 @@ MonoBehaviour:
   m_text: {fileID: 6000225388146235198}
   m_toggle: {fileID: 114756377923378590}
   m_closeButton: {fileID: 114703326869597678}
+  m_showOnPointerOver: 0
+  m_canClose: 1
 --- !u!225 &225542886877285894
 CanvasGroup:
   m_ObjectHideFlags: 0

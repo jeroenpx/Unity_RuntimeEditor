@@ -28,7 +28,14 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        [System.Obsolete("Use CanRotate instead")]
         bool CanOrbit
+        {
+            get;
+            set;
+        }
+
+        bool CanRotate
         {
             get;
             set;
@@ -73,7 +80,7 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private bool m_canZoom = true;
         [SerializeField]
-        private bool m_canOrbit = true;
+        private bool m_canRotate = true;
         
         public bool IsSceneGizmoEnabled
         {
@@ -110,10 +117,19 @@ namespace Battlehub.RTHandles
 
         public bool CanOrbit
         {
-            get { return m_canOrbit; }
+            get { return CanRotate; }
             set
             {
-                m_canZoom = value;
+                CanRotate = value;
+            }
+        }
+
+        public bool CanRotate
+        {
+            get { return m_canRotate; }
+            set
+            {
+                m_canRotate = value;
                 m_mouseOrbit.CanOrbit = value;
             }
         }
@@ -268,7 +284,7 @@ namespace Battlehub.RTHandles
         protected override bool CanSelectObject(GameObject go)
         {
             ExposeToEditor exposeToEditor = go.GetComponentInParent<ExposeToEditor>();
-            return exposeToEditor != null && exposeToEditor.CanSelect;
+            return exposeToEditor != null && exposeToEditor.CanEdit;
         }
 
         public void UpdateCursorState(bool isPointerOverEditorArea, bool pan, bool rotate)

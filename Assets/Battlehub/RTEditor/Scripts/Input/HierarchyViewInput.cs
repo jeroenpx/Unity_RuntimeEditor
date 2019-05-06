@@ -2,7 +2,6 @@
 {
     public class HierarchyViewInput : BaseViewInput<HierarchyView>
     {
-       
         protected override void UpdateOverride()
         {
             base.UpdateOverride();

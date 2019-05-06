@@ -263,7 +263,6 @@ namespace Battlehub.RTHandles
                 }
                
                 m_prevPoint = point;
-                m_prevPoint = point;
             }
         }
 

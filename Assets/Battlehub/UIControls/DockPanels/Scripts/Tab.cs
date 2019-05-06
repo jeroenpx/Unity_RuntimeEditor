@@ -22,7 +22,8 @@ namespace Battlehub.UIControls.DockPanels
     public delegate void TabEventArgs(Tab sender);
     public delegate void TabEventArgs<T>(Tab sender, T args);
 
-    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IInitializePotentialDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IInitializePotentialDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler, 
+        IPointerEnterHandler, IPointerExitHandler
     {
         public event TabEventArgs<bool> Toggle;
         public event TabEventArgs<PointerEventData> PointerDown;
@@ -99,6 +100,28 @@ namespace Battlehub.UIControls.DockPanels
             set { transform.SetSiblingIndex(value); }
         }
 
+        [SerializeField]
+        private bool m_showOnPointerOver = false;
+        private bool m_isPointerOver;
+        [SerializeField]
+        private bool m_canClose = true;
+        public bool CanClose
+        {
+            get { return m_canClose; }
+            set
+            {
+                m_canClose = value;
+                if(m_canClose)
+                {
+                    IsCloseButtonVisible = m_canClose && (!m_showOnPointerOver || m_isPointerOver);
+                }
+                else
+                {
+                    IsCloseButtonVisible = false;
+                }
+            }
+        }
+
         public bool IsCloseButtonVisible
         {
             get
@@ -113,7 +136,7 @@ namespace Battlehub.UIControls.DockPanels
             {
                 if(m_closeButton != null)
                 {
-                    m_closeButton.transform.parent.gameObject.SetActive(value);
+                    m_closeButton.transform.parent.gameObject.SetActive(value && CanClose);
                 }
             }
         }
@@ -165,6 +188,8 @@ namespace Battlehub.UIControls.DockPanels
             {
                 m_closeButton.onClick.AddListener(OnCloseButtonClick);
             }
+
+            IsCloseButtonVisible = m_canClose && (!m_showOnPointerOver || m_isPointerOver); 
         }
 
         private void Start()
@@ -288,5 +313,23 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            m_isPointerOver = true;
+            if(m_showOnPointerOver && m_canClose)
+            {
+                IsCloseButtonVisible = true;
+            }
+            
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            m_isPointerOver = false;
+            if (m_showOnPointerOver)
+            {
+                IsCloseButtonVisible = false;
+            }
+        }
     }
 }

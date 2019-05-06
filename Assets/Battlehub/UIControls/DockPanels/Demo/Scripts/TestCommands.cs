@@ -265,7 +265,7 @@ namespace Battlehub.UIControls.DockPanels
             if (tab != null)
             {
                 layoutInfo.CanDrag = tab.CanDrag;
-                layoutInfo.CanClose = tab.IsCloseButtonVisible;
+                layoutInfo.CanClose = tab.CanClose;
             }
             layoutInfo.IsHeaderVisible = region.IsHeaderVisible;
 

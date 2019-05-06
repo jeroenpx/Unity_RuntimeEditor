@@ -146,5 +146,15 @@ namespace Battlehub.RTSL.Internal
         {
             throw new InvalidOperationException();
         }
+
+        public virtual bool CanInstantiate(Type type)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public virtual object Instantiate(Type type)
+        {
+            throw new InvalidOperationException();
+        }
     }
 }

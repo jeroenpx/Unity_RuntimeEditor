@@ -73,11 +73,16 @@ namespace Battlehub.RTCommon
         public BoundsType BoundsType;
         public Bounds CustomBounds;
 
-        [HideInInspector]
+        [Obsolete("Use CanEdit instead")]
         public bool CanSelect = true;
+        public bool CanEdit = true;
+        public bool CanDuplicate = true;
+        public bool CanDelete = true;
+        
         [HideInInspector]
         public bool CanSnap = true;
         public bool AddColliders = true;
+        
 
         private bool m_markAsDestroyed;
         public bool MarkAsDestroyed

@@ -5,7 +5,12 @@ namespace Battlehub.RTEditor
 {
     public interface IContextMenu
     {
+        bool IsOpened
+        {
+            get;
+        }
         void Open(MenuItemInfo[] items);
+        void Close();
     }
 
     public class ContextMenu : MonoBehaviour, IContextMenu
@@ -15,6 +20,11 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private RectTransform m_contextMenuArea = null;
+
+        public bool IsOpened
+        {
+            get { return m_menu.IsOpened; }
+        }
 
         public void Open(MenuItemInfo[] items)
         {
@@ -33,6 +43,11 @@ namespace Battlehub.RTEditor
                 m_menu.Items = items;
                 m_menu.Open();
             }
+        }
+
+        public void Close()
+        {
+            m_menu.Close();
         }
     }
 }

@@ -961,13 +961,17 @@ namespace Battlehub.RTCommon
                     GameObject go = gameObjects[i];
                     if (go != null)
                     {
-                        Instantiate(go, go.transform.position, go.transform.rotation);
+                        ExposeToEditor exposed = go.GetComponent<ExposeToEditor>();
+                        if (exposed == null || exposed.CanDuplicate)
+                        {
+                            Instantiate(go, go.transform.position, go.transform.rotation);
+                        }
                     }
                 }
                 return;
             }
 
-            GameObject[] duplicates = new GameObject[gameObjects.Length];
+            List<GameObject> duplicates = new List<GameObject>();
             for (int i = 0; i < gameObjects.Length; ++i)
             {
                 GameObject go = gameObjects[i];
@@ -975,8 +979,14 @@ namespace Battlehub.RTCommon
                 {
                     continue;
                 }
-                GameObject duplicate = Instantiate(go, go.transform.position, go.transform.rotation);
 
+                ExposeToEditor exposed = go.GetComponent<ExposeToEditor>();
+                if (exposed != null && !exposed.CanDuplicate)
+                {
+                    continue;
+                }
+
+                GameObject duplicate = Instantiate(go, go.transform.position, go.transform.rotation);
                 duplicate.SetActive(true);
                 duplicate.SetActive(go.activeSelf);
                 if (go.transform.parent != null)
@@ -984,14 +994,17 @@ namespace Battlehub.RTCommon
                     duplicate.transform.SetParent(go.transform.parent, true);
                 }
 
-                duplicates[i] = duplicate;
+                duplicates.Add(duplicate);
             }
 
-            ExposeToEditor[] exposeToEditor = duplicates.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
-            Undo.BeginRecord();
-            Undo.RegisterCreatedObjects(exposeToEditor);
-            Selection.objects = duplicates;
-            Undo.EndRecord();
+            if(duplicates.Count > 0)
+            {
+                ExposeToEditor[] exposeToEditor = duplicates.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
+                Undo.BeginRecord();
+                Undo.RegisterCreatedObjects(exposeToEditor);
+                Selection.objects = duplicates.ToArray();
+                Undo.EndRecord();
+            }
         }
 
         public void Delete(GameObject[] gameObjects)
@@ -1008,22 +1021,32 @@ namespace Battlehub.RTCommon
                     GameObject go = gameObjects[i];
                     if (go != null)
                     {
-                        Destroy(go);
+                        ExposeToEditor exposed = go.GetComponent<ExposeToEditor>();
+
+                        if(exposed == null || exposed.CanDelete)
+                        {
+                            Destroy(go);
+                        }
                     }
                 }
                 return;
             }
 
-            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
-            Undo.BeginRecord();
+            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(exposed => exposed.CanDelete).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
+            if(exposeToEditor.Length == 0)
+            {
+                return;
+            }
 
+            HashSet<GameObject> removeObjectsHs = new HashSet<GameObject>(exposeToEditor.Select(exposed => exposed.gameObject));
+            Undo.BeginRecord();
             if (Selection.objects != null)
             {
                 List<UnityEngine.Object> selection = Selection.objects.ToList();
                 for (int i = selection.Count - 1; i >= 0; --i)
                 {
-                    if (selection[i] == gameObjects[i])
-                    {
+                    if (removeObjectsHs.Contains(selection[i]))
+                    {   
                         selection.RemoveAt(i);
                     }
                 }

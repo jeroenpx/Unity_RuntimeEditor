@@ -1432,7 +1432,7 @@ namespace Battlehub.RTEditor
                     if (tab != null)
                     {
                         layoutInfo.CanDrag = tab.CanDrag;
-                        layoutInfo.CanClose = tab.IsCloseButtonVisible;
+                        layoutInfo.CanClose = tab.CanClose;
                     }
                     layoutInfo.IsHeaderVisible = region.IsHeaderVisible;
                     break;

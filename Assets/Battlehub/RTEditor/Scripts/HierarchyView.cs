@@ -56,6 +56,7 @@ namespace Battlehub.RTEditor
 
             m_treeView.ItemDataBinding += OnItemDataBinding;
             m_treeView.SelectionChanged += OnSelectionChanged;
+            m_treeView.ItemsRemoving += OnItemRemoving;
             m_treeView.ItemsRemoved += OnItemsRemoved;
             m_treeView.ItemExpanding += OnItemExpanding;
             m_treeView.ItemBeginDrag += OnItemBeginDrag;
@@ -113,6 +114,7 @@ namespace Battlehub.RTEditor
             }
             m_treeView.ItemDataBinding -= OnItemDataBinding;
             m_treeView.SelectionChanged -= OnSelectionChanged;
+            m_treeView.ItemsRemoving -= OnItemRemoving;
             m_treeView.ItemsRemoved -= OnItemsRemoved;
             m_treeView.ItemExpanding -= OnItemExpanding;
             m_treeView.ItemBeginDrag -= OnItemBeginDrag;
@@ -280,7 +282,7 @@ namespace Battlehub.RTEditor
             {
                 newItems = new ExposeToEditor[0];
             }
-            ExposeToEditor[] selectableObjects = newItems.OfType<ExposeToEditor>().Where(o => o.CanSelect).ToArray();
+            ExposeToEditor[] selectableObjects = newItems.OfType<ExposeToEditor>().Where(o => o.CanEdit).ToArray();
             Editor.Selection.objects = selectableObjects.Select(o => o.gameObject).ToArray();
 
             //sync with RunitimeSelectiom.objects because of OnBeforeSelectionChanged event
@@ -289,14 +291,33 @@ namespace Battlehub.RTEditor
             m_lockSelection = false;
         }
 
-        private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
+
+        private void OnItemRemoving(object sender, ItemsCancelArgs e)
         {
+            if(e.Items == null)
+            {
+                return;
+            }
+
             if (Editor.ActiveWindow == this)
             {
                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
                 editor.Delete(e.Items.OfType<ExposeToEditor>().Select(exposed => exposed.gameObject).ToArray());
             }
-            //Removal handled in RuntimeEditor class
+
+            for (int i = e.Items.Count - 1; i >= 0; i--)
+            {
+                ExposeToEditor item = (ExposeToEditor)e.Items[i];
+                if(!item.CanDelete)
+                {
+                    e.Items.RemoveAt(i);
+                }
+            }
+        }
+
+        private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
+        {
+           
         }
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -322,7 +343,7 @@ namespace Battlehub.RTEditor
         private void OnItemDoubleClicked(object sender, ItemArgs e)
         {
             ExposeToEditor exposeToEditor = (ExposeToEditor)e.Items[0];
-            if (exposeToEditor.CanSelect)
+            if (exposeToEditor.CanEdit)
             {
                 Editor.Selection.activeObject = exposeToEditor.gameObject;
                 ItemDoubleClick.Invoke();

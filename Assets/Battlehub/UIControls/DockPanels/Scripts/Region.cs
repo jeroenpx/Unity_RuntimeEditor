@@ -167,6 +167,9 @@ namespace Battlehub.UIControls.DockPanels
         private ToggleGroup m_tabPanel = null;
 
         [SerializeField]
+        private TabPanelScroller m_tabScroller = null;
+
+        [SerializeField]
         private RectTransform m_content = null;
 
         [SerializeField]
@@ -177,6 +180,10 @@ namespace Battlehub.UIControls.DockPanels
 
         [SerializeField]
         private Tab m_tabPrefab = null;
+        public Tab TabPrefab
+        {
+            get { return m_tabPrefab; }
+        }
 
         [SerializeField]
         private DockPanel m_root = null;
@@ -425,6 +432,27 @@ namespace Battlehub.UIControls.DockPanels
             Clear(false);
             Build(layout, this);
             RaiseDepthChanged();
+
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(CoScrollToLeft());
+            }
+            else
+            {
+                if (m_tabScroller != null)
+                {
+                    m_tabScroller.ScrollToLeft();
+                }
+            }
+        }
+
+        private IEnumerator CoScrollToLeft()
+        {
+            yield return new WaitForEndOfFrame();
+            if (m_tabScroller != null)
+            {
+                m_tabScroller.ScrollToLeft();
+            }
         }
 
         private void Build(LayoutInfo layout, Region region)
@@ -729,6 +757,22 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public void ScrollTabHeaderToRight()
+        {
+            if(m_tabScroller != null)
+            {
+                m_tabScroller.ScrollToRight();
+            }
+        }
+
+        public void ScrollTabHeaderToLeft()
+        {
+            if (m_tabScroller != null)
+            {
+                m_tabScroller.ScrollToLeft();
+            }
+        }
+
         public static Tab FindTab(Transform content)
         {
             Region region = content.GetComponentInParent<Region>();
@@ -773,7 +817,7 @@ namespace Battlehub.UIControls.DockPanels
 
             Tab tab = Instantiate(m_tabPrefab);
             tab.CanDrag = canDrag;
-            tab.IsCloseButtonVisible = canClose;
+            tab.CanClose = canClose;
             tab.name = "Tab " + header;
             tab.Icon = icon;
             tab.Text = header;

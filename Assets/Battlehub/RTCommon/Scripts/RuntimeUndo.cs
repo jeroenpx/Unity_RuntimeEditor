@@ -880,6 +880,8 @@ namespace Battlehub.RTCommon
             {
                 m_stack.Push(new[] { record }, m_purgeRecords);
 
+                //these lines causes wrong behavior.Remove->undo->remove->undo again and objects are not recovered
+                //reason: the same action from different records undone.
                 for (int i = 0; i < m_purgeRecords.Count; ++i)
                 {
                     Record[] purgeItems = m_purgeRecords[i];

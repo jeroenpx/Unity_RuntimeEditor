@@ -37,12 +37,12 @@ namespace Battlehub.RTEditor.Demo
             scene.CanSelect = true;
             scene.CanSelectAll = true;
 
-            scene.CanOrbit = true;
+            scene.CanRotate = true;
             scene.CanPan = false;
             scene.CanZoom = true;
 
             Tab tab = Region.FindTab(window.transform);
-            tab.IsCloseButtonVisible = false;
+            tab.CanClose = false;
 
             scene.SceneGizmoTransform.anchorMax = new Vector2(1, 0);
             scene.SceneGizmoTransform.anchorMin = new Vector2(1, 0);

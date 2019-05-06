@@ -197,15 +197,10 @@ namespace Battlehub.UIControls.MenuControl
             var validationResult = IsValid();
             if (validationResult.IsValid)
             {
-                if (m_item.Action != null)
-                {
-                    m_item.Action.Invoke(m_item.Command);
-                }
-
-                if(this != null)
+                if (this != null)
                 {
                     Menu menu = GetComponentInParent<Menu>();
-                    if(menu != null)
+                    if (menu != null)
                     {
                         while (menu.Parent != null)
                         {
@@ -213,6 +208,11 @@ namespace Battlehub.UIControls.MenuControl
                         }
                         menu.Close();
                     }
+                }
+
+                if (m_item.Action != null)
+                {
+                    m_item.Action.Invoke(m_item.Command);
                 }
             }
         }

@@ -148,11 +148,10 @@ namespace Battlehub.RTCommon
                 m_graphicsLayerCamera.enabled = m_editorWindow.Camera.enabled;
             }
 
-            if(m_graphicsLayerCamera.gameObject.activeSelf != m_editorWindow.Camera.gameObject.activeSelf)
-            {
-                m_graphicsLayerCamera.gameObject.SetActive(m_editorWindow.Camera.gameObject.activeSelf);
-            }
-
+            //if(m_graphicsLayerCamera.gameObject.activeSelf != m_editorWindow.Camera.gameObject.activeSelf)
+            //{
+            //    m_graphicsLayerCamera.gameObject.SetActive(m_editorWindow.Camera.gameObject.activeSelf);
+            //}
             
             //if(m_trackedPoseDriver != null)
 
