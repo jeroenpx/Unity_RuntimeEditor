@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTSL.Interface
@@ -93,6 +95,7 @@ namespace Battlehub.RTSL.Interface
 
         ProjectAsyncOperation<UnityObject[]> Load(AssetItem[] assetItems, ProjectEventHandler<UnityObject[]> callback = null);
         ProjectAsyncOperation Unload(ProjectEventHandler completedCallback = null);
+        void Unload(AssetItem[] assetItems);
 
         ProjectAsyncOperation<ProjectItem> LoadImportItems(string path, bool isBuiltIn, ProjectEventHandler<ProjectItem> callback = null);
         void UnloadImportItems(ProjectItem importItemsRoot);
@@ -106,12 +109,19 @@ namespace Battlehub.RTSL.Interface
         ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);
         Dictionary<int, string> GetStaticAssetLibraries();
 
+        ProjectAsyncOperation<T[]> GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback = null) where T : new();
         ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) where T : new();
         ProjectAsyncOperation SetValue<T>(string key, T obj, ProjectEventHandler callback = null);
+        ProjectAsyncOperation DeleteValue<T>(string key, ProjectEventHandler callback = null);
     }
 
     public class ProjectAsyncOperation : CustomYieldInstruction
     {
+        public bool HasError
+        {
+            get { return Error.HasError; }
+        }
+
         public Error Error
         {
             get;
@@ -150,6 +160,12 @@ namespace Battlehub.RTSL.Interface
     {
         public static string[] Find<T>(this IProject project, string filter = null, bool allowSubclasses = false)
         {
+            Type typeofT = typeof(T);
+            return Find(project, filter, allowSubclasses, typeofT);
+        }
+
+        public static string[] Find(this IProject project, string filter, bool allowSubclasses, Type typeofT)
+        {
             List<string> result = new List<string>();
             ProjectItem[] projectItems = project.Root.Flatten(true);
             for (int i = 0; i < projectItems.Length; ++i)
@@ -161,9 +177,9 @@ namespace Battlehub.RTSL.Interface
                     continue;
                 }
 
-                if (type != typeof(T))
+                if (type != typeofT)
                 {
-                    if(!allowSubclasses || !type.IsSubclassOf(typeof(T)))
+                    if (!allowSubclasses || !type.IsSubclassOf(typeofT))
                     {
                         continue;
                     }
@@ -200,12 +216,18 @@ namespace Battlehub.RTSL.Interface
 
         public static ProjectItem Get<T>(this IProject project, string path)
         {
+            Type type = typeof(T);
+            return Get(project, path, type);
+        }
+        
+        public static ProjectItem Get(this IProject project, string path, Type type)
+        {
             if (!project.IsOpened)
             {
                 throw new InvalidOperationException("OpenProject first");
             }
 
-            return project.Root.Get(string.Format("{0}/{1}{2}", project.Root.Name, path, project.GetExt(typeof(T))));
+            return project.Root.Get(string.Format("{0}/{1}{2}", project.Root.Name, path, project.GetExt(type)));
         }
 
         public static ProjectItem GetFolder(this IProject project, string path = null, bool forceCreate = false)
@@ -223,9 +245,16 @@ namespace Battlehub.RTSL.Interface
             return project.Root.Get(string.Format("{0}/{1}", project.Root.Name, path), forceCreate);
         }
 
+        public static bool FolderExist(this IProject project, string path)
+        {
+            ProjectItem projectItem = project.GetFolder(path);
+            return projectItem != null && projectItem.ToString().ToLower() == ("/Assets/" + path).ToLower();
+        }
+
         public static bool Exist<T>(this IProject project, string path)
         {
-            return project.Get<T>(path) != null;
+            ProjectItem projectItem = project.Get<T>(path);
+            return projectItem != null && projectItem.ToString().ToLower() == ("/Assets/" + path + projectItem.Ext).ToLower();
         }
 
         public static ProjectAsyncOperation CreateFolder(this IProject project, string path)
@@ -251,7 +280,77 @@ namespace Battlehub.RTSL.Interface
             return project.Delete(new[] { projectItem });
         }
 
-        public static ProjectAsyncOperation Save(this IProject project, string path, object obj, byte[] preview = null)
+        public static ProjectAsyncOperation CreatePrefab(this IProject project, string folderPath, GameObject prefab, bool includeDeps, Func<UnityObject, byte[]> createPreview = null)
+        {
+            ProjectAsyncOperation ao = new ProjectAsyncOperation();
+
+            folderPath = string.Format("{0}/{1}", project.Root.Name, folderPath);
+            ProjectItem folder = project.Root.Get(folderPath, true) as ProjectItem;
+            if(folder is AssetItem)
+            {
+                throw new ArgumentException("folderPath");
+            }
+
+            if(includeDeps)
+            {
+                project.GetDependencies(prefab, true, (error, deps) =>
+                {
+                    object[] objects;
+                    if (!deps.Contains(prefab))
+                    {
+                        objects = new object[deps.Length + 1];
+                        objects[deps.Length] = prefab;
+                        for (int i = 0; i < deps.Length; ++i)
+                        {
+                            objects[i] = deps[i];
+                        }
+                    }
+                    else
+                    {
+                        objects = deps;
+                    }
+
+                    IUnityObjectFactory uoFactory = IOC.Resolve<IUnityObjectFactory>();
+                    objects = objects.Where(obj => uoFactory.CanCreateInstance(obj.GetType())).ToArray();
+
+                    byte[][] previewData = new byte[objects.Length][];
+                    if (createPreview != null)
+                    {
+                        for (int i = 0; i < objects.Length; ++i)
+                        {
+                            if (objects[i] is UnityObject)
+                            {
+                                previewData[i] = createPreview((UnityObject)objects[i]);
+                            }
+                        }
+                    }
+
+                    project.Save(new[] { folder }, previewData, objects, null, (saveErr, assetItems) =>
+                    {
+                        ao.Error = saveErr;
+                        ao.IsCompleted = true;
+                    });
+                });
+            }
+            else
+            {
+                byte[][] previewData = new byte[1][];
+                if (createPreview != null)
+                {
+                    previewData[0] = createPreview(prefab);
+                }
+
+                project.Save(new[] { folder }, previewData, new[] { prefab }, null, (saveErr, assetItems) =>
+                {
+                    ao.Error = saveErr;
+                    ao.IsCompleted = true;
+                });
+            }
+
+            return ao;
+        }
+
+        public static ProjectAsyncOperation<AssetItem[]> Save(this IProject project, string path, object obj, byte[] preview = null)
         {
             if (!project.IsOpened)
             {
@@ -286,6 +385,12 @@ namespace Battlehub.RTSL.Interface
 
         public static ProjectAsyncOperation<UnityObject[]> Load<T>(this IProject project, string path)
         {
+            Type type = typeof(T);
+            return Load(project, path, type);
+        }
+
+        public static ProjectAsyncOperation<UnityObject[]> Load(this IProject project, string path, Type type)
+        {
             if (!project.IsOpened)
             {
                 throw new InvalidOperationException("OpenProject first");
@@ -293,7 +398,7 @@ namespace Battlehub.RTSL.Interface
 
             path = string.Format("{0}/{1}", project.Root.Name, path);
 
-            AssetItem assetItem = project.Root.Get(path + project.GetExt(typeof(T))) as AssetItem;
+            AssetItem assetItem = project.Root.Get(path + project.GetExt(type)) as AssetItem;
             if (assetItem == null)
             {
                 throw new ArgumentException("not found", "path");
@@ -304,6 +409,12 @@ namespace Battlehub.RTSL.Interface
 
         public static ProjectAsyncOperation Delete<T>(this IProject project, string path)
         {
+            Type type = typeof(T);
+            return Delete(project, path, type);
+        }
+
+        public static ProjectAsyncOperation Delete(this IProject project, string path, Type type)
+        {
             if (!project.IsOpened)
             {
                 throw new InvalidOperationException("OpenProject first");
@@ -311,13 +422,29 @@ namespace Battlehub.RTSL.Interface
 
             path = string.Format("{0}/{1}", project.Root.Name, path);
 
-            AssetItem projectItem = project.Root.Get(path + project.GetExt(typeof(T))) as AssetItem;
+            AssetItem projectItem = project.Root.Get(path + project.GetExt(type)) as AssetItem;
             if (projectItem == null)
             {
                 throw new ArgumentException("not found", "path");
             }
 
             return project.Delete(new[] { projectItem });
+        }
+
+        public static void Unload<T>(this IProject project, string path)
+        {
+            project.Unload(path, typeof(T));
+        }
+
+        public static void Unload(this IProject project, string path, Type type)
+        {
+            AssetItem unloadItem = (AssetItem)project.Get(path, type);
+            if(unloadItem == null)
+            {
+                Debug.Log("Unable to unload. Item was not found " + path);
+                return;
+            }
+            project.Unload(new[] { unloadItem });
         }
     }
 }

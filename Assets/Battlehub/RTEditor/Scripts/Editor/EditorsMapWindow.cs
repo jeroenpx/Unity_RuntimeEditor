@@ -73,7 +73,6 @@ namespace Battlehub.RTEditor
             Init();
         }
 
-
         private void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
         {
             assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.Contains("UnityEditor") && !a.FullName.Contains("Assembly-CSharp-Editor")).OrderBy(a => a.FullName).ToArray();
@@ -119,14 +118,16 @@ namespace Battlehub.RTEditor
             m_propertyEditorDescriptors = new[] { typeof(object), typeof(UnityEngine.Object), typeof(bool), typeof(Enum), typeof(List<>), typeof(Array), typeof(string), typeof(int), typeof(float), typeof(Range), typeof(Vector2), typeof(Vector3), typeof(Vector4), typeof(Quaternion), typeof(Color), typeof(Bounds), typeof(RangeInt) }
                 .Where(t =>  t.IsPublic)
                 .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsPropertyEditorEnabled(t), m_map != null ? editorsMap.GetPropertyEditor(t, true) : null, true)).ToArray();
+
             m_stdComponentEditorDescriptors = unityAssemblies.SelectMany(a => a.GetTypes())
                 .Where(t => typeof(Component).IsAssignableFrom(t) && t.IsPublic && !t.IsGenericType)
                 .OrderBy(t => (t == typeof(Component)) ? string.Empty : t.Name)
                 .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
+
             m_scriptEditorDescriptors = otherAssemblies.SelectMany(a => a.GetTypes())
                 .Where(t => typeof(MonoBehaviour).IsAssignableFrom(t) && t.IsPublic && !t.IsGenericType)
                 .OrderBy(t => t.FullName)
-                .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
+                .Select(t => GetScriptEditorDescriptor(t, editorsMap)).ToArray();
 
             List<Material> materials = new List<Material>();
             string[] assets = AssetDatabase.GetAllAssetPaths();
@@ -155,6 +156,27 @@ namespace Battlehub.RTEditor
                 .Select(s => new MaterialEditorDescriptor(s, m_map != null && editorsMap.IsMaterialEditorEnabled(s), m_map != null ? editorsMap.GetMaterialEditor(s, true) : null)).ToArray();
 
             m_materialDescriptors = defaultDescriptors.Union(materialDescriptors).ToArray();
+        }
+
+        private EditorDescriptor GetScriptEditorDescriptor(Type t, EditorsMap editorsMap)
+        {
+            bool isPropertyEditorType = typeof(PropertyEditor).IsAssignableFrom(t);
+            bool isEditorEnabled = false;
+            GameObject editor = null;
+            if(m_map != null)
+            {
+                if (isPropertyEditorType)
+                {
+                    isEditorEnabled = editorsMap.IsPropertyEditorEnabled(t, true);
+                    editor = editorsMap.GetPropertyEditor(t, true);
+                }
+                else
+                {
+                    isEditorEnabled = editorsMap.IsObjectEditorEnabled(t);
+                    editor = editorsMap.GetObjectEditor(t, true);
+                }
+            }
+            return new EditorDescriptor(t, isEditorEnabled, editor, isPropertyEditorType);  
         }
 
         private bool m_objectsGroup = true;

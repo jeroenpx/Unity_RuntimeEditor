@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
+using Battlehub.Utils;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,10 +26,6 @@ namespace Battlehub.RTSL
             {
                 if(File.Exists(Application.streamingAssetsPath + "/credentials.json"))
                 {
-                    if(gameObject.GetComponent<Dispatcher.Dispatcher>() == null)
-                    {
-                        gameObject.AddComponent<Dispatcher.Dispatcher>();
-                    }
                     return new GoogleDriveAssetBundleLoader();
                 }
                 else
@@ -94,6 +91,11 @@ namespace Battlehub.RTSL
 
         protected virtual void AwakeOverride()
         {
+            if (gameObject.GetComponent<Dispatcher>() == null)
+            {
+                gameObject.AddComponent<Dispatcher>();
+            }
+
             m_assetBundleLoader = AssetBundleLoader;
             m_assetDB = AssetDB;
             m_shaderUtil = ShaderUtil;

@@ -86,7 +86,8 @@ namespace Battlehub.RTSL
             {
                 if (RTSLPath.UserRoot != m_path && Directory.Exists(Application.dataPath + m_path))
                 {
-                    EditorUtility.DisplayDialog("Directory already exists", "Unable to change data path. Directory " + Application.dataPath + m_path + " already exists", "OK");
+                    EditorUtility.DisplayDialog("Directory already exists", "Unable to copy files. Directory " + Application.dataPath + m_path + " already exists", "OK");
+                    RTSLPath.UserRoot = m_path;
                 }
                 else
                 {

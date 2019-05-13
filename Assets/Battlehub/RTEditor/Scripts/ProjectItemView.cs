@@ -71,6 +71,15 @@ namespace Battlehub.RTEditor
 
         private void UpdateImage()
         {
+            if(m_project == null)
+            {
+                m_project = IOC.Resolve<IProject>();
+                if(m_project == null)
+                {
+                    Debug.LogError("Project is null");
+                }
+            }
+
             if (m_texture != null)
             {
                 Destroy(m_texture);

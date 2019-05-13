@@ -11,6 +11,7 @@ using System.Threading;
 using System.Linq;
 using Google.Apis.Download;
 using Battlehub;
+using Battlehub.Utils;
 
 namespace Battlehub.RTSL
 {
@@ -186,9 +187,9 @@ namespace Battlehub.RTSL
         {
             if(IsPlaying)
             {
-                if (Dispatcher.Dispatcher.Current != null)
+                if (Dispatcher.Current != null)
                 {
-                    Dispatcher.Dispatcher.Current.BeginInvoke(() =>
+                    Dispatcher.BeginInvoke(() =>
                     {
                         action();
                     });
@@ -208,9 +209,9 @@ namespace Battlehub.RTSL
         {
             if (IsPlaying)
             {
-                if (Dispatcher.Dispatcher.Current != null)
+                if (Dispatcher.Current != null)
                 {
-                    Dispatcher.Dispatcher.Current.BeginInvoke(() =>
+                    Dispatcher.BeginInvoke(() =>
                     {
                         callback(bundle);
                     });

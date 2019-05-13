@@ -940,9 +940,17 @@ namespace Battlehub.RTCommon
 
         public void RegisterCreatedObjects(GameObject[] gameObjects)
         {
-            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
+            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(o => o != null).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
+
             Undo.BeginRecord();
-            Undo.RegisterCreatedObjects(exposeToEditor);
+            if (exposeToEditor.Length == 0)
+            {
+                Debug.LogWarning("To register created object GameObject add ExposeToEditor script to it");
+            }
+            else
+            {
+                Undo.RegisterCreatedObjects(exposeToEditor);
+            }
             Selection.objects = gameObjects;
             Undo.EndRecord();
         }

@@ -6,6 +6,8 @@ using UnityEngine;
 using Battlehub.RTSL.Interface;
 using Battlehub.RTCommon;
 using System.Linq;
+using System.Threading;
+using Battlehub.Utils;
 
 namespace Battlehub.RTSL
 {
@@ -30,18 +32,22 @@ namespace Battlehub.RTSL
         void Move(string projectPath, string[] paths, string[] names, string targetPath, StorageEventHandler callback);
         void Rename(string projectPath, string[] paths, string[] oldNames, string[] names, StorageEventHandler callback);
         void Create(string projectPath, string[] paths, string[] names, StorageEventHandler callback);
-        void SetValue(string projectPath, string key, PersistentObject persistentObject, StorageEventHandler callback);
         void GetValue(string projectPath, string key, Type type, StorageEventHandler<PersistentObject> callback);
+        void GetValues(string projectPath, string searchPattern, Type type, StorageEventHandler<PersistentObject[]> callback);
+        void SetValue(string projectPath, string key, PersistentObject persistentObject, StorageEventHandler callback);
+        void DeleteValue(string projectPath, string key, StorageEventHandler callback);
     }
 
     public class FileSystemStorage : IStorage
     {
         private const string MetaExt = ".rtmeta";
         private const string PreviewExt = ".rtview";
+        private const string KeyValueStorage = "Values";
 
         private string RootPath
         {
-            get { return Application.persistentDataPath + "/"; }
+            get;
+            set;
         }
 
         private string FullPath(string path)
@@ -56,6 +62,7 @@ namespace Battlehub.RTSL
 
         public FileSystemStorage()
         {
+            RootPath = Application.persistentDataPath + "/";
             Debug.LogFormat("RootPath : {0}", RootPath);
         }
 
@@ -311,175 +318,187 @@ namespace Battlehub.RTSL
 
         public void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, bool previewOnly, StorageEventHandler callback)
         {
-            if(!previewOnly)
+            QueueUserWorkItem(() =>
             {
-                if (assetItems.Length != persistentObjects.Length)
+                if (!previewOnly)
                 {
-                    throw new ArgumentException("assetItems");
+                    if (assetItems.Length != persistentObjects.Length)
+                    {
+                        throw new ArgumentException("assetItems");
+                    }
                 }
-            }
 
-            if(assetItems.Length > folderPaths.Length)
-            {
-                int l = folderPaths.Length;
-                Array.Resize(ref folderPaths, assetItems.Length);
-                for (int i = l; i < folderPaths.Length; ++i)
+                if (assetItems.Length > folderPaths.Length)
                 {
-                    folderPaths[i] = folderPaths[l - 1];
+                    int l = folderPaths.Length;
+                    Array.Resize(ref folderPaths, assetItems.Length);
+                    for (int i = l; i < folderPaths.Length; ++i)
+                    {
+                        folderPaths[i] = folderPaths[l - 1];
+                    }
                 }
-            }
 
-            projectPath = FullPath(projectPath);
-            if(!Directory.Exists(projectPath))
-            {
-                Directory.CreateDirectory(projectPath);
-            }
-
-            string projectInfoPath = projectPath + "/Project.rtmeta";
-            ISerializer serializer = IOC.Resolve<ISerializer>();
-            Error error = new Error(Error.OK);
-            for(int i = 0; i < assetItems.Length; ++i)
-            {
-                string folderPath = folderPaths[i];
-                AssetItem assetItem = assetItems[i];
-                
-                try
+                projectPath = FullPath(projectPath);
+                if (!Directory.Exists(projectPath))
                 {
-                    string path = projectPath + folderPath;
-                    if(!Directory.Exists(path))
-                    {
-                        Directory.CreateDirectory(path);
-                    }
+                    Directory.CreateDirectory(projectPath);
+                }
 
-                    string previewPath = path + "/" + assetItem.NameExt + PreviewExt;
-                    if (assetItem.Preview == null)
-                    {
-                        File.Delete(previewPath);
-                    }
-                    else
-                    {
-                        File.Delete(previewPath);
-                        using (FileStream fs = File.Create(previewPath))
-                        {
-                            serializer.Serialize(assetItem.Preview, fs);
-                        }
-                    }
+                string projectInfoPath = projectPath + "/Project.rtmeta";
+                ISerializer serializer = IOC.Resolve<ISerializer>();
+                Error error = new Error(Error.OK);
+                for (int i = 0; i < assetItems.Length; ++i)
+                {
+                    string folderPath = folderPaths[i];
+                    AssetItem assetItem = assetItems[i];
 
-                    if(!previewOnly)
+                    try
                     {
-                        PersistentObject persistentObject = persistentObjects[i];
-                        File.Delete(path + "/" + assetItem.NameExt + MetaExt);
-                        using (FileStream fs = File.Create(path + "/" + assetItem.NameExt + MetaExt))
+                        string path = projectPath + folderPath;
+                        if (!Directory.Exists(path))
                         {
-                            serializer.Serialize(assetItem, fs);
+                            Directory.CreateDirectory(path);
                         }
 
-                        File.Delete(path + "/" + assetItem.NameExt);
-                        using (FileStream fs = File.Create(path + "/" + assetItem.NameExt))
+                        string previewPath = path + "/" + assetItem.NameExt + PreviewExt;
+                        if (assetItem.Preview == null)
                         {
-                            serializer.Serialize(persistentObject, fs);
+                            File.Delete(previewPath);
+                        }
+                        else
+                        {
+                            File.Delete(previewPath);
+                            using (FileStream fs = File.Create(previewPath))
+                            {
+                                serializer.Serialize(assetItem.Preview, fs);
+                            }
+                        }
+
+                        if (!previewOnly)
+                        {
+                            PersistentObject persistentObject = persistentObjects[i];
+                            File.Delete(path + "/" + assetItem.NameExt + MetaExt);
+                            using (FileStream fs = File.Create(path + "/" + assetItem.NameExt + MetaExt))
+                            {
+                                serializer.Serialize(assetItem, fs);
+                            }
+
+                            File.Delete(path + "/" + assetItem.NameExt);
+                            using (FileStream fs = File.Create(path + "/" + assetItem.NameExt))
+                            {
+                                serializer.Serialize(persistentObject, fs);
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Debug.LogErrorFormat("Unable to create asset: {0} -> got exception: {1} ", assetItem.NameExt, e.ToString());
+                        error.ErrorCode = Error.E_Exception;
+                        error.ErrorText = e.ToString();
+                        break;
+                    }
                 }
-                catch (Exception e)
+
+                File.Delete(projectInfoPath);
+                using (FileStream fs = File.Create(projectInfoPath))
                 {
-                    Debug.LogErrorFormat("Unable to create asset: {0} -> got exception: {1} ", assetItem.NameExt, e.ToString());
-                    error.ErrorCode = Error.E_Exception;
-                    error.ErrorText = e.ToString();
-                    break;
+                    serializer.Serialize(projectInfo, fs);
                 }
-            }
 
-            File.Delete(projectInfoPath);
-            using (FileStream fs = File.Create(projectInfoPath))
-            {
-                serializer.Serialize(projectInfo, fs);
-            }
-
-            callback(error);
+                Callback(() => callback(error));
+            });
         }
 
         public void Save(string projectPath, AssetBundleInfo assetBundleInfo, ProjectInfo projectInfo, StorageEventHandler callback)
         {
-            projectPath = FullPath(projectPath);
-            string projectInfoPath = projectPath + "/Project.rtmeta";
-
-            string assetBundlePath = assetBundleInfo.UniqueName.Replace("/", "_").Replace("\\", "_");
-            assetBundlePath += ".rtbundle";
-            assetBundlePath = projectPath + "/" + assetBundlePath;
-
-            ISerializer serializer = IOC.Resolve<ISerializer>();
-
-            using (FileStream fs = File.OpenWrite(assetBundlePath))
+            QueueUserWorkItem(() =>
             {
-                serializer.Serialize(assetBundleInfo, fs);
-            }
+                projectPath = FullPath(projectPath);
+                string projectInfoPath = projectPath + "/Project.rtmeta";
 
-            using (FileStream fs = File.OpenWrite(projectInfoPath))
-            {
-                serializer.Serialize(projectInfo, fs);
-            }
+                string assetBundlePath = assetBundleInfo.UniqueName.Replace("/", "_").Replace("\\", "_");
+                assetBundlePath += ".rtbundle";
+                assetBundlePath = projectPath + "/" + assetBundlePath;
 
-            callback(new Error(Error.OK));
+                ISerializer serializer = IOC.Resolve<ISerializer>();
+
+                using (FileStream fs = File.OpenWrite(assetBundlePath))
+                {
+                    serializer.Serialize(assetBundleInfo, fs);
+                }
+
+                using (FileStream fs = File.OpenWrite(projectInfoPath))
+                {
+                    serializer.Serialize(projectInfo, fs);
+                }
+
+                Callback(() => callback(new Error(Error.OK)));
+            });
         }
 
         public void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback)
         {
-            PersistentObject[] result = new PersistentObject[assetPaths.Length];
-            for(int i = 0; i < assetPaths.Length; ++i)
+            QueueUserWorkItem(() =>
             {
-                string assetPath = assetPaths[i];
-                assetPath = FullPath(projectPath) + assetPath;
-                ISerializer serializer = IOC.Resolve<ISerializer>();
-                try
+                PersistentObject[] result = new PersistentObject[assetPaths.Length];
+                for (int i = 0; i < assetPaths.Length; ++i)
                 {
-                    if (File.Exists(assetPath))
+                    string assetPath = assetPaths[i];
+                    assetPath = FullPath(projectPath) + assetPath;
+                    ISerializer serializer = IOC.Resolve<ISerializer>();
+                    try
                     {
-                        using (FileStream fs = File.OpenRead(assetPath))
+                        if (File.Exists(assetPath))
                         {
-                            result[i] = (PersistentObject)serializer.Deserialize(fs, types[i]);
+                            using (FileStream fs = File.OpenRead(assetPath))
+                            {
+                                result[i] = (PersistentObject)serializer.Deserialize(fs, types[i]);
+                            }
                         }
+                        else
+                        {
+                            Callback(() => callback(new Error(Error.E_NotFound), new PersistentObject[0]));
+                            return;
+                        }
+
                     }
-                    else
+                    catch (Exception e)
                     {
-                        callback(new Error(Error.E_NotFound), new PersistentObject[0]);
+                        Debug.LogErrorFormat("Unable to load asset: {0} -> got exception: {1} ", assetPath, e.ToString());
+                        Callback(() => callback(new Error(Error.E_Exception) { ErrorText = e.ToString() }, new PersistentObject[0]));
                         return;
                     }
-
                 }
-                catch (Exception e)
-                {
-                    Debug.LogErrorFormat("Unable to load asset: {0} -> got exception: {1} ", assetPath, e.ToString());
-                    callback(new Error(Error.E_Exception) { ErrorText = e.ToString() }, new PersistentObject[0]);
-                    return;
-                }
-            }
 
-            callback(new Error(Error.OK), result);
+                Callback(() => callback(new Error(Error.OK), result));
+            });
+           
         }
 
         public void Load(string projectPath, string bundleName, StorageEventHandler<AssetBundleInfo> callback)
         {
-            string assetBundleInfoPath = bundleName.Replace("/", "_").Replace("\\", "_");
-            assetBundleInfoPath += ".rtbundle";
-            assetBundleInfoPath = FullPath(projectPath) + "/" + assetBundleInfoPath;
-
-            ISerializer serializer = IOC.Resolve<ISerializer>();
-            if (File.Exists(assetBundleInfoPath))
+            QueueUserWorkItem(() =>
             {
-                AssetBundleInfo result = null;
-                using (FileStream fs = File.OpenRead(assetBundleInfoPath))
+                string assetBundleInfoPath = bundleName.Replace("/", "_").Replace("\\", "_");
+                assetBundleInfoPath += ".rtbundle";
+                assetBundleInfoPath = FullPath(projectPath) + "/" + assetBundleInfoPath;
+
+                ISerializer serializer = IOC.Resolve<ISerializer>();
+                if (File.Exists(assetBundleInfoPath))
                 {
-                    result = serializer.Deserialize<AssetBundleInfo>(fs);
-                }
+                    AssetBundleInfo result = null;
+                    using (FileStream fs = File.OpenRead(assetBundleInfoPath))
+                    {
+                        result = serializer.Deserialize<AssetBundleInfo>(fs);
+                    }
 
-                callback(new Error(Error.OK), result);
-            }
-            else
-            {
-                callback(new Error(Error.E_NotFound), null);
-                return;
-            }
+                    Callback(() => callback(new Error(Error.OK), result));
+                }
+                else
+                {
+                    Callback(() => callback(new Error(Error.E_NotFound), null));
+                }
+            });
         }
 
 
@@ -579,34 +598,20 @@ namespace Battlehub.RTSL
             callback(new Error(Error.OK));
         }
 
-        public void SetValue(string projectPath, string key, PersistentObject persistentObject, StorageEventHandler callback)
-        {
-            string fullPath = FullPath(projectPath);
-            string path = fullPath + "/" + key;
-            ISerializer serializer = IOC.Resolve<ISerializer>();
-
-            if(File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            
-            using (FileStream fs = File.Create(path))
-            {
-                serializer.Serialize(persistentObject, fs);
-            }
-            serializer.Serialize(persistentObject);
-
-            callback(new Error(Error.OK));
-        }
-
+        
         public void GetValue(string projectPath, string key, Type type, StorageEventHandler<PersistentObject> callback)
         {
             string fullPath = FullPath(projectPath);
-            string path = fullPath + "/" + key;
-            ISerializer serializer = IOC.Resolve<ISerializer>();
+            string path = fullPath + "/" + KeyValueStorage;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
 
+            path = path + "/" + key;
             if (File.Exists(path))
             {
+                ISerializer serializer = IOC.Resolve<ISerializer>();
                 object result = null;
                 using (FileStream fs = File.OpenRead(path))
                 {
@@ -620,6 +625,98 @@ namespace Battlehub.RTSL
                 callback(new Error(Error.E_NotFound), null);
                 return;
             }
+        }
+
+        public void GetValues(string projectPath, string searchPattern, Type type, StorageEventHandler<PersistentObject[]> callback)
+        {
+            QueueUserWorkItem(() =>
+            {
+                string fullPath = FullPath(projectPath);
+                string path = fullPath + "/" + KeyValueStorage;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string[] files = Directory.GetFiles(path, searchPattern);
+                PersistentObject[] result = new PersistentObject[files.Length];
+
+                ISerializer serializer = IOC.Resolve<ISerializer>();
+                for (int i = 0; i < files.Length; ++i)
+                {
+                    using (FileStream fs = File.OpenRead(files[i]))
+                    {
+                        result[i] = (PersistentObject)serializer.Deserialize(fs, type);
+                    }
+                }
+
+                Callback(() => callback(Error.NoError, result));
+            });
+        }
+
+        public void SetValue(string projectPath, string key, PersistentObject persistentObject, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            string path = fullPath + "/" + KeyValueStorage;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            path = path + "/" + key;
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            ISerializer serializer = IOC.Resolve<ISerializer>();
+            using (FileStream fs = File.Create(path))
+            {
+                serializer.Serialize(persistentObject, fs);
+            }
+            serializer.Serialize(persistentObject);
+
+            callback(new Error(Error.OK));
+        }
+
+        public void DeleteValue(string projectPath, string key, StorageEventHandler callback)
+        {
+            string fullPath = FullPath(projectPath);
+            string path = fullPath + "/" + KeyValueStorage + "/" + key;
+            File.Delete(path);
+            callback(Error.NoError);
+        }
+
+        public void QueueUserWorkItem(Action action)
+        {
+#if UNITY_WEBGL
+            callback();
+#else
+            if (Dispatcher.Current != null)
+            {
+                ThreadPool.QueueUserWorkItem(arg =>
+                {
+                    try
+                    {
+                        action();
+                    }
+                    catch(Exception e)
+                    {
+                        Dispatcher.BeginInvoke(() => Debug.LogError(e));
+                    }
+                    
+                });
+            }
+            else
+            {
+                action();
+            }
+#endif
+        }
+
+        public void Callback(Action callback)
+        {
+            Dispatcher.BeginInvoke(callback);
         }
     }
 }

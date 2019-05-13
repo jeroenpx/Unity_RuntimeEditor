@@ -38336,7 +38336,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 1
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 0
     PersistentTag: 18
     PersistentNamespace: System.Battlehub.SL2
@@ -38350,7 +38350,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 0
     PersistentTag: 19
     PersistentNamespace: System.Battlehub.SL2
@@ -38364,7 +38364,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 0
     PersistentTag: 20
     PersistentNamespace: System.Battlehub.SL2
@@ -72924,7 +72924,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1389802694760091819}
   m_Layer: 0
-  m_Name: ClassMappingsStorage
+  m_Name: ClassMappingsTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

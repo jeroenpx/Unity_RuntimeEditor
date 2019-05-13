@@ -7,18 +7,18 @@ namespace Battlehub.RTEditor
         public const string EditorsMapPrefabName = "Battlehub_EditorsMapAuto";
         public const string EditorsMapTemplateName = "Battlehub_EditorsMapTemplate";
 
-        [HideInInspector]
+        //[HideInInspector]
         public GameObject[] Editors;
 
-        [HideInInspector]
+        //[HideInInspector]
         public bool IsDefaultMaterialEditorEnabled;
-        [HideInInspector]
+        //[HideInInspector]
         public GameObject DefaultMaterialEditor;
-        [HideInInspector]
+        //[HideInInspector]
         public Shader[] Shaders;
-       // [HideInInspector]
+        //[HideInInspector]
         public GameObject[] MaterialEditors;
-       // [HideInInspector]
+        //[HideInInspector]
         public bool[] IsMaterialEditorEnabled;
      
     }

@@ -47,7 +47,7 @@ namespace Battlehub.RTHandles
         public BaseHandleModel Model;
 
         private LockObject m_lockObject;
-        protected LockObject LockObject
+        public LockObject LockObject
         {
             get { return m_lockObject; }
             set
@@ -65,10 +65,10 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual Vector3 HandlePosition
+        public virtual Vector3 Position
         {
             get { return transform.position; }
-            set { transform.position = value; }
+            protected set { transform.position = value; }
         }
 
         /// <summary>
@@ -729,7 +729,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void SyncModelTransform()
         {
-            Vector3 position = HandlePosition;
+            Vector3 position = Position;
             Model.transform.position = position;
             Model.transform.rotation = Rotation;
             float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera);
@@ -757,11 +757,6 @@ namespace Battlehub.RTHandles
 
         public void BeginDrag()
         {
-            if (BeforeDrag != null)
-            {
-                BeforeDrag.Invoke(this);
-            }
-
             m_isPointerDown = true;
 
             if (Editor.Tools.Current != Tool && Editor.Tools.Current != RuntimeTool.None || Editor.Tools.IsViewing)
@@ -787,6 +782,11 @@ namespace Battlehub.RTHandles
             m_isDragging = OnBeginDrag();
             if (m_isDragging)
             {
+                if (BeforeDrag != null)
+                {
+                    BeforeDrag.Invoke(this);
+                }
+
                 Editor.Tools.ActiveTool = this;
                 BeginRecordTransform();
             }
@@ -796,7 +796,6 @@ namespace Battlehub.RTHandles
                 {
                     Editor.Tools.ActiveTool = null;
                 }
-                
             }
         }
 
@@ -809,11 +808,10 @@ namespace Battlehub.RTHandles
                 OnDrop();
                 EndRecordTransform();
                 m_isDragging = false;
-            }
-
-            if(Drop != null)
-            {
-                Drop.Invoke(this);
+                if (Drop != null)
+                {
+                    Drop.Invoke(this);
+                }
             }
         }
 
@@ -918,7 +916,6 @@ namespace Battlehub.RTHandles
                 {
                     Targets = m_realTargets;
                 }
-              
             }
         }
 
@@ -1061,6 +1058,18 @@ namespace Battlehub.RTHandles
         protected virtual void DrawOverride(Camera camera)
         {
 
+        }
+
+        public void SetModel(BaseHandleModel model)
+        {
+            model.Appearance = Appearance;
+            model.Window = Window;
+            model.ModelScale = Appearance.HandleScale;
+            model.SelectionMargin = Appearance.SelectionMargin;
+            model.gameObject.SetActive(gameObject.activeSelf && enabled);
+            model.SetLock(LockObject);
+
+            Model = model;
         }
     }
 }

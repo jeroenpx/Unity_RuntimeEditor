@@ -509,6 +509,20 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
+        public void AddRegion(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, bool canDrag = true, bool canClose = true)
+        {
+            m_rootRegion.Add(icon, header, content, isFree, splitType, flexibleSize, canDrag, canClose);
+        }
+
+        public void RemoveRegion(Transform content)
+        {
+            Tab tab = Region.FindTab(content);
+            if(tab != null)
+            {
+                tab.Close();
+            }
+        }
+
         public void AddModalRegion(Transform headerContent, Transform content, float ratio = 0.7f, bool canResize = true)
         {
             AddModalRegion(headerContent, content, m_modal.rect.width * ratio, m_modal.rect.height * ratio);
@@ -544,7 +558,6 @@ namespace Battlehub.UIControls.DockPanels
             region.CanResize = canResize;
             region.MinWidth = minWidth;
             region.MinHeight = minHeight;
-
 
             if (rect.width > m_modal.rect.width - margin * 2)
             {

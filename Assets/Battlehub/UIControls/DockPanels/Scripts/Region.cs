@@ -381,7 +381,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             tab.Toggle += region.OnTabToggle;
             tab.PointerDown += region.OnTabPointerDown;
-            tab.Close += region.OnTabClose;
+            tab.Closed += region.OnTabClose;
             tab.InitializePotentialDrag += region.OnTabInitializePotentialDrag;
             tab.BeginDrag += region.OnTabBeginDrag;
             tab.Drag += region.OnTabDrag;
@@ -397,7 +397,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             tab.Toggle -= region.OnTabToggle;
             tab.PointerDown -= region.OnTabPointerDown;
-            tab.Close -= region.OnTabClose;
+            tab.Closed -= region.OnTabClose;
             tab.InitializePotentialDrag -= region.OnTabInitializePotentialDrag;
             tab.BeginDrag -= region.OnTabBeginDrag;
             tab.Drag -= region.OnTabDrag;
@@ -1105,6 +1105,7 @@ namespace Battlehub.UIControls.DockPanels
             lg.childControlWidth = true;
             lg.childForceExpandHeight = false;
             lg.childForceExpandWidth = true;
+            lg.spacing = -1;
 
             region.m_layoutGroup = lg;
         }
@@ -1127,6 +1128,7 @@ namespace Battlehub.UIControls.DockPanels
             lg.childControlWidth = true;
             lg.childForceExpandHeight = true;
             lg.childForceExpandWidth = false;
+            lg.spacing = -1;
 
             region.m_layoutGroup = lg;
         }

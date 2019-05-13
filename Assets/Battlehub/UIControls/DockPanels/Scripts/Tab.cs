@@ -32,7 +32,7 @@ namespace Battlehub.UIControls.DockPanels
         public event TabEventArgs<PointerEventData> BeginDrag;
         public event TabEventArgs<PointerEventData> Drag;
         public event TabEventArgs<PointerEventData> EndDrag;
-        public event TabEventArgs Close;
+        public event TabEventArgs Closed;
 
         private DockPanel m_root;
 
@@ -186,7 +186,7 @@ namespace Battlehub.UIControls.DockPanels
             m_toggle.onValueChanged.AddListener(OnToggleValueChanged);
             if(m_closeButton != null)
             {
-                m_closeButton.onClick.AddListener(OnCloseButtonClick);
+                m_closeButton.onClick.AddListener(Close);
             }
 
             IsCloseButtonVisible = m_canClose && (!m_showOnPointerOver || m_isPointerOver); 
@@ -206,7 +206,7 @@ namespace Battlehub.UIControls.DockPanels
 
             if (m_closeButton != null)
             {
-                m_closeButton.onClick.RemoveListener(OnCloseButtonClick);
+                m_closeButton.onClick.RemoveListener(Close);
             }
         }
 
@@ -305,11 +305,11 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        private void OnCloseButtonClick()
+        public void Close()
         {
-            if(Close != null)
+            if(Closed != null)
             {
-                Close(this);
+                Closed(this);
             }
         }
 

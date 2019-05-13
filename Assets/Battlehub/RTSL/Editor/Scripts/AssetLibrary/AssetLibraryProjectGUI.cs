@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
@@ -133,7 +134,7 @@ namespace Battlehub.RTSL
                 }
             }
 
-            return obj != null && (IsFolder(obj) || File.Exists(AssetDatabase.GetAssetPath(obj)) && !obj.GetType().Assembly.FullName.Contains("UnityEditor"));
+            return obj != null && (IsFolder(obj) || File.Exists(AssetDatabase.GetAssetPath(obj)) && (!obj.GetType().Assembly.FullName.Contains("UnityEditor") || obj.GetType() == typeof(AnimatorController)));
         }
 
         private static bool IsFolder(UnityObject obj)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
@@ -120,7 +121,7 @@ namespace Battlehub.RTSL
                 }
             }
 
-            return obj != null && (!File.Exists(AssetDatabase.GetAssetPath(obj)) || File.Exists(AssetDatabase.GetAssetPath(obj)) && !obj.GetType().Assembly.FullName.Contains("UnityEditor"));
+            return obj != null && (!File.Exists(AssetDatabase.GetAssetPath(obj)) || File.Exists(AssetDatabase.GetAssetPath(obj)) && (!obj.GetType().Assembly.FullName.Contains("UnityEditor") || obj.GetType() == typeof(AnimatorController)));
         }
 
         private DragAndDropVisualMode CanDrop(TreeViewItem parent, int insertIndex)
@@ -212,7 +213,7 @@ namespace Battlehub.RTSL
             for (int i = 0; i < objects.Length; ++i)
             {
                 UnityObject obj = objects[i];
-                if (obj == null || obj.GetType().Assembly.FullName.Contains("UnityEditor"))
+                if (obj == null || obj.GetType().Assembly.FullName.Contains("UnityEditor") && obj.GetType() != typeof(AnimatorController))
                 {
                     continue;
                 }
@@ -635,7 +636,7 @@ namespace Battlehub.RTSL
                     {
                         if (m_folders[0].Assets == null || !m_folders[0].Assets.Any(a => a.Object == m_pickedObject || a.Object != null && a.Object.name == m_pickedObject.name && a.Object.GetType() == m_pickedObject.GetType()))
                         {
-                            if (m_pickedObject == null || m_pickedObject.GetType().Assembly.FullName.Contains("UnityEditor"))
+                            if (m_pickedObject == null || m_pickedObject.GetType().Assembly.FullName.Contains("UnityEditor") && m_pickedObject.GetType() != typeof(AnimatorController))
                             {
                                 EditorUtility.DisplayDialog("Unable to add asset",
                                    string.Format("Unable to add asset {0} from assembly {1}", m_pickedObject.GetType().Name, m_pickedObject.GetType().Assembly.GetName()), "OK");

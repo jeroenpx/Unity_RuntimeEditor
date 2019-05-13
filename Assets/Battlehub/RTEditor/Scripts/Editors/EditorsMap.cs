@@ -11,7 +11,7 @@ namespace Battlehub.RTEditor
         void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor);
         void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor);
         bool IsObjectEditorEnabled(Type type);
-        bool IsPropertyEditorEnabled(Type type);
+        bool IsPropertyEditorEnabled(Type type, bool strict = false);
         bool IsMaterialEditorEnabled(Shader shader);
         GameObject GetObjectEditor(Type type, bool strict = false);
         GameObject GetPropertyEditor(Type type, bool strict = false);
@@ -86,34 +86,34 @@ namespace Battlehub.RTEditor
                 { typeof(System.Int32), new EditorDescriptor(8, true, true) },
                 { typeof(System.Single), new EditorDescriptor(9, true, true) },
                 { typeof(Range), new EditorDescriptor(10, true, true) },
-                { typeof(UnityEngine.Vector2), new EditorDescriptor(11, true, true) },
-                { typeof(UnityEngine.Vector3), new EditorDescriptor(12, true, true) },
-                { typeof(UnityEngine.Vector4), new EditorDescriptor(13, true, true) },
-                { typeof(UnityEngine.Quaternion), new EditorDescriptor(14, true, true) },
-                { typeof(UnityEngine.Color), new EditorDescriptor(15, true, true) },
-                { typeof(UnityEngine.Bounds), new EditorDescriptor(16, true, true) },
+                { typeof(Vector2), new EditorDescriptor(11, true, true) },
+                { typeof(Vector3), new EditorDescriptor(12, true, true) },
+                { typeof(Vector4), new EditorDescriptor(13, true, true) },
+                { typeof(Quaternion), new EditorDescriptor(14, true, true) },
+                { typeof(Color), new EditorDescriptor(15, true, true) },
+                { typeof(Bounds), new EditorDescriptor(16, true, true) },
                 { typeof(RangeInt), new EditorDescriptor(17, true, true) },
-                { typeof(UnityEngine.Component), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.BoxCollider), new EditorDescriptor(19, true, false) },
-                { typeof(UnityEngine.Camera), new EditorDescriptor(18, false, false) },
-                { typeof(UnityEngine.CapsuleCollider), new EditorDescriptor(19, true, false) },
-                { typeof(UnityEngine.FixedJoint), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.HingeJoint), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.Light), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.MeshCollider), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.MeshFilter), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.MeshRenderer), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.MonoBehaviour), new EditorDescriptor(18, false, false) },
-                { typeof(UnityEngine.Rigidbody), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.SkinnedMeshRenderer), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.Skybox), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.SphereCollider), new EditorDescriptor(19, true, false) },
-                { typeof(UnityEngine.SpringJoint), new EditorDescriptor(18, true, false) },
-                { typeof(UnityEngine.Transform), new EditorDescriptor(20, true, false) },
+                { typeof(Component), new EditorDescriptor(18, true, false) },
+                { typeof(BoxCollider), new EditorDescriptor(19, true, false) },
+                { typeof(Camera), new EditorDescriptor(18, true, false) },
+                { typeof(CapsuleCollider), new EditorDescriptor(19, true, false) },
+                { typeof(FixedJoint), new EditorDescriptor(18, true, false) },
+                { typeof(HingeJoint), new EditorDescriptor(18, true, false) },
+                { typeof(Light), new EditorDescriptor(18, true, false) },
+                { typeof(MeshCollider), new EditorDescriptor(18, true, false) },
+                { typeof(MeshFilter), new EditorDescriptor(18, true, false) },
+                { typeof(MeshRenderer), new EditorDescriptor(18, true, false) },
+                { typeof(MonoBehaviour), new EditorDescriptor(18, false, false) },
+                { typeof(Rigidbody), new EditorDescriptor(18, true, false) },
+                { typeof(SkinnedMeshRenderer), new EditorDescriptor(18, true, false) },
+                { typeof(Skybox), new EditorDescriptor(18, true, false) },
+                { typeof(SphereCollider), new EditorDescriptor(19, true, false) },
+                { typeof(SpringJoint), new EditorDescriptor(18, true, false) },
+                { typeof(Transform), new EditorDescriptor(20, true, false) },
                 { typeof(Cubeman.CubemanCharacter), new EditorDescriptor(18, true, false) },
                 { typeof(Cubeman.CubemanUserControl), new EditorDescriptor(18, true, false) },
                 { typeof(Cubeman.GameCameraFollow), new EditorDescriptor(18, true, false) },
-                { typeof(Cubeman.GameCharacter), new EditorDescriptor(18, true, false) },
+                { typeof(Cubeman.GameCharacter), new EditorDescriptor(18, true, false) }
             };
         }
 
@@ -185,9 +185,9 @@ namespace Battlehub.RTEditor
             return IsEditorEnabled(type, false, true);
         }
 
-        public bool IsPropertyEditorEnabled(Type type)
+        public bool IsPropertyEditorEnabled(Type type, bool strict = false)
         {
-            return IsEditorEnabled(type, true, false);
+            return IsEditorEnabled(type, true, strict);
         }
 
         private bool IsEditorEnabled(Type type, bool isPropertyEditor, bool strict)
@@ -274,8 +274,13 @@ namespace Battlehub.RTEditor
                 {
                     if (type.IsGenericType)
                     {
-                        type = type.GetGenericTypeDefinition();
-                        continue;
+                        if (m_map.TryGetValue(type.GetGenericTypeDefinition(), out descriptor))
+                        {
+                            if (descriptor.IsPropertyEditor == isPropertyEditor)
+                            {
+                                return descriptor;
+                            }
+                        }
                     }
                 }
 

@@ -12,6 +12,8 @@ namespace Battlehub.RTSL.Interface
         public const int E_AlreadyExist = 3;
         public const int E_InvalidOperation = 4;
 
+        public static readonly Error NoError = new Error(OK);
+
         public int ErrorCode;
 
         public string ErrorText;

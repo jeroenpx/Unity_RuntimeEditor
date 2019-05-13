@@ -211,6 +211,9 @@ MonoBehaviour:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   CanSelect: 1
+  CanEdit: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &554941000
@@ -327,6 +330,9 @@ MonoBehaviour:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   CanSelect: 1
+  CanEdit: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!81 &878578354

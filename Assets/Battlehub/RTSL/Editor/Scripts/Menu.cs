@@ -153,10 +153,19 @@ namespace Battlehub.RTSL
         {
             if(EditorUtility.DisplayDialog("Clean", "Do you want to remove persistent classes and type model?", "Yes", "No"))
             {
-                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/CustomImplementation");
-                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/Mappings");
-                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/Scripts");
-                AssetDatabase.DeleteAsset("Assets/Battlehub/RTSL_Data/RTSLTypeModel.dll");
+                if(EditorUtility.DisplayDialog("Clean", "Do you want to remove files from " + "Assets" + RTSLPath.UserRoot + "/CustomImplementation ?", "Yes", "No"))
+                {
+                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/CustomImplementation");
+                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Mappings/Editor/FilePathStorage.prefab");
+                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
+                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
+                }
+                else
+                {
+                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
+                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
+                }
+                //AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Mappings");
             }
         }
 

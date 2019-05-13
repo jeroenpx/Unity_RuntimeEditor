@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Threading;
 
-namespace Battlehub.Dispatcher
+namespace Battlehub.Utils
 {
     public class DispatcherTest : MonoBehaviour
     {
@@ -21,7 +21,7 @@ namespace Battlehub.Dispatcher
         
         private void ThreadFunction(object param)
         {
-            Dispatcher.Current.BeginInvoke(() =>
+            Dispatcher.BeginInvoke(() =>
             {
                 Output.text += param;
                 Output.text += Environment.NewLine;

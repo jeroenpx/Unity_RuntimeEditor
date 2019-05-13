@@ -41,7 +41,7 @@ namespace Battlehub.RTHandles
                 {
                     if (LockObject == null || !LockObject.IsPositionLocked)
                     {
-                        if (Window.Pointer.XY(HandlePosition, out m_prevMousePosition))
+                        if (Window.Pointer.XY(Position, out m_prevMousePosition))
                         {
                             BeginSnap();
                         }
@@ -65,10 +65,10 @@ namespace Battlehub.RTHandles
 
         private Vector3[] m_boundingBoxCorners = new Vector3[8];
         private Vector3 m_handleOffset;
-        protected override Vector3 HandlePosition
+        public override Vector3 Position
         {
             get { return transform.position + m_handleOffset; }
-            set
+            protected set
             {
                 transform.position = value - m_handleOffset;
             }
@@ -160,7 +160,7 @@ namespace Battlehub.RTHandles
             if (IsInVertexSnappingMode || Editor.Tools.IsSnapping)
             {
                 Vector2 mousePosition;
-                if(Window.Pointer.XY(HandlePosition, out mousePosition))
+                if(Window.Pointer.XY(Position, out mousePosition))
                 {
                     if (editor.Tools.SnappingMode == SnappingMode.BoundingBox)
                     {
@@ -190,7 +190,7 @@ namespace Battlehub.RTHandles
 
                                 if (minPointFound)
                                 {
-                                    HandlePosition = minPoint;
+                                    Position = minPoint;
                                 }
                             }
                         }
@@ -277,7 +277,7 @@ namespace Battlehub.RTHandles
                                         for (int j = 0; j < m_boundingBoxCorners.Length; ++j)
                                         {
                                             Vector2 screenPoint;
-                                            if(Window.Pointer.WorldToScreenPoint(HandlePosition, exposedToEditor.BoundsObject.transform.TransformPoint(m_boundingBoxCorners[j]), out screenPoint))
+                                            if(Window.Pointer.WorldToScreenPoint(Position, exposedToEditor.BoundsObject.transform.TransformPoint(m_boundingBoxCorners[j]), out screenPoint))
                                             {
                                                 float distance = (screenPoint - mousePosition).magnitude;
                                                 if (distance < minDistance)
@@ -301,7 +301,7 @@ namespace Battlehub.RTHandles
 
                                     if (minPointFound)
                                     {
-                                        HandlePosition = minPoint;
+                                        Position = minPoint;
                                     }
 
                                 }
@@ -352,10 +352,10 @@ namespace Battlehub.RTHandles
                     vert = meshTransform.TransformPoint(vert);
 
                     Vector2 screenPoint;
-                    if(Window.Pointer.WorldToScreenPoint(HandlePosition, vert, out screenPoint))
+                    if(Window.Pointer.WorldToScreenPoint(Position, vert, out screenPoint))
                     {
                         Vector2 mousePoint;
-                        if (Window.Pointer.XY(HandlePosition, out mousePoint))
+                        if (Window.Pointer.XY(Position, out mousePoint))
                         {
                             float distance = (screenPoint - mousePoint).magnitude;
                             if (distance < minDistance)
@@ -571,10 +571,10 @@ namespace Battlehub.RTHandles
                 Vector3 worldPoint = tr.TransformPoint(m_boundingBoxCorners[j]);
                 Vector2 screenPoint;
 
-                if(Window.Pointer.WorldToScreenPoint(HandlePosition, worldPoint, out screenPoint))
+                if(Window.Pointer.WorldToScreenPoint(Position, worldPoint, out screenPoint))
                 {
                     Vector2 mousePoint;
-                    if (Window.Pointer.XY(HandlePosition, out mousePoint))
+                    if (Window.Pointer.XY(Position, out mousePoint))
                     {
                         float distance = (screenPoint - mousePoint).magnitude;
                         if (distance < minDistance)
@@ -592,10 +592,10 @@ namespace Battlehub.RTHandles
         {
             Vector2 sp;
 
-            if(Window.Pointer.WorldToScreenPoint(HandlePosition, HandlePosition, out sp))
+            if(Window.Pointer.WorldToScreenPoint(Position, Position, out sp))
             {
                 Vector2 mp;
-                if (Window.Pointer.XY(HandlePosition, out mp))
+                if (Window.Pointer.XY(Position, out mp))
                 {
                     const float pixelSize = 10;
 
@@ -621,7 +621,7 @@ namespace Battlehub.RTHandles
             Vector3 point = ray.GetPoint(distance);
             point = matrix.inverse.MultiplyPoint(point);
 
-            Vector3 toCam = matrix.inverse.MultiplyVector(Window.Camera.transform.position - HandlePosition);
+            Vector3 toCam = matrix.inverse.MultiplyVector(Window.Camera.transform.position - Position);
 
             float fx = Mathf.Sign(Vector3.Dot(toCam, Vector3.right));
             float fy = Mathf.Sign(Vector3.Dot(toCam, Vector3.up));
@@ -645,7 +645,7 @@ namespace Battlehub.RTHandles
 
         private RuntimeHandleAxis Hit()
         {
-            m_matrix = Matrix4x4.TRS(HandlePosition, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
+            m_matrix = Matrix4x4.TRS(Position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
             if (Model != null)
@@ -653,8 +653,8 @@ namespace Battlehub.RTHandles
                 return Model.HitTest(Window.Pointer);
             }
 
-            float scale = RuntimeHandlesComponent.GetScreenScale(HandlePosition, Window.Camera);
-            Matrix4x4 matrix = Matrix4x4.TRS(HandlePosition, Rotation, new Vector3(scale, scale, scale));
+            float scale = RuntimeHandlesComponent.GetScreenScale(Position, Window.Camera);
+            Matrix4x4 matrix = Matrix4x4.TRS(Position, Rotation, new Vector3(scale, scale, scale));
 
             if(!Appearance.PositionHandleArrowOnly)
             {
@@ -714,8 +714,8 @@ namespace Battlehub.RTHandles
         protected override bool OnBeginDrag()
         {
             SelectedAxis = Hit();           
-            m_currentPosition = HandlePosition;
-            m_cursorPosition = HandlePosition;
+            m_currentPosition = Position;
+            m_cursorPosition = Position;
 
             if ((IsInVertexSnappingMode || Editor.Tools.IsSnapping) && SelectedAxis != RuntimeHandleAxis.Snap)
             {
@@ -810,7 +810,7 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                Vector3 prevPosition = HandlePosition;
+                Vector3 prevPosition = Position;
                 Vector3 prevCurrentPosition = m_currentPosition;
                 if (EffectiveGridUnitSize == 0.0)
                 {
@@ -840,14 +840,14 @@ namespace Battlehub.RTHandles
                     }
                   
                     m_currentPosition += gridOffset;
-                    HandlePosition = m_currentPosition;
+                    Position = m_currentPosition;
                 }
 
                 float allowedRadius = Window.Camera.farClipPlane * 0.95f;
-                Vector3 toHandle = HandlePosition - Window.Camera.transform.position;
+                Vector3 toHandle = Position - Window.Camera.transform.position;
                 if(toHandle.magnitude > allowedRadius)
                 {
-                    HandlePosition = prevPosition;
+                    Position = prevPosition;
                     m_currentPosition = prevCurrentPosition;
                 }
                 else
@@ -859,7 +859,7 @@ namespace Battlehub.RTHandles
 
         protected override void DrawOverride(Camera camera)
         {
-            Appearance.DoPositionHandle(camera, HandlePosition, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
+            Appearance.DoPositionHandle(camera, Position, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
         }
     }
 

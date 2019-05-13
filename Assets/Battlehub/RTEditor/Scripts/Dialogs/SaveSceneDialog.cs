@@ -158,9 +158,9 @@ namespace Battlehub.RTEditor
         {
             m_windowManager.Confirmation("Scene with same name already exits", "Do you want to override it?", (sender, yes) =>
             {
-                yes.Cancel = true;
-                m_parentDialog.gameObject.SetActive(false);
-
+                //yes.Cancel = true;
+                //m_parentDialog.gameObject.SetActive(false);
+                m_parentDialog.Close(null);
                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
                 editor.OverwriteScene(selectedItem, error =>
                 {
@@ -169,7 +169,7 @@ namespace Battlehub.RTEditor
                     {
                         m_windowManager.MessageBox("Unable to save scene", error.ErrorText);
                     }
-                    m_parentDialog.Close(null);
+                    //m_parentDialog.Close(null);
                 });
             },
             (sender, no) => Input.ActivateInputField(),

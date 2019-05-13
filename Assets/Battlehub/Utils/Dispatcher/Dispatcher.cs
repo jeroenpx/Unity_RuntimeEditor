@@ -3,22 +3,22 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
-namespace Battlehub.Dispatcher
+namespace Battlehub.Utils
 {
     public class Dispatcher : MonoBehaviour
     {
-        private Dispatcher m_current;
+        private static Dispatcher m_current;
         public static Dispatcher Current
         {
-            get;
-            private set;
+            get { return m_current; }
+            private set { m_current = value; }
         }
 
         private int m_lock;
         private bool m_run;
         private Queue<Action> m_wait;
 
-        public void BeginInvoke(Action action)
+        private void _BeginInvoke(Action action)
         {
             while (true)
             {
@@ -30,6 +30,22 @@ namespace Battlehub.Dispatcher
                     break;
                 }
             }
+        }
+
+        public static void BeginInvoke(Action action)
+        {
+#if UNITY_WEBGL
+            action();
+#else
+            if (m_current != null)
+            {
+                m_current._BeginInvoke(action);
+            }
+            else
+            {
+                action();
+            }
+#endif
         }
 
         private void Awake()

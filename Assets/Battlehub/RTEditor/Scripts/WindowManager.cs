@@ -25,6 +25,9 @@ namespace Battlehub.RTEditor
         }
 
         event Action<IWindowManager> AfterLayout;
+        event Action<Transform> WindowCreated;
+        event Action<Transform> WindowDestroyed;
+
         void OverrideDefaultLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
         void SetDefaultLayout();
         void SetLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
@@ -52,12 +55,15 @@ namespace Battlehub.RTEditor
 
         Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
         Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f);
+        void DestroyWindow(Transform conent);
+
         Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
              float minWidth = 250,
              float minHeight = 250,
              float preferredWidth = 700,
              float preferredHeight = 400,
              bool canResize = true);
+        void DestroyDialogWindow();
 
         void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null);
         void MessageBox(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok = null);
@@ -107,6 +113,8 @@ namespace Battlehub.RTEditor
     public class WindowManager : MonoBehaviour, IWindowManager
     {
         public event Action<IWindowManager> AfterLayout;
+        public event Action<Transform> WindowCreated;
+        public event Action<Transform> WindowDestroyed;
 
         [SerializeField]
         private DialogManager m_dialogManager = null;
@@ -676,6 +684,11 @@ namespace Battlehub.RTEditor
                 {
                     wd.Created--;
                     Debug.Assert(wd.Created >= 0);
+
+                    if (WindowDestroyed != null)
+                    {
+                        WindowDestroyed(content);
+                    }
                 }
             }
         }
@@ -1098,7 +1111,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                m_dockPanels.RootRegion.Add(wd.Icon, wd.Header, content.transform, isFree, splitType, flexibleSize);                
+                m_dockPanels.AddRegion(wd.Icon, wd.Header, content.transform, isFree, splitType, flexibleSize);                
                 if(!isFree)
                 {
                     m_dockPanels.ForceUpdateLayout();
@@ -1106,10 +1119,19 @@ namespace Battlehub.RTEditor
             }
 
             ActivateContent(wd, content);
+
+            if(WindowCreated != null)
+            {
+                WindowCreated(window);
+            }
+
             return window;
         }
 
-        
+        public void DestroyWindow(Transform content)
+        {
+            m_dockPanels.RemoveRegion(content);
+        }
 
         public Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction,
              float minWidth,
@@ -1146,6 +1168,11 @@ namespace Battlehub.RTEditor
             ActivateContent(wd, content);
 
             return window;
+        }
+
+        public void DestroyDialogWindow()
+        {
+            m_dialogManager.CloseDialog();
         }
 
         public Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog)

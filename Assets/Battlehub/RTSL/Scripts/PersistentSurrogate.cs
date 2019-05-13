@@ -71,7 +71,7 @@ namespace Battlehub.RTSL
 
         public virtual bool CanInstantiate(Type type)
         {
-            return false;
+            return type != null && type.GetConstructor(Type.EmptyTypes) != null;
         }
 
         public virtual object Instantiate(Type type)

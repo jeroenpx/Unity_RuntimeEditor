@@ -475,6 +475,7 @@ namespace Battlehub.RTEditor
         private void CreatePrefabWithDependencies(ProjectItem dropTarget, ExposeToEditor dragObject, Action<AssetItem[]> done)
         {
             IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
+            
             m_project.GetDependencies(dragObject.gameObject, true, (error, deps) =>
             {
                 object[] objects;

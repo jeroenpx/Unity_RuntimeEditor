@@ -263,31 +263,7 @@ namespace Battlehub.RTSL
             {
                 return null;
             }
-            if (obj is Scene)
-            {
-                return ".rtscene";
-            }
-            if (obj is GameObject)
-            {
-                return ".rtprefab";
-            }
-            if (obj is ScriptableObject)
-            {
-                return ".rtasset";
-            }
-            if (obj is Material)
-            {
-                return ".rtmat";
-            }
-            if (obj is Mesh)
-            {
-                return ".rtmesh";
-            }
-            if (obj is Shader)
-            {
-                return ".rtshader";
-            }
-            return ".rt" + obj.GetType().Name.ToLower().Substring(0, 3);
+            return GetExt(obj.GetType());
         }
 
         public string GetExt(Type type)
@@ -319,6 +295,14 @@ namespace Battlehub.RTSL
             if (type == typeof(Shader))
             {
                 return ".rtshader";
+            }
+            if (type == typeof(TerrainData))
+            {
+                return ".rtterdata";
+            }
+            if(type == typeof(TerrainLayer))
+            {
+                return ".rtterlayer";
             }
             return ".rt" + type.Name.ToLower().Substring(0, 3);
         }
@@ -2268,6 +2252,54 @@ namespace Battlehub.RTSL
             done();
         }
 
+        public void Unload(AssetItem[] assetItems)
+        {
+            ProjectAsyncOperation ao = new ProjectAsyncOperation();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _Unload(assetItems));
+            }
+            else
+            {
+                IsBusy = true;
+                _Unload(assetItems);
+            }
+        }
+
+        private void _Unload(AssetItem[] assetItems)
+        {
+            for (int i = 0; i < assetItems.Length; ++i)
+            {
+                AssetItem assetItem = assetItems[i];
+                if (!m_assetDB.IsDynamicResourceID(assetItem.ItemID))
+                {
+                    Debug.LogWarning("Unable to unload " + assetItem.ToString() + ". It is possible to unload dynamic resources only"); ;
+                    continue;
+                }
+
+                if (assetItem.Parts != null)
+                {
+                    for (int p = 0; p < assetItem.Parts.Length; ++p)
+                    {
+                        int partID = m_assetDB.ToInt(assetItem.Parts[p].PartID);
+                        m_assetDB.UnregisterDynamicResource(partID);
+                    }
+                }
+
+                if (m_assetDB.IsDynamicResourceID(assetItem.ItemID))
+                {
+                    UnityObject obj = m_assetDB.FromID<UnityObject>(assetItem.ItemID);
+                    int itemID = m_assetDB.ToInt(assetItem.ItemID);
+                    m_assetDB.UnregisterDynamicResource(itemID);
+                    if (obj != null)
+                    {
+                        Destroy(obj);
+                    }
+                }
+            }
+            IsBusy = false;
+        }
+
         /// <summary>
         /// Unload everything
         /// </summary>
@@ -3212,14 +3244,13 @@ namespace Battlehub.RTSL
                 assetItem.Parent.RemoveChild(assetItem);
             }
             m_idToAssetItem.Remove(assetItem.ItemID);
-
             if (assetItem.Parts != null)
             {
                 for (int p = 0; p < assetItem.Parts.Length; ++p)
                 {
                     int partID = m_assetDB.ToInt(assetItem.Parts[p].PartID);
                     m_assetDB.UnregisterDynamicResource(partID);
-                 
+
                     AssetItem partAssetItem;
                     if (m_idToAssetItem.TryGetValue(assetItem.Parts[p].PartID, out partAssetItem))
                     {
@@ -3229,7 +3260,7 @@ namespace Battlehub.RTSL
                 }
             }
 
-            if(m_assetDB.IsDynamicResourceID(assetItem.ItemID))
+            if (m_assetDB.IsDynamicResourceID(assetItem.ItemID))
             {
                 UnityObject obj = m_assetDB.FromID<UnityObject>(assetItem.ItemID);
                 int itemID = m_assetDB.ToInt(assetItem.ItemID);
@@ -3241,6 +3272,7 @@ namespace Battlehub.RTSL
             }
         }
 
+   
         private void RemoveFolder(ProjectItem projectItem)
         {
             if (projectItem.Children != null)
@@ -3580,6 +3612,83 @@ namespace Battlehub.RTSL
             return m_ordinalToStaticAssetLibrary;
         }
 
+        public ProjectAsyncOperation<T[]> GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback = null) where T : new()
+        {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+
+            ProjectAsyncOperation<T[]> ao = new ProjectAsyncOperation<T[]>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _GetValues(searchPattern, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _GetValues(searchPattern, callback, ao);
+            }
+
+            return ao;
+        }
+
+        private void _GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback, ProjectAsyncOperation<T[]> ao) where T : new()
+        {
+            Type objType = typeof(T);
+            Type persistentType = m_typeMap.ToPersistentType(objType);
+            if (persistentType == null)
+            {
+                Debug.LogWarningFormat(string.Format("PersistentClass for {0} does not exist. To create or edit persistent classes click Tools->Runtime SaveLoad->Persistent Classes->Edit.", objType), "obj");
+                RaiseGetValuesCompleted(new T[0], callback, ao, new Error(Error.E_NotFound));
+                return;
+            }
+
+            m_storage.GetValues(m_projectPath, searchPattern, persistentType, (getValuesError, persistentObjects) =>
+            {
+                if (getValuesError.HasError)
+                {
+                    RaiseGetValuesCompleted(new T[0], callback, ao, getValuesError);
+                    return;
+                }
+
+                T[] result = new T[persistentObjects.Length];
+
+                if (typeof(T).IsSubclassOf(typeof(ScriptableObject)))
+                {
+                    for (int i = 0; i < result.Length; ++i)
+                    {
+                        result[i] = (T)Convert.ChangeType(ScriptableObject.CreateInstance(typeof(T)), typeof(T));
+                        persistentObjects[i].WriteTo(result[i]);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < result.Length; ++i)
+                    {
+                        result[i] = new T();
+                        persistentObjects[i].WriteTo(result[i]);
+                    }
+                }
+                
+                RaiseGetValuesCompleted(result, callback, ao, getValuesError);
+            });
+        }
+
+        private void RaiseGetValuesCompleted<T>(T[] result, ProjectEventHandler<T[]> callback, ProjectAsyncOperation<T[]> ao, Error error)
+        {
+            if (callback != null)
+            {
+                callback(error, result);
+            }
+
+            ao.Result = result;
+            ao.Error = error;
+            ao.IsCompleted = true;
+            IsBusy = false;
+        }
+
+
         public ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) where T : new()
         {
             if (m_root == null)
@@ -3704,6 +3813,54 @@ namespace Battlehub.RTSL
             ao.Error = error;
             ao.IsCompleted = true;
 
+            IsBusy = false;
+        }
+
+        public ProjectAsyncOperation DeleteValue<T>(string key, ProjectEventHandler callback = null)
+        {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+
+            ProjectAsyncOperation ao = new ProjectAsyncOperation();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _DeleteValue<T>(key, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _DeleteValue<T>(key, callback, ao);
+            }
+            return ao;
+        }
+
+
+        private void _DeleteValue<T>(string key, ProjectEventHandler callback, ProjectAsyncOperation ao)
+        {
+            Type objType = typeof(T);
+            m_storage.DeleteValue(m_projectPath, key + GetExt(objType), (deleteValueError) =>
+            {
+                if (deleteValueError.HasError)
+                {
+                    RaiseDeleteValueCompleted(callback, ao, deleteValueError);
+                    return;
+                }
+
+                RaiseDeleteValueCompleted(callback, ao, new Error(Error.OK));
+            });
+        }
+
+        private void RaiseDeleteValueCompleted(ProjectEventHandler callback, ProjectAsyncOperation ao, Error error)
+        {
+            if (callback != null)
+            {
+                callback(error);
+            }
+
+            ao.Error = error;
+            ao.IsCompleted = true;
             IsBusy = false;
         }
     }
