@@ -481,7 +481,6 @@ namespace Battlehub.RTEditor
                 object[] objects;
                 if (!deps.Contains(dragObject.gameObject))
                 {
-                    Debug.Log(dragObject.gameObject);
                     objects = new object[deps.Length + 1];
                     objects[deps.Length] = dragObject.gameObject;
                     for (int i = 0; i < deps.Length; ++i)

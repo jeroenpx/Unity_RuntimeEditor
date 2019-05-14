@@ -1,4 +1,4 @@
-﻿//#define RTSL_COMPILE_TEMPLATES
+﻿#define RTSL_COMPILE_TEMPLATES
 #if RTSL_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
 using ProtoBuf;
@@ -11,6 +11,7 @@ using UnityEngine;
 namespace Battlehub.RTSL.Internal
 {
     using PersistentParticleSystemNestedMinMaxCurve = PersistentSurrogateTemplate;
+    using PersistentParticleSystemNestedMinMaxGradient = PersistentSurrogateTemplate;
 
     [PersistentTemplate("UnityEngine.ParticleSystem+CustomDataModule", new string[0],
         new[] {
@@ -28,10 +29,10 @@ namespace Battlehub.RTSL.Internal
         public ParticleSystemCustomDataMode m_mode2;
 
         [ProtoMember(3)]
-        public ParticleSystem.MinMaxGradient m_color1;
+        public PersistentParticleSystemNestedMinMaxGradient m_color1;
 
         [ProtoMember(4)]
-        public ParticleSystem.MinMaxGradient m_color2;
+        public PersistentParticleSystemNestedMinMaxGradient m_color2;
 
         [ProtoMember(5)]
         public int m_vectorComponentCount1;
@@ -40,10 +41,10 @@ namespace Battlehub.RTSL.Internal
         public int m_vectorComponentCount2;
 
         [ProtoMember(7)]
-        public ParticleSystem.MinMaxCurve[] m_vectors1;
+        public PersistentParticleSystemNestedMinMaxCurve[] m_vectors1;
 
         [ProtoMember(8)]
-        public ParticleSystem.MinMaxCurve[] m_vectors2;
+        public PersistentParticleSystemNestedMinMaxCurve[] m_vectors2;
 
         public override object WriteTo(object obj)
         {
@@ -57,29 +58,58 @@ namespace Battlehub.RTSL.Internal
             o.SetMode(ParticleSystemCustomData.Custom1, m_mode1);
             o.SetMode(ParticleSystemCustomData.Custom1, m_mode2);
 
-            if(m_mode1 == ParticleSystemCustomDataMode.Color)
+            if (m_mode1 == ParticleSystemCustomDataMode.Color)
             {
-                o.SetColor(ParticleSystemCustomData.Custom1, m_color1);
+                if (m_color1 != null)
+                {
+                    ParticleSystem.MinMaxGradient grad = new ParticleSystem.MinMaxGradient();
+                    m_color1.WriteTo(grad);
+                    o.SetColor(ParticleSystemCustomData.Custom1, grad);
+                }
+            
             }
             else if(m_mode1 == ParticleSystemCustomDataMode.Vector)
             {
                 o.SetVectorComponentCount(ParticleSystemCustomData.Custom1, m_vectorComponentCount1);
-                for (int i = 0; i < m_vectorComponentCount1; ++i)
+                if (m_vectors1 != null)
                 {
-                    o.SetVector(ParticleSystemCustomData.Custom1, i, m_vectors1[i]);
+                    for (int i = 0; i < m_vectorComponentCount1; ++i)
+                    {
+                        if(m_vectors1[i] != null)
+                        {
+                            ParticleSystem.MinMaxCurve v = new ParticleSystem.MinMaxCurve();
+                            m_vectors1[i].WriteTo(v);
+                            o.SetVector(ParticleSystemCustomData.Custom1, i, v);
+                        }
+                    }
                 }
+                
             }
             
             if(m_mode2 == ParticleSystemCustomDataMode.Color)
             {
-                o.SetColor(ParticleSystemCustomData.Custom2, m_color2);
+                if(m_color2 != null)
+                {
+                    ParticleSystem.MinMaxGradient grad = new ParticleSystem.MinMaxGradient();
+                    m_color2.WriteTo(grad);
+                    o.SetColor(ParticleSystemCustomData.Custom2, grad);
+                }
+                
             }
             else if(m_mode2 == ParticleSystemCustomDataMode.Vector)
             {
                 o.SetVectorComponentCount(ParticleSystemCustomData.Custom2, m_vectorComponentCount2);
-                for (int i = 0; i < m_vectorComponentCount2; ++i)
+                if(m_vectors2 != null)
                 {
-                    o.SetVector(ParticleSystemCustomData.Custom2, i, m_vectors2[i]);
+                    for (int i = 0; i < m_vectorComponentCount2; ++i)
+                    {
+                        if(m_vectors2[i] != null)
+                        {
+                            ParticleSystem.MinMaxCurve v = new ParticleSystem.MinMaxCurve();
+                            m_vectors2[i].WriteTo(v);
+                            o.SetVector(ParticleSystemCustomData.Custom2, i, v);
+                        }
+                    }
                 }
             }
             
@@ -97,27 +127,37 @@ namespace Battlehub.RTSL.Internal
             ParticleSystem.CustomDataModule o = (ParticleSystem.CustomDataModule)obj;
             m_mode1 = o.GetMode(ParticleSystemCustomData.Custom1);
             m_mode2 = o.GetMode(ParticleSystemCustomData.Custom2);
-            m_color1 = o.GetColor(ParticleSystemCustomData.Custom1);
-            m_color2 = o.GetColor(ParticleSystemCustomData.Custom2);
+
+
+            m_color1 = new PersistentParticleSystemNestedMinMaxGradient();
+            m_color1.ReadFrom(o.GetColor(ParticleSystemCustomData.Custom1));
+
+            m_color2 = new PersistentParticleSystemNestedMinMaxGradient();
+            m_color2.ReadFrom(o.GetColor(ParticleSystemCustomData.Custom2));
+
             m_vectorComponentCount1 = o.GetVectorComponentCount(ParticleSystemCustomData.Custom1);
             m_vectorComponentCount2 = o.GetVectorComponentCount(ParticleSystemCustomData.Custom2);
 
             if(m_vectorComponentCount1 > 0)
             {
-                m_vectors1 = new ParticleSystem.MinMaxCurve[m_vectorComponentCount1];
+                m_vectors1 = new PersistentParticleSystemNestedMinMaxCurve[m_vectorComponentCount1];
                 for (int i = 0; i < m_vectors1.Length; ++i)
                 {
-                    m_vectors1[i] = o.GetVector(ParticleSystemCustomData.Custom1, i);
+                    PersistentParticleSystemNestedMinMaxCurve v = new PersistentParticleSystemNestedMinMaxCurve();
+                    v.ReadFrom(o.GetVector(ParticleSystemCustomData.Custom1, i));
+                    m_vectors1[i] = v;
                 }
 
             }
 
             if(m_vectorComponentCount2 > 0)
             {
-                m_vectors2 = new ParticleSystem.MinMaxCurve[m_vectorComponentCount2];
+                m_vectors2 = new PersistentParticleSystemNestedMinMaxCurve[m_vectorComponentCount2];
                 for (int i = 0; i < m_vectors2.Length; ++i)
                 {
-                    m_vectors2[i] = o.GetVector(ParticleSystemCustomData.Custom2, i);
+                    PersistentParticleSystemNestedMinMaxCurve v = new PersistentParticleSystemNestedMinMaxCurve();
+                    v.ReadFrom(o.GetVector(ParticleSystemCustomData.Custom2, i));
+                    m_vectors2[i] = v;
                 }
             }
         }

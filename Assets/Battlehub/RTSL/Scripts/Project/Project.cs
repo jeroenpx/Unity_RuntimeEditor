@@ -951,17 +951,17 @@ namespace Battlehub.RTSL
         /// <param name="obj"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation<object[]> GetDependencies(object obj, bool exceptMappedObject, ProjectEventHandler<object[]> callback)
+        public ProjectAsyncOperation<object[]> GetDependencies(object obj, bool exceptMappedObjects, ProjectEventHandler<object[]> callback)
         {
             ProjectAsyncOperation<object[]> ao = new ProjectAsyncOperation<object[]>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _GetDependencies(obj, exceptMappedObject, callback, ao));
+                m_actionsQueue.Enqueue(() => _GetDependencies(obj, exceptMappedObjects, callback, ao));
             }
             else
             {
                 IsBusy = true;
-                _GetDependencies(obj, exceptMappedObject, callback, ao);
+                _GetDependencies(obj, exceptMappedObjects, callback, ao);
             }
             
             return ao;
@@ -986,21 +986,103 @@ namespace Battlehub.RTSL
             LoadLibraryWithSceneDependencies(() =>
             {
                 PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                GetDepsFromContext getDepsFromCtx = new GetDepsFromContext();
-                persistentObject.GetDepsFrom(obj, getDepsFromCtx);
+                GetDepsFromContext ctx = new GetDepsFromContext();
+                persistentObject.GetDepsFrom(obj, ctx);
+
+                object[] deps = ctx.Dependencies.ToArray();
+                ctx.Dependencies.Clear();
+
+                for(int i = 0; i < deps.Length; ++i)
+                {
+                    object dep = deps[i];
+
+                    if (dep is GameObject)
+                    {
+                        continue;
+                    }
+                    else if(dep is Component)
+                    {
+                        continue;
+                    }
+                    else if(dep is UnityObject)
+                    {
+                        if (exceptMappedObject && m_assetDB.IsMapped((UnityObject)dep))
+                        {
+                            continue;
+                        }
+                        ctx.Dependencies.Add(dep);
+                    }
+                }
+                
+                Queue<UnityObject> depsQueue = new Queue<UnityObject>(deps.OfType<UnityObject>());
+                GetDeepDependencies(depsQueue, exceptMappedObject, ctx);
 
                 object[] dependencies;
                 if (exceptMappedObject)
                 {
-                    dependencies = getDepsFromCtx.Dependencies.Where(d => d is UnityObject && !m_assetDB.IsMapped((UnityObject)d)).ToArray();
+                    dependencies = ctx.Dependencies.Where(d => d is UnityObject && !m_assetDB.IsMapped((UnityObject)d)).ToArray();
                 }
                 else
                 {
-                    dependencies = getDepsFromCtx.Dependencies.ToArray();
+                    dependencies = ctx.Dependencies.ToArray();
                 }
 
-                RaiseGetDependenciesCompleted(callback, ao, dependencies);  
+                RaiseGetDependenciesCompleted(callback, ao, dependencies);
             });
+        }
+
+        private void GetDeepDependencies(Queue<UnityObject> depsQueue, bool exceptMappedObject, GetDepsFromContext ctx)
+        {
+            GetDepsFromContext getDepsCtx = new GetDepsFromContext();
+            while (depsQueue.Count > 0)
+            {
+                UnityObject uo = depsQueue.Dequeue();
+                if (!uo)
+                {
+                    continue;
+                }
+
+                if (exceptMappedObject && m_assetDB.IsMapped(uo))
+                {
+                    continue;
+                }
+
+                if (!(uo is GameObject) && !(uo is Component))
+                {
+                    Type persistentType = m_typeMap.ToPersistentType(uo.GetType());
+                    if (persistentType != null)
+                    {
+                        getDepsCtx.Clear();
+
+                        PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                        persistentObject.ReadFrom(uo);
+                        persistentObject.GetDepsFrom(uo, getDepsCtx);
+
+                        foreach (UnityObject dep in getDepsCtx.Dependencies)
+                        {
+                            
+                            if (!ctx.Dependencies.Contains(dep))
+                            {
+                                if (dep is GameObject)
+                                {
+                                    continue;
+                                }
+                                else if (dep is Component)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    ctx.Dependencies.Add(dep);
+                                }
+                                
+                                
+                                depsQueue.Enqueue(dep);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void RaiseGetDependenciesCompleted(ProjectEventHandler<object[]> callback, ProjectAsyncOperation<object[]> ao, object[] dependencies)
@@ -2218,22 +2300,20 @@ namespace Battlehub.RTSL
                     else
                     {
                         UnityObject obj = m_assetDB.FromID<UnityObject>(assetItems[i].ItemID);
-                        
-
-                        Debug.Assert(obj != null, "obj is null");
+                        //Debug.Assert(obj != null, "obj is null");
                         if (obj != null)
                         {
                             persistentObject.WriteTo(obj);
                             obj.name = assetItems[i].Name;
+
+                            if (m_assetDB.IsDynamicResourceID(assetItems[i].ItemID))
+                            {
+                                obj.hideFlags = HideFlags.HideAndDontSave;
+                            }
                         }
                         else
                         {
                             Debug.LogWarning("Unable to find UnityEngine.Object for " + assetItems[i].ToString() + " with id: " + assetItems[i].ItemID + ". This typically means that asset or corresponding asset library was removed (or its ordinal was changed).");
-                        }
-
-                        if (m_assetDB.IsDynamicResourceID(assetItems[i].ItemID))
-                        {
-                            obj.hideFlags = HideFlags.HideAndDontSave;
                         }
                     }
                 }

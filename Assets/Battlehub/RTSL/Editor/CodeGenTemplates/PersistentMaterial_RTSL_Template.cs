@@ -12,15 +12,14 @@ using UnityEngine;
 
 namespace Battlehub.RTSL.Internal
 {
+    using PersistentVector2 = PersistentSurrogateTemplate;
+
     [PersistentTemplate("UnityEngine.Material", 
         new[] { "color", "mainTexture", "mainTextureOffset", "mainTextureScale", "shader" },
-        new[] { "UnityEngine.Vector4", "UnityEngine.Color" })]
+        new[] { "UnityEngine.Vector4", "UnityEngine.Color", "UnityEngine.Vector2" })]
     public class PersistentMaterial_RTSL_Template : PersistentSurrogateTemplate
     {
 #if RTSL_COMPILE_TEMPLATES
-        public UnityEngine.Vector4 m_check1;
-        public UnityEngine.Color m_check2;
-
         //<TEMPLATE_BODY_START>
 
         [ProtoMember(1)]
@@ -36,10 +35,10 @@ namespace Battlehub.RTSL.Internal
         public string[] m_keywords;
 
         [ProtoMember(5)]
-        public Vector2 mainTextureOffset;
+        public PersistentVector2 mainTextureOffset;
 
         [ProtoMember(6)]
-        public Vector2 mainTextureScale;
+        public PersistentVector2 mainTextureScale;
 
         [ProtoMember(7)]
         public long shader;
@@ -58,8 +57,8 @@ namespace Battlehub.RTSL.Internal
             Material o = (Material)obj;
             if (o.HasProperty("_MainTex"))
             {
-                o.mainTextureOffset = mainTextureOffset;
-                o.mainTextureScale = mainTextureScale;
+                o.mainTextureOffset = (Vector2)mainTextureOffset.WriteTo(o.mainTextureOffset);
+                o.mainTextureScale = (Vector2)mainTextureScale.WriteTo(o.mainTextureScale);
             }
 
             if (m_assetDB.IsMapped(shader))
@@ -197,8 +196,10 @@ namespace Battlehub.RTSL.Internal
             Material o = (Material)obj;
             if (o.HasProperty("_MainTex"))
             {
-                mainTextureOffset = o.mainTextureOffset;
-                mainTextureScale = o.mainTextureScale;
+                mainTextureOffset = new PersistentVector2();
+                mainTextureOffset.ReadFrom(o.mainTextureOffset);
+                mainTextureScale = new PersistentVector2();
+                mainTextureScale.ReadFrom(o.mainTextureScale);
             }
 
             if (o.shader == null)

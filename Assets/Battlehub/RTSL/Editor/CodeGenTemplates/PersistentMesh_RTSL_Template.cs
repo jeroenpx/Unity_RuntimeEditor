@@ -14,7 +14,7 @@ namespace Battlehub.RTSL.Internal
 #if RTSL_COMPILE_TEMPLATES
         //<TEMPLATE_BODY_START>
         [ProtoMember(1)]
-        public Vector3[] vertices;
+        public PersistentVector3[] vertices;
 
         [ProtoMember(2)]
         public int subMeshCount;
@@ -34,7 +34,18 @@ namespace Battlehub.RTSL.Internal
 
             Mesh o = (Mesh)obj;
             o.indexFormat = indexFormat;
-            o.vertices = vertices;
+            if(vertices != null)
+            {
+                o.vertices = new Vector3[vertices.Length];
+                for(int i = 0; i < vertices.Length; ++i)
+                {
+                    if(vertices[i] != null)
+                    {
+                        o.vertices[i] = (Vector3)vertices[i].WriteTo(o.vertices[i]);
+                    }
+                }
+            }
+            
             o.subMeshCount = subMeshCount;
             if (m_tris != null)
             {
@@ -56,7 +67,17 @@ namespace Battlehub.RTSL.Internal
             Mesh o = (Mesh)obj;
             indexFormat = o.indexFormat;
             subMeshCount = o.subMeshCount;
-            vertices = o.vertices;
+            if(o.vertices != null)
+            {
+                vertices = new PersistentVector3[o.vertices.Length];
+                for(int i = 0; i < o.vertices.Length; ++i)
+                {
+                    PersistentVector3 v = new PersistentVector3();
+                    v.ReadFrom(o.vertices[i]);
+                    vertices[i] = v;
+                }
+            }
+            
             m_tris = new IntArray[subMeshCount];
             for (int i = 0; i < subMeshCount; ++i)
             {

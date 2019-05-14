@@ -546,19 +546,54 @@ namespace Battlehub.RTSL
         {
             TypeMap typeMap = new TypeMap();
             AssetDB assetDB = new AssetDB();
+            RuntimeShaderUtil shaderUtil = new RuntimeShaderUtil();
 
             IOC.Register<ITypeMap>(typeMap);
             IOC.Register<IAssetDB>(assetDB);
+            IOC.Register<IRuntimeShaderUtil>(shaderUtil);
 
             PersistentRuntimeScene rtScene = new PersistentRuntimeScene();
 
             GetDepsFromContext ctx = new GetDepsFromContext();
             rtScene.GetDepsFrom(scene, ctx);
 
+            Queue<UnityObject> depsQueue = new Queue<UnityObject>(ctx.Dependencies.OfType<UnityObject>());
+            GetDepsFromContext getDepsCtx = new GetDepsFromContext();
+            while (depsQueue.Count > 0)
+            {
+                UnityObject uo = depsQueue.Dequeue();
+                if (!uo)
+                {
+                    continue;
+                }
+
+                if (!(uo is GameObject) && !(uo is Component))
+                {
+                    Type persistentType = typeMap.ToPersistentType(uo.GetType());
+                    if (persistentType != null)
+                    {
+                        getDepsCtx.Clear();
+
+                        PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                        persistentObject.ReadFrom(uo);
+                        persistentObject.GetDepsFrom(uo, getDepsCtx);
+
+                        foreach (UnityObject dep in getDepsCtx.Dependencies)
+                        {
+                            if (!ctx.Dependencies.Contains(dep))
+                            {
+                                ctx.Dependencies.Add(dep);
+                                depsQueue.Enqueue(dep);
+                            }
+                        }
+                    }
+                }
+            }
+
+            IOC.Unregister<IRuntimeShaderUtil>(shaderUtil);
             IOC.Unregister<ITypeMap>(typeMap);
             IOC.Unregister<IAssetDB>(assetDB);
 
-           
             CreateAssetLibrary(ctx.Dependencies.ToArray(), "Scenes/" + scene.name, "SceneAssetLibrary", index, asset, folder, hs);
         }
 

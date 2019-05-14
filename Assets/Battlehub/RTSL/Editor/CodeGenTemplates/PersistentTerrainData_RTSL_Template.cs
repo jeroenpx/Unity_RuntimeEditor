@@ -29,11 +29,11 @@ namespace Battlehub.RTSL.Internal
         [ProtoMember(5)]
         public int m_heightMapHeight;
 
-        [ProtoMember(6)]
-        public Vector3 m_size;
-
         [ProtoMember(7)]
         public float[] m_data;
+
+        [ProtoMember(8)]
+        public PersistentVector3 m_size;
 
         public override object WriteTo(object obj)
         {
