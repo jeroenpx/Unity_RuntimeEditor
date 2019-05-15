@@ -11,7 +11,7 @@ namespace Battlehub.Utils
 {
     public class Strong
     {
-        public static PropertyInfo PropertyInfo<T, U>(Expression<Func<T, U>> expression, string propertyName)
+        public static PropertyInfo PropertyInfo<T, U>(Expression<Func<T, U>> expression, string propertyName = null)
         {
 #if USE_REFLECTION
             return typeof(T).GetProperty(propertyName);

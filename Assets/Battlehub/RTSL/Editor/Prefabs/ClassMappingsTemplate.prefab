@@ -4132,7 +4132,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 8
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -4146,7 +4146,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 9
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -4160,7 +4160,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 10
     PersistentNamespace: UnityEngine.Battlehub.SL2
