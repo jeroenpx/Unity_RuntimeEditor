@@ -363,10 +363,11 @@ namespace Battlehub.RTHandles
             m_graphicsBlockingCollider.radius = outerRadius;
         }
 
-        public override RuntimeHandleAxis HitTest(Ray ray)
+        public override RuntimeHandleAxis HitTest(Ray ray, out float distance)
         {
             if (!m_useColliders)
             {
+                distance = float.PositiveInfinity;
                 return RuntimeHandleAxis.None;
             }
 
@@ -439,7 +440,8 @@ namespace Battlehub.RTHandles
 
                 m_colliders[i].gameObject.SetActive(false);
             }
-            
+
+            distance = minDistance;
             if (collider == m_xCollider)
             {
                 return RuntimeHandleAxis.X;
@@ -465,6 +467,7 @@ namespace Battlehub.RTHandles
                 return RuntimeHandleAxis.Screen;
             }
 
+            distance = float.PositiveInfinity;
             return RuntimeHandleAxis.None;
         }
 

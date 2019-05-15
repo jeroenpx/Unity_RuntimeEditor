@@ -40,6 +40,7 @@ namespace Battlehub.RTHandles
             get { return m_isPointerDown; }
         }
 
+        public RuntimeHandlesHitTester HitTester;
         public RuntimeHandlesComponent Appearance;
         /// <summary>
         /// Configurable model
@@ -375,6 +376,9 @@ namespace Battlehub.RTHandles
             m_allHandles.Add(this);
 
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
+            RuntimeHandlesHitTester.InitializeIfRequired(Window, ref HitTester);
+            HitTester.Add(this);
+            
             if (m_targets != null && m_targets.Length > 0 )
             {
                 var lockObject = LockObject;
@@ -501,6 +505,11 @@ namespace Battlehub.RTHandles
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
+            }
+
+            if(HitTester != null)
+            {
+                HitTester.Remove(this);
             }
 
             if (Editor != null)
@@ -920,12 +929,19 @@ namespace Battlehub.RTHandles
         }
 
         /// Hit testing methods      
-        protected virtual bool HitCenter()
+        public virtual RuntimeHandleAxis Hit(out float distance)
+        {
+            distance = float.PositiveInfinity;
+            return RuntimeHandleAxis.None;
+        }
+
+        protected virtual bool HitCenter(out float distance)
         {
             Vector2 screenCenter = Window.Camera.WorldToScreenPoint(transform.position);
             Vector2 mouse = Window.Pointer.ScreenPoint;
 
-            return (mouse - screenCenter).magnitude <= Appearance.SelectionMargin * SelectionMarginPixels;
+            distance = (mouse - screenCenter).magnitude;
+            return distance <= Appearance.SelectionMargin * SelectionMarginPixels;
         }
 
         protected virtual bool HitAxis(Vector3 axis, Matrix4x4 matrix, out float distanceToAxis)

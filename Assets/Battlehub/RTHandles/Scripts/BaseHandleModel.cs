@@ -94,8 +94,9 @@ namespace Battlehub.RTHandles
 
         }
 
-        public virtual RuntimeHandleAxis HitTest(Ray ray)
+        public virtual RuntimeHandleAxis HitTest(Ray ray, out float distance)
         {
+            distance = float.PositiveInfinity;
             return RuntimeHandleAxis.None;
         }
 

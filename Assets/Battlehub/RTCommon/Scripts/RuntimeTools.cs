@@ -267,10 +267,5 @@ namespace Battlehub.RTCommon
             m_unitSnapping = false;
             m_pivotMode = RuntimePivotMode.Center;
         }
-
-        //public bool IsPointerOverGameObject()
-        //{
-        //    return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
-        //}
     }
 }

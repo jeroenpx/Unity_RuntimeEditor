@@ -50,11 +50,11 @@ namespace Battlehub.RTHandles
             }
             if (HightlightOnHover && !IsDragging && !IsPointerDown)
             {
-                SelectedAxis = Hit();
+                SelectedAxis = HitTester.GetSelectedAxis(this);
             }
         }
 
-        private RuntimeHandleAxis Hit()
+        public override RuntimeHandleAxis Hit(out float distance)
         {
             m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera) * Appearance.HandleScale;
             m_matrix = Matrix4x4.TRS(transform.position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
@@ -62,12 +62,12 @@ namespace Battlehub.RTHandles
 
             if (Model != null)
             {
-                return Model.HitTest(Window.Pointer);
+                return Model.HitTest(Window.Pointer, out distance);
             }
 
             Matrix4x4 matrix = Matrix4x4.TRS(transform.position, Rotation, new Vector3(m_screenScale, m_screenScale, m_screenScale));
 
-            if (HitCenter())
+            if (HitCenter(out distance))
             {
                 return RuntimeHandleAxis.Free;
             }
@@ -82,18 +82,22 @@ namespace Battlehub.RTHandles
             {
                 if (distToYAxis <= distToZAxis && distToYAxis <= distToXAxis)
                 {
+                    distance = distToYAxis;
                     return RuntimeHandleAxis.Y;
                 }
                 else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
                 {
+                    distance = distToYAxis;
                     return RuntimeHandleAxis.X;
                 }
                 else
                 {
+                    distance = distToZAxis;
                     return RuntimeHandleAxis.Z;
                 }
             }
-            
+
+            distance = float.PositiveInfinity;
             return RuntimeHandleAxis.None;
         }
 
@@ -104,7 +108,7 @@ namespace Battlehub.RTHandles
                 return false;
             }
 
-            SelectedAxis = Hit();
+            SelectedAxis = HitTester.GetSelectedAxis(this);
 
             if(SelectedAxis == RuntimeHandleAxis.Free)
             {

@@ -600,17 +600,17 @@ namespace Battlehub.RTHandles
 
         }
 
-        public override RuntimeHandleAxis HitTest(Ray ray)
+        public override RuntimeHandleAxis HitTest(Ray ray, out float distance)
         {
             if (!m_useColliders)
             {
+                distance = float.PositiveInfinity;
                 return RuntimeHandleAxis.None;
             }
 
             Collider collider = null;
             float minDistance = float.MaxValue;
 
-        
             if(m_isVertexSnapping)
             {
                 RaycastHit hit;
@@ -658,8 +658,8 @@ namespace Battlehub.RTHandles
                     }
                 }
             }
-           
-          
+
+            distance = minDistance;
             if (collider == m_xCollider)
             {
                 return RuntimeHandleAxis.X;
@@ -695,6 +695,7 @@ namespace Battlehub.RTHandles
                 return RuntimeHandleAxis.Snap;
             }
 
+            distance = float.PositiveInfinity;
             return RuntimeHandleAxis.None;
         }
 

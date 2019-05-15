@@ -89,7 +89,7 @@ namespace Battlehub.RTHandles
                 if (HightlightOnHover)
                 {
                     m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation * StartingRotationInv, Vector3.one).inverse;
-                    SelectedAxis = Hit();
+                    SelectedAxis = HitTester.GetSelectedAxis(this);
                 }
 
                 if (m_targetRotation != Target.rotation)
@@ -137,11 +137,11 @@ namespace Battlehub.RTHandles
             return true;
         }
 
-        private RuntimeHandleAxis Hit()
+        public override RuntimeHandleAxis Hit(out float distance)
         {
             if (Model != null)
             {
-                return Model.HitTest(Window.Pointer);
+                return Model.HitTest(Window.Pointer, out distance);
             }
 
             float hit1Distance;
@@ -150,7 +150,7 @@ namespace Battlehub.RTHandles
             float scale = RuntimeHandlesComponent.GetScreenScale(Target.position, Window.Camera) * Appearance.HandleScale;
             if (Intersect(ray, Target.position, outerRadius * scale, out hit1Distance, out hit2Distance))
             {
-                RuntimeHandleAxis selectedAxis = HitAxis();
+                RuntimeHandleAxis selectedAxis = HitAxis(out distance);
                 Vector3 axis = Vector3.zero;
                 switch (SelectedAxis)
                 {
@@ -185,10 +185,11 @@ namespace Battlehub.RTHandles
                 }
             }
 
+            distance = float.MaxValue;
             return RuntimeHandleAxis.None;
         }
 
-        private RuntimeHandleAxis HitAxis()
+        private RuntimeHandleAxis HitAxis(out float distance)
         {
             float screenScale = RuntimeHandlesComponent.GetScreenScale(Target.position, Window.Camera) * Appearance.HandleScale;
             Vector3 scale = new Vector3(screenScale, screenScale, screenScale);
@@ -206,17 +207,21 @@ namespace Battlehub.RTHandles
 
             if (hitX && xDistance < yDistance && xDistance < zDistance)
             {
+                distance = xDistance;
                 return RuntimeHandleAxis.X;
             }
             else if (hitY && yDistance < xDistance && yDistance < zDistance)
             {
+                distance = yDistance;
                 return RuntimeHandleAxis.Y;
             }
             else if (hitZ && zDistance < xDistance && zDistance < yDistance)
             {
+                distance = zDistance;
                 return RuntimeHandleAxis.Z;
             }
 
+            distance = float.MaxValue;
             return RuntimeHandleAxis.None;
         }
 
@@ -348,7 +353,7 @@ namespace Battlehub.RTHandles
 
             m_targetRotation = Target.rotation;
             m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation * StartingRotationInv, Vector3.one).inverse;
-            SelectedAxis = Hit();
+            SelectedAxis = HitTester.GetSelectedAxis(this);
             m_deltaX = 0.0f;
             m_deltaY = 0.0f;
 

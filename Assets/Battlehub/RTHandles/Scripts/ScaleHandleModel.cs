@@ -282,10 +282,11 @@ namespace Battlehub.RTHandles
             m_xyzCollider.size = new Vector3(size * 2, size * 2, size * 2);
         }
 
-        public override RuntimeHandleAxis HitTest(Ray ray)
+        public override RuntimeHandleAxis HitTest(Ray ray, out float distance)
         {
             if (!m_useColliders)
             {
+                distance = float.PositiveInfinity;
                 return RuntimeHandleAxis.None;
             }
 
@@ -335,8 +336,9 @@ namespace Battlehub.RTHandles
                 }
             }
 
+            distance = minDistance;
             if (collider == m_xCollider)
-            {
+            {    
                 return RuntimeHandleAxis.X;
             }
 
@@ -355,6 +357,7 @@ namespace Battlehub.RTHandles
                 return RuntimeHandleAxis.Free;
             }
 
+            distance = float.PositiveInfinity;
             return RuntimeHandleAxis.None;
         }
 

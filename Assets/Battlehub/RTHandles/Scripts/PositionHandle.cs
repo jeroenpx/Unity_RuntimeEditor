@@ -154,7 +154,7 @@ namespace Battlehub.RTHandles
 
             if (HightlightOnHover && !IsDragging && !IsPointerDown)
             {
-                SelectedAxis = Hit();
+                SelectedAxis = HitTester.GetSelectedAxis(this);
             }
         
             if (IsInVertexSnappingMode || Editor.Tools.IsSnapping)
@@ -607,12 +607,11 @@ namespace Battlehub.RTHandles
             return false;
         }
 
-        private bool HitQuad(Vector3 axis, Matrix4x4 matrix, float size)
+        private bool HitQuad(Vector3 axis, Matrix4x4 matrix, float size, out float distance)
         {
             Ray ray = Window.Pointer;
             Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));
 
-            float distance;
             if(!plane.Raycast(ray, out distance))
             {
                 return false;
@@ -643,14 +642,14 @@ namespace Battlehub.RTHandles
             return result;
         }
 
-        private RuntimeHandleAxis Hit()
+        public override RuntimeHandleAxis Hit(out float distance)
         {
             m_matrix = Matrix4x4.TRS(Position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;
 
             if (Model != null)
             {
-                return Model.HitTest(Window.Pointer);
+                return Model.HitTest(Window.Pointer, out distance);
             }
 
             float scale = RuntimeHandlesComponent.GetScreenScale(Position, Window.Camera);
@@ -662,7 +661,7 @@ namespace Battlehub.RTHandles
 
                 if(LockObject == null || !LockObject.PositionX && !LockObject.PositionZ)
                 {
-                    if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale))
+                    if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale, out distance))
                     {
                         return RuntimeHandleAxis.XZ;
                     }
@@ -670,7 +669,7 @@ namespace Battlehub.RTHandles
 
                 if (LockObject == null || !LockObject.PositionY && !LockObject.PositionZ)
                 {
-                    if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale))
+                    if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale, out distance))
                     {
                         return RuntimeHandleAxis.YZ;
                     }
@@ -678,7 +677,7 @@ namespace Battlehub.RTHandles
 
                 if (LockObject == null || !LockObject.PositionX && !LockObject.PositionY)
                 {
-                    if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale))
+                    if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale, out distance))
                     {
                         return RuntimeHandleAxis.XY;
                     }
@@ -696,24 +695,28 @@ namespace Battlehub.RTHandles
             {
                 if (distToYAxis <= distToZAxis && distToYAxis <= distToXAxis)
                 {
+                    distance = distToYAxis;
                     return RuntimeHandleAxis.Y;
                 }
                 else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
                 {
+                    distance = distToXAxis;
                     return RuntimeHandleAxis.X;
                 }
                 else
                 {
+                    distance = distToZAxis;
                     return RuntimeHandleAxis.Z;
                 }
             }
 
+            distance = float.PositiveInfinity;
             return  RuntimeHandleAxis.None;
         }
 
         protected override bool OnBeginDrag()
         {
-            SelectedAxis = Hit();           
+            SelectedAxis = HitTester.GetSelectedAxis(this);
             m_currentPosition = Position;
             m_cursorPosition = Position;
 
