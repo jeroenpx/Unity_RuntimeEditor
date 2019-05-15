@@ -60118,7 +60118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8257924316536721912}
   m_Layer: 0
-  m_Name: ClassMappingsStorage
+  m_Name: ClassMappingsTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82585,7 +82585,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 29
     PersistentNamespace: System.Battlehub.SL2
@@ -82655,7 +82655,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 1
+  - IsEnabled: 0
     IsProperty: 1
     PersistentTag: 34
     PersistentNamespace: System.Battlehub.SL2

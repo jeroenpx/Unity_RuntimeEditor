@@ -178,12 +178,12 @@ namespace Battlehub
             return type.GetTypeInfo().GetCustomAttributes(attributeType, inherit).ToArray();
         }
 
-         public static bool IsClass(this Type type)
+        public static bool IsClass(this Type type)
         {
             return type.GetTypeInfo().IsClass;
         }
 
-        public ConstructorInfo GetConstructor(this Type type, Type[] types)
+        public static ConstructorInfo GetConstructor(this Type type, Type[] types)
         {
              return type.GetTypeInfo().GetConstructor(types);
         }

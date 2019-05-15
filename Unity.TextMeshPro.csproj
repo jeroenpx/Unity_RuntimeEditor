@@ -317,6 +317,27 @@
     <Reference Include="protobuf-net">
       <HintPath>Assets/Battlehub/Deps/protobuf-net.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Auth">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Drive.v3">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Drive.v3.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets/Battlehub/Deps/GoogleDriveAPI/Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Google.IOSResolver_v1.2.95.0">
       <HintPath>Assets/PlayServicesResolver/Editor/Google.IOSResolver_v1.2.95.0.dll</HintPath>
     </Reference>
@@ -774,12 +795,31 @@
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\SSCircleShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\SSQuadShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Grid.shader" />
+    <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Outline.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Shape.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColor.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorBillboard.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorClip.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\VertexColorClipUsingClipPlane.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Battlehub\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\Battlehub\UIControls\DockPanels\Shaders\DepthMask.shader" />
+    <None Include="Assets\Battlehub\Utils\Dispatcher\Dispatcher Documentation.txt" />
     <None Include="Assets\GoogleARCore\Editor\ARCoreiOSDependencies.template" />
     <None Include="Assets\GoogleARCore\Examples\AugmentedFaces\Materials\Shaders\AugmentedFaceOccluder.shader" />
     <None Include="Assets\GoogleARCore\Examples\Common\Materials\Shaders\MobileDiffuseWithLightEstimation.shader" />

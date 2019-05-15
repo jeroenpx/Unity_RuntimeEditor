@@ -628,11 +628,11 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: RTEditor_133
   metroPackageVersion: 
-  metroCertificatePath: 
+  metroCertificatePath: E:\Development\GitHub\Unity_RuntimeEditor\Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: Battlehub
+  metroCertificateIssuer: Battlehub
+  metroCertificateNotAfter: 0076cdfeac29d601
   metroApplicationDescription: RTEditor_133
   wsaImages: {}
   metroTileShortName: 
