@@ -87,6 +87,7 @@ namespace Battlehub.UIControls
 
     public class TreeViewItemContainerData : ItemContainerData
     {
+        public static event EventHandler<VirtualizingParentChangedEventArgs> ParentChanging;
         public static event EventHandler<VirtualizingParentChangedEventArgs> ParentChanged;
 
         private TreeViewItemContainerData m_parent;
@@ -100,6 +101,11 @@ namespace Battlehub.UIControls
                     return;
                 }
 
+                if (ParentChanging != null)
+                {
+                    ParentChanging(this, new VirtualizingParentChangedEventArgs(m_parent, value));
+                }
+
                 TreeViewItemContainerData oldParent = m_parent;
                 m_parent = value;
                 if (ParentChanged != null)
@@ -108,6 +114,7 @@ namespace Battlehub.UIControls
                 }
             }
         }
+
 
         public object ParentItem
         {
@@ -307,8 +314,6 @@ namespace Battlehub.UIControls
         public override string ToString()
         {
             return "Data: " + Item;
-            //return base.ToString();// "TVIDAT " + Indent + " " + IsSelected + " " + CanExpand + " " + IsExpanded;// + " " + 
-                //Item.ToString() + " " + Parent != null ? Parent.Item.ToString() : "parent null";
         }
     }
 
@@ -340,13 +345,13 @@ namespace Battlehub.UIControls
         protected override void OnEnableOverride()
         {
             base.OnEnableOverride();
-            TreeViewItemContainerData.ParentChanged += OnTreeViewItemParentChanged;
+            TreeViewItemContainerData.ParentChanging += OnTreeViewItemParentChanging;
         }
 
         protected override void OnDisableOverride()
         {
             base.OnDisableOverride();
-            TreeViewItemContainerData.ParentChanged -= OnTreeViewItemParentChanged;
+            TreeViewItemContainerData.ParentChanging -= OnTreeViewItemParentChanging;
         }
 
         protected override ItemContainerData InstantiateItemContainerData(object item)
@@ -709,14 +714,14 @@ namespace Battlehub.UIControls
             }
         }
 
-        private void OnTreeViewItemParentChanged(object sender, VirtualizingParentChangedEventArgs e)
+        private void OnTreeViewItemParentChanging(object sender, VirtualizingParentChangedEventArgs e)
         {
-            if(!CanHandleEvent(sender))
+            if (!CanHandleEvent(sender))
             {
                 return;
             }
             TreeViewItemContainerData tvItem = (TreeViewItemContainerData)sender;
-         
+
             TreeViewItemContainerData oldParent = e.OldParent;
             if (DropMarker.Action != ItemDropAction.SetLastChild && DropMarker.Action != ItemDropAction.None)
             {
@@ -741,7 +746,7 @@ namespace Battlehub.UIControls
             {
                 tvDropTarget = (VirtualizingTreeViewItem)GetItemContainer(tvDropTargetData.Item);
             }
-             
+
             if (tvDropTarget != null)
             {
                 if (tvDropTarget.CanExpand)
@@ -764,7 +769,7 @@ namespace Battlehub.UIControls
             }
             else
             {
-                if(tvDropTargetData != null)
+                if (tvDropTargetData != null)
                 {
                     tvDropTargetData.CanExpand = true;
                     tvDropTargetData.IsExpanded = true;
@@ -783,7 +788,7 @@ namespace Battlehub.UIControls
             }
             else
             {
-                
+
                 lastChild = (TreeViewItemContainerData)LastItemContainerData();
             }
 
@@ -797,7 +802,7 @@ namespace Battlehub.UIControls
 
                 if (!lastChild.IsDescendantOf(tvItem))
                 {
-                     base.SetNextSiblingInternal(lastChild, tvItem);
+                    base.SetNextSiblingInternal(lastChild, tvItem);
                 }
             }
 
