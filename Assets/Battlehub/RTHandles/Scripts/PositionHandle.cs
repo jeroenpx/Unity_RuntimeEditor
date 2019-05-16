@@ -152,7 +152,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (HightlightOnHover && !IsDragging && !IsPointerDown)
+            if (HightlightOnHover && !IsDragging /*&& !IsPointerDown*/)
             {
                 SelectedAxis = HitTester.GetSelectedAxis(this);
             }
@@ -642,7 +642,7 @@ namespace Battlehub.RTHandles
             return result;
         }
 
-        public override RuntimeHandleAxis Hit(out float distance)
+        public override RuntimeHandleAxis HitTest(out float distance)
         {
             m_matrix = Matrix4x4.TRS(Position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
             m_inverse = m_matrix.inverse;

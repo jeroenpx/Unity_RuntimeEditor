@@ -48,13 +48,13 @@ namespace Battlehub.RTHandles
             {
                 return;
             }
-            if (HightlightOnHover && !IsDragging && !IsPointerDown)
+            if (HightlightOnHover && !IsDragging /*&& !IsPointerDown*/)
             {
                 SelectedAxis = HitTester.GetSelectedAxis(this);
             }
         }
 
-        public override RuntimeHandleAxis Hit(out float distance)
+        public override RuntimeHandleAxis HitTest(out float distance)
         {
             m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera) * Appearance.HandleScale;
             m_matrix = Matrix4x4.TRS(transform.position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
@@ -87,7 +87,7 @@ namespace Battlehub.RTHandles
                 }
                 else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
                 {
-                    distance = distToYAxis;
+                    distance = distToXAxis;
                     return RuntimeHandleAxis.X;
                 }
                 else

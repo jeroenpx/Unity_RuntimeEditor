@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 using Battlehub.RTCommon;
 
@@ -84,7 +83,7 @@ namespace Battlehub.RTHandles
             {
                 return;
             }
-            if (!IsDragging && !IsPointerDown)
+            if (!IsDragging /*&& !IsPointerDown*/)
             {
                 if (HightlightOnHover)
                 {
@@ -137,7 +136,7 @@ namespace Battlehub.RTHandles
             return true;
         }
 
-        public override RuntimeHandleAxis Hit(out float distance)
+        public override RuntimeHandleAxis HitTest(out float distance)
         {
             if (Model != null)
             {

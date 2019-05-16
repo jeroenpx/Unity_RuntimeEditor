@@ -103,18 +103,18 @@ namespace Battlehub.RTHandles
             SetColors();
         }
 
-        protected override void OnWindowActivated()
+        protected override void OnWindowActivating()
         {
-            base.OnWindowActivated();
-            if(m_useColliders)
+            base.OnWindowActivating();
+            if (m_useColliders)
             {
                 m_xCollider.gameObject.SetActive(true);
             }
         }
 
-        protected override void OnWindowDeactivated()
+        protected override void OnWindowDeactivating()
         {
-            base.OnWindowDeactivated();
+            base.OnWindowDeactivating();
             if(m_xCollider != null)
             {
                 m_xCollider.gameObject.SetActive(false);
@@ -326,7 +326,6 @@ namespace Battlehub.RTHandles
                             continue;
                         }
                     }
-                   
 
                     if (hit.distance < minDistance)
                     {

@@ -227,7 +227,7 @@ namespace Battlehub.RTHandles
             {
                 m_prevRotation = transform.rotation;
                 m_prevPosition = transform.position;
-                m_prevCameraPosition = Editor.ActiveWindow.Camera.transform.position;
+                m_prevCameraPosition = Window.Camera.transform.position;
                 int index = SetCameraPosition(m_prevCameraPosition);
                 if(index >= 0)
                 {
@@ -236,12 +236,12 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void OnWindowActivated()
+        protected override void OnWindowActivating()
         {
-            base.OnWindowActivated();
+            base.OnWindowActivating();
             m_prevRotation = transform.rotation;
             m_prevPosition = transform.position;
-            m_prevCameraPosition = Editor.ActiveWindow.Camera.transform.position;
+            m_prevCameraPosition = Window.Camera.transform.position;
             int index = SetCameraPosition(m_prevCameraPosition);
             if (index >= 0)
             {
@@ -250,16 +250,18 @@ namespace Battlehub.RTHandles
 
             if(m_useColliders)
             {
+                Debug.Log("Enable Colliders");
                 m_xCollider.transform.gameObject.SetActive(true);
             }   
         }
 
-        protected override void OnWindowDeactivated()
+        protected override void OnWindowDeactivating()
         {
-            base.OnWindowDeactivated();
+            base.OnWindowDeactivating();
 
             if (m_xCollider != null)
             {
+                Debug.Log("Disable Colliders");
                 m_xCollider.transform.gameObject.SetActive(false);
             }
         }

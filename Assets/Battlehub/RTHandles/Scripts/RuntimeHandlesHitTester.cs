@@ -10,6 +10,28 @@ namespace Battlehub.RTHandles
 
         protected BaseHandle m_selectedHandle;
         protected RuntimeHandleAxis m_selectedAxis;
+        protected RuntimeWindow m_window;
+        protected IRTE m_editor;
+
+        private void Awake()
+        {
+            m_editor = IOC.Resolve<IRTE>();
+            m_editor.ActiveWindowChanged += OnActiveWindowChanged;
+
+            m_window = GetComponent<RuntimeWindow>();
+            if(m_window == null)
+            {
+                Debug.LogError("Unable to find window");
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if(m_editor != null)
+            {
+                m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
+            }
+        }
 
         public static void InitializeIfRequired(RuntimeWindow window, ref RuntimeHandlesHitTester hitTester)
         {
@@ -20,9 +42,21 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private void OnActiveWindowChanged(RuntimeWindow deactivated)
+        {
+            if(m_window == m_editor.ActiveWindow)
+            {
+                Debug.Log("HitTestAll");
+                HitTestAll();
+            }
+        }
+
         public virtual void Add(BaseHandle handle)
         {
-            m_handles.Add(handle);
+            if(!m_handles.Contains(handle))
+            {
+                m_handles.Add(handle);
+            }
         }
 
         public virtual void Remove(BaseHandle handle)
@@ -48,17 +82,22 @@ namespace Battlehub.RTHandles
 
         protected virtual void Update()
         {
+            HitTestAll();
+        }
+
+        private void HitTestAll()
+        {
             m_selectedHandle = null;
             m_selectedAxis = RuntimeHandleAxis.None;
 
             float minDistance = float.PositiveInfinity;
-            for(int i = 0; i < m_handles.Count; ++i)
+            for (int i = 0; i < m_handles.Count; ++i)
             {
                 BaseHandle handle = m_handles[i];
 
                 float distance;
-                RuntimeHandleAxis selectedAxis = handle.Hit(out distance);
-                if(distance < minDistance)
+                RuntimeHandleAxis selectedAxis = handle.HitTest(out distance);
+                if (distance < minDistance)
                 {
                     minDistance = distance;
                     m_selectedAxis = selectedAxis;

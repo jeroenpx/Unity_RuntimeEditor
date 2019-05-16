@@ -34,11 +34,11 @@ namespace Battlehub.RTHandles
         /// </summary>
         public bool HightlightOnHover = true;
 
-        private bool m_isPointerDown = false;
-        protected bool IsPointerDown
-        {
-            get { return m_isPointerDown; }
-        }
+        //private bool m_isPointerDown = false;
+        //protected bool IsPointerDown
+        //{
+        //    get { return m_isPointerDown; }
+        //}
 
         public RuntimeHandlesHitTester HitTester;
         public RuntimeHandlesComponent Appearance;
@@ -377,8 +377,7 @@ namespace Battlehub.RTHandles
 
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
             RuntimeHandlesHitTester.InitializeIfRequired(Window, ref HitTester);
-            HitTester.Add(this);
-            
+          
             if (m_targets != null && m_targets.Length > 0 )
             {
                 var lockObject = LockObject;
@@ -471,6 +470,11 @@ namespace Battlehub.RTHandles
 
             OnEnableOverride();
 
+            if(HitTester != null)
+            {
+                HitTester.Add(this);
+            }
+           
             if(m_input != null)
             {
                 m_input.enabled = true;
@@ -507,7 +511,7 @@ namespace Battlehub.RTHandles
                 GLRenderer.Instance.Remove(this);
             }
 
-            if(HitTester != null)
+            if (HitTester != null)
             {
                 HitTester.Remove(this);
             }
@@ -543,7 +547,7 @@ namespace Battlehub.RTHandles
 
         protected virtual void OnDisableOverride()
         {
-
+            
         }
 
         protected override void OnDestroyOverride()
@@ -552,6 +556,8 @@ namespace Battlehub.RTHandles
 
             m_allHandles.Remove(this);
 
+
+ 
             if (GLRenderer.Instance != null)
             {
                 GLRenderer.Instance.Remove(this);
@@ -766,8 +772,6 @@ namespace Battlehub.RTHandles
 
         public void BeginDrag()
         {
-            m_isPointerDown = true;
-
             if (Editor.Tools.Current != Tool && Editor.Tools.Current != RuntimeTool.None || Editor.Tools.IsViewing)
             {
                 return;
@@ -788,6 +792,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            //m_isPointerDown = true;
             m_isDragging = OnBeginDrag();
             if (m_isDragging)
             {
@@ -810,7 +815,7 @@ namespace Battlehub.RTHandles
 
         public void EndDrag()
         {
-            m_isPointerDown = false;
+            //m_isPointerDown = false;
 
             if (m_isDragging)
             {
@@ -929,7 +934,7 @@ namespace Battlehub.RTHandles
         }
 
         /// Hit testing methods      
-        public virtual RuntimeHandleAxis Hit(out float distance)
+        public virtual RuntimeHandleAxis HitTest(out float distance)
         {
             distance = float.PositiveInfinity;
             return RuntimeHandleAxis.None;

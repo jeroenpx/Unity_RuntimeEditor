@@ -55,6 +55,7 @@ namespace Battlehub.RTCommon
         event RTEEvent BeforePlaymodeStateChange;
         event RTEEvent PlaymodeStateChanging;
         event RTEEvent PlaymodeStateChanged;
+        event RTEEvent<RuntimeWindow> ActiveWindowChanging;
         event RTEEvent<RuntimeWindow> ActiveWindowChanged;
         event RTEEvent<RuntimeWindow> WindowRegistered;
         event RTEEvent<RuntimeWindow> WindowUnregistered;
@@ -227,6 +228,7 @@ namespace Battlehub.RTCommon
         public event RTEEvent BeforePlaymodeStateChange;
         public event RTEEvent PlaymodeStateChanging;
         public event RTEEvent PlaymodeStateChanged;
+        public event RTEEvent<RuntimeWindow> ActiveWindowChanging;
         public event RTEEvent<RuntimeWindow> ActiveWindowChanged;
         public event RTEEvent<RuntimeWindow> WindowRegistered;
         public event RTEEvent<RuntimeWindow> WindowUnregistered;
@@ -930,6 +932,10 @@ namespace Battlehub.RTCommon
             {
                 RuntimeWindow deactivatedWindow = m_activeWindow;
 
+                if(ActiveWindowChanging != null)
+                {
+                    ActiveWindowChanging(window);
+                }
                 m_activeWindow = window;
                 if (ActiveWindowChanged != null)
                 {

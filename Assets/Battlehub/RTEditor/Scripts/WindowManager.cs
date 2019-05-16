@@ -394,9 +394,9 @@ namespace Battlehub.RTEditor
             }
 
             bool pointerDownOrUp = Input.GetPointerDown(0) ||
-              Input.GetPointerDown(1) ||
-              Input.GetPointerDown(2) ||
-              Input.GetPointerUp(0);
+                Input.GetPointerDown(1) ||
+                Input.GetPointerDown(2) ||
+                Input.GetPointerUp(0);
 
             bool canActivate = pointerDownOrUp ||
                 mwheel ||
@@ -412,7 +412,6 @@ namespace Battlehub.RTEditor
 
                 RectTransform activeRectTransform = GetRegionTransform(ActiveWindow);
                 bool activeWindowContainsScreenPoint = activeRectTransform != null && RectTransformUtility.RectangleContainsScreenPoint(activeRectTransform, Input.GetPointerXY(0), Raycaster.eventCamera);
-
 
                 if (!results.Any(r => r.gameObject.GetComponent<Menu>()))
                 {

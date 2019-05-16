@@ -58,8 +58,10 @@ namespace Battlehub.RTCommon
 
             if (IsWindowActive)
             {
+                OnWindowActivating();
                 OnWindowActivated();
             }
+            m_editor.ActiveWindowChanging += OnActiveWindowChanging;
             m_editor.ActiveWindowChanged += OnActiveWindowChanged;
         }
 
@@ -77,6 +79,7 @@ namespace Battlehub.RTCommon
         {
             if(m_editor != null)
             {
+                m_editor.ActiveWindowChanging -= OnActiveWindowChanging;
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
             }
             OnDestroyOverride();
@@ -86,6 +89,18 @@ namespace Battlehub.RTCommon
         protected virtual void OnDestroyOverride()
         {
 
+        }
+
+        private void OnActiveWindowChanging(RuntimeWindow activatedWindow)
+        {
+            if(activatedWindow == Window)
+            {
+                OnWindowActivating();
+            }
+            else
+            {
+                OnWindowDeactivating();
+            }
         }
 
         protected virtual void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
@@ -98,6 +113,16 @@ namespace Battlehub.RTCommon
             {
                 OnWindowDeactivated();
             }
+        }
+
+        protected virtual void OnWindowActivating()
+        {
+
+        }
+
+        protected virtual void OnWindowDeactivating()
+        {
+
         }
 
         protected virtual void OnWindowActivated()

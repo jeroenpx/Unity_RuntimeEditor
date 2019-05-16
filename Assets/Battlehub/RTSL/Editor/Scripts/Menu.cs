@@ -567,16 +567,23 @@ namespace Battlehub.RTSL
                     continue;
                 }
 
-                if (!(uo is GameObject) && !(uo is Component))
+                if (!(uo is GameObject) && !(uo is Component) && !(uo is Texture2D))
                 {
                     Type persistentType = typeMap.ToPersistentType(uo.GetType());
                     if (persistentType != null)
                     {
                         getDepsCtx.Clear();
 
-                        PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                        persistentObject.ReadFrom(uo);
-                        persistentObject.GetDepsFrom(uo, getDepsCtx);
+                        try
+                        {
+                            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                            persistentObject.ReadFrom(uo);
+                            persistentObject.GetDepsFrom(uo, getDepsCtx);
+                        }
+                        catch(Exception e)
+                        {
+                            Debug.LogError(e);
+                        }
 
                         foreach (UnityObject dep in getDepsCtx.Dependencies)
                         {
