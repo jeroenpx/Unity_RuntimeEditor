@@ -250,7 +250,6 @@ namespace Battlehub.RTHandles
 
             if(m_useColliders)
             {
-                Debug.Log("Enable Colliders");
                 m_xCollider.transform.gameObject.SetActive(true);
             }   
         }
@@ -261,7 +260,6 @@ namespace Battlehub.RTHandles
 
             if (m_xCollider != null)
             {
-                Debug.Log("Disable Colliders");
                 m_xCollider.transform.gameObject.SetActive(false);
             }
         }

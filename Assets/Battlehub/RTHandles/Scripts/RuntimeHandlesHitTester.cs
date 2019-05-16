@@ -46,7 +46,6 @@ namespace Battlehub.RTHandles
         {
             if(m_window == m_editor.ActiveWindow)
             {
-                Debug.Log("HitTestAll");
                 HitTestAll();
             }
         }
