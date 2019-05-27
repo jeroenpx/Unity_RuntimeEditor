@@ -307,7 +307,7 @@ namespace Battlehub.RTEditor
             {
                 newItems = new ExposeToEditor[0];
             }
-            ExposeToEditor[] selectableObjects = newItems.OfType<ExposeToEditor>().Where(o => o.CanEdit).ToArray();
+            ExposeToEditor[] selectableObjects = newItems.OfType<ExposeToEditor>().ToArray();
             Editor.Selection.objects = selectableObjects.Select(o => o.gameObject).ToArray();
 
             //sync with RunitimeSelectiom.objects because of OnBeforeSelectionChanged event
@@ -367,12 +367,9 @@ namespace Battlehub.RTEditor
         protected virtual void OnItemDoubleClicked(object sender, ItemArgs e)
         {
             ExposeToEditor exposeToEditor = (ExposeToEditor)e.Items[0];
-            if (exposeToEditor.CanEdit)
-            {
-                Editor.Selection.activeObject = exposeToEditor.gameObject;
-                //ItemDoubleClick.Invoke();
-            }
-        }
+            Editor.Selection.activeObject = exposeToEditor.gameObject;
+        }    
+        
 
         protected virtual void OnItemBeginEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {

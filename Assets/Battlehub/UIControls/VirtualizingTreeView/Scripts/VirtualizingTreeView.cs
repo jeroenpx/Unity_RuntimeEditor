@@ -323,7 +323,9 @@ namespace Battlehub.UIControls
         /// Raised on item expanding
         /// </summary>
         public event EventHandler<VirtualizingItemExpandingArgs> ItemExpanding;
+        public event EventHandler<VirtualizingItemExpandingArgs> ItemExpanded;
 
+        public event EventHandler<VirtualizingItemCollapsedArgs> ItemCollapsing;
         public event EventHandler<VirtualizingItemCollapsedArgs> ItemCollapsed;
 
         /// <summary>
@@ -558,9 +560,9 @@ namespace Battlehub.UIControls
                 return;
             }
 
+            
             if (ItemExpanding != null)
             {
-                
                 VirtualizingItemExpandingArgs args = new VirtualizingItemExpandingArgs(treeViewItemData.Item);
                 ItemExpanding(this, args);
 
@@ -597,7 +599,14 @@ namespace Battlehub.UIControls
 
                     UpdateSelectedItemIndex();
                 }
+
+                if (ItemExpanded != null)
+                {
+                    ItemExpanded(this, args);
+                }
             }
+
+           
         }
 
         public void Collapse(object item)
@@ -615,6 +624,11 @@ namespace Battlehub.UIControls
 
         public void Internal_Collapse(object item)
         {
+            if(ItemCollapsing != null)
+            {
+                ItemCollapsing(this, new VirtualizingItemCollapsedArgs(item));
+            }
+
             TreeViewItemContainerData treeViewItemData = (TreeViewItemContainerData)GetItemContainerData(item);
             if (treeViewItemData == null)
             {

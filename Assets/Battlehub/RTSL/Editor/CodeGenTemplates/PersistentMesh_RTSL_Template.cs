@@ -11,10 +11,10 @@ namespace Battlehub.RTSL.Internal
     [PersistentTemplate("UnityEngine.Mesh", new[] { "vertices", "subMeshCount", "indexFormat", "triangles" })]
     public class PersistentMesh_RTSL_Template : PersistentSurrogateTemplate
     {
-#if RTSL_COMPILE_TEMPLATES
+        #if RTSL_COMPILE_TEMPLATES
         //<TEMPLATE_BODY_START>
         [ProtoMember(1)]
-        public PersistentVector3[] vertices;
+        public Vector3[] vertices;
 
         [ProtoMember(2)]
         public int subMeshCount;
@@ -34,18 +34,11 @@ namespace Battlehub.RTSL.Internal
 
             Mesh o = (Mesh)obj;
             o.indexFormat = indexFormat;
-            if(vertices != null)
+            if (vertices != null)
             {
-                o.vertices = new Vector3[vertices.Length];
-                for(int i = 0; i < vertices.Length; ++i)
-                {
-                    if(vertices[i] != null)
-                    {
-                        o.vertices[i] = (Vector3)vertices[i].WriteTo(o.vertices[i]);
-                    }
-                }
+                o.vertices = vertices;
             }
-            
+
             o.subMeshCount = subMeshCount;
             if (m_tris != null)
             {
@@ -54,7 +47,7 @@ namespace Battlehub.RTSL.Internal
                     o.SetTriangles(m_tris[i].Array, i);
                 }
             }
-            return  base.WriteTo(obj); 
+            return base.WriteTo(obj);
         }
 
         public override void ReadFrom(object obj)
@@ -67,17 +60,11 @@ namespace Battlehub.RTSL.Internal
             Mesh o = (Mesh)obj;
             indexFormat = o.indexFormat;
             subMeshCount = o.subMeshCount;
-            if(o.vertices != null)
+            if (o.vertices != null)
             {
-                vertices = new PersistentVector3[o.vertices.Length];
-                for(int i = 0; i < o.vertices.Length; ++i)
-                {
-                    PersistentVector3 v = new PersistentVector3();
-                    v.ReadFrom(o.vertices[i]);
-                    vertices[i] = v;
-                }
+                vertices = o.vertices;
             }
-            
+
             m_tris = new IntArray[subMeshCount];
             for (int i = 0; i < subMeshCount; ++i)
             {

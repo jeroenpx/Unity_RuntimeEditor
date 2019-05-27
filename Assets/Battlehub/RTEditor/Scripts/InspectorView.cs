@@ -147,6 +147,15 @@ namespace Battlehub.RTEditor
                 }
             }
 
+            ExposeToEditor exposeToEditor = Editor.Selection.activeGameObject != null ?
+                Editor.Selection.activeGameObject.GetComponent<ExposeToEditor>() : 
+                null;
+
+            if(exposeToEditor != null && !exposeToEditor.CanInspect)
+            {
+                return;
+            }
+
             GameObject editorPrefab;
             if (objType == typeof(Material))
             {
@@ -174,8 +183,7 @@ namespace Battlehub.RTEditor
                 m_editor.transform.SetAsFirstSibling();
             }
 
-            bool isExposedToEditor = Editor.Selection.activeGameObject != null && Editor.Selection.activeGameObject.GetComponent<ExposeToEditor>() != null;
-            if (m_addComponentRoot != null && isExposedToEditor)
+            if (m_addComponentRoot != null && exposeToEditor)
             {
                 IProject project = IOC.Resolve<IProject>();
                 if(project == null || project.ToAssetItem(Editor.Selection.activeGameObject) == null)

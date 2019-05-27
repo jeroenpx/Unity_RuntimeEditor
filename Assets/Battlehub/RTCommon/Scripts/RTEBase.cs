@@ -928,7 +928,7 @@ namespace Battlehub.RTCommon
 
         public virtual void ActivateWindow(RuntimeWindow window)
         {
-            if (window != null && m_activeWindow != window && window.CanActivate)
+            if (m_activeWindow != window && (window == null ||  window.CanActivate))
             {
                 RuntimeWindow deactivatedWindow = m_activeWindow;
 
@@ -1046,7 +1046,7 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(exposed => exposed.CanDelete).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
+            ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(exposed => exposed != null && exposed.CanDelete).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
             if(exposeToEditor.Length == 0)
             {
                 return;

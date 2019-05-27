@@ -33,13 +33,7 @@ namespace Battlehub.RTHandles
         /// HighlightOnHover
         /// </summary>
         public bool HightlightOnHover = true;
-
-        //private bool m_isPointerDown = false;
-        //protected bool IsPointerDown
-        //{
-        //    get { return m_isPointerDown; }
-        //}
-
+        public bool EnableUndo = true;
         public RuntimeHandlesHitTester HitTester;
         public RuntimeHandlesComponent Appearance;
         /// <summary>
@@ -891,6 +885,10 @@ namespace Battlehub.RTHandles
 
         protected virtual void BeginRecordTransform()
         {
+            if (!EnableUndo)
+            {
+                return;
+            }
             Editor.Undo.BeginRecord();
             for (int i = 0; i < m_activeRealTargets.Length; ++i)
             {
@@ -901,6 +899,10 @@ namespace Battlehub.RTHandles
 
         protected virtual void EndRecordTransform()
         {
+            if(!EnableUndo)
+            {
+                return;
+            }
             Editor.Undo.BeginRecord();
             for (int i = 0; i < m_activeRealTargets.Length; ++i)
             {
@@ -914,7 +916,7 @@ namespace Battlehub.RTHandles
         {
             if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
             {
-                if(m_realTargets != null)
+                if(m_realTargets != null && (m_realTargets.Length != 1 || m_realTargets[0] != transform))
                 {
                     Targets = m_realTargets;
                 }
@@ -926,7 +928,7 @@ namespace Battlehub.RTHandles
         {
             if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
             {
-                if (m_realTargets != null)
+                if (m_realTargets != null && (m_realTargets.Length != 1 || m_realTargets[0] != transform))
                 {
                     Targets = m_realTargets;
                 }

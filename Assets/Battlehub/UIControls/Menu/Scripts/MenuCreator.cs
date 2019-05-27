@@ -69,6 +69,8 @@ namespace Battlehub.UIControls.MenuControl
         [SerializeField]
         private Menu m_menuPrefab = null;
 
+        
+
         private void Awake()
         {
             List<Assembly> assemblies = new List<Assembly>();
@@ -84,6 +86,7 @@ namespace Battlehub.UIControls.MenuControl
                 }
                 assemblies.Add(asm);
             }
+
 
             if (m_menuPanel == null)
             {

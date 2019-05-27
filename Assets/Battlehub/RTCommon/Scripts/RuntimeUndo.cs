@@ -418,6 +418,7 @@ namespace Battlehub.RTCommon
         void Store();
         void Restore();
 
+        Record CreateRecord(UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null);
         Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null);
         void Select(UnityObject[] objects, UnityObject activeObject);    
 
@@ -726,6 +727,16 @@ namespace Battlehub.RTCommon
                 return;
             }
 
+            _Purge();
+
+            if (StateChanged != null)
+            {
+                StateChanged();
+            }
+        }
+
+        private void _Purge()
+        {
             foreach (UndoStack<Record[]>.Node node in m_stack)
             {
                 if (node.Data != null)
@@ -743,11 +754,6 @@ namespace Battlehub.RTCommon
             {
                 Debug.LogWarning("Unifished RecordValue operations exists.");
                 m_objToValue = new Dictionary<object, Dictionary<MemberInfo, object>>();
-            }
-
-            if (StateChanged != null)
-            {
-                StateChanged();
             }
         }
 
@@ -840,19 +846,21 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            if (m_stack != null)
-            {
-                m_stack.Clear();
-            }
-
             if (m_stacks.Count > 0)
             {
+                _Purge();
+
                 m_stack = m_stacks.Pop();
                 if (StateChanged != null)
                 {
                     StateChanged();
                 }
             }
+        }
+
+        public Record CreateRecord(UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)
+        {
+            return CreateRecord(null, null, null, redoCallback, undoCallback, purgeCallback, eraseCallback);
         }
 
         public Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)
@@ -1828,6 +1836,11 @@ namespace Battlehub.RTCommon
         public void Restore()
         {
          
+        }
+
+        public Record CreateRecord(UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)
+        {
+            return CreateRecord(null, null, null, redoCallback, undoCallback, purgeCallback, eraseCallback);
         }
 
         public Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null)

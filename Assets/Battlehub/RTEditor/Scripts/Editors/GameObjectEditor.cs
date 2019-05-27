@@ -58,7 +58,6 @@ namespace Battlehub.RTEditor
 
             m_editorsMap = IOC.Resolve<IEditorsMap>();
             
-
             GameObject go = m_editor.Selection.activeGameObject;
             HashSet<Component> ignoreComponents = IgnoreComponents(go);
             InputName.text = go.name;

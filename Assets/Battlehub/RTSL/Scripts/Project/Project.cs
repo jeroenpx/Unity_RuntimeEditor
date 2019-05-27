@@ -1015,6 +1015,7 @@ namespace Battlehub.RTSL
                 }
                 
                 Queue<UnityObject> depsQueue = new Queue<UnityObject>(deps.OfType<UnityObject>());
+
                 GetDeepDependencies(depsQueue, exceptMappedObject, ctx);
 
                 object[] dependencies;
@@ -1059,8 +1060,7 @@ namespace Battlehub.RTSL
                         persistentObject.GetDepsFrom(uo, getDepsCtx);
 
                         foreach (UnityObject dep in getDepsCtx.Dependencies)
-                        {
-                            
+                        {   
                             if (!ctx.Dependencies.Contains(dep))
                             {
                                 if (dep is GameObject)
@@ -1075,7 +1075,6 @@ namespace Battlehub.RTSL
                                 {
                                     ctx.Dependencies.Add(dep);
                                 }
-                                
                                 
                                 depsQueue.Enqueue(dep);
                             }

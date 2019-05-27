@@ -651,6 +651,16 @@ namespace Battlehub.UIControls
             }
         }
 
+        public int VisibleItemIndex
+        {
+            get { return m_scrollRect.RoundedIndex; }
+        }
+
+        public int VisibleItemsCount
+        {
+            get { return m_scrollRect.VisibleItemsCount; }
+        }
+
         public void SetItems(IEnumerable value, bool updateSelection)
         {
             if (value == null)

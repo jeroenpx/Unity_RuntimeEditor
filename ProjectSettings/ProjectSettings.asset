@@ -628,7 +628,7 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: RTEditor_133
   metroPackageVersion: 
-  metroCertificatePath: E:\Development\GitHub\Unity_RuntimeEditor\Assets\WSATestCertificate.pfx
+  metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: Battlehub
   metroCertificateIssuer: Battlehub

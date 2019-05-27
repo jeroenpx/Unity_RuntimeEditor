@@ -61,6 +61,8 @@ namespace Battlehub.RTEditor
             m_window.DragLeaveEvent += OnDragLeave;
             m_window.DragEvent += OnDrag;
             m_window.DropEvent += OnDrop;
+
+            
         }
 
         protected virtual void OnDestroy()

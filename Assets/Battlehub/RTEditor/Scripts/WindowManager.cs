@@ -54,7 +54,7 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(Transform content);
 
         Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
-        Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f);
+        Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null);
         void DestroyWindow(Transform conent);
 
         Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction = null,
@@ -86,6 +86,7 @@ namespace Battlehub.RTEditor
         void SaveLayout(string name);
         LayoutInfo GetLayout(string name);
         void LoadLayout(string name);
+        void ForceLayoutUpdate();
     }
 
     [Serializable]
@@ -252,7 +253,7 @@ namespace Battlehub.RTEditor
             m_dockPanels.TabActivated += OnTabActivated;
             m_dockPanels.TabDeactivated += OnTabDeactivated;
             m_dockPanels.TabClosed += OnTabClosed;
-
+            
             m_dockPanels.RegionBeforeDepthChanged += OnRegionBeforeDepthChanged;
             m_dockPanels.RegionDepthChanged += OnRegionDepthChanged;
             m_dockPanels.RegionSelected += OnRegionSelected;
@@ -413,7 +414,7 @@ namespace Battlehub.RTEditor
                 RectTransform activeRectTransform = GetRegionTransform(ActiveWindow);
                 bool activeWindowContainsScreenPoint = activeRectTransform != null && RectTransformUtility.RectangleContainsScreenPoint(activeRectTransform, Input.GetPointerXY(0), Raycaster.eventCamera);
 
-                if (!results.Any(r => r.gameObject.GetComponent<Menu>()))
+                if (!results.Any(r => r.gameObject.GetComponent<Menu>() || r.gameObject.GetComponent<WindowOverlay>()))
                 {
                     foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z))
                     {
@@ -1065,6 +1066,11 @@ namespace Battlehub.RTEditor
 
         public bool ActivateWindow(Transform content)
         {
+            if(content == null)
+            {
+                return false;
+            }
+
             Region region = content.GetComponentInParent<Region>();
             if (region != null)
             {
@@ -1090,7 +1096,7 @@ namespace Battlehub.RTEditor
             return true;
         }
 
-        public Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f)
+        public Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null)
         {
             WindowDescriptor wd;
             GameObject content;
@@ -1110,7 +1116,19 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                m_dockPanels.AddRegion(wd.Icon, wd.Header, content.transform, isFree, splitType, flexibleSize);                
+                Region targetRegion = null;
+                if(parentWindow != null)
+                {
+                    targetRegion = parentWindow.GetComponentInParent<Region>();
+                }
+
+                if(targetRegion == null)
+                {
+                    targetRegion = m_dockPanels.RootRegion;
+                }
+
+                targetRegion.Add(wd.Icon, wd.Header, content.transform, isFree, splitType, flexibleSize);
+                
                 if(!isFree)
                 {
                     m_dockPanels.ForceUpdateLayout();
@@ -1129,7 +1147,15 @@ namespace Battlehub.RTEditor
 
         public void DestroyWindow(Transform content)
         {
-            m_dockPanels.RemoveRegion(content);
+            Tab tab = Region.FindTab(content);
+            if (tab != null)
+            {
+                m_dockPanels.RemoveRegion(content);
+            }
+            else
+            {
+                OnContentDestroyed(content);
+            }
         }
 
         public Transform CreateDialogWindow(string windowTypeName, string header, DialogAction<DialogCancelArgs> okAction, DialogAction<DialogCancelArgs> cancelAction,
@@ -1544,6 +1570,11 @@ namespace Battlehub.RTEditor
                     ToLayout(persistentLayoutInfo.Child1, layoutInfo.Child1);
                 }
             }
+        }
+
+        public void ForceLayoutUpdate()
+        {
+            m_dockPanels.ForceUpdateLayout();
         }
     }
 }

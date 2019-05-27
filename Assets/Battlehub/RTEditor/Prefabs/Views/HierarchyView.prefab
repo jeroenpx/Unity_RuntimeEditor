@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1759652137917595894
 RectTransform:
   m_ObjectHideFlags: 0
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
+  m_resizeCamera: 1
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 3
@@ -152,11 +153,6 @@ MonoBehaviour:
     type: 3}
   DisabledItemColor: {r: 0.5754717, g: 0.5727572, b: 0.5727572, a: 1}
   EnabledItemColor: {r: 1, g: 1, b: 1, a: 1}
-  ItemDoubleClick:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!222 &1925004940618416624
 CanvasRenderer:
   m_ObjectHideFlags: 0

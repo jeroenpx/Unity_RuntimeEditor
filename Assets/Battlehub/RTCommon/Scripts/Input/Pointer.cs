@@ -20,7 +20,17 @@ namespace Battlehub.RTCommon
 
         [SerializeField]
         protected RuntimeWindow m_window;
+        private void Awake()
+        {
+            Init();
+        }
+
         private void Start()
+        {
+            Init();
+        }
+
+        private void Init()
         {
             if (m_window == null)
             {

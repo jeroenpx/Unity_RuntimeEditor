@@ -42,47 +42,87 @@ namespace Battlehub.RTSL
             }
 
             HashSet<object> allDeps = getSceneDepsCtx.Dependencies;
-            List<UnityObject> externalDeps = new List<UnityObject>(allDeps.OfType<UnityObject>());
+            
             Queue<UnityObject> depsQueue = new Queue<UnityObject>(allDeps.OfType<UnityObject>());
 
             List<PersistentObject> assets = new List<PersistentObject>();
             List<int> assetIdentifiers = new List<int>();
 
             GetDepsFromContext getDepsCtx = new GetDepsFromContext();
-            while(depsQueue.Count > 0)
-            {   
+            while (depsQueue.Count > 0)
+            {
                 UnityObject uo = depsQueue.Dequeue();
-                if(!uo)
+                if (!uo)
                 {
                     continue;
                 }
-                if(!m_assetDB.IsMapped(uo))
+
+
+                Type persistentType = m_typeMap.ToPersistentType(uo.GetType());
+                if (persistentType != null)
                 {
-                    if (!(uo is GameObject) && !(uo is Component))
+                    getDepsCtx.Clear();
+
+                    try
                     {
-                        Type persistentType = m_typeMap.ToPersistentType(uo.GetType());
-                        if (persistentType != null)
+                        PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                        if (!(uo is GameObject) && !(uo is Component))
                         {
-                            getDepsCtx.Clear();
-
-                            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                            persistentObject.ReadFrom(uo);
-                            persistentObject.GetDepsFrom(uo, getDepsCtx);
-
-                            assets.Add(persistentObject);
-                            assetIdentifiers.Add(uo.GetInstanceID());
-
-                            foreach (UnityObject dep in getDepsCtx.Dependencies)
+                            if (!m_assetDB.IsMapped(uo))
                             {
-                                if(!allDeps.Contains(dep))
+                                if(uo is Texture2D)
                                 {
-                                    allDeps.Add(dep);
-                                    depsQueue.Enqueue(dep);
+                                    Texture2D texture = (Texture2D)uo;
+                                    if(texture.isReadable)  //
+                                    {
+                                        persistentObject.ReadFrom(uo);
+                                        assets.Add(persistentObject);
+                                        assetIdentifiers.Add(uo.GetInstanceID());
+                                        persistentObject.GetDepsFrom(uo, getDepsCtx);
+                                    }
+                                }
+                                else
+                                {
+                                    persistentObject.ReadFrom(uo);
+                                    assets.Add(persistentObject);
+                                    assetIdentifiers.Add(uo.GetInstanceID());
+                                    persistentObject.GetDepsFrom(uo, getDepsCtx);
                                 }
                             }
+                            else
+                            {
+                                persistentObject.GetDepsFrom(uo, getDepsCtx);
+                            }
+                        }
+                        else
+                        {
+                            persistentObject.GetDepsFrom(uo, getDepsCtx);
+                        }
+                        
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e.ToString());
+                    }
+
+                    foreach (UnityObject dep in getDepsCtx.Dependencies)
+                    {
+                        if (!allDeps.Contains(dep))
+                        {
+                            allDeps.Add(dep);
+                            depsQueue.Enqueue(dep);
                         }
                     }
-                    externalDeps.Remove(uo);
+
+                }
+            }
+
+            List<UnityObject> externalDeps = new List<UnityObject>(allDeps.OfType<UnityObject>());
+            for(int i = externalDeps.Count - 1; i >= 0; i--)
+            {
+                if(!m_assetDB.IsMapped(externalDeps[i]))
+                {
+                    externalDeps.RemoveAt(i);
                 }
             }
 

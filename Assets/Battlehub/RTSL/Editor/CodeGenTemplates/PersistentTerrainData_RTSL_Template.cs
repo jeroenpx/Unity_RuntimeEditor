@@ -1,4 +1,4 @@
-﻿#define RTSL_COMPILE_TEMPLATES
+﻿//#define RTSL_COMPILE_TEMPLATES
 #if RTSL_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
 using ProtoBuf;
@@ -87,10 +87,13 @@ namespace Battlehub.RTSL.Internal
             {
                 o.treePrototypes = new TreePrototype[0];
             }
-            
-            float[,] data = new float[m_heightMapWidth, m_heightMapHeight];
-            Buffer.BlockCopy(m_data, 0, data, 0, m_data.Length * sizeof(float));
-            o.SetHeights(0, 0, data);
+
+            if (m_data != null)
+            {
+                float[,] data = new float[m_heightMapWidth, m_heightMapHeight];
+                Buffer.BlockCopy(m_data, 0, data, 0, m_data.Length * sizeof(float));
+                o.SetHeights(0, 0, data);
+            }
 
             return base.WriteTo(obj);
         }

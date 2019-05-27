@@ -319,6 +319,7 @@ namespace Battlehub.RTHandles
                 }
 
                 m_boxSelection.Filtering += OnBoxSelectionFiltering;
+                m_boxSelection.Selection += OnBoxSelection;
             }
 
             if (m_positionHandle != null)
@@ -385,7 +386,6 @@ namespace Battlehub.RTHandles
             OnRuntimeSelectionChanged(null);
         }
 
-
         protected virtual void Start()
         {
             if (GetComponent<RuntimeSelectionInputBase>() == null)
@@ -426,6 +426,7 @@ namespace Battlehub.RTHandles
             if (m_boxSelection != null)
             {
                 m_boxSelection.Filtering -= OnBoxSelectionFiltering;
+                m_boxSelection.Selection -= OnBoxSelection;
             }
 
             Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
@@ -615,15 +616,28 @@ namespace Battlehub.RTHandles
 
         private void OnBoxSelectionFiltering(object sender, FilteringArgs e)
         {
-            if (e.Object == null || !CanSelect)
+            if(!CanSelect)
+            {
+                return;
+            }
+
+            if (e.Object == null)
             {
                 e.Cancel = true;
             }
 
             ExposeToEditor exposeToEditor = e.Object.GetComponent<ExposeToEditor>();
-            if (!exposeToEditor || !exposeToEditor.CanEdit)
+            if (!exposeToEditor)
             {
                 e.Cancel = true;
+            }
+        }
+
+        private void OnBoxSelection(object sender, BoxSelectionArgs e)
+        {
+            if(CanSelect)
+            {
+                m_editor.Selection.objects = e.GameObjects;
             }
         }
 
@@ -666,7 +680,7 @@ namespace Battlehub.RTHandles
                 {
                     GameObject selectedObj = selected[i];
                     ExposeToEditor exposeToEditor = selectedObj.GetComponent<ExposeToEditor>();
-                    if (exposeToEditor && exposeToEditor.CanEdit && !selectedObj.IsPrefab() && !selectedObj.isStatic)
+                    if (exposeToEditor && !selectedObj.IsPrefab() && !selectedObj.isStatic)
                     {
                         SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
                         if (selectionGizmo == null || selectionGizmo.Internal_Destroyed || selectionGizmo.Window != Window)
@@ -723,9 +737,19 @@ namespace Battlehub.RTHandles
             return go.GetComponentInParent<ExposeToEditor>();
         }
 
+        protected virtual bool CanTransformObject(GameObject go)
+        {
+            ExposeToEditor exposeToEditor = go.GetComponentInParent<ExposeToEditor>();
+            if(exposeToEditor == null)
+            {
+                return true;
+            }
+            return exposeToEditor.CanTransform;
+        }
+
         protected virtual Transform[] GetTargets()
         {
-            return Editor.Selection.gameObjects.Select(g => g.transform).OrderByDescending(g => Editor.Selection.activeTransform == g).ToArray();
+            return Editor.Selection.gameObjects.Where(g => CanTransformObject(g)).Select(g => g.transform).OrderByDescending(g => Editor.Selection.activeTransform == g).ToArray();
         }
 
         public virtual void Focus()

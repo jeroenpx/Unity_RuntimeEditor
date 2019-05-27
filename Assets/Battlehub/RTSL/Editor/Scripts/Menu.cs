@@ -567,31 +567,28 @@ namespace Battlehub.RTSL
                     continue;
                 }
 
-                if (!(uo is GameObject) && !(uo is Component) && !(uo is Texture2D))
+                Type persistentType = typeMap.ToPersistentType(uo.GetType());
+                if (persistentType != null)
                 {
-                    Type persistentType = typeMap.ToPersistentType(uo.GetType());
-                    if (persistentType != null)
+                    getDepsCtx.Clear();
+
+                    try
                     {
-                        getDepsCtx.Clear();
+                        PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+                        //persistentObject.ReadFrom(uo);
+                        persistentObject.GetDepsFrom(uo, getDepsCtx);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e);
+                    }
 
-                        try
+                    foreach (UnityObject dep in getDepsCtx.Dependencies)
+                    {
+                        if (!ctx.Dependencies.Contains(dep))
                         {
-                            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                            persistentObject.ReadFrom(uo);
-                            persistentObject.GetDepsFrom(uo, getDepsCtx);
-                        }
-                        catch(Exception e)
-                        {
-                            Debug.LogError(e);
-                        }
-
-                        foreach (UnityObject dep in getDepsCtx.Dependencies)
-                        {
-                            if (!ctx.Dependencies.Contains(dep))
-                            {
-                                ctx.Dependencies.Add(dep);
-                                depsQueue.Enqueue(dep);
-                            }
+                            ctx.Dependencies.Add(dep);
+                            depsQueue.Enqueue(dep);
                         }
                     }
                 }

@@ -281,12 +281,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override bool CanSelectObject(GameObject go)
-        {
-            ExposeToEditor exposeToEditor = go.GetComponentInParent<ExposeToEditor>();
-            return exposeToEditor != null && exposeToEditor.CanEdit;
-        }
-
+    
         public void UpdateCursorState(bool isPointerOverEditorArea, bool pan, bool rotate)
         {
             if (!isPointerOverEditorArea)

@@ -1,9 +1,11 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTEditor;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
+    [DefaultExecutionOrder(5)]
     public class RuntimeHandlesHitTester : MonoBehaviour
     {
         protected readonly List<BaseHandle> m_handles = new List<BaseHandle>();

@@ -73,9 +73,8 @@ namespace Battlehub.RTCommon
         public BoundsType BoundsType;
         public Bounds CustomBounds;
 
-        [Obsolete("Use CanEdit instead")]
-        public bool CanSelect = true;
-        public bool CanEdit = true;
+        public bool CanTransform = true;
+        public bool CanInspect = true;
         public bool CanDuplicate = true;
         public bool CanDelete = true;
         

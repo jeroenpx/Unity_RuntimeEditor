@@ -8,7 +8,7 @@ namespace Battlehub.RTEditor
     public class EditorOverride : MonoBehaviour
     {
         private IRTEState m_rteState;
-        private IRuntimeEditor m_editor;
+        private IRTE m_editor;
 
         protected virtual void Awake()
         {
@@ -45,7 +45,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnEditorExist()
         {
-            m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_editor = IOC.Resolve<IRTE>();
             m_editor.IsOpenedChanged += OnIsOpenedChanged;
             if (m_editor.IsOpened)
             {

@@ -148,8 +148,6 @@ namespace Battlehub.RTCommon
                     return;
                 }
 
-                
-
                 if (IsSelectionChanged(value))
                 {
                     if(m_editor.Undo.Enabled)

@@ -42,10 +42,21 @@ namespace Battlehub.RTHandles
         }
     }
 
+    public class BoxSelectionArgs
+    {
+        public GameObject[] GameObjects;
+    }
+    
+
     public interface IBoxSelection
     {
         event EventHandler<FilteringArgs> Filtering;
+        event EventHandler<BoxSelectionArgs> Selection;
         bool IsDragging
+        {
+            get;
+        }
+        Bounds SelectionBounds
         {
             get;
         }
@@ -69,16 +80,24 @@ namespace Battlehub.RTHandles
         public BoxSelectionMethod Method;
        
         public event EventHandler<FilteringArgs> Filtering;
+        public event EventHandler<BoxSelectionArgs> Selection;
+
+        public Bounds SelectionBounds
+        {
+            get;
+            private set;
+        }
 
         public bool IsDragging
         {
             get { return m_isDragging; }
         }
 
-
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+
+            Window.IOCContainer.RegisterFallback<IBoxSelection>(this);
             if (m_canvas == null)
             {
                 GameObject go = new GameObject("BoxSelection");
@@ -138,6 +157,7 @@ namespace Battlehub.RTHandles
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
+            Window.IOCContainer.UnregisterFallback<IBoxSelection>(this);
             if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {
                 if (Editor.Tools.ActiveTool == this)
@@ -239,6 +259,7 @@ namespace Battlehub.RTHandles
             Vector3 center = (m_startMousePosition + (Vector3)Window.Pointer.ScreenPoint) / 2;
             center.z = 0.0f;
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
+            SelectionBounds = selectionBounds;
 
             Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
             
@@ -252,8 +273,6 @@ namespace Battlehub.RTHandles
                 Bounds bounds = r.bounds;
                 GameObject go = r.gameObject;
                 TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
-
-           
             }
             for (int i = 0; i < colliders.Length; ++i)
             {
@@ -263,7 +282,14 @@ namespace Battlehub.RTHandles
                 TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
             }
 
-            Editor.Selection.objects = selection.ToArray();
+            if(Selection != null)
+            {
+                Selection(this, new BoxSelectionArgs { GameObjects = selection.ToArray() });
+            }
+            else
+            {
+                Editor.Selection.objects = selection.ToArray();
+            }
         }
 
         private void TrySelect(ref Bounds selectionBounds, HashSet<GameObject> selection, FilteringArgs args, ref Bounds bounds, GameObject go, Plane[] frustumPlanes)
@@ -297,7 +323,6 @@ namespace Battlehub.RTHandles
                         Filtering(this, args);
                         if (!args.Cancel)
                         {
-
                             selection.Add(go);
                         }
                         args.Reset();
