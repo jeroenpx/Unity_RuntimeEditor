@@ -420,7 +420,10 @@ namespace Battlehub.RTEditor
                     gizmo.gameObject.SetActive(true);
                 }
 
-                done(assetItems);
+                if(done != null)
+                {
+                    done(assetItems);
+                }
             };
 
             ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();

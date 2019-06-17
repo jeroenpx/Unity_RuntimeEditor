@@ -210,8 +210,8 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
-  CanEdit: 1
+  CanTransform: 1
+  CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
   CanSnap: 1
@@ -385,8 +385,8 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
-  CanEdit: 1
+  CanTransform: 1
+  CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
   CanSnap: 1
@@ -480,6 +480,49 @@ Skybox:
   m_GameObject: {fileID: 878578351}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 2100000, guid: f70eafef8958ff04abf086cfc61f98f5, type: 2}
+--- !u!1 &1296794020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1296794022}
+  - component: {fileID: 1296794021}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1296794021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296794020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd7546e12d54f894fad2c50fb2d83f0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1296794022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296794020}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -0.000015258789}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2992654425875381720
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -658,6 +701,26 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 878578355}
+    - target: {fileID: 1398855387405768621, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398855387405768621, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1398855390221720317, guid: 4c109d3ea16741141a43286324be75c4,
         type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState
@@ -676,26 +739,6 @@ PrefabInstance:
     - target: {fileID: 1398855390221720317, guid: 4c109d3ea16741141a43286324be75c4,
         type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1398855387405768621, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: InitialModule.startSizeY.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1398855387405768621, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: InitialModule.startSizeZ.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: InitialModule.startSizeY.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: InitialModule.startSizeZ.minMaxState
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []

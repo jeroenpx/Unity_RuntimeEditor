@@ -41,7 +41,10 @@ namespace Battlehub.RTCommon
     public class RuntimeTools
     {
         public event RuntimeToolsEvent ToolChanged;
+
+        public event RuntimeToolsEvent PivotRotationChanging;
         public event RuntimeToolsEvent PivotRotationChanged;
+        public event RuntimeToolsEvent PivotModeChanging;
         public event RuntimeToolsEvent PivotModeChanged;
     
         public event RuntimeToolsEvent IsViewingChanged;
@@ -226,6 +229,10 @@ namespace Battlehub.RTCommon
             {
                 if (m_pivotRotation != value)
                 {
+                    if(PivotRotationChanging != null)
+                    {
+                        PivotRotationChanging();
+                    }
                     m_pivotRotation = value;
                     if (PivotRotationChanged != null)
                     {
@@ -242,6 +249,10 @@ namespace Battlehub.RTCommon
             {
                 if(m_pivotMode != value)
                 {
+                    if(PivotModeChanging != null)
+                    {
+                        PivotModeChanging();
+                    }
                     m_pivotMode = value;
                     if(PivotModeChanged != null)
                     {

@@ -45,9 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   HightlightOnHover: 1
-  HitTester: {fileID: 0}
   Appearance: {fileID: 0}
-  Model: {fileID: 4363, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
+  Model: {fileID: 737, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
   m_targets: []
   BeforeDrag:
     m_PersistentCalls:
@@ -201,7 +200,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   HightlightOnHover: 1
-  HitTester: {fileID: 0}
   Appearance: {fileID: 0}
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 3}
   m_targets: []
@@ -638,7 +636,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   HightlightOnHover: 1
-  HitTester: {fileID: 0}
   Appearance: {fileID: 0}
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 3}
   m_targets: []

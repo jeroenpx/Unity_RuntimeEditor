@@ -251,17 +251,24 @@ namespace Battlehub.RTEditor
             return result;
         }
 
-
         public override IEnumerator Import(string filePath, string targetPath)
         {
             Mesh mesh = ImportFile(filePath);
+            mesh.name = Path.GetFileName(filePath) + "Mesh";
+
+            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.GetComponent<MeshFilter>().sharedMesh = mesh;
+            go.name = Path.GetFileName(filePath);
+            go.SetActive(false);
 
             IProject project = IOC.Resolve<IProject>();
-            IResourcePreviewUtility previewUtility = IOC.Resolve<IResourcePreviewUtility>();
-            byte[] preview = previewUtility.CreatePreviewData(mesh);
-            yield return project.Save(targetPath, mesh, preview);
+            IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
 
+            ProjectItem folder = project.GetFolder(Path.GetDirectoryName(targetPath));
+
+            yield return editor.CreatePrefab(folder, go.AddComponent<ExposeToEditor>(), true, assetItems => { });
             Object.Destroy(mesh);
+            Object.Destroy(go);
         }
     }
 }

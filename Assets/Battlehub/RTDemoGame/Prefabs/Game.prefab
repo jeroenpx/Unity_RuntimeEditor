@@ -105,7 +105,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &147262
@@ -411,7 +414,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &154412
@@ -897,7 +903,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0.75, z: 0}
     m_Extent: {x: 0.5, y: 0.75, z: 0.5}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!114 &1285032115109756156
@@ -1035,7 +1044,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032117650770171
@@ -1349,7 +1361,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032118110742917
@@ -1474,7 +1489,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032118157321921
@@ -1724,7 +1742,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032118245322917
@@ -6668,7 +6689,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032118302727087
@@ -11543,7 +11567,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032118449740001
@@ -11819,7 +11846,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0.75, z: 0}
     m_Extent: {x: 0.5, y: 0.75, z: 0.5}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!114 &1285032118656791206
@@ -11956,7 +11986,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032119007058397
@@ -12142,7 +12175,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032119125442767
@@ -12268,7 +12304,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032119148613399
@@ -17342,7 +17381,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032119846069391
@@ -17467,7 +17509,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032119928901551
@@ -17622,7 +17667,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0.75, z: 0}
     m_Extent: {x: 0.5, y: 0.75, z: 0.5}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!114 &1285032119928901552
@@ -27272,7 +27320,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120054996593
@@ -27396,7 +27447,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120176666765
@@ -27522,7 +27576,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120181584361
@@ -27677,7 +27734,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120307858969
@@ -27813,7 +27873,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120333150301
@@ -32572,7 +32635,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120424452463
@@ -32696,7 +32762,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120464023953
@@ -32852,7 +32921,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120521527449
@@ -33007,7 +33079,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032120692829167
@@ -33362,7 +33437,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032121158554649
@@ -38328,7 +38406,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032121355920797
@@ -38453,7 +38534,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032121409626867
@@ -38608,7 +38692,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1285032121614072567
@@ -38672,7 +38759,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &6813011608408156427
@@ -38808,7 +38898,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &6813011608433992395
@@ -78135,7 +78228,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &6813011612066915753
@@ -92629,7 +92725,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &9093469132918671361
@@ -92985,7 +93084,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &9093469132918860305
@@ -93233,6 +93335,9 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1

@@ -424,7 +424,9 @@ namespace Battlehub.RTCommon
 
         void RegisterCreatedObjects(ExposeToEditor[] createdObjects);
         void DestroyObjects(ExposeToEditor[] destoryedObjects);
-        
+
+        void RecordValue(object target, MemberInfo memberInfo);
+        void RecordValue(object target, object accessor, MemberInfo memberInfo);
         void BeginRecordValue(object target, MemberInfo memberInfo);
         void BeginRecordValue(object target, object accessor, MemberInfo memberInfo);
         void EndRecordValue(object target, MemberInfo memberInfo);
@@ -1256,9 +1258,31 @@ namespace Battlehub.RTCommon
                 return false;
             }
 
+            bool isValueChanged = false;
             for(int i = 0; i < state.Values.Length; ++i)
             {
-                AssignValue(state.Accessor, state.MemberInfo[i], state.Values[i]);
+                object oldValue = GetValue(state.Accessor, state.MemberInfo[i]);
+                object newValue = state.Values[i];
+                if(IsValueChanged(oldValue, newValue))
+                {
+                    isValueChanged = true;
+                }
+                AssignValue(state.Accessor, state.MemberInfo[i], newValue);
+            }
+
+            return isValueChanged;
+        }
+
+        private static bool IsValueChanged(object a, object b)
+        {
+            if(a == null && b == null)
+            {
+                return false;
+            }
+
+            if(a != null && b != null)
+            {
+                return !a.Equals(b);
             }
 
             return true;
@@ -1419,6 +1443,16 @@ namespace Battlehub.RTCommon
                 AssignValue(obj, memberInfo, state);
             }
             return hasChanged;
+        }
+
+        public void RecordValue(object target, MemberInfo memberInfo)
+        {
+            RecordValue(target, target, memberInfo, GetValue(target, memberInfo), null);
+        }
+
+        public void RecordValue(object target, object accessor, MemberInfo memberInfo)
+        {
+            RecordValue(target, accessor, memberInfo, GetValue(accessor, memberInfo), null);
         }
 
         public void BeginRecordValue(object target, MemberInfo memberInfo)
@@ -1863,8 +1897,16 @@ namespace Battlehub.RTCommon
             
         }
 
+        public void RecordValue(object target, MemberInfo memberInfo)
+        {
 
-      
+        }
+
+        public void RecordValue(object target, object accessor, MemberInfo memberInfo)
+        {
+
+        }
+
         public void BeginRecordValue(object target, MemberInfo memberInfo)
         {
            

@@ -61,11 +61,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\IMeshEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBBaseEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBBuiltinMaterials.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBEdgeEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBEdgeSelection.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBElementSelection.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBFaceEditor.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBFaceSelection.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBHandles.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBMaterialEditor.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBMesh.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBShapeGenerator.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBSurfaceTopology.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBUtility.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBVertexEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBVertexSelection.cs" />
     <Reference Include="Unity.ProBuilder">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/ScriptAssemblies/Unity.ProBuilder.dll</HintPath>
     </Reference>

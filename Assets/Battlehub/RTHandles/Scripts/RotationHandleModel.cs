@@ -54,7 +54,7 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private Mesh m_ssMesh = null;
 
-        private SphereCollider m_graphicsBlockingCollider;
+        //private SphereCollider m_graphicsBlockingCollider;
         private MeshCollider m_xCollider;
         private MeshCollider m_yCollider;
         private MeshCollider m_zCollider;
@@ -115,8 +115,8 @@ namespace Battlehub.RTHandles
                 GameObject colliders = new GameObject("Colliders");
                 colliders.transform.SetParent(transform, false);
                 colliders.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
-                m_graphicsBlockingCollider = colliders.AddComponent<SphereCollider>();
-                m_graphicsBlockingCollider.isTrigger = true;
+                //m_graphicsBlockingCollider = colliders.AddComponent<SphereCollider>();
+                //m_graphicsBlockingCollider.isTrigger = true;
 
                 GameObject xCollider = new GameObject("XAxis");
                 xCollider.transform.SetParent(colliders.transform, false);
@@ -360,7 +360,7 @@ namespace Battlehub.RTHandles
             m_outerCollider.sharedMesh = null;
             m_outerCollider.sharedMesh = outerMesh;
 
-            m_graphicsBlockingCollider.radius = outerRadius;
+            //m_graphicsBlockingCollider.radius = outerRadius;
         }
 
         public override RuntimeHandleAxis HitTest(Ray ray, out float distance)
@@ -371,7 +371,7 @@ namespace Battlehub.RTHandles
                 return RuntimeHandleAxis.None;
             }
 
-            Collider collider = null;
+            Collider hitCollider = null;
             float minDistance = float.MaxValue;
 
             Camera camera = Window.Camera;// Editor.ActiveWindow.Camera;
@@ -390,50 +390,50 @@ namespace Battlehub.RTHandles
 
             for (int i = 0; i < m_colliders.Length; ++i)
             {
+                Collider collider = m_colliders[i];
+                if (collider == m_innerCollider)
+                {
+                    if(m_lockObj.RotationFree)
+                    {
+                        continue;
+                    }
+                }
+                else if(collider == m_xCollider)
+                {
+                    if(m_lockObj.RotationX)
+                    {
+                        continue;
+                    }
+                }
+                else if(collider == m_yCollider)
+                {
+                    if(m_lockObj.RotationY)
+                    {
+                        continue;
+                    }
+                }
+                else if(collider == m_zCollider)
+                {
+                    if(m_lockObj.RotationZ)
+                    {
+                        continue;
+                    }
+                }
+                else if(collider == m_outerCollider)
+                {
+                    if(m_lockObj.RotationScreen)
+                    {
+                        continue;
+                    }
+                }
+
                 m_colliders[i].gameObject.SetActive(true);
                 RaycastHit hit;
                 if (m_colliders[i].Raycast(ray, out hit, camera.farClipPlane))
                 {
-                    if (m_lockObj.RotationFree)
-                    {
-                        if (hit.collider == m_innerCollider)
-                        {
-                            continue;
-                        }                        
-                    }
-
-                    if (m_lockObj.RotationX)
-                    {
-                        if (hit.collider == m_xCollider)
-                        {
-                            continue;
-                        }
-                    }
-                    if (m_lockObj.RotationY)
-                    {
-                        if (hit.collider == m_yCollider)
-                        {
-                            continue;
-                        }
-                    }
-                    if (m_lockObj.RotationZ)
-                    {
-                        if (hit.collider == m_zCollider)
-                        {
-                            continue;
-                        }
-                    }
-                    if(m_lockObj.RotationScreen)
-                    {
-                        if(hit.collider == m_outerCollider)
-                        {
-                            continue;
-                        }
-                    }
-
                     if (hit.distance < minDistance)
                     {
-                        collider = hit.collider;
+                        hitCollider = hit.collider;
                         minDistance = hit.distance;
                     }
                 }
@@ -442,27 +442,27 @@ namespace Battlehub.RTHandles
             }
 
             distance = minDistance;
-            if (collider == m_xCollider)
+            if (hitCollider == m_xCollider)
             {
                 return RuntimeHandleAxis.X;
             }
 
-            if (collider == m_yCollider)
+            if (hitCollider == m_yCollider)
             {
                 return RuntimeHandleAxis.Y;
             }
 
-            if (collider == m_zCollider)
+            if (hitCollider == m_zCollider)
             {
                 return RuntimeHandleAxis.Z;
             }
 
-            if (collider == m_innerCollider)
+            if (hitCollider == m_innerCollider)
             {
                 return RuntimeHandleAxis.Free;
             }
 
-            if(collider == m_outerCollider)
+            if(hitCollider == m_outerCollider)
             {
                 return RuntimeHandleAxis.Screen;
             }
@@ -476,6 +476,7 @@ namespace Battlehub.RTHandles
         private float m_prevOuterRadius = DefaultOuterRadius;
         protected override void Update()
         {
+            base.Update();
             if(m_prevMinorRadius != m_minorRadius || m_prevMajorRadius != m_majorRadius || m_prevOuterRadius != m_outerRadius)
             {
                 m_prevMinorRadius = m_minorRadius;

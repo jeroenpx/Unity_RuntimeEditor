@@ -410,7 +410,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   HightlightOnHover: 1
-  HitTester: {fileID: 0}
   Appearance: {fileID: 0}
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 3}
   m_targets: []
@@ -660,9 +659,6 @@ MonoBehaviour:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   CanSelect: 1
-  CanEdit: 1
-  CanDuplicate: 1
-  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &970972770
@@ -844,7 +840,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   HightlightOnHover: 1
-  HitTester: {fileID: 0}
   Appearance: {fileID: 0}
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 3}
   m_targets: []
@@ -1018,9 +1013,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   HightlightOnHover: 1
-  HitTester: {fileID: 0}
   Appearance: {fileID: 0}
-  Model: {fileID: 4363, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
+  Model: {fileID: 114244960618619326, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
   m_targets: []
   BeforeDrag:
     m_PersistentCalls:

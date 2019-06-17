@@ -694,6 +694,10 @@ namespace Battlehub.RTHandles
                     }
                 }
             }
+            if (Model != null && Window != null)
+            {
+                SyncModelTransform();
+            }
         }
 
         protected virtual void UpdateOverride()
@@ -721,12 +725,7 @@ namespace Battlehub.RTHandles
         }
 
         private void LateUpdate()
-        {
-            if (Model != null && Window != null)
-            {
-                SyncModelTransform();
-            }
-
+        {            
             if(!m_isDragging)
             {
                 if (Editor.Tools.ActiveTool == this)
@@ -734,15 +733,24 @@ namespace Battlehub.RTHandles
                     Editor.Tools.ActiveTool = null;
                 }
             }
+
+            if (Model != null && Window != null)
+            {
+                SyncScale();
+            }
         }
 
         protected virtual void SyncModelTransform()
         {
-            Vector3 position = Position;
-            Model.transform.position = position;
+            Model.transform.position = Position;
             Model.transform.rotation = Rotation;
+            SyncScale();
+        }
+
+        private void SyncScale()
+        {
             float screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera);
-            if(!float.IsInfinity(screenScale) && !float.IsNaN(screenScale))
+            if (!float.IsInfinity(screenScale) && !float.IsNaN(screenScale))
             {
                 screenScale = Mathf.Max(0, screenScale);
 
@@ -753,7 +761,7 @@ namespace Battlehub.RTHandles
                 lossyScale.z = 1 / Mathf.Max(0.00001f, lossyScale.z);
 
                 Vector3 prevScale = Model.transform.localScale;
-                Vector3 newScale =  Vector3.Scale(scale, lossyScale);
+                Vector3 newScale = Vector3.Scale(scale, lossyScale);
                 Model.transform.localScale = newScale;
                 if (prevScale == Vector3.zero && prevScale != newScale)
                 {
@@ -761,7 +769,6 @@ namespace Battlehub.RTHandles
                 }
 
             }
-
         }
 
         public void BeginDrag()

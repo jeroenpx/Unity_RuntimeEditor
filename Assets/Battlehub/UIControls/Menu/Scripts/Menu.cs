@@ -53,7 +53,7 @@ namespace Battlehub.UIControls.MenuControl
         public string Path;
         public string Text;
         public Sprite Icon;
-
+        
         public string Command;
         public MenuItemEvent Action;
         public MenuItemValidationEvent Validate;

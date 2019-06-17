@@ -7,39 +7,32 @@ using UnityEngine.ProBuilder.MeshOperations;
 
 namespace Battlehub.ProBuilderIntegration
 {
-    public class PBFaceEditor : MonoBehaviour, IMeshEditor
+    public class PBFaceEditor :  PBBaseEditor
     {
         private PBFaceSelection m_faceSelection;
 
-        public bool HasSelection
+        private int[][] m_initialIndexes;
+        private Vector3[][] m_initialPositions;
+        private Vector3 m_initialPostion;
+        private Quaternion m_initialRotation;
+        
+        public override bool HasSelection
         {
             get { return m_faceSelection.FacesCount > 0; }
         }
 
-        public bool CenterMode
-        {
-            get;
-            set;
-        }
-
-        public bool Global
-        {
-            get;
-            set;
-        }
-
-        public Vector3 Position
+        public override Vector3 Position
         {
             get { return CenterMode ? m_faceSelection.CenterOfMass : m_faceSelection.LastPosition; }
             set { MoveTo(value); }
         }
-
-        public Vector3 Normal
+               
+        public override Vector3 Normal
         {
-            get { return CenterMode ? Vector3.forward : m_faceSelection.LastNormal; }
+            get { return (CenterMode && m_faceSelection.FacesCount > 1) ? Vector3.forward : m_faceSelection.LastNormal; }
         }
 
-        public GameObject Target
+        public override GameObject Target
         {
             get { return m_faceSelection.LastMesh != null ? m_faceSelection.LastMesh.gameObject : null; }
         }
@@ -57,7 +50,12 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void Extrude(float distance)
+        public override void Hover(Camera camera, Vector3 pointer)
+        {
+
+        }
+
+        public override void Extrude(float distance)
         {
             m_faceSelection.BeginChange();
 
@@ -70,13 +68,37 @@ namespace Battlehub.ProBuilderIntegration
                     m_faceSelection.Remove(faces[i]);
                 }
 
-                mesh.Extrude(faces, ExtrudeMethod.FaceNormal, 0.0f);
+                mesh.Extrude(faces, ExtrudeMethod.FaceNormal, distance);
                 
                 for(int i = 0; i < faces.Count; ++i)
                 {
                     m_faceSelection.Add(mesh, faces[i]);
                 }
 
+                mesh.ToMesh();
+                mesh.Refresh();
+            }
+
+            m_faceSelection.EndChange();
+
+            if(distance != 0.0f)
+            {
+                m_faceSelection.Synchronize(
+                    m_faceSelection.GetCenterOfMass(),
+                    m_faceSelection.LastPosition + m_faceSelection.LastNormal * distance);
+            }
+        }
+
+        public override void Delete()
+        {
+            MeshSelection selection = new MeshSelection();
+            ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();
+            m_faceSelection.BeginChange();
+
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<Face> faces = m_faceSelection.GetFaces(mesh).ToArray();
+                mesh.DeleteFaces(faces);
                 mesh.ToMesh();
                 mesh.Refresh();
             }
@@ -101,50 +123,119 @@ namespace Battlehub.ProBuilderIntegration
             }
             m_faceSelection.Synchronize(
                 m_faceSelection.CenterOfMass + offset,
-                m_faceSelection.LastPosition + offset,
-                m_faceSelection.LastNormal);
+                m_faceSelection.LastPosition + offset);
         }
 
-        //private void Rotate(Quaternion to)
-        //{
-        //    Quaternion rotation = to * Quaternion.Inverse(Quaternion.LookRotation(PivotNormal));
+        public override void BeginRotate(Quaternion initialRotation)
+        {
+            m_initialPostion = m_faceSelection.LastPosition;
+            m_initialPositions = new Vector3[m_faceSelection.MeshesCount][];
+            m_initialIndexes = new int[m_faceSelection.MeshesCount][];
+            m_initialRotation = Quaternion.Inverse(initialRotation);
 
-        //    Vector3 center = PivotPosition;
+            int meshIndex = 0;
+            IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                int[] indexes = m_faceSelection.GetIndexes(mesh).ToArray();
+                m_initialIndexes[meshIndex] = mesh.GetCoincidentVertices(m_faceSelection.GetIndexes(mesh)).ToArray();
+                m_initialPositions[meshIndex] = mesh.GetVertices(m_initialIndexes[meshIndex]).Select(v => mesh.transform.TransformPoint(v.position)).ToArray();
+                meshIndex++;
+            }
+        }
+
+        public override void EndRotate()
+        {
+            m_initialPositions = null;
+            m_initialIndexes = null;
+        }
+
+        public override void Rotate(Quaternion rotation)
+        {
+            Vector3 center = Position;
+            int meshIndex = 0;
+            IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<Vector3> positions = mesh.positions.ToArray();
+                Vector3[] initialPositions = m_initialPositions[meshIndex];
+                int[] indexes = m_initialIndexes[meshIndex];
+
+                for (int i = 0; i < initialPositions.Length; ++i)
+                {
+                    Vector3 position = initialPositions[i];
+                    position = center + rotation * m_initialRotation * (position - center);
+                    position = mesh.transform.InverseTransformPoint(position);
+                    positions[indexes[i]] = position;
+                }
+
+                mesh.positions = positions;
+                mesh.Refresh();
+                mesh.ToMesh();
+                meshIndex++;
+            }
+
+            m_faceSelection.Synchronize(
+                m_faceSelection.CenterOfMass,
+                center + rotation * m_initialRotation * (m_initialPostion - center));
+        }
+
+
+        public override void BeginScale()
+        {
+            m_initialPostion = m_faceSelection.LastPosition;
+
+            m_initialPositions = new Vector3[m_faceSelection.MeshesCount][];
+            m_initialIndexes = new int[m_faceSelection.MeshesCount][];
+
+            int meshIndex = 0;
+            IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                m_initialIndexes[meshIndex] = mesh.GetCoincidentVertices(m_faceSelection.GetIndexes(mesh)).ToArray();
+                m_initialPositions[meshIndex] = mesh.GetVertices(m_initialIndexes[meshIndex]).Select(v => mesh.transform.TransformPoint(v.position)).ToArray();
+                meshIndex++;
+            }
+        }
+
+        public override void EndScale()
+        {
+            m_initialPositions = null;
+            m_initialIndexes = null;
+        }
+
+        public override void Scale(Vector3 scale, Quaternion rotation)
+        {
+            Vector3 center = Position;
+            int meshIndex = 0;
+            IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
             
-        //    IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
-        //    foreach (ProBuilderMesh mesh in meshes)
-        //    {
-        //        int[] indexes = m_faceSelection.GetIndexes(mesh).ToArray();
-                
-        //        Vertex[] vertices = mesh.GetVertices(indexes);
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<Vector3> positions = mesh.positions.ToArray();
+                Vector3[] initialPositions = m_initialPositions[meshIndex];
+                int[] indexes = m_initialIndexes[meshIndex];
 
-        //        int[] index = new int[1];
-        //        for(int i = 0; i < vertices.Length; ++i)
-        //        {
-        //            Vertex vertex = vertices[i];
-        //            Vector3 newPosition = mesh.transform.TransformPoint(vertex.position);
-        //            newPosition = center + rotation * (newPosition - center);
-        //            newPosition = mesh.transform.InverseTransformPoint(newPosition);
+                for (int i = 0; i < initialPositions.Length; ++i)
+                {
+                    Vector3 position = initialPositions[i];
+                    position = center + rotation * Vector3.Scale(Quaternion.Inverse(rotation) * (position - center), scale);
+                    position = mesh.transform.InverseTransformPoint(position);
+                    positions[indexes[i]] = position;
+                }
 
-        //            index[0] = indexes[i];
-        //            mesh.TranslateVertices(index, newPosition - vertex.position);
-        //        }
-                
-        //        mesh.Refresh();
-        //        mesh.ToMesh();
-        //    }
-        //    m_faceSelection.Synchronize(
-        //        m_faceSelection.CenterOfMass,
-        //        center + rotation * (m_faceSelection.LastPosition - center),
-        //        rotation * m_faceSelection.LastNormal);
-       // }
+                mesh.positions = positions;
+                mesh.Refresh();
+                mesh.ToMesh();
+                meshIndex++;
+            }
 
-        //private void Scale(Vector3 to)
-        //{
+            m_faceSelection.Synchronize(
+                m_faceSelection.CenterOfMass,
+                center + rotation * Vector3.Scale(Quaternion.Inverse(rotation) * (m_initialPostion - center), scale));
+        }
 
-        //}
-
-        public MeshSelection Select(Camera camera, Vector3 pointer, bool shift)
+        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift)
         {
             MeshSelection selection = null;
             MeshAndFace result = PBUtility.PickFace(camera, pointer);
@@ -156,13 +247,13 @@ namespace Battlehub.ProBuilderIntegration
                     {
                         m_faceSelection.Remove(result.face);
                         selection = new MeshSelection();
-                        selection.Unselected.Add(result.mesh, new[] { result.face });
+                        selection.UnselectedFaces.Add(result.mesh, new[] { result.face });
                     }
                     else
                     {
                         selection = ReadSelection();
-                        selection.Unselected[result.mesh] = selection.Unselected[result.mesh].Where(f => f != result.face).ToArray();
-                        selection.Selected.Add(result.mesh, new[] { result.face });
+                        selection.UnselectedFaces[result.mesh] = selection.UnselectedFaces[result.mesh].Where(f => f != result.face).ToArray();
+                        selection.SelectedFaces.Add(result.mesh, new[] { result.face });
                         m_faceSelection.Clear();
                         m_faceSelection.Add(result.mesh, result.face);
                     }
@@ -180,7 +271,7 @@ namespace Battlehub.ProBuilderIntegration
                     }
                     
                     m_faceSelection.Add(result.mesh, result.face);
-                    selection.Selected.Add(result.mesh, new[] { result.face });
+                    selection.SelectedFaces.Add(result.mesh, new[] { result.face });
                 }
             }
             else
@@ -188,7 +279,7 @@ namespace Battlehub.ProBuilderIntegration
                 if (!shift)
                 {
                     selection = ReadSelection();
-                    if (selection.Unselected.Count == 0)
+                    if (selection.UnselectedFaces.Count == 0)
                     {
                         selection = null;
                     }
@@ -207,13 +298,13 @@ namespace Battlehub.ProBuilderIntegration
                 IList<Face> faces = m_faceSelection.GetFaces(mesh);
                 if (faces != null && faces.Count > 0)
                 {
-                    selection.Unselected.Add(mesh, faces.ToArray());
+                    selection.UnselectedFaces.Add(mesh, faces.ToArray());
                 }
             }
             return selection;
         }
 
-        public MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode)
+        public override MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode)
         {
             MeshSelection selection = new MeshSelection();
             m_faceSelection.BeginChange();
@@ -230,7 +321,7 @@ namespace Battlehub.ProBuilderIntegration
                         m_faceSelection.Add(mesh, face);
                     }
 
-                    selection.Selected.Add(mesh, notSelected);
+                    selection.SelectedFaces.Add(mesh, notSelected);
                 }
             }
             else if(mode == MeshEditorSelectionMode.Substract)
@@ -243,7 +334,7 @@ namespace Battlehub.ProBuilderIntegration
                     {
                         m_faceSelection.Remove(face);
                     }
-                    selection.Unselected.Add(mesh, selected);
+                    selection.UnselectedFaces.Add(mesh, selected);
                 }
             }
             else if(mode == MeshEditorSelectionMode.Difference)
@@ -265,14 +356,14 @@ namespace Battlehub.ProBuilderIntegration
                         m_faceSelection.Add(mesh, face);
                     }
 
-                    selection.Unselected.Add(mesh, selected);
-                    selection.Selected.Add(mesh, notSelected);
+                    selection.UnselectedFaces.Add(mesh, selected);
+                    selection.SelectedFaces.Add(mesh, notSelected);
                 }
             }
 
             m_faceSelection.EndChange();
 
-            if(selection.Selected.Count == 0 && selection.Unselected.Count == 0)
+            if(selection.SelectedFaces.Count == 0 && selection.UnselectedFaces.Count == 0)
             {
                 selection = null;
             }
@@ -280,7 +371,91 @@ namespace Battlehub.ProBuilderIntegration
             return selection;
         }
 
-        public MeshSelection ClearSelection()
+        public override MeshSelection Select(Material material)
+        {
+            MeshSelection selection = IMeshEditorExt.Select(material);
+
+            m_faceSelection.BeginChange();
+            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.SelectedFaces.ToArray())
+            {
+                IList<Face> faces = kvp.Value;
+                for(int i = faces.Count - 1; i >= 0; i--)
+                {
+                    Face face = faces[i];
+                    if(m_faceSelection.IsSelected(face))
+                    {
+                        faces.Remove(face);
+                    }
+                    else
+                    {
+                        m_faceSelection.Add(kvp.Key, face);
+                    }
+                }
+
+                if(faces.Count == 0)
+                {
+                    selection.SelectedFaces.Remove(kvp.Key);
+                }
+            }
+            m_faceSelection.EndChange();
+            if(selection.SelectedFaces.Count == 0)
+            {
+                return null;
+            }
+            return selection;
+        }
+
+        public override MeshSelection Unselect(Material material)
+        {
+            MeshSelection selection = IMeshEditorExt.Select(material);
+            selection.Invert();
+
+            m_faceSelection.BeginChange();
+            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.UnselectedFaces.ToArray())
+            {
+                IList<Face> faces = kvp.Value;
+                for (int i = faces.Count - 1; i >= 0; i--)
+                {
+                    Face face = faces[i];
+                    if (!m_faceSelection.IsSelected(face))
+                    {
+                        faces.Remove(face);
+                    }
+                    else
+                    {
+                        m_faceSelection.Remove(face);
+                    }
+                }
+
+                if (faces.Count == 0)
+                {
+                    selection.UnselectedFaces.Remove(kvp.Key);
+                }
+            }
+            m_faceSelection.EndChange();
+            if (selection.UnselectedFaces.Count == 0)
+            {
+                return null;
+            }
+            return selection;
+        }
+
+        public override MeshSelection GetSelection()
+        {
+            MeshSelection selection = new MeshSelection();
+
+            foreach (ProBuilderMesh mesh in m_faceSelection.Meshes)
+            {
+                selection.SelectedFaces.Add(mesh, m_faceSelection.GetFaces(mesh).ToArray());
+            }
+            if (selection.SelectedFaces.Count > 0)
+            {
+                return selection;
+            }
+            return null;
+        }
+
+        public override MeshSelection ClearSelection()
         {
             MeshSelection meshSelection = null;
             if (m_faceSelection != null)
@@ -291,11 +466,11 @@ namespace Battlehub.ProBuilderIntegration
             return meshSelection;
         }
 
-        public void UndoSelection(MeshSelection selection)
+        public override void RollbackSelection(MeshSelection selection)
         {
             m_faceSelection.BeginChange();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.Selected)
+            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.SelectedFaces)
             {
                 foreach (Face face in kvp.Value)
                 {
@@ -303,7 +478,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
             }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.Unselected)
+            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.UnselectedFaces)
             {
                 ProBuilderMesh mesh = kvp.Key;
                 foreach (Face face in kvp.Value)
@@ -315,11 +490,11 @@ namespace Battlehub.ProBuilderIntegration
             m_faceSelection.EndChange();
         }
 
-        public void RedoSelection(MeshSelection selection)
+        public override void ApplySelection(MeshSelection selection)
         {
             m_faceSelection.BeginChange();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.Unselected)
+            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.UnselectedFaces)
             {
                 foreach (Face face in kvp.Value)
                 {
@@ -327,7 +502,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
             }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.Selected)
+            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.SelectedFaces)
             {
                 ProBuilderMesh mesh = kvp.Key;
                 foreach (Face face in kvp.Value)
@@ -339,7 +514,7 @@ namespace Battlehub.ProBuilderIntegration
             m_faceSelection.EndChange();
         }
 
-        public MeshEditorState GetState()
+        public override MeshEditorState GetState()
         {
             MeshEditorState state = new MeshEditorState();
             ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();
@@ -350,11 +525,12 @@ namespace Battlehub.ProBuilderIntegration
             return state;
         }
 
-        public void SetState(MeshEditorState state)
+        public override void SetState(MeshEditorState state)
         {
             m_faceSelection.BeginChange();
 
-            ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();
+            //ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();
+            ProBuilderMesh[] meshes = state.State.Keys.ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
                 IList<Face> faces = m_faceSelection.GetFaces(mesh).ToArray();
@@ -364,7 +540,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
 
                 MeshState meshState = state.State[mesh];
-                mesh.RebuildWithPositionsAndFaces(meshState.Positions, meshState.Faces);
+                mesh.RebuildWithPositionsAndFaces(meshState.Positions, meshState.Faces.Select(f => f.ToFace()));
 
                 mesh.ToMesh();
                 mesh.Refresh();

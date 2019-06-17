@@ -12,6 +12,7 @@ using UnityObject = UnityEngine.Object;
 using System.Linq;
 using System.Collections;
 using TMPro;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
@@ -446,7 +447,6 @@ namespace Battlehub.RTEditor
 
             if (Accessor == null)
             {
-                Debug.LogWarning("Accessor is null");
                 return default(T);
             }
 

@@ -1764,7 +1764,6 @@ namespace Battlehub.UIControls
 
         public virtual void DataBindItem(object item)
         {
-
             VirtualizingItemContainer itemContainer = GetItemContainer(item);
             if(itemContainer != null)
             {

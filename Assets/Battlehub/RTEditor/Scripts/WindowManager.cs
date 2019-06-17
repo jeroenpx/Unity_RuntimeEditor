@@ -6,11 +6,8 @@ using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -229,6 +226,11 @@ namespace Battlehub.RTEditor
             get { return m_dialogManager.IsDialogOpened; }
         }
 
+        private void Awake()
+        {
+            m_editor = IOC.Resolve<IRTE>();
+        }
+
         private void Start()
         {
             if (m_dockPanels == null)
@@ -272,7 +274,7 @@ namespace Battlehub.RTEditor
                 m_componentsRoot = transform;
             }
 
-            m_editor = IOC.Resolve<IRTE>();
+          
             m_sceneWindow.MaxWindows = m_editor.CameraLayerSettings.MaxGraphicsLayers;
 
             SetDefaultLayout();

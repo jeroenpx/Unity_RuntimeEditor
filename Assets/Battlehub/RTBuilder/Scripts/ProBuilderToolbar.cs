@@ -18,10 +18,19 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private Toggle m_faceToggle = null;
 
+        [SerializeField]
+        private Toggle m_pivotModeToggle = null;
+
+        [SerializeField]
+        private Toggle m_pivotRotationToggle = null;
+
         private IProBuilderTool m_tool;
+        private IRTE m_rte;
 
         protected virtual void Awake()
         {
+            m_rte = IOC.Resolve<IRTE>();
+
             if(m_objectToggle != null)
             {
                 m_objectToggle.onValueChanged.AddListener(OnObject);
@@ -38,6 +47,17 @@ namespace Battlehub.RTBuilder
             {
                 m_faceToggle.onValueChanged.AddListener(OnFace);
             }
+            if(m_pivotModeToggle != null)
+            {
+                m_pivotModeToggle.onValueChanged.AddListener(OnPivotMode);
+            }
+            if(m_pivotRotationToggle != null)
+            {
+                m_pivotRotationToggle.onValueChanged.AddListener(OnPivotRotation);
+            }
+
+            m_rte.Tools.PivotRotationChanged += OnPivotRotationChanged;
+            m_rte.Tools.PivotModeChanged += OnPivotModeChanged;
         }
 
         protected virtual void Start()
@@ -48,7 +68,7 @@ namespace Battlehub.RTBuilder
 
         protected virtual void OnDestroy()
         {
-            if(m_tool != null)
+            if (m_tool != null)
             {
                 m_tool.ModeChanged -= OnModeChanged;
             }
@@ -68,6 +88,20 @@ namespace Battlehub.RTBuilder
             if (m_faceToggle != null)
             {
                 m_faceToggle.onValueChanged.RemoveListener(OnFace);
+            }
+            if (m_pivotModeToggle != null)
+            {
+                m_pivotModeToggle.onValueChanged.RemoveListener(OnPivotMode);
+            }
+            if (m_pivotRotationToggle != null)
+            {
+                m_pivotRotationToggle.onValueChanged.RemoveListener(OnPivotRotation);
+            }
+
+            if (m_rte != null)
+            {
+                m_rte.Tools.PivotRotationChanged -= OnPivotRotationChanged;
+                m_rte.Tools.PivotModeChanged -= OnPivotModeChanged;
             }
         }
 
@@ -100,6 +134,34 @@ namespace Battlehub.RTBuilder
             if(value)
             {
                 m_tool.Mode = ProBuilderToolMode.Face;
+            }
+        }
+
+        private void OnPivotRotation(bool value)
+        {
+            IRTE rte = IOC.Resolve<IRTE>();
+            rte.Tools.PivotRotation = value ? RuntimePivotRotation.Global : RuntimePivotRotation.Local;
+        }
+
+        private void OnPivotMode(bool value)
+        {
+            IRTE rte = IOC.Resolve<IRTE>();
+            rte.Tools.PivotMode = value ? RuntimePivotMode.Center : RuntimePivotMode.Pivot;
+        }
+
+        private void OnPivotRotationChanged()
+        {
+            if (m_pivotRotationToggle != null)
+            {
+                m_pivotRotationToggle.isOn = m_rte.Tools.PivotRotation == RuntimePivotRotation.Global;
+            }
+        }
+
+        private void OnPivotModeChanged()
+        {
+            if(m_pivotModeToggle != null)
+            {
+                m_pivotModeToggle.isOn = m_rte.Tools.PivotMode == RuntimePivotMode.Center;
             }
         }
 

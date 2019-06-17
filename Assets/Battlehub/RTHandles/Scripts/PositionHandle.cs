@@ -87,7 +87,6 @@ namespace Battlehub.RTHandles
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            
         }
 
         protected override void OnEnableOverride()
@@ -505,16 +504,18 @@ namespace Battlehub.RTHandles
                     Transform target = RealTargets[i];
                     if (target != null)
                     {
-                        snapTargets.Add(target);
-                        snapTargetsHS.Add(target);
-
                         ExposeToEditor exposeToEditor = target.GetComponent<ExposeToEditor>();
                         if (exposeToEditor != null)
                         {
                             snapTargetBounds.Add(exposeToEditor.Bounds);
+                            snapTargets.Add(exposeToEditor.BoundsObject.transform);
+                            snapTargetsHS.Add(exposeToEditor.BoundsObject.transform);
                         }
                         else
                         {
+                            snapTargets.Add(target);
+                            snapTargetsHS.Add(target);
+
                             MeshFilter filter = target.GetComponent<MeshFilter>();
                             if(filter != null && filter.sharedMesh != null)
                             {

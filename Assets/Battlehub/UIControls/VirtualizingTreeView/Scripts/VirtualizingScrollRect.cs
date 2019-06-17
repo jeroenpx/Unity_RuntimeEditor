@@ -124,7 +124,11 @@ namespace Battlehub.UIControls
 
         private int RoundedItemsCount
         {
-            get { return Mathf.CeilToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup; }
+            get
+            {
+                //return Mathf.CeilToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup;
+                return Mathf.RoundToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup;
+            }
         }
 
 

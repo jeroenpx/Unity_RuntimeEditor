@@ -713,22 +713,28 @@ namespace Battlehub.RTHandles
 
             if (Editor.Selection.activeGameObject == null || Editor.Selection.activeGameObject.IsPrefab())
             {
-                if (m_positionHandle != null)
-                {
-                    m_positionHandle.gameObject.SetActive(false);
-                }
-                if (m_rotationHandle != null)
-                {
-                    m_rotationHandle.gameObject.SetActive(false);
-                }
-                if (m_scaleHandle != null)
-                {
-                    m_scaleHandle.gameObject.SetActive(false);
-                }
+                SetHandlesActive(false);
             }
             else
             {
+                SetHandlesActive(false);
                 OnRuntimeToolChanged();
+            }
+        }
+
+        private void SetHandlesActive(bool isActive)
+        {
+            if (m_positionHandle != null)
+            {
+                m_positionHandle.gameObject.SetActive(isActive);
+            }
+            if (m_rotationHandle != null)
+            {
+                m_rotationHandle.gameObject.SetActive(isActive);
+            }
+            if (m_scaleHandle != null)
+            {
+                m_scaleHandle.gameObject.SetActive(isActive);
             }
         }
 

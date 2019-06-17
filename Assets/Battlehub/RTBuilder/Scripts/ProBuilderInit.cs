@@ -8,6 +8,9 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private GameObject m_proBuilderWindow = null;
 
+        [SerializeField]
+        private GameObject m_materialPaletteWindow = null;
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -19,8 +22,11 @@ namespace Battlehub.RTBuilder
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             if (m_proBuilderWindow != null)
             {
-                Sprite icon = Resources.Load<Sprite>("hammer-24");
-                RegisterWindow(wm, "ProBuilder", "Builder", icon, m_proBuilderWindow, false);
+                RegisterWindow(wm, "ProBuilder", "Builder", 
+                    Resources.Load<Sprite>("hammer-24"), m_proBuilderWindow, false); 
+                
+                RegisterWindow(wm, "MaterialPalette", "Material Editor", 
+                    Resources.Load<Sprite>("palette-24"), m_materialPaletteWindow, false);
             }
         }
 

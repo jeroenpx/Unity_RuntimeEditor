@@ -72,7 +72,6 @@ namespace Battlehub.RTEditor
             objectSelector.ObjectType = MemberInfoType;
         }
 
-
         private void OnDrop(PointerEventData pointerEventData)
         {
             object dragObject = Editor.DragDrop.DragObjects[0];
@@ -99,18 +98,30 @@ namespace Battlehub.RTEditor
             }
             else if(dragObject is GameObject)
             {
-                SetValue((GameObject)dragObject);
+                UnityObject value = GetGameObjectOrComponent((GameObject)dragObject);
+                SetValue(value);
                 EndEdit();
-                SetInputField((GameObject)dragObject);
+                SetInputField(value);
                 HideDragHighlight();
             }
             else if(dragObject is ExposeToEditor)
             {
-                SetValue(((ExposeToEditor)dragObject).gameObject);
+                UnityObject value = GetGameObjectOrComponent(((ExposeToEditor)dragObject).gameObject);
+                SetValue(value);
                 EndEdit();
-                SetInputField(((ExposeToEditor)dragObject).gameObject);
+                SetInputField(value);
                 HideDragHighlight();
             }
+        }
+
+        private UnityObject GetGameObjectOrComponent(GameObject go)
+        {
+            Component component = go.GetComponent(MemberInfoType);
+            if (component != null)
+            {
+                return component;
+            }
+            return go;
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -123,7 +134,13 @@ namespace Battlehub.RTEditor
             Type type = null;
             if(dragObject is ExposeToEditor)
             {
-                type = typeof(GameObject);
+                ExposeToEditor exposeToEditor = (ExposeToEditor)dragObject;
+                GameObject go = exposeToEditor.gameObject;
+                type = ToType(go);
+            }
+            else if(dragObject is GameObject)
+            {
+                type = ToType((GameObject)dragObject);
             }
             else if(dragObject is AssetItem)
             {
@@ -139,6 +156,21 @@ namespace Battlehub.RTEditor
                 ShowDragHighlight();
                 Editor.DragDrop.SetCursor(Utils.KnownCursor.DropAllowed);
             }
+        }
+
+        private Type ToType(GameObject go)
+        {
+            Type type;
+            if (go.GetComponent(MemberInfoType) != null)
+            {
+                type = MemberInfoType;
+            }
+            else
+            {
+                type = typeof(GameObject);
+            }
+
+            return type;
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)

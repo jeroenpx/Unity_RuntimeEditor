@@ -158,6 +158,18 @@ namespace Battlehub.RTSL.Interface
 
     public static class IProjectExtensions
     {
+        public static string GetUniqueName(this IProject project, string path, Type type)
+        {
+            ProjectItem folder = project.GetFolder(Path.GetDirectoryName(path));
+            return Path.GetFileName(project.GetUniquePath(path, type, folder));
+        }
+
+        public static string GetUniquePath(this IProject project, string path, Type type)
+        {
+            ProjectItem folder = project.GetFolder(Path.GetDirectoryName(path));
+            return project.GetUniquePath(path, type, folder);
+        }
+
         public static string[] Find<T>(this IProject project, string filter = null, bool allowSubclasses = false)
         {
             Type typeofT = typeof(T);

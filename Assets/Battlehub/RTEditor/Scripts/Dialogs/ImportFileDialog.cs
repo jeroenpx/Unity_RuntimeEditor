@@ -142,22 +142,21 @@ namespace Battlehub.RTEditor
             {
                 m_fileBrowser.DoubleClick -= OnFileBrowserDoubleClick;
                 m_fileBrowser.SelectionChanged -= OnFileBrowserSelectionChanged;
-
             }
         }
 
         private void OnOk(Dialog sender, DialogCancelArgs args)
         {
+            args.Cancel = true;
+
             string path = m_fileBrowser.Open();
             if(string.IsNullOrEmpty(path))
-            {
-                args.Cancel = true;
+            {    
                 return;
             }
 
             if (!File.Exists(path))
             {
-                args.Cancel = true;
                 return;
             }
 
@@ -180,7 +179,6 @@ namespace Battlehub.RTEditor
         {
             if(File.Exists(path))
             {
-                m_parentDialog.Close();
                 TryImport(path);
             }
         }
@@ -215,12 +213,14 @@ namespace Battlehub.RTEditor
                 targetPath = targetPath.TrimStart('/');
 
                 IProject project = IOC.Resolve<IProject>();
-               
                 targetPath = project.GetUniquePath(targetPath, typeof(Texture2D), folder);    
             }
 
-            yield return importer.Import(path, targetPath);
+            yield return StartCoroutine(importer.Import(path, targetPath));
             rte.IsBusy = false;
+            m_parentDialog.Close();
+            
+            rte.ActivateWindow(RuntimeWindowType.Scene);
         }
 
         

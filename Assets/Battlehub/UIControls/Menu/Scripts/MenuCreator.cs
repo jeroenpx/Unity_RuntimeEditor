@@ -37,11 +37,18 @@ namespace Battlehub.UIControls.MenuControl
             private set;
         }
 
-        public MenuCommandAttribute(string path, bool validate = false, bool hide = false)
+        public int Priority
+        {
+            get;
+            private set;
+        }
+
+        public MenuCommandAttribute(string path, bool validate = false, bool hide = false, int priority = int.MaxValue)
         {
             Path = path;
             Validate = validate;
             Hide = hide;
+            Priority = priority;
         }
 
         public MenuCommandAttribute(string path, string iconPath)
@@ -50,8 +57,6 @@ namespace Battlehub.UIControls.MenuControl
             Validate = false;
             IconPath = iconPath;
         }
-
-       
     }
 
     [DefaultExecutionOrder(-25)]
@@ -69,7 +74,23 @@ namespace Battlehub.UIControls.MenuControl
         [SerializeField]
         private Menu m_menuPrefab = null;
 
-        
+        private class MenuItemWithPriority
+        {
+            public MenuItemInfo Info;
+            public int Priority;
+
+            public MenuItemWithPriority(MenuItemInfo menuItemInfo, int priority)
+            {
+                Info = menuItemInfo;
+                Priority = priority;
+            }
+
+            public MenuItemWithPriority()
+            {
+                Info = new MenuItemInfo();
+                Priority = int.MaxValue;
+            }
+        }
 
         private void Awake()
         {
@@ -114,7 +135,7 @@ namespace Battlehub.UIControls.MenuControl
             bool wasMenuPrefabActive = m_menuPrefab.gameObject.activeSelf;
 
             Dictionary<string, Menu> menuDictionary = new Dictionary<string, Menu>();
-            Dictionary<string, List<MenuItemInfo>> menuItemsDictionary = new Dictionary<string, List<MenuItemInfo>>();
+            Dictionary<string, List<MenuItemWithPriority>> menuItemsDictionary = new Dictionary<string, List<MenuItemWithPriority>>();
             Menu[] menus = m_menuPanel.GetComponentsInChildren<Menu>(true);
             for(int i = 0; i < menus.Length; ++i)
             {
@@ -124,11 +145,17 @@ namespace Battlehub.UIControls.MenuControl
 
                     if(menus[i].Items != null)
                     {
-                        menuItemsDictionary.Add(menus[i].name, menus[i].Items.ToList());
+                        List<MenuItemWithPriority> menuItemsWithPriority = new List<MenuItemWithPriority>();
+                        for(int priority = 0; priority < menus[i].Items.Length; ++priority)
+                        {
+                            MenuItemInfo menuItemInfo = menus[i].Items[priority];
+                            menuItemsWithPriority.Add(new MenuItemWithPriority(menuItemInfo, priority));
+                        }
+                        menuItemsDictionary.Add(menus[i].name, menuItemsWithPriority);
                     }
                     else
                     {
-                        menuItemsDictionary.Add(menus[i].name, new List<MenuItemInfo>());
+                        menuItemsDictionary.Add(menus[i].name, new List<MenuItemWithPriority>());
                     }
                 }
             }
@@ -176,7 +203,7 @@ namespace Battlehub.UIControls.MenuControl
                         btn.gameObject.SetActive(true);
 
                         menuDictionary.Add(menuName, menu);
-                        menuItemsDictionary.Add(menuName, new List<MenuItemInfo>());
+                        menuItemsDictionary.Add(menuName, new List<MenuItemWithPriority>());
                     }
                     else
                     {
@@ -197,17 +224,17 @@ namespace Battlehub.UIControls.MenuControl
                     }
 
                     string path = string.Join("/", pathParts.Skip(1));
-                    List<MenuItemInfo> menuItems = menuItemsDictionary[menuName];
-                    MenuItemInfo menuItem = menuItems.Where(item => item.Path == path).FirstOrDefault();
+                    List<MenuItemWithPriority> menuItems = menuItemsDictionary[menuName];
+                    MenuItemWithPriority menuItem = menuItems.Where(item => item.Info.Path == path).FirstOrDefault();
                     if (menuItem == null)
                     {
-                        menuItem = new MenuItemInfo();
+                        menuItem = new MenuItemWithPriority();
                         menuItems.Add(menuItem);
                     }
 
-                    menuItem.Path = string.Join("/", pathParts.Skip(1));
-                    menuItem.Icon = !string.IsNullOrEmpty(cmd.IconPath) ? Resources.Load<Sprite>(cmd.IconPath) : null;
-                    menuItem.Text = pathParts.Last();
+                    menuItem.Info.Path = string.Join("/", pathParts.Skip(1));
+                    menuItem.Info.Icon = !string.IsNullOrEmpty(cmd.IconPath) ? Resources.Load<Sprite>(cmd.IconPath) : null;
+                    menuItem.Info.Text = pathParts.Last();
 
                     if(cmd.Validate)
                     {
@@ -218,8 +245,8 @@ namespace Battlehub.UIControls.MenuControl
                         }
                         else
                         {
-                            menuItem.Validate = new MenuItemValidationEvent();
-                            menuItem.Validate.AddListener(new UnityAction<MenuItemValidationArgs>(args => args.IsValid = validate()));
+                            menuItem.Info.Validate = new MenuItemValidationEvent();
+                            menuItem.Info.Validate.AddListener(new UnityAction<MenuItemValidationArgs>(args => args.IsValid = validate()));
                         }
                     }
                     else
@@ -231,8 +258,8 @@ namespace Battlehub.UIControls.MenuControl
                         }
                         else
                         {
-                            menuItem.Action = new MenuItemEvent();
-                            menuItem.Action.AddListener(new UnityAction<string>(args => action()));
+                            menuItem.Info.Action = new MenuItemEvent();
+                            menuItem.Info.Action.AddListener(new UnityAction<string>(args => action()));
                         }
                     }
 
@@ -240,15 +267,17 @@ namespace Battlehub.UIControls.MenuControl
                     {
                         menuItems.Remove(menuItem);
                     }
+
+                    menuItem.Priority = cmd.Priority;
                 }
 
                 m_menuPrefab.gameObject.SetActive(wasMenuPrefabActive);
                 m_menuButtonPrefab.gameObject.SetActive(wasButtonPrefabActive);
             }
 
-            foreach(KeyValuePair<string, List<MenuItemInfo>> kvp in menuItemsDictionary)
+            foreach(KeyValuePair<string, List<MenuItemWithPriority>> kvp in menuItemsDictionary)
             {
-                menuDictionary[kvp.Key].SetMenuItems(kvp.Value.ToArray(), false);
+                menuDictionary[kvp.Key].SetMenuItems(kvp.Value.OrderBy(m => m.Priority).Select(m => m.Info).ToArray(), false);
             }
         }
     }

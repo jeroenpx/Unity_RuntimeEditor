@@ -7,16 +7,16 @@ namespace Battlehub.RTBuilder
     public class ProBuilderCmdItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField]
-        private Graphic m_graphics;
+        private Graphic m_graphics = null;
 
         [SerializeField]
-        private Color m_normalColor;
+        private Color m_normalColor = Color.white;
 
         [SerializeField]
-        private Color m_pointerOverColor;
+        private Color m_pointerOverColor = Color.white;
 
         [SerializeField]
-        private Color m_pressedColor;
+        private Color m_pressedColor = Color.white;
 
         private bool m_isPointerOver;
         private bool m_isPointerPressed;

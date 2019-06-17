@@ -23,9 +23,16 @@ namespace Battlehub.RTSL
         protected override void ReadFromImpl(object obj)
         {
             Scene scene = (Scene)obj;
-            
-            GameObject[] rootGameObjects = scene.GetRootGameObjects();
-
+            GameObject[] rootGameObjects;
+            if (scene.IsValid())
+            {
+                rootGameObjects = scene.GetRootGameObjects();
+            }
+            else
+            {
+                rootGameObjects = new GameObject[0];
+            }
+             
             List<PersistentObject> data = new List<PersistentObject>();
             List<long> identifiers = new List<long>();    
             List<PersistentDescriptor> descriptors = new List<PersistentDescriptor>(rootGameObjects.Length);
@@ -135,29 +142,8 @@ namespace Battlehub.RTSL
             AssetIdentifiers = assetIdentifiers.ToArray();
         }
 
-        protected override object WriteToImpl(object obj)
+        private void DestroyGameObjects(Scene scene)
         {
-            if (Descriptors == null && Data == null)
-            {
-                return obj;
-            }
-
-            if (Descriptors == null && Data != null || Data != null && Descriptors == null)
-            {
-                throw new ArgumentException("data is corrupted", "scene");
-            }
-
-            if (Descriptors.Length == 0)
-            {
-                return obj;
-            }
-
-            if(Identifiers == null || Identifiers.Length != Data.Length)
-            {
-                throw new ArgumentException("data is corrupted", "scene");
-            }
-      
-            Scene scene = (Scene)obj;
             GameObject[] rootGameObjects = scene.GetRootGameObjects();
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {
@@ -169,7 +155,34 @@ namespace Battlehub.RTSL
 
                 UnityObject.DestroyImmediate(rootGO);
             }
+        }
 
+        protected override object WriteToImpl(object obj)
+        {
+            Scene scene = (Scene)obj;
+            if (Descriptors == null && Data == null)
+            {
+                DestroyGameObjects(scene);
+                return obj;
+            }
+
+            if (Descriptors == null && Data != null || Data != null && Descriptors == null)
+            {
+                throw new ArgumentException("data is corrupted", "scene");
+            }
+
+            if (Descriptors.Length == 0)
+            {
+                DestroyGameObjects(scene);
+                return obj;
+            }
+
+            if(Identifiers == null || Identifiers.Length != Data.Length)
+            {
+                throw new ArgumentException("data is corrupted", "scene");
+            }
+      
+            DestroyGameObjects(scene);
             Dictionary<int, UnityObject> idToUnityObj = new Dictionary<int, UnityObject>();
             for (int i = 0; i < Descriptors.Length; ++i)
             {

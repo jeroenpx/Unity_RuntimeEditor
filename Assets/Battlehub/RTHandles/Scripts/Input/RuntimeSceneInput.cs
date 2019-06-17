@@ -6,7 +6,7 @@ namespace Battlehub.RTHandles
     public class RuntimeSceneInput : RuntimeSelectionInput
     {
         public KeyCode FocusKey = KeyCode.F;
-        public KeyCode SnapToGridKey = KeyCode.S;
+        public KeyCode SnapToGridKey = KeyCode.C;
         public KeyCode RotateKey = KeyCode.LeftAlt;
         public KeyCode RotateKey2 = KeyCode.RightAlt;
         public KeyCode RotateKey3 = KeyCode.AltGr;

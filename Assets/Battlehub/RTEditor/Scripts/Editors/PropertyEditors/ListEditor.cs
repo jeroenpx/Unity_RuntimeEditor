@@ -5,12 +5,6 @@ namespace Battlehub.RTEditor
 {
     public class ListEditor : IListEditor
     {
-        public ListEditor()
-        {
-
-        }
-
-
         protected override IList Resize(IList list, int size)
         {
             int delta = size;

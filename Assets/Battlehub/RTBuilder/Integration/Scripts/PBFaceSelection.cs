@@ -19,7 +19,6 @@ namespace Battlehub.ProBuilderIntegration
         }
     }
 
-    
     public class PBFaceSelection : MonoBehaviour
     {
         private ProBuilderMesh m_selectionMesh;
@@ -32,6 +31,7 @@ namespace Battlehub.ProBuilderIntegration
         private bool m_isChanging;
 
         [SerializeField]
+        private Color m_color = Color.yellow;
         private Material m_material;
 
         private Vector3 m_lastPosition;
@@ -80,16 +80,17 @@ namespace Battlehub.ProBuilderIntegration
             {
                 meshFilter = gameObject.AddComponent<MeshFilter>();
             }
-            meshFilter.mesh = new Mesh();
+            meshFilter.sharedMesh = new Mesh();
 
             MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
             if(renderer == null)
             {
                 renderer = gameObject.AddComponent<MeshRenderer>();
             }
+
             m_material = new Material(Shader.Find(BuiltinMaterials.faceShader));
             m_material.SetFloat("_Dither", 1f);
-            m_material.color = Color.yellow;
+            m_material.color = m_color;
             renderer.sharedMaterial = m_material;
 
             gameObject.AddComponent<PBMesh>();
@@ -102,6 +103,8 @@ namespace Battlehub.ProBuilderIntegration
             {
                 Destroy(m_material);
             }
+            m_selectionMesh = null;
+            Clear();
         }
 
         public bool IsSelected(Face face)
@@ -230,7 +233,6 @@ namespace Battlehub.ProBuilderIntegration
             faceList.SelectionFaces.Remove(selectionFace);
 
             Vector3 removedFaceCenterOfMass = GetCenterOfMass(selectionFace);
-
             int[] indices = selectionFace.distinctIndexes.OrderByDescending(i => i).ToArray();
             for(int i = 0; i < indices.Length; ++i)
             {
@@ -285,6 +287,18 @@ namespace Battlehub.ProBuilderIntegration
             RebuildSelectionMesh();
         }
 
+        public Vector3 GetCenterOfMass()
+        {
+            Vector3 centerOfMass = GetCenterOfMass(m_selectionFaces[0]);
+            for(int i = 1; i < m_selectionFaces.Count; ++i)
+            {
+                Face face = m_selectionFaces[i];
+                centerOfMass += GetCenterOfMass(face);
+            }
+
+            return centerOfMass / m_selectionFaces.Count;
+        }
+
         private Vector3 GetCenterOfMass(Face face)
         {
             IList<int> indexes = face.indexes;
@@ -309,7 +323,13 @@ namespace Battlehub.ProBuilderIntegration
 
         public IList<Face> GetFaces(ProBuilderMesh mesh)
         {
-            return m_meshToFaces[mesh].Faces;
+            FaceList faces;
+            if(m_meshToFaces.TryGetValue(mesh, out faces))
+            {
+                return faces.Faces;
+            }
+
+            return new Face[0];
         }
 
         public IEnumerable<int> GetIndexes(ProBuilderMesh mesh)
@@ -317,7 +337,7 @@ namespace Battlehub.ProBuilderIntegration
             return m_meshToFaces[mesh].Indexes.Keys;
         }
 
-        public void Synchronize(Vector3 centerOfMass, Vector3 lastPosition, Vector3 lastNormal)
+        public void Synchronize(Vector3 centerOfMass, Vector3 lastPosition)
         {
             foreach (KeyValuePair<ProBuilderMesh, FaceList> kvp in m_meshToFaces)
             {
@@ -341,12 +361,16 @@ namespace Battlehub.ProBuilderIntegration
 
             m_centerOfMass = transform.InverseTransformPoint(centerOfMass);
             m_lastPosition = transform.InverseTransformPoint(lastPosition);
-            m_lastNormal = transform.InverseTransformDirection(lastNormal.normalized);
+            m_lastNormal = m_selectionFaces.Count == 0 ? Vector3.forward : GetNormal(m_selectionFaces[m_selectionFaces.Count - 1]); // transform.InverseTransformDirection(lastNormal.normalized);
             RebuildSelectionMesh();
         }
 
         private void RebuildSelectionMesh()
         {
+            if(m_selectionMesh == null)
+            {
+                return;
+            }
             m_selectionMesh.RebuildWithPositionsAndFaces(m_selectionVertices, m_selectionFaces);
             m_selectionMesh.ToMesh();
             m_selectionMesh.Refresh();
