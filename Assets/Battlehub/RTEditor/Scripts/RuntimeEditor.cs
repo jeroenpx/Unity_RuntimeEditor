@@ -10,6 +10,7 @@ using Battlehub.UIControls.MenuControl;
 using UnityObject = UnityEngine.Object;
 using Battlehub.RTHandles;
 using Battlehub.UIControls;
+using Battlehub.RTSL;
 
 namespace Battlehub.RTEditor
 {
@@ -149,6 +150,13 @@ namespace Battlehub.RTEditor
                 gameObject.AddComponent<RuntimeEditorInput>();
             }
             base.Start();
+            if (EventSystem != null)
+            {
+                if (!EventSystem.GetComponent<RTSLIgnore>() && EventSystem.transform.parent == null)
+                {
+                    EventSystem.gameObject.AddComponent<RTSLIgnore>();
+                }
+            }
         }
 
         protected override void OnDestroy()

@@ -9,7 +9,19 @@ using UnityEngine.UI;
 namespace Battlehub.UIControls.MenuControl
 {
     public class MenuDefinitionAttribute : Attribute
-    { }
+    {
+        public int Order
+        {
+            get;
+            private set;
+        }
+
+        public MenuDefinitionAttribute(int order = 0)
+        {
+            Order = order;
+        }
+    }
+
 
     public class MenuCommandAttribute : Attribute
     {
@@ -160,8 +172,8 @@ namespace Battlehub.UIControls.MenuControl
                 }
             }
 
-            Type[] menuDefinitions = assemblies.SelectMany(asm => asm.GetTypesWithAttribute(typeof(MenuDefinitionAttribute))).ToArray();
-            foreach(Type menuDef in menuDefinitions)
+            Type[] menuDefinitions = assemblies.SelectMany(asm => asm.GetTypesWithAttribute(typeof(MenuDefinitionAttribute))).OrderBy(kvp => ((MenuDefinitionAttribute)kvp.Value).Order).Select(kvp => kvp.Key).ToArray();
+            foreach (Type menuDef in menuDefinitions)
             {
                 MethodInfo[] methods = menuDef.GetMethods(BindingFlags.Static | BindingFlags.Public);
                 for (int i = 0; i < methods.Length; ++i)

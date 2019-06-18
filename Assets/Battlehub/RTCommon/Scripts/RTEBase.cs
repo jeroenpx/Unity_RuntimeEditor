@@ -574,8 +574,6 @@ namespace Battlehub.RTCommon
                 sceneView.Camera = Camera.main;
             }
 
-
-
             EventSystem eventSystem = FindObjectOfType<EventSystem>();
             if (eventSystem == null)
             {
@@ -592,6 +590,7 @@ namespace Battlehub.RTCommon
                 }
             }
 
+           
             RectTransform rectTransform = sceneView.GetComponent<RectTransform>();
             if (rectTransform != null)
             {

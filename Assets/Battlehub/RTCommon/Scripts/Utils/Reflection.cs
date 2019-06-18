@@ -34,13 +34,14 @@ namespace Battlehub
             }
         }
 
-        public static IEnumerable<Type> GetTypesWithAttribute(this Assembly assembly, Type attribute)
+        public static IEnumerable<KeyValuePair<Type, object>> GetTypesWithAttribute(this Assembly assembly, Type attribute)
         {
             foreach (Type type in assembly.GetTypes())
             {
-                if (type.GetCustomAttributes(attribute, true).Length > 0)
+                object[] attributes = type.GetCustomAttributes(attribute, true);
+                if (attributes.Length > 0)
                 {
-                    yield return type;
+                    yield return new KeyValuePair<Type, object>(type, attributes[0]);
                 }
             }
         }

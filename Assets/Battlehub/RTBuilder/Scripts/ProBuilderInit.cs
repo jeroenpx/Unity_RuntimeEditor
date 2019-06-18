@@ -1,8 +1,10 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
+using Battlehub.UIControls.MenuControl;
 using UnityEngine;
 namespace Battlehub.RTBuilder
 {
+    [MenuDefinition(-1)]
     public class ProBuilderInit : EditorOverride
     {
         [SerializeField]
@@ -44,6 +46,13 @@ namespace Battlehub.RTBuilder
                     ContentPrefab = prefab
                 }
             });
+        }
+
+        //[MenuCommand("MenuWindow/Builder")]
+        public static void OpenProBuilder()
+        {
+            IWindowManager wm = IOC.Resolve<IWindowManager>();
+            wm.CreateWindow("ProBuilder");
         }
     }
 }
