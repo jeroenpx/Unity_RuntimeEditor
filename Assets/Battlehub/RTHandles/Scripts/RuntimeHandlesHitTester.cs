@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
+    [DefaultExecutionOrder(-90)]
     public class RuntimeHandlesHitTester : MonoBehaviour
     {
         protected readonly List<BaseHandle> m_handles = new List<BaseHandle>();

@@ -8105,7 +8105,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0.75, z: 0}
     m_Extent: {x: 0.5, y: 0.75, z: 0.5}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!114 &1792287101373332074

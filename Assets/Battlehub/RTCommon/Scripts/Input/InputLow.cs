@@ -174,16 +174,14 @@ namespace Battlehub.RTCommon
 
         public virtual Vector3 GetPointerXY(int pointer)
         {
-#if DEBUG
-            if(m_multitouchEmulator != null)
-            {
-                return m_multitouchEmulator.GetPosition(pointer);
-            }
-#endif
+//#if DEBUG
+//            if(m_multitouchEmulator != null)
+//            {
+//                return m_multitouchEmulator.GetPosition(pointer);
+//            }
+//#endif
             if (pointer == 0)
             {
-
-
                 return Input.mousePosition;
             }
             else
@@ -195,35 +193,36 @@ namespace Battlehub.RTCommon
 
         public virtual bool GetPointerDown(int index)
         {
-#if DEBUG
-            if (m_multitouchEmulator != null)
-            {
-                return m_multitouchEmulator.IsTouchDown(index);
-            }
-#endif
+//#if DEBUG
+//            if (m_multitouchEmulator != null)
+//            {
+//                return m_multitouchEmulator.IsTouchDown(index);
+//            }
+//#endif
+
             bool buttonDown = Input.GetMouseButtonDown(index);
             return buttonDown;
         }
 
         public virtual bool GetPointerUp(int index)
         {
-#if DEBUG
-            if (m_multitouchEmulator != null)
-            {
-                return m_multitouchEmulator.IsTouchUp(index);
-            }
-#endif
+//#if DEBUG
+//            if (m_multitouchEmulator != null)
+//            {
+//                return m_multitouchEmulator.IsTouchUp(index);
+//            }
+//#endif
             return Input.GetMouseButtonUp(index);
         }
 
         public virtual bool GetPointer(int index)
         {
-#if DEBUG
-            if (m_multitouchEmulator != null)
-            {
-                return m_multitouchEmulator.IsTouch(index);
-            }
-#endif
+//#if DEBUG
+//            if (m_multitouchEmulator != null)
+//            {
+//                return m_multitouchEmulator.IsTouch(index);
+//            }
+//#endif
 
             return Input.GetMouseButton(index);
         }

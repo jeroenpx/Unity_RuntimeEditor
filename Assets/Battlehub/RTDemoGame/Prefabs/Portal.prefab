@@ -3962,7 +3962,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1243314675393952
@@ -11778,7 +11781,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1463707715302862
@@ -19636,7 +19642,10 @@ MonoBehaviour:
   CustomBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  CanSelect: 1
+  CanTransform: 1
+  CanInspect: 1
+  CanDuplicate: 1
+  CanDelete: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1744681733381040
