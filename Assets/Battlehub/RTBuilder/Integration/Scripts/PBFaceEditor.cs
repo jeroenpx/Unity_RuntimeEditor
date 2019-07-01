@@ -23,13 +23,58 @@ namespace Battlehub.ProBuilderIntegration
 
         public override Vector3 Position
         {
-            get { return CenterMode ? m_faceSelection.CenterOfMass : m_faceSelection.LastPosition; }
+            get
+            {
+                if(UVEditingMode)
+                {
+                    return m_faceSelection.LastPosition;
+                }
+
+                return CenterMode ? m_faceSelection.CenterOfMass : m_faceSelection.LastPosition;
+            }
             set { MoveTo(value); }
         }
-               
+
         public override Vector3 Normal
         {
-            get { return (CenterMode && m_faceSelection.FacesCount > 1) ? Vector3.forward : m_faceSelection.LastNormal; }
+            get
+            {
+                if(UVEditingMode)
+                {
+                    return m_faceSelection.LastNormal;
+                }
+
+                return (CenterMode && m_faceSelection.FacesCount > 1) ? Vector3.forward : m_faceSelection.LastNormal;
+            }
+        }    
+        
+        public override Quaternion Rotation
+        {
+            get
+            {
+                if(m_faceSelection.LastMesh == null || !UVEditingMode && CenterMode && m_faceSelection.FacesCount > 1)
+                {
+                    return Quaternion.identity;
+                }
+
+                MeshSelection selection = GetSelection();
+                if(selection == null)
+                {
+                    return Quaternion.identity;
+                }
+                IList<Face> faces;
+                if(!selection.SelectedFaces.TryGetValue(m_faceSelection.LastMesh, out faces))
+                {
+                    return Quaternion.identity;
+                }
+
+                if(faces == null || faces.Count == 0)
+                {
+                    return Quaternion.identity;
+                }
+
+                return HandleUtility.GetRotation(m_faceSelection.LastMesh, faces.Last().distinctIndexes);
+            }
         }
 
         public override GameObject Target
@@ -252,10 +297,17 @@ namespace Battlehub.ProBuilderIntegration
                     else
                     {
                         selection = ReadSelection();
-                        selection.UnselectedFaces[result.mesh] = selection.UnselectedFaces[result.mesh].Where(f => f != result.face).ToArray();
-                        selection.SelectedFaces.Add(result.mesh, new[] { result.face });
-                        m_faceSelection.Clear();
-                        m_faceSelection.Add(result.mesh, result.face);
+                        //if(selection.SelectedFaces.Count > 1)
+                        //{
+                        //    selection.UnselectedFaces[result.mesh] = selection.UnselectedFaces[result.mesh].Where(f => f != result.face).ToArray();
+                        //    selection.SelectedFaces.Add(result.mesh, new[] { result.face });
+                        //    m_faceSelection.Clear();
+                        //    m_faceSelection.Add(result.mesh, result.face);
+                        //}
+                        //else
+                        {
+                            selection = null;
+                        }
                     }
                 }
                 else

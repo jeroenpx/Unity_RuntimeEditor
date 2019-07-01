@@ -28,6 +28,49 @@ namespace Battlehub.ProBuilderIntegration
             get { return (!GlobalMode && m_edgeSelection.LastMesh != null) ? m_edgeSelection.LastMesh.transform.forward : Vector3.forward; }
         }
 
+        public override Quaternion Rotation
+        {
+            get
+            {
+                if (GlobalMode || m_edgeSelection.LastMesh == null)
+                {
+                    return Quaternion.identity;
+                }
+
+                MeshSelection selection = GetSelection();
+                if (selection == null)
+                {
+                    return Quaternion.identity;
+                }
+                if (selection.HasEdges)
+                {
+                    selection.EdgesToFaces(false);
+                }
+                IList<Face> faces;
+                if (selection.SelectedFaces.TryGetValue(m_edgeSelection.LastMesh, out faces))
+                {
+                    if (faces.Count != 0)
+                    {
+                        return HandleUtility.GetRotation(m_edgeSelection.LastMesh, faces.Last().distinctIndexes);
+                    }
+                }
+ 
+                IList<Edge> edges;
+                if(!selection.SelectedEdges.TryGetValue(m_edgeSelection.LastMesh, out edges) || edges.Count == 0)
+                {
+                    return Quaternion.identity;
+                }
+
+                Face face = PBUtility.GetFace(m_edgeSelection.LastMesh, edges.Last());
+                if (face == null)
+                {
+                    return Quaternion.identity;
+                }
+                    
+                return HandleUtility.GetRotation(m_edgeSelection.LastMesh, face.distinctIndexes);
+            }
+        }
+
         public override GameObject Target
         {
             get { return m_edgeSelection.LastMesh != null ? m_edgeSelection.LastMesh.gameObject : null; }
@@ -110,24 +153,33 @@ namespace Battlehub.ProBuilderIntegration
 
             foreach (ProBuilderMesh mesh in m_edgeSelection.Meshes)
             {
-                MeshSelection selection = new MeshSelection();
-                selection.SelectedEdges.Add(mesh, m_edgeSelection.GetEdges(mesh));
-                selection.EdgesToVertices(false);
+                //MeshSelection selection = new MeshSelection();
+                //selection.SelectedEdges.Add(mesh, m_edgeSelection.GetEdges(mesh));
+                //selection.EdgesToVertices(false);
+
+                HashSet<int> indexes = new HashSet<int>();
+                for (int i = 0; i < mesh.vertexCount; ++i)
+                {
+                    indexes.Add(i);
+                }
+                List<List<Edge>> holes = PBElementSelection.FindHoles(mesh, indexes);
 
                 mesh.ToMesh();
 
                 List<WingedEdge> wings = WingedEdge.GetWingedEdges(mesh);
-                HashSet<int> common = new HashSet<int>(selection.SelectedIndices[mesh]);
-                List<List<WingedEdge>> holes = PBElementSelection.FindHoles(wings, common);
-
                 HashSet<Face> appendedFaces = new HashSet<Face>();
 
                // const bool wholePath = false;
 
-                foreach (List<WingedEdge> hole in holes)
+                foreach (List<Edge> hole in holes)
                 {
                     List<int> holeIndexes;
                     Face face;
+
+                    if(!hole.All(e => m_edgeSelection.IsSelected(mesh, e)))
+                    {
+                        continue;
+                    }
 
                     //if (wholePath)
                     //{
@@ -145,7 +197,10 @@ namespace Battlehub.ProBuilderIntegration
                         //IEnumerable<WingedEdge> selected = hole.Where(x => common.Contains(x.edge.common.a));
                         //holeIndexes = selected.Select(x => x.edge.local.a).ToList();
 
-                        holeIndexes = hole.Select(x => x.edge.local.a).ToList();
+                        //holeIndexes = hole.Select(x => x.edge.local.a).ToList();
+                        //face = AppendElements.CreatePolygon(mesh, holeIndexes, true);
+
+                        holeIndexes = hole.Select(x => x.a).ToList();
                         face = AppendElements.CreatePolygon(mesh, holeIndexes, true);
                     }
 

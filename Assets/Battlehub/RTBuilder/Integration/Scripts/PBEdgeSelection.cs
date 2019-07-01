@@ -72,6 +72,7 @@ namespace Battlehub.ProBuilderIntegration
             get { return LastMesh != null ? LastMesh.transform.TransformPoint(m_lastPosition) : Vector3.zero; }
         }
 
+     
         public Vector3 m_lastNormal = Vector3.forward;
         public Vector3 LastNormal
         {

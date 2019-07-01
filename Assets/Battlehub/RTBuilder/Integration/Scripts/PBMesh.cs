@@ -105,6 +105,13 @@ namespace Battlehub.ProBuilderIntegration
             m_pbMesh.ToMesh();
         }
 
+        public void Clear()
+        {
+            m_pbMesh.Clear();
+            m_pbMesh.Refresh();
+            m_pbMesh.ToMesh();
+        }
+
         public static PBMesh ProBuilderize(GameObject gameObject)
         {
             PBMesh mesh = gameObject.GetComponent<PBMesh>();
@@ -114,6 +121,12 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             return gameObject.AddComponent<PBMesh>();
+        }
+
+        public static void ImportMesh(ProBuilderMesh mesh)
+        {
+            MeshFilter filter = mesh.GetComponent<MeshFilter>();
+            ImportMesh(filter, mesh);
         }
 
         private static void ImportMesh(MeshFilter filter, ProBuilderMesh mesh)

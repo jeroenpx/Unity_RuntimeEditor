@@ -1771,6 +1771,15 @@ namespace Battlehub.UIControls
             }
         }
 
+        public virtual void DataBindVisible()
+        {
+            for(int i = VisibleItemIndex; i < VisibleItemIndex + VisibleItemsCount; ++i)
+            {
+                object item = m_scrollRect.Items[i];
+                DataBindItem(item);
+            }
+        }
+
         public virtual void DataBindItem(object item, VirtualizingItemContainer itemContainer)
         {
         }

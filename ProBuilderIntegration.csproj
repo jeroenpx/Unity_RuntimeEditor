@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\IMeshEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBAutoUVEditor.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBBaseEditor.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBBuiltinMaterials.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBEdgeEditor.cs" />
@@ -71,6 +72,8 @@
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBHandles.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBMaterialEditor.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBMesh.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBPolyShape.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBPolyShapeSelection.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBShapeGenerator.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBSurfaceTopology.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBUtility.cs" />

@@ -180,7 +180,7 @@ namespace Battlehub.UIControls.MenuControl
                 {
                     MethodInfo mi = methods[i];
                     MenuCommandAttribute cmd = (MenuCommandAttribute)mi.GetCustomAttributes(typeof(MenuCommandAttribute), true).FirstOrDefault();
-                    if (string.IsNullOrEmpty(cmd.Path))
+                    if (cmd == null || string.IsNullOrEmpty(cmd.Path))
                     {
                         continue;
                     }

@@ -391,6 +391,12 @@ namespace Battlehub.ProBuilderIntegration
             set;
         }
 
+        bool UVEditingMode
+        {
+            get;
+            set;
+        }
+
         Vector3 Position
         {
             get;
@@ -398,6 +404,11 @@ namespace Battlehub.ProBuilderIntegration
         }
 
         Vector3 Normal
+        {
+            get;
+        }
+
+        Quaternion Rotation
         {
             get;
         }

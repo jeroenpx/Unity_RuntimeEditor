@@ -34,6 +34,11 @@ namespace Battlehub.ProBuilderIntegration
             get { return LastMesh != null ? LastMesh.transform.TransformPoint(m_lastPosition) : Vector3.zero; }
         }
 
+        public Vector3 LastPositionLocal
+        {
+            get { return LastMesh != null ? m_lastPosition : Vector3.zero; }
+        }
+
         public Vector3 m_lastNormal = Vector3.forward;
         public Vector3 LastNormal
         {
@@ -405,117 +410,15 @@ namespace Battlehub.ProBuilderIntegration
         {
             if (IsGeometryShadersSupported)
             {
-                BuildVertexMeshInternal(mesh, target, indexes);
+                PBUtility.BuildVertexMesh(mesh.positions, m_color, target, indexes);
             }
             else
             {
-                BuildVertexMeshLegacy(mesh, target, indexes);
+                PBUtility.BuildVertexMeshLegacy(mesh.positions, m_color, target, indexes);
             }
         }
 
-        private void BuildVertexMeshLegacy(ProBuilderMesh mesh, Mesh target, IList<int> indexes)
-        {
-            const int k_MaxPointCount = int.MaxValue / 4;
-
-            int billboardCount = indexes == null ? mesh.vertexCount : indexes.Count;
-
-            if (billboardCount > k_MaxPointCount)
-            {
-                billboardCount = k_MaxPointCount;
-            }
-
-            var positions = mesh.positions;
-
-            Vector3[] billboards = new Vector3[billboardCount * 4];
-            Vector2[] uvs = new Vector2[billboardCount * 4];
-            Vector2[] uv2 = new Vector2[billboardCount * 4];
-            Color[] colors = new Color[billboardCount * 4];
-            int[] tris = new int[billboardCount * 6];
-            
-            int n = 0;
-            int t = 0;
-
-            Vector3 up = Vector3.up;
-            Vector3 right = Vector3.right;
-
-            if (indexes == null)
-            {
-                for (int i = 0; i < billboardCount; i++)
-                {
-                    billboards[t + 0] = positions[i];
-                    billboards[t + 1] = positions[i];
-                    billboards[t + 2] = positions[i];
-                    billboards[t + 3] = positions[i];
-                }
-
-                target.vertices = billboards;
-            }
-            else
-            {
-                for (int i = 0; i < billboardCount; i++)
-                {
-                    billboards[t + 0] = positions[indexes[i]];
-                    billboards[t + 1] = positions[indexes[i]];
-                    billboards[t + 2] = positions[indexes[i]];
-                    billboards[t + 3] = positions[indexes[i]];
-
-                    uvs[t + 0] = Vector3.zero;
-                    uvs[t + 1] = Vector3.right;
-                    uvs[t + 2] = Vector3.up;
-                    uvs[t + 3] = Vector3.one;
-
-                    uv2[t + 0] = -up - right;
-                    uv2[t + 1] = -up + right;
-                    uv2[t + 2] = up - right;
-                    uv2[t + 3] = up + right;
-
-                    colors[t + 0] = m_color;
-                    colors[t + 1] = m_color;
-                    colors[t + 2] = m_color;
-                    colors[t + 3] = m_color;
-
-                    tris[n + 0] = t + 0;
-                    tris[n + 1] = t + 1;
-                    tris[n + 2] = t + 2;
-                    tris[n + 3] = t + 1;
-                    tris[n + 4] = t + 3;
-                    tris[n + 5] = t + 2;
-
-                    t += 4;
-                    n += 6;
-                }
-
-                target.Clear();
-                target.vertices = billboards;
-                target.uv = uvs;
-                target.uv2 = uv2;
-                target.colors = colors;
-                target.triangles = tris;
-            }          
-        }
-
-        private void BuildVertexMeshInternal(ProBuilderMesh mesh, Mesh target, IEnumerable<int> indexes)
-        {
-            if(indexes != null)
-            {
-                target.Clear();
-            }
-            
-            target.vertices = mesh.positions.ToArray();
-
-            if (indexes != null)
-            {
-                Color[] colors = new Color[target.vertexCount];
-                for (int i = 0; i < colors.Length; ++i)
-                {
-                    colors[i] = m_color;
-                }
-                target.colors = colors;
-                target.subMeshCount = 1;
-                target.SetIndices(indexes as int[] ?? indexes.ToArray(), MeshTopology.Points, 0);
-            }
-        }
-
+     
         private static void CopyTransform(Transform src, Transform dst)
         {
             dst.position = src.position;

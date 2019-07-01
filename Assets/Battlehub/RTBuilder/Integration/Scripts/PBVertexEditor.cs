@@ -33,6 +33,44 @@ namespace Battlehub.ProBuilderIntegration
             get { return (!GlobalMode && m_vertexSelection.LastMesh != null) ? m_vertexSelection.LastMesh.transform.forward : Vector3.forward; }
         }
 
+
+        public override Quaternion Rotation
+        {
+            get
+            {
+                if (GlobalMode || m_vertexSelection.LastMesh == null)
+                {
+                    return Quaternion.identity;
+                }
+
+                MeshSelection selection = GetSelection();
+                if (selection == null)
+                {
+                    return Quaternion.identity;
+                }
+                if (selection.HasVertices)
+                {
+                    selection.VerticesToFaces(false);
+                }
+                IList<Face> faces;
+                if (selection.SelectedFaces.TryGetValue(m_vertexSelection.LastMesh, out faces))
+                {
+                    if (faces.Count != 0)
+                    {
+                        return HandleUtility.GetRotation(m_vertexSelection.LastMesh, faces.Last().distinctIndexes);
+                    }
+                }
+
+                IList<int> vertices;
+                if (!selection.SelectedIndices.TryGetValue(m_vertexSelection.LastMesh, out vertices) || vertices.Count == 0)
+                {
+                    return Quaternion.identity;
+                }
+
+                return HandleUtility.GetRotation(m_vertexSelection.LastMesh, vertices);
+            }
+        }
+
         public override GameObject Target
         {
             get { return m_vertexSelection.LastMesh != null ? m_vertexSelection.LastMesh.gameObject : null; }

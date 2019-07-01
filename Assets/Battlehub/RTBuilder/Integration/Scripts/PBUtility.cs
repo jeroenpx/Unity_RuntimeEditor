@@ -623,6 +623,159 @@ namespace Battlehub.ProBuilderIntegration
 
             return outHitFace > -1;
         }
+
+        public static void BuildVertexMeshLegacy(IList<Vector3> positions, Color color, Mesh target, IList<int> indexes)
+        {
+            const int k_MaxPointCount = int.MaxValue / 4;
+
+            int billboardCount = indexes == null ? positions.Count : indexes.Count;
+
+            if (billboardCount > k_MaxPointCount)
+            {
+                billboardCount = k_MaxPointCount;
+            }
+
+            Vector3[] billboards = new Vector3[billboardCount * 4];
+            Vector2[] uvs = new Vector2[billboardCount * 4];
+            Vector2[] uv2 = new Vector2[billboardCount * 4];
+            Color[] colors = new Color[billboardCount * 4];
+            int[] tris = new int[billboardCount * 6];
+
+            int n = 0;
+            int t = 0;
+
+            Vector3 up = Vector3.up;
+            Vector3 right = Vector3.right;
+
+            if (indexes == null)
+            {
+                for (int i = 0; i < billboardCount; i++)
+                {
+                    billboards[t + 0] = positions[i];
+                    billboards[t + 1] = positions[i];
+                    billboards[t + 2] = positions[i];
+                    billboards[t + 3] = positions[i];
+                }
+
+                target.vertices = billboards;
+            }
+            else
+            {
+                for (int i = 0; i < billboardCount; i++)
+                {
+                    billboards[t + 0] = positions[indexes[i]];
+                    billboards[t + 1] = positions[indexes[i]];
+                    billboards[t + 2] = positions[indexes[i]];
+                    billboards[t + 3] = positions[indexes[i]];
+
+                    uvs[t + 0] = Vector3.zero;
+                    uvs[t + 1] = Vector3.right;
+                    uvs[t + 2] = Vector3.up;
+                    uvs[t + 3] = Vector3.one;
+
+                    uv2[t + 0] = -up - right;
+                    uv2[t + 1] = -up + right;
+                    uv2[t + 2] = up - right;
+                    uv2[t + 3] = up + right;
+
+                    colors[t + 0] = color;
+                    colors[t + 1] = color;
+                    colors[t + 2] = color;
+                    colors[t + 3] = color;
+
+                    tris[n + 0] = t + 0;
+                    tris[n + 1] = t + 1;
+                    tris[n + 2] = t + 2;
+                    tris[n + 3] = t + 1;
+                    tris[n + 4] = t + 3;
+                    tris[n + 5] = t + 2;
+
+                    t += 4;
+                    n += 6;
+                }
+
+                target.Clear();
+                target.vertices = billboards;
+                target.uv = uvs;
+                target.uv2 = uv2;
+                target.colors = colors;
+                target.triangles = tris;
+            }
+        }
+
+        public static void BuildVertexMeshNew(IList<Vector3> positions, Color color, Mesh target, IEnumerable<int> indexes)
+        {
+            if (indexes != null)
+            {
+                target.Clear();
+            }
+
+            target.vertices = positions.ToArray();
+
+            if (indexes != null)
+            {
+                Color[] colors = new Color[target.vertexCount];
+                for (int i = 0; i < colors.Length; ++i)
+                {
+                    colors[i] = color;
+                }
+                target.colors = colors;
+                target.subMeshCount = 1;
+                target.SetIndices(indexes as int[] ?? indexes.ToArray(), MeshTopology.Points, 0);
+            }
+        }
+
+        public static void BuildVertexMesh(IList<Vector3> positions, Color color, Mesh target, IList<int> indexes)
+        {
+            if (BuiltinMaterials.geometryShadersSupported)
+            {
+                BuildVertexMeshNew(positions, color, target, indexes);
+            }
+            else
+            {
+                BuildVertexMeshLegacy(positions, color, target, indexes);
+            }
+        }
+
+        public static void BuildVertexMesh(IList<Vector3> positions, Color color, Mesh target)
+        {
+            if (BuiltinMaterials.geometryShadersSupported)
+            {
+                int[] indexes = new int[positions.Count];
+                for(int i = 0; i < indexes.Length; ++i)
+                {
+                    indexes[i] = i;
+                }
+
+                BuildVertexMeshNew(positions, color, target, indexes);
+            }
+            else
+            {
+                BuildVertexMeshLegacy(positions, color, target, null);
+            }
+        }
+
+        public static Face GetFace(ProBuilderMesh mesh, Edge edge)
+        {
+            Face res = null;
+
+            foreach (var face in mesh.faces)
+            {
+                var edges = face.edges;
+
+                for (int i = 0, c = edges.Count; i < c; i++)
+                {
+                    if (edge.Equals(edges[i]))
+                        return face;
+
+                    if (edges.Contains(edges[i]))
+                        res = face;
+                }
+            }
+
+            return res;
+        }
+
     }
 }
 

@@ -52,6 +52,12 @@ namespace Battlehub.RTBuilder
             }
         }
 
+        public Material SelectedMaterial
+        {
+            get { return (Material)m_treeView.SelectedItem; }
+        }
+
+
         [SerializeField]
         private ObjectEditor m_textureEditor = null;
 

@@ -124,7 +124,8 @@ namespace Battlehub.RTBuilder
             m_proBuilderToolGO.transform.SetParent(Editor.Root, false);
             m_proBuilderTool = m_proBuilderToolGO.AddComponent<ProBuilderTool>();
             m_proBuilderToolGO.AddComponent<MaterialPaletteManager>();
-            m_proBuilderTool.ModeChanged += OnModeChanged;
+            m_proBuilderTool.ModeChanged += OnProBuilderToolModeChanged;
+            m_proBuilderTool.SelectionChanged += OnProBuilderToolSelectionChanged;
             
             
             CreateToolbar();
@@ -188,7 +189,8 @@ namespace Battlehub.RTBuilder
 
             if (m_proBuilderTool != null)
             {
-                m_proBuilderTool.ModeChanged -= OnModeChanged;
+                m_proBuilderTool.ModeChanged -= OnProBuilderToolModeChanged;
+                m_proBuilderTool.SelectionChanged -= OnProBuilderToolSelectionChanged;
             }
         }
 
@@ -198,7 +200,7 @@ namespace Battlehub.RTBuilder
             m_commandsList.Items = m_commands;
         }
 
-        private void OnModeChanged(ProBuilderToolMode mode)
+        private void OnProBuilderToolModeChanged(ProBuilderToolMode mode)
         {
             m_commands = GetCommands().ToArray();
             m_commandsList.Items = m_commands;
@@ -223,8 +225,9 @@ namespace Battlehub.RTBuilder
         private List<ProBuilderCmd> GetObjectCommands()
         {
             List<ProBuilderCmd> commands = GetCommonCommands();
-
+            commands.Add(new ProBuilderCmd("ProBuilderize", OnProBuilderize, CanProBuilderize));
             commands.Add(new ProBuilderCmd("Subdivide", () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
+            
 
             return commands;
         }
@@ -275,8 +278,9 @@ namespace Battlehub.RTBuilder
             };
 
             commands.Add(newShapeCmd);
+            commands.Add(new ProBuilderCmd("New Poly Shape", OnNewPolyShape, true));
             commands.Add(new ProBuilderCmd("Edit Materials", OnEditMaterials));
-            commands.Add(new ProBuilderCmd("ProBuilderize", OnProBuilderize, CanProBuilderize));
+            commands.Add(new ProBuilderCmd("Edit UV", OnEditUV));
             return commands;
         }
 
@@ -301,6 +305,26 @@ namespace Battlehub.RTBuilder
                 m_commandsList.DataBindItem(m_commands[i]);
             }
         }
+
+
+        private void OnProBuilderToolSelectionChanged()
+        {
+            GameObject[] selected = Editor.Selection.gameObjects;
+            if (selected != null && selected.Length > 0)
+            {
+                m_isProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() != null).Any();
+                m_isNonProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() == null).Any();
+            }
+            else
+            {
+                m_isProBuilderMeshSelected = false;
+                m_isNonProBuilderMeshSelected = false;
+            }
+
+            m_commandsList.DataBindVisible();
+        }
+
+
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>();
@@ -364,6 +388,18 @@ namespace Battlehub.RTBuilder
             return go;
         }
 
+        private object OnNewPolyShape(object arg)
+        {
+            GameObject go = (GameObject)OnNewShape(PBShapeType.Cube);
+            go.name = "Poly Shape";
+            PBMesh pbMesh = go.GetComponent<PBMesh>();
+            pbMesh.Clear();
+            
+            PBPolyShape polyShape = go.AddComponent<PBPolyShape>();
+            polyShape.AddVertex(Vector3.zero);
+            return go;
+        }
+
         private void GetPositionAndRotation(RuntimeWindow window, out Vector3 position, out Quaternion rotation)
         {
             Ray ray = window != null ? 
@@ -418,6 +454,11 @@ namespace Battlehub.RTBuilder
         private void OnEditMaterials()
         {
             m_wm.CreateWindow("MaterialPalette", false, UIControls.DockPanels.RegionSplitType.Left, 0.2f);
+        }
+
+        private void OnEditUV()
+        {
+            m_wm.CreateWindow("UVEditor", false, UIControls.DockPanels.RegionSplitType.Left, 0.2f);
         }
 
         private bool CanProBuilderize()

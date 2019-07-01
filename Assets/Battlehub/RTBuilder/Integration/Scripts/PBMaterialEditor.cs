@@ -173,8 +173,8 @@ namespace Battlehub.ProBuilderIntegration
                 }
 
                 AddAllFacesToState(oldState, meshAndFace.mesh);
+                AddMaterialsToState(oldState, meshAndFace.mesh);
 
-                
                 meshAndFace.mesh.SetMaterial(new[] { meshAndFace.face }, material);                
                 meshAndFace.mesh.Refresh();
                 meshAndFace.mesh.ToMesh();

@@ -21,6 +21,12 @@ namespace Battlehub.ProBuilderIntegration
             set;
         }
 
+        public virtual bool UVEditingMode
+        {
+            get;
+            set;
+        }
+
         public abstract Vector3 Position
         {
             get;
@@ -31,8 +37,12 @@ namespace Battlehub.ProBuilderIntegration
         {
             get;
         }
-        
 
+        public virtual Quaternion Rotation
+        {
+            get { return Quaternion.identity; }
+        }
+        
         public abstract GameObject Target
         {
             get;

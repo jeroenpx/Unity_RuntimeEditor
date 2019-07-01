@@ -19,6 +19,7 @@ namespace Battlehub.RTBuilder
 
     public interface IProBuilderTool
     {
+        event Action SelectionChanged;
         event Action<ProBuilderToolMode> ModeChanged;
         ProBuilderToolMode Mode
         {
@@ -29,6 +30,22 @@ namespace Battlehub.RTBuilder
         bool HasSelection
         {
             get;
+        }
+
+        bool HasSelectedFaces
+        {
+            get;
+        }
+
+        PBAutoUnwrapSettings UV
+        {
+            get;
+        }
+
+        bool UVEditingMode
+        {
+            get;
+            set;
         }
 
         IMeshEditor GetEditor();
@@ -42,6 +59,7 @@ namespace Battlehub.RTBuilder
         void SelectHoles();
         void FillHoles();
         void Subdivide();
+
     }
 
     public static class IProBuilderToolExt
@@ -104,6 +122,7 @@ namespace Battlehub.RTBuilder
     public class ProBuilderTool : MonoBehaviour, IProBuilderTool
     {
         public event Action<ProBuilderToolMode> ModeChanged;
+        public event Action SelectionChanged;
 
         private ProBuilderToolMode m_mode = ProBuilderToolMode.Object;
         public ProBuilderToolMode Mode
@@ -147,8 +166,95 @@ namespace Battlehub.RTBuilder
             }
         }
 
+        public bool HasSelectedFaces
+        {
+            get
+            {
+                IMeshEditor editor = GetEditor();
+                if(editor == null || !editor.HasSelection)
+                {
+                    return false;
+                }
+
+                MeshSelection selection = editor.GetSelection();
+                if(selection.HasEdges)
+                {
+                    selection.EdgesToFaces(false);
+                }
+                else if(selection.HasVertices)
+                {
+                    selection.VerticesToFaces(false);
+                }
+
+                return selection.HasFaces;
+            }
+        }
+
+        private PBAutoUnwrapSettings m_uv;
+        public PBAutoUnwrapSettings UV
+        {
+            get { return m_uv; }
+        }
+
+        private bool m_uvEditingMode = false;
+        public bool UVEditingMode
+        {
+            get { return UVEditingModeInternal; }
+            set
+            {
+                if(UVEditingModeInternal != value)
+                {
+                    var propertyInfo = Strong.PropertyInfo((ProBuilderTool x) => x.UVEditingModeInternal);
+                    m_rte.Undo.BeginRecord();
+                    m_rte.Undo.BeginRecordValue(this, propertyInfo);
+                    UVEditingModeInternal = value;
+                    m_rte.Undo.EndRecordValue(this, propertyInfo);
+                    m_rte.Undo.EndRecord();
+                }
+            }
+        }
+
+        private bool UVEditingModeInternal
+        {
+            get { return m_uvEditingMode; }
+            set
+            {
+                if (m_uvEditingMode != value)
+                {
+                    m_uvEditingMode = value;
+
+                    LockAxes lockAxes = m_pivot.gameObject.GetComponent<LockAxes>();
+                    lockAxes.RotationX = m_uvEditingMode;
+                    lockAxes.RotationY = m_uvEditingMode;
+                    lockAxes.RotationScreen = m_uvEditingMode;
+                    lockAxes.ScaleZ = m_uvEditingMode;
+                    lockAxes.PositionZ = m_uvEditingMode;
+
+                    if(m_rte.Selection.IsSelected(m_pivot.gameObject))
+                    {
+                        m_rte.Selection.Select(null, null);
+                        m_rte.Selection.Select(m_pivot.gameObject, new[] { m_pivot.gameObject });
+                    }
+                    
+                    foreach (IMeshEditor editor in m_meshEditors)
+                    {
+                        if (editor == null)
+                        {
+                            continue;
+                        }
+                        editor.UVEditingMode = m_uvEditingMode;
+                    }
+
+                    IMeshEditor currentEditor = GetEditor();
+                    m_pivot.position = currentEditor.Position;
+                    m_pivot.rotation = GetPivotRotation(currentEditor);
+                }
+            }
+        }
+
         private IMeshEditor[] m_meshEditors;
         private IMaterialEditor m_materialEditor;
+        private IAutoUVEditor m_autoUVEditor;
         private IWindowManager m_wm;
         private IRuntimeEditor m_rte;
         private IBoxSelection m_boxSelection;
@@ -163,8 +269,11 @@ namespace Battlehub.RTBuilder
 
             m_wm = IOC.Resolve<IWindowManager>();
             m_wm.WindowCreated += OnWindowCreated;
-
+            
             m_materialEditor = gameObject.AddComponent<PBMaterialEditor>();
+            m_autoUVEditor = gameObject.AddComponent<PBAutoUVEditor>();
+            m_uv = new PBAutoUnwrapSettings();
+            m_uv.Changed += OnUVChanged;
 
             PBVertexEditor vertexEditor = gameObject.AddComponent<PBVertexEditor>();
             PBEdgeEditor edgeEditor = gameObject.AddComponent<PBEdgeEditor>();
@@ -252,6 +361,13 @@ namespace Battlehub.RTBuilder
             {
                 Destroy(m_materialEditor as MonoBehaviour);
             }
+
+            if(m_autoUVEditor != null)
+            {
+                Destroy(m_autoUVEditor as MonoBehaviour);
+            }
+
+            m_uv.Changed -= OnUVChanged;
         }
 
         private void OnCurrentModeChanged(ProBuilderToolMode oldMode)
@@ -352,6 +468,7 @@ namespace Battlehub.RTBuilder
                             enabledEditor.ApplySelection(selection);
                             m_pivot.position = enabledEditor.Position;
                             m_pivot.rotation = GetPivotRotation(enabledEditor);
+                            OnSelectionChanged();
                         }
 
                         return true;
@@ -364,6 +481,7 @@ namespace Battlehub.RTBuilder
                             disabledEditor.RollbackSelection(disabledSelection);
                             m_pivot.position = disabledEditor.Position;
                             m_pivot.rotation = GetPivotRotation(disabledEditor);
+                            OnSelectionChanged();
                         }
 
                         return true;
@@ -379,6 +497,7 @@ namespace Battlehub.RTBuilder
                     if (gameObjects != null)
                     {
                         enabledEditor.ApplySelection(new MeshSelection(gameObjects));
+                        OnSelectionChanged();
                     }
                 }
             }
@@ -679,31 +798,61 @@ namespace Battlehub.RTBuilder
 
             if (m_rte.Tools.ActiveTool != null)
             {
-                if(m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
+                if (UVEditingMode)
                 {
-                    meshEditor.Position = m_pivot.position;
+                    if (m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
+                    {
+                        Vector2 uv = (Quaternion.Inverse(m_pivot.rotation) * (m_pivot.position - meshEditor.Position));
+                        uv.x = -uv.x;
+                        UV.offset = m_initialUVOffset + uv;
+                    }
+                    else if (m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
+                    {
+                        UV.rotation = m_initialUVRotation - Vector3.SignedAngle(m_initialRight, m_pivot.right, m_pivot.forward); 
+                    }
+                    else if (m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
+                    {
+                        Vector2 scale = (Vector2)m_pivot.localScale;
+                        if(Mathf.Approximately(scale.x, 0))
+                        {
+                            scale.x = Mathf.Epsilon;
+                        }
+                        if(Mathf.Approximately(scale.y, 0))
+                        {
+                            scale.y = Mathf.Epsilon;
+                        }
+
+                        UV.scale = Vector2.Scale(new Vector2(1 / scale.x, 1 / scale.y), m_initialUVScale);
+                    }
                 }
-                else if(m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
+                else
                 {
-                    meshEditor.Rotate(m_pivot.rotation);
-                }
-                else if(m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
-                {
-                    Vector3 localScale = m_pivot.localScale;
-                    if(Mathf.Approximately(localScale.x, 0))
+                    if (m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
                     {
-                        localScale.x = 0.00001f;
+                        meshEditor.Position = m_pivot.position;
                     }
-                    if(Mathf.Approximately(localScale.y, 0))
+                    else if (m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
                     {
-                        localScale.y = 0.000001f;
+                        meshEditor.Rotate(m_pivot.rotation);
                     }
-                    if(Mathf.Approximately(localScale.z, 0))
+                    else if (m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
                     {
-                        localScale.z = 0.000001f;
+                        Vector3 localScale = m_pivot.localScale;
+                        if (Mathf.Approximately(localScale.x, 0))
+                        {
+                            localScale.x = 0.00001f;
+                        }
+                        if (Mathf.Approximately(localScale.y, 0))
+                        {
+                            localScale.y = 0.000001f;
+                        }
+                        if (Mathf.Approximately(localScale.z, 0))
+                        {
+                            localScale.z = 0.000001f;
+                        }
+                        m_pivot.localScale = localScale;
+                        meshEditor.Scale(m_pivot.localScale, m_pivot.rotation);
                     }
-                    m_pivot.localScale = localScale;
-                    meshEditor.Scale(m_pivot.localScale, m_pivot.rotation);
                 }
             }
             else
@@ -733,6 +882,14 @@ namespace Battlehub.RTBuilder
 
                     m_rte.Undo.EndRecord();
                 }
+                else if(m_rte.Input.GetKeyDown(KeyCode.Delete))
+                {
+                    DeleteFaces();
+                }
+                else if(m_rte.Input.GetKeyDown(KeyCode.H))
+                {
+                    FillHoles();
+                }
             }
         }
 
@@ -743,6 +900,7 @@ namespace Battlehub.RTBuilder
                 meshEditor.ApplySelection(selection);
                 m_pivot.position = meshEditor.Position;
                 m_pivot.rotation = GetPivotRotation(meshEditor);// Quaternion.LookRotation(meshEditor.Normal);
+                OnSelectionChanged();
                 return true;
             };
 
@@ -751,12 +909,15 @@ namespace Battlehub.RTBuilder
                 meshEditor.RollbackSelection(selection);
                 m_pivot.position = meshEditor.Position;
                 m_pivot.rotation = GetPivotRotation(meshEditor);// Quaternion.LookRotation(meshEditor.Normal);
+                OnSelectionChanged();
                 return true;
             };
 
             m_rte.Undo.CreateRecord(redo, undo);
+            OnSelectionChanged();
         }
 
+        private Vector2 m_initialUVOffset;
         private bool m_shift;
         private void OnBeginMove(BaseHandle positionHandle)
         {
@@ -766,17 +927,25 @@ namespace Battlehub.RTBuilder
                 positionHandle.EnableUndo = false;
 
                 m_rte.Undo.BeginRecord();
-                m_rte.Undo.BeginRecordTransform(m_pivot);
-                m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
-                m_shift = m_rte.Input.GetKey(KeyCode.LeftShift);
-                if (m_shift)
+                if (UVEditingMode)
                 {
-                    MeshEditorState oldState = meshEditor.GetState();
-                    meshEditor.Extrude();
-                    this.RecordState(meshEditor, oldState, null, false);
+                    m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset));
                 }
-
+                else
+                {
+                    m_rte.Undo.BeginRecordTransform(m_pivot);
+                    m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
+                    m_shift = m_rte.Input.GetKey(KeyCode.LeftShift);
+                    if (m_shift)
+                    {
+                        MeshEditorState oldState = meshEditor.GetState();
+                        meshEditor.Extrude();
+                        this.RecordState(meshEditor, oldState, null, false);
+                    }
+                }
+            
                 m_rte.Undo.EndRecord();
+                m_initialUVOffset = UV.offset;
             }
         }
 
@@ -789,16 +958,26 @@ namespace Battlehub.RTBuilder
 
                 m_rte.Undo.BeginRecord();
 
-                MeshEditorState newState = meshEditor.GetState();
-                this.RecordState(meshEditor, null, newState, false, false);
+                if (UVEditingMode)
+                {
+                    m_pivot.position = meshEditor.Position;
+                    m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset));
+                }
+                else
+                {
+                    MeshEditorState newState = meshEditor.GetState();
+                    this.RecordState(meshEditor, null, newState, false, false);
 
-                m_rte.Undo.EndRecordTransform(m_pivot);
-                m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
+                    m_rte.Undo.EndRecordTransform(m_pivot);
+                    m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
+                }
                 m_rte.Undo.EndRecord();
             }
         }
 
+        private Vector3 m_initialRight;
         private Quaternion m_initialRotation;
+        private float m_initialUVRotation;
         private void OnBeginRotate(BaseHandle rotationHandle)
         {
             IMeshEditor meshEditor = GetEditor();
@@ -807,6 +986,12 @@ namespace Battlehub.RTBuilder
                 rotationHandle.EnableUndo = false;
                 m_initialRotation = GetPivotRotation(meshEditor);
                 m_pivot.rotation = m_initialRotation;
+                m_initialRight = m_pivot.TransformDirection(Vector3.right);
+                m_initialUVRotation = UV.rotation;
+                if(UVEditingMode)
+                {
+                    m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation));
+                }
                 meshEditor.BeginRotate(m_initialRotation);
             }
         }
@@ -825,27 +1010,35 @@ namespace Battlehub.RTBuilder
                 Quaternion newStartRotation = GetPivotRotation(meshEditor);
                 m_pivot.rotation = newStartRotation;
 
-                m_rte.Undo.CreateRecord(record =>
+                if (UVEditingMode)
                 {
-                    meshEditor.BeginRotate(initialRotation);
-                    meshEditor.Rotate(endRotation);
-                    meshEditor.EndRotate();
-
-                    m_pivot.transform.rotation = newStartRotation;
-                    return true;
-                },
-                record =>
+                    m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation));
+                }
+                else
                 {
-                    meshEditor.BeginRotate(endRotation);
-                    meshEditor.Rotate(initialRotation);
-                    meshEditor.EndRotate();
+                    m_rte.Undo.CreateRecord(record =>
+                    {
+                        meshEditor.BeginRotate(initialRotation);
+                        meshEditor.Rotate(endRotation);
+                        meshEditor.EndRotate();
 
-                    m_pivot.transform.rotation = initialRotation;
-                    return true;
-                });   
+                        m_pivot.transform.rotation = newStartRotation;
+                        return true;
+                    },
+                    record =>
+                    {
+                        meshEditor.BeginRotate(endRotation);
+                        meshEditor.Rotate(initialRotation);
+                        meshEditor.EndRotate();
+
+                        m_pivot.transform.rotation = initialRotation;
+                        return true;
+                    });
+                }  
             }
         }
 
+        private Vector2 m_initialUVScale;
         private void OnBeginScale(BaseHandle scaleHandle)
         {
             IMeshEditor meshEditor = GetEditor();
@@ -853,6 +1046,11 @@ namespace Battlehub.RTBuilder
             {
                 scaleHandle.EnableUndo = false;
                 m_pivot.localScale = Vector3.one;
+                m_initialUVScale = UV.scale;
+                if (UVEditingMode)
+                {
+                    m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale));
+                }
                 meshEditor.BeginScale();
             }
         }
@@ -869,26 +1067,34 @@ namespace Battlehub.RTBuilder
                 Quaternion rotation = m_pivot.rotation;
                 m_pivot.localScale = Vector3.one;
 
-                m_rte.Undo.CreateRecord(record =>
+                if (UVEditingMode)
                 {
-                    meshEditor.BeginScale();
-                    meshEditor.Scale(newScale, rotation);
-                    meshEditor.EndScale();
-                    return true;
-                },
-               record =>
-               {
-                   meshEditor.BeginScale();
-                   meshEditor.Scale(new Vector3(1.0f / newScale.x, 1.0f / newScale.y, 1.0f / newScale.z), rotation);
-                   meshEditor.EndRotate();
-                   return true;
-               });
+                    m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale));
+                }
+                else
+                {
+                    m_rte.Undo.CreateRecord(record =>
+                    {
+                        meshEditor.BeginScale();
+                        meshEditor.Scale(newScale, rotation);
+                        meshEditor.EndScale();
+                        return true;
+                    },
+                    record =>
+                    {
+                        meshEditor.BeginScale();
+                        meshEditor.Scale(new Vector3(1.0f / newScale.x, 1.0f / newScale.y, 1.0f / newScale.z), rotation);
+                        meshEditor.EndRotate();
+                        return true;
+                    });
+                }
+              
             }
         }
 
         private Quaternion GetPivotRotation(IMeshEditor meshEditor)
         {
-            return m_rte.Tools.PivotRotation == RuntimePivotRotation.Global ? Quaternion.identity : Quaternion.LookRotation(meshEditor.Normal);
+            return m_rte.Tools.PivotRotation == RuntimePivotRotation.Global ? Quaternion.identity : meshEditor.Rotation;
         }
 
         public void ApplyMaterial(Material material, Camera camera, Vector3 mousePosition)
@@ -925,7 +1131,7 @@ namespace Battlehub.RTBuilder
             if(editor != null)
             {
                 MeshSelection selection = editor.GetSelection();
-                m_rte.Undo.BeginRecord();
+              //  m_rte.Undo.BeginRecord();
 
                 ApplyMaterialResult result = m_materialEditor.ApplyMaterial(material, selection);
                 RecordApplyMaterialResult(result);
@@ -1085,6 +1291,33 @@ namespace Battlehub.RTBuilder
                 m_rte.Undo.EndRecord();
             }
         }
+
+        private void OnSelectionChanged()
+        {
+            IMeshEditor editor = GetEditor();
+            if (editor != null)
+            {
+                MeshSelection selection = editor.GetSelection();
+                PBAutoUnwrapSettings settings = m_autoUVEditor.GetSettings(selection);
+                m_uv.CopyFrom(settings);
+            }
+
+            if (SelectionChanged != null)
+            {
+                SelectionChanged();
+            }
+        }
+
+        private void OnUVChanged()
+        {
+            IMeshEditor editor = GetEditor();
+            if (editor != null)
+            {
+                MeshSelection selection = editor.GetSelection();
+                m_autoUVEditor.ApplySettings(m_uv, selection);
+            }       
+        }
+
     }
 }
 
