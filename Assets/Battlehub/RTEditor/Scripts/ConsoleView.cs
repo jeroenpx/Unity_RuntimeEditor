@@ -171,7 +171,7 @@ namespace Battlehub.RTEditor
             return false;
         }
 
-        private void OnMessageAdded(RuntimeConsole console, ConsoleLogEntry logEntry)
+        private void OnMessageAdded(IRuntimeConsole console, ConsoleLogEntry logEntry)
         {
             bool scroll = false;
             if(m_scrollRect.Index + m_scrollRect.VisibleItemsCount == m_scrollRect.ItemsCount)
@@ -191,7 +191,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnMessageRemoved(RuntimeConsole console, ConsoleLogEntry[] arg)
+        private void OnMessageRemoved(IRuntimeConsole console, ConsoleLogEntry[] arg)
         {
             bool scroll = false;
             if (m_scrollRect.Index + m_scrollRect.VisibleItemsCount == m_scrollRect.ItemsCount)

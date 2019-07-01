@@ -18,10 +18,31 @@ namespace Battlehub.RTEditor
         }
     }
 
-    public delegate void RuntimeConsoleEventHandler<T>(RuntimeConsole console, T arg);
+    public class ConsoleLogCancelArgs
+    {
+        public bool Cancel
+        {
+            get;
+            set;
+        }
+
+        public ConsoleLogEntry LogEntry
+        {
+            get;
+            set;
+        }
+
+        public ConsoleLogCancelArgs(ConsoleLogEntry logEntry)
+        {
+            LogEntry = logEntry;
+        }
+    }
+
+    public delegate void RuntimeConsoleEventHandler<T>(IRuntimeConsole console, T arg);
 
     public interface IRuntimeConsole
     {
+        event RuntimeConsoleEventHandler<ConsoleLogCancelArgs> BeforeMessageAdded;
         event RuntimeConsoleEventHandler<ConsoleLogEntry> MessageAdded;
         event RuntimeConsoleEventHandler<ConsoleLogEntry[]> MessagesRemoved;
 
@@ -63,13 +84,13 @@ namespace Battlehub.RTEditor
 
     public class RuntimeConsole : MonoBehaviour, IRuntimeConsole
     {
+        public event RuntimeConsoleEventHandler<ConsoleLogCancelArgs> BeforeMessageAdded;
         public event RuntimeConsoleEventHandler<ConsoleLogEntry> MessageAdded;
         public event RuntimeConsoleEventHandler<ConsoleLogEntry[]> MessagesRemoved;
 
         [SerializeField]
         private bool m_store = false;
-
-        public bool Store
+        public virtual bool Store
         {
             get { return m_store; }
             set { m_store = value; }
@@ -77,7 +98,7 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private int m_maxItems = 300;
-        public int MaxItems
+        public virtual int MaxItems
         {
             get { return m_maxItems; }
         }
@@ -86,30 +107,30 @@ namespace Battlehub.RTEditor
         private int m_clearThreshold = 600;
 
         private Queue<ConsoleLogEntry> m_log;
-        public IEnumerable<ConsoleLogEntry> Log
+        public virtual IEnumerable<ConsoleLogEntry> Log
         {
             get { return m_log; }
         }
 
         private int m_infoCount;
-        public int InfoCount
+        public virtual int InfoCount
         {
             get { return m_infoCount; }
         }
 
         private int m_warningsCount;
-        public int WarningsCount
+        public virtual int WarningsCount
         {
             get { return m_warningsCount; }
         }
 
         private int m_errorsCount;
-        public int ErrorsCount
+        public virtual int ErrorsCount
         {
             get { return m_errorsCount; }
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             m_log = new Queue<ConsoleLogEntry>();
             if(m_clearThreshold <= m_maxItems)
@@ -118,17 +139,17 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             Application.logMessageReceived += OnLogMessageReceived;
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             Application.logMessageReceived -= OnLogMessageReceived;
         }
 
-        private void UpdateCounters(LogType type, int delta)
+        protected virtual void UpdateCounters(LogType type, int delta)
         {
             switch(type)
             {
@@ -146,13 +167,32 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
+        protected virtual bool AcceptMessage(string condition, string stackTrace, LogType type)
         {
+            return true;
+        }
+
+        protected virtual void OnLogMessageReceived(string condition, string stackTrace, LogType type)
+        {
+            if(!AcceptMessage(condition, stackTrace, type))
+            {
+                return;
+            }
+
             ConsoleLogEntry logEntry = null;
             if(MessageAdded != null || m_store)
             {
                 logEntry = new ConsoleLogEntry(type, condition, stackTrace);
-                
+                if (BeforeMessageAdded != null)
+                {
+                    ConsoleLogCancelArgs args = new ConsoleLogCancelArgs(logEntry);
+                    BeforeMessageAdded(this, args);
+                    if(args.Cancel)
+                    {
+                        return;
+                    }
+                }
+
                 m_log.Enqueue(logEntry);
                 UpdateCounters(type, 1);
                 if(m_log.Count > m_clearThreshold)
@@ -165,13 +205,14 @@ namespace Battlehub.RTEditor
                         UpdateCounters(removedLogEntry.LogType, -1);
                     }
 
-
-                    if(MessagesRemoved != null)
+                    if (MessagesRemoved != null)
                     {
                         MessagesRemoved(this, removedItems);
                     }
                 }
             }
+
+            
 
             if(MessageAdded != null)
             {
@@ -179,7 +220,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
             m_infoCount = 0;
             m_warningsCount = 0;
