@@ -52,12 +52,12 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     selection.VerticesToFaces(false);
                 }
-                IList<Face> faces;
-                if (selection.SelectedFaces.TryGetValue(m_vertexSelection.LastMesh, out faces))
+                IList<int> faceIndexes;
+                if (selection.SelectedFaces.TryGetValue(m_vertexSelection.LastMesh, out faceIndexes))
                 {
-                    if (faces.Count != 0)
+                    if (faceIndexes.Count != 0)
                     {
-                        return HandleUtility.GetRotation(m_vertexSelection.LastMesh, faces.Last().distinctIndexes);
+                        return HandleUtility.GetRotation(m_vertexSelection.LastMesh, m_vertexSelection.LastMesh.faces[faceIndexes.Last()].distinctIndexes);
                     }
                 }
 
@@ -121,16 +121,6 @@ namespace Battlehub.ProBuilderIntegration
                 return selection;
             }
             return null;
-        }
-
-        //public override void SelectHoles()
-        //{
-
-        //}
-
-        public override void FillHoles()
-        {
-
         }
 
         public override void Hover(Camera camera, Vector3 pointer)

@@ -1052,7 +1052,12 @@ namespace Battlehub.RTCommon
             }
 
             HashSet<GameObject> removeObjectsHs = new HashSet<GameObject>(exposeToEditor.Select(exposed => exposed.gameObject));
-            Undo.BeginRecord();
+            bool isRecording = Undo.IsRecording;
+            if(!isRecording)
+            {
+                Undo.BeginRecord();
+            }
+            
             if (Selection.objects != null)
             {
                 List<UnityEngine.Object> selection = Selection.objects.ToList();
@@ -1068,7 +1073,11 @@ namespace Battlehub.RTCommon
             }
 
             Undo.DestroyObjects(exposeToEditor);
-            Undo.EndRecord();
+
+            if(!isRecording)
+            {
+                Undo.EndRecord();
+            }
         }
 
 

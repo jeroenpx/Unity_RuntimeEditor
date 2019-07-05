@@ -597,7 +597,8 @@ namespace Battlehub.RTCommon
                     {
                         for (int j = 0; j < purgeRecords.Length; ++j)
                         {
-                            purgeRecords[j].Purge();
+                            Record record = purgeRecords[j];
+                            record.Purge();
                         }
                     }
                 }
@@ -1282,6 +1283,19 @@ namespace Battlehub.RTCommon
 
             if(a != null && b != null)
             {
+                if(a is Vector3 && b is Vector3)
+                {
+                    return (Vector3)a != (Vector3)b;
+                }
+                else if(a is Vector2 && b is Vector2)
+                {
+                    return (Vector2)a != (Vector2)b;
+                }
+                else if(a is Vector4 && b is Vector4)
+                {
+                    return (Vector4)a != (Vector4)b;
+                }
+
                 return !a.Equals(b);
             }
 

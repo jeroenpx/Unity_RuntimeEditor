@@ -533,6 +533,57 @@ namespace Battlehub.ProBuilderIntegration
             return matches;
         }
 
+        public static float PickVertex(Camera camera, Vector3 mousePosition, float maxDistance, Transform transform, IList<Vector3> positions, ref SceneSelection selection)
+        {
+            selection.Clear();
+            m_nearestVertices.Clear();
+
+            maxDistance = maxDistance * maxDistance;
+
+            GetNearestVertices(camera, transform, positions, mousePosition, m_nearestVertices, maxDistance, 1.0f);
+           
+            m_nearestVertices.Sort((x, y) => x.screenDistance.CompareTo(y.screenDistance));
+
+            for (int i = 0; i < m_nearestVertices.Count;)
+            {
+                //selection.gameObject = m_nearestVertices[i].mesh.gameObject;
+                //selection.mesh = m_nearestVertices[i].mesh;
+                selection.vertex = m_nearestVertices[i].vertex;
+                return Mathf.Sqrt(m_nearestVertices[i].screenDistance);
+            }
+
+            return Mathf.Infinity;
+        }
+
+
+        private static int GetNearestVertices(Camera camera, Transform transform, IList<Vector3> positions, Vector3 mousePosition, List<VertexPickerEntry> list, float maxDistance, float distModifier)
+        {
+            int matches = 0;
+
+            for (int i = 0; i < positions.Count; ++i)
+            {
+                Vector3 v = transform.TransformPoint(positions[i]);
+                Vector3 p = camera.WorldToScreenPoint(v);
+
+                float dist = (p - mousePosition).sqrMagnitude * distModifier;
+
+                if (dist < maxDistance)
+                {
+                    list.Add(new VertexPickerEntry
+                    {
+                        mesh = null,
+                        screenDistance = dist,
+                        worldPosition = v,
+                        vertex = i
+                    });
+
+                    matches++;
+                }
+            }
+
+            return matches;
+        }
+
         private static bool PointIsOccluded(Camera cam, ProBuilderMesh pb, Vector3 worldPoint)
         {
             Vector3 dir = (cam.transform.position - worldPoint).normalized;

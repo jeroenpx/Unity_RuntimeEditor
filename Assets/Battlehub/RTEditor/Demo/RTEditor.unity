@@ -514,6 +514,8 @@ MonoBehaviour:
     type: 3}
   m_materialPaletteWindow: {fileID: 5186639825075379583, guid: 21947ce0a589fc447b1bf1529a8603c6,
     type: 3}
+  m_uvEditorWindow: {fileID: 5186639825075379583, guid: dead9ab90ced1b04b962ed590548818e,
+    type: 3}
 --- !u!114 &1190978452
 MonoBehaviour:
   m_ObjectHideFlags: 0

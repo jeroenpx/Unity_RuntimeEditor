@@ -82,14 +82,21 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
+
         public float rotation
         {
-            get { return m_settings.rotation; }
+            get { return m_settings.rotation;  }
             set
             {
                 if(m_settings.rotation != value)
                 {
-                    m_settings.rotation = value;
+                    float clampedValue = value - Mathf.CeilToInt(value / 360f) * 360f;
+                    if (clampedValue < 0)
+                    {
+                        clampedValue += 360f;
+                    }
+
+                    m_settings.rotation = clampedValue;
                     RaiseChanged();
                 }
             }
@@ -240,10 +247,13 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             AutoUnwrapSettings unwrapSettings = settings;
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.SelectedFaces)
+            IList<Face> faces = new List<Face>();
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
             {
                 ProBuilderMesh mesh = kvp.Key;
-                IList<Face> faces = kvp.Value;
+
+                faces.Clear();
+                mesh.GetFaces(kvp.Value, faces);
                 for (int i = 0; i < faces.Count; ++i)
                 {
                     Face face = faces[i];
@@ -271,10 +281,12 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             PBAutoUnwrapSettings unwrapSettings = PBAutoUnwrapSettings.defaultAutoUnwrapSettings;
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.SelectedFaces)
+            IList<Face> faces = new List<Face>();
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
             {
                 ProBuilderMesh mesh = kvp.Key;
-                IList<Face> faces = kvp.Value;
+                faces.Clear();
+                mesh.GetFaces(kvp.Value, faces);
                 for (int i = 0; i < faces.Count;)
                 {
                     Face face = faces[i];

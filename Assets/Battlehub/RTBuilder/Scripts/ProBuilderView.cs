@@ -108,6 +108,7 @@ namespace Battlehub.RTBuilder
         
         private bool m_isProBuilderMeshSelected = false;
         private bool m_isNonProBuilderMeshSelected = false;
+        private bool m_isPolyShapeSelected = false;
         
         private IWindowManager m_wm;
         
@@ -126,7 +127,6 @@ namespace Battlehub.RTBuilder
             m_proBuilderToolGO.AddComponent<MaterialPaletteManager>();
             m_proBuilderTool.ModeChanged += OnProBuilderToolModeChanged;
             m_proBuilderTool.SelectionChanged += OnProBuilderToolSelectionChanged;
-            
             
             CreateToolbar();
             m_toolbar.gameObject.SetActive(m_useToolbar);
@@ -235,8 +235,9 @@ namespace Battlehub.RTBuilder
         private List<ProBuilderCmd> GetFaceCommands()
         {
             List<ProBuilderCmd> commands = GetCommonCommands();
-            commands.Add(new ProBuilderCmd("Extrude Face", OnExtrudeFace, CanExtrudeFace));
-            commands.Add(new ProBuilderCmd("Delete Face", OnDeleteFace, CanDeleteFace));
+            commands.Add(new ProBuilderCmd("Extrude Face", OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ProBuilderCmd("Delete Face", OnDeleteFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ProBuilderCmd("Subdivide Faces", OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             return commands;
         }
 
@@ -245,6 +246,7 @@ namespace Battlehub.RTBuilder
             List<ProBuilderCmd> commands = GetCommonCommands();
             commands.Add(new ProBuilderCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
             commands.Add(new ProBuilderCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ProBuilderCmd("Subdivide Edges", OnSubdivideEdges, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
             return commands;
         }
 
@@ -279,51 +281,40 @@ namespace Battlehub.RTBuilder
 
             commands.Add(newShapeCmd);
             commands.Add(new ProBuilderCmd("New Poly Shape", OnNewPolyShape, true));
+            commands.Add(new ProBuilderCmd("Edit Poly Shape", OnEditPolyShape, () => m_isPolyShapeSelected));
             commands.Add(new ProBuilderCmd("Edit Materials", OnEditMaterials));
             commands.Add(new ProBuilderCmd("Edit UV", OnEditUV));
             return commands;
         }
 
-        private void OnSelectionChanged(UnityEngine.Object[] unselectedObjects)
+        private void UpdateFlags()
         {
             GameObject[] selected = Editor.Selection.gameObjects;
             if (selected != null && selected.Length > 0)
             {
                 m_isProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() != null).Any();
                 m_isNonProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() == null).Any();
+                m_isPolyShapeSelected = selected.Where(go => go.GetComponent<PBPolyShape>() != null).Count() == 1;
             }
             else
             {
                 m_isProBuilderMeshSelected = false;
                 m_isNonProBuilderMeshSelected = false;
-            }
-
-            int index = m_commandsList.VisibleItemIndex;
-            int count = m_commandsList.VisibleItemsCount;
-            for (int i = 0; i < count; ++i)
-            {
-                m_commandsList.DataBindItem(m_commands[i]);
+                m_isPolyShapeSelected = false;
             }
         }
 
-
-        private void OnProBuilderToolSelectionChanged()
+        private void OnSelectionChanged(UnityEngine.Object[] unselectedObjects)
         {
-            GameObject[] selected = Editor.Selection.gameObjects;
-            if (selected != null && selected.Length > 0)
-            {
-                m_isProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() != null).Any();
-                m_isNonProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() == null).Any();
-            }
-            else
-            {
-                m_isProBuilderMeshSelected = false;
-                m_isNonProBuilderMeshSelected = false;
-            }
-
+            UpdateFlags();
             m_commandsList.DataBindVisible();
         }
 
+        private void OnProBuilderToolSelectionChanged()
+        {
+            UpdateFlags();
+            m_commandsList.DataBindVisible();
+        }
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
@@ -355,16 +346,16 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        private object OnNewShape(object arg)
+        private void CreateNewShape(PBShapeType type, out GameObject go, out ExposeToEditor exposeToEditor)
         {
-            GameObject go = PBShapeGenerator.CreateShape((PBShapeType)arg);
+            go = PBShapeGenerator.CreateShape(type);
             go.AddComponent<PBMesh>();
 
             Renderer renderer = go.GetComponent<Renderer>();
-            if(renderer != null && renderer.sharedMaterials.Length == 1 && renderer.sharedMaterials[0] == PBBuiltinMaterials.DefaultMaterial)
+            if (renderer != null && renderer.sharedMaterials.Length == 1 && renderer.sharedMaterials[0] == PBBuiltinMaterials.DefaultMaterial)
             {
                 IMaterialPaletteManager paletteManager = IOC.Resolve<IMaterialPaletteManager>();
-                if(paletteManager.Palette.Materials.Count > 0)
+                if (paletteManager.Palette.Materials.Count > 0)
                 {
                     renderer.sharedMaterial = paletteManager.Palette.Materials[0];
                 }
@@ -376,10 +367,17 @@ namespace Battlehub.RTBuilder
             Quaternion rotation;
             GetPositionAndRotation(scene, out position, out rotation);
 
-            ExposeToEditor exposeToEditor = go.AddComponent<ExposeToEditor>();
+            exposeToEditor = go.AddComponent<ExposeToEditor>();
             go.transform.position = position + rotation * Vector3.up * exposeToEditor.Bounds.extents.y;
             go.transform.rotation = rotation;
-         
+        }
+
+        private object OnNewShape(object arg)
+        {
+            GameObject go;
+            ExposeToEditor exposeToEditor;
+            CreateNewShape((PBShapeType)arg, out go, out exposeToEditor);
+
             Editor.Undo.BeginRecord();
             Editor.Selection.activeGameObject = go;
             Editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
@@ -390,13 +388,31 @@ namespace Battlehub.RTBuilder
 
         private object OnNewPolyShape(object arg)
         {
-            GameObject go = (GameObject)OnNewShape(PBShapeType.Cube);
+            GameObject go;
+            ExposeToEditor exposeToEditor;
+            CreateNewShape(PBShapeType.Cube, out go, out exposeToEditor);
             go.name = "Poly Shape";
+          
+            IRuntimeEditor rte = IOC.Resolve<IRuntimeEditor>();
+            RuntimeWindow scene = rte.GetWindow(RuntimeWindowType.Scene);
+            Vector3 position;
+            Quaternion rotation;
+            GetPositionAndRotation(scene, out position, out rotation);
+            go.transform.position = position;
+            go.transform.rotation = rotation;
+
             PBMesh pbMesh = go.GetComponent<PBMesh>();
             pbMesh.Clear();
             
             PBPolyShape polyShape = go.AddComponent<PBPolyShape>();
-            polyShape.AddVertex(Vector3.zero);
+            polyShape.IsEditing = true;
+
+            Editor.Undo.BeginRecord();
+            Editor.Selection.activeGameObject = go;
+            m_proBuilderTool.Mode = ProBuilderToolMode.PolyShape;
+            Editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
+            Editor.Undo.EndRecord();
+
             return go;
         }
 
@@ -451,6 +467,11 @@ namespace Battlehub.RTBuilder
             return false;
         }
 
+        private void OnEditPolyShape()
+        {
+            m_proBuilderTool.Mode = ProBuilderToolMode.PolyShape;
+        }
+
         private void OnEditMaterials()
         {
             m_wm.CreateWindow("MaterialPalette", false, UIControls.DockPanels.RegionSplitType.Left, 0.2f);
@@ -485,10 +506,7 @@ namespace Battlehub.RTBuilder
             return null;
         }
 
-        private bool CanExtrudeFace()
-        {
-            return m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection;
-        }
+     
 
         private object OnExtrudeFace(object arg)
         {
@@ -496,14 +514,19 @@ namespace Battlehub.RTBuilder
             return null;
         }
 
-        private bool CanDeleteFace()
-        {
-            return m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection;
-        }
-
         private void OnDeleteFace()
         {
             m_proBuilderTool.DeleteFaces();
+        }
+
+        private void OnSubdivideFaces()
+        {
+            m_proBuilderTool.SubdivideFaces();
+        }
+
+        private void OnSubdivideEdges()
+        {
+            m_proBuilderTool.SubdivideEdges();
         }
 
         private void OnItemBeginDrag(object sender, ItemArgs e)

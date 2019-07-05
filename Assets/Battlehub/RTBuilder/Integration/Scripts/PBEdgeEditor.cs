@@ -46,12 +46,12 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     selection.EdgesToFaces(false);
                 }
-                IList<Face> faces;
-                if (selection.SelectedFaces.TryGetValue(m_edgeSelection.LastMesh, out faces))
+                IList<int> faceIndexes;
+                if (selection.SelectedFaces.TryGetValue(m_edgeSelection.LastMesh, out faceIndexes))
                 {
-                    if (faces.Count != 0)
+                    if (faceIndexes.Count != 0)
                     {
-                        return HandleUtility.GetRotation(m_edgeSelection.LastMesh, faces.Last().distinctIndexes);
+                        return HandleUtility.GetRotation(m_edgeSelection.LastMesh, m_edgeSelection.LastMesh.faces[faceIndexes.Last()].distinctIndexes);
                     }
                 }
  
@@ -635,6 +635,18 @@ namespace Battlehub.ProBuilderIntegration
                 mesh.Refresh();
 
                 m_edgeSelection.Add(mesh, edges);
+            }
+        }
+
+        public override void Subdivide()
+        {
+            ProBuilderMesh[] meshes = m_edgeSelection.Meshes.OrderBy(m => m == m_edgeSelection.LastMesh).ToArray();
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<Edge> edges = m_edgeSelection.GetEdges(mesh);
+                ConnectElements.Connect(mesh, edges);
+                mesh.Refresh();
+                mesh.ToMesh();
             }
         }
     }

@@ -15,6 +15,10 @@ namespace Battlehub.ProBuilderIntegration
         private Color m_vertexSelectedColor = Color.yellow;
         [SerializeField]
         private Color m_vertexHoverColor = new Color(1, 1, 0, 0.75f);
+        [SerializeField]
+        private float m_vertexScale = 3.3f;
+        [SerializeField]
+        private float m_edgeScale = 1.0f;
 
         private readonly List<Vector3> m_positions = new List<Vector3>();
         public IList<Vector3> Positions
@@ -22,44 +26,87 @@ namespace Battlehub.ProBuilderIntegration
             get { return m_positions; }
         }
 
-        private int m_selectedIndex = -1;
-        private int m_hoveredIndex = -1;
+        public Transform Transform
+        {
+            get { return m_polyShapeVertices.transform; }
+        }
 
-        private MeshFilter m_polyShapeSelection;
+        private int m_hoveredIndex = -1;
+        private int m_selectedIndex = -1;
+        public int SelectedIndex
+        {
+            get { return m_selectedIndex; }
+        }
+        
+        private MeshFilter m_polyShapeVertices;
+        private MeshFilter m_polyShapeEdges;
 
         private void Awake()
         {
-            GameObject go = new GameObject("polyshapeSelection");
-            go.transform.SetParent(transform, false);
-            m_polyShapeSelection = go.AddComponent<MeshFilter>();
-            m_polyShapeSelection.mesh = new Mesh();
+            GameObject verticesGo = new GameObject("polyshapeVertices");
+            verticesGo.transform.SetParent(transform, false);
+            m_polyShapeVertices = verticesGo.AddComponent<MeshFilter>();
+            m_polyShapeVertices.mesh = new Mesh();
 
-            Renderer renderer = go.AddComponent<MeshRenderer>();
+            GameObject edgesGo = new GameObject("polyshapeEdges");
+            edgesGo.transform.SetParent(transform, false);
+            m_polyShapeEdges = edgesGo.AddComponent<MeshFilter>();
+            m_polyShapeEdges.mesh = new Mesh();
+
+            Renderer renderer = verticesGo.AddComponent<MeshRenderer>();
             string vertShader = BuiltinMaterials.geometryShadersSupported ?
                BuiltinMaterials.pointShader :
                BuiltinMaterials.dotShader;
             renderer.sharedMaterial = new Material(Shader.Find(vertShader));
+            renderer.sharedMaterial.SetFloat("_Scale", m_vertexScale);
+
+            renderer = edgesGo.AddComponent<MeshRenderer>();
+            string edgeShader = BuiltinMaterials.lineShader;
+            renderer.sharedMaterial = new Material(Shader.Find(edgeShader));
+            renderer.sharedMaterial.SetFloat("_Scale", m_edgeScale);
         }
 
         private void OnDestroy()
         {
-            Destroy(m_polyShapeSelection.gameObject);
+            Destroy(m_polyShapeVertices.gameObject);
+            Destroy(m_polyShapeEdges.gameObject);
+        }
+
+        private void OnEnable()
+        {
+            m_polyShapeVertices.gameObject.SetActive(true);
+            m_polyShapeEdges.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            if(m_polyShapeVertices != null)
+            {
+                m_polyShapeVertices.gameObject.SetActive(false);
+            }
+            
+            if(m_polyShapeEdges != null)
+            {
+                m_polyShapeEdges.gameObject.SetActive(false);
+            }
         }
 
         public void Add(Vector3 position)
         {
             m_positions.Add(position);
 
-            BuildVertexMesh(m_positions, m_polyShapeSelection.sharedMesh);
+            BuildVertexMesh(m_positions, m_polyShapeVertices.sharedMesh);
+            BuildEdgeMesh(m_positions, m_polyShapeEdges.sharedMesh, false);
             SetVertexColors();
         }
 
         public void Insert(int index, Vector3 position)
         {
             m_positions.Insert(index, position);
-            BuildVertexMesh(m_positions, m_polyShapeSelection.sharedMesh);
+            BuildVertexMesh(m_positions, m_polyShapeVertices.sharedMesh);
+            BuildEdgeMesh(m_positions, m_polyShapeEdges.sharedMesh, false);
 
-            if(m_hoveredIndex >= index)
+            if (m_hoveredIndex >= index)
             {
                 m_hoveredIndex++;
             }
@@ -84,7 +131,9 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             m_positions.RemoveAt(index);
-            BuildVertexMesh(m_positions, m_polyShapeSelection.sharedMesh);
+            BuildVertexMesh(m_positions, m_polyShapeVertices.sharedMesh);
+            BuildEdgeMesh(m_positions, m_polyShapeEdges.sharedMesh, false);
+
             SetVertexColors();
         }
 
@@ -92,12 +141,12 @@ namespace Battlehub.ProBuilderIntegration
         {
             if (m_hoveredIndex >= 0)
             {
-                SetVerticesColor(m_polyShapeSelection, m_vertexHoverColor, new[] { m_hoveredIndex });
+                SetVerticesColor(m_polyShapeVertices, m_vertexHoverColor, new[] { m_hoveredIndex });
             }
 
             if (m_selectedIndex >= 0)
             {
-                SetVerticesColor(m_polyShapeSelection, m_vertexSelectedColor, new[] { m_selectedIndex });
+                SetVerticesColor(m_polyShapeVertices, m_vertexSelectedColor, new[] { m_selectedIndex });
             }
         }
 
@@ -105,7 +154,7 @@ namespace Battlehub.ProBuilderIntegration
         public void Hover(int index)
         {
             Leave();
-            SetVerticesColor(m_polyShapeSelection, m_vertexHoverColor, new[] { index });
+            SetVerticesColor(m_polyShapeVertices, m_vertexHoverColor, new[] { index });
         }
 
         public void Leave()
@@ -114,11 +163,11 @@ namespace Battlehub.ProBuilderIntegration
             {
                 if (m_selectedIndex == m_hoveredIndex)
                 {
-                    SetVerticesColor(m_polyShapeSelection, m_vertexSelectedColor, new[] { m_hoveredIndex });
+                    SetVerticesColor(m_polyShapeVertices, m_vertexSelectedColor, new[] { m_hoveredIndex });
                 }
                 else
                 {
-                    SetVerticesColor(m_polyShapeSelection, m_vertexColor, new[] { m_hoveredIndex });
+                    SetVerticesColor(m_polyShapeVertices, m_vertexColor, new[] { m_hoveredIndex });
                 }
 
                 m_hoveredIndex = -1;
@@ -128,7 +177,8 @@ namespace Battlehub.ProBuilderIntegration
         public void Select(int index)
         {
             Unselect();
-            SetVerticesColor(m_polyShapeSelection, m_vertexSelectedColor, new[] { index });
+            SetVerticesColor(m_polyShapeVertices, m_vertexSelectedColor, new[] { index });
+            m_selectedIndex = index;
         }
 
         public void Unselect()
@@ -137,21 +187,32 @@ namespace Battlehub.ProBuilderIntegration
             {
                 if (m_selectedIndex == m_hoveredIndex)
                 {
-                    SetVerticesColor(m_polyShapeSelection, m_vertexHoverColor, new[] { m_selectedIndex });
+                    SetVerticesColor(m_polyShapeVertices, m_vertexHoverColor, new[] { m_selectedIndex });
                 }
                 else
                 {
-                    SetVerticesColor(m_polyShapeSelection, m_vertexColor, new[] { m_selectedIndex });
+                    SetVerticesColor(m_polyShapeVertices, m_vertexColor, new[] { m_selectedIndex });
                 }
 
                 m_selectedIndex = -1;
             }
         }
 
+        public void Refersh()
+        {
+            BuildVertexMesh(m_positions, m_polyShapeVertices.sharedMesh);
+            BuildEdgeMesh(m_positions, m_polyShapeEdges.sharedMesh, false);
+            if(m_selectedIndex >= 0)
+            {
+                SetVerticesColor(m_polyShapeVertices, m_vertexSelectedColor, new[] { m_selectedIndex });
+            }
+        }
+
         public void Clear()
         {
             m_positions.Clear();
-            BuildVertexMesh(m_positions, m_polyShapeSelection.sharedMesh);
+            BuildVertexMesh(m_positions, m_polyShapeVertices.sharedMesh);
+            BuildEdgeMesh(m_positions, m_polyShapeEdges.sharedMesh, false);
         }
 
         private void SetVerticesColor(MeshFilter vertices, Color color, IEnumerable<int> indices)
@@ -188,7 +249,7 @@ namespace Battlehub.ProBuilderIntegration
 
         private void BuildEdgeMesh(IList<Vector3> positions, Mesh target, bool positionsOnly)
         {
-            int edgeCount = positions.Count - 1;
+            int edgeCount = positions.Count;
 
             int[] tris;
             if (positionsOnly)
@@ -205,7 +266,7 @@ namespace Battlehub.ProBuilderIntegration
                 for (int i = 0; i < edgeCount; ++i)
                 {
                     tris[i * 2 + 0] = i + 0;
-                    tris[i * 2 + 1] = i + 1;
+                    tris[i * 2 + 1] = (i + 1) % edgeCount;
                 }
 
                 target.Clear();

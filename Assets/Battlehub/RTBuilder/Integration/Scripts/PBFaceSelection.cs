@@ -8,13 +8,15 @@ namespace Battlehub.ProBuilderIntegration
     public class FaceList
     {
         public readonly Dictionary<int, int> Indexes;
-        public readonly List<Face> Faces;
+        public readonly List<int> Faces;
+        public readonly List<int[]> FaceIndexes;
         public readonly List<Face> SelectionFaces;
 
         public FaceList()
         {
             Indexes = new Dictionary<int, int>();
-            Faces = new List<Face>();
+            Faces = new List<int>();
+            FaceIndexes = new List<int[]>();
             SelectionFaces = new List<Face>();
         }
     }
@@ -22,7 +24,7 @@ namespace Battlehub.ProBuilderIntegration
     public class PBFaceSelection : MonoBehaviour
     {
         private ProBuilderMesh m_selectionMesh;
-        private readonly Dictionary<Face, Face> m_faceToSelectionFace = new Dictionary<Face, Face>();
+        private readonly Dictionary<int, Face> m_faceToSelectionFace = new Dictionary<int, Face>();
         private readonly Dictionary<Face, ProBuilderMesh> m_selectionFaceToMesh = new Dictionary<Face, ProBuilderMesh>();
         private readonly List<Vector3> m_selectionVertices = new List<Vector3>();
         private readonly List<Face> m_selectionFaces = new List<Face>();
@@ -107,7 +109,7 @@ namespace Battlehub.ProBuilderIntegration
             Clear();
         }
 
-        public bool IsSelected(Face face)
+        public bool IsSelected(int face)
         {
             return m_faceToSelectionFace.ContainsKey(face);
         }
@@ -126,9 +128,10 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void Add(ProBuilderMesh mesh, Face face)
+        public void Add(ProBuilderMesh mesh, int faceIndex)
         {
-            if(m_faceToSelectionFace.ContainsKey(face))
+            Face face = mesh.faces[faceIndex];
+            if(m_faceToSelectionFace.ContainsKey(faceIndex))
             {
                 return;
             }
@@ -140,7 +143,7 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             Face selectionFace = new Face(indices);
-            m_faceToSelectionFace.Add(face, selectionFace);
+            m_faceToSelectionFace.Add(faceIndex, selectionFace);
             m_selectionFaceToMesh.Add(selectionFace, mesh);
 
             IList<int> indexes = face.indexes;
@@ -177,7 +180,8 @@ namespace Battlehub.ProBuilderIntegration
                 }
             }
 
-            faceList.Faces.Add(face);
+            faceList.Faces.Add(faceIndex);
+            faceList.FaceIndexes.Add(face.indexes.ToArray());
             faceList.SelectionFaces.Add(selectionFace);
 
             m_lastMesh = mesh;
@@ -195,16 +199,18 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void Remove(Face face)
+        public void Remove(int faceIndex)
         {
             Face selectionFace;
-            if(!m_faceToSelectionFace.TryGetValue(face, out selectionFace))
+            if(!m_faceToSelectionFace.TryGetValue(faceIndex, out selectionFace))
             {
                 return;
             }
 
             ProBuilderMesh mesh = m_selectionFaceToMesh[selectionFace];
-            m_faceToSelectionFace.Remove(face);
+            Face face = mesh.faces[faceIndex];
+
+            m_faceToSelectionFace.Remove(faceIndex);
             m_selectionFaceToMesh.Remove(selectionFace);
 
             FaceList faceList = m_meshToFaces[mesh];
@@ -222,14 +228,14 @@ namespace Battlehub.ProBuilderIntegration
                 }
             }
 
-            faceList.Faces.Remove(face);
-            faceList.Faces.Remove(selectionFace);
             if(faceList.Faces.Count == 0)
             {
                 m_meshToFaces.Remove(mesh);
             }
 
-            faceList.Faces.Remove(face);
+            int flidx = faceList.Faces.IndexOf(faceIndex);
+            faceList.Faces.RemoveAt(flidx);
+            faceList.FaceIndexes.RemoveAt(flidx);
             faceList.SelectionFaces.Remove(selectionFace);
 
             Vector3 removedFaceCenterOfMass = GetCenterOfMass(selectionFace);
@@ -321,7 +327,7 @@ namespace Battlehub.ProBuilderIntegration
                 m_selectionVertices[indexes[2]]);
         }
 
-        public IList<Face> GetFaces(ProBuilderMesh mesh)
+        public IList<int> GetFaces(ProBuilderMesh mesh)
         {
             FaceList faces;
             if(m_meshToFaces.TryGetValue(mesh, out faces))
@@ -329,7 +335,7 @@ namespace Battlehub.ProBuilderIntegration
                 return faces.Faces;
             }
 
-            return new Face[0];
+            return new int[0];
         }
 
         public IEnumerable<int> GetIndexes(ProBuilderMesh mesh)
@@ -346,10 +352,10 @@ namespace Battlehub.ProBuilderIntegration
 
                 for (int f = 0; f < faces.Faces.Count; ++f)
                 {
-                    Face face = faces.Faces[f];
+                    int[] faceIndexes = faces.FaceIndexes[f];
                     Face selectionFace = faces.SelectionFaces[f];
 
-                    Vertex[] vertices = mesh.GetVertices(face.indexes);
+                    Vertex[] vertices = mesh.GetVertices(faceIndexes);
                     IList<int> selectionIndexes = selectionFace.indexes;
                     for (int i = 0; i < vertices.Length; ++i)
                     {

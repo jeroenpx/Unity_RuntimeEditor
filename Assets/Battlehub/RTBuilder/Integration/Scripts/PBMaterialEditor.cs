@@ -98,14 +98,18 @@ namespace Battlehub.ProBuilderIntegration
             MeshMaterialsState oldState = new MeshMaterialsState();
             MeshMaterialsState newState = new MeshMaterialsState();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Face>> kvp in selection.SelectedFaces)
+            List<Face> faces = new List<Face>();
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
             {
                 ProBuilderMesh mesh = kvp.Key;
 
                 AddAllFacesToState(oldState, mesh);
                 AddMaterialsToState(oldState, mesh);
 
-                mesh.SetMaterial(kvp.Value, material);
+                faces.Clear();
+                mesh.GetFaces(kvp.Value, faces);
+                
+                mesh.SetMaterial(faces, material);
                 mesh.Refresh();
                 mesh.ToMesh();
 
@@ -140,18 +144,12 @@ namespace Battlehub.ProBuilderIntegration
             state.Materials.Add(mesh, materials);
         }
 
-        private static void GetFaceToSubmeshIndexes(List<FaceToSubmeshIndex> result, KeyValuePair<ProBuilderMesh, IList<Face>> kvp, ProBuilderMesh mesh)
+        private static void GetFaceToSubmeshIndexes(List<FaceToSubmeshIndex> result, KeyValuePair<ProBuilderMesh, IList<int>> kvp, ProBuilderMesh mesh)
         {
-            Dictionary<Face, int> faceToIndex = new Dictionary<Face, int>();
             IList<Face> faces = mesh.faces;
-            for (int i = 0; i < faces.Count; ++i)
+            foreach (int faceIndex in kvp.Value)
             {
-                faceToIndex.Add(faces[i], i);
-            }
-
-            foreach (Face face in kvp.Value)
-            {
-                result.Add(new FaceToSubmeshIndex(mesh, faceToIndex[face], face.submeshIndex));
+                result.Add(new FaceToSubmeshIndex(mesh, faceIndex, faces[faceIndex].submeshIndex));
             }
         }
 
@@ -163,10 +161,12 @@ namespace Battlehub.ProBuilderIntegration
                 MeshMaterialsState oldState = new MeshMaterialsState();
                 MeshMaterialsState newState = new MeshMaterialsState();
 
-                IList<Face> faces;
-                if(selection != null && selection.SelectedFaces.TryGetValue(meshAndFace.mesh, out faces))
+                int faceIndex = meshAndFace.mesh.faces.IndexOf(meshAndFace.face);
+
+                IList<int> faceIndexes;
+                if(selection != null && selection.SelectedFaces.TryGetValue(meshAndFace.mesh, out faceIndexes))
                 {
-                    if(faces.Contains(meshAndFace.face))
+                    if(faceIndexes.Contains(faceIndex))
                     {
                         return ApplyMaterial(material, selection);
                     }

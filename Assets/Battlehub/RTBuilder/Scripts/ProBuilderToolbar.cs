@@ -181,6 +181,12 @@ namespace Battlehub.RTBuilder
                 case ProBuilderToolMode.Face:
                     m_faceToggle.isOn = true;
                     break;
+                case ProBuilderToolMode.PolyShape:
+                    m_objectToggle.isOn = false;
+                    m_vetexToggle.isOn = false;
+                    m_edgeToggle.isOn = false;
+                    m_faceToggle.isOn = false;
+                    break;
             }
         }
     }

@@ -65,6 +65,11 @@ namespace Battlehub.ProBuilderIntegration
         {
         }
 
+        public virtual void Subdivide()
+        {
+
+        }
+
         public virtual void Extrude(float distance = 0)
         {
         }
@@ -91,6 +96,16 @@ namespace Battlehub.ProBuilderIntegration
         public virtual void Hover(Camera camera, Vector3 pointer)
         {
             
+        }
+
+        public virtual void BeginMove()
+        {
+
+        }
+
+        public virtual void EndMove()
+        {
+
         }
 
         public virtual void BeginRotate(Quaternion initialRotation)

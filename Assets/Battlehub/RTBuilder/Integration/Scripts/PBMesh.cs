@@ -110,6 +110,9 @@ namespace Battlehub.ProBuilderIntegration
             m_pbMesh.Clear();
             m_pbMesh.Refresh();
             m_pbMesh.ToMesh();
+
+            MeshFilter filter = m_pbMesh.GetComponent<MeshFilter>();
+            filter.sharedMesh.bounds = new Bounds(Vector3.zero, Vector3.zero);
         }
 
         public static PBMesh ProBuilderize(GameObject gameObject)
