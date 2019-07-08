@@ -192,7 +192,7 @@ MonoBehaviour:
   m_textColor: {r: 1, g: 1, b: 1, a: 1}
   m_disabledSelectionColor: {r: 0.5849056, g: 0.5766287, b: 0.5766287, a: 0.5019608}
   m_disableTextColor: {r: 0.4433962, g: 0.4413047, b: 0.4413047, a: 1}
-  m_menuPrefab: {fileID: 7528826752685209971, guid: 2d2f70c0ea0c68d479b472fa88c86bac,
+  m_menuPrefab: {fileID: 114641633655484212, guid: 9efa5dfbb900cc447b8f837a8135edc5,
     type: 3}
   m_icon: {fileID: 114438565579397756}
   m_text: {fileID: 6258416281891618960}
