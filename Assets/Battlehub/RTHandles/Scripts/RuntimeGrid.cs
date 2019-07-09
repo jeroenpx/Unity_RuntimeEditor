@@ -37,10 +37,17 @@ namespace Battlehub.RTHandles
         #if UNITY_2019_1_OR_NEWER
         private void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
         {
-            if(camera == m_camera)
+            GL.PushMatrix();
+            try
             {
-                DrawGrid(camera);
+                GL.LoadProjectionMatrix(GL.GetGPUProjectionMatrix(camera.projectionMatrix, false) * camera.worldToCameraMatrix);
+
+                if (camera == m_camera)
+                {
+                    DrawGrid(camera);
+                }
             }
+            finally { GL.PopMatrix(); }
         }
         #endif
 

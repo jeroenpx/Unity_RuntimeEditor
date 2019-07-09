@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
-//using UnityEngine.SpatialTracking;
+﻿using UnityEngine;
 
 namespace Battlehub.RTCommon
 {
@@ -98,6 +96,9 @@ namespace Battlehub.RTCommon
             m_renderTextureCamera = m_graphicsLayerCamera.GetComponent<RenderTextureCamera>();
             if (m_renderTextureCamera == null)
             {
+                #if UNITY_2019_1_OR_NEWER
+                UnityEngine.Rendering.RenderPipelineManager.endFrameRendering += OnEndFrameRendering;
+                #endif
                 m_graphicsLayerCamera.clearFlags = CameraClearFlags.Depth;
             }
             else
@@ -113,8 +114,31 @@ namespace Battlehub.RTCommon
             
             m_editorWindow.Camera.gameObject.SetActive(wasActive);
             m_graphicsLayerCamera.gameObject.SetActive(wasActive);
-
         }
+
+        #if UNITY_2019_1_OR_NEWER
+        private void OnEndFrameRendering(UnityEngine.Rendering.ScriptableRenderContext arg1, Camera[] arg2)
+        {
+            UnityEngine.Rendering.RenderPipelineManager.endFrameRendering -= OnEndFrameRendering;
+
+            //LWRP OR HDRP;
+
+            bool wasActive = m_graphicsLayerCamera.gameObject.activeSelf;
+            m_graphicsLayerCamera.gameObject.SetActive(false);
+
+            m_renderTextureCamera = m_graphicsLayerCamera.gameObject.AddComponent<RenderTextureCamera>();
+            m_renderTextureCamera.Fullscreen = false;
+
+            IRTE rte = IOC.Resolve<IRTE>();
+            RuntimeWindow sceneWindow = rte.GetWindow(RuntimeWindowType.Scene);
+            m_renderTextureCamera.OutputRoot = (RectTransform)sceneWindow.transform;
+            m_renderTextureCamera.OverlayMaterial = new Material(Shader.Find("Battlehub/RTCommon/RenderTextureOverlay"));
+            m_graphicsLayerCamera.clearFlags = CameraClearFlags.SolidColor;
+            m_graphicsLayerCamera.backgroundColor = new Color(0, 0, 0, 0);
+
+            m_graphicsLayerCamera.gameObject.SetActive(wasActive);
+        }
+        #endif
 
         private void LateUpdate()
         {
@@ -159,6 +183,7 @@ namespace Battlehub.RTCommon
             {
                 m_graphicsLayerCamera.projectionMatrix = m_editorWindow.Camera.projectionMatrix; //ARCore
             }
+
         }
     }
 }

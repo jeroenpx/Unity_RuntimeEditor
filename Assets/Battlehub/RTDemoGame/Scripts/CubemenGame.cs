@@ -268,7 +268,7 @@ namespace Battlehub.Cubeman
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
                     Camera cam = m_playerCamera.GetComponent<Camera>();
                     canvas.worldCamera = cam;
-                    canvas.planeDistance = cam.nearClipPlane + 0.01f;
+                    canvas.planeDistance = cam.nearClipPlane + 0.05f;
                 }
             }
             

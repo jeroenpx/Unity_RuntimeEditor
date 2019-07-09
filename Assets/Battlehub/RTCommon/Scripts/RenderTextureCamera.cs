@@ -1,6 +1,4 @@
-﻿using Battlehub.UIControls;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
@@ -65,7 +63,12 @@ namespace Battlehub.RTCommon
 
         [SerializeField]
         private bool m_fullscreen = true;
-        
+        public bool Fullscreen
+        {
+            get { return m_fullscreen; }
+            set { m_fullscreen = value; }
+        }
+
         private Camera m_camera;
         private RawImage m_output;
 

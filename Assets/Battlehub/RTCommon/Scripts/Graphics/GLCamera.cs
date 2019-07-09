@@ -32,13 +32,20 @@ namespace Battlehub.RTCommon
 #if UNITY_2019_1_OR_NEWER
         private void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
         {
-            if(m_camera == camera)
+            GL.PushMatrix();
+            try
             {
-                if (GLRenderer.Instance != null)
+                GL.LoadProjectionMatrix(GL.GetGPUProjectionMatrix(camera.projectionMatrix, false) * camera.worldToCameraMatrix);
+
+                if (m_camera == camera)
                 {
-                    GLRenderer.Instance.Draw(CullingMask, camera);
+                    if (GLRenderer.Instance != null)
+                    {
+                        GLRenderer.Instance.Draw(CullingMask, camera);
+                    }
                 }
-            }   
+            }
+            finally { GL.PopMatrix(); }  
         }
 #endif
 

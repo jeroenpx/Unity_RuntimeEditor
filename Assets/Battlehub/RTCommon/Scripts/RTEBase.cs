@@ -553,6 +553,7 @@ namespace Battlehub.RTCommon
             {
                 canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 canvas.worldCamera = Camera.main;
+                canvas.planeDistance = Camera.main.nearClipPlane + 0.01f;
             }
 
             canvas.sortingOrder = short.MinValue;
