@@ -97,6 +97,14 @@ namespace Battlehub.UIControls.MenuControl
         }
 
         [SerializeField]
+        private Vector2 m_anchorOffset = Vector2.zero;
+        public Vector2 AnchorOffset
+        {
+            get { return m_anchorOffset; }
+            set { m_anchorOffset = value; }
+        }
+     
+        [SerializeField]
         private Transform m_panel = null;
 
         private Transform m_root;
@@ -278,7 +286,7 @@ namespace Battlehub.UIControls.MenuControl
 
                 Vector3 lp = transform.localPosition;
                 lp.z = 0;
-                transform.localPosition = lp;
+                transform.localPosition = lp + (Vector3)m_anchorOffset;
             }
             
             DataBind();

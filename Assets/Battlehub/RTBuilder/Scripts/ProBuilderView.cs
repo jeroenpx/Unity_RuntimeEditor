@@ -196,6 +196,7 @@ namespace Battlehub.RTBuilder
 
         protected virtual void Start()
         {
+            UpdateFlags();
             m_commands = GetCommands().ToArray();
             m_commandsList.Items = m_commands;
         }
@@ -227,7 +228,7 @@ namespace Battlehub.RTBuilder
             List<ProBuilderCmd> commands = GetCommonCommands();
             commands.Add(new ProBuilderCmd("ProBuilderize", OnProBuilderize, CanProBuilderize));
             commands.Add(new ProBuilderCmd("Subdivide", () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
-            
+            commands.Add(new ProBuilderCmd("Center Pivot", OnCenterPivot, () => m_isProBuilderMeshSelected));
 
             return commands;
         }
@@ -238,6 +239,7 @@ namespace Battlehub.RTBuilder
             commands.Add(new ProBuilderCmd("Extrude Face", OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             commands.Add(new ProBuilderCmd("Delete Face", OnDeleteFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             commands.Add(new ProBuilderCmd("Subdivide Faces", OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ProBuilderCmd("Merge Faces", OnMergeFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             return commands;
         }
 
@@ -482,6 +484,18 @@ namespace Battlehub.RTBuilder
             m_wm.CreateWindow("UVEditor", false, UIControls.DockPanels.RegionSplitType.Left, 0.2f);
         }
 
+        private void OnCenterPivot()
+        {
+            foreach(GameObject go in Editor.Selection.gameObjects)
+            {
+                PBMesh mesh = go.GetComponent<PBMesh>();
+                if(mesh != null)
+                {
+                    mesh.CenterPivot();
+                }
+            }
+        }
+
         private bool CanProBuilderize()
         {
             return m_isNonProBuilderMeshSelected;
@@ -506,8 +520,6 @@ namespace Battlehub.RTBuilder
             return null;
         }
 
-     
-
         private object OnExtrudeFace(object arg)
         {
             m_proBuilderTool.Extrude(0.01f);
@@ -522,6 +534,11 @@ namespace Battlehub.RTBuilder
         private void OnSubdivideFaces()
         {
             m_proBuilderTool.SubdivideFaces();
+        }
+
+        private void OnMergeFaces()
+        {
+            m_proBuilderTool.MergeFaces();
         }
 
         private void OnSubdivideEdges()

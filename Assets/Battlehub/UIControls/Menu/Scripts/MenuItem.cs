@@ -10,7 +10,7 @@ namespace Battlehub.UIControls.MenuControl
 {
     public delegate void MenuItemEventHandler(MenuItem menuItem);
 
-    public class MenuItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    public class MenuItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler
     {
         [SerializeField]
         private Color m_selectionColor = new Color32(0x00, 0x97, 0xFF, 0xFF);
@@ -410,6 +410,11 @@ namespace Battlehub.UIControls.MenuControl
             }
 
             return false;
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            
         }
 
         //private bool IsPointerOverParentMenu(PointerEventData eventData)

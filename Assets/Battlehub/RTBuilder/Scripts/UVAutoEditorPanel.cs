@@ -107,6 +107,7 @@ namespace Battlehub.RTBuilder
         {
             if(m_useGizmosToggle != null)
             {
+                m_useGizmosToggle.isOn = false;
                 m_useGizmosToggle.onValueChanged.RemoveListener(OnUseGizmosValueChanged);
             }
 

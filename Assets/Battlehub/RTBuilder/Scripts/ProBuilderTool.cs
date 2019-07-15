@@ -58,6 +58,7 @@ namespace Battlehub.RTBuilder
         void UnselectFaces(Material material);
         void DeleteFaces();
         void SubdivideFaces();
+        void MergeFaces();
         void SubdivideEdges();
         void SelectHoles();
         void FillHoles();
@@ -278,7 +279,7 @@ namespace Battlehub.RTBuilder
             IOC.RegisterFallback<IProBuilderTool>(this);
 
             m_rte = IOC.Resolve<IRuntimeEditor>();
-            
+                        
             m_wm = IOC.Resolve<IWindowManager>();
             m_wm.WindowCreated += OnWindowCreated;
             
@@ -345,6 +346,8 @@ namespace Battlehub.RTBuilder
 
         private void OnDestroy()
         {
+            Mode = ProBuilderToolMode.Object;
+
             IOC.UnregisterFallback<IProBuilderTool>(this);
 
             if(m_rte != null)
@@ -750,6 +753,8 @@ namespace Battlehub.RTBuilder
             {
                 meshEditor.ClearSelection();
             }
+
+            Mode = ProBuilderToolMode.Object;
         }
 
         private void OnBoxSelection(object sender, BoxSelectionArgs e)
@@ -1323,6 +1328,11 @@ namespace Battlehub.RTBuilder
         public void SubdivideFaces()
         {
             RunStateChangeAction(meshEditor => meshEditor.Subdivide(), true);
+        }
+
+        public void MergeFaces()
+        {
+            RunStateChangeAction(meshEditor => meshEditor.Merge(), true);
         }
 
         public void SubdivideEdges()

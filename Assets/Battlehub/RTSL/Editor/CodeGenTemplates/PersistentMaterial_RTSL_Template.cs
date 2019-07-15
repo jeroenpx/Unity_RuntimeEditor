@@ -55,12 +55,6 @@ namespace Battlehub.RTSL.Internal
             }
 
             Material o = (Material)obj;
-            if (o.HasProperty("_MainTex"))
-            {
-                o.mainTextureOffset = (Vector2)mainTextureOffset.WriteTo(o.mainTextureOffset);
-                o.mainTextureScale = (Vector2)mainTextureScale.WriteTo(o.mainTextureScale);
-            }
-
             if (m_assetDB.IsMapped(shader))
             {
                 o.shader = m_assetDB.FromID<Shader>(shader);
@@ -68,6 +62,12 @@ namespace Battlehub.RTSL.Internal
             else
             {
                 o.shader = Shader.Find(m_shaderName);
+            }
+
+            if (o.HasProperty("_MainTex"))
+            {
+                o.mainTextureOffset = (Vector2)mainTextureOffset.WriteTo(o.mainTextureOffset);
+                o.mainTextureScale = (Vector2)mainTextureScale.WriteTo(o.mainTextureScale);
             }
 
             if (m_keywords != null)

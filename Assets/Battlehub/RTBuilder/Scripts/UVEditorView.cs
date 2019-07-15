@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTEditor;
 using UnityEngine;
 
 namespace Battlehub.RTBuilder
@@ -6,6 +7,7 @@ namespace Battlehub.RTBuilder
     public class UVEditorView : RuntimeWindow
     {
         private IProBuilderTool m_tool;
+        private IWindowManager m_wm;
         
         [SerializeField]
         private GameObject m_uvAutoEditorPanel = null;
@@ -16,6 +18,9 @@ namespace Battlehub.RTBuilder
             base.AwakeOverride();
 
             m_tool = IOC.Resolve<IProBuilderTool>();
+
+            m_wm = IOC.Resolve<IWindowManager>();
+            m_wm.WindowCreated += OnWindowCreated;
             
             OnToolSelectionChanged();
             m_tool.SelectionChanged += OnToolSelectionChanged;
@@ -25,6 +30,11 @@ namespace Battlehub.RTBuilder
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
+
+            if(m_wm != null)
+            {
+                m_wm.WindowCreated -= OnWindowCreated;
+            }
 
             if(m_tool != null)
             {
@@ -62,6 +72,20 @@ namespace Battlehub.RTBuilder
                 {
                     m_uvAutoEditorPanel.gameObject.SetActive(true);
                 }
+            }
+        }
+
+        private void OnWindowCreated(Transform obj)
+        {
+            if(obj == m_wm.GetWindow("ProBuilder"))
+            {
+                if (m_tool != null)
+                {
+                    m_tool.SelectionChanged -= OnToolSelectionChanged;
+                }
+                m_tool = IOC.Resolve<IProBuilderTool>();
+                OnToolSelectionChanged();
+                m_tool.SelectionChanged += OnToolSelectionChanged;
             }
         }
     }

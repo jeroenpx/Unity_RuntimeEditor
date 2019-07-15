@@ -167,14 +167,21 @@ namespace Battlehub.ProBuilderIntegration
             HashSet<Edge> result = new HashSet<Edge>();
             foreach(Edge edge in edges)
             {
-                HashSet<Edge> coincidentEdges = m_coincidentEdges[edge];
-                foreach(Edge coincident in coincidentEdges)
+                if(m_coincidentEdges.ContainsKey(edge))
                 {
-                    if(!result.Contains(coincident))
+                    HashSet<Edge> coincidentEdges = m_coincidentEdges[edge];
+                    foreach (Edge coincident in coincidentEdges)
                     {
-                        result.Add(coincident);
+                        if (!result.Contains(coincident))
+                        {
+                            result.Add(coincident);
+                        }
                     }
                 }
+                else
+                {
+                    result.Add(edge);
+                }   
             }
             return result.ToArray();
         }
@@ -415,13 +422,27 @@ namespace Battlehub.ProBuilderIntegration
             Color[] colors = selection.sharedMesh.colors;
             foreach (Edge edge in edges)
             {
-                HashSet<Edge> coincidentEdges = m_coincidentEdges[edge];
-                foreach (Edge coincidentEdge in coincidentEdges)
+                if(m_coincidentEdges.ContainsKey(edge))
                 {
-                    List<int> indices = m_edgeToSelection[coincidentEdge];
-                    for (int i = 0; i < indices.Count; ++i)
+                    HashSet<Edge> coincidentEdges = m_coincidentEdges[edge];
+                    foreach (Edge coincidentEdge in coincidentEdges)
                     {
-                        colors[indices[i]] = color;
+                        List<int> indices = m_edgeToSelection[coincidentEdge];
+                        for (int i = 0; i < indices.Count; ++i)
+                        {
+                            colors[indices[i]] = color;
+                        }
+                    }
+                }
+                else
+                {
+                    if(m_edgeToSelection.ContainsKey(edge))
+                    {
+                        List<int> indices = m_edgeToSelection[edge];
+                        for (int i = 0; i < indices.Count; ++i)
+                        {
+                            colors[indices[i]] = color;
+                        }
                     }
                 }
             }

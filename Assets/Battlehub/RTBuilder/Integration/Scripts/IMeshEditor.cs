@@ -436,6 +436,7 @@ namespace Battlehub.ProBuilderIntegration
         void Extrude(float distance = 0.0f);
         void Delete();
         void Subdivide();
+        void Merge();
         MeshSelection SelectHoles();
         void FillHoles();
 

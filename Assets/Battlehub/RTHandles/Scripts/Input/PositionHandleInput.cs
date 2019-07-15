@@ -8,7 +8,7 @@ namespace Battlehub.RTHandles
     {
         public KeyCode VertexSnappingKey = KeyCode.V;
         public KeyCode VertexSnappingToggleKey = KeyCode.LeftShift;
-        public KeyCode SnapToGroundKey = KeyCode.G;
+        public KeyCode SnapToGroundKey = KeyCode.None;
 
         protected PositionHandle PositionHandle
         {

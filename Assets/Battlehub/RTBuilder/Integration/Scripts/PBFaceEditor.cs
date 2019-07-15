@@ -649,9 +649,95 @@ namespace Battlehub.ProBuilderIntegration
                 IList<Face> faces = new List<Face>();
                 mesh.GetFaces(m_faceSelection.GetFaces(mesh), faces);
                 ConnectElements.Connect(mesh, faces);
-                mesh.Refresh();
                 mesh.ToMesh();
+                mesh.Refresh();
             }
+        }
+
+        public override void Merge()
+        {
+            ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();
+
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<Face> faces = new List<Face>();
+                mesh.GetFaces(m_faceSelection.GetFaces(mesh), faces);
+                Merge(mesh, faces);
+                mesh.ToMesh();
+                mesh.Refresh();
+            }
+        }
+
+        private static Face Merge(ProBuilderMesh target, IEnumerable<Face> faces)
+        {
+            int mergedCount = faces != null ? faces.Count() : 0;
+
+            if (mergedCount < 1)
+                return null;
+
+            Face first = faces.First();
+
+            Face mergedFace = new Face(faces.SelectMany(x => x.indexes).ToArray());
+            mergedFace.submeshIndex = first.submeshIndex;
+            mergedFace.uv = first.uv;
+            mergedFace.smoothingGroup = first.smoothingGroup;
+            mergedFace.textureGroup = first.textureGroup;
+            mergedFace.manualUV = first.manualUV;
+
+            Face[] rebuiltFaces = new Face[target.faces.Count - mergedCount + 1];
+
+            int n = 0;
+
+            HashSet<Face> skip = new HashSet<Face>(faces);
+
+            foreach (Face f in target.faces)
+            {
+                if (!skip.Contains(f))
+                    rebuiltFaces[n++] = f;
+            }
+
+            rebuiltFaces[n] = mergedFace;
+
+            target.faces = rebuiltFaces;
+
+            CollapseCoincidentVertices(target, new Face[] { mergedFace });
+
+            return mergedFace;
+        }
+
+        /// <summary>
+        /// Condense co-incident vertex positions per-face. vertices must already be marked as shared in the sharedIndexes
+        /// array to be considered. This method is really only useful after merging faces.
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <param name="faces"></param>
+        internal static void CollapseCoincidentVertices(ProBuilderMesh mesh, IEnumerable<Face> faces)
+        {
+            Dictionary<int, int> lookup = new Dictionary<int, int>();
+            SharedVertex.GetSharedVertexLookup(mesh.sharedVertices, lookup);
+            Dictionary<int, int> matches = new Dictionary<int, int>();
+
+            foreach (Face face in faces)
+            {
+                matches.Clear();
+
+                int[] indexes = face.indexes.ToArray();
+                for (int i = 0; i < indexes.Length; i++)
+                {
+                    int common = lookup[face.indexes[i]];
+
+                    if (matches.ContainsKey(common))
+                        indexes[i] = matches[common];
+                    else
+                        matches.Add(common, indexes[i]);
+                }
+                face.SetIndexes(indexes);
+
+                face.Reverse();
+                face.Reverse();
+            }
+
+            mesh.RemoveUnusedVertices();
         }
     }
 }

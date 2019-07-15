@@ -649,5 +649,30 @@ namespace Battlehub.ProBuilderIntegration
                 mesh.ToMesh();
             }
         }
+
+        public override void Extrude(float distance = 0)
+        {
+            ProBuilderMesh[] meshes = m_edgeSelection.Meshes.OrderBy(m => m == m_edgeSelection.LastMesh).ToArray();
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<Edge> edges = m_edgeSelection.GetEdges(mesh).ToArray();
+                m_edgeSelection.Remove(mesh);
+
+                Edge[] newEdges =  mesh.Extrude(edges, distance, false, true);
+
+                mesh.ToMesh();
+                mesh.Refresh();
+
+                m_edgeSelection.Add(mesh, newEdges);
+            }
+
+            if (distance != 0.0f)
+            {
+                m_edgeSelection.Synchronize(
+                    m_edgeSelection.CenterOfMass + m_edgeSelection.LastNormal * distance,
+                    m_edgeSelection.LastPosition + m_edgeSelection.LastNormal * distance,
+                    m_edgeSelection.LastNormal);
+            }
+        }
     }
 }

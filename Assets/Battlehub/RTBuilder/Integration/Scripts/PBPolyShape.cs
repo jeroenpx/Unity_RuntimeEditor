@@ -44,25 +44,40 @@ namespace Battlehub.ProBuilderIntegration
             set { m_stage = value; }
         }
 
-        public IList<Vector3> Positions
+        private List<Vector3> m_positions = new List<Vector3>();
+        public List<Vector3> Positions
         {
-            get { return m_selection.Positions; }
+            get { return m_positions; }
             set
             {
-                m_selection.Clear();
-                if (value != null)
+                m_positions.Clear();
+                if(value != null)
                 {
-                    for (int i = 0; i < value.Count; ++i)
+                    for(int i = 0; i < value.Count; ++i)
                     {
-                        m_selection.Add(value[i]);
+                        m_positions.Add(value[i]);
                     }
                 }
+                if(IsEditing)
+                {
+                    if (m_selection != null)
+                    {
+                        m_selection.Clear();
+                        if (value != null)
+                        {
+                            for (int i = 0; i < value.Count; ++i)
+                            {
+                                m_selection.Add(value[i]);
+                            }
+                        }
+                    }
+                }  
             }
         }
 
         public int SelectedIndex
         {
-            get { return m_selection.SelectedIndex; }
+            get { return m_selection == null ? -1 : m_selection.SelectedIndex; }
             set
             {
                 m_selection.Unselect();
@@ -80,12 +95,18 @@ namespace Battlehub.ProBuilderIntegration
             {
                 IList<Vector3> positions = m_selection.Positions;
                 positions[m_selection.SelectedIndex] = value;
+                m_positions[m_selection.SelectedIndex] = value;
                 Refresh();
             }
         }
 
         private void Awake()
         {
+            foreach(Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+
             m_target = GetComponent<PBMesh>();
             if(!m_target)
             {
@@ -93,6 +114,10 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             m_targetMesh = m_target.GetComponent<ProBuilderMesh>();
+            if(IsEditing)
+            {
+                BeginEdit();
+            }
         }
 
         private void OnDestroy()
@@ -108,13 +133,13 @@ namespace Battlehub.ProBuilderIntegration
                 m_selection = gameObject.AddComponent<PBPolyShapeSelection>();
             }
             m_selection.enabled = true;
-
-            if(m_selection.Positions.Count == 0)
+            m_isEditing = true;
+            Positions = Positions.ToList();
+            if (m_selection.Positions.Count == 0)
             {
                 m_selection.Add(Vector3.zero);
+                m_positions.Add(Vector3.zero);
             }
-            
-            m_isEditing = true;
         }
 
         private void EndEdit()
@@ -130,6 +155,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             position = transform.InverseTransformPoint(position);
             AddVertex(position);
+            m_positions.Add(position);
         }
 
         private void AddVertex(Vector3 position)
@@ -140,6 +166,7 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             m_selection.Add(position);
+            m_positions.Add(position);
         }
 
         public bool Click(Camera camera, Vector3 pointer)
@@ -174,6 +201,7 @@ namespace Battlehub.ProBuilderIntegration
                         Vector3 position = ray.GetPoint(enter);
                         position = m_selection.Transform.InverseTransformPoint(position);
                         m_selection.Add(position);
+                        m_positions.Add(position);
                     }
 
                     m_targetMesh.CreateShapeFromPolygon(m_selection.Positions, 0.001f, false);

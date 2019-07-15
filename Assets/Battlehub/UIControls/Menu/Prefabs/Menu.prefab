@@ -175,6 +175,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 0}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 224308982547327976}
   m_canvasGroup: {fileID: 225280226039488996}
   FadeInSpeed: 8

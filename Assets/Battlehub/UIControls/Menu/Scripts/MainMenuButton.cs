@@ -61,6 +61,21 @@ namespace Battlehub.UIControls.MenuControl
             }
         }
 
+        [SerializeField]
+        private Text m_text = null;
+
+        public string Text
+        {
+            get { return m_text != null ? m_text.text : null; }
+            set
+            {
+                if(m_text != null)
+                {
+                    m_text.text = value;
+                }
+            }
+        }
+
         private bool m_isPointerOver;
 
         private void Awake()

@@ -43,24 +43,33 @@ namespace Battlehub.ProBuilderIntegration
 
         private void Awake()
         {
-            GameObject verticesGo = new GameObject("polyshapeVertices");
+            GameObject verticesGo;
+            GameObject edgesGo;            
+
+            verticesGo = new GameObject("polyshapeVertices");
             verticesGo.transform.SetParent(transform, false);
-            m_polyShapeVertices = verticesGo.AddComponent<MeshFilter>();
+            verticesGo.AddComponent<MeshFilter>();
+            verticesGo.AddComponent<MeshRenderer>();
+                      
+            edgesGo = new GameObject("polyshapeEdges");
+            edgesGo.transform.SetParent(transform, false);
+            edgesGo.AddComponent<MeshFilter>();
+            edgesGo.AddComponent<MeshRenderer>();
+
+            m_polyShapeVertices = verticesGo.GetComponent<MeshFilter>();
             m_polyShapeVertices.mesh = new Mesh();
 
-            GameObject edgesGo = new GameObject("polyshapeEdges");
-            edgesGo.transform.SetParent(transform, false);
-            m_polyShapeEdges = edgesGo.AddComponent<MeshFilter>();
+            m_polyShapeEdges = edgesGo.GetComponent<MeshFilter>();
             m_polyShapeEdges.mesh = new Mesh();
 
-            Renderer renderer = verticesGo.AddComponent<MeshRenderer>();
+            Renderer renderer = verticesGo.GetComponent<MeshRenderer>();
             string vertShader = BuiltinMaterials.geometryShadersSupported ?
                BuiltinMaterials.pointShader :
                BuiltinMaterials.dotShader;
             renderer.sharedMaterial = new Material(Shader.Find(vertShader));
             renderer.sharedMaterial.SetFloat("_Scale", m_vertexScale);
 
-            renderer = edgesGo.AddComponent<MeshRenderer>();
+            renderer = edgesGo.GetComponent<MeshRenderer>();
             string edgeShader = BuiltinMaterials.lineShader;
             renderer.sharedMaterial = new Material(Shader.Find(edgeShader));
             renderer.sharedMaterial.SetFloat("_Scale", m_edgeScale);

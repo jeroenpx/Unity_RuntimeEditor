@@ -105,6 +105,11 @@ namespace Battlehub.ProBuilderIntegration
             m_pbMesh.ToMesh();
         }
 
+        public void CenterPivot()
+        {
+            m_pbMesh.CenterPivot(null);
+        }
+
         public void Clear()
         {
             m_pbMesh.Clear();

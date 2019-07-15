@@ -31,7 +31,7 @@ namespace Battlehub.RTEditor
 
         protected override void AwakeOverride()
         {
-            WindowType = RuntimeWindowType.Hierarchy;
+            WindowType = RuntimeWindowType.Inspector;
             base.AwakeOverride();
 
             if (m_gameObjectEditor == null)

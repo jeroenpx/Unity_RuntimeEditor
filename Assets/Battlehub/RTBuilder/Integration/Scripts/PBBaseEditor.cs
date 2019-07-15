@@ -70,8 +70,14 @@ namespace Battlehub.ProBuilderIntegration
 
         }
 
+        public virtual void Merge()
+        {
+
+        }
+
         public virtual void Extrude(float distance = 0)
         {
+
         }
 
         public virtual MeshSelection SelectHoles()

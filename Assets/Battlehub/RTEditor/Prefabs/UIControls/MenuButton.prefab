@@ -79,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: File
+  m_Text: Subfolder
 --- !u!114 &3597283937937387298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 5877049085975820582}
   - component: {fileID: 6127421030361569296}
   - component: {fileID: 8033418725100744605}
+  - component: {fileID: 3591542609729957624}
   m_Layer: 5
   m_Name: MenuButton
   m_TagString: Untagged
@@ -122,7 +123,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5877049085975820581}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -190,7 +191,7 @@ MonoBehaviour:
   m_PreferredWidth: -1
   m_PreferredHeight: -1
   m_FlexibleWidth: 0
-  m_FlexibleHeight: 1
+  m_FlexibleHeight: 0
   m_LayoutPriority: 1
 --- !u!114 &5877049085975820582
 MonoBehaviour:
@@ -209,6 +210,7 @@ MonoBehaviour:
   m_pointerOverColor: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
   m_focusedColor: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_normalColor: {r: 1, g: 1, b: 1, a: 0}
+  m_text: {fileID: 5877049085459821641}
 --- !u!114 &6127421030361569296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,3 +247,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: 
+--- !u!114 &3591542609729957624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5877049085975820581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
