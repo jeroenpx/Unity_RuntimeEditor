@@ -77,6 +77,7 @@ namespace Battlehub.UIControls.MenuControl
         }
 
         private bool m_isPointerOver;
+        private CanvasGroup m_canvasGroup;
 
         private void Awake()
         {
@@ -97,6 +98,8 @@ namespace Battlehub.UIControls.MenuControl
 
         private void Start()
         {
+            m_canvasGroup = GetComponentInParent<CanvasGroup>();
+
             if(m_menu != null && (m_menu.Items == null || m_menu.Items.Length == 0))
             {
                 gameObject.SetActive(false);
@@ -114,6 +117,11 @@ namespace Battlehub.UIControls.MenuControl
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
+            if (m_canvasGroup && !m_canvasGroup.interactable)
+            {
+                return;
+            }
+
             if (m_menu == null)
             {
                 return;
@@ -132,6 +140,11 @@ namespace Battlehub.UIControls.MenuControl
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
+            if(m_canvasGroup && !m_canvasGroup.interactable)
+            {
+                return;
+            }
+
             m_isPointerOver = true;
             if(m_menu != null && m_menu.gameObject.activeSelf)
             {
@@ -145,6 +158,11 @@ namespace Battlehub.UIControls.MenuControl
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
+            if (m_canvasGroup && !m_canvasGroup.interactable)
+            {
+                return;
+            }
+
             m_isPointerOver = false;
             if (m_menu != null && m_menu.gameObject.activeSelf)
             {

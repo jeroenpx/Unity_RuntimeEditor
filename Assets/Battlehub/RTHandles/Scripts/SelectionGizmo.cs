@@ -88,7 +88,7 @@ namespace Battlehub.RTHandles
                     glRenderer.AddComponent<GLRenderer>();
                 }
 
-                if (m_exposeToEditor != null)
+                if (m_exposeToEditor != null && m_exposeToEditor.ShowSelectionGizmo)
                 {
                     GLRenderer.Instance.Add(this);
                 }
@@ -104,7 +104,7 @@ namespace Battlehub.RTHandles
         {
             if (m_selectionGizmoModel == null)
             {
-                if (m_exposeToEditor != null)
+                if (m_exposeToEditor != null && m_exposeToEditor.ShowSelectionGizmo)
                 {
                     if (GLRenderer.Instance != null)
                     {

@@ -12,83 +12,8 @@ using UnityEngine;
 
 namespace Battlehub.RTBuilder
 {
-    public interface IProBuilderCmd
-    {
-        object Arg
-        {
-            get;
-            set;
-        }
-        object Run();
-        bool Validate();
-    }
-   
     public class ProBuilderView : RuntimeWindow
     {
-        private class ProBuilderCmd : IProBuilderCmd
-        {
-            private Func<object, object> m_func;
-            private Func<bool> m_validate;
-            public string Text;
-            public bool CanDrag;
-
-            public ProBuilderCmd Parent;
-            public List<ProBuilderCmd> Children;
-            public bool HasChildren
-            {
-                get { return Children != null && Children.Count > 0; }
-            }
-            public bool HasParent
-            {
-                get { return Parent != null; }
-            }
-
-            public object Arg
-            {
-                get;
-                set;
-            }
-
-            public ProBuilderCmd(string text, Func<object, object> func, bool canDrag = false) : this(text, func, () => true, canDrag)
-            {
-            }
-
-            public ProBuilderCmd(string text, Func<object, object> func, Func<bool> validate = null, bool canDrag = false)
-            {
-                Text = text;
-                m_func = func;
-                m_validate = validate;
-                if(m_validate == null)
-                {
-                    m_validate = () => true;
-                }
-                CanDrag = canDrag;
-            }
-
-            public ProBuilderCmd(string text, Action action, Func<bool> validate = null, bool canDrag = false)
-            {
-                Text = text;
-                m_func = args => { action(); return null; };
-                m_validate = validate;
-                if(m_validate == null)
-                {
-                    m_validate = () => true;
-                }
-                CanDrag = canDrag;
-            }
-
-            public object Run()
-            {
-                return m_func(Arg);
-            }
-
-            public bool Validate()
-            {
-                return m_validate();
-            }
-        }
-
-
         [SerializeField]
         private VirtualizingTreeView m_commandsList = null;
 
@@ -101,7 +26,7 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private ProBuilderToolbar m_toolbar = null;
 
-        private ProBuilderCmd[] m_commands;
+        private ToolCmd[] m_commands;
         private GameObject m_proBuilderToolGO;
         private IProBuilderTool m_proBuilderTool;
 
@@ -207,7 +132,7 @@ namespace Battlehub.RTBuilder
             m_commandsList.Items = m_commands;
         }
 
-        private List<ProBuilderCmd> GetCommands()
+        private List<ToolCmd> GetCommands()
         {
             switch (m_proBuilderTool.Mode)
             {
@@ -220,72 +145,72 @@ namespace Battlehub.RTBuilder
                 case ProBuilderToolMode.Vertex:
                     return GetVertexCommands();
             }
-            return new List<ProBuilderCmd>();
+            return new List<ToolCmd>();
         }
 
-        private List<ProBuilderCmd> GetObjectCommands()
+        private List<ToolCmd> GetObjectCommands()
         {
-            List<ProBuilderCmd> commands = GetCommonCommands();
-            commands.Add(new ProBuilderCmd("ProBuilderize", OnProBuilderize, CanProBuilderize));
-            commands.Add(new ProBuilderCmd("Subdivide", () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
-            commands.Add(new ProBuilderCmd("Center Pivot", OnCenterPivot, () => m_isProBuilderMeshSelected));
+            List<ToolCmd> commands = GetCommonCommands();
+            commands.Add(new ToolCmd("ProBuilderize", OnProBuilderize, CanProBuilderize));
+            commands.Add(new ToolCmd("Subdivide", () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd("Center Pivot", OnCenterPivot, () => m_isProBuilderMeshSelected));
 
             return commands;
         }
 
-        private List<ProBuilderCmd> GetFaceCommands()
+        private List<ToolCmd> GetFaceCommands()
         {
-            List<ProBuilderCmd> commands = GetCommonCommands();
-            commands.Add(new ProBuilderCmd("Extrude Face", OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ProBuilderCmd("Delete Face", OnDeleteFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ProBuilderCmd("Subdivide Faces", OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ProBuilderCmd("Merge Faces", OnMergeFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            List<ToolCmd> commands = GetCommonCommands();
+            commands.Add(new ToolCmd("Extrude Face", OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd("Delete Face", OnDeleteFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd("Subdivide Faces", OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd("Merge Faces", OnMergeFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             return commands;
         }
 
-        private List<ProBuilderCmd> GetEdgeCommands()
+        private List<ToolCmd> GetEdgeCommands()
         {
-            List<ProBuilderCmd> commands = GetCommonCommands();
-            commands.Add(new ProBuilderCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ProBuilderCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ProBuilderCmd("Subdivide Edges", OnSubdivideEdges, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
+            List<ToolCmd> commands = GetCommonCommands();
+            commands.Add(new ToolCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd("Subdivide Edges", OnSubdivideEdges, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
             return commands;
         }
 
-        private List<ProBuilderCmd> GetVertexCommands()
+        private List<ToolCmd> GetVertexCommands()
         {
-            List<ProBuilderCmd> commands = GetCommonCommands();
-            commands.Add(new ProBuilderCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ProBuilderCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            List<ToolCmd> commands = GetCommonCommands();
+            commands.Add(new ToolCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
             return commands;
         }
 
-        private List<ProBuilderCmd> GetCommonCommands()
+        private List<ToolCmd> GetCommonCommands()
         {
-            List<ProBuilderCmd> commands = new List<ProBuilderCmd>();
-            ProBuilderCmd newShapeCmd = new ProBuilderCmd("New Shape", OnNewShape, true) { Arg = PBShapeType.Cube };
-            newShapeCmd.Children = new List<ProBuilderCmd>
+            List<ToolCmd> commands = new List<ToolCmd>();
+            ToolCmd newShapeCmd = new ToolCmd("New Shape", OnNewShape, true) { Arg = PBShapeType.Cube };
+            newShapeCmd.Children = new List<ToolCmd>
             {
-                new ProBuilderCmd("Arch", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Arch },
-                new ProBuilderCmd("Cone", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cone },
-                new ProBuilderCmd("Cube", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cube },
-                new ProBuilderCmd("Curved Stair", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.CurvedStair },
-                new ProBuilderCmd("Cylinder", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cylinder },
-                new ProBuilderCmd("Door", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Door },
-                new ProBuilderCmd("Pipe", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Pipe },
-                new ProBuilderCmd("Plane", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Plane },
-                new ProBuilderCmd("Prism", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Prism },
-                new ProBuilderCmd("Sphere", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sphere },
-                new ProBuilderCmd("Sprite", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sprite },
-                new ProBuilderCmd("Stair", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Stair },
-                new ProBuilderCmd("Torus", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Torus },
+                new ToolCmd("Arch", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Arch },
+                new ToolCmd("Cone", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cone },
+                new ToolCmd("Cube", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cube },
+                new ToolCmd("Curved Stair", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.CurvedStair },
+                new ToolCmd("Cylinder", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cylinder },
+                new ToolCmd("Door", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Door },
+                new ToolCmd("Pipe", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Pipe },
+                new ToolCmd("Plane", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Plane },
+                new ToolCmd("Prism", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Prism },
+                new ToolCmd("Sphere", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sphere },
+                new ToolCmd("Sprite", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sprite },
+                new ToolCmd("Stair", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Stair },
+                new ToolCmd("Torus", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Torus },
             };
 
             commands.Add(newShapeCmd);
-            commands.Add(new ProBuilderCmd("New Poly Shape", OnNewPolyShape, true));
-            commands.Add(new ProBuilderCmd("Edit Poly Shape", OnEditPolyShape, () => m_isPolyShapeSelected));
-            commands.Add(new ProBuilderCmd("Edit Materials", OnEditMaterials));
-            commands.Add(new ProBuilderCmd("Edit UV", OnEditUV));
+            commands.Add(new ToolCmd("New Poly Shape", OnNewPolyShape, true));
+            commands.Add(new ToolCmd("Edit Poly Shape", OnEditPolyShape, () => m_isPolyShapeSelected));
+            commands.Add(new ToolCmd("Edit Materials", OnEditMaterials));
+            commands.Add(new ToolCmd("Edit UV", OnEditUV));
             return commands;
         }
 
@@ -321,7 +246,7 @@ namespace Battlehub.RTBuilder
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>();
-            ProBuilderCmd cmd = (ProBuilderCmd)e.Item;
+            ToolCmd cmd = (ToolCmd)e.Item;
             text.text = cmd.Text;
 
             bool isValid = cmd.Validate();
@@ -335,13 +260,13 @@ namespace Battlehub.RTBuilder
 
         private void OnItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
-            ProBuilderCmd cmd = (ProBuilderCmd)e.Item;
+            ToolCmd cmd = (ToolCmd)e.Item;
             e.Children = cmd.Children;
         }
 
         private void OnItemClick(object sender, ItemArgs e)
         {
-            ProBuilderCmd cmd = (ProBuilderCmd)e.Items[0];
+            ToolCmd cmd = (ToolCmd)e.Items[0];
             if(cmd.Validate())
             {
                 cmd.Run();
@@ -641,7 +566,6 @@ namespace Battlehub.RTBuilder
                 }
             }
         }
-
     }
 }
 

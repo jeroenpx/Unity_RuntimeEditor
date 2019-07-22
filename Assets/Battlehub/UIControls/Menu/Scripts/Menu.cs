@@ -15,6 +15,12 @@ namespace Battlehub.UIControls.MenuControl
             set;
         }
 
+        public bool HasChildren
+        {
+            get;
+            set;
+        }
+
         public bool IsVisible
         {
             get;
@@ -27,11 +33,12 @@ namespace Battlehub.UIControls.MenuControl
             private set;
         }
 
-        public MenuItemValidationArgs(string command)
+        public MenuItemValidationArgs(string command, bool hasChildren)
         {
-            IsValid = true;
+            IsValid = !hasChildren;
             IsVisible = true;
             Command = command;
+            HasChildren = HasChildren;
         }
     }
 

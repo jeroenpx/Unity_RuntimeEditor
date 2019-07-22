@@ -152,7 +152,7 @@ namespace Battlehub.UIControls.MenuControl
             }
 
 
-            var validationResult = IsValid();
+            var validationResult = IsValid(false);
             if(validationResult.IsVisible)
             {
                 if (validationResult.IsValid)
@@ -169,32 +169,26 @@ namespace Battlehub.UIControls.MenuControl
             gameObject.SetActive(validationResult.IsVisible);
         }
 
-        private MenuItemValidationArgs IsValid()
+        private MenuItemValidationArgs IsValid(bool checkChildren)
         {
             if(m_item == null)
             {
-                return new MenuItemValidationArgs(m_item.Command) { IsValid = false, IsVisible = false };
+                return new MenuItemValidationArgs(m_item.Command, checkChildren && HasChildren) { IsValid = false, IsVisible = false };
             }
 
             if(m_item.Validate == null)
             {
-                return new MenuItemValidationArgs(m_item.Command) { IsValid = true, IsVisible = true };
+                return new MenuItemValidationArgs(m_item.Command, checkChildren && HasChildren) { IsVisible = true };
             }
 
-            MenuItemValidationArgs args = new MenuItemValidationArgs(m_item.Command);
+            MenuItemValidationArgs args = new MenuItemValidationArgs(m_item.Command, checkChildren && HasChildren);
             m_item.Validate.Invoke(args);
             return args;
         }
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
-            if (HasChildren)
-            {
-                Select(false);
-                return;
-            }
-
-            var validationResult = IsValid();
+            var validationResult = IsValid(true);
             if (validationResult.IsValid)
             {
                 if (this != null)
@@ -213,6 +207,13 @@ namespace Battlehub.UIControls.MenuControl
                 if (m_item.Action != null)
                 {
                     m_item.Action.Invoke(m_item.Command);
+                }
+            }
+            else
+            {
+                if (HasChildren)
+                {
+                    Select(false);
                 }
             }
         }

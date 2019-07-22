@@ -247,10 +247,10 @@ MonoBehaviour:
   Label: {fileID: 7673889979542451996}
   Indent: 10
   m_input: {fileID: 3329539195912397019}
-  m_dragField: {fileID: 0}
+  m_dragField: {fileID: 3645128880297802972}
   m_slider: {fileID: 114000012856481078}
-  Min: 0
-  Max: 1
+  Min: 5
+  Max: 20
 --- !u!1 &1912899699479930
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,6 +307,31 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3645128880297802972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115534532316527780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965240457e17b1644a2cc6b0ffbe0956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Field: {fileID: 3329539195912397019}
+  IncrementFactor: 0.1
+  DragCursor: {fileID: 2800000, guid: c5e74e670e1ecd0428a71f20b0c30a63, type: 3}
+  BeginDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  EndDrag:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &2134897231732600255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -790,6 +815,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40696930dbd30444fa8eec7f34d8235e, type: 3}
+--- !u!1 &115534532316527780 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6053288948378312996, guid: 40696930dbd30444fa8eec7f34d8235e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6168783812309769600}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &180765591694593018 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6276286598639687290, guid: 40696930dbd30444fa8eec7f34d8235e,
@@ -802,7 +833,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 6168783812309769600}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 115534532316527780}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}

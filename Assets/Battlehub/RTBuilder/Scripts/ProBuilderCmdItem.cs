@@ -1,10 +1,86 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Battlehub.RTBuilder
+namespace Battlehub.RTEditor
 {
-    public class ProBuilderCmdItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+    public interface IToolCmd
+    {
+        object Arg
+        {
+            get;
+            set;
+        }
+        object Run();
+        bool Validate();
+    }
+
+    public class ToolCmd : IToolCmd
+    {
+        private Func<object, object> m_func;
+        private Func<bool> m_validate;
+        public string Text;
+        public bool CanDrag;
+
+        public ToolCmd Parent;
+        public List<ToolCmd> Children;
+        public bool HasChildren
+        {
+            get { return Children != null && Children.Count > 0; }
+        }
+        public bool HasParent
+        {
+            get { return Parent != null; }
+        }
+
+        public object Arg
+        {
+            get;
+            set;
+        }
+
+        public ToolCmd(string text, Func<object, object> func, bool canDrag = false) : this(text, func, () => true, canDrag)
+        {
+        }
+
+        public ToolCmd(string text, Func<object, object> func, Func<bool> validate = null, bool canDrag = false)
+        {
+            Text = text;
+            m_func = func;
+            m_validate = validate;
+            if (m_validate == null)
+            {
+                m_validate = () => true;
+            }
+            CanDrag = canDrag;
+        }
+
+        public ToolCmd(string text, Action action, Func<bool> validate = null, bool canDrag = false)
+        {
+            Text = text;
+            m_func = args => { action(); return null; };
+            m_validate = validate;
+            if (m_validate == null)
+            {
+                m_validate = () => true;
+            }
+            CanDrag = canDrag;
+        }
+
+        public object Run()
+        {
+            return m_func(Arg);
+        }
+
+        public bool Validate()
+        {
+            return m_validate();
+        }
+    }
+
+    public class ToolCmdItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField]
         private Graphic m_graphics = null;
