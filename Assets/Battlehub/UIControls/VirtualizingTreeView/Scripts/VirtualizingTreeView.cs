@@ -377,7 +377,7 @@ namespace Battlehub.UIControls
             }
             else
             {
-                VirtualizingTreeViewItem parentContainer = (VirtualizingTreeViewItem)GetItemContainer(parent);
+                TreeViewItemContainerData parentContainer = (TreeViewItemContainerData)GetItemContainerData(parent);
                 if (parentContainer == null)
                 {
                     return;
@@ -386,9 +386,9 @@ namespace Battlehub.UIControls
                 int index = -1;
                 if (parentContainer.IsExpanded)
                 {
-                    if (parentContainer.HasChildren)
+                    if (parentContainer.HasChildren(this))
                     {
-                        TreeViewItemContainerData lastDescendant = parentContainer.LastDescendant();
+                        TreeViewItemContainerData lastDescendant = parentContainer.LastDescendant(this);
                         index = IndexOf(lastDescendant.Item) + 1;
                     }
                     else
@@ -405,17 +405,18 @@ namespace Battlehub.UIControls
                 {
                     TreeViewItemContainerData addedItemData = (TreeViewItemContainerData)Insert(index, item);
                     VirtualizingTreeViewItem addedTreeViewItem = (VirtualizingTreeViewItem)GetItemContainer(item);
-                    if(addedTreeViewItem != null)
+                    if (addedTreeViewItem != null)
                     {
-                        addedTreeViewItem.Parent = parentContainer.TreeViewItemData;
+                        addedTreeViewItem.Parent = parentContainer;
                     }
                     else
                     {
-                        addedItemData.Parent = parentContainer.TreeViewItemData;
+                        addedItemData.Parent = parentContainer;
                     }
                 }
             }
         }
+
 
         public override void Remove(object item)
         {
