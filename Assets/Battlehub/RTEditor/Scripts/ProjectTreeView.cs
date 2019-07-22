@@ -308,8 +308,13 @@ namespace Battlehub.RTEditor
             m_treeView.ItemsRemoved += OnItemsRemoved;
             m_treeView.ItemBeginEdit += OnItemBeginEdit;
             m_treeView.ItemEndEdit += OnItemEndEdit;
+            m_treeView.ItemBeginDrag += OnItemBeginDrag;
             m_treeView.ItemBeginDrop += OnItemBeginDrop;
+            m_treeView.ItemDragEnter += OnItemDragEnter;
+            m_treeView.ItemDrag += OnItemDrag;
+            m_treeView.ItemDragExit += OnItemDragExit;
             m_treeView.ItemDrop += OnItemDrop;
+            m_treeView.ItemEndDrag += OnItemEndDrag;
             m_treeView.ItemDoubleClick += OnItemDoubleClick;
             m_treeView.ItemClick += OnItemClick;
 
@@ -370,8 +375,13 @@ namespace Battlehub.RTEditor
                 m_treeView.ItemsRemoved -= OnItemsRemoved;
                 m_treeView.ItemBeginEdit -= OnItemBeginEdit;
                 m_treeView.ItemEndEdit -= OnItemEndEdit;
+                m_treeView.ItemBeginDrag -= OnItemBeginDrag;
                 m_treeView.ItemBeginDrop -= OnItemBeginDrop;
+                m_treeView.ItemDragEnter -= OnItemDragEnter;
+                m_treeView.ItemDrag -= OnItemDrag;
+                m_treeView.ItemDragExit -= OnItemDragExit;
                 m_treeView.ItemDrop -= OnItemDrop;
+                m_treeView.ItemEndDrag -= OnItemEndDrag;
                 m_treeView.ItemDoubleClick -= OnItemDoubleClick;
                 m_treeView.ItemClick -= OnItemClick;
             }
@@ -463,24 +473,80 @@ namespace Battlehub.RTEditor
                 Toggle(projectItem);
             }
         }
-      
+
+        private void OnItemBeginDrag(object sender, ItemArgs e)
+        {
+            Editor.DragDrop.RaiseBeginDrag(this, e.Items, e.PointerEventData);
+        }
+
+        private bool FolderContainsItemWithSameName(object dropTarget, object[] dragItems)
+        {
+            ProjectItem folder = (ProjectItem)dropTarget;
+            if (folder.Children == null || folder.Children.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (ProjectItem projectItem in dragItems)
+            {
+                if (folder.Children.Any(child => child.NameExt == projectItem.NameExt))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
+        {
+            if (e.DropTarget == null || e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget) || FolderContainsItemWithSameName(e.DropTarget, e.DragItems))
+            {
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
+                e.Cancel = true;
+            }
+            else
+            {
+                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+            }
+        }
+
+        private void OnItemDrag(object sender, ItemArgs e)
+        {
+            Editor.DragDrop.RaiseDrag(e.PointerEventData);
+        }
+
+        private void OnItemDragExit(object sender, EventArgs e)
+        {
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
+        }
+
         private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
         {
             if (!e.IsExternal)
             {
                 ProjectItem dropFolder = (ProjectItem)e.DropTarget;
                 e.Cancel = !CanDrop(dropFolder, e.DragItems.OfType<ProjectItem>().ToArray());
+
+                //Editor.DragDrop.Reset();
             }
         }
 
         private void OnItemDrop(object sender, ItemDropArgs e)
         {
+            Editor.DragDrop.RaiseDrop(e.PointerEventData);
+
             ProjectItem drop = (ProjectItem)e.DropTarget;
             if (e.Action == ItemDropAction.SetLastChild)
             {
                 Editor.IsBusy = true;
                 m_project.Move(e.DragItems.OfType<ProjectItem>().ToArray(), (ProjectItem)e.DropTarget, (error, arg1, arg2) => Editor.IsBusy = false);
             }
+        }
+
+        private void OnItemEndDrag(object sender, ItemArgs e)
+        {
+            Editor.DragDrop.RaiseDrop(e.PointerEventData);
         }
 
         private void OnItemBeginEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -636,24 +702,18 @@ namespace Battlehub.RTEditor
             return projectItem.IsFolder;// && (projectItem.ResourceTypes == null || projectItem.ResourceTypes.Any(type => m_displayResourcesHS.Contains(type)));
         }
 
-        private bool CanCreatePrefab(ProjectItem dropFolder, object[] dragItems)
+        private bool CanCreatePrefab(ProjectItem dropTarget, object[] dragItems)
         {
-            if (dropFolder == null)
-            {
-                return false;
-            }
-
             ExposeToEditor[] objects = dragItems.OfType<ExposeToEditor>().ToArray();
             if (objects.Length == 0)
             {
                 return false;
             }
 
-            if (dropFolder.Children == null)
+            if (!objects.All(o => o.CanCreatePrefab))
             {
-                return true;
+                return false;
             }
-
 
             return true;
         }
@@ -703,21 +763,25 @@ namespace Battlehub.RTEditor
         {
             base.DragLeave(pointerEventData);
             m_treeView.ExternalItemDrop();
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
         }
 
         public override void Drag(object[] dragObjects, PointerEventData pointerEventData)
         {
             base.Drag(dragObjects, pointerEventData);
             m_treeView.ExternalItemDrag(pointerEventData.position);
-            if (CanCreatePrefab((ProjectItem)m_treeView.DropTarget, dragObjects) || CanDrop((ProjectItem)m_treeView.DropTarget, dragObjects))
+
+            bool canCreatePrefab = CanCreatePrefab((ProjectItem)m_treeView.DropTarget, dragObjects);
+            bool canDrop = CanDrop((ProjectItem)m_treeView.DropTarget, dragObjects);
+            if (!canCreatePrefab && !canDrop)
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+                m_treeView.ClearTarget();
+
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
             }
             else
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
-                m_treeView.ClearTarget();
+                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
             }
         }
 
@@ -731,7 +795,7 @@ namespace Battlehub.RTEditor
                 Editor.IsBusy = true;
                 m_project.Move(dragObjects.OfType<ProjectItem>().ToArray(), dropTarget, (error, arg1, arg2) => Editor.IsBusy = false);
             }
-            else if(CanCreatePrefab(dropTarget, dragObjects))
+            else if(dropTarget != null && dropTarget.IsFolder && CanCreatePrefab(dropTarget, dragObjects))
             {
                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
                 ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];

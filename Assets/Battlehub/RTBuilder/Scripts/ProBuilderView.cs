@@ -478,7 +478,7 @@ namespace Battlehub.RTBuilder
 
         private void OnItemDragEnter(object sender, ItemDropCancelArgs e)
         {
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
             e.Cancel = true;
         }
 
@@ -489,7 +489,7 @@ namespace Battlehub.RTBuilder
 
         private void OnItemDragExit(object sender, EventArgs e)
         {
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
         }
 
         private void OnItemDrop(object sender, ItemDropArgs e)

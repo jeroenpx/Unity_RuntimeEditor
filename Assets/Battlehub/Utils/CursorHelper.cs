@@ -7,13 +7,14 @@ namespace Battlehub.Utils
     {
         VResize,
         HResize,
-        DropNowAllowed,
+        DropNotAllowed,
         DropAllowed
     }
 
     public class CursorHelper
     {
         private object m_locker;
+        private Texture2D m_texutre;
 
         private readonly Dictionary<KnownCursor, Texture2D> m_knownCursorToTexture = new Dictionary<KnownCursor, Texture2D>();
         public void Map(KnownCursor cursorType, Texture2D texture)
@@ -59,8 +60,12 @@ namespace Battlehub.Utils
             }
 
             m_locker = locker;
-            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-            Cursor.SetCursor(texture, hotspot, mode);
+            if(m_texutre != texture)
+            {
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                Cursor.SetCursor(texture, hotspot, mode);
+                m_texutre = texture;
+            }
         }
 
         public void ResetCursor(object locker)
@@ -70,6 +75,7 @@ namespace Battlehub.Utils
                 return;
             }
 
+            m_texutre = null;
             m_locker = null;
             Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         }

@@ -111,7 +111,7 @@ namespace Battlehub.RTCommon
 
             m_source = source;
             DragObjects = dragItems;
-            SetCursor(KnownCursor.DropNowAllowed);
+            SetCursor(KnownCursor.DropNotAllowed);
             if (BeginDrag != null)
             {
                 BeginDrag(pointerEventData);

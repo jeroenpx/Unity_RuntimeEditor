@@ -72,7 +72,7 @@ namespace Battlehub.RTEditor
             m_treeView.name = "HierarchyTreeView";
             m_treeView.CanSelectAll = false;
             m_treeView.SelectOnPointerUp = true;
-
+            
             RectTransform rt = (RectTransform)m_treeView.transform;
             rt.Stretch();
 
@@ -360,6 +360,7 @@ namespace Battlehub.RTEditor
                     text.color = m_hierarchyView.DisabledItemColor;
                 }
 
+                e.CanEdit = dataItem.CanRename;
                 e.HasChildren = dataItem.HasChildren();
             }
         }
@@ -438,13 +439,13 @@ namespace Battlehub.RTEditor
         {
             if (m_treeView.DragItems != null)
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
             }
         }
 
         protected virtual void OnItemBeginDrag(object sender, ItemArgs e)
         {
-            Editor.DragDrop.RaiseBeginDrag(this, e.Items, e.PointerEventData);
+            Editor.DragDrop.RaiseBeginDrag(m_window, e.Items, e.PointerEventData);
         }
 
         protected virtual void OnItemDrag(object sender, ItemArgs e)
@@ -822,7 +823,7 @@ namespace Battlehub.RTEditor
         protected virtual void OnDragLeave(PointerEventData pointerEventData)
         {
             m_treeView.ExternalItemDrop();
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
         }
 
         protected virtual void OnDrag(PointerEventData pointerEventData)
@@ -836,7 +837,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
                 m_treeView.ClearTarget();
             }
         }

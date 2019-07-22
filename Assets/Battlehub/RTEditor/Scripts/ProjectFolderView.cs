@@ -258,7 +258,7 @@ namespace Battlehub.RTEditor
         {
             if (e.DropTarget == null || e.DropTarget is AssetItem || e.DragItems != null && e.DragItems.Contains(e.DropTarget) || FolderContainsItemWithSameName(e.DropTarget, e.DragItems))
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
                 e.Cancel = true;
             }
             else
@@ -274,7 +274,7 @@ namespace Battlehub.RTEditor
 
         private void OnItemDragExit(object sender, EventArgs e)
         {
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
         }
 
         private void OnItemDrop(object sender, ItemDropArgs e)
@@ -440,26 +440,15 @@ namespace Battlehub.RTEditor
 
         private bool CanCreatePrefab(ProjectItem dropTarget, object[] dragItems)
         {
-            if (dropTarget == null)
-            {
-                return false;
-            }
-
-          
-            if(!dropTarget.IsFolder)
-            {
-                return false;
-            }
-
             ExposeToEditor[] objects = dragItems.OfType<ExposeToEditor>().ToArray();
             if (objects.Length == 0)
             {
                 return false;
             }
 
-            if (dropTarget.Children == null)
+            if(!objects.All(o => o.CanCreatePrefab))
             {
-                return true;
+                return false;
             }
 
             return true;
@@ -475,18 +464,30 @@ namespace Battlehub.RTEditor
         {
             base.DragLeave(pointerEventData);
             m_listBox.ExternalItemDrop();
-            Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+            Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
         }
 
         public override void Drag(object[] dragObjects, PointerEventData pointerEventData)
         {
             base.Drag(dragObjects, pointerEventData);
             m_listBox.ExternalItemDrag(pointerEventData.position);
-            if (!CanCreatePrefab((ProjectItem)m_listBox.DropTarget, dragObjects) )
+            if (!CanCreatePrefab((ProjectItem)m_listBox.DropTarget, dragObjects))
             {
                 m_listBox.ClearTarget();
+
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
+
             }
-            Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+            else
+            {
+                ProjectItem dropTarget = (ProjectItem)m_listBox.DropTarget;
+                if (dropTarget != null && !dropTarget.IsFolder)
+                {
+                    m_listBox.ClearTarget();
+                }
+
+                Editor.DragDrop.SetCursor(KnownCursor.DropAllowed);
+            }
         }
 
         public override void Drop(object[] dragObjects, PointerEventData pointerEventData)
@@ -494,7 +495,7 @@ namespace Battlehub.RTEditor
             base.Drop(dragObjects, pointerEventData);
             ProjectItem dropTarget = (ProjectItem)m_listBox.DropTarget;
             IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
-            if (CanCreatePrefab(dropTarget, dragObjects))
+            if (dropTarget != null && dropTarget.IsFolder && CanCreatePrefab(dropTarget, dragObjects))
             {
                 ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
                 if (dropTarget.IsFolder)
@@ -509,10 +510,13 @@ namespace Battlehub.RTEditor
                 if(dragObjects[0] is ExposeToEditor)
                 {
                     ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
-                    editor.CreatePrefab(m_folders[0], dragObject, null, assetItem =>
+                    if(dragObject.CanCreatePrefab)
                     {
-                       
-                    });   
+                        editor.CreatePrefab(m_folders[0], dragObject, null, assetItem =>
+                        {
+
+                        });
+                    }
                 }
             }
             m_listBox.ExternalItemDrop();

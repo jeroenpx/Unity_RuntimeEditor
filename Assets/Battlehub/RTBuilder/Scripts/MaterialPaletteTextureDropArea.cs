@@ -67,7 +67,7 @@ namespace Battlehub.RTBuilder
             }
             else
             {
-                m_rte.DragDrop.SetCursor(Utils.KnownCursor.DropNowAllowed);
+                m_rte.DragDrop.SetCursor(Utils.KnownCursor.DropNotAllowed);
             }
 
             IsPointerOver = true;
@@ -77,7 +77,7 @@ namespace Battlehub.RTBuilder
         {
             if(m_rte.DragDrop.InProgress)
             {
-                m_rte.DragDrop.SetCursor(Utils.KnownCursor.DropNowAllowed);
+                m_rte.DragDrop.SetCursor(Utils.KnownCursor.DropNotAllowed);
             }
             
             IsPointerOver = false;

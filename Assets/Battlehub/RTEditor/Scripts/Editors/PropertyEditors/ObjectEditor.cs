@@ -178,7 +178,7 @@ namespace Battlehub.RTEditor
             Editor.DragDrop.Drop -= OnDrop;
             if(Editor.DragDrop.InProgress)
             {
-                Editor.DragDrop.SetCursor(Utils.KnownCursor.DropNowAllowed);
+                Editor.DragDrop.SetCursor(Utils.KnownCursor.DropNotAllowed);
                 HideDragHighlight();
             }
         }

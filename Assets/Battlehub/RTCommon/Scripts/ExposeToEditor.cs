@@ -77,6 +77,8 @@ namespace Battlehub.RTCommon
         public bool CanInspect = true;
         public bool CanDuplicate = true;
         public bool CanDelete = true;
+        public bool CanRename = true;
+        public bool CanCreatePrefab = true;
         public bool ShowSelectionGizmo = true;
         
         [HideInInspector]

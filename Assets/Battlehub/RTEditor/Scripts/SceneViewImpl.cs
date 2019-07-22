@@ -166,7 +166,7 @@ namespace Battlehub.RTEditor
         {
             if (!Editor.IsBusy)
             {
-                Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
             }
 
 
@@ -216,13 +216,13 @@ namespace Battlehub.RTEditor
                     }
                     else
                     {
-                        Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                        Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
                         m_dropTarget = null;
                     }
                 }
                 else
                 {
-                    Editor.DragDrop.SetCursor(KnownCursor.DropNowAllowed);
+                    Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
                     m_dropTarget = null;
                 }
             }

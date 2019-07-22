@@ -340,7 +340,7 @@ namespace Battlehub.RTEditor
             }
 
             AddCursorIfRequired(cursorSettings, KnownCursor.DropAllowed, "Drag & Drop Allowed", "RTE_DropAllowed_Cursor");
-            AddCursorIfRequired(cursorSettings, KnownCursor.DropNowAllowed, "Drag & Drop Not Allowed", "RTE_DropNotAllowed_Cursor");
+            AddCursorIfRequired(cursorSettings, KnownCursor.DropNotAllowed, "Drag & Drop Not Allowed", "RTE_DropNotAllowed_Cursor");
             AddCursorIfRequired(cursorSettings, KnownCursor.HResize, "Horizontal Resize", "RTE_HResize_Cursor");
             AddCursorIfRequired(cursorSettings, KnownCursor.VResize, "Vertical Resize", "RTE_VResize_Cursor");
             m_cursorSettings = cursorSettings.ToArray();

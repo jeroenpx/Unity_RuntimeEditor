@@ -85,7 +85,7 @@ namespace Battlehub.RTCommon
             m_isPointerOver = true;
             OnPointerEnterOverride(eventData);
             if (m_editor.DragDrop.InProgress && m_editor.DragDrop.Source != (object)this)
-            {   
+            {
                 DragEnter(m_editor.DragDrop.DragObjects, eventData);
 
                 m_editor.DragDrop.BeginDrag += OnBeginDrag;
