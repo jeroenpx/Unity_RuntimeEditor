@@ -230,7 +230,7 @@ namespace Battlehub.UIControls
         /// <summary>
         /// Protection against stack overflow
         /// </summary>
-        protected bool IsDropInProgress
+        public bool IsDropInProgress
         {
             get { return m_isDropInProgress; }
         }

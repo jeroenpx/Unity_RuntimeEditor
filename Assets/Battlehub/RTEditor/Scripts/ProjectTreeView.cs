@@ -414,23 +414,22 @@ namespace Battlehub.RTEditor
 
         public void ChangeParent(ProjectItem projectItem, ProjectItem oldParent)
         {
-            if(m_treeView.GetItemContainerData(projectItem) == null)
-            {
-                VirtualizingTreeViewItem tvOldParent = m_treeView.GetTreeViewItem(oldParent);
-                if(tvOldParent != null)
-                {
-                    tvOldParent.CanExpand = oldParent.Children != null && oldParent.Children.Any(c => c.IsFolder);
-                }
-
-                VirtualizingTreeViewItem tvNewParent = m_treeView.GetTreeViewItem(projectItem.Parent);
-                if(tvNewParent != null)
-                {
-                    tvNewParent.CanExpand = true;
-                }
-            }
-            else
+            
+            if (!m_treeView.IsDropInProgress && m_treeView.GetItemContainerData(projectItem) != null)
             {
                 m_treeView.ChangeParent(projectItem.Parent, projectItem);
+            }
+
+            VirtualizingTreeViewItem tvOldParent = m_treeView.GetTreeViewItem(oldParent);
+            if (tvOldParent != null)
+            {
+                tvOldParent.CanExpand = oldParent.Children != null && oldParent.Children.Any(c => c.IsFolder);
+            }
+
+            VirtualizingTreeViewItem tvNewParent = m_treeView.GetTreeViewItem(projectItem.Parent);
+            if (tvNewParent != null)
+            {
+                tvNewParent.CanExpand = true;
             }
         }
 
@@ -527,8 +526,6 @@ namespace Battlehub.RTEditor
             {
                 ProjectItem dropFolder = (ProjectItem)e.DropTarget;
                 e.Cancel = !CanDrop(dropFolder, e.DragItems.OfType<ProjectItem>().ToArray());
-
-                //Editor.DragDrop.Reset();
             }
         }
 
