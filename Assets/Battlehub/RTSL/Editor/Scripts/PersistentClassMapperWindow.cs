@@ -822,6 +822,11 @@ namespace Battlehub.RTSL
 
         private string FixTypeName(string name)
         {
+            if(string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+
             name = Regex.Replace(name, @", Version=\d+.\d+.\d+.\d+", string.Empty);
             name = Regex.Replace(name, @", Culture=\w+", string.Empty);
             name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
