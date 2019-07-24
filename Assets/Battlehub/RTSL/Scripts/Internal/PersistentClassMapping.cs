@@ -105,6 +105,8 @@ namespace Battlehub.RTSL
 
     public class PersistentClassMapping : MonoBehaviour
     {
+        public string Version;
+
         public string MappedFullTypeName
         {
             get

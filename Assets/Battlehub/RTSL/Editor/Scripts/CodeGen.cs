@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityObject = UnityEngine.Object;
@@ -437,6 +438,10 @@ namespace Battlehub.RTSL
             if (type.IsGenericType)
             {
                 string name = type.FullName;
+                name = Regex.Replace(name, @", Version=\d+.\d+.\d+.\d+", string.Empty);
+                name = Regex.Replace(name, @", Culture=\w+", string.Empty);
+                name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
+                
                 if (!string.IsNullOrEmpty(type.Namespace))
                 {
                     name = name.Remove(0, type.Namespace.Length + 1);
@@ -450,7 +455,11 @@ namespace Battlehub.RTSL
         {
             if (type.DeclaringType == null)
             {
-                return type.FullName;
+                string name = type.FullName;
+                name = Regex.Replace(name, @", Version=\d+.\d+.\d+.\d+", string.Empty);
+                name = Regex.Replace(name, @", Culture=\w+", string.Empty);
+                name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
+                return name;
             }
 
             return FullTypeName(type.DeclaringType) + "+" + _TypeName(type);

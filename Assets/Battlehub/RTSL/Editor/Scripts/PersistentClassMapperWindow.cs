@@ -8,6 +8,7 @@ using UnityObject = UnityEngine.Object;
 using System.IO;
 using Battlehub.RTSL.Internal;
 using UnityEngine.Events;
+using System.Text.RegularExpressions;
 
 namespace Battlehub.RTSL
 {
@@ -92,6 +93,8 @@ namespace Battlehub.RTSL
         private int[] m_filteredTypeIndices;
         private class ClassMappingInfo
         {
+            public string Version;
+
             public ObsoleteAttribute ObsoleteAttribute;
             public int PersistentPropertyTag;
             public int PersistentSubclassTag;
@@ -817,6 +820,14 @@ namespace Battlehub.RTSL
             m_dependencyTypes.Clear();
         }
 
+        private string FixTypeName(string name)
+        {
+            name = Regex.Replace(name, @", Version=\d+.\d+.\d+.\d+", string.Empty);
+            name = Regex.Replace(name, @", Culture=\w+", string.Empty);
+            name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
+            return name;
+        }
+
         private void LoadMappings()
         {
             PersistentClassMapping[] mappings = GetMappings();
@@ -824,6 +835,13 @@ namespace Battlehub.RTSL
             for (int i = 0; i < mappings.Length; ++i)
             {
                 PersistentClassMapping classMapping = mappings[i];
+                if(classMapping.Version != "2.1")
+                {
+                    classMapping.MappedTypeName = FixTypeName(classMapping.MappedTypeName);
+                    classMapping.PersistentTypeName = FixTypeName(classMapping.PersistentTypeName);
+                    classMapping.PersistentBaseTypeName = FixTypeName(classMapping.PersistentBaseTypeName);
+                }
+                
                 Type type = Type.GetType(classMapping.MappedAssemblyQualifiedName);
                 int typeIndex;
                 if (type != null && m_typeToIndex.TryGetValue(type, out typeIndex))
@@ -831,7 +849,28 @@ namespace Battlehub.RTSL
                     PersistentPropertyMapping[] pMappings = classMapping.PropertyMappings;
                     PersistentSubclass[] subclasses = classMapping.Subclasses;
 
+                    if (classMapping.Version != "2.1")
+                    {
+                        
+                        for (int p = 0; p < pMappings.Length; ++p)
+                        {
+                            PersistentPropertyMapping pMapping = pMappings[p];
+                            pMapping.MappedTypeName = FixTypeName(pMapping.MappedTypeName);
+                            pMapping.PersistentTypeName = FixTypeName(pMapping.PersistentTypeName);
+                        }
+
+                        if (classMapping.Subclasses != null)
+                        {
+                            for (int s = 0; s < classMapping.Subclasses.Length; ++s)
+                            {
+                                PersistentSubclass subclass = classMapping.Subclasses[s];
+                                subclass.TypeName = FixTypeName(subclass.TypeName);
+                            }
+                        }
+                    }
+
                     ClassMappingInfo mappingInfo = m_mappings[typeIndex];
+                    mappingInfo.Version = "2.1";
                     mappingInfo.PropertyMappings = pMappings;
                     mappingInfo.Subclasses = subclasses;
                     mappingInfo.IsLocked = classMapping.IsLocked;
@@ -843,6 +882,8 @@ namespace Battlehub.RTSL
 
                     ExpandType(typeIndex);
                 }
+
+
             }
 
             ExpandType(0);          
@@ -919,7 +960,7 @@ namespace Battlehub.RTSL
                         {
                             if (subclassDictionary.ContainsKey(subclass.FullTypeName))
                             {
-                                Debug.LogWarningFormat("Subclass dictionary already contains {0}, BaseType {1}", subclass.FullTypeName, m_types[typeIndex].FullName);
+                                Debug.LogWarningFormat("Subclass dictionary already contains {0}, BaseType {1}", subclass.FullTypeName, FullName(m_types[typeIndex]));
                             }
                             else
                             {
@@ -991,12 +1032,12 @@ namespace Battlehub.RTSL
                 }
                 ClassMappingInfo mappingInfo = m_mappings[typeIndex];
                 PersistentClassMapping classMapping;
-                if (!existingMappings.TryGetValue(m_types[typeIndex].FullName, out classMapping))
+                if (!existingMappings.TryGetValue(FullName(m_types[typeIndex]), out classMapping))
                 {
                     GameObject typeStorageGO = new GameObject();
                     typeStorageGO.transform.SetParent(storageGO.transform, false);
-                
-                    typeStorageGO.name = m_types[typeIndex].FullName;
+
+                    typeStorageGO.name = FullName(m_types[typeIndex]);
                     classMapping = typeStorageGO.AddComponent<PersistentClassMapping>();
                     classMapping.PersistentTypeGUID = Guid.NewGuid().ToString();
                     classMapping.MappedTypeGUID = Guid.NewGuid().ToString();
@@ -1042,6 +1083,7 @@ namespace Battlehub.RTSL
                 mappingInfo.PropertyMappings = selectedPropertyMappings.ToArray();
                 ExpandType(typeIndex);
 
+                classMapping.Version = mappingInfo.Version;
                 classMapping.IsSelected = mappingInfo.IsSelected;
                 classMapping.IsLocked = mappingInfo.IsLocked;
                 classMapping.PersistentPropertyTag = mappingInfo.PersistentPropertyTag;
@@ -1074,7 +1116,6 @@ namespace Battlehub.RTSL
                 classMapping.UseTemplate = mappingInfo.UseTemplate;
             }
 
-   
             EditorUtility.SetDirty(storageGO);
             PrefabUtility.SaveAsPrefabAsset(storageGO, m_mappingStoragePath);
             ///PrefabUtility.CreatePrefab(m_mappingStoragePath, storageGO);
@@ -1225,7 +1266,7 @@ namespace Battlehub.RTSL
                 {
                     GUILayout.Space(5 + 18 * indent);
                     EditorGUILayout.BeginVertical();
-                    EditorGUILayout.LabelField("Full Name: " + m_types[typeIndex].FullName);
+                    EditorGUILayout.LabelField("Full Name: " + FullName(m_types[typeIndex]));
 
                     mappingInfo.IsSupportedPlaftormsSectionExpanded = EditorGUILayout.Foldout(mappingInfo.IsSupportedPlaftormsSectionExpanded, "Supported Platforms");
                     if (mappingInfo.IsSupportedPlaftormsSectionExpanded)
@@ -1533,10 +1574,10 @@ namespace Battlehub.RTSL
             }
 
             FieldInfo[] fields = CodeGen.GetFields(type);
-            HashSet<string> fieldHs = new HashSet<string>(fields.Select(fInfo => fInfo.FieldType.FullName + " " + fInfo.Name));
+            HashSet<string> fieldHs = new HashSet<string>(fields.Select(fInfo => FullName(fInfo.FieldType) + " " + fInfo.Name));
 
             PropertyInfo[] properties = CodeGen.GetProperties(type);
-            HashSet<string> propertyHs = new HashSet<string>(properties.Select(pInfo => pInfo.PropertyType.FullName + " " + pInfo.Name));
+            HashSet<string> propertyHs = new HashSet<string>(properties.Select(pInfo => FullName(pInfo.PropertyType) + " " + pInfo.Name));
 
             for (int i = 0; i < fieldMappings.Length; ++i)
             {
@@ -1725,12 +1766,21 @@ namespace Battlehub.RTSL
 
         private IEnumerable<PropertyInfo> GetSuitableProperties(PropertyInfo[] properties, string persistentType)
         {
-            return properties.Where(pInfo => pInfo.PropertyType.FullName == persistentType);
+            return properties.Where(pInfo => FullName(pInfo.PropertyType) == persistentType);
         }
 
         private IEnumerable<FieldInfo> GetSuitableFields(FieldInfo[] fields, string persistentType)
         {
-            return fields.Where(fInfo => fInfo.FieldType.FullName == persistentType);
+            return fields.Where(fInfo => FullName(fInfo.FieldType) == persistentType);
+        }
+
+        public static string FullName(Type type)
+        {
+            string name = type.FullName;
+            name = Regex.Replace(name, @", Version=\d+.\d+.\d+.\d+", string.Empty);
+            name = Regex.Replace(name, @", Culture=\w+", string.Empty);
+            name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
+            return name;
         }
     }
 
@@ -2120,7 +2170,7 @@ namespace Battlehub.RTSL
                 }
             }
 
-            HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => t.FullName));
+            HashSet<string> hideMustHaveTypes = new HashSet<string>(PersistentClassMapperGUI.HideMustHaveTypes.Select(t => PersistentClassMapperGUI.FullName(t)));
             CodeGen codeGen = new CodeGen();
             for (int i = 0; i < uoMappings.Length; ++i)
             {
@@ -2252,7 +2302,7 @@ namespace Battlehub.RTSL
         private static Dictionary<Type, PersistentTemplateInfo> GetPersistentTemplates(Type[] allTypes)
         {
             Dictionary<Type, PersistentTemplateInfo> templates = new Dictionary<Type, PersistentTemplateInfo>();
-            Dictionary<string, Type> typeNameToType = allTypes.ToDictionary(t => t.FullName);
+            Dictionary<string, Type> typeNameToType = allTypes.ToDictionary(t => PersistentClassMapperGUI.FullName(t));
             Type[] templateTypes = Assembly.GetAssembly(typeof(PersistentClassMapperWindow)).GetTypes().Where(t => t.GetCustomAttributes(typeof(PersistentTemplateAttribute), false).Length != 0).ToArray();
             for (int i = 0; i < templateTypes.Length; ++i)
             {
@@ -2307,7 +2357,7 @@ namespace Battlehub.RTSL
 
                         if (templates.ContainsKey(mappedType))
                         {
-                            Debug.LogWarning("m_templates dictionary already contains " + mappedType.FullName);
+                            Debug.LogWarning("m_templates dictionary already contains " + PersistentClassMapperGUI.FullName(mappedType));
                         }
                         else
                         {
@@ -2324,6 +2374,7 @@ namespace Battlehub.RTSL
 
             return templates;
         }
+
 
         private static bool HasCustomImplementation(CodeGen codeGen, PersistentClassMapping mapping)
         {
