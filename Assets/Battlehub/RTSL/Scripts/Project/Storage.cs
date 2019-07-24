@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+using UnityEngine.Battlehub.SL2;
 using Battlehub.RTSL.Interface;
 using Battlehub.RTCommon;
 using System.Linq;

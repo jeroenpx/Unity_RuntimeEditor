@@ -1,7 +1,7 @@
 using ProtoBuf;
-using UnityEngine;
+using Battlehub.RTSL;
 
-namespace Battlehub.RTSL
+namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract]
     public partial class PersistentVector3 : PersistentSurrogate

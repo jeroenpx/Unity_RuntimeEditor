@@ -1,7 +1,7 @@
 using ProtoBuf;
 using UnityEngine;
 
-namespace Battlehub.RTSL
+namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract]
     public class PersistentGameObject : PersistentObject

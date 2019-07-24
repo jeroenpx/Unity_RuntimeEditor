@@ -4,9 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Battlehub.SL2;
 
 using UnityObject = UnityEngine.Object;
-namespace Battlehub.RTSL
+namespace Battlehub.RTSL.Battlehub.SL2
 {
     [ProtoContract]
     public class PersistentRuntimePrefab : PersistentObject

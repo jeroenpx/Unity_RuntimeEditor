@@ -1,8 +1,9 @@
 ﻿using ProtoBuf;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTSL;
 
-namespace Battlehub.RTSL
+namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract]    
     public class PersistentObject : PersistentSurrogate

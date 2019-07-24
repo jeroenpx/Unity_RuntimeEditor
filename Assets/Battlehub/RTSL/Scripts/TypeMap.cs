@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.Battlehub.SL2;
+using UnityEngine.Events.Battlehub.SL2;
 
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTSL;
+using Battlehub.RTSL.Battlehub.SL2;
+
 namespace Battlehub.RTSL
 {
     public interface ITypeMap
@@ -21,7 +26,6 @@ namespace Battlehub.RTSL
         protected readonly Dictionary<Type, Type> m_toUnityType = new Dictionary<Type, Type>();
         protected readonly Dictionary<Type, Guid> m_toGuid = new Dictionary<Type, Guid>();
         protected readonly Dictionary<Guid, Type> m_toType = new Dictionary<Guid, Type>();
-
 
         private bool m_registerDefault = true;
         public TypeMap()

@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.Events;
+using Battlehub.RTSL;
 using UnityObject = UnityEngine.Object;
+using Battlehub;
 
-namespace Battlehub.RTSL
+namespace UnityEngine.Events.Battlehub.SL2
 {
     [ProtoContract]
     public class PersistentArgumentCache : PersistentSurrogate

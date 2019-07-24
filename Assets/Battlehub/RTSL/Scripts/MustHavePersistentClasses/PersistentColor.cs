@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using ProtoBuf;
 using Battlehub.RTSL;
-using UnityEngine;
 
-namespace Battlehub.RTSL
+namespace UnityEngine.Battlehub.SL2
 {
     [ProtoContract]
     public partial class PersistentColor : PersistentSurrogate
