@@ -383,10 +383,15 @@ namespace Battlehub.RTSL
         {
             int identity = asset.AssetLibrary.Identity;
 
-            foreach (UnityObject obj in objects)
+            foreach (object o in objects)
             {
+                UnityObject obj = o as UnityObject;
                 if (!obj)
                 {
+                    if(o != null)
+                    {
+                        Debug.Log(o.GetType() + " is not a UnityEngine.Object");
+                    }
                     continue;
                 }
 
