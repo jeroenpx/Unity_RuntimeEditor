@@ -1271,7 +1271,7 @@ namespace Battlehub.RTSL
             }
             else
             {
-                if (!type.FullName.Contains("System"))
+                if (!type.FullName.StartsWith("System"))
                 {
                     if (!namespaces.Contains(persistentNamespace))
                     {
