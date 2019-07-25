@@ -875,7 +875,7 @@ namespace Battlehub.RTSL
                             }
                             else
                             {
-                                typeName = string.Format("List<{0}>", PreparePersistentTypeName(FullTypeName(argType)));
+                                typeName = string.Format("List<{0}>", PrepareMappedTypeName(FullTypeName(argType)));
                             }
                         }
                     }
