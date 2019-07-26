@@ -17,6 +17,7 @@ namespace Battlehub.RTSL
         public static RuntimeTypeModel Create()
         {
             RuntimeTypeModel model = TypeModel.Create();
+            model.UseImplicitZeroDefaults = false;
 
             model.Add(typeof(IntArray), true);
             model.Add(typeof(ProjectItem), true)

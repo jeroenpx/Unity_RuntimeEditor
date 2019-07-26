@@ -33,6 +33,7 @@ namespace Battlehub.RTSL
 
         static ProtobufSerializer()
         {
+            model.UseImplicitZeroDefaults = false;
             model.DynamicTypeFormatting += (sender, args) =>
             {
                 if (args.FormattedName == null)

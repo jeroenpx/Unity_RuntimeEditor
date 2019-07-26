@@ -272,10 +272,11 @@ namespace Battlehub.RTSL
             if(type.IsSubclassOf(typeof(MonoBehaviour)))
             {
                 return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Union(
-                    type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(f => f.FieldType.IsPublic && f.GetCustomAttributes(typeof(SerializeField), true).Length > 0)).ToArray();
+                    type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(f => (f.FieldType.IsPublic || f.FieldType.IsNestedPublic) && f.GetCustomAttributes(typeof(SerializeField), true).Length > 0)).ToArray();
             }
 
-            return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToArray();
+            return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Union(
+                    type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(f => f.FieldType.IsPublic || f.FieldType.IsNestedPublic)).ToArray();
         }
 
         public static MethodInfo[] GetMethods(Type type)
