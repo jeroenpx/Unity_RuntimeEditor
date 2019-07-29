@@ -28,6 +28,12 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        bool ChangeOrthographicSizeOnly
+        {
+            get;
+            set;
+        }
+
         [System.Obsolete("Use CanRotate instead")]
         bool CanOrbit
         {
@@ -80,6 +86,8 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private bool m_canZoom = true;
         [SerializeField]
+        private bool m_changeOrthographicSizeOnly = true;
+        [SerializeField]
         private bool m_canRotate = true;
         
         public bool IsSceneGizmoEnabled
@@ -131,6 +139,16 @@ namespace Battlehub.RTHandles
             {
                 m_canRotate = value;
                 m_mouseOrbit.CanOrbit = value;
+            }
+        }
+
+        public bool ChangeOrthographicSizeOnly
+        {
+            get { return m_changeOrthographicSizeOnly; }
+            set
+            {
+                m_changeOrthographicSizeOnly = value;
+                m_mouseOrbit.ChangeOrthographicSizeOnly = value;
             }
         }
 
@@ -198,6 +216,7 @@ namespace Battlehub.RTHandles
             m_mouseOrbit.Target = PivotTransform;
             m_mouseOrbit.SecondaryTarget = SecondaryPivotTransform;
             m_mouseOrbit.CanZoom = CanZoom;
+            m_mouseOrbit.ChangeOrthographicSizeOnly = ChangeOrthographicSizeOnly;
             m_mouseOrbit.CanOrbit = CanOrbit;
 
             if(m_sceneGizmo == null)

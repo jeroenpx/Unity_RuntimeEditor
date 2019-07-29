@@ -388,6 +388,12 @@ namespace Battlehub.ProBuilderIntegration
 
     public interface IMeshEditor
     {
+        int GraphicsLayer
+        {
+            get;
+            set;
+        }
+
         bool HasSelection
         {
             get;

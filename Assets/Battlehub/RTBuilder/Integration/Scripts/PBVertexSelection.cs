@@ -25,6 +25,7 @@ namespace Battlehub.ProBuilderIntegration
         private readonly Dictionary<ProBuilderMesh, HashSet<int>> m_meshToIndices = new Dictionary<ProBuilderMesh, HashSet<int>>();
         private readonly Dictionary<ProBuilderMesh, List<int>> m_meshToIndicesList = new Dictionary<ProBuilderMesh, List<int>>();
         private readonly List<ProBuilderMesh> m_meshes = new List<ProBuilderMesh>();
+        private readonly List<PBMesh> m_pbMeshes = new List<PBMesh>();
         private readonly int[] m_hoveredIndices = new int[] { -1 };
         private ProBuilderMesh m_hoveredMesh;
 
@@ -80,13 +81,21 @@ namespace Battlehub.ProBuilderIntegration
             get { return m_meshes; }
         }
 
+        public IEnumerable<PBMesh> PBMeshes
+        {
+            get { return m_pbMeshes; }
+        }
+
         private bool IsGeometryShadersSupported
         {
             get { return BuiltinMaterials.geometryShadersSupported; }
         }
 
+        private PBBaseEditor m_editor;
         private void Awake()
         {
+            m_editor = GetComponent<PBBaseEditor>();
+
             string vertShader = IsGeometryShadersSupported ?
                 BuiltinMaterials.pointShader :
                 BuiltinMaterials.dotShader;
@@ -103,10 +112,20 @@ namespace Battlehub.ProBuilderIntegration
                 Destroy(m_material);
             }
 
+            for(int i = 0; i < m_pbMeshes.Count; ++i)
+            {
+                PBMesh pbMesh = m_pbMeshes[i];
+                if(pbMesh != null)
+                {
+                    pbMesh.RaiseUnselected();
+                }
+            }
+
             m_meshToSelection.Clear();
             m_meshToIndices.Clear();
             m_meshToIndicesList.Clear();
             m_meshes.Clear();
+            m_pbMeshes.Clear();
         }
 
         public bool IsSelected(ProBuilderMesh mesh, int index)
@@ -136,12 +155,19 @@ namespace Battlehub.ProBuilderIntegration
                 ProBuilderMesh mesh = m_meshes[i];
                 MeshFilter filter = m_meshToSelection[mesh];
                 Destroy(filter.gameObject);
+
+                PBMesh pbMesh = m_pbMeshes[i];
+                if (pbMesh != null)
+                {
+                    pbMesh.RaiseUnselected();
+                }
             }
 
             m_meshToSelection.Clear();
             m_meshToIndices.Clear();
             m_meshToIndicesList.Clear();
             m_meshes.Clear();
+            m_pbMeshes.Clear();
 
             m_selectedVerticesCount = 0;
             m_centerOfMass = Vector3.zero;
@@ -223,6 +249,13 @@ namespace Battlehub.ProBuilderIntegration
                 m_meshToIndices.Add(mesh, indicesHs);
                 m_meshToIndicesList.Add(mesh, indicesList);
                 m_meshes.Add(mesh);
+
+                PBMesh pbMesh = mesh.GetComponent<PBMesh>();
+                if (pbMesh != null)
+                {
+                    pbMesh.RaiseSelected(false);
+                }
+                m_pbMeshes.Add(pbMesh);
             }
 
             int[] notSelectedIndices = indices.Where(i => !indicesHs.Contains(i)).ToArray();
@@ -291,7 +324,18 @@ namespace Battlehub.ProBuilderIntegration
                     m_meshToSelection.Remove(mesh);
                     
                     Destroy(vertices.gameObject);
-                    m_meshes.Remove(mesh);
+
+                    int index = m_meshes.IndexOf(mesh);
+                    if(index != -1)
+                    {
+                        m_meshes.RemoveAt(index);
+                        PBMesh pbMesh = m_pbMeshes[index];
+                        if (pbMesh != null)
+                        {
+                            pbMesh.RaiseUnselected();
+                        }
+                        m_pbMeshes.RemoveAt(index);
+                    }
                 }
 
                 if (indicesList.Count > 0)
@@ -378,6 +422,8 @@ namespace Battlehub.ProBuilderIntegration
         private MeshFilter CreateVerticesGameObject(ProBuilderMesh mesh, IList<int> indices)
         {
             GameObject vertices = new GameObject("Vertices");
+            vertices.layer = m_editor.GraphicsLayer;
+
             MeshFilter meshFilter = vertices.GetComponent<MeshFilter>();
             if (meshFilter == null)
             {
@@ -442,7 +488,6 @@ namespace Battlehub.ProBuilderIntegration
             m_centerOfMass = centerOfMass;
             m_lastNormal = LastMesh.transform.InverseTransformDirection(lastNormal.normalized);  
             m_lastPosition = LastMesh.transform.InverseTransformPoint(lastPosition);    
-            
         }
     }
 

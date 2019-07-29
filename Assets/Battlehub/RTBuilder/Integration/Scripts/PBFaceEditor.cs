@@ -148,6 +148,8 @@ namespace Battlehub.ProBuilderIntegration
                 m_faceSelection.CenterOfMass + offset,
                 m_faceSelection.LastPosition + offset);
 
+            RaisePBMeshesChanged(true);
+
             if(!wasMoveInProgress)
             {
                 EndMove();
@@ -206,6 +208,8 @@ namespace Battlehub.ProBuilderIntegration
             m_faceSelection.Synchronize(
                 m_faceSelection.CenterOfMass,
                 center + rotation * m_initialRotation * (m_initialPostion - center));
+
+            RaisePBMeshesChanged(true);
         }
 
 
@@ -261,6 +265,8 @@ namespace Battlehub.ProBuilderIntegration
             m_faceSelection.Synchronize(
                 m_faceSelection.CenterOfMass,
                 center + rotation * Vector3.Scale(Quaternion.Inverse(rotation) * (m_initialPostion - center), scale));
+
+            RaisePBMeshesChanged(true);
         }
 
         public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift)
@@ -620,6 +626,8 @@ namespace Battlehub.ProBuilderIntegration
                     m_faceSelection.GetCenterOfMass(),
                     m_faceSelection.LastPosition + m_faceSelection.LastNormal * distance);
             }
+
+            RaisePBMeshesChanged(false);
         }
 
         public override void Delete()
@@ -738,6 +746,14 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             mesh.RemoveUnusedVertices();
+        }
+
+        private void RaisePBMeshesChanged(bool positionsOnly)
+        {
+            foreach (PBMesh mesh in m_faceSelection.PBMeshes)
+            {
+                mesh.RaiseChanged(positionsOnly);
+            }
         }
     }
 }

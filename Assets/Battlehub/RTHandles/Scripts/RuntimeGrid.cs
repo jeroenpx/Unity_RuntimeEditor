@@ -66,7 +66,14 @@ namespace Battlehub.RTHandles
         {
             if (AutoCamOffset)
             {
-                Appearance.DrawGrid(camera, GridOffset, camera.transform.position.y);
+                if(camera.orthographic)
+                {
+                    Appearance.DrawGrid(camera, GridOffset, camera.orthographicSize);
+                }
+                else
+                {
+                    Appearance.DrawGrid(camera, GridOffset, camera.transform.position.y);
+                }
             }
             else
             {

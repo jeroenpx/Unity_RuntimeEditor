@@ -22,11 +22,13 @@ namespace Battlehub.ProBuilderIntegration
                     m_isEditing = value;
                     if (m_isEditing)
                     {
+                        m_target.RaiseSelected(true);
                         BeginEdit();
                     }
                     else
                     {
                         EndEdit();
+                        m_target.RaiseUnselected();
                     }
                 }
             }
@@ -151,12 +153,12 @@ namespace Battlehub.ProBuilderIntegration
             m_isEditing = false;
         }
 
-        public void AddVertexWorld(Vector3 position)
-        {
-            position = transform.InverseTransformPoint(position);
-            AddVertex(position);
-            m_positions.Add(position);
-        }
+        //public void AddVertexWorld(Vector3 position)
+        //{
+        //    position = transform.InverseTransformPoint(position);
+        //    AddVertex(position);
+        //    m_positions.Add(position);
+        //}
 
         private void AddVertex(Vector3 position)
         {
@@ -204,7 +206,7 @@ namespace Battlehub.ProBuilderIntegration
                         m_positions.Add(position);
                     }
 
-                    m_targetMesh.CreateShapeFromPolygon(m_selection.Positions, 0.001f, false);
+                    m_target.CreateShapeFromPolygon(m_selection.Positions, 0.001f, false);
                 }
             }
 
@@ -213,7 +215,7 @@ namespace Battlehub.ProBuilderIntegration
 
         public void Refresh()
         {
-            m_targetMesh.CreateShapeFromPolygon(m_selection.Positions, 0.001f, false);
+            m_target.CreateShapeFromPolygon(m_selection.Positions, 0.001f, false);
             m_selection.Refersh();
         }
 

@@ -101,6 +101,7 @@ namespace Battlehub.RTHandles
             if (m_canvas == null)
             {
                 GameObject go = new GameObject("BoxSelection");
+                go.layer = gameObject.layer;
                 go.transform.SetParent(transform.parent, false);
                 m_canvas = go.AddComponent<Canvas>();
             }

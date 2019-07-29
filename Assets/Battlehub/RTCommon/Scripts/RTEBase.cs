@@ -33,20 +33,24 @@ namespace Battlehub.RTCommon
         public int ResourcePreviewLayer;
         public int RuntimeGraphicsLayer;
         public int MaxGraphicsLayers;
+        public int ExtraLayer1;
+        public int ExtraLayer2;
 
         public int RaycastMask
         {
             get
             {
-                return ~(((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer);
+                return ~((((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer) | (1 << ExtraLayer1) | (1 << ExtraLayer2));
             }
         }
 
-        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers)
+        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers, int extraLayer1, int extraLayer2)
         {
             ResourcePreviewLayer = resourcePreviewLayer;
             RuntimeGraphicsLayer = runtimeGraphicsLayer;
             MaxGraphicsLayers = maxLayers;
+            ExtraLayer1 = extraLayer1;
+            ExtraLayer2 = extraLayer2;
         }
     }
 
@@ -61,6 +65,9 @@ namespace Battlehub.RTCommon
         event RTEEvent<RuntimeWindow> WindowUnregistered;
         event RTEEvent IsOpenedChanged;
         event RTEEvent IsDirtyChanged;
+        event RTEEvent<GameObject[]> ObjectsRegistered;
+        event RTEEvent<GameObject[]> ObjectsDuplicated;
+        event RTEEvent<GameObject[]> ObjectsDeleted;
 
         ComponentEditorSettings ComponentEditorSettings
         {
@@ -211,7 +218,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
         [SerializeField]
-        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4);
+        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 18, 19);
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
@@ -235,6 +242,9 @@ namespace Battlehub.RTCommon
         public event RTEEvent IsOpenedChanged;
         public event RTEEvent IsDirtyChanged;
         public event RTEEvent IsBusyChanged;
+        public event RTEEvent<GameObject[]> ObjectsRegistered;
+        public event RTEEvent<GameObject[]> ObjectsDuplicated;
+        public event RTEEvent<GameObject[]> ObjectsDeleted;
 
         private IInput m_input;
         private RuntimeSelection m_selection;
@@ -959,6 +969,11 @@ namespace Battlehub.RTCommon
             }
             Selection.objects = gameObjects;
             Undo.EndRecord();
+
+            if (ObjectsRegistered != null)
+            {
+                ObjectsRegistered(gameObjects);
+            }
         }
 
         public void Duplicate(GameObject[] gameObjects)
@@ -982,6 +997,12 @@ namespace Battlehub.RTCommon
                         }
                     }
                 }
+
+                if(ObjectsDuplicated != null)
+                {
+                    ObjectsDuplicated(gameObjects);
+                }
+
                 return;
             }
 
@@ -1019,6 +1040,11 @@ namespace Battlehub.RTCommon
                 Selection.objects = duplicates.ToArray();
                 Undo.EndRecord();
             }
+
+            if (ObjectsDuplicated != null)
+            {
+                ObjectsDuplicated(gameObjects);
+            }
         }
 
         public void Delete(GameObject[] gameObjects)
@@ -1043,6 +1069,12 @@ namespace Battlehub.RTCommon
                         }
                     }
                 }
+
+                if (ObjectsDeleted != null)
+                {
+                    ObjectsDeleted(gameObjects);
+                }
+
                 return;
             }
 
@@ -1078,6 +1110,11 @@ namespace Battlehub.RTCommon
             if(!isRecording)
             {
                 Undo.EndRecord();
+            }
+
+            if (ObjectsDeleted != null)
+            {
+                ObjectsDeleted(gameObjects);
             }
         }
 

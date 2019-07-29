@@ -29,6 +29,7 @@ namespace Battlehub.ProBuilderIntegration
         private readonly List<Vector3> m_selectionVertices = new List<Vector3>();
         private readonly List<Face> m_selectionFaces = new List<Face>();
         private readonly Dictionary<ProBuilderMesh, FaceList> m_meshToFaces = new Dictionary<ProBuilderMesh, FaceList>();
+        private readonly List<PBMesh> m_pbMeshes = new List<PBMesh>();
 
         private bool m_isChanging;
 
@@ -73,10 +74,19 @@ namespace Battlehub.ProBuilderIntegration
         public IEnumerable<ProBuilderMesh> Meshes
         {
             get { return m_meshToFaces.Keys; }
+        } 
+
+        public IEnumerable<PBMesh> PBMeshes
+        {
+            get { return m_pbMeshes; }
         }
 
+        private PBBaseEditor m_editor;
+        
         private void Awake()
         {
+            m_editor = GetComponent<PBBaseEditor>();
+
             MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
             if(meshFilter == null)
             {
@@ -96,6 +106,7 @@ namespace Battlehub.ProBuilderIntegration
             renderer.sharedMaterial = m_material;
 
             gameObject.AddComponent<PBMesh>();
+            gameObject.layer = m_editor.GraphicsLayer;
             m_selectionMesh = GetComponent<ProBuilderMesh>();            
         }
 
@@ -165,6 +176,13 @@ namespace Battlehub.ProBuilderIntegration
             {
                 faceList = new FaceList();
                 m_meshToFaces.Add(mesh, faceList);
+
+                PBMesh pbMesh = mesh.GetComponent<PBMesh>();
+                if(pbMesh != null)
+                {
+                    pbMesh.RaiseSelected(false);
+                }
+                m_pbMeshes.Add(pbMesh);
             }
 
             for (int i = 0; i < indexes.Count; ++i)
@@ -231,6 +249,14 @@ namespace Battlehub.ProBuilderIntegration
             if(faceList.Faces.Count == 0)
             {
                 m_meshToFaces.Remove(mesh);
+
+                PBMesh pbMesh = mesh.GetComponent<PBMesh>();
+                if(pbMesh != null)
+                {
+                    pbMesh.RaiseUnselected();
+                }
+                
+                m_pbMeshes.Remove(pbMesh);
             }
 
             int flidx = faceList.Faces.IndexOf(faceIndex);
@@ -285,11 +311,21 @@ namespace Battlehub.ProBuilderIntegration
 
         public void Clear()
         {
+            for(int i = 0; i < m_pbMeshes.Count; ++i)
+            {
+                PBMesh pbMesh = m_pbMeshes[i];
+                if(pbMesh != null)
+                {
+                    pbMesh.RaiseUnselected();
+                }
+            }
+
             m_selectionVertices.Clear();
             m_selectionFaces.Clear();
             m_faceToSelectionFace.Clear();
             m_selectionFaceToMesh.Clear();
             m_meshToFaces.Clear();
+            m_pbMeshes.Clear();
             RebuildSelectionMesh();
         }
 

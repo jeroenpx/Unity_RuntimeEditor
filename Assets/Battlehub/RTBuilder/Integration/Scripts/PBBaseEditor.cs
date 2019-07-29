@@ -4,6 +4,12 @@ namespace Battlehub.ProBuilderIntegration
 {
     public abstract class PBBaseEditor : MonoBehaviour, IMeshEditor
     {
+        public virtual int GraphicsLayer
+        {
+            get;
+            set;
+        }
+
         public abstract bool HasSelection
         {
             get;

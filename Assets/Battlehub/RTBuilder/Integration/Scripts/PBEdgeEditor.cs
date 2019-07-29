@@ -486,6 +486,8 @@ namespace Battlehub.ProBuilderIntegration
                     m_edgeSelection.LastPosition + offset,
                     m_edgeSelection.LastNormal);
             }
+
+            RaisePBMeshesChanged(true);
         }
 
         private int[][] m_initialIndexes;
@@ -549,6 +551,8 @@ namespace Battlehub.ProBuilderIntegration
                 m_edgeSelection.CenterOfMass,
                 center + rotation * m_initialRotation * (m_initialPostion - center),
                 rotation * m_initialRotation * m_edgeSelection.LastNormal);
+
+            RaisePBMeshesChanged(true);
         }
 
 
@@ -607,6 +611,8 @@ namespace Battlehub.ProBuilderIntegration
                 m_edgeSelection.CenterOfMass,
                 center + rotation * Vector3.Scale(Quaternion.Inverse(rotation) * (m_initialPostion - center), scale),
                 rotation * m_initialRotation * m_edgeSelection.LastNormal);
+
+            RaisePBMeshesChanged(true);
         }
 
         public override MeshEditorState GetState()
@@ -645,6 +651,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 IList<Edge> edges = m_edgeSelection.GetEdges(mesh);
                 ConnectElements.Connect(mesh, edges);
+
                 mesh.Refresh();
                 mesh.ToMesh();
             }
@@ -672,6 +679,16 @@ namespace Battlehub.ProBuilderIntegration
                     m_edgeSelection.CenterOfMass + m_edgeSelection.LastNormal * distance,
                     m_edgeSelection.LastPosition + m_edgeSelection.LastNormal * distance,
                     m_edgeSelection.LastNormal);
+            }
+
+            RaisePBMeshesChanged(false);
+        }
+
+        private void RaisePBMeshesChanged(bool positionsOnly)
+        {
+            foreach (PBMesh mesh in m_edgeSelection.PBMeshes)
+            {
+                mesh.RaiseChanged(positionsOnly);
             }
         }
     }

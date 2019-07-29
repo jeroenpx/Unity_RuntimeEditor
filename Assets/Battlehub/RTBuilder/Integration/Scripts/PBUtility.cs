@@ -513,6 +513,7 @@ namespace Battlehub.ProBuilderIntegration
                 int index = common[n][0];
                 Vector3 v = mesh.transform.TransformPoint(positions[index]);
                 Vector3 p = camera.WorldToScreenPoint(v);
+                p.z = mousePosition.z;
 
                 float dist = (p - mousePosition).sqrMagnitude * distModifier;
 
@@ -564,6 +565,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 Vector3 v = transform.TransformPoint(positions[i]);
                 Vector3 p = camera.WorldToScreenPoint(v);
+                p.z = mousePosition.z;
 
                 float dist = (p - mousePosition).sqrMagnitude * distModifier;
 

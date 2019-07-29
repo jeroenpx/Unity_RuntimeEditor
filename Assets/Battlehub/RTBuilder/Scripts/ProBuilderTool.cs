@@ -273,7 +273,7 @@ namespace Battlehub.RTBuilder
         private IBoxSelection m_boxSelection;
         private Transform m_pivot;
         private IPolyShapeEditor m_polyShapeEditor;
-       
+
         private void Awake()
         {
             IOC.RegisterFallback<IProBuilderTool>(this);
@@ -282,6 +282,13 @@ namespace Battlehub.RTBuilder
                         
             m_wm = IOC.Resolve<IWindowManager>();
             m_wm.WindowCreated += OnWindowCreated;
+            foreach(RuntimeWindow window in m_rte.Windows)
+            {
+                if(window.WindowType == RuntimeWindowType.Scene)
+                {
+                    SetCullingMask(window);
+                }
+            }
             
             m_materialEditor = gameObject.AddComponent<PBMaterialEditor>();
             m_autoUVEditor = gameObject.AddComponent<PBAutoUVEditor>();
@@ -290,6 +297,8 @@ namespace Battlehub.RTBuilder
             m_uv = new PBAutoUnwrapSettings();
             m_uv.Changed += OnUVChanged;
 
+            bool wasActive = gameObject.activeSelf;
+            gameObject.SetActive(false);
             PBVertexEditor vertexEditor = gameObject.AddComponent<PBVertexEditor>();
             PBEdgeEditor edgeEditor = gameObject.AddComponent<PBEdgeEditor>();
             PBFaceEditor faceEditor = gameObject.AddComponent<PBFaceEditor>();
@@ -305,6 +314,7 @@ namespace Battlehub.RTBuilder
                 {
                     continue;
                 }
+                editor.GraphicsLayer = m_rte.CameraLayerSettings.ExtraLayer1;
                 editor.CenterMode = m_rte.Tools.PivotMode == RuntimePivotMode.Center;
             }
             UpdateGlobalMode();
@@ -319,6 +329,8 @@ namespace Battlehub.RTBuilder
             exposed.CanDelete = false;
             exposed.CanDuplicate = false;
             exposed.CanInspect = false;
+
+            gameObject.SetActive(wasActive);
         }
 
         private void Start()
@@ -390,7 +402,26 @@ namespace Battlehub.RTBuilder
                 Destroy(m_polyShapeEditor as MonoBehaviour);
             }
 
+            foreach (RuntimeWindow window in m_rte.Windows)
+            {
+                if (window.WindowType == RuntimeWindowType.Scene)
+                {
+                    ResetCullingMask(window);
+                }
+            }
+
+
             m_uv.Changed -= OnUVChanged; 
+        }
+
+        private void SetCullingMask(RuntimeWindow window)
+        {
+            window.Camera.cullingMask |= 1 << m_rte.CameraLayerSettings.ExtraLayer1;
+        }
+
+        private void ResetCullingMask(RuntimeWindow window)
+        {
+            window.Camera.cullingMask &= ~(1 << m_rte.CameraLayerSettings.ExtraLayer1);
         }
 
         private void OnCurrentModeChanged(ProBuilderToolMode oldMode)
@@ -737,6 +768,8 @@ namespace Battlehub.RTBuilder
             {
                 return;
             }
+
+            SetCullingMask(window);
 
             IRuntimeSelectionComponent selectionComponent = window.IOCContainer.Resolve<IRuntimeSelectionComponent>();
             if(selectionComponent != null)

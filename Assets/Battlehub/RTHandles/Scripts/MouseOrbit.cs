@@ -23,6 +23,7 @@ namespace Battlehub.RTCommon
 
         public bool CanOrbit;
         public bool CanZoom;
+        public bool ChangeOrthographicSizeOnly;
 
         private void Awake()
         {
@@ -61,6 +62,11 @@ namespace Battlehub.RTCommon
                 if (m_camera.orthographicSize < 0.01f)
                 {
                     m_camera.orthographicSize = 0.01f;
+                }
+
+                if(ChangeOrthographicSizeOnly)
+                {
+                    return;
                 }
             }
 

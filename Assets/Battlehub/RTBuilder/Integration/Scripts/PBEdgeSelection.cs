@@ -60,11 +60,9 @@ namespace Battlehub.ProBuilderIntegration
         private readonly Dictionary<ProBuilderMesh, HashSet<Edge>> m_meshToEdges = new Dictionary<ProBuilderMesh, HashSet<Edge>>();
         private readonly Dictionary<ProBuilderMesh, List<Edge>> m_meshToEdgesList = new Dictionary<ProBuilderMesh, List<Edge>>();
         private readonly List<ProBuilderMesh> m_meshes = new List<ProBuilderMesh>();
+        private readonly List<PBMesh> m_pbMeshes = new List<PBMesh>();
         private readonly Dictionary<Edge, List<int>> m_edgeToSelection = new Dictionary<Edge, List<int>>();
         private readonly Dictionary<Edge, HashSet<Edge>> m_coincidentEdges = new Dictionary<Edge, HashSet<Edge>>();
-        
-        //private readonly Edge[] m_hoveredEdges = new Edge[] { Edge.Empty };
-        //private ProBuilderMesh m_hoveredMesh;
 
         private Vector3 m_lastPosition;
         public Vector3 LastPosition
@@ -114,13 +112,22 @@ namespace Battlehub.ProBuilderIntegration
             get { return m_meshes; }
         }
 
+        public IEnumerable<PBMesh> PBMeshes
+        {
+            get { return m_pbMeshes; }
+        }
+
         private bool IsGeometryShadersSupported
         {
             get { return BuiltinMaterials.geometryShadersSupported; }
         }
 
+        private PBBaseEditor m_editor;
+
         private void Awake()
         {
+            m_editor = GetComponent<PBBaseEditor>();
+
             m_material = new Material(Shader.Find(BuiltinMaterials.lineShader));
             m_material.SetColor("_Color", Color.white);
             m_material.SetInt("_HandleZTest", (int)m_zTest);
@@ -134,10 +141,20 @@ namespace Battlehub.ProBuilderIntegration
                 Destroy(m_material);
             }
 
+            for(int i = 0; i < m_pbMeshes.Count; ++i)
+            {
+                PBMesh pbMesh = m_pbMeshes[i];
+                if (pbMesh != null)
+                {
+                    pbMesh.RaiseUnselected();
+                }
+            }
+
             m_meshToSelection.Clear();
             m_meshToEdges.Clear();
             m_meshToEdgesList.Clear();
             m_meshes.Clear();
+            m_pbMeshes.Clear();
             m_edgeToSelection.Clear();
             m_coincidentEdges.Clear();
         }
@@ -193,12 +210,19 @@ namespace Battlehub.ProBuilderIntegration
                 ProBuilderMesh mesh = m_meshes[i];
                 MeshFilter filter = m_meshToSelection[mesh];
                 Destroy(filter.gameObject);
+
+                PBMesh pbMesh = m_pbMeshes[i];
+                if(pbMesh != null)
+                {
+                    pbMesh.RaiseUnselected();
+                }
             }
 
             m_meshToSelection.Clear();
             m_meshToEdges.Clear();
             m_meshToEdgesList.Clear();
             m_meshes.Clear();
+            m_pbMeshes.Clear();
             m_edgeToSelection.Clear();
             m_coincidentEdges.Clear();
 
@@ -207,73 +231,6 @@ namespace Battlehub.ProBuilderIntegration
             m_lastNormal = Vector3.forward;
             m_lastPosition = Vector3.zero;
         }
-
-        //public void Hover(ProBuilderMesh mesh, Edge edge)
-        //{
-        //    if (m_hoveredMesh != null)
-        //    {
-        //        Leave();
-        //    }
-
-        //    HashSet<Edge> edgesHs;
-        //    MeshFilter edgesSelection;
-        //    m_meshToSelection.TryGetValue(mesh, out edgesSelection);
-        //    if (!m_meshToEdges.TryGetValue(mesh, out edgesHs))
-        //    {
-        //        return;
-        //    }
-
-        //    m_hoveredMesh = mesh;
-          
-        //    foreach (Edge coincidentEdge in m_coincidentEdges[edge])
-        //    {
-        //        m_hoveredEdges[0] = coincidentEdge;
-
-        //        if (edgesHs.Contains(m_hoveredEdges[0]))
-        //        {
-        //            SetEdgesColor(mesh, edgesSelection, m_selectedColor, m_hoveredEdges);
-        //        }
-        //        else
-        //        {
-        //            SetEdgesColor(mesh, edgesSelection, m_hoverColor, m_hoveredEdges);
-        //        }
-        //    }
-        //}
-
-        //public void Leave()
-        //{
-        //    if (m_hoveredMesh == null)
-        //    {
-        //        return;
-        //    }
-
-        //    HashSet<Edge> edgesHs;
-        //    MeshFilter selection;
-        //    m_meshToSelection.TryGetValue(m_hoveredMesh, out selection);
-        //    if (!m_meshToEdges.TryGetValue(m_hoveredMesh, out edgesHs))
-        //    {
-        //        return;
-        //    }
-
-        //    Edge edge = m_hoveredEdges[0];
-        //    foreach (Edge coincidentEdge in m_coincidentEdges[edge])
-        //    {
-        //        m_hoveredEdges[0] = coincidentEdge;
-
-        //        if (edgesHs.Contains(m_hoveredEdges[0]))
-        //        {
-        //            SetEdgesColor(m_hoveredMesh, selection, m_selectedColor, m_hoveredEdges);
-        //        }
-        //        else
-        //        {
-        //            SetEdgesColor(m_hoveredMesh, selection, m_color, m_hoveredEdges);
-        //        }
-        //    }
-
-           
-        //    m_hoveredEdges[0] = Edge.Empty;
-        //    m_hoveredMesh = null;
-        //}
 
         public void Add(ProBuilderMesh mesh, IEnumerable<Edge> edges)
         {
@@ -295,6 +252,13 @@ namespace Battlehub.ProBuilderIntegration
                 m_meshToEdges.Add(mesh, edgesHs);
                 m_meshToEdgesList.Add(mesh, edgesList);
                 m_meshes.Add(mesh);
+
+                PBMesh pbMesh = mesh.GetComponent<PBMesh>();
+                if (pbMesh != null)
+                {
+                    pbMesh.RaiseSelected(true);
+                }
+                m_pbMeshes.Add(pbMesh);
             }
 
             Edge[] notSelectedEdges = edges.Where(i => !edgesHs.Contains(i)).ToArray();
@@ -360,7 +324,19 @@ namespace Battlehub.ProBuilderIntegration
                     m_meshToSelection.Remove(mesh);
 
                     Destroy(edgesSelection.gameObject);
-                    m_meshes.Remove(mesh);
+
+                    int meshIndex = m_meshes.IndexOf(mesh);
+                    if(meshIndex != -1)
+                    {
+                        m_meshes.RemoveAt(meshIndex);
+
+                        PBMesh pbMesh = m_pbMeshes[meshIndex];
+                        if (pbMesh != null)
+                        {
+                            pbMesh.RaiseUnselected();
+                        }
+                        m_pbMeshes.RemoveAt(meshIndex);
+                    }
                 }
 
                 if (edgesList.Count > 0)
@@ -452,6 +428,8 @@ namespace Battlehub.ProBuilderIntegration
         private MeshFilter CreateEdgesGameObject(ProBuilderMesh mesh)
         {
             GameObject edgesSelection = new GameObject("Edges");
+            edgesSelection.layer = m_editor.GraphicsLayer;
+
             MeshFilter meshFilter = edgesSelection.GetComponent<MeshFilter>();
             if (meshFilter == null)
             {
@@ -604,7 +582,7 @@ namespace Battlehub.ProBuilderIntegration
             foreach (KeyValuePair<ProBuilderMesh, HashSet<Edge>> kvp in m_meshToEdges)
             {
                 ProBuilderMesh mesh = kvp.Key;
-                
+
                 MeshFilter meshFilter = m_meshToSelection[mesh];
                 BuildEdgeMesh(mesh, meshFilter.sharedMesh, true);
 

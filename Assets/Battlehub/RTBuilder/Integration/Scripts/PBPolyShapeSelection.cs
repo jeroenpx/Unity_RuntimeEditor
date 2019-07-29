@@ -8,7 +8,7 @@ namespace Battlehub.ProBuilderIntegration
     public class PBPolyShapeSelection : MonoBehaviour
     {
         [SerializeField]
-        private Color m_edgesColor = Color.green;
+        private Color m_edgesColor = Color.yellow;
         [SerializeField]
         private Color m_vertexColor = new Color(0.33f, 0.33f, 0.33f);
         [SerializeField]

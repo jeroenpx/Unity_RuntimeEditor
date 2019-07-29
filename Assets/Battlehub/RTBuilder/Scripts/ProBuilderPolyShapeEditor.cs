@@ -114,6 +114,8 @@ namespace Battlehub.RTBuilder
                 m_polyShape = m_rte.Selection.activeGameObject.GetComponent<PBPolyShape>();
                 PolyShapeUpdatePivot();
                 m_polyShape.IsEditing = true;
+                SetLayer(m_polyShape.gameObject);
+
                 if (m_polyShape.Stage > 0)
                 {
                     m_rte.Selection.Enabled = false;
@@ -129,6 +131,21 @@ namespace Battlehub.RTBuilder
                 m_polyShape.IsEditing = false;
                 m_rte.Selection.Enabled = true;
                 m_rte.Selection.activeGameObject = m_polyShape.gameObject;
+            }
+        }
+
+        private void SetLayer(GameObject go)
+        {
+            int layer = m_rte.CameraLayerSettings.ExtraLayer1;
+
+            foreach(Transform child in go.GetComponentsInChildren<Transform>(true))
+            {
+                if(child.transform == go.transform)
+                {
+                    continue;
+                }
+
+                child.gameObject.layer = layer;
             }
         }
 

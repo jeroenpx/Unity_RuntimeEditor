@@ -392,6 +392,8 @@ namespace Battlehub.ProBuilderIntegration
                     m_vertexSelection.LastPosition + offset,
                     m_vertexSelection.LastNormal);
             }
+
+            RaisePBMeshesChanged(true);
         }
 
         public override void BeginRotate(Quaternion initialRotation)
@@ -447,6 +449,8 @@ namespace Battlehub.ProBuilderIntegration
                 m_vertexSelection.CenterOfMass,
                 center + rotation * m_initialRotation * (m_initialPostion - center),
                 rotation * m_initialRotation * m_vertexSelection.LastNormal);
+
+            RaisePBMeshesChanged(true);
         }
 
 
@@ -502,6 +506,16 @@ namespace Battlehub.ProBuilderIntegration
                 m_vertexSelection.CenterOfMass,
                 center + rotation * Vector3.Scale(Quaternion.Inverse(rotation) * (m_initialPostion - center), scale),
                 rotation * m_initialRotation * m_vertexSelection.LastNormal);
+
+            RaisePBMeshesChanged(true);
+        }
+
+        private void RaisePBMeshesChanged(bool positionsOnly)
+        {
+            foreach (PBMesh mesh in m_vertexSelection.PBMeshes)
+            {
+                mesh.RaiseChanged(positionsOnly);
+            }
         }
     }
 }

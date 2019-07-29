@@ -362,7 +362,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4477337054852880}
   - component: {fileID: 114487925011074116}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BoxSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
