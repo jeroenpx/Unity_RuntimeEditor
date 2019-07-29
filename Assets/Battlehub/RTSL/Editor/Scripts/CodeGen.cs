@@ -15,6 +15,8 @@ namespace Battlehub.RTSL
     /// </summary>
     public class CodeGen
     {
+        public static bool InitializeLists = false;
+        
         /// <summary>
         /// Automatically generated fields have ProtoMember tag offset = 256. 1 - 256 is reserved for user defined fields.
         /// User defined fields should be located in auto-generated partial class.
@@ -106,6 +108,14 @@ namespace Battlehub.RTSL
         private static readonly string FieldTemplate =
             "[ProtoMember({0})]" + BR + TAB2 +
             "public {1} {2};" + END + TAB2;
+
+        private static readonly string FieldInitializationTemplate =
+            "[ProtoMember({0})]" + BR + TAB2 +
+            "public {1} {2} = new {1}();" + END + TAB2;
+
+        private static readonly string ReplacementFieldInitializationTemplate =
+            "[ProtoMember({0})]" + BR + TAB2 +
+            "public long[] {1} = new long[0];" + END + TAB2;
 
         private static readonly string ReadFromMethodTemplate =
             "protected override void ReadFromImpl(object obj)" + BR + TAB2 +
@@ -792,10 +802,31 @@ namespace Battlehub.RTSL
 
                 string typeName = GetTypeName(prop);
 
-                sb.AppendFormat(
-                    FieldTemplate, i + AutoFieldTagOffset,
-                    typeName,
-                    prop.PersistentName);
+
+                if (InitializeLists && IsGenericList(prop.MappedType))
+                {
+                    Type replacementType = GetReplacementType(prop.MappedType);
+                    if (replacementType == null)
+                    {
+                        sb.AppendFormat(
+                            FieldInitializationTemplate, i + AutoFieldTagOffset,
+                            typeName,
+                            prop.PersistentName);
+                    }
+                    else if(replacementType == typeof(long[]))
+                    {
+                        sb.AppendFormat(
+                            ReplacementFieldInitializationTemplate, i + AutoFieldTagOffset,
+                            prop.PersistentName);
+                    }
+                }
+                else
+                {
+                    sb.AppendFormat(
+                        FieldTemplate, i + AutoFieldTagOffset,
+                        typeName,
+                        prop.PersistentName);
+                }
             }
 
             string readMethodBody = CreateReadMethodBody(mapping);
