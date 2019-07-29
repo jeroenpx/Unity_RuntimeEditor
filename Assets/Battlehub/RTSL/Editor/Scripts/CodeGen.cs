@@ -426,6 +426,17 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public static string TypeName(Type type)
         {
+            if(type.IsArray)
+            {
+                Type elementType = type.GetElementType();
+                if(elementType.DeclaringType == null)
+                {
+                    return _TypeName(type);
+                }
+
+                return TypeName(elementType.DeclaringType) + "+" + _TypeName(type);
+            }
+
             if (type.DeclaringType == null)
             {
                 return _TypeName(type);
@@ -792,17 +803,13 @@ namespace Battlehub.RTSL
             string getDepsMethodBody = CreateDepsMethodBody(mapping);
             string getDepsFromMethodBody = CreateDepsFromMethodBody(mapping);
 
-            string mappedTypeName = PrepareMappedTypeName(mapping.MappedTypeName);
-            if (mappedTypeName == "Object")
-            {
-                mappedTypeName = "UnityObject";
-            }
+            string mappedTypeName = ToMappedTypeName(mapping);
 
             if (!string.IsNullOrEmpty(readMethodBody))
             {
                 sb.AppendFormat(ReadFromMethodTemplate, readMethodBody, mappedTypeName);
             }
-        
+
             if (!string.IsNullOrEmpty(writeMethodBody))
             {
                 sb.Append(BR + TAB2);
@@ -821,22 +828,33 @@ namespace Battlehub.RTSL
             }
 
             Type mappingType = Type.GetType(mapping.MappedAssemblyQualifiedName);
-            if(mappingType != null)
+            if (mappingType != null)
             {
                 if (mappingType.GetConstructor(Type.EmptyTypes) != null || mappingType.IsValueType)
                 {
-                    if(!mappingType.IsSubclassOf(typeof(UnityObject)))
+                    if (!mappingType.IsSubclassOf(typeof(UnityObject)))
                     {
                         sb.Append(BR + TAB2);
                         sb.AppendFormat(ImplicitOperatorsTemplate, mappedTypeName, PreparePersistentTypeName(mapping.PersistentTypeName));
                     }
                 }
             }
-          
+
             return sb.ToString();
         }
 
-        private string GetTypeName(PersistentPropertyMapping prop, bool useReplacementType = true)
+        private string ToMappedTypeName(PersistentClassMapping mapping)
+        {
+            string mappedTypeName = PrepareMappedTypeName(mapping.MappedTypeName);
+            if (mappedTypeName == "Object")
+            {
+                mappedTypeName = "UnityObject";
+            }
+
+            return mappedTypeName;
+        }
+
+        private string GetTypeName(PersistentPropertyMapping prop, bool useReplacementType = true, bool forceMappedTypeName = false)
         {
             string typeName;
             Type repacementType = GetReplacementType(prop.MappedType);
@@ -870,7 +888,7 @@ namespace Battlehub.RTSL
                         }
                         else
                         {
-                            if (prop.UseSurrogate)
+                            if (prop.UseSurrogate && !forceMappedTypeName)
                             {
                                 typeName = string.Format("List<Persistent{0}>", PreparePersistentTypeName(TypeName(argType)));
                             }
@@ -882,7 +900,7 @@ namespace Battlehub.RTSL
                     }
                     else
                     {
-                        if (prop.UseSurrogate)
+                        if (prop.UseSurrogate && !forceMappedTypeName)
                         {
                             typeName = "Persistent" + PreparePersistentTypeName(prop.PersistentTypeName);
                         }
@@ -901,7 +919,7 @@ namespace Battlehub.RTSL
         private string CreateReadMethodBody(PersistentClassMapping mapping)
         {
             StringBuilder sb = new StringBuilder();
-
+            string mappedTypeName = ToMappedTypeName(mapping);
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
@@ -920,7 +938,7 @@ namespace Battlehub.RTSL
                 string get = "uo.{1}";
                 if(prop.IsNonPublic)
                 {
-                    get = "GetPrivate<" + GetTypeName(prop, false) + ">(uo, \"{1}\")";
+                    get = "GetPrivate<" + mappedTypeName + "," + GetTypeName(prop, false, true) + ">(uo, \"{1}\")";
                 }
 
                 
@@ -937,12 +955,10 @@ namespace Battlehub.RTSL
                     {
                         if (IsGenericList(prop.MappedType))
                         {
-                            //sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, PreparePersistentTypeName("Persistent" +  prop.MappedType.GetGenericArguments()[0].Name));
                             sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, PreparePersistentTypeName("Persistent" + TypeName(prop.MappedType.GetGenericArguments()[0])));
                         }
                         else if(prop.MappedType.IsArray)
                         {
-                            //sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, PreparePersistentTypeName("Persistent" + prop.MappedType.GetElementType().Name));
                             sb.AppendFormat("{0} = Assign(" + get + ", v_ => ({2})v_);", prop.PersistentName, prop.MappedName, PreparePersistentTypeName("Persistent" + TypeName(prop.MappedType.GetElementType())));
                         }
                         else
@@ -965,6 +981,7 @@ namespace Battlehub.RTSL
         private string CreateWriteMethodBody(PersistentClassMapping mapping)
         {
             StringBuilder sb = new StringBuilder();
+            string mappedTypeName = ToMappedTypeName(mapping);
 
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
@@ -983,17 +1000,13 @@ namespace Battlehub.RTSL
                 string get = "uo.{0}";
                 if (prop.IsNonPublic)
                 {
-                    get = "GetPrivate<" + GetTypeName(prop, false) + ">(uo, \"{0}\")";
+                    get = "GetPrivate<" + mappedTypeName + "," + GetTypeName(prop, false, true) + ">(uo, \"{0}\")";
                 }
 
                 if (prop.MappedType.IsSubclassOf(typeof(UnityObject)) || 
                     prop.MappedType.IsArray && prop.MappedType.GetElementType().IsSubclassOf(typeof(UnityObject)) ||
                     IsGenericList(prop.MappedType) && prop.MappedType.GetGenericArguments()[0].IsSubclassOf(typeof(UnityObject)))
                 {
-                    //generate code which will convert identifier to unity object
-
-                    //Type mappedType = prop.MappedType.IsArray ? prop.MappedType.GetElementType() : prop.MappedType;
-                    //sb.AppendFormat("uo.{0} = FromID<{2}>({1}, uo.{0});", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(mappedType.Name));
                     if (prop.IsNonPublic)
                     {
                         sb.AppendFormat("SetPrivate(uo, \"{0}\", FromID({1}, " + get + "));", prop.MappedName, prop.PersistentName);
@@ -1011,12 +1024,10 @@ namespace Battlehub.RTSL
                         {
                             if (prop.IsNonPublic)
                             {
-                                //sb.AppendFormat("SetPrivate(uo, \"{0}\", Assign({1}, v_ => ({2})v_));", prop.MappedName, prop.PersistentName, prop.MappedType.GetGenericArguments()[0].Name);
                                 sb.AppendFormat("SetPrivate(uo, \"{0}\", Assign({1}, v_ => ({2})v_));", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(TypeName(prop.MappedType.GetGenericArguments()[0])));
                             }
                             else
                             {
-                                //sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetGenericArguments()[0].Name);
                                 sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(TypeName(prop.MappedType.GetGenericArguments()[0])));
                             }
                         }
@@ -1024,26 +1035,22 @@ namespace Battlehub.RTSL
                         {
                             if (prop.IsNonPublic)
                             {
-                                //sb.AppendFormat("SetPrivate(uo, \"{0}\", Assign({1}, v_ => ({2})v_));", prop.MappedName, prop.PersistentName, prop.MappedType.GetElementType().Name);
                                 sb.AppendFormat("SetPrivate(uo, \"{0}\", Assign({1}, v_ => ({2})v_));", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(TypeName(prop.MappedType.GetElementType())));
                             }
                             else
                             {
-                                //sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, prop.MappedType.GetElementType().Name);
                                 sb.AppendFormat("uo.{0} = Assign({1}, v_ => ({2})v_);", prop.MappedName, prop.PersistentName, PrepareMappedTypeName(TypeName(prop.MappedType.GetElementType())));
                             }
-
-                            
                         }
                         else
                         {
                             if (prop.IsNonPublic)
                             {
-                                sb.AppendFormat("SetPrivate(uo, \"{0}\", {1});", prop.MappedName, prop.PersistentName);
+                                sb.AppendFormat("SetPrivate<{0}, {1}>(uo, \"{2}\", {3});", mappedTypeName, GetTypeName(prop, false, true), prop.MappedName, prop.PersistentName);
                             }
                             else
                             {
-                                sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
+                                sb.AppendFormat("uo.{0} = {1};",  prop.MappedName, prop.PersistentName);
                             }
                         }
                     }
@@ -1057,8 +1064,7 @@ namespace Battlehub.RTSL
                         {
                             sb.AppendFormat("uo.{0} = {1};", prop.MappedName, prop.PersistentName);
                         }
-                    }
-                    
+                    }   
                 }
 
                 sb.Append(BR + TAB2);
@@ -1116,6 +1122,8 @@ namespace Battlehub.RTSL
         private string CreateDepsFromMethodBody(PersistentClassMapping mapping)
         {
             StringBuilder sb = new StringBuilder();
+            string mappedTypeName = ToMappedTypeName(mapping);
+
             for (int i = 0; i < mapping.PropertyMappings.Length; ++i)
             {
                 PersistentPropertyMapping prop = mapping.PropertyMappings[i];
@@ -1132,7 +1140,7 @@ namespace Battlehub.RTSL
                     string get = "uo.{0}";
                     if (prop.IsNonPublic)
                     {
-                        get = "GetPrivate<" + GetTypeName(prop, false) + ">(uo, \"{0}\")";
+                        get = "GetPrivate<" + mappedTypeName + "," + GetTypeName(prop, false, true) + ">(uo, \"{0}\")";
                     }
 
                     if (prop.UseSurrogate)
@@ -1143,13 +1151,11 @@ namespace Battlehub.RTSL
                         if(prop.MappedType != null && IsGenericList(prop.MappedType))
                         {
                             Type type = prop.MappedType.GetGenericArguments()[0];
-                            //persistentTypeName = PreparePersistentTypeName("Persistent" + type.Name);
                             persistentTypeName = PreparePersistentTypeName("Persistent" + TypeName(type));
                         }
                         else if(prop.MappedType != null && prop.MappedType.IsArray)
                         {
                             Type type = prop.MappedType.GetElementType();
-                            //persistentTypeName = PreparePersistentTypeName("Persistent" + type.Name);
                             persistentTypeName = PreparePersistentTypeName("Persistent" + TypeName(type));
                         }
                         else

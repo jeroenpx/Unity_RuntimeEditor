@@ -417,6 +417,7 @@ namespace Battlehub.RTSL
             return objs;
         }
 
+
         protected T GetPrivate<T>(object obj, string fieldName)
         {
             FieldInfo fieldInfo = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -432,6 +433,21 @@ namespace Battlehub.RTSL
             return default(T);
         }
 
+        protected T GetPrivate<V, T>(object obj, string fieldName)
+        {
+            FieldInfo fieldInfo = typeof(V).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            if (fieldInfo == null)
+            {
+                return default(T);
+            }
+            object val = fieldInfo.GetValue(obj);
+            if (val is T)
+            {
+                return (T)val;
+            }
+            return default(T);
+        }
+
         protected void SetPrivate<T>(object obj, string fieldName, T value)
         {
             FieldInfo fieldInfo = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -441,6 +457,22 @@ namespace Battlehub.RTSL
             }
 
             if(!fieldInfo.FieldType.IsAssignableFrom(typeof(T)))
+            {
+                return;
+            }
+
+            fieldInfo.SetValue(obj, value);
+        }
+
+        protected void SetPrivate<V,T>(V obj, string fieldName, T value)
+        {
+            FieldInfo fieldInfo = typeof(V).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            if (fieldInfo == null)
+            {
+                return;
+            }
+
+            if (!fieldInfo.FieldType.IsAssignableFrom(typeof(T)))
             {
                 return;
             }
