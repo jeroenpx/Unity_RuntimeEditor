@@ -503,8 +503,21 @@ namespace Battlehub.RTSL
         private void ToPropertyTypeIndex(ClassMappingInfo mappingInfo, int propIndex, int selection, Action<int> callback, Action<Type> missingCallback)
         {
             Type propertyType = mappingInfo.PropertyMappingTypes[propIndex][selection];
-            propertyType = MappedType(propertyType);
+            if(CodeGen.IsDictionary(propertyType))
+            {
+                Type[] args = propertyType.GetGenericArguments();
+                ToTypeIndex(callback, missingCallback, args[0]);
+                ToTypeIndex(callback, missingCallback, args[1]);
+            }
+            else
+            {
+                propertyType = MappedType(propertyType);
+                ToTypeIndex(callback, missingCallback, propertyType);
+            }
+        }
 
+        private void ToTypeIndex(Action<int> callback, Action<Type> missingCallback, Type propertyType)
+        {
             int propertyTypeIndex;
             if (m_typeToIndex.TryGetValue(propertyType, out propertyTypeIndex))
             {
@@ -1596,13 +1609,15 @@ namespace Battlehub.RTSL
                     mapping.MappedAssemblyName = null;
 
                     mapping.UseSurrogate = false;
+                    mapping.UseSurrogate2 = false;
                     mapping.HasDependenciesOrIsDependencyItself = false;
                     pMappingsEnabled.Add(false);
                 }
                 else
                 {
                     mapping.IsNonPublic = type.GetField(mapping.MappedName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) != null;
-                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType) != null;
+                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType, 0) != null;
+                    mapping.UseSurrogate2 = CodeGen.GetSurrogateType(mapping.MappedType, 1) != null;
                     mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
@@ -1635,7 +1650,8 @@ namespace Battlehub.RTSL
                 pMapping.MappedAssemblyName = fInfo.FieldType.Assembly.FullName.Split(',')[0];
                 pMapping.IsProperty = false;
 
-                pMapping.UseSurrogate = CodeGen.GetSurrogateType(fInfo.FieldType) != null;
+                pMapping.UseSurrogate = CodeGen.GetSurrogateType(fInfo.FieldType, 0) != null;
+                pMapping.UseSurrogate2 = CodeGen.GetSurrogateType(fInfo.FieldType, 1) != null;
                 pMapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(fInfo.FieldType);
                 pMapping.IsNonPublic = !fInfo.IsPublic;
 
@@ -1662,12 +1678,14 @@ namespace Battlehub.RTSL
 
                     mapping.HasDependenciesOrIsDependencyItself = false;
                     mapping.UseSurrogate = false;
+                    mapping.UseSurrogate2 = false;
 
                     pMappingsEnabled.Add(false);
                 }
                 else
                 {
-                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType) != null;
+                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType, 0) != null;
+                    mapping.UseSurrogate2 = CodeGen.GetSurrogateType(mapping.MappedType, 1) != null;
                     mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
 
                     pMappingsEnabled.Add(mapping.IsEnabled);
@@ -1701,7 +1719,8 @@ namespace Battlehub.RTSL
                 pMapping.MappedAssemblyName = pInfo.PropertyType.Assembly.FullName.Split(',')[0];
                 pMapping.IsProperty = true;
 
-                pMapping.UseSurrogate = CodeGen.GetSurrogateType(pInfo.PropertyType) != null;
+                pMapping.UseSurrogate = CodeGen.GetSurrogateType(pInfo.PropertyType, 0) != null;
+                pMapping.UseSurrogate2 = CodeGen.GetSurrogateType(pInfo.PropertyType, 1) != null;
                 pMapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(pInfo.PropertyType);
 
                 pMappingsEnabled.Add(false);
