@@ -183,6 +183,26 @@ namespace Battlehub.RTHandles
             get { return gameObject; }
         }
 
+        public override bool IsOrthographic
+        {
+            get { return IsOrthographic; }
+            set
+            {
+                if(m_sceneGizmo != null)
+                {
+                    if(m_sceneGizmo.IsOrthographic != value)
+                    {
+                        m_sceneGizmo.IsOrthographic = value;
+                    }
+                }
+                else
+                {
+                    IsOrthographic = value;
+                }
+                
+            }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();

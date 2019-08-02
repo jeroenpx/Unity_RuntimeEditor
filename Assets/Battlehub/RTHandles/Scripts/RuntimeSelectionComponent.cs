@@ -171,7 +171,7 @@ namespace Battlehub.RTHandles
             get { return m_secondaryPivot; }
         }
 
-        public bool IsOrthographic
+        public virtual bool IsOrthographic
         {
             get { return Window.Camera.orthographic; }
             set { Window.Camera.orthographic = value; }

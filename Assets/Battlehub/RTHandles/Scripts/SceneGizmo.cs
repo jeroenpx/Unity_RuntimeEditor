@@ -60,7 +60,7 @@ namespace Battlehub.RTHandles
         private float m_screenHeight;
         private float m_screenWidth;
 
-        private bool IsOrthographic
+        public bool IsOrthographic
         {
             get { return m_camera.orthographic; }
             set
