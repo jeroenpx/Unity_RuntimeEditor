@@ -228,6 +228,18 @@ namespace Battlehub.RTSL
             }
         }
 
+        protected void AddDep<T>(HashSet<T> dependencies, GetDepsFromContext context)
+        {
+            if (dependencies == null)
+            {
+                return;
+            }
+            foreach(T dep in dependencies)
+            {
+                AddDep(dep, context);
+            }
+        }
+
         protected void AddDep<T,V>(Dictionary<T,V> dependencies, GetDepsFromContext context)
         {
             if (dependencies == null)
@@ -276,6 +288,18 @@ namespace Battlehub.RTSL
             for (int i = 0; i < surrogateList.Count; ++i)
             {
                 PersistentSurrogate surrogate = surrogateList[i];
+                surrogate.GetDeps(context);
+            }
+        }
+
+        protected void AddSurrogateDeps<T>(HashSet<T> surrogatesHS, GetDepsContext context) where T : PersistentSurrogate
+        {
+            if (surrogatesHS == null)
+            {
+                return;
+            }
+            foreach(PersistentSurrogate surrogate in surrogatesHS)
+            {
                 surrogate.GetDeps(context);
             }
         }
@@ -359,15 +383,31 @@ namespace Battlehub.RTSL
             }
         }
 
-        protected void AddSurrogateDeps<T>(List<T> objArray, Func<T, PersistentSurrogate> convert, GetDepsContext context)
+        protected void AddSurrogateDeps<T>(List<T> objList, Func<T, PersistentSurrogate> convert, GetDepsContext context)
         {
-            if (objArray == null)
+            if (objList == null)
             {
                 return;
             }
-            for (int i = 0; i < objArray.Count; ++i)
+            for (int i = 0; i < objList.Count; ++i)
             {
-                T obj = objArray[i];
+                T obj = objList[i];
+                if (obj != null)
+                {
+                    PersistentSurrogate surrogate = convert(obj);
+                    surrogate.GetDeps(context);
+                }
+            }
+        }
+
+        protected void AddSurrogateDeps<T>(HashSet<T> objHs, Func<T, PersistentSurrogate> convert, GetDepsContext context)
+        {
+            if (objHs == null)
+            {
+                return;
+            }
+            foreach(T obj in objHs)
+            {
                 if (obj != null)
                 {
                     PersistentSurrogate surrogate = convert(obj);
@@ -419,6 +459,22 @@ namespace Battlehub.RTSL
             }
         }
 
+        protected void AddSurrogateDeps<T>(HashSet<T> objHs, Func<T, PersistentSurrogate> convert, GetDepsFromContext context)
+        {
+            if (objHs == null)
+            {
+                return;
+            }
+            foreach(T obj in objHs)
+            { 
+                if (obj != null)
+                {
+                    PersistentSurrogate surrogate = convert(obj);
+                    surrogate.GetDepsFrom(obj, context);
+                }
+            }
+        }
+
         protected void AddSurrogateDeps<T, V, T1, V1>(Dictionary<T, V> dict, Func<T, T1> convertKey, Func<V, V1> convertValue, GetDepsFromContext context)
         {
             if (dict == null)
@@ -442,89 +498,6 @@ namespace Battlehub.RTSL
                 }
             }
         }
-
-        //protected void AddSurrogateDeps<T, V>(Dictionary<T, V> dict, Func<T, PersistentSurrogate> convertKey, GetDepsFromContext context)
-        //{
-        //    if (dict == null)
-        //    {
-        //        return;
-        //    }
-        //    foreach(KeyValuePair<T, V> kvp in dict)
-        //    {
-        //        T obj = kvp.Key;
-
-        //        PersistentSurrogate surrogate = convertKey(obj);
-        //        surrogate.GetDepsFrom(obj, context);
-
-
-        //        GetDepsFrom(kvp.Value, context);
-        //    }
-        //}
-
-        //protected void AddSurrogateDeps<T, V>(Dictionary<T, V> dict, Func<V, PersistentSurrogate> convertValue, GetDepsFromContext context)
-        //{
-        //    if (dict == null)
-        //    {
-        //        return;
-        //    }
-        //    foreach (KeyValuePair<T, V> kvp in dict)
-        //    {
-        //        T obj = kvp.Key;
-        //        GetDepsFrom(obj, context);
-
-        //        PersistentSurrogate surrogate = convertValue(kvp.Value);
-        //        surrogate.GetDepsFrom(obj, context);
-        //    }
-        //}
-
-        //protected void AddSurrogateDeps<T, V>(Dictionary<T, V> dict, Func<T, PersistentSurrogate> convertKey, Func<V, PersistentSurrogate> convertValue, GetDepsFromContext context)
-        //{
-        //    if (dict == null)
-        //    {
-        //        return;
-        //    }
-        //    foreach (KeyValuePair<T, V> kvp in dict)
-        //    {
-        //        T obj = kvp.Key;
-
-        //        PersistentSurrogate surrogate = convertKey(obj);
-        //        surrogate.GetDepsFrom(obj, context);
-
-        //        surrogate = convertValue(kvp.Value);
-        //        surrogate.GetDepsFrom(obj, context);
-        //    }
-        //}
-
-        //protected void AddSurrogateDeps<T, V>(Dictionary<T, V> dict, Func<T, T> convertKey, Func<V, PersistentSurrogate> convertValue, GetDepsFromContext context)
-        //{
-        //    if (dict == null)
-        //    {
-        //        return;
-        //    }
-        //    foreach (KeyValuePair<T, V> kvp in dict)
-        //    {
-        //        T obj = kvp.Key;
-
-        //        PersistentSurrogate surrogate = convertValue(kvp.Value);
-        //        surrogate.GetDepsFrom(obj, context);
-        //    }
-        //}
-
-        //protected void AddSurrogateDeps<T, V>(Dictionary<T, V> dict, Func<T, PersistentSurrogate> convertKey, Func<V, V> convertValue, GetDepsFromContext context)
-        //{
-        //    if (dict == null)
-        //    {
-        //        return;
-        //    }
-        //    foreach (KeyValuePair<T, V> kvp in dict)
-        //    {
-        //        T obj = kvp.Key;
-
-        //        PersistentSurrogate surrogate = convertKey(obj);
-        //        surrogate.GetDepsFrom(obj, context);                
-        //    }
-        //}
-
 
         public T[] Assign<V, T>(V[] arr, Func<V, T> convert)
         {
@@ -552,6 +525,21 @@ namespace Battlehub.RTSL
             for (int i = 0; i < list.Count; ++i)
             {
                 result.Add(convert(list[i]));
+            }
+            return result;
+        }
+
+        public HashSet<T> Assign<V, T>(HashSet<V> hs, Func<V, T> convert)
+        {
+            if (hs == null)
+            {
+                return null;
+            }
+
+            HashSet<T> result = new HashSet<T>();
+            foreach(V obj in hs)
+            {
+                result.Add(convert(obj));
             }
             return result;
         }
@@ -587,9 +575,14 @@ namespace Battlehub.RTSL
             return m_assetDB.ToID(uo);
         }
 
-        protected long[] ToID<T>(List<T> uo) where T : UnityObject
+        protected long[] ToID<T>(List<T> list) where T : UnityObject
         {
-            return m_assetDB.ToID(uo);
+            return m_assetDB.ToID(list);
+        }
+
+        protected long[] ToID<T>(HashSet<T> hs) where T : UnityObject
+        {
+            return m_assetDB.ToID(hs);
         }
 
         protected Dictionary<long, long> ToID<T, V>(Dictionary<T, V> uo) where T : UnityObject where V : UnityObject
@@ -709,6 +702,46 @@ namespace Battlehub.RTSL
                     objs.Add(FromID<T>(id[i]));
                 }
             }
+            return objs;
+        }
+
+        protected HashSet<T> FromID<T>(long[] id, HashSet<T> fallback = null) where T : UnityObject
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            HashSet<T> objs = new HashSet<T>();
+
+            int count = 0;
+            if(fallback != null)
+            {
+                foreach(T f in fallback)
+                {
+                    if (count >= id.Length)
+                    {
+                        break;
+                    }
+
+                    T obj = FromID(id[count], f);
+                    if(obj != null)
+                    {
+                        objs.Add(obj);
+                    }
+                    
+                    count++;
+                }
+            }
+
+            for (int i = count; i < id.Length; ++i)
+            {
+                T obj = FromID<T>(id[i]);
+                if(obj != null)
+                {
+                    objs.Add(obj);
+                }
+            }            
             return objs;
         }
 

@@ -37,6 +37,7 @@ namespace Battlehub.RTSL
         long ToID(UnityObject uo);
         long[] ToID(UnityObject[] uo);
         long[] ToID<T>(List<T> uo) where T : UnityObject;
+        long[] ToID<T>(IEnumerable<T> uo) where T : UnityObject;
         bool IsMapped(long id);
         T FromID<T>(long id) where T : UnityObject;
         T[] FromID<T>(long[] id) where T : UnityObject;
@@ -551,6 +552,20 @@ namespace Battlehub.RTSL
                 ids[i] = ToID(uo[i]);
             }
             return ids;
+        }
+
+        public long[] ToID<T>(IEnumerable<T> uo) where T : UnityObject
+        {
+            if (uo == null)
+            {
+                return null;
+            }
+            List<long> ids = new List<long>();
+            foreach(T obj in uo)
+            {
+                ids.Add(ToID(obj));
+            }
+            return ids.ToArray();
         }
 
         public int ToInt(long id)

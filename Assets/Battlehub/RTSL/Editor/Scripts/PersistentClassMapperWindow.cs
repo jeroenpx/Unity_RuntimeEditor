@@ -451,7 +451,7 @@ namespace Battlehub.RTSL
             {
                 mappedType = mappedType.GetElementType();
             }
-            else if (CodeGen.IsGenericList(mappedType))
+            else if (CodeGen.IsGenericList(mappedType) || CodeGen.IsHashSet(mappedType))
             {
                 mappedType = mappedType.GetGenericArguments()[0];
             }
