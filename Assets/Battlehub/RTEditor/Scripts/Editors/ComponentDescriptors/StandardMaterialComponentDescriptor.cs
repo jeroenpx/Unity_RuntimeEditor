@@ -175,6 +175,18 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public Vector2 Tiling
+        {
+            get { return Material.mainTextureScale; }
+            set { Material.mainTextureScale = value; }
+        }
+
+        public Vector2 Offset
+        {
+            get { return Material.mainTextureOffset; }
+            set { Material.mainTextureOffset = value; }
+        }
+
         private static bool ShouldEmissionBeEnabled(Material mat, Color color)
         {
             var realtimeEmission = (mat.globalIlluminationFlags & MaterialGlobalIlluminationFlags.RealtimeEmissive) > 0;
@@ -422,6 +434,11 @@ namespace Battlehub.RTEditor
             properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Detail Albedo Map", RTShaderPropertyType.TexEnv, detailAlbedoMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null, EraseAccessorTarget));
             properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Detail Normal Map", RTShaderPropertyType.TexEnv, detailNormalMap, new RuntimeShaderInfo.RangeLimits(0.0f, 0.0f, 0.0f), TextureDimension.Tex2D, null, EraseAccessorTarget));
             properties.Add(new MaterialPropertyDescriptor(editor.Material, new MaterialPropertyAccessor(editor.Material, _DetailNormalMapScale), "Detail Scale", RTShaderPropertyType.Float, floatInfo, new RuntimeShaderInfo.RangeLimits(0, 0, 0), TextureDimension.None, null, EraseAccessorTarget));
+
+            PropertyInfo tilingInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.Tiling, "Tiling");
+            PropertyInfo offsetInfo = Strong.PropertyInfo((StandardMaterialValueConverter x) => x.Offset, "Offset");
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Tiling", RTShaderPropertyType.Vector, tilingInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.None, null, EraseAccessorTarget));
+            properties.Add(new MaterialPropertyDescriptor(editor.Material, converter, "Offset", RTShaderPropertyType.Vector, offsetInfo, new RuntimeShaderInfo.RangeLimits(), TextureDimension.None, null, EraseAccessorTarget));
 
             return properties.ToArray();
         }
