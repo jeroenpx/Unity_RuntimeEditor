@@ -80,13 +80,15 @@ namespace Battlehub.RTBuilder
         private void SetCullingMask(RuntimeWindow window)
         {
             window.Camera.cullingMask = (1 << LayerMask.NameToLayer("UI")) | (1 << m_editor.CameraLayerSettings.ExtraLayer1) | (1 << m_editor.CameraLayerSettings.ExtraLayer2);
-            window.Camera.backgroundColor = Color.black;
+            window.Camera.backgroundColor = Color.white;
             window.Camera.clearFlags = CameraClearFlags.SolidColor;
         }
 
         private void ResetCullingMask(RuntimeWindow window)
         {
-            //window.Camera.cullingMask &= ~(1 << m_editor.CameraLayerSettings.ExtraLayer2);
+            CameraLayerSettings settings = m_editor.CameraLayerSettings;
+            window.Camera.cullingMask = ~((1 << m_editor.CameraLayerSettings.ExtraLayer2) | ((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
+            window.Camera.clearFlags = CameraClearFlags.Skybox;
         }
 
     }

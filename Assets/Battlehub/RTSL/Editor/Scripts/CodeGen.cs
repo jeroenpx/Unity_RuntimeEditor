@@ -16,6 +16,8 @@ namespace Battlehub.RTSL
     public class CodeGen
     {
         public static bool InitializeLists = false;
+        public static bool InitializeDictionaries = false;
+        public static bool InitializeHs = false;
         
         /// <summary>
         /// Automatically generated fields have ProtoMember tag offset = 256. 1 - 256 is reserved for user defined fields.
@@ -512,9 +514,9 @@ namespace Battlehub.RTSL
                 name = Regex.Replace(name, @", Culture=\w+", string.Empty);
                 name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
                 
-                if (!string.IsNullOrEmpty(type.Namespace))
+                if (!string.IsNullOrEmpty(Namespace(type)))
                 {
-                    name = name.Remove(0, type.Namespace.Length + 1);
+                    name = name.Remove(0, Namespace(type).Length + 1);
                 }
                 return name;
             }
@@ -872,7 +874,7 @@ namespace Battlehub.RTSL
                 }
 
                 string typeName = GetTypeName(prop);
-                if (InitializeLists && IsGenericList(prop.MappedType))
+                if (InitializeLists && IsGenericList(prop.MappedType) || InitializeHs && IsHashSet(prop.MappedType))
                 {
                     Type replacementType = GetReplacementType(prop.MappedType);
                     if (replacementType == null)
@@ -893,13 +895,24 @@ namespace Battlehub.RTSL
                 {
                     if(IsDictionary(prop.MappedType))
                     {
+                        string fieldTemplate;
+                        if (InitializeDictionaries)
+                        {
+                            fieldTemplate = FieldInitializationTemplate;
+                        }
+                        else
+                        {
+                            fieldTemplate = FieldTemplate;
+                        }
+
+
                         Type[] args = prop.MappedType.GetGenericArguments();
                         Type t0 = GetReplacementType(args[0]);
                         Type t1 = GetReplacementType(args[1]);
                         if(t0 != null && t1 != null)
                         {
                             sb.AppendFormat(
-                                FieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, i + AutoFieldTagOffset,
                                 "Dictionary<long, long>",
                                 prop.PersistentName);
                         }
@@ -907,21 +920,21 @@ namespace Battlehub.RTSL
                         {
 
                             sb.AppendFormat(
-                                FieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, i + AutoFieldTagOffset,
                                 string.Format("Dictionary<long, {0}>", DictionaryPersistentArgTypeName(args[1])),
                                 prop.PersistentName);
                         }
                         else if(t1 != null)
                         {
                             sb.AppendFormat(
-                                FieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, i + AutoFieldTagOffset,
                                 string.Format("Dictionary<{0}, long>", DictionaryPersistentArgTypeName(args[0])),
                                 prop.PersistentName);
                         }
                         else
                         {
                             sb.AppendFormat(
-                                FieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, i + AutoFieldTagOffset,
                                 string.Format("Dictionary<{0}, {1}>", DictionaryPersistentArgTypeName(args[0]), DictionaryPersistentArgTypeName(args[1])),
                                 prop.PersistentName);
                         }
@@ -1533,40 +1546,40 @@ namespace Battlehub.RTSL
                             if (IsDictionary(type))
                             {
                                 Type[] args = type.GetGenericArguments();
-                                if (!namespaces.Contains(args[0].Namespace) && !string.IsNullOrEmpty(args[0].Namespace))
+                                if (!namespaces.Contains(Namespace(args[0])) && !string.IsNullOrEmpty(Namespace(args[0])))
                                 {
-                                    namespaces.Add(args[0].Namespace);
+                                    namespaces.Add(Namespace(args[0]));
                                 }
 
-                                AddNamespace(args[0], namespaces, PersistentClassMapping.ToPersistentNamespace(args[0].Namespace));
+                                AddNamespace(args[0], namespaces, PersistentClassMapping.ToPersistentNamespace(Namespace(args[0])));
 
-                                if (!namespaces.Contains(args[1].Namespace) && !string.IsNullOrEmpty(args[1].Namespace))
+                                if (!namespaces.Contains(Namespace(args[1])) && !string.IsNullOrEmpty(Namespace(args[1])))
                                 {
-                                    namespaces.Add(args[1].Namespace);
+                                    namespaces.Add(Namespace(args[1]));
                                 }
 
-                                AddNamespace(args[1], namespaces, PersistentClassMapping.ToPersistentNamespace(args[1].Namespace));
+                                AddNamespace(args[1], namespaces, PersistentClassMapping.ToPersistentNamespace(Namespace(args[1])));
 
                             }
                             else if (IsGenericList(type) || IsHashSet(type))
                             {
                                 type = type.GetGenericArguments()[0];
-                                if (!namespaces.Contains(type.Namespace) && !string.IsNullOrEmpty(type.Namespace))
+                                if (!namespaces.Contains(Namespace(type)) && !string.IsNullOrEmpty(Namespace(type)))
                                 {
-                                    namespaces.Add(type.Namespace);
+                                    namespaces.Add(Namespace(type));
                                 }
 
-                                AddNamespace(type, namespaces, PersistentClassMapping.ToPersistentNamespace(type.Namespace));
+                                AddNamespace(type, namespaces, PersistentClassMapping.ToPersistentNamespace(Namespace(type)));
                             }
                             else if ( type.IsArray)
                             {
                                 type = type.GetElementType();
-                                if (!namespaces.Contains(type.Namespace) && !string.IsNullOrEmpty(type.Namespace))
+                                if (!namespaces.Contains(Namespace(type)) && !string.IsNullOrEmpty(Namespace(type)))
                                 {
-                                    namespaces.Add(type.Namespace);
+                                    namespaces.Add(Namespace(type));
                                 }
 
-                                AddNamespace(type, namespaces, PersistentClassMapping.ToPersistentNamespace(type.Namespace));
+                                AddNamespace(type, namespaces, PersistentClassMapping.ToPersistentNamespace(Namespace(type)));
                             }
                         }
                         else
@@ -1589,9 +1602,9 @@ namespace Battlehub.RTSL
             Type replacementType = GetReplacementType(type);
             if (replacementType != null)
             {
-                if (!namespaces.Contains(replacementType.Namespace))
+                if (!namespaces.Contains(Namespace(replacementType)))
                 {
-                    namespaces.Add(replacementType.Namespace);
+                    namespaces.Add(Namespace(replacementType));
                 }
             }
             else
@@ -1766,6 +1779,15 @@ namespace Battlehub.RTSL
             }
 
             types = allTypesHS.ToArray();
+        }
+
+        public static string Namespace(Type type)
+        {
+            if(type.IsArray)
+            {
+                return type.GetElementType().Namespace;
+            }
+            return type.Namespace;
         }
     }
 }

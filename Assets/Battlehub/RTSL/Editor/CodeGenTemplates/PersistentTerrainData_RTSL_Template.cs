@@ -4,6 +4,7 @@
 using ProtoBuf;
 using System;
 using UnityEngine;
+using UnityEngine.Battlehub.SL2;
 //<TEMPLATE_USINGS_END>
 #endif
 
@@ -48,6 +49,18 @@ namespace Battlehub.RTSL.Internal
 
         [ProtoMember(11)]
         public PersistentTreePrototype[] treePrototypes;
+
+        [ProtoMember(12)]
+        public int m_alphamapWidth;
+
+        [ProtoMember(13)]
+        public int m_alphamapHeight;
+
+        [ProtoMember(14)]
+        public int m_terrainLayersLength;
+
+        [ProtoMember(15)]
+        public float[] m_alphamaps;
 
         public override object WriteTo(object obj)
         {
@@ -95,6 +108,13 @@ namespace Battlehub.RTSL.Internal
                 o.SetHeights(0, 0, data);
             }
 
+            if(m_alphamaps != null)
+            {
+                float[,,] alphamaps = new float[m_alphamapWidth, m_alphamapHeight, m_terrainLayersLength];
+                Buffer.BlockCopy(m_alphamaps, 0, alphamaps, 0, m_alphamaps.Length * sizeof(float));
+                o.SetAlphamaps(0, 0, alphamaps);
+            }
+
             return base.WriteTo(obj);
         }
 
@@ -123,6 +143,14 @@ namespace Battlehub.RTSL.Internal
             float[,] data = o.GetHeights(0, 0, m_heightMapWidth, m_heightMapHeight);
             m_data = new float[data.GetLength(0) * data.GetLength(1)];
             Buffer.BlockCopy(data, 0, m_data, 0, m_data.Length * sizeof(float));
+
+            m_alphamapWidth = o.alphamapWidth;
+            m_alphamapHeight = o.alphamapHeight;
+            m_terrainLayersLength = o.terrainLayers.Length;
+
+            float[,,] alphamaps = o.GetAlphamaps(0, 0, m_alphamapWidth, m_alphamapHeight);
+            m_alphamaps = new float[alphamaps.GetLength(0) * alphamaps.GetLength(1) * alphamaps.GetLength(2)];
+            Buffer.BlockCopy(alphamaps, 0, m_alphamaps, 0, m_alphamaps.Length * sizeof(float));
         }
 
 

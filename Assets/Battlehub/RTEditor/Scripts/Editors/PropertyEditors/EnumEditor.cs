@@ -51,7 +51,7 @@ namespace Battlehub.RTEditor
 
             for (int i = 0; i < names.Length; ++i)
             {
-                options.Add(new TMP_Dropdown.OptionData(names[i]));
+                options.Add(new TMP_Dropdown.OptionData(names[i].Replace('_', ' ')));
             }
 
             m_input.options = options;

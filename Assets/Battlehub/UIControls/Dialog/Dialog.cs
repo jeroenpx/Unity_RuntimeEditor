@@ -372,7 +372,7 @@ namespace Battlehub.UIControls.Dialogs
             m_parentRegion.gameObject.SetActive(true);
         }
 
-        public void Close(bool? result = null)
+        public void Close(bool? result = null, bool raiseEvents = true, bool invokeActions = true)
         {
             if(m_parentRegion == null)
             {
@@ -384,7 +384,7 @@ namespace Battlehub.UIControls.Dialogs
             {
                 if (result == false)
                 {
-                    if(Cancel != null)
+                    if(Cancel != null && raiseEvents)
                     {
                         DialogCancelArgs args = new DialogCancelArgs();
                         Cancel(this, args);
@@ -394,7 +394,7 @@ namespace Battlehub.UIControls.Dialogs
                         }
                     }
 
-                    if(CancelAction != null)
+                    if(CancelAction != null && invokeActions)
                     {
                         DialogCancelArgs args = new DialogCancelArgs();
                         CancelAction(this, args);
@@ -403,12 +403,10 @@ namespace Battlehub.UIControls.Dialogs
                             return;
                         }
                     }
-                    
-                    
                 }
                 else if (result == true)
                 {
-                    if(Ok != null)
+                    if(Ok != null && raiseEvents)
                     {
                         DialogCancelArgs args = new DialogCancelArgs();
                         Ok(this, args);
@@ -418,7 +416,7 @@ namespace Battlehub.UIControls.Dialogs
                         }
                     }
                 
-                    if(OkAction != null)
+                    if(OkAction != null && invokeActions)
                     {
                         DialogCancelArgs args = new DialogCancelArgs();
                         OkAction(this, args);
@@ -427,7 +425,6 @@ namespace Battlehub.UIControls.Dialogs
                             return;
                         }
                     }
-                   
                 }
             }
 

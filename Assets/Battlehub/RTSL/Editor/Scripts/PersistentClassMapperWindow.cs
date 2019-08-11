@@ -373,7 +373,7 @@ namespace Battlehub.RTSL
                 m_mappings[i].HasTemplate = m_templates.ContainsKey(m_types[i]);
                 m_mappings[i].UseTemplate = true;
 
-                Type persistentType = m_codeGen.GetPersistentType(PersistentClassMapping.ToPersistentFullName(m_types[i].Namespace, m_types[i].Name));
+                Type persistentType = m_codeGen.GetPersistentType(PersistentClassMapping.ToPersistentFullName(CodeGen.Namespace(m_types[i]), m_types[i].Name));
                 m_mappings[i].HasCustomImplementation = persistentType != null && persistentType.GetCustomAttributes(typeof(CustomImplementationAttribute), false).Length > 0;
             }
 
@@ -423,7 +423,7 @@ namespace Battlehub.RTSL
             {
                 Type type = m_types[i];
 
-                bool matchNs = string.IsNullOrEmpty(type.Namespace) && string.IsNullOrEmpty(m_namespaceFilterText) || !string.IsNullOrEmpty(type.Namespace) && type.Namespace.ToLower().Contains(m_namespaceFilterText.ToLower());
+                bool matchNs = string.IsNullOrEmpty(CodeGen.Namespace(type)) && string.IsNullOrEmpty(m_namespaceFilterText) || !string.IsNullOrEmpty(CodeGen.Namespace(type)) && CodeGen.Namespace(type).ToLower().Contains(m_namespaceFilterText.ToLower());
 
                 bool groupFilterPassed = m_useGroupFilterText ?
                      m_groupFilter(type, m_groupFilterText) :
@@ -1016,7 +1016,7 @@ namespace Battlehub.RTSL
                 if (m_typeToIndex.TryGetValue(baseType, out baseTypeIndex))
                 {
                     ClassMappingInfo baseClassMapping = m_mappings[baseTypeIndex];
-                    string ns = PersistentClassMapping.ToPersistentNamespace(m_types[typeIndex].Namespace);
+                    string ns = PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(m_types[typeIndex]));
                     string typeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(m_types[typeIndex]));
                     string fullTypeName = string.Format("{0}.{1}", ns, typeName);
 
@@ -1025,7 +1025,7 @@ namespace Battlehub.RTSL
                     {
                         PersistentSubclass subclass = new PersistentSubclass();
                         subclass.IsEnabled = true;
-                        subclass.Namespace = PersistentClassMapping.ToPersistentNamespace(type.Namespace);
+                        subclass.Namespace = PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(type));
                         subclass.TypeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(type));
                         baseClassMapping.PersistentSubclassTag++;
                         subclass.PersistentTag = baseClassMapping.PersistentSubclassTag;
@@ -1112,7 +1112,7 @@ namespace Battlehub.RTSL
                     classMapping.Subclasses = typeIndexToSubclasses[typeIndex].Values.ToArray();
                 }
                 classMapping.MappedAssemblyName = m_types[typeIndex].Assembly.FullName.Split(',')[0];
-                classMapping.MappedNamespace = m_types[typeIndex].Namespace;
+                classMapping.MappedNamespace = CodeGen.Namespace(m_types[typeIndex]);
                 classMapping.MappedTypeName = CodeGen.TypeName(m_types[typeIndex]);
                     
                 classMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(classMapping.MappedNamespace);
@@ -1126,7 +1126,7 @@ namespace Battlehub.RTSL
                 }
                 else
                 {
-                    classMapping.PersistentBaseNamespace = PersistentClassMapping.ToPersistentNamespace(baseType.Namespace);
+                    classMapping.PersistentBaseNamespace = PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(baseType));
                     classMapping.PersistentBaseTypeName = PersistentClassMapping.ToPersistentName(CodeGen.TypeName(baseType));
                 }
 
@@ -1370,7 +1370,7 @@ namespace Battlehub.RTSL
                             if (GUILayout.Button("Edit Custom Implementation", GUILayout.Width(215)))
                             {
                                 Type t = m_types[typeIndex];
-                                string fullTypeName = PersistentClassMapping.ToPersistentFullName(t.Namespace, t.Name);
+                                string fullTypeName = PersistentClassMapping.ToPersistentFullName(CodeGen.Namespace(t), t.Name);
                                 UnityObject scriptFile;
                                 if(m_typeToScriptObject.TryGetValue(fullTypeName, out scriptFile))
                                 {
@@ -1631,7 +1631,7 @@ namespace Battlehub.RTSL
                 FieldInfo fInfo = fields[f];
 
                 string key = string.Format("{0}.{1}",
-                    PersistentClassMapping.ToPersistentNamespace(fInfo.FieldType.Namespace),
+                    PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(fInfo.FieldType)),
                     CodeGen.TypeName(fInfo.FieldType)) + " " + fInfo.Name;
 
                 if (fieldMappingsHs.Contains(key))
@@ -1642,11 +1642,11 @@ namespace Battlehub.RTSL
                 PersistentPropertyMapping pMapping = new PersistentPropertyMapping();
                 pMapping.PersistentName = fInfo.Name;
                 pMapping.PersistentTypeName = CodeGen.TypeName(fInfo.FieldType);
-                pMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(fInfo.FieldType.Namespace);
+                pMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(fInfo.FieldType));
 
                 pMapping.MappedName = fInfo.Name;
                 pMapping.MappedTypeName = CodeGen.TypeName(fInfo.FieldType);
-                pMapping.MappedNamespace = fInfo.FieldType.Namespace;
+                pMapping.MappedNamespace = CodeGen.Namespace(fInfo.FieldType);
                 pMapping.MappedAssemblyName = fInfo.FieldType.Assembly.FullName.Split(',')[0];
                 pMapping.IsProperty = false;
 
@@ -1699,7 +1699,7 @@ namespace Battlehub.RTSL
                 PropertyInfo pInfo = properties[p];
 
                 string key = string.Format("{0}.{1}",
-                    PersistentClassMapping.ToPersistentNamespace(pInfo.PropertyType.Namespace),
+                    PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(pInfo.PropertyType)),
                     CodeGen.TypeName(pInfo.PropertyType)) + " " + pInfo.Name;
 
                 if (propertyMappingsHs.Contains(key))
@@ -1711,11 +1711,11 @@ namespace Battlehub.RTSL
 
                 pMapping.PersistentName = pInfo.Name;       //property name of mapping
                 pMapping.PersistentTypeName = CodeGen.TypeName(pInfo.PropertyType);
-                pMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(pInfo.PropertyType.Namespace);
+                pMapping.PersistentNamespace = PersistentClassMapping.ToPersistentNamespace(CodeGen.Namespace(pInfo.PropertyType));
 
                 pMapping.MappedName = pInfo.Name;           //property name of unity type
                 pMapping.MappedTypeName = CodeGen.TypeName(pInfo.PropertyType);
-                pMapping.MappedNamespace = pInfo.PropertyType.Namespace;
+                pMapping.MappedNamespace = CodeGen.Namespace(pInfo.PropertyType);
                 pMapping.MappedAssemblyName = pInfo.PropertyType.Assembly.FullName.Split(',')[0];
                 pMapping.IsProperty = true;
 
@@ -1757,7 +1757,7 @@ namespace Battlehub.RTSL
                         ObsoleteAttribute = f.GetCustomAttributes(false).OfType<ObsoleteAttribute>().FirstOrDefault(),
                         Type = f.FieldType,
                         TypeName = CodeGen.TypeName(f.FieldType),
-                        Namespace = f.FieldType.Namespace,
+                        Namespace = CodeGen.Namespace(f.FieldType),
                         Assembly = f.FieldType.Assembly.FullName.Split(',')[0] })
                     .Union(GetSuitableProperties(properties, ns + pMapping.PersistentTypeName)
                     .Select(p => new {
@@ -1765,7 +1765,7 @@ namespace Battlehub.RTSL
                         ObsoleteAttribute = p.GetCustomAttributes(false).OfType<ObsoleteAttribute>().FirstOrDefault(),
                         Type = p.PropertyType,
                         TypeName = CodeGen.TypeName(p.PropertyType),
-                        Namespace = p.PropertyType.Namespace,
+                        Namespace = CodeGen.Namespace(p.PropertyType),
                         Assembly = p.PropertyType.Assembly.FullName.Split(',')[0] }))
                     .OrderBy(p => p.Name)
                     .ToArray();

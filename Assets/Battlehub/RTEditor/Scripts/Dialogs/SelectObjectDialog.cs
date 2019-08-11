@@ -15,18 +15,45 @@ using TMPro;
 
 namespace Battlehub.RTEditor
 {
-    public class SelectObjectDialog : RuntimeWindow
+    public interface ISelectObjectDialog
+    {
+        Type ObjectType
+        {
+            get;
+            set;
+        }
+
+        bool IsNoneSelected
+        {
+            get;
+        }
+
+        UnityObject SelectedObject
+        {
+            get;
+        }
+    }
+
+    public class SelectObjectDialog : RuntimeWindow, ISelectObjectDialog
     {
         [SerializeField]
         private TMP_InputField m_filter = null;
-        [HideInInspector]
-        public UnityObject SelectedObject;
-        [HideInInspector]
-        public Type ObjectType;
         [SerializeField]
         private VirtualizingTreeView m_treeView = null;
         [SerializeField]
         private Toggle m_toggleAssets = null;
+
+        public UnityObject SelectedObject
+        {
+            get;
+            private set;
+        }
+
+        public Type ObjectType
+        {
+            get;
+            set;
+        }
 
         public bool IsNoneSelected
         {
@@ -42,10 +69,10 @@ namespace Battlehub.RTEditor
         private AssetItem[] m_assetsCache;
         private AssetItem[] m_sceneCache;
         private Dictionary<long, UnityObject> m_sceneObjects;
-        
 
         protected override void AwakeOverride()
         {
+            IOC.RegisterFallback<ISelectObjectDialog>(this);
             WindowType = RuntimeWindowType.SelectObject;
             base.AwakeOverride();
         }
@@ -173,6 +200,8 @@ namespace Battlehub.RTEditor
             {
                 m_filter.onValueChanged.RemoveListener(OnFilterValueChanged);
             }
+
+            IOC.UnregisterFallback<ISelectObjectDialog>(this);
         }
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)

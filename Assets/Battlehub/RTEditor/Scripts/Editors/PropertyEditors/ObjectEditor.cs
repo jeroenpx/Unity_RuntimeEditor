@@ -51,7 +51,7 @@ namespace Battlehub.RTEditor
 
         private void OnSelect()
         {
-            SelectObjectDialog objectSelector = null;
+            ISelectObjectDialog objectSelector = null;
             Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
                  (sender, args) =>
                  {
@@ -68,7 +68,7 @@ namespace Battlehub.RTEditor
                          SetInputField(objectSelector.SelectedObject);
                      }
                  });
-            objectSelector = dialogTransform.GetComponentInChildren<SelectObjectDialog>();
+            objectSelector = IOC.Resolve<ISelectObjectDialog>();// dialogTransform.GetComponentInChildren<SelectObjectDialog>();
             objectSelector.ObjectType = MemberInfoType;
         }
 

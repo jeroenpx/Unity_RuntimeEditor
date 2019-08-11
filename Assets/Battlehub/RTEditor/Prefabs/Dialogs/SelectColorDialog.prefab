@@ -80,6 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
+  m_resizeCamera: 1
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 102
@@ -200,6 +201,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8438397691628306832}
   m_CullTransparentMesh: 0
+--- !u!114 &3516414093780643904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8438397691628306832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: SecondaryColor
 --- !u!114 &7988453616904188586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,19 +243,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &3516414093780643904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8438397691628306832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: SecondaryColor
 --- !u!1001 &4649663852357589465
 PrefabInstance:
   m_ObjectHideFlags: 0
