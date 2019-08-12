@@ -866,6 +866,79 @@ namespace Battlehub.RTSL
             fieldInfo.SetValue(obj, value);
         }
 
+        private static readonly Dictionary<object, object> m_refrencesCache = new Dictionary<object, object>();
+        protected T ResolveReference<T, V>(V v, Func<T> fallback)
+        {
+            if(v == null)
+            {
+                return default(T);
+            }
+
+            object result;
+            if(!m_refrencesCache.TryGetValue(v, out result))
+            {
+                result = fallback();
+                m_refrencesCache.Add(v, result);
+            }
+            return (T)result;
+        }
+
+        protected T[] ResolveReference<T, V>(V[] v, Func<int, T> fallback)
+        {
+            if(v == null)
+            {
+                return null;
+            }
+
+            T[] result = new T[v.Length];
+            for (int i = 0; i < v.Length; ++i)
+            {
+                if(v[i] == null)
+                {
+                    continue;
+                }
+                object res;
+                if (!m_refrencesCache.TryGetValue(v[i], out res))
+                {
+                    res = fallback(i);
+                    m_refrencesCache.Add(v[i], res);
+                }
+                result[i] = (T)res;
+            }
+            return result;
+        }
+
+        protected List<T> ResolveReference<T, V>(List<V> v, Func<int, T> fallback)
+        {
+            if (v == null)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>(v.Count);
+            for (int i = 0; i < v.Count; ++i)
+            {
+                if (v[i] == null)
+                {
+                    continue;
+                }
+                object res;
+                if (!m_refrencesCache.TryGetValue(v[i], out res))
+                {
+                    res = fallback(i);
+                    m_refrencesCache.Add(v[i], res);
+                }
+                result.Add((T)res);
+            }
+            return result;
+        }
+
+
+        protected void ClearReferencesCache()
+        {
+            m_refrencesCache.Clear();
+        }
+
     }
 }
 

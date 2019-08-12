@@ -22,6 +22,8 @@ namespace Battlehub.RTSL.Battlehub.SL2
 
         protected override void ReadFromImpl(object obj)
         {
+            ClearReferencesCache();
+
             Scene scene = (Scene)obj;
             GameObject[] rootGameObjects;
             if (scene.IsValid())
@@ -32,7 +34,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
             {
                 rootGameObjects = new GameObject[0];
             }
-             
+
             List<PersistentObject> data = new List<PersistentObject>();
             List<long> identifiers = new List<long>();    
             List<PersistentDescriptor> descriptors = new List<PersistentDescriptor>(rootGameObjects.Length);
@@ -140,6 +142,8 @@ namespace Battlehub.RTSL.Battlehub.SL2
 
             Assets = assets.ToArray();
             AssetIdentifiers = assetIdentifiers.ToArray();
+
+            ClearReferencesCache();
         }
 
         private void DestroyGameObjects(Scene scene)
@@ -159,6 +163,8 @@ namespace Battlehub.RTSL.Battlehub.SL2
 
         protected override object WriteToImpl(object obj)
         {
+            ClearReferencesCache();
+
             Scene scene = (Scene)obj;
             if (Descriptors == null && Data == null)
             {
@@ -244,6 +250,8 @@ namespace Battlehub.RTSL.Battlehub.SL2
 
             RestoreDataAndResolveDependencies();
             m_assetDB.UnregisterSceneObjects();
+
+            ClearReferencesCache();
 
             return scene;
         }
