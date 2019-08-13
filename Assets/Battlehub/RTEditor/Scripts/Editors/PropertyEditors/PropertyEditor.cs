@@ -171,12 +171,53 @@ namespace Battlehub.RTEditor
             get;
             private set;
         }
-        
+
         protected object Accessor
         {
             get;
             private set;
         }
+
+        //protected object[] m_targets;
+        //protected object[] m_accessors;
+
+        //protected object Target
+        //{
+        //    get
+        //    {
+        //        return m_targets != null && m_targets.Length > 0 ? m_targets[0] : null;
+        //    }
+        //    private set
+        //    {
+        //        if(value == null)
+        //        {
+        //            m_targets = null;
+        //        }
+        //        else
+        //        {
+        //            m_targets = new[] { value };
+        //        }
+        //    }
+        //}
+        
+        //protected object Accessor
+        //{
+        //    get
+        //    {
+        //        return m_accessors != null && m_accessors.Length > 0 ? m_accessors[0] : null;
+        //    }
+        //    private set
+        //    {
+        //        if (value == null)
+        //        {
+        //            m_accessors = null;
+        //        }
+        //        else
+        //        {
+        //            m_accessors = new[] { value };
+        //        }
+        //    }
+        //}
 
         private Action<object, object> m_eraseTargetCallback;
 
@@ -280,7 +321,7 @@ namespace Battlehub.RTEditor
             m_lockValue = true;
             InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             m_lockValue = false;
-        }
+        }       
 
         protected virtual void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
         {
