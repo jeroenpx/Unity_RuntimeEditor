@@ -81,10 +81,14 @@ namespace Battlehub
         }
 
 
-        public static FieldInfo[] GetSerializableFields(this Type type)
+        public static FieldInfo[] GetSerializableFields(this Type type, bool declaredOnly = true)
         {
-            return type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).
-                Where(f => IsSerializable(f)).ToArray();
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+            if (declaredOnly)
+            {
+                flags |= BindingFlags.DeclaredOnly;
+            }
+            return type.GetFields(flags).Where(f => IsSerializable(f)).ToArray();
         }
 
         private static bool IsSerializable(this FieldInfo field)

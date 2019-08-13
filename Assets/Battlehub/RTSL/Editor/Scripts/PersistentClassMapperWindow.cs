@@ -1590,7 +1590,7 @@ namespace Battlehub.RTSL
                     propertyMappingsHs.Add(key);
                 }
             }
-
+            
             FieldInfo[] fields = CodeGen.GetFields(type);
             HashSet<string> fieldHs = new HashSet<string>(fields.Select(fInfo => FullName(fInfo.FieldType) + " " + fInfo.Name));
 
