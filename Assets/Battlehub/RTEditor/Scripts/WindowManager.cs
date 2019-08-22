@@ -1511,17 +1511,17 @@ namespace Battlehub.RTEditor
 
         public void LoadLayout(string name)
         {
-            LayoutInfo layoutInfo = GetLayout(name);
-            if (layoutInfo == null)
-            {
-                return;
-            }
-
             ClearRegion(m_dockPanels.RootRegion);
             foreach (Transform child in m_dockPanels.Free)
             {
                 Region region = child.GetComponent<Region>();
                 ClearRegion(region);
+            }
+
+            LayoutInfo layoutInfo = GetLayout(name);
+            if (layoutInfo == null)
+            {
+                return;
             }
 
             SetLayout(wm => layoutInfo);
