@@ -29,7 +29,7 @@ namespace Battlehub.RTSL
             return CanCreateInstance(type, surrogate);
         }
 
-        public bool CanCreateInstance(Type type, PersistentSurrogate surrogate)
+        public bool CanCreateInstance(Type type, IPersistentSurrogate surrogate)
         {
             return type == typeof(Material) ||
                 type == typeof(Texture2D) ||
@@ -51,7 +51,7 @@ namespace Battlehub.RTSL
             return CreateInstance(type, surrogate);
         }
 
-        public UnityObject CreateInstance(Type type, PersistentSurrogate surrogate)
+        public UnityObject CreateInstance(Type type, IPersistentSurrogate surrogate)
         {
             if(type == null)
             {

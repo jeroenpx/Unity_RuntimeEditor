@@ -21,40 +21,6 @@ namespace Battlehub.RTSL
         public int[] Array;
     }
 
-    public interface IPersistentSurrogate
-    {
-        void ReadFrom(object obj);
-
-        object WriteTo(object obj);
-
-        void GetDeps(GetDepsContext context);
-
-        void GetDepsFrom(object obj, GetDepsFromContext context);
-    }
-
-    public class GetDepsContext
-    {
-        public readonly HashSet<long> Dependencies = new HashSet<long>();
-        public readonly HashSet<object> VisitedObjects = new HashSet<object>();
-
-        public void Clear()
-        {
-            Dependencies.Clear();
-            VisitedObjects.Clear();
-        }
-    }
-
-    public class GetDepsFromContext
-    {
-        public readonly HashSet<object> Dependencies = new HashSet<object>();
-        public readonly HashSet<object> VisitedObjects = new HashSet<object>();
-
-        public void Clear()
-        {
-            Dependencies.Clear();
-            VisitedObjects.Clear();
-        }
-    }
 
     public abstract class PersistentSurrogate : IPersistentSurrogate
     {

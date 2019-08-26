@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace Battlehub.RTCommon.EditorTreeView
 {
-    internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
+    public class TreeViewItem<T> : TreeViewItem where T : TreeElement
 	{
 		public T data { get; set; }
 
@@ -17,7 +17,7 @@ namespace Battlehub.RTCommon.EditorTreeView
 		}
 	}
 
-	internal class TreeViewWithTreeModel<T> : TreeView where T : TreeElement
+    public class TreeViewWithTreeModel<T> : TreeView where T : TreeElement
 	{
         public bool SupportExternalDragDrop = true;
 		TreeModel<T> m_TreeModel;
