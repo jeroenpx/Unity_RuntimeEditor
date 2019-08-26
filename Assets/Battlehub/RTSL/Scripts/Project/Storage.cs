@@ -691,7 +691,7 @@ namespace Battlehub.RTSL
         public void QueueUserWorkItem(Action action)
         {
 #if UNITY_WEBGL
-            callback();
+            action();
 #else
             if (Dispatcher.Current != null)
             {
