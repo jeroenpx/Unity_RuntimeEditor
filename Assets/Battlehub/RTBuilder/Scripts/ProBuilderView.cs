@@ -343,20 +343,27 @@ namespace Battlehub.RTBuilder
             return go;
         }
 
-        private void GetPositionAndRotation(RuntimeWindow window, out Vector3 position, out Quaternion rotation)
+        private void GetPositionAndRotation(RuntimeWindow window, out Vector3 position, out Quaternion rotation, bool rotateToTerrain = false)
         {
             Ray ray = window != null ? 
                 new Ray(window.Camera.transform.position, window.Camera.transform.forward) : 
                 new Ray(Vector3.up * 100000, Vector3.down);
 
             RaycastHit[] hits = Physics.RaycastAll(ray);
-            for(int i = 0; i < hits.Length; ++i)
+            for (int i = 0; i < hits.Length; ++i)
             {
                 RaycastHit hit = hits[i];
                 if (hit.collider is TerrainCollider)
                 {
                     position = hit.point;
-                    rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                    if(rotateToTerrain)
+                    {
+                        rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                    }
+                    else
+                    {
+                        rotation = Quaternion.identity;
+                    }
                     return;
                 }
             }

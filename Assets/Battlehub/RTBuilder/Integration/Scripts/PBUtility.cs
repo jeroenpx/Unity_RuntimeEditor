@@ -454,7 +454,6 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-
         public static Dictionary<ProBuilderMesh, HashSet<int>> PickVertices(Camera camera, Rect rect, GameObject[] gameObjects)
         {
             return SelectionPicker.PickVerticesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = false });

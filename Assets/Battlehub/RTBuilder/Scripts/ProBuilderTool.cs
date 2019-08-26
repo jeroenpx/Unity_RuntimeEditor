@@ -1025,7 +1025,7 @@ namespace Battlehub.RTBuilder
         }
 
         private Vector2 m_initialUVOffset;
-        private bool m_shift;
+        private bool m_control;
         private void OnBeginMove(BaseHandle positionHandle)
         {
             IMeshEditor meshEditor = GetEditor();
@@ -1042,8 +1042,8 @@ namespace Battlehub.RTBuilder
                 {
                     m_rte.Undo.BeginRecordTransform(m_pivot);
                     m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
-                    m_shift = m_rte.Input.GetKey(KeyCode.LeftShift);
-                    if (m_shift)
+                    m_control = m_rte.Input.GetKey(KeyCode.LeftControl);
+                    if (m_control)
                     {
                         MeshEditorState oldState = meshEditor.GetState();
                         meshEditor.Extrude();

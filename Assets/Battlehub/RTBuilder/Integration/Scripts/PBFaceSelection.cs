@@ -102,7 +102,8 @@ namespace Battlehub.ProBuilderIntegration
 
             m_material = new Material(Shader.Find(BuiltinMaterials.faceShader));
             m_material.SetFloat("_Dither", 1f);
-            m_material.color = m_color;
+            m_material.color = new Color(m_color.r, m_color.g, m_color.b, 0.5f);
+            
             renderer.sharedMaterial = m_material;
 
             gameObject.AddComponent<PBMesh>();

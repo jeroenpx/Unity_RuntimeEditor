@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1220928184416827035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1220928184416827034}
+  - component: {fileID: 1220928184416827036}
+  - component: {fileID: 1220928184416827037}
+  m_Layer: 0
+  m_Name: TerrainTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1220928184416827034
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220928184416827035}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1220928184416827036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220928184416827035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f0fc75026055434c912d761d8a14213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_colors:
+    DisabledColor:
+      serializedVersion: 2
+      rgba: 8421504
+    XColor:
+      serializedVersion: 2
+      rgba: 4281157307
+    YColor:
+      serializedVersion: 2
+      rgba: 4283092619
+    ZColor:
+      serializedVersion: 2
+      rgba: 4294210359
+    AltColor:
+      serializedVersion: 2
+      rgba: 3770728640
+    AltColor2:
+      serializedVersion: 2
+      rgba: 3761780792
+    SelectionColor:
+      serializedVersion: 2
+      rgba: 4282445551
+    SelectionAltColor:
+      serializedVersion: 2
+      rgba: 419430400
+    BoundsColor:
+      serializedVersion: 2
+      rgba: 4278255360
+    GridColor:
+      serializedVersion: 2
+      rgba: 436207615
+  m_handleScale: 1
+  m_selectionMargin: 1
+  m_invertZAxis: 0
+  m_positionHandleArrowOnly: 1
+  m_sceneGizmoScale: 1
+--- !u!114 &1220928184416827037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220928184416827035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f34bfe954677b4a4288f9c3f72e7fc6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_handlePrefab: {fileID: 7574196023977402016, guid: 7fcf695eb48f7c24a819fb1db46f0167,
+    type: 3}

@@ -69,6 +69,15 @@ namespace Battlehub.RTHandles
         void Focus();
     }
 
+    public class RuntimeSelectionCancelArgs
+    {
+        public bool Cancel
+        {
+            get;
+            set;
+        }
+    }
+
     public interface IRuntimeSelectionComponent : IScenePivot
     {
         PositionHandle PositionHandle
@@ -231,7 +240,11 @@ namespace Battlehub.RTHandles
                 m_isPositionHandleEnabled = value;
                 if (m_positionHandle != null)
                 {
-                    m_positionHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Move);
+                    if (value)
+                    {
+                        m_positionHandle.Targets = GetTargets();
+                    }
+                    m_positionHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Move && m_positionHandle.Target != null);
                 }
             }
         }
@@ -244,7 +257,11 @@ namespace Battlehub.RTHandles
                 m_isRotationHandleEnabled = value;
                 if (m_rotationHandle != null)
                 {
-                    m_rotationHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Rotate);
+                    if (value)
+                    {
+                        m_rotationHandle.Targets = GetTargets();
+                    }
+                    m_rotationHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Rotate && m_rotationHandle.Target != null);
                 }
             }
         }
@@ -257,7 +274,11 @@ namespace Battlehub.RTHandles
                 m_isScaleHandleEnabled = value; 
                 if(m_scaleHandle != null)
                 {
-                    m_scaleHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Scale);
+                    if (value)
+                    {
+                        m_scaleHandle.Targets = GetTargets();
+                    }
+                    m_scaleHandle.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Scale && m_scaleHandle.Target != null);
                 }
             }
         }
@@ -745,6 +766,11 @@ namespace Battlehub.RTHandles
 
         protected virtual bool CanTransformObject(GameObject go)
         {
+            if(go == null)
+            {
+                return false;
+            }
+
             ExposeToEditor exposeToEditor = go.GetComponentInParent<ExposeToEditor>();
             if(exposeToEditor == null)
             {
@@ -755,6 +781,11 @@ namespace Battlehub.RTHandles
 
         protected virtual Transform[] GetTargets()
         {
+            if(Editor.Selection.gameObjects == null)
+            {
+                return null;
+            }
+
             return Editor.Selection.gameObjects.Where(g => CanTransformObject(g)).Select(g => g.transform).OrderByDescending(g => Editor.Selection.activeTransform == g).ToArray();
         }
 
