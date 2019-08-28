@@ -16,6 +16,7 @@ namespace Battlehub.RTEditor
         public MemberInfo MemberInfo;
         public MemberInfo ComponentMemberInfo;
         public PropertyEditorCallback ValueChangedCallback;
+        public PropertyEditorCallback EndEditCallback;
         public Range Range;
 
         public PropertyDescriptor[] ChildDesciptors;
@@ -53,6 +54,7 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = null;
+            EndEditCallback = null;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
         }
@@ -64,6 +66,7 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = null;
+            EndEditCallback = null;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
         }
@@ -75,6 +78,19 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = valueChangedCallback;
+            EndEditCallback = null;
+            Range = TryGetRange(memberInfo);
+            ChildDesciptors = null;
+        }
+
+        public PropertyDescriptor(string label, object target, MemberInfo memberInfo, MemberInfo componentMemberInfo, PropertyEditorCallback valueChangedCallback, PropertyEditorCallback endEditCallback)
+        {
+            MemberInfo = memberInfo;
+            ComponentMemberInfo = componentMemberInfo;
+            Label = label;
+            Target = target;
+            ValueChangedCallback = valueChangedCallback;
+            EndEditCallback = endEditCallback;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
         }
@@ -86,6 +102,7 @@ namespace Battlehub.RTEditor
             Label = label;
             Target = target;
             ValueChangedCallback = valueChangedCallback;
+            EndEditCallback = null;
             Range = range;
             ChildDesciptors = null;
         }
@@ -534,6 +551,12 @@ namespace Battlehub.RTEditor
                     rangeEditor.Min = (int)descriptor.Range.Min;
                     rangeEditor.Max = (int)descriptor.Range.Max;
                 }
+                else if(descriptor.Range is RangeOptions)
+                {
+                    RangeOptions range = (RangeOptions)descriptor.Range;
+                    OptionsEditor optionsEditor = editor as OptionsEditor;
+                    optionsEditor.Options = range.Options;
+                }
                 else
                 {
                     RangeEditor rangeEditor = editor as RangeEditor;
@@ -547,7 +570,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void InitEditor(PropertyEditor editor, PropertyDescriptor descriptor)
         {
-            editor.Init(descriptor.Target, descriptor.Target, descriptor.MemberInfo, null, descriptor.Label, null, descriptor.ValueChangedCallback, EndEditCallback, true, descriptor.ChildDesciptors);
+            editor.Init(descriptor.Target, descriptor.Target, descriptor.MemberInfo, null, descriptor.Label, null, descriptor.ValueChangedCallback, () => { descriptor.EndEditCallback?.Invoke(); EndEditCallback?.Invoke(); }, true, descriptor.ChildDesciptors);
         }
 
         protected virtual void DestroyEditor()

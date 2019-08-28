@@ -6,7 +6,7 @@ namespace Battlehub.RTEditor
     {
         public float Min;
         public float Max;
-
+        
         public Range(float min, float max)
         {
             Min = min;

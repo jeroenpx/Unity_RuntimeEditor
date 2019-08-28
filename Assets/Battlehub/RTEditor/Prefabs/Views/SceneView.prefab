@@ -156,6 +156,7 @@ MonoBehaviour:
   m_isSceneGizmoEnabled: 1
   m_canPan: 1
   m_canZoom: 1
+  m_changeOrthographicSizeOnly: 1
   m_canRotate: 1
 --- !u!1 &1269772482016382
 GameObject:

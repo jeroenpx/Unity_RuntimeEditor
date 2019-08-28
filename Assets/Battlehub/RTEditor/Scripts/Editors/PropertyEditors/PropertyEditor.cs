@@ -327,7 +327,15 @@ namespace Battlehub.RTEditor
         {
             if(target == null)
             {
-                throw new ArgumentNullException("target");
+                if (Label != null)
+                {
+                    if (label != null)
+                    {
+                        Label.text = label;
+                    }
+                }
+                return;
+                //throw new ArgumentNullException("target");
             }
 
             IListElementAccessor arrayElement = target as IListElementAccessor;

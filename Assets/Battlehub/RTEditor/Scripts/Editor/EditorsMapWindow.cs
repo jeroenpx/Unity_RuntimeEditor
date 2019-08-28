@@ -115,7 +115,7 @@ namespace Battlehub.RTEditor
             m_objectEditorDescriptors = new[] { typeof(GameObject) }
                 .Where(t => t.IsPublic && !t.IsGenericType)
                 .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
-            m_propertyEditorDescriptors = new[] { typeof(object), typeof(UnityEngine.Object), typeof(bool), typeof(Enum), typeof(List<>), typeof(Array), typeof(string), typeof(int), typeof(float), typeof(Range), typeof(Vector2), typeof(Vector3), typeof(Vector4), typeof(Quaternion), typeof(Color), typeof(Bounds), typeof(RangeInt) }
+            m_propertyEditorDescriptors = new[] { typeof(object), typeof(UnityEngine.Object), typeof(bool), typeof(Enum), typeof(List<>), typeof(Array), typeof(string), typeof(int), typeof(float), typeof(Range), typeof(Vector2), typeof(Vector3), typeof(Vector4), typeof(Quaternion), typeof(Color), typeof(Bounds), typeof(RangeInt), typeof(RangeOptions), typeof(HeaderText) }
                 .Where(t =>  t.IsPublic)
                 .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsPropertyEditorEnabled(t), m_map != null ? editorsMap.GetPropertyEditor(t, true) : null, true)).ToArray();
 
