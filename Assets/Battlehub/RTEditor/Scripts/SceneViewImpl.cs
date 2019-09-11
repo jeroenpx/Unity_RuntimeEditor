@@ -137,17 +137,28 @@ namespace Battlehub.RTEditor
                     m_prefabInstance = InstantiatePrefab(prefab, Vector3.zero, Quaternion.identity);
                 }
 
+                Debug.Log(m_prefabInstance.GetComponentsInChildren<MeshFilter>().Length);
+
                 m_prefabInstanceTransforms = new HashSet<Transform>(m_prefabInstance.GetComponentsInChildren<Transform>(true));
 
                 prefab.SetActive(wasPrefabEnabled);
 
-                ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
-                if (exposeToEditor == null)
+                Transform[] transforms = m_prefabInstance.GetComponentsInChildren<Transform>();
+                foreach(Transform transform in transforms)
                 {
-                    exposeToEditor = m_prefabInstance.AddComponent<ExposeToEditor>();
+                    ExposeToEditor exposeToEditor = transform.GetComponent<ExposeToEditor>();
+                    if (exposeToEditor == null)
+                    {
+                        exposeToEditor = transform.gameObject.AddComponent<ExposeToEditor>();
+                    }
                 }
 
-                exposeToEditor.SetName(obj[0].name);
+                {
+                    ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
+                    exposeToEditor.SetName(obj[0].name);
+                }
+
+                
                 OnActivatePrefabInstance(m_prefabInstance);
             }
         }
