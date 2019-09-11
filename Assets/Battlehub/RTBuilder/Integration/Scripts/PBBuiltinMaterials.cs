@@ -9,8 +9,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             get { return BuiltinMaterials.defaultMaterial; }
         }
-
-
+ 
         private static Material m_linesMaterial;
         public static Material LinesMaterial
         {

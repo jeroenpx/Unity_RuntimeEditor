@@ -219,10 +219,10 @@ namespace Battlehub.ProBuilderIntegration
             m_selection.Refersh();
         }
 
-        public MeshEditorState GetState()
+        public MeshEditorState GetState(bool recordUV)
         {
             MeshEditorState state = new MeshEditorState();
-            state.State.Add(m_targetMesh, new MeshState(m_targetMesh.positions, m_targetMesh.faces));
+            state.State.Add(m_targetMesh, new MeshState(m_targetMesh.positions.ToArray(), m_targetMesh.faces.ToArray(), m_targetMesh.textures.ToArray(), recordUV));
             return state;
         }
 
@@ -232,10 +232,7 @@ namespace Battlehub.ProBuilderIntegration
             foreach (ProBuilderMesh mesh in meshes)
             {
                 MeshState meshState = state.State[mesh];
-                mesh.RebuildWithPositionsAndFaces(meshState.Positions, meshState.Faces.Select(f => f.ToFace()));
-
-                mesh.ToMesh();
-                mesh.Refresh();
+                mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
             }
         }
     }

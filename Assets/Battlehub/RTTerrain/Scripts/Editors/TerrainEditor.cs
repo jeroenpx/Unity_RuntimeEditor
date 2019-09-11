@@ -12,7 +12,7 @@ namespace Battlehub.RTTerrain
     {
         public enum EditorTypes
         {
-            General = 0,
+            Selection_Handles = 0,
             Raise_Or_Lower_Terrain = 1,
             Paint_Texture = 2,
             Stamp_Terrain = 3,
@@ -48,7 +48,7 @@ namespace Battlehub.RTTerrain
             {
                 if(m_editorType != value)
                 {
-                    if (value == EditorTypes.General)
+                    if (value == EditorTypes.Selection_Handles)
                     {
                         m_wasEnabled = m_enableToggle.isOn;
                         m_enableToggle.isOn = false;
@@ -56,7 +56,7 @@ namespace Battlehub.RTTerrain
                     }
                     else
                     {
-                        if(m_editorType == EditorTypes.General)
+                        if(m_editorType == EditorTypes.Selection_Handles)
                         {
                             m_header.SetActive(true);
                             m_enableToggle.isOn = m_wasEnabled;
@@ -144,12 +144,15 @@ namespace Battlehub.RTTerrain
                     if (window.WindowType == RuntimeWindowType.Scene)
                     {
                         IRuntimeSceneComponent scene = window.IOCContainer.Resolve<IRuntimeSceneComponent>();
-                        scene.CanSelect = false;
-                        scene.CanSelectAll = false;
-                        scene.IsPositionHandleEnabled = false;
-                        scene.IsRotationHandleEnabled = false;
-                        scene.IsScaleHandleEnabled = false;
-                        scene.IsBoxSelectionEnabled = false;
+                        if(scene != null)
+                        {
+                            scene.CanSelect = false;
+                            scene.CanSelectAll = false;
+                            scene.IsPositionHandleEnabled = false;
+                            scene.IsRotationHandleEnabled = false;
+                            scene.IsScaleHandleEnabled = false;
+                            scene.IsBoxSelectionEnabled = false;
+                        }
                     }
                 }
                 m_wm.WindowCreated += OnWindowCreated;
@@ -177,12 +180,17 @@ namespace Battlehub.RTTerrain
                     if (window.WindowType == RuntimeWindowType.Scene)
                     {
                         IRuntimeSceneComponent scene = window.IOCContainer.Resolve<IRuntimeSceneComponent>();
-                        scene.CanSelect = true;
-                        scene.CanSelectAll = true;
-                        scene.IsPositionHandleEnabled = true;
-                        scene.IsRotationHandleEnabled = true;
-                        scene.IsScaleHandleEnabled = true;
-                        scene.IsBoxSelectionEnabled = true;
+                        if(scene != null)
+                        {
+                            scene.CanSelect = true;
+                            scene.CanSelectAll = true;
+                            scene.IsPositionHandleEnabled = true;
+                            scene.IsRotationHandleEnabled = true;
+                            scene.IsScaleHandleEnabled = true;
+                            scene.IsBoxSelectionEnabled = true;
+
+                        }
+                
                     }
                 }
             }

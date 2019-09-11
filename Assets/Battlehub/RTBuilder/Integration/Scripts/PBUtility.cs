@@ -44,14 +44,13 @@ namespace Battlehub.ProBuilderIntegration
         public static GameObject PickObject(Camera camera, Vector2 mousePosition)
         {
             var ray = camera.ScreenPointToRay(mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            RaycastHit result = Physics.RaycastAll(ray).OrderBy(hit => hit.distance).Where(hit => hit.collider.GetComponent<ProBuilderMesh>() != null).FirstOrDefault();
+            if(result.collider == null)
             {
-                return hit.collider.gameObject;
+                return null;
             }
-                
-            return null;
+
+            return result.collider.gameObject;
         }
 
         public static MeshAndFace PickFace(Camera camera, Vector3 mousePosition)
@@ -827,7 +826,6 @@ namespace Battlehub.ProBuilderIntegration
 
             return res;
         }
-
     }
 }
 

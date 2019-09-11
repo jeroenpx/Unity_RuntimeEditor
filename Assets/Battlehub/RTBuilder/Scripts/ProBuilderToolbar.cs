@@ -24,6 +24,9 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private Toggle m_pivotRotationToggle = null;
 
+        [SerializeField]
+        private ToggleGroup m_toggleGroup = null;
+
         private IProBuilderTool m_tool;
         private IRTE m_rte;
 
@@ -167,6 +170,10 @@ namespace Battlehub.RTBuilder
 
         private void OnModeChanged(ProBuilderToolMode oldMode)
         {
+            if (m_toggleGroup != null)
+            {
+                m_toggleGroup.allowSwitchOff = false;
+            }
             switch (m_tool.Mode)
             {
                 case ProBuilderToolMode.Object:
@@ -182,6 +189,10 @@ namespace Battlehub.RTBuilder
                     m_faceToggle.isOn = true;
                     break;
                 case ProBuilderToolMode.PolyShape:
+                    if(m_toggleGroup != null)
+                    {
+                        m_toggleGroup.allowSwitchOff = true;
+                    }
                     m_objectToggle.isOn = false;
                     m_vetexToggle.isOn = false;
                     m_edgeToggle.isOn = false;

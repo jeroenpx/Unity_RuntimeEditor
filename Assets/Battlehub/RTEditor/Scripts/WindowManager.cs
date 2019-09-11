@@ -1548,6 +1548,7 @@ namespace Battlehub.RTEditor
                 layoutInfo.Icon = wd.Icon;
                 layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
                 layoutInfo.CanClose = persistentLayoutInfo.CanClose;
+                layoutInfo.IsHeaderVisible = persistentLayoutInfo.IsHeaderVisible;
             }
             else
             {

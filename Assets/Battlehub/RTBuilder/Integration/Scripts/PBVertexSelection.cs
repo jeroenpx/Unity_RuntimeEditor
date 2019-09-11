@@ -240,7 +240,8 @@ namespace Battlehub.ProBuilderIntegration
             if (!m_meshToIndices.TryGetValue(mesh, out indicesHs))
             {
                 vertices = CreateVerticesGameObject(mesh, null);
-                vertices.transform.SetParent(transform, false);
+                //vertices.transform.SetParent(transform, false);
+                vertices.transform.SetParent(mesh.transform, false);
 
                 indicesHs = new HashSet<int>();
                 indicesList = new List<int>();
@@ -422,6 +423,7 @@ namespace Battlehub.ProBuilderIntegration
         private MeshFilter CreateVerticesGameObject(ProBuilderMesh mesh, IList<int> indices)
         {
             GameObject vertices = new GameObject("Vertices");
+            vertices.hideFlags = HideFlags.DontSave;
             vertices.layer = m_editor.GraphicsLayer;
 
             MeshFilter meshFilter = vertices.GetComponent<MeshFilter>();
@@ -467,9 +469,9 @@ namespace Battlehub.ProBuilderIntegration
      
         private static void CopyTransform(Transform src, Transform dst)
         {
-            dst.position = src.position;
-            dst.rotation = src.rotation;
-            dst.localScale = src.localScale;
+            //dst.position = src.position;
+            //dst.rotation = src.rotation;
+            //dst.localScale = src.localScale;
         }
 
         public void Synchronize(Vector3 centerOfMass, Vector3 lastPosition, Vector3 lastNormal)

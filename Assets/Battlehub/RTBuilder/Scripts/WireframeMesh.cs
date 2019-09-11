@@ -10,6 +10,11 @@ namespace Battlehub.RTBuilder
         private MeshFilter m_filter;
         private Color m_color;
         private bool m_update;
+        public bool IsIndividual
+        {
+            get;
+            set;
+        }
 
         private void Awake()
         {

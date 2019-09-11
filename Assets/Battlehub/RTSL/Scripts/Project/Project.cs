@@ -348,7 +348,7 @@ namespace Battlehub.RTSL
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {
                 GameObject rootGO = rootGameObjects[i];
-                if (rootGO.GetComponent<RTSLIgnore>())
+                if (rootGO.GetComponent<RTSLIgnore>() || (rootGO.hideFlags & HideFlags.DontSave) != 0)
                 {
                     continue;
                 }

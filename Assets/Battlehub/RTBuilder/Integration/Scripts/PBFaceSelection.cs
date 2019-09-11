@@ -24,7 +24,7 @@ namespace Battlehub.ProBuilderIntegration
     public class PBFaceSelection : MonoBehaviour
     {
         private ProBuilderMesh m_selectionMesh;
-        private readonly Dictionary<int, Face> m_faceToSelectionFace = new Dictionary<int, Face>();
+        private readonly Dictionary<ProBuilderMesh, Dictionary<int, Face>> m_faceToSelectionFace = new Dictionary<ProBuilderMesh, Dictionary<int, Face>>();
         private readonly Dictionary<Face, ProBuilderMesh> m_selectionFaceToMesh = new Dictionary<Face, ProBuilderMesh>();
         private readonly List<Vector3> m_selectionVertices = new List<Vector3>();
         private readonly List<Face> m_selectionFaces = new List<Face>();
@@ -82,6 +82,13 @@ namespace Battlehub.ProBuilderIntegration
         }
 
         private PBBaseEditor m_editor;
+
+        private MeshRenderer m_renderer;
+        public bool IsRendererEnabled
+        {
+            get { return m_renderer.enabled; }
+            set { m_renderer.enabled = value; }
+        }
         
         private void Awake()
         {
@@ -94,17 +101,17 @@ namespace Battlehub.ProBuilderIntegration
             }
             meshFilter.sharedMesh = new Mesh();
 
-            MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
-            if(renderer == null)
+            m_renderer = gameObject.GetComponent<MeshRenderer>();
+            if(m_renderer == null)
             {
-                renderer = gameObject.AddComponent<MeshRenderer>();
+                m_renderer = gameObject.AddComponent<MeshRenderer>();
             }
 
-            m_material = new Material(Shader.Find(BuiltinMaterials.faceShader));
+            m_material = new Material(Shader.Find("Hidden/RTBuilder/FaceHighlight"));
             m_material.SetFloat("_Dither", 1f);
             m_material.color = new Color(m_color.r, m_color.g, m_color.b, 0.5f);
-            
-            renderer.sharedMaterial = m_material;
+
+            m_renderer.sharedMaterial = m_material;
 
             gameObject.AddComponent<PBMesh>();
             gameObject.layer = m_editor.GraphicsLayer;
@@ -121,9 +128,15 @@ namespace Battlehub.ProBuilderIntegration
             Clear();
         }
 
-        public bool IsSelected(int face)
+        public bool IsSelected(ProBuilderMesh mesh, int face)
         {
-            return m_faceToSelectionFace.ContainsKey(face);
+            Dictionary<int, Face> faceToSelection;
+            if(!m_faceToSelectionFace.TryGetValue(mesh, out faceToSelection))
+            {
+                return false;
+            }
+
+            return faceToSelection.ContainsKey(face);
         }
 
         public void BeginChange()
@@ -143,19 +156,30 @@ namespace Battlehub.ProBuilderIntegration
         public void Add(ProBuilderMesh mesh, int faceIndex)
         {
             Face face = mesh.faces[faceIndex];
-            if(m_faceToSelectionFace.ContainsKey(faceIndex))
+
+            Dictionary<int, Face> faceToSelection;
+            if (m_faceToSelectionFace.TryGetValue(mesh, out faceToSelection))
             {
-                return;
+                if (faceToSelection.ContainsKey(faceIndex))
+                {
+                    return;
+                }
             }
+            else
+            {
+                faceToSelection = new Dictionary<int, Face>();
+                m_faceToSelectionFace.Add(mesh, faceToSelection);
+            }
+            
 
             int[] indices = new int[face.indexes.Count];
-            for(int i = 0; i < face.indexes.Count; ++i)
+            for(int i = 0; i < indices.Length; ++i)
             {
                 indices[i] = m_selectionVertices.Count + i;
             }
 
             Face selectionFace = new Face(indices);
-            m_faceToSelectionFace.Add(faceIndex, selectionFace);
+            faceToSelection.Add(faceIndex, selectionFace);
             m_selectionFaceToMesh.Add(selectionFace, mesh);
 
             IList<int> indexes = face.indexes;
@@ -165,7 +189,6 @@ namespace Battlehub.ProBuilderIntegration
                 m_selectionVertices.Add(transform.InverseTransformPoint(mesh.transform.TransformPoint(vertices[i].position)));
             }
 
-          
             m_selectionFaces.Add(selectionFace);
             if(!m_isChanging)
             {
@@ -218,18 +241,30 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void Remove(int faceIndex)
+        public void Remove(ProBuilderMesh mesh, int faceIndex)
         {
             Face selectionFace;
-            if(!m_faceToSelectionFace.TryGetValue(faceIndex, out selectionFace))
+            Dictionary<int, Face> faceToSelection;
+            if (m_faceToSelectionFace.TryGetValue(mesh, out faceToSelection))
+            {
+                if (!faceToSelection.TryGetValue(faceIndex, out selectionFace))
+                {
+                    return;
+                }
+            }
+            else
             {
                 return;
             }
 
-            ProBuilderMesh mesh = m_selectionFaceToMesh[selectionFace];
             Face face = mesh.faces[faceIndex];
 
-            m_faceToSelectionFace.Remove(faceIndex);
+            faceToSelection.Remove(faceIndex);
+            if(faceToSelection.Count == 0)
+            {
+                m_faceToSelectionFace.Remove(mesh);
+            }
+
             m_selectionFaceToMesh.Remove(selectionFace);
 
             FaceList faceList = m_meshToFaces[mesh];

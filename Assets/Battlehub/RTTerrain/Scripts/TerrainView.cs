@@ -20,6 +20,15 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        protected override void UpdateOverride()
+        {
+            base.UpdateOverride();
+            if(m_terrainEditor.Terrain != Terrain.activeTerrain && Terrain.activeTerrain != null)
+            {
+                m_terrainEditor.Terrain = Terrain.activeTerrain;
+            }
+        }
+
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();

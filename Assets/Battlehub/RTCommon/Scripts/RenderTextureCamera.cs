@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Battlehub.UIControls;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
@@ -71,6 +72,7 @@ namespace Battlehub.RTCommon
 
         private Camera m_camera;
         private RawImage m_output;
+        private RectTransformChangeListener m_rectTransformChangeListener;
 
         public RectTransform RectTransform
         {
@@ -101,6 +103,7 @@ namespace Battlehub.RTCommon
             GameObject outputGo = new GameObject(m_camera.name + " Output");
             outputGo.SetActive(false);
 
+            
             m_output = outputGo.AddComponent<RawImage>();
             m_output.raycastTarget = false;
             if(m_overlayMaterial != null)
@@ -122,8 +125,12 @@ namespace Battlehub.RTCommon
             ResizeRenderTexture();
             ResizeOutput();
 
+            m_rectTransformChangeListener = outputGo.AddComponent<RectTransformChangeListener>();
+            m_rectTransformChangeListener.RectTransformChanged += OnRectTransformChanged;
+
             outputGo.SetActive(true);
         }
+
 
         private void OnDestroy()
         {
@@ -132,29 +139,45 @@ namespace Battlehub.RTCommon
                 m_camera.targetTexture.Release();
                 m_camera.targetTexture = null;
             }
-       
-            if(m_output != null)
+
+            if (m_rectTransformChangeListener != null)
+            {
+                m_rectTransformChangeListener.RectTransformChanged -= OnRectTransformChanged;
+            }
+
+            if (m_output != null)
             {
                 Destroy(m_output.gameObject);
             }
         }
 
+        private void OnRectTransformChanged()
+        {
+            //ResizeOutput();
+            //ResizeRenderTexture();
+        }
+
         private void LateUpdate()
         {
-            if(m_output == null)
-            {
-
-            }
-
             bool resizeRenderTexture = m_outputRect != m_output.rectTransform.rect || m_screenWidth != Screen.width || m_screenHeight != Screen.height;
             bool resizeOutput = resizeRenderTexture || m_output.rectTransform.position != m_position;
+
+            if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                if (m_output.uvRect != m_camera.rect)
+                {
+                    resizeOutput = true;
+                }
+            }
+
+           
 
             if (resizeRenderTexture)
             {
                 ResizeRenderTexture();
             }
 
-            if(resizeOutput)
+            if (resizeOutput)
             {
                 ResizeOutput();
             }
@@ -185,36 +208,47 @@ namespace Battlehub.RTCommon
 
         private void ResizeRenderTexture(int sizeX, int sizeY, RenderTexture texture)
         {
-            if (texture != null)
-            {
-                texture.Release();
-            }
+            RenderTexture oldTexture = texture;
 
             texture = new RenderTexture(Mathf.Max(1, sizeX), Mathf.Max(1, sizeY), 24, RenderTextureFormat.ARGB32);
             texture.name = m_camera.name + " RenderTexture";
             texture.filterMode = FilterMode.Point;
             texture.antiAliasing = m_allowMSAA ? Mathf.Max(1, QualitySettings.antiAliasing) : 1;
+
             m_camera.targetTexture = texture;
             m_output.texture = texture;
 
             m_outputRect = m_output.rectTransform.rect;
             m_screenWidth = Screen.width;
             m_screenHeight = Screen.height;
+
+
+            if (oldTexture != null)
+            {
+                oldTexture.Release();
+            }
         }
 
         private void ResizeOutput()
         {
             if(m_fullscreen)
             {
-                Vector2 p0;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(m_outputRoot, Vector2.zero, m_canvas.worldCamera, out p0);
+                if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                {
+                    m_output.uvRect = m_camera.rect;
+                }
+                else
+                {
+                    Vector2 p0;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(m_outputRoot, Vector2.zero, m_canvas.worldCamera, out p0);
 
-                Vector2 p1;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(m_outputRoot, new Vector2(Screen.width, Screen.height), m_canvas.worldCamera, out p1);
+                    Vector2 p1;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(m_outputRoot, new Vector2(Screen.width, Screen.height), m_canvas.worldCamera, out p1);
 
-                m_output.rectTransform.anchoredPosition = p0;
-                m_output.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Abs(p1.x - p0.x));
-                m_output.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Abs(p1.y - p0.y));
+                    m_output.rectTransform.anchoredPosition = p0;
+                    m_output.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Abs(p1.x - p0.x));
+                    m_output.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Abs(p1.y - p0.y));
+                }
             }
 
             m_position = m_output.rectTransform.position;

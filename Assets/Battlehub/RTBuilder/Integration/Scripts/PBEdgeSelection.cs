@@ -243,7 +243,7 @@ namespace Battlehub.ProBuilderIntegration
             if (!m_meshToEdges.TryGetValue(mesh, out edgesHs))
             {
                 edgesSelection = CreateEdgesGameObject(mesh);
-                edgesSelection.transform.SetParent(transform, false);
+                edgesSelection.transform.SetParent(mesh.transform, false);
 
                 edgesHs = new HashSet<Edge>();
                 edgesList = new List<Edge>();
@@ -428,6 +428,7 @@ namespace Battlehub.ProBuilderIntegration
         private MeshFilter CreateEdgesGameObject(ProBuilderMesh mesh)
         {
             GameObject edgesSelection = new GameObject("Edges");
+            edgesSelection.hideFlags = HideFlags.DontSave;
             edgesSelection.layer = m_editor.GraphicsLayer;
 
             MeshFilter meshFilter = edgesSelection.GetComponent<MeshFilter>();
@@ -572,9 +573,9 @@ namespace Battlehub.ProBuilderIntegration
 
         private static void CopyTransform(Transform src, Transform dst)
         {
-            dst.position = src.position;
-            dst.rotation = src.rotation;
-            dst.localScale = src.localScale;
+            //dst.position = src.position;
+            //dst.rotation = src.rotation;
+            //dst.localScale = src.localScale;
         }
 
         public void Synchronize(Vector3 centerOfMass, Vector3 lastPosition, Vector3 lastNormal)

@@ -33,24 +33,26 @@ namespace Battlehub.RTCommon
         public int ResourcePreviewLayer;
         public int RuntimeGraphicsLayer;
         public int MaxGraphicsLayers;
-        public int ExtraLayer1;
+        public int AllScenesLayer;
         public int ExtraLayer2;
-
+        public int ExtraLayer;
+        
         public int RaycastMask
         {
             get
             {
-                return ~((((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer) | (1 << ExtraLayer1) | (1 << ExtraLayer2));
+                return ~((((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer) | (1 << AllScenesLayer) | (1 << ExtraLayer) | (1 << ExtraLayer2));
             }
         }
 
-        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers, int extraLayer1, int extraLayer2)
+        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers, int allSceneLayer, int extraLayer, int hiddenLayer)
         {
             ResourcePreviewLayer = resourcePreviewLayer;
             RuntimeGraphicsLayer = runtimeGraphicsLayer;
             MaxGraphicsLayers = maxLayers;
-            ExtraLayer1 = extraLayer1;
-            ExtraLayer2 = extraLayer2;
+            AllScenesLayer = allSceneLayer;
+            ExtraLayer = extraLayer;
+            ExtraLayer2 = hiddenLayer;
         }
     }
 
@@ -218,7 +220,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
         [SerializeField]
-        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 18, 19);
+        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 17, 18, 19);
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
@@ -523,7 +525,7 @@ namespace Battlehub.RTCommon
 
         private static RTEBase m_instance;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Init()
+        public static void Init()
         {
             Debug.Log("RTE Initialized");
             IOC.RegisterFallback<IRTE>(RegisterRTE);

@@ -328,6 +328,8 @@ namespace Battlehub.RTTerrain
                     {
                         m_handlePrefab.gameObject.SetActive(false);
                         TerrainToolHandle handle = Instantiate(m_handlePrefab, transform);
+                        handle.gameObject.hideFlags = HideFlags.HideInHierarchy;
+
                         LockAxes lockAxes = handle.gameObject.AddComponent<LockAxes>();
                         lockAxes.PositionX = true;
                         lockAxes.PositionZ = true;

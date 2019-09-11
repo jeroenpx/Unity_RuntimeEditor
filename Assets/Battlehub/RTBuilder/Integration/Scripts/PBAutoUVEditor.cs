@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
@@ -10,6 +11,14 @@ namespace Battlehub.ProBuilderIntegration
     {
         void ApplySettings(PBAutoUnwrapSettings settings, MeshSelection selection);
         PBAutoUnwrapSettings GetSettings(MeshSelection selection);
+
+        bool HasAutoUV(MeshSelection selection, bool auto);
+        void SetAutoUV(MeshSelection selection, bool auto);
+        void ResetUV(MeshSelection selection);
+
+        void GroupFaces(MeshSelection selection);
+        void UngroupFaces(MeshSelection selection);
+        MeshSelection SelectFaceGroup(MeshSelection currentSelection);
     }
 
     public class PBAutoUnwrapSettings
@@ -230,6 +239,119 @@ namespace Battlehub.ProBuilderIntegration
 
     public class PBAutoUVEditor : MonoBehaviour, IAutoUVEditor
     {
+        public bool HasAutoUV(MeshSelection selection, bool auto)
+        {
+            if (selection == null)
+            {
+                return false;
+            }
+
+            if (selection.HasVertices)
+            {
+                selection.VerticesToFaces(false);
+            }
+            else if (selection.HasEdges)
+            {
+                selection.EdgesToFaces(false);
+            }
+
+            IList<Face> faces = new List<Face>();
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            {
+                ProBuilderMesh mesh = kvp.Key;
+
+                faces.Clear();
+                mesh.GetFaces(kvp.Value, faces);
+                for (int i = 0; i < faces.Count; ++i)
+                {
+                    Face face = faces[i];
+                    if(auto)
+                    {
+                        if (!face.manualUV)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (face.manualUV)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void SetAutoUV(MeshSelection selection, bool auto)
+        {
+            if (selection == null)
+            {
+                return;
+            }
+
+            if (selection.HasVertices)
+            {
+                selection.VerticesToFaces(false);
+            }
+            else if (selection.HasEdges)
+            {
+                selection.EdgesToFaces(false);
+            }
+
+            List<Face> faces = new List<Face>();
+            foreach(KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            {
+                ProBuilderMesh mesh = kvp.Key;
+
+                faces.Clear();
+                mesh.GetFaces(kvp.Value, faces);
+
+                PBAutoUVConversion.SetAutoUV(mesh, faces.ToArray(), auto);
+
+                mesh.ToMesh();
+                mesh.Refresh();
+            }
+        }
+
+        public void ResetUV(MeshSelection selection)
+        {
+            if (selection == null)
+            {
+                return;
+            }
+
+            if (selection.HasVertices)
+            {
+                selection.VerticesToFaces(false);
+            }
+            else if (selection.HasEdges)
+            {
+                selection.EdgesToFaces(false);
+            }
+
+            List<Face> faces = new List<Face>();
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            {
+                ProBuilderMesh mesh = kvp.Key;
+
+                faces.Clear();
+                mesh.GetFaces(kvp.Value, faces);
+
+                for(int i = 0; i < faces.Count; ++i)
+                {
+                    faces[i].uv = AutoUnwrapSettings.defaultAutoUnwrapSettings;
+                }
+
+                mesh.RefreshUV(faces);
+
+
+                mesh.ToMesh();
+                mesh.Refresh();
+            }
+        }
+
         public void ApplySettings(PBAutoUnwrapSettings settings, MeshSelection selection)
         {
             if (selection == null)
@@ -261,6 +383,10 @@ namespace Battlehub.ProBuilderIntegration
                 }
 
                 mesh.RefreshUV(faces);
+
+
+                mesh.ToMesh();
+                mesh.Refresh();
             }    
         }
 
@@ -296,6 +422,81 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             return unwrapSettings;
+        }
+
+        private int GetUnusedTextureGroup(ProBuilderMesh mesh)
+        {
+            return mesh.faces.Max(f => f.textureGroup) + 2;
+        }
+
+        private void SetTextureGroup(MeshSelection selection, int textureGroup = 0)
+        {
+            if (selection.HasVertices)
+            {
+                selection.VerticesToFaces(false);
+            }
+            else if (selection.HasEdges)
+            {
+                selection.EdgesToFaces(false);
+            }
+
+            List<Face> faces = new List<Face>();
+            Dictionary<ProBuilderMesh, IList<int>> selectedFaces = selection.SelectedFaces;
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selectedFaces)
+            {
+                faces.Clear();
+
+                ProBuilderMesh mesh = kvp.Key;
+                mesh.GetFaces(kvp.Value, faces);
+
+                int texGroup = textureGroup >= 0 ? GetUnusedTextureGroup(mesh) : -1;
+                for (int i = 0; i < faces.Count; ++i)
+                {
+                    Face face = faces[i];
+                    face.textureGroup = texGroup;
+                }
+
+                mesh.RefreshUV(faces);
+
+
+                mesh.ToMesh();
+                mesh.Refresh();
+            }
+        }
+
+        public void GroupFaces(MeshSelection selection)
+        {
+            SetTextureGroup(selection);
+        }
+
+        public void UngroupFaces(MeshSelection selection)
+        {
+            SetTextureGroup(selection, -1);
+        }
+
+        public MeshSelection SelectFaceGroup(MeshSelection currentSelection)
+        {
+            MeshSelection selection = new MeshSelection();
+
+            ProBuilderMesh mesh = currentSelection.SelectedFaces.Last().Key;
+            IList<int> currentlySelectedFaces = currentSelection.SelectedFaces.Last().Value;
+            HashSet<int> facesHs = new HashSet<int>(currentlySelectedFaces);
+            int faceIndex = currentlySelectedFaces.Last();
+            int textureGroup = mesh.faces[faceIndex].textureGroup;
+
+            IList<Face> faces = mesh.faces;
+            List<int> selectedFaces = new List<int>();
+            for (int i = 0; i < faces.Count; ++i)
+            {
+                Face face = faces[i];
+                if (face.textureGroup == textureGroup && !facesHs.Contains(i))
+                {
+                    selectedFaces.Add(i);
+                }
+            }
+
+            selection.SelectedFaces.Add(mesh, selectedFaces);
+            return selection;
         }
     }
 }

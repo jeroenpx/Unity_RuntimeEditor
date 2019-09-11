@@ -298,7 +298,7 @@ namespace Battlehub.RTCommon
         {
             return exposeToEditor != null &&
                 !exposeToEditor.MarkAsDestroyed &&
-                exposeToEditor.hideFlags != HideFlags.HideAndDontSave;
+                (exposeToEditor.hideFlags & HideFlags.HideInHierarchy) == 0;
         }
 
         private static List<ExposeToEditor> FindAll()

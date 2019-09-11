@@ -98,7 +98,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
             }
         }
 
-        private void GetDependenciesFrom(GameObject go, List<object> prefabParts, GetDepsFromContext context)
+        protected virtual void GetDependenciesFrom(GameObject go, List<object> prefabParts, GetDepsFromContext context)
         {
             if (go.GetComponent<RTSLIgnore>())
             {
@@ -376,7 +376,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
         }
 
 
-        protected PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, /*HashSet<int> usings,*/ GetDepsFromContext getDepsFromCtx, PersistentDescriptor parentDescriptor = null)
+        protected virtual PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, /*HashSet<int> usings,*/ GetDepsFromContext getDepsFromCtx, PersistentDescriptor parentDescriptor = null)
         {
             if (go.GetComponent<RTSLIgnore>())
             {

@@ -782,7 +782,7 @@ MonoBehaviour:
   m_Script: {fileID: -1184210157, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 1
+  m_AllowSwitchOff: 0
 --- !u!114 &6833604107758261191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1213,6 +1213,7 @@ MonoBehaviour:
   m_faceToggle: {fileID: 32655405861763093}
   m_pivotModeToggle: {fileID: 2221725183980629143}
   m_pivotRotationToggle: {fileID: 5195084034881941850}
+  m_toggleGroup: {fileID: 3001547104996523509}
 --- !u!114 &1373664072099010320
 MonoBehaviour:
   m_ObjectHideFlags: 0

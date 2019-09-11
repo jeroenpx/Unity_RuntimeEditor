@@ -112,7 +112,10 @@ public class TerrainGeneralSettings : MonoBehaviour
 
     private void OnDisable()
     {
-        m_terrainTool.Enabled = false;
+        if(m_terrainTool != null)
+        {
+            m_terrainTool.Enabled = false;
+        }
     }
 
     private List<ToolCmd> GetCommands()

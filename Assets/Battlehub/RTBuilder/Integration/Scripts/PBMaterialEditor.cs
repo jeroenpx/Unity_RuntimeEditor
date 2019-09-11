@@ -73,7 +73,7 @@ namespace Battlehub.ProBuilderIntegration
     {
         ApplyMaterialResult ApplyMaterial(Material material, MeshSelection selection, Camera camera, Vector3 mousePosition);
         ApplyMaterialResult ApplyMaterial(Material material, MeshSelection selection);
-        ApplyMaterialResult ApplyMaterial(Material material, GameObject gameObject);
+        ApplyMaterialResult ApplyMaterial(Material material, GameObject gameObject, int submeshIndex);
         void ApplyMaterials(MeshMaterialsState state);
     }
 
@@ -192,7 +192,7 @@ namespace Battlehub.ProBuilderIntegration
             return null;
         }
 
-        public ApplyMaterialResult ApplyMaterial(Material material, GameObject gameObject)
+        public ApplyMaterialResult ApplyMaterial(Material material, GameObject gameObject, int submeshIndex)
         {
             MeshMaterialsState oldState = new MeshMaterialsState();
             MeshMaterialsState newState = new MeshMaterialsState();
@@ -203,7 +203,15 @@ namespace Battlehub.ProBuilderIntegration
                 AddAllFacesToState(oldState, mesh);
                 AddMaterialsToState(oldState, mesh);
 
-                mesh.SetMaterial(mesh.faces, material);
+                if(submeshIndex < 0)
+                {
+                    mesh.SetMaterial(mesh.faces, material);
+                }
+                else
+                {
+                    mesh.SetMaterial(mesh.faces.Where(f => f.submeshIndex == submeshIndex), material);
+                }
+                
                 mesh.Refresh();
                 mesh.ToMesh();
 

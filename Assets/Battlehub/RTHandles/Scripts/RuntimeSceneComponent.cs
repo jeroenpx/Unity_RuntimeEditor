@@ -239,14 +239,14 @@ namespace Battlehub.RTHandles
             m_mouseOrbit.ChangeOrthographicSizeOnly = ChangeOrthographicSizeOnly;
             m_mouseOrbit.CanOrbit = CanOrbit;
 
-            if(m_sceneGizmo == null)
+            if (m_sceneGizmo == null)
             {
                 m_sceneGizmo = GetComponentInChildren<SceneGizmo>(true);
             }
 
             if (m_sceneGizmo != null)
             {
-                if(m_sceneGizmo.Window == null)
+                if (m_sceneGizmo.Window == null)
                 {
                     m_sceneGizmo.Window = Window;
                 }
@@ -254,11 +254,13 @@ namespace Battlehub.RTHandles
                 m_sceneGizmo.OrientationChanged.AddListener(OnSceneGizmoOrientationChanged);
                 m_sceneGizmo.ProjectionChanged.AddListener(OnSceneGizmoProjectionChanged);
                 m_sceneGizmo.Pivot = PivotTransform;
-                if(!IsSceneGizmoEnabled)
+                if (!IsSceneGizmoEnabled)
                 {
                     m_sceneGizmo.gameObject.SetActive(false);
                 }
             }
+
+            Window.Camera.transform.LookAt(Pivot);
         }
 
         protected override void OnDestroyOverride()
@@ -398,7 +400,7 @@ namespace Battlehub.RTHandles
             }
 
             m_autoFocusTransform = Editor.Selection.activeTransform;
-            if (Editor.Selection.activeTransform.gameObject.hideFlags != HideFlags.None)
+            if ((Editor.Selection.activeTransform.gameObject.hideFlags & HideFlags.DontSave) != 0)
             {
                 return;
             }

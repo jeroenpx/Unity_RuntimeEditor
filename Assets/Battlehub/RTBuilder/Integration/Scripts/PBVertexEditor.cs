@@ -148,7 +148,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift)
+        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
         {
             MeshSelection selection = null;
             GameObject pickedObject = PBUtility.PickObject(camera, pointer);

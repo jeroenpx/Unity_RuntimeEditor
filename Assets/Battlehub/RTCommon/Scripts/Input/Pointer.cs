@@ -17,6 +17,7 @@ namespace Battlehub.RTCommon
 
         private RenderTextureCamera m_renderTextureCamera;
         private CanvasScaler m_canvasScaler;
+        private Canvas m_canvas;
 
         [SerializeField]
         protected RuntimeWindow m_window;
@@ -37,6 +38,8 @@ namespace Battlehub.RTCommon
                 m_window = GetComponent<RuntimeWindow>();
             }
 
+            m_canvas = GetComponentInParent<Canvas>();
+
             if (m_window.Camera != null)
             {
                 m_renderTextureCamera = m_window.Camera.GetComponent<RenderTextureCamera>();
@@ -49,7 +52,7 @@ namespace Battlehub.RTCommon
 
         private Vector2 ScreenPointToViewPoint(Vector2 screenPoint)
         {
-            if (m_renderTextureCamera == null)
+            if (m_renderTextureCamera == null || m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             {
                 return screenPoint;
             }

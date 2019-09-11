@@ -251,7 +251,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift)
+        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
         {
             MeshSelection selection = null;
             GameObject pickedObject = PBUtility.PickObject(camera, pointer);
@@ -615,13 +615,13 @@ namespace Battlehub.ProBuilderIntegration
             RaisePBMeshesChanged(true);
         }
 
-        public override MeshEditorState GetState()
+        public override MeshEditorState GetState(bool recordUV)
         {
             MeshEditorState state = new MeshEditorState();
             ProBuilderMesh[] meshes = m_edgeSelection.Meshes.OrderBy(m => m == m_edgeSelection.LastMesh).ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
-                state.State.Add(mesh, new MeshState(mesh.positions.ToArray(), mesh.faces.ToArray()));
+                state.State.Add(mesh, new MeshState(mesh.positions.ToArray(),  mesh.faces.ToArray(), mesh.textures.ToArray(), recordUV));
             }
             return state;
         }
@@ -635,11 +635,8 @@ namespace Battlehub.ProBuilderIntegration
                 m_edgeSelection.Remove(mesh, edges);
 
                 MeshState meshState = state.State[mesh];
-                mesh.RebuildWithPositionsAndFaces(meshState.Positions, meshState.Faces.Select(f => f.ToFace()));
-
-                mesh.ToMesh();
-                mesh.Refresh();
-
+                mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
+                
                 m_edgeSelection.Add(mesh, edges);
             }
         }

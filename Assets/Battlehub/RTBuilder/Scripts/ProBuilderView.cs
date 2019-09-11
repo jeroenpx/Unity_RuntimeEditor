@@ -433,6 +433,22 @@ namespace Battlehub.RTBuilder
             return m_isNonProBuilderMeshSelected;
         }
 
+        private bool IsDescendant(Transform ancestor, Transform obj)
+        {
+            obj = obj.parent;
+            while(obj != null)
+            {
+                if(obj == ancestor)
+                {
+                    return true;
+                }
+
+                obj = obj.parent;
+            }
+
+            return false;
+        }
+
         private object OnProBuilderize(object arg)
         {
             GameObject[] gameObjects = Editor.Selection.gameObjects;
@@ -441,13 +457,14 @@ namespace Battlehub.RTBuilder
                 return null;
             }
 
+            Transform[] transforms = gameObjects.Select(g => g.transform).ToArray();
+            gameObjects = gameObjects.Where(g => !transforms.Any(t => IsDescendant(t, g.transform))).ToArray();
+
             for(int i = 0; i < gameObjects.Length; ++i)
             {
-                MeshFilter[] filters = gameObjects[i].GetComponentsInChildren<MeshFilter>();
-                for(int j = 0; j < filters.Length; ++j)
-                {
-                    PBMesh.ProBuilderize(filters[j].gameObject);
-                }
+                Vector3 scale = gameObjects[i].transform.localScale;
+                float minScale = Mathf.Min(scale.x, scale.y, scale.z);
+                PBMesh.ProBuilderize(gameObjects[i], true, new Vector2(minScale, minScale));
             }
             return null;
         }

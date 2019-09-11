@@ -283,7 +283,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                m_treeView.SelectedItems = Editor.Selection.gameObjects.Select(g => g.GetComponent<ExposeToEditor>()).Where(e => e != null && !e.gameObject.IsPrefab() && e.gameObject.hideFlags != HideFlags.HideAndDontSave).ToArray();
+                m_treeView.SelectedItems = Editor.Selection.gameObjects.Select(g => g.GetComponent<ExposeToEditor>()).Where(e => e != null && !e.gameObject.IsPrefab() && (e.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0).ToArray();
             }
 
             m_lockSelection = false;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
@@ -9,21 +7,60 @@ using UnityEngine.ProBuilder.MeshOperations;
 
 namespace Battlehub.ProBuilderIntegration
 {
+    public static class ProBuilderMeshOperationsExt
+    {
+        public static void Rebuild(this ProBuilderMesh mesh, IList<Vector3> positions, IList<Face> faces, IList<Vector2> textures)
+        {
+            mesh.Clear();
+            mesh.positions = positions;
+            mesh.faces = faces;
+            mesh.textures = textures;
+            mesh.sharedVertices = SharedVertex.GetSharedVerticesWithPositions(positions);
+            mesh.ToMesh();
+            mesh.Refresh();
+        }
+    }
+
     public struct PBFace
     {
         public int[] Indexes;
         public int SubmeshIndex;
+        public int TextureGroup;
+        public bool IsManualUV;
+        public PBAutoUnwrapSettings UnwrapSettings;
 
-        public PBFace(Face face)
+        public PBFace(Face face, bool recordUV)
         {
             Indexes = face.indexes.ToArray();
             SubmeshIndex = face.submeshIndex;
+            TextureGroup = face.textureGroup;
+            if(recordUV)
+            {
+                IsManualUV = face.manualUV;
+                UnwrapSettings = face.uv;
+            }
+            else
+            {
+                IsManualUV = face.manualUV;
+                UnwrapSettings = null;
+            }
         }
 
         public Face ToFace()
         {
             Face face = new Face(Indexes);
             face.submeshIndex = SubmeshIndex;
+            
+            if(UnwrapSettings != null)
+            {
+                face.textureGroup = TextureGroup;
+                face.uv = UnwrapSettings;
+                face.manualUV = IsManualUV;
+            }
+            else
+            {
+                face.manualUV = IsManualUV;
+            }
             return face;
         }
     }
@@ -47,7 +84,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             get
             {
-                m_faces = m_pbMesh.faces.Select(f => new PBFace(f)).ToArray();
+                m_faces = m_pbMesh.faces.Select(f => new PBFace(f, true)).ToArray();
                 return m_faces;
             }
             set { m_faces = value; }
@@ -64,6 +101,17 @@ namespace Battlehub.ProBuilderIntegration
             set { m_positions = value; }
         }
 
+        private Vector2[] m_textures;
+        public Vector2[] Textures
+        {
+            get
+            {
+                m_textures = m_pbMesh.textures.ToArray();
+                return m_textures;
+            }
+            set { m_textures = value; }
+        }
+
         internal ProBuilderMesh Mesh
         {
             get { return m_pbMesh; }
@@ -71,28 +119,38 @@ namespace Battlehub.ProBuilderIntegration
 
         private void Awake()
         {
-            m_meshFilter = GetComponent<MeshFilter>();
-            m_pbMesh = GetComponent<ProBuilderMesh>();
-            if (m_pbMesh == null)
-            {
-                m_pbMesh = gameObject.AddComponent<ProBuilderMesh>();
-                if (m_positions != null)
-                {
-                    Face[] faces = m_faces.Select(f => f.ToFace()).ToArray();
-                    m_pbMesh.RebuildWithPositionsAndFaces(m_positions, faces);
+            Init(this, Vector2.one);
+        }
 
-                    IList<Face> actualFaces = m_pbMesh.faces;
-                    for(int i = 0; i < actualFaces.Count; ++i)
+        private static void Init(PBMesh mesh, Vector2 scale)
+        {
+            if(mesh.m_pbMesh != null)
+            {
+                return;
+            }
+
+            mesh.m_meshFilter = mesh.GetComponent<MeshFilter>();
+            mesh.m_pbMesh = mesh.GetComponent<ProBuilderMesh>();
+            if (mesh.m_pbMesh == null)
+            {
+                mesh.m_pbMesh = mesh.gameObject.AddComponent<ProBuilderMesh>();
+                if (mesh.m_positions != null)
+                {
+                    Face[] faces = mesh.m_faces.Select(f => f.ToFace()).ToArray();
+                    mesh.m_pbMesh.Rebuild(mesh.m_positions, faces, mesh.m_textures);
+
+                    IList<Face> actualFaces = mesh.m_pbMesh.faces;
+                    for (int i = 0; i < actualFaces.Count; ++i)
                     {
-                        actualFaces[i].submeshIndex = m_faces[i].SubmeshIndex;
+                        actualFaces[i].submeshIndex = mesh.m_faces[i].SubmeshIndex;
                     }
 
-                    m_pbMesh.Refresh();
-                    m_pbMesh.ToMesh();
+                    mesh.m_pbMesh.Refresh();
+                    mesh.m_pbMesh.ToMesh();
                 }
                 else
                 {
-                    ImportMesh(m_meshFilter, m_pbMesh);
+                    ImportMesh(mesh.m_meshFilter, mesh.m_pbMesh, scale);
                 }
             }
         }
@@ -248,39 +306,179 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-
-        public static PBMesh ProBuilderize(GameObject gameObject)
+        public static PBMesh ProBuilderize(GameObject gameObject, bool hierarchy)
         {
-            PBMesh mesh = gameObject.GetComponent<PBMesh>();
-            if (mesh != null)
+            return ProBuilderize(gameObject, hierarchy, Vector2.one);
+        }
+
+        public static PBMesh ProBuilderize(GameObject gameObject, bool hierarchy, Vector2 uvScale)
+        {
+            bool wasActive = false;
+            if(uvScale != Vector2.one)
             {
+                wasActive = gameObject.activeSelf;
+                gameObject.SetActive(false);
+            }
+            
+            if(hierarchy)
+            {
+                MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>(true);
+                for(int i = 0; i < meshFilters.Length; ++i)
+                {
+                    if(meshFilters[i].GetComponent<PBMesh>() == null)
+                    {
+                        PBMesh pbMesh = meshFilters[i].gameObject.AddComponent<PBMesh>();
+                        Init(pbMesh, uvScale);
+                    }
+                }
+
+                if (uvScale != Vector2.one)
+                {
+                    gameObject.SetActive(wasActive);
+                }
+
+                return gameObject.GetComponent<PBMesh>();
+            }
+            else
+            {
+                PBMesh mesh = gameObject.GetComponent<PBMesh>();
+                if (mesh != null)
+                {
+                    if (uvScale != Vector2.one)
+                    {
+                        gameObject.SetActive(wasActive);
+                    }
+                    return mesh;
+                }
+
+                mesh = gameObject.AddComponent<PBMesh>();
+                Init(mesh, uvScale);
+                if (uvScale != Vector2.one)
+                {
+                    gameObject.SetActive(wasActive);
+                }
                 return mesh;
             }
-
-            return gameObject.AddComponent<PBMesh>();
         }
 
         public static void ImportMesh(ProBuilderMesh mesh)
         {
             MeshFilter filter = mesh.GetComponent<MeshFilter>();
-            ImportMesh(filter, mesh);
+            ImportMesh(filter, mesh, Vector2.one);
         }
 
-        private static void ImportMesh(MeshFilter filter, ProBuilderMesh mesh)
+        private static void ImportMesh(ProBuilderMesh mesh, Vector2 uvScale)
+        {
+            MeshFilter filter = mesh.GetComponent<MeshFilter>();
+            ImportMesh(filter, mesh, uvScale);
+        }
+
+        private static void ImportMesh(MeshFilter filter, ProBuilderMesh mesh, Vector2 uvScale)
         {
             MeshImporter importer = new MeshImporter(mesh);
             Renderer renderer = mesh.GetComponent<Renderer>();
-            importer.Import(filter.sharedMesh, renderer.sharedMaterials );
+            importer.Import(filter.sharedMesh, renderer.sharedMaterials);
+
+            Dictionary<int, List<Face>> submeshIndexToFace = new Dictionary<int, List<Face>>();
+            int submeshCount = filter.sharedMesh.subMeshCount;
+            for(int i = 0; i < submeshCount; ++i)
+            {
+                submeshIndexToFace.Add(i, new List<Face>());
+            }
+
+            IList<Face> faces = mesh.faces;
+            if(uvScale != Vector2.one)
+            {
+                AutoUnwrapSettings uv = AutoUnwrapSettings.defaultAutoUnwrapSettings;
+                uv.scale = uvScale;
+                for (int i = 0; i < mesh.faceCount; ++i)
+                {
+                    Face face = faces[i];
+                    face.uv = uv;
+                    submeshIndexToFace[face.submeshIndex].Add(face);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < mesh.faceCount; ++i)
+                {
+                    Face face = faces[i];
+                    submeshIndexToFace[face.submeshIndex].Add(face);
+                }
+            }
 
             filter.sharedMesh = new Mesh();
+            mesh.ToMesh();
+            mesh.Refresh();
 
-            foreach(Face face in mesh.faces)
+            Material[] materials = renderer.sharedMaterials;
+            for (int i = 0; i < submeshCount && i < materials.Length; ++i)
             {
-                face.manualUV = false;
+                List<Face> submeshFaces = submeshIndexToFace[i];
+                Material material = materials[i];
+                
+                if (material != null)
+                {
+                    mesh.SetMaterial(submeshFaces, material);
+                }
             }
 
             mesh.ToMesh();
             mesh.Refresh();
+        }
+
+        public bool UvTo3D(Vector2 uv, out Vector3 p3d)
+        {
+            Mesh mesh = m_meshFilter.sharedMesh;
+            int[] tris = mesh.triangles;
+            Vector2[] uvs = mesh.uv;
+            Vector3[] verts = mesh.vertices;
+            for (int i = 0; i < tris.Length; i += 3)
+            {
+                Vector2 u1 = uvs[tris[i]]; // get the triangle UVs
+                Vector2 u2 = uvs[tris[i + 1]];
+                Vector3 u3 = uvs[tris[i + 2]];
+                // calculate triangle area - if zero, skip it
+                float a = Area(u1, u2, u3);
+                if (a == 0)
+                {
+                    continue;
+                }
+                // calculate barycentric coordinates of u1, u2 and u3
+                // if anyone is negative, point is outside the triangle: skip it
+                float a1 = Area(u2, u3, uv) / a;
+                if (a1 < 0)
+                {
+                    continue;
+                }
+
+                float a2 = Area(u3, u1, uv) / a;
+                if (a2 < 0)
+                {
+                    continue;
+                }
+                float a3 = Area(u1, u2, uv) / a;
+                if (a3 < 0)
+                {
+                    continue;
+                }
+                // point inside the triangle - find mesh position by interpolation...
+                p3d = a1 * verts[tris[i]] + a2 * verts[tris[i + 1]] + a3 * verts[tris[i + 2]];
+                // and return it in world coordinates:
+                p3d = transform.TransformPoint(p3d);
+                return true;
+            }
+            // point outside any uv triangle: return Vector3.zero
+            p3d = Vector3.zero;
+            return false;
+        }
+
+        // calculate signed triangle area using a kind of "2D cross product":
+        private float Area(Vector2 p1, Vector2 p2, Vector2 p3)
+        {
+            Vector2 v1 = p1 - p3;
+            Vector2 v2 = p2 - p3;
+            return (v1.x* v2.y - v1.y* v2.x)/2;
         }
 
         

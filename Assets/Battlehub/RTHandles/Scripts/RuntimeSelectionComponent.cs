@@ -402,8 +402,6 @@ namespace Battlehub.RTHandles
                 m_secondaryPivot = secondaryPivot.transform;
             }
 
-            Window.Camera.transform.LookAt(m_pivot);
-
             OnRuntimeSelectionChanged(null);
         }
 
@@ -492,6 +490,77 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private int GetDepth(Transform tr)
+        {
+            int depth = 0;
+
+            while(tr.parent != null)
+            {
+                depth++;
+                tr = tr.parent;
+            }
+
+            return depth;
+        }
+
+        private bool IsReachable(Transform t1, Transform t2)
+        {
+            Transform p1 = t1;
+            while(p1 != null)
+            {
+                if(p1 == t2)
+                {
+                    return true;
+                }
+
+                p1 = p1.parent;
+            }
+
+            Transform p2 = t2;
+            while(p2 != null)
+            {
+                if(p2 == t1)
+                {
+                    return true;
+                }
+
+                p2 = p2.parent;
+            }
+
+            return false;
+        }
+
+        private RaycastHit[] FilterHits(RaycastHit[] hits)
+        {
+            RaycastHit closestHit = hits.OrderBy(hit => hit.distance).FirstOrDefault();
+            return hits.Where(h => IsReachable(h.transform, closestHit.transform)).ToArray();
+        }
+
+        private int GetNextIndex(RaycastHit[] hits)
+        {
+            int index = -1;
+            if(hits == null || hits.Length == 0)
+            {
+                return index;
+            }
+
+            if(Editor.Selection.activeGameObject != null)
+            {
+                for (int i = 0; i < hits.Length; ++i)
+                {
+                    RaycastHit hit = hits[i];
+                    if (Editor.Selection.IsSelected(hit.collider.gameObject))
+                    {
+                        index = i;
+                    }
+                }
+            }
+            
+            index++;
+            index %= hits.Length;
+            return index;
+        }
+
         public virtual void SelectGO(bool multiselect, bool allowUnselect)
         {
             if(!CanSelect)
@@ -500,15 +569,17 @@ namespace Battlehub.RTHandles
             }
 
             Ray ray = Window.Pointer;
-            RaycastHit hitInfo;
-
-            if (Physics.Raycast(ray, out hitInfo, float.MaxValue))
+            RaycastHit[] hits = Physics.RaycastAll(ray, float.MaxValue);
+            if (hits.Length > 0)
             {
-                GameObject hitGO = hitInfo.collider.gameObject;
-                bool canSelect = CanSelectObject(hitGO);
+                hits = hits.Where(hit => CanSelectObject(hit.collider.gameObject)).OrderBy(hit => GetDepth(hit.transform)).ToArray();
+                bool canSelect = hits.Length > 0;
                 if (canSelect)
                 {
-                    hitGO = hitGO.GetComponentInParent<ExposeToEditor>().gameObject;
+                    hits = FilterHits(hits);
+                    int nextIndex = GetNextIndex(hits);
+                    GameObject hitGO = hits[nextIndex].collider.GetComponentInParent<ExposeToEditor>().gameObject;
+
                     if (multiselect)
                     {
                         List<Object> selection;
@@ -708,7 +779,7 @@ namespace Battlehub.RTHandles
                         {
                             if(!Editor.IsPlaymodeStateChanging || !Editor.IsPlaying)
                             {
-                                if(selectedObj.hideFlags != HideFlags.HideAndDontSave)
+                                if((selectedObj.hideFlags & HideFlags.DontSave) == 0)
                                 {
                                     selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
                                     if (m_selectionGizmoPrefab != null)

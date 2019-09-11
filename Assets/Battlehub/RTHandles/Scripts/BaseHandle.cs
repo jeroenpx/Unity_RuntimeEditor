@@ -103,7 +103,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            m_realTargets = m_realTargets.Where(t => t != null && t.hideFlags == HideFlags.None).ToArray();
+            m_realTargets = m_realTargets.Where(t => t != null && ((t.hideFlags & HideFlags.DontSave) == 0)).ToArray();
             HashSet<Transform> targetsHS = new HashSet<Transform>();
             for (int i = 0; i < m_realTargets.Length; ++i)
             {
@@ -209,7 +209,7 @@ namespace Battlehub.RTHandles
                     return;
                 }
 
-                m_targets = m_targets.Where(t => t != null && t.hideFlags == HideFlags.None).ToArray();
+                m_targets = m_targets.Where(t => t != null && ((t.hideFlags & HideFlags.DontSave) == 0)).ToArray();
                 HashSet<Transform> targetsHS = new HashSet<Transform>();
                 for (int i = 0; i < m_targets.Length; ++i)
                 {

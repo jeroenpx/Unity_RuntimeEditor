@@ -1,10 +1,10 @@
 ﻿//#define RTSL_COMPILE_TEMPLATES
 #if RTSL_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
-using Battlehub.RTCommon;
+using Battlehub.RTSL;
 using ProtoBuf;
 using System;
-using System.Collections.Generic;
+using Battlehub.Utils;
 using UnityEngine;
 //<TEMPLATE_USINGS_END>
 #else
@@ -25,6 +25,9 @@ namespace Battlehub.RTSL.Internal
         [ProtoMember(2)]
         public bool m_isReadable;
 
+        [ProtoMember(3)]
+        public bool m_mipChain;
+
         public override void ReadFrom(object obj)
         {
             base.ReadFrom(obj);
@@ -37,8 +40,24 @@ namespace Battlehub.RTSL.Internal
 
             try
             {
-                m_bytes = texture.EncodeToPNG();
+                bool supportedFormat = texture.format == TextureFormat.ARGB32 ||
+                                        texture.format == TextureFormat.RGBA32 ||
+                                        texture.format == TextureFormat.RGB24 ||
+                                        texture.format == TextureFormat.Alpha8;
+
+                if (texture.isReadable && supportedFormat)
+                {
+                    m_bytes = texture.EncodeToPNG();
+                }
+                else
+                {
+                    Texture2D decompressed = texture.DeCompress();
+                    m_bytes = decompressed.EncodeToPNG();
+                    UnityEngine.Object.Destroy(decompressed);
+                }
+
                 m_isReadable = true;
+                m_mipChain = texture.mipmapCount > 1;
             }
             catch (Exception e)
             {
@@ -73,6 +92,17 @@ namespace Battlehub.RTSL.Internal
         public override void GetDepsFrom(object obj, GetDepsFromContext context)
         {
             base.GetDepsFrom(obj, context);
+        }
+
+        public override bool CanInstantiate(Type type)
+        {
+            return true;
+        }
+
+        public override object Instantiate(Type type)
+        {
+            Texture2D texture = new Texture2D(1, 1, TextureFormat.ARGB32, m_mipChain);
+            return texture;
         }
         //<TEMPLATE_BODY_END>
 #endif

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System;
 
-
 namespace Battlehub.MeshDeformer3
 {
     public enum Axis

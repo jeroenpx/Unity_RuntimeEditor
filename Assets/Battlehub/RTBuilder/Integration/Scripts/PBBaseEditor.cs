@@ -100,7 +100,7 @@ namespace Battlehub.ProBuilderIntegration
             return null;
         }
 
-        public virtual MeshEditorState GetState()
+        public virtual MeshEditorState GetState(bool recordUV)
         {
             return null;
         }
@@ -147,7 +147,7 @@ namespace Battlehub.ProBuilderIntegration
         {
         }
 
-        public virtual MeshSelection Select(Camera camera, Vector3 pointer, bool shift)
+        public virtual MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
         {
             return null;
         }

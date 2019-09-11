@@ -43,10 +43,15 @@ namespace Battlehub.RTBuilder
                     PBMesh pbMesh = obj.GetComponent<PBMesh>();
                     if (pbMesh != null)
                     {
-                        WireframeMesh wireframeMesh = pbMesh.GetComponentInChildren<WireframeMesh>(true);
-                        if (wireframeMesh != null)
+                        WireframeMesh[] wireframeMesh = pbMesh.GetComponentsInChildren<WireframeMesh>(true);
+                        for(int i = 0; i < wireframeMesh.Length; ++i)
                         {
-                            Destroy(wireframeMesh.gameObject);
+                            WireframeMesh wireframe = wireframeMesh[i];
+                            if (!wireframe.IsIndividual)
+                            {
+                                Destroy(wireframe.gameObject);
+                                break;
+                            }
                         }
                     }
                 }
@@ -72,14 +77,14 @@ namespace Battlehub.RTBuilder
             GameObject wireframe = new GameObject("Wireframe");
             wireframe.transform.SetParent(pbMesh.transform, false);
 
-            wireframe.AddComponent<RTSLIgnore>();
-            wireframe.layer = m_editor.CameraLayerSettings.ExtraLayer2;
+            wireframe.hideFlags = HideFlags.DontSave;
+            wireframe.layer = m_editor.CameraLayerSettings.ExtraLayer;
             wireframe.AddComponent<WireframeMesh>();
         }
 
         private void SetCullingMask(RuntimeWindow window)
         {
-            window.Camera.cullingMask = (1 << LayerMask.NameToLayer("UI")) | (1 << m_editor.CameraLayerSettings.ExtraLayer1) | (1 << m_editor.CameraLayerSettings.ExtraLayer2);
+            window.Camera.cullingMask = (1 << LayerMask.NameToLayer("UI")) | (1 << m_editor.CameraLayerSettings.AllScenesLayer) | (1 << m_editor.CameraLayerSettings.ExtraLayer);
             window.Camera.backgroundColor = Color.white;
             window.Camera.clearFlags = CameraClearFlags.SolidColor;
         }
@@ -87,7 +92,7 @@ namespace Battlehub.RTBuilder
         private void ResetCullingMask(RuntimeWindow window)
         {
             CameraLayerSettings settings = m_editor.CameraLayerSettings;
-            window.Camera.cullingMask = ~((1 << m_editor.CameraLayerSettings.ExtraLayer2) | ((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
+            window.Camera.cullingMask = ~((1 << m_editor.CameraLayerSettings.ExtraLayer) | ((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
             window.Camera.clearFlags = CameraClearFlags.Skybox;
         }
 

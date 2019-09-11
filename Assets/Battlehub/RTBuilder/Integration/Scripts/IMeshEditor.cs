@@ -23,11 +23,13 @@ namespace Battlehub.ProBuilderIntegration
     {
         public readonly IList<Vector3> Positions;
         public readonly IList<PBFace> Faces;
+        public readonly IList<Vector2> Textures;
 
-        public MeshState(IList<Vector3> positions, IList<Face> faces)
+        public MeshState(IList<Vector3> positions, IList<Face> faces, IList<Vector2> textures, bool recordUV)
         {
             Positions = positions;
-            Faces = faces.Select(f => new PBFace(f)).ToList();
+            Faces = faces.Select(f => new PBFace(f, recordUV)).ToList();
+            Textures = textures;
         }
     }
 
@@ -92,7 +94,7 @@ namespace Battlehub.ProBuilderIntegration
             AddToSelection(gameObjects, SelectedFaces, SelectedEdges, SelectedIndices);
         }
 
-        public void Invert()
+        public MeshSelection Invert()
         {
             var temp1 = SelectedFaces;
             SelectedFaces = UnselectedFaces;
@@ -105,6 +107,8 @@ namespace Battlehub.ProBuilderIntegration
             var temp3 = SelectedIndices;
             SelectedIndices = UnselectedIndices;
             UnselectedIndices = temp3;
+
+            return this;
         }
 
         private static void AddToSelection(GameObject[] gameObjects, Dictionary<ProBuilderMesh, IList<int>> faces, Dictionary<ProBuilderMesh, IList<Edge>> edges, Dictionary<ProBuilderMesh, IList<int>> indices)
@@ -384,6 +388,160 @@ namespace Battlehub.ProBuilderIntegration
             indices = new List<int>();
             mesh.GetCoincidentVertices(edges, indices);
         }
+
+        public void Merge(MeshSelection selection)
+        {
+            if(HasFaces)
+            {
+                if (selection.HasEdges)
+                {
+                    selection.EdgesToFaces(false);
+                }
+                else if (selection.HasVertices)
+                {
+                    selection.VerticesToFaces(false);
+                }
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    IList<int> faces = kvp.Value;
+
+                    if (!SelectedFaces.ContainsKey(mesh))
+                    {
+                        SelectedFaces.Add(mesh, faces);
+                    }
+                    else
+                    {
+                        IList<int> existingFaces = SelectedFaces[mesh].ToList();
+                        MergeLists(faces, existingFaces);
+                        SelectedFaces[mesh] = existingFaces;
+                    }
+                }
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    IList<int> faces = kvp.Value;
+
+                    if (!UnselectedFaces.ContainsKey(mesh))
+                    {
+                        UnselectedFaces.Add(mesh, faces);
+                    }
+                    else
+                    {
+                        IList<int> existingFaces = UnselectedFaces[mesh].ToList();
+                        MergeLists(faces, existingFaces);
+                        UnselectedFaces[mesh] = existingFaces;
+                    }
+                }
+            }
+            else if(HasEdges)
+            {
+                if (selection.HasFaces)
+                {
+                    selection.FacesToEdges(false);
+                }
+                else if (selection.HasVertices)
+                {
+                    selection.VerticesToEdges(false);
+                }
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    IList<Edge> edges = kvp.Value;
+
+                    if (!SelectedEdges.ContainsKey(mesh))
+                    {
+                        SelectedEdges.Add(mesh, edges);
+                    }
+                    else
+                    {
+                        IList<Edge> existingEdges = SelectedEdges[mesh].ToList();
+                        MergeLists(edges, existingEdges);
+                        SelectedEdges[mesh] = existingEdges;
+                    }
+                }
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    IList<Edge> edges = kvp.Value;
+
+                    if (!UnselectedEdges.ContainsKey(mesh))
+                    {
+                        UnselectedEdges.Add(mesh, edges);
+                    }
+                    else
+                    {
+                        IList<Edge> existingEdges = UnselectedEdges[mesh].ToList();
+                        MergeLists(edges, existingEdges);
+                        UnselectedEdges[mesh] = existingEdges;
+                    }
+                }
+            }
+            else if(HasVertices)
+            {
+                if (selection.HasFaces)
+                {
+                    selection.FacesToVertices(false);
+                }
+                else if (selection.HasEdges)
+                {
+                    selection.EdgesToVertices(false);
+                }
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    IList<int> indexes = kvp.Value;
+
+                    if (!SelectedIndices.ContainsKey(mesh))
+                    {
+                        SelectedIndices.Add(mesh, indexes);
+                    }
+                    else
+                    {
+                        IList<int> existingIndexes = SelectedIndices[mesh].ToList();
+                        MergeLists(indexes, existingIndexes);
+                        SelectedIndices[mesh] = existingIndexes;
+                    }
+                }
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    IList<int> indexes = kvp.Value;
+
+                    if (!UnselectedIndices.ContainsKey(mesh))
+                    {
+                        UnselectedIndices.Add(mesh, indexes);
+                    }
+                    else
+                    {
+                        IList<int> existingIndexes = UnselectedIndices[mesh].ToList();
+                        MergeLists(indexes, existingIndexes);
+                        UnselectedIndices[mesh] = existingIndexes;
+                    }
+                }
+            }
+        }
+
+        private static void MergeLists<T>(IList<T> list, IList<T> existingList)
+        {
+            for (int i = list.Count - 1; i >= 0; --i)
+            {
+                if (existingList.Contains(list[i]))
+                {
+                    list.RemoveAt(i);
+                }
+            }
+            for (int i = 0; i < list.Count; ++i)
+            {
+                existingList.Add(list[i]);
+            }
+        }
     }
 
     public interface IMeshEditor
@@ -445,8 +603,9 @@ namespace Battlehub.ProBuilderIntegration
         void Merge();
         MeshSelection SelectHoles();
         void FillHoles();
+        
 
-        MeshSelection Select(Camera camera, Vector3 pointer, bool shift);
+        MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl);
         MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode);
         MeshSelection Select(Material material);
         MeshSelection Unselect(Material material);
@@ -457,7 +616,7 @@ namespace Battlehub.ProBuilderIntegration
         MeshSelection GetSelection();
         MeshSelection ClearSelection();
         
-        MeshEditorState GetState();
+        MeshEditorState GetState(bool recordUV);
         void SetState(MeshEditorState state);
 
         void BeginMove();

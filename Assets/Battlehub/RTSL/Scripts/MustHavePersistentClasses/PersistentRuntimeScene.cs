@@ -152,7 +152,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {
                 GameObject rootGO = rootGameObjects[i];
-                if (rootGO.GetComponent<RTSLIgnore>())
+                if (rootGO.GetComponent<RTSLIgnore>() || (rootGO.hideFlags & HideFlags.DontSave) != 0)
                 {
                     continue;
                 }
@@ -270,6 +270,25 @@ namespace Battlehub.RTSL.Battlehub.SL2
             {
                 base.GetDepsFromImpl(gameObjects[i], context);
             }
+        }
+
+        protected override void GetDependenciesFrom(GameObject go, List<object> prefabParts, GetDepsFromContext context)
+        {
+            if ((go.hideFlags & HideFlags.DontSave) != 0)
+            {
+                //Do not save persistent ignore objects
+                return;
+            }
+            base.GetDependenciesFrom(go, prefabParts, context);
+        }
+
+        protected override PersistentDescriptor CreateDescriptorAndData(GameObject go, List<PersistentObject> persistentData, List<long> persistentIdentifiers, GetDepsFromContext getDepsFromCtx, PersistentDescriptor parentDescriptor = null)
+        {
+            if ((go.hideFlags & HideFlags.DontSave) != 0)
+            {
+                return null;
+            }
+            return base.CreateDescriptorAndData(go, persistentData, persistentIdentifiers, getDepsFromCtx, parentDescriptor);
         }
     }
 }

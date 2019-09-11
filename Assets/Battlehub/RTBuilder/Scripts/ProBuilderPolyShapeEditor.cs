@@ -121,9 +121,9 @@ namespace Battlehub.RTBuilder
                     m_rte.Selection.Enabled = false;
                 }
 
-                MeshEditorState oldState = m_polyShape.GetState();
+                MeshEditorState oldState = m_polyShape.GetState(false);
                 m_polyShape.Refresh();
-                MeshEditorState newState = m_polyShape.GetState();
+                MeshEditorState newState = m_polyShape.GetState(false);
                 RecordState(oldState, newState);
             }
             else if(oldMode == ProBuilderToolMode.PolyShape)
@@ -136,7 +136,7 @@ namespace Battlehub.RTBuilder
 
         private void SetLayer(GameObject go)
         {
-            int layer = m_rte.CameraLayerSettings.ExtraLayer1;
+            int layer = m_rte.CameraLayerSettings.AllScenesLayer;
 
             foreach(Transform child in go.GetComponentsInChildren<Transform>(true))
             {

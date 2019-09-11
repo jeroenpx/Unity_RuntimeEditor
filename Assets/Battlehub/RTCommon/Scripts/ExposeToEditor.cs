@@ -201,7 +201,18 @@ namespace Battlehub.RTCommon
                 m_spriteRenderer = BoundsObject.GetComponent<SpriteRenderer>();
             }
 
-            if (hideFlags != HideFlags.HideAndDontSave)
+            bool visible = (hideFlags & HideFlags.HideInHierarchy) == 0;
+            if(visible)
+            {
+                if (transform.parent != null && transform.parent.GetComponent<ExposeToEditor>() == null)
+                {
+                    gameObject.hideFlags = HideFlags.HideInHierarchy;
+                    visible = false;
+                    Debug.LogWarning(gameObject.name + ": parent GameObject is not exposed to editor");
+                }
+            }
+
+            if (visible)
             {
                 if (_Awaked != null)
                 {
@@ -212,8 +223,7 @@ namespace Battlehub.RTCommon
 
         private void Start()
         {
-           
-            if (hideFlags != HideFlags.HideAndDontSave)
+            if ((hideFlags & HideFlags.HideInHierarchy) == 0)
             {
                 if (_Started != null)
                 {
@@ -224,7 +234,7 @@ namespace Battlehub.RTCommon
 
         private void OnEnable()
         {
-            if (hideFlags != HideFlags.HideAndDontSave)
+            if ((hideFlags & HideFlags.HideInHierarchy) == 0)
             {
                 if (_Enabled != null)
                 {
@@ -235,7 +245,7 @@ namespace Battlehub.RTCommon
 
         private void OnDisable()
         {
-            if (hideFlags != HideFlags.HideAndDontSave)
+            if ((hideFlags & HideFlags.HideInHierarchy) == 0)
             {
                 if (_Disabled != null)
                 {
@@ -248,7 +258,7 @@ namespace Battlehub.RTCommon
         {
             if (!m_isPaused)
             {
-                if (hideFlags != HideFlags.HideAndDontSave)
+                if ((hideFlags & HideFlags.HideInHierarchy) == 0)
                 {
                     if (_Destroying != null)
                     {
@@ -256,7 +266,7 @@ namespace Battlehub.RTCommon
                     }
                 }
 
-                if (hideFlags != HideFlags.HideAndDontSave)
+                if ((hideFlags & HideFlags.HideInHierarchy) == 0)
                 {
                     if (_Destroyed != null)
                     {
@@ -294,7 +304,7 @@ namespace Battlehub.RTCommon
                 {
                     transform.hasChanged = false;
 
-                    if (hideFlags != HideFlags.HideAndDontSave)
+                    if ((hideFlags & HideFlags.HideInHierarchy) == 0)
                     {
                         if (_TransformChanged != null)
                         {
@@ -329,7 +339,7 @@ namespace Battlehub.RTCommon
         public void SetName(string name)
         {
             gameObject.name = name;
-            if (hideFlags != HideFlags.HideAndDontSave)
+            if ((hideFlags & HideFlags.HideInHierarchy) == 0)
             {
                 if (_NameChanged != null)
                 {
