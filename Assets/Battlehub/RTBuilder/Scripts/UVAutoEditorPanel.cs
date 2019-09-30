@@ -51,13 +51,30 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private Button m_resetUVs = null;
 
-        private IProBuilderTool m_tool;
         private IRTE m_editor;
-   
+
+        private IProBuilderTool m_tool;
+        public IProBuilderTool Tool
+        {
+            get { return m_tool; }
+            set
+            {
+                if (m_tool != null)
+                {
+                    m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
+                }
+                m_tool = value;
+                if (m_tool != null)
+                {
+                    m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
+                }
+            }
+        }
+
         private void Awake()
         {
-            m_tool = IOC.Resolve<IProBuilderTool>();
-            m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
+            Tool = IOC.Resolve<IProBuilderTool>();
+            
 
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_editor.Undo.UndoCompleted += OnUpdateVisualState;
@@ -147,10 +164,7 @@ namespace Battlehub.RTBuilder
                 m_useGizmosToggle.onValueChanged.RemoveListener(OnUseGizmosValueChanged);
             }
 
-            if(m_tool != null)
-            {
-                m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
-            }
+            Tool = null;
 
             if(m_editor != null)
             {

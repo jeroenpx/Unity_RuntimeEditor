@@ -76,7 +76,7 @@ namespace Battlehub.RTHandles
 
         void ApplySettings();
     }
-
+    
     /// <summary>
     /// GL Drawing routines for all handles, gizmos and grid
     /// </summary>
@@ -392,6 +392,7 @@ namespace Battlehub.RTHandles
             SceneGizmoSelectedCube = RuntimeGraphics.CreateCubeMesh(m_colors.SelectionColor, Vector3.zero, 1);
             SceneGizmoQuad = RuntimeGraphics.CreateQuadMesh();
         }
+
 
         private void Cleanup()
         {
@@ -912,7 +913,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void DoSceneGizmo(Camera camera, Vector3 position, Quaternion rotation, Vector3 selection, float gizmoScale, float xAlpha = 1.0f, float yAlpha = 1.0f, float zAlpha = 1.0f)
+        public void DoSceneGizmo(Camera camera, Vector3 position, Quaternion rotation, Vector3 selection, float gizmoScale, Color textColor, float xAlpha = 1.0f, float yAlpha = 1.0f, float zAlpha = 1.0f)
         {
             float sScale = GetScreenScale(position, camera) * gizmoScale;
             Vector3 screenScale = new Vector3(sScale, sScale, sScale);
@@ -1007,16 +1008,17 @@ namespace Battlehub.RTHandles
                     Graphics.DrawMeshNow(SceneGizmoZAxis, Matrix4x4.TRS(position, rotation, screenScale));
                 }
             }
-            
-            m_xMaterial.color = new Color(1, 1, 1, xAlpha);
+
+            Color c = textColor;
+            m_xMaterial.color = new Color(c.r, c.b, c.g, xAlpha);
             m_xMaterial.SetPass(0);
             DragSceneGizmoAxis(camera, position, rotation, Vector3.right, gizmoScale, billboardScale, billboardOffset, sScale);
             
-            m_yMaterial.color = new Color(1, 1, 1, yAlpha);
+            m_yMaterial.color = new Color(c.r, c.b, c.g, yAlpha);
             m_yMaterial.SetPass(0);
             DragSceneGizmoAxis(camera, position, rotation, Vector3.up, gizmoScale, billboardScale, billboardOffset, sScale);
 
-            m_zMaterial.color = new Color(1, 1, 1, zAlpha);
+            m_zMaterial.color = new Color(c.r, c.b, c.g, zAlpha);
             m_zMaterial.SetPass(0);
             DragSceneGizmoAxis(camera, position, rotation, Forward, gizmoScale, billboardScale, billboardOffset, sScale);
 
@@ -1074,7 +1076,6 @@ namespace Battlehub.RTHandles
             h = Mathf.Max(1, h);
             
             float d = CountOfDigits(h);
-
        
             float spacing = Mathf.Pow(10, d - 1);
             float nextSpacing = Mathf.Pow(10, d);
@@ -1117,6 +1118,43 @@ namespace Battlehub.RTHandles
             }
 
             GL.End();
+        }
+
+        public Mesh CreateGridMesh(Color color, float spacing, int linesCount = 150)
+        {
+            int count = linesCount / 2;
+
+            Mesh mesh = new Mesh();
+            mesh.name = "Grid " + spacing;
+
+            int index = 0;
+            int[] indices = new int[count * 8];
+            Vector3[] vertices = new Vector3[count * 8];
+            Color[] colors = new Color[count * 8];
+            
+            for(int i = -count; i < count; ++i)
+            {
+                vertices[index] = new Vector3(i * spacing, 0, -count * spacing);
+                vertices[index + 1] = new Vector3(i * spacing, 0, count * spacing);
+
+                vertices[index + 2] = new Vector3(-count * spacing, 0, i * spacing);
+                vertices[index + 3] = new Vector3(count * spacing, 0, i * spacing);
+
+                indices[index] = index;
+                indices[index + 1] = index + 1;
+                indices[index + 2] = index + 2;
+                indices[index + 3] = index + 3;
+
+                colors[index] = colors[index + 1] = colors[index + 2] = colors[index + 3] = color;
+
+                index += 4;
+            }
+
+            mesh.vertices = vertices;
+            mesh.SetIndices(indices, MeshTopology.Lines, 0);
+            mesh.colors = colors;
+
+            return mesh;
         }
 
         public void DrawBounds(Camera camera, ref Bounds bounds, Vector3 position, Quaternion rotation, Vector3 scale)

@@ -13,10 +13,26 @@ namespace Battlehub.RTBuilder
         private IProBuilderTool m_tool;
         private IRTE m_editor;
 
+        public IProBuilderTool Tool
+        {
+            get { return m_tool; }
+            set
+            {
+                if(m_tool != null)
+                {
+                    m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
+                }
+                m_tool = value;
+                if(m_tool != null)
+                {
+                    m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
+                }
+            }
+        }
+
         private void Awake()
         {
-            m_tool = IOC.Resolve<IProBuilderTool>();
-            m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
+            Tool = IOC.Resolve<IProBuilderTool>();
 
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_editor.Undo.UndoCompleted += OnUpdateVisualState;
@@ -34,12 +50,9 @@ namespace Battlehub.RTBuilder
 
         private void OnDestroy()
         {
-            if(m_tool != null)
-            {
-                m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
-            }
+            Tool = null;
 
-            if(m_editor != null)
+            if (m_editor != null)
             {
                 m_editor.Undo.UndoCompleted -= OnUpdateVisualState;
                 m_editor.Undo.RedoCompleted -= OnUpdateVisualState;
@@ -54,7 +67,10 @@ namespace Battlehub.RTBuilder
 
         private void OnUseGizmosValueChanged(bool value)
         {
-            m_tool.UVEditingMode = value;
+            if (m_tool != null)
+            {
+                m_tool.UVEditingMode = value;
+            }
         }
 
         private void OnUVEditingModeChanged(bool obj)
@@ -64,7 +80,10 @@ namespace Battlehub.RTBuilder
 
         private void OnUpdateVisualState()
         {
-            m_useGizmosToggle.isOn = m_tool.UVEditingMode;
+            if(m_tool != null)
+            {
+                m_useGizmosToggle.isOn = m_tool.UVEditingMode;
+            }
         }
     }
 }

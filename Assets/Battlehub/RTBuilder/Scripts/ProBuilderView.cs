@@ -162,7 +162,7 @@ namespace Battlehub.RTBuilder
         {
             List<ToolCmd> commands = GetCommonCommands();
             commands.Add(new ToolCmd("Extrude Face", OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ToolCmd("Delete Face", OnDeleteFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd("Delete Face", OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             commands.Add(new ToolCmd("Subdivide Faces", OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             commands.Add(new ToolCmd("Merge Faces", OnMergeFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             return commands;
@@ -173,6 +173,7 @@ namespace Battlehub.RTBuilder
             List<ToolCmd> commands = GetCommonCommands();
             commands.Add(new ToolCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
             commands.Add(new ToolCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd("Delete Edge", OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
             commands.Add(new ToolCmd("Subdivide Edges", OnSubdivideEdges, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
             return commands;
         }
@@ -182,6 +183,7 @@ namespace Battlehub.RTBuilder
             List<ToolCmd> commands = GetCommonCommands();
             commands.Add(new ToolCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
             commands.Add(new ToolCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd("Delete Vertex", OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Vertex && m_proBuilderTool.HasSelection));
             return commands;
         }
 
@@ -418,14 +420,7 @@ namespace Battlehub.RTBuilder
 
         private void OnCenterPivot()
         {
-            foreach(GameObject go in Editor.Selection.gameObjects)
-            {
-                PBMesh mesh = go.GetComponent<PBMesh>();
-                if(mesh != null)
-                {
-                    mesh.CenterPivot();
-                }
-            }
+            m_proBuilderTool.CenterPivot();           
         }
 
         private bool CanProBuilderize()
@@ -475,9 +470,9 @@ namespace Battlehub.RTBuilder
             return null;
         }
 
-        private void OnDeleteFace()
+        private void OnDelete()
         {
-            m_proBuilderTool.DeleteFaces();
+            m_proBuilderTool.Delete();
         }
 
         private void OnSubdivideFaces()

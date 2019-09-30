@@ -4,6 +4,9 @@ using Unity.Mathematics;
 using Battlehub.RTHandles;
 using Battlehub.RTCommon;
 using System.Linq;
+using System;
+
+using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTTerrain
 {
@@ -28,6 +31,7 @@ namespace Battlehub.RTTerrain
 
         void ResetPosition();
         void CutHoles();
+        void ClearHoles();
     }
 
     public class TerrainTool : MonoBehaviour, ITerrainTool
@@ -94,7 +98,13 @@ namespace Battlehub.RTTerrain
         public bool Enabled
         {
             get { return gameObject.activeSelf; }
-            set { gameObject.SetActive(value); }
+            set
+            {
+                if(this && gameObject)
+                {
+                    gameObject.SetActive(value);
+                }
+            }
         }
 
         [SerializeField]
@@ -112,6 +122,14 @@ namespace Battlehub.RTTerrain
         private TerrainToolHandle m_pointerOverHandle;
         private CachedBicubicInterpolator m_interpolator;
         private ITerrainCutoutMaskRenderer m_cutoutMaskRenderer;
+
+        private float[,] m_additiveHeights;
+        private float[,] m_interpolatedHeights;
+
+        public TerrainData ActiveTerrainData
+        {
+            get { return m_activeTerrain.terrainData;}
+        }
         
         private void Awake()
         {
@@ -130,34 +148,32 @@ namespace Battlehub.RTTerrain
             m_editor.Selection.SelectionChanged += OnSelectionChanged;
             m_interpolator = new CachedBicubicInterpolator();
             m_activeTerrain = Terrain.activeTerrain;
+
+            TerrainData data = ActiveTerrainData;
+            m_additiveHeights = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapHeight);
+            m_interpolatedHeights = new float[data.heightmapHeight, data.heightmapWidth];
+
             m_state = m_activeTerrain.GetComponent<TerrainToolState>();
             if (m_state == null)
             {
                 m_state = m_activeTerrain.gameObject.AddComponent<TerrainToolState>();
-                m_state.Size = (int)m_activeTerrain.terrainData.size.x;
+                m_state.Size = (int)ActiveTerrainData.size.x;
                 m_count = m_state.Size / m_state.Spacing + 1;
                 m_state.Grid = new float[m_count * m_count];
-                m_state.HeightMap = new float[m_activeTerrain.terrainData.heightmapWidth * m_activeTerrain.terrainData.heightmapHeight];
-                float[,] hmap = m_activeTerrain.terrainData.GetHeights(0, 0, m_activeTerrain.terrainData.heightmapWidth, m_activeTerrain.terrainData.heightmapHeight);
-                for (int i = 0; i < m_activeTerrain.terrainData.heightmapWidth; ++i)
-                {
-                    for(int j = 0; j < m_activeTerrain.terrainData.heightmapHeight; ++j)
-                    {
-                        m_state.HeightMap[i * m_activeTerrain.terrainData.heightmapHeight + j] = hmap[i, j];
-                    }
-                }
+                m_state.HeightMap = new float[data.heightmapWidth * data.heightmapHeight];
                 m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(null);
             }
             else
             {
                 TryRefreshGrid();
             }
-            InitHandles();
 
+            InitHandles();
             OnSelectionChanged(null);
             OnActiveWindowChanged(m_editor.ActiveWindow);
             EnableZTest = EnableZTest;
         }
+
 
         private void OnDisable()
         {
@@ -208,6 +224,89 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private void InitAdditiveHeights(int hmWidth, int hmHeight)
+        {
+            for (int i = 0; i < hmHeight; ++i)
+            {
+                for (int j = 0; j < hmWidth; ++j)
+                {
+                    if (!IsCutout(j, i))
+                    {
+                        m_additiveHeights[i, j] -= m_interpolatedHeights[i, j];
+                    }
+                }
+            }
+        }
+
+        private bool IsCutout(int x, int y)
+        {
+            int width = ActiveTerrainData.heightmapWidth;
+            int height = ActiveTerrainData.heightmapHeight;
+
+            float u = (float)(x) / width;
+            float v = (float)(y) / height;
+            if (u >= 0 && u <= 1 && v >= 0 && v <= 1)
+            {
+                Color color = m_state.CutoutTexture.GetPixelBilinear(u, v);
+                if (Mathf.Approximately(color.a, 1))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void SetActiveTerrainHeights(int x, int y, float[,] heights)
+        {
+            int h = heights.GetLength(0);
+            int w = heights.GetLength(1);
+
+            float[,] currentHeights = ActiveTerrainData.GetHeights(x, y, w, h);
+            for (int i = 0; i < h; i++)
+            {
+                for (int j = 0; j < w; j++)
+                {
+                    if(IsCutout(j, i))
+                    {
+                        currentHeights[i, j] = m_additiveHeights[y + i, x + j];
+                    }
+                    else
+                    {
+                        currentHeights[i, j] = heights[i, j] + m_additiveHeights[y + i, x + j];
+                    }
+                }
+            }
+
+            ActiveTerrainData.SetHeights(x, y, currentHeights);
+        }
+
+        private void SetInterpolatedHeights(int x, int y, float[,] heights)
+        {
+            int h = heights.GetLength(0);
+            int w = heights.GetLength(1);
+            for (int i = 0; i < h; i++)
+            {
+                for (int j = 0; j < w; j++)
+                {
+                    m_interpolatedHeights[y + i, x + j] = heights[i, j];
+                }
+            }
+        }
+
+        private float[,] GetInterpolatedHeights(int x, int y, int w, int h)
+        {
+            float[,] result = new float[h, w];
+            for(int i = 0; i < h; i++)
+            {
+                for(int j = 0; j < w; j++)
+                {
+                    result[i, j] = m_interpolatedHeights[y + i, x + j];
+                }
+            }
+            return result;
+        }
+
+
         public void ResetPosition()
         {
             if (m_targetHandles != null)
@@ -217,53 +316,39 @@ namespace Battlehub.RTTerrain
                     Vector3 pos = handle.transform.localPosition;
                     pos.y = 0;
                     handle.transform.localPosition = pos;
-                    UpdateTerrain(handle);
+                    UpdateTerrain(handle, GetInterpolatedHeights, SetActiveTerrainHeights);
                 }
             }
+        }
+
+        public void ClearHoles()
+        {
+            CreateAndApplyCutoutTexture(new GameObject[0]);
         }
 
         public void CutHoles()
         {
             GameObject[] objects = m_editor.Selection.gameObjects;
-            if(objects != null)
+            objects = CreateAndApplyCutoutTexture(objects);
+        }
+
+        private GameObject[] CreateAndApplyCutoutTexture(GameObject[] objects)
+        {
+            if (objects != null)
             {
                 objects = objects.Where(o => !m_handles.ContainsKey(o) && !o.GetComponent<Terrain>()).ToArray();
             }
 
-            if(m_state.CutoutTexture != null)
+            if (m_state.CutoutTexture != null)
             {
                 Destroy(m_state.CutoutTexture);
             }
 
             m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(objects);
 
-            int width = m_activeTerrain.terrainData.heightmapWidth;
-            int height = m_activeTerrain.terrainData.heightmapHeight;
-
-            float[,] hmap = m_activeTerrain.terrainData.GetHeights(0, 0, width, height);
-
-            for (int i = 0; i < width; ++i)
-            {
-                for (int j = 0; j < height; ++j)
-                {
-                    float u = (float)(i) / width;
-                    float v = (float)(j) / height;
-                    if (u >= 0 && u <= 1 && v >= 0 && v <= 1)
-                    {
-                        Color color = m_state.CutoutTexture.GetPixelBilinear(u, v);
-                        if (Mathf.Approximately(color.a, 1))
-                        {
-                            hmap[j, i] = 0;
-                        }
-                        else
-                        {
-                            hmap[j, i] = m_state.HeightMap[j * width + i];
-                        }
-                    }
-                }
-            }
-
-            m_activeTerrain.terrainData.SetHeights(0, 0, hmap);
+            float[,] hmap = m_interpolatedHeights; 
+            SetActiveTerrainHeights(0, 0, hmap);
+            return objects;
         }
 
         private void Refresh()
@@ -277,28 +362,36 @@ namespace Battlehub.RTTerrain
 
         private void TryRefreshGrid()
         {
-            if(m_count * m_count == m_state.Grid.Length)
+            TerrainData data = ActiveTerrainData;
+            m_additiveHeights = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapHeight);
+
+            if (m_count * m_count == m_state.Grid.Length)
             {
+                for (int i = 0; i < m_interpolatedHeights.GetLength(0); ++i)
+                {
+                    for (int j = 0; j < m_interpolatedHeights.GetLength(1); ++j)
+                    {
+                        m_interpolatedHeights[i, j] = m_state.HeightMap[i * m_interpolatedHeights.GetLength(1) + j];
+                    }
+                }
+                
+                InitAdditiveHeights(data.heightmapWidth, data.heightmapHeight);
                 return;
             }
 
             m_count = m_state.Size / m_state.Spacing + 1;
             m_state.Grid = new float[m_count * m_count];
 
-            TerrainData data = m_activeTerrain.terrainData;
-            float[,] heightsvalues = data.GetHeights(
-                0, 0, data.heightmapWidth, data.heightmapHeight);
-
-            for (int i = 0; i < heightsvalues.GetLength(0); ++i)
+            for (int i = 0; i < m_interpolatedHeights.GetLength(0); ++i)
             {
-                for (int j = 0; j < heightsvalues.GetLength(1); ++j)
+                for (int j = 0; j < m_interpolatedHeights.GetLength(1); ++j)
                 {
-                    heightsvalues[i, j] = 0;
-                    m_state.HeightMap[i * heightsvalues.GetLength(1) + j] = 0;
+                    m_interpolatedHeights[i, j] = 0;
+                    m_state.HeightMap[i * m_interpolatedHeights.GetLength(1) + j] = 0;
                 }
             }
 
-            data.SetHeights(0, 0, heightsvalues);
+            SetActiveTerrainHeights(0, 0, m_interpolatedHeights);
         }
 
         private void InitHandles()
@@ -313,7 +406,7 @@ namespace Battlehub.RTTerrain
                     GameObject handle = kvp.Key;
                     int z = kvp.Value / m_count;
                     int x = kvp.Value % m_count;
-                    float y = m_state.Grid[kvp.Value] * m_activeTerrain.terrainData.heightmapScale.y;
+                    float y = m_state.Grid[kvp.Value] * ActiveTerrainData.heightmapScale.y;
 
                     handle.transform.position = new Vector3(x * m_state.Spacing, y, z * m_state.Spacing);
                 }
@@ -334,7 +427,7 @@ namespace Battlehub.RTTerrain
                         lockAxes.PositionX = true;
                         lockAxes.PositionZ = true;
 
-                        float y = m_state.Grid[z * m_count + x] * m_activeTerrain.terrainData.heightmapScale.y;
+                        float y = m_state.Grid[z * m_count + x] * ActiveTerrainData.heightmapScale.y;
                         handle.transform.localPosition = new Vector3(x * m_state.Spacing, y, z * m_state.Spacing);
                         handle.name = "h " + x + "," + z;
                         handle.gameObject.SetActive(true);
@@ -369,11 +462,11 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void OnSelectionChanged(Object[] unselectedObjects)
+        private void OnSelectionChanged(UnityObject[] unselectedObjects)
         {
             if(unselectedObjects != null)
             {
-                foreach (Object obj in unselectedObjects)
+                foreach (UnityObject obj in unselectedObjects)
                 {
                     GameObject go = obj as GameObject;
                     if (go != null)
@@ -422,7 +515,7 @@ namespace Battlehub.RTTerrain
                     {
                         for (int i = 0; i < targetHandles.Length; ++i)
                         {
-                            UpdateTerrain(targetHandles[i]);
+                            UpdateTerrain(targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
                         }
                     }
                     return false;
@@ -459,7 +552,7 @@ namespace Battlehub.RTTerrain
                     {
                         for (int i = 0; i < targetHandles.Length; ++i)
                         {
-                            UpdateTerrain(targetHandles[i]);
+                            UpdateTerrain(targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
                         }
                     }
                     return false;
@@ -471,7 +564,7 @@ namespace Battlehub.RTTerrain
                 {
                     for (int i = 0; i < m_targetHandles.Length; ++i)
                     {
-                        UpdateTerrain(m_targetHandles[i]);
+                        UpdateTerrain(m_targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
                     }
                 }
             }
@@ -484,7 +577,6 @@ namespace Battlehub.RTTerrain
                 gameObject.SetActive(false);
                 return;
             }
-
 
             Transform terrainTransform = m_activeTerrain.transform;
             if(terrainTransform.position != gameObject.transform.position ||
@@ -521,7 +613,7 @@ namespace Battlehub.RTTerrain
                 {
                     for(int i = 0; i < m_targetHandles.Length; ++i)
                     {
-                        UpdateTerrain(m_targetHandles[i]);
+                        UpdateTerrain(m_targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
                     }
                 }
             }
@@ -546,16 +638,16 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void UpdateTerrain(GameObject handle)
+        private void UpdateTerrain(GameObject handle, Func<int, int, int, int, float[,]> getValues, Action<int, int, float[,]> setValues)
         {
             switch (m_state.Interpolation)
             {
-                case Interpolation.Bilinear: UpdateTerrainBilinear(handle); break;
-                case Interpolation.Bicubic: UpdateTerrainBicubic(handle); break;
+                case Interpolation.Bilinear: UpdateTerrainBilinear(handle, getValues, setValues); break;
+                case Interpolation.Bicubic: UpdateTerrainBicubic(handle, getValues, setValues); break;
             }
         }
 
-        private void UpdateTerrainBilinear(GameObject handle)
+        private void UpdateTerrainBilinear(GameObject handle, Func<int, int, int, int, float[,]> getValues, Action<int, int, float[,]> setValues)
         {
             int hid;
             if (!m_handles.TryGetValue(handle, out hid))
@@ -564,12 +656,12 @@ namespace Battlehub.RTTerrain
             }
             
             Vector3 pos = handle.transform.localPosition;
-            UpdateTerrainBilinear(hid, pos);
+            UpdateTerrainBilinear(hid, pos, getValues, setValues);
         }
 
-        private void UpdateTerrainBilinear(int hid, Vector3 position)
+        private void UpdateTerrainBilinear(int hid, Vector3 position, Func<int, int, int, int, float[,]> getValues, Action<int, int, float[,]> setValues)
         {
-            TerrainData data = m_activeTerrain.terrainData;
+            TerrainData data = ActiveTerrainData;
             float[] grid = m_state.Grid;
             grid[hid] = position.y / data.heightmapScale.y;
 
@@ -593,7 +685,7 @@ namespace Battlehub.RTTerrain
 
             hPos -= blockSize;
 
-            float[,] heightsvalues = data.GetHeights(
+            float[,] heightsvalues = getValues(
                 hPos.x, hPos.y,
                 blockSize.x * 2 + 1, blockSize.y * 2 + 1);
 
@@ -621,21 +713,21 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            data.SetHeights(hPos.x, hPos.y, heightsvalues);
+            setValues(hPos.x, hPos.y, heightsvalues);
         }
 
-        private void UpdateTerrainBicubic(GameObject handle)
+        private void UpdateTerrainBicubic(GameObject handle, Func<int, int, int, int, float[,]> getValues, Action<int, int, float[,]> setValues)
         {
             Vector3 position = handle.transform.localPosition;// Position;
             int hid = -1;
             m_handles.TryGetValue(handle, out hid);
 
-            UpdateTerrainBicubic(hid, position);
+            UpdateTerrainBicubic(hid, position, getValues, setValues);
         }
 
-        private void UpdateTerrainBicubic(int hid, Vector3 position)
+        private void UpdateTerrainBicubic(int hid, Vector3 position, Func<int, int, int, int, float[,]> getValues, Action<int, int, float[,]> setValues)
         {
-            var data = m_activeTerrain.terrainData;
+            var data = ActiveTerrainData;
             if (hid >= 0)
             {
                 m_state.Grid[hid] = position.y / data.heightmapScale.y;
@@ -673,7 +765,7 @@ namespace Battlehub.RTTerrain
             r.yMin = math.clamp(r.yMin, 0, res);
             r.yMax = math.clamp(r.yMax, 0, res);
 
-            float[,] hmap = data.GetHeights(r.x, r.y, r.width, r.height);
+            float[,] hmap = getValues(r.x, r.y, r.width, r.height);
 
             for (int gy = 0; gy < 4; gy++)
             {
@@ -726,7 +818,8 @@ namespace Battlehub.RTTerrain
                                             hmap[_y - r.yMin, _x - r.xMin] = height;
                                         }
                                         
-                                         m_state.HeightMap[(r.y + (_y - r.yMin)) * m_activeTerrain.terrainData.heightmapWidth + r.x + (_x - r.xMin)] = height;
+                                        m_state.HeightMap[(r.y + (_y - r.yMin)) * data.heightmapWidth + r.x + (_x - r.xMin)] = height;
+                                        m_interpolatedHeights[(r.y + (_y - r.yMin)), r.x + (_x - r.xMin)] = height;
                                     }
                                     catch
                                     {
@@ -739,7 +832,7 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            data.SetHeights(r.x, r.y, hmap);
+            setValues(r.x, r.y, hmap);
         }
 
         private void InitLerpGrid()

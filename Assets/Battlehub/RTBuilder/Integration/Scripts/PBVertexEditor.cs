@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
+using UnityEngine.ProBuilder.MeshOperations;
 
 namespace Battlehub.ProBuilderIntegration
 {
@@ -50,7 +51,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
                 if (selection.HasVertices)
                 {
-                    selection.VerticesToFaces(false);
+                    selection.VerticesToFaces(false, false);
                 }
                 IList<int> faceIndexes;
                 if (selection.SelectedFaces.TryGetValue(m_vertexSelection.LastMesh, out faceIndexes))
@@ -86,6 +87,16 @@ namespace Battlehub.ProBuilderIntegration
             if (m_vertexSelection != null)
             {
                 Destroy(m_vertexSelection);
+            }
+        }
+
+        public override void SetSelection(MeshSelection selection)
+        {
+            m_vertexSelection.Clear();
+            m_selection.Clear();
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices)
+            {
+                m_vertexSelection.Add(kvp.Key, kvp.Value);
             }
         }
 
@@ -125,34 +136,34 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Hover(Camera camera, Vector3 pointer)
         {
-            if(m_nextUpdate > Time.time)
-            {
-                return;
-            }
+            //if(m_nextUpdate > Time.time)
+            //{
+            //    return;
+            //}
 
-            m_nextUpdate = Time.time + 0.3f;
+            //m_nextUpdate = Time.time + 0.3f;
 
-            if(m_vertexSelection.MeshesCount == 0)
-            {
-                return;
-            }
+            //if(m_vertexSelection.MeshesCount == 0)
+            //{
+            //    return;
+            //}
 
-            float result = PBUtility.PickVertex(camera, pointer, 20, null, m_vertexSelection.Meshes, ref m_selection);
-            if (result != Mathf.Infinity)
-            {
-                m_vertexSelection.Hover(m_selection.mesh, m_selection.vertex);
-            }
-            else
-            {
-                m_vertexSelection.Leave();
-            }
+            //float result = PBUtility.PickVertex(camera, pointer, 20, null, m_vertexSelection.Meshes, ref m_selection);
+            //if (result != Mathf.Infinity)
+            //{
+            //    m_vertexSelection.Hover(m_selection.mesh, m_selection.vertex);
+            //}
+            //else
+            //{
+            //    m_vertexSelection.Leave();
+            //}
         }
 
-        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
+        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl, bool depthTest)
         {
             MeshSelection selection = null;
             GameObject pickedObject = PBUtility.PickObject(camera, pointer);
-            float result = PBUtility.PickVertex(camera, pointer, 20, pickedObject, m_vertexSelection.Meshes, ref m_selection);
+            float result = PBUtility.PickVertex(camera, pointer, 20, pickedObject, m_vertexSelection.Meshes, depthTest, ref m_selection);
 
             if(result != Mathf.Infinity)
             {
@@ -224,9 +235,9 @@ namespace Battlehub.ProBuilderIntegration
             return selection;
         }
 
-        public override MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode)
+        public override MeshSelection Select(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest, MeshEditorSelectionMode mode)
         {
-            Dictionary<ProBuilderMesh, HashSet<int>> pickResult = PBUtility.PickVertices(camera, rect, gameObjects);
+            Dictionary<ProBuilderMesh, HashSet<int>> pickResult = PBUtility.PickVertices(camera, rect, uiRootRect, gameObjects, depthTest);
             if(pickResult.Count == 0)
             {
                 return null;
@@ -336,9 +347,39 @@ namespace Battlehub.ProBuilderIntegration
             return selection;
         }
 
+        public override MeshEditorState GetState(bool recordUV)
+        {
+            MeshEditorState state = new MeshEditorState();
+            ProBuilderMesh[] meshes = m_vertexSelection.Meshes.OrderBy(m => m == m_vertexSelection.LastMesh).ToArray();
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                state.State.Add(mesh, new MeshState(mesh.positions.ToArray(), mesh.faces.ToArray(), mesh.textures.ToArray(), recordUV));
+            }
+            return state;
+        }
+
         public override void SetState(MeshEditorState state)
         {
             
+            ProBuilderMesh[] meshes = state.State.Keys.ToArray();
+            foreach (ProBuilderMesh mesh in meshes)
+            {
+                IList<int> vertices = m_vertexSelection.GetVertices(mesh);
+                if(vertices != null)
+                {
+                    vertices = vertices.ToArray();
+                    m_vertexSelection.Remove(mesh, vertices);
+                }
+                
+                MeshState meshState = state.State[mesh];
+                mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
+
+                if(vertices != null)
+                {
+                    m_vertexSelection.Add(mesh, vertices);
+                }
+                
+            }
         }
 
         public override void ApplySelection(MeshSelection selection)
@@ -514,7 +555,20 @@ namespace Battlehub.ProBuilderIntegration
         {
             foreach (PBMesh mesh in m_vertexSelection.PBMeshes)
             {
-                mesh.RaiseChanged(positionsOnly);
+                mesh.RaiseChanged(positionsOnly, false);
+            }
+        }
+
+        public override void Delete()
+        {
+            MeshSelection selection = GetSelection();
+            selection.VerticesToFaces(false, true);
+
+            foreach(KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            {                
+                kvp.Key.DeleteFaces(kvp.Value);
+                kvp.Key.ToMesh();
+                kvp.Key.Refresh();
             }
         }
     }

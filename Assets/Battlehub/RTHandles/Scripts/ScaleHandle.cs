@@ -218,12 +218,14 @@ namespace Battlehub.RTHandles
                     {
                         Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
 
+                        float gridSize = EffectiveGridUnitSize * 2;
+
                         m_roundedScale = Vector3.Scale(m_refScales[i], m_scale);
                         if (EffectiveGridUnitSize > 0.01)
                         {
-                            m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / EffectiveGridUnitSize) * EffectiveGridUnitSize;
-                            m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / EffectiveGridUnitSize) * EffectiveGridUnitSize;
-                            m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / EffectiveGridUnitSize) * EffectiveGridUnitSize;
+                            m_roundedScale.x = Mathf.RoundToInt(m_roundedScale.x / gridSize) * gridSize;
+                            m_roundedScale.y = Mathf.RoundToInt(m_roundedScale.y / gridSize) * gridSize;
+                            m_roundedScale.z = Mathf.RoundToInt(m_roundedScale.z / gridSize) * gridSize;
                         }
 
                         Vector3 scale = Quaternion.Inverse(rotation) * m_roundedScale;
@@ -259,6 +261,7 @@ namespace Battlehub.RTHandles
                         Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
 
                         Vector3 scale = Quaternion.Inverse(rotation) * Vector3.Scale(m_refScales[i], m_roundedScale);
+                        
                         scale.x = Mathf.Max(MinScale.x, scale.x);
                         scale.y = Mathf.Max(MinScale.y, scale.y);
                         scale.z = Mathf.Max(MinScale.z, scale.z);

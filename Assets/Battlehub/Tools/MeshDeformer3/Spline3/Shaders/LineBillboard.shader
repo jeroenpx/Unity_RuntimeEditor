@@ -1,4 +1,4 @@
-Shader "Hidden/Spline3/LineBillboard"
+Shader "Hidden/RTHandles/LineBillboard"
 {
     Properties
     {
@@ -11,7 +11,6 @@ Shader "Hidden/Spline3/LineBillboard"
     {
         Tags
         {
-            //"ProBuilderPicker"="EdgePass"
             "RenderType"="Geometry"
             "Queue"="Geometry+4"
             "DisableBatching"="True"

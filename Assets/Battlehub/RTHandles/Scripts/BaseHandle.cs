@@ -76,6 +76,10 @@ namespace Battlehub.RTHandles
         }
 
         private Transform[] m_activeRealTargets;
+        protected Transform[] ActiveRealTargets
+        {
+            get { return m_activeRealTargets; }
+        }
         private Transform[] m_realTargets;
         protected Transform[] RealTargets
         {
@@ -163,15 +167,9 @@ namespace Battlehub.RTHandles
                     return;
                 }
 
-                if (Editor.Tools.PivotMode == RuntimePivotMode.Center && ActiveTargets.Length > 1)
+                if (PivotMode == RuntimePivotMode.Center && ActiveTargets.Length > 1)
                 {
-                    Vector3 centerPosition = Targets_Internal[0].position;
-                    for (int i = 1; i < Targets_Internal.Length; ++i)
-                    {
-                        centerPosition += Targets_Internal[i].position;
-                    }
-
-                    centerPosition = centerPosition / Targets_Internal.Length;
+                    Vector3 centerPosition = GetCommonCenterPosition();
                     m_commonCenter = new Transform[1];
                     m_commonCenter[0] = new GameObject { name = "CommonCenter" }.transform;
                     m_commonCenter[0].SetParent(transform.parent, true);
@@ -195,7 +193,42 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private Transform[] Targets_Internal
+        protected virtual RuntimePivotMode PivotMode
+        {
+            get { return Editor.Tools.PivotMode; }
+        }
+
+        protected virtual Vector3 GetCommonCenterPosition()
+        {
+            Vector3 centerPosition = GetCenterPosition(Targets_Internal[0]);
+            for (int i = 1; i < Targets_Internal.Length; ++i)
+            {
+                Transform target = Targets_Internal[i];
+                centerPosition += GetCenterPosition(target);
+            }
+
+            centerPosition = centerPosition / Targets_Internal.Length;
+            return centerPosition;
+        }
+
+        protected Vector3 GetCenterPosition(Transform target)
+        {
+            MeshFilter filter = target.GetComponent<MeshFilter>();
+            if (filter != null && filter.sharedMesh != null)
+            {
+                return target.TransformPoint(filter.sharedMesh.bounds.center);
+            }
+
+            SkinnedMeshRenderer smr = target.GetComponent<SkinnedMeshRenderer>();
+            if (smr != null && smr.sharedMesh != null)
+            {
+                return target.TransformPoint(smr.sharedMesh.bounds.center);
+            }
+
+            return target.position;
+        }
+
+        protected virtual Transform[] Targets_Internal
         {
             get { return m_targets; }
             set
@@ -576,6 +609,9 @@ namespace Battlehub.RTHandles
         protected override void OnWindowDeactivated()
         {
             base.OnWindowDeactivated();
+
+            EndDrag();
+
             if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {
                 Editor.Tools.ActiveTool = null;
@@ -666,17 +702,15 @@ namespace Battlehub.RTHandles
 
             if (m_isDragging)
             {
-                if (Editor.Tools.PivotMode == RuntimePivotMode.Center && m_commonCenterTarget != null && m_realTargets != null && m_realTargets.Length > 1)
+                if (PivotMode == RuntimePivotMode.Center && m_commonCenterTarget != null && m_realTargets != null && m_realTargets.Length > 1)
                 {
                     for (int i = 0; i < m_commonCenterTarget.Length; ++i)
                     {
                         Transform commonCenterTarget = m_commonCenterTarget[i];
                         Transform target = m_realTargets[i];
-
                         target.transform.position = commonCenterTarget.position;
                         target.transform.rotation = commonCenterTarget.rotation;
                         target.transform.localScale = commonCenterTarget.lossyScale;
-                        //Debug.Log(commonCenterTarget.localScale);
                     }
                 }   
 
@@ -863,7 +897,7 @@ namespace Battlehub.RTHandles
                 Targets = RealTargets;
             }
 
-            if (Editor.Tools.PivotMode != RuntimePivotMode.Center)
+            if (PivotMode != RuntimePivotMode.Center)
             {
                 m_realTargets = null;   
             }
@@ -921,7 +955,7 @@ namespace Battlehub.RTHandles
 
         private void OnRedoCompleted()
         {
-            if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
+            if (PivotMode == RuntimePivotMode.Center)
             {
                 if(m_realTargets != null && (m_realTargets.Length != 1 || m_realTargets[0] != transform))
                 {
@@ -933,7 +967,7 @@ namespace Battlehub.RTHandles
 
         private void OnUndoCompleted()
         {
-            if (Editor.Tools.PivotMode == RuntimePivotMode.Center)
+            if (PivotMode == RuntimePivotMode.Center)
             {
                 if (m_realTargets != null && (m_realTargets.Length != 1 || m_realTargets[0] != transform))
                 {
@@ -1070,6 +1104,16 @@ namespace Battlehub.RTHandles
         private static Vector2 PerpendicularClockwise(Vector2 vector2)
         {
             return new Vector2(-vector2.y, vector2.x);
+        }
+
+        protected Vector3 GetGridOffset(float gridSize, Vector3 position)
+        {
+            Vector3 currentPosition = position;
+            position.x = Mathf.Round(position.x / gridSize) * gridSize;
+            position.y = Mathf.Round(position.y / gridSize) * gridSize;
+            position.z = Mathf.Round(position.z / gridSize) * gridSize;
+            Vector3 offset = position - currentPosition;
+            return offset;
         }
 
         void IGL.Draw(int cullingMask, Camera camera)

@@ -126,8 +126,8 @@ namespace Battlehub.UIControls
         {
             get
             {
-                //return Mathf.CeilToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup;
-                return Mathf.RoundToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup;
+                return Mathf.CeilToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup;
+                //return Mathf.RoundToInt(((float)ItemsCount) / ContainersPerGroup) * ContainersPerGroup;
             }
         }
 

@@ -77,6 +77,8 @@
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBMesh.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBPolyShape.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBPolyShapeSelection.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBSelectionPicker.cs" />
+    <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBSelectionPickerRenderer.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBShapeGenerator.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBSurfaceTopology.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBTextureMoveTool.cs" />
@@ -86,7 +88,14 @@
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBUtility.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBVertexEditor.cs" />
     <Compile Include="Assets\Battlehub\RTBuilder\Integration\Scripts\PBVertexSelection.cs" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\SelectionPicker.shader" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\LineBillboard.shader" />
     <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\FaceHighlight.shader" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\PointBillboard.shader" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\EdgePicker.shader" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\VertexShader.shader" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\VertexPicker.shader" />
+    <None Include="Assets\Battlehub\RTBuilder\Integration\Shaders\FacePicker.shader" />
     <Reference Include="Unity.ProBuilder">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/ScriptAssemblies/Unity.ProBuilder.dll</HintPath>
     </Reference>

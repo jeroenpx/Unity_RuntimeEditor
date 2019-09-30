@@ -88,11 +88,11 @@ namespace Battlehub.ProBuilderIntegration
 
             if(selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if(selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             MeshMaterialsState oldState = new MeshMaterialsState();

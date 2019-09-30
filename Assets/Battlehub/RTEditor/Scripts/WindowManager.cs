@@ -46,6 +46,7 @@ namespace Battlehub.RTEditor
         bool Exists(string windowTypeName);
         bool IsActive(string windowType);
         bool IsActive(Transform content);
+        Transform FindPointerOverWindow(RuntimeWindow exceptWindow);
 
         bool ActivateWindow(string windowTypeName);
         bool ActivateWindow(Transform content);
@@ -309,7 +310,7 @@ namespace Battlehub.RTEditor
         }
 
 
-        public bool IsOverlapped(RuntimeWindow testWindow)
+        public bool IsOverlapped(RuntimeWindow testWindow, RuntimeWindow exceptWindow = null)
         {
             for (int i = 0; i < Windows.Length; ++i)
             {
@@ -321,7 +322,7 @@ namespace Battlehub.RTEditor
 
                 if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)window.transform, Input.GetPointerXY(0), Raycaster.eventCamera))
                 {
-                    if (testWindow.Depth < window.Depth)
+                    if (testWindow.Depth < window.Depth && exceptWindow != window)
                     {
                         return true;
                     }
@@ -330,11 +331,33 @@ namespace Battlehub.RTEditor
             return false;
         }
 
+        public bool IsPointerOver(RuntimeWindow testWindow)
+        {
+            return RectTransformUtility.RectangleContainsScreenPoint((RectTransform)testWindow.transform, Input.GetPointerXY(0), Raycaster.eventCamera);
+        }
+
+        public Transform FindPointerOverWindow(RuntimeWindow exceptWindow = null)
+        {
+            foreach (KeyValuePair<string, HashSet<Transform>> kvp in m_windows)
+            {
+                foreach(Transform content in kvp.Value)
+                {
+                    RuntimeWindow window = content.GetComponentInChildren<RuntimeWindow>();
+
+                    if(window != null && window != exceptWindow && IsPointerOver(window) && !IsOverlapped(window, exceptWindow))
+                    {
+                        return content;
+                    }
+                }
+            }
+            return null;
+        }
+
         private void EnableOrDisableRaycasts()
         {
             if (ActiveWindow != null)
             {
-                if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)ActiveWindow.transform, Input.GetPointerXY(0), Raycaster.eventCamera) && !IsOverlapped(ActiveWindow))
+                if (IsPointerOver(ActiveWindow) && !IsOverlapped(ActiveWindow))
                 {
                     if (!m_isPointerOverActiveWindow)
                     {
@@ -1110,7 +1133,7 @@ namespace Battlehub.RTEditor
                 return window;
             }
 
-            if (isDialog)
+            if (isDialog && isFree)
             {
                 Dialog dialog = m_dialogManager.ShowDialog(wd.Icon, wd.Header, content.transform);
                 dialog.IsCancelVisible = false;

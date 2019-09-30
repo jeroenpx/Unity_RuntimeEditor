@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -8,6 +9,7 @@ namespace Battlehub.RTHandles
     /// Attach to camera
     /// </summary>
     [RequireComponent(typeof(Camera))]
+    [Obsolete("Use SceneGrid instead")]
     public class RuntimeGrid : RTEComponent
     {
         public RuntimeHandlesComponent Appearance;

@@ -35,14 +35,14 @@ namespace Battlehub.Spline3
         {
             if(m_lineMaterial == null)
             {
-                m_lineMaterial = new Material(Shader.Find("Hidden/Spline3/LineBillboard"));
+                m_lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
                 m_lineMaterial.SetFloat("_Scale", 0.9f);
                 m_lineMaterial.SetColor("_Color", m_lineColor);
                 m_lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             }
             if(m_normalMaterial == null)
             {
-                m_normalMaterial = new Material(Shader.Find("Hidden/Spline3/LineBillboard"));
+                m_normalMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
                 m_normalMaterial.SetFloat("_Scale", 0.9f);
                 m_normalMaterial.SetColor("_Color", m_lineColor);
                 m_normalMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
@@ -50,7 +50,7 @@ namespace Battlehub.Spline3
 
             if(m_controlPointMaterial == null)
             {
-                m_controlPointMaterial = new Material(Shader.Find("Hidden/Spline3/PointBillboard"));
+                m_controlPointMaterial = new Material(Shader.Find("Hidden/RTHandles/PointBillboard"));
                 m_controlPointMaterial.SetFloat("_Scale", 4.5f);
                 m_controlPointMaterial.SetColor("_Color", m_controlPointColor);
                 m_controlPointMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);

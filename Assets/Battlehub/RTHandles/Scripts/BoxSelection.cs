@@ -9,6 +9,8 @@ namespace Battlehub.RTHandles
 {
     public enum BoxSelectionMethod
     {
+        Vertex,
+        PixelPerfectDepthTest,
         LooseFitting,
         BoundsCenter,
         TansformCenter
@@ -60,6 +62,11 @@ namespace Battlehub.RTHandles
         {
             get;
         }
+
+        Canvas Canvas
+        {
+            get;
+        }
     }
 
     /// <summary>
@@ -91,6 +98,11 @@ namespace Battlehub.RTHandles
         public bool IsDragging
         {
             get { return m_isDragging; }
+        }
+
+        public Canvas Canvas
+        {
+            get { return m_canvas; }
         }
 
         protected override void AwakeOverride()
@@ -262,25 +274,64 @@ namespace Battlehub.RTHandles
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
             SelectionBounds = selectionBounds;
 
-            Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
-            
-            HashSet<GameObject> selection = new HashSet<GameObject>();
+            HashSet<GameObject> selection;
             Renderer[] renderers = FindObjectsOfType<Renderer>();
-            Collider[] colliders = FindObjectsOfType<Collider>();
-            FilteringArgs args = new FilteringArgs();
-            for (int i = 0; i < renderers.Length; ++i)
+
+            if(Method == BoxSelectionMethod.PixelPerfectDepthTest)
             {
-                Renderer r = renderers[i];
-                Bounds bounds = r.bounds;
-                GameObject go = r.gameObject;
-                TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
+                Vector2 min = SelectionBounds.min;
+                Vector2 max = SelectionBounds.max;
+                Canvas canvas = Window.GetComponentInParent<Canvas>();
+
+                RectTransform sceneOutput = (RectTransform)Window.GetComponent<RectTransform>().GetChild(0);
+
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneOutput, min, canvas.worldCamera, out min);
+                min.y = sceneOutput.rect.height - min.y;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneOutput, max, canvas.worldCamera, out max);
+                max.y = sceneOutput.rect.height - max.y;
+
+                Rect rect = new Rect(new Vector2(Mathf.Min(min.x, max.x), Mathf.Min(min.y, max.y)), new Vector2(Mathf.Abs(max.x - min.x), Mathf.Abs(max.y - min.y)));
+                rect.x += Window.Camera.pixelRect.x;
+                rect.y += canvas.pixelRect.height - (Window.Camera.pixelRect.y + Window.Camera.pixelRect.height);
+
+                IEnumerable<GameObject> gameObjects = BoxSelectionRenderer.PickObjectsInRect(Window.Camera, rect, renderers, Mathf.RoundToInt(canvas.pixelRect.width), Mathf.RoundToInt(canvas.pixelRect.height)).Select(r => r.gameObject);
+                selection = new HashSet<GameObject>();
+                FilteringArgs args = new FilteringArgs();
+                foreach(GameObject go in gameObjects)
+                {
+                    if (!selection.Contains(go))
+                    {
+                        if (Filtering != null)
+                        {
+                            args.Object = go;
+                            Filtering(this, args);
+                            if (!args.Cancel)
+                            {
+                                selection.Add(go);
+                            }
+                            args.Reset();
+                        }
+                        else
+                        {
+                            selection.Add(go);
+                        }
+                    }
+                }
             }
-            for (int i = 0; i < colliders.Length; ++i)
+            else
             {
-                Collider c = colliders[i];
-                Bounds bounds = c.bounds;
-                GameObject go = c.gameObject;
-                TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
+                selection = new HashSet<GameObject>();
+
+                Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
+                Collider[] colliders = FindObjectsOfType<Collider>();
+                FilteringArgs args = new FilteringArgs();
+                for (int i = 0; i < renderers.Length; ++i)
+                {
+                    Renderer r = renderers[i];
+                    Bounds bounds = r.bounds;
+                    GameObject go = r.gameObject;
+                    TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
+                }
             }
 
             if(Selection != null)
@@ -295,10 +346,39 @@ namespace Battlehub.RTHandles
 
         private void TrySelect(ref Bounds selectionBounds, HashSet<GameObject> selection, FilteringArgs args, ref Bounds bounds, GameObject go, Plane[] frustumPlanes)
         {
+            if (!GeometryUtility.TestPlanesAABB(frustumPlanes, bounds))
+            {
+                return;
+            }
             bool select;
             if (Method == BoxSelectionMethod.LooseFitting)
             {
+                select = LooseFitting(ref selectionBounds, ref bounds);              
+            }
+            else if(Method == BoxSelectionMethod.Vertex)
+            {
                 select = LooseFitting(ref selectionBounds, ref bounds);
+                if (select && !selection.Contains(go))
+                {
+                    select = false;
+                    MeshFilter meshFilter = go.GetComponent<MeshFilter>();
+                    if (meshFilter != null && meshFilter.sharedMesh != null)
+                    {
+                        Vector3[] vertices = meshFilter.sharedMesh.vertices;
+
+                        for (int i = 0; i < vertices.Length; ++i)
+                        {
+                            Vector3 vertex = go.transform.TransformPoint(vertices[i]);
+                            vertex = Window.Camera.WorldToScreenPoint(vertex);
+                            vertex.z = 0;
+                            if (selectionBounds.Contains(vertex))
+                            {
+                                select = true;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
             else if (Method == BoxSelectionMethod.BoundsCenter)
             {
@@ -307,11 +387,6 @@ namespace Battlehub.RTHandles
             else
             {
                 select = TransformCenter(ref selectionBounds, go.transform);
-            }
-
-            if (!GeometryUtility.TestPlanesAABB(frustumPlanes, bounds))
-            {
-                select = false;
             }
 
             if (select)

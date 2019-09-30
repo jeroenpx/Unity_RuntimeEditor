@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_enableZTest: 1
-  m_handlePrefab: {fileID: 7574196023977402016, guid: 7fcf695eb48f7c24a819fb1db46f0167,
+  m_handlePrefab: {fileID: 2268241784843733535, guid: 70f313e71f2e3f34eb26f0d7e8661363,
     type: 3}
 --- !u!114 &766989969
 MonoBehaviour:

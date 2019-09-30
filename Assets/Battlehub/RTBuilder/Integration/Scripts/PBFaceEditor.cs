@@ -280,7 +280,7 @@ namespace Battlehub.ProBuilderIntegration
             RaisePBMeshesChanged(true);
         }
 
-        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
+        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl, bool depthTest)
         {
             MeshSelection selection = null;
             MeshAndFace result = PBUtility.PickFace(camera, pointer);
@@ -397,12 +397,12 @@ namespace Battlehub.ProBuilderIntegration
             return selection;
         }
 
-        public override MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode)
+        public override MeshSelection Select(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest, MeshEditorSelectionMode mode)
         {
             MeshSelection selection = new MeshSelection();
             m_faceSelection.BeginChange();
 
-            Dictionary<ProBuilderMesh, HashSet<Face>> result = PBUtility.PickFaces(camera, rect, gameObjects);
+            Dictionary<ProBuilderMesh, HashSet<Face>> result = PBUtility.PickFaces(camera, rect, uiRootRect, gameObjects, depthTest);
             if (mode == MeshEditorSelectionMode.Add)
             {
                 foreach (KeyValuePair<ProBuilderMesh, HashSet<Face>> kvp in result)
@@ -537,6 +537,27 @@ namespace Battlehub.ProBuilderIntegration
                 return null;
             }
             return selection;
+        }
+
+        public override void SetSelection(MeshSelection selection)
+        {
+            if (m_faceSelection != null)
+            {
+                m_faceSelection.Clear();
+            }
+
+            m_faceSelection.BeginChange();
+
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            {
+                ProBuilderMesh mesh = kvp.Key;
+                foreach (int face in kvp.Value)
+                {
+                    m_faceSelection.Add(mesh, face);
+                }
+            }
+
+            m_faceSelection.EndChange();
         }
 
         public override MeshSelection GetSelection()
@@ -690,10 +711,7 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Delete()
         {
-            //MeshSelection selection = new MeshSelection();
-            ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();
-            //  m_faceSelection.BeginChange();
-
+            ProBuilderMesh[] meshes = m_faceSelection.Meshes.OrderBy(m => m == m_faceSelection.LastMesh).ToArray();   
             foreach (ProBuilderMesh mesh in meshes)
             {
                 IList<Face> faces = new List<Face>();
@@ -702,8 +720,6 @@ namespace Battlehub.ProBuilderIntegration
                 mesh.ToMesh();
                 mesh.Refresh();
             }
-
-            //  m_faceSelection.EndChange();
         }
 
         public override void Subdivide()
@@ -811,7 +827,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             foreach (PBMesh mesh in m_faceSelection.PBMeshes)
             {
-                mesh.RaiseChanged(positionsOnly);
+                mesh.RaiseChanged(positionsOnly, false);
             }
         }
     }

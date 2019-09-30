@@ -67,22 +67,27 @@ namespace Battlehub.ProBuilderIntegration
             return res;
         }
 
-        public static Dictionary<ProBuilderMesh, HashSet<Face>> PickFaces(Camera camera, Rect rect, GameObject[] gameObjects)
+        public static Dictionary<ProBuilderMesh, HashSet<Face>> PickFaces(Camera camera, Rect rect, Rect uiRect, GameObject[] gameObjects, bool depthTest)
         {
             try
             {
-                return SelectionPicker.PickFacesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = false });
+                if (depthTest)
+                {
+                    return PBSelectionPickerRenderer.PickFacesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), Mathf.RoundToInt(uiRect.width), Mathf.RoundToInt(uiRect.height));
+                }
+
+                return SelectionPicker.PickFacesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = false }, 1);
             }
-            catch(System.Exception e)
+            catch (System.Exception e)
             {
                 Debug.LogError(e);
                 return new Dictionary<ProBuilderMesh, HashSet<Face>>();
             }
         }
 
-        public static Dictionary<ProBuilderMesh, HashSet<Edge>> PickEdges(Camera camera, Rect rect, GameObject[] gameObjects)
+        public static Dictionary<ProBuilderMesh, HashSet<Edge>> PickEdges(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest)
         {
-            return SelectionPicker.PickEdgesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = false });
+            return PBSelectionPicker.PickEdgesInRect(camera, rect, uiRootRect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = depthTest });
         }
 
         public static float PickEdge(Camera camera, Vector3 mousePosition, float maxDistance, GameObject pickedObject, IEnumerable<ProBuilderMesh> meshes, ref SceneSelection selection)
@@ -453,14 +458,14 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public static Dictionary<ProBuilderMesh, HashSet<int>> PickVertices(Camera camera, Rect rect, GameObject[] gameObjects)
+        public static Dictionary<ProBuilderMesh, HashSet<int>> PickVertices(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest)
         {
-            return SelectionPicker.PickVerticesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = false });
+            return PBSelectionPicker.PickVerticesInRect(camera, rect, uiRootRect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = depthTest });
         }
 
-        public static float PickVertex(Camera camera, Vector3 mousePosition, float maxDistance, GameObject pickedObject, IEnumerable<ProBuilderMesh> meshes, ref SceneSelection selection)
+        public static float PickVertex(Camera camera, Vector3 mousePosition, float maxDistance, GameObject pickedObject, IEnumerable<ProBuilderMesh> meshes, bool depthTest, ref SceneSelection selection)
         {
-            selection.Clear();
+          //  selection.Clear();
             m_nearestVertices.Clear();
 
             maxDistance = maxDistance * maxDistance;
@@ -486,14 +491,31 @@ namespace Battlehub.ProBuilderIntegration
 
             m_nearestVertices.Sort((x, y) => x.screenDistance.CompareTo(y.screenDistance));
 
+
+            ProBuilderMesh selectedMesh = selection.mesh;
+            int selectedVertex = selection.vertex;
+            selection.Clear();
+
+            int startIndex = 0;
+
             for (int i = 0; i < m_nearestVertices.Count; i++)
             {
-                if (!PointIsOccluded(camera, m_nearestVertices[i].mesh, m_nearestVertices[i].worldPosition))
+                VertexPickerEntry pickerEntry = m_nearestVertices[i];
+                if (pickerEntry.mesh == selectedMesh && pickerEntry.vertex == selectedVertex)
+                {
+                    startIndex = i + 1;
+                    startIndex %= m_nearestVertices.Count;
+                }
+            }
+            
+            for (int i = startIndex; i < m_nearestVertices.Count; i++)
+            {
+                if (!depthTest || !PointIsOccluded(camera, m_nearestVertices[i].mesh, m_nearestVertices[i].worldPosition))
                 {
                     selection.gameObject = m_nearestVertices[i].mesh.gameObject;
                     selection.mesh = m_nearestVertices[i].mesh;
                     selection.vertex = m_nearestVertices[i].vertex;
-                    return Mathf.Sqrt(m_nearestVertices[i].screenDistance); 
+                    return Mathf.Sqrt(m_nearestVertices[i].screenDistance);
                 }
             }
 
@@ -584,7 +606,7 @@ namespace Battlehub.ProBuilderIntegration
             return matches;
         }
 
-        private static bool PointIsOccluded(Camera cam, ProBuilderMesh pb, Vector3 worldPoint)
+        public static bool PointIsOccluded(Camera cam, ProBuilderMesh pb, Vector3 worldPoint)
         {
             Vector3 dir = (cam.transform.position - worldPoint).normalized;
 
@@ -778,7 +800,7 @@ namespace Battlehub.ProBuilderIntegration
 
         public static void BuildVertexMesh(IList<Vector3> positions, Color color, Mesh target, IList<int> indexes)
         {
-            if (BuiltinMaterials.geometryShadersSupported)
+            if (PBBuiltinMaterials.geometryShadersSupported)
             {
                 BuildVertexMeshNew(positions, color, target, indexes);
             }
@@ -790,7 +812,7 @@ namespace Battlehub.ProBuilderIntegration
 
         public static void BuildVertexMesh(IList<Vector3> positions, Color color, Mesh target)
         {
-            if (BuiltinMaterials.geometryShadersSupported)
+            if (PBBuiltinMaterials.geometryShadersSupported)
             {
                 int[] indexes = new int[positions.Count];
                 for(int i = 0; i < indexes.Length; ++i)

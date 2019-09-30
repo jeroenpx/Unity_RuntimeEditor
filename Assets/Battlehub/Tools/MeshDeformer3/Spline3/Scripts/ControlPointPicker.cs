@@ -110,12 +110,17 @@ namespace Battlehub.Spline3
 
         public void Pick(Camera camera, Vector2 position)
         {
+            PickResult oldPickResult = m_pickResult;
             m_pickResult = PickControlPoint(camera, position, 20);
             if (m_pickResult != null)
             {
                 BaseSpline spline = m_pickResult.GetSpline();
                 transform.position = spline.GetControlPoint(m_pickResult.Index);
                 m_editor.Selection.activeGameObject = gameObject;
+            }
+            else if(oldPickResult != null)
+            {
+                m_editor.Selection.activeGameObject = null;
             }
         }
 

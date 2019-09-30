@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
+using UnityEngine.Rendering;
 
 namespace Battlehub.ProBuilderIntegration
 {
@@ -107,8 +108,9 @@ namespace Battlehub.ProBuilderIntegration
                 m_renderer = gameObject.AddComponent<MeshRenderer>();
             }
 
-            m_material = new Material(Shader.Find("Hidden/RTBuilder/FaceHighlight"));
+            m_material = new Material(Shader.Find("Battlehub/RTBuilder/FaceHighlight"));
             m_material.SetFloat("_Dither", 1f);
+            m_material.SetInt("_HandleZTest", (int)CompareFunction.LessEqual);
             m_material.color = new Color(m_color.r, m_color.g, m_color.b, 0.5f);
 
             m_renderer.sharedMaterial = m_material;

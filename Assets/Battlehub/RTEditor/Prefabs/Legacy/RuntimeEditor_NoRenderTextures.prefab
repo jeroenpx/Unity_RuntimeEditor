@@ -282,6 +282,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 0}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 233234370}
   m_canvasGroup: {fileID: 233234371}
   FadeInSpeed: 8
@@ -1459,6 +1460,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 5849259614052136183}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 220647733058011166}
   m_canvasGroup: {fileID: 230625903091272210}
   FadeInSpeed: 8
@@ -1796,6 +1798,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 5849259614183290822}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 220647733216695752}
   m_canvasGroup: {fileID: 230625903234326468}
   FadeInSpeed: 8
@@ -2108,6 +2111,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 5849259614214296018}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 220647732588404015}
   m_canvasGroup: {fileID: 230625902621628195}
   FadeInSpeed: 8
@@ -2486,6 +2490,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 5849259613376326648}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 220647734270409400}
   m_canvasGroup: {fileID: 230625902139535540}
   FadeInSpeed: 8
@@ -2662,6 +2667,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 0}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 220647733806578002}
   m_canvasGroup: {fileID: 230625901696545630}
   FadeInSpeed: 8
@@ -2849,6 +2855,7 @@ MonoBehaviour:
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 608560c9df008cd48a82482fca449e8e,
     type: 3}
   m_anchor: {fileID: 5849259614669755914}
+  m_anchorOffset: {x: 0, y: 0}
   m_panel: {fileID: 220647733537699799}
   m_canvasGroup: {fileID: 230625901428817371}
   FadeInSpeed: 8
@@ -4071,6 +4078,7 @@ MonoBehaviour:
   m_pointerOverColor: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
   m_focusedColor: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_normalColor: {r: 1, g: 1, b: 1, a: 0}
+  m_text: {fileID: 0}
 --- !u!114 &3585920918779202565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4361,6 +4369,7 @@ MonoBehaviour:
   m_pointerOverColor: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
   m_focusedColor: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_normalColor: {r: 1, g: 1, b: 1, a: 0}
+  m_text: {fileID: 0}
 --- !u!114 &8077136230047967497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4575,6 +4584,7 @@ MonoBehaviour:
   m_pointerOverColor: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
   m_focusedColor: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_normalColor: {r: 1, g: 1, b: 1, a: 0}
+  m_text: {fileID: 0}
 --- !u!114 &8699228782476089258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4802,6 +4812,7 @@ MonoBehaviour:
   m_pointerOverColor: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
   m_focusedColor: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_normalColor: {r: 1, g: 1, b: 1, a: 0}
+  m_text: {fileID: 0}
 --- !u!114 &6173097361273975014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4872,6 +4883,7 @@ MonoBehaviour:
   MoveKey: 119
   RotateKey: 101
   ScaleKey: 114
+  RectToolKey: 116
   PivotRotationKey: 120
   PivotModeKey: 122
 --- !u!1 &5849259614334939582
@@ -5041,7 +5053,6 @@ GameObject:
   - component: {fileID: 3214422774527365804}
   - component: {fileID: 848462208471534376}
   - component: {fileID: 9058800277652670137}
-  - component: {fileID: 5849259614496068627}
   - component: {fileID: 5849259614496068636}
   - component: {fileID: 5849259614496068637}
   - component: {fileID: 5849259614496068625}
@@ -5090,6 +5101,9 @@ MonoBehaviour:
     ResourcePreviewLayer: 20
     RuntimeGraphicsLayer: 21
     MaxGraphicsLayers: 4
+    AllScenesLayer: 17
+    ExtraLayer2: 19
+    ExtraLayer: 18
   m_useBuiltinUndo: 1
   m_enableVRIfAvailable: 1
   m_isOpened: 1
@@ -5104,6 +5118,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_progressIndicator: {fileID: 5849259614334939582}
+  m_defaultProjectName: 
 --- !u!114 &257632392269822385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5120,6 +5135,97 @@ MonoBehaviour:
   m_uiBackgroundScaler: {fileID: 2391296701540230532}
   m_uiForegroundScaler: {fileID: 9174941219733222014}
   m_uiScaler: {fileID: 9174941219733222014}
+  m_colors:
+    Primary: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+    Secondary: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+    Border: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+    Border2: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 1}
+    Border3: {r: 0.32156864, g: 0.29803923, b: 0.29803923, a: 1}
+    Border4: {r: 135, g: 135, b: 135, a: 255}
+    Accent: {r: 0, g: 0.5921569, b: 1, a: 0.7529412}
+    Text: {r: 1, g: 1, b: 1, a: 1}
+    Text2: {r: 1, g: 1, b: 1, a: 0.49803922}
+    ModalOverlay: {r: 0, g: 0, b: 0, a: 0.2509804}
+    MainMenuBar: {r: 0.43529412, g: 0.43529412, b: 0.43529412, a: 1}
+    Footer: {r: 0.43529412, g: 0.43529412, b: 0.43529412, a: 1}
+    MainMenuButton:
+      Normal: {r: 1, g: 1, b: 1, a: 0}
+      Highlight: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
+      Pressed: {r: 0, g: 0.5921569, b: 1, a: 1}
+      Disabled: {r: 0, g: 0, b: 0, a: 0}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    ToolsToggle: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
+    MenuItem:
+      SelectionColor: {r: 0, g: 0.5921569, b: 1, a: 1}
+      TextColor: {r: 1, g: 1, b: 1, a: 1}
+      DisabledSelectionColor: {r: 0.58431375, g: 0.5764706, b: 0.5764706, a: 0.49803922}
+      DisabledTextColor: {r: 0.44313726, g: 0.44313726, b: 0.44313726, a: 1}
+    Hierarchy:
+      NormalItem: {r: 1, g: 1, b: 1, a: 1}
+      DisabledItem: {r: 0.5764706, g: 0.57254905, b: 0.57254905, a: 1}
+    ProjectFolder: {r: 0.28235295, g: 0.28235295, b: 0.28235295, a: 1}
+    ConsoleButton:
+      Normal: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+      Highlight: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+      Pressed: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Disabled: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    ScrollBar:
+      Normal: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+      Highlight: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+      Pressed: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Disabled: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    ScrollBarBackground: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
+    Toggle:
+      Normal: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Highlight: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Pressed: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+      Disabled: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.49803922}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    ToggleButton:
+      Normal: {r: 0.26666668, g: 0.26666668, b: 0.26666668, a: 1}
+      Highlight: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+      Pressed: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Disabled: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    InputField:
+      Normal: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Highlight: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Pressed: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+      Disabled: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.49803922}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    InputField2:
+      Normal: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Highlight: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
+      Pressed: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+      Disabled: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.49803922}
+      Selected: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+    Button:
+      Normal: {r: 0.26666668, g: 0.26666668, b: 0.26666668, a: 1}
+      Highlight: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
+      Pressed: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.49803922}
+      Disabled: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.4}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    Button2:
+      Normal: {r: 255, g: 255, b: 255, a: 255}
+      Highlight: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+      Pressed: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+      Disabled: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    Slider:
+      Normal: {r: 0.26666668, g: 0.26666668, b: 0.26666668, a: 1}
+      Highlight: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
+      Pressed: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.49803922}
+      Disabled: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.4}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    Dropdown:
+      Normal: {r: 0.26666668, g: 0.26666668, b: 0.26666668, a: 1}
+      Highlight: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
+      Pressed: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.49803922}
+      Disabled: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.4}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+  m_prefabs: []
 --- !u!114 &5849259614496068631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5261,10 +5367,32 @@ MonoBehaviour:
       type: 3}
     MaxWindows: 1
     Created: 0
-  m_customWindows: []
+  m_customWindows:
+  - TypeName: importfile
+    IsDialog: 1
+    Descriptor:
+      Icon: {fileID: 21300000, guid: 93e198295d49d7348b9328fcfb88d0cb, type: 3}
+      Header: Import File
+      ContentPrefab: {fileID: 1000010003848526, guid: 24e72d14919037844941c3ffc9aba369,
+        type: 3}
+      MaxWindows: 1
+      Created: 0
+  - TypeName: scenesettings
+    IsDialog: 1
+    Descriptor:
+      Icon: {fileID: 21300000, guid: 89a4e12e4493f6341928b4e2f80ec665, type: 3}
+      Header: Scene Settings
+      ContentPrefab: {fileID: 1332217457950486, guid: ec34abdc89db59e42b4487f79cd8d277,
+        type: 3}
+      MaxWindows: 1
+      Created: 0
   m_dockPanels: {fileID: 111226606771800033}
   m_componentsRoot: {fileID: 5849259612975468223}
   m_toolsRoot: {fileID: 6236831816304581951}
+  m_topBar: {fileID: 0}
+  m_bottomBar: {fileID: 0}
+  m_leftBar: {fileID: 0}
+  m_rightBar: {fileID: 0}
 --- !u!114 &1868234900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5301,6 +5429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2cbc35edb251049b0589730891cdfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_defaultMaterial: {fileID: 0}
 --- !u!114 &848462208471534376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5327,22 +5456,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_menu: {fileID: 233234377}
   m_contextMenuArea: {fileID: 5849259612951747679}
---- !u!114 &5849259614496068627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5849259614496068639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 302b7c7acc0328f499e38885f86c1aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_staticAssetLibraries: {fileID: 0}
-  m_sceneDepsLibrary: 
-  m_builtInLibrary: 
-  m_dynamicPrefabsRoot: {fileID: 0}
 --- !u!114 &5849259614496068636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5659,6 +5772,7 @@ MonoBehaviour:
   m_pointerOverColor: {r: 0, g: 0.5921569, b: 1, a: 0.49803922}
   m_focusedColor: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_normalColor: {r: 1, g: 1, b: 1, a: 0}
+  m_text: {fileID: 0}
 --- !u!114 &8917869522317704742
 MonoBehaviour:
   m_ObjectHideFlags: 0

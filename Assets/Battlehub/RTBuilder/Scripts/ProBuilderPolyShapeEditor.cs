@@ -25,7 +25,6 @@ namespace Battlehub.RTBuilder
 
         private void Awake()
         {
-            m_rte = IOC.Resolve<IRTE>();
             m_pivot = new GameObject("PolyShapePivot").transform;
             LockAxes axes = m_pivot.gameObject.AddComponent<LockAxes>();
             axes.PositionY = true;
@@ -36,6 +35,7 @@ namespace Battlehub.RTBuilder
 
         private void Start()
         {
+            m_rte = IOC.Resolve<IRTE>();
             m_tool = IOC.Resolve<IProBuilderTool>();
             m_tool.ModeChanged += OnModeChanged;
 

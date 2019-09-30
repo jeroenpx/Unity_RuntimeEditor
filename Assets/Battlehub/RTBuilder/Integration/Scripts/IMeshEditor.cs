@@ -17,9 +17,14 @@ namespace Battlehub.ProBuilderIntegration
     public class MeshEditorState
     {
         internal readonly Dictionary<ProBuilderMesh, MeshState> State = new Dictionary<ProBuilderMesh, MeshState>();
+
+        public IEnumerable<PBMesh> GetMeshes()
+        {
+            return State.Select(kvp => kvp.Key.GetComponent<PBMesh>()).Where(pbMesh => pbMesh != null);
+        }
     }
 
-    internal class MeshState
+    public class MeshState
     {
         public readonly IList<Vector3> Positions;
         public readonly IList<PBFace> Faces;
@@ -70,6 +75,12 @@ namespace Battlehub.ProBuilderIntegration
         public bool HasVertices
         {
             get { return SelectedIndices.Count != 0 || UnselectedIndices.Count != 0; }
+        }
+
+        public IEnumerable<PBMesh> GetSelectedMeshes()
+        {
+            IEnumerable<ProBuilderMesh> meshes = SelectedFaces.Select(kvp => kvp.Key).Union(SelectedEdges.Select(kvp => kvp.Key)).Union(SelectedIndices.Select(kvp => kvp.Key));
+            return meshes.Select(m => m.GetComponent<PBMesh>()).Where(pbMesh => pbMesh != null);
         }
 
         public MeshSelection()
@@ -161,7 +172,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void VerticesToFaces(bool invert)
+        public void VerticesToFaces(bool invert, bool partial)
         {
             SelectedFaces.Clear();
             UnselectedFaces.Clear();
@@ -170,7 +181,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = kvp.Key;
                 HashSet<int> indicesHs = new HashSet<int>(mesh.GetCoincidentVertices(kvp.Value));
-                List<int> faces = GetFaces(mesh, indicesHs);
+                List<int> faces = GetFaces(mesh, indicesHs, !partial);
 
                 if (faces.Count > 0)
                 {
@@ -182,7 +193,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = kvp.Key;
                 HashSet<int> indicesHs = new HashSet<int>(mesh.GetCoincidentVertices(kvp.Value));
-                List<int> faces = GetFaces(mesh, indicesHs);
+                List<int> faces = GetFaces(mesh, indicesHs, !partial);
 
                 if (faces.Count > 0)
                 {
@@ -213,7 +224,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void EdgesToFaces(bool invert)
+        public void EdgesToFaces(bool invert, bool partial)
         {
             SelectedFaces.Clear();
             UnselectedFaces.Clear();
@@ -222,7 +233,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = kvp.Key;
                 HashSet<Edge> edgesHs = new HashSet<Edge>(kvp.Value);
-                List<int> faces = GetFaces(mesh, edgesHs);
+                List<int> faces = GetFaces(mesh, edgesHs, !partial);
 
                 if (faces.Count > 0)
                 {
@@ -234,7 +245,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = kvp.Key;
                 HashSet<Edge> edgesHs = new HashSet<Edge>(kvp.Value);
-                List<int> faces = GetFaces(mesh, edgesHs);
+                List<int> faces = GetFaces(mesh, edgesHs, !partial);
 
                 if (faces.Count > 0)
                 {
@@ -267,7 +278,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void VerticesToEdges(bool invert)
+        public void VerticesToEdges(bool invert, bool partial)
         {
             SelectedEdges.Clear();
             UnselectedEdges.Clear();
@@ -276,7 +287,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = kvp.Key;
                 HashSet<int> indicesHs = new HashSet<int>(mesh.GetCoincidentVertices(kvp.Value));
-                List<Edge> edges = GetEdges(mesh, indicesHs);
+                List<Edge> edges = GetEdges(mesh, indicesHs, !partial);
 
                 if (edges.Count > 0)
                 {
@@ -288,7 +299,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = kvp.Key;
                 HashSet<int> indicesHs = new HashSet<int>(mesh.GetCoincidentVertices(kvp.Value));
-                List<Edge> edges = GetEdges(mesh, indicesHs);
+                List<Edge> edges = GetEdges(mesh, indicesHs, !partial);
 
                 if (edges.Count > 0)
                 {
@@ -297,23 +308,33 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        private static List<int> GetFaces(ProBuilderMesh mesh, HashSet<int> indicesHs)
+        private static List<int> GetFaces(ProBuilderMesh mesh, HashSet<int> indicesHs, bool all)
         {
             IList<Face> allFaces = mesh.faces;
             List<int> faces = new List<int>();
             for (int i = 0; i < allFaces.Count; ++i)
             {
                 Face face = allFaces[i];
-                if (face.indexes.All(index => indicesHs.Contains(index)))
+                if (all)
                 {
-                    faces.Add(i);
+                    if (face.indexes.All(index => indicesHs.Contains(index)))
+                    {
+                        faces.Add(i);
+                    }
                 }
+                else
+                {
+                    if (face.indexes.Any(index => indicesHs.Contains(index)))
+                    {
+                        faces.Add(i);
+                    }
+                }   
             }
 
             return faces;
         }
 
-        private static List<int> GetFaces(ProBuilderMesh mesh, HashSet<Edge> edgesHs)
+        private static List<int> GetFaces(ProBuilderMesh mesh, HashSet<Edge> edgesHs, bool all)
         {
             IList<Face> allFaces = mesh.faces;
             List<int> faces = new List<int>();
@@ -321,15 +342,26 @@ namespace Battlehub.ProBuilderIntegration
             {
                 Face face = allFaces[i];
 
-                if (face.edges.All(index => edgesHs.Contains(index)))
+                if(all)
                 {
-                    faces.Add(i);
+                    if (face.edges.All(edge => edgesHs.Contains(edge)))
+                    {
+                        faces.Add(i);
+                    }
                 }
+                else
+                {
+                    if (face.edges.Any(edge => edgesHs.Contains(edge)))
+                    {
+                        faces.Add(i);
+                    }
+                }
+                
             }
             return faces;
         }
 
-        private static List<Edge> GetEdges(ProBuilderMesh mesh, HashSet<int> indicesHs)
+        private static List<Edge> GetEdges(ProBuilderMesh mesh, HashSet<int> indicesHs, bool all)
         {
             IList<Face> allFaces = mesh.faces;
             HashSet<Edge> edgesHs = new HashSet<Edge>();
@@ -342,10 +374,21 @@ namespace Battlehub.ProBuilderIntegration
                     Edge edge = edges[e];
                     if(!edgesHs.Contains(edge))
                     {
-                        if(indicesHs.Contains(edge.a) && indicesHs.Contains(edge.b))
+                        if(all)
                         {
-                            edgesHs.Add(edge);
+                            if (indicesHs.Contains(edge.a) && indicesHs.Contains(edge.b))
+                            {
+                                edgesHs.Add(edge);
+                            }
                         }
+                        else
+                        {
+                            if (indicesHs.Contains(edge.a) || indicesHs.Contains(edge.b))
+                            {
+                                edgesHs.Add(edge);
+                            }
+                        }
+                        
                     }
                 }
             }
@@ -389,17 +432,17 @@ namespace Battlehub.ProBuilderIntegration
             mesh.GetCoincidentVertices(edges, indices);
         }
 
-        public void Merge(MeshSelection selection)
+        public void Merge(MeshSelection selection, bool partial)
         {
             if(HasFaces)
             {
                 if (selection.HasEdges)
                 {
-                    selection.EdgesToFaces(false);
+                    selection.EdgesToFaces(false, partial);
                 }
                 else if (selection.HasVertices)
                 {
-                    selection.VerticesToFaces(false);
+                    selection.VerticesToFaces(false, partial);
                 }
 
                 foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
@@ -444,7 +487,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
                 else if (selection.HasVertices)
                 {
-                    selection.VerticesToEdges(false);
+                    selection.VerticesToEdges(false, partial);
                 }
 
                 foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
@@ -605,14 +648,15 @@ namespace Battlehub.ProBuilderIntegration
         void FillHoles();
         
 
-        MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl);
-        MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode);
+        MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl, bool depthTest);
+        MeshSelection Select(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest, MeshEditorSelectionMode mode);
         MeshSelection Select(Material material);
         MeshSelection Unselect(Material material);
 
         void ApplySelection(MeshSelection selection);
         void RollbackSelection(MeshSelection selection);
 
+        void SetSelection(MeshSelection selection);
         MeshSelection GetSelection();
         MeshSelection ClearSelection();
         

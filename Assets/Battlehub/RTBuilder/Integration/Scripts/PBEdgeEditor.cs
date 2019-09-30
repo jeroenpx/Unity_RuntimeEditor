@@ -44,7 +44,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
                 if (selection.HasEdges)
                 {
-                    selection.EdgesToFaces(false);
+                    selection.EdgesToFaces(false, false);
                 }
                 IList<int> faceIndexes;
                 if (selection.SelectedFaces.TryGetValue(m_edgeSelection.LastMesh, out faceIndexes))
@@ -54,9 +54,9 @@ namespace Battlehub.ProBuilderIntegration
                         return HandleUtility.GetRotation(m_edgeSelection.LastMesh, m_edgeSelection.LastMesh.faces[faceIndexes.Last()].distinctIndexes);
                     }
                 }
- 
+
                 IList<Edge> edges;
-                if(!selection.SelectedEdges.TryGetValue(m_edgeSelection.LastMesh, out edges) || edges.Count == 0)
+                if (!selection.SelectedEdges.TryGetValue(m_edgeSelection.LastMesh, out edges) || edges.Count == 0)
                 {
                     return Quaternion.identity;
                 }
@@ -66,7 +66,7 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     return Quaternion.identity;
                 }
-                    
+
                 return HandleUtility.GetRotation(m_edgeSelection.LastMesh, face.distinctIndexes);
             }
         }
@@ -86,6 +86,17 @@ namespace Battlehub.ProBuilderIntegration
             if (m_edgeSelection != null)
             {
                 Destroy(m_edgeSelection);
+            }
+        }
+
+        public override void SetSelection(MeshSelection selection)
+        {
+            m_edgeSelection.Clear();
+            m_selection.Clear();
+
+            foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
+            {
+                m_edgeSelection.Add(kvp.Key, kvp.Value);
             }
         }
 
@@ -129,17 +140,17 @@ namespace Battlehub.ProBuilderIntegration
             foreach (ProBuilderMesh mesh in m_edgeSelection.Meshes)
             {
                 HashSet<int> indexes = new HashSet<int>();
-                for(int i = 0; i < mesh.vertexCount; ++i)
+                for (int i = 0; i < mesh.vertexCount; ++i)
                 {
                     indexes.Add(i);
                 }
 
                 List<List<Edge>> holes = PBElementSelection.FindHoles(mesh, indexes);
-                selection.SelectedEdges.Add(mesh,  m_edgeSelection.GetCoincidentEdges(holes.SelectMany(e => e).Where(e => !m_edgeSelection.IsSelected(mesh, e))));
+                selection.SelectedEdges.Add(mesh, m_edgeSelection.GetCoincidentEdges(holes.SelectMany(e => e).Where(e => !m_edgeSelection.IsSelected(mesh, e))));
                 m_edgeSelection.Add(mesh, selection.SelectedEdges[mesh]);
             }
-           
-            if(!selection.HasEdges)
+
+            if (!selection.HasEdges)
             {
                 return null;
             }
@@ -169,14 +180,14 @@ namespace Battlehub.ProBuilderIntegration
                 List<WingedEdge> wings = WingedEdge.GetWingedEdges(mesh);
                 HashSet<Face> appendedFaces = new HashSet<Face>();
 
-               // const bool wholePath = false;
+                // const bool wholePath = false;
 
                 foreach (List<Edge> hole in holes)
                 {
                     List<int> holeIndexes;
                     Face face;
 
-                    if(!hole.All(e => m_edgeSelection.IsSelected(mesh, e)))
+                    if (!hole.All(e => m_edgeSelection.IsSelected(mesh, e)))
                     {
                         continue;
                     }
@@ -251,7 +262,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
+        public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl, bool depthTest)
         {
             MeshSelection selection = null;
             GameObject pickedObject = PBUtility.PickObject(camera, pointer);
@@ -331,9 +342,9 @@ namespace Battlehub.ProBuilderIntegration
             return selection;
         }
 
-        public override MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode)
+        public override MeshSelection Select(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest, MeshEditorSelectionMode mode)
         {
-            Dictionary<ProBuilderMesh, HashSet<Edge>> pickResult = PBUtility.PickEdges(camera, rect, gameObjects);
+            Dictionary<ProBuilderMesh, HashSet<Edge>> pickResult = PBUtility.PickEdges(camera, rect, uiRootRect, gameObjects, depthTest);
             if (pickResult.Count == 0)
             {
                 return null;
@@ -347,7 +358,7 @@ namespace Battlehub.ProBuilderIntegration
                 m_edgeSelection.FindCoincidentEdges(mesh);
                 IList<Edge> edges = m_edgeSelection.GetCoincidentEdges(kvp.Value);
 
-                IList<Edge> selected =  edges.Where(edge => m_edgeSelection.IsSelected(mesh, edge)).ToArray();
+                IList<Edge> selected = edges.Where(edge => m_edgeSelection.IsSelected(mesh, edge)).ToArray();
                 IList<Edge> notSelected = edges.Where(edge => !m_edgeSelection.IsSelected(mesh, edge)).ToArray();
 
                 if (mode == MeshEditorSelectionMode.Substract || mode == MeshEditorSelectionMode.Difference)
@@ -378,7 +389,7 @@ namespace Battlehub.ProBuilderIntegration
                 for (int i = edges.Count - 1; i >= 0; i--)
                 {
                     Edge edge = edges[i];
-                    if(m_edgeSelection.IsSelected(kvp.Key, edge))
+                    if (m_edgeSelection.IsSelected(kvp.Key, edge))
                     {
                         edges.Remove(edge);
                     }
@@ -437,6 +448,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void ApplySelection(MeshSelection selection)
         {
+            if(selection == null)
+            {
+                return;
+            }
+
             foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges)
             {
                 m_edgeSelection.Remove(kvp.Key, kvp.Value);
@@ -451,6 +467,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void RollbackSelection(MeshSelection selection)
         {
+            if(selection == null)
+            {
+                return;
+            }
+
             foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
             {
                 m_edgeSelection.Remove(kvp.Key, kvp.Value);
@@ -509,7 +530,7 @@ namespace Battlehub.ProBuilderIntegration
             foreach (ProBuilderMesh mesh in meshes)
             {
                 IList<Edge> edges = m_edgeSelection.GetCoincidentEdges(m_edgeSelection.GetEdges(mesh));
-                
+
                 m_initialIndexes[meshIndex] = mesh.GetCoincidentVertices(edges.Select(e => e.a).Union(edges.Select(e => e.b))).ToArray();
                 m_initialPositions[meshIndex] = mesh.GetVertices(m_initialIndexes[meshIndex]).Select(v => mesh.transform.TransformPoint(v.position)).ToArray();
                 meshIndex++;
@@ -621,7 +642,7 @@ namespace Battlehub.ProBuilderIntegration
             ProBuilderMesh[] meshes = m_edgeSelection.Meshes.OrderBy(m => m == m_edgeSelection.LastMesh).ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
-                state.State.Add(mesh, new MeshState(mesh.positions.ToArray(),  mesh.faces.ToArray(), mesh.textures.ToArray(), recordUV));
+                state.State.Add(mesh, new MeshState(mesh.positions.ToArray(), mesh.faces.ToArray(), mesh.textures.ToArray(), recordUV));
             }
             return state;
         }
@@ -631,13 +652,20 @@ namespace Battlehub.ProBuilderIntegration
             ProBuilderMesh[] meshes = state.State.Keys.ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
-                IList<Edge> edges = m_edgeSelection.GetCoincidentEdges(m_edgeSelection.GetEdges(mesh)).ToArray();
-                m_edgeSelection.Remove(mesh, edges);
-
+                IList<Edge> edges = m_edgeSelection.GetCoincidentEdges(m_edgeSelection.GetEdges(mesh));
+                if(edges != null)
+                {
+                    edges = edges.ToArray();
+                    m_edgeSelection.Remove(mesh, edges);
+                }
+                
                 MeshState meshState = state.State[mesh];
                 mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
-                
-                m_edgeSelection.Add(mesh, edges);
+
+                if(edges != null)
+                {
+                    m_edgeSelection.Add(mesh, edges);
+                }
             }
         }
 
@@ -662,7 +690,7 @@ namespace Battlehub.ProBuilderIntegration
                 IList<Edge> edges = m_edgeSelection.GetEdges(mesh).ToArray();
                 m_edgeSelection.Remove(mesh);
 
-                Edge[] newEdges =  mesh.Extrude(edges, distance, false, true);
+                Edge[] newEdges = mesh.Extrude(edges, distance, false, true);
 
                 mesh.ToMesh();
                 mesh.Refresh();
@@ -685,7 +713,20 @@ namespace Battlehub.ProBuilderIntegration
         {
             foreach (PBMesh mesh in m_edgeSelection.PBMeshes)
             {
-                mesh.RaiseChanged(positionsOnly);
+                mesh.RaiseChanged(positionsOnly, false);
+            }
+        }
+
+        public override void Delete()
+        {
+            MeshSelection selection = GetSelection();
+            selection.EdgesToFaces(false, true);
+
+            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            {
+                kvp.Key.DeleteFaces(kvp.Value);
+                kvp.Key.ToMesh();
+                kvp.Key.Refresh();
             }
         }
     }

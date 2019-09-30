@@ -46,15 +46,19 @@ namespace Battlehub.ProBuilderIntegration
             GameObject verticesGo;
             GameObject edgesGo;            
 
+
             verticesGo = new GameObject("polyshapeVertices");
             verticesGo.transform.SetParent(transform, false);
             verticesGo.AddComponent<MeshFilter>();
             verticesGo.AddComponent<MeshRenderer>();
-                      
+            verticesGo.hideFlags = HideFlags.HideInHierarchy;
+            
             edgesGo = new GameObject("polyshapeEdges");
             edgesGo.transform.SetParent(transform, false);
             edgesGo.AddComponent<MeshFilter>();
             edgesGo.AddComponent<MeshRenderer>();
+            edgesGo.hideFlags = HideFlags.HideInHierarchy;
+            
 
             m_polyShapeVertices = verticesGo.GetComponent<MeshFilter>();
             m_polyShapeVertices.mesh = new Mesh();
@@ -63,14 +67,14 @@ namespace Battlehub.ProBuilderIntegration
             m_polyShapeEdges.mesh = new Mesh();
 
             Renderer renderer = verticesGo.GetComponent<MeshRenderer>();
-            string vertShader = BuiltinMaterials.geometryShadersSupported ?
-               BuiltinMaterials.pointShader :
-               BuiltinMaterials.dotShader;
+            string vertShader = PBBuiltinMaterials.geometryShadersSupported ?
+               PBBuiltinMaterials.pointShader :
+               PBBuiltinMaterials.dotShader;
             renderer.sharedMaterial = new Material(Shader.Find(vertShader));
             renderer.sharedMaterial.SetFloat("_Scale", m_vertexScale);
 
             renderer = edgesGo.GetComponent<MeshRenderer>();
-            string edgeShader = BuiltinMaterials.lineShader;
+            string edgeShader = PBBuiltinMaterials.lineShader;
             renderer.sharedMaterial = new Material(Shader.Find(edgeShader));
             renderer.sharedMaterial.SetFloat("_Scale", m_edgeScale);
         }
@@ -226,7 +230,7 @@ namespace Battlehub.ProBuilderIntegration
 
         private void SetVerticesColor(MeshFilter vertices, Color color, IEnumerable<int> indices)
         {
-            if (BuiltinMaterials.geometryShadersSupported)
+            if (PBBuiltinMaterials.geometryShadersSupported)
             {
                 foreach (int index in indices)
                 {

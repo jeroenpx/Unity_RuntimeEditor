@@ -88,7 +88,7 @@ namespace Battlehub.ProBuilderIntegration
 
         private bool IsGeometryShadersSupported
         {
-            get { return BuiltinMaterials.geometryShadersSupported; }
+            get { return PBBuiltinMaterials.geometryShadersSupported; }
         }
 
         private PBBaseEditor m_editor;
@@ -97,8 +97,9 @@ namespace Battlehub.ProBuilderIntegration
             m_editor = GetComponent<PBBaseEditor>();
 
             string vertShader = IsGeometryShadersSupported ?
-                BuiltinMaterials.pointShader :
-                BuiltinMaterials.dotShader;
+                PBBuiltinMaterials.pointShader :
+                PBBuiltinMaterials.dotShader;
+
             m_material = new Material(Shader.Find(vertShader));
             m_material.SetColor("_Color", Color.white);
             m_material.SetInt("_HandleZTest", (int)m_zTest);
@@ -145,7 +146,13 @@ namespace Battlehub.ProBuilderIntegration
 
         public IList<int> GetVertices(ProBuilderMesh mesh)
         {
-            return m_meshToIndicesList[mesh];
+            List<int> result;
+            if(m_meshToIndicesList.TryGetValue(mesh, out result))
+            {
+                return result;
+            }
+
+            return null;
         }
 
         public void Clear()

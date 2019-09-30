@@ -5,6 +5,7 @@
 Shader "Battlehub/RTHandles/Grid" {
 	Properties
 	{
+		_GridColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_ZWrite("ZWrite", Float) = 0.0
 		_ZTest("ZTest", Float) = 4.0
 		_Cull("Cull", Float) = 0.0
@@ -29,6 +30,8 @@ Shader "Battlehub/RTHandles/Grid" {
 			Cull[_Cull]
 			ZTest On
 			ZWrite Off
+			Offset -0.02, 0
+
 
 			CGPROGRAM
 
@@ -47,6 +50,7 @@ Shader "Battlehub/RTHandles/Grid" {
 			};
 
 			float _FadeDistance;
+			float4 _GridColor;
 
 			inline float4 GammaToLinearSpace(float4 sRGB)
 			{
@@ -63,7 +67,7 @@ Shader "Battlehub/RTHandles/Grid" {
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.worldPos = mul(unity_ObjectToWorld, input.vertex);
 
-				output.color = GammaToLinearSpace(input.color);
+				output.color = input.color;// GammaToLinearSpace(input.color);
 				output.color.a = input.color.a;
 				return output;
 			}
@@ -73,13 +77,14 @@ Shader "Battlehub/RTHandles/Grid" {
 				float4 col = input.color;
 				float3 cam = _WorldSpaceCameraPos;
 				float3 wp = input.worldPos;
-				cam.y = wp.y;
+				//cam.y = wp.y;
 
-				float alpha = saturate(1 - length(cam - wp) / _FadeDistance);
+				float f = length(cam - wp) / _FadeDistance;
+				float alpha = saturate(1.0f - f);
+
 				col.a = col.a * alpha * alpha;
-				
 
-				return col;
+				return col * _GridColor;
 			}
 
 			ENDCG

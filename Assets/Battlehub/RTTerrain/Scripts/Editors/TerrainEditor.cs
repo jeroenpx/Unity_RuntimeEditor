@@ -90,6 +90,7 @@ namespace Battlehub.RTTerrain
         {
             m_editor = IOC.Resolve<IRTE>();
             m_wm = IOC.Resolve<IWindowManager>();
+            m_wm.AfterLayout += OnAfterLayout;
 
             Projector = Instantiate(m_terrainProjectorPrefab, m_editor.Root);
             Projector.gameObject.SetActive(false);
@@ -107,12 +108,16 @@ namespace Battlehub.RTTerrain
                     OnEnableValueChanged(m_enableToggle.isOn);
                 }
             }
-            
         }
 
+    
         private void OnDestroy()
         {
-            if(m_enableToggle != null)
+            if(m_wm != null)
+            {
+                m_wm.AfterLayout -= OnAfterLayout;
+            }
+            if (m_enableToggle != null)
             {
                 m_enableToggle.onValueChanged.RemoveListener(OnEnableValueChanged);
             }
@@ -122,7 +127,7 @@ namespace Battlehub.RTTerrain
                 Destroy(Projector);
             }
 
-            EnableStandardTools();
+            EnableStandardTools(true);
         }
 
         private void OnWindowCreated(Transform obj)
@@ -130,38 +135,20 @@ namespace Battlehub.RTTerrain
             RuntimeWindow window = obj.GetComponent<RuntimeWindow>();
             if (window != null && window.WindowType == RuntimeWindowType.Scene)
             {
-                IRuntimeSceneComponent scene = window.IOCContainer.Resolve<IRuntimeSceneComponent>();
-                scene.IsBoxSelectionEnabled = false;
+                EnableStandardTools(m_enableToggle.isOn);
             }
         }
 
         private void OnEnableValueChanged(bool value)
         {
-            if(value)
-            {
-                foreach (RuntimeWindow window in m_editor.Windows)
-                {
-                    if (window.WindowType == RuntimeWindowType.Scene)
-                    {
-                        IRuntimeSceneComponent scene = window.IOCContainer.Resolve<IRuntimeSceneComponent>();
-                        if(scene != null)
-                        {
-                            scene.CanSelect = false;
-                            scene.CanSelectAll = false;
-                            scene.IsPositionHandleEnabled = false;
-                            scene.IsRotationHandleEnabled = false;
-                            scene.IsScaleHandleEnabled = false;
-                            scene.IsBoxSelectionEnabled = false;
-                        }
-                    }
-                }
+            EnableStandardTools(!value);
+            if (value)
+            {   
                 m_wm.WindowCreated += OnWindowCreated;
                 Projector.gameObject.SetActive(true);
             }
             else
-            {
-                EnableStandardTools();
-
+            {                
                 if (m_wm != null)
                 {
                     m_wm.WindowCreated -= OnWindowCreated;
@@ -171,7 +158,7 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void EnableStandardTools()
+        private void EnableStandardTools(bool enable)
         {
             if (m_editor != null)
             {
@@ -179,21 +166,23 @@ namespace Battlehub.RTTerrain
                 {
                     if (window.WindowType == RuntimeWindowType.Scene)
                     {
-                        IRuntimeSceneComponent scene = window.IOCContainer.Resolve<IRuntimeSceneComponent>();
-                        if(scene != null)
+                        ISelectionComponentState selectionComponentState = window.IOCContainer.Resolve<ISelectionComponentState>();
+                        if(selectionComponentState != null)
                         {
-                            scene.CanSelect = true;
-                            scene.CanSelectAll = true;
-                            scene.IsPositionHandleEnabled = true;
-                            scene.IsRotationHandleEnabled = true;
-                            scene.IsScaleHandleEnabled = true;
-                            scene.IsBoxSelectionEnabled = true;
-
+                            selectionComponentState.EnableAll(this, enable);
                         }
-                
                     }
                 }
             }
         }
+
+        private void OnAfterLayout(IWindowManager obj)
+        {
+            if (m_enableToggle != null && m_enableToggle.isOn)
+            {
+                OnEnableValueChanged(m_enableToggle.isOn);
+            }
+        }
+
     }
 }

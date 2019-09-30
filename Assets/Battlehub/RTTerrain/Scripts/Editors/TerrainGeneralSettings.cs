@@ -123,7 +123,8 @@ public class TerrainGeneralSettings : MonoBehaviour
         return new List<ToolCmd>()
             {
                 new ToolCmd("Reset Position", () => m_terrainTool.ResetPosition(), () => m_isTerrainHandleSelected),
-                new ToolCmd("Cut Holes", () => m_terrainTool.CutHoles(), () => m_editor.Selection.Length > 0)
+                new ToolCmd("Cut Holes", () => m_terrainTool.CutHoles(), () => m_editor.Selection.Length > 0),
+                new ToolCmd("Clear Holes", () => m_terrainTool.ClearHoles(), () => m_editor.Selection.Length > 0),
             };
     }
 

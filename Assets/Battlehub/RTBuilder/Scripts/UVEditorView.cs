@@ -29,6 +29,8 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private TextMeshProUGUI m_modeText = null;
 
+        private Transform m_proBuilderWindow;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Custom;
@@ -41,9 +43,14 @@ namespace Battlehub.RTBuilder
 
             m_wm = IOC.Resolve<IWindowManager>();
             m_wm.WindowCreated += OnWindowCreated;
+            m_wm.WindowDestroyed += OnWindowDestroyed;
 
-            OnToolSelectionChanged();
-            m_tool.SelectionChanged += OnToolSelectionChanged;
+            if(m_tool != null)
+            {
+                OnToolSelectionChanged();
+                m_tool.SelectionChanged += OnToolSelectionChanged;
+            }
+            
             Editor.Selection.SelectionChanged += OnSelectionChanged;
 
             if (m_convertToAutoUVsButton != null)
@@ -64,6 +71,7 @@ namespace Battlehub.RTBuilder
             if(m_wm != null)
             {
                 m_wm.WindowCreated -= OnWindowCreated;
+                m_wm.WindowDestroyed -= OnWindowDestroyed;
             }
 
             if(m_tool != null)
@@ -111,6 +119,11 @@ namespace Battlehub.RTBuilder
 
         private void UpdateVisualState()
         {
+            if(m_tool == null)
+            {
+                return;
+            }
+
             if (!m_tool.HasSelectedFaces)
             {
                 if (m_uvAutoEditorPanel != null)
@@ -178,6 +191,7 @@ namespace Battlehub.RTBuilder
         {
             if(obj == m_wm.GetWindow("ProBuilder"))
             {
+                m_proBuilderWindow = obj;
                 if (m_tool != null)
                 {
                     m_tool.SelectionChanged -= OnToolSelectionChanged;
@@ -185,6 +199,34 @@ namespace Battlehub.RTBuilder
                 m_tool = IOC.Resolve<IProBuilderTool>();
                 OnToolSelectionChanged();
                 m_tool.SelectionChanged += OnToolSelectionChanged;
+
+                UVAutoEditorPanel autoUV = m_uvAutoEditorPanel.GetComponent<UVAutoEditorPanel>();
+                autoUV.Tool = m_tool;
+
+                UVManualEditorPanel manualUV = m_uvManualEditorPanel.GetComponent<UVManualEditorPanel>();
+                manualUV.Tool = m_tool;
+            }
+        }
+
+        private void OnWindowDestroyed(Transform obj)
+        {
+            if (obj == m_proBuilderWindow)
+            {
+                m_proBuilderWindow = null;
+
+                UVAutoEditorPanel autoUV = m_uvAutoEditorPanel.GetComponent<UVAutoEditorPanel>();
+                if(autoUV)
+                {
+                    autoUV.Tool = null;
+                }
+                
+
+                UVManualEditorPanel manualUV = m_uvManualEditorPanel.GetComponent<UVManualEditorPanel>();
+                if(manualUV)
+                {
+                    manualUV.Tool = null;
+                }
+                
             }
         }
     }

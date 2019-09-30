@@ -129,6 +129,7 @@ namespace Battlehub.ProBuilderIntegration
 
         private void BeginEdit()
         {
+            
             m_selection = gameObject.GetComponent<PBPolyShapeSelection>();
             if(m_selection == null)
             {
@@ -146,10 +147,12 @@ namespace Battlehub.ProBuilderIntegration
 
         private void EndEdit()
         {
-            if(m_selection != null)
+            if (m_selection != null)
             {
+                m_selection.Unselect();
                 m_selection.enabled = false;
             }
+
             m_isEditing = false;
         }
 

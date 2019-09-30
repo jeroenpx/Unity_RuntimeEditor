@@ -12,6 +12,7 @@ namespace Battlehub.RTCommon
         Rotate,
         Scale,
         View,
+        Rect
     }
 
     public enum RuntimePivotRotation
@@ -183,10 +184,14 @@ namespace Battlehub.RTCommon
             }
         }
 
+        private UnityObject m_activeTool;
         public UnityObject ActiveTool
         {
-            get;
-            set;
+            get { return m_activeTool; }
+            set
+            {
+                m_activeTool = value;
+            }
         }
 
         public LockObject m_lockAxes;

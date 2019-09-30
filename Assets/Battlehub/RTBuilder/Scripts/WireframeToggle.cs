@@ -7,10 +7,21 @@ namespace Battlehub.RTBuilder
     {
         [SerializeField]
         private Toggle m_toggle = null;
+        public Toggle Toggle
+        {
+            get { return m_toggle; }
+        }
 
+        public bool IsStarted
+        {
+            get { return m_isStarted; }
+        }
+
+        private bool m_isStarted;
         private void Start()
         {
-            m_toggle.isOn = GetComponent<Wireframe>();
+            m_isStarted = true;
+            m_toggle.isOn = GetComponent<Wireframe>() != null;
             m_toggle.onValueChanged.AddListener(OnWireframeToggleValueChanged);
         }
 

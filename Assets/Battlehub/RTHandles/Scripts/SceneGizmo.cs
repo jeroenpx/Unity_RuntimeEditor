@@ -21,7 +21,7 @@ namespace Battlehub.RTHandles
         public RectTransform m_output;
         private CanvasScaler m_canvasScaler;
         private Canvas m_canvas;
-        
+
         public UnityEvent OrientationChanging;
         public UnityEvent OrientationChanged;
         public UnityEvent ProjectionChanged;
@@ -108,6 +108,37 @@ namespace Battlehub.RTHandles
             }
         }
 
+        [SerializeField]
+        private Color m_textColor = Color.white;
+
+        public Color TextColor
+        {
+            get { return m_textColor; }
+            set
+            {
+                m_textColor = value;
+                SetTextColor();
+            }
+        }
+
+        private void SetTextColor()
+        {
+            if (BtnProjection != null)
+            {
+                Text txt = BtnProjection.GetComponentInChildren<Text>();
+                if (txt != null)
+                {
+                    txt.color = m_textColor;
+                }
+
+                TextMeshProUGUI txtPro = BtnProjection.GetComponentInChildren<TextMeshProUGUI>();
+                if(txtPro != null)
+                {
+                    txtPro.color = m_textColor;
+                }
+            }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
@@ -186,6 +217,7 @@ namespace Battlehub.RTHandles
             if (BtnProjection != null)
             {
                 BtnProjection.onClick.AddListener(OnBtnModeClick);
+                SetTextColor();
             }
 
             if(!GetComponent<SceneGizmoInput>())
@@ -265,7 +297,7 @@ namespace Battlehub.RTHandles
 
         private void OnPostRender()
         {
-            Appearance.DoSceneGizmo(Camera.current, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_xAlpha, m_yAlpha, m_zAlpha);
+            Appearance.DoSceneGizmo(Camera.current, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_textColor,  m_xAlpha, m_yAlpha, m_zAlpha);
         }
 
         private void OnGUI()

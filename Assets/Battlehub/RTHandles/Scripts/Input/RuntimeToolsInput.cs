@@ -9,6 +9,7 @@ namespace Battlehub.RTHandles
         public KeyCode MoveKey = KeyCode.W;
         public KeyCode RotateKey = KeyCode.E;
         public KeyCode ScaleKey = KeyCode.R;
+        public KeyCode RectToolKey = KeyCode.T;
         public KeyCode PivotRotationKey = KeyCode.X;
         public KeyCode PivotModeKey = KeyCode.Z;
 
@@ -63,6 +64,10 @@ namespace Battlehub.RTHandles
                 {
                     m_editor.Tools.Current = RuntimeTool.Scale;
                 }
+                else if(RectToolAction())
+                {
+                    m_editor.Tools.Current = RuntimeTool.Rect;
+                }
 
                 if (PivotRotationAction())
                 {
@@ -106,6 +111,9 @@ namespace Battlehub.RTHandles
                 case UnityEditor.Tool.Scale:
                     m_editor.Tools.Current = RuntimeTool.Scale;
                     break;
+                case UnityEditor.Tool.Rect:
+                    m_editor.Tools.Current = RuntimeTool.Rect;
+                    break;
                 case UnityEditor.Tool.View:
                     m_editor.Tools.Current = RuntimeTool.View;
                     break;
@@ -135,6 +143,11 @@ namespace Battlehub.RTHandles
         protected virtual bool ScaleAction()
         {
             return m_editor.Input.GetKeyDown(ScaleKey);
+        }
+
+        protected virtual bool RectToolAction()
+        {
+            return m_editor.Input.GetKeyDown(RectToolKey);
         }
 
         protected virtual bool PivotRotationAction()

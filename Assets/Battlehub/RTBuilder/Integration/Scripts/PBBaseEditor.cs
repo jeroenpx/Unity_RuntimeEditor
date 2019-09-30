@@ -95,6 +95,11 @@ namespace Battlehub.ProBuilderIntegration
         {
         }
 
+        public virtual void SetSelection(MeshSelection selection)
+        {
+            
+        }
+
         public virtual MeshSelection GetSelection()
         {
             return null;
@@ -147,12 +152,12 @@ namespace Battlehub.ProBuilderIntegration
         {
         }
 
-        public virtual MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl)
+        public virtual MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl, bool depthTest)
         {
             return null;
         }
 
-        public virtual MeshSelection Select(Camera camera, Rect rect, GameObject[] gameObjects, MeshEditorSelectionMode mode)
+        public virtual MeshSelection Select(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest, MeshEditorSelectionMode mode)
         {
             return null;
         }

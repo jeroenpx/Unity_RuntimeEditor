@@ -67,6 +67,7 @@ namespace Battlehub.ProBuilderIntegration
 
     public delegate void PBMeshEvent();
     public delegate void PBMeshEvent<T>(T arg);
+    public delegate void PBMeshEvent<T1, T2>(T1 arg1, T2 arg2);
 
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
@@ -74,7 +75,7 @@ namespace Battlehub.ProBuilderIntegration
     {
         public event PBMeshEvent<bool> Selected;
         public event PBMeshEvent Unselected;
-        public event PBMeshEvent<bool> Changed;
+        public event PBMeshEvent<bool, bool> Changed;
 
         private ProBuilderMesh m_pbMesh;
         private MeshFilter m_meshFilter;
@@ -163,10 +164,21 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
+        public MeshState GetState(bool recordUV)
+        {
+            return new MeshState(m_pbMesh.positions.ToArray(), m_pbMesh.faces.ToArray(), m_pbMesh.textures.ToArray(), recordUV);
+        }
+
+        public void SetState(MeshState state)
+        {
+            m_pbMesh.Rebuild(state.Positions, state.Faces.Select(f => f.ToFace()).ToArray(), state.Textures);
+            RaiseChanged(false, true);
+        }
+
         public bool CreateShapeFromPolygon(IList<Vector3> points, float extrude, bool flipNormals)
         {
             ActionResult result = m_pbMesh.CreateShapeFromPolygon(points, extrude, flipNormals);
-            RaiseChanged(false);
+            RaiseChanged(false, true);
             return result.ToBool();
         }
 
@@ -176,14 +188,14 @@ namespace Battlehub.ProBuilderIntegration
             m_pbMesh.Refresh();
             m_pbMesh.ToMesh();
 
-            RaiseChanged(false);
+            RaiseChanged(false, true);
         }
 
         public void CenterPivot()
         {
             m_pbMesh.CenterPivot(null);
 
-            RaiseChanged(false);
+            RaiseChanged(false, true);
         }
 
         public void Clear()
@@ -195,7 +207,7 @@ namespace Battlehub.ProBuilderIntegration
             MeshFilter filter = m_pbMesh.GetComponent<MeshFilter>();
             filter.sharedMesh.bounds = new Bounds(Vector3.zero, Vector3.zero);
 
-            RaiseChanged(false);
+            RaiseChanged(false, true);
         }
 
         public void Refresh()
@@ -209,7 +221,7 @@ namespace Battlehub.ProBuilderIntegration
                 m_pbMesh.Refresh();
             }
 
-            RaiseChanged(false);
+            RaiseChanged(false, true);
         }
 
         public void RaiseSelected(bool clear)
@@ -220,11 +232,11 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public void RaiseChanged(bool positionsOnly)
+        public void RaiseChanged(bool positionsOnly, bool forceUpdate)
         {
             if(Changed != null)
             {
-                Changed(positionsOnly);
+                Changed(positionsOnly, forceUpdate);
             }
         }
 
@@ -273,9 +285,16 @@ namespace Battlehub.ProBuilderIntegration
 
                     int positionIndex = edgeIndex * 2;
 
-                    vertices[positionIndex + 0] = positions[edge.a];
-                    vertices[positionIndex + 1] = positions[edge.b];
-
+                    if(vertices.Length > positionIndex)
+                    {
+                        vertices[positionIndex + 0] = positions[edge.a];
+                    }
+                    
+                    if(vertices.Length > positionIndex + 1)
+                    {
+                        vertices[positionIndex + 1] = positions[edge.b];
+                    }
+                    
                     if (!positionsOnly)
                     {
                         tris[positionIndex + 0] = positionIndex + 0;
@@ -481,6 +500,5 @@ namespace Battlehub.ProBuilderIntegration
             return (v1.x* v2.y - v1.y* v2.x)/2;
         }
 
-        
     }
 }

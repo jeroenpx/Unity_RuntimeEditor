@@ -52,11 +52,14 @@ namespace Battlehub.RTEditor
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();
-            m_parentDialog.IsOkVisible = true;
-            m_parentDialog.OkText = "Select";
-            m_parentDialog.IsCancelVisible = true;
-            m_parentDialog.CancelText = "Cancel";
-            m_parentDialog.Ok += OnOk;
+            if(m_parentDialog != null)
+            {
+                m_parentDialog.IsOkVisible = true;
+                m_parentDialog.OkText = "Select";
+                m_parentDialog.IsCancelVisible = true;
+                m_parentDialog.CancelText = "Cancel";
+                m_parentDialog.Ok += OnOk;
+            }
             
             if (m_builtInTreeView == null)
             {
@@ -146,7 +149,10 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            m_parentDialog.Close(true);
+            if(m_parentDialog != null)
+            {
+                m_parentDialog.Close(true);
+            }
         }
 
         private void OnOk(Dialog sender, DialogCancelArgs args)
@@ -158,7 +164,10 @@ namespace Battlehub.RTEditor
             }
 
             args.Cancel = true;
-            m_parentDialog.Close();
+            if(m_parentDialog != null)
+            {
+                m_parentDialog.Close();
+            }
             Import(SelectedLibrary, IsBuiltInLibrary);
         }
 

@@ -67,6 +67,8 @@ namespace Battlehub.UIControls.DockPanels
 
         private bool m_updateButtonsState;
 
+        private bool m_isStarted;
+
         private void Awake()
         {
             m_region = GetComponentInParent<Region>();
@@ -74,13 +76,14 @@ namespace Battlehub.UIControls.DockPanels
 
             m_tabSize = layoutElement.minWidth;
             m_viewport = GetComponent<RectTransform>();
-            m_transformChildrenChangeListener = m_content.gameObject.AddComponent<TransformChildrenChangeListener>();
-            m_transformChildrenChangeListener.TransformChildrenChanged += UpdateButtonsState;
+            m_transformChildrenChangeListener = m_content.gameObject.AddComponent<TransformChildrenChangeListener>();    
         }
 
         private void Start()
         {
             m_updateButtonsState = true;
+            m_isStarted = true;
+            m_transformChildrenChangeListener.TransformChildrenChanged += UpdateButtonsState;
         }
 
         private void OnDestroy()
@@ -94,7 +97,11 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRectTransformDimensionsChange()
         {
-            m_updateButtonsState = true;
+            if(m_isStarted)
+            {
+                m_updateButtonsState = true;
+            }
+            
         }
 
         private void UpdateButtonsState()

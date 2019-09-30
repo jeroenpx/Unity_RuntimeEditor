@@ -39,11 +39,11 @@ namespace Battlehub.ProBuilderIntegration
             Selection = selection;
             if(Selection.HasEdges)
             {
-                Selection.EdgesToFaces(false);
+                Selection.EdgesToFaces(false, false);
             }
             if(Selection.HasVertices)
             {
-                Selection.VerticesToFaces(false);
+                Selection.VerticesToFaces(false, false);
             }
 
             InitialPosition = initialPosition;

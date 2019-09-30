@@ -248,11 +248,11 @@ namespace Battlehub.ProBuilderIntegration
 
             if (selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if (selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             IList<Face> faces = new List<Face>();
@@ -293,11 +293,11 @@ namespace Battlehub.ProBuilderIntegration
 
             if (selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if (selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             List<Face> faces = new List<Face>();
@@ -324,11 +324,11 @@ namespace Battlehub.ProBuilderIntegration
 
             if (selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if (selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             List<Face> faces = new List<Face>();
@@ -361,11 +361,11 @@ namespace Battlehub.ProBuilderIntegration
 
             if (selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if (selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             AutoUnwrapSettings unwrapSettings = settings;
@@ -399,11 +399,11 @@ namespace Battlehub.ProBuilderIntegration
 
             if (selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if (selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             PBAutoUnwrapSettings unwrapSettings = PBAutoUnwrapSettings.defaultAutoUnwrapSettings;
@@ -433,11 +433,11 @@ namespace Battlehub.ProBuilderIntegration
         {
             if (selection.HasVertices)
             {
-                selection.VerticesToFaces(false);
+                selection.VerticesToFaces(false, false);
             }
             else if (selection.HasEdges)
             {
-                selection.EdgesToFaces(false);
+                selection.EdgesToFaces(false, false);
             }
 
             List<Face> faces = new List<Face>();

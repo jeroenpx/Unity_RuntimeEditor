@@ -95,6 +95,11 @@ namespace Battlehub.RTHandles
             get;
         }
 
+        RectTool RectTool
+        {
+            get;
+        }
+
         BoxSelection BoxSelection
         {
             get;
@@ -119,6 +124,12 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        bool IsRectToolEnabled
+        {
+            get;
+            set;
+        }
+
         bool IsBoxSelectionEnabled
         {
             get;
@@ -136,11 +147,32 @@ namespace Battlehub.RTHandles
             get;
             set;
         }
+
+
+        float SizeOfGrid
+        {
+            get;
+            set;
+        }
+
+        bool IsGridVisible
+        {
+            get;
+            set;
+        }
+
+        bool IsGridEnabled
+        {
+            get;
+            set;
+        }
     }
 
     [DefaultExecutionOrder(-55)]
     public class RuntimeSelectionComponent : RTEComponent, IRuntimeSelectionComponent
     {
+        [SerializeField]
+        private OutlineManager m_outlineManager = null;
         [SerializeField]
         private PositionHandle m_positionHandle = null;
         [SerializeField]
@@ -148,11 +180,13 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private ScaleHandle m_scaleHandle = null;
         [SerializeField]
+        private RectTool m_rectTool = null;
+        [SerializeField]
         private BoxSelection m_boxSelection = null;
         [SerializeField]
         private GameObject m_selectionGizmoPrefab = null;
         [SerializeField]
-        private RuntimeGrid m_grid = null;
+        private SceneGrid m_grid = null;
         [SerializeField]
         private Transform m_pivot = null;
         [SerializeField]
@@ -163,6 +197,8 @@ namespace Battlehub.RTHandles
         private bool m_isRotationHandleEnabled = true;
         [SerializeField]
         private bool m_isScaleHandleEnabled = true;
+        [SerializeField]
+        private bool m_isRectToolEnabled = true;
         [SerializeField]
         private bool m_isBoxSelectionEnabled = true;
         [SerializeField]
@@ -232,6 +268,11 @@ namespace Battlehub.RTHandles
             get { return m_scaleHandle; }
         }
 
+        public RectTool RectTool
+        {
+            get { return m_rectTool; }
+        }
+
         public bool IsPositionHandleEnabled
         {
             get { return m_isPositionHandleEnabled && m_positionHandle != null; }
@@ -283,6 +324,23 @@ namespace Battlehub.RTHandles
             }
         }
 
+        public bool IsRectToolEnabled
+        {
+            get { return m_isRectToolEnabled && m_rectTool != null; }
+            set
+            {
+                m_isRectToolEnabled = value;
+                if (m_rectTool != null)
+                {
+                    if (value)
+                    {
+                        m_rectTool.Targets = GetTargets();
+                    }
+                    m_rectTool.gameObject.SetActive(value && Editor.Tools.Current == RuntimeTool.Rect && m_rectTool.Target != null);
+                }
+            }
+        }
+
         public bool IsBoxSelectionEnabled
         {
             get { return m_isBoxSelectionEnabled && m_boxSelection != null; }
@@ -308,12 +366,108 @@ namespace Battlehub.RTHandles
             set { m_canSelectAll = value; }
         }
 
+        public bool IsGridVisible
+        {
+            get
+            {
+                if(m_grid == null)
+                {
+                    return false;
+                }
+                return m_grid.gameObject.activeSelf;
+            }
+            set
+            {
+                if(m_grid == null)
+                {
+                    return;
+                }
+                m_grid.gameObject.SetActive(value);
+            }
+        }
+
+        private bool m_isGridEnabled;
+        public bool IsGridEnabled
+        {
+            get { return m_isGridEnabled; }
+            set
+            {
+                if(m_isGridEnabled != value)
+                {
+                    m_isGridEnabled = value;
+                    ApplyIsGridEnabled();
+                }
+            }
+        }
+
+        private void ApplyIsGridEnabled()
+        {
+            if (m_positionHandle != null)
+            {
+                m_positionHandle.SnapToGrid = IsGridEnabled;
+            }
+
+            if (m_scaleHandle != null)
+            {
+                m_scaleHandle.AbsouluteGrid = IsGridEnabled;
+            }
+        }
+
+        public float SizeOfGrid
+        {
+            get
+            {
+                if(m_grid == null)
+                {
+                    return 0.5f;
+                }
+                return m_grid.SizeOfGrid;
+            }
+            set
+            {
+                if (m_grid == null)
+                {
+                    return;
+                }
+
+                m_grid.SizeOfGrid = value;
+                ApplySizeOfGrid();
+            }
+        }
+
+        private void ApplySizeOfGrid()
+        {
+            if (m_positionHandle != null)
+            {
+                m_positionHandle.GridSize = SizeOfGrid;
+            }
+
+            if (m_scaleHandle != null)
+            {
+                m_scaleHandle.GridSize = SizeOfGrid;
+            }
+
+            if(m_rectTool != null)
+            {
+                m_rectTool.GridSize = SizeOfGrid;
+            }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
             
             Window.IOCContainer.RegisterFallback<IScenePivot>(this);
             Window.IOCContainer.RegisterFallback<IRuntimeSelectionComponent>(this);
+
+            if(m_outlineManager == null)
+            {
+                m_outlineManager = GetComponentInChildren<OutlineManager>(true);
+                if(m_outlineManager != null)
+                {
+                    m_outlineManager.Camera = Window.Camera;
+                }
+            }
 
             if(m_boxSelection == null)
             {
@@ -322,6 +476,7 @@ namespace Battlehub.RTHandles
             if(m_positionHandle == null)
             {
                 m_positionHandle = GetComponentInChildren<PositionHandle>(true);
+                
             }
             if(m_rotationHandle == null)
             {
@@ -331,7 +486,16 @@ namespace Battlehub.RTHandles
             {
                 m_scaleHandle = GetComponentInChildren<ScaleHandle>(true);
             }
-
+            if(m_rectTool == null)
+            {
+                m_rectTool = GetComponentInChildren<RectTool>(true);
+                
+            }
+            if(m_grid == null)
+            {
+                m_grid = GetComponentInChildren<SceneGrid>(true);
+            }
+            
             if (m_boxSelection != null)
             {
                 if(m_boxSelection.Window == null)
@@ -352,6 +516,9 @@ namespace Battlehub.RTHandles
 
                 m_positionHandle.gameObject.SetActive(true);
                 m_positionHandle.gameObject.SetActive(false);
+
+                m_positionHandle.BeforeDrag.AddListener(OnBeforeDrag);
+                m_positionHandle.Drop.AddListener(OnDrop);
             }
 
             if (m_rotationHandle != null)
@@ -363,6 +530,9 @@ namespace Battlehub.RTHandles
 
                 m_rotationHandle.gameObject.SetActive(true);
                 m_rotationHandle.gameObject.SetActive(false);
+
+                m_rotationHandle.BeforeDrag.AddListener(OnBeforeDrag);
+                m_rotationHandle.Drop.AddListener(OnDrop);
             }
 
             if (m_scaleHandle != null)
@@ -373,6 +543,23 @@ namespace Battlehub.RTHandles
                 }
                 m_scaleHandle.gameObject.SetActive(true);
                 m_scaleHandle.gameObject.SetActive(false);
+
+                m_scaleHandle.BeforeDrag.AddListener(OnBeforeDrag);
+                m_scaleHandle.Drop.AddListener(OnDrop);
+            }
+
+
+            if (m_rectTool != null)
+            {
+                if (m_rectTool.Window == null)
+                {
+                    m_rectTool.Window = Window;
+                }
+                m_rectTool.gameObject.SetActive(true);
+                m_rectTool.gameObject.SetActive(false);
+
+                m_rectTool.BeforeDrag.AddListener(OnBeforeDrag);
+                m_rectTool.Drop.AddListener(OnDrop);
             }
 
             if (m_grid != null)
@@ -402,6 +589,9 @@ namespace Battlehub.RTHandles
                 m_secondaryPivot = secondaryPivot.transform;
             }
 
+            ApplySizeOfGrid();
+            ApplyIsGridEnabled();
+
             OnRuntimeSelectionChanged(null);
         }
 
@@ -428,6 +618,12 @@ namespace Battlehub.RTHandles
             {
                 m_scaleHandle.gameObject.SetActive(true);
                 m_scaleHandle.gameObject.SetActive(false);
+            }
+
+            if (m_rectTool != null && !m_rectTool.gameObject.activeSelf)
+            {
+                m_rectTool.gameObject.SetActive(true);
+                m_rectTool.gameObject.SetActive(false);
             }
 
             RuntimeTool tool = Editor.Tools.Current;
@@ -469,6 +665,30 @@ namespace Battlehub.RTHandles
                         }
                     }
                 }
+            }
+
+            if(m_positionHandle != null)
+            {
+                m_positionHandle.BeforeDrag.RemoveListener(OnBeforeDrag);
+                m_positionHandle.Drop.RemoveListener(OnDrop);
+            }
+
+            if(m_rotationHandle != null)
+            {
+                m_rotationHandle.BeforeDrag.RemoveListener(OnBeforeDrag);
+                m_rotationHandle.Drop.RemoveListener(OnDrop);
+            }
+
+            if(m_scaleHandle != null)
+            {
+                m_scaleHandle.BeforeDrag.RemoveListener(OnBeforeDrag);
+                m_scaleHandle.Drop.RemoveListener(OnDrop);
+            }
+
+            if(m_rectTool != null)
+            {
+                m_rectTool.BeforeDrag.RemoveListener(OnBeforeDrag);
+                m_rectTool.Drop.RemoveListener(OnDrop);
             }
         }
 
@@ -628,6 +848,41 @@ namespace Battlehub.RTHandles
             }
         }
 
+        public virtual void SnapToGrid()
+        {
+            GameObject[] selection = Editor.Selection.gameObjects;
+            if (selection == null || selection.Length == 0)
+            {
+                return;
+            }
+
+            Transform activeTransform = selection[0].transform;
+
+            Vector3 position = activeTransform.position;
+            if (SizeOfGrid < 0.01)
+            {
+                SizeOfGrid = 0.01f;
+            }
+            position.x = Mathf.Round(position.x / SizeOfGrid) * SizeOfGrid;
+            position.y = Mathf.Round(position.y / SizeOfGrid) * SizeOfGrid;
+            position.z = Mathf.Round(position.z / SizeOfGrid) * SizeOfGrid;
+            Vector3 offset = position - activeTransform.position;
+
+            Editor.Undo.BeginRecord();
+            for (int i = 0; i < selection.Length; ++i)
+            {
+                Editor.Undo.BeginRecordTransform(selection[i].transform);
+                selection[i].transform.position += offset;
+                Editor.Undo.EndRecordTransform(selection[i].transform);
+            }
+            Editor.Undo.EndRecord();
+
+            if (m_rectTool != null && Editor.Tools.Current == RuntimeTool.Rect)
+            {
+                m_rectTool.RecalculateBoundsAndRebuild();
+            }
+        }
+
         public virtual void SelectAll()
         {
             if(!CanSelect || !CanSelectAll)
@@ -683,6 +938,19 @@ namespace Battlehub.RTHandles
                     m_scaleHandle.gameObject.SetActive(false);
                 }
             }
+            if (m_rectTool != null)
+            {
+                if (Editor.Tools.Current == RuntimeTool.Rect && IsRectToolEnabled)
+                {
+                    m_rectTool.transform.position = Editor.Selection.activeTransform.position;
+                    m_rectTool.Targets = GetTargets();
+                    m_rectTool.gameObject.SetActive(m_rectTool.Targets.Length > 0);
+                }
+                else
+                {
+                    m_rectTool.gameObject.SetActive(false);
+                }
+            }
 
 #if UNITY_EDITOR
             switch (Editor.Tools.Current)
@@ -698,6 +966,9 @@ namespace Battlehub.RTHandles
                     break;
                 case RuntimeTool.Scale:
                     UnityEditor.Tools.current = UnityEditor.Tool.Scale;
+                    break;
+                case RuntimeTool.Rect:
+                    UnityEditor.Tools.current = UnityEditor.Tool.Rect;
                     break;
                 case RuntimeTool.View:
                     UnityEditor.Tools.current = UnityEditor.Tool.View;
@@ -781,12 +1052,15 @@ namespace Battlehub.RTHandles
                             {
                                 if((selectedObj.hideFlags & HideFlags.DontSave) == 0)
                                 {
-                                    selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
-                                    if (m_selectionGizmoPrefab != null)
+                                    if(m_outlineManager == null)
                                     {
-                                        selectionGizmo.SelectionGizmoModel = Instantiate(m_selectionGizmoPrefab, selectionGizmo.transform);
-                                        //selectionGizmo.SelectionGizmoModel.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer;
-                                    }
+                                        selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
+                                        if (m_selectionGizmoPrefab != null)
+                                        {
+                                            selectionGizmo.SelectionGizmoModel = Instantiate(m_selectionGizmoPrefab, selectionGizmo.transform);
+                                            //selectionGizmo.SelectionGizmoModel.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer;
+                                        }
+                                    }                                   
                                 } 
                             }
                         }
@@ -828,6 +1102,10 @@ namespace Battlehub.RTHandles
             {
                 m_scaleHandle.gameObject.SetActive(isActive);
             }
+            if(m_rectTool != null)
+            {
+                m_rectTool.gameObject.SetActive(isActive);
+            }
         }
 
         protected virtual bool CanSelectObject(GameObject go)
@@ -863,6 +1141,25 @@ namespace Battlehub.RTHandles
         public virtual void Focus()
         {
 
+        }
+
+        private bool m_wasUnitSnappingEnabled;
+        private void OnBeforeDrag(BaseHandle handle)
+        {
+            if(IsGridEnabled)
+            {
+                m_wasUnitSnappingEnabled = Editor.Tools.UnitSnapping;
+                Editor.Tools.UnitSnapping = true;
+            }
+            
+        }
+
+        private void OnDrop(BaseHandle handle)
+        {
+            if(IsGridEnabled)
+            {
+                Editor.Tools.UnitSnapping = m_wasUnitSnappingEnabled;
+            }
         }
     }
 }

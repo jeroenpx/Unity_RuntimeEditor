@@ -119,7 +119,7 @@ namespace Battlehub.ProBuilderIntegration
 
         private bool IsGeometryShadersSupported
         {
-            get { return BuiltinMaterials.geometryShadersSupported; }
+            get { return PBBuiltinMaterials.geometryShadersSupported; }
         }
 
         private PBBaseEditor m_editor;
@@ -128,7 +128,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             m_editor = GetComponent<PBBaseEditor>();
 
-            m_material = new Material(Shader.Find(BuiltinMaterials.lineShader));
+            m_material = new Material(PBBuiltinMaterials.LinesMaterial);
             m_material.SetColor("_Color", Color.white);
             m_material.SetInt("_HandleZTest", (int)m_zTest);
             m_material.SetFloat("_Scale", m_scale);
@@ -176,12 +176,21 @@ namespace Battlehub.ProBuilderIntegration
 
         public IList<Edge> GetEdges(ProBuilderMesh mesh)
         {
-            return m_meshToEdgesList[mesh];
+            List<Edge> edges;
+            if(m_meshToEdgesList.TryGetValue(mesh, out edges))
+            {
+                return edges;
+            }
+            return null;
         }
 
         public IList<Edge> GetCoincidentEdges(IEnumerable<Edge> edges)
         {
             HashSet<Edge> result = new HashSet<Edge>();
+            if(edges == null)
+            {
+                return null;
+            }
             foreach(Edge edge in edges)
             {
                 if(m_coincidentEdges.ContainsKey(edge))
@@ -261,7 +270,8 @@ namespace Battlehub.ProBuilderIntegration
                 m_pbMeshes.Add(pbMesh);
             }
 
-            Edge[] notSelectedEdges = edges.Where(i => !edgesHs.Contains(i)).ToArray();
+            int vertexCount = mesh.vertexCount;
+            Edge[] notSelectedEdges = edges.Where(edge => !edgesHs.Contains(edge) && vertexCount > edge.a && vertexCount > edge.b).ToArray();
             SetEdgesColor(mesh, edgesSelection, m_selectedColor, notSelectedEdges);
             for (int i = 0; i < notSelectedEdges.Length; ++i)
             {
@@ -403,10 +413,13 @@ namespace Battlehub.ProBuilderIntegration
                     HashSet<Edge> coincidentEdges = m_coincidentEdges[edge];
                     foreach (Edge coincidentEdge in coincidentEdges)
                     {
-                        List<int> indices = m_edgeToSelection[coincidentEdge];
-                        for (int i = 0; i < indices.Count; ++i)
+                        List<int> indices;
+                        if(m_edgeToSelection.TryGetValue(coincidentEdge, out indices))
                         {
-                            colors[indices[i]] = color;
+                            for (int i = 0; i < indices.Count; ++i)
+                            {
+                                colors[indices[i]] = color;
+                            }
                         }
                     }
                 }

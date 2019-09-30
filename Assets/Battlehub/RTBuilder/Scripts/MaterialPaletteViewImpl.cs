@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTEditor;
 using Battlehub.UIControls;
 using System.Collections;
 using System.Linq;
@@ -26,31 +27,24 @@ namespace Battlehub.RTBuilder
             get { return m_editor; }
         }
 
+        private IWindowManager m_wm;
+        private Transform m_probuilderWindow;
+
         protected virtual IEnumerator Start()
         {
             m_editor = IOC.Resolve<IRTE>();
             m_view = GetComponent<MaterialPaletteView>();
+            m_wm = IOC.Resolve<IWindowManager>();
+            m_wm.WindowCreated += OnWindowCreated;
+            m_wm.WindowDestroyed += OnWindowDestroyed;
+
 
             m_proBuilderTool = IOC.Resolve<IProBuilderTool>();
             m_paletteManager = IOC.Resolve<IMaterialPaletteManager>();
-            m_paletteManager.PaletteChanged += OnPaletteChanged;
-            m_paletteManager.MaterialAdded += OnMaterialAdded;
-            m_paletteManager.MaterialCreated += OnMaterialCreated;
-            m_paletteManager.MaterialRemoved += OnMaterialRemoved;
-
-            yield return new WaitUntil(() => m_paletteManager.IsReady);
-            yield return new WaitWhile(() => m_editor.IsBusy);
 
             m_view.TreeView.ItemDataBinding += OnItemDataBinding;
             m_view.TreeView.ItemDrop += OnItemDrop;
             m_view.TreeView.SelectionChanged += OnSelectionChanged;
-
-            if (m_view.CreateMaterialButton != null)
-            {
-                m_view.CreateMaterialButton.onClick.AddListener(CreateMaterial);
-            }
-
-            m_view.TreeView.Items = m_paletteManager.Palette.Materials;
 
             m_view.TreeView.CanEdit = false;
             m_view.TreeView.CanReorder = true;
@@ -58,10 +52,34 @@ namespace Battlehub.RTBuilder
             m_view.TreeView.CanSelectAll = false;
             m_view.TreeView.CanUnselectAll = true;
             m_view.TreeView.CanRemove = false;
+
+            if (m_paletteManager != null)
+            {
+                m_paletteManager.PaletteChanged += OnPaletteChanged;
+                m_paletteManager.MaterialAdded += OnMaterialAdded;
+                m_paletteManager.MaterialCreated += OnMaterialCreated;
+                m_paletteManager.MaterialRemoved += OnMaterialRemoved;
+
+                yield return new WaitUntil(() => m_paletteManager.IsReady);
+                yield return new WaitWhile(() => m_editor.IsBusy);
+
+                if (m_view.CreateMaterialButton != null)
+                {
+                    m_view.CreateMaterialButton.onClick.AddListener(CreateMaterial);
+                }
+
+                m_view.TreeView.Items = m_paletteManager.Palette.Materials;
+
+            }
         }
 
         protected virtual void OnDestroy()
         {
+            if(m_wm != null)
+            {
+                m_wm.WindowCreated -= OnWindowCreated;
+                m_wm.WindowDestroyed -= OnWindowDestroyed;
+            }
             if (m_view.TreeView != null)
             {
                 m_view.TreeView.ItemDataBinding -= OnItemDataBinding;
@@ -145,7 +163,10 @@ namespace Battlehub.RTBuilder
 
         public void ApplyMaterial(Material material)
         {
-            m_proBuilderTool.ApplyMaterial(material);
+            if (m_proBuilderTool != null)
+            {
+                m_proBuilderTool.ApplyMaterial(material);
+            }
         }
 
         public void CreateMaterial()
@@ -166,12 +187,18 @@ namespace Battlehub.RTBuilder
 
         public void SelectFacesByMaterial(Material material)
         {
-            m_proBuilderTool.SelectFaces(material);
+            if (m_proBuilderTool != null)
+            {
+                m_proBuilderTool.SelectFaces(material);
+            }
         }
 
         public void UnselectFacesByMaterial(Material material)
         {
-            m_proBuilderTool.UnselectFaces(material);
+            if(m_proBuilderTool != null)
+            {
+                m_proBuilderTool.UnselectFaces(material);
+            }    
         }
 
         private void OnPaletteChanged(MaterialPalette palette)
@@ -200,6 +227,67 @@ namespace Battlehub.RTBuilder
             }
         }
 
+        private void OnWindowCreated(Transform obj)
+        {
+            if (obj == m_wm.GetWindow("ProBuilder"))
+            {
+                m_probuilderWindow = obj;
+                m_proBuilderTool = IOC.Resolve<IProBuilderTool>();
+                m_paletteManager = IOC.Resolve<IMaterialPaletteManager>();
+                m_paletteManager.PaletteChanged += OnPaletteChanged;
+                m_paletteManager.MaterialAdded += OnMaterialAdded;
+                m_paletteManager.MaterialCreated += OnMaterialCreated;
+                m_paletteManager.MaterialRemoved += OnMaterialRemoved;
+
+                m_coPopulateTreeView = CoPopulateTreeView();
+                StartCoroutine(m_coPopulateTreeView);
+            }
+        }
+
+        private IEnumerator m_coPopulateTreeView;
+        private IEnumerator CoPopulateTreeView()
+        {
+            yield return new WaitUntil(() => m_paletteManager.IsReady);
+            yield return new WaitWhile(() => m_editor.IsBusy);
+
+            if (m_view.CreateMaterialButton != null)
+            {
+                m_view.CreateMaterialButton.onClick.AddListener(CreateMaterial);
+            }
+
+            m_view.TreeView.Items = m_paletteManager.Palette.Materials;
+        }
+
+        private void OnWindowDestroyed(Transform obj)
+        {
+            if(obj == m_probuilderWindow)
+            {
+                m_probuilderWindow = null;
+                m_proBuilderTool = null;
+                if(m_paletteManager != null)
+                {
+                    if (m_coPopulateTreeView != null)
+                    {
+                        StopCoroutine(m_coPopulateTreeView);
+                        m_coPopulateTreeView = null;
+                    }
+
+                    m_paletteManager.PaletteChanged -= OnPaletteChanged;
+                    m_paletteManager.MaterialAdded -= OnMaterialAdded;
+                    m_paletteManager.MaterialCreated -= OnMaterialCreated;
+                    m_paletteManager.MaterialRemoved -= OnMaterialRemoved;
+
+                    if (m_view.CreateMaterialButton != null)
+                    {
+                        m_view.CreateMaterialButton.onClick.RemoveListener(CreateMaterial);
+                    }
+
+                    m_view.TreeView.Items = null;
+                }
+                m_paletteManager = null;
+            }   
+        }
+
         protected virtual void Update()
         {
             if (m_editor.ActiveWindow == null || m_editor.ActiveWindow != this && m_editor.ActiveWindow.WindowType != RuntimeWindowType.Scene)
@@ -207,7 +295,7 @@ namespace Battlehub.RTBuilder
                 return;
             }
 
-            if (!m_proBuilderTool.HasSelection)
+            if (m_proBuilderTool == null || !m_proBuilderTool.HasSelection)
             {
                 return;
             }

@@ -29,6 +29,12 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        public bool SnapToGrid
+        {
+            get;
+            set;
+        }
+
         private bool m_isInVertexSnappingMode = false;
         public bool IsInVertexSnappingMode
         {
@@ -404,7 +410,12 @@ namespace Battlehub.RTHandles
         protected override void OnDrop()
         {
             base.OnDrop();
-       
+
+            if (SnapToGrid)
+            {
+                SnapActiveTargetsToGrid();
+            }
+
             if (SnapToGround)
             {
                 SnapActiveTargetsToGround(ActiveTargets, Window.Camera, true);
@@ -837,7 +848,6 @@ namespace Battlehub.RTHandles
                         gridOffset.y = EffectiveGridUnitSize * Mathf.Sign(toCurrentPosition.y);
                     }
 
-
                     if (Mathf.Abs(toCurrentPosition.z * 1.5f) >= EffectiveGridUnitSize)
                     {
                         gridOffset.z = EffectiveGridUnitSize * Mathf.Sign(toCurrentPosition.z);
@@ -845,6 +855,17 @@ namespace Battlehub.RTHandles
                   
                     m_currentPosition += gridOffset;
                     Position = m_currentPosition;
+
+                    if (SnapToGrid)
+                    {
+                        float gridSize = GridSize;
+                        if (!Mathf.Approximately(GridSize, 0))
+                        {
+                            gridOffset = GetGridOffset(gridSize, Position);
+                            m_currentPosition += gridOffset;
+                            Position = m_currentPosition;
+                        }
+                    }
                 }
 
                 float allowedRadius = Window.Camera.farClipPlane * 0.95f;
@@ -858,12 +879,33 @@ namespace Battlehub.RTHandles
                 {
                     m_prevPoint = point;
                 }
+
+               
             }
         }
 
         protected override void DrawOverride(Camera camera)
         {
             Appearance.DoPositionHandle(camera, Position, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
+        }
+
+        private void SnapActiveTargetsToGrid()
+        {
+            float gridSize = GridSize;
+            if (Mathf.Approximately(gridSize, 0))
+            {
+                return;
+            }
+
+            for (int i = 0; i < ActiveTargets.Length; ++i)
+            {
+                Transform activeTransform = ActiveTargets[i];
+                Vector3 position = activeTransform.position;
+
+                Vector3 offset = GetGridOffset(gridSize, position);
+
+                activeTransform.position += offset;
+            }
         }
     }
 

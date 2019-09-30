@@ -1,4 +1,4 @@
-﻿Shader "Hidden/RTBuilder/FaceHighlight"
+﻿Shader "Battlehub/RTBuilder/FaceHighlight"
 {
 	Properties
 	{

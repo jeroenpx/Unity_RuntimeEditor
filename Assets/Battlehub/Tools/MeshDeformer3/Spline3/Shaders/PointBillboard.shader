@@ -1,4 +1,4 @@
-Shader "Hidden/Spline3/PointBillboard"
+Shader "Hidden/RTHandles/PointBillboard"
 {
     Properties
     {
@@ -11,7 +11,6 @@ Shader "Hidden/Spline3/PointBillboard"
     {
         Tags
         {
-            /*"ProBuilderPicker"="VertexPass"*/
             "RenderType"="Geometry"
             "Queue"="Geometry+5"
             "IgnoreProjector"="True"

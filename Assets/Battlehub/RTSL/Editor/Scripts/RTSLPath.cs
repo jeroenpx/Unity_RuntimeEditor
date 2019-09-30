@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace Battlehub.RTSL
 {
@@ -15,7 +16,7 @@ namespace Battlehub.RTSL
             get
             {
                 string userRoot = EditorPrefs.GetString("RTSLDataRoot");
-                if(string.IsNullOrEmpty(userRoot))
+                if (string.IsNullOrEmpty(userRoot))
                 {
                     string dll = AssetDatabase.FindAssets(TypeModelDll.Replace(".dll", string.Empty)).FirstOrDefault();
                     if(string.IsNullOrEmpty(dll))
@@ -39,6 +40,7 @@ namespace Battlehub.RTSL
                 {
                     userRoot = "/" + userRoot;
                 }
+                userRoot = userRoot.TrimEnd(new[] { '/', '\\' });
                 return userRoot;
             }
             set

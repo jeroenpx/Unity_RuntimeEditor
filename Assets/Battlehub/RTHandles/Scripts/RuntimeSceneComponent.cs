@@ -16,6 +16,11 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        SceneGizmo SceneGizmo
+        {
+            get;
+        }
+
         bool CanPan
         {
             get;
@@ -47,12 +52,6 @@ namespace Battlehub.RTHandles
             set;
         }
 
-        float SizeOfGrid
-        {
-            get;
-            set;
-        }
-
         GameObject GameObject
         {
             get;
@@ -71,10 +70,13 @@ namespace Battlehub.RTHandles
         private MouseOrbit m_mouseOrbit;
         private IAnimationInfo m_focusAnimation;
         private Transform m_autoFocusTransform;
-        public float GridSize = 1;
-
+       
         [SerializeField]
         private SceneGizmo m_sceneGizmo;
+        public SceneGizmo SceneGizmo
+        {
+            get { return m_sceneGizmo; }
+        }
 
         [SerializeField]
         private RectTransform m_sceneGizmoTransform = null;
@@ -151,13 +153,7 @@ namespace Battlehub.RTHandles
                 m_mouseOrbit.ChangeOrthographicSizeOnly = value;
             }
         }
-
-        public float SizeOfGrid
-        {
-            get { return GridSize; }
-            set { GridSize = value; }
-        }
-
+      
         public override Vector3 Pivot
         {
             get { return base.Pivot; }
@@ -352,40 +348,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void SnapToGrid()
-        {
-            if (m_lockInput)
-            {
-                return;
-            }
-
-            GameObject[] selection = Editor.Selection.gameObjects;
-            if (selection == null || selection.Length == 0)
-            {
-                return;
-            }
-
-            Transform activeTransform = selection[0].transform;
-            
-            Vector3 position = activeTransform.position;
-            if (GridSize < 0.01)
-            {
-                GridSize = 0.01f;
-            }
-            position.x = Mathf.Round(position.x / GridSize) * GridSize;
-            position.y = Mathf.Round(position.y / GridSize) * GridSize;
-            position.z = Mathf.Round(position.z / GridSize) * GridSize;
-            Vector3 offset = position - activeTransform.position;
-
-            Editor.Undo.BeginRecord();
-            for (int i = 0; i < selection.Length; ++i)
-            {
-                Editor.Undo.BeginRecordTransform(selection[i].transform);
-                selection[i].transform.position += offset;
-                Editor.Undo.EndRecordTransform(selection[i].transform);
-            }
-            Editor.Undo.EndRecord();
-        }
 
         public override void Focus()
         {

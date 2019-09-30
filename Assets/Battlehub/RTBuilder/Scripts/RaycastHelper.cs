@@ -138,7 +138,7 @@ namespace Battlehub.RTBuilder
 
                 CombineInstance[] removeColliderRotation = new CombineInstance[1];
                 removeColliderRotation[0].mesh = colliderMesh;
-                removeColliderRotation[0].transform = targetRotationMatrix;
+                removeColliderRotation[0].transform = Matrix4x4.identity;// targetRotationMatrix;
 
                 finalColliderMesh = new Mesh();
                 finalColliderMesh.name = target.name + "Collider";

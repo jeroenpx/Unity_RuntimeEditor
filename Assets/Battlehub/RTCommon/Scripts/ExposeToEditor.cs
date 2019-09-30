@@ -206,7 +206,7 @@ namespace Battlehub.RTCommon
             {
                 if (transform.parent != null && transform.parent.GetComponent<ExposeToEditor>() == null)
                 {
-                    gameObject.hideFlags = HideFlags.HideInHierarchy;
+                    //gameObject.hideFlags = HideFlags.HideInHierarchy;
                     visible = false;
                     Debug.LogWarning(gameObject.name + ": parent GameObject is not exposed to editor");
                 }
