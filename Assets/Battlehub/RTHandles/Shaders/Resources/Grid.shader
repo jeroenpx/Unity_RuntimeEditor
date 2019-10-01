@@ -10,6 +10,7 @@ Shader "Battlehub/RTHandles/Grid" {
 		_ZTest("ZTest", Float) = 4.0
 		_Cull("Cull", Float) = 0.0
 		_FadeDistance("FadeDistance", Float) = 50.0
+		_CameraSize("CameraSize", Float) = 1.0
 
 		_StencilComp("Stencil Comparison", Float) = 5
 		_Stencil("Stencil ID", Float) = 99
@@ -50,6 +51,7 @@ Shader "Battlehub/RTHandles/Grid" {
 			};
 
 			float _FadeDistance;
+			float _CameraSize;
 			float4 _GridColor;
 
 			inline float4 GammaToLinearSpace(float4 sRGB)
@@ -72,6 +74,9 @@ Shader "Battlehub/RTHandles/Grid" {
 				return output;
 			}
 
+			#define PERSP UNITY_MATRIX_P[3][3]
+			#define ORTHO (1 - PERSP)
+
 			float4 frag(vertexOutput input) : COLOR
 			{
 				float4 col = input.color;
@@ -79,7 +84,7 @@ Shader "Battlehub/RTHandles/Grid" {
 				float3 wp = input.worldPos;
 				//cam.y = wp.y;
 
-				float f = length(cam - wp) / _FadeDistance;
+				float f = (length(cam - wp) * ORTHO + _CameraSize * PERSP) / _FadeDistance;
 				float alpha = saturate(1.0f - f);
 
 				col.a = col.a * alpha * alpha;

@@ -7,9 +7,7 @@ namespace Battlehub.RTHandles
     public class SceneGrid : RTEComponent
     {
         public RuntimeHandlesComponent Appearance;
-
-        //private GameObject m_grid0;
-       // private GameObject m_grid1;
+        
         private Mesh m_grid0Mesh;
         private Mesh m_grid1Mesh;
         private Material m_grid0Material;
@@ -26,7 +24,7 @@ namespace Battlehub.RTHandles
             get { return m_gridSize; }
             set
             {
-                if(m_gridSize != value)
+                if (m_gridSize != value)
                 {
                     m_gridSize = value;
                     Rebuild();
@@ -39,7 +37,7 @@ namespace Battlehub.RTHandles
             base.AwakeOverride();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
 
-            m_commandBuffer = new CommandBuffer();            
+            m_commandBuffer = new CommandBuffer();
             Rebuild();
         }
 
@@ -80,14 +78,6 @@ namespace Battlehub.RTHandles
             {
                 Destroy(m_grid1Mesh);
             }
-            //if (m_grid0 != null)
-            //{
-            //    Destroy(m_grid0);
-            //}
-            //if (m_grid1 != null)
-            //{
-            //    Destroy(m_grid1);
-            //}
         }
 
         private void Rebuild()
@@ -121,8 +111,8 @@ namespace Battlehub.RTHandles
 
             Matrix4x4 grid0 =
                 Matrix4x4.TRS(GetGridPostion(pow0), Quaternion.identity, Vector3.one * pow0) * transform.localToWorldMatrix;
-            Matrix4x4 grid1 = 
-                Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1) * transform.localToWorldMatrix; 
+            Matrix4x4 grid1 =
+                Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1) * transform.localToWorldMatrix;
 
             m_commandBuffer.Clear();
             m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material);
@@ -151,6 +141,11 @@ namespace Battlehub.RTHandles
             color.a = alpha;
             gridMaterial.SetColor("_GridColor", color);
             gridMaterial.SetFloat("_FadeDistance", fadeDistance);
+
+            if (Window.Camera.orthographic)
+            {
+                gridMaterial.SetFloat("_CameraSize", Window.Camera.orthographicSize);
+            }
         }
 
         private Material CreateGridMaterial(float scale)
@@ -183,10 +178,10 @@ namespace Battlehub.RTHandles
             }
 
             float nextNextSpacing = Mathf.Pow(10, scale + 1);
-            return (h * 10 - nextSpacing) / (nextNextSpacing - nextSpacing);            
+            return (h * 10 - nextSpacing) / (nextNextSpacing - nextSpacing);
         }
 
-        
+
     }
 }
 

@@ -157,7 +157,6 @@ MonoBehaviour:
   m_canSelectAll: 1
   ViewTexture: {fileID: 0}
   MoveTexture: {fileID: 0}
-  GridSize: 1
   m_sceneGizmo: {fileID: 114592105554459430}
   m_sceneGizmoTransform: {fileID: 2670726625911863490}
   m_isSceneGizmoEnabled: 1
@@ -847,7 +846,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 6898960901341884732}
   Appearance: {fileID: 0}
-  m_offset: {x: -0.5, y: 0.005, z: -0.5}
+  m_gridOffset: {x: 0, y: 0.01, z: 0}
 --- !u!1 &1624369908261116379
 GameObject:
   m_ObjectHideFlags: 0
