@@ -137,6 +137,9 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_consoleWindow = null;
 
         [SerializeField]
+        private WindowDescriptor m_animationWindow = null;
+
+        [SerializeField]
         private WindowDescriptor m_saveSceneDialog = null;
 
         [SerializeField]
@@ -664,6 +667,10 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_consoleWindow;
                 }
+                else if(windowTypeName == RuntimeWindowType.Animation.ToString().ToLower())
+                {
+                    wd = m_animationWindow;
+                }
                 else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
                 {
                     wd = m_saveSceneDialog;
@@ -866,6 +873,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
             {
                 m_consoleWindow = descriptor;
+            }
+            else if(windowTypeName == RuntimeWindowType.Animation.ToString().ToLower())
+            {
+                m_animationWindow = descriptor;
             }
             else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
             {
@@ -1260,6 +1271,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.Console.ToString().ToLower())
             {
                 wd = m_consoleWindow;
+            }
+            else if (windowTypeName == RuntimeWindowType.Animation.ToString().ToLower())
+            {
+                wd = m_animationWindow;
             }
             else if (windowTypeName == RuntimeWindowType.ToolsPanel.ToString().ToLower())
             {

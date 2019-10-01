@@ -1,5 +1,17 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &8331063425185392209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7749026625816137128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da843983576f2d042b202ea5996a10a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8756119971012547089
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,12 +22,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8756119971012547088}
   - component: {fileID: 8756119971012547090}
-  - component: {fileID: 8756119971012547091}
   - component: {fileID: 8756119971012547084}
   - component: {fileID: 8756119971012547085}
   - component: {fileID: 8756119971012547087}
   m_Layer: 5
-  m_Name: ProjectTree
+  m_Name: PropertiesTree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,32 +71,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &8756119971012547091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8756119971012547089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb2b5ee69bf787a4d9118a655d6e1467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_dragDropTargetGO: {fileID: 0}
-  m_resizeCamera: 1
-  m_activateOnAnyKey: 0
-  m_canActivate: 1
-  m_windowType: 5
-  m_background: {fileID: 0}
-  m_camera: {fileID: 0}
-  m_pointer: {fileID: 0}
-  TreeViewPrefab: {fileID: 1733655225862514, guid: 370f94e0ffbc8b645974abea347d3405,
-    type: 3}
-  FolderIcon: {fileID: 21300000, guid: 8eb1638682a6ded4295023097793c7b2, type: 3}
-  ExposedFolderIcon: {fileID: 21300000, guid: 85b44348b46526947ae6c8d5db414a2e, type: 3}
-  RemoveKey: 127
-  ShowRootFolder: 1
 --- !u!222 &8756119971012547084
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -368,7 +353,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1783882218524766, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0, type: 3}
       propertyPath: m_Name
-      value: ProjectTreeView
+      value: AnimationPropertiesView
       objectReference: {fileID: 0}
     - target: {fileID: 224663202568730580, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0,
         type: 3}
@@ -606,6 +591,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0, type: 3}
+--- !u!1 &7749026625816137128 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1783882218524766, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0,
+    type: 3}
+  m_PrefabInstance: {fileID: 7749644678326410742}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7534914235817685812 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 224371109872938690, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0,

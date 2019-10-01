@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Battlehub.RTHandles
 {
@@ -7,8 +8,8 @@ namespace Battlehub.RTHandles
     {
         public RuntimeHandlesComponent Appearance;
 
-        private GameObject m_grid0;
-        private GameObject m_grid1;
+        //private GameObject m_grid0;
+       // private GameObject m_grid1;
         private Mesh m_grid0Mesh;
         private Mesh m_grid1Mesh;
         private Material m_grid0Material;
@@ -16,6 +17,8 @@ namespace Battlehub.RTHandles
 
         [SerializeField]
         private Vector3 m_gridOffset = new Vector3(0f, 0.01f, 0f);
+
+        private CommandBuffer m_commandBuffer;
 
         private float m_gridSize = 0.5f;
         public float SizeOfGrid
@@ -35,7 +38,22 @@ namespace Battlehub.RTHandles
         {
             base.AwakeOverride();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
+
+            m_commandBuffer = new CommandBuffer();            
             Rebuild();
+        }
+
+        protected virtual void OnEnable()
+        {
+            Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (Window != null && m_commandBuffer != null)
+            {
+                Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            }
         }
 
         protected override void OnDestroyOverride()
@@ -62,14 +80,14 @@ namespace Battlehub.RTHandles
             {
                 Destroy(m_grid1Mesh);
             }
-            if (m_grid0 != null)
-            {
-                Destroy(m_grid0);
-            }
-            if (m_grid1 != null)
-            {
-                Destroy(m_grid1);
-            }
+            //if (m_grid0 != null)
+            //{
+            //    Destroy(m_grid0);
+            //}
+            //if (m_grid1 != null)
+            //{
+            //    Destroy(m_grid1);
+            //}
         }
 
         private void Rebuild()
@@ -81,9 +99,6 @@ namespace Battlehub.RTHandles
 
             m_grid0Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
             m_grid1Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
-
-            m_grid0 = CreateGridGameObject("Grid0", m_grid0Mesh, m_grid0Material);
-            m_grid1 = CreateGridGameObject("Grid1", m_grid1Mesh, m_grid1Material);
         }
 
 
@@ -98,17 +113,23 @@ namespace Battlehub.RTHandles
             float alpha0 = GetAlpha(0, h, scale);
             float alpha1 = GetAlpha(1, h, scale);
 
-            m_grid0.transform.localScale = Vector3.one * Mathf.Pow(10, scale - 1);
-            m_grid1.transform.localScale = Vector3.one * Mathf.Pow(10, scale);
-
-            SetGridPostion(m_grid0, Mathf.Pow(10, scale - 1));
-            SetGridPostion(m_grid1, Mathf.Pow(10, scale));
-
             SetGridAlpha(m_grid0Material, alpha0, fadeDistance);
             SetGridAlpha(m_grid1Material, alpha1, fadeDistance);
+
+            float pow0 = Mathf.Pow(10, scale - 1);
+            float pow1 = Mathf.Pow(10, scale);
+
+            Matrix4x4 grid0 =
+                Matrix4x4.TRS(GetGridPostion(pow0), Quaternion.identity, Vector3.one * pow0) * transform.localToWorldMatrix;
+            Matrix4x4 grid1 = 
+                Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1) * transform.localToWorldMatrix; 
+
+            m_commandBuffer.Clear();
+            m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material);
+            m_commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material);
         }
 
-        private void SetGridPostion(GameObject grid, float spacing)
+        private Vector3 GetGridPostion(float spacing)
         {
             Vector3 position = Window.Camera.transform.position;
             position = transform.InverseTransformPoint(position);
@@ -121,7 +142,7 @@ namespace Battlehub.RTHandles
 
             position += m_gridOffset;
 
-            grid.transform.localPosition = position;
+            return position;
         }
 
         private void SetGridAlpha(Material gridMaterial, float alpha, float fadeDistance)
@@ -138,17 +159,6 @@ namespace Battlehub.RTHandles
             Material material = new Material(shader);
             material.SetColor("_GridColor", Appearance.Colors.GridColor);
             return material;
-        }
-
-        private GameObject CreateGridGameObject(string name, Mesh mesh, Material material)
-        {
-            GameObject go = new GameObject(name);
-            go.transform.SetParent(transform, false);
-            MeshFilter meshFilter = go.AddComponent<MeshFilter>();
-            meshFilter.sharedMesh = mesh;
-            MeshRenderer renderer = go.AddComponent<MeshRenderer>();
-            renderer.sharedMaterial = material;
-            return go;
         }
 
         private float GetCameraOffset()
@@ -175,6 +185,8 @@ namespace Battlehub.RTHandles
             float nextNextSpacing = Mathf.Pow(10, scale + 1);
             return (h * 10 - nextSpacing) / (nextNextSpacing - nextSpacing);            
         }
+
+        
     }
 }
 

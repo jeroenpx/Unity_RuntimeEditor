@@ -18,6 +18,12 @@ namespace Battlehub.RTSL
 
     public interface IStorage
     {
+        string RootPath
+        {
+            get;
+            set;
+        }
+
         void CreateProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
         void DeleteProject(string projectPath, StorageEventHandler callback);
         void GetProjects(StorageEventHandler<ProjectInfo[]> callback);
@@ -45,7 +51,7 @@ namespace Battlehub.RTSL
         private const string PreviewExt = ".rtview";
         private const string KeyValueStorage = "Values";
 
-        private string RootPath
+        public string RootPath
         {
             get;
             set;

@@ -15,6 +15,7 @@ namespace Battlehub.RTCommon
         ProjectFolder = 6,
         Inspector = 7,
         Console = 8,
+        Animation = 9,
 
         ToolsPanel = 21,
 
@@ -24,7 +25,7 @@ namespace Battlehub.RTCommon
         ImportAssets = 53,
         SaveScene = 54,
         About = 55,
-
+        
         SelectObject = 101,
         SelectColor = 102,
 
