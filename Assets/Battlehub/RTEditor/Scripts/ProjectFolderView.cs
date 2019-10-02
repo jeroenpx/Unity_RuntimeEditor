@@ -500,9 +500,7 @@ namespace Battlehub.RTEditor
                 ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
                 if (dropTarget.IsFolder)
                 {
-                    editor.CreatePrefab(dropTarget, dragObject, null, assetItem =>
-                    {
-                    });
+                    editor.CreatePrefab(dropTarget, dragObject, null, assetItem => { });
                 } 
             }
             else
@@ -512,10 +510,7 @@ namespace Battlehub.RTEditor
                     ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
                     if(dragObject.CanCreatePrefab)
                     {
-                        editor.CreatePrefab(m_folders[0], dragObject, null, assetItem =>
-                        {
-
-                        });
+                        editor.CreatePrefab(m_folders[0], dragObject, null, assetItem => { });
                     }
                 }
             }
