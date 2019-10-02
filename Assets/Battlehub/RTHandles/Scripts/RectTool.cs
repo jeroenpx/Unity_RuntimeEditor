@@ -74,12 +74,12 @@ namespace Battlehub.RTHandles
             m_localScale = Vector3.one;
             m_bounds = new Bounds();
 
-            if(m_txtSize1 != null)
+            if (m_txtSize1 != null)
             {
                 m_txtSize1.text = string.Empty;
             }
 
-            if(m_txtSize2 != null)
+            if (m_txtSize2 != null)
             {
                 m_txtSize2.text = string.Empty;
             }
@@ -99,7 +99,7 @@ namespace Battlehub.RTHandles
                 m_rotation = exposeToEditor.transform.rotation;
                 m_localScale = exposeToEditor.transform.lossyScale;
 
-                if(m_bounds.extents == Vector3.zero)
+                if (m_bounds.extents == Vector3.zero)
                 {
                     if (m_lines != null)
                     {
@@ -141,7 +141,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if(m_lines == null && m_points == null)
+            if (m_lines == null && m_points == null)
             {
                 return;
             }
@@ -157,11 +157,11 @@ namespace Battlehub.RTHandles
             BuildPointsMesh(m_points.sharedMesh, m_currentAxis, m_bounds);
             BuildLineMesh(m_lines.sharedMesh, m_currentAxis, m_bounds);
 
-            if(m_txtSize1 != null)
+            if (m_txtSize1 != null)
             {
                 m_txtSize1.gameObject.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
             }
-            if(m_txtSize2 != null)
+            if (m_txtSize2 != null)
             {
                 m_txtSize2.gameObject.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
             }
@@ -179,7 +179,7 @@ namespace Battlehub.RTHandles
 
             m_lines = lines.AddComponent<MeshFilter>();
             m_lines.sharedMesh = new Mesh();
-            
+
             MeshRenderer linesRenderer = lines.AddComponent<MeshRenderer>();
 
             Material lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
@@ -203,7 +203,7 @@ namespace Battlehub.RTHandles
             pointMaterial.SetColor("_Color", Color.white);
             pointMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             pointsRenderer.sharedMaterial = pointMaterial;
-            
+
         }
 
         protected override void OnEnableOverride()
@@ -216,7 +216,7 @@ namespace Battlehub.RTHandles
             base.OnDisableOverride();
         }
 
-        
+
 
         protected override void UpdateOverride()
         {
@@ -236,7 +236,7 @@ namespace Battlehub.RTHandles
                 }
 
                 Vector3[] vertices = m_points.sharedMesh.vertices;
-                if(vertices.Length == 0)
+                if (vertices.Length == 0)
                 {
                     return;
                 }
@@ -310,24 +310,24 @@ namespace Battlehub.RTHandles
             }
         }
 
-       
+
         protected override bool OnBeginDrag()
         {
-            if(!base.OnBeginDrag())
+            if (!base.OnBeginDrag())
             {
                 return false;
             }
 
-            if(m_bounds.extents == Vector3.zero)
+            if (m_bounds.extents == Vector3.zero)
             {
                 return false;
             }
 
-            if(m_currentAxis == RuntimeHandleAxis.XY)
+            if (m_currentAxis == RuntimeHandleAxis.XY)
             {
                 DragPlane = new Plane(m_lines.transform.forward, m_lines.transform.TransformPoint(m_bounds.center));
             }
-            else if(m_currentAxis == RuntimeHandleAxis.XZ)
+            else if (m_currentAxis == RuntimeHandleAxis.XZ)
             {
                 DragPlane = new Plane(m_lines.transform.up, m_lines.transform.TransformPoint(m_bounds.center));
             }
@@ -403,7 +403,7 @@ namespace Battlehub.RTHandles
 
                     for (int i = 0; i < ActiveTargets.Length; ++i)
                     {
-                        ActiveTargets[i].position = m_referencePositions[i] + offset;  
+                        ActiveTargets[i].position = m_referencePositions[i] + offset;
                     }
                     UpdateText();
                 }
@@ -419,20 +419,20 @@ namespace Battlehub.RTHandles
                         {
                             float gridSize = EffectiveGridUnitSize;
                             gridSize /= 2;
-                            
-                            if(!Mathf.Approximately(m_localScale.x, 0))
+
+                            if (!Mathf.Approximately(m_localScale.x, 0))
                             {
                                 float gridSizeX = gridSize / m_localScale.x;
                                 offset.x = Mathf.RoundToInt(offset.x / gridSizeX) * gridSizeX;
                             }
-                            
-                            if(!Mathf.Approximately(m_localScale.y, 0))
+
+                            if (!Mathf.Approximately(m_localScale.y, 0))
                             {
                                 float gridSizeY = gridSize / m_localScale.y;
                                 offset.y = Mathf.RoundToInt(offset.y / gridSizeY) * gridSizeY;
                             }
 
-                            if(!Mathf.Approximately(m_localScale.z, 0))
+                            if (!Mathf.Approximately(m_localScale.z, 0))
                             {
                                 float gridSizeZ = gridSize / m_localScale.z;
 
@@ -477,7 +477,7 @@ namespace Battlehub.RTHandles
                         if (EffectiveGridUnitSize > 0.001)
                         {
                             float gridSize = EffectiveGridUnitSize;
-                            
+
                             if (!Mathf.Approximately(m_localScale.x, 0))
                             {
                                 float gridSizeX = gridSize / m_localScale.x;
@@ -501,14 +501,14 @@ namespace Battlehub.RTHandles
 
                         Vector3 p2 = p1 + offset;
                         Vector3 ext = (p2 - p0) / 2;
-                        
+
                         m_bounds.center = ((p0 + p1) + offset) / 2;
 
                         Vector3 extents = m_bounds.extents;
                         if (m_currentAxis == RuntimeHandleAxis.XY)
                         {
                             ext.z = extents.z;
-                            if(Mathf.Abs(offset.y) > Mathf.Abs(offset.x))
+                            if (Mathf.Abs(offset.y) > Mathf.Abs(offset.x))
                             {
                                 sign.y = Mathf.Sign(offset.y / m_beginDragOffset.y);
                             }
@@ -528,7 +528,7 @@ namespace Battlehub.RTHandles
                             else
                             {
                                 sign.x = Mathf.Sign(offset.x / m_beginDragOffset.x);
-                            }                            
+                            }
                         }
                         else
                         {
@@ -591,10 +591,10 @@ namespace Battlehub.RTHandles
         private Vector3 GetOffset(int selectedPointIndex, Vector3 pointOnPlane, out Vector3 refPoint)
         {
             refPoint = m_referencePoints[(selectedPointIndex + 2) % 4];
-            
+
             Vector3 delta = Vector3.zero;
             delta = m_referencePoints[m_selectedPointIndex] - m_beginDragPoint;
-            
+
             Vector3 offset = (pointOnPlane + delta - refPoint) / 2;
             return offset;
         }
@@ -624,7 +624,7 @@ namespace Battlehub.RTHandles
             Targets = RealTargets;
             //RecalculateBoundsAndRebuild();
 
-            
+
 
             m_referencePoints = null;
             m_referencePositions = null;
@@ -703,7 +703,7 @@ namespace Battlehub.RTHandles
             {
                 v[0], v[1], v[1], v[2], v[2], v[3], v[3], v[0]
             };
-            
+
             int[] indices = new[]
             {
                 0, 1, 2, 3, 4, 5, 6, 7
@@ -729,13 +729,32 @@ namespace Battlehub.RTHandles
             target.vertices = new[]
             {
                 v[0], v[1], v[1], v[2], v[2], v[3], v[3], v[0]
-            }; 
+            };
             target.RecalculateBounds();
+        }
+
+        //GK convert meters to feet - inches
+        private string ConvertMetersToFeetInches(float meters)
+        {
+            if (meters == 0)
+                return "0′" + " 0″";
+
+            double inchfeet = meters / 0.3048;
+            int feet = (int)inchfeet;
+            int inchesleft = (int)((inchfeet - System.Math.Truncate(inchfeet)) / 0.08333);
+
+            if (inchesleft == 12)
+            {
+                inchesleft = 0;
+                feet += 1;
+            }
+
+            return feet.ToString("0′") + inchesleft.ToString(" 0″");
         }
 
         private void UpdateText()
         {
-            if(m_txtSize1 == null && m_txtSize2 == null)
+            if (m_txtSize1 == null && m_txtSize2 == null)
             {
                 return;
             }
@@ -764,10 +783,10 @@ namespace Battlehub.RTHandles
 
                 m_txtSize1.transform.localRotation = m_rotation * textRotation;
                 m_txtSize1.transform.position = m_points.transform.TransformPoint(v[0] + (v[1] - v[0]) / 2);
-                m_txtSize1.text = (Mathf.Abs(size / 0.0254f)).ToString("0.00″");
+                m_txtSize1.text = ConvertMetersToFeetInches(size);
             }
 
-            if(m_txtSize2 != null)
+            if (m_txtSize2 != null)
             {
                 float size;
                 Quaternion textRotation;
@@ -780,7 +799,7 @@ namespace Battlehub.RTHandles
                 else if (m_currentAxis == RuntimeHandleAxis.XZ)
                 {
                     size = m_bounds.size.z * m_localScale.z;
-                    textRotation = Mathf.Sign(m_currentDot) > 0 ? Quaternion.Euler(270, 0, 90)  : Quaternion.Euler(90, 0, 90);
+                    textRotation = Mathf.Sign(m_currentDot) > 0 ? Quaternion.Euler(270, 0, 90) : Quaternion.Euler(90, 0, 90);
                 }
                 else
                 {
@@ -791,7 +810,7 @@ namespace Battlehub.RTHandles
 
                 m_txtSize2.transform.localRotation = m_rotation * textRotation;
                 m_txtSize2.transform.position = position;
-                m_txtSize2.text = (Mathf.Abs(size / 0.0254f)).ToString("0.00″");
+                m_txtSize2.text = ConvertMetersToFeetInches(size);
             }
         }
 
@@ -906,7 +925,7 @@ namespace Battlehub.RTHandles
                 if (dist < minDistance)
                 {
                     minIndex = i;
-                    minDistance = dist;   
+                    minDistance = dist;
                 }
             }
 
