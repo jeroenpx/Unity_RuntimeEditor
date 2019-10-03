@@ -25,9 +25,10 @@ namespace Battlehub.RTCommon
         ImportAssets = 53,
         SaveScene = 54,
         About = 55,
-        
+                
         SelectObject = 101,
         SelectColor = 102,
+        SelectAnimationProperties = 109,
 
         Custom = 1 << 16,
     }

@@ -7,7 +7,7 @@ namespace Battlehub.RTHandles
     public class SceneGrid : RTEComponent
     {
         public RuntimeHandlesComponent Appearance;
-        
+
         private Mesh m_grid0Mesh;
         private Mesh m_grid1Mesh;
         private Material m_grid0Material;
@@ -110,9 +110,9 @@ namespace Battlehub.RTHandles
             float pow1 = Mathf.Pow(10, scale);
 
             Matrix4x4 grid0 =
-                Matrix4x4.TRS(GetGridPostion(pow0), Quaternion.identity, Vector3.one * pow0) * transform.localToWorldMatrix;
+                transform.localToWorldMatrix * Matrix4x4.TRS(GetGridPostion(pow0), Quaternion.identity, Vector3.one * pow0);
             Matrix4x4 grid1 =
-                Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1) * transform.localToWorldMatrix;
+                transform.localToWorldMatrix * Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1);
 
             m_commandBuffer.Clear();
             m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material);

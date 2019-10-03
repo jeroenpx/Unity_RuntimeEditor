@@ -5399,6 +5399,13 @@ MonoBehaviour:
       type: 3}
     MaxWindows: 1
     Created: 0
+  m_selectAnimationPropertiesDialog:
+    Icon: {fileID: 0}
+    Header: Select Properties
+    ContentPrefab: {fileID: 1332217457950486, guid: dd47718b55641fc499209a4fc02e99db,
+      type: 3}
+    MaxWindows: 1
+    Created: 0
   m_customWindows:
   - TypeName: importfile
     IsDialog: 1

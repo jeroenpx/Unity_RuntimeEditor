@@ -131,7 +131,6 @@ namespace Battlehub
         }
 
 
-
 #if UNITY_WINRT && !UNITY_EDITOR
         public static Type BaseType(this Type type)
         {

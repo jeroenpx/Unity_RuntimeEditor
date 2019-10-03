@@ -213,6 +213,7 @@ namespace Battlehub.UIControls
         public bool SelectOnPointerUp = false;
         public bool CanUnselectAll = true;
         public bool CanSelectAll = true;
+        public bool CanMultiSelect = true;
         public bool CanEdit = true;
         public bool CanRemove = true;
         private bool m_prevCanDrag;
@@ -1111,21 +1112,30 @@ namespace Battlehub.UIControls
                 return;
             }
 
+           
             VirtualizingItemContainer.Unselected -= OnItemUnselected;
-            if (InputProvider.IsFunctionalButtonPressed)
+            if (CanMultiSelect)
             {
-                IList selectedItems = m_selectedItems != null ? m_selectedItems.ToList() : new List<object>();
-                selectedItems.Add(((VirtualizingItemContainer)sender).Item);
-                SelectedItems = selectedItems;
-            }
-            else if (InputProvider.IsFunctional2ButtonPressed)
-            {
-                SelectRange((VirtualizingItemContainer)sender);
+                if (InputProvider.IsFunctionalButtonPressed)
+                {
+                    IList selectedItems = m_selectedItems != null ? m_selectedItems.ToList() : new List<object>();
+                    selectedItems.Add(((VirtualizingItemContainer)sender).Item);
+                    SelectedItems = selectedItems;
+                }
+                else if (InputProvider.IsFunctional2ButtonPressed)
+                {
+                    SelectRange((VirtualizingItemContainer)sender);
+                }
+                else
+                {
+                    SelectedIndex = IndexOf(((VirtualizingItemContainer)sender).Item);
+                }
             }
             else
             {
                 SelectedIndex = IndexOf(((VirtualizingItemContainer)sender).Item);
             }
+           
             VirtualizingItemContainer.Unselected += OnItemUnselected;
         }
 

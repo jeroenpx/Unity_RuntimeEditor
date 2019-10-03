@@ -164,6 +164,9 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_selectColorDialog = null;
 
         [SerializeField]
+        private WindowDescriptor m_selectAnimationPropertiesDialog = null;
+
+        [SerializeField]
         private CustomWindowDescriptor[] m_customWindows = null;
 
         [SerializeField]
@@ -703,6 +706,10 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_selectColorDialog;
                 }
+                else if (windowTypeName == RuntimeWindowType.SelectAnimationProperties.ToString().ToLower())
+                {
+                    wd = m_selectAnimationPropertiesDialog;
+                }
                 else
                 {
                     CustomWindowDescriptor cwd;
@@ -874,7 +881,7 @@ namespace Battlehub.RTEditor
             {
                 m_consoleWindow = descriptor;
             }
-            else if(windowTypeName == RuntimeWindowType.Animation.ToString().ToLower())
+            else if (windowTypeName == RuntimeWindowType.Animation.ToString().ToLower())
             {
                 m_animationWindow = descriptor;
             }
@@ -909,6 +916,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.SelectColor.ToString().ToLower())
             {
                 m_selectColorDialog = descriptor;
+            }
+            else if (windowTypeName == RuntimeWindowType.SelectAnimationProperties.ToString().ToLower())
+            {
+                m_selectAnimationPropertiesDialog = descriptor;
             }
         }
 
@@ -1313,6 +1324,11 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.SelectColor.ToString().ToLower())
             {
                 wd = m_selectColorDialog;
+                isDialog = true;
+            }
+            else if (windowTypeName == RuntimeWindowType.SelectAnimationProperties.ToString().ToLower())
+            {
+                wd = m_selectAnimationPropertiesDialog;
                 isDialog = true;
             }
             else
