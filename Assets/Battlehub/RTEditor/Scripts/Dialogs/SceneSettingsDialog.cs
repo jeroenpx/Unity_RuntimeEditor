@@ -1,21 +1,11 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTHandles;
 using Battlehub.UIControls.Dialogs;
 using Battlehub.Utils;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public interface ISceneSettingsDialog
-    {
-        RuntimeWindow Scene
-        {
-            get;
-            set;
-        }
-    }
-
-    public class SceneSettingsDialog : RuntimeWindow, ISceneSettingsDialog
+     public class SceneSettingsDialog : RuntimeWindow
     {
         [SerializeField]
         private BoolEditor m_isGridVisibleEditor = null;
@@ -28,42 +18,31 @@ namespace Battlehub.RTEditor
         
         public bool IsGridVisible
         {
-            get { return m_sceneComponent.IsGridVisible; }
-            set { m_sceneComponent.IsGridVisible = value; }
+            get { return m_settings.IsGridVisible; }
+            set { m_settings.IsGridVisible = value; }
         }
 
         public bool SnapToGrid
         {
-            get { return m_sceneComponent.IsGridEnabled; }
-            set { m_sceneComponent.IsGridEnabled = value; }
+            get { return m_settings.IsGridEnabled; }
+            set { m_settings.IsGridEnabled = value; }
         }
 
         public float GridSize
         {
-            get { return m_sceneComponent.SizeOfGrid; }
-            set { m_sceneComponent.SizeOfGrid = value; }
+            get { return m_settings.GridSize; }
+            set { m_settings.GridSize = value; }
         }
 
-        private IRuntimeSceneComponent m_sceneComponent;
-        private RuntimeWindow m_window;
-        public RuntimeWindow Scene
-        {
-            get { return m_window; }
-            set
-            {
-                m_window = value;
-                m_sceneComponent = m_window.IOCContainer.Resolve<IRuntimeSceneComponent>();
-            }
-        }
+        private ISceneSettingsComponent m_settings;
+        private Dialog m_parentDialog;
 
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            IOC.RegisterFallback<ISceneSettingsDialog>(this);
+            m_settings = IOC.Resolve<ISceneSettingsComponent>();
         }
-
-        private Dialog m_parentDialog;
-
+        
         protected virtual void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();
@@ -88,12 +67,6 @@ namespace Battlehub.RTEditor
                 m_gridSizeEditor.Max = 8;
                 m_gridSizeEditor.Init(this, this, Strong.PropertyInfo((SceneSettingsDialog x) => x.GridSize), null, "Grid Size");
             }
-        }
-
-        protected override void OnDestroyOverride()
-        {
-            base.OnDestroyOverride();
-            IOC.UnregisterFallback<ISceneSettingsDialog>(this);
         }
     }
 }

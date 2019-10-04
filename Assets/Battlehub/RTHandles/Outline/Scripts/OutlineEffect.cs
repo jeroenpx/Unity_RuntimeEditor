@@ -26,9 +26,8 @@ namespace Battlehub.RTHandles
         private int m_rtWidth = 512;
         private int m_rtHeight = 512;
 
-        private float m_prevWidth;
-        private float m_prevHeight;
-
+        private Rect m_prevRect;
+        
         public bool ContainsRenderer(Renderer renderer)
         {
             return m_objectRenderers.Contains(renderer);
@@ -173,11 +172,9 @@ namespace Battlehub.RTHandles
 
         private void OnPreRender()
         {
-            if (m_camera.pixelWidth != m_prevWidth || m_camera.pixelHeight != m_prevHeight)
+            if (m_camera.pixelRect != m_prevRect)
             {
-                m_prevWidth = m_camera.pixelWidth;
-                m_prevHeight = m_camera.pixelHeight;
-
+                m_prevRect = m_camera.pixelRect;
                 RecreateCommandBuffer();
             }
         }

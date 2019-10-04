@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -28,7 +29,20 @@ namespace Battlehub.RTHandles
             get { return GridSize; }
         }
 
+        private static readonly List<RectTool> m_connectedTools = new List<RectTool>();
         private Bounds m_bounds;
+        private Bounds Bounds
+        {
+            get { return m_bounds; }
+            set
+            {
+                m_bounds = value;
+                UpdatePointsMesh(m_points.sharedMesh, m_currentAxis, m_bounds);
+                UpdateLinesMesh(m_lines.sharedMesh, m_currentAxis, m_bounds);
+                UpdateText();
+            }
+        }
+        
         private Quaternion m_rotation;
         private Vector3 m_position;
         private Vector3 m_localScale;
@@ -209,14 +223,15 @@ namespace Battlehub.RTHandles
         protected override void OnEnableOverride()
         {
             base.OnEnableOverride();
+            RecalculateBoundsAndRebuild();
+            m_connectedTools.Add(this);
         }
 
         protected override void OnDisableOverride()
         {
             base.OnDisableOverride();
+            m_connectedTools.Remove(this);
         }
-
-
 
         protected override void UpdateOverride()
         {
@@ -310,6 +325,17 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private void UpdateConnectedTools()
+        {
+            for(int i = 0; i < m_connectedTools.Count; ++i)
+            {
+                RectTool tool = m_connectedTools[i];
+                if(tool != this)
+                {
+                    tool.Bounds = m_bounds;
+                }
+            }
+        }
 
         protected override bool OnBeginDrag()
         {
@@ -371,6 +397,7 @@ namespace Battlehub.RTHandles
                 else
                 {
                     RecalculateBoundsAndRebuild();
+                    UpdateConnectedTools();
                 }
                 SetSelectionColorColors();
                 return true;
@@ -498,7 +525,6 @@ namespace Battlehub.RTHandles
                             }
                         }
 
-
                         Vector3 p2 = p1 + offset;
                         Vector3 ext = (p2 - p0) / 2;
 
@@ -570,7 +596,32 @@ namespace Battlehub.RTHandles
                         target.position = m_referencePositions[i] + (m_points.transform.TransformPoint(m_bounds.center) - m_referencePositions[i]) + pivotOffset;
                     }
                 }
+
+                UpdateConnectedTools();
             }
+        }
+
+        protected override void OnDrop()
+        {
+            base.OnDrop();
+
+
+            Targets = RealTargets;
+            //RecalculateBoundsAndRebuild();
+            //UpdateConnectedTools();
+            for (int i = 0; i < m_connectedTools.Count; ++i)
+            {
+                RectTool tool = m_connectedTools[i];
+                if (tool != this)
+                {
+                    tool.RecalculateBoundsAndRebuild();
+                }
+            }
+
+
+            m_referencePoints = null;
+            m_referencePositions = null;
+            m_referenceScale = null;
         }
 
         private Vector3 GetOffset(int selectedEdgeIndex, Vector3 pointOnPlane, out Vector3 p0, out Vector3 p1)
@@ -616,20 +667,7 @@ namespace Battlehub.RTHandles
             return v;
         }
 
-        protected override void OnDrop()
-        {
-            base.OnDrop();
-
-
-            Targets = RealTargets;
-            //RecalculateBoundsAndRebuild();
-
-
-
-            m_referencePoints = null;
-            m_referencePositions = null;
-            m_referenceScale = null;
-        }
+      
 
 
         private RuntimeHandleAxis GetAxis(out float dot)
@@ -683,6 +721,7 @@ namespace Battlehub.RTHandles
             target.SetIndices(indices, MeshTopology.Points, 0);
             target.colors = colors;
             target.RecalculateBounds();
+
         }
 
         private void UpdatePointsMesh(Mesh target, RuntimeHandleAxis axis, Bounds bounds)

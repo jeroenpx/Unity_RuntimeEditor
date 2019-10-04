@@ -35,6 +35,8 @@ namespace Battlehub.RTEditor
                     return !m_editor.IsPlaying;
                 case "stop":
                     return m_editor.IsPlaying;
+                case "scenesettings":
+                    return true;
             }
             return false;
         }
@@ -61,6 +63,11 @@ namespace Battlehub.RTEditor
                     break;
                 case "stop":
                     m_editor.IsPlaying = false;
+                    break;
+                case "scenesettings":
+                    IWindowManager wm = IOC.Resolve<IWindowManager>();
+                    wm.CreateDialogWindow("scenesettings", "Scene Settings",
+                        (sender, args) => { }, (sender, args) => { }, 250, 160, 250, 160, false);
                     break;
 
             }
