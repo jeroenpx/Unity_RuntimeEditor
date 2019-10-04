@@ -6,13 +6,13 @@ namespace Battlehub.RTHandles
 {
     public class OutlineEffect : MonoBehaviour
     {
-        public Color OutlineColor = new Color(1, 0.35f, 0, .05f); 
+        public Color OutlineColor = new Color(1, 0.35f, 0, .05f);
         public CameraEvent BufferDrawEvent = CameraEvent.BeforeImageEffects;
         [Range(0, 1)]
         public int Downsample = 0;
         [Range(0.0f, 3.0f)]
         public float BlurSize = 0.9f;
-        
+
         private CommandBuffer m_commandBuffer;
         private int m_outlineRTID;
         private int m_blurredRTID;
@@ -36,11 +36,11 @@ namespace Battlehub.RTHandles
 
         public void AddRenderers(Renderer[] renderers)
         {
-            foreach(Renderer renderer in renderers)
+            foreach (Renderer renderer in renderers)
             {
                 m_objectRenderers.Add(renderer);
             }
-            
+
             RecreateCommandBuffer();
         }
 
@@ -83,8 +83,16 @@ namespace Battlehub.RTHandles
 
         public void RecreateCommandBuffer()
         {
-            m_rtWidth = Screen.width;
-            m_rtHeight = Screen.height;
+            if (m_camera.targetTexture != null)
+            {
+                m_rtWidth = Screen.width;
+                m_rtHeight = Screen.height;
+            }
+            else
+            {
+                m_rtWidth = m_camera.pixelWidth;
+                m_rtHeight = m_camera.pixelHeight;
+            }
 
             m_commandBuffer.Clear();
 
@@ -100,14 +108,19 @@ namespace Battlehub.RTHandles
             m_commandBuffer.GetTemporaryRT(m_depthRTID, m_rtWidth, m_rtHeight, 0, filterMode, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default, antialiasing);
             m_commandBuffer.SetRenderTarget(m_depthRTID, BuiltinRenderTextureType.CurrentActive);
             m_commandBuffer.ClearRenderTarget(false, true, Color.clear);
-            m_commandBuffer.SetViewport(m_camera.pixelRect);
+
+            if (m_camera.targetTexture != null)
+            {
+                m_commandBuffer.SetViewport(m_camera.pixelRect);
+            }
+
 
             // render selected objects into a mask buffer, with different colors for visible vs occluded ones 
             float id = 0f;
-            for(int i = m_objectRenderers.Count - 1; i >= 0; --i)
+            for (int i = m_objectRenderers.Count - 1; i >= 0; --i)
             {
                 Renderer renderer = m_objectRenderers[i];
-                if(renderer != null)
+                if (renderer != null)
                 {
                     if (((1 << renderer.gameObject.layer) & m_camera.cullingMask) != 0 && renderer.enabled)
                     {
@@ -120,7 +133,7 @@ namespace Battlehub.RTHandles
                             m_commandBuffer.DrawRenderer(renderer, m_outlineMaterial, s, 1);
                             m_commandBuffer.DrawRenderer(renderer, m_outlineMaterial, s, 0);
                         }
-                    }   
+                    }
                 }
                 else
                 {

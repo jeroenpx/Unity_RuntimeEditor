@@ -3966,6 +3966,9 @@ MonoBehaviour:
   CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
+  CanRename: 1
+  CanCreatePrefab: 1
+  ShowSelectionGizmo: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1243314675393952
@@ -11785,6 +11788,9 @@ MonoBehaviour:
   CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
+  CanRename: 1
+  CanCreatePrefab: 1
+  ShowSelectionGizmo: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1463707715302862
@@ -19646,6 +19652,9 @@ MonoBehaviour:
   CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
+  CanRename: 1
+  CanCreatePrefab: 1
+  ShowSelectionGizmo: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1744681733381040

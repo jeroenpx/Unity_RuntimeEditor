@@ -323,7 +323,6 @@ namespace Battlehub.RTHandles
                 selection = new HashSet<GameObject>();
 
                 Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
-                Collider[] colliders = FindObjectsOfType<Collider>();
                 FilteringArgs args = new FilteringArgs();
                 for (int i = 0; i < renderers.Length; ++i)
                 {
@@ -378,6 +377,39 @@ namespace Battlehub.RTHandles
                             }
                         }
                     }
+                    else
+                    {
+                        SkinnedMeshRenderer smr = go.GetComponent<SkinnedMeshRenderer>();
+                        
+                        if (smr != null && smr.sharedMesh != null)
+                        {
+                            Mesh bakedMesh = new Mesh();
+                            smr.BakeMesh(bakedMesh);
+
+                            Matrix4x4 m = Matrix4x4.TRS(go.transform.localPosition, go.transform.localRotation, Vector3.one);
+                            if(smr.transform.parent != null)
+                            {
+                                m = m * smr.transform.parent.localToWorldMatrix;
+                            }
+
+                            Vector3[] vertices = bakedMesh.vertices;
+
+                            for (int i = 0; i < vertices.Length; ++i)
+                            {
+                                Vector3 vertex = m.MultiplyPoint(vertices[i]);
+                                vertex = Window.Camera.WorldToScreenPoint(vertex);
+                                vertex.z = 0;
+                                if (selectionBounds.Contains(vertex))
+                                {
+                                    select = true;
+                                    break;
+                                }
+                            }
+
+                           Destroy(bakedMesh);
+                        }
+                    }
+                    
                 }
             }
             else if (Method == BoxSelectionMethod.BoundsCenter)

@@ -8109,6 +8109,9 @@ MonoBehaviour:
   CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
+  CanRename: 1
+  CanCreatePrefab: 1
+  ShowSelectionGizmo: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!114 &1792287101373332074
