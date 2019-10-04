@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8756119970407778079
 RectTransform:
   m_ObjectHideFlags: 0
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_modal: {fileID: 0}
   m_mask: {fileID: 0}
   m_allowDragOutside: 0
-  m_minWidth: 202
+  m_minWidth: 340
   m_minHeight: 180
 --- !u!222 &1768449329013305083
 CanvasRenderer:
@@ -468,6 +468,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 405214360890007403, guid: 771c2d27e3e05db43b66f96a41a421cb,
+        type: 3}
+      propertyPath: m_FlexibleWidth
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 510146150953910229, guid: 771c2d27e3e05db43b66f96a41a421cb,
         type: 3}
@@ -1082,6 +1087,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645577452597855328, guid: 178ce42beed3f6c4fa423b5cb27cc51e,
+        type: 3}
+      propertyPath: m_minHeight
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645577452597855328, guid: 178ce42beed3f6c4fa423b5cb27cc51e,
+        type: 3}
+      propertyPath: m_minWidth
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645740806030775374, guid: 178ce42beed3f6c4fa423b5cb27cc51e,
+        type: 3}
+      propertyPath: m_MinWidth
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 7645740806030775374, guid: 178ce42beed3f6c4fa423b5cb27cc51e,
+        type: 3}
+      propertyPath: m_FlexibleWidth
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7534763698937918704, guid: 178ce42beed3f6c4fa423b5cb27cc51e,
         type: 3}

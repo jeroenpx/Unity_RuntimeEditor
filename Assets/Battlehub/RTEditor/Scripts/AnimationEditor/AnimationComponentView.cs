@@ -13,6 +13,9 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Button m_addPropertyButton = null;
 
+        [SerializeField]
+        private CanvasGroup m_addButtonCanvasGroup = null;
+
         private AnimationPropertyItem m_item;
         public AnimationPropertyItem Item
         {
@@ -27,29 +30,22 @@ namespace Battlehub.RTEditor
                     {
                         if (m_item.Parent == null)
                         {
-                            m_label.name = m_item.ComponentName;
+                            m_label.text = m_item.ComponentName;
                         }
                         else
                         {
-                            m_label.name = m_item.PropertyName;
+                            m_label.text = m_item.PropertyName;
                         }
                     }
 
                     if(m_addPropertyButton != null)
                     {
-                        m_addPropertyButton.gameObject.SetActive(m_item.Parent != null);
-                    }
-                }
-                else
-                {
-                    if (m_label != null)
-                    {
-                        m_label.gameObject.SetActive(false);
+                        m_addPropertyButton.interactable = m_item.Parent != null;
                     }
 
-                    if (m_addPropertyButton != null)
+                    if(m_addButtonCanvasGroup != null)
                     {
-                        m_addPropertyButton.gameObject.SetActive(false);
+                        m_addButtonCanvasGroup.alpha = m_item.Parent != null ? 1 : 0;
                     }
                 }
             }

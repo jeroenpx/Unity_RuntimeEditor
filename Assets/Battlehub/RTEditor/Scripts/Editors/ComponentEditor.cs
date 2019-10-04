@@ -45,6 +45,25 @@ namespace Battlehub.RTEditor
             }
         }
 
+        public Type ComponentMemberType
+        {
+            get
+            {
+                if (ComponentMemberInfo is PropertyInfo)
+                {
+                    PropertyInfo prop = (PropertyInfo)ComponentMemberInfo;
+                    return prop.PropertyType;
+                }
+                else if (ComponentMemberInfo is FieldInfo)
+                {
+                    FieldInfo field = (FieldInfo)ComponentMemberInfo;
+                    return field.FieldType;
+                }
+
+                return null;
+            }
+        }
+
 		public object Target;
         
         public PropertyDescriptor(string label, object target, MemberInfo memberInfo)
@@ -126,48 +145,22 @@ namespace Battlehub.RTEditor
 
     }
 
+    public class VoidComponentEditor : ComponentEditor
+    {
+        public override Component Component
+        {
+            get { return m_component; }
+            set { m_component = value; }
+        }
+
+        protected override void UpdateOverride()
+        {
+
+        }
+    }
 
     public class ComponentEditor : MonoBehaviour
     {
-        private static Dictionary<Type, IComponentDescriptor> m_componentDescriptors;
-        static ComponentEditor()
-        {
-            var type = typeof(IComponentDescriptor);
-
-#if !UNITY_WSA || UNITY_EDITOR
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract);
-#else
-            var types = type.GetTypeInfo().Assembly.GetTypes().
-                Where(p => type.IsAssignableFrom(p) && p.GetTypeInfo().IsClass);
-#endif
-
-            m_componentDescriptors = new Dictionary<Type, IComponentDescriptor>();
-            foreach (Type t in types)
-            {
-                IComponentDescriptor descriptor = (IComponentDescriptor)Activator.CreateInstance(t);
-                if (descriptor == null)
-                {
-                    Debug.LogWarningFormat("Unable to instantiate selector of type " + t.FullName);
-                    continue;
-                }
-                if (descriptor.ComponentType == null)
-                {
-                    Debug.LogWarningFormat("ComponentType is null. Selector Type {0}", t.FullName);
-                    continue;
-                }
-                if (m_componentDescriptors.ContainsKey(descriptor.ComponentType))
-                {
-                    Debug.LogWarningFormat("Duplicate selector for {0} found. Type name {1}. Using {2} instead", descriptor.ComponentType.FullName, descriptor.GetType().FullName, m_componentDescriptors[descriptor.ComponentType].GetType().FullName);
-                }
-                else
-                {
-                    m_componentDescriptors.Add(descriptor.ComponentType, descriptor);
-                }
-            }
-        }
-
         public PropertyEditorCallback EndEditCallback;
 
         [SerializeField]
@@ -203,8 +196,8 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private Component m_component;
-        public Component Component
+        protected Component m_component;
+        public virtual Component Component
         {
             get { return m_component; }
             set
@@ -216,43 +209,49 @@ namespace Battlehub.RTEditor
                 }
 
                 IComponentDescriptor componentDescriptor = GetComponentDescriptor();
+                if(EnabledEditor != null)
+                {
+                    PropertyInfo enabledProperty = EnabledProperty;
+                    if (enabledProperty != null && (componentDescriptor == null || componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton))
+                    {
+                        EnabledEditor.gameObject.SetActive(true);
+                        EnabledEditor.Init(Component, Component, enabledProperty, null, string.Empty, () => { },
+                            () =>
+                            {
+                                if (IsComponentEnabled)
+                                {
+                                    TryCreateGizmo(componentDescriptor);
+                                }
+                                else
+                                {
+                                    DestroyGizmo();
+                                }
+                            },
+                            () =>
+                            {
+                                if (EndEditCallback != null)
+                                {
+                                    EndEditCallback();
+                                }
+                            });
+                    }
+                    else
+                    {
+                        EnabledEditor.gameObject.SetActive(false);
+                    }
+                }
 
-                PropertyInfo enabledProperty = EnabledProperty;
-                if (enabledProperty != null && (componentDescriptor == null || componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton))
+              
+                if(Header != null)
                 {
-                    EnabledEditor.gameObject.SetActive(true);
-                    EnabledEditor.Init(Component, Component, enabledProperty, null, string.Empty, () => { },
-                        () =>
-                        {
-                            if(IsComponentEnabled)
-                            {
-                                TryCreateGizmo(componentDescriptor);
-                            }
-                            else
-                            {
-                                DestroyGizmo();
-                            }
-                        }, 
-                        () =>
-                        {
-                            if (EndEditCallback != null)
-                            {
-                                EndEditCallback();
-                            }
-                        });
-                }
-                else
-                {
-                    EnabledEditor.gameObject.SetActive(false);
-                }
-
-                if(componentDescriptor != null)
-                {
-                    Header.text = componentDescriptor.GetHeaderDescriptor(m_editor).DisplayName;
-                }
-                else
-                {
-                    Header.text = Component.GetType().Name;
+                    if (componentDescriptor != null)
+                    {
+                        Header.text = componentDescriptor.GetHeaderDescriptor(m_editor).DisplayName;
+                    }
+                    else
+                    {
+                        Header.text = Component.GetType().Name;
+                    }
                 }
                 
                 if(Expander != null)
@@ -261,7 +260,6 @@ namespace Battlehub.RTEditor
                 }
                 
                 BuildEditor();
-
             }
         }
 
@@ -415,34 +413,11 @@ namespace Battlehub.RTEditor
         protected IComponentDescriptor GetComponentDescriptor()
         {
             IComponentDescriptor componentDescriptor;
-            if (m_componentDescriptors.TryGetValue(Component.GetType(), out componentDescriptor))
+            if (m_editorsMap.ComponentDescriptors.TryGetValue(Component.GetType(), out componentDescriptor))
             {
                 return componentDescriptor;
             }
             return null;
-        }
-
-        private PropertyDescriptor[] GetDescriptors(object converter)
-        {
-            IComponentDescriptor componentDescriptor = GetComponentDescriptor();
-            if (componentDescriptor != null)
-            {
-                PropertyDescriptor[] properties = componentDescriptor.GetProperties(this, converter);
-                return properties;
-            }
-            else
-            {
-                if (Component.GetType().IsScript())
-                {
-                    FieldInfo[] serializableFields = Component.GetType().GetSerializableFields();
-                    return serializableFields.Select(f => new PropertyDescriptor(f.Name, Component, f, f)).ToArray();
-                }
-                else
-                {
-                    PropertyInfo[] properties = Component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToArray();
-                    return properties.Select(p => new PropertyDescriptor(p.Name, Component, p, p)).ToArray();
-                }
-            }
         }
 
         public void BuildEditor()
@@ -453,7 +428,7 @@ namespace Battlehub.RTEditor
                 m_converter = componentDescriptor.CreateConverter(this);
             }
 
-            PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
+            PropertyDescriptor[] descriptors = m_editorsMap.GetPropertyDescriptors(Component.GetType(), this, m_converter);
             if (descriptors == null || descriptors.Length == 0)
             {
                 if(ExpanderGraphics != null)
@@ -648,7 +623,7 @@ namespace Battlehub.RTEditor
             if (expanded)
             {
                 IComponentDescriptor componentDescriptor = GetComponentDescriptor();
-                PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
+                PropertyDescriptor[] descriptors = m_editorsMap.GetPropertyDescriptors(Component.GetType(), this, m_converter);
                 if(ExpanderGraphics != null)
                 {
                     ExpanderGraphics.SetActive(true);
@@ -710,8 +685,8 @@ namespace Battlehub.RTEditor
 
             bool isMonoBehavior = component is MonoBehaviour;
 
-            PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
-            for(int i = 0; i < descriptors.Length; ++i)
+            PropertyDescriptor[] descriptors = m_editorsMap.GetPropertyDescriptors(Component.GetType(), this, m_converter);
+            for (int i = 0; i < descriptors.Length; ++i)
             {
                 PropertyDescriptor descriptor = descriptors[i];
                 MemberInfo memberInfo = descriptor.ComponentMemberInfo;
@@ -775,7 +750,7 @@ namespace Battlehub.RTEditor
 
         private void OnRemove()
         {
-            PropertyDescriptor[] descriptors = GetDescriptors(m_converter);
+            PropertyDescriptor[] descriptors = m_editorsMap.GetPropertyDescriptors(Component.GetType(), this, m_converter);
             Editor.Undo.DestroyComponent(Component, descriptors.Select(d => d.ComponentMemberInfo).ToArray());
         }
     }

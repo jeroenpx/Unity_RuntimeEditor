@@ -125,7 +125,14 @@ namespace Battlehub.RTEditor
         {
             get
             {
-                return new EditorsMap();
+                
+                EditorsMap editorsMap = new EditorsMap();
+
+                GameObject voidComponentEditor = new GameObject("VoidComponentEditor");
+                voidComponentEditor.transform.SetParent(transform, false);
+                editorsMap.VoidComponentEditor  = voidComponentEditor.AddComponent<VoidComponentEditor>();
+
+                return editorsMap;
             }
         }
 

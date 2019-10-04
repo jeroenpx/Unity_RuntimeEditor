@@ -833,6 +833,10 @@ namespace Battlehub.RTEditor
             GameObject projectContent;
             wm.CreateWindow(RuntimeWindowType.Project.ToString(), out projectWd, out projectContent, out isDialog);
 
+            WindowDescriptor animationWd;
+            GameObject animationContent;
+            wm.CreateWindow(RuntimeWindowType.Animation.ToString(), out animationWd, out animationContent, out isDialog);
+
             LayoutInfo layout = new LayoutInfo(false,
                 new LayoutInfo(false,
                     new LayoutInfo(true,
@@ -841,7 +845,9 @@ namespace Battlehub.RTEditor
                         0.5f),
                     new LayoutInfo(true,
                         new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
-                        new LayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon),
+                        new LayoutInfo(
+                            new LayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon),
+                            new LayoutInfo(animationContent.transform, animationWd.Header, animationWd.Icon)),
                         0.75f),
                     0.25f),
                 new LayoutInfo(true,

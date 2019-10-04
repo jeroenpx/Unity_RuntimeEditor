@@ -2,6 +2,7 @@
 using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -14,7 +15,7 @@ namespace Battlehub.RTEditor
             set;
         }
 
-        GameObject Target
+        RuntimeAnimation Target
         {
             get;
             set;
@@ -33,12 +34,13 @@ namespace Battlehub.RTEditor
             set;
         }
 
-        public GameObject Target
+        public RuntimeAnimation Target
         {
             get;
             set;
         }
 
+        private VoidComponentEditor m_voidComponentEditor;
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
@@ -56,6 +58,8 @@ namespace Battlehub.RTEditor
                 m_propertiesTreeView.ItemDataBinding += OnItemDatabinding;
                 m_propertiesTreeView.ItemExpanding += OnItemExpanding;
             }
+
+             m_voidComponentEditor = gameObject.AddComponent<VoidComponentEditor>();
         }
 
         protected virtual void Start()
@@ -66,12 +70,54 @@ namespace Battlehub.RTEditor
                 m_parentDialog.IsOkVisible = true;
             }
 
-            //Type[] editableTypes = IOC.Resolve<IEditorsMap>().GetEditableTypes();
-
-            m_propertiesTreeView.Items = new[]
+            List<AnimationPropertyItem> components = new List<AnimationPropertyItem>();
+            IEditorsMap editorsMap = IOC.Resolve<IEditorsMap>();
+            Type[] editableTypes = editorsMap.GetEditableTypes();
+            for (int i = 0; i < editableTypes.Length; ++i)
             {
-                new AnimationPropertyItem()
-            };         
+                Type editableType = editableTypes[i];
+                if (!(typeof(Component).IsAssignableFrom(editableType)) || typeof(Component) == editableType)
+                {
+                    continue;
+                }
+                m_voidComponentEditor.Component = Target.GetComponent(editableType);
+                if(m_voidComponentEditor.Component == null)
+                {
+                    continue;
+                }
+
+                AnimationPropertyItem component = new AnimationPropertyItem();
+                component.ComponentName = editableType.Name;
+                component.ComponentType = editableType.FullName;
+                component.Children = new List<AnimationPropertyItem>();
+                
+                PropertyDescriptor[] propertyDescriptors = editorsMap.GetPropertyDescriptors(editableType, m_voidComponentEditor);
+                for (int j = 0; j < propertyDescriptors.Length; ++j)
+                {
+                    PropertyDescriptor propertyDescriptor = propertyDescriptors[j];
+                    Type memberType = propertyDescriptor.ComponentMemberType;
+                    if(memberType.IsClass || memberType.IsEnum)
+                    {
+                        continue;
+                    }
+
+                    AnimationPropertyItem property = new AnimationPropertyItem();
+                    property.Value = m_voidComponentEditor.Component;
+                    property.Parent = component;
+                    property.PropertyName = propertyDescriptor.Label;
+                    
+                    component.Children.Add(property);
+                }
+
+                if(component.Children.Count > 0)
+                {
+                    components.Add(component);
+                }
+
+                m_voidComponentEditor.Component = null;
+            }
+
+            m_propertiesTreeView.Items = components;
         }
 
         protected override void OnDestroyOverride()

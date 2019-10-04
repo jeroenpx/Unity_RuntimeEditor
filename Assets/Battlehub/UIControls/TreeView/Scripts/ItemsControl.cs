@@ -183,6 +183,7 @@ namespace Battlehub.UIControls
             get { return m_canReparent; }
             set { m_canReparent = value; }
         }
+
     }
 
 

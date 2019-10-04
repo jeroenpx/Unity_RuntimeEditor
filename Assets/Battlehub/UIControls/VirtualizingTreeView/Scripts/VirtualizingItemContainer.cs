@@ -24,7 +24,7 @@ namespace Battlehub.UIControls
         public bool CanSelect = true;
         [HideInInspector]
         public bool CanChangeParent = true;
-
+        
         public static event EventHandler Selected;
         public static event EventHandler Unselected;
         public static event VirtualizingItemEventHandler PointerDown;

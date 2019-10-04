@@ -208,6 +208,17 @@ namespace Battlehub.RTEditor
                             m_label.name = string.Format("{0} : {1}", m_item.Parent.PropertyName, m_item.PropertyName);
                         }
                     }
+
+                    if (m_addPropertyButton != null)
+                    {
+                        m_addPropertyButton.gameObject.SetActive(false);
+                    }
+
+
+                    if (m_selectionHighlight != null)
+                    {
+                        m_selectionHighlight.gameObject.SetActive(true);
+                    }
                 }
                 else
                 {
@@ -223,34 +234,22 @@ namespace Battlehub.RTEditor
                     {
                         m_label.gameObject.SetActive(false);
                     }
+
+                    if (m_addPropertyButton != null)
+                    {
+                        m_addPropertyButton.gameObject.SetActive(true);
+                    }
+
+                    if(m_selectionHighlight != null)
+                    {
+                        m_selectionHighlight.gameObject.SetActive(false);
+                    }
+
                 }
             }
         }
 
-        public bool IsAddPropertyButtonVisible
-        {
-            get
-            {
-                if(m_addPropertyButton != null)
-                {
-                    return m_addPropertyButton.gameObject.activeSelf;
-                }
-                return false;
-            }
-            set
-            {
-                if(m_addPropertyButton != null)
-                {
-                    m_addPropertyButton.gameObject.SetActive(value);
-                }
-
-                if(m_selectionHighlight != null)
-                {
-                    m_selectionHighlight.SetActive(value);
-                }
-            }
-        }
-
+   
         public AnimationPropertiesView View
         {
             get;

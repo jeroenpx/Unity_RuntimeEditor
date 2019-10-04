@@ -3,11 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Battlehub.RTCommon;
+using System.Reflection;
 
 namespace Battlehub.RTEditor
 {
     public interface IEditorsMap
     {
+        Dictionary<Type, IComponentDescriptor> ComponentDescriptors
+        {
+            get;
+        }
+
+        PropertyDescriptor[] GetPropertyDescriptors(Type componentType, ComponentEditor componentEditor = null, object converter = null);
+
         void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor);
         void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor);
         bool IsObjectEditorEnabled(Type type);
@@ -47,15 +55,98 @@ namespace Battlehub.RTEditor
             }
         }
 
+
         private GameObject m_defaultMaterialEditor;
         private Dictionary<Shader, MaterialEditorDescriptor> m_materialMap = new Dictionary<Shader, MaterialEditorDescriptor>();
         private Dictionary<Type, EditorDescriptor> m_map = new Dictionary<Type, EditorDescriptor>();
         private GameObject[] m_editors = new GameObject[0];
         private bool m_isLoaded = false;
+        private Dictionary<Type, IComponentDescriptor> m_componentDescriptors;
+        private ComponentEditor m_emptyComponentEditor;
+
+        public Dictionary<Type, IComponentDescriptor> ComponentDescriptors
+        {
+            get { return m_componentDescriptors; }
+        }
+
+        public ComponentEditor VoidComponentEditor
+        {
+            get;
+            set;
+        }
 
         public EditorsMap()
         {
+            var type = typeof(IComponentDescriptor);
+#if !UNITY_WSA || UNITY_EDITOR
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract);
+#else
+            var types = type.GetTypeInfo().Assembly.GetTypes().
+                Where(p => type.IsAssignableFrom(p) && p.GetTypeInfo().IsClass);
+#endif
+
+            m_componentDescriptors = new Dictionary<Type, IComponentDescriptor>();
+            foreach (Type t in types)
+            {
+                IComponentDescriptor descriptor = (IComponentDescriptor)Activator.CreateInstance(t);
+                if (descriptor == null)
+                {
+                    Debug.LogWarningFormat("Unable to instantiate selector of type " + t.FullName);
+                    continue;
+                }
+                if (descriptor.ComponentType == null)
+                {
+                    Debug.LogWarningFormat("ComponentType is null. Selector Type {0}", t.FullName);
+                    continue;
+                }
+                if (m_componentDescriptors.ContainsKey(descriptor.ComponentType))
+                {
+                    Debug.LogWarningFormat("Duplicate selector for {0} found. Type name {1}. Using {2} instead", descriptor.ComponentType.FullName, descriptor.GetType().FullName, m_componentDescriptors[descriptor.ComponentType].GetType().FullName);
+                }
+                else
+                {
+                    m_componentDescriptors.Add(descriptor.ComponentType, descriptor);
+                }
+            }
+
             LoadMap();
+        }
+
+        public PropertyDescriptor[] GetPropertyDescriptors(Type componentType, ComponentEditor componentEditor = null, object converter = null)
+        {
+            ComponentEditor editor = componentEditor != null ? componentEditor : VoidComponentEditor;
+
+            IComponentDescriptor componentDescriptor;
+            if(!ComponentDescriptors.TryGetValue(componentType, out componentDescriptor))
+            {
+                componentDescriptor = null;
+            }
+
+            if (componentDescriptor != null)
+            {
+                if (converter == null)
+                {
+                    converter = componentDescriptor.CreateConverter(editor);
+                }
+
+                PropertyDescriptor[] properties = componentDescriptor.GetProperties(editor, converter);
+                return properties;
+            }
+            else
+            {
+                if (componentType.IsScript())
+                {
+                    FieldInfo[] serializableFields = componentType.GetSerializableFields();
+                    return serializableFields.Select(f => new PropertyDescriptor(f.Name, editor.Component, f, f)).ToArray();
+                }
+                else
+                {
+                    PropertyInfo[] properties = componentType.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToArray();
+                    return properties.Select(p => new PropertyDescriptor(p.Name, editor.Component, p, p)).ToArray();
+                }
+            }
         }
 
         public void Reset()

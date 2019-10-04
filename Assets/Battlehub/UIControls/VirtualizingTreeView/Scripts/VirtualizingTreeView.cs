@@ -735,8 +735,8 @@ namespace Battlehub.UIControls
             {
                 return;
             }
-            TreeViewItemContainerData tvItem = (TreeViewItemContainerData)sender;
 
+            TreeViewItemContainerData tvItem = (TreeViewItemContainerData)sender;
             TreeViewItemContainerData oldParent = e.OldParent;
             if (DropMarker.Action != ItemDropAction.SetLastChild && DropMarker.Action != ItemDropAction.None)
             {
