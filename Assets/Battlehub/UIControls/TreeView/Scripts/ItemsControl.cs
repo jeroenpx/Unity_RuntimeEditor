@@ -184,6 +184,13 @@ namespace Battlehub.UIControls
             set { m_canReparent = value; }
         }
 
+        private bool m_canSelect = true;
+        public bool CanSelect
+        {
+            get { return m_canSelect; }
+            set { m_canSelect = value; }
+        }
+
     }
 
 

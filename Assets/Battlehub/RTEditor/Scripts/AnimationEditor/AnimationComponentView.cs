@@ -30,11 +30,11 @@ namespace Battlehub.RTEditor
                     {
                         if (m_item.Parent == null)
                         {
-                            m_label.text = m_item.ComponentName;
+                            m_label.text = m_item.ComponentDisplayName;
                         }
                         else
                         {
-                            m_label.text = m_item.PropertyName;
+                            m_label.text = m_item.PropertyDisplayName;
                         }
                     }
 
@@ -58,6 +58,12 @@ namespace Battlehub.RTEditor
             set;
         }
 
+        public AnimationSelectPropertiesDialog Dialog
+        {
+            get;
+            set;
+        }
+
         private void Awake()
         {
             UnityEventHelper.AddListener(m_addPropertyButton, button => button.onClick, OnAddPropertyButtonClick);
@@ -71,6 +77,8 @@ namespace Battlehub.RTEditor
         private void OnAddPropertyButtonClick()
         {
             View.AddProperty(Item);
+            Dialog.RemoveProperty(Item);
+
         }
     }
 }

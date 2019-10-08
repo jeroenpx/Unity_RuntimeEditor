@@ -715,6 +715,7 @@ namespace Battlehub.UIControls
                 treeViewItem.CanDrag = CanDrag && args.CanDrag;
                 treeViewItem.CanBeParent = args.CanBeParent;
                 treeViewItem.CanChangeParent = args.CanChangeParent;
+                treeViewItem.CanSelect = args.CanSelect;
                 treeViewItem.UpdateIndent();
             }
             else
@@ -725,6 +726,7 @@ namespace Battlehub.UIControls
                 treeViewItem.CanDrag = false;
                 treeViewItem.CanBeParent = false;
                 treeViewItem.CanChangeParent = false;
+                treeViewItem.CanSelect = false;
                 treeViewItem.UpdateIndent();
             }
         }

@@ -82,6 +82,7 @@ namespace Battlehub.UIControls
                 itemContainer.CanDrag = args.CanDrag;
                 itemContainer.CanBeParent = args.CanBeParent;
                 itemContainer.CanChangeParent = args.CanChangeParent;
+                itemContainer.CanSelect = args.CanSelect;
             }
             else
             {
@@ -89,6 +90,7 @@ namespace Battlehub.UIControls
                 itemContainer.CanDrag = false;
                 itemContainer.CanBeParent = false;
                 itemContainer.CanChangeParent = false;
+                itemContainer.CanSelect = false;
             }
         }
 
@@ -1112,7 +1114,6 @@ namespace Battlehub.UIControls
                 return;
             }
 
-           
             VirtualizingItemContainer.Unselected -= OnItemUnselected;
             if (CanMultiSelect)
             {
@@ -1135,7 +1136,6 @@ namespace Battlehub.UIControls
             {
                 SelectedIndex = IndexOf(((VirtualizingItemContainer)sender).Item);
             }
-           
             VirtualizingItemContainer.Unselected += OnItemUnselected;
         }
 

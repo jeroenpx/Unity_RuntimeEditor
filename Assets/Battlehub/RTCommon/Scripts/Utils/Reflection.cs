@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.ComponentModel;
 
 namespace Battlehub
 {
@@ -45,6 +46,27 @@ namespace Battlehub
                 }
             }
         }
+
+        public static bool TryConvert(this string input, Type type, out object result)
+        {
+            try
+            {
+                var converter = TypeDescriptor.GetConverter(type);
+                if (converter != null)
+                {
+                    result = converter.ConvertFromString(input);
+                    return true;
+                }
+                result = GetDefault(type);
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                result = GetDefault(type);
+                return false;
+            }
+        }
+
 
         public static object GetDefault(Type type)
         {
@@ -93,17 +115,15 @@ namespace Battlehub
 
         private static bool IsSerializable(this FieldInfo field)
         {
-            return (field.IsPublic || field.IsDefined(typeof(SerializeField), false))
-                && !field.IsDefined(typeof(SerializeIgnore), false);
-              //  && !(typeof(IList).IsAssignableFrom(field.FieldType) && field.FieldType.IsGenericType);
+            return (field.IsPublic || field.IsDefined(typeof(SerializeField), false)) && !field.IsDefined(typeof(SerializeIgnore), false);
         }
 
         private static bool IsSerializable(this PropertyInfo property)
         {
-            return (property.CanWrite && property.GetSetMethod(/*nonPublic*/ true).IsPublic &&
-                   property.CanRead && property.GetGetMethod(true).IsPublic || property.IsDefined(typeof(SerializeField), false))
-                && !property.IsDefined(typeof(SerializeIgnore), false);
-               // && !(typeof(IList).IsAssignableFrom(property.PropertyType) && property.PropertyType.IsGenericType);
+            return property.CanWrite && property.GetSetMethod(/*nonPublic*/ true).IsPublic &&
+                   property.CanRead && property.GetGetMethod(true).IsPublic &&
+                   !property.IsDefined(typeof(SerializeIgnore), false) &&
+                   property.GetIndexParameters().Length == 0;
         }
 
         public static Type[] GetAllFromCurrentAssembly()

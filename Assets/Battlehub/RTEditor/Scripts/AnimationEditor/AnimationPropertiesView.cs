@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -59,6 +60,8 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private GameObject m_blockUI = null;
+
+        private bool m_isStarted;
 
         public int m_selectedClipIndex;
         public RuntimeAnimationClip SelectedClip
@@ -138,6 +141,24 @@ namespace Battlehub.RTEditor
                             break;
                         }
                     }
+
+                    if (m_animationsDropDown != null)
+                    {
+                        List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < m_target.Clips.Length; ++i)
+                        {
+                            if (m_target.Clips[i] == null)
+                            {
+                                options.Add(new TMP_Dropdown.OptionData("(Missing)"));
+                            }
+                            else
+                            {
+                                options.Add(new TMP_Dropdown.OptionData(m_target.Clips[i].name));
+                            }
+                        }
+                        m_animationsDropDown.options = options;
+                        m_animationsDropDown.value = m_selectedClipIndex;
+                    }
                 }
 
                 if(m_canvasGroup != null)
@@ -154,6 +175,16 @@ namespace Battlehub.RTEditor
                         EventSystem.current.SetSelectedGameObject(null);
                     }
                 }
+
+                DataBind();
+            }
+        }
+
+        public AnimationPropertyItem[] Properties
+        {
+            get
+            {
+                return m_propertiesTreeView.Items.OfType<AnimationPropertyItem>().ToArray();
             }
         }
 
@@ -164,6 +195,8 @@ namespace Battlehub.RTEditor
 
         protected virtual void Start()
         {
+            m_isStarted = true;
+
             if (m_propertiesTreeView != null)
             {
                 m_propertiesTreeView.CanReorder = false;
@@ -173,38 +206,13 @@ namespace Battlehub.RTEditor
                 m_propertiesTreeView.CanMultiSelect = false;
                 m_propertiesTreeView.CanEdit = false;
 
-                m_propertiesTreeView.Items = new List<AnimationPropertyItem>
-                {
-                    m_empty
-                };
+                DataBind();
             }
         }
 
         protected virtual void OnDestroy()
         {
             Unsubscribe();
-        }
-
-        public void AddProperty(AnimationPropertyItem propertyItem)
-        {
-            if(propertyItem == null)
-            {
-                IWindowManager wm = IOC.Resolve<IWindowManager>();
-                IAnimationSelectPropertiesDialog selectPropertiesDialog = null;
-                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectAnimationProperties.ToString(), "Select Properties",
-                     (sender, args) => { }, (sender, args) => { }, 250, 250, 400, 400);
-                selectPropertiesDialog = IOC.Resolve<IAnimationSelectPropertiesDialog>();
-                selectPropertiesDialog.View = this;
-                selectPropertiesDialog.Target = Target;
-            }
-            else
-            {
-                propertyItem.Parent = null;
-                
-                propertyItem.TryToCreateChildren();
-
-                m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, propertyItem);
-            }
         }
 
         protected virtual void Subscribe()
@@ -215,6 +223,7 @@ namespace Battlehub.RTEditor
                 m_propertiesTreeView.ItemExpanding += OnPropertiesItemExpanding;
                 m_propertiesTreeView.SelectionChanged += OnPropertiesSelectionChanged;
                 m_propertiesTreeView.ItemsRemoving += OnPropertiesItemRemoving;
+                m_propertiesTreeView.ItemsRemoved += OnPropertiesItemRemoved;
             }
 
             UnityEventHelper.AddListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
@@ -240,6 +249,7 @@ namespace Battlehub.RTEditor
                 m_propertiesTreeView.ItemExpanding -= OnPropertiesItemExpanding;
                 m_propertiesTreeView.SelectionChanged -= OnPropertiesSelectionChanged;
                 m_propertiesTreeView.ItemsRemoving -= OnPropertiesItemRemoving;
+                m_propertiesTreeView.ItemsRemoved -= OnPropertiesItemRemoved;
             }
 
             UnityEventHelper.RemoveListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
@@ -257,19 +267,69 @@ namespace Battlehub.RTEditor
             UnityEventHelper.RemoveListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
+        private void DataBind()
+        {
+            if (!m_isStarted)
+            {
+                return;
+            }
+            m_propertiesTreeView.Items = new List<AnimationPropertyItem>
+            {
+                m_empty
+            };
+        }
+
+
+        public void AddProperty(AnimationPropertyItem propertyItem)
+        {
+            if (propertyItem == null)
+            {
+                IWindowManager wm = IOC.Resolve<IWindowManager>();
+                IAnimationSelectPropertiesDialog selectPropertiesDialog = null;
+                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectAnimationProperties.ToString(), "Select Properties",
+                     (sender, args) => { }, (sender, args) => { }, 250, 250, 400, 400);
+                selectPropertiesDialog = IOC.Resolve<IAnimationSelectPropertiesDialog>();
+                selectPropertiesDialog.View = this;
+                selectPropertiesDialog.Target = Target;
+            }
+            else
+            {
+                propertyItem = new AnimationPropertyItem(propertyItem);
+
+                propertyItem.Parent = null;
+                propertyItem.Children = null;
+
+                propertyItem.TryToCreateChildren();
+
+                m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, propertyItem);
+            }
+        }
+
         private void OnPropertiesSelectionChanged(object sender, SelectionChangedArgs e)
         {
-            
+           
         }
 
         private void OnPropertiesItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
-            
+            AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+            e.Children = item.Children;
         }
 
         private void OnPropertiesItemRemoving(object sender, ItemsCancelArgs e)
         {
-            e.Items.Remove(m_empty);
+            e.Items.Remove(m_empty);   
+        }
+
+        private void OnPropertiesItemRemoved(object sender, ItemsRemovedArgs e)
+        {
+            foreach(AnimationPropertyItem item in e.Items)
+            {
+                if(item.Parent != null)
+                {
+                    m_propertiesTreeView.RemoveChild(null, item.Parent);
+                }
+            }
         }
 
         private void OnPropertiesItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -281,14 +341,14 @@ namespace Battlehub.RTEditor
             if (m_empty != item)
             {
                 ui.Item = item;
+                e.CanSelect = true;
             }
             else
             {
                 ui.Item = null;
+                e.CanSelect = false;
             }
 
-
-            
             e.HasChildren = item.Children != null && item.Children.Count > 0;
         }
 

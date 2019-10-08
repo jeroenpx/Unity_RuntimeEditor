@@ -64,15 +64,18 @@ namespace Battlehub.RTEditor
                 animation = go.AddComponent<RuntimeAnimation>();
             }
 
+            RuntimeAnimationClip clip = ScriptableObject.CreateInstance<RuntimeAnimationClip>();
+            clip.name = "New Animation Clip";
+
             if (animation.Clips == null || animation.Clips.Length == 0)
             {
-                animation.Clips = new[] { ScriptableObject.CreateInstance<RuntimeAnimationClip>() };
+                animation.Clips = new[] { clip };
                 m_propertiesView.Target = animation;
             }
             else
             {
                 Debug.Assert(m_propertiesView.Target != null);
-                m_propertiesView.SelectedClip = ScriptableObject.CreateInstance<RuntimeAnimationClip>();
+                m_propertiesView.SelectedClip = clip;
             }
 
             UpdateVisualState();
