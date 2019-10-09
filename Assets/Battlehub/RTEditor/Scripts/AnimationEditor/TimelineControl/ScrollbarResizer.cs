@@ -80,37 +80,62 @@ namespace Battlehub.RTEditor
 
                 RectTransform slidingArea = (RectTransform)m_scrollbar.handleRect.parent;
                 float slidingAreaSize = slidingArea.rect.height;
+               
                 float slidingAreaSizeDelta = slidingArea.sizeDelta.y;
 
                 point.x = m_beginDragPoint.x;
                 
-
                 if(IsEnd)
-                {
+                {   
+                    float maxY = -slidingAreaSize + slidingAreaSizeDelta;
+                    if (point.y + m_beginDragPosition.y - m_beginDragPoint.y < maxY)
+                    {
+                        point.y = maxY - m_beginDragPosition.y + m_beginDragPoint.y;
+                    }
+
                     float offset = (m_beginDragPoint - point).y + slidingAreaSizeDelta;
                     float handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
-
                     float sizeRatio = handleSize / slidingAreaSize;
-                    sizeRatio = Mathf.Min(1, Mathf.Max(0.001f, sizeRatio));
-                    
+                    sizeRatio = Mathf.Min(0.99999f, Mathf.Max(0.00001f, sizeRatio));
                     handleSize = slidingAreaSize * sizeRatio;
-                    float newValue = 1 + m_other.Position.y / (slidingAreaSize - handleSize);
-                    
-
+                    float newValue;
+                    if (Mathf.Approximately(slidingAreaSize, handleSize))
+                    {
+                        newValue = 0;
+                        sizeRatio = 1;
+                    }
+                    else
+                    {
+                        newValue = 1 + m_other.Position.y / (slidingAreaSize - handleSize);
+                    }
+                     
                     m_scrollView.content.SetSizeWithCurrentAnchors(axis, viewportSize / sizeRatio);
                     m_scrollbar.value = newValue;
                 }
                 else
                 {
-                    float offset = (point - m_beginDragPoint).y + slidingAreaSizeDelta;
+                    float minY = 0;
+                    if(point.y + m_beginDragPosition.y - m_beginDragPoint.y > minY)
+                    {
+                        point.y = minY - m_beginDragPosition.y + m_beginDragPoint.y;
+                    }
 
+                    float offset = (point - m_beginDragPoint).y + slidingAreaSizeDelta;
                     float handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
                     float sizeRatio = handleSize / slidingAreaSize;
-                    sizeRatio = Mathf.Min(1, Mathf.Max(0.001f, sizeRatio));
-                    
+                    sizeRatio = Mathf.Min(0.99999f, Mathf.Max(0.00001f, sizeRatio));
                     handleSize = slidingAreaSize * sizeRatio;
-                    float newValue = 1 + (m_beginDragPosition.y - (m_beginDragPoint - point).y) / (slidingAreaSize - handleSize);
-                    
+                    float newValue;
+                    if (Mathf.Approximately(slidingAreaSize,  handleSize))
+                    {
+                        newValue = 0;
+                        sizeRatio = 1;
+                    }
+                    else
+                    {
+                        newValue = 1 + (m_beginDragPosition.y - (m_beginDragPoint - point).y) / (slidingAreaSize - handleSize);
+                    }
+
                     m_scrollView.content.SetSizeWithCurrentAnchors(axis, viewportSize / sizeRatio);
                     m_scrollbar.value = newValue;
 
