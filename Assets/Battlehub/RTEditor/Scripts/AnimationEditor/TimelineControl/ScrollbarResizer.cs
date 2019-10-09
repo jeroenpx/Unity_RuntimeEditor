@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class ScrollbarResizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
+    public class ScrollbarResizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler
     {
         private Scrollbar m_scrollbar;
         private RectTransform m_scrollbarRect;
@@ -20,7 +20,6 @@ namespace Battlehub.RTEditor
         private Vector2 m_beginDragPoint;
         private Vector2 m_beginDragPosition;
         private bool m_isDragging;
-
         
         private bool IsEnd
         {
@@ -33,6 +32,25 @@ namespace Battlehub.RTEditor
                 else if(m_scrollbar.direction == Scrollbar.Direction.LeftToRight)
                 {
                     return Position.x > m_other.Position.x;
+                }
+                else
+                {
+                    throw new System.NotSupportedException();
+                }
+            }
+        }
+
+        private bool IsVertical
+        {
+            get
+            {
+                if (m_scrollbar.direction == Scrollbar.Direction.BottomToTop)
+                {
+                    return true;
+                }
+                else if (m_scrollbar.direction == Scrollbar.Direction.LeftToRight)
+                {
+                    return false;
                 }
                 else
                 {
@@ -75,30 +93,65 @@ namespace Battlehub.RTEditor
             Vector2 point;
             if(RectTransformUtility.ScreenPointToLocalPointInRectangle(m_scrollbarRect, eventData.position, eventData.pressEventCamera, out point))
             {
-                RectTransform.Axis axis = RectTransform.Axis.Vertical;
-                float viewportSize = m_scrollView.viewport.rect.height;
-
                 RectTransform slidingArea = (RectTransform)m_scrollbar.handleRect.parent;
-                float slidingAreaSize = slidingArea.rect.height;
-               
-                float slidingAreaSizeDelta = slidingArea.sizeDelta.y;
 
-                point.x = m_beginDragPoint.x;
-                
-                if(IsEnd)
-                {   
-                    float maxY = -slidingAreaSize + slidingAreaSizeDelta;
-                    if (point.y + m_beginDragPosition.y - m_beginDragPoint.y < maxY)
+                RectTransform.Axis axis;
+                float viewportSize;
+                float slidingAreaSize;
+                float slidingAreaSizeDelta;
+                float offset;
+                if (IsVertical)
+                {
+                    axis = RectTransform.Axis.Vertical;
+                    viewportSize = m_scrollView.viewport.rect.height;
+                    slidingAreaSize = slidingArea.rect.height;
+                    slidingAreaSizeDelta = slidingArea.sizeDelta.y;
+                    point.x = m_beginDragPoint.x;
+                    point = ClampPoint(point, slidingAreaSize, slidingAreaSizeDelta);
+                    offset = (m_beginDragPoint - point).y;
+                    if(!IsEnd)
                     {
-                        point.y = maxY - m_beginDragPosition.y + m_beginDragPoint.y;
+                        offset = -offset;
                     }
+                }
+                else
+                {
+                    axis = RectTransform.Axis.Horizontal;
+                    viewportSize = m_scrollView.viewport.rect.width;
+                    slidingAreaSize = slidingArea.rect.width;
+                    slidingAreaSizeDelta = slidingArea.sizeDelta.x;
+                    point.y = m_beginDragPoint.y;
+                    point = ClampPoint(point, slidingAreaSize, slidingAreaSizeDelta);
+                    offset = (m_beginDragPoint - point).x;
+                    if(IsEnd)
+                    {
+                        offset = -offset;
+                    }
+                }
+                 
+                float sizeRatio;
+                float handleSize;
+                
+                GetHandleSizeAndSizeRatio(slidingAreaSize, offset + slidingAreaSizeDelta, out handleSize, out sizeRatio);
+                float newValue = GetNewValue(slidingAreaSize, handleSize, point, ref sizeRatio);
 
-                    float offset = (m_beginDragPoint - point).y + slidingAreaSizeDelta;
-                    float handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
-                    float sizeRatio = handleSize / slidingAreaSize;
-                    sizeRatio = Mathf.Min(0.99999f, Mathf.Max(0.00001f, sizeRatio));
-                    handleSize = slidingAreaSize * sizeRatio;
-                    float newValue;
+                m_scrollView.content.SetSizeWithCurrentAnchors(axis, viewportSize / sizeRatio);
+                m_scrollbar.value = newValue;
+            }
+        }
+
+        public static bool Approximately(float a, float b, float threshold = 0.0001f)
+        {
+            return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
+        }
+
+        private float GetNewValue(float slidingAreaSize, float handleSize, Vector2 point, ref float sizeRatio)
+        {
+            float newValue;
+            if (IsEnd)
+            {
+                if(IsVertical)
+                {
                     if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
                         newValue = 0;
@@ -108,25 +161,25 @@ namespace Battlehub.RTEditor
                     {
                         newValue = 1 + m_other.Position.y / (slidingAreaSize - handleSize);
                     }
-                     
-                    m_scrollView.content.SetSizeWithCurrentAnchors(axis, viewportSize / sizeRatio);
-                    m_scrollbar.value = newValue;
                 }
                 else
                 {
-                    float minY = 0;
-                    if(point.y + m_beginDragPosition.y - m_beginDragPoint.y > minY)
+                    if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
-                        point.y = minY - m_beginDragPosition.y + m_beginDragPoint.y;
+                        newValue = 0;
+                        sizeRatio = 1;
                     }
-
-                    float offset = (point - m_beginDragPoint).y + slidingAreaSizeDelta;
-                    float handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
-                    float sizeRatio = handleSize / slidingAreaSize;
-                    sizeRatio = Mathf.Min(0.99999f, Mathf.Max(0.00001f, sizeRatio));
-                    handleSize = slidingAreaSize * sizeRatio;
-                    float newValue;
-                    if (Mathf.Approximately(slidingAreaSize,  handleSize))
+                    else
+                    {
+                        newValue = m_other.Position.x / (slidingAreaSize - handleSize);
+                    }
+                }
+            }
+            else
+            {
+                if(IsVertical)
+                {
+                    if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
                         newValue = 0;
                         sizeRatio = 1;
@@ -135,35 +188,77 @@ namespace Battlehub.RTEditor
                     {
                         newValue = 1 + (m_beginDragPosition.y - (m_beginDragPoint - point).y) / (slidingAreaSize - handleSize);
                     }
-
-                    m_scrollView.content.SetSizeWithCurrentAnchors(axis, viewportSize / sizeRatio);
-                    m_scrollbar.value = newValue;
-
+                }
+                else
+                {
+                    if (Mathf.Approximately(slidingAreaSize, handleSize))
+                    {
+                        newValue = 0;
+                        sizeRatio = 1;
+                    }
+                    else
+                    {
+                        newValue = (m_beginDragPosition.x - (m_beginDragPoint - point).x) / (slidingAreaSize  - handleSize);
+                    }
                 }
             }
+
+            return newValue;
         }
 
-        public void OnDrop(PointerEventData eventData)
+        private Vector2 ClampPoint(Vector2 point, float slidingAreaSize, float slidingAreaSizeDelta)
         {
-            if (!m_isDragging)
+            if (IsEnd)
             {
-                return;
+                if (IsVertical)
+                {
+                    float maxY = -slidingAreaSize + slidingAreaSizeDelta;
+                    if (point.y + m_beginDragPosition.y - m_beginDragPoint.y < maxY)
+                    {
+                        point.y = maxY - m_beginDragPosition.y + m_beginDragPoint.y;
+                    }
+                }
+                else
+                {
+                    float maxX = slidingAreaSize - slidingAreaSizeDelta;
+                    if (point.x + m_beginDragPosition.x - m_beginDragPoint.x > maxX)
+                    {
+                        point.x = maxX - m_beginDragPosition.x + m_beginDragPoint.x;
+                    }
+                }
+                
+            }
+            else
+            {
+                if (IsVertical)
+                {
+                    float minY = 0;
+                    if (point.y + m_beginDragPosition.y - m_beginDragPoint.y > minY)
+                    {
+                        point.y = minY - m_beginDragPosition.y + m_beginDragPoint.y;
+                    }
+                }
+                else
+                {
+                    float minX = 0;
+                    if (point.x + m_beginDragPosition.x - m_beginDragPoint.x < minX)
+                    {
+                        point.x = minX - m_beginDragPosition.x + m_beginDragPoint.x;
+                    }
+                }
+                
             }
 
-            Debug.Log("Drop");
+            return point;
         }
 
-        public void OnEndDrag(PointerEventData eventData)
+        private void GetHandleSizeAndSizeRatio(float slidingAreaSize,  float offset, out float handleSize, out float sizeRatio)
         {
-            if (!m_isDragging)
-            {
-                return;
-            }
-
-            Debug.Log("EndDrag");
+            handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
+            sizeRatio = handleSize / slidingAreaSize;
+            sizeRatio = Mathf.Min(0.99999f, Mathf.Max(0.00001f, sizeRatio));
+            handleSize = slidingAreaSize * sizeRatio;
         }
-
-     
     }
 }
 

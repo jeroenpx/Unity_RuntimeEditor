@@ -45,10 +45,12 @@ namespace Battlehub.RTEditor
             {
                 RuntimeAnimation animation = Editor.Selection.activeGameObject.GetComponent<RuntimeAnimation>();
                 m_propertiesView.Target = animation;
+                m_timelineView.Target = animation;
             }
             else
             {
                 m_propertiesView.Target = null;
+                m_timelineView.Target = null;
             }
 
             UpdateVisualState();
@@ -71,6 +73,7 @@ namespace Battlehub.RTEditor
             {
                 animation.Clips = new[] { clip };
                 m_propertiesView.Target = animation;
+                m_timelineView.Target = animation;
             }
             else
             {

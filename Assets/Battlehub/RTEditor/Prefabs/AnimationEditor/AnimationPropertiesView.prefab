@@ -939,7 +939,7 @@ MonoBehaviour:
   m_MinWidth: 240
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: 21
+  m_PreferredHeight: 18
   m_FlexibleWidth: -1
   m_FlexibleHeight: 0
   m_LayoutPriority: 1
@@ -2264,6 +2264,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AddKeyframeButton
       objectReference: {fileID: 0}
+    - target: {fileID: 1060215512980641389, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
+        type: 3}
+      propertyPath: Name
+      value: AddKeyframeButton
+      objectReference: {fileID: 0}
     - target: {fileID: 3346728406367875146, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2373,11 +2378,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_PreferredWidth
       value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1060215512980641389, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
-        type: 3}
-      propertyPath: Name
-      value: AddKeyframeButton
       objectReference: {fileID: 0}
     - target: {fileID: 7286595525160945382, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
         type: 3}
@@ -2788,6 +2788,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnimationPropertiesToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 438794745683833396, guid: 1ca02c164c33fae4cb94fa35865be583,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 4497075798028339634}
     - target: {fileID: 332630266450714622, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2893,11 +2898,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 438794745683833396, guid: 1ca02c164c33fae4cb94fa35865be583,
-        type: 3}
-      propertyPath: m_Group
-      value: 
-      objectReference: {fileID: 4497075798028339634}
     - target: {fileID: 6915802337646952570, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -3160,6 +3160,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 8413239083265563857, guid: 1ca02c164c33fae4cb94fa35865be583,
+        type: 3}
+      propertyPath: m_PreferredWidth
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 332630266450714622, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3264,11 +3269,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8413239083265563857, guid: 1ca02c164c33fae4cb94fa35865be583,
-        type: 3}
-      propertyPath: m_PreferredWidth
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5142481191497601883, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
@@ -4055,6 +4055,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 438794745683833396, guid: 1ca02c164c33fae4cb94fa35865be583,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 4497075798028339634}
+    - target: {fileID: 438794745683833396, guid: 1ca02c164c33fae4cb94fa35865be583,
+        type: 3}
+      propertyPath: m_IsOn
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 332630266450714622, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4160,16 +4170,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 438794745683833396, guid: 1ca02c164c33fae4cb94fa35865be583,
-        type: 3}
-      propertyPath: m_Group
-      value: 
-      objectReference: {fileID: 4497075798028339634}
-    - target: {fileID: 438794745683833396, guid: 1ca02c164c33fae4cb94fa35865be583,
-        type: 3}
-      propertyPath: m_IsOn
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6915802337646952570, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -4226,6 +4226,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RecordToggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8413239083265563857, guid: 1ca02c164c33fae4cb94fa35865be583,
+        type: 3}
+      propertyPath: m_PreferredWidth
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 332630266450714622, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
@@ -4331,11 +4336,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8413239083265563857, guid: 1ca02c164c33fae4cb94fa35865be583,
-        type: 3}
-      propertyPath: m_PreferredWidth
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5142481191497601883, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
@@ -4539,6 +4539,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AddEventButton
       objectReference: {fileID: 0}
+    - target: {fileID: 1060215512980641389, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
+        type: 3}
+      propertyPath: Name
+      value: AddKeyframeButton
+      objectReference: {fileID: 0}
     - target: {fileID: 3346728406367875146, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4658,11 +4663,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_PreferredWidth
       value: 19
-      objectReference: {fileID: 0}
-    - target: {fileID: 1060215512980641389, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
-        type: 3}
-      propertyPath: Name
-      value: AddKeyframeButton
       objectReference: {fileID: 0}
     - target: {fileID: 7286595525160945382, guid: 4cad3cdd6986d3a4b92d9262171a3f24,
         type: 3}
@@ -4931,6 +4931,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PreviewToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 8413239083265563857, guid: 1ca02c164c33fae4cb94fa35865be583,
+        type: 3}
+      propertyPath: m_PreferredWidth
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 332630266450714622, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5035,11 +5040,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8413239083265563857, guid: 1ca02c164c33fae4cb94fa35865be583,
-        type: 3}
-      propertyPath: m_PreferredWidth
-      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6915802337646952570, guid: 1ca02c164c33fae4cb94fa35865be583,
         type: 3}

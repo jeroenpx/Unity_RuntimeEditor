@@ -287,6 +287,130 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 0100000002000000010000000100000002000000010000000200000001000000010000000100000002000000010000000200000001000000020000000100000002000000020000000200000001000000020000000100000001000000010000000100000001000000
     IsHidden: 0000000000000000000000000000000000000000000001010101
+  - Name: Battlehub/RTBuilder/EdgePicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Battlehub/RTBuilder/FaceHighlight
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color Tint
+    - Dithering
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Dither
+    - _HandleZTest
+    PropertyTypes: 000000000200000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Battlehub/RTBuilder/FacePicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Battlehub/RTBuilder/LineBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 7
+      Min: 0
+      Max: 20
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Battlehub/RTBuilder/PointBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 7
+      Min: 0
+      Max: 20
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Battlehub/RTBuilder/SelectionPicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Battlehub/RTBuilder/VertexPicker
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
+  - Name: Battlehub/RTBuilder/VertexShader
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Scale
+    - Color
+    - _HandleZTest
+    PropertyNames:
+    - _Scale
+    - _Color
+    - _HandleZTest
+    PropertyTypes: 030000000000000002000000
+    PropertyRangeLimits:
+    - Def: 3.3
+      Min: 1
+      Max: 7
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
   - Name: Battlehub/RTCommon/Billboard
     PropertyCount: 2
     PropertyDescriptions:
@@ -386,6 +510,24 @@ MonoBehaviour:
       Max: 1
     PropertyTexDims: 01000000020000000100000001000000
     IsHidden: 00000000
+  - Name: Battlehub/RTEditor/Unlit/TextureInstanced
+    PropertyCount: 2
+    PropertyDescriptions:
+    - Color
+    - Base (RGB)
+    PropertyNames:
+    - _Color
+    - _MainTex
+    PropertyTypes: 0000000004000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0100000002000000
+    IsHidden: 0000
   - Name: Battlehub/RTGizmos/Handles
     PropertyCount: 7
     PropertyDescriptions:
@@ -429,26 +571,41 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 01000000010000000100000001000000010000000100000001000000
     IsHidden: 00000000000000
+  - Name: Battlehub/RTHandles/BoxSelectionShader
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
   - Name: Battlehub/RTHandles/Grid
-    PropertyCount: 7
+    PropertyCount: 9
     PropertyDescriptions:
+    - Color
     - ZWrite
     - ZTest
     - Cull
     - FadeDistance
+    - CameraSize
     - Stencil Comparison
     - Stencil ID
     - Stencil Operation
     PropertyNames:
+    - _GridColor
     - _ZWrite
     - _ZTest
     - _Cull
     - _FadeDistance
+    - _CameraSize
     - _StencilComp
     - _Stencil
     - _StencilOp
-    PropertyTypes: 02000000020000000200000002000000020000000200000002000000
+    PropertyTypes: 000000000200000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -461,6 +618,9 @@ MonoBehaviour:
     - Def: 50
       Min: 0
       Max: 0
+    - Def: 1
+      Min: 0
+      Max: 0
     - Def: 5
       Min: 0
       Max: 0
@@ -470,8 +630,8 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000
-    IsHidden: 00000000000000
+    PropertyTexDims: 010000000100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 000000000000000000
   - Name: Battlehub/RTHandles/Models/ArrowShader
     PropertyCount: 1
     PropertyDescriptions:
@@ -715,6 +875,52 @@ MonoBehaviour:
       Min: 0
       Max: 0
     PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Battlehub/RTTerrain/Projectors/Default
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Tint Color
+    - Falloff
+    - Cookie
+    PropertyNames:
+    - _Color
+    - _Attenuation
+    - _ShadowTex
+    PropertyTypes: 000000000300000004000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 1
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000002000000
+    IsHidden: 000000
+  - Name: Battlehub/RTTerrain/Unlit/TerrainHandleShader
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Texture
+    - ZTest
+    PropertyNames:
+    - _Color
+    - _MainTex
+    - _ZTest
+    PropertyTypes: 000000000400000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000200000001000000
     IsHidden: 000000
   - Name: Battlehub/UIControls/DepthMask
     PropertyCount: 9
@@ -1875,18 +2081,13 @@ MonoBehaviour:
     PropertyTexDims: 010000000100000001000000
     IsHidden: 000000
   - Name: Hidden/ProBuilder/FacePicker
-    PropertyCount: 1
-    PropertyDescriptions:
-    - Tint
-    PropertyNames:
-    - _Tint
-    PropertyTypes: 00000000
-    PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
-    IsHidden: 00
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
   - Name: Hidden/ProBuilder/HideVertices
     PropertyCount: 0
     PropertyDescriptions: []
@@ -2042,6 +2243,52 @@ MonoBehaviour:
     - Def: 1
       Min: 1
       Max: 1
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Hidden/RTHandles/LineBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 7
+      Min: 0
+      Max: 20
+    - Def: 8
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000100000001000000
+    IsHidden: 000000
+  - Name: Hidden/RTHandles/PointBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 1
+      Min: 1
+      Max: 1
+    - Def: 7
+      Min: 0
+      Max: 20
     - Def: 8
       Min: 0
       Max: 0
@@ -2489,6 +2736,24 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
     IsHidden: 000000000000000000
+  - Name: Hidden/UnityOutline
+    PropertyCount: 2
+    PropertyDescriptions:
+    - Main Texture
+    - Alpha cutoff
+    PropertyNames:
+    - _MainTex
+    - _Cutoff
+    PropertyTypes: 0400000003000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.01
+      Min: 0
+      Max: 1
+    PropertyTexDims: 0200000001000000
+    IsHidden: 0000
   - Name: Hidden/VideoDecode
     PropertyCount: 3
     PropertyDescriptions:
