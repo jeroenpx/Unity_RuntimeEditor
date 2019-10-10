@@ -72,8 +72,12 @@ namespace Battlehub.RTCommon
 
         private Camera m_camera;
         private RawImage m_output;
-        private RectTransformChangeListener m_rectTransformChangeListener;
-
+        public RawImage Output
+        {
+            get { return m_output; }
+            set { m_output = value; }
+        }
+        
         public RectTransform RectTransform
         {
             get { return m_output.rectTransform; }
@@ -95,40 +99,49 @@ namespace Battlehub.RTCommon
         private void Awake()
         {
             m_camera = GetComponent<Camera>();
-            if(!m_fullscreen)
+            if (!m_fullscreen)
             {
                 m_camera.rect = new Rect(0, 0, 1, 1);
             }
 
-            GameObject outputGo = new GameObject(m_camera.name + " Output");
-            outputGo.SetActive(false);
-
-            
-            m_output = outputGo.AddComponent<RawImage>();
-            m_output.raycastTarget = false;
-            if(m_overlayMaterial != null)
+            GameObject outputGo = null;
+            if (m_output == null)
             {
-                m_output.material = m_overlayMaterial;
+                outputGo = new GameObject(m_camera.name + " Output");
+                outputGo.SetActive(false);
+
+                m_output = outputGo.AddComponent<RawImage>();
+                m_output.raycastTarget = false;
+
+                if (m_overlayMaterial != null)
+                {
+                    m_output.material = m_overlayMaterial;
+                }
+
+                RectTransform rt = outputGo.GetComponent<RectTransform>();
+                rt.SetParent(m_outputRoot, false);
+                rt.anchorMin = new Vector2(0, 0);
+                rt.anchorMax = new Vector2(1, 1);
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+                rt.pivot = Vector2.zero;
             }
-            
-            RectTransform rt = outputGo.GetComponent<RectTransform>();
-            rt.SetParent(m_outputRoot, false);
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
-            rt.pivot = Vector2.zero;
-            
+            else
+            {
+                m_outputRoot = m_output.rectTransform;
+            }
+
+
             m_canvas = m_outputRoot.GetComponentInParent<Canvas>();
             m_canvasScaler = m_outputRoot.GetComponentInParent<CanvasScaler>();
 
             ResizeRenderTexture();
             ResizeOutput();
 
-            m_rectTransformChangeListener = outputGo.AddComponent<RectTransformChangeListener>();
-            m_rectTransformChangeListener.RectTransformChanged += OnRectTransformChanged;
-
-            outputGo.SetActive(true);
+            if (outputGo != null)
+            {
+                outputGo.SetActive(true);
+            }
         }
 
 
@@ -140,10 +153,6 @@ namespace Battlehub.RTCommon
                 m_camera.targetTexture = null;
             }
 
-            if (m_rectTransformChangeListener != null)
-            {
-                m_rectTransformChangeListener.RectTransformChanged -= OnRectTransformChanged;
-            }
 
             if (m_output != null)
             {
@@ -151,16 +160,15 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void OnRectTransformChanged()
-        {
-            //ResizeOutput();
-            //ResizeRenderTexture();
-        }
-
         private void LateUpdate()
         {
+            TryResizeRenderTexture();
+        }
+
+        public bool TryResizeRenderTexture(bool canResizeOutput = true)
+        {
             bool resizeRenderTexture = m_outputRect != m_output.rectTransform.rect || m_screenWidth != Screen.width || m_screenHeight != Screen.height;
-            bool resizeOutput = resizeRenderTexture || m_output.rectTransform.position != m_position;
+            bool resizeOutput = canResizeOutput && (resizeRenderTexture || m_output.rectTransform.position != m_position);
 
             if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             {
@@ -169,8 +177,6 @@ namespace Battlehub.RTCommon
                     resizeOutput = true;
                 }
             }
-
-           
 
             if (resizeRenderTexture)
             {
@@ -181,6 +187,8 @@ namespace Battlehub.RTCommon
             {
                 ResizeOutput();
             }
+
+            return resizeRenderTexture || resizeOutput;
         }
 
         private void ResizeRenderTexture()

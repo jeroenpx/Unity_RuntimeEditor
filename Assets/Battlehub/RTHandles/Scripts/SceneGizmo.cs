@@ -290,7 +290,7 @@ namespace Battlehub.RTHandles
         {
             if(m_camera == camera)
             {
-                Appearance.DoSceneGizmo(camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_xAlpha, m_yAlpha, m_zAlpha);
+                Appearance.DoSceneGizmo(camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Size.y * Appearance.SceneGizmoScale / 96, m_textColor, m_xAlpha, m_yAlpha, m_zAlpha);
             }
         }
 #endif

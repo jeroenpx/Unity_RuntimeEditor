@@ -5,13 +5,13 @@ namespace Battlehub.RTEditor
     public class AnimationTimelineView : MonoBehaviour
     {
         [SerializeField]
-        private GameObject m_timeline;
+        private GameObject m_timeline = null;
 
         [SerializeField]
-        private TimelineControl m_dopesheet;
+        private TimelineControl m_dopesheet = null;
 
         [SerializeField]
-        private TimelineControl m_curves;
+        private TimelineControl m_curves = null;
 
         public bool IsDopesheet
         {

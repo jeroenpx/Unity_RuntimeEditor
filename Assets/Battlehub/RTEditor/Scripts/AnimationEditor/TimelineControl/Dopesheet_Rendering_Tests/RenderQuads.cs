@@ -22,8 +22,24 @@ public class RenderQuads : MonoBehaviour
 
     private CommandBuffer m_commandBuffer;
 
+    [SerializeField]
+    private AnimationClip clip;
+
     private void Awake()
     {
+        clip.legacy = true;
+
+        // create a curve to move the GameObject and assign to the clip
+        Keyframe[] keys;
+        keys = new Keyframe[3];
+        keys[0] = new Keyframe(0.0f, 0.0f);
+        keys[1] = new Keyframe(1.0f, 1.5f);
+        keys[2] = new Keyframe(2.0f, 0.0f);
+        AnimationCurve curve = new AnimationCurve(keys);
+        clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
+
+        return;
+
         m_matrices = new Matrix4x4[m_batchSize];
 
         m_camera.enabled = false;
