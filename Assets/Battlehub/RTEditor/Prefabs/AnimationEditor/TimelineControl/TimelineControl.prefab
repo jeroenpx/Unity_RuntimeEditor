@@ -123,7 +123,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 200}
+  m_SizeDelta: {x: 600, y: 200}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6064613261347071273
 CanvasRenderer:
@@ -174,6 +174,7 @@ GameObject:
   - component: {fileID: 1006041478811872930}
   - component: {fileID: 3209707820177397489}
   - component: {fileID: 171865951523696618}
+  - component: {fileID: 2104758609114540143}
   m_Layer: 5
   m_Name: Scrollbar Vertical
   m_TagString: Untagged
@@ -278,7 +279,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1006041480651811985}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.81
+  m_Size: 0.9
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -311,6 +312,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: ScrollBarBackgroundColor
+--- !u!114 &2104758609114540143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006041478811872928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2331cfc8aa43d40a4cfe61f71bccb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1006041479696984565
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,6 +578,7 @@ GameObject:
   - component: {fileID: 1006041480087552398}
   - component: {fileID: 7982600311314670389}
   - component: {fileID: 5946511201546653796}
+  - component: {fileID: 8634593538926264492}
   m_Layer: 5
   m_Name: Scrollbar Horizontal
   m_TagString: Untagged
@@ -669,7 +683,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1006041480037052664}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.91
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -702,6 +716,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: ScrollBarBackgroundColor
+--- !u!114 &8634593538926264492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006041480087552396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f2331cfc8aa43d40a4cfe61f71bccb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1006041480144311844
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,7 +764,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 200}
+  m_SizeDelta: {x: 600, y: 200}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8134130868172469820
 CanvasRenderer:

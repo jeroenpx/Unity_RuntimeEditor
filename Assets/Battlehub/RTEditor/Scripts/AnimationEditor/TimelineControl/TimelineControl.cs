@@ -1,8 +1,8 @@
-﻿#define USE_RTE
+﻿//#define USE_RTE
 
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
-using System.Collections;
+using Battlehub.UIControls.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,8 +23,18 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Color m_backgroundColor = new Color32(0x27, 0x27, 0x27, 0xFF);
 
+        //Visible interval (seconds - x axis, units - y axis)
+        private Vector2 m_interval = Vector2.one;
+        
         private TimelineGrid m_timelineGrid;
+        private TimelineGridParameters m_timelineGridParams;
+        private DragAndDropListener m_hScrollbarListener;
+        private DragAndDropListener m_vScrollbarListener;
+        private bool m_hScrollValue;
+        private bool m_vScrollValue;
+
 #if USE_RTE
+        private RuntimeWindow m_window;
         private IRTE m_editor;
 #endif
 
@@ -33,6 +43,11 @@ namespace Battlehub.RTEditor
             m_scrollRect = GetComponentInChildren<ScrollRect>(true);
             m_scrollRect.scrollSensitivity = 0;
             m_scrollRect.onValueChanged.AddListener(OnInitScrollRectValueChanged);
+
+            m_hScrollbarListener = m_scrollRect.horizontalScrollbar.GetComponentInChildren<DragAndDropListener>(true);
+            m_vScrollbarListener = m_scrollRect.verticalScrollbar.GetComponentInChildren<DragAndDropListener>(true);
+            m_hScrollbarListener.Drop += OnHorizontalScrollbarDrop;
+            m_vScrollbarListener.Drop += OnVerticalScrolbarDrop;
 
             if (m_fixedHeight > -1)
             {
@@ -56,6 +71,7 @@ namespace Battlehub.RTEditor
 
 #if USE_RTE
             m_editor = IOC.Resolve<IRTE>();
+            m_window = GetComponentInParent<RuntimeWindow>();
             cameraGo.transform.SetParent(m_editor.Root, false);
 #endif
 
@@ -76,6 +92,11 @@ namespace Battlehub.RTEditor
 
             m_timelineGrid = m_output.gameObject.AddComponent<TimelineGrid>();
             m_timelineGrid.Init(m_camera);
+            m_timelineGridParams = new TimelineGridParameters();
+            m_timelineGridParams.VerticalLinesCount = 13;
+            m_timelineGridParams.HorizontalLinesCount = 2;
+            m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
+            m_timelineGrid.SetGridParameters(m_timelineGridParams);
 
             RenderGraphics();
         }
@@ -92,7 +113,16 @@ namespace Battlehub.RTEditor
                 m_scrollRect.onValueChanged.AddListener(OnInitScrollRectValueChanged);
                 m_scrollRect.onValueChanged.RemoveListener(OnScrollRectValueChanged);
             }
-
+            if(m_hScrollbarListener != null)
+            {
+                m_hScrollbarListener.Drop -= OnHorizontalScrollbarDrop;
+            }
+            
+            if(m_hScrollbarListener != null)
+            {
+                m_vScrollbarListener.Drop -= OnVerticalScrolbarDrop;
+            }
+            
             if (m_camera != null)
             {
                 Destroy(m_camera.gameObject);
@@ -109,6 +139,23 @@ namespace Battlehub.RTEditor
         private void OnScrollRectValueChanged(Vector2 value)
         {
             RenderGraphics();
+        }
+
+        private void OnVerticalScrolbarDrop(UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            if(m_interval.y > 1)
+            {
+                Debug.Log("VeticalScrollbarDrop");
+            }
+            
+        }
+
+        private void OnHorizontalScrollbarDrop(UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            if(m_interval.x > 1)
+            {
+                Debug.Log("HorizontalScrollbarDrop");
+            }
         }
 
         private void OnRectTransformChanged()
@@ -130,7 +177,51 @@ namespace Battlehub.RTEditor
         
         private void LateUpdate()
         {
+            #if USE_RTE
+            if(m_editor.ActiveWindow != m_window)
+            {
+                return;
+            }
+            #endif
+            
+            bool renderGraphics = false;
             if (m_rtCamera.TryResizeRenderTexture(false))
+            {
+                renderGraphics = true;
+            }
+
+            Vector2 delta = ChangeInterval();
+            if (delta != Vector2.zero)
+            {
+                if(delta.x < 0 || delta.y < 0)
+                {
+                    Vector2 newInterval = m_interval - delta;
+                    newInterval.x = Mathf.Clamp(newInterval.x, 1.0f / 60.0f, 3600.0f); //at 60 samples per second
+                    newInterval.y = Mathf.Clamp(newInterval.y, 0.01f, 10000.0f); //TODO: handle negative values
+                    if (newInterval != m_interval)
+                    {
+                        m_interval = newInterval;
+                        renderGraphics = true;
+                    }
+                }
+                else
+                {
+                    if(delta.x > 0)
+                    {
+                        m_scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_scrollRect.content.rect.width + m_scrollRect.viewport.rect.width * 0.1f);
+                        m_scrollRect.horizontalNormalizedPosition = 0.9999f;
+                        renderGraphics = true;
+                    }
+                    else if(delta.y > 0)
+                    {
+                        m_scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_scrollRect.content.rect.height + m_scrollRect.viewport.rect.height * 0.1f);
+                        m_scrollRect.verticalNormalizedPosition = 0.0001f;
+                        renderGraphics = true;
+                    }
+                }
+            }
+
+            if(renderGraphics)
             {
                 RenderGraphics();
             }
@@ -153,14 +244,37 @@ namespace Battlehub.RTEditor
             contentSize.y = Mathf.Max(contentSize.y, Mathf.Epsilon);
 
             float verticalScale = (m_fixedHeight > -1) ? m_fixedHeight / contentSize.y : 1;
-
-            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, verticalScale);
+            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, m_interval - Vector2.one, verticalScale);
 
             m_camera.enabled = true;
             m_camera.Render();
             m_camera.enabled = false;
         }
 
+
+        protected virtual Vector2 ChangeInterval()
+        {
+#if USE_RTE
+            if(!m_window.IsPointerOver)
+            {
+                return Vector2.zero;
+            }
+
+            float delta = m_editor.Input.GetAxis(InputAxis.Z);
+            if(m_editor.Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                return new Vector2(0, delta);
+            }
+            return new Vector2(delta, 0);
+#else
+            float delta = Input.GetAxis("Mouse ScrollWheel");
+            if(Input.GetKey(KeyCode.LeftAlt))
+            {
+                return new Vector2(0, delta);
+            }
+            return new Vector2(delta, 0);
+#endif
+        }
         
     }
 }

@@ -527,7 +527,7 @@ namespace Battlehub.RTCommon
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Init()
         {
-            Debug.Log("RTE Initialized");
+            Debug.Log("RTE Initialized, 2_1_v");
             IOC.RegisterFallback<IRTE>(RegisterRTE);
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
