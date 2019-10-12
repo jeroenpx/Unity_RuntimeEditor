@@ -32,7 +32,7 @@ namespace Battlehub.RTEditor
         private Material m_hGridMaterial1;
         private Material m_hGridMaterial2;
         
-        private const int k_Lines = 5;
+        public const int k_Lines = 5;
         private const float k_FadeBeginPixels = 10;
         private const float k_FadeOutPixels = 2;
 
@@ -170,8 +170,8 @@ namespace Battlehub.RTEditor
             interval.y %= k_FadeBeginPixels / k_FadeOutPixels - 1;
             interval += Vector2.one;
 
-            float vSpace = viewportSize.x / (vLinesCount * interval.x);
-            float hSpace = viewportSize.y / (hLinesCount * interval.y);
+            float vSpace = contentSize.x / (vLinesCount * interval.x);
+            float hSpace = contentSize.y / (hLinesCount * interval.y);
             scale.x *= contentScale.x / interval.x;
             scale.y *= contentScale.y / interval.y;
 
@@ -191,8 +191,6 @@ namespace Battlehub.RTEditor
             
             vLineColor.a = Lerp(vLineColor.a, 0, Alpha(vSpace / k_Lines));
             hLineColor.a = Lerp(hLineColor.a, 0, Alpha(hSpace / k_Lines));
-
-            Debug.Log(vLineColor.a);
 
             m_vgridMaterial2.color = vLineColor;
             m_hGridMaterial2.color = hLineColor;

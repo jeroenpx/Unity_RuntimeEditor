@@ -5,13 +5,16 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class ScrollbarResizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler
+    public class ScrollbarResizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
+        public const float k_minValue = 0.0001f;
+        public const float k_maxValue = 0.9999f;
+
         private Scrollbar m_scrollbar;
         private RectTransform m_scrollbarRect;
         private ScrollbarResizer m_other;
         private ScrollRect m_scrollView;
-
+        
         private Vector2 Position
         {
             get { return m_scrollbarRect.InverseTransformPoint(transform.TransformPoint(Vector3.zero)); }
@@ -140,11 +143,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public static bool Approximately(float a, float b, float threshold = 0.0001f)
-        {
-            return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= threshold;
-        }
-
         private float GetNewValue(float slidingAreaSize, float handleSize, Vector2 point, ref float sizeRatio)
         {
             float newValue;
@@ -155,7 +153,7 @@ namespace Battlehub.RTEditor
                     if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
                         newValue = 0;
-                        sizeRatio = 1;
+                        sizeRatio = k_maxValue;
                     }
                     else
                     {
@@ -167,7 +165,7 @@ namespace Battlehub.RTEditor
                     if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
                         newValue = 0;
-                        sizeRatio = 1;
+                        sizeRatio = k_maxValue;
                     }
                     else
                     {
@@ -182,7 +180,7 @@ namespace Battlehub.RTEditor
                     if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
                         newValue = 0;
-                        sizeRatio = 1;
+                        sizeRatio = k_maxValue;
                     }
                     else
                     {
@@ -194,7 +192,7 @@ namespace Battlehub.RTEditor
                     if (Mathf.Approximately(slidingAreaSize, handleSize))
                     {
                         newValue = 0;
-                        sizeRatio = 1;
+                        sizeRatio = k_maxValue;
                     }
                     else
                     {
@@ -256,8 +254,18 @@ namespace Battlehub.RTEditor
         {
             handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
             sizeRatio = handleSize / slidingAreaSize;
-            sizeRatio = Mathf.Min(0.99999f, Mathf.Max(0.00001f, sizeRatio));
+            sizeRatio = Mathf.Min(k_maxValue, Mathf.Max(k_minValue, sizeRatio));
             handleSize = slidingAreaSize * sizeRatio;
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            m_scrollbar.value = Mathf.Clamp(m_scrollbar.value, k_minValue, k_maxValue);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            m_scrollbar.value = Mathf.Clamp(m_scrollbar.value, k_minValue, k_maxValue);
         }
     }
 }
