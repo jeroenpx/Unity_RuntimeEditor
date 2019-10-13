@@ -26,13 +26,15 @@ namespace Battlehub.RTEditor
 
         private Material m_vGridMaterial0;
         private Material m_vGridMaterial1;
-        private Material m_vgridMaterial2;
+        private Material m_vGridMaterial2;
         
         private Material m_hGridMaterial0;
         private Material m_hGridMaterial1;
         private Material m_hGridMaterial2;
         
         public const int k_Lines = 5;
+        public const int k_LinesSq = k_Lines * k_Lines;
+
         private const float k_FadeBeginPixels = 10;
         private const float k_FadeOutPixels = 2;
 
@@ -61,7 +63,7 @@ namespace Battlehub.RTEditor
             m_camera = camera;
             m_camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             m_vGridMaterial1 = CreateGridMaterial();
-            m_vgridMaterial2 = CreateGridMaterial();
+            m_vGridMaterial2 = CreateGridMaterial();
             m_vGridMaterial0 = CreateGridMaterial();
             m_hGridMaterial1 = CreateGridMaterial();
             m_hGridMaterial2 = CreateGridMaterial();
@@ -110,43 +112,50 @@ namespace Battlehub.RTEditor
                 Destroy(m_hGridMesh2);
             }
 
-            
-            int vLinesCount = m_parameters.VerticalLinesCount;
-            int hLinesCount = m_parameters.HorizontalLinesCount;
+            int vLinesCount = m_parameters.VerticalLinesCount * k_Lines;
+            int hLinesCount = m_parameters.HorizontalLinesCount * k_Lines;
 
             int repeatX = Mathf.Max(1, Mathf.CeilToInt((viewportSize.x / (vLinesCount * k_Lines)) / k_FadeOutPixels));
             int repeatY = Mathf.Max(1, Mathf.CeilToInt((viewportSize.y / (hLinesCount * k_Lines)) / k_FadeOutPixels));
 
-            m_vGridMesh0 = CreateGridMesh(vLinesCount / (float)k_Lines, true, repeatX, repeatY);
-            m_hGridMesh0 = CreateGridMesh(hLinesCount / (float)k_Lines, false, repeatY, repeatX);
+            m_vGridMesh0 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
+            m_hGridMesh0 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
 
-            m_vGridMesh1 = CreateGridMesh(vLinesCount, true, repeatX, repeatY, k_Lines);
-            m_hGridMesh1 = CreateGridMesh(hLinesCount, false, repeatY, repeatX, k_Lines);
+            m_vGridMesh1 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
+            m_hGridMesh1 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
 
-            m_vGridMesh2 = CreateGridMesh(vLinesCount * k_Lines, true, repeatX, repeatY, k_Lines);
-            m_hGridMesh2 = CreateGridMesh(hLinesCount * k_Lines, false, repeatY, repeatX, k_Lines);
-
+            m_vGridMesh2 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
+            m_hGridMesh2 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
         }
 
-        private float Lerp(float a, float b, float t)
+        public static float EaseOutQuad(float start, float end, float value)
         {
-            return a * t + b * (1 - t);
+            end -= start;
+            return -end * value * (value - 2) + start;
         }
 
-        private float Alpha(float space)
+
+        private void SetAlpha(Material material, float p)
         {
-            float b = k_FadeBeginPixels * k_Lines;
-            return Mathf.Clamp01((space - b) / (b - k_FadeOutPixels) + 1);
+            Color color = m_parameters.LineColor;
+
+            p = p % 3.0f / 3.0f;
+            p = (p <= 0.5) ? 0 : (p - 0.5f) * 2.0f;
+
+            color.a *= EaseOutQuad(1, 0, p);
+            material.color = color;
         }
 
         public void UpdateGraphics(Vector2 viewportSize, Vector2 contentSize, Vector2 scrollOffset, Vector2 scrollSize, Vector2 interval, float verticalScale)
         {
-            if(m_parameters == null)
+            if (m_parameters == null)
             {
                 throw new System.InvalidOperationException("Call SetGridParameters method first");
             }
 
             m_commandBuffer.Clear();
+
+            //Debug.Log("Interval " + Mathf.Pow(k_Lines, interval.x) / k_Lines);
 
             int vLinesCount = m_parameters.VerticalLinesCount;
             int hLinesCount = m_parameters.HorizontalLinesCount;
@@ -157,77 +166,67 @@ namespace Battlehub.RTEditor
                 1.0f / scrollSize.y);
 
             Vector3 offset = new Vector3(-0.5f, 0.5f, 1.0f);
-            offset.x -= ((1 - scrollSize.x) * scrollOffset.x / scrollSize.x) % (contentScale.x / Mathf.Max(1, vLinesCount));
-            offset.y += ((1 - scrollSize.y) * (1 - scrollOffset.y) / scrollSize.y) % (contentScale.y / Mathf.Max(1, hLinesCount));
+            offset.x -= ((1 - scrollSize.x) * scrollOffset.x / scrollSize.x) % (contentScale.x * k_LinesSq / Mathf.Max(1, vLinesCount));
+            offset.y += ((1 - scrollSize.y) * (1 - scrollOffset.y) / scrollSize.y) % (contentScale.y * k_LinesSq / Mathf.Max(1, hLinesCount));
 
             Vector3 scale = Vector3.one;
 
-            float aspect = viewportSize.x / viewportSize.y; 
+            float aspect = viewportSize.x / viewportSize.y;
             offset.x *= aspect;
             scale.x = aspect;
 
-            interval.x %= k_FadeBeginPixels / k_FadeOutPixels - 1;
-            interval.y %= k_FadeBeginPixels / k_FadeOutPixels - 1;
-            interval += Vector2.one;
+            float px = interval.x * scrollSize.x;
+            float py = interval.y * scrollSize.y;
 
-            float vSpace = contentSize.x / (vLinesCount * interval.x);
-            float hSpace = contentSize.y / (hLinesCount * interval.y);
-            scale.x *= contentScale.x / interval.x;
-            scale.y *= contentScale.y / interval.y;
+            SetAlpha(m_vGridMaterial0, px - 1);
+            SetAlpha(m_vGridMaterial1, px);
+            SetAlpha(m_vGridMaterial2, px + 1);
 
-            Color vLineColor = lineColor;
-            Color hLineColor = lineColor;
-            m_vGridMaterial0.color = vLineColor;
-            m_hGridMaterial0.color = hLineColor;
+            SetAlpha(m_hGridMaterial0, py - 1);
+            SetAlpha(m_hGridMaterial1, py);
+            SetAlpha(m_hGridMaterial2, py + 1);
 
-            vLineColor.a = Lerp(vLineColor.a, Alpha(k_FadeBeginPixels / k_Lines), Alpha(vSpace));
-            hLineColor.a = Lerp(hLineColor.a, Alpha(k_FadeBeginPixels / k_Lines), Alpha(hSpace));
-
-            m_vGridMaterial1.color = vLineColor;
-            m_hGridMaterial1.color = hLineColor;
-
-            vLineColor = lineColor;
-            hLineColor = lineColor;
-            
-            vLineColor.a = Lerp(vLineColor.a, 0, Alpha(vSpace / k_Lines));
-            hLineColor.a = Lerp(hLineColor.a, 0, Alpha(hSpace / k_Lines));
-
-            m_vgridMaterial2.color = vLineColor;
-            m_hGridMaterial2.color = hLineColor;
-
+            scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px - 1) % 3.0f);
+            scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py - 1) % 3.0f);
             Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh0 != null)
             {
                 m_commandBuffer.DrawMesh(m_vGridMesh0, vMatrix, m_vGridMaterial0);
             }
 
-            if (m_vGridMesh1 != null)
-            {
-                m_commandBuffer.DrawMesh(m_vGridMesh1, vMatrix, m_vGridMaterial1);
-            }
-            
-            if(m_vGridMesh2 != null)
-            {
-                m_commandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vgridMaterial2);
-            }
-            
-           // scale.y = verticalScale;
             Matrix4x4 hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_hGridMesh0 != null)
             {
                 m_commandBuffer.DrawMesh(m_hGridMesh0, hMatrix, m_hGridMaterial0);
             }
 
+            scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, px % 3.0f);
+            scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, py % 3.0f);
+            vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_vGridMesh1 != null)
+            {
+                m_commandBuffer.DrawMesh(m_vGridMesh1, vMatrix, m_vGridMaterial1);
+            }
+
+            hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_hGridMesh1 != null)
             {
                 m_commandBuffer.DrawMesh(m_hGridMesh1, hMatrix, m_hGridMaterial1);
             }
-            
-            if(m_hGridMesh2 != null)
+
+            scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px + 1) % 3.0f);
+            scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py + 1) % 3.0f);
+            vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_vGridMesh2 != null)
+            {
+                m_commandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vGridMaterial2);
+            }
+
+            hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_hGridMesh2 != null)
             {
                 m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
             }
-            
         }
 
         private Material CreateGridMaterial()

@@ -231,7 +231,7 @@ namespace Battlehub.RTEditor
             contentSize.y = Mathf.Max(contentSize.y, Mathf.Epsilon);
 
             float verticalScale = (m_fixedHeight > -1) ? m_fixedHeight / contentSize.y : 1;
-            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, m_interval - Vector2.one, verticalScale);
+            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, m_interval, verticalScale);
             m_textPanel.UpdateGraphics(viewportSize.x, contentSize.x, scrollOffset.x, scrollSize.x, m_interval.x - 1);
 
             m_camera.enabled = true;
