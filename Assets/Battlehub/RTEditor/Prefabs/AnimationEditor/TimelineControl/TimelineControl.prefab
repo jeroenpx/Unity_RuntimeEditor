@@ -280,7 +280,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1006041480651811985}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.63666666
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1210,6 +1210,7 @@ GameObject:
   - component: {fileID: 8812791706020437518}
   - component: {fileID: 1802244879862037697}
   - component: {fileID: 2820008579505518291}
+  - component: {fileID: 719297304}
   m_Layer: 5
   m_Name: Header
   m_TagString: Untagged
@@ -1307,6 +1308,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: SecondaryColor
+--- !u!114 &719297304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7639890891475707887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 1
 --- !u!1 &7982048184411091798
 GameObject:
   m_ObjectHideFlags: 0
