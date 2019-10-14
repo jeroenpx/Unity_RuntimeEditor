@@ -135,18 +135,20 @@ namespace Battlehub.RTEditor
         }
 
 
-        private void SetAlpha(Material material, float p)
+        private void SetAlpha(Material material, float fadeOutOffset, float p)
         {
             Color color = m_parameters.LineColor;
 
             p = p % 3.0f / 3.0f;
+            
+            p = (p > 1 - fadeOutOffset) ? 1 : p / (1 - fadeOutOffset);
             p = (p <= 0.5) ? 0 : (p - 0.5f) * 2.0f;
 
             color.a *= EaseOutQuad(1, 0, p);
             material.color = color;
         }
 
-        public void UpdateGraphics(Vector2 viewportSize, Vector2 contentSize, Vector2 scrollOffset, Vector2 scrollSize, Vector2 interval, float verticalScale)
+        public void UpdateGraphics(Vector2 viewportSize, Vector2 contentSize, Vector2 normalizedOffset, Vector2 normalizedSize, Vector2 interval, float verticalScale)
         {
             if (m_parameters == null)
             {
@@ -155,19 +157,20 @@ namespace Battlehub.RTEditor
 
             m_commandBuffer.Clear();
 
-            //Debug.Log("Interval " + Mathf.Pow(k_Lines, interval.x) / k_Lines);
-
             int vLinesCount = m_parameters.VerticalLinesCount;
             int hLinesCount = m_parameters.HorizontalLinesCount;
             Color lineColor = m_parameters.LineColor;
 
+            //Vector2 scrollSize = new Vector2(Mathf.Pow(k_Lines, normalizedSize.x - 1), Mathf.Pow(k_Lines, normalizedSize.y - 1));
+            //Vector2 scrollOffset = new Vector2(Mathf.Pow(k_Lines, normalizedOffset.x - 1), Mathf.Pow(k_Lines, normalizedOffset.y - 1));
+
             Vector2 contentScale = new Vector2(
-                1.0f / scrollSize.x,
-                1.0f / scrollSize.y);
+                1.0f / normalizedSize.x,
+                1.0f / normalizedSize.y);
 
             Vector3 offset = new Vector3(-0.5f, 0.5f, 1.0f);
-            offset.x -= ((1 - scrollSize.x) * scrollOffset.x / scrollSize.x) % (contentScale.x * k_LinesSq / Mathf.Max(1, vLinesCount));
-            offset.y += ((1 - scrollSize.y) * (1 - scrollOffset.y) / scrollSize.y) % (contentScale.y * k_LinesSq / Mathf.Max(1, hLinesCount));
+            offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * k_LinesSq / Mathf.Max(1, vLinesCount));
+            offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * k_LinesSq / Mathf.Max(1, hLinesCount));
 
             Vector3 scale = Vector3.one;
 
@@ -175,19 +178,23 @@ namespace Battlehub.RTEditor
             offset.x *= aspect;
             scale.x = aspect;
 
-            float px = interval.x * scrollSize.x;
-            float py = interval.y * scrollSize.y;
+            float px = interval.x * normalizedSize.x;
+            float py = interval.y * normalizedSize.y;
 
-            SetAlpha(m_vGridMaterial0, px - 1);
-            SetAlpha(m_vGridMaterial1, px);
-            SetAlpha(m_vGridMaterial2, px + 1);
+            float fadeOutOffset = Mathf.Min(0.4f, 1 - Mathf.Clamp01(viewportSize.x / 600.0f));
 
-            SetAlpha(m_hGridMaterial0, py - 1);
-            SetAlpha(m_hGridMaterial1, py);
-            SetAlpha(m_hGridMaterial2, py + 1);
+            SetAlpha(m_vGridMaterial0, fadeOutOffset, px - 1);
+            SetAlpha(m_vGridMaterial1, fadeOutOffset, px);
+            SetAlpha(m_vGridMaterial2, fadeOutOffset, px + 1);
 
+            SetAlpha(m_hGridMaterial0, fadeOutOffset, py - 1);
+            SetAlpha(m_hGridMaterial1, fadeOutOffset, py);
+            SetAlpha(m_hGridMaterial2, fadeOutOffset, py + 1);
+
+            
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px - 1) % 3.0f);
             scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py - 1) % 3.0f);
+
             Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh0 != null)
             {

@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTEditor;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -42,7 +43,7 @@ namespace Battlehub.RTHandles
                 UpdateText();
             }
         }
-        
+
         private Quaternion m_rotation;
         private Vector3 m_position;
         private Vector3 m_localScale;
@@ -218,6 +219,17 @@ namespace Battlehub.RTHandles
             pointMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             pointsRenderer.sharedMaterial = pointMaterial;
 
+            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+            float scale = appearance.UIScaler.scaleFactor;
+
+            //GK set text and control sizes to match display
+            if (m_txtSize1 != null && m_txtSize2 != null)
+            {
+                m_txtSize1.transform.localScale = m_txtSize2.transform.localScale = new Vector3(scale, scale, scale);
+            }
+
+            lineMaterial.SetFloat("_Scale", scale);
+            pointMaterial.SetFloat("_Scale", 4.5f * scale);
         }
 
         protected override void OnEnableOverride()
@@ -327,12 +339,15 @@ namespace Battlehub.RTHandles
 
         private void UpdateConnectedTools()
         {
-            for(int i = 0; i < m_connectedTools.Count; ++i)
+            for (int i = 0; i < m_connectedTools.Count; ++i)
             {
                 RectTool tool = m_connectedTools[i];
-                if(tool != this)
+                if (tool != this)
                 {
                     tool.Bounds = m_bounds;
+                    tool.m_lines.transform.position = m_lines.transform.position;
+                    tool.m_points.transform.position = m_points.transform.position;
+                    //tool.Position = Position;
                 }
             }
         }
@@ -667,7 +682,7 @@ namespace Battlehub.RTHandles
             return v;
         }
 
-      
+
 
 
         private RuntimeHandleAxis GetAxis(out float dot)
@@ -775,10 +790,8 @@ namespace Battlehub.RTHandles
         //GK convert meters to feet - inches
         private string ConvertMetersToFeetInches(float meters)
         {
-            if (meters == 0)
-                return "0′" + " 0″";
-
-            double inchfeet = meters / 0.3048;
+            //GK use absolute value of meters to eliminate negative lengths
+            double inchfeet = Mathf.Abs(meters) / 0.3048;
             int feet = (int)inchfeet;
             int inchesleft = (int)((inchfeet - System.Math.Truncate(inchfeet)) / 0.08333);
 
@@ -857,12 +870,12 @@ namespace Battlehub.RTHandles
         {
             if (m_txtSize1 != null)
             {
-                m_txtSize1.fontSize = RuntimeGraphics.GetScreenScale(m_txtSize1.transform.position, Window.Camera) * 1.33f;
+                m_txtSize1.fontSize = RuntimeGraphics.GetScreenScale(m_txtSize1.transform.position, Window.Camera) * 1.7f;
             }
 
             if (m_txtSize2 != null)
             {
-                m_txtSize2.fontSize = RuntimeGraphics.GetScreenScale(m_txtSize2.transform.position, Window.Camera) * 1.33f;
+                m_txtSize2.fontSize = RuntimeGraphics.GetScreenScale(m_txtSize2.transform.position, Window.Camera) * 1.7f;
             }
         }
 
