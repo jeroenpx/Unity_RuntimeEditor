@@ -279,8 +279,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1006041480651811984}
   m_HandleRect: {fileID: 1006041480651811985}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.81
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -697,7 +697,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1006041480037052664}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.30333334
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1258,7 +1258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
+  m_Color: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1306,7 +1306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: PrimaryColor
+  Name: SecondaryColor
 --- !u!1 &7982048184411091798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2512,11 +2512,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 2050633653814475845, guid: dc07eb762044ff34fa8d7ac573944689,
-        type: 3}
-      propertyPath: m_scrolRect
-      value: 
-      objectReference: {fileID: 8940289603545627744}
     - target: {fileID: 1276424039, guid: dc07eb762044ff34fa8d7ac573944689, type: 3}
       propertyPath: m_ChildAlignment
       value: 5

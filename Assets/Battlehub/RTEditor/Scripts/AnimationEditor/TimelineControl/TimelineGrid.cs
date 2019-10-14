@@ -161,9 +161,6 @@ namespace Battlehub.RTEditor
             int hLinesCount = m_parameters.HorizontalLinesCount;
             Color lineColor = m_parameters.LineColor;
 
-            //Vector2 scrollSize = new Vector2(Mathf.Pow(k_Lines, normalizedSize.x - 1), Mathf.Pow(k_Lines, normalizedSize.y - 1));
-            //Vector2 scrollOffset = new Vector2(Mathf.Pow(k_Lines, normalizedOffset.x - 1), Mathf.Pow(k_Lines, normalizedOffset.y - 1));
-
             Vector2 contentScale = new Vector2(
                 1.0f / normalizedSize.x,
                 1.0f / normalizedSize.y);
@@ -181,6 +178,10 @@ namespace Battlehub.RTEditor
             float px = interval.x * normalizedSize.x;
             float py = interval.y * normalizedSize.y;
 
+            //required to match grid scale to scroll viewer viewport size & offset
+            px = Mathf.Log(px * k_Lines, k_Lines); 
+            py = Mathf.Log(py * k_Lines, k_Lines);
+
             float fadeOutOffset = Mathf.Min(0.4f, 1 - Mathf.Clamp01(viewportSize.x / 600.0f));
 
             SetAlpha(m_vGridMaterial0, fadeOutOffset, px - 1);
@@ -191,10 +192,8 @@ namespace Battlehub.RTEditor
             SetAlpha(m_hGridMaterial1, fadeOutOffset, py);
             SetAlpha(m_hGridMaterial2, fadeOutOffset, py + 1);
 
-            
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px - 1) % 3.0f);
             scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py - 1) % 3.0f);
-
             Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh0 != null)
             {
@@ -209,6 +208,7 @@ namespace Battlehub.RTEditor
 
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, px % 3.0f);
             scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, py % 3.0f);
+
             vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh1 != null)
             {
@@ -223,6 +223,7 @@ namespace Battlehub.RTEditor
 
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px + 1) % 3.0f);
             scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py + 1) % 3.0f);
+
             vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh2 != null)
             {
