@@ -49,6 +49,11 @@ namespace Battlehub.RTEditor
 
         public void UpdateGraphics(float viewportSize, float contentSize, float scrollOffset, float scrollSize, float interval)
         {
+            
+           
+            contentSize /= interval;
+            viewportSize /= interval;
+
             m_textRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, contentSize);
 
             Vector2 position = m_textRoot.anchoredPosition;
