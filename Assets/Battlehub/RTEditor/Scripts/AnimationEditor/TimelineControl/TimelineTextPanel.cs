@@ -49,12 +49,14 @@ namespace Battlehub.RTEditor
 
         public void UpdateGraphics(float viewportSize, float contentSize, float scrollOffset, float scrollSize, float interval)
         {
-            
-           
-            contentSize /= interval;
-            viewportSize /= interval;
+            float cs = contentSize;
+            cs /= interval;
 
-            m_textRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, contentSize);
+            float kLines = TimelineGrid.k_Lines;
+            cs *= Mathf.Pow(kLines, Mathf.Ceil(Mathf.Log(interval, kLines)));
+
+            m_textRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, cs);
+            Canvas.ForceUpdateCanvases();
 
             Vector2 position = m_textRoot.anchoredPosition;
             position.x = -(contentSize - viewportSize) * scrollOffset;
