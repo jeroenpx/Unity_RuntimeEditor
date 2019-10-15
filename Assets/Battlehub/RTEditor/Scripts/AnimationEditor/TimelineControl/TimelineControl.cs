@@ -104,10 +104,10 @@ namespace Battlehub.RTEditor
             m_timelineGrid.Init(m_camera);
             m_timelineGridParams = new TimelineGridParameters();
             m_timelineGridParams.VerticalLinesCount = 12;
-            m_timelineGridParams.HorizontalLinesCount = 2;
+            m_timelineGridParams.HorizontalLinesCount = 6;
             m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
             m_timelineGrid.SetGridParameters(m_timelineGridParams);
-            m_textPanel.SetParameters(m_timelineGridParams.VerticalLinesCount, TimelineGrid.k_Lines);
+            m_textPanel.SetParameters(m_timelineGridParams.VerticalLinesCount, TimelineGrid.k_Lines, 60);
 
             RenderGraphics();
         }

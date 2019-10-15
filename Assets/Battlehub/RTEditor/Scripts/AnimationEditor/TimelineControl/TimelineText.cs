@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
@@ -7,11 +8,12 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         private TextMeshProUGUI m_text;
+
+        private RectTransform m_rt;
         
-        private int m_samplesCount;
-        public int SamplesCount
+        public string Text
         {
-            set { m_samplesCount = value; }
+            set { m_text.text = value; }
         }
 
         private bool m_isSecondary;
@@ -20,20 +22,48 @@ namespace Battlehub.RTEditor
             set { m_isSecondary = value; }
         }
 
+        private bool m_isPrimary;
+        public bool IsPrimary
+        {
+            set { m_isPrimary = value; }
+        }
+
+        public bool IsVisible
+        {
+            set
+            {
+                m_text.alpha = value ? 1 : 0;
+            }
+        }
+
         private void Awake()
         {
             if(m_text == null)
             {
                 m_text = GetComponent<TextMeshProUGUI>();
             }
+
+            m_rt = GetComponent<RectTransform>();
         }
             
-        public void Refresh()
+        public void Refresh(float primarySpace, float secondarySpace)
         {
-            RectTransform rt = (RectTransform)transform;
-            if(m_isSecondary)
+            m_text.ForceMeshUpdate();
+
+            if (m_isSecondary)
             {
-                if (rt.rect.width < m_text.bounds.size.x + 10)
+                if (secondarySpace < m_text.bounds.size.x + 10)
+                {
+                    m_text.alpha = 0;
+                }
+                else
+                {
+                    m_text.alpha = 1;
+                }
+            }
+            else if(m_isPrimary)
+            {
+                if (primarySpace < m_text.bounds.size.x + 10)
                 {
                     m_text.alpha = 0;
                 }
@@ -43,12 +73,6 @@ namespace Battlehub.RTEditor
                 }
             }
         }
-
-        private void OnRectTransformDimensionsChange()
-        {
-            
-        }
-
     }
 
 }

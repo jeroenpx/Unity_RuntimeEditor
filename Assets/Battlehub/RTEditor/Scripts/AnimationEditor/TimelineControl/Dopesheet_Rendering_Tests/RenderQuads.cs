@@ -4,12 +4,11 @@ using UnityEngine.Rendering;
 
 public class RenderQuads : MonoBehaviour
 {
+    [SerializeField]
+    private Mesh m_quad = null;
 
     [SerializeField]
-    private Mesh m_quad;
-
-    [SerializeField]
-    private Material m_material;
+    private Material m_material = null;
 
     private int m_rows = 1000;
     private int m_cols = 100;
@@ -18,27 +17,27 @@ public class RenderQuads : MonoBehaviour
     private Matrix4x4[] m_matrices;
 
     [SerializeField]
-    private Camera m_camera;
+    private Camera m_camera = null;
 
     private CommandBuffer m_commandBuffer;
 
     [SerializeField]
-    private AnimationClip clip;
+    private AnimationClip clip = null;
 
     private void Awake()
     {
         clip.legacy = true;
 
         // create a curve to move the GameObject and assign to the clip
-        Keyframe[] keys;
-        keys = new Keyframe[3];
-        keys[0] = new Keyframe(0.0f, 0.0f);
-        keys[1] = new Keyframe(1.0f, 1.5f);
-        keys[2] = new Keyframe(2.0f, 0.0f);
-        AnimationCurve curve = new AnimationCurve(keys);
-        clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
+        //Keyframe[] keys;
+        //keys = new Keyframe[3];
+        //keys[0] = new Keyframe(0.0f, 0.0f);
+        //keys[1] = new Keyframe(1.0f, 1.5f);
+        //keys[2] = new Keyframe(2.0f, 0.0f);
+        //AnimationCurve curve = new AnimationCurve(keys);
+        //clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
 
-        return;
+       // return;
 
         m_matrices = new Matrix4x4[m_batchSize];
 

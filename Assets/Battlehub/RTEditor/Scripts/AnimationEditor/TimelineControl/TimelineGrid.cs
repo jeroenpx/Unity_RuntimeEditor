@@ -173,7 +173,7 @@ namespace Battlehub.RTEditor
 
             float aspect = viewportSize.x / viewportSize.y;
             offset.x *= aspect;
-            scale.x = aspect;
+           // scale.x = aspect;
 
             float px = interval.x * normalizedSize.x;
             float py = interval.y * normalizedSize.y;
@@ -193,7 +193,7 @@ namespace Battlehub.RTEditor
             SetAlpha(m_hGridMaterial2, fadeOutOffset, py + 1);
 
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px - 1) % 3.0f);
-            scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py - 1) % 3.0f);
+            scale.y = k_LinesSq / Mathf.Pow(k_Lines, (py - 1) % 3.0f);
 
             Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh0 != null)
@@ -208,7 +208,7 @@ namespace Battlehub.RTEditor
             }
 
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, px % 3.0f);
-            scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, py % 3.0f);
+            scale.y = k_LinesSq / Mathf.Pow(k_Lines, py % 3.0f);
 
             vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh1 != null)
@@ -223,18 +223,24 @@ namespace Battlehub.RTEditor
             }
 
             scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px + 1) % 3.0f);
-            scale.y = aspect * k_LinesSq / Mathf.Pow(k_Lines, (py + 1) % 3.0f);
+            scale.y = k_LinesSq / Mathf.Pow(k_Lines, (py + 1) % 3.0f);
 
             vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh2 != null)
             {
-                m_commandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vGridMaterial2);
+                if(interval.x > k_Lines)
+                {
+                    m_commandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vGridMaterial2);
+                }
             }
 
             hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_hGridMesh2 != null)
             {
-                m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
+                if(interval.y > k_Lines)
+                {
+                    m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
+                }
             }
         }
 
@@ -247,6 +253,8 @@ namespace Battlehub.RTEditor
 
         private Mesh CreateGridMesh(float count, bool isVertical, int repeat = 2, int lineLength = 2, int skipLine = int.MaxValue)
         {
+            lineLength *= 100;
+
             Mesh mesh = new Mesh();
             mesh.name = "TimelineGrid";
 
