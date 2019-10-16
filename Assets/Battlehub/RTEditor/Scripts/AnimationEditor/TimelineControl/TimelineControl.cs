@@ -28,7 +28,8 @@ namespace Battlehub.RTEditor
 
         //Visible interval (seconds - x axis, units - y axis)
         private Vector2 m_interval = Vector2.one;
-        
+
+        private Dopesheet m_dopesheet;
         private TimelineGrid m_timelineGrid;
         private TimelineGridParameters m_timelineGridParams;
         private DragAndDropListener m_hScrollbarListener;
@@ -100,8 +101,6 @@ namespace Battlehub.RTEditor
             cameraGo.SetActive(true);
             m_rtCamera.enabled = false;
 
-            m_timelineGrid = m_output.gameObject.AddComponent<TimelineGrid>();
-            m_timelineGrid.Init(m_camera);
             m_timelineGridParams = new TimelineGridParameters();
             m_timelineGridParams.VertLines = 13;
             m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
@@ -109,7 +108,23 @@ namespace Battlehub.RTEditor
             m_timelineGridParams.HorLinesSecondary = 2;
             m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
             m_timelineGridParams.FixedHeight = m_fixedHeight;
+
+            m_timelineGrid = m_output.GetComponent<TimelineGrid>();
+            if(m_timelineGrid == null)
+            {
+                m_timelineGrid = m_output.gameObject.AddComponent<TimelineGrid>();
+            }
+            m_timelineGrid.Init(m_camera);
             m_timelineGrid.SetGridParameters(m_timelineGridParams);
+
+            m_dopesheet = m_output.gameObject.GetComponent<Dopesheet>();
+            if(m_dopesheet == null)
+            {
+                m_dopesheet = m_output.gameObject.AddComponent<Dopesheet>();
+            }
+            m_dopesheet.Init(m_camera);
+            m_dopesheet.SetGridParameters(m_timelineGridParams);
+            
             m_textPanel.SetParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
 
             RenderGraphics();
@@ -231,13 +246,12 @@ namespace Battlehub.RTEditor
             Vector2 contentSize = m_scrollRect.content.sizeDelta;
             contentSize.y = Mathf.Max(contentSize.y, Mathf.Epsilon);
 
-            //float verticalScale = (m_fixedHeight > -1) ? m_fixedHeight / contentSize.y : float.NaN;
-
             Vector2 interval = m_interval;
             
             interval.x = Mathf.Pow(m_timelineGridParams.VertLinesSecondary, interval.x);
             interval.y = Mathf.Pow(m_timelineGridParams.HorLinesSecondary, interval.y);
 
+            m_dopesheet.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
             m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
             m_textPanel.UpdateGraphics(viewportSize.x, contentSize.x, scrollOffset.x, scrollSize.x, interval.x);
 

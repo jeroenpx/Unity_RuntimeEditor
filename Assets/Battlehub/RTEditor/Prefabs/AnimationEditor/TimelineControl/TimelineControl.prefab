@@ -99,8 +99,9 @@ GameObject:
   - component: {fileID: 7797811991777663411}
   - component: {fileID: 6064613261347071273}
   - component: {fileID: 9097686841843301696}
+  - component: {fileID: 29296147}
   m_Layer: 5
-  m_Name: TimelineGrid
+  m_Name: Output
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,6 +161,20 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &29296147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413185607620705474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4c28c3803b5d9e4cafeafa2a99df081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_quad: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  m_material: {fileID: 2100000, guid: e1590177bdccbd34a8ff7877fb355069, type: 2}
 --- !u!1 &1006041478811872928
 GameObject:
   m_ObjectHideFlags: 0
@@ -280,7 +295,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1006041480651811985}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

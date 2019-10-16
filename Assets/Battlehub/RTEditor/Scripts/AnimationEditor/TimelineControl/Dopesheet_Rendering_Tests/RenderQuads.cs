@@ -10,7 +10,7 @@ public class RenderQuads : MonoBehaviour
     [SerializeField]
     private Material m_material = null;
 
-    private int m_rows = 1000;
+    private int m_rows = 10;
     private int m_cols = 100;
     private int m_batchSize = 512;
 
@@ -26,7 +26,7 @@ public class RenderQuads : MonoBehaviour
 
     private void Awake()
     {
-        clip.legacy = true;
+        //clip.legacy = true;
 
         // create a curve to move the GameObject and assign to the clip
         //Keyframe[] keys;
