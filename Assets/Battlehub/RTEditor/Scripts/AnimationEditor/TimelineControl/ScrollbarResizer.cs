@@ -7,6 +7,7 @@ namespace Battlehub.RTEditor
 {
     public class ScrollbarResizer : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
+        public const float k_minSize = 0.15f;
         public const float k_minValue = 0.0001f;
         public const float k_maxValue = 0.9999f;
 
@@ -254,7 +255,7 @@ namespace Battlehub.RTEditor
         {
             handleSize = (m_beginDragPosition - m_other.Position).magnitude + offset;
             sizeRatio = handleSize / slidingAreaSize;
-            sizeRatio = Mathf.Min(k_maxValue, Mathf.Max(k_minValue, sizeRatio));
+            sizeRatio = Mathf.Min(k_maxValue, Mathf.Max(k_minSize, sizeRatio));
             handleSize = slidingAreaSize * sizeRatio;
         }
 

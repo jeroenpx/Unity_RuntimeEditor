@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -97,7 +98,7 @@ namespace Battlehub.RTHandles
             float h = GetCameraOffset();
             h = Mathf.Abs(h);
             h = Mathf.Max(1, h);
-            float scale = RuntimeHandlesComponent.CountOfDigits(h);
+            float scale = MathHelper.CountOfDigits(h);
             float fadeDistance = h * 10;
 
             float alpha0 = GetAlpha(0, h, scale);

@@ -6,8 +6,11 @@ namespace Battlehub.RTEditor
 {
     public class TimelineGridParameters
     {
-        public int VerticalLinesCount;
-        public int HorizontalLinesCount;
+        public int VertLines;
+        public int VertLinesSecondary;
+        
+        public int HorLines;
+        public int HorLinesSecondary;
         public Color LineColor;
     }
 
@@ -33,8 +36,7 @@ namespace Battlehub.RTEditor
         private Material m_hGridMaterial2;
         
         public const int k_Lines = 5;
-        public const int k_LinesSq = k_Lines * k_Lines;
-
+       
         private const float k_FadeBeginPixels = 10;
         private const float k_FadeOutPixels = 2;
 
@@ -112,11 +114,11 @@ namespace Battlehub.RTEditor
                 Destroy(m_hGridMesh2);
             }
 
-            int vLinesCount = m_parameters.VerticalLinesCount * k_Lines;
-            int hLinesCount = m_parameters.HorizontalLinesCount * k_Lines;
+            int vLinesCount = m_parameters.VertLines * m_parameters.VertLinesSecondary;
+            int hLinesCount = m_parameters.HorLines * m_parameters.HorLinesSecondary;
 
-            int repeatX = Mathf.Max(1, Mathf.CeilToInt((viewportSize.x / (vLinesCount * k_Lines)) / k_FadeOutPixels));
-            int repeatY = Mathf.Max(1, Mathf.CeilToInt((viewportSize.y / (hLinesCount * k_Lines)) / k_FadeOutPixels));
+            int repeatX = Mathf.Max(1, Mathf.CeilToInt((viewportSize.x / (vLinesCount * m_parameters.VertLinesSecondary)) / k_FadeOutPixels));
+            int repeatY = Mathf.Max(1, Mathf.CeilToInt((viewportSize.y / (hLinesCount * m_parameters.HorLinesSecondary)) / k_FadeOutPixels));
 
             m_vGridMesh0 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
             m_hGridMesh0 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
@@ -157,17 +159,20 @@ namespace Battlehub.RTEditor
 
             m_commandBuffer.Clear();
 
-            int vLinesCount = m_parameters.VerticalLinesCount;
-            int hLinesCount = m_parameters.HorizontalLinesCount;
+            int vLinesCount = m_parameters.VertLines;
+            int hLinesCount = m_parameters.HorLines;
             Color lineColor = m_parameters.LineColor;
+
+            int vLinesSq = m_parameters.VertLinesSecondary * m_parameters.VertLinesSecondary;
+            int hLinesSq = m_parameters.HorLinesSecondary * m_parameters.HorLinesSecondary;
 
             Vector2 contentScale = new Vector2(
                 1.0f / normalizedSize.x,
                 1.0f / normalizedSize.y);
 
             Vector3 offset = new Vector3(-0.5f, 0.5f, 1.0f);
-            offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * k_LinesSq / Mathf.Max(1, vLinesCount));
-            offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * k_LinesSq / Mathf.Max(1, hLinesCount));
+            offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * vLinesSq / Mathf.Max(1, vLinesCount));
+            offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * hLinesSq / Mathf.Max(1, hLinesCount));
 
             Vector3 scale = Vector3.one;
 
@@ -179,8 +184,8 @@ namespace Battlehub.RTEditor
             float py = interval.y * normalizedSize.y;
 
             //required to match grid scale to scroll viewer viewport size & offset
-            px = Mathf.Log(px * k_Lines, k_Lines); 
-            py = Mathf.Log(py * k_Lines, k_Lines);
+            px = Mathf.Log(px * m_parameters.VertLinesSecondary, m_parameters.VertLinesSecondary); 
+            py = Mathf.Log(py * m_parameters.HorLinesSecondary, m_parameters.HorLinesSecondary);
 
             float fadeOutOffset = Mathf.Min(0.4f, 1 - Mathf.Clamp01(viewportSize.x / 600.0f));
 
@@ -192,8 +197,8 @@ namespace Battlehub.RTEditor
             SetAlpha(m_hGridMaterial1, fadeOutOffset, py);
             SetAlpha(m_hGridMaterial2, fadeOutOffset, py + 1);
 
-            scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px - 1) % 3.0f);
-            scale.y = k_LinesSq / Mathf.Pow(k_Lines, (py - 1) % 3.0f);
+            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px - 1) % 3.0f);
+            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py - 1) % 3.0f);
 
             Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh0 != null)
@@ -207,8 +212,8 @@ namespace Battlehub.RTEditor
                 m_commandBuffer.DrawMesh(m_hGridMesh0, hMatrix, m_hGridMaterial0);
             }
 
-            scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, px % 3.0f);
-            scale.y = k_LinesSq / Mathf.Pow(k_Lines, py % 3.0f);
+            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, px % 3.0f);
+            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, py % 3.0f);
 
             vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh1 != null)
@@ -222,13 +227,13 @@ namespace Battlehub.RTEditor
                 m_commandBuffer.DrawMesh(m_hGridMesh1, hMatrix, m_hGridMaterial1);
             }
 
-            scale.x = aspect * k_LinesSq / Mathf.Pow(k_Lines, (px + 1) % 3.0f);
-            scale.y = k_LinesSq / Mathf.Pow(k_Lines, (py + 1) % 3.0f);
+            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px + 1) % 3.0f);
+            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py + 1) % 3.0f);
 
             vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh2 != null)
             {
-                if(interval.x > k_Lines)
+                if(interval.x > m_parameters.VertLinesSecondary)
                 {
                     m_commandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vGridMaterial2);
                 }
@@ -237,7 +242,7 @@ namespace Battlehub.RTEditor
             hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_hGridMesh2 != null)
             {
-                if(interval.y > k_Lines)
+                if(interval.y > m_parameters.HorLinesSecondary)
                 {
                     m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
                 }

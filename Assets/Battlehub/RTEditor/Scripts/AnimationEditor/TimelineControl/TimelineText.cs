@@ -19,12 +19,14 @@ namespace Battlehub.RTEditor
         private bool m_isSecondary;
         public bool IsSecondary
         {
+            get { return m_isSecondary; }
             set { m_isSecondary = value; }
         }
 
         private bool m_isPrimary;
         public bool IsPrimary
         {
+            get { return m_isPrimary; }
             set { m_isPrimary = value; }
         }
 
@@ -45,14 +47,19 @@ namespace Battlehub.RTEditor
 
             m_rt = GetComponent<RectTransform>();
         }
+
+        public void ForceMeshUpdate()
+        {
+            m_text.ForceMeshUpdate();
+        }
             
         public void Refresh(float primarySpace, float secondarySpace)
         {
-            m_text.ForceMeshUpdate();
+            float charWidth = m_text.GetPreferredValues("0").x;
 
             if (m_isSecondary)
             {
-                if (secondarySpace < m_text.bounds.size.x + 10)
+                if (secondarySpace < m_text.text.Length * charWidth + 10)
                 {
                     m_text.alpha = 0;
                 }
@@ -63,7 +70,7 @@ namespace Battlehub.RTEditor
             }
             else if(m_isPrimary)
             {
-                if (primarySpace < m_text.bounds.size.x + 10)
+                if (primarySpace < m_text.text.Length * charWidth + 10)
                 {
                     m_text.alpha = 0;
                 }

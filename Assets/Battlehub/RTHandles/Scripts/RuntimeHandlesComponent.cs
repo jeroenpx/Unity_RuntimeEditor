@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Battlehub.RTCommon;
+using Battlehub.Utils;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -1064,7 +1065,7 @@ namespace Battlehub.RTHandles
         public static float GetGridFarPlane(Camera camera)
         {
             float h = camera.transform.position.y;
-            float d = CountOfDigits(h);
+            float d = MathHelper.CountOfDigits(h);
             float spacing = Mathf.Pow(10, d - 1);
             return spacing * 150;
         }
@@ -1075,7 +1076,7 @@ namespace Battlehub.RTHandles
             h = Mathf.Abs(h);
             h = Mathf.Max(1, h);
             
-            float d = CountOfDigits(h);
+            float d = MathHelper.CountOfDigits(h);
        
             float spacing = Mathf.Pow(10, d - 1);
             float nextSpacing = Mathf.Pow(10, d);
@@ -1217,10 +1218,7 @@ namespace Battlehub.RTHandles
             GL.Vertex(p + sizeZ * s.z);
         }
 
-        public static float CountOfDigits(float number)
-        {
-            return (number == 0) ? 1.0f : Mathf.Ceil(Mathf.Log10(Mathf.Abs(number) + 0.5f));
-        }
+     
     }
 
 }

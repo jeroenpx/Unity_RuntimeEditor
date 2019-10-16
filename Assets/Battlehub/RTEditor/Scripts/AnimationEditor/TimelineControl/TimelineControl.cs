@@ -103,11 +103,13 @@ namespace Battlehub.RTEditor
             m_timelineGrid = m_output.gameObject.AddComponent<TimelineGrid>();
             m_timelineGrid.Init(m_camera);
             m_timelineGridParams = new TimelineGridParameters();
-            m_timelineGridParams.VerticalLinesCount = 12;
-            m_timelineGridParams.HorizontalLinesCount = 6;
+            m_timelineGridParams.VertLines = 13;
+            m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
+            m_timelineGridParams.HorLines = 6;
+            m_timelineGridParams.HorLinesSecondary = TimelineGrid.k_Lines;
             m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
             m_timelineGrid.SetGridParameters(m_timelineGridParams);
-            m_textPanel.SetParameters(m_timelineGridParams.VerticalLinesCount, TimelineGrid.k_Lines, 60);
+            m_textPanel.SetParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
 
             RenderGraphics();
         }
@@ -164,7 +166,7 @@ namespace Battlehub.RTEditor
 
         private void OnRectTransformChanged()
         {
-            Vector2 contentSize = m_scrollRect.content.sizeDelta;
+            //Vector2 contentSize = m_scrollRect.content.sizeDelta;
             Vector2 viewportSize = m_scrollRect.viewport.rect.size;
 
             if(m_fixedHeight > -1)
@@ -172,9 +174,9 @@ namespace Battlehub.RTEditor
                 viewportSize.y = m_fixedHeight;
             }
 
-            if (viewportSize != contentSize)
+            if (viewportSize != m_output.rectTransform.sizeDelta)
             {
-                m_scrollRect.content.sizeDelta = viewportSize;
+             //   m_scrollRect.content.sizeDelta = viewportSize;
                 m_output.rectTransform.sizeDelta = viewportSize;
             }
         }
@@ -198,12 +200,13 @@ namespace Battlehub.RTEditor
             if (delta != Vector2.zero)
             {
                 Vector2 newInterval = m_interval - delta;
-                float widthPerLine = m_scrollRect.viewport.rect.width / m_timelineGridParams.VerticalLinesCount;
-                newInterval.x = Mathf.Clamp(newInterval.x, 1.0f, 3600.0f); //at 60 samples per second
+                float widthPerLine = m_scrollRect.viewport.rect.width / m_timelineGridParams.VertLines;
+                newInterval.x = Mathf.Clamp(newInterval.x, 1.0f, Mathf.Log(3600 * 24, m_timelineGridParams.VertLinesSecondary)); //at 60 samples per second
                 newInterval.y = Mathf.Clamp(newInterval.y, 1.0f, 10000.0f); //TODO: handle negative values
                 if (newInterval != m_interval)
                 {
                     m_interval = newInterval;
+                    Debug.Log(newInterval);
                     renderGraphics = true;
                 }
             }
@@ -233,8 +236,9 @@ namespace Battlehub.RTEditor
             float verticalScale = (m_fixedHeight > -1) ? m_fixedHeight / contentSize.y : 1;
 
             Vector2 interval = m_interval;
-
-            interval.x = Mathf.Pow(5, interval.x);
+            
+            interval.x = Mathf.Pow(m_timelineGridParams.VertLinesSecondary, interval.x);
+            interval.y = Mathf.Pow(m_timelineGridParams.HorLinesSecondary, interval.y);
 
             m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval, verticalScale);
             m_textPanel.UpdateGraphics(viewportSize.x, contentSize.x, scrollOffset.x, scrollSize.x, interval.x);

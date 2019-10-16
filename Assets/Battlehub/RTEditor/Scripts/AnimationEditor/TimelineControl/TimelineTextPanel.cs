@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.Utils;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -61,54 +62,65 @@ namespace Battlehub.RTEditor
 
         public void UpdateGraphics(float viewportSize, float contentSize, float scrollOffset, float scrollSize, float interval)
         {
-            float intervalMaxValue = m_samples;
-
+            float kLines = m_secondaryLinesCount;
+            
             float size = contentSize;
             size /= interval;
+   
+            float s1 = Mathf.Pow(kLines, Mathf.Ceil(Mathf.Log(interval * scrollSize, kLines)));
+            float s0 = Mathf.Pow(kLines, Mathf.Ceil(Mathf.Log(interval * scrollSize, kLines)) - 1);
 
-            float kLines = TimelineGrid.k_Lines;
-            float scaleFactor = Mathf.Pow(kLines, Mathf.Ceil(Mathf.Log(interval * scrollSize, kLines)));
-            size *= scaleFactor;
+            size *= s1;
 
             m_textRoot.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size);
             LayoutRebuilder.ForceRebuildLayoutImmediate(m_textRoot);
 
             Vector2 position = m_textRoot.anchoredPosition;
-            float mod = (((contentSize / m_linesCount) / interval) * scaleFactor);
+            float mod = (((contentSize / m_linesCount) / interval) * s1);
             position.x = -((contentSize - viewportSize) * scrollOffset) % mod;
             m_textRoot.anchoredPosition = position;
 
             float seconarySpace = size / m_textList.Count;
             float primarySpace = seconarySpace * m_secondaryLinesCount;
 
-           
+            float roundTo = Mathf.Pow(kLines, Mathf.Floor(Mathf.Log(s1, kLines)));
+            float offset = Mathf.FloorToInt(m_linesCount * interval * (1 - scrollSize) * scrollOffset / roundTo) * roundTo;
 
+            const int maxDigits = 5;
 
-            float s = Mathf.Log(interval, kLines);
-            float sc = Mathf.Ceil(s);
-            float sc1 = Mathf.Pow(kLines, Mathf.Ceil(Mathf.Log(interval * scrollSize, kLines)) - 1);
-            Debug.Log("SC1 : " + sc1 + " Log: " + (Mathf.Log(interval, kLines) - 1));
+            int maxIntervalDigits = Mathf.RoundToInt(MathHelper.CountOfDigits(Mathf.CeilToInt(m_linesCount * interval / m_samples)));
+            int sampleDigits = Mathf.RoundToInt(MathHelper.CountOfDigits(m_samples));
 
+            string intervalFormat = "0";
+            string sampleFormat = "1:D" + sampleDigits;
 
+            string format;
+            if(maxDigits - maxIntervalDigits >= sampleDigits)
+            {    
+                format = "{" + intervalFormat + "}:{" + sampleFormat + "}";
+            }
+            else
+            {
+                format = "{" + intervalFormat + "}";
+            }
+            
+            for (int i = 0; i < m_textList.Count; ++i)
+            {
+                TimelineText text = m_textList[i];
+                text.ForceMeshUpdate();
+            }
 
-            //float tBegin = s * (1 - scrollSize) * scrollOffset;
-            //float tEnd = tBegin + s * scrollSize;
-
-            //Debug.LogFormat("TBegin {0}, TEnd {1}", tBegin, tEnd);
-
+            int pad = Mathf.Max(maxIntervalDigits, maxDigits + 1);
             for (int i = 0; i < m_textList.Count; ++i)
             {
                 TimelineText text = m_textList[i];
 
-                // int intervalNumber = (int)(((float)i / m_textList.Count) * Mathf.Log(interval, kLines));
-                int offset = 0;// Mathf.FloorToInt((m_linesCount * scaleFactor)  * scrollOffset);
-                int intervalNumber = Mathf.RoundToInt((1 / intervalMaxValue) * i * sc1 * 60) / 60;
-                int timeValue = offset + Mathf.RoundToInt((1 / intervalMaxValue) * i * sc1 * 60) % 60;
+                int t = Mathf.RoundToInt(offset + i * s0);
+                int intervalNumber = t / m_samples;
+                int sampleNumber = t % m_samples;
 
+                text.Text = string.Format(format, intervalNumber, sampleNumber).PadRight(pad, ' ');
 
-                text.Text = string.Format("{0:D2}:{1:D2}", intervalNumber, timeValue);
-
-                
                 text.Refresh(primarySpace, seconarySpace);
             }
         }
