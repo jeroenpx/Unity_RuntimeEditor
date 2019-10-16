@@ -12,6 +12,8 @@ namespace Battlehub.RTEditor
         public int HorLines;
         public int HorLinesSecondary;
         public Color LineColor;
+
+        public float FixedHeight;
     }
 
     public class TimelineGrid : MonoBehaviour
@@ -121,13 +123,26 @@ namespace Battlehub.RTEditor
             int repeatY = Mathf.Max(1, Mathf.CeilToInt((viewportSize.y / (hLinesCount * m_parameters.HorLinesSecondary)) / k_FadeOutPixels));
 
             m_vGridMesh0 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
-            m_hGridMesh0 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
+            if (m_parameters.FixedHeight < 0)
+            {
+                m_hGridMesh0 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
+            }
+            else
+            {
+                m_hGridMesh0 = CreateGridMesh(m_parameters.HorLines, false, 1, repeatX);
+            }
 
             m_vGridMesh1 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
-            m_hGridMesh1 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
+            if(m_parameters.FixedHeight < 0)
+            {
+                m_hGridMesh1 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
+            }
 
             m_vGridMesh2 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
-            m_hGridMesh2 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
+            if(m_parameters.FixedHeight < 0)
+            {
+                m_hGridMesh2 = CreateGridMesh(hLinesCount, false, repeatY, repeatX);
+            }
         }
 
         public static float EaseOutQuad(float start, float end, float value)
@@ -150,11 +165,17 @@ namespace Battlehub.RTEditor
             material.color = color;
         }
 
-        public void UpdateGraphics(Vector2 viewportSize, Vector2 contentSize, Vector2 normalizedOffset, Vector2 normalizedSize, Vector2 interval, float verticalScale)
+        public void UpdateGraphics(Vector2 viewportSize, Vector2 contentSize, Vector2 normalizedOffset, Vector2 normalizedSize, Vector2 interval)
         {
             if (m_parameters == null)
             {
                 throw new System.InvalidOperationException("Call SetGridParameters method first");
+            }
+
+            bool fixedHeight = m_parameters.FixedHeight > 0;
+            if(fixedHeight)
+            {
+                m_parameters.HorLinesSecondary = 2;
             }
 
             m_commandBuffer.Clear();
@@ -172,7 +193,10 @@ namespace Battlehub.RTEditor
 
             Vector3 offset = new Vector3(-0.5f, 0.5f, 1.0f);
             offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * vLinesSq / Mathf.Max(1, vLinesCount));
-            offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * hLinesSq / Mathf.Max(1, hLinesCount));
+            if (!fixedHeight)
+            {
+                offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * hLinesSq / Mathf.Max(1, hLinesCount));
+            }
 
             Vector3 scale = Vector3.one;
 
@@ -199,6 +223,12 @@ namespace Battlehub.RTEditor
 
             scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px - 1) % 3.0f);
             scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py - 1) % 3.0f);
+            if (fixedHeight)
+            {
+                offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y);
+                scale.y = hLinesCount * m_parameters.FixedHeight / viewportSize.y;
+                m_hGridMaterial0.color = m_parameters.LineColor;
+            }
 
             Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
             if (m_vGridMesh0 != null)
@@ -221,10 +251,13 @@ namespace Battlehub.RTEditor
                 m_commandBuffer.DrawMesh(m_vGridMesh1, vMatrix, m_vGridMaterial1);
             }
 
-            hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-            if (m_hGridMesh1 != null)
+            if (!fixedHeight)
             {
-                m_commandBuffer.DrawMesh(m_hGridMesh1, hMatrix, m_hGridMaterial1);
+                hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+                if (m_hGridMesh1 != null)
+                {
+                    m_commandBuffer.DrawMesh(m_hGridMesh1, hMatrix, m_hGridMaterial1);
+                }
             }
 
             scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px + 1) % 3.0f);
@@ -239,14 +272,17 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-            if (m_hGridMesh2 != null)
+            if(!fixedHeight)
             {
-                if(interval.y > m_parameters.HorLinesSecondary)
+                hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+                if (m_hGridMesh2 != null)
                 {
-                    m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
+                    if (interval.y > m_parameters.HorLinesSecondary)
+                    {
+                        m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
+                    }
                 }
-            }
+            }   
         }
 
         private Material CreateGridMaterial()
@@ -258,7 +294,10 @@ namespace Battlehub.RTEditor
 
         private Mesh CreateGridMesh(float count, bool isVertical, int repeat = 2, int lineLength = 2, int skipLine = int.MaxValue)
         {
-            lineLength *= 100;
+            if(lineLength < 1000)
+            {
+                lineLength *= 100;
+            }
 
             Mesh mesh = new Mesh();
             mesh.name = "TimelineGrid";

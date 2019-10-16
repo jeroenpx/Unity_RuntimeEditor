@@ -280,7 +280,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1006041480651811985}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.63666666
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -790,7 +790,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 200}
+  m_SizeDelta: {x: 600, y: 261}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8134130868172469820
 CanvasRenderer:
@@ -2210,7 +2210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_output: {fileID: 9097686841843301696}
   m_textPanel: {fileID: 0}
-  m_fixedHeight: -1
+  m_fixedHeight: 200
   m_backgroundColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
 --- !u!1 &8972713072451675668
 GameObject:

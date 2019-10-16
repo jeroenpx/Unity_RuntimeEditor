@@ -105,9 +105,10 @@ namespace Battlehub.RTEditor
             m_timelineGridParams = new TimelineGridParameters();
             m_timelineGridParams.VertLines = 13;
             m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
-            m_timelineGridParams.HorLines = 6;
-            m_timelineGridParams.HorLinesSecondary = TimelineGrid.k_Lines;
+            m_timelineGridParams.HorLines = 4;
+            m_timelineGridParams.HorLinesSecondary = 2;
             m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
+            m_timelineGridParams.FixedHeight = m_fixedHeight;
             m_timelineGrid.SetGridParameters(m_timelineGridParams);
             m_textPanel.SetParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
 
@@ -166,17 +167,15 @@ namespace Battlehub.RTEditor
 
         private void OnRectTransformChanged()
         {
-            //Vector2 contentSize = m_scrollRect.content.sizeDelta;
             Vector2 viewportSize = m_scrollRect.viewport.rect.size;
 
-            if(m_fixedHeight > -1)
+            if (m_timelineGridParams.FixedHeight > -1)
             {
-                viewportSize.y = m_fixedHeight;
+                m_scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_timelineGridParams.FixedHeight * (m_timelineGridParams.HorLines - 1));
             }
 
             if (viewportSize != m_output.rectTransform.sizeDelta)
             {
-             //   m_scrollRect.content.sizeDelta = viewportSize;
                 m_output.rectTransform.sizeDelta = viewportSize;
             }
         }
@@ -206,7 +205,6 @@ namespace Battlehub.RTEditor
                 if (newInterval != m_interval)
                 {
                     m_interval = newInterval;
-                    Debug.Log(newInterval);
                     renderGraphics = true;
                 }
             }
@@ -233,14 +231,14 @@ namespace Battlehub.RTEditor
             Vector2 contentSize = m_scrollRect.content.sizeDelta;
             contentSize.y = Mathf.Max(contentSize.y, Mathf.Epsilon);
 
-            float verticalScale = (m_fixedHeight > -1) ? m_fixedHeight / contentSize.y : 1;
+            //float verticalScale = (m_fixedHeight > -1) ? m_fixedHeight / contentSize.y : float.NaN;
 
             Vector2 interval = m_interval;
             
             interval.x = Mathf.Pow(m_timelineGridParams.VertLinesSecondary, interval.x);
             interval.y = Mathf.Pow(m_timelineGridParams.HorLinesSecondary, interval.y);
 
-            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval, verticalScale);
+            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
             m_textPanel.UpdateGraphics(viewportSize.x, contentSize.x, scrollOffset.x, scrollSize.x, interval.x);
 
             m_camera.enabled = true;
