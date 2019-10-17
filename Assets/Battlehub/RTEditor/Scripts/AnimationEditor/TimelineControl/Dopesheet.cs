@@ -61,40 +61,42 @@ namespace Battlehub.RTEditor
                 throw new System.InvalidOperationException("Call SetGridParameters method first");
             }
 
-            //if(Input.GetKey(KeyCode.T))
+           // if(Input.GetKey(KeyCode.T))
             {
                 m_commandBuffer.Clear();
 
-                //int m_rows = 10;
-                //int m_cols = 10;
+                int m_rows = 100;
+                int m_cols = 100;
 
-                //int m_batchSize = 512;
-                //Matrix4x4[] m_matrices = new Matrix4x4[m_batchSize];
+                int m_batchSize = 512;
+                Matrix4x4[] m_matrices = new Matrix4x4[m_batchSize];
 
-                //int index = 0;
+                int index = 0;
 
-                //for (int i = 0; i < m_rows; ++i)
-                //{
-                //    for (int j = 0; j < m_cols; ++j)
-                //    {
-                //        m_matrices[index] = Matrix4x4.TRS(
-                //            new Vector3(i / 10.0f, j / 10.0f, 0),
-                //            Quaternion.Euler(0, 0, 45),
-                //            Vector3.one * 0.05f);
+                for (int i = 0; i < m_rows; ++i)
+                {
+                    for (int j = 0; j < m_cols; ++j)
+                    {
+                        m_matrices[index] = Matrix4x4.TRS(
+                            //new Vector3(i / 10.0f, j / 10.0f, 0),
+                            Vector3.forward,
+                            Quaternion.Euler(0, 0, 45),
+                            Vector3.one);
+                            //Vector3.one * 0.05f);
 
-                //        index++;
-                //        if (index == m_batchSize)
-                //        {
-                //            index = 0;
-                //            m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, m_batchSize);
-                //        }
-                //    }
-                //}
+                        index++;
+                        if (index == m_batchSize)
+                        {
+                            index = 0;
+                            m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, m_batchSize);
+                        }
+                    }
+                }
 
-                //if (0 < index && index < m_batchSize)
-                //{
-                //    m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, index);
-                //}
+                if (0 < index && index < m_batchSize)
+                {
+                    m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, index);
+                }
             }
         }
 

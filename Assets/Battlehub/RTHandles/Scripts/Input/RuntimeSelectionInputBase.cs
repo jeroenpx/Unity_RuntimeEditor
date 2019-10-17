@@ -24,17 +24,13 @@ namespace Battlehub.RTHandles
 
         }
 
-        protected virtual void LateUpdate()
+        //Moved to Update instead of LateUpdate because of TMP_InputField_LayoutFix script
+        protected virtual void Update()
         {
             if (!m_component.IsWindowActive || !m_component.Window.IsPointerOver)
             {
                 return;
             }
-
-            //if (!m_component.IsUISelected && !m_component.Editor.IsVR)
-            //{
-            //    return;
-            //}
 
             if (SelectAction())
             {
@@ -44,7 +40,7 @@ namespace Battlehub.RTHandles
 
         protected virtual bool SelectAction()
         {
-            return m_component.Editor.Input.GetPointerDown(0);
+            return m_component.Editor.Input.GetPointerUp(0);
         }
 
         protected virtual void SelectGO()

@@ -21,7 +21,14 @@ namespace Battlehub.RTHandles
             get;
         }
 
-        bool CanPan
+        [System.Obsolete("Use CanRotate instead")]
+        bool CanOrbit
+        {
+            get;
+            set;
+        }
+
+        bool CanRotate
         {
             get;
             set;
@@ -39,14 +46,13 @@ namespace Battlehub.RTHandles
             set;
         }
 
-        [System.Obsolete("Use CanRotate instead")]
-        bool CanOrbit
+        bool CanPan
         {
             get;
             set;
         }
 
-        bool CanRotate
+        bool CanFreeMove
         {
             get;
             set;
@@ -62,6 +68,7 @@ namespace Battlehub.RTHandles
     {
         public Texture2D ViewTexture;
         public Texture2D MoveTexture;
+        public Texture2D FreeMoveTexture;
         
         private Plane m_dragPlane;
         private Vector3 m_lastMousePosition;
@@ -91,7 +98,18 @@ namespace Battlehub.RTHandles
         private bool m_changeOrthographicSizeOnly = true;
         [SerializeField]
         private bool m_canRotate = true;
-        
+        [SerializeField]
+        private bool m_canFreeMove = true;
+        [SerializeField]
+        private float m_freeMoveSpeed = 5.0f;
+        [SerializeField]
+        private float m_freeSmoothMoveSpeed = 5.0f;
+        [SerializeField]
+        private float m_freeRotateSpeed = 7.5f;
+        [SerializeField]
+        private float m_freeSmoothRotateSpeed = 5.0f;
+        private Quaternion m_freeMoveTargetRotation;
+
         public bool IsSceneGizmoEnabled
         {
             get { return m_isSceneGizmoEnabled && m_sceneGizmo != null; }
@@ -108,21 +126,6 @@ namespace Battlehub.RTHandles
         public RectTransform SceneGizmoTransform
         {
             get { return m_sceneGizmoTransform; }
-        }
-
-        public bool CanPan
-        {
-            get { return m_canPan; }
-            set { m_canPan = value; }
-        }
-        public bool CanZoom
-        {
-            get { return m_canZoom; }
-            set
-            {
-                m_canZoom = value;
-                m_mouseOrbit.CanZoom = value;
-            }
         }
 
         public bool CanOrbit
@@ -144,6 +147,16 @@ namespace Battlehub.RTHandles
             }
         }
 
+        public bool CanZoom
+        {
+            get { return m_canZoom; }
+            set
+            {
+                m_canZoom = value;
+                m_mouseOrbit.CanZoom = value;
+            }
+        }
+
         public bool ChangeOrthographicSizeOnly
         {
             get { return m_changeOrthographicSizeOnly; }
@@ -153,25 +166,17 @@ namespace Battlehub.RTHandles
                 m_mouseOrbit.ChangeOrthographicSizeOnly = value;
             }
         }
-      
-        public override Vector3 Pivot
+
+        public bool CanPan
         {
-            get { return base.Pivot; }
-            set
-            {
-                base.Pivot = value;
-                m_mouseOrbit.SyncAngles();
-            }
+            get { return m_canPan; }
+            set { m_canPan = value; }
         }
 
-        public override Vector3 CameraPosition
+        public bool CanFreeMove
         {
-            get { return base.CameraPosition; }
-            set
-            { 
-                base.CameraPosition = value;
-                m_mouseOrbit.SyncAngles();
-            }
+            get { return m_canFreeMove; }
+            set { m_canFreeMove = value; }
         }
 
         public GameObject GameObject
@@ -217,6 +222,10 @@ namespace Battlehub.RTHandles
             if (MoveTexture == null)
             {
                 MoveTexture = Resources.Load<Texture2D>("RTH_Hand");
+            }
+            if(FreeMoveTexture == null)
+            {
+                FreeMoveTexture = Resources.Load<Texture2D>("RTH_FreeMove");
             }
 
             if (GetComponent<RuntimeSelectionInputBase>() == null)
@@ -319,7 +328,7 @@ namespace Battlehub.RTHandles
         }
 
     
-        public void UpdateCursorState(bool isPointerOverEditorArea, bool pan, bool rotate)
+        public void UpdateCursorState(bool isPointerOverEditorArea, bool pan, bool rotate, bool freeMove)
         {
             if (!isPointerOverEditorArea)
             {
@@ -327,27 +336,30 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (pan && CanPan)
+            if (freeMove && CanFreeMove)
+            {
+                Editor.CursorHelper.SetCursor(this, FreeMoveTexture, Vector2.one * 0.5f, CursorMode.Auto);
+            }
+            else if (pan && CanPan)
             {
                 if (rotate && Editor.Tools.Current == RuntimeTool.View)
                 {
-                    Editor.CursorHelper.SetCursor(this, ViewTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
+                    Editor.CursorHelper.SetCursor(this, ViewTexture, Vector2.one * 0.5f, CursorMode.Auto);
                 }
                 else
                 {
-                    Editor.CursorHelper.SetCursor(this, MoveTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
+                    Editor.CursorHelper.SetCursor(this, MoveTexture, Vector2.one * 0.5f, CursorMode.Auto);
                 }
             }
-            else if (rotate && CanOrbit)
+            else if (rotate && CanRotate)
             {
-                Editor.CursorHelper.SetCursor(this, ViewTexture, new Vector2(0.5f, 0.5f), CursorMode.Auto);
+                Editor.CursorHelper.SetCursor(this, ViewTexture, Vector2.one * 0.5f, CursorMode.Auto);
             }
             else
             {
                 Editor.CursorHelper.ResetCursor(this);
             }
         }
-
 
         public override void Focus()
         {
@@ -404,6 +416,15 @@ namespace Battlehub.RTHandles
                 }));
         }
 
+        public void Orbit(float deltaX, float deltaY, float deltaZ)
+        {
+            if (m_lockInput || !CanRotate)
+            {
+                return;
+            }
+            m_mouseOrbit.Orbit(deltaX, deltaY, deltaZ);
+        }
+
         public void BeginPan(Vector3 mousePosition)
         {
             if (m_lockInput || !CanPan)
@@ -433,15 +454,81 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void Orbit(float deltaX, float deltaY, float deltaZ)
+        public void BeginFreeMove()
         {
-            if (m_lockInput || !CanOrbit)
+            Transform camTransform = Window.Camera.transform;
+            m_freeMoveTargetRotation = camTransform.rotation;
+        }
+
+        public void FreeMove(Vector2 rotate, Vector3 move, float forward)
+        {
+            if (m_lockInput || !CanFreeMove)
             {
                 return;
             }
-            m_mouseOrbit.Orbit(deltaX, deltaY, deltaZ);
-        }
+
+            bool invertRotateDirection = false;
+
+            float direction = invertRotateDirection ? -1 : 1;
+            rotate *= direction * m_freeRotateSpeed;
             
+            Transform camTransform = Window.Camera.transform;
+
+            m_freeMoveTargetRotation = Quaternion.Inverse(
+                Quaternion.Euler(rotate.y, 0, 0) * 
+                Quaternion.Inverse(m_freeMoveTargetRotation) * 
+                Quaternion.Euler(0, -rotate.x, 0));
+           
+            camTransform.rotation = Quaternion.Slerp(
+                camTransform.rotation,
+                m_freeMoveTargetRotation,
+                m_freeSmoothRotateSpeed * Time.deltaTime);
+
+
+            Vector3 zoomOffset = Vector3.zero;
+            if (Window.Camera.orthographic)
+            {
+                if (Mathf.Approximately(move.y, 0))
+                {
+                    move.y = forward;
+                }
+                else
+                {
+                    move.y /= (m_freeMoveSpeed * 10);
+                }
+                
+                if (!Mathf.Approximately(move.y, 0))
+                {
+                    Vector3 position = camTransform.position;
+                    m_mouseOrbit.Zoom(move.y);
+                    zoomOffset = camTransform.position - position;
+                    camTransform.position = position;
+                    move.y = 0;
+                }
+            }
+            else
+            {
+                if (Mathf.Approximately(move.y, 0))
+                {
+                    move.y = forward * 50;
+                }
+            }
+
+            move *= m_freeMoveSpeed;
+
+            Vector3 targetPosition = camTransform.position + zoomOffset +
+                camTransform.forward * move.y + camTransform.right * move.x + camTransform.up * move.z;
+
+            camTransform.position = Vector3.Lerp(
+                camTransform.position, 
+                targetPosition,
+                m_freeSmoothMoveSpeed * Time.deltaTime);
+
+            Vector3 newPivot = camTransform.position + camTransform.forward * m_mouseOrbit.Distance;
+            SecondaryPivotTransform.position += newPivot - Pivot;
+            PivotTransform.position = newPivot;
+        }
+
         private void OnSceneGizmoOrientationChanging()
         {
             m_lockInput = true;
@@ -454,7 +541,6 @@ namespace Battlehub.RTHandles
             {
                 m_mouseOrbit.Target.position = Window.Camera.transform.position + Window.Camera.transform.forward * m_mouseOrbit.Distance;
                 m_mouseOrbit.SecondaryTarget.position = m_mouseOrbit.Target.position;
-                m_mouseOrbit.SyncAngles();
             }
         }
 

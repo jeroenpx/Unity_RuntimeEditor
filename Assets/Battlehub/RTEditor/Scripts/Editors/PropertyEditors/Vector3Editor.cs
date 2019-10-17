@@ -46,6 +46,8 @@ namespace Battlehub.RTEditor
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+            
+
             m_xInput.onValueChanged.AddListener(OnXValueChanged);
             m_yInput.onValueChanged.AddListener(OnYValueChanged);
             m_zInput.onValueChanged.AddListener(OnZValueChanged);

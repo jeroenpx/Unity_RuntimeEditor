@@ -6,7 +6,9 @@ namespace Battlehub.RTCommon
     {
         X,
         Y,
-        Z
+        Z,
+        Horizontal,
+        Vertical,
     }
 
     public interface IInput
@@ -167,6 +169,10 @@ namespace Battlehub.RTCommon
                     return Input.GetAxis("Mouse Y");
                 case InputAxis.Z:
                     return Input.GetAxis("Mouse ScrollWheel");
+                case InputAxis.Horizontal:
+                    return Input.GetAxis("Horizontal");
+                case InputAxis.Vertical:
+                    return Input.GetAxis("Vertical");
                 default:
                     return 0;
             }

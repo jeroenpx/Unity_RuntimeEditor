@@ -10,7 +10,7 @@ public class RenderQuads : MonoBehaviour
     [SerializeField]
     private Material m_material = null;
 
-    private int m_rows = 10;
+    private int m_rows = 1000;
     private int m_cols = 100;
     private int m_batchSize = 512;
 

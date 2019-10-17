@@ -15,6 +15,7 @@ namespace Battlehub.RTHandles
 
         private bool m_rotate;
         private bool m_pan;
+        private bool m_freeMove;
         private bool m_isActive;
 
         protected RuntimeSceneComponent SceneComponent
@@ -40,9 +41,14 @@ namespace Battlehub.RTHandles
         {
             IInput input = m_component.Editor.Input;
             RuntimeTools tools = m_component.Editor.Tools;
-            return input.GetPointer(2) ||
-                input.GetPointer(1) ||
-                input.GetPointer(0) && tools.Current == RuntimeTool.View && tools.ActiveTool == null;
+            return input.GetPointer(2) || input.GetPointer(0) && tools.Current == RuntimeTool.View && tools.ActiveTool == null;
+        }
+
+        protected virtual bool FreeMoveAction()
+        {
+            IInput input = m_component.Editor.Input;
+            RuntimeTools tools = m_component.Editor.Tools;
+            return input.GetPointer(1);
         }
 
         protected virtual bool FocusAction()
@@ -57,7 +63,7 @@ namespace Battlehub.RTHandles
             return input.GetKeyDown(SnapToGridKey) && input.GetKey(ModifierKey);
         }
 
-        protected virtual Vector2 OrbitAxes()
+        protected virtual Vector2 RotateAxes()
         {
             IInput input = m_component.Editor.Input;
             float deltaX = input.GetAxis(InputAxis.X);
@@ -70,6 +76,23 @@ namespace Battlehub.RTHandles
             IInput input = m_component.Editor.Input;
             float deltaZ = input.GetAxis(InputAxis.Z);
             return deltaZ;
+        }
+
+        protected virtual Vector3 MoveAxes()
+        {
+            IInput input = m_component.Editor.Input;
+            float deltaX = input.GetAxis(InputAxis.Horizontal);
+            float deltaY = input.GetAxis(InputAxis.Vertical);
+            float deltaZ = 0;
+            if (input.GetKey(KeyCode.Q))
+            {
+                deltaZ = 0.5f;
+            }
+            else if (input.GetKey(KeyCode.E))
+            {
+                deltaZ = -0.5f;
+            }
+            return new Vector3(deltaX, deltaY, deltaZ);
         }
 
         protected override void Start()
@@ -93,15 +116,16 @@ namespace Battlehub.RTHandles
             {
                 if(m_isActive)
                 {
-                    SceneComponent.UpdateCursorState(false, false, false);
+                    SceneComponent.UpdateCursorState(false, false, false, false);
                     m_pan = false;
                     m_rotate = false;
+                    m_freeMove = false;
                 }
                 m_isActive = m_component.IsWindowActive;
             }
         }
 
-        protected override void LateUpdate()
+        protected override void Update()
         {
             if(!m_component.IsWindowActive)
             {
@@ -116,6 +140,7 @@ namespace Battlehub.RTHandles
             bool canRotate = AllowRotateAction();
             bool rotate = RotateAction();
             bool pan = PanAction();
+            bool freeMove = FreeMoveAction();
 
             if(pan && tools.Current != RuntimeTool.View)
             {
@@ -139,21 +164,35 @@ namespace Battlehub.RTHandles
             bool endPan = m_pan != pan && !pan;
             m_pan = pan;
 
-            
-            Vector3 pointerPosition = input.GetPointerXY(0);
-
-            tools.IsViewing = m_rotate || m_pan;
-
-            if (beginPan || endPan || beginRotate || endRotate)
+            bool beginFreeMove = m_freeMove != freeMove && freeMove;
+            if(beginFreeMove && !isPointerOverAndSelected)
             {
-                SceneComponent.UpdateCursorState(true, m_pan, m_rotate);
+                freeMove = false;
+            }
+            bool endFreeMove = m_freeMove != freeMove && !freeMove;
+            m_freeMove = freeMove;
+
+            Vector3 pointerPosition = input.GetPointerXY(0);
+            tools.IsViewing = m_rotate || m_pan || m_freeMove;
+
+            if (beginPan || endPan || beginRotate || endRotate || beginFreeMove || endFreeMove)
+            {
+                SceneComponent.UpdateCursorState(true, m_pan, m_rotate, m_freeMove);
             }
 
-            if(m_rotate)
+            if (m_freeMove)
+            {
+                if(beginFreeMove)
+                {
+                    SceneComponent.BeginFreeMove();
+                }
+                SceneComponent.FreeMove(RotateAxes(), MoveAxes(), ZoomAxis());
+            }
+            else if (m_rotate)
             {
                 if(canRotate)
                 {
-                    Vector2 orbitAxes = OrbitAxes();  
+                    Vector2 orbitAxes = RotateAxes();  
                     SceneComponent.Orbit(orbitAxes.x, orbitAxes.y, 0);
                 }
             }

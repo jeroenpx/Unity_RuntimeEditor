@@ -75,10 +75,10 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void LateUpdate()
+        protected override void Update()
         {
-            base.LateUpdate();
-            
+            base.Update();
+                    
             if (m_component.Editor.Input.GetPointerDown(1))
             {
                 m_component.Editor.Tools.IsViewing = true;

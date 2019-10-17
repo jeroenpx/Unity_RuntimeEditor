@@ -95,9 +95,9 @@ namespace Battlehub.RTHandles
         }
 
 
-        protected override void LateUpdate()
+        protected override void Update()
         {
-            base.LateUpdate();
+            base.Update();
 
             if (Time.time > m_countdownStartT)
             {

@@ -5,6 +5,9 @@ using UnityEngine;
 using Battlehub.RTCommon;
 using UnityObject = UnityEngine.Object;
 using Battlehub.RTSL.Interface;
+using UnityEngine.UI;
+using System.Collections;
+using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -196,7 +199,6 @@ namespace Battlehub.RTEditor
                 }
             }
         }
-
 
         private void OnAddComponent(Type type)
         {

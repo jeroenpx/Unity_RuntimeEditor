@@ -118,6 +118,7 @@ namespace Battlehub.RTSL
                             string relativePath = GetRelativePath(path, projectPath);
                             relativePath = relativePath.Replace('\\', '/');
                             AssetItem scene = (AssetItem)project.Root.Get(relativePath);
+                            
                             project.Load(new[] { scene }, (loadError, loadedObjects) =>
                             {
                                 IOC.ClearAll();
