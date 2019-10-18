@@ -16,6 +16,10 @@ namespace Battlehub.RTEditor
 
         private TimelineGridParameters m_parameters = null;
 
+        private const int k_batchSize = 512;
+
+        private Matrix4x4[] m_matrices = new Matrix4x4[k_batchSize];
+
         private void OnDestroy()
         {
             if (m_camera != null)
@@ -61,44 +65,55 @@ namespace Battlehub.RTEditor
                 throw new System.InvalidOperationException("Call SetGridParameters method first");
             }
 
-           // if(Input.GetKey(KeyCode.T))
+            m_commandBuffer.Clear();
+
+            int vLinesCount = m_parameters.VertLines;
+            int hLinesCount = m_parameters.HorLines;
+            Color lineColor = m_parameters.LineColor;
+
+            int index = 0;
+            int cols = vLinesCount * m_parameters.VertLinesSecondary;
+            int rows = hLinesCount - 1;
+
+            float rowHeight = m_parameters.FixedHeight / viewportSize.y;
+            float aspect = viewportSize.x / viewportSize.y;
+
+            int vLinesSq = m_parameters.VertLinesSecondary * m_parameters.VertLinesSecondary;
+            int hLinesSq = m_parameters.HorLinesSecondary * m_parameters.HorLinesSecondary;
+
+            Vector2 contentScale = new Vector2(
+                1.0f / normalizedSize.x,
+                1.0f / normalizedSize.y);
+
+            Vector3 offset = new Vector3(-0.5f, 0.5f - rowHeight * 0.5f, 1.0f);
+            offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * vLinesSq / Mathf.Max(1, vLinesCount));
+            offset.x *= aspect;
+            offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y);
+
+            Vector3 keyframeScale = Vector3.one * rowHeight * 0.5f;
+
+            for (int i = 0; i < rows; ++i)
             {
-                m_commandBuffer.Clear();
-
-                int m_rows = 100;
-                int m_cols = 100;
-
-                int m_batchSize = 512;
-                Matrix4x4[] m_matrices = new Matrix4x4[m_batchSize];
-
-                int index = 0;
-
-                for (int i = 0; i < m_rows; ++i)
+                for (int j = 0; j < cols; ++j)
                 {
-                    for (int j = 0; j < m_cols; ++j)
-                    {
-                        m_matrices[index] = Matrix4x4.TRS(
-                            //new Vector3(i / 10.0f, j / 10.0f, 0),
-                            Vector3.forward,
-                            Quaternion.Euler(0, 0, 45),
-                            Vector3.one);
-                            //Vector3.one * 0.05f);
+                    m_matrices[index] = Matrix4x4.TRS(
+                        offset + new Vector3(aspect * j / cols, -rowHeight * i , 1),
+                        Quaternion.Euler(0, 0, 45),
+                        keyframeScale);
 
-                        index++;
-                        if (index == m_batchSize)
-                        {
-                            index = 0;
-                            m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, m_batchSize);
-                        }
+                    index++;
+                    if (index == k_batchSize)
+                    {
+                        index = 0;
+                        m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, k_batchSize);
                     }
                 }
+            }
 
-                if (0 < index && index < m_batchSize)
-                {
-                    m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, index);
-                }
+            if (0 < index && index < k_batchSize)
+            {
+                m_commandBuffer.DrawMeshInstanced(m_quad, 0, m_material, 0, m_matrices, index);
             }
         }
-
     }
 }

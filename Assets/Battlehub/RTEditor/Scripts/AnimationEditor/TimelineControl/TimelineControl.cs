@@ -104,7 +104,7 @@ namespace Battlehub.RTEditor
             m_timelineGridParams = new TimelineGridParameters();
             m_timelineGridParams.VertLines = 13;
             m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
-            m_timelineGridParams.HorLines = 4;
+            m_timelineGridParams.HorLines = 21;
             m_timelineGridParams.HorLinesSecondary = 2;
             m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
             m_timelineGridParams.FixedHeight = m_fixedHeight;
@@ -251,9 +251,9 @@ namespace Battlehub.RTEditor
             interval.x = Mathf.Pow(m_timelineGridParams.VertLinesSecondary, interval.x);
             interval.y = Mathf.Pow(m_timelineGridParams.HorLinesSecondary, interval.y);
 
-            m_dopesheet.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
-            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
             m_textPanel.UpdateGraphics(viewportSize.x, contentSize.x, scrollOffset.x, scrollSize.x, interval.x);
+            m_timelineGrid.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
+            m_dopesheet.UpdateGraphics(viewportSize, contentSize, scrollOffset, scrollSize, interval);
 
             m_camera.enabled = true;
             m_camera.Render();

@@ -191,7 +191,7 @@ namespace Battlehub.RTEditor
                 1.0f / normalizedSize.x,
                 1.0f / normalizedSize.y);
 
-            Vector3 offset = new Vector3(-0.5f, 0.5f, 1.0f);
+            Vector3 offset = new Vector3(-0.5f, 0.5f, 2.0f);
             offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * vLinesSq / Mathf.Max(1, vLinesCount));
             if (!fixedHeight)
             {
