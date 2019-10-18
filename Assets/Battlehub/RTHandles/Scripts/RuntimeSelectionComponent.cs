@@ -66,6 +66,12 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        float OrthographicSize
+        {
+            get;
+            set;
+        }
+
         void Focus();
     }
 
@@ -222,6 +228,12 @@ namespace Battlehub.RTHandles
             set { Window.Camera.orthographic = value; }
         }
 
+        public virtual float OrthographicSize
+        {
+            get { return Window.Camera.orthographicSize; }
+            set { Window.Camera.orthographicSize = value; }
+        }
+
         public virtual Vector3 CameraPosition
         {
             get { return Window.Camera.transform.position; }
@@ -271,6 +283,11 @@ namespace Battlehub.RTHandles
         public RectTool RectTool
         {
             get { return m_rectTool; }
+        }
+
+        public SceneGrid Grid
+        {
+            get { return m_grid; }
         }
 
         public bool IsPositionHandleEnabled

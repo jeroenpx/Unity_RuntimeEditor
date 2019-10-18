@@ -33,6 +33,14 @@ namespace Battlehub.RTHandles
             }
         }
 
+        [SerializeField]
+        private float m_alpha = 1.0f;
+        public float Alpha
+        {
+            get { return m_alpha; }
+            set { m_alpha = Mathf.Clamp01(value); }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
@@ -104,8 +112,8 @@ namespace Battlehub.RTHandles
             float alpha0 = GetAlpha(0, h, scale);
             float alpha1 = GetAlpha(1, h, scale);
 
-            SetGridAlpha(m_grid0Material, alpha0, fadeDistance);
-            SetGridAlpha(m_grid1Material, alpha1, fadeDistance);
+            SetGridAlpha(m_grid0Material, alpha0 * m_alpha, fadeDistance);
+            SetGridAlpha(m_grid1Material, alpha1 * m_alpha, fadeDistance);
 
             float pow0 = Mathf.Pow(10, scale - 1);
             float pow1 = Mathf.Pow(10, scale);

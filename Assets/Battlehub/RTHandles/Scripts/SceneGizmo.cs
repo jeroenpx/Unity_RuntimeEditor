@@ -231,7 +231,10 @@ namespace Battlehub.RTHandles
 
         protected virtual void Start()
         {
-            IsOrthographic = Window.Camera.orthographic;   
+            if(IsOrthographic != Window.Camera.orthographic)
+            {
+                IsOrthographic = Window.Camera.orthographic;
+            }
         }
 
         protected override void OnDestroyOverride()
@@ -462,45 +465,48 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-                    if (m_rotateAnimation == null || !m_rotateAnimation.InProgress)
-                    {
-                        if (OrientationChanging != null)
-                        {
-                            OrientationChanging.Invoke();
-                        }
-                    }
-
-                    if (m_rotateAnimation != null)
-                    {
-                        m_rotateAnimation.Abort();
-                    }
-
-                    Vector3 pivot = Pivot.transform.position;
-                    Vector3 radiusVector = Vector3.back * (Window.Camera.transform.position - pivot).magnitude;
-                    Quaternion targetRotation = Quaternion.LookRotation(-m_selectedAxis, Up);
-                    m_rotateAnimation = new QuaternionAnimationInfo(Window.Camera.transform.rotation, targetRotation, 0.4f, QuaternionAnimationInfo.EaseOutCubic,
-                        (target, value, t, completed) =>
-                        {
-                            Window.Camera.transform.position = pivot + value * radiusVector;
-                            Window.Camera.transform.rotation = value;
-
-                            if (completed)
-                            {
-                                DisableColliders();
-                                EnableColliders();
-
-
-                                if (OrientationChanged != null)
-                                {
-                                    OrientationChanged.Invoke();
-                                }
-                            }
-
-                        });
-
-                    Run.Instance.Animation(m_rotateAnimation);
+                    ChangeOrientation(-m_selectedAxis);
                 }
             }
+        }
+
+        public void ChangeOrientation(Vector3 axis)
+        {
+            if (m_rotateAnimation == null || !m_rotateAnimation.InProgress)
+            {
+                if (OrientationChanging != null)
+                {
+                    OrientationChanging.Invoke();
+                }
+            }
+
+            if (m_rotateAnimation != null)
+            {
+                m_rotateAnimation.Abort();
+            }
+
+            Vector3 pivot = Pivot.transform.position;
+            Vector3 radiusVector = Vector3.back * (Window.Camera.transform.position - pivot).magnitude;
+            Quaternion targetRotation = Quaternion.LookRotation(axis, Up);
+            m_rotateAnimation = new QuaternionAnimationInfo(Window.Camera.transform.rotation, targetRotation, 0.4f, QuaternionAnimationInfo.EaseOutCubic,
+                (target, value, t, completed) =>
+                {
+                    Window.Camera.transform.position = pivot + value * radiusVector;
+                    Window.Camera.transform.rotation = value;
+
+                    if (completed)
+                    {
+                        DisableColliders();
+                        EnableColliders();
+
+                        if (OrientationChanged != null)
+                        {
+                            OrientationChanged.Invoke();
+                        }
+                    }
+                });
+
+            Run.Instance.Animation(m_rotateAnimation);
         }
 
         private void Sync()

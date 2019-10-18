@@ -9,7 +9,7 @@ namespace Battlehub.RTEditor
     public class TMP_InputFieldLayoutFix : MonoBehaviour
     {
         [SerializeField]
-        private TMP_InputField m_inputField;
+        private TMP_InputField m_inputField = null;
 
 #if UNITY_2019_1_OR_NEWER
         private void Start()

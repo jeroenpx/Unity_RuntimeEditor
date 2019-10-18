@@ -10,9 +10,13 @@ namespace Battlehub.RTHandles
         public KeyCode RotateKey = KeyCode.LeftAlt;
         public KeyCode RotateKey2 = KeyCode.RightAlt;
         public KeyCode RotateKey3 = KeyCode.AltGr;
-        public float ZoomSensitivity = 8f;
-        public float PanSensitivity = 100f;
-
+        
+        public float RotateXSensitivity = 5.0f;
+        public float RotateYSensitivity = 5.0f;
+        public float MoveZSensitivity = 1.0f;
+        public float FreeMoveSensitivity = 0.25f;
+        public float FreeRotateSensitivity = 7.5f;
+        
         private bool m_rotate;
         private bool m_pan;
         private bool m_freeMove;
@@ -125,9 +129,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void Update()
+        protected override void LateUpdate()
         {
-            if(!m_component.IsWindowActive)
+            if (!m_component.IsWindowActive)
             {
                 return;
             }
@@ -178,22 +182,17 @@ namespace Battlehub.RTHandles
             if (beginPan || endPan || beginRotate || endRotate || beginFreeMove || endFreeMove)
             {
                 SceneComponent.UpdateCursorState(true, m_pan, m_rotate, m_freeMove);
-            }
-
+            } 
             if (m_freeMove)
             {
-                if(beginFreeMove)
-                {
-                    SceneComponent.BeginFreeMove();
-                }
-                SceneComponent.FreeMove(RotateAxes(), MoveAxes(), ZoomAxis());
+                SceneComponent.FreeMove(RotateAxes() * FreeRotateSensitivity, MoveAxes() * FreeMoveSensitivity, ZoomAxis());
             }
             else if (m_rotate)
             {
                 if(canRotate)
                 {
                     Vector2 orbitAxes = RotateAxes();  
-                    SceneComponent.Orbit(orbitAxes.x, orbitAxes.y, 0);
+                    SceneComponent.Orbit(orbitAxes.x * RotateXSensitivity, orbitAxes.y * RotateYSensitivity, 0);
                 }
             }
             else if(m_pan)
@@ -206,10 +205,12 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                if(isPointerOverAndSelected)
-                {
-                    SceneComponent.Orbit(0, 0, ZoomAxis());
+                SceneComponent.FreeMove(Vector2.zero, Vector3.zero, 0);
 
+                if (isPointerOverAndSelected)
+                {
+                    SceneComponent.Zoom(ZoomAxis() * MoveZSensitivity);
+                  
                     if (SelectAction())
                     {
                         SelectGO();

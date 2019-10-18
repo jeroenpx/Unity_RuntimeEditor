@@ -28,9 +28,9 @@ namespace Battlehub.RTHandles
             return Input.GetKeyDown(SelectAllKey) && Input.GetKey(ModifierKey);
         }
 
-        protected override void Update()
+        protected override void LateUpdate()
         {
-            base.Update();
+            base.LateUpdate();
             if(SelectAllAction())
             {
                 SelectAll();
