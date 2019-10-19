@@ -57,9 +57,6 @@ namespace Battlehub.RTEditor
             m_offset.x = -(1 - 1 / normalizedSize.x) * normalizedOffset.x  * m_visibleColumns;
             m_offset.y = (1 - normalizedSize.y) * (1 - normalizedOffset.y) * (m_parameters.HorLines - 1);
 
-            Debug.Log("Offset.x " + m_offset.x);
-            //Debug.Log("Visible columns " + m_visibleColumns);
-
             Vector3 pos = m_pointer.transform.localPosition;
             pos.x = (m_sample - m_offset.x) * m_columnWidth;
             m_pointer.transform.localPosition = pos;
