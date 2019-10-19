@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Battlehub.RTEditor
 {
     public delegate void TimelinePointerEvent<T>(T sample);
-    
+
     public class TimelinePointer : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
         public event TimelinePointerEvent<int> SampleChanged;
@@ -54,8 +54,11 @@ namespace Battlehub.RTEditor
             int vLinesSq = m_parameters.VertLinesSecondary * m_parameters.VertLinesSecondary;
             int vLinesCount = m_parameters.VertLines;
 
-            m_offset.x = ((1 - 1.0f / normalizedSize.x) * normalizedOffset.x / normalizedSize.x) * m_visibleColumns;
+            m_offset.x = -(1 - 1 / normalizedSize.x) * normalizedOffset.x  * m_visibleColumns;
             m_offset.y = (1 - normalizedSize.y) * (1 - normalizedOffset.y) * (m_parameters.HorLines - 1);
+
+            Debug.Log("Offset.x " + m_offset.x);
+            //Debug.Log("Visible columns " + m_visibleColumns);
 
             Vector3 pos = m_pointer.transform.localPosition;
             pos.x = (m_sample - m_offset.x) * m_columnWidth;
@@ -74,15 +77,16 @@ namespace Battlehub.RTEditor
                 pos.x = (m_sample - m_offset.x) * m_columnWidth;
                 m_pointer.transform.localPosition = pos;
 
-                if(oldSample != m_sample)
+                if (oldSample != m_sample)
                 {
-                    if(SampleChanged != null)
+                    if (SampleChanged != null)
                     {
                         SampleChanged(m_sample);
                     }
                 }
             }
         }
+
 
         private bool GetKeyframeCoord(PointerEventData eventData, out Vector2Int coord)
         {
@@ -116,7 +120,7 @@ namespace Battlehub.RTEditor
                 Vector2Int coord;
                 if (GetKeyframeCoord(eventData, out coord))
                 {
-                    if(PointerDown != null)
+                    if (PointerDown != null)
                     {
                         PointerDown(coord);
                     }
@@ -143,7 +147,7 @@ namespace Battlehub.RTEditor
 
         public void OnDrag(PointerEventData eventData)
         {
-            if(m_isDragInProgress)
+            if (m_isDragInProgress)
             {
                 UpdatePointerPosition(eventData);
             }
