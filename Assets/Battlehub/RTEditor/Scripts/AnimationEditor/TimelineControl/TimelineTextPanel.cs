@@ -19,7 +19,7 @@ namespace Battlehub.RTEditor
         private int m_secondaryLinesCount;
         private int m_samples;
 
-        public void SetParameters(int linesCount, int secondaryLinesCount, int samples)
+        public void SetGridParameters(int linesCount, int secondaryLinesCount, int samples)
         {
             m_linesCount = linesCount;
             m_secondaryLinesCount = secondaryLinesCount;

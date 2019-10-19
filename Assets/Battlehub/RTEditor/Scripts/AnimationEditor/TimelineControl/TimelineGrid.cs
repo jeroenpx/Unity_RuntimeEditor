@@ -151,7 +151,6 @@ namespace Battlehub.RTEditor
             return -end * value * (value - 2) + start;
         }
 
-
         private void SetAlpha(Material material, float fadeOutOffset, float p)
         {
             Color color = m_parameters.LineColor;
