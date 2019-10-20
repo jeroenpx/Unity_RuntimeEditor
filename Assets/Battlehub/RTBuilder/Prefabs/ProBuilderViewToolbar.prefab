@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 5810110979923320021}
   - component: {fileID: 7195785773591312450}
   - component: {fileID: 4113149879108415942}
+  - component: {fileID: 5950550136132359441}
   m_Layer: 5
   m_Name: ToggleEdge
   m_TagString: Untagged
@@ -194,6 +195,23 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5950550136132359441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 404473859871809881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36920747b93751d4eb77ba0da546af5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_location: 3
+  m_prefab: {fileID: 0}
+  m_target: {fileID: 0}
+  m_layer: {fileID: 0}
+  m_text: Edge Selection
 --- !u!1 &503547740642702079
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +575,7 @@ GameObject:
   - component: {fileID: 3388851151061473287}
   - component: {fileID: 32655405861763093}
   - component: {fileID: 2278350938864916239}
+  - component: {fileID: 1460495862745693028}
   m_Layer: 5
   m_Name: ToggleFace
   m_TagString: Untagged
@@ -652,6 +671,23 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1460495862745693028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729444537041235502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36920747b93751d4eb77ba0da546af5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_location: 3
+  m_prefab: {fileID: 0}
+  m_target: {fileID: 0}
+  m_layer: {fileID: 0}
+  m_text: Face Selection
 --- !u!1 &2004064005204633335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,6 +1304,7 @@ GameObject:
   - component: {fileID: 4810101701580014938}
   - component: {fileID: 4810101701580014936}
   - component: {fileID: 4810101701580014937}
+  - component: {fileID: 8969593629336059827}
   m_Layer: 5
   m_Name: ToggleObject
   m_TagString: Untagged
@@ -1363,6 +1400,23 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8969593629336059827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4810101701580014939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36920747b93751d4eb77ba0da546af5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_location: 3
+  m_prefab: {fileID: 0}
+  m_target: {fileID: 0}
+  m_layer: {fileID: 0}
+  m_text: Object Selection
 --- !u!1 &4810101701751329175
 GameObject:
   m_ObjectHideFlags: 0
@@ -2196,6 +2250,7 @@ GameObject:
   - component: {fileID: 7972602060805790714}
   - component: {fileID: 6247523122145992160}
   - component: {fileID: 3424492004068838740}
+  - component: {fileID: 5869347116299626898}
   m_Layer: 5
   m_Name: ToggleVertex
   m_TagString: Untagged
@@ -2291,6 +2346,23 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5869347116299626898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6681298336506516097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36920747b93751d4eb77ba0da546af5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_location: 3
+  m_prefab: {fileID: 0}
+  m_target: {fileID: 0}
+  m_layer: {fileID: 0}
+  m_text: Vertex Selection
 --- !u!1 &6792270730077814414
 GameObject:
   m_ObjectHideFlags: 0

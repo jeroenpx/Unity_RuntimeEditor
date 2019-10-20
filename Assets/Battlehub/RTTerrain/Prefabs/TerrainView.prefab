@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &3139532682288898263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358899163038641504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36920747b93751d4eb77ba0da546af5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_location: 1
+  m_prefab: {fileID: 0}
+  m_target: {fileID: 0}
+  m_layer: {fileID: 0}
+  m_text: Tooltip
+--- !u!114 &8945452268682993256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358899163038641504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97032f53005682c4fb94d4c9882b67a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_toggle: {fileID: 0}
+  m_onText: Disable Terrain Brush
+  m_offText: Enable Terrain Brush
 --- !u!1 &1305432093263058928
 GameObject:
   m_ObjectHideFlags: 0
@@ -3849,6 +3881,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3251072229159586765}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &358899163038641504 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3018871990047712941, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3251072229159586765}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6175684121489730360 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8694848937852117237, guid: 962c4b531a03aed4da0cf24ae485ce7b,
@@ -4000,15 +4038,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d19d5f723624d1a4aa5ec987e956675b, type: 3}
---- !u!224 &1607008063750014045 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8708297900551949110, guid: d19d5f723624d1a4aa5ec987e956675b,
-    type: 3}
-  m_PrefabInstance: {fileID: 7968886016946720619}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3933709747141899472 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6341195478718069691, guid: d19d5f723624d1a4aa5ec987e956675b,
+    type: 3}
+  m_PrefabInstance: {fileID: 7968886016946720619}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1607008063750014045 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8708297900551949110, guid: d19d5f723624d1a4aa5ec987e956675b,
     type: 3}
   m_PrefabInstance: {fileID: 7968886016946720619}
   m_PrefabAsset: {fileID: 0}

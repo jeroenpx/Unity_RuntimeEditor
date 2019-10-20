@@ -544,7 +544,7 @@ namespace Battlehub.RTEditor
 
         private const float m_updateInterval = 0.25f;
         private float m_nextUpate;
-        protected void Update()
+        protected virtual void Update()
         {
             if(m_nextUpate > Time.time)
             {
@@ -558,7 +558,6 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            
             if(Target == null)
             {
                 return;

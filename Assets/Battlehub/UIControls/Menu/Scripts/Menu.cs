@@ -353,7 +353,6 @@ namespace Battlehub.UIControls.MenuControl
             transform.localPosition = lp;
         }
 
-
         private void LateUpdate()
         {
             if(m_skipUpdate)

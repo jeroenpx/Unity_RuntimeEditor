@@ -4,6 +4,7 @@ namespace Battlehub.RTEditor
 {
     public class AnimationTimelineView : MonoBehaviour
     {
+#pragma warning disable 0414
         [SerializeField]
         private GameObject m_timeline = null;
 
@@ -12,7 +13,7 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private TimelineControl m_curves = null;
-
+#pragma warning restore 0219
         public bool IsDopesheet
         {
             get;

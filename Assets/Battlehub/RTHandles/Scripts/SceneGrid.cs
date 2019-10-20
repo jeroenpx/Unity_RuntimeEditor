@@ -1,5 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.Utils;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -47,24 +49,28 @@ namespace Battlehub.RTHandles
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
 
             m_commandBuffer = new CommandBuffer();
+            m_commandBuffer.name = "SceneGrid Command Buffer";
+            Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             Rebuild();
         }
 
         protected virtual void OnEnable()
         {
-            Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            
         }
 
         protected virtual void OnDisable()
+        {
+            m_commandBuffer.Clear();
+        }
+
+        protected override void OnDestroyOverride()
         {
             if (Window != null && m_commandBuffer != null)
             {
                 Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             }
-        }
 
-        protected override void OnDestroyOverride()
-        {
             base.OnDestroyOverride();
             Cleanup();
         }

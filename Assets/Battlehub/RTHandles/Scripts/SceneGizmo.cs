@@ -520,10 +520,6 @@ namespace Battlehub.RTHandles
 
             if (m_screenHeight != Screen.height || m_screenWidth != Screen.width || m_cameraPixelRect != Window.Camera.pixelRect || m_scale != Appearance.SceneGizmoScale)
             {
-                m_screenHeight = Screen.height;
-                m_screenWidth = Screen.width;
-                m_cameraPixelRect = Window.Camera.pixelRect;
-                m_scale = Appearance.SceneGizmoScale;
                 UpdateLayout();
             }
 
@@ -693,6 +689,11 @@ namespace Battlehub.RTHandles
 
         public void UpdateLayout()
         {
+            m_screenHeight = Screen.height;
+            m_screenWidth = Screen.width;
+            m_cameraPixelRect = Window.Camera.pixelRect;
+            m_scale = Appearance.SceneGizmoScale;
+
             if (m_camera == null)
             {
                 return;
@@ -750,6 +751,11 @@ namespace Battlehub.RTHandles
                 if (initColliders)
                 {
                     InitColliders();
+                }
+
+                if(m_renderTextureCamera != null)
+                {
+                    m_renderTextureCamera.ResizeRenderTexture();
                 }
             }
         }  

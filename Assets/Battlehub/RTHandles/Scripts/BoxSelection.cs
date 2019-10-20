@@ -274,6 +274,7 @@ namespace Battlehub.RTHandles
             Bounds selectionBounds = new Bounds(center, m_rectTransform.sizeDelta);
             SelectionBounds = selectionBounds;
 
+            FilteringArgs filteringArgs = new FilteringArgs();
             HashSet<GameObject> selection;
             Renderer[] renderers = FindObjectsOfType<Renderer>();
 
@@ -296,20 +297,19 @@ namespace Battlehub.RTHandles
 
                 IEnumerable<GameObject> gameObjects = BoxSelectionRenderer.PickObjectsInRect(Window.Camera, rect, renderers, Mathf.RoundToInt(canvas.pixelRect.width), Mathf.RoundToInt(canvas.pixelRect.height)).Select(r => r.gameObject);
                 selection = new HashSet<GameObject>();
-                FilteringArgs args = new FilteringArgs();
                 foreach(GameObject go in gameObjects)
                 {
                     if (!selection.Contains(go))
                     {
                         if (Filtering != null)
                         {
-                            args.Object = go;
-                            Filtering(this, args);
-                            if (!args.Cancel)
+                            filteringArgs.Object = go;
+                            Filtering(this, filteringArgs);
+                            if (!filteringArgs.Cancel)
                             {
                                 selection.Add(go);
                             }
-                            args.Reset();
+                            filteringArgs.Reset();
                         }
                         else
                         {
@@ -323,13 +323,23 @@ namespace Battlehub.RTHandles
                 selection = new HashSet<GameObject>();
 
                 Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(Window.Camera);
-                FilteringArgs args = new FilteringArgs();
                 for (int i = 0; i < renderers.Length; ++i)
                 {
                     Renderer r = renderers[i];
                     Bounds bounds = r.bounds;
                     GameObject go = r.gameObject;
-                    TrySelect(ref selectionBounds, selection, args, ref bounds, go, frustumPlanes);
+                    TrySelect(ref selectionBounds, selection, filteringArgs, ref bounds, go, frustumPlanes);
+                }
+            }
+
+            SpriteGizmo[] spriteGizmos = FindObjectsOfType<SpriteGizmo>();
+            for (int i = 0; i < spriteGizmos.Length; ++i)
+            {
+                SpriteGizmo spriteGizmo = spriteGizmos[i];
+                bool select = TransformCenter(ref selectionBounds, spriteGizmo.transform);
+                if (select)
+                {
+                    Filter(selection, filteringArgs, spriteGizmo.gameObject);
                 }
             }
 
@@ -423,22 +433,27 @@ namespace Battlehub.RTHandles
 
             if (select)
             {
-                if (!selection.Contains(go))
+                Filter(selection, args, go);
+            }
+        }
+
+        private void Filter(HashSet<GameObject> selection, FilteringArgs args, GameObject go)
+        {
+            if (!selection.Contains(go))
+            {
+                if (Filtering != null)
                 {
-                    if (Filtering != null)
-                    {
-                        args.Object = go;
-                        Filtering(this, args);
-                        if (!args.Cancel)
-                        {
-                            selection.Add(go);
-                        }
-                        args.Reset();
-                    }
-                    else
+                    args.Object = go;
+                    Filtering(this, args);
+                    if (!args.Cancel)
                     {
                         selection.Add(go);
                     }
+                    args.Reset();
+                }
+                else
+                {
+                    selection.Add(go);
                 }
             }
         }

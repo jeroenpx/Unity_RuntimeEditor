@@ -191,7 +191,7 @@ namespace Battlehub.RTCommon
             return resizeRenderTexture || resizeOutput;
         }
 
-        private void ResizeRenderTexture()
+        public void ResizeRenderTexture()
         {
             RenderTexture texture = m_camera.targetTexture;
 
@@ -237,7 +237,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void ResizeOutput()
+        public void ResizeOutput()
         {
             if(m_fullscreen)
             {
