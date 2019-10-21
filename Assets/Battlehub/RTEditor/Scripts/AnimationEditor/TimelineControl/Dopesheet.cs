@@ -31,6 +31,7 @@ namespace Battlehub.RTEditor
         private const int k_batchSize = 512;
         private Matrix4x4[] m_matrices = new Matrix4x4[k_batchSize];
 
+#warning replace array with more appropriate structure
         private Keyframe[,] m_keyframes = new Keyframe[0, 0];
         public Keyframe[,] Keyframes
         {
@@ -109,26 +110,26 @@ namespace Battlehub.RTEditor
 
             float px = interval.x * normalizedSize.x;
             float visibleColumns = m_parameters.VertLines * Mathf.Pow(m_parameters.VertLinesSecondary, Mathf.Log(px, m_parameters.VertLinesSecondary));
+            float offsetColumns = -(1 - 1 / normalizedSize.x) * normalizedOffset.x * visibleColumns;
 
             Vector3 keyframeScale = Vector3.one * rowHeight * 0.5f;
 
-            UpdateKeyframes(Keyframe.Normal, m_material, index, cols, rows, rowHeight, aspect, offset, visibleColumns, keyframeScale);
+            UpdateKeyframes(Keyframe.Normal, m_material, index, cols, rows, rowHeight, aspect, offset, offsetColumns, visibleColumns, keyframeScale);
 
-            UpdateKeyframes(Keyframe.Selected, m_selectionMaterial, index, cols, rows, rowHeight, aspect, offset, visibleColumns, keyframeScale);
+            UpdateKeyframes(Keyframe.Selected, m_selectionMaterial, index, cols, rows, rowHeight, aspect, offset, offsetColumns, visibleColumns, keyframeScale);
 
         }
 
-        private void UpdateKeyframes(Keyframe state, Material material, int index, int cols, int rows, float rowHeight, float aspect, Vector3 offset, float visibleColumns, Vector3 keyframeScale)
+        private void UpdateKeyframes(Keyframe state, Material material, int index, int cols, int rows, float rowHeight, float aspect, Vector3 offset, float offsetColumns, float visibleColumns, Vector3 keyframeScale)
         {
             for (int i = 0; i < rows; ++i)
             {
-                for (int j = 0; j < cols; ++j)
+                for (int j = Mathf.FloorToInt(offsetColumns); j < cols && j < Mathf.Ceil(offsetColumns + visibleColumns + 1); ++j)
                 {
                     if (state == m_keyframes[i, j])
                     {
-                        m_matrices[index] = Matrix4x4.TRS(
-                        offset + new Vector3(aspect * j / visibleColumns, -rowHeight * i, 1),
-                        Quaternion.Euler(0, 0, 45),
+                        m_matrices[index] = Matrix4x4.TRS(offset + new Vector3(aspect * j / visibleColumns, -rowHeight * i, 1),
+                            Quaternion.Euler(0, 0, 45),
                         keyframeScale);
 
                         index++;

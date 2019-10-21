@@ -3,10 +3,31 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
+    public class TimelineBoxSelectionCancelArgs
+    {
+        public bool Cancel
+        {
+            get;
+            set;
+        }
+
+        public Vector2 LocalPoint
+        {
+            get;
+            private set;
+        }
+
+        public TimelineBoxSelectionCancelArgs(Vector2 localPoint)
+        {
+            LocalPoint = localPoint;
+        }
+    }
+    public delegate void TimelineBoxSelectionEvent<T>(T args);
     public delegate void TimelineBoxSelectionEvent(Vector2Int min, Vector2Int max);
 
     public class TimelineBoxSelection : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
+        public event TimelineBoxSelectionEvent<TimelineBoxSelectionCancelArgs> BeginSelection;   
         public event TimelineBoxSelectionEvent Selection;
 
         [SerializeField]
@@ -37,7 +58,9 @@ namespace Battlehub.RTEditor
 
         public void OnInitializePotentialDrag(PointerEventData eventData)
         {
-            // eventData.useDragThreshold = false;
+            ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, ExecuteEvents.initializePotentialDrag);
+
+            m_isReady = false;
 
             Vector2 point;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_rt, eventData.position, eventData.pressEventCamera, out point))
@@ -47,13 +70,28 @@ namespace Battlehub.RTEditor
                 {
                     m_start1 = coord;
                     m_start2 = new Vector2Int(coord.x, coord.y + 1);
-                    m_isReady = true;
+
+                    if (BeginSelection != null)
+                    {
+                        TimelineBoxSelectionCancelArgs cancelArgs = new TimelineBoxSelectionCancelArgs(point);
+                        BeginSelection(cancelArgs);
+                        if(!cancelArgs.Cancel)
+                        {
+                            m_isReady = true;
+                        }
+                    }
+                    else
+                    {
+                        m_isReady = true;
+                    }
                 }
             }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, ExecuteEvents.beginDragHandler);
+
             m_isInProgress = m_isReady;
             if(m_isInProgress)
             {
@@ -67,9 +105,12 @@ namespace Battlehub.RTEditor
             }
         }
 
+
         public void OnDrag(PointerEventData eventData)
         {
-            if(!m_isInProgress)
+
+            ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, ExecuteEvents.dragHandler);
+            if (!m_isInProgress)
             {
                 return;
             }
@@ -92,16 +133,22 @@ namespace Battlehub.RTEditor
                     m_box.sizeDelta = new Vector2(Mathf.Max(2, Mathf.Abs(size.x)), Mathf.Abs(size.y));
                 }
             }
+
+            
         }
 
         public void OnDrop(PointerEventData eventData)
         {
             Drop();
+
+            ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, ExecuteEvents.dropHandler);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             Drop();
+
+            ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, ExecuteEvents.endDragHandler);
         }
 
         private void Drop()

@@ -3,12 +3,13 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
-    public delegate void TimelinePointerEvent<T>(T sample);
+    public delegate void TimelinePointerEvent<T>(T arg);
 
     public class TimelinePointer : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
         public event TimelinePointerEvent<int> SampleChanged;
         public event TimelinePointerEvent<Vector2Int> PointerDown;
+        public event TimelinePointerEvent<int> Drag;
 
         [SerializeField]
         private RectTransform m_pointer = null;
@@ -22,7 +23,10 @@ namespace Battlehub.RTEditor
         private float m_columnWidth;
         private int m_sample;
         private Vector2 m_offset;
+        private bool m_isPointerDragInProgress;
+
         private bool m_isDragInProgress;
+        private Vector2Int m_prevCoord;
 
         public int Sample
         {
@@ -181,29 +185,48 @@ namespace Battlehub.RTEditor
         {
             if (RectTransformUtility.RectangleContainsScreenPoint(m_dragArea, eventData.position, eventData.pressEventCamera))
             {
-                m_isDragInProgress = true;
+                m_isPointerDragInProgress = true;
             }
             else
             {
-                m_isDragInProgress = false;
+                m_isPointerDragInProgress = false;
+                m_isDragInProgress = GetKeyframeCoord(eventData, false, out m_prevCoord);
             }
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (m_isDragInProgress)
+            if (m_isPointerDragInProgress)
             {
                 UpdatePointerPosition(eventData);
+            }
+            else
+            {
+                if(m_isDragInProgress)
+                {
+                    if (Drag != null)
+                    {
+                        Vector2Int coord;
+                        if (GetKeyframeCoord(eventData, false, out coord) && coord != m_prevCoord)
+                        {
+                            Drag(coord.x - m_prevCoord.x);
+                            m_prevCoord = coord;
+                        }
+                    }
+                   
+                }
             }
         }
 
         public void OnDrop(PointerEventData eventData)
         {
+            m_isPointerDragInProgress = false;
             m_isDragInProgress = false;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            m_isPointerDragInProgress = false;
             m_isDragInProgress = false;
         }
     }

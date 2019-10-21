@@ -1,9 +1,12 @@
 ﻿//#define USE_RTE
+#define TIMELINE_CONTROL_DEBUG
 
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Common;
+using Battlehub.Utils;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
@@ -33,7 +36,6 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Color m_backgroundColor = new Color32(0x27, 0x27, 0x27, 0xFF);
 
-        //Visible interval (seconds - x axis, units - y axis)
         private Vector2 m_interval = Vector2.one;
 
         private TimelineGridParameters m_timelineGridParams;
@@ -41,12 +43,58 @@ namespace Battlehub.RTEditor
         private DragAndDropListener m_vScrollbarListener;
         private bool m_hScrollValue;
         private bool m_vScrollValue;
+        private bool m_renderGraphics;
 
-        
-#if USE_RTE
-        private RuntimeWindow m_window;
-        private IRTE m_editor;
-#endif
+        public bool MultiselectMode
+        {
+            get;
+            set;
+        }
+
+        public int CurrentSample
+        {
+            get
+            {
+                if(m_pointer != null)
+                {
+                    return m_pointer.Sample;
+                }
+                return 0;
+            }
+        }
+
+        public int RowsCount
+        {
+            get { return m_timelineGridParams.HorLines - 1; }
+            //set
+            //{
+            //    m_timelineGridParams.HorLines = value + 1;
+            //    SetGridParameters();
+            //    m_renderGraphics = true;
+            //}
+        }
+       
+        /// Dopesheet.Keyframe must be replaced with more appropriate data structure
+        public Dopesheet.Keyframe[,] Keyframes
+        {
+            get { return m_dopesheet.Keyframes; }
+            set
+            {
+                m_dopesheet.Keyframes = value;
+                float colums = m_dopesheet.Keyframes.GetLength(1);
+                m_interval.x = Mathf.Log(m_timelineGridParams.VertLinesSecondary * colums / (m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary), m_timelineGridParams.VertLinesSecondary);
+                ChangeInterval(Vector2.zero);
+            }
+        }
+
+
+        private void SetGridParameters()
+        {
+            m_timelineGrid.SetGridParameters(m_timelineGridParams);
+            m_dopesheet.SetGridParameters(m_timelineGridParams);
+            m_textPanel.SetGridParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
+            m_pointer.SetGridParameters(m_timelineGridParams);
+        }
 
         private void Awake()
         {
@@ -55,7 +103,7 @@ namespace Battlehub.RTEditor
                 m_textPanel = GetComponentInChildren<TimelineTextPanel>(true);
             }
 
-            if(m_pointer == null)
+            if (m_pointer == null)
             {
                 m_pointer = GetComponentInChildren<TimelinePointer>(true);
             }
@@ -92,11 +140,9 @@ namespace Battlehub.RTEditor
             cameraGo.SetActive(false);
 
 #if USE_RTE
-            m_editor = IOC.Resolve<IRTE>();
-            m_window = GetComponentInParent<RuntimeWindow>();
-            cameraGo.transform.SetParent(m_editor.Root, false);
+            IRTE editor = IOC.Resolve<IRTE>();
+            cameraGo.transform.SetParent(editor, false);
 #endif
-
             m_camera = cameraGo.AddComponent<Camera>();
             m_camera.enabled = false;
             m_camera.orthographic = true;
@@ -113,44 +159,44 @@ namespace Battlehub.RTEditor
             m_rtCamera.enabled = false;
 
             m_timelineGridParams = new TimelineGridParameters();
-            m_timelineGridParams.VertLines = 13;
+            m_timelineGridParams.VertLines = 12;
             m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
             m_timelineGridParams.HorLines = 21;
             m_timelineGridParams.HorLinesSecondary = 2;
             m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
             m_timelineGridParams.FixedHeight = m_fixedHeight;
 
-            int samplesCount = m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary;
-
-            Dopesheet.Keyframe[,] keyframes = new Dopesheet.Keyframe[m_timelineGridParams.HorLines, samplesCount];
-            for(int i = 0; i < m_timelineGridParams.HorLines; ++i)
-            {
-                for(int j = 0; j < samplesCount; ++j)
-                {
-                    keyframes[i, j] = (Dopesheet.Keyframe)Random.Range(0, 3);
-                }
-            }
-
             m_timelineGrid = m_output.GetComponent<TimelineGrid>();
-            if(m_timelineGrid == null)
+            if (m_timelineGrid == null)
             {
                 m_timelineGrid = m_output.gameObject.AddComponent<TimelineGrid>();
             }
             m_timelineGrid.Init(m_camera);
-            m_timelineGrid.SetGridParameters(m_timelineGridParams);
+
 
             m_dopesheet = m_output.gameObject.GetComponent<Dopesheet>();
-            if(m_dopesheet == null)
+            if (m_dopesheet == null)
             {
                 m_dopesheet = m_output.gameObject.AddComponent<Dopesheet>();
             }
             m_dopesheet.Init(m_camera);
-            m_dopesheet.SetGridParameters(m_timelineGridParams);
-            m_dopesheet.Keyframes = keyframes;
-            
-            m_textPanel.SetGridParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
-            m_pointer.SetGridParameters(m_timelineGridParams);
+            SetGridParameters();
+
+#if TIMELINE_CONTROL_DEBUG
+            int samplesCount = 60;// m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary;
+
+            Dopesheet.Keyframe[,] keyframes = new Dopesheet.Keyframe[m_timelineGridParams.HorLines, samplesCount];
+            for (int i = 0; i < m_timelineGridParams.HorLines; ++i)
+            {
+                for (int j = 0; j < samplesCount; ++j)
+                {
+                    keyframes[i, j] = (Dopesheet.Keyframe)Random.Range(0, 3);
+                }
+            }
+            Keyframes = keyframes;
+#endif
             m_pointer.PointerDown += OnTimlineClick;
+            m_pointer.Drag += OnTimelineDrag;
 
             if (m_boxSelection == null)
             {
@@ -159,10 +205,20 @@ namespace Battlehub.RTEditor
 
             if (m_boxSelection != null)
             {
+                m_boxSelection.BeginSelection += OnBeginBoxSelection;
                 m_boxSelection.Selection += OnBoxSelection;
+                
             }
 
             RenderGraphics();
+        }
+
+        private void Start()
+        {
+            if(GetComponent<TimelineControlInput>() == null)
+            {
+                gameObject.AddComponent<TimelineControlInput>();
+            }
         }
 
         private void OnDestroy()
@@ -197,18 +253,80 @@ namespace Battlehub.RTEditor
             if(m_pointer != null)
             {
                 m_pointer.PointerDown -= OnTimlineClick;
+                m_pointer.Drag -= OnTimelineDrag;
             }
 
             if (m_boxSelection != null)
             {
+                m_boxSelection.BeginSelection -= OnBeginBoxSelection;
                 m_boxSelection.Selection -= OnBoxSelection;
             }
         }
 
         private void OnTimlineClick(Vector2Int coordinate)
         {
-            UnselectAll();
+            if(!IsSelected(coordinate) && !MultiselectMode)
+            {
+                UnselectAll();
+            }
+            
             Select(coordinate, coordinate);
+        }
+
+        private void OnTimelineDrag(int delta)
+        {
+            Debug.Log("TimelineDrag " + delta);
+
+            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
+            int rows = keyframes.GetLength(0);
+            int cols = keyframes.GetLength(1);
+
+            for (int i = 0; i < rows; i++)
+            {
+                if (delta < 0)
+                {
+                    for (int j = 0; j < cols; j++)
+                    {
+                        if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
+                        {
+                            if(j - 1 > 0)
+                            {
+                                keyframes[i, j - 1] = Dopesheet.Keyframe.Selected;
+                            }
+                            keyframes[i, j] = Dopesheet.Keyframe.Empty;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int j = cols - 1; j >= 0; j--)
+                    {
+                        if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
+                        {
+                            if(j + 1 < cols)
+                            {
+                                keyframes[i, j + 1] = Dopesheet.Keyframe.Selected;
+                                keyframes[i, j] = Dopesheet.Keyframe.Empty;
+                            }
+                        }
+                    }
+                }
+            }
+            m_dopesheet.Keyframes = keyframes;
+            m_renderGraphics = true;
+        }
+
+        private void OnBeginBoxSelection(TimelineBoxSelectionCancelArgs args)
+        {
+            Vector2Int coord;
+            if(m_pointer.GetKeyframeCoordinate(args.LocalPoint, true, false, out coord))
+            {
+                coord.y++;
+                if(IsSelected(coord))
+                {
+                    args.Cancel = true;
+                }
+            }
         }
 
         private void OnBoxSelection(Vector2Int min, Vector2Int max)
@@ -233,6 +351,16 @@ namespace Battlehub.RTEditor
                 }
             }
             m_dopesheet.Keyframes = keyframes;
+        }
+
+        private bool IsSelected(Vector2Int coord)
+        {
+            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
+            if(coord.x >= 0 && coord.x < keyframes.GetLength(1) && coord.y >= 0 && coord.y < keyframes.GetLength(0))
+            {
+                return keyframes[coord.y, coord.x] == Dopesheet.Keyframe.Selected;
+            }
+            return false;
         }
 
         private void Select(Vector2Int min, Vector2Int max)
@@ -294,57 +422,79 @@ namespace Battlehub.RTEditor
                 m_output.rectTransform.sizeDelta = viewportSize;
             }
         }
-        
-        private void LateUpdate()
+
+        public void ChangeInterval(Vector2 delta)
         {
-            #if USE_RTE
-            if(m_editor.ActiveWindow != m_window)
+            Vector2 newInterval = m_interval - delta;
+            float widthPerLine = m_scrollRect.viewport.rect.width / m_timelineGridParams.VertLines;
+            newInterval.x = Mathf.Clamp(newInterval.x, 1.0f, Mathf.Log(3600 * 24, m_timelineGridParams.VertLinesSecondary)); //at 60 samples per second
+            newInterval.y = Mathf.Clamp(newInterval.y, 1.0f, 10000.0f); //TODO: handle negative values
+
+            if (newInterval != m_interval)
+            {
+                m_interval = newInterval;
+                m_renderGraphics = true;
+            }
+        }
+
+        public void AddKeyframe(int sample, int row)
+        {
+            if(sample < 0 || row < 0)
             {
                 return;
             }
-            #endif
-            
-            bool renderGraphics = false;
-            if (m_rtCamera.TryResizeRenderTexture(false))
+
+            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
+            int rows = keyframes.GetLength(0);
+            int cols = keyframes.GetLength(1);
+
+            if(sample >= cols || row >= rows)
             {
-                renderGraphics = true;
+                cols = Mathf.Max(sample + 1, cols);
+                rows = Mathf.Max(row + 1, rows);
+
+                ArrayHelper.ResizeArray(ref keyframes, rows, cols);
             }
 
-            Vector2 delta = ChangeInterval();
-            if (delta != Vector2.zero)
+            if(keyframes[row, sample] == Dopesheet.Keyframe.Empty)
             {
-                Vector2 newInterval = m_interval - delta;
-                float widthPerLine = m_scrollRect.viewport.rect.width / m_timelineGridParams.VertLines;
-                newInterval.x = Mathf.Clamp(newInterval.x, 1.0f, Mathf.Log(3600 * 24, m_timelineGridParams.VertLinesSecondary)); //at 60 samples per second
-                newInterval.y = Mathf.Clamp(newInterval.y, 1.0f, 10000.0f); //TODO: handle negative values
-                if (newInterval != m_interval)
-                {
-                    m_interval = newInterval;
-                    renderGraphics = true;
-                }
+                keyframes[row, sample] = Dopesheet.Keyframe.Normal;
             }
 
-            if(Input.GetKeyDown(KeyCode.Delete))
+            m_dopesheet.Keyframes = keyframes;
+
+            m_renderGraphics = true;
+        }
+
+        public void DeleteSelectedKeyframes()
+        {
+            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
+            int rows = keyframes.GetLength(0);
+            int cols = keyframes.GetLength(1);
+            for (int i = 0; i < rows; ++i)
             {
-                Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-                int rows = keyframes.GetLength(0);
-                int cols = keyframes.GetLength(1);
-                for(int i = 0; i < rows; ++i)
+                for (int j = 0; j < cols; ++j)
                 {
-                    for(int j = 0; j < cols; ++j)
+                    if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
                     {
-                        if(keyframes[i, j] == Dopesheet.Keyframe.Selected)
-                        {
-                            keyframes[i, j] = Dopesheet.Keyframe.Empty;
-                        }
+                        keyframes[i, j] = Dopesheet.Keyframe.Empty;
                     }
                 }
-                RenderGraphics();
+            }
+            RenderGraphics();
+        }
+
+        private void LateUpdate()
+        {
+            if (m_rtCamera.TryResizeRenderTexture(false))
+            {
+                m_renderGraphics = true;
             }
 
-            if(renderGraphics)
+            if(m_renderGraphics)
             {
                 RenderGraphics();
+                m_renderGraphics = false;
             }
         }
 
@@ -377,32 +527,7 @@ namespace Battlehub.RTEditor
             m_camera.enabled = true;
             m_camera.Render();
             m_camera.enabled = false;
-        }
-
-        protected virtual Vector2 ChangeInterval()
-        {
-#if USE_RTE
-            if(!m_window.IsPointerOver)
-            {
-                return Vector2.zero;
-            }
-
-            float delta = m_editor.Input.GetAxis(InputAxis.Z);
-            if(m_editor.Input.GetKeyDown(KeyCode.LeftAlt))
-            {
-                return new Vector2(0, delta);
-            }
-            return new Vector2(delta, 0);
-#else
-            float delta = Input.GetAxis("Mouse ScrollWheel");
-            if(Input.GetKey(KeyCode.LeftAlt))
-            {
-                return new Vector2(0, delta);
-            }
-            return new Vector2(delta, 0);
-#endif
-        }
-        
+        }   
     }
 }
 
