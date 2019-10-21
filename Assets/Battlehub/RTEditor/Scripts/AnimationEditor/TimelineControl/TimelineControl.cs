@@ -16,6 +16,8 @@ namespace Battlehub.RTEditor
         private TimelineTextPanel m_textPanel = null;
         [SerializeField]
         private TimelinePointer m_pointer = null;
+        [SerializeField]
+        private TimelineBoxSelection m_boxSelection = null;
 
         private Dopesheet m_dopesheet;
         private TimelineGrid m_timelineGrid;
@@ -34,7 +36,6 @@ namespace Battlehub.RTEditor
         //Visible interval (seconds - x axis, units - y axis)
         private Vector2 m_interval = Vector2.one;
 
-        
         private TimelineGridParameters m_timelineGridParams;
         private DragAndDropListener m_hScrollbarListener;
         private DragAndDropListener m_vScrollbarListener;
@@ -151,6 +152,16 @@ namespace Battlehub.RTEditor
             m_pointer.SetGridParameters(m_timelineGridParams);
             m_pointer.PointerDown += OnTimlineClick;
 
+            if (m_boxSelection == null)
+            {
+                m_boxSelection = GetComponentInChildren<TimelineBoxSelection>();
+            }
+
+            if (m_boxSelection != null)
+            {
+                m_boxSelection.Selection += OnBoxSelection;
+            }
+
             RenderGraphics();
         }
 
@@ -187,21 +198,65 @@ namespace Battlehub.RTEditor
             {
                 m_pointer.PointerDown -= OnTimlineClick;
             }
+
+            if (m_boxSelection != null)
+            {
+                m_boxSelection.Selection -= OnBoxSelection;
+            }
         }
 
         private void OnTimlineClick(Vector2Int coordinate)
         {
-            Debug.Log("Timeline click " + coordinate);
-            Dopesheet.Keyframe keyframe = m_dopesheet.Keyframes[coordinate.y, coordinate.x];
-            if(keyframe == Dopesheet.Keyframe.Normal)
+            UnselectAll();
+            Select(coordinate, coordinate);
+        }
+
+        private void OnBoxSelection(Vector2Int min, Vector2Int max)
+        {
+            Select(min, max);
+        }
+
+        private void UnselectAll()
+        {
+            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
+            int rows = keyframes.GetLength(0);
+            int cols = keyframes.GetLength(1);
+
+            for (int i = 0; i < rows; i++)
             {
-                keyframe = Dopesheet.Keyframe.Selected;
+                for (int j = 0; j < cols; j++)
+                {
+                    if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
+                    {
+                        keyframes[i, j] = Dopesheet.Keyframe.Normal;
+                    }
+                }
             }
-            else if(keyframe == Dopesheet.Keyframe.Selected)
+            m_dopesheet.Keyframes = keyframes;
+        }
+
+        private void Select(Vector2Int min, Vector2Int max)
+        {
+            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
+            int rows = keyframes.GetLength(0);
+            int cols = keyframes.GetLength(1);
+
+            min.y = Mathf.Max(0, min.y);
+            min.x = Mathf.Max(0, min.x);
+            max.y = Mathf.Min(rows - 1, max.y);
+            max.x = Mathf.Min(cols - 1, max.x);
+
+            for (int i = min.y; i <= max.y; i++)
             {
-                keyframe = Dopesheet.Keyframe.Normal;
+                for (int j = min.x; j <= max.x; j++)
+                {
+                    if (keyframes[i, j] == Dopesheet.Keyframe.Normal)
+                    {
+                        keyframes[i, j] = Dopesheet.Keyframe.Selected;
+                    }
+                }
             }
-            m_dopesheet.Keyframes[coordinate.y, coordinate.x] = keyframe;
+            m_dopesheet.Keyframes = keyframes;
             RenderGraphics();
         }
 

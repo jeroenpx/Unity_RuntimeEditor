@@ -65,7 +65,7 @@ namespace Battlehub.RTEditor
         private void UpdatePointerPosition(PointerEventData eventData)
         {
             Vector2Int coord;
-            if (GetKeyframeCoord(eventData, out coord))
+            if (GetKeyframeCoord(eventData, false, out coord))
             {
                 int oldSample = m_sample;
 
@@ -85,7 +85,7 @@ namespace Battlehub.RTEditor
         }
 
 
-        private bool GetKeyframeCoord(PointerEventData eventData, out Vector2Int coord)
+        private bool GetKeyframeCoord(PointerEventData eventData, bool precise, out Vector2Int coord)
         {
             Vector2 point;
             RectTransform rt = (RectTransform)transform;
@@ -95,15 +95,55 @@ namespace Battlehub.RTEditor
                 return false;
             }
 
-            int sample = Mathf.RoundToInt(m_offset.x + point.x / m_columnWidth);
+            return GetKeyframeCoordinate(point, precise, false, out coord);
+        }
+
+        public Vector2 GetViewportPosition(Vector2Int coord)
+        {
+            return new Vector2(
+                (coord.x - m_offset.x) * m_columnWidth ,
+                -(coord.y - m_offset.y + 1) * m_parameters.FixedHeight);
+        }
+
+        public bool GetKeyframeCoordinate(Vector2 point, bool precise, bool rowCenter, out Vector2Int coord)
+        {
+            const float margin = 0.15f;
+            bool result = true;
+
+            float sampleF = m_offset.x + point.x / m_columnWidth;
+            int sample = Mathf.RoundToInt(sampleF);
             if (sample < 0)
             {
                 sample = 0;
             }
 
-            int row = Mathf.FloorToInt(m_offset.y - (point.y / m_parameters.FixedHeight)) - 1;
-            coord = new Vector2Int(sample, row);
-            return true;
+            if (precise)
+            {
+                float distance = Mathf.Abs(sample - sampleF);
+                distance *= m_columnWidth;
+                if (distance > m_parameters.FixedHeight * (1 - 4.0f * margin))
+                {
+                    sample = -1;
+                    result = false;
+                }
+            }
+
+            float rowF = m_offset.y - (point.y / m_parameters.FixedHeight);
+            int row = rowCenter ? Mathf.RoundToInt(rowF) : Mathf.FloorToInt(rowF);
+
+            if (precise)
+            {
+                int nextRow = Mathf.CeilToInt(rowF);
+                if (rowF - row < margin ||
+                    nextRow - rowF < margin)
+                {
+                    row = 0;
+                    result = false;
+                }
+            }
+
+            coord = new Vector2Int(sample, row - 1);
+            return result;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -115,14 +155,21 @@ namespace Battlehub.RTEditor
             else
             {
                 Vector2Int coord;
-                if (GetKeyframeCoord(eventData, out coord))
+                if (!GetKeyframeCoord(eventData, true, out coord))
                 {
-                    if (PointerDown != null)
-                    {
-                        PointerDown(coord);
-                    }
+                    coord = new Vector2Int(-1, -1);
+                }
+
+                if (PointerDown != null)
+                {
+                    PointerDown(coord);
                 }
             }
+        }
+
+        private void OnBoxSelection(Vector2Int min, Vector2Int max)
+        {
+
         }
 
         public void OnInitializePotentialDrag(PointerEventData eventData)
