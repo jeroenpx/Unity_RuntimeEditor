@@ -109,6 +109,18 @@ namespace Battlehub.RTEditor
                 }
             }
 
+            public void ClearKeyframes()
+            {
+                m_keyframes.Clear();
+                m_kfDictionary.Clear();
+            }
+
+            public void ClearSelectedKeyframes()
+            {
+                m_selectedKeyframes.Clear();
+                m_selectedKfDictionary.Clear();
+            }
+
             public void RemoveKeyframes(bool all, params Keyframe[] keyframes)
             {
                 for (int i = 0; i < keyframes.Length; ++i)
@@ -121,10 +133,12 @@ namespace Battlehub.RTEditor
                         if (m_kfDictionary.TryGetValue(key, out kf))
                         {
                             m_keyframes.Remove(kf);
+                            m_kfDictionary.Remove(key);
                         }
                         else if (m_selectedKfDictionary.TryGetValue(key, out kf))
                         {
                             m_selectedKeyframes.Remove(kf);
+                            m_selectedKfDictionary.Remove(key);
                         }
                     }
                     else
@@ -132,6 +146,7 @@ namespace Battlehub.RTEditor
                         if (m_kfDictionary.TryGetValue(key, out kf))
                         {
                             m_keyframes.Remove(kf);
+                            m_kfDictionary.Remove(key);
                         }
                     }  
                 }

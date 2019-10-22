@@ -37,6 +37,12 @@ namespace Battlehub.RTEditor
         private bool m_isDragInProgress;
         private Vector2Int m_prevCoord;
 
+        private int m_samplesCount;
+        public int ColumnsCount
+        {
+            get { return m_samplesCount; }
+        }
+
         public int Sample
         {
             get { return m_sample; }
@@ -64,6 +70,8 @@ namespace Battlehub.RTEditor
             {
                 throw new System.InvalidOperationException("Call SetGridParameters method first");
             }
+
+            m_samplesCount = Mathf.FloorToInt(m_parameters.VertLines * interval.x) + 1;
 
             float px = interval.x * normalizedSize.x;
             m_visibleColumns = m_parameters.VertLines * Mathf.Pow(m_parameters.VertLinesSecondary, Mathf.Log(px, m_parameters.VertLinesSecondary));
@@ -133,6 +141,10 @@ namespace Battlehub.RTEditor
             if (sample < 0)
             {
                 sample = 0;
+            }
+            else if(sample >= m_samplesCount)
+            {
+                sample = m_samplesCount - 1;
             }
 
             if (precise)
