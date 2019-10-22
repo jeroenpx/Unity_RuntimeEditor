@@ -5,11 +5,18 @@ namespace Battlehub.RTEditor
 {
     public delegate void TimelinePointerEvent();
     public delegate void TimelinePointerEvent<T>(T arg);
-
+    
     public class TimelinePointer : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
     {
+        public class PointerArgs
+        {
+            public int Row;
+            public int Col;
+            public int Range;
+        }
+
         public event TimelinePointerEvent<int> SampleChanged;
-        public event TimelinePointerEvent<Vector2Int> PointerDown;
+        public event TimelinePointerEvent<PointerArgs> PointerDown;
         public event TimelinePointerEvent<int> Drag;
         public event TimelinePointerEvent Drop;
 
@@ -33,6 +40,11 @@ namespace Battlehub.RTEditor
         public int Sample
         {
             get { return m_sample; }
+        }
+
+        public int Range
+        {
+            get { return Mathf.FloorToInt(5.0f / m_columnWidth); }
         }
 
         public void SetGridParameters(TimelineGridParameters parameters)
@@ -166,9 +178,14 @@ namespace Battlehub.RTEditor
                     coord = new Vector2Int(-1, -1);
                 }
 
+                                
                 if (PointerDown != null)
                 {
-                    PointerDown(coord);
+                    PointerArgs args = new PointerArgs();
+                    args.Col = coord.x;
+                    args.Row = coord.y;
+                    args.Range = Range;
+                    PointerDown(args);
                 }
             }
         }

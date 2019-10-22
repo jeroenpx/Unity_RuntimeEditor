@@ -282,14 +282,51 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnTimlineClick(Vector2Int coordinate)
+        private bool TryGetKeyframeWithinRange(Vector2Int coord, int maxRange, out Vector2Int result)
         {
-            if(!m_dopesheet.Clip.IsSelected(coordinate.y, coordinate.x) && !MultiselectMode)
+            result = coord;
+            int range = 0;
+            int row = coord.y;
+            int col = coord.x;
+            while (range <= maxRange)
             {
-                UnselectAll();
+                if (m_dopesheet.Clip.HasKeyframe(row, col - range))
+                {
+                    result = new Vector2Int(col - range, row);
+                    return true;
+                }
+
+                if (m_dopesheet.Clip.HasKeyframe(row, col + range))
+                {
+                    result = new Vector2Int(col + range, row);
+                    return true;
+                }
+
+                range++;
             }
-            
-            Select(coordinate, coordinate);
+
+            return false;
+        }
+
+        private void OnTimlineClick(TimelinePointer.PointerArgs args)
+        {
+            Vector2Int coord = new Vector2Int(args.Col, args.Row);
+            if (TryGetKeyframeWithinRange(coord, args.Range, out coord))
+            {
+                if (!m_dopesheet.Clip.IsSelected(coord.y, coord.x) && !MultiselectMode)
+                {
+                    UnselectAll();
+                }
+
+                Select(coord, coord);
+            }
+            else
+            {
+                if(!MultiselectMode)
+                {
+                    UnselectAll();
+                }
+            }
         }
 
         private void OnTimelineDrag(int delta)
@@ -320,9 +357,13 @@ namespace Battlehub.RTEditor
             if(m_pointer.GetKeyframeCoordinate(args.LocalPoint, true, false, out coord))
             {
                 coord.y++;
-                if(m_dopesheet.Clip.IsSelected(coord.y, coord.x))
+
+                if (TryGetKeyframeWithinRange(coord, m_pointer.Range, out coord))
                 {
-                    args.Cancel = true;
+                    if (m_dopesheet.Clip.IsSelected(coord.y, coord.x))
+                    {
+                        args.Cancel = true;
+                    }
                 }
             }
         }
@@ -336,6 +377,7 @@ namespace Battlehub.RTEditor
         {
             Dopesheet.AnimationClip clip = m_dopesheet.Clip;
             clip.UnselectKeyframes(clip.SelectedKeyframes.ToArray());
+            m_renderGraphics = true;
         }
 
         private void Select(Vector2Int min, Vector2Int max)
@@ -365,7 +407,7 @@ namespace Battlehub.RTEditor
                 }
             }
             clip.SelectKeyframes(selectKeyframes.ToArray());
-            RenderGraphics();
+            m_renderGraphics = true;
         }
 
         private void OnInitScrollRectValueChanged(Vector2 value)
