@@ -76,6 +76,7 @@ namespace Battlehub.RTEditor
             EndEditCallback = null;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
+
         }
 
         public PropertyDescriptor(string label, object target, MemberInfo memberInfo, MemberInfo componentMemberInfo)

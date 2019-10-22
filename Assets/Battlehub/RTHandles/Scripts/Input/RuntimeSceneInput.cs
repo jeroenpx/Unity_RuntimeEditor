@@ -16,12 +16,15 @@ namespace Battlehub.RTHandles
         public float MoveZSensitivity = 1.0f;
         public float FreeMoveSensitivity = 0.25f;
         public float FreeRotateSensitivity = 7.5f;
+
+        public bool SwapLRMB = false;
         
         private bool m_rotate;
         private bool m_pan;
         private bool m_freeMove;
         private bool m_isActive;
 
+       
         protected RuntimeSceneComponent SceneComponent
         {
             get { return (RuntimeSceneComponent)m_component; }
@@ -30,7 +33,7 @@ namespace Battlehub.RTHandles
         protected virtual bool AllowRotateAction()
         {
             IInput input = m_component.Editor.Input;
-            return input.GetPointer(0);
+            return input.GetPointer(SwapLRMB ? 1 : 0);
         }
 
         protected virtual bool RotateAction()
@@ -45,13 +48,18 @@ namespace Battlehub.RTHandles
         {
             IInput input = m_component.Editor.Input;
             RuntimeTools tools = m_component.Editor.Tools;
-            return input.GetPointer(2) || input.GetPointer(0) && tools.Current == RuntimeTool.View && tools.ActiveTool == null;
+            return input.GetPointer(2) || input.GetPointer(SwapLRMB ? 1 : 0) && tools.Current == RuntimeTool.View && tools.ActiveTool == null;
         }
 
         protected virtual bool FreeMoveAction()
         {
             IInput input = m_component.Editor.Input;
             RuntimeTools tools = m_component.Editor.Tools;
+            
+            if(SwapLRMB)
+            {
+                return input.GetPointer(0) && RotateAction();
+            }
             return input.GetPointer(1);
         }
 

@@ -67,7 +67,6 @@ namespace Battlehub.RTEditor
         static MaterialEditor()
         {
             var type = typeof(IMaterialDescriptor);
-
             var types = Reflection.GetAssignableFromTypes(type);
 
             m_propertySelectors = new Dictionary<string, IMaterialDescriptor>();

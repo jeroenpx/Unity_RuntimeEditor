@@ -5,6 +5,8 @@ using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Common;
 using Battlehub.Utils;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -75,13 +77,13 @@ namespace Battlehub.RTEditor
         }
        
         /// Dopesheet.Keyframe must be replaced with more appropriate data structure
-        public Dopesheet.Keyframe[,] Keyframes
+        public Dopesheet.AnimationClip Clip
         {
-            get { return m_dopesheet.Keyframes; }
+            get { return m_dopesheet.Clip; }
             set
             {
-                m_dopesheet.Keyframes = value;
-                float colums = m_dopesheet.Keyframes.GetLength(1);
+                m_dopesheet.Clip = value;
+                float colums = m_dopesheet.Clip.Cols;
                 m_interval.x = Mathf.Log(m_timelineGridParams.VertLinesSecondary * colums / (m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary), m_timelineGridParams.VertLinesSecondary);
                 ChangeInterval(Vector2.zero);
             }
@@ -185,18 +187,34 @@ namespace Battlehub.RTEditor
 #if TIMELINE_CONTROL_DEBUG
             int samplesCount = 60;// m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary;
 
-            Dopesheet.Keyframe[,] keyframes = new Dopesheet.Keyframe[m_timelineGridParams.HorLines, samplesCount];
+            Dopesheet.AnimationClip clip = new Dopesheet.AnimationClip(m_timelineGridParams.HorLines, samplesCount);
+            List<Dopesheet.Keyframe> keyframes = new List<Dopesheet.Keyframe>();
+            List<Dopesheet.Keyframe> selectedKeyframes = new List<Dopesheet.Keyframe>();
             for (int i = 0; i < m_timelineGridParams.HorLines; ++i)
             {
                 for (int j = 0; j < samplesCount; ++j)
                 {
-                    keyframes[i, j] = (Dopesheet.Keyframe)Random.Range(0, 3);
+                    int keyframeType = Random.Range(0, 3);
+                    if(keyframeType == 1)
+                    {
+                        keyframes.Add(new Dopesheet.Keyframe(i, j));
+                    }
+                    else if(keyframeType == 2)
+                    {
+                        Dopesheet.Keyframe kf = new Dopesheet.Keyframe(i, j);
+                        keyframes.Add(kf);
+                        selectedKeyframes.Add(kf);
+                    }
                 }
             }
-            Keyframes = keyframes;
+
+            clip.AddKeyframes(keyframes.ToArray());
+            clip.SelectKeyframes(selectedKeyframes.ToArray());
+            Clip = clip;
 #endif
             m_pointer.PointerDown += OnTimlineClick;
             m_pointer.Drag += OnTimelineDrag;
+            m_pointer.Drop += OnTimelineDrop;
 
             if (m_boxSelection == null)
             {
@@ -254,6 +272,7 @@ namespace Battlehub.RTEditor
             {
                 m_pointer.PointerDown -= OnTimlineClick;
                 m_pointer.Drag -= OnTimelineDrag;
+                m_pointer.Drop -= OnTimelineDrop;
             }
 
             if (m_boxSelection != null)
@@ -265,7 +284,7 @@ namespace Battlehub.RTEditor
 
         private void OnTimlineClick(Vector2Int coordinate)
         {
-            if(!IsSelected(coordinate) && !MultiselectMode)
+            if(!m_dopesheet.Clip.IsSelected(coordinate.y, coordinate.x) && !MultiselectMode)
             {
                 UnselectAll();
             }
@@ -275,45 +294,24 @@ namespace Battlehub.RTEditor
 
         private void OnTimelineDrag(int delta)
         {
-            Debug.Log("TimelineDrag " + delta);
+            Dopesheet.AnimationClip clip = m_dopesheet.Clip;
 
-            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-            int rows = keyframes.GetLength(0);
-            int cols = keyframes.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
+            IList<Dopesheet.Keyframe> selectedKeyframes = clip.SelectedKeyframes;
+            for(int i = 0; i < selectedKeyframes.Count; ++i)
             {
-                if (delta < 0)
-                {
-                    for (int j = 0; j < cols; j++)
-                    {
-                        if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
-                        {
-                            if(j - 1 > 0)
-                            {
-                                keyframes[i, j - 1] = Dopesheet.Keyframe.Selected;
-                            }
-                            keyframes[i, j] = Dopesheet.Keyframe.Empty;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int j = cols - 1; j >= 0; j--)
-                    {
-                        if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
-                        {
-                            if(j + 1 < cols)
-                            {
-                                keyframes[i, j + 1] = Dopesheet.Keyframe.Selected;
-                                keyframes[i, j] = Dopesheet.Keyframe.Empty;
-                            }
-                        }
-                    }
-                }
+                Dopesheet.Keyframe kf = selectedKeyframes[i];
+                kf.Col += delta;
             }
-            m_dopesheet.Keyframes = keyframes;
+
+            clip.TryResizeClip(selectedKeyframes);
+
             m_renderGraphics = true;
+        }
+
+        private void OnTimelineDrop()
+        {
+            m_dopesheet.Clip.RemoveKeyframes(false, m_dopesheet.Clip.SelectedKeyframes.ToArray());
+            m_dopesheet.Clip.UpdateDictionaries();
         }
 
         private void OnBeginBoxSelection(TimelineBoxSelectionCancelArgs args)
@@ -322,7 +320,7 @@ namespace Battlehub.RTEditor
             if(m_pointer.GetKeyframeCoordinate(args.LocalPoint, true, false, out coord))
             {
                 coord.y++;
-                if(IsSelected(coord))
+                if(m_dopesheet.Clip.IsSelected(coord.y, coord.x))
                 {
                     args.Cancel = true;
                 }
@@ -336,55 +334,37 @@ namespace Battlehub.RTEditor
 
         private void UnselectAll()
         {
-            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-            int rows = keyframes.GetLength(0);
-            int cols = keyframes.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
-                    {
-                        keyframes[i, j] = Dopesheet.Keyframe.Normal;
-                    }
-                }
-            }
-            m_dopesheet.Keyframes = keyframes;
-        }
-
-        private bool IsSelected(Vector2Int coord)
-        {
-            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-            if(coord.x >= 0 && coord.x < keyframes.GetLength(1) && coord.y >= 0 && coord.y < keyframes.GetLength(0))
-            {
-                return keyframes[coord.y, coord.x] == Dopesheet.Keyframe.Selected;
-            }
-            return false;
+            Dopesheet.AnimationClip clip = m_dopesheet.Clip;
+            clip.UnselectKeyframes(clip.SelectedKeyframes.ToArray());
         }
 
         private void Select(Vector2Int min, Vector2Int max)
         {
-            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-            int rows = keyframes.GetLength(0);
-            int cols = keyframes.GetLength(1);
+            Dopesheet.AnimationClip clip = m_dopesheet.Clip;
+            int rows = clip.Rows;
+            int cols = clip.Cols;
 
             min.y = Mathf.Max(0, min.y);
             min.x = Mathf.Max(0, min.x);
             max.y = Mathf.Min(rows - 1, max.y);
             max.x = Mathf.Min(cols - 1, max.x);
 
+            List<Dopesheet.Keyframe> selectKeyframes = new List<Dopesheet.Keyframe>();
             for (int i = min.y; i <= max.y; i++)
             {
                 for (int j = min.x; j <= max.x; j++)
                 {
-                    if (keyframes[i, j] == Dopesheet.Keyframe.Normal)
+                    if (!clip.IsSelected(i, j))
                     {
-                        keyframes[i, j] = Dopesheet.Keyframe.Selected;
+                        Dopesheet.Keyframe kf = clip.GetKeyframe(i, j);
+                        if(kf != null)
+                        {
+                            selectKeyframes.Add(kf);
+                        }
                     }
                 }
             }
-            m_dopesheet.Keyframes = keyframes;
+            clip.SelectKeyframes(selectKeyframes.ToArray());
             RenderGraphics();
         }
 
@@ -444,43 +424,19 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-            int rows = keyframes.GetLength(0);
-            int cols = keyframes.GetLength(1);
+            m_dopesheet.Clip.TryResizeClip(new[] { new Dopesheet.Keyframe(row, sample) });
 
-            if(sample >= cols || row >= rows)
+            if(!m_dopesheet.Clip.HasKeyframe(row, sample))
             {
-                cols = Mathf.Max(sample + 1, cols);
-                rows = Mathf.Max(row + 1, rows);
-
-                ArrayHelper.ResizeArray(ref keyframes, rows, cols);
+                m_dopesheet.Clip.AddKeyframes(new Dopesheet.Keyframe(row, sample));
             }
-
-            if(keyframes[row, sample] == Dopesheet.Keyframe.Empty)
-            {
-                keyframes[row, sample] = Dopesheet.Keyframe.Normal;
-            }
-
-            m_dopesheet.Keyframes = keyframes;
 
             m_renderGraphics = true;
         }
 
         public void DeleteSelectedKeyframes()
         {
-            Dopesheet.Keyframe[,] keyframes = m_dopesheet.Keyframes;
-            int rows = keyframes.GetLength(0);
-            int cols = keyframes.GetLength(1);
-            for (int i = 0; i < rows; ++i)
-            {
-                for (int j = 0; j < cols; ++j)
-                {
-                    if (keyframes[i, j] == Dopesheet.Keyframe.Selected)
-                    {
-                        keyframes[i, j] = Dopesheet.Keyframe.Empty;
-                    }
-                }
-            }
+            m_dopesheet.Clip.RemoveKeyframes(true, m_dopesheet.Clip.SelectedKeyframes.ToArray());
             RenderGraphics();
         }
 

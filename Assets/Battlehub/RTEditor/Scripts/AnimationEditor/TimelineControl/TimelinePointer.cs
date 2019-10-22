@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
+    public delegate void TimelinePointerEvent();
     public delegate void TimelinePointerEvent<T>(T arg);
 
     public class TimelinePointer : MonoBehaviour, IPointerDownHandler, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
@@ -10,6 +11,7 @@ namespace Battlehub.RTEditor
         public event TimelinePointerEvent<int> SampleChanged;
         public event TimelinePointerEvent<Vector2Int> PointerDown;
         public event TimelinePointerEvent<int> Drag;
+        public event TimelinePointerEvent Drop;
 
         [SerializeField]
         private RectTransform m_pointer = null;
@@ -213,19 +215,34 @@ namespace Battlehub.RTEditor
                             m_prevCoord = coord;
                         }
                     }
-                   
                 }
             }
         }
 
         public void OnDrop(PointerEventData eventData)
         {
+            if(m_isDragInProgress)
+            {
+                if(Drop != null)
+                {
+                    Drop();
+                }
+            }
+
             m_isPointerDragInProgress = false;
             m_isDragInProgress = false;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (m_isDragInProgress)
+            {
+                if (Drop != null)
+                {
+                    Drop();
+                }
+            }
+
             m_isPointerDragInProgress = false;
             m_isDragInProgress = false;
         }
