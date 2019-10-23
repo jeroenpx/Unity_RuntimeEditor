@@ -1,8 +1,10 @@
-﻿namespace Battlehub.RTSL
+﻿using System;
+
+namespace Battlehub.RTSL
 {
     public class RTSLVersion
     {
-        public const string Version = "2019.0.0";
+        public static readonly Version Version = new Version(2, 1);
     }
 }
 

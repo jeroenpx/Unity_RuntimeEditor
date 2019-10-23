@@ -50,7 +50,7 @@ namespace Battlehub.RTSL.Interface
         public int BundleIdentifier = 0;
 
         [ProtoMember(4)]
-        public string Version = RTSLVersion.Version;
+        public string Version = RTSLVersion.Version.ToString();
 
         //This properties populate using fileData
         public string Name;

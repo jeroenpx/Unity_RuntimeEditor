@@ -159,6 +159,12 @@ namespace Battlehub.RTSL
         private GUIStyle m_deprecatedPopupStyle;
         private GUIStyle m_deprecatedFoldoutStyle;
 
+        private PersistentClassMappingsStorage m_storage;
+        public PersistentClassMappingsStorage Storage
+        {
+            get { return m_storage; }
+        }
+
         public string EditorGUILayoutTextField(string header, string text)
         {
             GUILayout.BeginHorizontal();
@@ -848,12 +854,12 @@ namespace Battlehub.RTSL
 
         private void LoadMappings()
         {
-            PersistentClassMapping[] mappings = GetMappings();
+            PersistentClassMapping[] mappings = GetMappings(out m_storage);
             
             for (int i = 0; i < mappings.Length; ++i)
             {
                 PersistentClassMapping classMapping = mappings[i];
-                if(classMapping.Version != "2.1")
+                if(string.IsNullOrEmpty(classMapping.Version))
                 {
                     classMapping.MappedTypeName = FixTypeName(classMapping.MappedTypeName);
                     classMapping.PersistentTypeName = FixTypeName(classMapping.PersistentTypeName);
@@ -867,9 +873,8 @@ namespace Battlehub.RTSL
                     PersistentPropertyMapping[] pMappings = classMapping.PropertyMappings;
                     PersistentSubclass[] subclasses = classMapping.Subclasses;
 
-                    if (classMapping.Version != "2.1")
+                    if (string.IsNullOrEmpty(classMapping.Version))
                     {
-                        
                         for (int p = 0; p < pMappings.Length; ++p)
                         {
                             PersistentPropertyMapping pMapping = pMappings[p];
@@ -888,7 +893,7 @@ namespace Battlehub.RTSL
                     }
 
                     ClassMappingInfo mappingInfo = m_mappings[typeIndex];
-                    mappingInfo.Version = "2.1";
+                    mappingInfo.Version = RTSLVersion.Version.ToString();
                     mappingInfo.PropertyMappings = pMappings;
                     mappingInfo.Subclasses = subclasses;
                     mappingInfo.IsLocked = classMapping.IsLocked;
@@ -912,12 +917,12 @@ namespace Battlehub.RTSL
             return m_templates;
         }
 
-        public PersistentClassMapping[] GetMappings()
+        public PersistentClassMapping[] GetMappings(out PersistentClassMappingsStorage storage)
         {
-            return GetMappings(m_mappingStoragePath, m_mappingTemplateStoragePath);
+            return GetMappings(m_mappingStoragePath, m_mappingTemplateStoragePath, out storage);
         }
 
-        public static PersistentClassMapping[] GetMappings(string mappingStoragePath, string mappingTemplateStoragePath)
+        public static PersistentClassMapping[] GetMappings(string mappingStoragePath, string mappingTemplateStoragePath, out PersistentClassMappingsStorage storage)
         {
             GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(mappingStoragePath, typeof(GameObject));
             if (storageGO == null)
@@ -927,9 +932,11 @@ namespace Battlehub.RTSL
 
             if (storageGO != null)
             {
+                storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
                 PersistentClassMapping[] mappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true);
                 return mappings;
             }
+            storage = null;
             return new PersistentClassMapping[0];
         }
 
@@ -1133,6 +1140,13 @@ namespace Battlehub.RTSL
                 classMapping.CreateCustomImplementation = mappingInfo.CreateCustomImplementation;
                 classMapping.UseTemplate = mappingInfo.UseTemplate;
             }
+
+            PersistentClassMappingsStorage storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
+            if(storage == null)
+            {
+                storage = storageGO.AddComponent<PersistentClassMappingsStorage>();
+            }
+            storage.Version = RTSLVersion.Version.ToString();
 
             EditorUtility.SetDirty(storageGO);
             PrefabUtility.SaveAsPrefabAsset(storageGO, m_mappingStoragePath);
@@ -2036,6 +2050,27 @@ namespace Battlehub.RTSL
         {
             EditorGUILayout.Separator();
             EditorGUILayout.BeginHorizontal();
+
+            if (m_uoMapperGUI != null && (m_uoMapperGUI.Storage == null || m_uoMapperGUI.Storage.PatchCounter == 0) || 
+               m_surrogatesMapperGUI != null && (m_surrogatesMapperGUI.Storage == null || m_surrogatesMapperGUI.Storage.PatchCounter == 0))
+            {
+                EditorGUI.BeginChangeCheck();
+                GUILayout.Button("Patch Mappings", GUILayout.Height(20));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    PatchPersistentClassMappings();
+
+                    m_uoMapperGUI.ClearDependencies();
+                    m_surrogatesMapperGUI.ClearDependencies();
+                    m_uoMapperGUI.Reset();
+                    m_surrogatesMapperGUI.Reset();
+                    m_uoMapperGUI.LockTypes();
+                    m_surrogatesMapperGUI.LockTypes();
+                }
+            }
+          
+            EditorGUI.BeginChangeCheck();
+
             EditorGUI.BeginChangeCheck();
             GUILayout.Button("Undo & Reload", GUILayout.Height(20));
             if (EditorGUI.EndChangeCheck())
@@ -2072,8 +2107,9 @@ namespace Battlehub.RTSL
         public static void CreatePersistentClasses()
         {
             Type[] types = GetAllTypes();
-            PersistentClassMapping[] uoMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.ClassMappingsStoragePath, RTSLPath.ClassMappingsTemplatePath);
-            PersistentClassMapping[] surrogateMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.SurrogatesMappingsStoragePath, RTSLPath.SurrogatesMappingsTemplatePath);
+            PersistentClassMappingsStorage storageGo;
+            PersistentClassMapping[] uoMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.ClassMappingsStoragePath, RTSLPath.ClassMappingsTemplatePath, out storageGo);
+            PersistentClassMapping[] surrogateMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.SurrogatesMappingsStoragePath, RTSLPath.SurrogatesMappingsTemplatePath, out storageGo);
             Dictionary<Type, PersistentTemplateInfo> templates = GetPersistentTemplates(types);
             CreatePersistentClasses(uoMappings, templates, surrogateMappings, templates);
         }
@@ -2464,6 +2500,59 @@ namespace Battlehub.RTSL
             return path;
         }
 
+
+        /// <summary>
+        /// This method should be used make persistent to be compatible with saved files after CodeGen.cs fix from 10/23/2019.
+        /// </summary>
+        private void PatchPersistentClassMappings()
+        {
+            UpdateTags(RTSLPath.ClassMappingsTemplatePath);
+            UpdateTags(RTSLPath.ClassMappingsStoragePath);
+
+            UpdateTags(RTSLPath.SurrogatesMappingsTemplatePath);
+            UpdateTags(RTSLPath.SurrogatesMappingsStoragePath);
+        }
+
+        private void UpdateTags(string storagePath)
+        {
+            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(storagePath, typeof(GameObject));
+            if(storageGO == null)
+            {
+                return;
+            }
+
+            storageGO = Instantiate(storageGO);
+            PersistentClassMappingsStorage storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
+            if (storage == null)
+            {
+                storage = storageGO.AddComponent<PersistentClassMappingsStorage>();
+            }
+            storage.Version = RTSLVersion.Version.ToString();
+            if (storage.PatchCounter > 0)
+            {
+                DestroyImmediate(storageGO);
+                return;
+            }
+
+            storage.PatchCounter = 1;
+
+            PersistentClassMapping[] mappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true);
+            for (int i = 0; i < mappings.Length; ++i)
+            {
+                PersistentClassMapping mapping = mappings[i];
+                PersistentPropertyMapping[] properties = mapping.PropertyMappings;
+                for(int j = 0; j < properties.Length; ++j)
+                {
+                    PersistentPropertyMapping property = properties[j];
+                    property.PersistentTag = j + 1;
+                    mapping.PersistentPropertyTag = j + 1;
+                }   
+            }
+            
+            EditorUtility.SetDirty(storageGO);
+            PrefabUtility.SaveAsPrefabAsset(storageGO, storagePath);
+            DestroyImmediate(storageGO);
+        }
    
     }
 }

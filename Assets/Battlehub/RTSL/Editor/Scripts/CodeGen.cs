@@ -874,20 +874,21 @@ namespace Battlehub.RTSL
                 }
 
                 string typeName = GetTypeName(prop);
+                int tag = prop.PersistentTag - 1;
                 if (InitializeLists && IsGenericList(prop.MappedType) || InitializeHs && IsHashSet(prop.MappedType))
                 {
                     Type replacementType = GetReplacementType(prop.MappedType);
                     if (replacementType == null)
                     {
                         sb.AppendFormat(
-                            FieldInitializationTemplate, i + AutoFieldTagOffset,
+                            FieldInitializationTemplate, tag + AutoFieldTagOffset,
                             typeName,
                             prop.PersistentName);
                     }
                     else if(replacementType == typeof(long[]))
                     {
                         sb.AppendFormat(
-                            ReplacementFieldInitializationTemplate, i + AutoFieldTagOffset,
+                            ReplacementFieldInitializationTemplate, tag + AutoFieldTagOffset,
                             prop.PersistentName);
                     }
                 }
@@ -912,7 +913,7 @@ namespace Battlehub.RTSL
                         if(t0 != null && t1 != null)
                         {
                             sb.AppendFormat(
-                                fieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, tag + AutoFieldTagOffset,
                                 "Dictionary<long, long>",
                                 prop.PersistentName);
                         }
@@ -920,21 +921,21 @@ namespace Battlehub.RTSL
                         {
 
                             sb.AppendFormat(
-                                fieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, tag + AutoFieldTagOffset,
                                 string.Format("Dictionary<long, {0}>", DictionaryPersistentArgTypeName(args[1])),
                                 prop.PersistentName);
                         }
                         else if(t1 != null)
                         {
                             sb.AppendFormat(
-                                fieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, tag + AutoFieldTagOffset,
                                 string.Format("Dictionary<{0}, long>", DictionaryPersistentArgTypeName(args[0])),
                                 prop.PersistentName);
                         }
                         else
                         {
                             sb.AppendFormat(
-                                fieldTemplate, i + AutoFieldTagOffset,
+                                fieldTemplate, tag + AutoFieldTagOffset,
                                 string.Format("Dictionary<{0}, {1}>", DictionaryPersistentArgTypeName(args[0]), DictionaryPersistentArgTypeName(args[1])),
                                 prop.PersistentName);
                         }
@@ -942,7 +943,7 @@ namespace Battlehub.RTSL
                     else
                     {
                         sb.AppendFormat(
-                            FieldTemplate, i + AutoFieldTagOffset,
+                            FieldTemplate, tag + AutoFieldTagOffset,
                             typeName,
                             prop.PersistentName);
                     }
