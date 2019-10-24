@@ -9,6 +9,8 @@ using Battlehub.RTCommon;
 using System.Linq;
 using System.Threading;
 using Battlehub.Utils;
+using System.IO.Compression;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace Battlehub.RTSL
 {
@@ -50,6 +52,8 @@ namespace Battlehub.RTSL
         private const string MetaExt = ".rtmeta";
         private const string PreviewExt = ".rtview";
         private const string KeyValueStorage = "Values";
+        private const string TempFolder = "Temp";
+        private const string AssetsRootFolder = "Assets";
 
         public string RootPath
         {
@@ -64,12 +68,19 @@ namespace Battlehub.RTSL
 
         private string AssetsFolderPath(string path)
         {
-            return RootPath + path + "/Assets";
+            return RootPath + path + "/" + AssetsRootFolder;
         }
 
         public FileSystemStorage()
         {
             RootPath = Application.persistentDataPath + "/";
+
+            string tempPath = RootPath + "/" + TempFolder;
+            if(Directory.Exists(tempPath))
+            {
+                Directory.Delete(tempPath, true);
+            }
+            Directory.CreateDirectory(tempPath);
             Debug.LogFormat("RootPath : {0}", RootPath);
         }
 
@@ -692,6 +703,100 @@ namespace Battlehub.RTSL
             string path = fullPath + "/" + KeyValueStorage + "/" + key;
             File.Delete(path);
             callback(Error.NoError);
+        }
+
+        public void CreatePackage(string projectPath, string[] assetsPath, string packagePath, StorageEventHandler callback)
+        {
+            QueueUserWorkItem(() =>
+            {
+                try
+                {
+                    string fullProjectPath = FullPath(projectPath);
+                    string tempPath = RootPath + "/" + TempFolder;
+                    if (!Directory.Exists(tempPath))
+                    {
+                        Directory.CreateDirectory(tempPath);
+                    }
+
+                    tempPath = tempPath + "/" + Path.GetFileNameWithoutExtension(packagePath) + "/" + AssetsRootFolder;
+
+                    for (int i = 0; i < assetsPath.Length; ++i)
+                    {
+                        string sourceDataPath = fullProjectPath + "/" + assetsPath[i];
+
+                        if (File.Exists(sourceDataPath) && File.Exists(sourceDataPath + MetaExt))
+                        {
+                            string targetDataPath = tempPath + "/" + assetsPath[i];
+                            string targetDir = Path.GetDirectoryName(targetDataPath);
+                            Directory.CreateDirectory(targetDir);
+
+                            File.Copy(sourceDataPath, targetDataPath);
+                            File.Copy(sourceDataPath + MetaExt, targetDataPath + MetaExt);
+
+                            if (File.Exists(sourceDataPath + PreviewExt))
+                            {
+                                File.Copy(sourceDataPath + PreviewExt, targetDataPath + PreviewExt);
+                            }
+                        }
+                    }
+
+                    FastZip fastZip = new FastZip();
+                    fastZip.CreateZip(packagePath, tempPath, true, null);
+                    Directory.Delete(tempPath, true);
+
+                    Callback(() => callback(Error.NoError));
+                }
+                catch(Exception e)
+                {
+                    Callback(() => callback(new Error(Error.E_Exception) { ErrorText = e.ToString() }));
+                }
+            });                
+        }
+
+        public void OpenPackage(string projectPath, string packagePath, StorageEventHandler<AssetItem[]> callback)
+        {
+            QueueUserWorkItem(() =>
+            {
+                try
+                {
+                    if (!File.Exists(packagePath))
+                    {
+                        Callback(() => callback(new Error(Error.E_NotFound) { ErrorText = "File was not found: " + packagePath }, new AssetItem[0]));
+                        return;
+                    }
+
+                    string fullProjectPath = FullPath(projectPath);
+
+                    string tempPath = RootPath + "/" + TempFolder;
+                    if (!Directory.Exists(tempPath))
+                    {
+                        Directory.CreateDirectory(tempPath);
+                    }
+
+                    tempPath = tempPath + "/" + Path.GetFileNameWithoutExtension(packagePath);
+                    Directory.CreateDirectory(tempPath);
+
+                    FastZip fastZip = new FastZip();
+                    fastZip.ExtractZip(packagePath, tempPath, null);
+
+                    tempPath = tempPath + "/" + AssetsRootFolder;
+
+                    ProjectItem assets = new ProjectItem();
+                    assets.ItemID = 0;
+                    assets.Children = new List<ProjectItem>();
+                    assets.Name = "Assets";
+
+                    GetProjectTree(projectPath, assets);
+
+                    AssetItem[] assetItems = assets.Flatten(true).Cast<AssetItem>().ToArray();
+
+                    Callback(() => callback(Error.NoError, assetItems));
+                }
+                catch (Exception e)
+                {
+                    Callback(() => callback(new Error(Error.E_Exception) { ErrorText = e.ToString() }, new AssetItem[0]));
+                }
+            });
         }
 
         public void QueueUserWorkItem(Action action)

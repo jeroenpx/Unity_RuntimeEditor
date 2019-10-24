@@ -23,9 +23,6 @@ namespace Battlehub.RTSL.Battlehub.SL2
         [ProtoMember(4)]
         public long[] Dependencies;
 
-        //[ProtoMember(5)]
-        //public int[] Usings;
-
         protected readonly ITypeMap m_typeMap;
 
         public PersistentRuntimePrefab()
@@ -40,30 +37,21 @@ namespace Battlehub.RTSL.Battlehub.SL2
 
             List<PersistentObject> data = new List<PersistentObject>();
             List<long> identifiers = new List<long>();
-            //HashSet<int> usings = new HashSet<int>();
+            
             GetDepsFromContext getDepsCtx = new GetDepsFromContext();
             Descriptors = new PersistentDescriptor[1];
-            Descriptors[0] = CreateDescriptorAndData(go, data, identifiers, /*usings,*/ getDepsCtx);
+            Descriptors[0] = CreateDescriptorAndData(go, data, identifiers, getDepsCtx);
 
             Identifiers = identifiers.ToArray();
             Data = data.ToArray();
             Dependencies = getDepsCtx.Dependencies.OfType<UnityObject>().Select(d => m_assetDB.ToID(d)).ToArray();
-           // Usings = usings.ToArray();
         }
 
         protected override object WriteToImpl(object obj)
         {
             obj = base.WriteToImpl(obj);
             RestoreDataAndResolveDependencies();
-            //for(int i = 0; i < Data.Length; ++i)
-            //{
-            //    PersistentObject data = Data[i];
-            //    long id = Identifiers[i];
- 
-            //    UnityObject unityObj = m_assetDB.FromID<UnityObject>(id);
-            //    data.WriteTo(unityObj);
-            //}
-
+            
             return obj;
         }
 

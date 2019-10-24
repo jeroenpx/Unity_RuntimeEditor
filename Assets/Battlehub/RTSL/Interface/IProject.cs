@@ -101,6 +101,10 @@ namespace Battlehub.RTSL.Interface
         void UnloadImportItems(ProjectItem importItemsRoot);
         ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback = null);
 
+        ProjectAsyncOperation ExportPackage(string path, AssetItem[] items, ProjectEventHandler callback = null);
+        ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null);
+        ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null);
+
         ProjectAsyncOperation<ProjectItem> CreateFolder(ProjectItem projectItem, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[], ProjectItem[]> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem[]> callback = null);

@@ -40,8 +40,8 @@ namespace Battlehub.RTSL.Interface
     [ProtoContract]
     public class ProjectInfo
     {
-        [ProtoMember(1)]
-        public int FolderIdentifier = 1;
+        //[ProtoMember(1)]
+        //public int FolderIdentifier = 1;
 
         [ProtoMember(2)]
         public int AssetIdentifier = 1;
@@ -52,7 +52,6 @@ namespace Battlehub.RTSL.Interface
         [ProtoMember(4)]
         public string Version = RTSLVersion.Version.ToString();
 
-        //This properties populate using fileData
         public string Name;
         public DateTime LastWriteTime;
     }

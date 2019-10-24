@@ -3378,6 +3378,21 @@ namespace Battlehub.RTSL
             }
         }
 
+        public ProjectAsyncOperation ExportPackage(string path, AssetItem[] items, ProjectEventHandler callback = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Create folder
         /// </summary>

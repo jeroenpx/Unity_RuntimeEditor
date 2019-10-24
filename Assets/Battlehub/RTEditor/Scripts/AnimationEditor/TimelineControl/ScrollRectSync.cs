@@ -6,9 +6,9 @@ namespace Battlehub.RTEditor
     public class ScrollRectSync : MonoBehaviour
     {
         [SerializeField]
-        private ScrollRect m_scroll1;
+        private ScrollRect m_scroll1 = null;
         [SerializeField]
-        private ScrollRect m_scroll2;
+        private ScrollRect m_scroll2 = null;
         [SerializeField]
         private bool m_vertical = true;
         [SerializeField]
