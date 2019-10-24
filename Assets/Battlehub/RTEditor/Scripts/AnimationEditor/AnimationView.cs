@@ -15,6 +15,9 @@ namespace Battlehub.RTEditor
             base.AwakeOverride();
 
             m_propertiesView = GetComponentInChildren<AnimationPropertiesView>(true);
+            m_propertiesView.PropertiesAdded += OnPropertiesAdded;
+            m_propertiesView.PropertiesRemoved += OnPropertiesRemoved;
+
             m_timelineView = GetComponentInChildren<AnimationTimelineView>(true);
             m_animationCreateView = GetComponentInChildren<AnimationCreateView>(true);
             m_animationCreateView.Click += OnCreateClick;
@@ -23,6 +26,7 @@ namespace Battlehub.RTEditor
 
             Editor.Selection.SelectionChanged += OnSelectionChanged;
         }
+
 
         protected override void OnDestroyOverride()
         {
@@ -33,13 +37,19 @@ namespace Battlehub.RTEditor
                 Editor.Selection.SelectionChanged -= OnSelectionChanged;
             }
 
+            if(m_propertiesView != null)
+            {
+                m_propertiesView.PropertiesAdded -= OnPropertiesAdded;
+                m_propertiesView.PropertiesRemoved -= OnPropertiesRemoved;
+            }
+
             if(m_animationCreateView != null)
             {
                 m_animationCreateView.Click -= OnCreateClick;
             }
         }
 
-        private void OnSelectionChanged(UnityEngine.Object[] unselectedObjects)
+        private void OnSelectionChanged(Object[] unselectedObjects)
         {
             if (Editor.Selection.activeGameObject != null)
             {
@@ -82,6 +92,16 @@ namespace Battlehub.RTEditor
             }
 
             UpdateVisualState();
+        }
+
+        private void OnPropertiesAdded(AnimationPropertiesView.ItemsArgs args)
+        {
+            m_timelineView.AddProperites(args.Items);
+        }
+
+        private void OnPropertiesRemoved(AnimationPropertiesView.ItemsArgs args)
+        {
+            m_timelineView.RemoveProperties(args.Items);
         }
 
         private void UpdateVisualState()

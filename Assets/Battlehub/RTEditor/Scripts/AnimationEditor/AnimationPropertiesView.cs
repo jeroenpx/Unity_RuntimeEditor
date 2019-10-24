@@ -11,6 +11,16 @@ namespace Battlehub.RTEditor
 {
     public class AnimationPropertiesView : MonoBehaviour
     {
+        public delegate void EventHandler<T>(T args);
+
+        public class ItemsArgs
+        {
+            public AnimationPropertyItem[] Items;
+        }
+
+        public event EventHandler<ItemsArgs> PropertiesAdded;
+        public event EventHandler<ItemsArgs> PropertiesRemoved;
+        
         [SerializeField]
         private Toggle m_previewToggle = null;
 
@@ -53,7 +63,8 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private VirtualizingTreeView m_propertiesTreeView = null;
 
-        private readonly AnimationPropertyItem m_empty = new AnimationPropertyItem();
+        private readonly AnimationPropertyItem m_emptyTop = new AnimationPropertyItem { ComponentType = AnimationPropertyItem.k_SpecialEmptySpace };
+        private readonly AnimationPropertyItem m_emptyBottom = new AnimationPropertyItem { ComponentType = AnimationPropertyItem.k_SpecialAddButton };
 
         [SerializeField]
         private CanvasGroup m_canvasGroup = null;
@@ -275,14 +286,14 @@ namespace Battlehub.RTEditor
             }
             m_propertiesTreeView.Items = new List<AnimationPropertyItem>
             {
-                m_empty
+                m_emptyBottom
             };
         }
 
 
         public void AddProperty(AnimationPropertyItem propertyItem)
         {
-            if (propertyItem == null)
+            if (propertyItem.ComponentType == AnimationPropertyItem.k_SpecialAddButton)
             {
                 IWindowManager wm = IOC.Resolve<IWindowManager>();
                 IAnimationSelectPropertiesDialog selectPropertiesDialog = null;
@@ -294,14 +305,29 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                propertyItem = new AnimationPropertyItem(propertyItem);
+                if(m_propertiesTreeView.ItemsCount == 1)
+                {
+                    m_propertiesTreeView.Insert(0, m_emptyTop);
+                }
 
+                propertyItem = new AnimationPropertyItem(propertyItem);
                 propertyItem.Parent = null;
                 propertyItem.Children = null;
-
                 propertyItem.TryToCreateChildren();
-
                 m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, propertyItem);
+
+                if(PropertiesAdded != null)
+                {
+                    if(m_propertiesTreeView.ItemsCount == 3)
+                    {
+                        PropertiesAdded(new ItemsArgs { Items = new[] { m_emptyTop, propertyItem } });
+                    }
+                    else
+                    {
+                        PropertiesAdded(new ItemsArgs { Items = new[] { propertyItem } });
+                    }
+                    
+                }
             }
         }
 
@@ -318,17 +344,32 @@ namespace Battlehub.RTEditor
 
         private void OnPropertiesItemRemoving(object sender, ItemsCancelArgs e)
         {
-            e.Items.Remove(m_empty);   
+            e.Items.Remove(m_emptyTop);
+            e.Items.Remove(m_emptyBottom);   
         }
 
         private void OnPropertiesItemRemoved(object sender, ItemsRemovedArgs e)
         {
+            List<AnimationPropertyItem> removedProperties = new List<AnimationPropertyItem>();
             foreach(AnimationPropertyItem item in e.Items)
             {
+                removedProperties.Add(item);
                 if(item.Parent != null)
                 {
                     m_propertiesTreeView.RemoveChild(null, item.Parent);
+                    removedProperties.Add(item.Parent);
                 }
+            }
+
+            if(m_propertiesTreeView.ItemsCount == 2)
+            {
+                m_propertiesTreeView.RemoveChild(null, m_emptyTop);
+                removedProperties.Add(m_emptyTop);
+            }
+
+            if (PropertiesRemoved != null)
+            {
+                PropertiesRemoved(new ItemsArgs { Items = removedProperties.ToArray() });
             }
         }
 
@@ -338,16 +379,16 @@ namespace Battlehub.RTEditor
             AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
 
             ui.View = this;
-            if (m_empty != item)
+            if (m_emptyBottom != item && m_emptyTop != item)
             {
-                ui.Item = item;
                 e.CanSelect = true;
             }
             else
-            {
-                ui.Item = null;
+            {   
                 e.CanSelect = false;
             }
+
+            ui.Item = item;
 
             e.HasChildren = item.Children != null && item.Children.Count > 0;
         }

@@ -1,14 +1,12 @@
-﻿//#define USE_RTE
-#define TIMELINE_CONTROL_DEBUG
+﻿#define USE_RTE
+//#define TIMELINE_CONTROL_DEBUG
 
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Common;
-using Battlehub.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
@@ -35,6 +33,22 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private float m_fixedHeight = -1;
+        private float FixedHeight
+        {
+            get
+            {
+                if(m_fixedHeight >= 0)
+                {
+                    return Mathf.Max(1, m_fixedHeight);
+                }
+                return m_fixedHeight;
+            }
+        }
+
+        [SerializeField]
+        private bool m_virtualizingTreeViewVerticalScrollStyle = true; 
+        
+
         [SerializeField]
         private Color m_backgroundColor = new Color32(0x27, 0x27, 0x27, 0xFF);
 
@@ -68,14 +82,24 @@ namespace Battlehub.RTEditor
         public int RowsCount
         {
             get { return m_timelineGridParams.HorLines - 1; }
-            //set
-            //{
-            //    m_timelineGridParams.HorLines = value + 1;
-            //    SetGridParameters();
-            //    m_renderGraphics = true;
-            //}
+            set
+            {
+                if (m_timelineGridParams == null)
+                {
+                    CreateDefaultTimelineGridParams();
+                }
+
+                m_timelineGridParams.HorLines = value + 1;
+                SetTimelineGridParameters();
+                m_renderGraphics = true;
+
+                if (m_scrollRect != null)
+                {
+                    OnRectTransformChanged();
+                }   
+            }
         }
-       
+
         /// Dopesheet.Keyframe must be replaced with more appropriate data structure
         public Dopesheet.AnimationClip Clip
         {
@@ -90,12 +114,27 @@ namespace Battlehub.RTEditor
         }
 
 
-        private void SetGridParameters()
+        private void SetTimelineGridParameters()
         {
-            m_timelineGrid.SetGridParameters(m_timelineGridParams);
-            m_dopesheet.SetGridParameters(m_timelineGridParams);
-            m_textPanel.SetGridParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
-            m_pointer.SetGridParameters(m_timelineGridParams);
+            if(m_timelineGrid != null)
+            {
+                m_timelineGrid.SetGridParameters(m_timelineGridParams);
+            }
+            
+            if(m_dopesheet != null)
+            {
+                m_dopesheet.SetGridParameters(m_timelineGridParams);
+            }
+            
+            if(m_textPanel != null)
+            {
+                m_textPanel.SetGridParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
+            }
+            
+            if(m_pointer != null)
+            {
+                m_pointer.SetGridParameters(m_timelineGridParams);
+            }
         }
 
         private void Awake()
@@ -121,7 +160,7 @@ namespace Battlehub.RTEditor
             m_vScrollbarListener.Drop += OnVerticalScrolbarDrop;
             m_vScrollbarListener.EndDrag += OnVerticalScrolbarDrop;
 
-            if (m_fixedHeight > -1)
+            if (FixedHeight > -1)
             {
                 ScrollbarResizer[] resizers = m_scrollRect.verticalScrollbar.GetComponentsInChildren<ScrollbarResizer>(true);
                 for (int i = 0; i < resizers.Length; ++i)
@@ -143,7 +182,7 @@ namespace Battlehub.RTEditor
 
 #if USE_RTE
             IRTE editor = IOC.Resolve<IRTE>();
-            cameraGo.transform.SetParent(editor, false);
+            cameraGo.transform.SetParent(editor.Root, false);
 #endif
             m_camera = cameraGo.AddComponent<Camera>();
             m_camera.enabled = false;
@@ -160,14 +199,13 @@ namespace Battlehub.RTEditor
             cameraGo.SetActive(true);
             m_rtCamera.enabled = false;
 
-            m_timelineGridParams = new TimelineGridParameters();
-            m_timelineGridParams.VertLines = 12;
-            m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
-            m_timelineGridParams.HorLines = 21;
-            m_timelineGridParams.HorLinesSecondary = 2;
-            m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
-            m_timelineGridParams.FixedHeight = m_fixedHeight;
-
+            if(m_timelineGridParams == null)
+            {
+                CreateDefaultTimelineGridParams();
+                m_timelineGridParams.HorLines = 1;
+                m_timelineGridParams.HorLinesSecondary = 2;
+            }
+            
             m_timelineGrid = m_output.GetComponent<TimelineGrid>();
             if (m_timelineGrid == null)
             {
@@ -182,24 +220,26 @@ namespace Battlehub.RTEditor
                 m_dopesheet = m_output.gameObject.AddComponent<Dopesheet>();
             }
             m_dopesheet.Init(m_camera);
-            SetGridParameters();
+            SetTimelineGridParameters();
 
-#if TIMELINE_CONTROL_DEBUG
+
             int samplesCount = 60;// m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary;
 
             Dopesheet.AnimationClip clip = new Dopesheet.AnimationClip(m_timelineGridParams.HorLines, samplesCount + 1);
             List<Dopesheet.Keyframe> keyframes = new List<Dopesheet.Keyframe>();
             List<Dopesheet.Keyframe> selectedKeyframes = new List<Dopesheet.Keyframe>();
-            for (int i = 0; i < m_timelineGridParams.HorLines; ++i)
+
+#if TIMELINE_CONTROL_DEBUG
+            for (int i = 0; i < m_timelineGridParams.HorLines - 1; ++i)
             {
                 for (int j = 0; j <= samplesCount; ++j)
                 {
                     int keyframeType = Random.Range(0, 3);
-                    if(keyframeType == 1)
+                    if (keyframeType == 1)
                     {
                         keyframes.Add(new Dopesheet.Keyframe(i, j));
                     }
-                    else if(keyframeType == 2)
+                    else if (keyframeType == 2)
                     {
                         Dopesheet.Keyframe kf = new Dopesheet.Keyframe(i, j);
                         keyframes.Add(kf);
@@ -207,11 +247,11 @@ namespace Battlehub.RTEditor
                     }
                 }
             }
+#endif
 
             clip.AddKeyframes(keyframes.ToArray());
             clip.SelectKeyframes(selectedKeyframes.ToArray());
             Clip = clip;
-#endif
             m_pointer.PointerDown += OnTimlineClick;
             m_pointer.Drag += OnTimelineDrag;
             m_pointer.Drop += OnTimelineDrop;
@@ -225,10 +265,19 @@ namespace Battlehub.RTEditor
             {
                 m_boxSelection.BeginSelection += OnBeginBoxSelection;
                 m_boxSelection.Selection += OnBoxSelection;
-                
+
             }
 
             RenderGraphics();
+        }
+
+        private void CreateDefaultTimelineGridParams()
+        {
+            m_timelineGridParams = new TimelineGridParameters();
+            m_timelineGridParams.VertLines = 12;
+            m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
+            m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
+            m_timelineGridParams.FixedHeight = FixedHeight;
         }
 
         private void Start()
@@ -387,7 +436,7 @@ namespace Battlehub.RTEditor
             Vector2Int coord;
             if(m_pointer.GetKeyframeCoordinate(args.LocalPoint, true, false, out coord))
             {
-                coord.y++;
+                //coord.y++;
 
                 if (TryGetKeyframeWithinRange(coord, m_pointer.Range, out coord))
                 {
@@ -465,14 +514,15 @@ namespace Battlehub.RTEditor
         {
             Vector2 viewportSize = m_scrollRect.viewport.rect.size;
 
-            if (m_timelineGridParams.FixedHeight > -1)
-            {
-                m_scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_timelineGridParams.FixedHeight * (m_timelineGridParams.HorLines - 1));
-            }
-
             if (viewportSize != m_output.rectTransform.sizeDelta)
             {
                 m_output.rectTransform.sizeDelta = viewportSize;
+                m_scrollRect.content.sizeDelta = viewportSize;
+            }
+
+            if (m_timelineGridParams.FixedHeight > -1)
+            {
+                m_scrollRect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, m_timelineGridParams.FixedHeight * (m_timelineGridParams.HorLines - 1));
             }
         }
 
@@ -535,6 +585,24 @@ namespace Battlehub.RTEditor
             Vector2 scrollOffset = new Vector2(
                     m_scrollRect.horizontalScrollbar.value,
                     m_scrollRect.verticalScrollbar.value);
+
+            if (m_virtualizingTreeViewVerticalScrollStyle && FixedHeight > 0)
+            {
+                float possibleRowsCount = Mathf.RoundToInt(viewportSize.y / FixedHeight);
+                float visibleRowsCount = Mathf.Min(RowsCount, possibleRowsCount);
+                if(visibleRowsCount < RowsCount)
+                {
+                    float magicScrollFix = (0.5f / RowsCount);
+                    int index = Mathf.RoundToInt(((1 - scrollOffset.y) + magicScrollFix) * Mathf.Max((RowsCount - visibleRowsCount), 0));
+
+                    float deltaRow = 1.0f / (RowsCount - m_scrollRect.verticalScrollbar.size * RowsCount);
+                    scrollOffset.y = 1 - (index * deltaRow);
+                }
+                else
+                {
+                    scrollOffset.y = 1;
+                }
+            }
 
             Vector2 scrollSize =  new Vector2(
                     m_scrollRect.horizontalScrollbar.size,

@@ -24,7 +24,10 @@ namespace Battlehub.RTEditor
         private RectTransform m_pointer = null;
 
         [SerializeField]
-        private RectTransform m_dragArea = null;
+        private RectTransform m_timelineArea = null;
+
+        [SerializeField]
+        private RectTransform m_workArea = null;
 
         private TimelineGridParameters m_parameters;
 
@@ -114,8 +117,7 @@ namespace Battlehub.RTEditor
         private bool GetKeyframeCoord(PointerEventData eventData, bool precise, out Vector2Int coord)
         {
             Vector2 point;
-            RectTransform rt = (RectTransform)transform;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, eventData.position, eventData.pressEventCamera, out point))
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_workArea, eventData.position, eventData.pressEventCamera, out point))
             {
                 coord = new Vector2Int(-1, -1);
                 return false;
@@ -172,13 +174,13 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            coord = new Vector2Int(sample, row - 1);
+            coord = new Vector2Int(sample, row);
             return result;
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(m_dragArea, eventData.position, eventData.pressEventCamera))
+            if (RectTransformUtility.RectangleContainsScreenPoint(m_timelineArea, eventData.position, eventData.pressEventCamera))
             {
                 UpdatePointerPosition(eventData);
             }
@@ -214,7 +216,7 @@ namespace Battlehub.RTEditor
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(m_dragArea, eventData.position, eventData.pressEventCamera))
+            if (RectTransformUtility.RectangleContainsScreenPoint(m_timelineArea, eventData.position, eventData.pressEventCamera))
             {
                 m_isPointerDragInProgress = true;
             }

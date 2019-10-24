@@ -68,8 +68,8 @@ namespace Battlehub.RTEditor
                 Vector2Int coord;
                 if (m_pointer.GetKeyframeCoordinate(point, false, false, out coord))
                 {
-                    m_start1 = coord;
-                    m_start2 = new Vector2Int(coord.x, coord.y + 1);
+                    m_start1 = new Vector2Int(coord.x, coord.y - 1);
+                    m_start2 = new Vector2Int(coord.x, coord.y);
 
                     if (BeginSelection != null)
                     {
@@ -121,7 +121,7 @@ namespace Battlehub.RTEditor
                 Vector2Int coord;
                 if (m_pointer.GetKeyframeCoordinate(point, false, true, out coord))
                 {
-                    m_end = coord;
+                    m_end = new Vector2Int(coord.x, coord.y - 1); 
 
                     Vector2Int min = new Vector2Int(Mathf.Min(m_start1.x, m_start2.x, m_end.x), Mathf.Min(m_start1.y, m_start2.y, m_end.y));
                     Vector2Int max = new Vector2Int(Mathf.Max(m_start1.x, m_start2.x, m_end.x), Mathf.Max(m_start1.y, m_start2.y, m_end.y));

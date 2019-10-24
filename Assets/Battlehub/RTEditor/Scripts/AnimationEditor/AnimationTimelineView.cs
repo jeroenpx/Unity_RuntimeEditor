@@ -20,6 +20,7 @@ namespace Battlehub.RTEditor
             set;
         }
 
+
         private RuntimeAnimation m_target;
         public RuntimeAnimation Target
         {
@@ -32,6 +33,21 @@ namespace Battlehub.RTEditor
                     m_timeline.SetActive(m_target != null);
                 }
             }
+        }
+
+        private void Start()
+        {
+            m_dopesheet.RowsCount = 1;
+        }
+
+        public void AddProperites(AnimationPropertyItem[] properties)
+        {
+            m_dopesheet.RowsCount += properties.Length;
+        }
+
+        public void RemoveProperties(AnimationPropertyItem[] properties)
+        {
+            m_dopesheet.RowsCount -= properties.Length;
         }
 
     }

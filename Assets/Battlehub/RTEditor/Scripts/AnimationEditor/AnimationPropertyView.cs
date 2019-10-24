@@ -10,6 +10,9 @@ namespace Battlehub.RTEditor
 {
     public class AnimationPropertyItem
     {
+        public const string k_SpecialAddButton = "Special_AddButton";
+        public const string k_SpecialEmptySpace = "Special_EmptySpace";
+
         public string ComponentType;
         public string ComponentDisplayName;
         public string PropertyName;
@@ -94,6 +97,11 @@ namespace Battlehub.RTEditor
 
         public void TryToCreateChildren()
         {
+            if(ComponentType == k_SpecialEmptySpace || ComponentType == k_SpecialAddButton)
+            {
+                return;
+            }
+
             Type type = Value.GetType();
             if (Reflection.IsPrimitive(type))
             {
@@ -177,7 +185,7 @@ namespace Battlehub.RTEditor
             {
                 m_item = value;
 
-                if(m_item != null)
+                if (m_item != null && m_item.ComponentType != AnimationPropertyItem.k_SpecialAddButton && m_item.ComponentType != AnimationPropertyItem.k_SpecialEmptySpace)
                 {
                     bool isBool = m_item.Value is bool;
                     bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
@@ -185,7 +193,7 @@ namespace Battlehub.RTEditor
                     if (m_toggle != null)
                     {
                         m_toggle.gameObject.SetActive(isBool && !hasChildren);
-                        if(isBool)
+                        if (isBool)
                         {
                             m_toggle.isOn = (bool)m_item.Value;
                         }
@@ -198,7 +206,7 @@ namespace Battlehub.RTEditor
 
                     if (m_inputField != null)
                     {
-                        if(!hasChildren)
+                        if (!hasChildren)
                         {
                             m_inputField.gameObject.SetActive(!isBool);
                             m_inputField.DeactivateInputField();
@@ -209,7 +217,7 @@ namespace Battlehub.RTEditor
                                 if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte))
                                 {
                                     m_inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
-                                    if(m_dragField != null)
+                                    if (m_dragField != null)
                                     {
                                         m_dragField.IncrementFactor = 1.0f;
                                     }
@@ -217,7 +225,7 @@ namespace Battlehub.RTEditor
                                 else if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
                                 {
                                     m_inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
-                                    if(m_dragField != null)
+                                    if (m_dragField != null)
                                     {
                                         m_dragField.IncrementFactor = 0.1f;
                                     }
@@ -243,7 +251,7 @@ namespace Battlehub.RTEditor
                         {
                             m_inputField.gameObject.SetActive(false);
                             m_inputField.text = "";
-                        }   
+                        }
                     }
 
                     if (m_label != null)
@@ -267,23 +275,24 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    if(m_inputField != null)
+                    if (m_inputField != null)
                     {
                         m_inputField.gameObject.SetActive(false);
                     }
-                    if(m_toggle != null)
+                    if (m_toggle != null)
                     {
                         m_toggle.gameObject.SetActive(false);
                     }
-                    if(m_label != null)
+                    if (m_label != null)
                     {
                         m_label.gameObject.SetActive(false);
                     }
 
                     if (m_addPropertyButton != null)
                     {
-                        m_addPropertyButton.gameObject.SetActive(true);
+                        m_addPropertyButton.gameObject.SetActive(m_item.ComponentType == AnimationPropertyItem.k_SpecialAddButton);
                     }
+
                 }
             }
         }
@@ -369,11 +378,14 @@ namespace Battlehub.RTEditor
                 return;
             }
             m_nextUpdate = Time.time + 0.2f;
-            if(m_item == null)
+            if(m_item == null || 
+               m_item.ComponentType == AnimationPropertyItem.k_SpecialAddButton ||
+               m_item.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace )
             {
                 return;
             }
 
+            
            
             bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
             if(hasChildren)

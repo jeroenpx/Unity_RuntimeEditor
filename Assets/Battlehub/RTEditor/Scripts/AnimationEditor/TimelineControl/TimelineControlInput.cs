@@ -1,18 +1,21 @@
-﻿//#define USE_RTE
+﻿#define USE_RTE
 #if USE_RTE
 using Battlehub.RTCommon;
 #endif
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
-    public class TimelineControlInput : MonoBehaviour
+    public class TimelineControlInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private TimelineControl m_timelineControl;
         #if USE_RTE
         private IRTE m_editor;
         private RuntimeWindow m_window;
         #endif
+
+        private bool m_isPointerOver;
 
         private void Start()
         {
@@ -75,6 +78,11 @@ namespace Battlehub.RTEditor
 
         protected virtual Vector2 GetIntervalDelta()
         {
+            if(!m_isPointerOver)
+            {
+                return Vector2.zero;
+            }
+
             #if USE_RTE
             if(!m_window.IsPointerOver)
             {
@@ -95,6 +103,16 @@ namespace Battlehub.RTEditor
             }
             return new Vector2(delta, 0);
             #endif
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            m_isPointerOver = true;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            m_isPointerOver = false;
         }
     }
 }
