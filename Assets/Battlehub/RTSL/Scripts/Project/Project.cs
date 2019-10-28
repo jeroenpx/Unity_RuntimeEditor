@@ -23,7 +23,10 @@ namespace Battlehub.RTSL
         public event ProjectEventHandler NewSceneCreated;
         public event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
         public event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
+        public event ProjectEventHandler<string> CopyProjectCompleted;
         public event ProjectEventHandler<string> DeleteProjectCompleted;
+        public event ProjectEventHandler<string> ExportProjectCompleted;
+        public event ProjectEventHandler<string> ImportProjectCompleted;
         public event ProjectEventHandler<ProjectInfo[]> ListProjectsCompleted;
         public event ProjectEventHandler CloseProjectCompleted;
 
@@ -363,47 +366,6 @@ namespace Battlehub.RTSL
             }
         }
 
-        /// <summary>
-        /// Create Project
-        /// </summary>
-        /// <param name="project"></param>
-        /// <param name="callback"></param>
-        /// <returns></returns>
-        public ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null)
-        {
-            ProjectAsyncOperation<ProjectInfo> ao = new ProjectAsyncOperation<ProjectInfo>();
-            if (IsBusy)
-            {
-                m_actionsQueue.Enqueue(() => _CreateProject(project, callback, ao));
-            }
-            else
-            {
-                IsBusy = true;
-                _CreateProject(project, callback, ao);
-            }
-            return ao;
-        }
-
-        private void _CreateProject(string project, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
-        {
-            m_storage.CreateProject(project, (error, projectInfo) =>
-            {
-                if (callback != null)
-                {
-                    callback(error, projectInfo);
-                }
-                if (CreateProjectCompleted != null)
-                {
-                    CreateProjectCompleted(error, projectInfo);
-                }
-                ao.Error = error;
-                ao.Result = projectInfo;
-                ao.IsCompleted = true;
-
-                IsBusy = false;
-            });
-        }
-
 
         /// <summary>
         /// List all projects
@@ -448,72 +410,44 @@ namespace Battlehub.RTSL
         }
 
         /// <summary>
-        /// Delete Project
+        /// Create Project
         /// </summary>
         /// <param name="project"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null)
+        public ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null)
         {
-            ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
+            ProjectAsyncOperation<ProjectInfo> ao = new ProjectAsyncOperation<ProjectInfo>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _DeleteProject(project, callback, pao));
+                m_actionsQueue.Enqueue(() => _CreateProject(project, callback, ao));
             }
             else
             {
                 IsBusy = true;
-                _DeleteProject(project, callback, pao);
+                _CreateProject(project, callback, ao);
             }
-            
-            return pao;
+            return ao;
         }
 
-        private void _DeleteProject(string project, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
+        private void _CreateProject(string project, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
         {
-            if (m_projectInfo != null && project == m_projectInfo.Name)
-            {
-                CloseProject();        
-            }
-            m_storage.DeleteProject(project, error =>
+            m_storage.CreateProject(project, (error, projectInfo) =>
             {
                 if (callback != null)
                 {
-                    callback(error, project);
+                    callback(error, projectInfo);
                 }
-                
-                ao.Error = error;
-                ao.Result = project;
-                ao.IsCompleted = true;
-
-                if (DeleteProjectCompleted != null)
+                if (CreateProjectCompleted != null)
                 {
-                    DeleteProjectCompleted(error, project);
+                    CreateProjectCompleted(error, projectInfo);
                 }
+                ao.Error = error;
+                ao.Result = projectInfo;
+                ao.IsCompleted = true;
 
                 IsBusy = false;
             });
-        }
-
-        /// <summary>
-        /// Close Project
-        /// </summary>
-        public void CloseProject()
-        {
-            if(m_projectInfo != null)
-            {
-                UnloadUnregisterDestroy();
-            }
-            m_projectInfo = null;
-            m_root = null;
-            m_projectPath = null;
-
-            CreateNewScene();
-
-            if (CloseProjectCompleted != null)
-            {
-                CloseProjectCompleted(new Error(Error.OK));
-            }
         }
 
         /// <summary>
@@ -524,30 +458,36 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback)
         {
+            return OpenProject(project, true, callback);
+        }
+
+        public ProjectAsyncOperation<ProjectInfo> OpenProject(string project, bool createNewScene, ProjectEventHandler<ProjectInfo> callback)
+        {
             ProjectAsyncOperation<ProjectInfo> ao = new ProjectAsyncOperation<ProjectInfo>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _OpenProject(project, callback, ao));
+                m_actionsQueue.Enqueue(() => _OpenProject(project, createNewScene, callback, ao));
             }
             else
             {
-                
+
                 IsBusy = true;
-                _OpenProject(project, callback, ao);
+                _OpenProject(project, createNewScene, callback, ao);
             }
             return ao;
         }
 
-        private void _OpenProject(string project, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
+
+        private void _OpenProject(string project, bool createNewScene, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
         {
-            if(m_projectPath == project)
+            if (m_projectPath == project)
             {
                 Debug.Assert(m_projectInfo != null);
                 RaiseOpenProjectCompleted(callback, ao, new Error(Error.OK), m_projectInfo);
                 return;
             }
 
-            if (m_projectInfo != null)
+            if (m_projectInfo != null && createNewScene)
             {
                 CreateNewScene();
             }
@@ -654,7 +594,7 @@ namespace Battlehub.RTSL
             {
                 callback(error, m_projectInfo);
             }
-            
+
             ao.Result = m_projectInfo;
             ao.Error = error;
             ao.IsCompleted = true;
@@ -665,6 +605,195 @@ namespace Battlehub.RTSL
             }
 
             IsBusy = false;
+        }
+
+        public ProjectAsyncOperation<string> CopyProject(string project, string targetProject, ProjectEventHandler<string> callback = null)
+        {
+            ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _CopyProject(project, targetProject, callback, pao));
+            }
+            else
+            {
+                IsBusy = true;
+                _CopyProject(project, targetProject, callback, pao);
+            }
+
+            return pao;
+        }
+
+        private void _CopyProject(string project, string targetProject, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
+        {
+            m_storage.CopyProject(project, targetProject, error =>
+            {
+                if (callback != null)
+                {
+                    callback(error, targetProject);
+                }
+
+                ao.Error = error;
+                ao.Result = project;
+                ao.IsCompleted = true;
+
+                if (CopyProjectCompleted != null)
+                {
+                    CopyProjectCompleted(error, targetProject);
+                }
+
+                IsBusy = false;
+            });
+        }
+
+        /// <summary>
+        /// Delete Project
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null)
+        {
+            ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _DeleteProject(project, callback, pao));
+            }
+            else
+            {
+                IsBusy = true;
+                _DeleteProject(project, callback, pao);
+            }
+            
+            return pao;
+        }
+
+        private void _DeleteProject(string project, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
+        {
+            if (m_projectInfo != null && project == m_projectInfo.Name)
+            {
+                CloseProject();        
+            }
+            m_storage.DeleteProject(project, error =>
+            {
+                if (callback != null)
+                {
+                    callback(error, project);
+                }
+                
+                ao.Error = error;
+                ao.Result = project;
+                ao.IsCompleted = true;
+
+                if (DeleteProjectCompleted != null)
+                {
+                    DeleteProjectCompleted(error, project);
+                }
+
+                IsBusy = false;
+            });
+        }
+
+        public ProjectAsyncOperation<string> ExportProject(string project, string targetPath, ProjectEventHandler<string> callback = null)
+        {
+            ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _ExportProject(project, targetPath, callback, pao));
+            }
+            else
+            {
+                IsBusy = true;
+                _ExportProject(project, targetPath, callback, pao);
+            }
+
+            return pao;
+        }
+
+        private void _ExportProject(string project, string targetPath, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
+        {
+            m_storage.ExportProject(project, targetPath, error =>
+            {
+                if (callback != null)
+                {
+                    callback(error, project);
+                }
+
+                ao.Error = error;
+                ao.Result = project;
+                ao.IsCompleted = true;
+
+                if(!error.HasError)
+                {
+                    if (ExportProjectCompleted != null)
+                    {
+                        ExportProjectCompleted(error, project);
+                    }
+                }
+                
+                IsBusy = false;
+            });
+        }
+
+        public ProjectAsyncOperation<string> ImportProject(string project, string sourcePath, ProjectEventHandler<string> callback = null)
+        {
+            ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _ImportProject(project, sourcePath, callback, pao));
+            }
+            else
+            {
+                IsBusy = true;
+                _ImportProject(project, sourcePath, callback, pao);
+            }
+
+            return pao;
+        }
+
+        private void _ImportProject(string project, string sourcePath, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
+        {
+            m_storage.ImportProject(project, sourcePath, error =>
+            {
+                if (callback != null)
+                {
+                    callback(error, project);
+                }
+
+                ao.Error = error;
+                ao.Result = project;
+                ao.IsCompleted = true;
+
+                if(!error.HasError)
+                {
+                    if (ImportProjectCompleted != null)
+                    {
+                        ImportProjectCompleted(error, project);
+                    }
+                }
+                
+                IsBusy = false;
+            });
+        }
+
+        /// <summary>
+        /// Close Project
+        /// </summary>
+        public void CloseProject()
+        {
+            if(m_projectInfo != null)
+            {
+                UnloadUnregisterDestroy();
+            }
+            m_projectInfo = null;
+            m_root = null;
+            m_projectPath = null;
+
+            CreateNewScene();
+
+            if (CloseProjectCompleted != null)
+            {
+                CloseProjectCompleted(new Error(Error.OK));
+            }
         }
 
         /// <summary>
@@ -3378,20 +3507,20 @@ namespace Battlehub.RTSL
             }
         }
 
-        public ProjectAsyncOperation ExportPackage(string path, AssetItem[] items, ProjectEventHandler callback = null)
-        {
-            throw new NotImplementedException();
-        }
+        //public ProjectAsyncOperation ExportPackage(string path, AssetItem[] items, ProjectEventHandler callback = null)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null)
-        {
-            throw new NotImplementedException();
-        }
+        //public ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null)
-        {
-            throw new NotImplementedException();
-        }
+        //public ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         /// <summary>
         /// Create folder
@@ -3557,6 +3686,41 @@ namespace Battlehub.RTSL
                 {
                     MoveCompleted(error, projectItems, oldParents);
                 }
+
+                IsBusy = false;
+            });
+        }
+
+        public ProjectAsyncOperation Delete(string projectPath, string[] projectItemsPath, ProjectEventHandler callback)
+        {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+            ProjectAsyncOperation<ProjectItem[]> ao = new ProjectAsyncOperation<ProjectItem[]>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _Delete(projectPath, projectItemsPath, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _Delete(projectPath, projectItemsPath, callback, ao);
+            } 
+            return ao;
+        }
+
+        private void _Delete(string projectPath, string[] projectItemsPath, ProjectEventHandler callback, ProjectAsyncOperation ao)
+        {
+            m_storage.Delete(projectPath, projectItemsPath, error =>
+            {
+                if (callback != null)
+                {
+                    callback(error);
+                }
+
+                ao.Error = error;                
+                ao.IsCompleted = true;
 
                 IsBusy = false;
             });

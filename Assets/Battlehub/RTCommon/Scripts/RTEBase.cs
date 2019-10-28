@@ -1,5 +1,6 @@
 using Battlehub.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -204,6 +205,8 @@ namespace Battlehub.RTCommon
         void Duplicate(GameObject[] go);
         void Delete(GameObject[] go);
         void Close();
+
+        Coroutine StartCoroutine(IEnumerator method);
     }
 
     public delegate void RTEEvent();

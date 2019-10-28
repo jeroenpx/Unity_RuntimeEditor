@@ -61,8 +61,10 @@ namespace Battlehub.RTEditor
         private GameObject m_progressIndicator = null;
 
         [SerializeField]
+        private bool m_openDefaultProject = true;
+        [SerializeField]
         private string m_defaultProjectName = null;
-
+        
         public override bool IsBusy
         {
             get { return base.IsBusy; }
@@ -73,6 +75,7 @@ namespace Battlehub.RTEditor
                     m_progressIndicator.gameObject.SetActive(value);
                 }
 
+                
                 base.IsBusy = value;
             }
         }
@@ -131,16 +134,19 @@ namespace Battlehub.RTEditor
             m_project.OpenProjectCompleted += OnProjectOpened;
             m_project.DeleteProjectCompleted += OnProjectDeleted;
 
-            if(string.IsNullOrEmpty(m_defaultProjectName))
+            if(m_openDefaultProject)
             {
-                m_defaultProjectName = PlayerPrefs.GetString("RuntimeEditor.DefaultProject", "DefaultProject");
-            }
+                if (string.IsNullOrEmpty(m_defaultProjectName))
+                {
+                    m_defaultProjectName = PlayerPrefs.GetString("RuntimeEditor.DefaultProject", "DefaultProject");
+                }
 
-            IsBusy = true;
-            m_project.OpenProject(m_defaultProjectName, (error, projectInfo) =>
-            {
-                IsBusy = false;
-            });
+                IsBusy = true;
+                m_project.OpenProject(m_defaultProjectName, (error, projectInfo) =>
+                {
+                    IsBusy = false;
+                });
+            }
         }
 
         protected override void Start()

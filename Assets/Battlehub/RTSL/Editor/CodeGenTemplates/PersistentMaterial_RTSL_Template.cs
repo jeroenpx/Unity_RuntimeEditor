@@ -2,9 +2,11 @@
 #if RTSL_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
 using Battlehub.RTCommon;
+using Battlehub.Utils;
 using ProtoBuf;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Battlehub.SL2;
 //<TEMPLATE_USINGS_END>
 #else
 using UnityEngine;
@@ -120,6 +122,12 @@ namespace Battlehub.RTSL.Internal
                             break;
                     }
                 }
+            }
+
+            if (m_shaderName == "Standard")
+            {
+                StandardMaterialUtils.SetupMaterialWithBlendMode(o, StandardMaterialUtils.GetBlendMode(o));
+                StandardMaterialUtils.SetMaterialKeywords(o, StandardMaterialUtils.m_workflow);
             }
 
             return obj;

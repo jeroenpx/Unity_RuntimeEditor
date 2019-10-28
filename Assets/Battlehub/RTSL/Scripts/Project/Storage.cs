@@ -11,6 +11,7 @@ using System.Threading;
 using Battlehub.Utils;
 using System.IO.Compression;
 using ICSharpCode.SharpZipLib.Zip;
+using ProtoBuf;
 
 namespace Battlehub.RTSL
 {
@@ -27,6 +28,9 @@ namespace Battlehub.RTSL
         }
 
         void CreateProject(string projectPath, StorageEventHandler<ProjectInfo> callback);
+        void CopyProject(string projectPath, string targetPath, StorageEventHandler callback);
+        void ExportProject(string projectPath, string targetPath, StorageEventHandler callback);
+        void ImportProject(string projectPath, string sourcePath, StorageEventHandler callback);
         void DeleteProject(string projectPath, StorageEventHandler callback);
         void GetProjects(StorageEventHandler<ProjectInfo[]> callback);
         void GetProject(string projectPath, StorageEventHandler<ProjectInfo, AssetBundleInfo[]> callback);
@@ -112,10 +116,119 @@ namespace Battlehub.RTSL
             }
         }
 
+        public void CopyProject(string projectPath, string targetPath, StorageEventHandler callback)
+        {
+            try
+            {
+                string projectFullPath = FullPath(projectPath);
+                string projectTargetPath = FullPath(targetPath);
+
+                DirectoryInfo diSource = new DirectoryInfo(projectFullPath);
+                DirectoryInfo diTarget = new DirectoryInfo(projectTargetPath);
+
+                CopyAll(diSource, diTarget);
+
+                ProjectInfo projectInfo;
+                using (FileStream fs = File.OpenRead(projectTargetPath + "/Project.rtmeta"))
+                {
+                    projectInfo = Serializer.Deserialize<ProjectInfo>(fs);
+                }
+
+                projectInfo.Name = Path.GetFileNameWithoutExtension(targetPath);
+                projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectTargetPath + "/Project.rtmeta");
+
+                using (FileStream fs = File.OpenWrite(projectTargetPath + "/Project.rtmeta"))
+                {
+                    Serializer.Serialize(fs, projectInfo);
+                }
+            
+                callback(new Error(Error.OK));
+            }
+            catch (Exception e)
+            {
+                callback(new Error(Error.E_Exception) { ErrorText = e.ToString() });
+            }
+        }
+
+        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            Directory.CreateDirectory(target.FullName);
+
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
+        }
+
+        public void ExportProject(string projectPath, string targetPath, StorageEventHandler callback)
+        {
+            try
+            {
+                string projectFullPath = FullPath(projectPath);
+
+                FastZip fastZip = new FastZip();
+                fastZip.CreateZip(targetPath, projectFullPath, true, null);
+
+                callback(new Error(Error.OK));
+            }
+            catch (Exception e)
+            {
+                callback(new Error(Error.E_Exception) { ErrorText = e.ToString() });
+            }            
+        }
+
+        public void ImportProject(string projectPath, string sourcePath, StorageEventHandler callback)
+        {
+            try
+            {
+                string projectFullPath = FullPath(projectPath);
+                if(Directory.Exists(projectFullPath))
+                {
+                    callback(new Error(Error.E_AlreadyExist) { ErrorText = string.Format("Project {0} already exist", projectPath) });
+                }
+                else
+                {
+                    FastZip fastZip = new FastZip();
+                    fastZip.ExtractZip(sourcePath, projectFullPath, null);
+
+                    ProjectInfo projectInfo;
+                    using (FileStream fs = File.OpenRead(projectFullPath + "/Project.rtmeta"))
+                    {
+                        projectInfo = Serializer.Deserialize<ProjectInfo>(fs);
+                    }
+
+                    projectInfo.Name = Path.GetFileNameWithoutExtension(projectPath);
+                    projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectFullPath + "/Project.rtmeta");
+
+                    using (FileStream fs = File.OpenWrite(projectFullPath + "/Project.rtmeta"))
+                    {
+                        Serializer.Serialize(fs, projectInfo);
+                    }
+
+                    callback(new Error(Error.OK));
+                }
+
+            }
+            catch (Exception e)
+            {
+                callback(new Error(Error.E_Exception) { ErrorText = e.ToString() });
+            }
+        }
+
         public void DeleteProject(string projectPath, StorageEventHandler callback)
         {
             string projectDir = FullPath(projectPath);
-            Directory.Delete(projectDir, true);
+            if(Directory.Exists(projectDir))
+            {
+                Directory.Delete(projectDir, true);
+            }
             callback(new Error(Error.OK));
         }
 
@@ -705,6 +818,7 @@ namespace Battlehub.RTSL
             callback(Error.NoError);
         }
 
+        /*
         public void CreatePackage(string projectPath, string[] assetsPath, string packagePath, StorageEventHandler callback)
         {
             QueueUserWorkItem(() =>
@@ -752,7 +866,8 @@ namespace Battlehub.RTSL
                 }
             });                
         }
-
+        */
+        /*
         public void OpenPackage(string projectPath, string packagePath, StorageEventHandler<AssetItem[]> callback)
         {
             QueueUserWorkItem(() =>
@@ -798,6 +913,7 @@ namespace Battlehub.RTSL
                 }
             });
         }
+        */
 
         public void QueueUserWorkItem(Action action)
         {

@@ -94,6 +94,12 @@ namespace Battlehub.RTSL.Battlehub.SL2
                 return;
             }
 
+            ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
+            if(exposeToEditor != null && exposeToEditor.MarkAsDestroyed)
+            {
+                return;
+            }
+
             Type persistentType = m_typeMap.ToPersistentType(go.GetType());
             if (persistentType == null)
             {

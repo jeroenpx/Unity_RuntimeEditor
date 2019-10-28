@@ -17,6 +17,8 @@ namespace Battlehub.RTSL.Interface
         event ProjectEventHandler NewSceneCreated;
         event ProjectEventHandler<ProjectInfo> CreateProjectCompleted;
         event ProjectEventHandler<ProjectInfo> OpenProjectCompleted;
+        event ProjectEventHandler<string> ExportProjectCompleted;
+        event ProjectEventHandler<string> ImportProjectCompleted;
         event ProjectEventHandler<string> DeleteProjectCompleted;
         event ProjectEventHandler<ProjectInfo[]> ListProjectsCompleted;
         event ProjectEventHandler CloseProjectCompleted;
@@ -77,10 +79,14 @@ namespace Battlehub.RTSL.Interface
         string GetUniquePath(string path, Type type, ProjectItem folder);
 
         void CreateNewScene();
+        ProjectAsyncOperation<ProjectInfo[]> GetProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
         ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
         ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
-        ProjectAsyncOperation<ProjectInfo[]> GetProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
+        ProjectAsyncOperation<ProjectInfo> OpenProject(string project, bool createNewScene, ProjectEventHandler<ProjectInfo> callback = null);
+        ProjectAsyncOperation<string> CopyProject(string project, string targetProject, ProjectEventHandler<string> callback = null);
         ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null);
+        ProjectAsyncOperation<string> ExportProject(string project, string targetPath, ProjectEventHandler<string> callback = null);
+        ProjectAsyncOperation<string> ImportProject(string projectName, string sourcePath, ProjectEventHandler<string> callback = null);
         void CloseProject();
 
         ProjectAsyncOperation<AssetItem[]> GetAssetItems(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null); /*no events raised*/
@@ -101,14 +107,15 @@ namespace Battlehub.RTSL.Interface
         void UnloadImportItems(ProjectItem importItemsRoot);
         ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback = null);
 
-        ProjectAsyncOperation ExportPackage(string path, AssetItem[] items, ProjectEventHandler callback = null);
-        ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null);
-        ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null);
+        //ProjectAsyncOperation ExportProject(string path, AssetItem[] items, ProjectEventHandler callback = null);
+        //ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null);
+        //ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null);
 
         ProjectAsyncOperation<ProjectItem> CreateFolder(ProjectItem projectItem, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[], ProjectItem[]> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);
+        ProjectAsyncOperation Delete(string projectPath, string[] files, ProjectEventHandler callback = null);
 
         ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);
         Dictionary<int, string> GetStaticAssetLibraries();
@@ -279,6 +286,25 @@ namespace Battlehub.RTSL.Interface
             return project.CreateFolder(folder);
         }
 
+        public static ProjectAsyncOperation RenameFolder(this IProject project, string path, string newName)
+        {
+            if (!project.IsOpened)
+            {
+                throw new InvalidOperationException("OpenProject first");
+            }
+
+            path = string.Format("{0}/{1}", project.Root.Name, path);
+            ProjectItem projectItem = project.Root.Get(path) as ProjectItem;
+            if (projectItem == null)
+            {
+                throw new ArgumentException("not found", "path");
+            }
+
+            string oldName = projectItem.Name;
+            projectItem.Name = newName;
+            return project.Rename(projectItem, oldName);
+        }
+
         public static ProjectAsyncOperation DeleteFolder(this IProject project, string path)
         {
             if (!project.IsOpened)
@@ -421,6 +447,31 @@ namespace Battlehub.RTSL.Interface
             }
 
             return project.Load(new[] { assetItem });
+        }
+
+        public static ProjectAsyncOperation<ProjectItem> Rename<T>(this IProject project, string path, string newName)
+        {
+            Type type = typeof(T);
+            return Rename(project, path, newName, type);
+        }
+
+        public static ProjectAsyncOperation<ProjectItem> Rename(this IProject project, string path, string newName, Type type)
+        {
+            if (!project.IsOpened)
+            {
+                throw new InvalidOperationException("OpenProject first");
+            }
+
+            path = string.Format("{0}/{1}", project.Root.Name, path);
+
+            AssetItem projectItem = project.Root.Get(path + project.GetExt(type)) as AssetItem;
+            if (projectItem == null)
+            {
+                throw new ArgumentException("not found", "path");
+            }
+            string oldName = projectItem.Name;
+            projectItem.Name = newName;
+            return project.Rename(projectItem, oldName);
         }
 
         public static ProjectAsyncOperation Delete<T>(this IProject project, string path)
