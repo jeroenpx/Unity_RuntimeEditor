@@ -27,6 +27,7 @@ namespace Battlehub.RTEditor
             get { return m_target; }
             set
             {
+                m_dopesheet.VisibleRowsCount = 1;
                 m_target = value;
                 if (m_timeline != null)
                 {
@@ -37,17 +38,59 @@ namespace Battlehub.RTEditor
 
         private void Start()
         {
-            m_dopesheet.RowsCount = 1;
+            m_dopesheet.VisibleRowsCount = 1;
         }
 
-        public void AddProperites(AnimationPropertyItem[] properties)
+        public void AddProperties(AnimationPropertyItem[] properties)
         {
-            m_dopesheet.RowsCount += properties.Length;
+            for(int i = 0; i < properties.Length; ++i)
+            {
+                AnimationPropertyItem property = properties[i];
+
+                bool isVisible = property.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace || property.Children != null && property.Children.Count > 0;
+                m_dopesheet.Clip.AddRow(isVisible);
+                if (isVisible)
+                {
+                    m_dopesheet.VisibleRowsCount++;
+                }
+            }
+            
         }
 
-        public void RemoveProperties(AnimationPropertyItem[] properties)
+        public void RemoveProperties(int[] rows, AnimationPropertyItem[] properties)
         {
-            m_dopesheet.RowsCount -= properties.Length;
+            for (int i = properties.Length - 1; i >= 0; --i)
+            {
+                int rowIndex = rows[i];
+                Dopesheet.DopesheetRow row = m_dopesheet.Clip.Rows[rowIndex];
+                m_dopesheet.Clip.RemoveKeyframes(true, row.Keyframes.ToArray());
+                m_dopesheet.Clip.RemoveKeyframes(true, row.SelectedKeyframes.ToArray());
+            }
+
+            for (int i = properties.Length - 1; i >= 0; --i)
+            {
+                int rowIndex = rows[i];
+                bool isVisible = m_dopesheet.Clip.RemoveRow(rowIndex);
+                if(isVisible)
+                {
+                    m_dopesheet.VisibleRowsCount--;
+                }
+            }
+
+            m_dopesheet.Clip.UpdateDictionaries();
+        }
+              
+
+        public void ExpandProperty(int row, AnimationPropertyItem property)
+        {
+            m_dopesheet.VisibleRowsCount += property.Children.Count;
+            m_dopesheet.Clip.Expand(row, property.Children.Count);
+        }
+
+        public void CollapseProperty(int row, AnimationPropertyItem property)
+        {
+            m_dopesheet.VisibleRowsCount -= property.Children.Count;
+            m_dopesheet.Clip.Collapse(row, property.Children.Count);
         }
 
     }

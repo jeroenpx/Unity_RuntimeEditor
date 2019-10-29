@@ -129,7 +129,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                m_hGridMesh0 = CreateGridMesh(m_parameters.HorLines, false, 1, repeatX);
+                m_hGridMesh0 = CreateGridMesh(m_parameters.HorLines, false, 1, repeatX, int.MaxValue, false);
             }
 
             m_vGridMesh1 = CreateGridMesh(vLinesCount, true, repeatX, repeatY);
@@ -291,7 +291,7 @@ namespace Battlehub.RTEditor
             return material;
         }
 
-        private Mesh CreateGridMesh(float count, bool isVertical, int repeat = 2, int lineLength = 2, int skipLine = int.MaxValue)
+        private Mesh CreateGridMesh(float count, bool isVertical, int repeat = 2, int lineLength = 2, int skipLine = int.MaxValue, bool drawListLine = true)
         {
             if(lineLength < 1000)
             {
@@ -307,6 +307,11 @@ namespace Battlehub.RTEditor
             int[] indices = new int[(totalCount - totalCount / skipLine) * 2];
             Vector3[] vertices = new Vector3[indices.Length];
             Color[] colors = new Color[indices.Length];
+
+            if(!drawListLine)
+            {
+                totalCount--;
+            }
 
             if(isVertical)
             {

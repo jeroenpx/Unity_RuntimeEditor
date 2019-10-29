@@ -4,7 +4,7 @@ namespace Battlehub.RTEditor
 {
     public class RuntimeAnimationClip : ScriptableObject
     {
-
+        
     }
 
     public class RuntimeAnimation : MonoBehaviour

@@ -79,7 +79,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public int RowsCount
+        public int VisibleRowsCount
         {
             get { return m_timelineGridParams.HorLines - 1; }
             set
@@ -107,7 +107,7 @@ namespace Battlehub.RTEditor
             set
             {
                 m_dopesheet.Clip = value;
-                float colums = m_dopesheet.Clip.Cols - 1;
+                float colums = m_dopesheet.Clip.ColsCount - 1;
                 m_interval.x = Mathf.Log(m_timelineGridParams.VertLinesSecondary * colums / (m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary), m_timelineGridParams.VertLinesSecondary);
                 ChangeInterval(Vector2.zero);
             }
@@ -413,7 +413,7 @@ namespace Battlehub.RTEditor
                     keyframe.Col = m_pointer.ColumnsCount - 1;
                 }
 
-                int key = keyframe.Row * clip.Cols + keyframe.Col;
+                int key = keyframe.Row * clip.ColsCount + keyframe.Col;
                 if (!selectedKfDictionary.ContainsKey(key))
                 {
                     selectedKfDictionary.Add(key, keyframe);
@@ -463,8 +463,8 @@ namespace Battlehub.RTEditor
         private void Select(Vector2Int min, Vector2Int max)
         {
             Dopesheet.AnimationClip clip = m_dopesheet.Clip;
-            int rows = clip.Rows;
-            int cols = clip.Cols;
+            int rows = clip.RowsCount;
+            int cols = clip.ColsCount;
 
             min.y = Mathf.Max(0, min.y);
             min.x = Mathf.Max(0, min.x);
@@ -589,14 +589,21 @@ namespace Battlehub.RTEditor
             if (m_virtualizingTreeViewVerticalScrollStyle && FixedHeight > 0)
             {
                 float possibleRowsCount = Mathf.RoundToInt(viewportSize.y / FixedHeight);
-                float visibleRowsCount = Mathf.Min(RowsCount, possibleRowsCount);
-                if(visibleRowsCount < RowsCount)
+                float visibleRowsCount = Mathf.Min(VisibleRowsCount, possibleRowsCount);
+                if(visibleRowsCount < VisibleRowsCount)
                 {
-                    float magicScrollFix = (0.5f / RowsCount);
-                    int index = Mathf.RoundToInt(((1 - scrollOffset.y) + magicScrollFix) * Mathf.Max((RowsCount - visibleRowsCount), 0));
+                    float magicScrollFix = (0.5f / VisibleRowsCount);
+                    int index = Mathf.RoundToInt(((1 - scrollOffset.y) + magicScrollFix) * Mathf.Max((VisibleRowsCount - visibleRowsCount), 0));
 
-                    float deltaRow = 1.0f / (RowsCount - m_scrollRect.verticalScrollbar.size * RowsCount);
-                    scrollOffset.y = 1 - (index * deltaRow);
+                    if(Mathf.Approximately(m_scrollRect.verticalScrollbar.size, 1))
+                    {
+                        scrollOffset.y = 1;
+                    }
+                    else
+                    {
+                        float deltaRow = 1.0f / (VisibleRowsCount - m_scrollRect.verticalScrollbar.size * VisibleRowsCount);
+                        scrollOffset.y = 1 - (index * deltaRow);
+                    }
                 }
                 else
                 {

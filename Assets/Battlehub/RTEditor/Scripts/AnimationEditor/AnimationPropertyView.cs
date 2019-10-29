@@ -19,10 +19,15 @@ namespace Battlehub.RTEditor
         public string PropertyDisplayName;
         public AnimationPropertyItem Parent;
         public List<AnimationPropertyItem> Children;
+        
         public object Component;
 
-        public AnimationPropertyItem() { }
-        public AnimationPropertyItem(AnimationPropertyItem item)
+        public AnimationPropertyItem()
+        {
+            
+            
+        }
+        public AnimationPropertyItem(AnimationPropertyItem item) : this()
         {
             ComponentType = item.ComponentType;
             ComponentDisplayName = item.ComponentDisplayName;

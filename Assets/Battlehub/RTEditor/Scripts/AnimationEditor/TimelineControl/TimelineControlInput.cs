@@ -51,7 +51,7 @@ namespace Battlehub.RTEditor
 
             if(Input.GetKeyDown(KeyCode.K))
             {
-                for(int i = 0; i < m_timelineControl.RowsCount; ++i)
+                for(int i = 0; i < m_timelineControl.VisibleRowsCount - 1; ++i)
                 {
                     m_timelineControl.AddKeyframe(m_timelineControl.CurrentSample, i);
                 }

@@ -8,14 +8,49 @@ namespace Battlehub.RTEditor
     {
         public class AnimationClip
         {
-            public int Rows;
-            public int Cols;
+            public int RowsCount
+            {
+                get { return m_rows.Count; }
+                //private set
+                //{
+                //    int delta = value - m_rows.Count;
+                //    if(delta > 0)
+                //    {
+                //        for(int i = 0; i < delta; ++i)
+                //        {
+                //            m_rows.Add(new DopesheetRow());
+                //        }
+                //    }
+                //    else if(delta < 0)
+                //    {
+                //        delta = -delta;
+                //        for (int i = 0; i < delta; ++i)
+                //        {
+                //            m_rows.RemoveAt(m_rows.Count - 1);
+                //        }
+                //    }
+                //}
+            }
+            
+            public int ColsCount
+            {
+                get;
+                set;
+            }
+
+
+            private readonly List<DopesheetRow> m_rows = new List<DopesheetRow>();
 
             private readonly List<Keyframe> m_keyframes = new List<Keyframe>();
             private readonly List<Keyframe> m_selectedKeyframes = new List<Keyframe>();
 
             private readonly Dictionary<int, Keyframe> m_kfDictionary = new Dictionary<int, Keyframe>();
             private readonly Dictionary<int, Keyframe> m_selectedKfDictionary = new Dictionary<int, Keyframe>();
+
+            public IList<DopesheetRow> Rows
+            {
+                get { return m_rows; }
+            }
 
             public IList<Keyframe> Keyframes
             {
@@ -27,21 +62,22 @@ namespace Battlehub.RTEditor
                 get { return m_selectedKeyframes; }
             }
 
+
             public bool IsSelected(int row, int col)
             {
-                int key = row * Cols + col;
+                int key = row * ColsCount + col;
                 return m_selectedKfDictionary.ContainsKey(key);
             }
 
             public bool HasKeyframe(int row, int col)
             {
-                int key = row * Cols + col;
+                int key = row * ColsCount + col;
                 return m_selectedKfDictionary.ContainsKey(key) || m_kfDictionary.ContainsKey(key);
             }
 
             public Keyframe GetSelectedKeyframe(int row, int col)
             {
-                int key = row * Cols + col;
+                int key = row * ColsCount + col;
                 Keyframe result;
                 if (!m_selectedKfDictionary.TryGetValue(key, out result))
                 {
@@ -52,7 +88,7 @@ namespace Battlehub.RTEditor
 
             public Keyframe GetKeyframe(int row, int col)
             {
-                int key = row * Cols + col;
+                int key = row * ColsCount + col;
                 Keyframe result;
                 if(!m_kfDictionary.TryGetValue(key, out result))
                 {
@@ -61,7 +97,7 @@ namespace Battlehub.RTEditor
                 return result;
             }
 
-
+        
             public void UpdateDictionaries()
             {
                 m_kfDictionary.Clear();
@@ -70,7 +106,7 @@ namespace Battlehub.RTEditor
                 for(int i = 0; i < m_keyframes.Count; ++i)
                 {
                     Keyframe kf = m_keyframes[i];
-                    int key = kf.Row * Cols + kf.Col;
+                    int key = kf.Row * ColsCount + kf.Col;
 
                     m_kfDictionary.Add(key, kf);
                 }
@@ -78,7 +114,7 @@ namespace Battlehub.RTEditor
                 for (int i = 0; i < m_selectedKeyframes.Count; ++i)
                 {
                     Keyframe kf = m_selectedKeyframes[i];
-                    int key = kf.Row * Cols + kf.Col;
+                    int key = kf.Row * ColsCount + kf.Col;
 
                     m_selectedKfDictionary.Add(key, kf);
                 }
@@ -89,10 +125,10 @@ namespace Battlehub.RTEditor
                 for (int i = 0; i < keyframes.Count; ++i)
                 {
                     Keyframe kf = keyframes[i];
-                    if (Cols <= kf.Col || Rows <= kf.Row)
+                    if (ColsCount <= kf.Col || RowsCount <= kf.Row)
                     {
-                        Cols = Mathf.Max(Cols, kf.Col + 1);
-                        Rows = Mathf.Max(Rows, kf.Row + 1);
+                        ColsCount = Mathf.Max(ColsCount, kf.Col + 1);
+                       // RowsCount = Mathf.Max(RowsCount, kf.Row + 1);
                         UpdateDictionaries();
                     }
                 }
@@ -103,9 +139,16 @@ namespace Battlehub.RTEditor
                 for (int i = 0; i < keyframes.Length; ++i)
                 {
                     Keyframe kf = keyframes[i];
-                    int key = kf.Row * Cols + kf.Col;
+                    int key = kf.Row * ColsCount + kf.Col;
                     m_kfDictionary.Add(key, kf);
-                    m_keyframes.Add(kf);                    
+                    m_keyframes.Add(kf);
+
+                    for(int r = m_rows.Count; r <= kf.Row; ++r)
+                    {
+                        m_rows.Add(new DopesheetRow());
+                    }
+
+                    m_rows[kf.Row].Keyframes.Add(kf);
                 }
             }
 
@@ -113,12 +156,43 @@ namespace Battlehub.RTEditor
             {
                 m_keyframes.Clear();
                 m_kfDictionary.Clear();
+
+                bool empty = true;
+                foreach(DopesheetRow row in m_rows)
+                {
+                    row.Keyframes.Clear();
+                    if(row.SelectedKeyframes.Count > 0)
+                    {
+                        empty = false;
+                    }
+                }
+
+                if(empty)
+                {
+                    m_rows.Clear();
+                }
+                
             }
 
             public void ClearSelectedKeyframes()
             {
                 m_selectedKeyframes.Clear();
                 m_selectedKfDictionary.Clear();
+
+                bool empty = true;
+                foreach (DopesheetRow row in m_rows)
+                {
+                    row.SelectedKeyframes.Clear();
+                    if (row.Keyframes.Count > 0)
+                    {
+                        empty = false;
+                    }
+                }
+
+                if (empty)
+                {
+                    m_rows.Clear();
+                }
             }
 
             public void RemoveKeyframes(bool all, params Keyframe[] keyframes)
@@ -126,7 +200,7 @@ namespace Battlehub.RTEditor
                 for (int i = 0; i < keyframes.Length; ++i)
                 {
                     Keyframe kf = keyframes[i];
-                    int key = kf.Row * Cols + kf.Col;
+                    int key = kf.Row * ColsCount + kf.Col;
                     
                     if(all)
                     {
@@ -134,11 +208,13 @@ namespace Battlehub.RTEditor
                         {
                             m_keyframes.Remove(kf);
                             m_kfDictionary.Remove(key);
+                            m_rows[kf.Row].Keyframes.Remove(kf);
                         }
                         else if (m_selectedKfDictionary.TryGetValue(key, out kf))
                         {
                             m_selectedKeyframes.Remove(kf);
                             m_selectedKfDictionary.Remove(key);
+                            m_rows[kf.Row].SelectedKeyframes.Remove(kf);
                         }
                     }
                     else
@@ -147,6 +223,7 @@ namespace Battlehub.RTEditor
                         {
                             m_keyframes.Remove(kf);
                             m_kfDictionary.Remove(key);
+                            m_rows[kf.Row].Keyframes.Remove(kf);
                         }
                     }  
                 }
@@ -157,16 +234,18 @@ namespace Battlehub.RTEditor
                 for (int i = 0; i < keyframes.Length; ++i)
                 {
                     Keyframe kf = keyframes[i];
-                    int key = kf.Row * Cols + kf.Col;
+                    int key = kf.Row * ColsCount + kf.Col;
 
                     if (m_kfDictionary.TryGetValue(key, out kf))
                     {
                         m_keyframes.Remove(kf);
                         m_kfDictionary.Remove(key);
+                        m_rows[kf.Row].Keyframes.Remove(kf);
                     }
                     
                     m_selectedKfDictionary.Add(key, kf);
                     m_selectedKeyframes.Add(kf);
+                    m_rows[kf.Row].SelectedKeyframes.Add(kf);
                 }
             }
 
@@ -175,26 +254,66 @@ namespace Battlehub.RTEditor
                 for (int i = 0; i < keyframes.Length; ++i)
                 {
                     Keyframe kf = keyframes[i];
-                    int key = kf.Row * Cols + kf.Col;
+                    int key = kf.Row * ColsCount + kf.Col;
 
                     if (m_selectedKfDictionary.TryGetValue(key, out kf))
                     {
                         m_selectedKeyframes.Remove(kf);
                         m_selectedKfDictionary.Remove(key);
+                        m_rows[kf.Row].SelectedKeyframes.Remove(kf);
                     }
 
                     m_kfDictionary.Add(key, kf);
                     m_keyframes.Add(kf);
+                    m_rows[kf.Row].Keyframes.Add(kf);
                 }
             }
-            
+
+            public void AddRow(bool isVisible)
+            {
+                DopesheetRow row = new DopesheetRow();
+                row.IsVisible = isVisible;
+                m_rows.Add(row);
+            }
+
+            public bool RemoveRow(int row)
+            {
+                DopesheetRow dopesheetRow = m_rows[row];
+                m_rows.RemoveAt(row);
+                return dopesheetRow.IsVisible;
+            }
+
+            public void Expand(int row, int count)
+            {
+                for(int i = row + 1; i <= row + count; ++i)
+                {
+                    m_rows[i].IsVisible = true;
+                }
+            }
+
+            public void Collapse(int row, int count)
+            {
+                for (int i = row + 1; i <= row + count; ++i)
+                {
+                    m_rows[i].IsVisible = false;
+                }
+            }
+
 
             public AnimationClip(int rows, int columns)
             {
-                Rows = rows;
-                Cols = columns;
+               // RowsCount = rows;
+                ColsCount = columns;
             }
 
+        }
+
+        public class DopesheetRow
+        {
+            public int Row;
+            public readonly List<Keyframe> Keyframes = new List<Keyframe>();
+            public readonly List<Keyframe> SelectedKeyframes = new List<Keyframe>();
+            public bool IsVisible = true;
         }
 
         public class Keyframe
@@ -226,15 +345,6 @@ namespace Battlehub.RTEditor
 
         private const int k_batchSize = 512;
         private Matrix4x4[] m_matrices = new Matrix4x4[k_batchSize];
-
-        //#warning replace array with more appropriate structure
-        //        private Keyframe[,] m_keyframes = new Keyframe[0, 0];
-        //        public Keyframe[,] Keyframes
-        //        {
-        //            get { return m_keyframes; }
-        //            set { m_keyframes = value; }
-        //        }
-
 
         private AnimationClip m_clip;
         public AnimationClip Clip
@@ -295,7 +405,7 @@ namespace Battlehub.RTEditor
 
             int index = 0;
           //  int cols = m_clip.Cols;
-            int rows = m_clip.Rows;
+            int rows = m_clip.RowsCount;
 
             float rowHeight = m_parameters.FixedHeight / viewportSize.y;
             float aspect = viewportSize.x / viewportSize.y;
@@ -316,50 +426,40 @@ namespace Battlehub.RTEditor
             float visibleColumns = m_parameters.VertLines * Mathf.Pow(m_parameters.VertLinesSecondary, Mathf.Log(px, m_parameters.VertLinesSecondary));
             float offsetColumns = -(1 - 1 / normalizedSize.x) * normalizedOffset.x * visibleColumns;
 
+            Debug.Log(offsetColumns + " " + visibleColumns);
+
             Vector3 keyframeScale = Vector3.one * rowHeight * 0.5f;
 
-            //UpdateKeyframes(m_animationClip.Keyframes, m_material, index, cols, rows, rowHeight, aspect, offset, offsetColumns, visibleColumns, keyframeScale);
-            //UpdateKeyframes(m_animationClip.SelectedKeyframes, m_selectionMaterial, index, cols, rows, rowHeight, aspect, offset, offsetColumns, visibleColumns, keyframeScale);
-            UpdateKeyframes(m_clip.Keyframes, m_material, index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
-            UpdateKeyframes(m_clip.SelectedKeyframes, m_selectionMaterial, index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
+            UpdateKeyframes(false, m_clip.Rows, m_material, index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
+            UpdateKeyframes(true, m_clip.Rows, m_selectionMaterial, index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
         }
 
-        //private void UpdateKeyframes(List<Keyframe> keyframes, Material material, int index, int cols, int rows, float rowHeight, float aspect, Vector3 offset, float offsetColumns, float visibleColumns, Vector3 keyframeScale)
-        private void UpdateKeyframes(IList<Keyframe> keyframes, Material material, int index, float rowHeight, float aspect, Vector3 offset, float visibleColumns, Vector3 keyframeScale)
+        private void UpdateKeyframes(bool selected, IList<DopesheetRow> rows, Material material, int index, float rowHeight, float aspect, Vector3 offset, float visibleColumns, Vector3 keyframeScale)
         {
-            //for (int i = 0; i < rows; ++i)
-            //{
-            //    for (int j = Mathf.FloorToInt(offsetColumns); j < cols && j < Mathf.Ceil(offsetColumns + visibleColumns + 1); ++j)
-            //    {
-            //        if (state == m_keyframes[i, j])
-            //        {
-            //            m_matrices[index] = Matrix4x4.TRS(offset + new Vector3(aspect * j / visibleColumns, -rowHeight * i, 1),
-            //                Quaternion.Euler(0, 0, 45),
-            //            keyframeScale);
-
-            //            index++;
-            //            if (index == k_batchSize)
-            //            {
-            //                index = 0;
-            //                m_commandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, k_batchSize);
-            //            }
-            //        }
-            //    }
-            //}
-
-            for(int i = 0; i < keyframes.Count; ++i)
+            int rowNumber = 0;
+            for(int i = 0; i < rows.Count; ++i)
             {
-                Keyframe keyframe = keyframes[i];
-                m_matrices[index] = Matrix4x4.TRS(
-                    offset + new Vector3(aspect * keyframe.Col / visibleColumns, -rowHeight * keyframe.Row, 1),
-                    Quaternion.Euler(0, 0, 45),
-                    keyframeScale);
-
-                index++;
-                if (index == k_batchSize)
+                DopesheetRow row = rows[i];
+                if(row.IsVisible)
                 {
-                    index = 0;
-                    m_commandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, k_batchSize);
+                    List<Keyframe> keyframes = selected ? row.SelectedKeyframes : row.Keyframes;
+                    for (int j = 0; j < keyframes.Count; ++j)
+                    {
+                        Keyframe keyframe = keyframes[j];
+                        m_matrices[index] = Matrix4x4.TRS(
+                            offset + new Vector3(aspect * keyframe.Col / visibleColumns, -rowHeight * rowNumber, 1),
+                            Quaternion.Euler(0, 0, 45),
+                            keyframeScale);
+
+                        index++;
+                        if (index == k_batchSize)
+                        {
+                            index = 0;
+                            m_commandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, k_batchSize);
+                        }
+                    }
+
+                    rowNumber++;
                 }
             }
 
