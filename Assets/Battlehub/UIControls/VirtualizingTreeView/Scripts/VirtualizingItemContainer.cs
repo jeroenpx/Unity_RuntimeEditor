@@ -284,7 +284,7 @@ namespace Battlehub.UIControls
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
-        {
+        {            
             if (eventData.clickCount == 2)
             {
                 if (DoubleClick != null)

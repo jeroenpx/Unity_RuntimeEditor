@@ -212,6 +212,7 @@ namespace Battlehub.UIControls
         public EventSystem m_eventSystem;
 
         public InputProvider InputProvider;
+        public bool SelectUsingLeftButtonOnly = false;
         public bool SelectOnPointerUp = false;
         public bool CanUnselectAll = true;
         public bool CanSelectAll = true;
@@ -1243,7 +1244,7 @@ namespace Battlehub.UIControls
             m_dragItemsData = null;
             m_isDropInProgress = false;
 
-            if (sender.IsSelected && eventData.button == PointerEventData.InputButton.Right)
+            if (SelectUsingLeftButtonOnly && eventData.button != PointerEventData.InputButton.Left || sender.IsSelected && eventData.button == PointerEventData.InputButton.Right)
             {
                 return;
             }
@@ -1271,7 +1272,7 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            if(sender.IsSelected && eventData.button == PointerEventData.InputButton.Right)
+            if (SelectUsingLeftButtonOnly && eventData.button != PointerEventData.InputButton.Left || sender.IsSelected && eventData.button == PointerEventData.InputButton.Right)
             {
                 return;
             }
@@ -1375,7 +1376,7 @@ namespace Battlehub.UIControls
             {
                 return;
             }
-
+            
             if(sender.Item == null)
             {
                 if(Click != null)

@@ -514,6 +514,7 @@ namespace Battlehub.RTHandles
 
             Transform cameraTransform = Window.Camera.transform;
             m_orbitDistance = Mathf.Clamp(m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance), m_orbitDistanceMin, m_orbitDistanceMax);
+            //m_orbitDistance = Mathf.Clamp(m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance), m_orbitDistanceMin, m_orbitDistanceMax);
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -m_orbitDistance);
             m_targetPosition = cameraTransform.rotation * negDistance + PivotTransform.position;
             cameraTransform.position = m_targetPosition;
