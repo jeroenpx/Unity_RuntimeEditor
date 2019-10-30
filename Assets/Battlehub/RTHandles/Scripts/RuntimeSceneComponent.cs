@@ -513,7 +513,7 @@ namespace Battlehub.RTHandles
             }
 
             Transform cameraTransform = Window.Camera.transform;
-            m_orbitDistance = Mathf.Clamp(m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance), m_orbitDistanceMin, m_orbitDistanceMax);
+            m_orbitDistance = m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance);
             //m_orbitDistance = Mathf.Clamp(m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance), m_orbitDistanceMin, m_orbitDistanceMax);
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -m_orbitDistance);
             m_targetPosition = cameraTransform.rotation * negDistance + PivotTransform.position;
@@ -550,7 +550,16 @@ namespace Battlehub.RTHandles
                 return;
             }
             m_lastMousePosition = mousePosition;
-            m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
+            //m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(Window.Pointer, out hitInfo))
+            {
+                m_dragPlane = new Plane(-Window.Camera.transform.forward, hitInfo.point);
+            }
+            else
+            {
+                m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
+            }
         }
 
         public void Pan(Vector3 mousePosition)
