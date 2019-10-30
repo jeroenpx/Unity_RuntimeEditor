@@ -32,81 +32,13 @@ namespace Battlehub.RTEditor
         public event EventHandler<ExpandCollapseArgs> PropertyCollapsed;
 
         [SerializeField]
-        private Toggle m_previewToggle = null;
-
-        [SerializeField]
-        private Toggle m_recordToggle = null;
-
-        [SerializeField]
-        private Button m_firstFrameButton = null;
-
-        [SerializeField]
-        private Button m_prevFrameButton = null;
-
-        [SerializeField]
-        private Toggle m_playToggle = null;
-
-        [SerializeField]
-        private Button m_nextFrameButton = null;
-
-        [SerializeField]
-        private Button m_lastFrameButton = null;
-
-        [SerializeField]
-        private TMP_InputField m_frameInput = null;
-
-        [SerializeField]
-        private TMP_Dropdown m_animationsDropDown = null;
-
-        [SerializeField]
-        private TMP_InputField m_samplesInput = null;
-
-        [SerializeField]
-        private Button m_addKeyframeButton = null;
-
-        [SerializeField]
-        private Button m_addEventButton = null;
-
-        [SerializeField]
-        private Toggle m_dopesheetToggle = null;
-
-        [SerializeField]
         private VirtualizingTreeView m_propertiesTreeView = null;
         private List<AnimationPropertyItem> m_properties = new List<AnimationPropertyItem>();
 
         private readonly AnimationPropertyItem m_emptyTop = new AnimationPropertyItem { ComponentType = AnimationPropertyItem.k_SpecialEmptySpace };
         private readonly AnimationPropertyItem m_emptyBottom = new AnimationPropertyItem { ComponentType = AnimationPropertyItem.k_SpecialAddButton };
 
-        [SerializeField]
-        private CanvasGroup m_canvasGroup = null;
-
-        [SerializeField]
-        private GameObject m_blockUI = null;
-
         private bool m_isStarted;
-
-        public int m_selectedClipIndex;
-        public RuntimeAnimationClip SelectedClip
-        {
-            get
-            {
-                if(m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Length)
-                {
-                    return null;
-                }
-
-                return m_target.Clips[m_selectedClipIndex];
-            }
-            set
-            {
-                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Length)
-                {
-                    return;
-                }
-
-                m_target.Clips[m_selectedClipIndex] = value;
-            }
-        }
 
         private RuntimeAnimation m_target;
         public RuntimeAnimation Target
@@ -114,90 +46,7 @@ namespace Battlehub.RTEditor
             get { return m_target; }
             set
             {
-                if(value == null)
-                {
-                    if (m_previewToggle != null)
-                    {
-                        m_previewToggle.isOn = false;
-                    }
-
-                    if (m_playToggle != null)
-                    {
-                        m_playToggle.isOn = false;
-                    }
-
-                    if (m_frameInput != null)
-                    {
-                        m_frameInput.text = "0";
-                    }
-
-                    if(m_samplesInput != null)
-                    {
-                        m_samplesInput.text = "60";
-                    }
-
-                    if(m_dopesheetToggle != null)
-                    {
-                        m_dopesheetToggle.isOn = true;
-                    }
-
-                    if(m_animationsDropDown != null)
-                    {
-                        m_animationsDropDown.ClearOptions();
-                    }
-                }
-
                 m_target = value;
-                if (m_target == null || m_target.Clips == null || m_target.Clips.Length == 0)
-                {
-                    m_selectedClipIndex = -1;
-                }
-                else
-                {
-                    m_selectedClipIndex = -1;
-                    for(int i = 0; i < m_target.Clips.Length; i++)
-                    {
-                        if(m_target.Clips[i] != null)
-                        {
-                            m_selectedClipIndex = i;
-                            break;
-                        }
-                    }
-
-                    if (m_animationsDropDown != null)
-                    {
-                        List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
-                        for (int i = 0; i < m_target.Clips.Length; ++i)
-                        {
-                            if (m_target.Clips[i] == null)
-                            {
-                                options.Add(new TMP_Dropdown.OptionData("(Missing)"));
-                            }
-                            else
-                            {
-                                options.Add(new TMP_Dropdown.OptionData(m_target.Clips[i].name));
-                            }
-                        }
-                        m_animationsDropDown.options = options;
-                        m_animationsDropDown.value = m_selectedClipIndex;
-                    }
-                }
-
-                if(m_canvasGroup != null)
-                {
-                    m_canvasGroup.alpha = m_target != null ? 1 : 0.5f;
-                }
-
-                if(m_blockUI != null)
-                {
-                    m_blockUI.SetActive(m_target == null);
-
-                    if(m_target == null)
-                    {
-                        EventSystem.current.SetSelectedGameObject(null);
-                    }
-                }
-
                 DataBind();
             }
         }
@@ -254,20 +103,6 @@ namespace Battlehub.RTEditor
                 m_propertiesTreeView.ItemsRemoving += OnPropertiesRemoving;
                 m_propertiesTreeView.ItemsRemoved += OnPropertiesRemoved;
             }
-
-            UnityEventHelper.AddListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
-            UnityEventHelper.AddListener(m_recordToggle, toggle => toggle.onValueChanged, OnRecordToggleValueChanged);
-            UnityEventHelper.AddListener(m_firstFrameButton, button => button.onClick, OnFirstFrameButtonClick);
-            UnityEventHelper.AddListener(m_prevFrameButton, button => button.onClick, OnPrevFrameButtonClick);
-            UnityEventHelper.AddListener(m_playToggle, toggle => toggle.onValueChanged, OnPlayToggleValueChanged);
-            UnityEventHelper.AddListener(m_nextFrameButton, button => button.onClick, OnNextFrameButtonClick);
-            UnityEventHelper.AddListener(m_lastFrameButton, button => button.onClick, OnLastFrameButtonClick);
-            UnityEventHelper.AddListener(m_frameInput, input => input.onEndEdit, OnFrameInputEndEdit);
-            UnityEventHelper.AddListener(m_animationsDropDown, dropdown => dropdown.onValueChanged, OnAnimationsDropdownValueChanged);
-            UnityEventHelper.AddListener(m_samplesInput, input => input.onEndEdit, OnSamplesInputEndEdit);
-            UnityEventHelper.AddListener(m_addKeyframeButton, button => button.onClick, OnAddKeyframeButtonClick);
-            UnityEventHelper.AddListener(m_addEventButton, button => button.onClick, OnAddEventButtonClick);
-            UnityEventHelper.AddListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
         protected virtual void Unsubscribe()
@@ -282,20 +117,6 @@ namespace Battlehub.RTEditor
                 m_propertiesTreeView.ItemsRemoving -= OnPropertiesRemoving;
                 m_propertiesTreeView.ItemsRemoved -= OnPropertiesRemoved;
             }
-
-            UnityEventHelper.RemoveListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
-            UnityEventHelper.RemoveListener(m_recordToggle, toggle => toggle.onValueChanged, OnRecordToggleValueChanged);
-            UnityEventHelper.RemoveListener(m_firstFrameButton, button => button.onClick, OnFirstFrameButtonClick);
-            UnityEventHelper.RemoveListener(m_prevFrameButton, button => button.onClick, OnPrevFrameButtonClick);
-            UnityEventHelper.RemoveListener(m_playToggle, toggle => toggle.onValueChanged, OnPlayToggleValueChanged);
-            UnityEventHelper.RemoveListener(m_nextFrameButton, button => button.onClick, OnNextFrameButtonClick);
-            UnityEventHelper.RemoveListener(m_lastFrameButton, button => button.onClick, OnLastFrameButtonClick);
-            UnityEventHelper.RemoveListener(m_frameInput, input => input.onEndEdit, OnFrameInputEndEdit);
-            UnityEventHelper.RemoveListener(m_animationsDropDown, dropdown => dropdown.onValueChanged, OnAnimationsDropdownValueChanged);
-            UnityEventHelper.RemoveListener(m_samplesInput, input => input.onEndEdit, OnSamplesInputEndEdit);
-            UnityEventHelper.RemoveListener(m_addKeyframeButton, button => button.onClick, OnAddKeyframeButtonClick);
-            UnityEventHelper.RemoveListener(m_addEventButton, button => button.onClick, OnAddEventButtonClick);
-            UnityEventHelper.RemoveListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
         private void DataBind()
@@ -340,16 +161,17 @@ namespace Battlehub.RTEditor
                 propertyItem.Children = null;
                 propertyItem.TryToCreateChildren();
                 m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, propertyItem);
-                m_properties.Insert(m_properties.Count - 1, propertyItem);
+                
                 addedProperties.Add(propertyItem);
                 addedIndexes.Add(m_properties.Count - 1);
+                m_properties.Insert(m_properties.Count - 1, propertyItem);
                 if (propertyItem.Children != null)
                 {
                     for(int i = 0; i < propertyItem.Children.Count; i++)
                     {
-                        m_properties.Insert(m_properties.Count - 1, propertyItem.Children[i]);
                         addedProperties.Add(propertyItem.Children[i]);
                         addedIndexes.Add(m_properties.Count - 1);
+                        m_properties.Insert(m_properties.Count - 1, propertyItem.Children[i]);
                     }
                 }
 
@@ -497,71 +319,6 @@ namespace Battlehub.RTEditor
             ui.Item = item;
 
             e.HasChildren = item.Children != null && item.Children.Count > 0;
-        }
-
-        private void OnPreviewToggleValueChanged(bool value)
-        {
-
-        }
-
-        private void OnRecordToggleValueChanged(bool value)
-        {
-
-        }
-
-        private void OnFirstFrameButtonClick()
-        {
-
-        }
-
-        private void OnPrevFrameButtonClick()
-        {
-
-        }
-
-        private void OnPlayToggleValueChanged(bool value)
-        {
-
-        }
-
-        private void OnNextFrameButtonClick()
-        {
-
-        }
-
-        private void OnLastFrameButtonClick()
-        {
-
-        }
-
-        private void OnFrameInputEndEdit(string value)
-        {
-
-        }
-
-        private void OnAnimationsDropdownValueChanged(int value)
-        {
-
-        }
-
-        private void OnSamplesInputEndEdit(string value)
-        {
-
-        }
-
-        private void OnAddKeyframeButtonClick()
-        {
-
-        }
-
-        private void OnAddEventButtonClick()
-        {
-
-        }
-
-        private void OnDopesheetToggleValueChanged(bool value)
-        {
-
         }
     }
 }

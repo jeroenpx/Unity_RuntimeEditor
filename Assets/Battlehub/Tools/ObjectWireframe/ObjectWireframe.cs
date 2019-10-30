@@ -81,6 +81,7 @@ namespace Battlehub.Wireframe
             }
         }
 
+
         private static Mesh CreateWirefameMesh(Mesh mesh)
         {
             int[] triangles = mesh.triangles;

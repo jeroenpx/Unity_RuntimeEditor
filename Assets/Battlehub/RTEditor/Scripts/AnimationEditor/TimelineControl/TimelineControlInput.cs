@@ -9,7 +9,7 @@ namespace Battlehub.RTEditor
 {
     public class TimelineControlInput : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private TimelineControl m_timelineControl;
+        private ITimelineControl m_timelineControl;
         #if USE_RTE
         private IRTE m_editor;
         private RuntimeWindow m_window;
@@ -40,7 +40,7 @@ namespace Battlehub.RTEditor
 
             if (DeleteAction())
             {
-                m_timelineControl.DeleteSelectedKeyframes();
+                m_timelineControl.RemoveSelectedKeyframes();
             }
 
             Vector2 delta = GetIntervalDelta();

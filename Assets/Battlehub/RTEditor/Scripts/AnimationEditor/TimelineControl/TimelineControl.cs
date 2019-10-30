@@ -11,7 +11,56 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public class TimelineControl : MonoBehaviour
+    public interface ITimelineControl
+    {
+        bool MultiselectMode
+        {
+            get;
+            set;
+        }
+
+        int CurrentSample
+        {
+            get;
+        }
+
+        int VisibleRowsCount
+        {
+            get;
+            set;
+        }
+
+        Dopesheet.AnimationClip Clip
+        {
+            //get;
+            set;
+        }
+
+        bool IsPlaying
+        {
+            get;
+            set;
+        }
+
+        void NextSample();
+        void PrevSample();
+        void LastSample();
+        void FirstSample();
+
+        void ChangeInterval(Vector2 delta);
+        void AddKeyframe(int sample, int row);
+        void RemoveKeyframes(int rowIndex);
+        void RemoveSelectedKeyframes();
+
+        void AddRow(bool isVisible, int parentRowIndex);
+        void RemoveRow(int rowIndex);
+        
+        void Expand(int row, int count);
+        void Collapse(int row, int count);
+        void Refresh();
+    }
+
+    public class TimelineControl : MonoBehaviour, ITimelineControl
     {
         [SerializeField]
         private RawImage m_output = null;
@@ -48,7 +97,6 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private bool m_virtualizingTreeViewVerticalScrollStyle = true; 
         
-
         [SerializeField]
         private Color m_backgroundColor = new Color32(0x27, 0x27, 0x27, 0xFF);
 
@@ -113,28 +161,11 @@ namespace Battlehub.RTEditor
             }
         }
 
-
-        private void SetTimelineGridParameters()
+        private bool m_isPlaying;
+        public bool IsPlaying
         {
-            if(m_timelineGrid != null)
-            {
-                m_timelineGrid.SetGridParameters(m_timelineGridParams);
-            }
-            
-            if(m_dopesheet != null)
-            {
-                m_dopesheet.SetGridParameters(m_timelineGridParams);
-            }
-            
-            if(m_textPanel != null)
-            {
-                m_textPanel.SetGridParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
-            }
-            
-            if(m_pointer != null)
-            {
-                m_pointer.SetGridParameters(m_timelineGridParams);
-            }
+            get { return m_isPlaying; }
+            set { m_isPlaying = value; }
         }
 
         private void Awake()
@@ -253,6 +284,7 @@ namespace Battlehub.RTEditor
             clip.SelectKeyframes(selectedKeyframes.ToArray());
             Clip = clip;
             m_pointer.PointerDown += OnTimlineClick;
+            m_pointer.BeginDrag += OnTimelineBeginDrag;
             m_pointer.Drag += OnTimelineDrag;
             m_pointer.Drop += OnTimelineDrop;
 
@@ -269,15 +301,6 @@ namespace Battlehub.RTEditor
             }
 
             RenderGraphics();
-        }
-
-        private void CreateDefaultTimelineGridParams()
-        {
-            m_timelineGridParams = new TimelineGridParameters();
-            m_timelineGridParams.VertLines = 12;
-            m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
-            m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
-            m_timelineGridParams.FixedHeight = FixedHeight;
         }
 
         private void Start()
@@ -320,6 +343,7 @@ namespace Battlehub.RTEditor
             if(m_pointer != null)
             {
                 m_pointer.PointerDown -= OnTimlineClick;
+                m_pointer.BeginDrag -= OnTimelineBeginDrag;
                 m_pointer.Drag -= OnTimelineDrag;
                 m_pointer.Drop -= OnTimelineDrop;
             }
@@ -331,27 +355,65 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private void CreateDefaultTimelineGridParams()
+        {
+            m_timelineGridParams = new TimelineGridParameters();
+            m_timelineGridParams.VertLines = 12;
+            m_timelineGridParams.VertLinesSecondary = TimelineGrid.k_Lines;
+            m_timelineGridParams.LineColor = new Color(1, 1, 1, 0.1f);
+            m_timelineGridParams.FixedHeight = FixedHeight;
+        }
+
+        private void SetTimelineGridParameters()
+        {
+            if (m_timelineGrid != null)
+            {
+                m_timelineGrid.SetGridParameters(m_timelineGridParams);
+            }
+
+            if (m_dopesheet != null)
+            {
+                m_dopesheet.SetGridParameters(m_timelineGridParams);
+            }
+
+            if (m_textPanel != null)
+            {
+                m_textPanel.SetGridParameters(m_timelineGridParams.VertLines, m_timelineGridParams.VertLinesSecondary, 60);
+            }
+
+            if (m_pointer != null)
+            {
+                m_pointer.SetGridParameters(m_timelineGridParams);
+            }
+        }
+
         private bool TryGetKeyframeWithinRange(Vector2Int coord, int maxRange, out Vector2Int result)
         {
             result = coord;
             int range = 0;
             int row = coord.y;
             int col = coord.x;
-            while (range <= maxRange)
+
+            Dopesheet.DopesheetRow dopesheetRow = m_dopesheet.Clip.GetRowByVisibleIndex(row);
+            if (dopesheetRow != null)
             {
-                if (m_dopesheet.Clip.HasKeyframe(row, col - range))
+                row = dopesheetRow.Index;
+                while (range <= maxRange)
                 {
-                    result = new Vector2Int(col - range, row);
-                    return true;
-                }
+                    if (m_dopesheet.Clip.HasKeyframe(row, col - range))
+                    {
+                        result = new Vector2Int(col - range, row);
+                        return true;
+                    }
 
-                if (m_dopesheet.Clip.HasKeyframe(row, col + range))
-                {
-                    result = new Vector2Int(col + range, row);
-                    return true;
-                }
+                    if (m_dopesheet.Clip.HasKeyframe(row, col + range))
+                    {
+                        result = new Vector2Int(col + range, row);
+                        return true;
+                    }
 
-                range++;
+                    range++;
+                }
             }
 
             return false;
@@ -367,15 +429,54 @@ namespace Battlehub.RTEditor
                     UnselectAll();
                 }
 
-                Select(coord, coord);
+                Vector2Int min = coord;
+                Vector2Int max = coord;
+                Select(min, max);
             }
             else
             {
-                if(!MultiselectMode)
+                if (!MultiselectMode)
                 {
                     UnselectAll();
                 }
             }
+        }
+
+        private bool HasUnselectedChildren(Dopesheet.Keyframe kf)
+        {
+            if(kf.Row.Children != null)
+            {
+                for(int i = 0; i < kf.Row.Children.Count; ++i)
+                {
+                    if(m_dopesheet.Clip.HasKeyframe(kf.Row.Children[i].Index, kf.Col) &&
+                       !m_dopesheet.Clip.IsSelected(kf.Row.Children[i].Index, kf.Col))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            
+            return false;
+        }
+
+        private void OnTimelineBeginDrag()
+        {
+            Dopesheet.AnimationClip clip = m_dopesheet.Clip;
+
+            IList<Dopesheet.Keyframe> selectedKeyframes = clip.SelectedKeyframes;
+            List<Dopesheet.Keyframe> keyframesWithUnselectedChildren = new List<Dopesheet.Keyframe>();
+            for (int i = 0; i < selectedKeyframes.Count; ++i)
+            {
+                Dopesheet.Keyframe selectedKeyframe = selectedKeyframes[i];
+                if(HasUnselectedChildren(selectedKeyframe))
+                {
+                    Dopesheet.Keyframe keyframe = new Dopesheet.Keyframe(selectedKeyframe.Row, selectedKeyframe.Col);
+                    keyframesWithUnselectedChildren.Add(keyframe);
+                }
+            }
+
+            clip.AddKeyframes(keyframesWithUnselectedChildren.ToArray());
         }
 
         private void OnTimelineDrag(int delta)
@@ -389,7 +490,7 @@ namespace Battlehub.RTEditor
                 kf.Col += delta;   
             }
 
-            clip.TryResizeClip(selectedKeyframes);
+            clip.ResizeClip(selectedKeyframes);
 
             m_renderGraphics = true;
         }
@@ -413,7 +514,7 @@ namespace Battlehub.RTEditor
                     keyframe.Col = m_pointer.ColumnsCount - 1;
                 }
 
-                int key = keyframe.Row * clip.ColsCount + keyframe.Col;
+                int key = keyframe.Row.Index * clip.ColsCount + keyframe.Col;
                 if (!selectedKfDictionary.ContainsKey(key))
                 {
                     selectedKfDictionary.Add(key, keyframe);
@@ -426,18 +527,17 @@ namespace Battlehub.RTEditor
             clip.AddKeyframes(selectedKfDictionary.Values.ToArray());
             clip.SelectKeyframes(selectedKfDictionary.Values.ToArray());
 
-            m_dopesheet.Clip.UpdateDictionaries();
+            clip.Refresh();
 
             m_renderGraphics = true;
         }
 
+        
         private void OnBeginBoxSelection(TimelineBoxSelectionCancelArgs args)
         {
             Vector2Int coord;
             if(m_pointer.GetKeyframeCoordinate(args.LocalPoint, true, false, out coord))
             {
-                //coord.y++;
-
                 if (TryGetKeyframeWithinRange(coord, m_pointer.Range, out coord))
                 {
                     if (m_dopesheet.Clip.IsSelected(coord.y, coord.x))
@@ -446,10 +546,40 @@ namespace Battlehub.RTEditor
                     }
                 }
             }
+
+            if(!args.Cancel)
+            {
+                m_pointer.IsDragInProgress = false;
+            }
         }
 
         private void OnBoxSelection(Vector2Int min, Vector2Int max)
         {
+            m_pointer.IsDragInProgress = false;
+
+            Dopesheet.AnimationClip clip = m_dopesheet.Clip;
+            int rows = clip.VisibleRowsCount;
+            int cols = clip.ColsCount;
+
+            min.y = Mathf.Clamp(min.y, 0, rows);
+            min.x = Mathf.Clamp(min.x, 0, cols - 1);
+            max.y = Mathf.Clamp(max.y, 0, rows - 1);
+            max.x = Mathf.Clamp(max.x, 0, cols - 1);
+
+            Dopesheet.DopesheetRow minRow = clip.GetRowByVisibleIndex(min.y);
+            if(minRow == null)
+            {
+                return;
+            }
+            min.y = minRow.Index;
+
+            Dopesheet.DopesheetRow maxRow = clip.GetRowByVisibleIndex(max.y);
+            max.y = maxRow.Index;
+            if(maxRow.Children != null)
+            {
+                max.y += maxRow.Children.Count;
+            }
+
             Select(min, max);
         }
 
@@ -465,11 +595,6 @@ namespace Battlehub.RTEditor
             Dopesheet.AnimationClip clip = m_dopesheet.Clip;
             int rows = clip.RowsCount;
             int cols = clip.ColsCount;
-
-            min.y = Mathf.Max(0, min.y);
-            min.x = Mathf.Max(0, min.x);
-            max.y = Mathf.Min(rows - 1, max.y);
-            max.x = Mathf.Min(cols - 1, max.x);
 
             List<Dopesheet.Keyframe> selectKeyframes = new List<Dopesheet.Keyframe>();
             for (int i = min.y; i <= max.y; i++)
@@ -547,20 +672,121 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_dopesheet.Clip.TryResizeClip(new[] { new Dopesheet.Keyframe(row, sample) });
+            Dopesheet.DopesheetRow dopesheetRow = m_dopesheet.Clip.Rows[row];
+
+            m_dopesheet.Clip.ResizeClip(new[] { new Dopesheet.Keyframe(dopesheetRow, sample) });
 
             if(!m_dopesheet.Clip.HasKeyframe(row, sample))
             {
-                m_dopesheet.Clip.AddKeyframes(new Dopesheet.Keyframe(row, sample));
+                m_dopesheet.Clip.AddKeyframes(new Dopesheet.Keyframe(dopesheetRow, sample));
             }
 
             m_renderGraphics = true;
         }
 
-        public void DeleteSelectedKeyframes()
+        public void RemoveSelectedKeyframes()
         {
-            m_dopesheet.Clip.RemoveKeyframes(true, m_dopesheet.Clip.SelectedKeyframes.ToArray());
+            List<Dopesheet.Keyframe> keyframesList = m_dopesheet.Clip.SelectedKeyframes.ToList();
+            HashSet<int> keyframesHs = new HashSet<int>(keyframesList.Select(kf => kf.Row.Index * m_dopesheet.Clip.ColsCount + kf.Col));
+            List<Dopesheet.Keyframe> notRemovedKeyframesList = new List<Dopesheet.Keyframe>();
+
+            for (int i = keyframesList.Count - 1; i >= 0; --i)
+            {
+                Dopesheet.Keyframe kf = keyframesList[i];
+                if (kf.Row.Children != null)
+                {
+                    for (int j = 0; j < kf.Row.Children.Count; ++j)
+                    {
+                        Dopesheet.DopesheetRow childRow = kf.Row.Children[j];
+                        Dopesheet.Keyframe childKf = m_dopesheet.Clip.GetKeyframe(childRow.Index, kf.Col);
+                        if (childKf != null && !keyframesHs.Contains(childKf.Row.Index * m_dopesheet.Clip.ColsCount + childKf.Col))
+                        {
+                            keyframesList.RemoveAt(i);
+                            notRemovedKeyframesList.Add(kf);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (notRemovedKeyframesList.Count > 0)
+            {
+                m_dopesheet.Clip.UnselectKeyframes(notRemovedKeyframesList.ToArray());
+            }
+
+            m_dopesheet.Clip.RemoveKeyframes(true, keyframesList.ToArray());
+            m_dopesheet.Clip.Refresh(false, true);
             RenderGraphics();
+        }
+
+        public void RemoveKeyframes(int rowIndex)
+        {
+            Dopesheet.DopesheetRow row = Clip.Rows[rowIndex];
+            Clip.RemoveKeyframes(true, row.Keyframes.ToArray());
+            Clip.RemoveKeyframes(true, row.SelectedKeyframes.ToArray());
+        }
+
+        public void AddRow(bool isVisible, int parentRowIndex)
+        {
+            Clip.AddRow(isVisible, parentRowIndex);
+            if(isVisible)
+            {
+                VisibleRowsCount++;
+            }
+        }
+
+        public void RemoveRow(int rowIndex)
+        {
+            bool isVisible = Clip.RemoveRow(rowIndex);
+            if(isVisible)
+            {
+                VisibleRowsCount--;
+            }
+        }
+
+        public void Expand(int row, int count)
+        {
+            VisibleRowsCount += count;
+            Clip.Expand(row, count);
+        }
+
+        public void Collapse(int row, int count)
+        {
+            VisibleRowsCount -= count;
+            Clip.Collapse(row, count);
+        }
+
+        public void Refresh()
+        {
+            Clip.Refresh();
+        }
+
+        public void NextSample()
+        {
+            Debug.Log("NextSample");
+        }
+
+        public void PrevSample()
+        {
+            Debug.Log("PrevSample");
+        }
+
+        public void LastSample()
+        {
+            Debug.Log("LastSample");
+        }
+
+        public void FirstSample()
+        {
+            Debug.Log("FirstSample");
+        }
+
+        private void Update()
+        {
+            if(m_isPlaying)
+            {
+                Debug.Log("Playing");
+            }
         }
 
         private void LateUpdate()

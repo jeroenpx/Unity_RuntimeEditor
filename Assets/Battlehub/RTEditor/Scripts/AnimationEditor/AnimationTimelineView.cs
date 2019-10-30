@@ -10,6 +10,11 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private TimelineControl m_dopesheet = null;
+        private ITimelineControl Dopesheet
+        {
+            get { return m_dopesheet; }
+        }
+
 
         [SerializeField]
         private TimelineControl m_curves = null;
@@ -27,7 +32,8 @@ namespace Battlehub.RTEditor
             get { return m_target; }
             set
             {
-                m_dopesheet.VisibleRowsCount = 1;
+
+                Dopesheet.VisibleRowsCount = 1;
                 m_target = value;
                 if (m_timeline != null)
                 {
@@ -36,63 +42,88 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void Start()
+        public bool IsPlaying
         {
-            m_dopesheet.VisibleRowsCount = 1;
+            get { return m_dopesheet.IsPlaying; }
+            set { m_dopesheet.IsPlaying = value; }
         }
 
-        public void AddProperties(AnimationPropertyItem[] properties)
+        private void Start()
         {
+            Dopesheet.VisibleRowsCount = 1;
+        }
+
+        public void AddProperties(int[] rows, AnimationPropertyItem[] properties)
+        {
+            int parentIndex = -1;
             for(int i = 0; i < properties.Length; ++i)
             {
                 AnimationPropertyItem property = properties[i];
 
-                bool isVisible = property.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace || property.Children != null && property.Children.Count > 0;
-                m_dopesheet.Clip.AddRow(isVisible);
-                if (isVisible)
+                if(property.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace)
                 {
-                    m_dopesheet.VisibleRowsCount++;
+                    Dopesheet.AddRow(true, -1);
+                }
+                else
+                {
+                    bool isParent = property.Children != null && property.Children.Count > 0;
+                    if(isParent)
+                    {
+                        parentIndex = rows[i];
+                        Dopesheet.AddRow(true, 0);
+                    }
+                    else
+                    {
+                        Dopesheet.AddRow(false, parentIndex);
+                    }
                 }
             }
-            
         }
 
         public void RemoveProperties(int[] rows, AnimationPropertyItem[] properties)
         {
             for (int i = properties.Length - 1; i >= 0; --i)
             {
-                int rowIndex = rows[i];
-                Dopesheet.DopesheetRow row = m_dopesheet.Clip.Rows[rowIndex];
-                m_dopesheet.Clip.RemoveKeyframes(true, row.Keyframes.ToArray());
-                m_dopesheet.Clip.RemoveKeyframes(true, row.SelectedKeyframes.ToArray());
+                Dopesheet.RemoveKeyframes(rows[i]);
             }
 
             for (int i = properties.Length - 1; i >= 0; --i)
             {
-                int rowIndex = rows[i];
-                bool isVisible = m_dopesheet.Clip.RemoveRow(rowIndex);
-                if(isVisible)
-                {
-                    m_dopesheet.VisibleRowsCount--;
-                }
+                Dopesheet.RemoveRow(rows[i]);
             }
 
-            m_dopesheet.Clip.UpdateDictionaries();
+            Dopesheet.Refresh();
         }
               
-
         public void ExpandProperty(int row, AnimationPropertyItem property)
         {
-            m_dopesheet.VisibleRowsCount += property.Children.Count;
-            m_dopesheet.Clip.Expand(row, property.Children.Count);
+            Dopesheet.Expand(row, property.Children.Count);
         }
 
         public void CollapseProperty(int row, AnimationPropertyItem property)
         {
-            m_dopesheet.VisibleRowsCount -= property.Children.Count;
-            m_dopesheet.Clip.Collapse(row, property.Children.Count);
+            Dopesheet.Collapse(row, property.Children.Count);
         }
 
+        public void NextSample()
+        {
+            Dopesheet.NextSample();
+        }
+
+        public void PrevSample()
+        {
+            Dopesheet.PrevSample();
+        }
+
+        public void LastSample()
+        {
+            Dopesheet.LastSample();
+        }
+
+        public void FirstSample()
+        {
+            Dopesheet.FirstSample();
+        }
     }
 
 }

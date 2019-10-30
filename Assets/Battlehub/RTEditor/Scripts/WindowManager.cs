@@ -405,10 +405,14 @@ namespace Battlehub.RTEditor
                 foreach(Transform content in kvp.Value)
                 {
                     RuntimeWindow window = content.GetComponentInChildren<RuntimeWindow>();
-
+                    
                     if(window != null && window != exceptWindow && IsPointerOver(window) && !IsOverlapped(window, exceptWindow))
                     {
-                        return content;
+                        Tab tab = Region.FindTab(content);
+                        if(tab.IsOn)
+                        {
+                            return content;
+                        }
                     }
                 }
             }
@@ -570,6 +574,15 @@ namespace Battlehub.RTEditor
         private void OnDialogDestroyed(Dialog dialog)
         {
             OnContentDestroyed(dialog.Content);
+
+            //Transform pointerOverWindow = IOC.Resolve<IWindowManager>().FindPointerOverWindow(null);
+
+            //RuntimeWindow window = pointerOverWindow.GetComponentInChildren<RuntimeWindow>();
+            //if (window == null)
+            //{
+            //    window = m_editor.GetWindow(RuntimeWindowType.Scene);
+            //}
+            //m_editor.ActivateWindow(window);
         }
 
         private void OnRegionSelected(Region region)

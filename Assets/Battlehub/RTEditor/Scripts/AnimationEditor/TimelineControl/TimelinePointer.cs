@@ -17,6 +17,7 @@ namespace Battlehub.RTEditor
 
         public event TimelinePointerEvent<int> SampleChanged;
         public event TimelinePointerEvent<PointerArgs> PointerDown;
+        public event TimelinePointerEvent BeginDrag;
         public event TimelinePointerEvent<int> Drag;
         public event TimelinePointerEvent Drop;
 
@@ -36,8 +37,17 @@ namespace Battlehub.RTEditor
         private int m_sample;
         private Vector2 m_offset;
         private bool m_isPointerDragInProgress;
+        public bool IsPointerDragInProgress
+        {
+            get { return m_isDragInProgress; }
+        }
 
         private bool m_isDragInProgress;
+        public bool IsDragInProgress
+        {
+            get { return m_isDragInProgress; }
+            set { m_isDragInProgress = value; }
+        }
         private Vector2Int m_prevCoord;
 
         private int m_samplesCount;
@@ -204,11 +214,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnBoxSelection(Vector2Int min, Vector2Int max)
-        {
-
-        }
-
         public void OnInitializePotentialDrag(PointerEventData eventData)
         {
             eventData.useDragThreshold = false;
@@ -224,6 +229,10 @@ namespace Battlehub.RTEditor
             {
                 m_isPointerDragInProgress = false;
                 m_isDragInProgress = GetKeyframeCoord(eventData, false, out m_prevCoord);
+                if(BeginDrag != null)
+                {
+                    BeginDrag();
+                }
             }
         }
 

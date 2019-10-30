@@ -1,14 +1,181 @@
 ﻿using Battlehub.RTCommon;
 using UnityEngine;
-using System.Linq;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using TMPro;
+using Battlehub.UIControls;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
     public class AnimationView : RuntimeWindow
     {
+        [SerializeField]
+        private Toggle m_previewToggle = null;
+
+        [SerializeField]
+        private Toggle m_recordToggle = null;
+
+        [SerializeField]
+        private Button m_firstFrameButton = null;
+
+        [SerializeField]
+        private Button m_prevFrameButton = null;
+
+        [SerializeField]
+        private Toggle m_playToggle = null;
+
+        [SerializeField]
+        private Button m_nextFrameButton = null;
+
+        [SerializeField]
+        private Button m_lastFrameButton = null;
+
+        [SerializeField]
+        private TMP_InputField m_frameInput = null;
+
+        [SerializeField]
+        private TMP_Dropdown m_animationsDropDown = null;
+
+        [SerializeField]
+        private TMP_InputField m_samplesInput = null;
+
+        [SerializeField]
+        private Button m_addKeyframeButton = null;
+
+        [SerializeField]
+        private Button m_addEventButton = null;
+
+        [SerializeField]
+        private Toggle m_dopesheetToggle = null;
+
+        [SerializeField]
+        private CanvasGroup m_group = null;
+
+        [SerializeField]
+        private GameObject m_blockUI = null;
+
         private AnimationPropertiesView m_propertiesView;
         private AnimationTimelineView m_timelineView;
         private AnimationCreateView m_animationCreateView;
+
+        public int m_selectedClipIndex;
+        public RuntimeAnimationClip SelectedClip
+        {
+            get
+            {
+                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Length)
+                {
+                    return null;
+                }
+
+                return m_target.Clips[m_selectedClipIndex];
+            }
+            set
+            {
+                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Length)
+                {
+                    return;
+                }
+
+                m_target.Clips[m_selectedClipIndex] = value;
+            }
+        }
+
+        private RuntimeAnimation m_target;
+        public RuntimeAnimation Target
+        {
+            get { return m_target; }
+            set
+            {
+                m_propertiesView.Target = value;
+                m_timelineView.Target = value;
+
+                if (value == null)
+                {
+                    if (m_previewToggle != null)
+                    {
+                        m_previewToggle.isOn = false;
+                    }
+
+                    if (m_playToggle != null)
+                    {
+                        m_playToggle.isOn = false;
+                    }
+
+                    if (m_frameInput != null)
+                    {
+                        m_frameInput.text = "0";
+                    }
+
+                    if (m_samplesInput != null)
+                    {
+                        m_samplesInput.text = "60";
+                    }
+
+                    if (m_dopesheetToggle != null)
+                    {
+                        m_dopesheetToggle.isOn = true;
+                    }
+
+                    if (m_animationsDropDown != null)
+                    {
+                        m_animationsDropDown.ClearOptions();
+                    }
+                }
+
+                m_target = value;
+                if (m_target == null || m_target.Clips == null || m_target.Clips.Length == 0)
+                {
+                    m_selectedClipIndex = -1;
+                }
+                else
+                {
+                    m_selectedClipIndex = -1;
+                    for (int i = 0; i < m_target.Clips.Length; i++)
+                    {
+                        if (m_target.Clips[i] != null)
+                        {
+                            m_selectedClipIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (m_animationsDropDown != null)
+                    {
+                        List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < m_target.Clips.Length; ++i)
+                        {
+                            if (m_target.Clips[i] == null)
+                            {
+                                options.Add(new TMP_Dropdown.OptionData("(Missing)"));
+                            }
+                            else
+                            {
+                                options.Add(new TMP_Dropdown.OptionData(m_target.Clips[i].name));
+                            }
+                        }
+                        m_animationsDropDown.options = options;
+                        m_animationsDropDown.value = m_selectedClipIndex;
+                    }
+                }
+
+                if (m_group != null)
+                {
+                    m_group.alpha = m_target != null ? 1 : 0.5f;
+                }
+
+                if (m_blockUI != null)
+                {
+                    m_blockUI.SetActive(m_target == null);
+
+                    if (m_target == null)
+                    {
+                        EventSystem.current.SetSelectedGameObject(null);
+                    }
+                }
+            }
+        }
 
         protected override void AwakeOverride()
         {
@@ -29,6 +196,20 @@ namespace Battlehub.RTEditor
             OnSelectionChanged(null);
 
             Editor.Selection.SelectionChanged += OnSelectionChanged;
+
+            UnityEventHelper.AddListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
+            UnityEventHelper.AddListener(m_recordToggle, toggle => toggle.onValueChanged, OnRecordToggleValueChanged);
+            UnityEventHelper.AddListener(m_firstFrameButton, button => button.onClick, OnFirstFrameButtonClick);
+            UnityEventHelper.AddListener(m_prevFrameButton, button => button.onClick, OnPrevFrameButtonClick);
+            UnityEventHelper.AddListener(m_playToggle, toggle => toggle.onValueChanged, OnPlayToggleValueChanged);
+            UnityEventHelper.AddListener(m_nextFrameButton, button => button.onClick, OnNextFrameButtonClick);
+            UnityEventHelper.AddListener(m_lastFrameButton, button => button.onClick, OnLastFrameButtonClick);
+            UnityEventHelper.AddListener(m_frameInput, input => input.onEndEdit, OnFrameInputEndEdit);
+            UnityEventHelper.AddListener(m_animationsDropDown, dropdown => dropdown.onValueChanged, OnAnimationsDropdownValueChanged);
+            UnityEventHelper.AddListener(m_samplesInput, input => input.onEndEdit, OnSamplesInputEndEdit);
+            UnityEventHelper.AddListener(m_addKeyframeButton, button => button.onClick, OnAddKeyframeButtonClick);
+            UnityEventHelper.AddListener(m_addEventButton, button => button.onClick, OnAddEventButtonClick);
+            UnityEventHelper.AddListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
         protected override void OnDestroyOverride()
@@ -53,6 +234,20 @@ namespace Battlehub.RTEditor
             {
                 m_animationCreateView.Click -= OnCreateClick;
             }
+
+            UnityEventHelper.RemoveListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
+            UnityEventHelper.RemoveListener(m_recordToggle, toggle => toggle.onValueChanged, OnRecordToggleValueChanged);
+            UnityEventHelper.RemoveListener(m_firstFrameButton, button => button.onClick, OnFirstFrameButtonClick);
+            UnityEventHelper.RemoveListener(m_prevFrameButton, button => button.onClick, OnPrevFrameButtonClick);
+            UnityEventHelper.RemoveListener(m_playToggle, toggle => toggle.onValueChanged, OnPlayToggleValueChanged);
+            UnityEventHelper.RemoveListener(m_nextFrameButton, button => button.onClick, OnNextFrameButtonClick);
+            UnityEventHelper.RemoveListener(m_lastFrameButton, button => button.onClick, OnLastFrameButtonClick);
+            UnityEventHelper.RemoveListener(m_frameInput, input => input.onEndEdit, OnFrameInputEndEdit);
+            UnityEventHelper.RemoveListener(m_animationsDropDown, dropdown => dropdown.onValueChanged, OnAnimationsDropdownValueChanged);
+            UnityEventHelper.RemoveListener(m_samplesInput, input => input.onEndEdit, OnSamplesInputEndEdit);
+            UnityEventHelper.RemoveListener(m_addKeyframeButton, button => button.onClick, OnAddKeyframeButtonClick);
+            UnityEventHelper.RemoveListener(m_addEventButton, button => button.onClick, OnAddEventButtonClick);
+            UnityEventHelper.RemoveListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
         private void OnSelectionChanged(Object[] unselectedObjects)
@@ -60,13 +255,11 @@ namespace Battlehub.RTEditor
             if (Editor.Selection.activeGameObject != null)
             {
                 RuntimeAnimation animation = Editor.Selection.activeGameObject.GetComponent<RuntimeAnimation>();
-                m_propertiesView.Target = animation;
-                m_timelineView.Target = animation;
+                Target = animation;
             }
             else
             {
-                m_propertiesView.Target = null;
-                m_timelineView.Target = null;
+                Target = null;
             }
 
             UpdateVisualState();
@@ -88,13 +281,12 @@ namespace Battlehub.RTEditor
             if (animation.Clips == null || animation.Clips.Length == 0)
             {
                 animation.Clips = new[] { clip };
-                m_propertiesView.Target = animation;
-                m_timelineView.Target = animation;
+                Target = animation;
             }
             else
             {
-                Debug.Assert(m_propertiesView.Target != null);
-                m_propertiesView.SelectedClip = clip;
+                Debug.Assert(Target != null);
+                SelectedClip = clip;
             }
 
             UpdateVisualState();
@@ -102,7 +294,7 @@ namespace Battlehub.RTEditor
 
         private void OnPropertiesAdded(AnimationPropertiesView.ItemsArgs args)
         {
-            m_timelineView.AddProperties(args.Items);
+            m_timelineView.AddProperties(args.Rows, args.Items);
         }
 
         private void OnPropertiesRemoved(AnimationPropertiesView.ItemsArgs args)
@@ -120,6 +312,71 @@ namespace Battlehub.RTEditor
             m_timelineView.CollapseProperty(args.Row, args.Item);
         }
 
+        private void OnPreviewToggleValueChanged(bool value)
+        {
+
+        }
+
+        private void OnRecordToggleValueChanged(bool value)
+        {
+
+        }
+
+        private void OnFirstFrameButtonClick()
+        {
+            m_timelineView.FirstSample();
+        }
+
+        private void OnPrevFrameButtonClick()
+        {
+            m_timelineView.PrevSample();
+        }
+
+        private void OnPlayToggleValueChanged(bool value)
+        {
+            m_timelineView.IsPlaying = value;
+        }
+
+        private void OnNextFrameButtonClick()
+        {
+            m_timelineView.NextSample();
+        }
+
+        private void OnLastFrameButtonClick()
+        {
+            m_timelineView.LastSample();
+        }
+
+        private void OnFrameInputEndEdit(string value)
+        {
+
+        }
+
+        private void OnAnimationsDropdownValueChanged(int value)
+        {
+
+        }
+
+        private void OnSamplesInputEndEdit(string value)
+        {
+
+        }
+
+        private void OnAddKeyframeButtonClick()
+        {
+
+        }
+
+        private void OnAddEventButtonClick()
+        {
+
+        }
+
+        private void OnDopesheetToggleValueChanged(bool value)
+        {
+
+        }
+
         private void UpdateVisualState()
         {
             if (Editor.Selection.activeGameObject == null)
@@ -134,19 +391,19 @@ namespace Battlehub.RTEditor
                     m_animationCreateView.Text = string.Format("To begin animating {0}, create a RuntimeAnimation and a RuntimeAnimation Clip", Editor.Selection.activeGameObject.name);
                 }
 
-                if (m_propertiesView.SelectedClip == null)
+                if (SelectedClip == null)
                 {
                     m_animationCreateView.Text = string.Format("To begin animating {0}, create a RuntimeAnimation Clip", Editor.Selection.activeGameObject.name);
                 }
 
-                if (animation != null && m_propertiesView.SelectedClip != null)
+                if (animation != null && SelectedClip != null)
                 {
                     m_animationCreateView.gameObject.SetActive(false);
                 }
                 else
                 {
                     m_animationCreateView.gameObject.SetActive(true);
-                    m_propertiesView.Target = null;
+                    Target = null;
                 }
             }
         }
