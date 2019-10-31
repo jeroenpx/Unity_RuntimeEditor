@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
+    public delegate void AnimtionPropertyItemValueChanged(AnimationPropertyItem property, object oldValue, object newValue);
+
     public class AnimationPropertyItem
     {
         public const string k_SpecialAddButton = "Special_AddButton";
@@ -19,7 +21,9 @@ namespace Battlehub.RTEditor
         public string PropertyDisplayName;
         public AnimationPropertyItem Parent;
         public List<AnimationPropertyItem> Children;
-        
+
+        public event AnimtionPropertyItemValueChanged ValueChanged;
+
         public object Component;
 
         public AnimationPropertyItem()
@@ -38,7 +42,6 @@ namespace Battlehub.RTEditor
             Component = item.Component;
         }
 
-        
         public object Value
         {
             get
@@ -52,6 +55,7 @@ namespace Battlehub.RTEditor
             }
             set
             {
+                object oldValue = Value;
                 if (Parent != null)
                 {
                     object v = Parent.Value;
@@ -61,6 +65,26 @@ namespace Battlehub.RTEditor
                 else
                 {
                     SetMemberValue(Component, PropertyName, value);
+                }
+                
+                if(ValueChanged != null)
+                {
+                    object newValue = Value;
+                    if(oldValue != null || newValue != null)
+                    {
+                        if (oldValue == null || newValue == null)
+                        {
+                            ValueChanged(this, oldValue, newValue);
+                        }
+                        else
+                        {
+                            if(!oldValue.Equals(newValue))
+                            {
+                                ValueChanged(this, oldValue, newValue);
+                            }
+                        }
+                    }
+                    
                 }
             }
         }

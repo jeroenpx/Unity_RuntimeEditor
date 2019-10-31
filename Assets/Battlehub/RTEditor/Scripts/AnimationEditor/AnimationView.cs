@@ -187,6 +187,7 @@ namespace Battlehub.RTEditor
             m_propertiesView.PropertiesRemoved += OnPropertiesRemoved;
             m_propertiesView.PropertyExpanded += OnPropertyExpanded;
             m_propertiesView.PropertyCollapsed += OnPropertyCollapsed;
+            m_propertiesView.PropertyValueChanged += OnPropertyValueChanged;
             
 
             m_timelineView = GetComponentInChildren<AnimationTimelineView>(true);
@@ -227,7 +228,7 @@ namespace Battlehub.RTEditor
                 m_propertiesView.PropertiesRemoved -= OnPropertiesRemoved;
                 m_propertiesView.PropertyExpanded -= OnPropertyExpanded;
                 m_propertiesView.PropertyCollapsed -= OnPropertyCollapsed;
-
+                m_propertiesView.PropertyValueChanged -= OnPropertyValueChanged;
             }
 
             if (m_animationCreateView != null)
@@ -292,24 +293,29 @@ namespace Battlehub.RTEditor
             UpdateVisualState();
         }
 
-        private void OnPropertiesAdded(AnimationPropertiesView.ItemsArgs args)
+        private void OnPropertiesAdded(AnimationPropertiesView.ItemsArg args)
         {
-            m_timelineView.AddProperties(args.Rows, args.Items);
+            m_timelineView.AddRows(args.Rows, args.Items);
         }
 
-        private void OnPropertiesRemoved(AnimationPropertiesView.ItemsArgs args)
+        private void OnPropertiesRemoved(AnimationPropertiesView.ItemsArg args)
         {
-            m_timelineView.RemoveProperties(args.Rows, args.Items);
+            m_timelineView.RemoveRows(args.Rows, args.Items);
         }
 
-        private void OnPropertyExpanded(AnimationPropertiesView.ExpandCollapseArgs args)
+        private void OnPropertyExpanded(AnimationPropertiesView.ItemArg args)
         {
-            m_timelineView.ExpandProperty(args.Row, args.Item);
+            m_timelineView.ExpandRow(args.Row, args.Item);
         }
 
-        private void OnPropertyCollapsed(AnimationPropertiesView.ExpandCollapseArgs args)
+        private void OnPropertyCollapsed(AnimationPropertiesView.ItemArg args)
         {
-            m_timelineView.CollapseProperty(args.Row, args.Item);
+            m_timelineView.CollapseRow(args.Row, args.Item);
+        }
+
+        private void OnPropertyValueChanged(AnimationPropertiesView.ItemArg args)
+        {
+            m_timelineView.SetKeyframeValue(args.Row, args.Item);
         }
 
         private void OnPreviewToggleValueChanged(bool value)

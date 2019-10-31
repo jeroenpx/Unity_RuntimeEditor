@@ -48,7 +48,10 @@ namespace Battlehub.RTEditor
 
             public IList<DopesheetRow> Rows
             {
-                get { return m_rows; }
+                get
+                {
+                    return m_rows;
+                }
             }
 
             public IList<Keyframe> Keyframes
@@ -261,7 +264,7 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            public void AddRow(bool isVisible, int parentIndex)
+            public void AddRow(bool isVisible, int parentIndex, float value)
             {
                 DopesheetRow row = new DopesheetRow();
                 row.IsVisible = isVisible;
@@ -279,8 +282,8 @@ namespace Battlehub.RTEditor
                     row.Parent.Children.Add(row);
                 }
 
-                Keyframe kf0 = new Keyframe(row, 0);
-                Keyframe kf1 = new Keyframe(row, ColsCount - 1);
+                Keyframe kf0 = new Keyframe(row, 0, value);
+                Keyframe kf1 = new Keyframe(row, ColsCount - 1, value);
                 AddKeyframes(kf0, kf1);
 
                 UpdateRowIndexes();
@@ -429,6 +432,9 @@ namespace Battlehub.RTEditor
                             max = keyframe.Col;
                         }
                     }
+
+                    FirstSample = min;
+                    LastSample = max;
                 }
             }
 
@@ -456,11 +462,13 @@ namespace Battlehub.RTEditor
         {
             public DopesheetRow Row;
             public int Col;
+            public float Value;
             
-            public Keyframe(DopesheetRow row, int col)
+            public Keyframe(DopesheetRow row, int col, float value)
             {
                 Row = row;
                 Col = col;
+                Value = value;
             }
         }
 

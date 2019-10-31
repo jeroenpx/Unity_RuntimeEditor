@@ -48,11 +48,12 @@ namespace Battlehub.RTEditor
         void FirstSample();
 
         void ChangeInterval(Vector2 delta);
-        void AddKeyframe(int sample, int row);
+        void SetKeyframeValue(int row, float value);
+        void AddKeyframe(int sample, int row, float value);
         void RemoveKeyframes(int rowIndex);
         void RemoveSelectedKeyframes();
 
-        void AddRow(bool isVisible, int parentRowIndex);
+        void AddRow(bool isVisible, int parentRowIndex, float value);
         void RemoveRow(int rowIndex);
         
         void Expand(int row, int count);
@@ -442,21 +443,30 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private bool HasUnselectedChildren(Dopesheet.Keyframe kf)
+        private bool HasUnselectedDescendants(Dopesheet.Keyframe kf)
         {
             if(kf.Row.Children != null)
             {
                 for(int i = 0; i < kf.Row.Children.Count; ++i)
                 {
-                    if(m_dopesheet.Clip.HasKeyframe(kf.Row.Children[i].Index, kf.Col) &&
-                       !m_dopesheet.Clip.IsSelected(kf.Row.Children[i].Index, kf.Col))
+                    if(m_dopesheet.Clip.HasKeyframe(kf.Row.Children[i].Index, kf.Col))
                     {
-                        return true;
+                        if (!m_dopesheet.Clip.IsSelected(kf.Row.Children[i].Index, kf.Col))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            Dopesheet.Keyframe childKf = m_dopesheet.Clip.GetSelectedKeyframe(kf.Row.Children[i].Index, kf.Col);
+                            if(HasUnselectedDescendants(childKf))
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
             }
 
-            
             return false;
         }
 
@@ -469,9 +479,9 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < selectedKeyframes.Count; ++i)
             {
                 Dopesheet.Keyframe selectedKeyframe = selectedKeyframes[i];
-                if(HasUnselectedChildren(selectedKeyframe))
+                if(HasUnselectedDescendants(selectedKeyframe))
                 {
-                    Dopesheet.Keyframe keyframe = new Dopesheet.Keyframe(selectedKeyframe.Row, selectedKeyframe.Col);
+                    Dopesheet.Keyframe keyframe = new Dopesheet.Keyframe(selectedKeyframe.Row, selectedKeyframe.Col, selectedKeyframe.Value);
                     keyframesWithUnselectedChildren.Add(keyframe);
                 }
             }
@@ -665,7 +675,32 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void AddKeyframe(int sample, int row)
+        public void SetKeyframeValue(int row, float value)
+        {
+            Dopesheet.Keyframe keyframe = m_dopesheet.Clip.GetKeyframe(row, CurrentSample);
+            if(keyframe == null)
+            {
+                keyframe = m_dopesheet.Clip.GetSelectedKeyframe(row, CurrentSample);
+            }
+            if (keyframe == null)
+            {
+                Dopesheet.DopesheetRow dopesheetRow = Clip.Rows[row];
+                AddKeyframe(CurrentSample, row, value);
+
+                dopesheetRow = dopesheetRow.Parent;
+                while (dopesheetRow != null)
+                {
+                    AddKeyframe(CurrentSample, dopesheetRow.Index, 0);
+                    dopesheetRow = dopesheetRow.Parent;
+                }
+            }
+            else
+            {
+                keyframe.Value = value;
+            }
+        }
+
+        public void AddKeyframe(int sample, int row, float value)
         {
             if(sample < 0 || row < 0)
             {
@@ -674,11 +709,11 @@ namespace Battlehub.RTEditor
 
             Dopesheet.DopesheetRow dopesheetRow = m_dopesheet.Clip.Rows[row];
 
-            m_dopesheet.Clip.ResizeClip(new[] { new Dopesheet.Keyframe(dopesheetRow, sample) });
+            m_dopesheet.Clip.ResizeClip(new[] { new Dopesheet.Keyframe(dopesheetRow, sample, value) });
 
             if(!m_dopesheet.Clip.HasKeyframe(row, sample))
             {
-                m_dopesheet.Clip.AddKeyframes(new Dopesheet.Keyframe(dopesheetRow, sample));
+                m_dopesheet.Clip.AddKeyframes(new Dopesheet.Keyframe(dopesheetRow, sample, value));
             }
 
             m_renderGraphics = true;
@@ -726,9 +761,9 @@ namespace Battlehub.RTEditor
             Clip.RemoveKeyframes(true, row.SelectedKeyframes.ToArray());
         }
 
-        public void AddRow(bool isVisible, int parentRowIndex)
+        public void AddRow(bool isVisible, int parentRowIndex, float value)
         {
-            Clip.AddRow(isVisible, parentRowIndex);
+            Clip.AddRow(isVisible, parentRowIndex, value);
             if(isVisible)
             {
                 VisibleRowsCount++;
@@ -763,29 +798,41 @@ namespace Battlehub.RTEditor
 
         public void NextSample()
         {
-            Debug.Log("NextSample");
+            if (m_pointer.Sample < Clip.LastSample)
+            {
+                m_pointer.Sample++;
+            }
         }
 
         public void PrevSample()
         {
-            Debug.Log("PrevSample");
+            if (m_pointer.Sample > Clip.FirstSample)
+            {
+                m_pointer.Sample--;
+            }
         }
 
         public void LastSample()
         {
-            Debug.Log("LastSample");
+            m_pointer.Sample = Clip.LastSample;
         }
 
         public void FirstSample()
         {
-            Debug.Log("FirstSample");
+            m_pointer.Sample = Clip.FirstSample;
         }
 
         private void Update()
         {
             if(m_isPlaying)
             {
-                Debug.Log("Playing");
+                int sample = m_pointer.Sample;
+                sample++;
+                if (sample > Clip.LastSample)
+                {
+                    sample = Clip.FirstSample;
+                }
+                m_pointer.Sample = sample;
             }
         }
 

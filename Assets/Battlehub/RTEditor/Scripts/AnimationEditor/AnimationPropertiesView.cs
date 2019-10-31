@@ -14,22 +14,24 @@ namespace Battlehub.RTEditor
     {
         public delegate void EventHandler<T>(T args);
 
-        public class ItemsArgs
+        public class ItemsArg
         {
             public int[] Rows;
             public AnimationPropertyItem[] Items;
         }
 
-        public class ExpandCollapseArgs
+        public class ItemArg
         {
             public int Row;
             public AnimationPropertyItem Item;
         }
 
-        public event EventHandler<ItemsArgs> PropertiesAdded;
-        public event EventHandler<ItemsArgs> PropertiesRemoved;
-        public event EventHandler<ExpandCollapseArgs> PropertyExpanded;
-        public event EventHandler<ExpandCollapseArgs> PropertyCollapsed;
+        private ItemArg m_propertyValueChangedArg = new ItemArg();
+        public event EventHandler<ItemArg> PropertyValueChanged;
+        public event EventHandler<ItemsArg> PropertiesAdded;
+        public event EventHandler<ItemsArg> PropertiesRemoved;
+        public event EventHandler<ItemArg> PropertyExpanded;
+        public event EventHandler<ItemArg> PropertyCollapsed;
 
         [SerializeField]
         private VirtualizingTreeView m_propertiesTreeView = null;
@@ -160,6 +162,7 @@ namespace Battlehub.RTEditor
                 propertyItem.Parent = null;
                 propertyItem.Children = null;
                 propertyItem.TryToCreateChildren();
+
                 m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, propertyItem);
                 
                 addedProperties.Add(propertyItem);
@@ -172,13 +175,31 @@ namespace Battlehub.RTEditor
                         addedProperties.Add(propertyItem.Children[i]);
                         addedIndexes.Add(m_properties.Count - 1);
                         m_properties.Insert(m_properties.Count - 1, propertyItem.Children[i]);
+                        propertyItem.Children[i].ValueChanged += OnPropertyValueChanged;
                     }
+                }
+                else
+                {
+                    propertyItem.ValueChanged += OnPropertyValueChanged;
                 }
 
                 if(PropertiesAdded != null)
                 {
-                    PropertiesAdded(new ItemsArgs { Items = addedProperties.ToArray(), Rows = addedIndexes.ToArray() });
+                    PropertiesAdded(new ItemsArg { Items = addedProperties.ToArray(), Rows = addedIndexes.ToArray() });
                 }
+            }
+        }
+
+        private void OnPropertyValueChanged(AnimationPropertyItem property, object oldValue, object newValue)
+        {
+            if(PropertyValueChanged != null)
+            {
+                int rowIndex = m_properties.IndexOf(property);
+
+                m_propertyValueChangedArg.Row = rowIndex;
+                m_propertyValueChangedArg.Item = property;
+
+                PropertyValueChanged(m_propertyValueChangedArg);
             }
         }
 
@@ -199,7 +220,7 @@ namespace Battlehub.RTEditor
             {
                 AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
                 int index = IndexOf(item);
-                PropertyExpanded(new ExpandCollapseArgs { Item = (AnimationPropertyItem)e.Item, Row = index });
+                PropertyExpanded(new ItemArg { Item = (AnimationPropertyItem)e.Item, Row = index });
             }
         }
 
@@ -209,7 +230,7 @@ namespace Battlehub.RTEditor
             {
                 AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
                 int index = IndexOf(item);
-                PropertyCollapsed(new ExpandCollapseArgs { Item = (AnimationPropertyItem)e.Item, Row = index });
+                PropertyCollapsed(new ItemArg { Item = (AnimationPropertyItem)e.Item, Row = index });
             }
         }
 
@@ -281,7 +302,9 @@ namespace Battlehub.RTEditor
 
             for(int i = 0; i < removedProperties.Count; ++i)
             {
-                m_properties.Remove(removedProperties[i].Item2);
+                AnimationPropertyItem property = removedProperties[i].Item2;
+                property.ValueChanged -= OnPropertyValueChanged;
+                m_properties.Remove(property);
             }
 
             if(m_propertiesTreeView.ItemsCount == 2)
@@ -295,7 +318,7 @@ namespace Battlehub.RTEditor
 
             if (PropertiesRemoved != null)
             {
-                PropertiesRemoved(new ItemsArgs {  Items = orderedItems.Select(t => t.Item2).ToArray(), Rows = orderedItems.Select(t => t.Item1).ToArray() });
+                PropertiesRemoved(new ItemsArg {  Items = orderedItems.Select(t => t.Item2).ToArray(), Rows = orderedItems.Select(t => t.Item1).ToArray() });
             }
 
             m_propertiesTreeView.ItemsRemoved += OnPropertiesRemoved;

@@ -56,14 +56,33 @@ namespace Battlehub.RTEditor
             get { return m_samplesCount; }
         }
 
-        public int Sample
-        {
-            get { return m_sample; }
-        }
-
         public int Range
         {
             get { return Mathf.FloorToInt(5.0f / m_columnWidth); }
+        }
+
+        public int Sample
+        {
+            get { return m_sample; }
+            set { SetSample(value); }
+        }
+
+        private void SetSample(int sample)
+        {
+            int oldSample = m_sample;
+            m_sample = sample;
+
+            Vector3 pos = m_pointer.transform.localPosition;
+            pos.x = (m_sample - m_offset.x) * m_columnWidth;
+            m_pointer.transform.localPosition = pos;
+
+            if (oldSample != m_sample)
+            {
+                if (SampleChanged != null)
+                {
+                    SampleChanged(m_sample);
+                }
+            }
         }
 
         public void SetGridParameters(TimelineGridParameters parameters)
@@ -106,23 +125,9 @@ namespace Battlehub.RTEditor
             Vector2Int coord;
             if (GetKeyframeCoord(eventData, false, out coord))
             {
-                int oldSample = m_sample;
-
-                Vector3 pos = m_pointer.transform.localPosition;
-                m_sample = coord.x;
-                pos.x = (m_sample - m_offset.x) * m_columnWidth;
-                m_pointer.transform.localPosition = pos;
-
-                if (oldSample != m_sample)
-                {
-                    if (SampleChanged != null)
-                    {
-                        SampleChanged(m_sample);
-                    }
-                }
+                SetSample(coord.x);
             }
         }
-
 
         private bool GetKeyframeCoord(PointerEventData eventData, bool precise, out Vector2Int coord)
         {

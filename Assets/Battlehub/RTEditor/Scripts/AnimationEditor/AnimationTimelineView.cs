@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
@@ -53,7 +54,12 @@ namespace Battlehub.RTEditor
             Dopesheet.VisibleRowsCount = 1;
         }
 
-        public void AddProperties(int[] rows, AnimationPropertyItem[] properties)
+        public void SetKeyframeValue(int row, AnimationPropertyItem property)
+        {
+            Dopesheet.SetKeyframeValue(row, Convert.ToSingle(property.Value));
+        }
+
+        public void AddRows(int[] rows, AnimationPropertyItem[] properties)
         {
             int parentIndex = -1;
             for(int i = 0; i < properties.Length; ++i)
@@ -62,7 +68,7 @@ namespace Battlehub.RTEditor
 
                 if(property.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace)
                 {
-                    Dopesheet.AddRow(true, -1);
+                    Dopesheet.AddRow(true, -1, 0);
                 }
                 else
                 {
@@ -70,17 +76,17 @@ namespace Battlehub.RTEditor
                     if(isParent)
                     {
                         parentIndex = rows[i];
-                        Dopesheet.AddRow(true, 0);
+                        Dopesheet.AddRow(true, 0, 0);
                     }
                     else
                     {
-                        Dopesheet.AddRow(false, parentIndex);
+                        Dopesheet.AddRow(false, parentIndex, Convert.ToSingle(property.Value));
                     }
                 }
             }
         }
 
-        public void RemoveProperties(int[] rows, AnimationPropertyItem[] properties)
+        public void RemoveRows(int[] rows, AnimationPropertyItem[] properties)
         {
             for (int i = properties.Length - 1; i >= 0; --i)
             {
@@ -95,12 +101,12 @@ namespace Battlehub.RTEditor
             Dopesheet.Refresh();
         }
               
-        public void ExpandProperty(int row, AnimationPropertyItem property)
+        public void ExpandRow(int row, AnimationPropertyItem property)
         {
             Dopesheet.Expand(row, property.Children.Count);
         }
 
-        public void CollapseProperty(int row, AnimationPropertyItem property)
+        public void CollapseRow(int row, AnimationPropertyItem property)
         {
             Dopesheet.Collapse(row, property.Children.Count);
         }
