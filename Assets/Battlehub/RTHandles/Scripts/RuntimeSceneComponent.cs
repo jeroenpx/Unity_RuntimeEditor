@@ -103,10 +103,10 @@ namespace Battlehub.RTHandles
         private bool m_canFreeMove = true;
         [SerializeField]
         private float m_orbitDistance = 5.0f;
-        [SerializeField]
-        private float m_orbitDistanceMin = 0.5f;
-        [SerializeField]
-        private float m_orbitDistanceMax = 1000f;
+        //[SerializeField]
+        //private float m_orbitDistanceMin = 0.5f;
+        //[SerializeField]
+        //private float m_orbitDistanceMax = 1000f;
         [SerializeField]
         private float m_freeSmoothMoveSpeed = 7.5f;
         [SerializeField]

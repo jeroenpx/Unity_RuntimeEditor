@@ -1109,61 +1109,93 @@ namespace Battlehub.RTSL
                 return;
             }
 
+            LoadLibraryWithSceneDependencies(() =>
+            {
+                object[] dependencies = FindDeepDependencies(obj, exceptMappedObject);
+                RaiseGetDependenciesCompleted(callback, ao, dependencies);
+            });
+        }
+
+        private void RaiseGetDependenciesCompleted(ProjectEventHandler<object[]> callback, ProjectAsyncOperation<object[]> ao, object[] dependencies)
+        {
+            Error error = new Error(Error.OK);
+            if (callback != null)
+            {
+                callback(error, dependencies);
+            }
+
+            ao.Error = error;
+            ao.Result = dependencies;
+            ao.IsCompleted = true;
+
+            IsBusy = false;
+        }
+
+        public object[] FindDeepDependencies(object obj)
+        {
+            return FindDeepDependencies(obj, false);
+        }
+
+        private object[] FindDeepDependencies(object obj, bool exceptMappedObject)
+        {
+            Type objType = obj.GetType();
+            Type persistentType = m_typeMap.ToPersistentType(objType);
+            if (persistentType == null)
+            {
+                return null;
+            }
+
             if (persistentType == typeof(PersistentGameObject))
             {
                 persistentType = typeof(PersistentRuntimePrefab);
             }
 
-            LoadLibraryWithSceneDependencies(() =>
+            PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
+            GetDepsFromContext ctx = new GetDepsFromContext();
+            persistentObject.GetDepsFrom(obj, ctx);
+
+            object[] deps = ctx.Dependencies.ToArray();
+            ctx.Dependencies.Clear();
+
+            for (int i = 0; i < deps.Length; ++i)
             {
-                PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                GetDepsFromContext ctx = new GetDepsFromContext();
-                persistentObject.GetDepsFrom(obj, ctx);
+                object dep = deps[i];
 
-                object[] deps = ctx.Dependencies.ToArray();
-                ctx.Dependencies.Clear();
-
-                for(int i = 0; i < deps.Length; ++i)
+                if (dep is GameObject)
                 {
-                    object dep = deps[i];
-
-                    if (dep is GameObject)
+                    continue;
+                }
+                else if (dep is Component)
+                {
+                    continue;
+                }
+                else if (dep is UnityObject)
+                {
+                    if (exceptMappedObject && m_assetDB.IsMapped((UnityObject)dep))
                     {
                         continue;
                     }
-                    else if(dep is Component)
-                    {
-                        continue;
-                    }
-                    else if(dep is UnityObject)
-                    {
-                        if (exceptMappedObject && m_assetDB.IsMapped((UnityObject)dep))
-                        {
-                            continue;
-                        }
-                        ctx.Dependencies.Add(dep);
-                    }
+                    ctx.Dependencies.Add(dep);
                 }
-                
-                Queue<UnityObject> depsQueue = new Queue<UnityObject>(deps.OfType<UnityObject>());
+            }
 
-                GetDeepDependencies(depsQueue, exceptMappedObject, ctx);
+            Queue<UnityObject> depsQueue = new Queue<UnityObject>(deps.OfType<UnityObject>());
+            FindDeepDependencies(depsQueue, exceptMappedObject, ctx);
 
-                object[] dependencies;
-                if (exceptMappedObject)
-                {
-                    dependencies = ctx.Dependencies.Where(d => d is UnityObject && !m_assetDB.IsMapped((UnityObject)d)).ToArray();
-                }
-                else
-                {
-                    dependencies = ctx.Dependencies.ToArray();
-                }
+            object[] dependencies;
+            if (exceptMappedObject)
+            {
+                dependencies = ctx.Dependencies.Where(d => d is UnityObject && !m_assetDB.IsMapped((UnityObject)d)).ToArray();
+            }
+            else
+            {
+                dependencies = ctx.Dependencies.ToArray();
+            }
 
-                RaiseGetDependenciesCompleted(callback, ao, dependencies);
-            });
+            return dependencies;
         }
 
-        private void GetDeepDependencies(Queue<UnityObject> depsQueue, bool exceptMappedObject, GetDepsFromContext ctx)
+        private void FindDeepDependencies(Queue<UnityObject> depsQueue, bool exceptMappedObject, GetDepsFromContext ctx)
         {
             GetDepsFromContext getDepsCtx = new GetDepsFromContext();
             while (depsQueue.Count > 0)
@@ -1215,21 +1247,7 @@ namespace Battlehub.RTSL
             }
         }
 
-        private void RaiseGetDependenciesCompleted(ProjectEventHandler<object[]> callback, ProjectAsyncOperation<object[]> ao, object[] dependencies)
-        {
-            Error error = new Error(Error.OK);
-            if (callback != null)
-            {
-                callback(error, dependencies);
-            }
-
-            ao.Error = error;
-            ao.Result = dependencies;
-            ao.IsCompleted = true;
-
-            IsBusy = false;
-        }
-
+   
         public AssetItem[] GetDependantAssetItems(AssetItem[] assetItems)
         {
             HashSet<AssetItem> resultHs = new HashSet<AssetItem>();

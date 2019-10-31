@@ -71,7 +71,8 @@ namespace Battlehub.RTSL.Interface
         T FromID<T>(long id) where T : UnityObject;
         AssetItem ToAssetItem(UnityObject obj);
         AssetItem[] GetDependantAssetItems(AssetItem[] assetItems);
-        
+        object[] FindDeepDependencies(object obj);
+
         string GetExt(object obj);
         string GetExt(Type type);
         string GetUniqueName(string name, string[] names);
