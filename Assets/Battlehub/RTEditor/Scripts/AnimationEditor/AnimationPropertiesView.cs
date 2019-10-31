@@ -3,10 +3,7 @@ using Battlehub.UIControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
@@ -17,13 +14,13 @@ namespace Battlehub.RTEditor
         public class ItemsArg
         {
             public int[] Rows;
-            public AnimationPropertyItem[] Items;
+            public RuntimeAnimationProperty[] Items;
         }
 
         public class ItemArg
         {
             public int Row;
-            public AnimationPropertyItem Item;
+            public RuntimeAnimationProperty Item;
         }
 
         private ItemArg m_propertyValueChangedArg = new ItemArg();
@@ -35,35 +32,53 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private VirtualizingTreeView m_propertiesTreeView = null;
-        private List<AnimationPropertyItem> m_properties = new List<AnimationPropertyItem>();
-
-        private readonly AnimationPropertyItem m_emptyTop = new AnimationPropertyItem { ComponentType = AnimationPropertyItem.k_SpecialEmptySpace };
-        private readonly AnimationPropertyItem m_emptyBottom = new AnimationPropertyItem { ComponentType = AnimationPropertyItem.k_SpecialAddButton };
+        private List<RuntimeAnimationProperty> m_props = new List<RuntimeAnimationProperty>();
+        
+        private readonly RuntimeAnimationProperty m_emptyTop = new RuntimeAnimationProperty { ComponentTypeName = RuntimeAnimationProperty.k_SpecialEmptySpace };
+        private readonly RuntimeAnimationProperty m_emptyBottom = new RuntimeAnimationProperty { ComponentTypeName = RuntimeAnimationProperty.k_SpecialAddButton };
 
         private bool m_isStarted;
 
-        private RuntimeAnimation m_target;
-        public RuntimeAnimation Target
+        public GameObject Target
         {
-            get { return m_target; }
+            get;
+            set;
+        }
+
+        private RuntimeAnimationClip m_clip;
+        public RuntimeAnimationClip Clip
+        {
+            get { return m_clip; }
             set
             {
-                m_target = value;
+                if(m_clip != null)
+                {
+                    foreach(RuntimeAnimationProperty property in m_clip.Properties)
+                    {
+                        property.ValueChanged -= OnPropertyValueChanged;
+                        if(property.Children != null)
+                        {
+                            foreach(RuntimeAnimationProperty childProperty in property.Children)
+                            {
+                                property.ValueChanged -= OnPropertyValueChanged;
+                            }
+                        }
+                    }
+                }
+
+                m_clip = value;
                 DataBind();
             }
         }
 
-        public AnimationPropertyItem[] Properties
+        public RuntimeAnimationProperty[] Props
         {
-            get
-            {
-                return m_properties.ToArray(); //m_propertiesTreeView.Items.OfType<AnimationPropertyItem>().ToArray();
-            }
+            get { return m_props.ToArray(); }
         }
 
-        public int IndexOf(AnimationPropertyItem item)
+        public int IndexOf(RuntimeAnimationProperty item)
         {
-            return m_properties.IndexOf(item);
+            return m_props.IndexOf(item);
         }
 
         protected virtual void Awake()
@@ -127,14 +142,54 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            m_properties = new List<AnimationPropertyItem> { m_emptyBottom };
-            m_propertiesTreeView.Items = m_properties;
+
+            List<RuntimeAnimationProperty> addedProperties = new List<RuntimeAnimationProperty>();
+            List<int> addedIndexes = new List<int>();
+
+            m_props =  new List<RuntimeAnimationProperty>();
+            if(Clip != null)
+            {
+                if(Clip.Properties.Count > 0)
+                {
+                    m_props.Add(m_emptyTop);
+                    addedProperties.Add(m_emptyTop);
+                    addedIndexes.Add(0);
+                }
+
+                foreach (RuntimeAnimationProperty property in Clip.Properties)
+                {
+                    m_props.Add(property);
+                    addedProperties.Add(property);
+                    addedIndexes.Add(m_props.Count - 1);
+
+                    if (property.Children != null)
+                    {
+                        for (int i = 0; i < property.Children.Count; i++)
+                        {
+                            m_props.Add(property.Children[i]);
+                            addedProperties.Add(property.Children[i]);
+                            addedIndexes.Add(m_props.Count - 1);
+                            property.Children[i].ValueChanged += OnPropertyValueChanged;   
+                        }
+                    }
+                    else
+                    {
+                        property.ValueChanged += OnPropertyValueChanged;
+                    }
+                }
+            }
+            m_props.Add(m_emptyBottom);
+            m_propertiesTreeView.Items = m_props.Where(p => p.Children != null || p == m_emptyTop || p == m_emptyBottom);
+
+            if (PropertiesAdded != null)
+            {
+                PropertiesAdded(new ItemsArg { Items = addedProperties.ToArray(), Rows = addedIndexes.ToArray() });
+            }
         }
 
-
-        public void AddProperty(AnimationPropertyItem propertyItem)
+        public void AddProperty(RuntimeAnimationProperty property)
         {
-            if (propertyItem.ComponentType == AnimationPropertyItem.k_SpecialAddButton)
+            if (property.ComponentTypeName == RuntimeAnimationProperty.k_SpecialAddButton)
             {
                 IWindowManager wm = IOC.Resolve<IWindowManager>();
                 IAnimationSelectPropertiesDialog selectPropertiesDialog = null;
@@ -146,41 +201,42 @@ namespace Battlehub.RTEditor
             }
             else
             {
-
-                List<AnimationPropertyItem> addedProperties = new List<AnimationPropertyItem>();
+                List<RuntimeAnimationProperty> addedProperties = new List<RuntimeAnimationProperty>();
                 List<int> addedIndexes = new List<int>();
 
                 if (m_propertiesTreeView.ItemsCount == 1)
                 {
                     m_propertiesTreeView.Insert(0, m_emptyTop);
-                    m_properties.Insert(0, m_emptyTop);
+                    m_props.Insert(0, m_emptyTop);
                     addedProperties.Add(m_emptyTop);
                     addedIndexes.Add(0);
                 }
 
-                propertyItem = new AnimationPropertyItem(propertyItem);
-                propertyItem.Parent = null;
-                propertyItem.Children = null;
-                propertyItem.TryToCreateChildren();
+                property = new RuntimeAnimationProperty(property);
+                property.Parent = null;
+                property.Children = null;
+                property.TryToCreateChildren();
 
-                m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, propertyItem);
+                Clip.Add(property);
+
+                m_propertiesTreeView.Insert(m_propertiesTreeView.ItemsCount - 1, property);
                 
-                addedProperties.Add(propertyItem);
-                addedIndexes.Add(m_properties.Count - 1);
-                m_properties.Insert(m_properties.Count - 1, propertyItem);
-                if (propertyItem.Children != null)
+                addedProperties.Add(property);
+                addedIndexes.Add(m_props.Count - 1);
+                m_props.Insert(m_props.Count - 1, property);
+                if (property.Children != null)
                 {
-                    for(int i = 0; i < propertyItem.Children.Count; i++)
+                    for(int i = 0; i < property.Children.Count; i++)
                     {
-                        addedProperties.Add(propertyItem.Children[i]);
-                        addedIndexes.Add(m_properties.Count - 1);
-                        m_properties.Insert(m_properties.Count - 1, propertyItem.Children[i]);
-                        propertyItem.Children[i].ValueChanged += OnPropertyValueChanged;
+                        addedProperties.Add(property.Children[i]);
+                        addedIndexes.Add(m_props.Count - 1);
+                        m_props.Insert(m_props.Count - 1, property.Children[i]);
+                        property.Children[i].ValueChanged += OnPropertyValueChanged;
                     }
                 }
                 else
                 {
-                    propertyItem.ValueChanged += OnPropertyValueChanged;
+                    property.ValueChanged += OnPropertyValueChanged;
                 }
 
                 if(PropertiesAdded != null)
@@ -190,11 +246,11 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnPropertyValueChanged(AnimationPropertyItem property, object oldValue, object newValue)
+        private void OnPropertyValueChanged(RuntimeAnimationProperty property, object oldValue, object newValue)
         {
             if(PropertyValueChanged != null)
             {
-                int rowIndex = m_properties.IndexOf(property);
+                int rowIndex = m_props.IndexOf(property);
 
                 m_propertyValueChangedArg.Row = rowIndex;
                 m_propertyValueChangedArg.Item = property;
@@ -210,7 +266,7 @@ namespace Battlehub.RTEditor
 
         private void OnPropertiesItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
-            AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+            RuntimeAnimationProperty item = (RuntimeAnimationProperty)e.Item;
             e.Children = item.Children;
         }
 
@@ -218,9 +274,9 @@ namespace Battlehub.RTEditor
         {
             if(PropertyExpanded != null)
             {
-                AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+                RuntimeAnimationProperty item = (RuntimeAnimationProperty)e.Item;
                 int index = IndexOf(item);
-                PropertyExpanded(new ItemArg { Item = (AnimationPropertyItem)e.Item, Row = index });
+                PropertyExpanded(new ItemArg { Item = (RuntimeAnimationProperty)e.Item, Row = index });
             }
         }
 
@@ -228,9 +284,9 @@ namespace Battlehub.RTEditor
         {
             if(PropertyCollapsed != null)
             {
-                AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+                RuntimeAnimationProperty item = (RuntimeAnimationProperty)e.Item;
                 int index = IndexOf(item);
-                PropertyCollapsed(new ItemArg { Item = (AnimationPropertyItem)e.Item, Row = index });
+                PropertyCollapsed(new ItemArg { Item = (RuntimeAnimationProperty)e.Item, Row = index });
             }
         }
 
@@ -248,11 +304,11 @@ namespace Battlehub.RTEditor
         {
             m_propertiesTreeView.ItemsRemoved -= OnPropertiesRemoved;
 
-            List<Tuple<int, AnimationPropertyItem>> removedProperties = new List<Tuple<int, AnimationPropertyItem>>();
+            List<Tuple<int, RuntimeAnimationProperty>> removedProperties = new List<Tuple<int, RuntimeAnimationProperty>>();
             
             HashSet<int> removedHs = new HashSet<int>();
 
-            foreach(AnimationPropertyItem item in e.Items)
+            foreach(RuntimeAnimationProperty item in e.Items)
             {
                 if(item.Parent != null)
                 {
@@ -260,7 +316,7 @@ namespace Battlehub.RTEditor
                     if(!removedHs.Contains(row))
                     {
                         removedHs.Add(row);
-                        removedProperties.Add(new Tuple<int, AnimationPropertyItem>(row, item.Parent));
+                        removedProperties.Add(new Tuple<int, RuntimeAnimationProperty>(row, item.Parent));
 
                         m_propertiesTreeView.RemoveChild(null, item.Parent);
                         
@@ -270,7 +326,7 @@ namespace Battlehub.RTEditor
                             if(!removedHs.Contains(row))
                             {
                                 removedHs.Add(row);
-                                removedProperties.Add(new Tuple<int, AnimationPropertyItem>(row, item.Parent.Children[i]));
+                                removedProperties.Add(new Tuple<int, RuntimeAnimationProperty>(row, item.Parent.Children[i]));
                             }
                         }
                     }
@@ -282,7 +338,7 @@ namespace Battlehub.RTEditor
                     if(!removedHs.Contains(row))
                     {
                         removedHs.Add(row);
-                        removedProperties.Add(new Tuple<int, AnimationPropertyItem>(row, item));
+                        removedProperties.Add(new Tuple<int, RuntimeAnimationProperty>(row, item));
 
                         if (item.Children != null)
                         {
@@ -292,7 +348,7 @@ namespace Battlehub.RTEditor
                                 if (!removedHs.Contains(row))
                                 {
                                     removedHs.Add(row);
-                                    removedProperties.Add(new Tuple<int, AnimationPropertyItem>(row, item.Children[i]));
+                                    removedProperties.Add(new Tuple<int, RuntimeAnimationProperty>(row, item.Children[i]));
                                 }
                             }
                         }
@@ -302,19 +358,20 @@ namespace Battlehub.RTEditor
 
             for(int i = 0; i < removedProperties.Count; ++i)
             {
-                AnimationPropertyItem property = removedProperties[i].Item2;
+                RuntimeAnimationProperty property = removedProperties[i].Item2;
                 property.ValueChanged -= OnPropertyValueChanged;
-                m_properties.Remove(property);
+                m_props.Remove(property);
+                Clip.Remove(property);
             }
 
             if(m_propertiesTreeView.ItemsCount == 2)
             {
-                m_properties.Remove(m_emptyTop);
+                m_props.Remove(m_emptyTop);
                 m_propertiesTreeView.RemoveChild(null, m_emptyTop);
-                removedProperties.Insert(0, new Tuple<int, AnimationPropertyItem>(0, m_emptyTop));
+                removedProperties.Insert(0, new Tuple<int, RuntimeAnimationProperty>(0, m_emptyTop));
             }
 
-            IEnumerable<Tuple<int, AnimationPropertyItem>> orderedItems = removedProperties.OrderBy(t => t.Item1);
+            IEnumerable<Tuple<int, RuntimeAnimationProperty>> orderedItems = removedProperties.OrderBy(t => t.Item1);
 
             if (PropertiesRemoved != null)
             {
@@ -327,7 +384,7 @@ namespace Battlehub.RTEditor
         private void OnPropertiesItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             AnimationPropertyView ui = e.ItemPresenter.GetComponent<AnimationPropertyView>();
-            AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+            RuntimeAnimationProperty item = (RuntimeAnimationProperty)e.Item;
 
             ui.View = this;
             if (m_emptyBottom != item && m_emptyTop != item)

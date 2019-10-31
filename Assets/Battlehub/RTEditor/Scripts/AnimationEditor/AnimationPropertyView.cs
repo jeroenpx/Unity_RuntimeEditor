@@ -4,36 +4,54 @@ using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
-    public delegate void AnimtionPropertyItemValueChanged(AnimationPropertyItem property, object oldValue, object newValue);
+    public delegate void AnimationPropertyValueChanged(RuntimeAnimationProperty property, object oldValue, object newValue);
 
-    public class AnimationPropertyItem
+    public class RuntimeAnimationProperty
     {
+        public event AnimationPropertyValueChanged ValueChanged;
+
         public const string k_SpecialAddButton = "Special_AddButton";
         public const string k_SpecialEmptySpace = "Special_EmptySpace";
 
-        public string ComponentType;
+        public string ComponentTypeName;
         public string ComponentDisplayName;
         public string PropertyName;
         public string PropertyDisplayName;
-        public AnimationPropertyItem Parent;
-        public List<AnimationPropertyItem> Children;
-
-        public event AnimtionPropertyItemValueChanged ValueChanged;
-
+        public RuntimeAnimationProperty Parent;
+        public List<RuntimeAnimationProperty> Children;
+        public AnimationCurve Curve;
         public object Component;
 
-        public AnimationPropertyItem()
+        public Type ComponentType
+        {
+            get { return Type.GetType(ComponentTypeName); }
+        }
+
+        public string PropertyPath
+        {
+            get
+            {
+                if(Parent != null)
+                {
+                    return Parent.PropertyName + "." + PropertyName;
+                }
+                return PropertyName;
+            }
+        }
+
+        public RuntimeAnimationProperty()
         {
             
             
         }
-        public AnimationPropertyItem(AnimationPropertyItem item) : this()
+        public RuntimeAnimationProperty(RuntimeAnimationProperty item) : this()
         {
-            ComponentType = item.ComponentType;
+            ComponentTypeName = item.ComponentTypeName;
             ComponentDisplayName = item.ComponentDisplayName;
             PropertyName = item.PropertyName;
             PropertyDisplayName = item.PropertyDisplayName;
@@ -124,25 +142,25 @@ namespace Battlehub.RTEditor
             throw new InvalidOperationException("wrong property path " + path);
         }
 
-        public void TryToCreateChildren()
+        public bool TryToCreateChildren()
         {
-            if(ComponentType == k_SpecialEmptySpace || ComponentType == k_SpecialAddButton)
+            if(ComponentTypeName == k_SpecialEmptySpace || ComponentTypeName == k_SpecialAddButton)
             {
-                return;
+                return false;
             }
 
             Type type = Value.GetType();
             if (Reflection.IsPrimitive(type))
             {
-                return;
+                return false;
             }
 
             if (!Reflection.IsValueType(type))
             {
-                return;
+                return false;
             }
 
-            List<AnimationPropertyItem> children = new List<AnimationPropertyItem>();
+            List<RuntimeAnimationProperty> children = new List<RuntimeAnimationProperty>();
             FieldInfo[] fields = type.GetSerializableFields();
             for (int i = 0; i < fields.Length; ++i)
             {
@@ -152,13 +170,14 @@ namespace Battlehub.RTEditor
                     continue;
                 }
 
-                AnimationPropertyItem child = new AnimationPropertyItem
+                RuntimeAnimationProperty child = new RuntimeAnimationProperty
                 {
                     PropertyName = field.Name,
                     PropertyDisplayName = field.Name,
+                    ComponentTypeName = ComponentTypeName,
                     Parent = this,
                     Component = Component,
-
+                    Curve = new AnimationCurve(),
                     Value = GetMemberValue(Value, field.Name),
                 };
                 children.Add(child);
@@ -173,19 +192,21 @@ namespace Battlehub.RTEditor
                     continue;
                 }
 
-                AnimationPropertyItem child = new AnimationPropertyItem
+                RuntimeAnimationProperty child = new RuntimeAnimationProperty
                 {
                     PropertyName = property.Name,
                     PropertyDisplayName = property.Name,
+                    ComponentTypeName = ComponentTypeName,
                     Parent = this,
                     Component = Component,
-
+                    Curve = new AnimationCurve(),
                     Value = GetMemberValue(Value, property.Name),
                 };
                 children.Add(child);
             }
 
             Children = children;
+            return true;
         }
     }
 
@@ -206,15 +227,15 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private DragField m_dragField = null;
 
-        private AnimationPropertyItem m_item;
-        public AnimationPropertyItem Item
+        private RuntimeAnimationProperty m_item;
+        public RuntimeAnimationProperty Item
         {
             get { return m_item; }
             set
             {
                 m_item = value;
 
-                if (m_item != null && m_item.ComponentType != AnimationPropertyItem.k_SpecialAddButton && m_item.ComponentType != AnimationPropertyItem.k_SpecialEmptySpace)
+                if (m_item != null && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialAddButton && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialEmptySpace)
                 {
                     bool isBool = m_item.Value is bool;
                     bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
@@ -319,7 +340,7 @@ namespace Battlehub.RTEditor
 
                     if (m_addPropertyButton != null)
                     {
-                        m_addPropertyButton.gameObject.SetActive(m_item.ComponentType == AnimationPropertyItem.k_SpecialAddButton);
+                        m_addPropertyButton.gameObject.SetActive(m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialAddButton);
                     }
 
                 }
@@ -402,14 +423,19 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            if (EventSystem.current.currentSelectedGameObject == m_inputField.gameObject)
+            {
+                return;
+            }
+
             if (m_nextUpdate > Time.time)
             {
                 return;
             }
             m_nextUpdate = Time.time + 0.2f;
             if(m_item == null || 
-               m_item.ComponentType == AnimationPropertyItem.k_SpecialAddButton ||
-               m_item.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace )
+               m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialAddButton ||
+               m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialEmptySpace )
             {
                 return;
             }

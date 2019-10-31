@@ -64,7 +64,7 @@ namespace Battlehub.RTEditor
         {
             get
             {
-                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Length)
+                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Count)
                 {
                     return null;
                 }
@@ -73,12 +73,15 @@ namespace Battlehub.RTEditor
             }
             set
             {
-                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Length)
+                if (m_target == null || m_target.Clips == null || m_selectedClipIndex < 0 || m_selectedClipIndex >= m_target.Clips.Count)
                 {
                     return;
                 }
 
                 m_target.Clips[m_selectedClipIndex] = value;
+                m_propertiesView.Target = m_target.gameObject;
+                m_propertiesView.Clip = value;
+                m_timelineView.Clip = value;
             }
         }
 
@@ -88,9 +91,6 @@ namespace Battlehub.RTEditor
             get { return m_target; }
             set
             {
-                m_propertiesView.Target = value;
-                m_timelineView.Target = value;
-
                 if (value == null)
                 {
                     if (m_previewToggle != null)
@@ -125,18 +125,24 @@ namespace Battlehub.RTEditor
                 }
 
                 m_target = value;
-                if (m_target == null || m_target.Clips == null || m_target.Clips.Length == 0)
+                if (m_target == null || m_target.Clips == null || m_target.Clips.Count == 0)
                 {
                     m_selectedClipIndex = -1;
+                    m_propertiesView.Target = null;
+                    m_propertiesView.Clip = null;
+                    m_timelineView.Clip = null;
                 }
                 else
                 {
                     m_selectedClipIndex = -1;
-                    for (int i = 0; i < m_target.Clips.Length; i++)
+                    for (int i = 0; i < m_target.Clips.Count; i++)
                     {
                         if (m_target.Clips[i] != null)
                         {
                             m_selectedClipIndex = i;
+                            m_propertiesView.Target = m_target.gameObject;
+                            m_propertiesView.Clip = m_target.Clips[i];
+                            m_timelineView.Clip = m_target.Clips[i];
                             break;
                         }
                     }
@@ -144,7 +150,7 @@ namespace Battlehub.RTEditor
                     if (m_animationsDropDown != null)
                     {
                         List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
-                        for (int i = 0; i < m_target.Clips.Length; ++i)
+                        for (int i = 0; i < m_target.Clips.Count; ++i)
                         {
                             if (m_target.Clips[i] == null)
                             {
@@ -162,14 +168,14 @@ namespace Battlehub.RTEditor
 
                 if (m_group != null)
                 {
-                    m_group.alpha = m_target != null ? 1 : 0.5f;
+                    m_group.alpha = m_propertiesView.Clip != null ? 1 : 0.5f;
                 }
 
                 if (m_blockUI != null)
                 {
-                    m_blockUI.SetActive(m_target == null);
+                    m_blockUI.SetActive(m_propertiesView.Clip == null);
 
-                    if (m_target == null)
+                    if (m_propertiesView.Clip == null)
                     {
                         EventSystem.current.SetSelectedGameObject(null);
                     }
@@ -279,9 +285,9 @@ namespace Battlehub.RTEditor
             RuntimeAnimationClip clip = ScriptableObject.CreateInstance<RuntimeAnimationClip>();
             clip.name = "New Animation Clip";
 
-            if (animation.Clips == null || animation.Clips.Length == 0)
+            if (animation.Clips == null || animation.Clips.Count == 0)
             {
-                animation.Clips = new[] { clip };
+                animation.AddClip(clip);
                 Target = animation;
             }
             else
@@ -341,6 +347,8 @@ namespace Battlehub.RTEditor
         private void OnPlayToggleValueChanged(bool value)
         {
             m_timelineView.IsPlaying = value;
+
+            Target.IsPlaying = value;
         }
 
         private void OnNextFrameButtonClick()

@@ -16,8 +16,8 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private CanvasGroup m_addButtonCanvasGroup = null;
 
-        private AnimationPropertyItem m_item;
-        public AnimationPropertyItem Item
+        private RuntimeAnimationProperty m_item;
+        public RuntimeAnimationProperty Item
         {
             get { return m_item; }
             set

@@ -3,6 +3,7 @@ using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -15,7 +16,7 @@ namespace Battlehub.RTEditor
             set;
         }
 
-        RuntimeAnimation Target
+        GameObject Target
         {
             get;
             set;
@@ -34,7 +35,7 @@ namespace Battlehub.RTEditor
             set;
         }
 
-        public RuntimeAnimation Target
+        public GameObject Target
         {
             get;
             set;
@@ -62,9 +63,9 @@ namespace Battlehub.RTEditor
              m_voidComponentEditor = gameObject.AddComponent<VoidComponentEditor>();
         }
 
-        public virtual void RemoveProperty(AnimationPropertyItem propertyItem)
+        public virtual void RemoveProperty(RuntimeAnimationProperty propertyItem)
         {
-            AnimationPropertyItem parent = propertyItem.Parent;
+            RuntimeAnimationProperty parent = propertyItem.Parent;
             m_propertiesTreeView.RemoveChild(propertyItem.Parent, propertyItem);
             if (parent != null && parent.Children != null && parent.Children.Count > 0)
             {
@@ -85,14 +86,14 @@ namespace Battlehub.RTEditor
             }
 
             HashSet<string> alreadyAddedHs = new HashSet<string>();
-            AnimationPropertyItem[] alreadyAddedProperties = View.Properties;
+            RuntimeAnimationProperty[] alreadyAddedProperties = View.Props;
             for (int i = 0; i < alreadyAddedProperties.Length; ++i)
             {
-                AnimationPropertyItem property = alreadyAddedProperties[i];
-                alreadyAddedHs.Add(property.ComponentType + " " + property.PropertyName);
+                RuntimeAnimationProperty property = alreadyAddedProperties[i];
+                alreadyAddedHs.Add(property.ComponentTypeName + " " + property.PropertyName);
             }
 
-            List<AnimationPropertyItem> components = new List<AnimationPropertyItem>();
+            List<RuntimeAnimationProperty> components = new List<RuntimeAnimationProperty>();
             IEditorsMap editorsMap = IOC.Resolve<IEditorsMap>();
             Type[] editableTypes = editorsMap.GetEditableTypes();
             for (int i = 0; i < editableTypes.Length; ++i)
@@ -108,10 +109,10 @@ namespace Battlehub.RTEditor
                     continue;
                 }
 
-                AnimationPropertyItem component = new AnimationPropertyItem();
+                RuntimeAnimationProperty component = new RuntimeAnimationProperty();
                 component.ComponentDisplayName = editableType.Name;
-                component.ComponentType = editableType.FullName;
-                component.Children = new List<AnimationPropertyItem>();
+                component.ComponentTypeName = string.Format("{0},{1}", editableType.FullName, editableType.Assembly.FullName.Split(',')[0]);
+                component.Children = new List<RuntimeAnimationProperty>();
                 component.Component = m_voidComponentEditor.Component;
                 
                 PropertyDescriptor[] propertyDescriptors = editorsMap.GetPropertyDescriptors(editableType, m_voidComponentEditor);
@@ -124,15 +125,15 @@ namespace Battlehub.RTEditor
                         continue;
                     }
 
-                    if(alreadyAddedHs.Contains(component.ComponentType + " " + propertyDescriptor.MemberInfo.Name))
+                    if(alreadyAddedHs.Contains(component.ComponentTypeName + " " + propertyDescriptor.MemberInfo.Name))
                     {
                         continue;
                     }
 
-                    AnimationPropertyItem property = new AnimationPropertyItem();
+                    RuntimeAnimationProperty property = new RuntimeAnimationProperty();
                     property.Parent = component;
 
-                    property.ComponentType = component.ComponentType;
+                    property.ComponentTypeName = component.ComponentTypeName;
                     property.ComponentDisplayName = component.ComponentDisplayName;
                     property.PropertyName = propertyDescriptor.MemberInfo.Name;
                     property.PropertyDisplayName = propertyDescriptor.Label;
@@ -167,14 +168,14 @@ namespace Battlehub.RTEditor
 
         private void OnItemExpanding(object sender, VirtualizingItemExpandingArgs e)
         {
-            AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+            RuntimeAnimationProperty item = (RuntimeAnimationProperty)e.Item;
             e.Children = item.Children;
         }
 
         private void OnItemDatabinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
             AnimationComponentView ui = e.ItemPresenter.GetComponent<AnimationComponentView>();
-            AnimationPropertyItem item = (AnimationPropertyItem)e.Item;
+            RuntimeAnimationProperty item = (RuntimeAnimationProperty)e.Item;
             ui.Item = item;
             ui.View = View;
             ui.Dialog = this;

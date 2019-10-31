@@ -27,18 +27,24 @@ namespace Battlehub.RTEditor
         }
 
 
-        private RuntimeAnimation m_target;
-        public RuntimeAnimation Target
+        private RuntimeAnimationClip m_clip;
+        public RuntimeAnimationClip Clip
         {
-            get { return m_target; }
+            get { return m_clip; }
             set
             {
+                m_clip = value;
+
+                Dopesheet.DsAnimationClip clip = new Dopesheet.DsAnimationClip();
+
+                //Add keyframes to DsClip here
 
                 Dopesheet.VisibleRowsCount = 1;
-                m_target = value;
+                Dopesheet.Clip = clip;
+                
                 if (m_timeline != null)
                 {
-                    m_timeline.SetActive(m_target != null);
+                    m_timeline.SetActive(m_clip != null);
                 }
             }
         }
@@ -54,21 +60,21 @@ namespace Battlehub.RTEditor
             Dopesheet.VisibleRowsCount = 1;
         }
 
-        public void SetKeyframeValue(int row, AnimationPropertyItem property)
+        public void SetKeyframeValue(int row, RuntimeAnimationProperty property)
         {
             Dopesheet.SetKeyframeValue(row, Convert.ToSingle(property.Value));
         }
 
-        public void AddRows(int[] rows, AnimationPropertyItem[] properties)
+        public void AddRows(int[] rows, RuntimeAnimationProperty[] properties)
         {
             int parentIndex = -1;
             for(int i = 0; i < properties.Length; ++i)
             {
-                AnimationPropertyItem property = properties[i];
+                RuntimeAnimationProperty property = properties[i];
 
-                if(property.ComponentType == AnimationPropertyItem.k_SpecialEmptySpace)
+                if(property.ComponentTypeName == RuntimeAnimationProperty.k_SpecialEmptySpace)
                 {
-                    Dopesheet.AddRow(true, -1, 0);
+                    Dopesheet.AddRow(true, -1, 0, null);
                 }
                 else
                 {
@@ -76,17 +82,17 @@ namespace Battlehub.RTEditor
                     if(isParent)
                     {
                         parentIndex = rows[i];
-                        Dopesheet.AddRow(true, 0, 0);
+                        Dopesheet.AddRow(true, 0, 0, null);
                     }
                     else
                     {
-                        Dopesheet.AddRow(false, parentIndex, Convert.ToSingle(property.Value));
+                        Dopesheet.AddRow(false, parentIndex, Convert.ToSingle(property.Value), property.Curve);
                     }
                 }
             }
         }
 
-        public void RemoveRows(int[] rows, AnimationPropertyItem[] properties)
+        public void RemoveRows(int[] rows, RuntimeAnimationProperty[] properties)
         {
             for (int i = properties.Length - 1; i >= 0; --i)
             {
@@ -98,15 +104,15 @@ namespace Battlehub.RTEditor
                 Dopesheet.RemoveRow(rows[i]);
             }
 
-            Dopesheet.Refresh();
+            Dopesheet.Refresh(true, true, false);
         }
               
-        public void ExpandRow(int row, AnimationPropertyItem property)
+        public void ExpandRow(int row, RuntimeAnimationProperty property)
         {
             Dopesheet.Expand(row, property.Children.Count);
         }
 
-        public void CollapseRow(int row, AnimationPropertyItem property)
+        public void CollapseRow(int row, RuntimeAnimationProperty property)
         {
             Dopesheet.Collapse(row, property.Children.Count);
         }
