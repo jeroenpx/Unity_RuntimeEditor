@@ -774,6 +774,7 @@ namespace Battlehub.RTEditor
 
                 Light light = lightGO.AddComponent<Light>();
                 light.type = LightType.Directional;
+                light.shadows = LightShadows.Soft;
                 lightGO.AddComponent<ExposeToEditor>();
             }
 
