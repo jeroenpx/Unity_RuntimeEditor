@@ -131,6 +131,7 @@ namespace Battlehub.RTEditor
                     m_propertiesView.Target = null;
                     m_propertiesView.Clip = null;
                     m_timelineView.Clip = null;
+                    m_timelineView.Animation = null;
                 }
                 else
                 {
@@ -142,6 +143,7 @@ namespace Battlehub.RTEditor
                             m_selectedClipIndex = i;
                             m_propertiesView.Target = m_target.gameObject;
                             m_propertiesView.Clip = m_target.Clips[i];
+                            m_timelineView.Animation = m_target;
                             m_timelineView.Clip = m_target.Clips[i];
                             break;
                         }
@@ -195,7 +197,6 @@ namespace Battlehub.RTEditor
             m_propertiesView.PropertyCollapsed += OnPropertyCollapsed;
             m_propertiesView.PropertyValueChanged += OnPropertyValueChanged;
             
-
             m_timelineView = GetComponentInChildren<AnimationTimelineView>(true);
             m_animationCreateView = GetComponentInChildren<AnimationCreateView>(true);
             m_animationCreateView.Click += OnCreateClick;
@@ -368,7 +369,11 @@ namespace Battlehub.RTEditor
 
         private void OnAnimationsDropdownValueChanged(int value)
         {
-
+            if(m_target != null)
+            {
+                m_target.ClipIndex = value;
+                m_target.Refresh();
+            }
         }
 
         private void OnSamplesInputEndEdit(string value)

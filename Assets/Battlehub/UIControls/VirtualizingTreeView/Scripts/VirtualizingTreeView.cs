@@ -377,28 +377,36 @@ namespace Battlehub.UIControls
             }
             else
             {
-                TreeViewItemContainerData parentContainer = (TreeViewItemContainerData)GetItemContainerData(parent);
-                if (parentContainer == null)
+                TreeViewItemContainerData parentContainerData = (TreeViewItemContainerData)GetItemContainerData(parent);
+                if (parentContainerData == null)
                 {
                     return;
                 }
 
                 int index = -1;
-                if (parentContainer.IsExpanded)
+                if (parentContainerData.IsExpanded)
                 {
-                    if (parentContainer.HasChildren(this))
+                    if (parentContainerData.HasChildren(this))
                     {
-                        TreeViewItemContainerData lastDescendant = parentContainer.LastDescendant(this);
+                        TreeViewItemContainerData lastDescendant = parentContainerData.LastDescendant(this);
                         index = IndexOf(lastDescendant.Item) + 1;
                     }
                     else
                     {
-                        index = IndexOf(parentContainer.Item) + 1;
+                        index = IndexOf(parentContainerData.Item) + 1;
                     }
                 }
                 else
                 {
-                    parentContainer.CanExpand = true;
+                    VirtualizingTreeViewItem parentContainer = (VirtualizingTreeViewItem)GetItemContainer(parent);
+                    if(parentContainer != null)
+                    {
+                        parentContainer.CanExpand = true;
+                    }
+                    else
+                    {
+                        parentContainerData.CanExpand = true;
+                    }
                 }
 
                 if (index > -1)
@@ -407,11 +415,11 @@ namespace Battlehub.UIControls
                     VirtualizingTreeViewItem addedTreeViewItem = (VirtualizingTreeViewItem)GetItemContainer(item);
                     if (addedTreeViewItem != null)
                     {
-                        addedTreeViewItem.Parent = parentContainer;
+                        addedTreeViewItem.Parent = parentContainerData;
                     }
                     else
                     {
-                        addedItemData.Parent = parentContainer;
+                        addedItemData.Parent = parentContainerData;
                     }
                 }
             }

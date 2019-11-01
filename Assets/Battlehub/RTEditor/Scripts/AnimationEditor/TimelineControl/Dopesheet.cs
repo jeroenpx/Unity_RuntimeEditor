@@ -10,6 +10,8 @@ namespace Battlehub.RTEditor
     {
         public class DsAnimationClip
         {
+            public event Action Modified;
+
             public int VisibleRowsCount
             {
                 get;
@@ -375,7 +377,7 @@ namespace Battlehub.RTEditor
 
                 if(curves)
                 {
-                    RefreshCurves(SamplesCount);
+                    RefreshCurves();
                 }
             }
 
@@ -443,12 +445,36 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            private void RefreshCurves(int samplesCount)
+            private void RefreshCurves()
             {
                 for(int i = 0; i < m_rows.Count; ++i)
                 {
                     DsRow row = m_rows[i];
-                    row.RefreshCurve(samplesCount);
+                    row.RefreshCurve(SamplesCount);
+                }
+
+                if(Modified != null)
+                {
+                    Modified();
+                }
+            }
+
+            public void RefreshCurve(int index)
+            {
+                DsRow row = m_rows[index];
+                row.RefreshCurve(SamplesCount);
+
+                if(Modified != null)
+                {
+                    Modified();
+                }
+            }
+
+            public void RaiseCurveModified(int index)
+            {
+                if (Modified != null)
+                {
+                    Modified();
                 }
             }
 
@@ -509,9 +535,11 @@ namespace Battlehub.RTEditor
                     m_value = value;
                     if(Index > -1)
                     {
-                        Keyframe keyframe = Row.Curve.keys[Index];
+                        Keyframe[] keyframes = Row.Curve.keys;
+                        Keyframe keyframe = keyframes[Index];
                         keyframe.value = m_value;
-                        Row.Curve.keys[Index] = keyframe;
+                        keyframes[Index] = keyframe;
+                        Row.Curve.keys = keyframes;
                     }
                 }
             }

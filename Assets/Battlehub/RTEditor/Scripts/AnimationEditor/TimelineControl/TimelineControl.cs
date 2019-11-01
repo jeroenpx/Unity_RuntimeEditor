@@ -4,6 +4,7 @@
 using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace Battlehub.RTEditor
 {
     public interface ITimelineControl
     {
+        event Action ClipModified;
+
         bool MultiselectMode
         {
             get;
@@ -63,6 +66,8 @@ namespace Battlehub.RTEditor
 
     public class TimelineControl : MonoBehaviour, ITimelineControl
     {
+        public event Action ClipModified;
+
         [SerializeField]
         private RawImage m_output = null;
         [SerializeField]
@@ -152,7 +157,7 @@ namespace Battlehub.RTEditor
         /// Dopesheet.Keyframe must be replaced with more appropriate data structure
         public Dopesheet.DsAnimationClip Clip
         {
-            get
+            private get
             {
                 if(m_dopesheet == null)
                 {
@@ -168,7 +173,18 @@ namespace Battlehub.RTEditor
                     return;
                 }
 
+                if(m_dopesheet.Clip != null)
+                {
+                    m_dopesheet.Clip.Modified -= OnClipModified;
+                }
+
                 m_dopesheet.Clip = value;
+
+                if (m_dopesheet.Clip != null)
+                {
+                    m_dopesheet.Clip.Modified += OnClipModified;
+                }
+
                 float colums = m_dopesheet.Clip.ColsCount - 1;
                 m_interval.x = Mathf.Log(m_timelineGridParams.VertLinesSecondary * colums / (m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary), m_timelineGridParams.VertLinesSecondary);
                 ChangeInterval(Vector2.zero);
@@ -338,6 +354,11 @@ namespace Battlehub.RTEditor
             {
                 m_boxSelection.BeginSelection -= OnBeginBoxSelection;
                 m_boxSelection.Selection -= OnBoxSelection;
+            }
+
+            if(m_dopesheet.Clip != null)
+            {
+                m_dopesheet.Clip.Modified -= OnClipModified;
             }
         }
 
@@ -682,6 +703,7 @@ namespace Battlehub.RTEditor
             else
             {
                 keyframe.Value = value;
+                Clip.RaiseCurveModified(keyframe.Row.Index);
             }
         }
 
@@ -702,8 +724,8 @@ namespace Battlehub.RTEditor
                 Clip.AddKeyframes(newKeyframe);
             }
 
-            dopesheetRow.RefreshCurve(Clip.SamplesCount);
-            
+            Clip.RefreshCurve(row);
+
             m_renderGraphics = true;
         }
 
@@ -892,7 +914,15 @@ namespace Battlehub.RTEditor
             m_camera.enabled = true;
             m_camera.Render();
             m_camera.enabled = false;
-        }   
+        }
+
+        private void OnClipModified()
+        {
+            if(ClipModified != null)
+            {
+                ClipModified();
+            }
+        }
     }
 }
 

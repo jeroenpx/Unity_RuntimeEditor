@@ -258,7 +258,7 @@ namespace Battlehub.RTEditor
                     {
                         if (!hasChildren)
                         {
-                            m_inputField.gameObject.SetActive(!isBool);
+                            m_inputField.transform.parent.gameObject.SetActive(!isBool);
                             m_inputField.DeactivateInputField();
 
                             if (!isBool && m_item.Value != null)
@@ -299,7 +299,7 @@ namespace Battlehub.RTEditor
                         }
                         else
                         {
-                            m_inputField.gameObject.SetActive(false);
+                            m_inputField.transform.parent.gameObject.SetActive(false);
                             m_inputField.text = "";
                         }
                     }
@@ -327,7 +327,7 @@ namespace Battlehub.RTEditor
                 {
                     if (m_inputField != null)
                     {
-                        m_inputField.gameObject.SetActive(false);
+                        m_inputField.transform.parent.gameObject.SetActive(false);
                     }
                     if (m_toggle != null)
                     {

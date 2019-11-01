@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -26,6 +27,11 @@ namespace Battlehub.RTEditor
             set;
         }
 
+        public RuntimeAnimation Animation
+        {
+            get;
+            set;
+        }
 
         private RuntimeAnimationClip m_clip;
         public RuntimeAnimationClip Clip
@@ -35,12 +41,38 @@ namespace Battlehub.RTEditor
             {
                 m_clip = value;
 
-                Dopesheet.DsAnimationClip clip = new Dopesheet.DsAnimationClip();
-
-                //Add keyframes to DsClip here
-
+                Dopesheet.Clip = new Dopesheet.DsAnimationClip();
                 Dopesheet.VisibleRowsCount = 1;
-                Dopesheet.Clip = clip;
+
+                if(m_clip != null)
+                {
+                    List<RuntimeAnimationProperty> addedProperties = new List<RuntimeAnimationProperty>();
+                    List<int> addedIndexes = new List<int>();
+                    if (m_clip.Properties.Count > 0)
+                    {
+                        addedProperties.Add(new RuntimeAnimationProperty { ComponentTypeName = RuntimeAnimationProperty.k_SpecialEmptySpace });
+                        addedIndexes.Add(0);
+                    }
+                    int index = 1;
+                    foreach (RuntimeAnimationProperty property in m_clip.Properties)
+                    {
+                        addedProperties.Add(property);
+                        addedIndexes.Add(index);
+                        index++;
+
+                        if (property.Children != null)
+                        {
+                            for (int i = 0; i < property.Children.Count; i++)
+                            {
+                                addedProperties.Add(property.Children[i]);
+                                addedIndexes.Add(index);
+                                index++;
+                            }
+                        }
+                    }
+
+                    AddRows(addedIndexes.ToArray(), addedProperties.ToArray());
+                }
                 
                 if (m_timeline != null)
                 {
@@ -58,6 +90,12 @@ namespace Battlehub.RTEditor
         private void Start()
         {
             Dopesheet.VisibleRowsCount = 1;
+            Dopesheet.ClipModified += OnClipModified;
+        }
+
+        private void OnDestroy()
+        {
+            Dopesheet.ClipModified -= OnClipModified;
         }
 
         public void SetKeyframeValue(int row, RuntimeAnimationProperty property)
@@ -135,6 +173,14 @@ namespace Battlehub.RTEditor
         public void FirstSample()
         {
             Dopesheet.FirstSample();
+        }
+
+        private void OnClipModified()
+        {
+            if(Animation != null)
+            {
+                Animation.Refresh();
+            }
         }
     }
 

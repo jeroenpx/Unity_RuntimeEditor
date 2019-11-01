@@ -40,17 +40,7 @@ namespace Battlehub.RTEditor
         public void Remove(RuntimeAnimationProperty property)
         {
             m_properties.Remove(property);
-            if (property.Children != null)
-            {
-                for (int i = 0; i < property.Children.Count; ++i)
-                {
-                    ClearCurve(property.Children[i]);
-                }
-            }
-            else
-            {
-                ClearCurve(property);
-            }
+            ClearCurve(property);
         }
 
         private void SetCurve(RuntimeAnimationProperty property)
@@ -65,7 +55,8 @@ namespace Battlehub.RTEditor
         private void ClearCurve(RuntimeAnimationProperty property)
         {
             Type componentType = property.ComponentType;
-            if (componentType != null && property.Children == null)
+            //if (componentType != null && property.Children == null)
+            if (componentType != null && property.Parent == null)
             {
                 m_clip.SetCurve("", componentType, property.PropertyPath, null);
             }
@@ -81,36 +72,71 @@ namespace Battlehub.RTEditor
             m_clip = new AnimationClip();
             m_clip.legacy = true;
         }
+
+        public void Refresh()
+        {
+            for(int i = 0; i < m_properties.Count; ++i)
+            {
+                RuntimeAnimationProperty property = m_properties[i];
+                if (property.Children != null)
+                {
+                    for (int j = 0; j < property.Children.Count; ++j)
+                    {
+                        SetCurve(property.Children[j]);
+                    }
+                }
+                else
+                {
+                    SetCurve(property);
+                }
+            }
+        }
     }
 
     public class RuntimeAnimation : MonoBehaviour
     {
         private Animation m_animation;
-        
+
+        public int ClipIndex = -1;
+
         private readonly List<RuntimeAnimationClip> m_rtClips = new List<RuntimeAnimationClip>();
         public IList<RuntimeAnimationClip> Clips
         {
             get { return m_rtClips; }
         }
 
+        private bool m_isPlaying;
         public bool IsPlaying
         {
-            get { return m_animation.isPlaying; }
+            get { return m_isPlaying; }
             set
             {
-                if (!m_animation.isPlaying)
+                if(m_isPlaying != value)
                 {
-                    m_animation.Play();
-                }
-                else
-                {
-                    m_animation.Stop();
+                    m_isPlaying = value;
+                    if (m_isPlaying)
+                    {
+                        if (ClipIndex >= 0 && ClipIndex < m_rtClips.Count)
+                        {
+                            RuntimeAnimationClip clip = m_rtClips[ClipIndex];
+                            m_animation.Play(clip.name);
+                        }
+                    }
+                    else
+                    {
+                        m_animation.Stop();
+                    }
                 }
             }
         }
         
         public void AddClip(RuntimeAnimationClip rtClip)
         {
+            if(m_rtClips.Count == 0)
+            {
+                ClipIndex = 0;
+            }
+
             m_rtClips.Add(rtClip);
             m_animation.AddClip(rtClip.Clip, rtClip.name);
         }
@@ -118,9 +144,19 @@ namespace Battlehub.RTEditor
         public void RemoveClip(RuntimeAnimationClip rtClip)
         {
             int index = m_rtClips.IndexOf(rtClip);
+            if(index == ClipIndex)
+            {
+                m_animation.Stop();
+            }
+
             if(index >= 0)
             {
                 RemoveClipAt(index);
+            }
+
+            if(ClipIndex >= m_rtClips.Count)
+            {
+                ClipIndex = m_rtClips.Count - 1;
             }
         }
 
@@ -144,11 +180,18 @@ namespace Battlehub.RTEditor
             //m_animationState = (AnimationState)en.Current;
         }
 
-    
 
-        private void OnDestroy()
+        public void Refresh()
         {
-            
+            if(ClipIndex >= 0)
+            {
+                RuntimeAnimationClip clip = m_rtClips[ClipIndex];
+                clip.Refresh();
+                clip.Clip.wrapMode = WrapMode.Loop;
+
+                m_animation.RemoveClip(clip.name);
+                m_animation.AddClip(clip.Clip, clip.name);
+            }
         }
     }
 }
