@@ -258,6 +258,24 @@ namespace Battlehub.RTEditor
             UnityEventHelper.RemoveListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
+        protected override void UpdateOverride()
+        {
+            base.UpdateOverride();
+
+            bool isPlaying = m_target != null && m_target.IsPlaying;
+           
+            if(m_playToggle.isOn != isPlaying)
+            {
+                m_playToggle.isOn = isPlaying;
+            }
+
+            bool isInPreviewMode = m_target != null && m_target.IsInPreviewMode;
+            if(m_previewToggle.isOn != isInPreviewMode)
+            {
+                m_previewToggle.isOn = isInPreviewMode;
+            }
+        }
+
         private void OnSelectionChanged(Object[] unselectedObjects)
         {
             if (Editor.Selection.activeGameObject != null)
@@ -327,7 +345,10 @@ namespace Battlehub.RTEditor
 
         private void OnPreviewToggleValueChanged(bool value)
         {
-
+            if(m_target != null)
+            {
+                m_target.IsInPreviewMode = value;
+            }
         }
 
         private void OnRecordToggleValueChanged(bool value)
@@ -347,8 +368,6 @@ namespace Battlehub.RTEditor
 
         private void OnPlayToggleValueChanged(bool value)
         {
-            m_timelineView.IsPlaying = value;
-
             Target.IsPlaying = value;
         }
 
@@ -372,7 +391,6 @@ namespace Battlehub.RTEditor
             if(m_target != null)
             {
                 m_target.ClipIndex = value;
-                m_target.Refresh();
             }
         }
 
@@ -426,8 +444,6 @@ namespace Battlehub.RTEditor
                 }
             }
         }
-
-
     }
 }
 

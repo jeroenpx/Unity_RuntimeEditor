@@ -60,14 +60,13 @@ namespace Battlehub.RTEditor
         {
             get { return Mathf.FloorToInt(5.0f / m_columnWidth); }
         }
-
-        public int Sample
+        
+        public int GetSample()
         {
-            get { return m_sample; }
-            set { SetSample(value); }
+            return m_sample;
         }
 
-        private void SetSample(int sample)
+        public void SetSample(int sample, bool raiseEvent)
         {
             int oldSample = m_sample;
             m_sample = sample;
@@ -76,7 +75,7 @@ namespace Battlehub.RTEditor
             pos.x = (m_sample - m_offset.x) * m_columnWidth;
             m_pointer.transform.localPosition = pos;
 
-            if (oldSample != m_sample)
+            if (raiseEvent && oldSample != m_sample)
             {
                 if (SampleChanged != null)
                 {
@@ -125,7 +124,7 @@ namespace Battlehub.RTEditor
             Vector2Int coord;
             if (GetKeyframeCoord(eventData, false, out coord))
             {
-                SetSample(coord.x);
+                SetSample(coord.x, true);
             }
         }
 

@@ -81,21 +81,32 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public bool IsPlaying
-        {
-            get { return m_dopesheet.IsPlaying; }
-            set { m_dopesheet.IsPlaying = value; }
-        }
-
         private void Start()
         {
             Dopesheet.VisibleRowsCount = 1;
             Dopesheet.ClipModified += OnClipModified;
+            Dopesheet.SampleChanged += OnSampleChanged;
         }
 
         private void OnDestroy()
         {
-            Dopesheet.ClipModified -= OnClipModified;
+            if((Dopesheet as Component) != null)
+            {
+                Dopesheet.ClipModified -= OnClipModified;
+                Dopesheet.SampleChanged -= OnSampleChanged;
+            }
+        }
+
+        private void Update()
+        {
+            if(Animation != null && Animation.IsPlaying)
+            {
+                Dopesheet.SetNormalizedTime(Animation.NormalizedTime % 1, false);
+                if(Animation.NormalizedTime > 1)
+                {
+                    Animation.NormalizedTime = 0;
+                }
+            }
         }
 
         public void SetKeyframeValue(int row, RuntimeAnimationProperty property)
@@ -182,6 +193,12 @@ namespace Battlehub.RTEditor
                 Animation.Refresh();
             }
         }
+
+        private void OnSampleChanged()
+        {
+            Animation.NormalizedTime = Dopesheet.NormalizedTime;
+        }
+
     }
 
 }

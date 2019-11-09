@@ -15,6 +15,7 @@ namespace Battlehub.RTEditor
     public interface ITimelineControl
     {
         event Action ClipModified;
+        event Action SampleChanged;
 
         bool MultiselectMode
         {
@@ -27,6 +28,11 @@ namespace Battlehub.RTEditor
             get;
         }
 
+        float NormalizedTime
+        {
+            get;
+        }
+
         int VisibleRowsCount
         {
             get;
@@ -35,16 +41,10 @@ namespace Battlehub.RTEditor
 
         Dopesheet.DsAnimationClip Clip
         {
-            //get;
             set;
         }
 
-        bool IsPlaying
-        {
-            get;
-            set;
-        }
-
+        void SetNormalizedTime(float value, bool raiseEvent);
         void NextSample();
         void PrevSample();
         void LastSample();
@@ -67,6 +67,7 @@ namespace Battlehub.RTEditor
     public class TimelineControl : MonoBehaviour, ITimelineControl
     {
         public event Action ClipModified;
+        public event Action SampleChanged;
 
         [SerializeField]
         private RawImage m_output = null;
@@ -127,8 +128,28 @@ namespace Battlehub.RTEditor
             {
                 if(m_pointer != null)
                 {
-                    return m_pointer.Sample;
+                    return m_pointer.GetSample();
                 }
+                return 0;
+            }
+        }
+
+        public float NormalizedTime
+        {
+            get
+            {
+                if(m_pointer != null)
+                {
+                    if(Clip.LastSample <= Clip.FirstSample)
+                    {
+                        return 0;
+                    }
+
+                    float sample = CurrentSample;
+
+                    return sample / (Clip.LastSample - Clip.FirstSample);
+                }
+
                 return 0;
             }
         }
@@ -189,13 +210,6 @@ namespace Battlehub.RTEditor
                 m_interval.x = Mathf.Log(m_timelineGridParams.VertLinesSecondary * colums / (m_timelineGridParams.VertLines * m_timelineGridParams.VertLinesSecondary), m_timelineGridParams.VertLinesSecondary);
                 ChangeInterval(Vector2.zero);
             }
-        }
-
-        private bool m_isPlaying;
-        public bool IsPlaying
-        {
-            get { return m_isPlaying; }
-            set { m_isPlaying = value; }
         }
 
         private void Awake()
@@ -285,6 +299,7 @@ namespace Battlehub.RTEditor
 
             Clip = new Dopesheet.DsAnimationClip();
 
+            m_pointer.SampleChanged += OnTimelineSampleChanged;
             m_pointer.PointerDown += OnTimlineClick;
             m_pointer.BeginDrag += OnTimelineBeginDrag;
             m_pointer.Drag += OnTimelineDrag;
@@ -344,6 +359,7 @@ namespace Battlehub.RTEditor
 
             if(m_pointer != null)
             {
+                m_pointer.SampleChanged -= OnTimelineSampleChanged;
                 m_pointer.PointerDown -= OnTimlineClick;
                 m_pointer.BeginDrag -= OnTimelineBeginDrag;
                 m_pointer.Drag -= OnTimelineDrag;
@@ -424,6 +440,14 @@ namespace Battlehub.RTEditor
             }
 
             return false;
+        }
+
+        private void OnTimelineSampleChanged(int sample)
+        {
+            if(SampleChanged != null)
+            {
+                SampleChanged();
+            }
         }
 
         private void OnTimlineClick(TimelinePointer.PointerArgs args)
@@ -548,7 +572,6 @@ namespace Battlehub.RTEditor
             m_renderGraphics = true;
         }
 
-        
         private void OnBeginBoxSelection(TimelineBoxSelectionCancelArgs args)
         {
             Vector2Int coord;
@@ -806,44 +829,45 @@ namespace Battlehub.RTEditor
             Clip.Refresh(dictonaries, firstAndLastSample, curves);
         }
 
+        public void SetNormalizedTime(float value, bool raiseEvent)
+        {
+            float sample = 0;
+            if (Clip.LastSample > Clip.FirstSample)
+            {
+                sample = value * (Clip.LastSample - Clip.FirstSample);
+            }
+
+            m_pointer.SetSample(Mathf.RoundToInt(sample), raiseEvent);
+        }
+
         public void NextSample()
         {
-            if (m_pointer.Sample < Clip.LastSample)
+            int sample = m_pointer.GetSample();
+            if (sample < Clip.LastSample)
             {
-                m_pointer.Sample++;
+                sample++;
+                m_pointer.SetSample(sample, true);
             }
         }
 
         public void PrevSample()
         {
-            if (m_pointer.Sample > Clip.FirstSample)
+            int sample = m_pointer.GetSample();
+            if (sample > Clip.FirstSample)
             {
-                m_pointer.Sample--;
+                sample--;
+                m_pointer.SetSample(sample, true);
             }
         }
 
         public void LastSample()
         {
-            m_pointer.Sample = Clip.LastSample;
+            m_pointer.SetSample(Clip.LastSample, true);
         }
 
         public void FirstSample()
         {
-            m_pointer.Sample = Clip.FirstSample;
-        }
-
-        private void Update()
-        {
-            if(m_isPlaying)
-            {
-                int sample = m_pointer.Sample;
-                sample++;
-                if (sample > Clip.LastSample)
-                {
-                    sample = Clip.FirstSample;
-                }
-                m_pointer.Sample = sample;
-            }
+            m_pointer.SetSample(Clip.FirstSample, true);
         }
 
         private void LateUpdate()
