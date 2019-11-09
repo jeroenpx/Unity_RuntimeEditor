@@ -20,8 +20,8 @@ namespace Battlehub.RTEditor
             {
                 return new[]
                 {
-                    new PropertyDescriptor("Convex", editor.Component, convexInfo, convexInfo, valueChanged),
-                    new PropertyDescriptor("Is Trigger", editor.Component, isTriggerInfo, isTriggerInfo),
+                    new PropertyDescriptor("Convex", editor.Component, convexInfo, convexInfo, valueChanged) { AnimationPropertyName = "m_Convex"},
+                    new PropertyDescriptor("Is Trigger", editor.Component, isTriggerInfo, "m_IsTrigger"),
                     new PropertyDescriptor("Material", editor.Component, materialInfo, materialInfo),
                     new PropertyDescriptor("Mesh", editor.Component, meshInfo, meshInfo),
                 };
@@ -30,7 +30,7 @@ namespace Battlehub.RTEditor
             {
                 return new[]
                 {
-                    new PropertyDescriptor("Convex", editor.Component, convexInfo, convexInfo, valueChanged),
+                    new PropertyDescriptor("Convex", editor.Component, convexInfo, convexInfo, valueChanged)  { AnimationPropertyName = "m_Convex"},
                     new PropertyDescriptor("Material", editor.Component, materialInfo, materialInfo),
                     new PropertyDescriptor("Mesh", editor.Component, meshInfo, meshInfo),
                 };

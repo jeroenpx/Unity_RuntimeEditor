@@ -260,7 +260,7 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public static PropertyInfo[] GetProperties(Type type)
         {
-            return GetAllProperties(type).Where(p => p.GetGetMethod() != null && p.GetSetMethod() != null).ToArray();
+            return GetAllProperties(type).Where(p => p.GetGetMethod() != null && p.GetSetMethod() != null /*&& !Reflection.IsDelegate(p.PropertyType)*/).ToArray();
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public static FieldInfo[] GetFields(Type type)
         {
-            Func<FieldInfo, bool> filter = f => (!f.FieldType.IsGenericType || IsGenericList(f.FieldType) || IsHashSet(f.FieldType) ||  IsDictionary(f.FieldType));
+            Func<FieldInfo, bool> filter = f => /*!Reflection.IsDelegate(f.FieldType) &&*/ (!f.FieldType.IsGenericType || IsGenericList(f.FieldType) || IsHashSet(f.FieldType) ||  IsDictionary(f.FieldType));
             if (type.IsSubclassOf(typeof(MonoBehaviour)))
             {
                 return type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Union(

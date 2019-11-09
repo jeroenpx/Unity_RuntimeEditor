@@ -13,12 +13,12 @@ namespace Battlehub.RTEditor
     public struct PropertyDescriptor
     {
         public string Label;
+        public string AnimationPropertyName;
         public MemberInfo MemberInfo;
         public MemberInfo ComponentMemberInfo;
         public PropertyEditorCallback ValueChangedCallback;
         public PropertyEditorCallback EndEditCallback;
         public Range Range;
-
         public PropertyDescriptor[] ChildDesciptors;
      
         public Type MemberType
@@ -66,7 +66,9 @@ namespace Battlehub.RTEditor
 
 		public object Target;
         
-        public PropertyDescriptor(string label, object target, MemberInfo memberInfo)
+        public PropertyDescriptor(string label, object target, MemberInfo memberInfo) : this(label, target, memberInfo, memberInfo.Name) {}
+
+        public PropertyDescriptor(string label, object target, MemberInfo memberInfo, string animationPropertyName)
         {
             MemberInfo = memberInfo;
             ComponentMemberInfo = memberInfo;
@@ -76,7 +78,7 @@ namespace Battlehub.RTEditor
             EndEditCallback = null;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
-
+            AnimationPropertyName = animationPropertyName;
         }
 
         public PropertyDescriptor(string label, object target, MemberInfo memberInfo, MemberInfo componentMemberInfo)
@@ -89,6 +91,7 @@ namespace Battlehub.RTEditor
             EndEditCallback = null;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
+            AnimationPropertyName = null;
         }
 
         public PropertyDescriptor(string label, object target, MemberInfo memberInfo, MemberInfo componentMemberInfo, PropertyEditorCallback valueChangedCallback)
@@ -101,6 +104,7 @@ namespace Battlehub.RTEditor
             EndEditCallback = null;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
+            AnimationPropertyName = null;
         }
 
         public PropertyDescriptor(string label, object target, MemberInfo memberInfo, MemberInfo componentMemberInfo, PropertyEditorCallback valueChangedCallback, PropertyEditorCallback endEditCallback)
@@ -113,6 +117,7 @@ namespace Battlehub.RTEditor
             EndEditCallback = endEditCallback;
             Range = TryGetRange(memberInfo);
             ChildDesciptors = null;
+            AnimationPropertyName = null;
         }
 
         public PropertyDescriptor(string label, object target, MemberInfo memberInfo, MemberInfo componentMemberInfo, PropertyEditorCallback valueChangedCallback, Range range)
@@ -125,6 +130,7 @@ namespace Battlehub.RTEditor
             EndEditCallback = null;
             Range = range;
             ChildDesciptors = null;
+            AnimationPropertyName = null;
         }
 
         private static Range TryGetRange(MemberInfo memberInfo)

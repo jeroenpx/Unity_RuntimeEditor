@@ -36,12 +36,12 @@ namespace Battlehub.RTEditor
 
             return new[]
                 {
-                    new PropertyDescriptor( "Cast Shadows", editor.Component, shadowCastingMode, shadowCastingMode),
-                    new PropertyDescriptor( "Receive Shadows", editor.Component, receiveShadows, receiveShadows),
-                    new PropertyDescriptor( "Materials", editor.Component, materials, materials),
-                    new PropertyDescriptor( "Light Probes", editor.Component, lightProbes, lightProbes),
-                    new PropertyDescriptor( "Reflection Probes", editor.Component, reflectionProbes, reflectionProbes),
-                    new PropertyDescriptor( "Anchor Override", editor.Component, anchorOverride, anchorOverride),
+                    new PropertyDescriptor( "Cast Shadows", editor.Component, shadowCastingMode),
+                    new PropertyDescriptor( "Receive Shadows", editor.Component, receiveShadows, "m_ReceiveShadows"),
+                    new PropertyDescriptor( "Materials", editor.Component, materials),
+                    new PropertyDescriptor( "Light Probes", editor.Component, lightProbes),
+                    new PropertyDescriptor( "Reflection Probes", editor.Component, reflectionProbes),
+                    new PropertyDescriptor( "Anchor Override", editor.Component, anchorOverride),
                 };
         }
     }

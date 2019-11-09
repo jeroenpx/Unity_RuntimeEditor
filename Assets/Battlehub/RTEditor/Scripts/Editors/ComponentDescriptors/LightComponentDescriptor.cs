@@ -27,24 +27,24 @@ namespace Battlehub.RTEditor
             MemberInfo renderModeInfo = Strong.PropertyInfo((Light x) => x.renderMode, "renderMode");
 
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
-            descriptors.Add(new PropertyDescriptor("Enabled", editor.Component, enabledInfo, enabledInfo));
+            descriptors.Add(new PropertyDescriptor("Enabled", editor.Component, enabledInfo, "m_Enabled"));
             descriptors.Add(new PropertyDescriptor("Type", editor.Component, lightTypeInfo, lightTypeInfo, valueChanged));
             if (light.type == LightType.Point)
             {
                 MemberInfo rangeInfo = Strong.PropertyInfo((Light x) => x.range, "range");
-                descriptors.Add(new PropertyDescriptor("Range", editor.Component, rangeInfo, rangeInfo));
+                descriptors.Add(new PropertyDescriptor("Range", editor.Component, rangeInfo, "m_Range"));
             }
             else if (light.type == LightType.Spot)
             {
                 MemberInfo rangeInfo = Strong.PropertyInfo((Light x) => x.range, "range");
                 MemberInfo spotAngleInfo = Strong.PropertyInfo((Light x) => x.spotAngle, "spotAngle");
-                descriptors.Add(new PropertyDescriptor("Range", editor.Component, rangeInfo, rangeInfo));
-                descriptors.Add(new PropertyDescriptor("Spot Angle", editor.Component, spotAngleInfo, spotAngleInfo, null, new Range(1, 179)));
+                descriptors.Add(new PropertyDescriptor("Range", editor.Component, rangeInfo, "m_Range"));
+                descriptors.Add(new PropertyDescriptor("Spot Angle", editor.Component, spotAngleInfo, spotAngleInfo, null, new Range(1, 179)) { AnimationPropertyName = "m_SpotAngle" } );
             }
 
-            descriptors.Add(new PropertyDescriptor("Color", editor.Component, colorInfo, colorInfo));
-            descriptors.Add(new PropertyDescriptor("Intensity", editor.Component, intensityInfo, intensityInfo, null, new Range(0, 8)));
-            descriptors.Add(new PropertyDescriptor("Bounce Intensity", editor.Component, bounceIntensityInfo, bounceIntensityInfo, null, new Range(0, 8)));
+            descriptors.Add(new PropertyDescriptor("Color", editor.Component, colorInfo, "m_Color"));
+            descriptors.Add(new PropertyDescriptor("Intensity", editor.Component, intensityInfo, intensityInfo, null, new Range(0, 8)) { AnimationPropertyName = "m_Intensity" });
+            descriptors.Add(new PropertyDescriptor("Bounce Intensity", editor.Component, bounceIntensityInfo, bounceIntensityInfo, null, new Range(0, 8)) { AnimationPropertyName = "m_BounceIntensity" });
 
             if (light.type != LightType.Area)
             {
@@ -57,11 +57,11 @@ namespace Battlehub.RTEditor
                     MemberInfo shadowNormalBiasInfo = Strong.PropertyInfo((Light x) => x.shadowNormalBias, "shadowNormalBias");
                     MemberInfo shadowNearPlaneInfo = Strong.PropertyInfo((Light x) => x.shadowNearPlane, "shadowNearPlane");
 
-                    descriptors.Add(new PropertyDescriptor("Strength", editor.Component, shadowStrengthInfo, shadowStrengthInfo, null, new Range(0, 1)));
+                    descriptors.Add(new PropertyDescriptor("Strength", editor.Component, shadowStrengthInfo, shadowStrengthInfo, null, new Range(0, 1)) { AnimationPropertyName = "m_Strength" });
                     descriptors.Add(new PropertyDescriptor("Resoultion", editor.Component, shadowResolutionInfo, shadowResolutionInfo));
-                    descriptors.Add(new PropertyDescriptor("Bias", editor.Component, shadowBiasInfo, shadowBiasInfo, null, new Range(0, 2)));
-                    descriptors.Add(new PropertyDescriptor("Normal Bias", editor.Component, shadowNormalBiasInfo, shadowNormalBiasInfo, null, new Range(0, 3)));
-                    descriptors.Add(new PropertyDescriptor("Shadow Near Plane", editor.Component, shadowNearPlaneInfo, shadowNearPlaneInfo, null, new Range(0, 10)));
+                    descriptors.Add(new PropertyDescriptor("Bias", editor.Component, shadowBiasInfo, shadowBiasInfo, null, new Range(0, 2)) { AnimationPropertyName = "m_Bias" });
+                    descriptors.Add(new PropertyDescriptor("Normal Bias", editor.Component, shadowNormalBiasInfo, shadowNormalBiasInfo, null, new Range(0, 3)) { AnimationPropertyName = "m_NormalBias" });
+                    descriptors.Add(new PropertyDescriptor("Shadow Near Plane", editor.Component, shadowNearPlaneInfo, shadowNearPlaneInfo, null, new Range(0, 10)) { AnimationPropertyName = "m_NearPlane" });
                 }
 
                 descriptors.Add(new PropertyDescriptor("Cookie", editor.Component, cookieInfo, cookieInfo));

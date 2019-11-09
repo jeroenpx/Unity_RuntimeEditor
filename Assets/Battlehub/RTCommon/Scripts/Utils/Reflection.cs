@@ -81,6 +81,11 @@ namespace Battlehub
             return null;
         }
 
+        public static bool IsDelegate(Type type)
+        {
+            return typeof(MulticastDelegate).IsAssignableFrom(type.BaseType);
+        }
+
         public static bool IsScript(this Type type)
         {
             return type.IsSubclassOf(typeof(MonoBehaviour));

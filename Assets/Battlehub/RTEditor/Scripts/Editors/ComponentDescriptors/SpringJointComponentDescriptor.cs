@@ -26,18 +26,18 @@ namespace Battlehub.RTEditor
             return new[]
             {
                 new PropertyDescriptor("ConnectedBody", editor.Component, connectedBodyInfo),
-                new PropertyDescriptor("Anchor", editor.Component, anchorInfo),
-                new PropertyDescriptor("Auto Configure Connected Anchor", editor.Component, autoConfigAnchorInfo),
-                new PropertyDescriptor("Connected Anchor", editor.Component, connectedAnchorInfo),
-                new PropertyDescriptor("Spring", editor.Component, springInfo),
-                new PropertyDescriptor("Damper", editor.Component, damperInfo),
-                new PropertyDescriptor("MinDistance", editor.Component, minDistanceInfo),
-                new PropertyDescriptor("MaxDistance", editor.Component, maxDistanceInfo),
-                new PropertyDescriptor("Tolerance", editor.Component, toleranceInfo),
-                new PropertyDescriptor("Break Force", editor.Component, breakForceInfo),
-                new PropertyDescriptor("Break Torque", editor.Component, breakTorqueInfo),
-                new PropertyDescriptor("Enable Collision", editor.Component, enableCollisionInfo),
-                new PropertyDescriptor("Enable Preprocessing", editor.Component, enablePreporcessingInfo),
+                new PropertyDescriptor("Anchor", editor.Component, anchorInfo, "m_Anchor"),
+                new PropertyDescriptor("Auto Configure Connected Anchor", editor.Component, autoConfigAnchorInfo, "m_AutoConfigureConnectedAnchor"),
+                new PropertyDescriptor("Connected Anchor", editor.Component, connectedAnchorInfo, "m_ConnectedAnchor"),
+                new PropertyDescriptor("Spring", editor.Component, springInfo, "m_Spring"),
+                new PropertyDescriptor("Damper", editor.Component, damperInfo, "m_Damper"),
+                new PropertyDescriptor("MinDistance", editor.Component, minDistanceInfo, "m_MinDistance"),
+                new PropertyDescriptor("MaxDistance", editor.Component, maxDistanceInfo, "m_MaxDistance"),
+                new PropertyDescriptor("Tolerance", editor.Component, toleranceInfo, "m_Tolerance"),
+                new PropertyDescriptor("Break Force", editor.Component, breakForceInfo, "m_BreakForce"),
+                new PropertyDescriptor("Break Torque", editor.Component, breakTorqueInfo, "m_BreakTorque"),
+                new PropertyDescriptor("Enable Collision", editor.Component, enableCollisionInfo, "m_EnableCollision"),
+                new PropertyDescriptor("Enable Preprocessing", editor.Component, enablePreporcessingInfo, "m_EnablePreprocessing"),
             };            
         }
     }

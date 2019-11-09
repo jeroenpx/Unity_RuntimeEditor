@@ -21,6 +21,7 @@ namespace Battlehub.RTEditor
         public string ComponentTypeName;
         public string ComponentDisplayName;
         public string PropertyName;
+        public string AnimationPropertyName;
         public string PropertyDisplayName;
         public RuntimeAnimationProperty Parent;
         public List<RuntimeAnimationProperty> Children;
@@ -32,15 +33,15 @@ namespace Battlehub.RTEditor
             get { return Type.GetType(ComponentTypeName); }
         }
 
-        public string PropertyPath
+        public string AnimationPropertyPath
         {
             get
             {
                 if(Parent != null)
                 {
-                    return Parent.PropertyName + "." + PropertyName;
+                    return Parent.AnimationPropertyName + "." + PropertyName;
                 }
-                return PropertyName;
+                return AnimationPropertyName;
             }
         }
 
@@ -54,6 +55,7 @@ namespace Battlehub.RTEditor
             ComponentTypeName = item.ComponentTypeName;
             ComponentDisplayName = item.ComponentDisplayName;
             PropertyName = item.PropertyName;
+            AnimationPropertyName = item.AnimationPropertyName;
             PropertyDisplayName = item.PropertyDisplayName;
             Parent = item.Parent;
             Children = item.Children;
@@ -173,6 +175,7 @@ namespace Battlehub.RTEditor
                 RuntimeAnimationProperty child = new RuntimeAnimationProperty
                 {
                     PropertyName = field.Name,
+                    AnimationPropertyName = field.Name,
                     PropertyDisplayName = field.Name,
                     ComponentTypeName = ComponentTypeName,
                     Parent = this,
@@ -195,6 +198,7 @@ namespace Battlehub.RTEditor
                 RuntimeAnimationProperty child = new RuntimeAnimationProperty
                 {
                     PropertyName = property.Name,
+                    AnimationPropertyName = property.Name,
                     PropertyDisplayName = property.Name,
                     ComponentTypeName = ComponentTypeName,
                     Parent = this,

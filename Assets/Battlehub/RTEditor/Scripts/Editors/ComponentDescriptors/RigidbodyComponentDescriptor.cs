@@ -18,11 +18,11 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor("Mass", editor.Component, massInfo, massInfo),
-                new PropertyDescriptor("Drag", editor.Component, dragInfo, dragInfo),
-                new PropertyDescriptor("Angular Drag", editor.Component, angularDragInfo, angularDragInfo),
-                new PropertyDescriptor("Use Gravity", editor.Component, useGravityInfo, useGravityInfo),
-                new PropertyDescriptor("Is Kinematic", editor.Component, isKinematicInfo, isKinematicInfo),
+                new PropertyDescriptor("Mass", editor.Component, massInfo, "m_Mass"),
+                new PropertyDescriptor("Drag", editor.Component, dragInfo, "m_Drag"),
+                new PropertyDescriptor("Angular Drag", editor.Component, angularDragInfo, "m_AngularDrag"),
+                new PropertyDescriptor("Use Gravity", editor.Component, useGravityInfo, "m_UseGravity"),
+                new PropertyDescriptor("Is Kinematic", editor.Component, isKinematicInfo, "m_IsKinematic"),
                 new PropertyDescriptor("Interpolation", editor.Component, interpolationInfo, interpolationInfo),
                 new PropertyDescriptor("Collision Detection", editor.Component, collisionDetectionInfo, collisionDetectionInfo),
             };

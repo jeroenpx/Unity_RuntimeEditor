@@ -17,7 +17,7 @@ namespace Battlehub.RTSL.Internal
     using PersistentAnimationCurve = PersistentSurrogateTemplate;
 
     [PersistentTemplate("Battlehub.RTEditor.RuntimeAnimationProperty", 
-        new[] { "ComponentTypeName",  "ComponentDisplayName", "PropertyName", "PropertyDisplayName", "Children", "Parent", "Curve" },
+        new[] { "ComponentTypeName",  "ComponentDisplayName", "PropertyName", "PropertyDisplayName", "AnimationPropertyName", "Children", "Parent", "Curve" },
         new[] { "UnityEngine.AnimationCurve" } )]
     public class PersistentRuntimeAnimationProperty_RTSL_Template : PersistentSurrogateTemplate
     {
@@ -37,9 +37,12 @@ namespace Battlehub.RTSL.Internal
         public string PropertyDisplayName;
 
         [ProtoMember(5)]
-        public List<PersistentRuntimeAnimationProperty> Children;
+        public string AnimationPropertyName;
 
         [ProtoMember(6)]
+        public List<PersistentRuntimeAnimationProperty> Children;
+
+        [ProtoMember(7)]
         public PersistentAnimationCurve Curve;
 
         public override void ReadFrom(object obj)
@@ -56,6 +59,7 @@ namespace Battlehub.RTSL.Internal
             ComponentDisplayName = property.ComponentDisplayName;
             PropertyName = property.PropertyName;
             PropertyDisplayName = property.PropertyDisplayName;
+            AnimationPropertyName = property.AnimationPropertyName;
            
             if(property.Children != null)
             {
@@ -88,8 +92,9 @@ namespace Battlehub.RTSL.Internal
             property.ComponentDisplayName = ComponentDisplayName;
             property.PropertyName = PropertyName;
             property.PropertyDisplayName = PropertyDisplayName;
+            property.AnimationPropertyName = AnimationPropertyName;
 
-            if(Children != null)
+            if (Children != null)
             {
                 property.Children = new List<RuntimeAnimationProperty>();
                 for(int i = 0; i < Children.Count; ++i)

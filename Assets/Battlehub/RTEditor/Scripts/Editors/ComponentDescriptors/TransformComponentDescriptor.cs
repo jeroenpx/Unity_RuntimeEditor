@@ -17,9 +17,9 @@ namespace Battlehub.RTEditor
         {
             TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
 
-            MemberInfo position = Strong.PropertyInfo((Transform x) => x.localPosition, "position");
-            MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.localRotation, "rotation");
-            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.Rotation, "Rotation");
+            MemberInfo position = Strong.PropertyInfo((Transform x) => x.localPosition, "localPosition");
+            MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.localRotation, "localRotation");
+            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.localEuler, "localEuler");
             MemberInfo scale = Strong.PropertyInfo((Transform x) => x.localScale, "localScale");
 
             return new[]
@@ -33,7 +33,7 @@ namespace Battlehub.RTEditor
 
     public class TransformPropertyConverter 
     {
-        public Vector3 Rotation
+        public Vector3 localEuler
         {
             get
             {

@@ -19,7 +19,7 @@ namespace Battlehub.RTEditor
 
             MemberInfo position = Strong.PropertyInfo((Transform x) => x.localPosition, "position");
             MemberInfo rotation = Strong.PropertyInfo((Transform x) => x.localRotation, "rotation");
-            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.Rotation, "Rotation");
+            MemberInfo rotationConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.localEuler, "localEuler");
             MemberInfo scale = Strong.PropertyInfo((Transform x) => x.localScale, "localScale");
 
             return new[]

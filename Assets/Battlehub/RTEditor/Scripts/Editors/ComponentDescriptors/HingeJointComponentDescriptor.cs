@@ -28,15 +28,15 @@ namespace Battlehub.RTEditor
             return new[]
             {
                 new PropertyDescriptor("ConnectedBody", editor.Component, connectedBodyInfo),
-                new PropertyDescriptor("Anchor", editor.Component, anchorInfo),
-                new PropertyDescriptor("Axis", editor.Component, axisInfo),
-                new PropertyDescriptor("Auto Configure Connected Anchor", editor.Component, autoConfigAnchorInfo),
-                new PropertyDescriptor("Connected Anchor", editor.Component, connectedAnchorInfo),
-                new PropertyDescriptor("Use Spring", editor.Component, useSpringInfo),
+                new PropertyDescriptor("Anchor", editor.Component, anchorInfo, "m_Anchor"),
+                new PropertyDescriptor("Axis", editor.Component, axisInfo, "m_Axis"),
+                new PropertyDescriptor("Auto Configure Connected Anchor", editor.Component, autoConfigAnchorInfo, "m_AutoConfigureConnectedAnchor"),
+                new PropertyDescriptor("Connected Anchor", editor.Component, connectedAnchorInfo, "m_ConnectedAnchor"),
+                new PropertyDescriptor("Use Spring", editor.Component, useSpringInfo, "m_UseSpring"),
                 new PropertyDescriptor("Spring", editor.Component, springInfo),
-                new PropertyDescriptor("Use Motor", editor.Component, useMotorInfo),
+                new PropertyDescriptor("Use Motor", editor.Component, useMotorInfo, "m_UseMotor"),
                 new PropertyDescriptor("Motor", editor.Component, motorInfo),
-                new PropertyDescriptor("Use Limits", editor.Component, useLimitsInfo),
+                new PropertyDescriptor("Use Limits", editor.Component, useLimitsInfo, "m_UseLimits"),
                 new PropertyDescriptor("Limits", editor.Component, limitsInfo)
                 {
                     ChildDesciptors = new[]
@@ -48,10 +48,10 @@ namespace Battlehub.RTEditor
                         new PropertyDescriptor("Contact Distance", null, Strong.PropertyInfo((JointLimits x) => x.contactDistance, "contactDistance")),
                     }
                 },
-                new PropertyDescriptor("Break Force", editor.Component, breakForceInfo),
-                new PropertyDescriptor("Break Torque", editor.Component, breakTorqueInfo),
-                new PropertyDescriptor("Enable Collision", editor.Component, enableCollisionInfo),
-                new PropertyDescriptor("Enable Preprocessing", editor.Component, enablePreporcessingInfo),
+                new PropertyDescriptor("Break Force", editor.Component, breakForceInfo, "m_BreakForce"),
+                new PropertyDescriptor("Break Torque", editor.Component, breakTorqueInfo, "m_BreakTorque"),
+                new PropertyDescriptor("Enable Collision", editor.Component, enableCollisionInfo, "m_EnableCollision"),
+                new PropertyDescriptor("Enable Preprocessing", editor.Component, enablePreporcessingInfo, "m_EnablePreprocessing"),
             };            
         }
     }

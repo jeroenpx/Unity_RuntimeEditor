@@ -45,14 +45,17 @@ namespace Battlehub.RTEditor
         }
 
         void SetNormalizedTime(float value, bool raiseEvent);
+        void SetSample(int value);
         void NextSample();
         void PrevSample();
         void LastSample();
         void FirstSample();
 
         void ChangeInterval(Vector2 delta);
+        void BeginSetKeyframeValues();
+        void EndSetKeyframeValues();
         void SetKeyframeValue(int row, float value);
-        void AddKeyframe(int sample, int row, float value);
+        
         void RemoveKeyframes(int rowIndex);
         void RemoveSelectedKeyframes();
 
@@ -147,7 +150,7 @@ namespace Battlehub.RTEditor
 
                     float sample = CurrentSample;
 
-                    return sample / (Clip.LastSample - Clip.FirstSample);
+                    return sample / Clip.SamplesCount;
                 }
 
                 return 0;
@@ -704,6 +707,18 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private bool m_raiseCurveModified = true;
+        public void BeginSetKeyframeValues()
+        {
+            m_raiseCurveModified = false;
+        }
+
+        public void EndSetKeyframeValues()
+        {
+            m_raiseCurveModified = true;
+            Clip.Refresh();
+        }
+
         public void SetKeyframeValue(int row, float value)
         {
             Dopesheet.DsKeyframe keyframe = Clip.GetKeyframe(row, CurrentSample);
@@ -726,11 +741,15 @@ namespace Battlehub.RTEditor
             else
             {
                 keyframe.Value = value;
-                Clip.RaiseCurveModified(keyframe.Row.Index);
+
+                if(m_raiseCurveModified)
+                {
+                    Clip.RaiseCurveModified(keyframe.Row.Index);
+                }
             }
         }
 
-        public void AddKeyframe(int sample, int row, float value)
+        private void AddKeyframe(int sample, int row, float value)
         {
             if(sample < 0 || row < 0)
             {
@@ -747,8 +766,11 @@ namespace Battlehub.RTEditor
                 Clip.AddKeyframes(newKeyframe);
             }
 
-            Clip.RefreshCurve(row);
-
+            if(m_raiseCurveModified)
+            {
+                Clip.RefreshCurve(row);
+            }
+            
             m_renderGraphics = true;
         }
 
@@ -779,6 +801,13 @@ namespace Battlehub.RTEditor
 
             if (notRemovedKeyframesList.Count > 0)
             {
+                Dopesheet.DsKeyframe topRowKeyframe = keyframesList.Where(kf => kf.Row.Index == 0).FirstOrDefault();
+                if (topRowKeyframe != null && !notRemovedKeyframesList.Contains(topRowKeyframe))
+                {
+                    notRemovedKeyframesList.Add(topRowKeyframe);
+                    keyframesList.Remove(topRowKeyframe);
+                }
+
                 Clip.UnselectKeyframes(notRemovedKeyframesList.ToArray());
             }
 
@@ -834,10 +863,17 @@ namespace Battlehub.RTEditor
             float sample = 0;
             if (Clip.LastSample > Clip.FirstSample)
             {
-                sample = value * (Clip.LastSample - Clip.FirstSample);
+                sample = Clip.FirstSample + value * (Clip.LastSample - Clip.FirstSample);
             }
 
             m_pointer.SetSample(Mathf.RoundToInt(sample), raiseEvent);
+        }
+
+        public void SetSample(int value)
+        {
+            int sample = Mathf.Clamp(value, Clip.FirstSample, Clip.LastSample);
+
+            m_pointer.SetSample(sample, true);
         }
 
         public void NextSample()

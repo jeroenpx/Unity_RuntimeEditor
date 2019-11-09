@@ -39,14 +39,14 @@ namespace Battlehub.RTEditor
 
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
 
-            descriptors.Add(new PropertyDescriptor("Cast Shadows", editor.Component, castShadowsInfo, castShadowsInfo));
-            descriptors.Add(new PropertyDescriptor("Receive Shadows", editor.Component, receiveShadowsInfo, receiveShadowsInfo));
+            descriptors.Add(new PropertyDescriptor("Cast Shadows", editor.Component, castShadowsInfo));
+            descriptors.Add(new PropertyDescriptor("Receive Shadows", editor.Component, receiveShadowsInfo, "m_ReceiveShadows"));
             descriptors.Add(new PropertyDescriptor("Materials", editor.Component, materialsInfo, materialsInfo));
             descriptors.Add(new PropertyDescriptor("Light Probes", editor.Component, lightProbesInfo, lightProbesInfo));
             descriptors.Add(new PropertyDescriptor("Reflection Probes", editor.Component, reflectionProbesInfo, reflectionProbesInfo));
             descriptors.Add(new PropertyDescriptor("Anchor Override", editor.Component, anchorOverrideInfo, anchorOverrideInfo));
             descriptors.Add(new PropertyDescriptor("Quality", editor.Component, qualityInfo, qualityInfo));
-            descriptors.Add(new PropertyDescriptor("Update When Offscreen", editor.Component, updateWhenOffscreenInfo, updateWhenOffscreenInfo));
+            descriptors.Add(new PropertyDescriptor("Update When Offscreen", editor.Component, updateWhenOffscreenInfo, "m_UpdateWhenOffscreen"));
             descriptors.Add(new PropertyDescriptor("Skinned Motion Vectors", editor.Component, skinnedMotionVectorsInfo, skinnedMotionVectorsInfo));
             descriptors.Add(new PropertyDescriptor("Mesh", editor.Component, meshInfo, meshInfo));
             descriptors.Add(new PropertyDescriptor("Root Bone", editor.Component, rootBoneInfo, rootBoneInfo));

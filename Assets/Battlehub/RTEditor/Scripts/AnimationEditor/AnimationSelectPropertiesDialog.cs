@@ -1,9 +1,11 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
+using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -93,6 +95,8 @@ namespace Battlehub.RTEditor
                 alreadyAddedHs.Add(property.ComponentTypeName + " " + property.PropertyName);
             }
 
+            MemberInfo enabledProperty = Strong.MemberInfo((Behaviour x) => x.enabled);
+
             List<RuntimeAnimationProperty> components = new List<RuntimeAnimationProperty>();
             IEditorsMap editorsMap = IOC.Resolve<IEditorsMap>();
             Type[] editableTypes = editorsMap.GetEditableTypes();
@@ -120,7 +124,7 @@ namespace Battlehub.RTEditor
                 {
                     PropertyDescriptor propertyDescriptor = propertyDescriptors[j];
                     Type memberType = propertyDescriptor.MemberType;
-                    if(memberType.IsClass || memberType.IsEnum)
+                    if(memberType.IsClass || memberType.IsEnum || typeof(MonoBehaviour).IsAssignableFrom(editableType) && propertyDescriptor.MemberInfo is PropertyInfo)
                     {
                         continue;
                     }
@@ -132,13 +136,39 @@ namespace Battlehub.RTEditor
 
                     RuntimeAnimationProperty property = new RuntimeAnimationProperty();
                     property.Parent = component;
-
                     property.ComponentTypeName = component.ComponentTypeName;
                     property.ComponentDisplayName = component.ComponentDisplayName;
                     property.PropertyName = propertyDescriptor.MemberInfo.Name;
                     property.PropertyDisplayName = propertyDescriptor.Label;
 
+                    if (propertyDescriptor.MemberInfo.Name == enabledProperty.Name && propertyDescriptor.MemberInfo.DeclaringType == enabledProperty.DeclaringType)
+                    {
+                        property.AnimationPropertyName = "m_Enabled";
+                    }
+                    else
+                    {    
+                        if(string.IsNullOrEmpty(propertyDescriptor.AnimationPropertyName))
+                        {
+                            Type componentType = property.ComponentType;
+                            if(typeof(Component).IsAssignableFrom(componentType) && !typeof(MonoBehaviour).IsAssignableFrom(componentType))
+                            {
+                                //Trying to derive serialized property name
+                                string aPropName = propertyDescriptor.MemberInfo.Name;
+                                property.AnimationPropertyName = "m_" + Char.ToUpper(aPropName[0]) + aPropName.Substring(1);
+                            }
+                            else
+                            {
+                                property.AnimationPropertyName = propertyDescriptor.MemberInfo.Name;
+                            }
+                        }
+                        else
+                        {
+                            property.AnimationPropertyName = propertyDescriptor.AnimationPropertyName;
+                        }
+                    }
+
                     property.Component = propertyDescriptor.Target;
+
 
                     component.Children.Add(property);
                 }

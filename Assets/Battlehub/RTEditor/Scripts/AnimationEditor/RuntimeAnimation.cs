@@ -47,17 +47,16 @@ namespace Battlehub.RTEditor
             Type componentType = property.ComponentType;
             if (componentType != null && property.Children == null)
             {
-                m_clip.SetCurve("", componentType, property.PropertyPath, property.Curve);
+                m_clip.SetCurve("", componentType, property.AnimationPropertyPath, property.Curve);
             }
         }
 
         private void ClearCurve(RuntimeAnimationProperty property)
         {
             Type componentType = property.ComponentType;
-            //if (componentType != null && property.Children == null)
             if (componentType != null && property.Parent == null)
             {
-                m_clip.SetCurve("", componentType, property.PropertyPath, null);
+                m_clip.SetCurve("", componentType, property.AnimationPropertyPath, null);
             }
         }
 
@@ -137,7 +136,7 @@ namespace Battlehub.RTEditor
 
                 if(!m_animation.isPlaying)
                 {
-                    Debug.LogWarning("!m_animation.IsPlaying");
+                   // Debug.LogWarning("!m_animation.IsPlaying");
                     return null;
                 }
 
@@ -189,6 +188,10 @@ namespace Battlehub.RTEditor
                             {
                                 m_isPlaying = false;
                                 return;
+                            }
+                            else
+                            {
+                                m_isPlaying = true;
                             }
                         }
 

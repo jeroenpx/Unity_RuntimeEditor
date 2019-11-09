@@ -15,7 +15,7 @@ namespace Battlehub.RTEditor
             {
                 new PropertyDescriptor("Clip", editor.Component, clipInfo),
                 new PropertyDescriptor("Volume", editor.Component, volumeInfo, volumeInfo,
-                    null, new Range(0.0f, 1.0f)),
+                    null, new Range(0.0f, 1.0f)) { AnimationPropertyName = "m_Volume" },
             };
         }
     }

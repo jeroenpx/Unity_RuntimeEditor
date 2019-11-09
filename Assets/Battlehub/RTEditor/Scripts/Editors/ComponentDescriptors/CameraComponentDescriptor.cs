@@ -54,11 +54,11 @@ namespace Battlehub.RTEditor
             
             if(!camera.orthographic)
             {
-                descriptors.Add(new PropertyDescriptor("Field Of View", editor.Component, fov, fov));
+                descriptors.Add(new PropertyDescriptor("Field Of View", editor.Component, fov, "field of view"));
             }
             else
             {
-                descriptors.Add(new PropertyDescriptor("Size", editor.Component, orthographicSize, orthographicSize));
+                descriptors.Add(new PropertyDescriptor("Size", editor.Component, orthographicSize, "orthographic size"));
             }
             
             return descriptors.ToArray();

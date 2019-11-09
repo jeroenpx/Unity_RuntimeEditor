@@ -65,12 +65,12 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor("Is Trigger", editor.Component, isTriggerInfo, isTriggerInfo),
-                new PropertyDescriptor("Material", editor.Component, materialInfo, materialInfo),
-                new PropertyDescriptor("Center", editor.Component, centerInfo, centerInfo),
-                new PropertyDescriptor("Radius", editor.Component, radiusInfo, radiusInfo),
-                new PropertyDescriptor("Height", editor.Component, heightInfo, heightInfo),
-                new PropertyDescriptor("Direction", converter, directionConvertedInfo, directionInfo),
+                new PropertyDescriptor("Is Trigger", editor.Component, isTriggerInfo, "m_IsTrigger"),
+                new PropertyDescriptor("Material", editor.Component, materialInfo),
+                new PropertyDescriptor("Center", editor.Component, centerInfo, "m_Center"),
+                new PropertyDescriptor("Radius", editor.Component, radiusInfo, "m_Radius"),
+                new PropertyDescriptor("Height", editor.Component, heightInfo, "m_Height"),
+                new PropertyDescriptor("Direction", converter, directionConvertedInfo, "m_Direction"),
             };
         }
     }
