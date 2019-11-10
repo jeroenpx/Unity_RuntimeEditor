@@ -19,6 +19,7 @@ namespace Battlehub.RTCommon
     public delegate void ExposeToEditorChangeEvent<T>(ExposeToEditor obj, T oldValue, T newValue);
     public delegate void ExposeToEditorEvent(ExposeToEditor obj);
     public delegate void ExposeToEditorEvent<T>(ExposeToEditor obj, T arg);
+    public delegate void ExposeToEditorEvent<T, T2>(ExposeToEditor obj, T arg, T2 arg2);
 
     [System.Serializable]
     public class ExposeToEditorUnityEvent : UnityEvent<ExposeToEditor> { }
@@ -38,6 +39,7 @@ namespace Battlehub.RTCommon
         public static event ExposeToEditorEvent _Disabled;
         public static event ExposeToEditorChangeEvent<ExposeToEditor> _ParentChanged;
         public static event ExposeToEditorEvent<Component> _ComponentAdded;
+        public static event ExposeToEditorEvent<Component, bool> _ReloadComponentEditor;
         
         [SerializeField]
         [HideInInspector]
@@ -358,6 +360,13 @@ namespace Battlehub.RTCommon
             return component;
         }
 
+        public void ReloadComponentEditor(Component component, bool force)
+        {
+            if(_ReloadComponentEditor != null)
+            {
+                _ReloadComponentEditor(this, component, force);
+            }
+        }
 
         public ExposeToEditor NextSibling(List<GameObject> rootGameObjects)
         {

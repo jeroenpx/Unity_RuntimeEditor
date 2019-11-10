@@ -64,11 +64,18 @@ namespace Battlehub.RTEditor
             {
                 m_clip = value;
 
-                Dopesheet.Clip = new Dopesheet.DsAnimationClip();
-                Dopesheet.VisibleRowsCount = 1;
+                m_dopesheet.SetSample(0);
 
-                if(m_clip != null)
-                {
+                if (m_clip != null)
+                {                    
+                    AnimationClip clip = m_clip.Clip;
+                    const int frameRate = 60;
+                    clip.frameRate = frameRate;
+                    int samplesCount = Mathf.CeilToInt(clip.length * clip.frameRate);
+
+                    Dopesheet.Clip = new Dopesheet.DsAnimationClip(samplesCount, frameRate);
+                    Dopesheet.VisibleRowsCount = 1;
+
                     List<RuntimeAnimationProperty> addedProperties = new List<RuntimeAnimationProperty>();
                     List<int> addedIndexes = new List<int>();
                     if (m_clip.Properties.Count > 0)
@@ -94,9 +101,15 @@ namespace Battlehub.RTEditor
                         }
                     }
 
-                    AddRows(addedIndexes.ToArray(), addedProperties.ToArray());
+                    AddRows(addedIndexes.ToArray(), addedProperties.ToArray(), false);
+                    Dopesheet.Refresh();
                 }
-                
+                else
+                {
+                    Dopesheet.Clip = new Dopesheet.DsAnimationClip();
+                    Dopesheet.VisibleRowsCount = 1;
+                }
+
                 if (m_timeline != null)
                 {
                     m_timeline.SetActive(m_clip != null);
@@ -144,10 +157,10 @@ namespace Battlehub.RTEditor
 
         public void SetKeyframeValue(int row, RuntimeAnimationProperty property)
         {
-            Dopesheet.SetKeyframeValue(row, Convert.ToSingle(property.Value));
+            Dopesheet.SetKeyframeValue(Convert.ToSingle(property.Value), row);
         }
 
-        public void AddRows(int[] rows, RuntimeAnimationProperty[] properties)
+        public void AddRows(int[] rows, RuntimeAnimationProperty[] properties, bool isNew = true)
         {
             int parentIndex = 0;
             for(int i = 0; i < properties.Length; ++i)
@@ -156,7 +169,7 @@ namespace Battlehub.RTEditor
 
                 if(property.ComponentTypeName == RuntimeAnimationProperty.k_SpecialEmptySpace)
                 {
-                    Dopesheet.AddRow(true, -1, 0, null);
+                    Dopesheet.AddRow(true, isNew, -1, 0, null);
                 }
                 else
                 {
@@ -164,19 +177,47 @@ namespace Battlehub.RTEditor
                     {
                         if (property.Curve != null)
                         {
-                            Dopesheet.AddRow(true, 0, Convert.ToSingle(property.Value), property.Curve);
+                            Dopesheet.AddRow(true, isNew, 0, Convert.ToSingle(property.Value), property.Curve);
                         }
                         else
                         {
                             parentIndex = rows[i];
-                            Dopesheet.AddRow(true, 0, 0, null);
+                            Dopesheet.AddRow(true, isNew, 0, 0, null);
                         }
                     }
                     else
                     {
-                        Dopesheet.AddRow(false, parentIndex, Convert.ToSingle(property.Value), property.Curve);
+                        Dopesheet.AddRow(false, isNew, parentIndex, Convert.ToSingle(property.Value), property.Curve);
                     }
                 }
+            }
+
+            if(!isNew)
+            {
+                float clipLength = Clip.Clip.length;
+                Dopesheet.BeginSetKeyframeValues();
+                for (int i = 0; i < properties.Length; ++i)
+                {
+                    RuntimeAnimationProperty property = properties[i];
+                    if (property.ComponentTypeName == RuntimeAnimationProperty.k_SpecialEmptySpace)
+                    {
+                        continue;
+                    }
+
+                    AnimationCurve curve = property.Curve;
+                    if (curve != null)
+                    {
+                        Keyframe[] keys = curve.keys;
+                        for(int k = 0; k < keys.Length; ++k)
+                        {
+                            Keyframe kf = keys[k];
+
+                            int sample = Mathf.RoundToInt(kf.time * Dopesheet.SamplesCount / clipLength);
+                            Dopesheet.SetKeyframeValue(kf.value, rows[i], sample);
+                        }
+                    }
+                }
+                Dopesheet.EndSetKeyframeValues(false);
             }
 
             OnClipModified();
@@ -242,7 +283,10 @@ namespace Battlehub.RTEditor
 
         private void OnSampleChanged()
         {
-            Animation.NormalizedTime = Dopesheet.NormalizedTime;
+            if(Animation != null)
+            {
+                Animation.NormalizedTime = Dopesheet.NormalizedTime;
+            }
         }
     }
 

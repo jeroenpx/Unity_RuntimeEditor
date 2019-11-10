@@ -322,6 +322,10 @@ namespace Battlehub.RTEditor
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
+            if(m_editor.Object != null)
+            {
+                m_editor.Object.ReloadComponentEditor += OnReloadComponentEditor;
+            }
             m_project = IOC.Resolve<IProject>();
             m_editorsMap = IOC.Resolve<IEditorsMap>();
 
@@ -355,10 +359,12 @@ namespace Battlehub.RTEditor
             {
                 RemoveButton.onClick.AddListener(OnRemove);
             }
-            
+
+            m_editor.Object.ReloadComponentEditor -= OnReloadComponentEditor;
+            m_editor.Object.ReloadComponentEditor += OnReloadComponentEditor;
             m_editor.Undo.UndoCompleted += OnUndoCompleted;
             m_editor.Undo.RedoCompleted += OnRedoCompleted;
-
+            
             StartOverride();
         }
 
@@ -373,8 +379,12 @@ namespace Battlehub.RTEditor
             {
                 m_editor.Undo.UndoCompleted -= OnUndoCompleted;
                 m_editor.Undo.RedoCompleted -= OnRedoCompleted;
+                if(m_editor.Object != null)
+                {
+                    m_editor.Object.ReloadComponentEditor -= OnReloadComponentEditor;
+                }
             }
-            
+
             if (Expander != null)
             {
                 Expander.onValueChanged.RemoveListener(OnExpanded);
@@ -659,22 +669,30 @@ namespace Battlehub.RTEditor
 
         private void OnRedoCompleted()
         {
-            ReloadEditors();
+            ReloadEditors(false);
         }
 
         private void OnUndoCompleted()
         {
-            ReloadEditors();
+            ReloadEditors(false);
         }
 
-        private void ReloadEditors()
+        private void OnReloadComponentEditor(ExposeToEditor obj, Component component, bool force)
+        {
+            if(Component == component)
+            {
+                ReloadEditors(force);
+            }
+        }
+
+        private void ReloadEditors(bool force)
         {
             foreach (Transform t in EditorsPanel)
             {
                 PropertyEditor propertyEditor = t.GetComponent<PropertyEditor>();
                 if (propertyEditor != null)
                 {
-                    propertyEditor.Reload();
+                    propertyEditor.Reload(force);
                 }
             }
         }

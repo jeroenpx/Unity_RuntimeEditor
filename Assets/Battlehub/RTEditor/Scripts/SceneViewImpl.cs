@@ -130,11 +130,11 @@ namespace Battlehub.RTEditor
                 Vector3 point;
                 if (GetPointOnDragPlane(out point))
                 {
-                    m_prefabInstance = InstantiatePrefab(prefab, point, Quaternion.identity);
+                    m_prefabInstance = InstantiatePrefab(prefab, point, prefab.GetComponent<Transform>().rotation);
                 }
                 else
                 {
-                    m_prefabInstance = InstantiatePrefab(prefab, Vector3.zero, Quaternion.identity);
+                    m_prefabInstance = InstantiatePrefab(prefab, Vector3.zero, prefab.GetComponent<Transform>().rotation);
                 }
 
                 Debug.Log(m_prefabInstance.GetComponentsInChildren<MeshFilter>().Length);

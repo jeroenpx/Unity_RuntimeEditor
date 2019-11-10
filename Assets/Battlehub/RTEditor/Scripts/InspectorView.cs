@@ -108,6 +108,7 @@ namespace Battlehub.RTEditor
             }
         }
 
+
         private void DestroyEditor()
         {
             if (m_editor != null)

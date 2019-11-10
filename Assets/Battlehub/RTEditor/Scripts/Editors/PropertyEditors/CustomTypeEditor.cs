@@ -178,12 +178,12 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void ReloadOverride()
+        protected override void ReloadOverride(bool force)
         {
-            base.ReloadOverride();
+            base.ReloadOverride(force);
 
             object value = GetValue();
-            if (!EqualityComparer<object>.Default.Equals(m_currentValue, value))
+            if (force || !EqualityComparer<object>.Default.Equals(m_currentValue, value))
             {
                 value = Activator.CreateInstance(MemberInfoType);
                 SetValue(value);

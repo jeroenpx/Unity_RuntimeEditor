@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 222000012044081494}
   - component: {fileID: 114000011857312804}
   - component: {fileID: 114000013822679962}
-  - component: {fileID: 2925013149664396641}
+  - component: {fileID: 1349081877432444924}
   m_Layer: 5
-  m_Name: SaveSceneDialog
+  m_Name: SaveAssetDialog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
---- !u!114 &2925013149664396641
+--- !u!114 &1349081877432444924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,20 +103,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000010003848526}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 883bf76d4f448d241b1ea9ddac30e9e3, type: 3}
+  m_Script: {fileID: 11500000, guid: a756da5a901c9ef4586c5e152b554d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
   m_resizeCamera: 1
   m_activateOnAnyKey: 0
   m_canActivate: 1
-  m_windowType: 54
+  m_windowType: 56
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}
   Input: {fileID: 2255046510104239875}
   FolderIcon: {fileID: 21300000, guid: 8eb1638682a6ded4295023097793c7b2, type: 3}
-  SceneIcon: {fileID: 21300000, guid: 02c080519c5caa6478d23cab5306ac14, type: 3}
+  DefaultAssetIcon: {fileID: 21300000, guid: 6324110ea1efba34faee4869655308d5, type: 3}
 --- !u!1 &1000011147295794
 GameObject:
   m_ObjectHideFlags: 0

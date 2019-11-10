@@ -26,7 +26,7 @@ namespace Battlehub.RTEditor
             m_samples = samples;
 
             int sqSecondaryLinesCount = m_secondaryLinesCount * m_secondaryLinesCount;
-            int totalLinesCount = m_linesCount * m_secondaryLinesCount;
+            int totalLinesCount = m_linesCount * m_secondaryLinesCount + 1;
             int delta = totalLinesCount - m_textRoot.childCount;
 
             if(delta > 0)

@@ -53,8 +53,7 @@ namespace Battlehub.RTSL.Internal
                 return null;
             }
 
-
-                        IList<RuntimeAnimationClip> clips = FromID<RuntimeAnimationClip>(Clips, animation.Clips.ToArray());
+            IList<RuntimeAnimationClip> clips = FromID<RuntimeAnimationClip>(Clips, animation.Clips.ToArray());
             animation.SetClips(clips, ClipIndex);
             return animation;
         }

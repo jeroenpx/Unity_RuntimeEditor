@@ -301,7 +301,7 @@ namespace Battlehub.RTEditor
             SizeInput.text = value.Count.ToString();
         }
 
-        protected override void ReloadOverride()
+        protected override void ReloadOverride(bool force)
         {
             if (!Expander.isOn)
             {
@@ -314,10 +314,10 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if (m_currentValue == null || value == null || m_currentValue.Count != value.Count)
+            if (force || m_currentValue == null || value == null || m_currentValue.Count != value.Count)
             {
                 m_currentValue = value;
-                SetInputField(value);
+                SetInputField(m_currentValue);
                 BuildEditor();
             }
             else

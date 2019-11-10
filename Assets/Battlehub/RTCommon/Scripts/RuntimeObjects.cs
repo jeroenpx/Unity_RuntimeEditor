@@ -9,6 +9,7 @@ namespace Battlehub.RTCommon
 {
     public delegate void ObjectEvent(ExposeToEditor obj);
     public delegate void ObjectEvent<T>(ExposeToEditor obj, T arg);
+    public delegate void ObjectEvent<T, T2>(ExposeToEditor obj, T arg, T2 arg2);
     public delegate void ObjectParentChangedEvent(ExposeToEditor obj, ExposeToEditor oldValue, ExposeToEditor newValue);
    
     public interface IRuntimeObjects
@@ -25,6 +26,7 @@ namespace Battlehub.RTCommon
         event ObjectEvent NameChanged;
         event ObjectParentChangedEvent ParentChanged;
         event ObjectEvent<Component> ComponentAdded;
+        event ObjectEvent<Component, bool> ReloadComponentEditor;
 
         IEnumerable<ExposeToEditor> Get(bool rootsOnly, bool useCache = true);
     }
@@ -43,6 +45,7 @@ namespace Battlehub.RTCommon
         public event ObjectEvent NameChanged;
         public event ObjectParentChangedEvent ParentChanged;
         public event ObjectEvent<Component> ComponentAdded;
+        public event ObjectEvent<Component, bool> ReloadComponentEditor;
 
         private IRTE m_editor;
 
@@ -120,7 +123,9 @@ namespace Battlehub.RTCommon
             ExposeToEditor._TransformChanged += OnTransformChanged;
             ExposeToEditor._NameChanged += OnNameChanged;
             ExposeToEditor._ParentChanged += OnParentChanged;
+
             ExposeToEditor._ComponentAdded += OnComponentAdded;
+            ExposeToEditor._ReloadComponentEditor += OnReloadComponentEditor;
         }
 
         private void OnDestroy()
@@ -146,6 +151,7 @@ namespace Battlehub.RTCommon
             ExposeToEditor._ParentChanged -= OnParentChanged;
 
             ExposeToEditor._ComponentAdded -= OnComponentAdded;
+            ExposeToEditor._ReloadComponentEditor -= OnReloadComponentEditor;
         }
 
         private void OnIsOpenedChanged()
@@ -681,6 +687,14 @@ namespace Battlehub.RTCommon
             if(ComponentAdded != null)
             {
                 ComponentAdded(obj, component);
+            }
+        }
+
+        private void OnReloadComponentEditor(ExposeToEditor obj, Component component, bool force)
+        {
+            if(ReloadComponentEditor != null)
+            {
+                ReloadComponentEditor(obj, component, force);
             }
         }
     }

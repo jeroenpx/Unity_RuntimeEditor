@@ -1305,7 +1305,7 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] assetItems, object[] obj, ProjectEventHandler<AssetItem[]> callback = null)
         {
-            return Save(assetItems, null, null, obj, null, callback);
+            return Save(assetItems, null, null, obj, null, true, callback);
         }
 
         /// <summary>
@@ -1319,26 +1319,31 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public ProjectAsyncOperation<AssetItem[]> Save(ProjectItem[] parents, byte[][] previewData, object[] obj, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback = null)
         {
-            return Save(null, parents, previewData, obj, nameOverrides, callback);
+            return Save(null, parents, previewData, obj, nameOverrides, true, callback);
         }
 
-        private ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] existingAssetItems, ProjectItem[] parents, byte[][] previewData, object[] objects, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback)
+        public ProjectAsyncOperation<AssetItem[]> Save(ProjectItem[] parents, byte[][] previewData, object[] obj, string[] nameOverrides, bool isUserAction, ProjectEventHandler<AssetItem[]> callback = null)
+        {
+            return Save(null, parents, previewData, obj, nameOverrides, isUserAction, callback);
+        }
+
+        private ProjectAsyncOperation<AssetItem[]> Save(AssetItem[] existingAssetItems, ProjectItem[] parents, byte[][] previewData, object[] objects, string[] nameOverrides, bool isUserAction, ProjectEventHandler<AssetItem[]> callback)
         {
             ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => { _Save(existingAssetItems, parents, previewData, objects, nameOverrides, callback, ao); });
+                m_actionsQueue.Enqueue(() => { _Save(existingAssetItems, parents, previewData, objects, nameOverrides, isUserAction, callback, ao); });
             }
             else
             {
                 IsBusy = true;
-                _Save(existingAssetItems, parents, previewData, objects, nameOverrides, callback, ao);
+                _Save(existingAssetItems, parents, previewData, objects, nameOverrides, isUserAction, callback, ao);
             }
 
             return ao;
         }
 
-        private void _Save(AssetItem[] existingAssetItems, ProjectItem[] parents, byte[][] previewData, object[] objects, string[] nameOverrides, ProjectEventHandler<AssetItem[]> callback, ProjectAsyncOperation<AssetItem[]> ao)
+        private void _Save(AssetItem[] existingAssetItems, ProjectItem[] parents, byte[][] previewData, object[] objects, string[] nameOverrides, bool isUserAction, ProjectEventHandler<AssetItem[]> callback, ProjectAsyncOperation<AssetItem[]> ao)
         {
             if (BeginSave != null)
             {
@@ -1351,7 +1356,7 @@ namespace Battlehub.RTSL
                     if (SaveCompleted != null)
                     {
                         bool isNew = existingAssetItems == null;
-                        SaveCompleted(ao.Error, ao.Result, isNew);
+                        SaveCompleted(ao.Error, ao.Result, isNew && isUserAction);
                     }
                     IsBusy = false;
                 }

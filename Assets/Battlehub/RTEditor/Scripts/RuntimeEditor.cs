@@ -878,7 +878,7 @@ namespace Battlehub.RTEditor
             });
         }
 
-        private void OnSaveCompleted(Error error, AssetItem[] result, bool isNew)
+        private void OnSaveCompleted(Error error, AssetItem[] result, bool userAction)
         {
             RaiseIfIsScene(error, result, () =>
             {

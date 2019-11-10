@@ -5905,6 +5905,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_progressIndicator: {fileID: 5849259614334939582}
+  m_openDefaultProject: 1
   m_defaultProjectName: 
 --- !u!114 &257632392269822385
 MonoBehaviour:
@@ -6176,6 +6177,13 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: e5a00995c2633e046bcc7a83ad24c42e, type: 3}
     Header: Save Scene As ...
     ContentPrefab: {fileID: 1000010003848526, guid: bda63a6b64080df4297f99b8a72d520f,
+      type: 3}
+    MaxWindows: 1
+    Created: 0
+  m_saveAssetDialog:
+    Icon: {fileID: 21300000, guid: e5a00995c2633e046bcc7a83ad24c42e, type: 3}
+    Header: Save Asset As...
+    ContentPrefab: {fileID: 1000010003848526, guid: feea27e171ca7bb4ea7567726cac5e3f,
       type: 3}
     MaxWindows: 1
     Created: 0

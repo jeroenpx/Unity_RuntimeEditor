@@ -29,6 +29,12 @@ namespace Battlehub.RTEditor
                 private set;
             }
 
+            public int FrameRate
+            {
+                get;
+                private set;
+            }
+
             public int FirstSample
             {
                 get;
@@ -43,8 +49,8 @@ namespace Battlehub.RTEditor
 
             public int SamplesCount
             {
-                get;
-                private set;
+                get { return ColsCount - 1; }
+               // private set;
             }
 
             private readonly Dictionary<int, DsRow> m_visibleIndexToRow = new Dictionary<int, DsRow>();
@@ -263,7 +269,7 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            public void AddRow(bool isVisible, int parentIndex, float initialValue, AnimationCurve curve)
+            public DsRow AddRow(bool isVisible, int parentIndex, float initialValue, AnimationCurve curve)
             {
                 DsRow row = new DsRow();
                 row.IsVisible = isVisible;
@@ -281,14 +287,8 @@ namespace Battlehub.RTEditor
                     row.Parent.Children.Add(row);
                 }
 
-                DsKeyframe kf0 = new DsKeyframe(row, 0, initialValue);
-                DsKeyframe kf1 = new DsKeyframe(row, ColsCount - 1, initialValue);
-                AddKeyframes(kf0, kf1);
-
-                row.Curve = curve;
-                row.RefreshCurve(SamplesCount);
-
                 UpdateRowIndexes();
+                return row;
             }
 
             public bool RemoveRow(int row)
@@ -365,14 +365,14 @@ namespace Battlehub.RTEditor
 
             public void Refresh(bool dictonaries = true, bool firstAndLastSample = true, bool curves = true)
             {
-                if(dictonaries)
-                {
-                    RefreshDictionaries();
-                }
-
-                if(firstAndLastSample)
+                if (firstAndLastSample)
                 {
                     RefreshFirstAndLastSample();
+                }
+
+                if (dictonaries)
+                {
+                    RefreshDictionaries();
                 }
 
                 if(curves)
@@ -412,7 +412,7 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    int min = ColsCount;
+                    int min = ColsCount - 1;
                     int max = 0;
                     for (int i = 0; i < m_keyframes.Count; ++i)
                     {
@@ -442,6 +442,7 @@ namespace Battlehub.RTEditor
 
                     FirstSample = min;
                     LastSample = max;
+                    ColsCount = LastSample + 1;
                 }
             }
 
@@ -450,7 +451,7 @@ namespace Battlehub.RTEditor
                 for(int i = 0; i < m_rows.Count; ++i)
                 {
                     DsRow row = m_rows[i];
-                    row.RefreshCurve(SamplesCount);
+                    row.RefreshCurve(FrameRate);
                 }
 
                 if(Modified != null)
@@ -462,7 +463,7 @@ namespace Battlehub.RTEditor
             public void RefreshCurve(int index)
             {
                 DsRow row = m_rows[index];
-                row.RefreshCurve(SamplesCount);
+                row.RefreshCurve(FrameRate);
 
                 if(Modified != null)
                 {
@@ -478,10 +479,10 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            public DsAnimationClip(int columns = 61, int samplesCount = 60)
+            public DsAnimationClip(int samplesCount = 60, int frameRate = 60)
             {
-                ColsCount = columns;
-                SamplesCount = samplesCount;
+                ColsCount = samplesCount + 1;
+                FrameRate = frameRate;  
             }
 
         }
@@ -498,7 +499,7 @@ namespace Battlehub.RTEditor
             public List<DsRow> Children;
 
             public AnimationCurve Curve;
-            public void RefreshCurve(float samplesCount)
+            public void RefreshCurve(float frameRate)
             {
                 if(Curve != null)
                 {
@@ -511,7 +512,7 @@ namespace Battlehub.RTEditor
                         DsKeyframe dsKeyframe = dsKeyframes[i];
                         dsKeyframe.Index = i;
 
-                        Keyframe keyframe = new Keyframe(dsKeyframe.Col / samplesCount, dsKeyframe.Value);
+                        Keyframe keyframe = new Keyframe(dsKeyframe.Col / frameRate, dsKeyframe.Value);
                         keyframes[i] = keyframe;
                     }
 

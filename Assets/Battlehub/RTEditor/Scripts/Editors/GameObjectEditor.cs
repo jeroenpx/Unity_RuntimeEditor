@@ -111,7 +111,7 @@ namespace Battlehub.RTEditor
 
             return ignoreComponents;
         }
-
+        
         private bool CreateComponentEditor(GameObject go, Component component, HashSet<Component> ignoreComponents)
         {
             if (component == null)

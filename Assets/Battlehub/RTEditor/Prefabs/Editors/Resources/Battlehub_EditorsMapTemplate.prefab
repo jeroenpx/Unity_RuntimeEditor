@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5965263831575989207}
   - component: {fileID: 852504760956630530}
   m_Layer: 0
-  m_Name: Battlehub_EditorsMapAuto
+  m_Name: Battlehub_EditorsMapTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

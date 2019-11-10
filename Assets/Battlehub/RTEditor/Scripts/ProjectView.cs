@@ -238,11 +238,10 @@ namespace Battlehub.RTEditor
             }
         }
 
-     
-        private void OnSaveCompleted(Error createPrefabError, AssetItem[] result, bool isNew)
+        private void OnSaveCompleted(Error createPrefabError, AssetItem[] result, bool userAction)
         {
             Editor.IsBusy = false;
-            m_projectResources.InsertItems(result, isNew);
+            m_projectResources.InsertItems(result, userAction);
         }
 
         private void OnDuplicateCompleted(Error error, AssetItem[] result)

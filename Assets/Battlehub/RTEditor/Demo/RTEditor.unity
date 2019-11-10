@@ -840,8 +840,8 @@ Animation:
   serializedVersion: 3
   m_Animation: {fileID: 0}
   m_Animations:
-  - {fileID: 7400000, guid: 342ef076e7ca7134da8fc4ec7f9da57f, type: 2}
-  - {fileID: 7400000, guid: e024bc984b51f914ab26e015fced9898, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0

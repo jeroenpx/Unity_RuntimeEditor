@@ -69,9 +69,9 @@ namespace Battlehub.RTEditor
             m_extents.Init(boundsAccessor, boundsAccessor, Strong.PropertyInfo((BoundsAccessor x) => x.Extents, "Extents"), null, "Extents", OnValueChanging, null, OnEndEdit, false);
         }
 
-        protected override void ReloadOverride()
+        protected override void ReloadOverride(bool force)
         {
-            base.ReloadOverride();
+            base.ReloadOverride(force);
             m_center.Reload();
             m_extents.Reload();
         }

@@ -199,6 +199,9 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_saveSceneDialog = null;
 
         [SerializeField]
+        private WindowDescriptor m_saveAssetDialog = null;
+
+        [SerializeField]
         private WindowDescriptor m_openProjectDialog = null;
 
         [SerializeField]
@@ -747,6 +750,10 @@ namespace Battlehub.RTEditor
                 {
                     wd = m_saveSceneDialog;
                 }
+                else if(windowTypeName == RuntimeWindowType.SaveAsset.ToString().ToLower())
+                {
+                    wd = m_saveAssetDialog;
+                }
                 else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
                 {
                     wd = m_openProjectDialog;
@@ -912,6 +919,10 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
             {
                 m_saveSceneDialog = descriptor;
+            }
+            else if(windowTypeName == RuntimeWindowType.SaveAsset.ToString().ToLower())
+            {
+                m_saveAssetDialog = descriptor;
             }
             else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())
             {
@@ -1318,6 +1329,11 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.SaveScene.ToString().ToLower())
             {
                 wd = m_saveSceneDialog;
+                isDialog = true;
+            }
+            else if(windowTypeName == RuntimeWindowType.SaveAsset.ToString().ToLower())
+            {
+                wd = m_saveAssetDialog;
                 isDialog = true;
             }
             else if (windowTypeName == RuntimeWindowType.OpenProject.ToString().ToLower())

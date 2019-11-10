@@ -384,7 +384,7 @@ namespace Battlehub.RTEditor
             m_eraseTargetCallback = eraseTargetCallback;
         }
 
-        public void Reload()
+        public void Reload(bool force = false)
         {
             if(m_isEditing)
             {
@@ -392,11 +392,11 @@ namespace Battlehub.RTEditor
             }
 
             m_lockValue = true;
-            ReloadOverride();
+            ReloadOverride(force);
             m_lockValue = false;
         }
 
-        protected virtual void ReloadOverride()
+        protected virtual void ReloadOverride(bool force)
         {
 
         }
@@ -575,12 +575,12 @@ namespace Battlehub.RTEditor
             Reload();
         }
 
-        protected override void ReloadOverride()
+        protected override void ReloadOverride(bool force)
         {
-            base.ReloadOverride();
+            base.ReloadOverride(force);
             
             T value = GetValue();
-            if (!EqualityComparer<T>.Default.Equals(m_currentValue, value))
+            if (force || !EqualityComparer<T>.Default.Equals(m_currentValue, value))
             {
                 m_currentValue = value;
                 SetInputField(value);
