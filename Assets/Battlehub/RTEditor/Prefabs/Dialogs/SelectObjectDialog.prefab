@@ -317,16 +317,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToggleAssets
       objectReference: {fileID: 0}
-    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
-        type: 3}
-      propertyPath: m_IsOn
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
-        type: 3}
-      propertyPath: m_Group
-      value: 
-      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 5187368348241652973, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -432,6 +422,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
+        type: 3}
+      propertyPath: m_IsOn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 1003250788332044206, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_text
@@ -1026,11 +1026,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToggleScene
       objectReference: {fileID: 0}
-    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
-        type: 3}
-      propertyPath: m_Group
-      value: 
-      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 5187368348241652973, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1136,6 +1131,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5005302451592495399, guid: 531aab43aab19364f8d25da82db890be,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 7069072148126961337}
     - target: {fileID: 1003250788332044206, guid: 531aab43aab19364f8d25da82db890be,
         type: 3}
       propertyPath: m_text

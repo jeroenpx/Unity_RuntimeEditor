@@ -420,7 +420,7 @@ namespace Battlehub.RTEditor
         {
             base.OnSelect(eventData);
             IsSelected = true;
-            Debug.Log("OnTimelineControl Select");
+            //Debug.Log("OnTimelineControl Select");
         }
 
 
@@ -428,7 +428,7 @@ namespace Battlehub.RTEditor
         {
             base.OnDeselect(eventData);
             IsSelected = false;
-            Debug.Log("OnTimelineControl Deselect");
+            //Debug.Log("OnTimelineControl Deselect");
         }
 
         private void CreateDefaultTimelineGridParams()

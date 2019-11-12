@@ -302,8 +302,11 @@ namespace Battlehub.RTEditor
 
             if (m_wasInPreviewMode)
             {
-                m_target.IsInPreviewMode = true;
-                m_target.NormalizedTime = m_normalizedTime;
+                if(m_target != null)
+                {
+                    m_target.IsInPreviewMode = true;
+                    m_target.NormalizedTime = m_normalizedTime;
+                }
             }
         }
 
