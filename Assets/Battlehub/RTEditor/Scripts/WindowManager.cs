@@ -6,6 +6,7 @@ using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -577,16 +578,35 @@ namespace Battlehub.RTEditor
         private void OnDialogDestroyed(Dialog dialog)
         {
             OnContentDestroyed(dialog.Content);
-
-            //Transform pointerOverWindow = IOC.Resolve<IWindowManager>().FindPointerOverWindow(null);
-
-            //RuntimeWindow window = pointerOverWindow.GetComponentInChildren<RuntimeWindow>();
-            //if (window == null)
-            //{
-            //    window = m_editor.GetWindow(RuntimeWindowType.Scene);
-            //}
-            //m_editor.ActivateWindow(window);
         }
+
+        //private IEnumerator CoDialogDestoryed(Transform pointerOverWindow)
+        //{
+        //    yield return new WaitForEndOfFrame();
+        //    if (!m_dialogManager.IsDialogOpened)
+        //    {
+        //        RuntimeWindow window;
+        //        if (pointerOverWindow == null)
+        //        {
+        //            window = m_editor.GetWindow(RuntimeWindowType.Scene);
+        //        }
+        //        else
+        //        {
+        //            window = pointerOverWindow.GetComponentInChildren<RuntimeWindow>();
+        //            if (window == null)
+        //            {
+        //                window = m_editor.GetWindow(RuntimeWindowType.Scene);
+        //            }
+        //        }
+
+        //        if (window == null)
+        //        {
+        //            window = m_editor.Windows.FirstOrDefault();
+        //        }
+
+        //        m_editor.ActivateWindow(window);
+        //    }
+        //}
 
         private void OnRegionSelected(Region region)
         {

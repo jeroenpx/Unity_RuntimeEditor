@@ -95,6 +95,10 @@ namespace Battlehub.RTEditor
             AssetItem[] assetItems = m_project.Root.Flatten(true, false).Where(item =>
             {
                 Type type = m_project.ToType((AssetItem)item);
+                if(type == null)
+                {
+                    return false;
+                }
                 return type == ObjectType || type.IsSubclassOf(ObjectType);
 
             }).OfType<AssetItem>().ToArray();

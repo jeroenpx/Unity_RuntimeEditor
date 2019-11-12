@@ -7,19 +7,11 @@ using UnityEngine.Battlehub.SL2;
 using UnityEngine.Events.Battlehub.SL2;
 
 using UnityObject = UnityEngine.Object;
-using Battlehub.RTSL;
+using Battlehub.RTSL.Interface;
 using Battlehub.RTSL.Battlehub.SL2;
 
 namespace Battlehub.RTSL
 {
-    public interface ITypeMap
-    {
-        Type ToPersistentType(Type unityType);
-        Type ToUnityType(Type persistentType);
-        Type ToType(Guid typeGuid);
-        Guid ToGuid(Type type);
-    }
-
     public partial class TypeMap : ITypeMap
     {
         protected readonly Dictionary<Type, Type> m_toPeristentType = new Dictionary<Type, Type>();

@@ -2,23 +2,9 @@
 using System;
 using System.IO;
 using UnityEngine;
-
+using Battlehub.RTSL.Interface;
 namespace Battlehub.RTSL
 {
-    public interface ISerializer
-    {
-        TData DeepClone<TData>(TData data);
-
-        TData Deserialize<TData>(Stream stream);
-
-        TData Deserialize<TData>(byte[] b);
-
-        object Deserialize(Stream stream, Type type);
-
-        void Serialize<TData>(TData data, Stream stream);
-
-        byte[] Serialize<TData>(TData data);
-    }
   
     [ProtoBuf.ProtoContract]
     public class NilContainer { }
@@ -63,6 +49,14 @@ namespace Battlehub.RTSL
             return deserialized;
         }
 
+        public object Deserialize(byte[] b, Type type)
+        {
+            using (var stream = new MemoryStream(b))
+            {
+                return model.Deserialize(stream, null, type);
+            }
+        }
+
         public object Deserialize(Stream stream, Type type)
         {
             return model.Deserialize(stream, null, type);
@@ -73,6 +67,15 @@ namespace Battlehub.RTSL
             using (var stream = new MemoryStream(b))
             {
                 TData deserialized = (TData)model.Deserialize(stream, null, typeof(TData));
+                return deserialized;
+            }
+        }
+
+        public TData Deserialize<TData>(byte[] b, TData obj)
+        {
+            using (var stream = new MemoryStream(b))
+            {
+                TData deserialized = (TData)model.Deserialize(stream, obj, typeof(TData));
                 return deserialized;
             }
         }

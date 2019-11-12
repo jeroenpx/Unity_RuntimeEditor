@@ -8,14 +8,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
     public interface ITimelineControl
     {
+        event Action ClipBeginModify;
         event Action ClipModified;
         event Action SampleChanged;
+
+        bool IsSelected
+        {
+            get;
+        }
 
         bool MultiselectMode
         {
@@ -57,7 +64,7 @@ namespace Battlehub.RTEditor
         void FirstSample();
 
         void ChangeInterval(Vector2 delta);
-        void BeginSetKeyframeValues();
+        void BeginSetKeyframeValues(bool refresh);
         void EndSetKeyframeValues(bool refresh = true);
         void SetKeyframeValue(float value, int row, int sample);
         void SetKeyframeValue(float value, int row);
@@ -70,11 +77,14 @@ namespace Battlehub.RTEditor
         
         void Expand(int row, int count);
         void Collapse(int row, int count);
+        void BeginRefresh();
         void Refresh(bool dictonaries = true, bool firstAndLastSample = true, bool curves = true);
     }
 
-    public class TimelineControl : MonoBehaviour, ITimelineControl
+    [DefaultExecutionOrder(-61)]
+    public class TimelineControl : Selectable, ITimelineControl
     {
+        public event Action ClipBeginModify;
         public event Action ClipModified;
         public event Action SampleChanged;
 
@@ -124,6 +134,12 @@ namespace Battlehub.RTEditor
         private bool m_hScrollValue;
         private bool m_vScrollValue;
         private bool m_renderGraphics;
+
+        public bool IsSelected
+        {
+            get;
+            private set;
+        }
 
         public bool MultiselectMode
         {
@@ -193,7 +209,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-        /// Dopesheet.Keyframe must be replaced with more appropriate data structure
         public Dopesheet.DsAnimationClip Clip
         {
             private get
@@ -230,8 +245,9 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             if (m_textPanel == null)
             {
                 m_textPanel = GetComponentInChildren<TimelineTextPanel>(true);
@@ -338,16 +354,19 @@ namespace Battlehub.RTEditor
             RenderGraphics();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             if(GetComponent<TimelineControlInput>() == null)
             {
                 gameObject.AddComponent<TimelineControlInput>();
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+        
             if (m_rtListener != null)
             {
                 m_rtListener.RectTransformChanged -= OnRectTransformChanged;
@@ -394,6 +413,22 @@ namespace Battlehub.RTEditor
             {
                 m_dopesheet.Clip.Modified -= OnClipModified;
             }
+        }
+
+
+        public override void OnSelect(BaseEventData eventData)
+        {
+            base.OnSelect(eventData);
+            IsSelected = true;
+            Debug.Log("OnTimelineControl Select");
+        }
+
+
+        public override void OnDeselect(BaseEventData eventData)
+        {
+            base.OnDeselect(eventData);
+            IsSelected = false;
+            Debug.Log("OnTimelineControl Deselect");
         }
 
         private void CreateDefaultTimelineGridParams()
@@ -470,6 +505,8 @@ namespace Battlehub.RTEditor
 
         private void OnTimlineClick(TimelinePointer.PointerArgs args)
         {
+            Select();
+
             Vector2Int coord = new Vector2Int(args.Col, args.Row);
             if (TryGetKeyframeWithinRange(coord, args.Range, out coord))
             {
@@ -520,9 +557,16 @@ namespace Battlehub.RTEditor
 
         private void OnTimelineBeginDrag()
         {
+            Select();
+
             Dopesheet.DsAnimationClip clip = Clip;
 
+
             IList<Dopesheet.DsKeyframe> selectedKeyframes = clip.SelectedKeyframes;
+            if(selectedKeyframes != null && selectedKeyframes.Count > 0)
+            {
+                BeginRefresh();
+            }
             List<Dopesheet.DsKeyframe> keyframesWithUnselectedChildren = new List<Dopesheet.DsKeyframe>();
             for (int i = 0; i < selectedKeyframes.Count; ++i)
             {
@@ -726,9 +770,13 @@ namespace Battlehub.RTEditor
         }
 
         private bool m_raiseCurveModified = true;
-        public void BeginSetKeyframeValues()
+        public void BeginSetKeyframeValues(bool refresh)
         {
             m_raiseCurveModified = false;
+            if(refresh)
+            {
+                BeginRefresh();
+            }
         }
 
         public void EndSetKeyframeValues(bool refresh)
@@ -801,6 +849,8 @@ namespace Battlehub.RTEditor
 
         public void RemoveSelectedKeyframes()
         {
+            BeginRefresh();
+
             List<Dopesheet.DsKeyframe> keyframesList = Clip.SelectedKeyframes.ToList();
             HashSet<int> keyframesHs = new HashSet<int>(keyframesList.Select(kf => kf.Row.Index * Clip.ColsCount + kf.Col));
             List<Dopesheet.DsKeyframe> notRemovedKeyframesList = new List<Dopesheet.DsKeyframe>();
@@ -886,6 +936,14 @@ namespace Battlehub.RTEditor
         {
             VisibleRowsCount -= count;
             Clip.Collapse(row, count);
+        }
+
+        public void BeginRefresh()
+        {
+            if (ClipBeginModify != null)
+            {
+                ClipBeginModify();
+            }
         }
 
         public void Refresh(bool dictonaries = true, bool firstAndLastSample = true, bool curves = true)

@@ -31,6 +31,7 @@ namespace Battlehub.RTEditor
             set;
         }
 
+   
         event System.Action<ISaveAssetDialog, Object> SaveCompleted;
     }
 
@@ -55,18 +56,29 @@ namespace Battlehub.RTEditor
             get;
             set;
         }
-     
+
+        private Object m_asset;
         public Object Asset
         {
-            get;
-            set;
+            get { return m_asset; }
+            set
+            {
+                if(m_asset != value)
+                {
+                    m_asset = value;
+                    if(Input != null && m_asset != null)
+                    {
+                        Input.text = m_asset.name;
+                    }
+                }
+            }
         }
 
         public bool SelectSavedAssets
         {
             get;
             set;
-        }
+        }   
 
         protected override void AwakeOverride()
         {
@@ -342,8 +354,12 @@ namespace Battlehub.RTEditor
                         }
                         else
                         {
-                            Destroy(Asset);
-                            Asset = loadResult[0];
+                            if(loadResult.Length > 0)
+                            {
+                                Destroy(Asset);
+                                Asset = loadResult[0];
+                            }
+                            
                             RaseSaveCompleted(Asset);
                         }
                     });

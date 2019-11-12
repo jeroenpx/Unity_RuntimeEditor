@@ -58,6 +58,8 @@ namespace Battlehub.RTSL.Internal
                 return null;
             }
 
+            clip.Clear();
+
             if(Properties != null)
             {
                 for(int i = 0; i < Properties.Length; ++i)

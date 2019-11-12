@@ -30,7 +30,7 @@ namespace Battlehub.RTEditor
         private void Update()
         {
             #if USE_RTE
-            if(m_window != m_editor.ActiveWindow)
+            if(m_window != m_editor.ActiveWindow || !m_timelineControl.IsSelected)
             {
                 return;
             }
@@ -48,14 +48,6 @@ namespace Battlehub.RTEditor
             {
                 m_timelineControl.ChangeInterval(delta);
             }
-
-            //if(Input.GetKeyDown(KeyCode.K))
-            //{
-            //    for(int i = 0; i < m_timelineControl.VisibleRowsCount - 1; ++i)
-            //    {
-            //        m_timelineControl.AddKeyframe(m_timelineControl.CurrentSample, i);
-            //    }
-            //}
         }
 
         protected virtual bool MultiselectAction()

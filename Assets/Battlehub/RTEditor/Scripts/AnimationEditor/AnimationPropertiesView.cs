@@ -23,9 +23,15 @@ namespace Battlehub.RTEditor
             public RuntimeAnimationProperty Item;
         }
 
-        private ItemArg m_propertyValueChangedArg = new ItemArg();
+        private ItemArg m_itemArg = new ItemArg();
+
+        public event EventHandler<ItemArg> PropertyBeginEdit;
         public event EventHandler<ItemArg> PropertyValueChanged;
+        public event EventHandler<ItemArg> PropertyEndEdit;
+
+        public event EventHandler BeforePropertiesAdded;
         public event EventHandler<ItemsArg> PropertiesAdded;
+        public event EventHandler BeforePropertiesRemoved;
         public event EventHandler<ItemsArg> PropertiesRemoved;
         public event EventHandler<ItemArg> PropertyExpanded;
         public event EventHandler<ItemArg> PropertyCollapsed;
@@ -37,9 +43,12 @@ namespace Battlehub.RTEditor
         private readonly RuntimeAnimationProperty m_emptyTop = new RuntimeAnimationProperty { ComponentTypeName = RuntimeAnimationProperty.k_SpecialEmptySpace };
         private readonly RuntimeAnimationProperty m_emptyBottom = new RuntimeAnimationProperty { ComponentTypeName = RuntimeAnimationProperty.k_SpecialAddButton };
 
+        private VoidComponentEditor m_voidComponentEditor;
+        private IEditorsMap m_editorsMap;
+
         private bool m_isStarted;
 
-        public GameObject Target
+        public RuntimeAnimation Target
         {
             get;
             set;
@@ -55,12 +64,13 @@ namespace Battlehub.RTEditor
                 {
                     foreach(RuntimeAnimationProperty property in m_clip.Properties)
                     {
-                        property.ValueChanged -= OnPropertyValueChanged;
+                        property.Component = null;
+                        Unsubscribe(property);
                         if(property.Children != null)
                         {
                             foreach(RuntimeAnimationProperty childProperty in property.Children)
                             {
-                                childProperty.ValueChanged -= OnPropertyValueChanged;
+                                Unsubscribe(childProperty);
                             }
                         }
                     }
@@ -97,6 +107,8 @@ namespace Battlehub.RTEditor
         protected virtual void Awake()
         {
             Subscribe();
+            m_voidComponentEditor = gameObject.AddComponent<VoidComponentEditor>();
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
         }
 
         protected virtual void Start()
@@ -149,6 +161,20 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private void Subscribe(RuntimeAnimationProperty property)
+        {
+            property.BeginEdit += OnPropertyBeginEdit;
+            property.ValueChanged += OnPropertyValueChanged;
+            property.EndEdit += OnPropertyEndEdit;
+        }
+
+        private void Unsubscribe(RuntimeAnimationProperty property)
+        {
+            property.BeginEdit -= OnPropertyBeginEdit;
+            property.ValueChanged -= OnPropertyValueChanged;
+            property.EndEdit -= OnPropertyEndEdit;
+        }
+
         private void DataBind()
         {
             if (!m_isStarted)
@@ -166,24 +192,35 @@ namespace Battlehub.RTEditor
 
                 foreach (RuntimeAnimationProperty property in Clip.Properties)
                 {
+                    //Type componentType = property.ComponentType;
+                    //if(componentType != null)
+                    //{
+                    //    property.Component = Target.GetComponent(componentType);
+                    //}
+
+                    ResolveComponent(property);
+
                     m_props.Add(property);
                     
                     if (property.Children != null)
                     {
                         for (int i = 0; i < property.Children.Count; i++)
                         {
-                            m_props.Add(property.Children[i]);
-                            property.Children[i].ValueChanged += OnPropertyValueChanged;   
+                            RuntimeAnimationProperty childProperty = property.Children[i];
+                            childProperty.Component = property.Component;
+
+                            m_props.Add(childProperty);
+                            Subscribe(childProperty);
                         }
                     }
                     else
                     {
-                        property.ValueChanged += OnPropertyValueChanged;
+                        Subscribe(property);
                     }
                 }
             }
             m_props.Add(m_emptyBottom);
-            m_propertiesTreeView.Items = m_props.Where(p => p.Children != null || p == m_emptyTop || p == m_emptyBottom);
+            m_propertiesTreeView.Items = m_props.Where(p => p.Parent == null || p == m_emptyTop || p == m_emptyBottom);
         }
 
         public void AddProperty(RuntimeAnimationProperty property)
@@ -196,10 +233,15 @@ namespace Battlehub.RTEditor
                      (sender, args) => { }, (sender, args) => { }, 250, 250, 400, 400);
                 selectPropertiesDialog = IOC.Resolve<IAnimationSelectPropertiesDialog>();
                 selectPropertiesDialog.View = this;
-                selectPropertiesDialog.Target = Target;
+                selectPropertiesDialog.Target = Target.gameObject;
             }
             else
             {
+                if(BeforePropertiesAdded != null)
+                {
+                    BeforePropertiesAdded(this, EventArgs.Empty);
+                }
+
                 List<RuntimeAnimationProperty> addedProperties = new List<RuntimeAnimationProperty>();
                 List<int> addedIndexes = new List<int>();
 
@@ -235,12 +277,12 @@ namespace Battlehub.RTEditor
                         addedProperties.Add(property.Children[i]);
                         addedIndexes.Add(m_props.Count - 1);
                         m_props.Insert(m_props.Count - 1, property.Children[i]);
-                        property.Children[i].ValueChanged += OnPropertyValueChanged;
+                        Subscribe(property.Children[i]);
                     }
                 }
                 else
                 {
-                    property.ValueChanged += OnPropertyValueChanged;
+                    Subscribe(property);
                 }
 
                 if(PropertiesAdded != null)
@@ -250,16 +292,43 @@ namespace Battlehub.RTEditor
             }
         }
 
+
+        private void OnPropertyBeginEdit(RuntimeAnimationProperty property)
+        {
+            if(PropertyBeginEdit != null)
+            {
+                int rowIndex = m_props.IndexOf(property);
+
+                m_itemArg.Row = rowIndex;
+                m_itemArg.Item = property;
+
+                PropertyBeginEdit(m_itemArg);
+            }
+        }
+
         private void OnPropertyValueChanged(RuntimeAnimationProperty property, object oldValue, object newValue)
         {
             if(PropertyValueChanged != null)
             {
                 int rowIndex = m_props.IndexOf(property);
 
-                m_propertyValueChangedArg.Row = rowIndex;
-                m_propertyValueChangedArg.Item = property;
+                m_itemArg.Row = rowIndex;
+                m_itemArg.Item = property;
 
-                PropertyValueChanged(m_propertyValueChangedArg);
+                PropertyValueChanged(m_itemArg);
+            }
+        }
+
+        private void OnPropertyEndEdit(RuntimeAnimationProperty property)
+        {
+            if (PropertyEndEdit != null)
+            {
+                int rowIndex = m_props.IndexOf(property);
+
+                m_itemArg.Row = rowIndex;
+                m_itemArg.Item = property;
+
+                PropertyEndEdit(m_itemArg);
             }
         }
 
@@ -302,6 +371,11 @@ namespace Battlehub.RTEditor
             }
 
             e.Items.Remove(m_emptyBottom);   
+
+            if(BeforePropertiesRemoved != null)
+            {
+                BeforePropertiesRemoved(this, EventArgs.Empty);
+            }
         }
 
         private void OnPropertiesRemoved(object sender, ItemsRemovedArgs e)
@@ -363,7 +437,7 @@ namespace Battlehub.RTEditor
             for(int i = 0; i < removedProperties.Count; ++i)
             {
                 RuntimeAnimationProperty property = removedProperties[i].Item2;
-                property.ValueChanged -= OnPropertyValueChanged;
+                Unsubscribe(property);
                 m_props.Remove(property);
                 Clip.Remove(property);
             }
@@ -403,6 +477,52 @@ namespace Battlehub.RTEditor
             ui.Item = item;
 
             e.HasChildren = item.Children != null && item.Children.Count > 0;
+        }
+
+        public void OnComponentAdded(Component component)
+        {
+            Type type = component.GetType();
+            for(int i = 0; i < m_props.Count; ++i)
+            {
+                RuntimeAnimationProperty property = m_props[i];
+                if(property.ComponentType == type && property.ComponentIsNull)
+                {
+                    ResolveComponent(property);
+                    //property.Component = component;
+                    m_propertiesTreeView.DataBindItem(property);
+                    if(property.Children != null)
+                    {
+                        foreach(RuntimeAnimationProperty childProperty in property.Children)
+                        {
+                            childProperty.Component = property.Component;
+                            m_propertiesTreeView.DataBindItem(childProperty);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ResolveComponent(RuntimeAnimationProperty property)
+        {
+            Type componentType = property.ComponentType;
+            if(componentType == null)
+            {
+                return;
+            }
+
+            m_voidComponentEditor.Component = Target.GetComponent(componentType);
+
+            PropertyDescriptor[] propertyDescriptors = m_editorsMap.GetPropertyDescriptors(componentType, m_voidComponentEditor);
+            for(int i = 0; i < propertyDescriptors.Length; ++i)
+            {
+                PropertyDescriptor desc = propertyDescriptors[i];
+                if(property.PropertyName == desc.MemberInfo.Name)
+                {
+                    property.Component = desc.Target;
+                    break;
+                }
+            }
+            
         }
     }
 }

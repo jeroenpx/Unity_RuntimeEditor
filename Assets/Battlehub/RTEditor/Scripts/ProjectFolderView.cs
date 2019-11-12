@@ -572,15 +572,8 @@ namespace Battlehub.RTEditor
                 createFolder.Validate.AddListener(CreateValidate);
                 menuItems.Add(createFolder);
 
-                if (m_project.ToGuid(typeof(Material)) != Guid.Empty)
-                {
-                    MenuItemInfo createMaterial = new MenuItemInfo { Path = "Create/Material" };
-                    createMaterial.Action = new MenuItemEvent();
-                    createMaterial.Action.AddListener(CreateMaterial);
-                    createMaterial.Validate = new MenuItemValidationEvent();
-                    createMaterial.Validate.AddListener(CreateValidate);
-                    menuItems.Add(createMaterial);
-                }
+                CreateMenuItem("Material", "Material", typeof(Material), menuItems);
+                CreateMenuItem("Animation Clip", "AnimationClip", typeof(RuntimeAnimationClip), menuItems);
 
                 MenuItemInfo open = new MenuItemInfo { Path = "Open" };
                 open.Action = new MenuItemEvent();
@@ -625,16 +618,22 @@ namespace Battlehub.RTEditor
                 createFolder.Action.AddListener(CreateFolder);
                 menuItems.Add(createFolder);
 
-                if (m_project.ToGuid(typeof(Material)) != Guid.Empty)
-                {
-                    MenuItemInfo createMaterial = new MenuItemInfo { Path = "Create/Material" };
-                    createMaterial.Action = new MenuItemEvent();
-                    createMaterial.Command = "CurrentFolder";
-                    createMaterial.Action.AddListener(CreateMaterial);
-                    menuItems.Add(createMaterial);
-                }
+                CreateMenuItem("Material", "Material", typeof(Material), menuItems);
+                CreateMenuItem("Animation Clip", "AnimationClip", typeof(RuntimeAnimationClip), menuItems);
 
                 menu.Open(menuItems.ToArray());
+            }
+        }
+
+        private void CreateMenuItem(string text, string defaultName, Type type, List<MenuItemInfo> menuItems)
+        {
+            if (m_project.ToGuid(type) != Guid.Empty)
+            {
+                MenuItemInfo createAsset = new MenuItemInfo { Path = "Create/" + text };
+                createAsset.Action = new MenuItemEvent();
+                createAsset.Command = "CurrentFolder";
+                createAsset.Action.AddListener(arg => CreateAsset(arg, type, defaultName));
+                menuItems.Add(createAsset);
             }
         }
 
@@ -672,7 +671,7 @@ namespace Battlehub.RTEditor
             m_project.CreateFolder(folder, (error, projectItem) => Editor.IsBusy = false);
         }
 
-        private void CreateMaterial(string arg)
+        private void CreateAsset(string arg, Type type, string defaultName)
         {
             bool currentFolder = !string.IsNullOrEmpty(arg);
 
@@ -683,7 +682,8 @@ namespace Battlehub.RTEditor
             }
 
             IUnityObjectFactory objectFactory = IOC.Resolve<IUnityObjectFactory>();
-            UnityObject unityObject = objectFactory.CreateInstance(typeof(Material), null);
+            UnityObject unityObject = objectFactory.CreateInstance(type, null);
+            unityObject.name = defaultName;
 
             IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
             byte[] preview = resourcePreview.CreatePreviewData(unityObject);

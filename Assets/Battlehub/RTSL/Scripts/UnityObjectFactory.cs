@@ -76,7 +76,9 @@ namespace Battlehub.RTSL
             }
             else if(type.IsSubclassOf(typeof(ScriptableObject)))
             {
-                return ScriptableObject.CreateInstance(type);
+                ScriptableObject obj = ScriptableObject.CreateInstance(type);
+                obj.name = type.Name;
+                return obj;
             }
                
             try

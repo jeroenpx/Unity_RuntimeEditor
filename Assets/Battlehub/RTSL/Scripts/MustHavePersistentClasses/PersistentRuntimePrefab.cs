@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTSL.Interface;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;

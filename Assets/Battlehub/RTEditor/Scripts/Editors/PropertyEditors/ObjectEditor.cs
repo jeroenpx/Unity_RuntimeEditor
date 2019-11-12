@@ -161,7 +161,7 @@ namespace Battlehub.RTEditor
         private Type ToType(GameObject go)
         {
             Type type;
-            if (go.GetComponent(MemberInfoType) != null)
+            if (typeof(Component).IsAssignableFrom(MemberInfoType) && go.GetComponent(MemberInfoType) != null)
             {
                 type = MemberInfoType;
             }

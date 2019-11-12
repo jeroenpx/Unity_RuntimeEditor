@@ -696,7 +696,7 @@ namespace Battlehub.UIControls
             {
                 int i = 0;
 
-                foreach (RectTransform container in m_containers)
+                foreach (RectTransform container in m_containers.ToArray())
                 {
                     int index = firstItemIndex + i;
                     if(index < Items.Count)

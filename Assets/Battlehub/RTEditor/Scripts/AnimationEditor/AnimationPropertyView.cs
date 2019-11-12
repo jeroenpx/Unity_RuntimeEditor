@@ -9,11 +9,15 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
+
+    public delegate void AnimationPropertyEvent(RuntimeAnimationProperty property);
     public delegate void AnimationPropertyValueChanged(RuntimeAnimationProperty property, object oldValue, object newValue);
 
     public class RuntimeAnimationProperty
     {
+        public event AnimationPropertyEvent BeginEdit;
         public event AnimationPropertyValueChanged ValueChanged;
+        public event AnimationPropertyEvent EndEdit;
 
         public const string k_SpecialAddButton = "Special_AddButton";
         public const string k_SpecialEmptySpace = "Special_EmptySpace";
@@ -27,6 +31,10 @@ namespace Battlehub.RTEditor
         public List<RuntimeAnimationProperty> Children;
         public AnimationCurve Curve;
         public object Component;
+        public bool ComponentIsNull
+        {
+            get { return Component == null || (Component is Component) && ((Component)Component) == null; }
+        }
 
         public Type ComponentType
         {
@@ -62,49 +70,66 @@ namespace Battlehub.RTEditor
             Component = item.Component;
         }
 
+        public float FloatValue
+        {
+            get
+            {
+                if(ComponentIsNull)
+                {
+                    return 0;
+                }
+
+                return Convert.ToSingle(Value);
+            }
+        }
+
         public object Value
         {
             get
             {
                 if (Parent != null)
                 {
+                    if(Parent.ComponentIsNull)
+                    {
+                        return null;
+                    }
                     return GetMemberValue(Parent.Value, PropertyName);
                 }
 
                 return GetMemberValue(Component, PropertyName);
             }
-            set
+        }
+
+        public void SetValue(object value, bool raiseValueChangedEvent)
+        {
+            object oldValue = Value;
+            if (Parent != null)
             {
-                object oldValue = Value;
-                if (Parent != null)
+                object v = Parent.Value;
+                SetMemberValue(v, PropertyName, value);
+                Parent.SetValue(v, raiseValueChangedEvent);
+            }
+            else
+            {
+                SetMemberValue(Component, PropertyName, value);
+            }
+
+            if (ValueChanged != null && raiseValueChangedEvent)
+            {
+                object newValue = Value;
+                if (oldValue != null || newValue != null)
                 {
-                    object v = Parent.Value;
-                    SetMemberValue(v, PropertyName, value);
-                    Parent.Value = v;
-                }
-                else
-                {
-                    SetMemberValue(Component, PropertyName, value);
-                }
-                
-                if(ValueChanged != null)
-                {
-                    object newValue = Value;
-                    if(oldValue != null || newValue != null)
+                    if (oldValue == null || newValue == null)
                     {
-                        if (oldValue == null || newValue == null)
+                        ValueChanged(this, oldValue, newValue);
+                    }
+                    else
+                    {
+                        if (!oldValue.Equals(newValue))
                         {
                             ValueChanged(this, oldValue, newValue);
                         }
-                        else
-                        {
-                            if(!oldValue.Equals(newValue))
-                            {
-                                ValueChanged(this, oldValue, newValue);
-                            }
-                        }
                     }
-                    
                 }
             }
         }
@@ -181,8 +206,8 @@ namespace Battlehub.RTEditor
                     Parent = this,
                     Component = Component,
                     Curve = new AnimationCurve(),
-                    Value = GetMemberValue(Value, field.Name),
                 };
+                child.SetValue(GetMemberValue(Value, field.Name), false);
                 children.Add(child);
             }
 
@@ -204,13 +229,29 @@ namespace Battlehub.RTEditor
                     Parent = this,
                     Component = Component,
                     Curve = new AnimationCurve(),
-                    Value = GetMemberValue(Value, property.Name),
                 };
+                child.SetValue(GetMemberValue(Value, property.Name), false);
                 children.Add(child);
             }
 
             Children = children;
             return true;
+        }
+
+        public void RaiseBeginEdit()
+        {
+            if(BeginEdit != null)
+            {
+                BeginEdit(this);
+            }
+        }
+
+        public void RaiseEndEdit()
+        {
+            if(EndEdit != null)
+            {
+                EndEdit(this);
+            }
         }
     }
 
@@ -241,72 +282,87 @@ namespace Battlehub.RTEditor
 
                 if (m_item != null && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialAddButton && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialEmptySpace)
                 {
-                    bool isBool = m_item.Value is bool;
-                    bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
-
-                    if (m_toggle != null)
+                    if(!m_item.ComponentIsNull)
                     {
-                        m_toggle.gameObject.SetActive(isBool && !hasChildren);
-                        if (isBool)
+                        bool isBool = m_item.Value is bool;
+                        bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
+
+                        if (m_toggle != null)
                         {
-                            m_toggle.isOn = (bool)m_item.Value;
-                        }
-                    }
-
-                    if (m_dragField != null)
-                    {
-                        m_dragField.enabled = !isBool && !hasChildren;
-                    }
-
-                    if (m_inputField != null)
-                    {
-                        if (!hasChildren)
-                        {
-                            m_inputField.transform.parent.gameObject.SetActive(!isBool);
-                            m_inputField.DeactivateInputField();
-
-                            if (!isBool && m_item.Value != null)
+                            m_toggle.gameObject.SetActive(isBool && !hasChildren);
+                            if (isBool)
                             {
-                                Type type = m_item.Value.GetType();
-                                if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte))
+                                m_toggle.isOn = (bool)m_item.Value;
+                            }
+                        }
+
+                        if (m_dragField != null)
+                        {
+                            m_dragField.enabled = !isBool && !hasChildren;
+                        }
+
+                        if (m_inputField != null)
+                        {
+                            if (!hasChildren)
+                            {
+                                m_inputField.transform.parent.gameObject.SetActive(!isBool);
+                                m_inputField.DeactivateInputField();
+
+                                if (!isBool && m_item.Value != null)
                                 {
-                                    m_inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
-                                    if (m_dragField != null)
+                                    Type type = m_item.Value.GetType();
+                                    if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte))
                                     {
-                                        m_dragField.IncrementFactor = 1.0f;
+                                        m_inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
+                                        if (m_dragField != null)
+                                        {
+                                            m_dragField.IncrementFactor = 1.0f;
+                                        }
                                     }
-                                }
-                                else if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
-                                {
-                                    m_inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
-                                    if (m_dragField != null)
+                                    else if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
                                     {
-                                        m_dragField.IncrementFactor = 0.1f;
+                                        m_inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
+                                        if (m_dragField != null)
+                                        {
+                                            m_dragField.IncrementFactor = 0.1f;
+                                        }
                                     }
+                                    else
+                                    {
+                                        m_inputField.contentType = TMP_InputField.ContentType.Standard;
+                                        if (m_dragField != null)
+                                        {
+                                            m_dragField.IncrementFactor = 1.0f;
+                                        }
+                                    }
+
+                                    m_inputField.text = m_item.Value + "";
                                 }
                                 else
                                 {
                                     m_inputField.contentType = TMP_InputField.ContentType.Standard;
-                                    if (m_dragField != null)
-                                    {
-                                        m_dragField.IncrementFactor = 1.0f;
-                                    }
+                                    m_inputField.text = "";
                                 }
-
-                                m_inputField.text = m_item.Value + "";
                             }
                             else
                             {
-                                m_inputField.contentType = TMP_InputField.ContentType.Standard;
+                                m_inputField.transform.parent.gameObject.SetActive(false);
                                 m_inputField.text = "";
                             }
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (m_inputField != null)
                         {
                             m_inputField.transform.parent.gameObject.SetActive(false);
-                            m_inputField.text = "";
+                        }
+                        if (m_toggle != null)
+                        {
+                            m_toggle.gameObject.SetActive(false);
                         }
                     }
+                    
 
                     if (m_label != null)
                     {
@@ -385,19 +441,21 @@ namespace Battlehub.RTEditor
 
         private void OnInputFieldEndEdit(string value)
         {
-            UpdateValue(value);
+            RaiseBeginEdit();
+            UpdateValue(value, true);
+            RaiseEndEdit();
         }
 
-        private void UpdateValue(string value)
+        private void UpdateValue(string value, bool raiseValueChangedEvent)
         {
-            if (m_item != null)
+            if (m_item != null && !m_item.ComponentIsNull)
             {
                 Type type = m_item.Value.GetType();
 
                 object result;
                 if (Reflection.TryConvert(value, type, out result))
                 {
-                    m_item.Value = result;
+                    m_item.SetValue(result, raiseValueChangedEvent);
                 }
             }
         }
@@ -405,17 +463,43 @@ namespace Battlehub.RTEditor
         private void OnDragFieldBeginDrag()
         {
             m_isDragging = true;
+            RaiseBeginEdit();
         }
 
         private void OnDragFieldEndDrag()
         {
-            m_isDragging = false;
-            OnInputFieldEndEdit(m_inputField.text);
+            if(m_isDragging)
+            {
+                m_isDragging = false;
+                UpdateValue(m_inputField.text, true);
+                RaiseEndEdit();
+            }
         }
 
         private void OnToggleValueChange(bool value)
         {
-            m_item.Value = value;
+            if(!m_item.ComponentIsNull)
+            {
+                m_item.RaiseBeginEdit();
+                m_item.SetValue(value, true);
+                m_item.RaiseEndEdit();
+            }
+        }
+
+        private void RaiseBeginEdit()
+        {
+            if (m_item != null && !m_item.ComponentIsNull)
+            {
+                m_item.RaiseBeginEdit();
+            }
+        }
+
+        private void RaiseEndEdit()
+        {
+            if (m_item != null && !m_item.ComponentIsNull)
+            {
+                m_item.RaiseEndEdit();
+            }
         }
 
         private float m_nextUpdate = 0.0f;
@@ -423,7 +507,7 @@ namespace Battlehub.RTEditor
         {
             if (m_isDragging)
             {
-                UpdateValue(m_inputField.text);
+                UpdateValue(m_inputField.text, true);
                 return;
             }
 
@@ -436,16 +520,29 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
+
+            object component = m_item.Component;
+            if (component != null && m_item.ComponentIsNull)
+            {
+                m_item.Component = null;
+                if (m_inputField != null)
+                {
+                    m_inputField.transform.parent.gameObject.SetActive(false);
+                }
+                if (m_toggle != null)
+                {
+                    m_toggle.gameObject.SetActive(false);
+                }
+            }
+
             m_nextUpdate = Time.time + 0.2f;
-            if(m_item == null || 
+            if(m_item == null || m_item.ComponentIsNull ||
                m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialAddButton ||
                m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialEmptySpace )
             {
                 return;
             }
 
-            
-           
             bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
             if(hasChildren)
             {

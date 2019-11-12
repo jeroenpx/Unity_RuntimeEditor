@@ -29,6 +29,8 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Sprite m_mesh = null;
         [SerializeField]
+        private Sprite m_runtimeAnimationClip = null;
+        [SerializeField]
         public Sprite m_defaultPrefab = null;
         [SerializeField]
         public Sprite m_none = null;
@@ -93,13 +95,18 @@ namespace Battlehub.RTEditor
             else if (m_projectItem is AssetItem)
             {
                 AssetItem assetItem = (AssetItem)m_projectItem;
-                if (m_project.ToType(assetItem) == typeof(Scene))
+                Type assetItemType = m_project.ToType(assetItem);
+                if (assetItemType == typeof(Scene))
                 {
                     m_imgPreview.sprite = m_scene;
                 }
-                else if(m_project.ToType(assetItem) == typeof(Mesh))
+                else if(assetItemType == typeof(Mesh))
                 {
                     m_imgPreview.sprite = m_mesh;
+                }
+                else if(assetItemType == typeof(RuntimeAnimationClip))
+                {
+                    m_imgPreview.sprite = m_runtimeAnimationClip;
                 }
                 else if(assetItem.Preview == null || assetItem.Preview.PreviewData == null)
                 {

@@ -48,7 +48,7 @@ MonoBehaviour:
   EnableUndo: 1
   HitTester: {fileID: 0}
   Appearance: {fileID: 0}
-  Model: {fileID: 737, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
+  Model: {fileID: 4363, guid: d3fd87b8a132d624f846fd97fbb89c85, type: 3}
   m_targets: []
   BeforeDrag:
     m_PersistentCalls:
@@ -128,7 +128,7 @@ MonoBehaviour:
   MoveZSensitivity: 1
   FreeMoveSensitivity: 0.25
   FreeRotateSensitivity: 7.5
-  m_invertMouseButtons: 0
+  SwapLRMB: 0
 --- !u!114 &114970690636574616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,8 +172,6 @@ MonoBehaviour:
   m_canRotate: 1
   m_canFreeMove: 1
   m_orbitDistance: 5
-  m_orbitDistanceMin: 0.5
-  m_orbitDistanceMax: 1000
   m_freeSmoothMoveSpeed: 5
   m_freeSmoothRotateSpeed: 5
 --- !u!114 &8513267411312411289
@@ -475,9 +473,10 @@ Camera:
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -590,17 +589,20 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
+    m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
@@ -717,9 +719,10 @@ Camera:
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -845,6 +848,7 @@ MonoBehaviour:
   m_window: {fileID: 6898960901341884732}
   Appearance: {fileID: 0}
   m_gridOffset: {x: 0, y: 0.01, z: 0}
+  m_alpha: 1
 --- !u!1 &1624369908261116379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1059,7 +1063,6 @@ MonoBehaviour:
   m_fontSizeMax: 0
   m_fontStyle: 0
   m_textAlignment: 257
-  m_isAlignmentEnumConverted: 0
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -1086,6 +1089,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -1100,12 +1104,9 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
   - {fileID: 0}

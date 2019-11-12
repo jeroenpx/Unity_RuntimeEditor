@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    [DisallowMultipleComponent]
     public class RuntimeAnimationClip : ScriptableObject
     {
         private readonly List<RuntimeAnimationProperty> m_properties;
@@ -44,6 +43,28 @@ namespace Battlehub.RTEditor
             ClearCurve(property);
         }
 
+        public void Clear()
+        {
+            if(m_properties == null)
+            {
+                return;
+            }
+
+            if(m_clip != null)
+            {
+                for (int i = 0; i < m_properties.Count; ++i)
+                {
+                    RuntimeAnimationProperty property = m_properties[i];
+                    if (property != null)
+                    {
+                        ClearCurve(property);
+                    }
+                }
+            }
+     
+            m_properties.Clear();
+        }
+
         private void SetCurve(RuntimeAnimationProperty property)
         {
             Type componentType = property.ComponentType;
@@ -70,6 +91,7 @@ namespace Battlehub.RTEditor
         private void OnEnable()
         {
             m_clip = new AnimationClip();
+            m_clip.name = "AnimationClip";
             m_clip.legacy = true;
         }
 
@@ -95,12 +117,21 @@ namespace Battlehub.RTEditor
         }
     }
 
+    [DisallowMultipleComponent]
     public class RuntimeAnimation : MonoBehaviour
     {
+        public event Action ClipIndexChanged;
+        public event Action ClipsChanged;
+
         private Animation m_animation;
 
         private int m_clipIndex = -1;
         private List<RuntimeAnimationClip> m_rtClips = new List<RuntimeAnimationClip>();
+
+        public int ClipsCount
+        {
+            get { return m_rtClips.Count; }
+        }
 
         public int ClipIndex
         {
@@ -109,16 +140,23 @@ namespace Battlehub.RTEditor
             {
                 if(m_clipIndex != value)
                 {
-                    IsPlaying = false;
+                    SetClipIndex(value);
+                    if(ClipIndexChanged != null)
+                    {
+                        ClipIndexChanged();
+                    }
                 }
-                m_clipIndex = value;
-                Refresh();
             }
         }
 
-        public int ClipsCount
+        private void SetClipIndex(int value)
         {
-            get { return m_rtClips.Count; }
+            if (m_clipIndex != value)
+            {
+                IsPlaying = false;
+                m_clipIndex = value;
+                Refresh();
+            }
         }
 
         public List<RuntimeAnimationClip> Clips
@@ -139,37 +177,32 @@ namespace Battlehub.RTEditor
                             }
                         }
                     }
+                    SetClipIndex(-1);
                     m_rtClips = new List<RuntimeAnimationClip>();
                 }
                 else
                 {
-                    for (int i = 0; i < m_rtClips.Count; ++i)
+                    if(m_animation.clip != null)
                     {
-                        RuntimeAnimationClip rtClip = m_rtClips[i];
-                        if(rtClip != null)
-                        {
-                            if(m_animation.GetClip(rtClip.name) != null)
-                            {
-                                m_animation.RemoveClip(rtClip.name);
-                            }
-                        }
+                        m_animation.RemoveClip(m_animation.clip.name);
                     }
-
-                    for(int i = 0; i < value.Count; ++i)
-                    {
-                        RuntimeAnimationClip rtClip = value[i];
-                        if(rtClip != null)
-                        {
-                            m_animation.AddClip(rtClip.Clip, rtClip.name);
-                        }
-                    }
-
-                    if(ClipIndex >= m_rtClips.Count)
-                    {
-                        ClipIndex = m_rtClips.Count - 1;
-                    }
-
+                    m_animation.clip = null;
                     m_rtClips = value.ToList();
+
+                    if (m_rtClips.Count == 1)
+                    {
+                        ClipIndex = 0;
+                    }
+
+                    if (ClipIndex >= m_rtClips.Count)
+                    {
+                        SetClipIndex(m_rtClips.Count - 1);
+                    }
+                }
+
+                if(ClipsChanged != null)
+                {
+                    ClipsChanged();
                 }
             }
         }
@@ -187,7 +220,7 @@ namespace Battlehub.RTEditor
                 RuntimeAnimationClip clip = m_rtClips[ClipIndex];
                 if(clip == null)
                 {
-                    Debug.LogWarning("Clip == null");
+                    //Debug.LogWarning("Clip == null");
                     return null;
                 }
 
@@ -197,7 +230,7 @@ namespace Battlehub.RTEditor
                     return null;
                 }
 
-                AnimationState state = m_animation[clip.name];
+                AnimationState state = m_animation[clip.Clip.name];
                 if(state == null)
                 {
                     Debug.LogWarning("state == null");
@@ -297,18 +330,7 @@ namespace Battlehub.RTEditor
             }
         }
         
-        public void AddClip(RuntimeAnimationClip rtClip)
-        {
-            m_rtClips.Add(rtClip);
-            m_animation.AddClip(rtClip.Clip, rtClip.name);
-
-            if (m_rtClips.Count == 1)
-            {
-                ClipIndex = 0;
-            }
-        }
-   
-        public void RemoveClip(RuntimeAnimationClip rtClip)
+        private void RemoveClip(RuntimeAnimationClip rtClip)
         {
             int index = m_rtClips.IndexOf(rtClip);
             if (index == ClipIndex)
@@ -320,10 +342,10 @@ namespace Battlehub.RTEditor
             if (index >= 0)
             {
                 m_rtClips.RemoveAt(index);
-
-                if (m_animation.GetClip(rtClip.name) != null)
+                if(m_animation.clip == rtClip.Clip)
                 {
-                    m_animation.RemoveClip(rtClip.name);
+                    m_animation.RemoveClip(m_animation.clip.name);
+                    m_animation.clip = null;
                 }
             }
 
@@ -333,13 +355,22 @@ namespace Battlehub.RTEditor
             }
         }
 
-
         private void Awake()
         {
             m_animation = GetComponent<Animation>();
             if (m_animation == null)
             {
                 m_animation = gameObject.AddComponent<Animation>();
+            }
+
+            m_animation.playAutomatically = false;
+        }
+
+        private void OnDestroy()
+        {
+            if(m_animation != null)
+            {
+                Destroy(m_animation);
             }
         }
 
@@ -350,6 +381,8 @@ namespace Battlehub.RTEditor
                 RuntimeAnimationClip clip = m_rtClips[ClipIndex];
                 if(clip == null)
                 {
+                    m_isPlaying = false;
+                    m_animation.Stop();
                     return;
                 }
                 clip.Refresh();
@@ -360,31 +393,51 @@ namespace Battlehub.RTEditor
                 AnimationState animationState;
                 if (m_animation.isPlaying)
                 {
-                    animationState = m_animation[clip.name];
+                    animationState = m_animation[clip.Clip.name];
                     if (animationState != null)
                     {
                         speed = animationState.speed;
+                        if(!m_isPlaying)
+                        {
+                            speed = 0;
+                        }
                         normalizedTime = animationState.normalizedTime;
                     }
                 }
 
                 m_animation.Stop();
-                m_animation.RemoveClip(clip.name);
-                m_animation.AddClip(clip.Clip, clip.name);
-
-                m_animation.Play(clip.name);
+                if(m_animation.clip != null)
+                {
+                    m_animation.RemoveClip(m_animation.clip.name);
+                }
+                m_animation.clip = null;
+                if (clip.Clip != null)
+                {
+                    m_animation.AddClip(clip.Clip, clip.Clip.name);
+                }
+                m_animation.clip = clip.Clip;
+                m_animation.Play(clip.Clip.name);
 
                 if(m_animation.isPlaying)
                 {
                     m_isPlaying = !clip.Clip.empty && speed > 0;
-                    animationState = m_animation[clip.name];
+                    animationState = m_animation[clip.Clip.name];
                     animationState.speed = speed;
+                    if(float.IsInfinity(normalizedTime) || float.IsNaN(normalizedTime))
+                    {
+                        normalizedTime = 0;
+                    }
                     animationState.normalizedTime = normalizedTime;
                 }
                 else
                 {
                     m_isPlaying = false;
                 }
+            }
+            else
+            {
+                m_isPlaying = false;
+                m_animation.Stop();
             }
         }
 
@@ -395,18 +448,19 @@ namespace Battlehub.RTEditor
             if (m_animation == null)
             {
                 m_animation = gameObject.GetComponent<Animation>();
-                m_animation.Stop();
-
-                foreach (RuntimeAnimationClip clip in m_rtClips)
+                if(m_animation == null)
                 {
-                    m_animation.RemoveClip(clip.name);
+                    m_animation = gameObject.AddComponent<Animation>();
                 }
+                m_animation.playAutomatically = false;
+                m_animation.Stop();
+                if(m_animation.clip != null)
+                {
+                    m_animation.RemoveClip(m_animation.clip.name);
+                }
+                m_animation.clip = null;
             }
-            if(m_animation == null)
-            {
-                m_animation = gameObject.AddComponent<Animation>();
-            }
-
+        
             m_rtClips.Clear();
 
             if(clips != null)
@@ -416,11 +470,25 @@ namespace Battlehub.RTEditor
                     m_rtClips.Add(clip);
                 }
                 m_clipIndex = currentClipIndex;
+                RuntimeAnimationClip currentClip = m_rtClips[m_clipIndex];
+                if(currentClip != null)
+                {
+                    if(currentClip.Clip != null)
+                    {
+                        m_animation.AddClip(currentClip.Clip, currentClip.Clip.name);
+                    }
+                    m_animation.clip = currentClip.Clip;
+                }
             }
             else
             {
                 m_clipIndex = -1;
             }
+        }
+
+        public void Sample()
+        {
+            m_animation.Sample();
         }
     }
 }
