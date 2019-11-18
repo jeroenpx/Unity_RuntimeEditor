@@ -347,6 +347,9 @@
     <Reference Include="Ookii.Dialogs">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/ThirdParty/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
     </Reference>
+    <Reference Include="System.Deployment">
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/ThirdParty/StandaloneFileBrowser/Plugins/System.Deployment.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/ThirdParty/StandaloneFileBrowser/Plugins/System.Windows.Forms.dll</HintPath>
     </Reference>
@@ -382,9 +385,6 @@
     </Reference>
     <Reference Include="UnityEditor.Purchasing">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Deployment">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/ThirdParty/StandaloneFileBrowser/Plugins/System.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Program Files/2019.1.14f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

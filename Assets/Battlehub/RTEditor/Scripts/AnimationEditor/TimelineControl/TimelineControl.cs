@@ -89,6 +89,8 @@ namespace Battlehub.RTEditor
         public event Action SampleChanged;
 
         [SerializeField]
+        private GameObject RenderCameraPrefab;
+        [SerializeField]
         private RawImage m_output = null;
         [SerializeField]
         private TimelineTextPanel m_textPanel = null;
@@ -248,6 +250,11 @@ namespace Battlehub.RTEditor
         protected override void Awake()
         {
             base.Awake();
+            if(!Application.isPlaying)
+            {
+                return;
+            }
+            
             if (m_textPanel == null)
             {
                 m_textPanel = GetComponentInChildren<TimelineTextPanel>(true);
@@ -286,14 +293,21 @@ namespace Battlehub.RTEditor
                 m_output = m_scrollRect.content.GetComponentInChildren<RawImage>(true);
             }
 
-            GameObject cameraGo = new GameObject("TimelineGraphicsCamera");
+            RenderCameraPrefab = null;
+
+            GameObject cameraGo = RenderCameraPrefab != null ? Instantiate(RenderCameraPrefab) : new GameObject();
+            cameraGo.name = "TimelineGraphicsCamera";
             cameraGo.SetActive(false);
 
 #if USE_RTE
             IRTE editor = IOC.Resolve<IRTE>();
             cameraGo.transform.SetParent(editor.Root, false);
 #endif
-            m_camera = cameraGo.AddComponent<Camera>();
+            m_camera = cameraGo.GetComponent<Camera>();
+            if(m_camera == null)
+            {
+                m_camera = cameraGo.AddComponent<Camera>();
+            }
             m_camera.enabled = false;
             m_camera.orthographic = true;
             m_camera.orthographicSize = 0.5f;
