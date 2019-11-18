@@ -293,8 +293,6 @@ namespace Battlehub.RTEditor
                 m_output = m_scrollRect.content.GetComponentInChildren<RawImage>(true);
             }
 
-            RenderCameraPrefab = null;
-
             GameObject cameraGo = RenderCameraPrefab != null ? Instantiate(RenderCameraPrefab) : new GameObject();
             cameraGo.name = "TimelineGraphicsCamera";
             cameraGo.SetActive(false);
