@@ -35,16 +35,29 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private bool m_zTest;
         public bool ZTest
         {
-            get { return m_renderer.sharedMaterial.GetFloat("_ZTest") != 0; }
+            get
+            {
+                return m_zTest;
+            }
             set
             {
                 if(ZTest != value)
                 {
-                    m_renderer.sharedMaterial.SetFloat("_ZTest", value ? 2 : 0);
+                    m_zTest = value;
+                    if(m_renderer != null && m_renderer.sharedMaterial != null)
+                    {
+                        UpdateZTest();
+                    }
                 }
             }
+        }
+
+        private void UpdateZTest()
+        {
+            m_renderer.sharedMaterial.SetFloat("_ZTest", m_zTest ? 2 : 0);
         }
 
         private void UpdateVisualState()
@@ -70,6 +83,7 @@ namespace Battlehub.RTTerrain
             m_renderer = GetComponent<Renderer>();
             m_renderer.sharedMaterial = m_renderer.material;
             UpdateVisualState();
+            UpdateZTest();
         }
     }
 }

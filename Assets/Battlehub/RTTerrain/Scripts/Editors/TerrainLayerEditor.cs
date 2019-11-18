@@ -44,10 +44,23 @@ namespace Battlehub.RTTerrain
             set { m_selectTextureWindow = value; }
         }
 
+
+        private TerrainData m_terrainData;
         public TerrainData TerrainData
         {
-            get;
-            set;
+            get { return m_terrainData; }
+            set
+            {
+                if(m_terrainData != value)
+                {
+                    m_terrainData = value;
+                    if (m_layersList != null)
+                    {
+                        m_layersList.Items = TerrainData.terrainLayers;
+                        UpdateVisualState();
+                    }
+                }
+            }
         }
 
         public TerrainLayer SelectedLayer
@@ -120,9 +133,8 @@ namespace Battlehub.RTTerrain
             if(m_layersList != null)
             {
                 m_layersList.Items = TerrainData.terrainLayers;
+                UpdateVisualState();
             }
-
-            UpdateVisualState();
         }
 
         private void OnDestroy()

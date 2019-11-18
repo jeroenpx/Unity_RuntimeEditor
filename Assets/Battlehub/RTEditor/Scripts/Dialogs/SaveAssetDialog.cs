@@ -344,7 +344,7 @@ namespace Battlehub.RTEditor
                 else
                 {
                     Editor.IsBusy = true;
-                    m_project.Load(saveResult, (loadError, loadResult) =>
+                    m_project.Load(saveResult, (loadError, UnityObject) =>
                     {
                         Editor.IsBusy = false;
                         if (loadError.HasError)
@@ -354,10 +354,10 @@ namespace Battlehub.RTEditor
                         }
                         else
                         {
-                            if(loadResult.Length > 0)
+                            if(UnityObject.Length > 0)
                             {
                                 Destroy(Asset);
-                                Asset = loadResult[0];
+                                Asset = UnityObject[0];
                             }
                             
                             RaseSaveCompleted(Asset);

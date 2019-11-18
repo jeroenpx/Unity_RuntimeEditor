@@ -79,6 +79,7 @@ namespace Battlehub.RTSL.Interface
         string GetUniqueName(string name, Type type, ProjectItem folder);
         string GetUniquePath(string path, Type type, ProjectItem folder);
 
+        void ClearScene();
         void CreateNewScene();
         ProjectAsyncOperation<ProjectInfo[]> GetProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
         ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);

@@ -9,6 +9,7 @@ namespace Battlehub.RTCommon
         Legacy,
         LWRP,
         HDRP,
+        URP,
     }
 
     public static class RenderPipelineInfo 
@@ -37,18 +38,24 @@ namespace Battlehub.RTCommon
                 Type = RPType.Legacy;
                 DefaultShaderName = "Standard";
             }
-            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "LightweightPipelineAsset")
+            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "LightweightRenderPipelineAsset")
             {
                 Type = RPType.LWRP;
                 DefaultShaderName = "Lightweight Render Pipeline/Lit";
             }
-            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "HDRenderPipelineAsset")
+            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "UniversalRenderPipelineAsset")
+            {
+                Type = RPType.URP;
+                DefaultShaderName = "Universal Render Pipeline/Lit";
+            }
+            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "HDRenderRenderPipelineAsset")
             {
                 Type = RPType.HDRP;
                 DefaultShaderName = "HD Render Pipeline/Lit";
             }
             else
             {
+                Debug.Log(GraphicsSettings.renderPipelineAsset.GetType());
                 Type = RPType.Unknown;
             }
         }

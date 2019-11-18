@@ -342,11 +342,22 @@ namespace Battlehub.RTSL
 
         public void CreateNewScene()
         {
-            if(NewSceneCreating != null)
+            if (NewSceneCreating != null)
             {
                 NewSceneCreating(new Error(Error.OK));
             }
 
+            ClearScene();
+
+            m_loadedScene = null;
+            if (NewSceneCreated != null)
+            {
+                NewSceneCreated(new Error(Error.OK));
+            }
+        }
+
+        public void ClearScene()
+        {
             GameObject[] rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {
@@ -357,12 +368,6 @@ namespace Battlehub.RTSL
                 }
 
                 Destroy(rootGO);
-            }
-
-            m_loadedScene = null;
-            if (NewSceneCreated != null)
-            {
-                NewSceneCreated(new Error(Error.OK));
             }
         }
 

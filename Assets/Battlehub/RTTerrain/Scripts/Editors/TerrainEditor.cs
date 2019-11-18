@@ -1,8 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
-using Battlehub.RTHandles;
 using Battlehub.Utils;
-using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +9,8 @@ namespace Battlehub.RTTerrain
 {
     public class TerrainEditor : MonoBehaviour
     {
+        public event Action TerrainChanged;
+
         public enum EditorTypes
         {
             Selection_Handles = 0,
@@ -17,7 +18,8 @@ namespace Battlehub.RTTerrain
             Paint_Texture = 2,
             Stamp_Terrain = 3,
             Set_Height = 4,
-            Smooth_Height = 5
+            Smooth_Height = 5,
+            Settings = 6,
         }
 
         [SerializeField]
@@ -48,7 +50,7 @@ namespace Battlehub.RTTerrain
             {
                 if(m_editorType != value)
                 {
-                    if (value == EditorTypes.Selection_Handles)
+                    if (value == EditorTypes.Selection_Handles || value == EditorTypes.Settings)
                     {
                         m_wasEnabled = m_enableToggle.isOn;
                         m_enableToggle.isOn = false;
@@ -56,7 +58,7 @@ namespace Battlehub.RTTerrain
                     }
                     else
                     {
-                        if(m_editorType == EditorTypes.Selection_Handles)
+                        if(m_editorType == EditorTypes.Selection_Handles || m_editorType == EditorTypes.Settings)
                         {
                             m_header.SetActive(true);
                             m_enableToggle.isOn = m_wasEnabled;
@@ -80,10 +82,21 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private Terrain m_terrain;
         public Terrain Terrain
         {
-            get;
-            set;
+            get { return m_terrain; }
+            set
+            {
+                if(m_terrain != value)
+                {
+                    m_terrain = value;
+                    if(TerrainChanged != null)
+                    {
+                        TerrainChanged();
+                    }
+                }
+            }
         }
 
         private void Awake()

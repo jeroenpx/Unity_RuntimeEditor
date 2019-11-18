@@ -1,6 +1,5 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
-using Battlehub.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,8 +39,21 @@ namespace Battlehub.RTEditor
 
         void EndEditUIScale();
 
+        float ZoomSpeed
+        {
+            get;
+            set;
+        }
+
+        bool ConstantZoomSpeed
+        {
+            get;
+            set;
+        }
+
         void ResetToDefaults();
     }
+
 
     public class SettingsComponent : MonoBehaviour, ISettingsComponent
     {
@@ -49,9 +61,11 @@ namespace Battlehub.RTEditor
 
         private Dictionary<Transform, IRuntimeSceneComponent> m_sceneComponents = new Dictionary<Transform, IRuntimeSceneComponent>();
 
+        [SerializeField]
+        private bool m_isGridVisibleDefault = true;
         public bool IsGridVisible
         {
-            get { return GetBool("IsGridVisible", true); }
+            get { return GetBool("IsGridVisible", m_isGridVisibleDefault); }
             set
             {
                 SetBool("IsGridVisible", value);
@@ -62,6 +76,8 @@ namespace Battlehub.RTEditor
             }
         }
 
+        [SerializeField]
+        private bool m_isGridEnabledDefault = false;
         public bool IsGridEnabled
         {
             get { return GetBool("IsGridEnabled", false); }
@@ -75,9 +91,11 @@ namespace Battlehub.RTEditor
             }
         }
 
+        [SerializeField]
+        private float m_gridSizeDefault = 0.5f;
         public float GridSize
         {
-            get { return GetFloat("GridSize", 0.5f); }
+            get { return GetFloat("GridSize", m_gridSizeDefault); }
             set
             {
                 SetFloat("GridSize", value);
@@ -88,9 +106,11 @@ namespace Battlehub.RTEditor
             }
         }
 
+        [SerializeField]
+        private bool m_uiAutoScaleDefault = true;
         public bool UIAutoScale
         {
-            get { return GetBool("UIAutoScale", true); }
+            get { return GetBool("UIAutoScale", m_uiAutoScaleDefault); }
             set
             {
                 SetBool("UIAutoScale", value);
@@ -98,9 +118,11 @@ namespace Battlehub.RTEditor
             }
         }
 
+        [SerializeField]
+        private float m_uiScaleDefault = 1.0f;
         public float UIScale
         {
-            get { return GetFloat("UIScale", 1); }
+            get { return GetFloat("UIScale", m_uiScaleDefault); }
             set
             {
                 SetFloat("UIScale", value);
@@ -128,6 +150,36 @@ namespace Battlehub.RTEditor
             IRuntimeHandlesComponent handles = IOC.Resolve<IRuntimeHandlesComponent>();
             handles.HandleScale = scale;
             handles.SceneGizmoScale = scale;
+        }
+
+        [SerializeField]
+        private float m_zoomSpeedDefault = 5.0f;
+        public float ZoomSpeed
+        {
+            get { return GetFloat("ZoomSpeed", m_zoomSpeedDefault); }
+            set
+            {
+                SetFloat("ZoomSpeed", value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.ZoomSpeed = value;
+                }
+            }
+        }
+
+        [SerializeField]
+        private bool m_constantZoomSpeedDefault = false;
+        public bool ConstantZoomSpeed
+        {
+            get { return GetBool("ConstantZoomSpeed", m_constantZoomSpeedDefault); }
+            set
+            {
+                SetBool("ConstantZoomSpeed", value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.ConstantZoomSpeed = value;
+                }
+            }
         }
 
         private void Awake()
@@ -199,6 +251,8 @@ namespace Battlehub.RTEditor
             sceneComponent.IsGridVisible = IsGridVisible;
             sceneComponent.IsGridEnabled = IsGridEnabled;
             sceneComponent.SizeOfGrid = GridSize;
+            sceneComponent.ZoomSpeed = ZoomSpeed;
+            sceneComponent.ConstantZoomSpeed = ConstantZoomSpeed;
         }
 
         private void ApplySettings()
@@ -218,7 +272,9 @@ namespace Battlehub.RTEditor
             DeleteKey("GridSize");
             DeleteKey("UIAutoScale");
             DeleteKey("UIScale");
-
+            DeleteKey("ZoomSpeed");
+            DeleteKey("ConstantZoomSpeed");
+            
             ApplySettings();
         }
 

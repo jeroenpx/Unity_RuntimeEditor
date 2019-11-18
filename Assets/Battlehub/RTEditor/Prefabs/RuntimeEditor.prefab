@@ -2652,10 +2652,10 @@ MonoBehaviour:
           m_CallState: 2
       m_TypeName: Battlehub.UIControls.MenuControl.MenuItemValidationEvent, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - Path: SceneSettings
-    Text: Scene Settings
+  - Path: Settings
+    Text: Settings
     Icon: {fileID: 21300000, guid: 89a4e12e4493f6341928b4e2f80ec665, type: 3}
-    Command: scenesettings
+    Command: settings
     Action:
       m_PersistentCalls:
         m_Calls:

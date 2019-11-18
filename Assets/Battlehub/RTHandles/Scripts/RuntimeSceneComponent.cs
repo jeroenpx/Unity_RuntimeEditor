@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using Battlehub.RTCommon;
 using Battlehub.Utils;
-using Battlehub.RTCommon;
+using UnityEngine;
 namespace Battlehub.RTHandles
 {
     public interface IRuntimeSceneComponent : IRuntimeSelectionComponent
@@ -35,6 +35,18 @@ namespace Battlehub.RTHandles
         }
 
         bool CanZoom
+        {
+            get;
+            set;
+        }
+
+        float ZoomSpeed
+        {
+            get;
+            set;
+        }
+
+        bool ConstantZoomSpeed
         {
             get;
             set;
@@ -103,10 +115,10 @@ namespace Battlehub.RTHandles
         private bool m_canFreeMove = true;
         [SerializeField]
         private float m_orbitDistance = 5.0f;
-        //[SerializeField]
-        //private float m_orbitDistanceMin = 0.5f;
-        //[SerializeField]
-        //private float m_orbitDistanceMax = 1000f;
+        [SerializeField]
+        private float m_zoomSpeed = 5.0f;
+        [SerializeField]
+        private bool m_constantZoomSpeed = false;
         [SerializeField]
         private float m_freeSmoothMoveSpeed = 7.5f;
         [SerializeField]
@@ -152,6 +164,18 @@ namespace Battlehub.RTHandles
         {
             get { return m_canZoom; }
             set { m_canZoom = value; }                 
+        }
+
+        public float ZoomSpeed
+        {
+            get { return m_zoomSpeed; }
+            set { m_zoomSpeed = value; }
+        }
+
+        public bool ConstantZoomSpeed
+        {
+            get { return m_constantZoomSpeed; }
+            set { m_constantZoomSpeed = value; }
         }
 
         public bool ChangeOrthographicSizeOnly
@@ -484,7 +508,7 @@ namespace Battlehub.RTHandles
                 }));
         }
 
-        public virtual void Zoom(float deltaZ)
+        public virtual void Zoom(float deltaZ, Quaternion rotation)
         {
             if(m_lockInput)
             {
@@ -512,13 +536,26 @@ namespace Battlehub.RTHandles
                 }
             }
 
+            Vector3 fwd = (rotation * Vector3.forward) * deltaZ;
+            if (m_constantZoomSpeed)
+            {
+                 fwd *= m_zoomSpeed;
+            }
+            else
+            {
+                fwd *= Mathf.Max(m_zoomSpeed, Mathf.Abs(m_orbitDistance));
+            }
+            
             Transform cameraTransform = Window.Camera.transform;
-            m_orbitDistance = m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance);
-            //m_orbitDistance = Mathf.Clamp(m_orbitDistance - deltaZ * Mathf.Max(1.0f, m_orbitDistance), m_orbitDistanceMin, m_orbitDistanceMax);
+            m_orbitDistance = m_orbitDistance - fwd.z;
+
+            fwd.z = 0;
+
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -m_orbitDistance);
-            m_targetPosition = cameraTransform.rotation * negDistance + PivotTransform.position;
+            m_targetPosition = cameraTransform.TransformVector(fwd) + cameraTransform.rotation * negDistance + PivotTransform.position;
             cameraTransform.position = m_targetPosition;
         }
+
 
         public virtual void Orbit(float deltaX, float deltaY, float deltaZ)
         {
@@ -540,7 +577,7 @@ namespace Battlehub.RTHandles
 
             cameraTransform.rotation = m_targetRotation;
 
-            Zoom(deltaZ);
+            Zoom(deltaZ, Quaternion.identity);
         }
 
         public void BeginPan(Vector3 mousePosition)
@@ -620,7 +657,7 @@ namespace Battlehub.RTHandles
                 if (!Mathf.Approximately(move.y, 0))
                 {
                     Vector3 position = camTransform.position;
-                    Zoom(move.y);
+                    Zoom(move.y, Quaternion.identity);
                     zoomOffset = camTransform.position - position;
                     camTransform.position = position;
                     move.y = 0;

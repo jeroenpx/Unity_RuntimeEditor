@@ -17,7 +17,13 @@ namespace Battlehub.RTTerrain
             get; set;
         }
 
-        int Spacing
+        float ZSpacing
+        {
+            get;
+            set;
+        }
+
+        float XSpacing
         {
             get;
             set;
@@ -53,12 +59,12 @@ namespace Battlehub.RTTerrain
             set
             {
                 m_enableZTest = value;
-                if(!Enabled)
+                if (!Enabled)
                 {
                     return;
                 }
 
-                foreach(GameObject go in m_handles.Keys)
+                foreach (GameObject go in m_handles.Keys)
                 {
                     TerrainToolHandle handle = go.GetComponent<TerrainToolHandle>();
                     handle.ZTest = value;
@@ -66,15 +72,15 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        public int Spacing
+        public float ZSpacing
         {
             get
             {
-                if(!Enabled)
+                if (!Enabled)
                 {
                     return 0;
                 }
-                return m_state.Spacing;
+                return m_state.ZSpacing;
             }
             set
             {
@@ -83,10 +89,10 @@ namespace Battlehub.RTTerrain
                     return;
                 }
 
-                if (m_state.Spacing != value)
+                if (m_state.ZSpacing != value)
                 {
-                    m_state.Spacing = value;
-                    m_count = m_state.Size / m_state.Spacing + 1;
+                    m_state.ZSpacing = value;
+                    m_zCount = Mathf.FloorToInt(m_state.ZSize / m_state.ZSpacing) + 1;
                     if (Enabled)
                     {
                         Refresh();
@@ -94,26 +100,69 @@ namespace Battlehub.RTTerrain
                 }
             }
         }
-           
-        public bool Enabled
+
+        public float XSpacing
         {
-            get { return gameObject.activeSelf; }
+            get
+            {
+                if (!Enabled)
+                {
+                    return 0;
+                }
+                return m_state.XSpacing;
+            }
             set
             {
-                if(this && gameObject)
+                if (!Enabled)
                 {
-                    gameObject.SetActive(value);
+                    return;
+                }
+
+                if (m_state.XSpacing != value)
+                {
+                    m_state.XSpacing = value;
+                    m_xCount = Mathf.FloorToInt(m_state.XSize / m_state.XSpacing) + 1;
+                    if (Enabled)
+                    {
+                        Refresh();
+                    }
+                }
+            }
+        }
+
+        private bool m_enabled;
+        public bool Enabled
+        {
+            get { return m_enabled; }
+            set
+            {
+                if (this == null)
+                {
+                    return;
+                }
+                gameObject.SetActive(value);
+                if (m_enabled != value)
+                {
+                    m_enabled = value;
+                    if (m_enabled)
+                    {
+                        Enable();
+                    }
+                    else
+                    {
+                        Disable();
+                    }
                 }
             }
         }
 
         [SerializeField]
         public TerrainToolHandle m_handlePrefab;
-        private Terrain m_activeTerrain;
         private TerrainToolState m_state;
 
         private IRTE m_editor;
-        private int m_count;
+        private int m_zCount;
+        private int m_xCount;
         private float[,] m_lerpGrid;
         private Dictionary<GameObject, int> m_handles;
         private GameObject[] m_targetHandles;
@@ -128,9 +177,22 @@ namespace Battlehub.RTTerrain
 
         public TerrainData ActiveTerrainData
         {
-            get { return m_activeTerrain.terrainData;}
+            get { return m_activeTerrain.terrainData; }
         }
-        
+
+        private Terrain m_activeTerrain;
+        private Terrain ActiveTerrain
+        {
+            get
+            {
+                if (m_activeTerrain == null)
+                {
+                    m_activeTerrain = Terrain.activeTerrain;
+                }
+                return m_activeTerrain;
+            }
+        }
+
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
@@ -142,40 +204,74 @@ namespace Battlehub.RTTerrain
 
         private void OnEnable()
         {
-            m_editor.Undo.Store();
+            if (ActiveTerrain == null)
+            {
+                Enabled = false;
+                return;
+            }
 
+            Enabled = true;
+        }
+
+
+        private void OnDisable()
+        {
+            Enabled = false;
+        }
+
+        private void Enable()
+        {
+           // m_editor.Undo.Store();
             m_editor.ActiveWindowChanged += OnActiveWindowChanged;
             m_editor.Selection.SelectionChanged += OnSelectionChanged;
             m_interpolator = new CachedBicubicInterpolator();
-            m_activeTerrain = Terrain.activeTerrain;
 
             TerrainData data = ActiveTerrainData;
             m_additiveHeights = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapHeight);
             m_interpolatedHeights = new float[data.heightmapHeight, data.heightmapWidth];
 
-            m_state = m_activeTerrain.GetComponent<TerrainToolState>();
-            if (m_state == null)
+            const float preferredSpace = 10;
+
+            m_state = ActiveTerrain.GetComponent<TerrainToolState>();
+            if (m_state == null || m_state.HeightMap.Length != data.heightmapWidth * data.heightmapHeight)
             {
-                m_state = m_activeTerrain.gameObject.AddComponent<TerrainToolState>();
-                m_state.Size = (int)ActiveTerrainData.size.x;
-                m_count = m_state.Size / m_state.Spacing + 1;
-                m_state.Grid = new float[m_count * m_count];
+                m_state = ActiveTerrain.gameObject.GetComponent<TerrainToolState>();
+                if(m_state == null)
+                {
+                    m_state = ActiveTerrain.gameObject.AddComponent<TerrainToolState>();
+                }
+                
+                m_state.ZSize = ActiveTerrainData.size.z;
+                m_state.XSize = ActiveTerrainData.size.x;
+
+                m_zCount = Mathf.Max(2, Mathf.FloorToInt(ActiveTerrainData.size.z / preferredSpace)) + 1;
+                m_xCount = Mathf.Max(2, Mathf.FloorToInt(ActiveTerrainData.size.x / preferredSpace)) + 1;
+
+                m_state.ZSpacing = m_state.ZSize / (m_zCount - 1);
+                m_state.XSpacing = m_state.XSize / (m_xCount - 1);
+
+                m_state.Grid = new float[m_zCount * m_xCount];
                 m_state.HeightMap = new float[data.heightmapWidth * data.heightmapHeight];
-                m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(null);
+                m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(ActiveTerrainData, null);
             }
             else
             {
+                m_state.ZSize = ActiveTerrainData.size.z;
+                m_state.XSize = ActiveTerrainData.size.x;
+
+                m_state.ZSpacing = m_state.ZSize / (m_zCount - 1);
+                m_state.XSpacing = m_state.XSize / (m_xCount - 1);
+
                 TryRefreshGrid();
             }
 
             InitHandles();
-            OnSelectionChanged(null);
+            //OnSelectionChanged(null);
             OnActiveWindowChanged(m_editor.ActiveWindow);
             EnableZTest = EnableZTest;
         }
 
-
-        private void OnDisable()
+        private void Disable()
         {
             if (m_sceneComponent != null)
             {
@@ -187,14 +283,32 @@ namespace Battlehub.RTTerrain
 
             if (m_editor != null)
             {
+                m_editor.Selection.activeGameObject = null;
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
                 m_editor.Selection.SelectionChanged -= OnSelectionChanged;
-                m_targetHandles = null;
+               // m_targetHandles = null;
             }
 
-            DestroyHandles();
+            //DestroyHandles();
 
-            m_editor.Undo.Restore();
+            //m_editor.Undo.Restore();
+        }
+
+        private void DisableHandles()
+        {
+            if (m_handles != null)
+            {
+                foreach (KeyValuePair<GameObject, int> kvp in m_handles)
+                {
+                    GameObject handle = kvp.Key;
+                    handle.SetActive(false);
+
+                   // LockAxes lockAxes = handle.gameObject.GetComponent<LockAxes>();
+                   // lockAxes.PositionX = lockAxes.PositionY = lockAxes.PositionZ = true;
+                   // lockAxes.ScaleX = lockAxes.ScaleY = lockAxes.ScaleZ = true;
+                   // lockAxes.RotationX = lockAxes.RotationY = lockAxes.RotationZ = lockAxes.RotationScreen = lockAxes.RotationFree = true;
+                }   
+            }
         }
 
         private void DestroyHandles()
@@ -208,7 +322,7 @@ namespace Battlehub.RTTerrain
                 }
                 m_handles = null;
             }
-
+            m_targetHandles = null;
             m_editor.Selection.activeGameObject = null;
         }
 
@@ -222,6 +336,7 @@ namespace Battlehub.RTTerrain
                     Destroy(m_state.CutoutTexture);
                 }
             }
+            DestroyHandles();
         }
 
         private void InitAdditiveHeights(int hmWidth, int hmHeight)
@@ -344,7 +459,7 @@ namespace Battlehub.RTTerrain
                 Destroy(m_state.CutoutTexture);
             }
 
-            m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(objects);
+            m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(ActiveTerrainData, objects);
 
             float[,] hmap = m_interpolatedHeights; 
             SetActiveTerrainHeights(0, 0, hmap);
@@ -353,9 +468,10 @@ namespace Battlehub.RTTerrain
 
         private void Refresh()
         {
-            DestroyHandles();
-            m_editor.Undo.Restore();
-            m_editor.Undo.Store();
+            //DestroyHandles();
+            DisableHandles();
+            //m_editor.Undo.Restore();
+            //m_editor.Undo.Store();
             TryRefreshGrid();
             InitHandles();
         }
@@ -365,7 +481,7 @@ namespace Battlehub.RTTerrain
             TerrainData data = ActiveTerrainData;
             m_additiveHeights = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapHeight);
 
-            if (m_count * m_count == m_state.Grid.Length)
+            if (m_zCount * m_xCount == m_state.Grid.Length)
             {
                 for (int i = 0; i < m_interpolatedHeights.GetLength(0); ++i)
                 {
@@ -379,8 +495,9 @@ namespace Battlehub.RTTerrain
                 return;
             }
 
-            m_count = m_state.Size / m_state.Spacing + 1;
-            m_state.Grid = new float[m_count * m_count];
+            m_zCount = Mathf.FloorToInt(m_state.ZSize / m_state.ZSpacing) + 1;
+            m_xCount = Mathf.FloorToInt(m_state.XSize / m_state.XSpacing) + 1;
+            m_state.Grid = new float[m_zCount * m_xCount];
 
             for (int i = 0; i < m_interpolatedHeights.GetLength(0); ++i)
             {
@@ -399,40 +516,64 @@ namespace Battlehub.RTTerrain
             m_prevInterpolation = m_state.Interpolation;
             InitLerpGrid();
 
-            if (m_handles != null)
-            {
-                foreach (KeyValuePair<GameObject, int> kvp in m_handles)
-                {
-                    GameObject handle = kvp.Key;
-                    int z = kvp.Value / m_count;
-                    int x = kvp.Value % m_count;
-                    float y = m_state.Grid[kvp.Value] * ActiveTerrainData.heightmapScale.y;
+            //if (m_handles != null)
+            //{
+            //    foreach (KeyValuePair<GameObject, int> kvp in m_handles)
+            //    {
+            //        GameObject handle = kvp.Key;
+            //        int z = kvp.Value / m_xCount;
+            //        int x = kvp.Value % m_xCount;
+            //        float y = m_state.Grid[kvp.Value] * ActiveTerrainData.heightmapScale.y;
 
-                    handle.transform.position = new Vector3(x * m_state.Spacing, y, z * m_state.Spacing);
-                }
-            }
-            else
+            //        handle.transform.position = new Vector3(x * m_state.XSpacing, y, z * m_state.ZSpacing);
+
+            //        TerrainToolHandle terrainToolHandle = handle.GetComponent<TerrainToolHandle>();
+            //        terrainToolHandle.ZTest = EnableZTest;
+            //    }
+            //}
+            //else
             {
+                DisableHandles();
+                GameObject[] cache = m_handles != null ? m_handles.Keys.ToArray() : new GameObject[0];
                 m_handles = new Dictionary<GameObject, int>(m_state.Grid.Length);
 
-                for (int x = 0; x < m_count; ++x)
+                int handleNumber = 0;
+                for (int x = 0; x < m_xCount; ++x)
                 {
-                    for (int z = 0; z < m_count; ++z)
+                    for (int z = 0; z < m_zCount; ++z)
                     {
                         m_handlePrefab.gameObject.SetActive(false);
-                        TerrainToolHandle handle = Instantiate(m_handlePrefab, transform);
-                        handle.gameObject.hideFlags = HideFlags.HideInHierarchy;
 
-                        LockAxes lockAxes = handle.gameObject.AddComponent<LockAxes>();
+                        TerrainToolHandle handle;
+                        LockAxes lockAxes;
+                        if (handleNumber < cache.Length)
+                        {
+                            handle = cache[handleNumber].GetComponent<TerrainToolHandle>();
+                            lockAxes = handle.gameObject.GetComponent<LockAxes>();
+                        }
+                        else
+                        {
+                            handle = Instantiate(m_handlePrefab, transform);
+                            lockAxes = handle.gameObject.AddComponent<LockAxes>();
+                          
+                        }
+
+                        lockAxes.PositionZ = false;
                         lockAxes.PositionX = true;
                         lockAxes.PositionZ = true;
+                        lockAxes.ScaleX = lockAxes.ScaleY = lockAxes.ScaleZ = true;
+                        lockAxes.RotationX = lockAxes.RotationY = lockAxes.RotationZ = lockAxes.RotationScreen = lockAxes.RotationFree = true;
 
-                        float y = m_state.Grid[z * m_count + x] * ActiveTerrainData.heightmapScale.y;
-                        handle.transform.localPosition = new Vector3(x * m_state.Spacing, y, z * m_state.Spacing);
+                        handle.ZTest = EnableZTest;
+                        handle.gameObject.hideFlags = HideFlags.HideInHierarchy;
+
+                        float y = m_state.Grid[z * m_xCount + x] * ActiveTerrainData.heightmapScale.y;
+                        handle.transform.localPosition = new Vector3(x * m_state.XSpacing, y, z * m_state.ZSpacing);
                         handle.name = "h " + x + "," + z;
                         handle.gameObject.SetActive(true);
 
-                        m_handles.Add(handle.gameObject, z * m_count + x);
+                        m_handles.Add(handle.gameObject, z * m_xCount + x);
+                        handleNumber++;
                     }
                 }
             }
@@ -499,35 +640,22 @@ namespace Battlehub.RTTerrain
             }
         }
 
-
+        private Vector3[] m_handlePositions;
+        
         private void OnBeforeDrag(BaseHandle handle)
         {
             m_isDragging = m_targetHandles != null;
-            if(m_isDragging)
+            if (m_isDragging)
             {
-                GameObject[] targetHandles = m_targetHandles.ToArray();
-
                 handle.EnableUndo = false;
-                m_editor.Undo.BeginRecord();
-                m_editor.Undo.CreateRecord(record => { return false; }, record =>
+                if (m_targetHandles != null)
                 {
-                    if (targetHandles != null)
+                    m_handlePositions = new Vector3[m_targetHandles.Length];
+                    for (int i = 0; i < m_targetHandles.Length; ++i)
                     {
-                        for (int i = 0; i < targetHandles.Length; ++i)
-                        {
-                            UpdateTerrain(targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
-                        }
-                    }
-                    return false;
-                });
-                if (targetHandles != null)
-                {
-                    for (int i = 0; i < targetHandles.Length; ++i)
-                    {
-                        m_editor.Undo.BeginRecordTransform(targetHandles[i].transform);
+                        m_handlePositions[i] = m_targetHandles[i].transform.position;
                     }
                 }
-                m_editor.Undo.EndRecord();
             }
         }
 
@@ -535,50 +663,54 @@ namespace Battlehub.RTTerrain
         {
             if(m_isDragging)
             {
-                GameObject[] targetHandles = m_targetHandles.ToArray();
-
                 m_isDragging = false;
-                m_editor.Undo.BeginRecord();
-                if (targetHandles != null)
-                {
-                    for (int i = 0; i < targetHandles.Length; ++i)
-                    {
-                        m_editor.Undo.EndRecordTransform(targetHandles[i].transform);
-                    }
-                }
-                m_editor.Undo.CreateRecord(record =>
-                {
-                    if (targetHandles != null)
-                    {
-                        for (int i = 0; i < targetHandles.Length; ++i)
-                        {
-                            UpdateTerrain(targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
-                        }
-                    }
-                    return false;
-                }, record => { return false; });
-                m_editor.Undo.EndRecord();
-                handle.EnableUndo = true;
-                
                 if (m_targetHandles != null)
                 {
+                    Vector3[] oldHandlePositions = m_handlePositions.ToArray();
+                    Vector3[] handlePositions = new Vector3[m_targetHandles.Length];
+
                     for (int i = 0; i < m_targetHandles.Length; ++i)
                     {
+                        handlePositions[i] = m_targetHandles[i].transform.position;
                         UpdateTerrain(m_targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
                     }
+
+                    m_editor.Undo.CreateRecord(redoRecord =>
+                    {
+                        m_targetHandles = m_editor.Selection.gameObjects.Where(go => go != null && m_handles.ContainsKey(go)).ToArray();
+                        for (int i = 0; i < m_targetHandles.Length; ++i)
+                        {
+                            m_targetHandles[i].transform.position = handlePositions[i];
+                            UpdateTerrain(m_targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
+                        }
+                        return true;
+                    },
+                    undoRecord =>
+                    {
+                        m_targetHandles = m_editor.Selection.gameObjects.Where(go => go != null && m_handles.ContainsKey(go)).ToArray();
+                        for (int i = 0; i < m_targetHandles.Length; ++i)
+                        {
+                            m_targetHandles[i].transform.position = oldHandlePositions[i];
+                            UpdateTerrain(m_targetHandles[i], GetInterpolatedHeights, SetActiveTerrainHeights);
+                        }
+                        return true;
+                    });
+
+                    m_handlePositions = null;
                 }
+                handle.EnableUndo = true;
             }
         }
 
         private void LateUpdate()
         {
-            if(m_activeTerrain == null)
+            if(ActiveTerrain == null)
             {
-                gameObject.SetActive(false);
+                Enabled = false;
                 return;
             }
-
-            Transform terrainTransform = m_activeTerrain.transform;
+                        
+            Transform terrainTransform = ActiveTerrain.transform;
             if(terrainTransform.position != gameObject.transform.position ||
                terrainTransform.rotation != gameObject.transform.rotation ||
                terrainTransform.localScale != gameObject.transform.localScale)
@@ -665,19 +797,19 @@ namespace Battlehub.RTTerrain
             float[] grid = m_state.Grid;
             grid[hid] = position.y / data.heightmapScale.y;
 
-            m_lerpGrid[0, 0] = grid[hid - m_count - 1];
-            m_lerpGrid[0, 1] = grid[hid - m_count];
-            m_lerpGrid[0, 2] = grid[hid - m_count + 1];
+            m_lerpGrid[0, 0] = grid[hid - m_zCount - 1];
+            m_lerpGrid[0, 1] = grid[hid - m_zCount];
+            m_lerpGrid[0, 2] = grid[hid - m_zCount + 1];
             m_lerpGrid[1, 0] = grid[hid - 1];
             m_lerpGrid[1, 1] = grid[hid];
             m_lerpGrid[1, 2] = grid[hid + 1];
-            m_lerpGrid[2, 0] = grid[hid + m_count - 1];
-            m_lerpGrid[2, 1] = grid[hid + m_count];
-            m_lerpGrid[2, 2] = grid[hid + m_count + 1];
+            m_lerpGrid[2, 0] = grid[hid + m_zCount - 1];
+            m_lerpGrid[2, 1] = grid[hid + m_zCount];
+            m_lerpGrid[2, 2] = grid[hid + m_zCount + 1];
 
             Vector2Int blockSize = new Vector2Int(
-                (int)(m_state.Spacing / data.heightmapScale.x),
-                (int)(m_state.Spacing / data.heightmapScale.z));
+                (int)(m_state.XSpacing / data.heightmapScale.x),
+                (int)(m_state.ZSpacing / data.heightmapScale.z));
 
             Vector2Int hPos = new Vector2Int(
                 (int)(position.x / data.heightmapScale.x),
@@ -737,28 +869,28 @@ namespace Battlehub.RTTerrain
                 Debug.LogError("Gizmo is not found!");
             }
 
-            int2 iidx = new int2(hid % m_count, hid / m_count);
+            int2 iidx = new int2(hid % m_xCount, hid / m_xCount);
 
             for (int y = 0; y < 7; y++)
             {
-                int _y = math.clamp(iidx.y - 3 + y, 0, m_count - 1);
+                int _y = math.clamp(iidx.y - 3 + y, 0, m_zCount - 1);
 
                 for (int x = 0; x < 7; x++)
                 {
-                    int _x = math.clamp(iidx.x - 3 + x, 0, m_count - 1);
-                    m_lerpGrid[y, x] = m_state.Grid[m_count * _y + _x];
+                    int _x = math.clamp(iidx.x - 3 + x, 0, m_xCount - 1);
+                    m_lerpGrid[y, x] = m_state.Grid[m_xCount * _y + _x];
                 }
             }
 
             float2 heightmapScale = ((float3)data.heightmapScale).xz;
             float2 pos = ((float3)position).xz;
-            int2 block_size = (int2)(new float2(m_state.Spacing) / heightmapScale);
+            int2 block_size = (int2)(new float2(m_state.XSpacing, m_state.ZSpacing) / heightmapScale);
 
             int2 hPos = (int2)(pos / heightmapScale);
             hPos -= block_size * 2;
 
             int2 max_block = new int2(block_size.x * 4, block_size.y * 4);
-            int res = data.heightmapResolution;// - 1;
+            int res = data.heightmapResolution;
             RectInt r = new RectInt(hPos.x, hPos.y, max_block.x, max_block.y);
             r.xMin = math.clamp(r.xMin, 0, res);
             r.xMax = math.clamp(r.xMax, 0, res);

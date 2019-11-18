@@ -1679,12 +1679,15 @@ namespace Battlehub.RTEditor
                 else
                 {
                     layoutInfo.IsVertical = persistentLayoutInfo.IsVertical;
-                    layoutInfo.Child0 = new LayoutInfo();
-                    layoutInfo.Child1 = new LayoutInfo();
-                    layoutInfo.Ratio = persistentLayoutInfo.Ratio;
+                    if(persistentLayoutInfo.Child0 != null && persistentLayoutInfo.Child0 != null)
+                    {
+                        layoutInfo.Child0 = new LayoutInfo();
+                        layoutInfo.Child1 = new LayoutInfo();
+                        layoutInfo.Ratio = persistentLayoutInfo.Ratio;
 
-                    ToLayout(persistentLayoutInfo.Child0, layoutInfo.Child0);
-                    ToLayout(persistentLayoutInfo.Child1, layoutInfo.Child1);
+                        ToLayout(persistentLayoutInfo.Child0, layoutInfo.Child0);
+                        ToLayout(persistentLayoutInfo.Child1, layoutInfo.Child1);
+                    }
                 }
             }
         }

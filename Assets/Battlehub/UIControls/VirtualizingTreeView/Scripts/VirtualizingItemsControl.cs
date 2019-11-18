@@ -707,12 +707,15 @@ namespace Battlehub.UIControls
                     m_itemContainerData.Add(items[i], InstantiateItemContainerData(items[i]));
                 }
 
-                m_scrollRect.Items = items;
-                if (updateSelection && !CanUnselectAll)
+                if(m_scrollRect != null)
                 {
-                    if (IsFocused && SelectedIndex == -1 && m_selectedItems != null && m_selectedItems.Count > 0)
+                    m_scrollRect.Items = items;
+                    if (updateSelection && !CanUnselectAll)
                     {
-                        SelectedIndex = 0;
+                        if (IsFocused && SelectedIndex == -1 && m_selectedItems != null && m_selectedItems.Count > 0)
+                        {
+                            SelectedIndex = 0;
+                        }
                     }
                 }
             }

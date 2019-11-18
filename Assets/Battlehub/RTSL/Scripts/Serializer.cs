@@ -1,7 +1,6 @@
 ﻿using ProtoBuf.Meta;
 using System;
 using System.IO;
-using UnityEngine;
 using Battlehub.RTSL.Interface;
 namespace Battlehub.RTSL
 {

@@ -197,11 +197,18 @@ namespace Battlehub.RTHandles
             }
             else if (m_rotate)
             {
-                if(canRotate)
+                if (canRotate)
                 {
-                    Vector2 orbitAxes = RotateAxes();  
-                    SceneComponent.Orbit(orbitAxes.x * RotateXSensitivity, orbitAxes.y * RotateYSensitivity, 0);
+                    Vector2 orbitAxes = RotateAxes();
+                    SceneComponent.Orbit(orbitAxes.x * RotateXSensitivity, orbitAxes.y * RotateYSensitivity, ZoomAxis() * MoveZSensitivity);
                 }
+                else
+                {
+                    Transform camTransform = m_component.Window.Camera.transform;
+                    Ray pointer = m_component.Window.Pointer;
+                    SceneComponent.Zoom(ZoomAxis() * MoveZSensitivity, Quaternion.FromToRotation(Vector3.forward, (camTransform.InverseTransformVector(pointer.direction)).normalized));
+                }
+                SceneComponent.FreeMove(Vector2.zero, Vector3.zero, 0);
             }
             else if(m_pan)
             {
@@ -217,7 +224,7 @@ namespace Battlehub.RTHandles
 
                 if (isPointerOverAndSelected)
                 {
-                    SceneComponent.Zoom(ZoomAxis() * MoveZSensitivity);
+                    SceneComponent.Zoom(ZoomAxis() * MoveZSensitivity, Quaternion.identity);
                   
                     if (SelectAction())
                     {

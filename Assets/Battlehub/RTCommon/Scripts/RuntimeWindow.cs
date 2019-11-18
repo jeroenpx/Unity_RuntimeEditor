@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
@@ -328,26 +327,33 @@ namespace Battlehub.RTCommon
         {
             if (m_camera != null && m_rectTransform != null && m_resizeCamera)
             {
-                if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                if(RenderPipelineInfo.Type != RPType.Legacy)
                 {
-                    Vector3[] corners = new Vector3[4];
-                    m_rectTransform.GetWorldCorners(corners);
-                    ResizeCamera(new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y)));
+                    m_camera.rect = new Rect(0, 0, 1, 1);
                 }
-                else if (m_canvas.renderMode == RenderMode.ScreenSpaceCamera)
+                else
                 {
-                    if(m_canvas.worldCamera != Camera)
+                    if (m_canvas.renderMode == RenderMode.ScreenSpaceOverlay)
                     {
                         Vector3[] corners = new Vector3[4];
                         m_rectTransform.GetWorldCorners(corners);
+                        ResizeCamera(new Rect(corners[0], new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y)));
+                    }
+                    else if (m_canvas.renderMode == RenderMode.ScreenSpaceCamera)
+                    {
+                        if (m_canvas.worldCamera != Camera)
+                        {
+                            Vector3[] corners = new Vector3[4];
+                            m_rectTransform.GetWorldCorners(corners);
 
-                        corners[0] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[0]);
-                        corners[1] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[1]);
-                        corners[2] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[2]);
-                        corners[3] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[3]);
+                            corners[0] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[0]);
+                            corners[1] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[1]);
+                            corners[2] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[2]);
+                            corners[3] = RectTransformUtility.WorldToScreenPoint(m_canvas.worldCamera, corners[3]);
 
-                        Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
-                        ResizeCamera(new Rect(corners[0], size));
+                            Vector2 size = new Vector2(corners[2].x - corners[0].x, corners[1].y - corners[0].y);
+                            ResizeCamera(new Rect(corners[0], size));
+                        }
                     }
                 }
             }

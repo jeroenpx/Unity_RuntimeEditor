@@ -101,8 +101,11 @@ namespace Battlehub.RTTerrain
         private void OnFlatten()
         {
             Terrain terrain = TerrainEditor.Terrain;
+            if(terrain == null)
+            {
+                return;
+            }
             float[,] oldHeightmap = GetHeightmap();
-
             float[,] newHeightmap = GetHeightmap();
             int w = newHeightmap.GetLength(0);
             int h = newHeightmap.GetLength(1);

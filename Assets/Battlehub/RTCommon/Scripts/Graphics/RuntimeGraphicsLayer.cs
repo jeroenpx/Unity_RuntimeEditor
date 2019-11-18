@@ -127,7 +127,7 @@ namespace Battlehub.RTCommon
             m_graphicsLayerCamera.gameObject.SetActive(false);
 
             m_renderTextureCamera = m_graphicsLayerCamera.gameObject.AddComponent<RenderTextureCamera>();
-            m_renderTextureCamera.Fullscreen = false;
+            //m_renderTextureCamera.Fullscreen = false;
 
             IRTE rte = IOC.Resolve<IRTE>();
             RuntimeWindow sceneWindow = rte.GetWindow(RuntimeWindowType.Scene);

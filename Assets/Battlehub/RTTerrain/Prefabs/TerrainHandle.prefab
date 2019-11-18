@@ -126,6 +126,8 @@ MonoBehaviour:
   CanInspect: 1
   CanDuplicate: 1
   CanDelete: 1
+  CanRename: 1
+  CanCreatePrefab: 1
   ShowSelectionGizmo: 0
   CanSnap: 1
   AddColliders: 1
@@ -155,4 +157,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pointerOverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  m_normalColor: {r: 1, g: 1, b: 1, a: 1}
+  m_normalColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.6509804}

@@ -67,7 +67,7 @@ namespace Battlehub.RTEditor
                 case "settings":
                     IWindowManager wm = IOC.Resolve<IWindowManager>();
                     wm.CreateDialogWindow("settings", "Settings",
-                        (sender, args) => { }, (sender, args) => { }, 250, 270, 250, 270, false);
+                        (sender, args) => { }, (sender, args) => { }, 350, 350, 350, 350, false);
                     break;
 
             }

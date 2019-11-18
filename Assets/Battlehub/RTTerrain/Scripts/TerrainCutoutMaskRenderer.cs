@@ -12,7 +12,7 @@ namespace Battlehub.RTTerrain
             set;
         }
 
-        Texture2D CreateMask(GameObject[] gameObjects, bool terrainScaleMask = true);
+        Texture2D CreateMask(TerrainData terrainData, GameObject[] gameObjects, bool terrainScaleMask = true);
     }
 
     [DefaultExecutionOrder(-90)]
@@ -61,12 +61,12 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        public Texture2D CreateMask(GameObject[] gameObjects, bool terrainScaleMask = true)
+        public Texture2D CreateMask(TerrainData terrainData, GameObject[] gameObjects, bool terrainScaleMask = true)
         {
-            return CreateMask(gameObjects, defaultPosition, Quaternion.Euler(defaultRotation), defaultScale, terrainScaleMask);
+            return CreateMask(terrainData, gameObjects, defaultPosition, Quaternion.Euler(defaultRotation), defaultScale, terrainScaleMask);
         }
 
-        public Texture2D CreateMask(GameObject[] gameObjects, Vector3 position, Quaternion rotation, Vector3 scale, bool terrainScaleMask)
+        public Texture2D CreateMask(TerrainData terrainData, GameObject[] gameObjects, Vector3 position, Quaternion rotation, Vector3 scale, bool terrainScaleMask)
         {
             if(gameObjects == null)
             {
@@ -135,7 +135,7 @@ namespace Battlehub.RTTerrain
                 float objSize;
                 if(terrainScaleMask)
                 {
-                    objSize = Mathf.Max(Terrain.activeTerrain.terrainData.size.x / 2, Terrain.activeTerrain.terrainData.size.z / 2);
+                    objSize = Mathf.Max(terrainData.size.x / 2, terrainData.size.z / 2);
                 }
                 else
                 {

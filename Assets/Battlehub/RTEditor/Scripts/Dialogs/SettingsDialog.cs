@@ -23,24 +23,12 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private RangeEditor m_uiScaleEditor = null;
-        
-        public bool IsGridVisible
-        {
-            get { return m_settings.IsGridVisible; }
-            set { m_settings.IsGridVisible = value; }
-        }
 
-        public bool SnapToGrid
-        {
-            get { return m_settings.IsGridEnabled; }
-            set { m_settings.IsGridEnabled = value; }
-        }
+        [SerializeField]
+        private RangeEditor m_zoomSpeedEditor = null;
 
-        public float GridSize
-        {
-            get { return m_settings.GridSize; }
-            set { m_settings.GridSize = value; }
-        }
+        [SerializeField]
+        private BoolEditor m_constantZoomSpeedEditor = null;
 
         public bool UIAutoScale
         {
@@ -54,15 +42,9 @@ namespace Battlehub.RTEditor
                 }
                 if(value)
                 {
-                    UIScale = 1.0f;
+                    m_settings.UIScale = 1.0f;
                 }
             }
-        }
-
-        public float UIScale
-        {
-            get { return m_settings.UIScale; }
-            set { m_settings.UIScale = value; }
         }
 
         private ISettingsComponent m_settings;
@@ -89,19 +71,19 @@ namespace Battlehub.RTEditor
 
             if(m_isGridVisibleEditor != null)
             {
-                m_isGridVisibleEditor.Init(this, this, Strong.PropertyInfo((SettingsDialog x) => x.IsGridVisible), null, "Is Grid Visible");
+                m_isGridVisibleEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.IsGridVisible), null, "Is Grid Visible");
             }
 
             if(m_snapToGridEditor != null)
             {
-                m_snapToGridEditor.Init(this, this, Strong.PropertyInfo((SettingsDialog x) => x.SnapToGrid), null, "Snap To Grid");
+                m_snapToGridEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.IsGridEnabled), null, "Snap To Grid");
             }
 
             if(m_gridSizeEditor != null)
             {
                 m_gridSizeEditor.Min = 0.1f;
                 m_gridSizeEditor.Max = 8;
-                m_gridSizeEditor.Init(this, this, Strong.PropertyInfo((SettingsDialog x) => x.GridSize), null, "Grid Size");
+                m_gridSizeEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.GridSize), null, "Grid Size");
             }
 
             if(m_uiAutoScaleEditor != null)
@@ -113,7 +95,7 @@ namespace Battlehub.RTEditor
             {
                 m_uiScaleEditor.Min = 0.5f;
                 m_uiScaleEditor.Max = 3;
-                m_uiScaleEditor.Init(this, this, Strong.PropertyInfo((SettingsDialog x) => x.UIScale), null, "UI Scale", 
+                m_uiScaleEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.UIScale), null, "UI Scale", 
                     () => { },
                     () => { },
                     () => 
@@ -128,6 +110,18 @@ namespace Battlehub.RTEditor
                 {
                     m_uiScaleEditor.gameObject.SetActive(false);
                 }
+            }
+
+            if (m_zoomSpeedEditor != null)
+            {
+                m_zoomSpeedEditor.Min = 1.0f;
+                m_zoomSpeedEditor.Max = 100.0f;
+                m_zoomSpeedEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.ZoomSpeed), null, "Zoom Speed");
+            }
+
+            if(m_constantZoomSpeedEditor != null)
+            {
+                m_constantZoomSpeedEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.ConstantZoomSpeed), null, "Constant Zoom Speed");
             }
         }
 

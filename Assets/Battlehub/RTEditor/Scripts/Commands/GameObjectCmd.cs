@@ -112,7 +112,7 @@ namespace Battlehub.RTEditor
                         go = new GameObject();
                         go.name = "Spot Light";
                         Light light = go.AddComponent<Light>();
-                        light.type = LightType.Point;
+                        light.type = LightType.Spot;
                     }
                     break;
                 case "camera":

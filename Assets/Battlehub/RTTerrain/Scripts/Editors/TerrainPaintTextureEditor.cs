@@ -16,6 +16,7 @@ namespace Battlehub.RTTerrain
         private void Awake()
         {
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
+            m_terrainEditor.TerrainChanged += OnTerrainChanged;
 
             if(m_terrainLayerEditor != null)
             {
@@ -30,9 +31,13 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        
         private void OnDestroy()
         {
+            if(m_terrainEditor != null)
+            {
+                m_terrainEditor.TerrainChanged -= OnTerrainChanged;
+            }
+
             if(m_terrainLayerEditor != null)
             {
                 m_terrainLayerEditor.SelectedLayerChanged -= OnSelectedLayerChanged;
@@ -101,6 +106,21 @@ namespace Battlehub.RTTerrain
         private int GetTerrainLayerIndex()
         {
             return m_terrainLayerEditor.SelectedLayer != null ? Array.IndexOf(m_terrainLayerEditor.TerrainData.terrainLayers, m_terrainLayerEditor.SelectedLayer) : 0;
+        }
+
+        private void OnTerrainChanged()
+        {
+            if (m_terrainLayerEditor != null)
+            {
+                if (m_terrainEditor.Terrain == null)
+                {
+                    m_terrainLayerEditor.TerrainData = null;
+                }
+                else
+                {
+                    m_terrainLayerEditor.TerrainData = m_terrainEditor.Terrain.terrainData;
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.RTCommon;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -82,7 +83,7 @@ namespace Battlehub.RTHandles
 
         public void RecreateCommandBuffer()
         {
-            if (m_camera.targetTexture != null)
+            if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Legacy)
             {
                 m_rtWidth = Screen.width;
                 m_rtHeight = Screen.height;
@@ -108,7 +109,7 @@ namespace Battlehub.RTHandles
             m_commandBuffer.SetRenderTarget(m_depthRTID, BuiltinRenderTextureType.CurrentActive);
             m_commandBuffer.ClearRenderTarget(false, true, Color.clear);
 
-            if (m_camera.targetTexture != null)
+            if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Legacy)
             {
                 m_commandBuffer.SetViewport(m_camera.pixelRect);
             }

@@ -75,9 +75,11 @@ namespace Battlehub.RTTerrain
         private TerrainBrushSource m_source;
         private ITerrainCutoutMaskRenderer m_terrainCutoutRenderer;
         private IRTE m_editor;
+        private TerrainEditor m_terrainEditor;
        
         private void Awake()
         {
+            m_terrainEditor = GetComponentInParent<TerrainEditor>();
             m_editor = IOC.Resolve<IRTE>();
             m_editor.Selection.SelectionChanged += OnEditorSelectionChanged;
             m_terrainCutoutRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
@@ -219,7 +221,12 @@ namespace Battlehub.RTTerrain
 
         private void OnCreateButtonClick()
         {
-            Texture2D texuture = m_terrainCutoutRenderer.CreateMask(m_editor.Selection.gameObjects, false);
+            if(m_terrainEditor.Terrain == null || m_terrainEditor.Terrain.terrainData == null)
+            {
+                return;
+            }
+
+            Texture2D texuture = m_terrainCutoutRenderer.CreateMask(m_terrainEditor.Terrain.terrainData, m_editor.Selection.gameObjects, false);
             CreateBrush(texuture);
             Destroy(texuture);
         }
