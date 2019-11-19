@@ -35,7 +35,7 @@ namespace Battlehub.RTCommon
             GL.PushMatrix();
             try
             {
-                GL.LoadProjectionMatrix(GL.GetGPUProjectionMatrix(camera.projectionMatrix, false) * camera.worldToCameraMatrix);
+                GL.LoadProjectionMatrix(GL.GetGPUProjectionMatrix(camera.projectionMatrix, false));
 
                 if (m_camera == camera)
                 {

@@ -75,6 +75,8 @@ namespace Battlehub.RTHandles
 
             m_outlineMaterial = new Material(Shader.Find("Hidden/UnityOutline"));
 
+            //m_outlineMaterial = RenderPipelineInfo.DefaultMaterial;
+
             m_camera = GetComponent<Camera>();
 
             m_camera.depthTextureMode = DepthTextureMode.Depth;
@@ -101,9 +103,9 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            int antialiasing = Mathf.Max(1, QualitySettings.antiAliasing);
+            int antialiasing = Mathf.Max(1, RenderPipelineInfo.MSAASampleCount);
 
-            FilterMode filterMode = FilterMode.Bilinear;
+            FilterMode filterMode = FilterMode.Point;
             // initialization
             m_commandBuffer.GetTemporaryRT(m_depthRTID, m_rtWidth, m_rtHeight, 0, filterMode, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default, antialiasing);
             m_commandBuffer.SetRenderTarget(m_depthRTID, BuiltinRenderTextureType.CurrentActive);

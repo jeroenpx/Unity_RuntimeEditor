@@ -44,6 +44,11 @@ namespace Battlehub.RTEditor
         private void Awake()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();   
+
+            if(RenderPipelineInfo.Type != RPType.Legacy)
+            {
+                m_defaultMaterial = RenderPipelineInfo.DefaultMaterial;
+            }
         }
 
         public bool CanExec(string cmd)

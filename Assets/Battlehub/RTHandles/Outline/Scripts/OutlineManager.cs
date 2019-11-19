@@ -42,6 +42,12 @@ namespace Battlehub.RTHandles
                     m_sceneWindow.IOCContainer.RegisterFallback<IOutlineManager>(this);
                 }
             }
+
+            if(RenderPipelineInfo.Type != RPType.Legacy)
+            {
+                Debug.Log("OutlineManager is not supported");
+                Destroy(this);
+            }
         }
 
         private void OnDestroy()

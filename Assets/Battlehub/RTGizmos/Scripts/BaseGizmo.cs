@@ -163,7 +163,7 @@ namespace Battlehub.RTGizmos
             if (m_isDragging)
             {
                 Vector3 point;
-                if (GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out point))
+                if (GetPointOnDragPlane(Window.Pointer.ScreenPoint, out point))
                 {
                     Vector3 offset = m_handlesInverseTransform.MultiplyVector(point - m_prevPoint);
                     offset = Vector3.Project(offset, m_normal);
@@ -413,14 +413,14 @@ namespace Battlehub.RTGizmos
                 return;
             }
 
-            Vector2 pointer = Window.Editor.Input.GetPointerXY(0);
+            Vector2 pointer = Window.Pointer.ScreenPoint;
             m_dragIndex = Hit(pointer, HandlesPositions, HandlesNormals);
             if (m_dragIndex >= 0 && OnBeginDrag(m_dragIndex))
             {
                 m_handlesTransform = HandlesTransform;
                 m_handlesInverseTransform = HandlesTransformInverse;
                 m_dragPlane = GetDragPlane();
-                m_isDragging = GetPointOnDragPlane(Window.Editor.Input.GetPointerXY(0), out m_prevPoint);
+                m_isDragging = GetPointOnDragPlane(Window.Pointer.ScreenPoint, out m_prevPoint);
                 m_normal = HandlesNormals[m_dragIndex].normalized;
                 if (m_isDragging)
                 {

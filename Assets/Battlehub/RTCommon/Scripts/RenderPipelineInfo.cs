@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Reflection;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Battlehub.RTCommon
@@ -16,6 +18,7 @@ namespace Battlehub.RTCommon
     {
         public static readonly RPType Type;
         public static readonly string DefaultShaderName;
+        public static readonly int MSAASampleCount;
 
         private static Material m_defaultMaterial;
         public static Material DefaultMaterial
@@ -37,27 +40,47 @@ namespace Battlehub.RTCommon
             {
                 Type = RPType.Legacy;
                 DefaultShaderName = "Standard";
-            }
-            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "LightweightRenderPipelineAsset")
-            {
-                Type = RPType.LWRP;
-                DefaultShaderName = "Lightweight Render Pipeline/Lit";
-            }
-            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "UniversalRenderPipelineAsset")
-            {
-                Type = RPType.URP;
-                DefaultShaderName = "Universal Render Pipeline/Lit";
-            }
-            else if(GraphicsSettings.renderPipelineAsset.GetType().Name == "HDRenderRenderPipelineAsset")
-            {
-                Type = RPType.HDRP;
-                DefaultShaderName = "HD Render Pipeline/Lit";
+                MSAASampleCount = QualitySettings.antiAliasing;
             }
             else
             {
-                Debug.Log(GraphicsSettings.renderPipelineAsset.GetType());
-                Type = RPType.Unknown;
+                Type pipelineType = GraphicsSettings.renderPipelineAsset.GetType();
+                if (pipelineType.Name == "LightweightRenderPipelineAsset")
+                {
+                    Type = RPType.LWRP;
+                    MSAASampleCount = GetMSAASampleCount(pipelineType);
+                    DefaultShaderName = "Lightweight Render Pipeline/Lit";
+                }
+                else if (pipelineType.Name == "UniversalRenderPipelineAsset")
+                {
+                    Type = RPType.URP;
+                    MSAASampleCount = GetMSAASampleCount(pipelineType);
+                    DefaultShaderName = "Universal Render Pipeline/Lit";
+                }
+                else if (pipelineType.Name == "HDRenderRenderPipelineAsset")
+                {
+                    Type = RPType.HDRP;
+                    MSAASampleCount = GetMSAASampleCount(pipelineType);
+                    DefaultShaderName = "HD Render Pipeline/Lit";
+                }
+                else
+                {
+                    Debug.Log(GraphicsSettings.renderPipelineAsset.GetType());
+                    Type = RPType.Unknown;
+                    MSAASampleCount = 0;
+                }
             }
+           
+        }
+
+        static int GetMSAASampleCount(Type pipelineType)
+        {
+            PropertyInfo msaaProp = pipelineType.GetProperty("msaaSampleCount");
+            if (msaaProp != null)
+            {
+                return Convert.ToInt32(msaaProp.GetValue(GraphicsSettings.renderPipelineAsset));
+            }
+            return 0;
         }
 
 

@@ -39,15 +39,18 @@ Shader "Battlehub/RTHandles/Grid" {
 			#include "UnityCG.cginc"
 			#pragma vertex vert  
 			#pragma fragment frag 
+			#pragma multi_compile_instancing
 
 			struct vertexInput {
 				float4 vertex : POSITION;
 				float4 color: COLOR;
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 			struct vertexOutput {
 				float4 pos : SV_POSITION;
 				float3 worldPos: TEXCOORD0;
 				float4 color: COLOR;
+				//UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			float _FadeDistance;
@@ -66,10 +69,13 @@ Shader "Battlehub/RTHandles/Grid" {
 			vertexOutput vert(vertexInput input)
 			{
 				vertexOutput output;
+				UNITY_SETUP_INSTANCE_ID(input);
+				//UNITY_TRANSFER_INSTANCE_ID(input, output);
+
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.worldPos = mul(unity_ObjectToWorld, input.vertex);
 
-				output.color = input.color;// GammaToLinearSpace(input.color);
+				output.color = input.color;
 				output.color.a = input.color.a;
 				return output;
 			}
@@ -79,11 +85,11 @@ Shader "Battlehub/RTHandles/Grid" {
 
 			float4 frag(vertexOutput input) : COLOR
 			{
+				//UNITY_SETUP_INSTANCE_ID(input);
 				float4 col = input.color;
 				float3 cam = _WorldSpaceCameraPos;
 				float3 wp = input.worldPos;
-				//cam.y = wp.y;
-
+				
 				float f = (length(cam - wp) * ORTHO + _CameraSize * PERSP) / _FadeDistance;
 				float alpha = saturate(1.0f - f);
 

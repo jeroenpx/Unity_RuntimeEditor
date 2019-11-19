@@ -94,6 +94,11 @@ namespace Battlehub.RTCommon
                 m_camera.rect = new Rect(0, 0, 1, 1);
             }
 
+            if(RenderPipelineInfo.Type != RPType.Legacy)
+            {
+                m_camera.allowMSAA = m_allowMSAA;
+            }
+
             GameObject outputGo = null;
             if (m_output == null)
             {
@@ -226,7 +231,7 @@ namespace Battlehub.RTCommon
             m_texture = new RenderTexture(Mathf.Max(1, sizeX), Mathf.Max(1, sizeY), 24, RenderTextureFormat.ARGB32);
             m_texture.name = m_camera.name + " RenderTexture";
             m_texture.filterMode = FilterMode.Point;
-            m_texture.antiAliasing = m_allowMSAA ? Mathf.Max(1, QualitySettings.antiAliasing) : 1;
+            m_texture.antiAliasing = m_allowMSAA ? Mathf.Max(1, RenderPipelineInfo.MSAASampleCount) : 1;
 
             m_camera.targetTexture = m_texture;
             m_output.texture = m_texture;
@@ -234,7 +239,6 @@ namespace Battlehub.RTCommon
             m_outputRect = m_output.rectTransform.rect;
             m_screenWidth = Screen.width;
             m_screenHeight = Screen.height;
-
 
             if (oldTexture != null)
             {
