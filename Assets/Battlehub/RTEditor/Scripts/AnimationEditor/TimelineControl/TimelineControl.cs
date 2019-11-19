@@ -89,7 +89,7 @@ namespace Battlehub.RTEditor
         public event Action SampleChanged;
 
         [SerializeField]
-        private GameObject RenderCameraPrefab;
+        private GameObject RenderCameraPrefab = null;
         [SerializeField]
         private RawImage m_output = null;
         [SerializeField]
