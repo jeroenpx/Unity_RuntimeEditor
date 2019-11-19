@@ -183,6 +183,12 @@ namespace Battlehub.RTHandles
             }
             else
             {
+                if (RenderPipelineInfo.Type != RPType.Legacy)
+                {
+                    m_camera.allowMSAA = false;
+                    m_camera.allowHDR = false;
+                }
+
                 m_camera.clearFlags = CameraClearFlags.SolidColor;
                 m_camera.backgroundColor = new Color(0, 0, 0, 0);
                 if (m_output != null)
