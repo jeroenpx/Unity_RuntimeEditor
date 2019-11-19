@@ -80,7 +80,7 @@ namespace Battlehub.RTEditor
         private bool m_isGridEnabledDefault = false;
         public bool IsGridEnabled
         {
-            get { return GetBool("IsGridEnabled", false); }
+            get { return GetBool("IsGridEnabled", m_isGridEnabledDefault); }
             set
             {
                 SetBool("IsGridEnabled", value);
