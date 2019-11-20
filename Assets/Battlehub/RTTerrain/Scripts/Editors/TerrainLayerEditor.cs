@@ -132,7 +132,11 @@ namespace Battlehub.RTTerrain
         {
             if(m_layersList != null)
             {
-                m_layersList.Items = TerrainData.terrainLayers;
+                if(TerrainData != null)
+                {
+                    m_layersList.Items = TerrainData.terrainLayers;
+                }
+                
                 UpdateVisualState();
             }
         }

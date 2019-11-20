@@ -53,13 +53,9 @@ MonoBehaviour:
   BeforeDrag:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   Drop:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   AbsouluteGrid: 0
   GridSize: 0.1
   MinScale: {x: -3.4028235e+38, y: -3.4028235e+38, z: -3.4028235e+38}
@@ -242,13 +238,9 @@ MonoBehaviour:
   BeforeDrag:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   Drop:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   GridSize: 1
 --- !u!1 &1310129391672340
 GameObject:
@@ -303,7 +295,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1310129391672340}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
@@ -351,7 +343,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1310129391672340}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -360,8 +352,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -371,6 +361,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &2109597063451165262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -486,7 +477,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1706449621727260}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -520,8 +511,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!1 &1726797802037690
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,13 +564,9 @@ MonoBehaviour:
   BeforeDrag:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   Drop:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Battlehub.RTHandles.BaseHandleUnityEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   GridSize: 15
   XSpeed: 1
   YSpeed: 1
@@ -684,18 +669,12 @@ MonoBehaviour:
   OrientationChanging:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   OrientationChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   ProjectionChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   m_textColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &5600781197829517373
 MonoBehaviour:
@@ -952,8 +931,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Persp
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1102,7 +1079,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6911562475532189792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -1111,8 +1088,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 69dc32a5820fe6f45a870562c0d83ca4, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -1122,6 +1097,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &5936084454261844825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1191,7 +1167,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7094019275735313339}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -1200,8 +1176,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 69dc32a5820fe6f45a870562c0d83ca4, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -1211,6 +1185,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &1397098861393456807
 MonoBehaviour:
   m_ObjectHideFlags: 0

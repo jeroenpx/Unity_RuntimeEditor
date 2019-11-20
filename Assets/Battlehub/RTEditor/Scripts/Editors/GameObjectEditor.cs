@@ -51,7 +51,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_editor.Object.ComponentAdded += OnComponentAdded;

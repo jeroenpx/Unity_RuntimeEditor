@@ -28,12 +28,19 @@ namespace Battlehub.RTTerrain
                 }
             }
         }
+        
 
         protected override void Awake()
         {
             base.Awake();
 
-            if(m_heightEditor != null)
+            OnTerrainChanged();
+        }
+
+        protected override void OnTerrainChanged()
+        {
+            base.OnTerrainChanged();
+            if (m_heightEditor != null && TerrainEditor.Terrain != null && TerrainEditor.Terrain.terrainData != null)
             {
                 m_heightEditor.Min = 0;
                 m_heightEditor.Max = TerrainEditor.Terrain.terrainData.size.y;

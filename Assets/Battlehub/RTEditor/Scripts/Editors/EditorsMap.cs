@@ -202,12 +202,13 @@ namespace Battlehub.RTEditor
                 { typeof(UnityEngine.Skybox), new EditorDescriptor(20, true, false) },
                 { typeof(UnityEngine.SphereCollider), new EditorDescriptor(21, true, false) },
                 { typeof(UnityEngine.SpringJoint), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.Transform), new EditorDescriptor(22, true, false) },
+                { typeof(UnityEngine.Terrain), new EditorDescriptor(22, true, false) },
+                { typeof(UnityEngine.Transform), new EditorDescriptor(23, true, false) },
                 { typeof(Cubeman.CubemanCharacter), new EditorDescriptor(20, true, false) },
                 { typeof(Cubeman.CubemanUserControl), new EditorDescriptor(20, true, false) },
                 { typeof(Cubeman.GameCameraFollow), new EditorDescriptor(20, true, false) },
                 { typeof(Cubeman.GameCharacter), new EditorDescriptor(20, true, false) },
-                { typeof(RuntimeAnimation), new EditorDescriptor(20, true, false) }
+                { typeof(RuntimeAnimation), new EditorDescriptor(20, true, false) },
             };
         }
 

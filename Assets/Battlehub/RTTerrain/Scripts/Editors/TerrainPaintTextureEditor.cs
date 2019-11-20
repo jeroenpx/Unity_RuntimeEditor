@@ -20,7 +20,10 @@ namespace Battlehub.RTTerrain
 
             if(m_terrainLayerEditor != null)
             {
-                m_terrainLayerEditor.TerrainData = m_terrainEditor.Terrain.terrainData;
+                if(m_terrainEditor.Terrain != null)
+                {
+                    m_terrainLayerEditor.TerrainData = m_terrainEditor.Terrain.terrainData;
+                }
                 m_terrainLayerEditor.SelectedLayerChanged += OnSelectedLayerChanged;
             }
             

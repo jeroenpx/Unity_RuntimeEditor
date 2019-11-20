@@ -66,7 +66,7 @@ namespace Battlehub.RTHandles
 
         protected override void OnDestroyOverride()
         {
-            if (Window != null && m_commandBuffer != null)
+            if (Window != null && Window.Camera != null && m_commandBuffer != null)
             {
                 Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             }

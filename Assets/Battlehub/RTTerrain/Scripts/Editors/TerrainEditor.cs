@@ -31,6 +31,8 @@ namespace Battlehub.RTTerrain
         [SerializeField]
         private GameObject[] m_editors = null;
         [SerializeField]
+        private CanvasGroup m_canvasGroup = null;
+        [SerializeField]
         private TerrainProjector m_terrainProjectorPrefab = null;
         public TerrainProjector Projector
         {
@@ -41,6 +43,12 @@ namespace Battlehub.RTTerrain
         private IRTE m_editor;
         private IWindowManager m_wm;
         private bool m_wasEnabled;
+
+        private bool IsEnabled
+        {
+            get { return PlayerPrefs.GetInt("TerrainEditor.m_enableToggle", 1) == 1; }
+            set { PlayerPrefs.SetInt("TerrainEditor.m_enableToggle", value ? 1 : 0); }
+        }
 
         private EditorTypes m_editorType = EditorTypes.Raise_Or_Lower_Terrain;
         public EditorTypes EditorType
@@ -95,6 +103,11 @@ namespace Battlehub.RTTerrain
                     {
                         TerrainChanged();
                     }
+
+                    if(m_canvasGroup != null)
+                    {
+                        m_canvasGroup.interactable = m_terrain != null;
+                    }
                 }
             }
         }
@@ -115,11 +128,17 @@ namespace Battlehub.RTTerrain
 
             if(m_enableToggle != null)
             {
+                m_enableToggle.isOn = IsEnabled;
                 m_enableToggle.onValueChanged.AddListener(OnEnableValueChanged);
                 if(m_enableToggle.isOn)
                 {
                     OnEnableValueChanged(m_enableToggle.isOn);
                 }
+            }
+
+            if(m_canvasGroup != null)
+            {
+                m_canvasGroup.interactable = false;
             }
         }
 
@@ -169,6 +188,8 @@ namespace Battlehub.RTTerrain
 
                 Projector.gameObject.SetActive(false);
             }
+
+            IsEnabled = value;
         }
 
         private void EnableStandardTools(bool enable)

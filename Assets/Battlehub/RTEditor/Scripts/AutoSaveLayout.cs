@@ -2,18 +2,19 @@
 using Battlehub.UIControls.DockPanels;
 using UnityEngine;
 
-namespace Battlehub.RTEditor.Demo
+namespace Battlehub.RTEditor
 {
-    [DefaultExecutionOrder(-90)]
-    public class PersistentLayoutExample2 : EditorOverride
+    [DefaultExecutionOrder(-91)]
+    public class AutoSaveLayout : EditorOverride
     {
-        private const string SavedLayoutName = "AutoSavedLayout";
+        private const string SavedLayoutName = "Saved_Layout";
 
         private IWindowManager m_wm;
 
         protected override void OnEditorCreated(object obj)
-        {
+        {    
             OverrideDefaultLayout();
+            m_wm = IOC.Resolve<IWindowManager>();
         }
 
         protected override void OnEditorExist()
@@ -26,6 +27,12 @@ namespace Battlehub.RTEditor.Demo
                 m_wm = IOC.Resolve<IWindowManager>();
                 m_wm.SetLayout(DefaultLayout, RuntimeWindowType.Scene.ToString());
             }
+        }
+
+        protected override void OnEditorClosed()
+        {
+            base.OnEditorClosed();
+            m_wm.SaveLayout(SavedLayoutName);
         }
 
         private void OnApplicationQuit()
@@ -50,4 +57,5 @@ namespace Battlehub.RTEditor.Demo
             return wm.GetBuiltInDefaultLayout();
         }
     }
+
 }

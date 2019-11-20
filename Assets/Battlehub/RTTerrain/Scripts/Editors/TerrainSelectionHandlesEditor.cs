@@ -35,9 +35,18 @@ namespace Battlehub.RTTerrain
         private bool m_isTerrainSelected = false;
         private bool m_isTerrainHandleSelected = false;
 
+        private TerrainEditor m_terrainEditor;
+        protected TerrainEditor TerrainEditor
+        {
+            get { return m_terrainEditor; }
+        }
+
         private void Awake()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();
+
+            m_terrainEditor = GetComponentInParent<TerrainEditor>();
+            m_terrainEditor.TerrainChanged += OnTerrainChanged;
 
             m_terrainTool = IOC.Resolve<ITerrainTool>();
 
@@ -89,7 +98,11 @@ namespace Battlehub.RTTerrain
             if (m_editor != null)
             {
                 m_editor.Selection.SelectionChanged -= OnSelectionChanged;
-                m_editor.SceneLoaded -= OnSceneLoaded;
+            }
+
+            if(m_terrainEditor != null)
+            {
+                m_terrainEditor.TerrainChanged -= OnTerrainChanged;
             }
 
             if (m_commandsList != null)
@@ -110,6 +123,14 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private void OnTerrainChanged()
+        {
+            if(m_terrainTool != null)
+            {
+                m_terrainTool.ActiveTerrain = m_terrainEditor.Terrain;
+            }
+        }
+
         private void Start()
         {
             UpdateFlags();
@@ -119,22 +140,15 @@ namespace Battlehub.RTTerrain
 
         private void OnEnable()
         {
-            m_terrainTool.Enabled = true;
-            if (m_editor != null)
-            {
-                m_editor.SceneLoaded += OnSceneLoaded;
-            }
+            m_terrainTool.ActiveTerrain = m_terrainEditor.Terrain;
+            
         }
 
         private void OnDisable()
         {
-            if (m_editor != null)
-            {
-                m_editor.SceneLoaded -= OnSceneLoaded;
-            }
             if (m_terrainTool != null)
             {
-                m_terrainTool.Enabled = false;
+                m_terrainTool.ActiveTerrain = null;
             }
         }
 
@@ -147,7 +161,6 @@ namespace Battlehub.RTTerrain
                 new ToolCmd("Clear Holes", () => m_terrainTool.ClearHoles(), () => m_editor.Selection.Length > 0),
             };
         }
-
 
         private void UpdateFlags()
         {
@@ -239,13 +252,7 @@ namespace Battlehub.RTTerrain
 
         private void OnHandlesToggleValueChanged(bool value)
         {
-            m_terrainTool.Enabled = value;
-        }
-
-        private void OnSceneLoaded()
-        {
-            m_terrainTool.Enabled = false;
-            m_terrainTool.Enabled = true;
+            m_terrainTool.ActiveTerrain = value ? m_terrainEditor.Terrain : null;
         }
     }
 }

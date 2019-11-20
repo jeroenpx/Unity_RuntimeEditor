@@ -13,7 +13,7 @@ namespace Battlehub.RTTerrain
 {
     public interface ITerrainTool
     {
-        bool Enabled
+        Terrain ActiveTerrain
         {
             get; set;
         }
@@ -60,7 +60,7 @@ namespace Battlehub.RTTerrain
             set
             {
                 m_enableZTest = value;
-                if (!Enabled)
+                if (ActiveTerrain == null)
                 {
                     return;
                 }
@@ -77,7 +77,7 @@ namespace Battlehub.RTTerrain
         {
             get
             {
-                if (!Enabled)
+                if (ActiveTerrain == null || m_state == null)
                 {
                     return 0;
                 }
@@ -85,7 +85,7 @@ namespace Battlehub.RTTerrain
             }
             set
             {
-                if (!Enabled)
+                if (ActiveTerrain == null || m_state == null)
                 {
                     return;
                 }
@@ -94,10 +94,7 @@ namespace Battlehub.RTTerrain
                 {
                     m_state.ZSpacing = value;
                     m_zCount = Mathf.FloorToInt(m_state.ZSize / m_state.ZSpacing) + 1;
-                    if (Enabled)
-                    {
-                        Refresh();
-                    }
+                    Refresh();
                 }
             }
         }
@@ -106,7 +103,7 @@ namespace Battlehub.RTTerrain
         {
             get
             {
-                if (!Enabled)
+                if (ActiveTerrain == null || m_state == null)
                 {
                     return 0;
                 }
@@ -114,7 +111,7 @@ namespace Battlehub.RTTerrain
             }
             set
             {
-                if (!Enabled)
+                if (ActiveTerrain == null || m_state == null)
                 {
                     return;
                 }
@@ -123,39 +120,44 @@ namespace Battlehub.RTTerrain
                 {
                     m_state.XSpacing = value;
                     m_xCount = Mathf.FloorToInt(m_state.XSize / m_state.XSpacing) + 1;
-                    if (Enabled)
+                    Refresh();
+                }
+            }
+        }
+
+        private Terrain m_activeTerrain;
+        public Terrain ActiveTerrain
+        {
+            get { return m_activeTerrain; }
+            set
+            {
+                gameObject.SetActive(m_activeTerrain != null);
+                if (m_activeTerrain != value)
+                {
+                    m_activeTerrain = value;
+                    Disable();
+                    if(m_activeTerrain != null)
                     {
-                        Refresh();
+                        Enable();
                     }
                 }
             }
         }
 
-        private bool m_enabled;
-        public bool Enabled
+        public TerrainData ActiveTerrainData
         {
-            get { return m_enabled; }
-            set
+            get
             {
-                if (this == null)
+                Terrain activeTerrain = ActiveTerrain;
+                if (activeTerrain == null)
                 {
-                    return;
+                    return null;
                 }
-                gameObject.SetActive(value);
-                if (m_enabled != value)
-                {
-                    m_enabled = value;
-                    if (m_enabled)
-                    {
-                        Enable();
-                    }
-                    else
-                    {
-                        Disable();
-                    }
-                }
+
+                return activeTerrain.terrainData;
             }
         }
+
 
         [SerializeField]
         public TerrainToolHandle m_handlePrefab;
@@ -176,24 +178,6 @@ namespace Battlehub.RTTerrain
         private float[,] m_additiveHeights;
         private float[,] m_interpolatedHeights;
 
-        public TerrainData ActiveTerrainData
-        {
-            get { return m_activeTerrain.terrainData; }
-        }
-
-        private Terrain m_activeTerrain;
-        private Terrain ActiveTerrain
-        {
-            get
-            {
-                if (m_activeTerrain == null)
-                {
-                    m_activeTerrain = Terrain.activeTerrain;
-                }
-                return m_activeTerrain;
-            }
-        }
-
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -201,39 +185,11 @@ namespace Battlehub.RTTerrain
             IOC.RegisterFallback<ITerrainTool>(this);
             m_cutoutMaskRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
             m_cutoutMaskRenderer.ObjectImageLayer = m_editor.CameraLayerSettings.ResourcePreviewLayer;
-            Enabled = false;
-        }
-
-        private void OnEnable()
-        {
-            if(m_editor == null)
-            {
-                return;
-            }
-
-            if (ActiveTerrain == null)
-            {
-                Enabled = false;
-                return;
-            }
-
-            Enabled = true;
-        }
-
-
-        private void OnDisable()
-        {
-            if (m_editor == null)
-            {
-                return;
-            }
-
-            Enabled = false;
+            ActiveTerrain = null;
         }
 
         private void Enable()
         {
-           // m_editor.Undo.Store();
             m_editor.ActiveWindowChanged += OnActiveWindowChanged;
             m_editor.Selection.SelectionChanged += OnSelectionChanged;
             m_interpolator = new CachedBicubicInterpolator();
@@ -278,7 +234,6 @@ namespace Battlehub.RTTerrain
             }
 
             InitHandles();
-            //OnSelectionChanged(null);
             OnActiveWindowChanged(m_editor.ActiveWindow);
             EnableZTest = EnableZTest;
         }
@@ -298,12 +253,7 @@ namespace Battlehub.RTTerrain
                 m_editor.Selection.activeGameObject = null;
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
                 m_editor.Selection.SelectionChanged -= OnSelectionChanged;
-               // m_targetHandles = null;
             }
-
-            //DestroyHandles();
-
-            //m_editor.Undo.Restore();
         }
 
         private void DisableHandles()
@@ -482,10 +432,7 @@ namespace Battlehub.RTTerrain
 
         private void Refresh()
         {
-            //DestroyHandles();
             DisableHandles();
-            //m_editor.Undo.Restore();
-            //m_editor.Undo.Store();
             TryRefreshGrid();
             InitHandles();
         }
@@ -530,65 +477,47 @@ namespace Battlehub.RTTerrain
             m_prevInterpolation = m_state.Interpolation;
             InitLerpGrid();
 
-            //if (m_handles != null)
-            //{
-            //    foreach (KeyValuePair<GameObject, int> kvp in m_handles)
-            //    {
-            //        GameObject handle = kvp.Key;
-            //        int z = kvp.Value / m_xCount;
-            //        int x = kvp.Value % m_xCount;
-            //        float y = m_state.Grid[kvp.Value] * ActiveTerrainData.heightmapScale.y;
+            DisableHandles();
+            GameObject[] cache = m_handles != null ? m_handles.Keys.ToArray() : new GameObject[0];
+            m_handles = new Dictionary<GameObject, int>(m_state.Grid.Length);
 
-            //        handle.transform.position = new Vector3(x * m_state.XSpacing, y, z * m_state.ZSpacing);
-
-            //        TerrainToolHandle terrainToolHandle = handle.GetComponent<TerrainToolHandle>();
-            //        terrainToolHandle.ZTest = EnableZTest;
-            //    }
-            //}
-            //else
+            int handleNumber = 0;
+            for (int x = 0; x < m_xCount; ++x)
             {
-                DisableHandles();
-                GameObject[] cache = m_handles != null ? m_handles.Keys.ToArray() : new GameObject[0];
-                m_handles = new Dictionary<GameObject, int>(m_state.Grid.Length);
-
-                int handleNumber = 0;
-                for (int x = 0; x < m_xCount; ++x)
+                for (int z = 0; z < m_zCount; ++z)
                 {
-                    for (int z = 0; z < m_zCount; ++z)
+                    m_handlePrefab.gameObject.SetActive(false);
+
+                    TerrainToolHandle handle;
+                    LockAxes lockAxes;
+                    if (handleNumber < cache.Length)
                     {
-                        m_handlePrefab.gameObject.SetActive(false);
-
-                        TerrainToolHandle handle;
-                        LockAxes lockAxes;
-                        if (handleNumber < cache.Length)
-                        {
-                            handle = cache[handleNumber].GetComponent<TerrainToolHandle>();
-                            lockAxes = handle.gameObject.GetComponent<LockAxes>();
-                        }
-                        else
-                        {
-                            handle = Instantiate(m_handlePrefab, transform);
-                            lockAxes = handle.gameObject.AddComponent<LockAxes>();
-                          
-                        }
-
-                        lockAxes.PositionZ = false;
-                        lockAxes.PositionX = true;
-                        lockAxes.PositionZ = true;
-                        lockAxes.ScaleX = lockAxes.ScaleY = lockAxes.ScaleZ = true;
-                        lockAxes.RotationX = lockAxes.RotationY = lockAxes.RotationZ = lockAxes.RotationScreen = lockAxes.RotationFree = true;
-
-                        handle.ZTest = EnableZTest;
-                        handle.gameObject.hideFlags = HideFlags.HideInHierarchy;
-
-                        float y = m_state.Grid[z * m_xCount + x] * ActiveTerrainData.heightmapScale.y;
-                        handle.transform.localPosition = new Vector3(x * m_state.XSpacing, y, z * m_state.ZSpacing);
-                        handle.name = "h " + x + "," + z;
-                        handle.gameObject.SetActive(true);
-
-                        m_handles.Add(handle.gameObject, z * m_xCount + x);
-                        handleNumber++;
+                        handle = cache[handleNumber].GetComponent<TerrainToolHandle>();
+                        lockAxes = handle.gameObject.GetComponent<LockAxes>();
                     }
+                    else
+                    {
+                        handle = Instantiate(m_handlePrefab, transform);
+                        lockAxes = handle.gameObject.AddComponent<LockAxes>();
+
+                    }
+
+                    lockAxes.PositionZ = false;
+                    lockAxes.PositionX = true;
+                    lockAxes.PositionZ = true;
+                    lockAxes.ScaleX = lockAxes.ScaleY = lockAxes.ScaleZ = true;
+                    lockAxes.RotationX = lockAxes.RotationY = lockAxes.RotationZ = lockAxes.RotationScreen = lockAxes.RotationFree = true;
+
+                    handle.ZTest = EnableZTest;
+                    handle.gameObject.hideFlags = HideFlags.HideInHierarchy;
+
+                    float y = m_state.Grid[z * m_xCount + x] * ActiveTerrainData.heightmapScale.y;
+                    handle.transform.localPosition = new Vector3(x * m_state.XSpacing, y, z * m_state.ZSpacing);
+                    handle.name = "h " + x + "," + z;
+                    handle.gameObject.SetActive(true);
+
+                    m_handles.Add(handle.gameObject, z * m_xCount + x);
+                    handleNumber++;
                 }
             }
         }
@@ -720,7 +649,7 @@ namespace Battlehub.RTTerrain
         {
             if(ActiveTerrain == null)
             {
-                Enabled = false;
+                gameObject.SetActive(false);
                 return;
             }
                         

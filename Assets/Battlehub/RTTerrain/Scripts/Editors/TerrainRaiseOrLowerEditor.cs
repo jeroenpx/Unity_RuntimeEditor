@@ -16,16 +16,22 @@ namespace Battlehub.RTTerrain
         protected virtual void Awake()
         {
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
+            m_terrainEditor.TerrainChanged += OnTerrainChanged;
                        
             if (m_terrainBrushEditor != null)
             {
                 m_terrainBrushEditor.SelectedBrushChanged += OnSelectedBrushChanged;
                 m_terrainBrushEditor.BrushParamsChanged += OnBrushParamsChanged;
             }
-        }        
+        }
 
         protected virtual void OnDestroy()
         {
+            if(m_terrainEditor != null)
+            {
+                m_terrainEditor.TerrainChanged -= OnTerrainChanged;
+            }
+
             if (m_terrainBrushEditor != null)
             {
                 m_terrainBrushEditor.SelectedBrushChanged -= OnSelectedBrushChanged;
@@ -35,7 +41,6 @@ namespace Battlehub.RTTerrain
 
         protected virtual void OnEnable()
         {
-            //m_terrainEditor.Projector.gameObject.SetActive(true);
             if (m_terrainBrushEditor.SelectedBrush != null)
             {
                 OnSelectedBrushChanged(this, System.EventArgs.Empty);
@@ -45,7 +50,12 @@ namespace Battlehub.RTTerrain
 
         protected virtual void OnDisable()
         {
-            //m_terrainEditor.Projector.gameObject.SetActive(false);
+            
+        }
+
+        protected virtual void OnTerrainChanged()
+        {
+
         }
 
         protected virtual void OnSelectedBrushChanged(object sender, System.EventArgs e)

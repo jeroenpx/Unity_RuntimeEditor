@@ -481,6 +481,11 @@ namespace Battlehub.RTEditor
 
         public void OnComponentAdded(Component component)
         {
+            if(component == null)
+            {
+                return;
+            }
+
             Type type = component.GetType();
             for(int i = 0; i < m_props.Count; ++i)
             {

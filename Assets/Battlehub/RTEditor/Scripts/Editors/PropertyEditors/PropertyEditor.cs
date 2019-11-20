@@ -530,12 +530,18 @@ namespace Battlehub.RTEditor
             if (MemberInfo is PropertyInfo)
             {
                 PropertyInfo prop = (PropertyInfo)MemberInfo;
-                prop.SetValue(Accessor, value, null);
+                if(Accessor != null)
+                {
+                    prop.SetValue(Accessor, value, null);
+                }
             }
             else
             {
                 FieldInfo field = (FieldInfo)MemberInfo;
-                field.SetValue(Accessor, value);
+                if(Accessor != null)
+                {
+                    field.SetValue(Accessor, value);
+                }
             }
 
             m_currentValue = value;
