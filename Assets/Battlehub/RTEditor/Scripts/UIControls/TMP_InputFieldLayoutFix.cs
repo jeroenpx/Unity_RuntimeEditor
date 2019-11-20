@@ -6,6 +6,7 @@ namespace Battlehub.RTEditor
     /// <summary>
     /// This script is required to fix wrong input field text alignment (starting from unity 2019.1f)
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class TMP_InputFieldLayoutFix : MonoBehaviour
     {
 #pragma warning disable 0414

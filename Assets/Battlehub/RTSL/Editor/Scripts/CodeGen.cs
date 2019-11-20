@@ -322,6 +322,11 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public static Type GetSurrogateType(Type type, int index)
         {
+            if(type == null)
+            {
+                return null;
+            }
+
             if (type.IsArray)
             {
                 type = type.GetElementType();

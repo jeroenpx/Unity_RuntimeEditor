@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTEditor;
 
 namespace Battlehub.RTTerrain
 {
@@ -40,7 +41,7 @@ namespace Battlehub.RTTerrain
         void ClearHoles();
     }
 
-    public class TerrainTool : MonoBehaviour, ITerrainTool
+    public class TerrainTool : EditorOverride, ITerrainTool
     {
         public enum Interpolation
         {
@@ -193,8 +194,9 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void Awake()
+        protected override void OnEditorExist()
         {
+            base.OnEditorExist();
             m_editor = IOC.Resolve<IRTE>();
             IOC.RegisterFallback<ITerrainTool>(this);
             m_cutoutMaskRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
@@ -204,6 +206,11 @@ namespace Battlehub.RTTerrain
 
         private void OnEnable()
         {
+            if(m_editor == null)
+            {
+                return;
+            }
+
             if (ActiveTerrain == null)
             {
                 Enabled = false;
@@ -216,6 +223,11 @@ namespace Battlehub.RTTerrain
 
         private void OnDisable()
         {
+            if (m_editor == null)
+            {
+                return;
+            }
+
             Enabled = false;
         }
 
@@ -326,8 +338,10 @@ namespace Battlehub.RTTerrain
             m_editor.Selection.activeGameObject = null;
         }
 
-        private void OnDestroy()
+        protected override void OnEditorClosed()
         {
+            base.OnEditorClosed();
+        
             IOC.UnregisterFallback<ITerrainTool>(this);
             if(m_state != null)
             {

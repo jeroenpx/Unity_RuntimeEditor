@@ -438,7 +438,7 @@ namespace Battlehub.RTSL
 
         private void DoTreeView()
         {
-            Rect rect = GUILayoutUtility.GetRect(0, 10000, 0, Mathf.Max(10000, TreeView.totalHeight));
+            Rect rect = GUILayoutUtility.GetRect(0, 0, GUILayout.MaxHeight((Screen.height - 280) * 0.5f));
             TreeView.OnGUI(rect);
         }
 

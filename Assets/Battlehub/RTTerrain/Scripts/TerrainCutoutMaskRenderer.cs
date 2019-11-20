@@ -24,7 +24,11 @@ namespace Battlehub.RTTerrain
         public int ObjectImageLayer
         {
             get { return m_objectImageLayer; }
-            set { m_objectImageLayer = value; }
+            set
+            {
+                m_objectImageLayer = value;
+                Camera.cullingMask = 1 << m_objectImageLayer;
+            }
         }
 
         public bool DestroyScripts = true;
@@ -41,7 +45,7 @@ namespace Battlehub.RTTerrain
                 Camera = gameObject.AddComponent<Camera>();
                 Camera.orthographic = true;
                 Camera.clearFlags = CameraClearFlags.Depth;
-                Camera.cullingMask = 1 << IOC.Resolve<IRTE>().CameraLayerSettings.ResourcePreviewLayer;
+                
             }
             Camera.enabled = false;
 
