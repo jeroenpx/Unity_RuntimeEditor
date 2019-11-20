@@ -1,5 +1,4 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTEditor;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -219,8 +218,7 @@ namespace Battlehub.RTHandles
             pointMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             pointsRenderer.sharedMaterial = pointMaterial;
 
-            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-            float scale = appearance.UIScaler.scaleFactor;
+            float scale = Appearance.HandleScale;
 
             //GK set text and control sizes to match display
             if (m_txtSize1 != null && m_txtSize2 != null)
