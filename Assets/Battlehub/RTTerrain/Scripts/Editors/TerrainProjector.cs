@@ -10,6 +10,9 @@ namespace Battlehub.RTTerrain
         private IRTE m_editor;
         private Brush m_terrainBrush;
         private Vector2 m_prevPos;
+        private Vector3 m_prevCamPos;
+        private Quaternion m_prevCamRot;
+
         private Vector3 m_position;
         private Terrain m_terrain;
 
@@ -77,9 +80,13 @@ namespace Battlehub.RTTerrain
                 m_projector.enabled = true;
             }
 
-            if(m_prevPos != m_editor.ActiveWindow.Pointer.ScreenPoint)
+            Camera cam = m_editor.ActiveWindow.Camera;
+            if(m_prevPos != m_editor.ActiveWindow.Pointer.ScreenPoint || m_prevCamPos != cam.transform.position || m_prevCamRot != cam.transform.rotation)
             {
                 m_prevPos = m_editor.ActiveWindow.Pointer.ScreenPoint;
+                m_prevCamPos = cam.transform.position;
+                m_prevCamRot = cam.transform.rotation;
+
                 m_terrain = null;
 
                 Ray ray = m_editor.ActiveWindow.Pointer;
@@ -101,6 +108,7 @@ namespace Battlehub.RTTerrain
 
                 if (m_terrain == null)
                 {
+                    transform.position = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
                     return;
                 }
 

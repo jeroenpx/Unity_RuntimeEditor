@@ -1,7 +1,9 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
-using Battlehub.Utils;
+using Battlehub.RTHandles;
+using Battlehub.UIControls;
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,83 +13,36 @@ namespace Battlehub.RTTerrain
     {
         public event Action TerrainChanged;
 
-        public enum EditorTypes
+        public enum EditorType
         {
-            Selection_Handles = 0,
+            Empty = 0,
             Raise_Or_Lower_Terrain = 1,
             Paint_Texture = 2,
             Stamp_Terrain = 3,
             Set_Height = 4,
             Smooth_Height = 5,
-            Settings = 6,
+            Selection_Handles = 6,
+            Settings = 7,
         }
 
         [SerializeField]
-        private GameObject m_header = null;
-        [SerializeField]
-        private Toggle m_enableToggle = null;
-        [SerializeField]
-        private EnumEditor m_editorSelector = null;
+        private Toggle[] m_toggles = null;
+        
         [SerializeField]
         private GameObject[] m_editors = null;
         [SerializeField]
         private CanvasGroup m_canvasGroup = null;
         [SerializeField]
         private TerrainProjector m_terrainProjectorPrefab = null;
-        public TerrainProjector Projector
-        {
-            get;
-            private set;
-        }
-
+        
         private IRTE m_editor;
         private IWindowManager m_wm;
         private bool m_wasEnabled;
 
-        private bool IsEnabled
+        public TerrainProjector Projector
         {
-            get { return PlayerPrefs.GetInt("TerrainEditor.m_enableToggle", 1) == 1; }
-            set { PlayerPrefs.SetInt("TerrainEditor.m_enableToggle", value ? 1 : 0); }
-        }
-
-        private EditorTypes m_editorType = EditorTypes.Raise_Or_Lower_Terrain;
-        public EditorTypes EditorType
-        {
-            get { return m_editorType; }
-            set
-            {
-                if(m_editorType != value)
-                {
-                    if (value == EditorTypes.Selection_Handles || value == EditorTypes.Settings)
-                    {
-                        m_wasEnabled = m_enableToggle.isOn;
-                        m_enableToggle.isOn = false;
-                        m_header.SetActive(false);
-                    }
-                    else
-                    {
-                        if(m_editorType == EditorTypes.Selection_Handles || m_editorType == EditorTypes.Settings)
-                        {
-                            m_header.SetActive(true);
-                            m_enableToggle.isOn = m_wasEnabled;
-                        }
-                    }
-
-                    Projector.gameObject.SetActive(m_enableToggle.isOn);            
-                    m_editorType = value;
-
-                    foreach (GameObject disableEditor in m_editors)
-                    {
-                        disableEditor.SetActive(false);
-                    }
-                  
-                    GameObject editor = m_editors[(int)m_editorType];
-                    if(editor)
-                    {
-                        editor.SetActive(true);
-                    }
-                }
-            }
+            get;
+            private set;
         }
 
         private Terrain m_terrain;
@@ -112,109 +67,195 @@ namespace Battlehub.RTTerrain
             }
         }
 
+   
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
+            m_editor.Tools.ToolChanged += OnEditorToolChanged;
             m_wm = IOC.Resolve<IWindowManager>();
+            m_wm.WindowCreated += OnWindowCreated;
             m_wm.AfterLayout += OnAfterLayout;
 
             Projector = Instantiate(m_terrainProjectorPrefab, m_editor.Root);
             Projector.gameObject.SetActive(false);
 
-            if (m_editorSelector != null)
-            {
-                m_editorSelector.Init(this, this, Strong.PropertyInfo((TerrainEditor x) => x.EditorType), null, "Tool");
-            }
-
-            if(m_enableToggle != null)
-            {
-                m_enableToggle.isOn = IsEnabled;
-                m_enableToggle.onValueChanged.AddListener(OnEnableValueChanged);
-                if(m_enableToggle.isOn)
-                {
-                    OnEnableValueChanged(m_enableToggle.isOn);
-                }
-            }
-
             if(m_canvasGroup != null)
             {
                 m_canvasGroup.interactable = false;
             }
+
+            for(int i = 0; i < m_toggles.Length; ++i)
+            {
+                Toggle toggle = m_toggles[i];
+                if(toggle != null)
+                {
+                    EditorType editorType = ToEditorType(i);
+                    UnityEventHelper.AddListener(toggle, tog => tog.onValueChanged, v => OnToggleValueChanged(editorType, v));
+                }
+            }
+
+            EditorType toolType = (m_editor.Tools.Custom is EditorType) ? (EditorType)m_editor.Tools.Custom : EditorType.Empty;
+            Toggle selectedToggle = m_toggles[(int)toolType];
+            if(selectedToggle != null)
+            {
+                selectedToggle.isOn = true;
+            }
+            else
+            {
+                GameObject emptyEditor = m_editors[(int)EditorType.Empty];
+                if (emptyEditor)
+                {
+                    emptyEditor.gameObject.SetActive(true);
+                }
+            }
+
+            SubscribeSelectionChangingEvent(true);
         }
 
-    
+   
         private void OnDestroy()
         {
             if(m_wm != null)
             {
+                m_wm.WindowCreated -= OnWindowCreated;
                 m_wm.AfterLayout -= OnAfterLayout;
             }
-            if (m_enableToggle != null)
+
+            if (m_editor != null)
             {
-                m_enableToggle.onValueChanged.RemoveListener(OnEnableValueChanged);
+                m_editor.Tools.ToolChanged -= OnEditorToolChanged;
             }
 
             if(Projector != null)
             {
-                Destroy(Projector);
+                Destroy(Projector.gameObject);
             }
 
-            EnableStandardTools(true);
-        }
-
-        private void OnWindowCreated(Transform obj)
-        {
-            RuntimeWindow window = obj.GetComponent<RuntimeWindow>();
-            if (window != null && window.WindowType == RuntimeWindowType.Scene)
+            for (int i = 0; i < m_toggles.Length; ++i)
             {
-                EnableStandardTools(m_enableToggle.isOn);
+                Toggle toggle = m_toggles[i];
+                UnityEventHelper.RemoveAllListeners(toggle, tog => tog.onValueChanged);
             }
+
+            SubscribeSelectionChangingEvent(false);
         }
 
-        private void OnEnableValueChanged(bool value)
+        private void OnToggleValueChanged(EditorType editorType,  bool value)
         {
-            EnableStandardTools(!value);
-            if (value)
-            {   
-                m_wm.WindowCreated += OnWindowCreated;
-                Projector.gameObject.SetActive(true);
+            GameObject emptyEditor = m_editors[(int)EditorType.Empty];
+            if (emptyEditor)
+            {
+                emptyEditor.gameObject.SetActive(!value);
             }
-            else
-            {                
-                if (m_wm != null)
+
+            GameObject editor = m_editors[(int)editorType];
+            if(editor)
+            {
+                editor.SetActive(value); 
+                if(value)
                 {
-                    m_wm.WindowCreated -= OnWindowCreated;
+                    m_editor.Tools.Custom = editorType;
                 }
-
-                Projector.gameObject.SetActive(false);
             }
 
-            IsEnabled = value;
+            if(Projector != null)
+            {
+                if (!value || (editorType == EditorType.Empty || editorType == EditorType.Settings || editorType == EditorType.Selection_Handles))
+                {
+                    Projector.gameObject.SetActive(false);
+                }
+                else
+                {
+                    Projector.gameObject.SetActive(true);
+                }
+            }
         }
 
-        private void EnableStandardTools(bool enable)
+        private static EditorType ToEditorType(int value)
+        {
+            if (!Enum.IsDefined(typeof(EditorType), value))
+            {
+                return EditorType.Empty;
+            }
+            return (EditorType)value;
+        }
+
+        private void SubscribeSelectionChangingEvent(bool subscribe)
         {
             if (m_editor != null)
             {
                 foreach (RuntimeWindow window in m_editor.Windows)
                 {
-                    if (window.WindowType == RuntimeWindowType.Scene)
+                    SubscribeSelectionChangingEvent(subscribe, window);
+                }
+            }
+        }
+
+        private void SubscribeSelectionChangingEvent(bool subscribe, RuntimeWindow window)
+        {
+            if (window != null && window.WindowType == RuntimeWindowType.Scene)
+            {
+                IRuntimeSelectionComponent selectionComponent = window.IOCContainer.Resolve<IRuntimeSelectionComponent>();
+
+                if (selectionComponent != null)
+                {
+                    if (subscribe)
                     {
-                        ISelectionComponentState selectionComponentState = window.IOCContainer.Resolve<ISelectionComponentState>();
-                        if(selectionComponentState != null)
-                        {
-                            selectionComponentState.EnableAll(this, enable);
-                        }
+                        selectionComponent.SelectionChanging += OnSelectionChanging;
+                    }
+                    else
+                    {
+                        selectionComponent.SelectionChanging -= OnSelectionChanging;
                     }
                 }
             }
         }
 
-        private void OnAfterLayout(IWindowManager obj)
+        private void OnEditorToolChanged()
         {
-            if (m_enableToggle != null && m_enableToggle.isOn)
+            if (!(m_editor.Tools.Custom is EditorType))
             {
-                OnEnableValueChanged(m_enableToggle.isOn);
+                foreach (Toggle toggle in m_toggles)
+                {
+                    if (toggle != null)
+                    {
+                        toggle.isOn = false;
+                    }
+                }
+            }
+        }
+
+        private void OnSelectionChanging(object sender, RuntimeSelectionChangingArgs e)
+        {
+            if(m_editor.Tools.Custom is EditorType)
+            {
+                EditorType editorType = (EditorType)m_editor.Tools.Custom;
+                if(editorType != EditorType.Empty)
+                {
+                    IRuntimeSelectionComponent component = (IRuntimeSelectionComponent)sender;
+                    RaycastHit[] hits = Physics.RaycastAll(component.Window.Pointer);
+                    
+                    if(Terrain != null && hits.Any(hit => hit.collider.gameObject == Terrain.gameObject))
+                    {
+                        e.Cancel = true;
+                    }
+                }
+            }
+        }
+
+        private void OnAfterLayout(IWindowManager wm)
+        {
+            SubscribeSelectionChangingEvent(false);
+            SubscribeSelectionChangingEvent(true);
+        }
+
+        private void OnWindowCreated(Transform windowTransform)
+        {
+            RuntimeWindow window = windowTransform.GetComponent<RuntimeWindow>();
+            if(window != null && window.WindowType == RuntimeWindowType.Scene)
+            {
+                SubscribeSelectionChangingEvent(false, window);
+                SubscribeSelectionChangingEvent(true, window);
             }
         }
 

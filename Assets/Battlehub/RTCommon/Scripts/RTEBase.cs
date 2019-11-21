@@ -102,7 +102,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        IRuntimeSelectionInternal Selection
+        IRuntimeSelection Selection
         {
             get;
         }
@@ -339,7 +339,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public virtual IRuntimeSelectionInternal Selection
+        public virtual IRuntimeSelection Selection
         {
             get { return m_selection; }
         }

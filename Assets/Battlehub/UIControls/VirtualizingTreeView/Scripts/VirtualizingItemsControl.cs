@@ -1787,6 +1787,11 @@ namespace Battlehub.UIControls
 
         public virtual void DataBindVisible()
         {
+            if(m_scrollRect == null)
+            {
+                return;
+            }
+
             for(int i = VisibleItemIndex; i < VisibleItemIndex + VisibleItemsCount; ++i)
             {
                 object item = m_scrollRect.Items[i];

@@ -17,30 +17,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Material m_defaultMaterial = null;
 
-        private IScenePivot GetScenePivot()
-        {
-            if(m_editor.ActiveWindow != null)
-            {
-                IScenePivot scenePivot = m_editor.ActiveWindow.IOCContainer.Resolve<IScenePivot>();
-                if(scenePivot != null)
-                {
-                    return scenePivot;
-                }
-            }
-
-            RuntimeWindow sceneWindow = m_editor.GetWindow(RuntimeWindowType.Scene);
-            if(sceneWindow != null)
-            {
-                IScenePivot scenePivot = sceneWindow.IOCContainer.Resolve<IScenePivot>();
-                if(scenePivot != null)
-                {
-                    return scenePivot;
-                }
-            }
-
-            return null;
-        }
-
+     
         private void Awake()
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();   
@@ -133,16 +110,7 @@ namespace Battlehub.RTEditor
 
             if(go != null)
             {
-                Vector3 pivot = Vector3.zero;
-                IScenePivot scenePivot = GetScenePivot();
-                if (scenePivot != null)
-                {
-                    pivot = scenePivot.SecondaryPivot;
-                }
-                go.transform.position = pivot;
-                go.AddComponent<ExposeToEditor>();
-                go.SetActive(true);
-                m_editor.RegisterCreatedObjects(new[] { go });
+                m_editor.AddGameObjectToScene(go);
             }
             
         }

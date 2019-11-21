@@ -27,6 +27,15 @@ namespace Battlehub.UIControls
             evt(control).RemoveListener(action);
         }
 
+        public static void RemoveAllListeners<T>(T control, Func<T, UnityEvent> evt) where T : MonoBehaviour
+        {
+            if(control == null)
+            {
+                return;
+            }
+            evt(control).RemoveAllListeners();
+        }
+
         public static void AddListener<T, V>(T control, Func<T, UnityEvent<V>> evt, UnityAction<V> action) where T : MonoBehaviour
         {
             if (control == null)
@@ -45,8 +54,16 @@ namespace Battlehub.UIControls
             }
 
             evt(control).RemoveListener(action);
+        }
 
-            
+
+        public static void RemoveAllListeners<T, V>(T control, Func<T, UnityEvent<V>> evt)  where T : MonoBehaviour
+        {
+            if (control == null)
+            {
+                return;
+            }
+            evt(control).RemoveAllListeners();
         }
     }
 }

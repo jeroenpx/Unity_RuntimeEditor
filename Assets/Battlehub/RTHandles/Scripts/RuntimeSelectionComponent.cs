@@ -3,6 +3,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using Battlehub.Utils;
 using Battlehub.RTCommon;
+using System;
+
+using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTHandles
 {
@@ -75,17 +78,31 @@ namespace Battlehub.RTHandles
         void Focus();
     }
 
-    public class RuntimeSelectionCancelArgs
+    public class RuntimeSelectionChangingArgs : EventArgs
     {
         public bool Cancel
         {
             get;
             set;
         }
-    }
 
+        public UnityObject[] Selected
+        {
+            get;
+            private set;
+        }
+
+        public RuntimeSelectionChangingArgs(UnityObject[] selected)
+        {
+            Selected = selected;
+        }    
+    }
+    
     public interface IRuntimeSelectionComponent : IScenePivot
     {
+        event EventHandler<RuntimeSelectionChangingArgs> SelectionChanging;
+        event EventHandler SelectionChanged;
+
         PositionHandle PositionHandle
         {
             get;
@@ -172,11 +189,19 @@ namespace Battlehub.RTHandles
             get;
             set;
         }
+
+        RuntimeWindow Window
+        {
+            get;
+        }
     }
 
     [DefaultExecutionOrder(-55)]
     public class RuntimeSelectionComponent : RTEComponent, IRuntimeSelectionComponent
     {
+        public event EventHandler<RuntimeSelectionChangingArgs> SelectionChanging;
+        public event EventHandler SelectionChanged;
+
         [SerializeField]
         private OutlineManager m_outlineManager = null;
         [SerializeField]
@@ -819,40 +844,54 @@ namespace Battlehub.RTHandles
 
                     if (multiselect)
                     {
-                        List<Object> selection;
+                        List<UnityObject> selectionList;
                         if (Editor.Selection.objects != null)
                         {
-                            selection = Editor.Selection.objects.ToList();
+                            selectionList = Editor.Selection.objects.ToList();
                         }
                         else
                         {
-                            selection = new List<Object>();
+                            selectionList = new List<UnityObject>();
                         }
 
-                        if (selection.Contains(hitGO))
+                        if (selectionList.Contains(hitGO))
                         {
-                            selection.Remove(hitGO);
+                            selectionList.Remove(hitGO);
                             if (!allowUnselect)
                             {
-                                selection.Insert(0, hitGO);
+                                selectionList.Insert(0, hitGO);
                             }
                         }
                         else
                         {
-                            selection.Insert(0, hitGO);
+                            selectionList.Insert(0, hitGO);
                         }
-                        Editor.Undo.Select(selection.ToArray(), hitGO);
+
+                        UnityObject[] selection = selectionList.ToArray();
+                        if(RaiseSelectionChanging(selection))
+                        {
+                            Editor.Undo.Select(selection, hitGO);
+                            RaiseSelectionChanged();
+                        }
                     }
                     else
                     {
-                        Editor.Selection.activeObject = hitGO;
+                        if(RaiseSelectionChanging(new[] { hitGO }))
+                        {
+                            Editor.Selection.activeObject = hitGO;
+                            RaiseSelectionChanged();
+                        }
                     }
                 }
                 else
                 {
                     if (!multiselect)
                     {
-                        Editor.Selection.activeObject = null;
+                        if(RaiseSelectionChanging(new UnityObject[0]))
+                        {
+                            Editor.Selection.activeObject = null;
+                            RaiseSelectionChanged();
+                        }
                     }
                 }
             }
@@ -860,8 +899,33 @@ namespace Battlehub.RTHandles
             {
                 if (!multiselect)
                 {
-                    Editor.Selection.activeObject = null;
+                    if (RaiseSelectionChanging(new UnityObject[0]))
+                    {
+                        Editor.Selection.activeObject = null;
+                        RaiseSelectionChanged();
+                    }
                 }
+            }
+        }
+
+        private bool RaiseSelectionChanging(UnityObject[] selected)
+        {
+            if(SelectionChanging != null)
+            {
+                RuntimeSelectionChangingArgs args = new RuntimeSelectionChangingArgs(selected);
+                SelectionChanging(this, args);
+
+                return !args.Cancel;
+            }
+
+            return true;
+        }
+
+        private void RaiseSelectionChanged()
+        {
+            if(SelectionChanged != null)
+            {
+                SelectionChanged(this, EventArgs.Empty);
             }
         }
 
@@ -906,7 +970,14 @@ namespace Battlehub.RTHandles
             {
                 return;
             }
-            Editor.Selection.objects = Editor.Object.Get(false).Select(exposed => exposed.gameObject).ToArray();
+
+            UnityObject[] selection = Editor.Object.Get(false).Select(exposed => exposed.gameObject).ToArray();
+
+            if(RaiseSelectionChanging(selection))
+            {
+                Editor.Selection.objects = selection;
+                RaiseSelectionChanged();
+            }
         }
 
         private void OnRuntimeToolChanged()
@@ -1017,11 +1088,15 @@ namespace Battlehub.RTHandles
         {
             if(CanSelect)
             {
-                m_editor.Selection.objects = e.GameObjects;
+                if(RaiseSelectionChanging(e.GameObjects))
+                {
+                    m_editor.Selection.objects = e.GameObjects;
+                    RaiseSelectionChanged();
+                }
             }
         }
 
-        private void OnRuntimeSelectionChanged(Object[] unselected)
+        private void OnRuntimeSelectionChanged(UnityObject[] unselected)
         {
             if (unselected != null)
             {

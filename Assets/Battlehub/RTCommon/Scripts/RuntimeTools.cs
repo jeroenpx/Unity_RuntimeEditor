@@ -12,7 +12,8 @@ namespace Battlehub.RTCommon
         Rotate,
         Scale,
         View,
-        Rect
+        Rect,
+        Custom
     }
 
     public enum RuntimePivotRotation
@@ -219,7 +220,26 @@ namespace Battlehub.RTCommon
                 if (m_current != value)
                 {
                     m_current = value;
+                    m_custom = null;
                     if (ToolChanged != null)
+                    {
+                        ToolChanged();
+                    }
+                }
+            }
+        }
+
+        private object m_custom;
+        public object Custom
+        {
+            get { return m_custom; }
+            set
+            {
+                if(m_custom != value)
+                {
+                    m_current = RuntimeTool.Custom;
+                    m_custom = value;
+                    if(ToolChanged != null)
                     {
                         ToolChanged();
                     }
@@ -276,6 +296,7 @@ namespace Battlehub.RTCommon
         {
             ActiveTool = null;
             LockAxes = null;
+            Custom = null;
             m_isViewing = false;
             m_isSnapping = false;
             m_showSelectionGizmos = true;

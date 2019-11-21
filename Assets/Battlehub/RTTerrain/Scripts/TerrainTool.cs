@@ -250,7 +250,7 @@ namespace Battlehub.RTTerrain
 
             if (m_editor != null)
             {
-                m_editor.Selection.activeGameObject = null;
+                //m_editor.Selection.activeGameObject = null;
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
                 m_editor.Selection.SelectionChanged -= OnSelectionChanged;
             }

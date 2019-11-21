@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7244910993236975953
+--- !u!1 &1089736215347489956
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5289826724471549932}
-  - component: {fileID: 3389161005463529379}
+  - component: {fileID: 5965263831575989207}
+  - component: {fileID: 852504760956630530}
   m_Layer: 0
-  m_Name: Battlehub_EditorsMapAuto
+  m_Name: Battlehub_EditorsMapTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5289826724471549932
+--- !u!4 &5965263831575989207
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7244910993236975953}
+  m_GameObject: {fileID: 1089736215347489956}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3389161005463529379
+--- !u!114 &852504760956630530
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7244910993236975953}
+  m_GameObject: {fileID: 1089736215347489956}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4c556f3441c2c342a2b1779dd1a8c59, type: 3}
@@ -66,7 +66,6 @@ MonoBehaviour:
   - {fileID: 1000012517089462, guid: af7b03a55e88ab94cb47dc49a56638fe, type: 3}
   - {fileID: 1000013256475392, guid: daf1985b0ff70be4f949269449ad5ab1, type: 3}
   - {fileID: 1000013256475392, guid: b3869b72d165b1a4bbc0a2af36147707, type: 3}
-  - {fileID: 1000013256475392, guid: 8f929c4fd16376a40af25b7cdee5ed89, type: 3}
   - {fileID: 1000013256475392, guid: 2291aaf81204cc74ebdc34c552e56fa6, type: 3}
   IsDefaultMaterialEditorEnabled: 1
   DefaultMaterialEditor: {fileID: 1000013302785078, guid: e271b6853f0d680408d9527a996e88ce,

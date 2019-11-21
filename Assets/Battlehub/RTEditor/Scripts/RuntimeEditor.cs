@@ -43,6 +43,48 @@ namespace Battlehub.RTEditor
         ProjectAsyncOperation<AssetItem> UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
     }
 
+    public static class IRuntimEditorExt
+    {
+        public static IScenePivot GetScenePivot(this IRTE editor)
+        {
+            if (editor.ActiveWindow != null)
+            {
+                IScenePivot scenePivot = editor.ActiveWindow.IOCContainer.Resolve<IScenePivot>();
+                if (scenePivot != null)
+                {
+                    return scenePivot;
+                }
+            }
+
+            RuntimeWindow sceneWindow = editor.GetWindow(RuntimeWindowType.Scene);
+            if (sceneWindow != null)
+            {
+                IScenePivot scenePivot = sceneWindow.IOCContainer.Resolve<IScenePivot>();
+                if (scenePivot != null)
+                {
+                    return scenePivot;
+                }
+            }
+
+            return null;
+        }
+
+        public static void AddGameObjectToScene(this IRTE editor, GameObject go)
+        {
+            Vector3 pivot = Vector3.zero;
+            IScenePivot scenePivot = editor.GetScenePivot();
+            if (scenePivot != null)
+            {
+                pivot = scenePivot.SecondaryPivot;
+            }
+            go.transform.position = pivot;
+            go.AddComponent<ExposeToEditor>();
+            go.SetActive(true);
+            editor.RegisterCreatedObjects(new[] { go });
+        }
+    }
+
+
     [DefaultExecutionOrder(-90)]
     [RequireComponent(typeof(RuntimeObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor

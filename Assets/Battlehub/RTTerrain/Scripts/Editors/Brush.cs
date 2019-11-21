@@ -115,9 +115,8 @@ namespace Battlehub.RTTerrain
             m_clampMax = Max / data.heightmapScale.y;
 
             // Calculate bounds
-            Vector2 center = new Vector2(pos.x, pos.z) / data.heightmapScale.x;
-            float scaled_r = Radius / data.heightmapScale.x;
-            Vector2 radius_ext = new Vector2(scaled_r, scaled_r);
+            Vector2 center = new Vector2(pos.x / data.heightmapScale.x, pos.z / data.heightmapScale.z);
+            Vector2 radius_ext = new Vector2(Radius / data.heightmapScale.x, Radius / data.heightmapScale.z);
 
             Vector2Int minPos = Floor(center - radius_ext);
             Vector2Int maxPos = Ceil(center + radius_ext);

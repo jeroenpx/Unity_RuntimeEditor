@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 639338853}
   - component: {fileID: 639338854}
   m_Layer: 0
-  m_Name: ProBuilder
+  m_Name: ProBuilderInit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -746,7 +746,7 @@ GameObject:
   - component: {fileID: 1762677759}
   - component: {fileID: 1762677760}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: TerrainInit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -780,6 +780,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_terrainView: {fileID: 5186639825075379583, guid: bacd99013aa0de849ae3a67dd0bb2efc,
+    type: 3}
+  m_terrainComponentEditor: {fileID: 1860928297357902606, guid: 8f929c4fd16376a40af25b7cdee5ed89,
     type: 3}
 --- !u!1 &1849476792
 GameObject:
