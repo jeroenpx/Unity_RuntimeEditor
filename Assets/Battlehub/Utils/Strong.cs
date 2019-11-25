@@ -37,6 +37,12 @@ namespace Battlehub.Utils
             var methodInfo = (MethodInfo)methodInfoExpression.Value;
             return methodInfo;
         }
+
+        public static MethodInfo MethodInfo<T>(Expression<Action<T>> method)
+        {
+            return ((MethodCallExpression)method.Body).Method;
+        }
+
     }
 
 

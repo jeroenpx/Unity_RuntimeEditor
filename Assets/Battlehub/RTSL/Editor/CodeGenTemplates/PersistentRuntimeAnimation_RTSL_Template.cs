@@ -25,6 +25,12 @@ namespace Battlehub.RTSL.Internal
         [ProtoMember(2)]
         public int ClipIndex;
 
+        [ProtoMember(3)]
+        public bool PlayOnAwake;
+
+        [ProtoMember(4)]
+        public bool Loop;
+
         public override void ReadFrom(object obj)
         {
             base.ReadFrom(obj);
@@ -42,6 +48,8 @@ namespace Battlehub.RTSL.Internal
             }
 
             ClipIndex = animation.ClipIndex;
+            PlayOnAwake = animation.PlayOnAwake;
+            Loop = animation.Loop;
         }
 
         public override object WriteTo(object obj)
@@ -52,6 +60,9 @@ namespace Battlehub.RTSL.Internal
             {
                 return null;
             }
+
+            animation.PlayOnAwake = PlayOnAwake;
+            animation.Loop = Loop;
 
             IList<RuntimeAnimationClip> clips = FromID<RuntimeAnimationClip>(Clips, animation.Clips.ToArray());
             animation.SetClips(clips, ClipIndex);

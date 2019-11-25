@@ -105,8 +105,8 @@ namespace Battlehub.RTEditor
             {
                 if(m_target != value && m_target != null)
                 {
-                    m_target.IsPlaying = false;
-                    m_target.IsInPreviewMode = false;
+                   // m_target.IsPlaying = false;
+                   // m_target.IsInPreviewMode = false;
                 }
 
                 if(m_target != null)

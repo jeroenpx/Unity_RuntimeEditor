@@ -186,28 +186,29 @@ namespace Battlehub.RTEditor
                 { typeof(RangeInt), new EditorDescriptor(17, true, true) },
                 { typeof(RangeOptions), new EditorDescriptor(18, true, true) },
                 { typeof(HeaderText), new EditorDescriptor(19, true, true) },
-                { typeof(UnityEngine.Component), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.BoxCollider), new EditorDescriptor(21, true, false) },
-                { typeof(UnityEngine.Camera), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.CapsuleCollider), new EditorDescriptor(21, true, false) },
-                { typeof(UnityEngine.FixedJoint), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.HingeJoint), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.Light), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.MeshCollider), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.MeshFilter), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.MeshRenderer), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.MonoBehaviour), new EditorDescriptor(20, false, false) },
-                { typeof(UnityEngine.Rigidbody), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.SkinnedMeshRenderer), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.Skybox), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.SphereCollider), new EditorDescriptor(21, true, false) },
-                { typeof(UnityEngine.SpringJoint), new EditorDescriptor(20, true, false) },
-                { typeof(UnityEngine.Transform), new EditorDescriptor(22, true, false) },
-                { typeof(Cubeman.CubemanCharacter), new EditorDescriptor(20, true, false) },
-                { typeof(Cubeman.CubemanUserControl), new EditorDescriptor(20, true, false) },
-                { typeof(Cubeman.GameCameraFollow), new EditorDescriptor(20, true, false) },
-                { typeof(Cubeman.GameCharacter), new EditorDescriptor(20, true, false) },
-                { typeof(RuntimeAnimation), new EditorDescriptor(20, true, false) }
+                { typeof(System.Reflection.MethodInfo), new EditorDescriptor(20, true, true) },
+                { typeof(UnityEngine.Component), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.BoxCollider), new EditorDescriptor(22, true, false) },
+                { typeof(UnityEngine.Camera), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.CapsuleCollider), new EditorDescriptor(22, true, false) },
+                { typeof(UnityEngine.FixedJoint), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.HingeJoint), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.Light), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.MeshCollider), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.MeshFilter), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.MeshRenderer), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.MonoBehaviour), new EditorDescriptor(21, false, false) },
+                { typeof(UnityEngine.Rigidbody), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.SkinnedMeshRenderer), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.Skybox), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.SphereCollider), new EditorDescriptor(22, true, false) },
+                { typeof(UnityEngine.SpringJoint), new EditorDescriptor(21, true, false) },
+                { typeof(UnityEngine.Transform), new EditorDescriptor(23, true, false) },
+                { typeof(Cubeman.CubemanCharacter), new EditorDescriptor(21, true, false) },
+                { typeof(Cubeman.CubemanUserControl), new EditorDescriptor(21, true, false) },
+                { typeof(Cubeman.GameCameraFollow), new EditorDescriptor(21, true, false) },
+                { typeof(Cubeman.GameCharacter), new EditorDescriptor(21, true, false) },
+                { typeof(RuntimeAnimation), new EditorDescriptor(21, true, false) },
             };
         }
 
@@ -354,6 +355,16 @@ namespace Battlehub.RTEditor
 
         private EditorDescriptor GetEditorDescriptor(Type type, bool isPropertyEditor, bool strict)
         {
+            if (type == typeof(MethodInfo))
+            {
+                EditorDescriptor descriptor;
+                if (m_map.TryGetValue(type, out descriptor))
+                {
+                    return descriptor;
+                }
+                return null;
+            }
+
             do
             {
                 EditorDescriptor descriptor;

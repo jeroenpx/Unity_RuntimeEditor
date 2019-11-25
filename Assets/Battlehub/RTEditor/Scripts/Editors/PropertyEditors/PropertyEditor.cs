@@ -341,21 +341,22 @@ namespace Battlehub.RTEditor
             IListElementAccessor arrayElement = target as IListElementAccessor;
             if (arrayElement == null)
             {
-                if (!(memberInfo is PropertyInfo) && !(memberInfo is FieldInfo))
-                {
-                    throw new ArgumentException("memberInfo should be PropertyInfo or FieldInfo");
-                }
+                //if (!(memberInfo is PropertyInfo) && !(memberInfo is FieldInfo))
+                //{
+                //    throw new ArgumentException("memberInfo should be PropertyInfo or FieldInfo");
+                //}
 
                 if (memberInfo is PropertyInfo)
                 {
                     Type propType = ((PropertyInfo)memberInfo).PropertyType;
                     MemberInfoType = propType;
                 }
-                else
+                else if(memberInfo is FieldInfo)
                 {
                     Type fieldType = ((FieldInfo)memberInfo).FieldType;
                     MemberInfoType = fieldType;
                 }
+
                 if(Label != null)
                 {
                     if (label != null)

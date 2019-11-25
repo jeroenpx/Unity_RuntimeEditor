@@ -607,19 +607,29 @@ namespace Battlehub.RTEditor
                 return null;
             }
 
-            if (descriptor.MemberType == null)
+            Type memberType;
+            if (descriptor.MemberInfo is MethodInfo)
+            {
+                memberType = typeof(MethodInfo);
+            }
+            else
+            {
+                memberType = descriptor.MemberType;
+            }
+
+            if (memberType == null)
             {
                 Debug.LogError("descriptor.MemberType is null");
                 return null;
             }
 
-            GameObject editorGo = m_editorsMap.GetPropertyEditor(descriptor.MemberType);
+            GameObject editorGo = m_editorsMap.GetPropertyEditor(memberType);
             if (editorGo == null)
             {
                 return null;
             }
 
-            if (!m_editorsMap.IsPropertyEditorEnabled(descriptor.MemberType))
+            if (!m_editorsMap.IsPropertyEditorEnabled(memberType))
             {
                 return null;
             }

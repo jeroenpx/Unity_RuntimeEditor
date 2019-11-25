@@ -487,7 +487,9 @@ namespace Battlehub.RTCommon
             }
             else
             {
-                if(!m_editModeCache.Contains(obj))
+                obj.SendMessage("EditorAwake", SendMessageOptions.DontRequireReceiver);
+
+                if (!m_editModeCache.Contains(obj))
                 {
                     m_editModeCache.Add(obj);
                     if (m_editor.IsOpened)
@@ -524,7 +526,8 @@ namespace Battlehub.RTCommon
             }
             else 
             {
-                if(m_editModeCache.Contains(obj))
+                obj.SendMessage("OnEditorDestroy", SendMessageOptions.DontRequireReceiver);
+                if (m_editModeCache.Contains(obj))
                 {
                     m_editModeCache.Remove(obj);
                     TryToDestroyColliders(obj);
@@ -642,6 +645,10 @@ namespace Battlehub.RTCommon
             if (m_editor.IsPlaying)
             {
                 obj.SendMessage("RuntimeStart", SendMessageOptions.DontRequireReceiver);
+            }
+            else
+            {
+                obj.SendMessage("EditorStart", SendMessageOptions.DontRequireReceiver);
             }
 
             if (Started != null)

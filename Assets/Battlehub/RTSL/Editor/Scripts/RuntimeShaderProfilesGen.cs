@@ -107,11 +107,35 @@ namespace Battlehub.RTSL
             {
                 shaderInfo.PropertyDescriptions[i] = ShaderUtil.GetPropertyDescription(shader, i);
                 shaderInfo.PropertyNames[i] = ShaderUtil.GetPropertyName(shader, i);
-                shaderInfo.PropertyRangeLimits[i] = new RuntimeShaderInfo.RangeLimits(
-                    ShaderUtil.GetRangeLimits(shader, i, 0),
-                    ShaderUtil.GetRangeLimits(shader, i, 1),
-                    ShaderUtil.GetRangeLimits(shader, i, 2));
-                shaderInfo.PropertyTexDims[i] = ShaderUtil.GetTexDim(shader, i);
+
+                try
+                {
+                    ShaderUtil.ShaderPropertyType propType = ShaderUtil.GetPropertyType(shader, i);
+                    if (propType == ShaderUtil.ShaderPropertyType.Range)
+                    {
+                        shaderInfo.PropertyRangeLimits[i] = new RuntimeShaderInfo.RangeLimits(
+                            ShaderUtil.GetRangeLimits(shader, i, 0),
+                            ShaderUtil.GetRangeLimits(shader, i, 1),
+                            ShaderUtil.GetRangeLimits(shader, i, 2));
+                    }
+                    else
+                    {
+                        shaderInfo.PropertyRangeLimits[i] = new RuntimeShaderInfo.RangeLimits();
+                    }
+
+                    if (propType == ShaderUtil.ShaderPropertyType.TexEnv)
+                    {
+                        shaderInfo.PropertyTexDims[i] = ShaderUtil.GetTexDim(shader, i);
+                    }
+                    else
+                    {
+                        shaderInfo.PropertyTexDims[i] = TextureDimension.None;
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(e);
+                }
 
                 RTShaderPropertyType rtType = RTShaderPropertyType.Unknown;
                 ShaderUtil.ShaderPropertyType type = ShaderUtil.GetPropertyType(shader, i);

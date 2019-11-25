@@ -1002,7 +1002,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5186639825075379580
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2400,10 +2400,20 @@ PrefabInstance:
       propertyPath: m_ChildForceExpandHeight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5048689815371145950, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_Padding.m_Top
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1528376127289958938, guid: 962c4b531a03aed4da0cf24ae485ce7b,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7610654527398673498, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_PreferredHeight
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7755818551804938877, guid: 962c4b531a03aed4da0cf24ae485ce7b,
         type: 3}
@@ -3898,6 +3908,26 @@ PrefabInstance:
     - target: {fileID: 2459759157380307615, guid: 962c4b531a03aed4da0cf24ae485ce7b,
         type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553360412971663205, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_Padding.m_Left
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553360412971663205, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553360412971663205, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_Padding.m_Top
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553360412971663205, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_Padding.m_Bottom
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7993559293782417194, guid: 962c4b531a03aed4da0cf24ae485ce7b,

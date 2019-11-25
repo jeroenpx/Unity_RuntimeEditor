@@ -369,7 +369,11 @@ namespace Battlehub.RTEditor
         protected override void Start()
         {
             base.Start();
-            if(GetComponent<TimelineControlInput>() == null)
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+            if (GetComponent<TimelineControlInput>() == null)
             {
                 gameObject.AddComponent<TimelineControlInput>();
             }
@@ -378,7 +382,10 @@ namespace Battlehub.RTEditor
         protected override void OnDestroy()
         {
             base.OnDestroy();
-        
+            if (!Application.isPlaying)
+            {
+                return;
+            }
             if (m_rtListener != null)
             {
                 m_rtListener.RectTransformChanged -= OnRectTransformChanged;
@@ -1020,6 +1027,11 @@ namespace Battlehub.RTEditor
 
         private void LateUpdate()
         {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
             if (m_rtCamera.TryResizeRenderTexture(false))
             {
                 m_renderGraphics = true;

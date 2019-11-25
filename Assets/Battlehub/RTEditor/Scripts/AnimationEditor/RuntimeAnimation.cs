@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -125,7 +126,9 @@ namespace Battlehub.RTEditor
 
         private Animation m_animation;
 
+        [SerializeField]
         private int m_clipIndex = -1;
+        [SerializeField]
         private List<RuntimeAnimationClip> m_rtClips = new List<RuntimeAnimationClip>();
 
         public int ClipsCount
@@ -138,10 +141,10 @@ namespace Battlehub.RTEditor
             get { return m_clipIndex; }
             set
             {
-                if(m_clipIndex != value)
+                if (m_clipIndex != value)
                 {
                     SetClipIndex(value);
-                    if(ClipIndexChanged != null)
+                    if (ClipIndexChanged != null)
                     {
                         ClipIndexChanged();
                     }
@@ -156,6 +159,29 @@ namespace Battlehub.RTEditor
                 IsPlaying = false;
                 m_clipIndex = value;
                 Refresh();
+            }
+        }
+
+        [SerializeField]
+        private bool m_playOnAwake;
+        public bool PlayOnAwake
+        {
+            get { return m_playOnAwake; }
+            set { m_playOnAwake = value; }
+        }
+
+        [SerializeField]
+        private bool m_loop;
+        public bool Loop
+        {
+            get { return m_loop; }
+            set
+            {
+                m_loop = value;
+                if (m_animation != null && m_isPlaying)
+                {
+                    m_animation.wrapMode = m_loop ? WrapMode.Loop : WrapMode.ClampForever;
+                }
             }
         }
 
@@ -260,6 +286,7 @@ namespace Battlehub.RTEditor
             }
         }
 
+        [SerializeField]
         private bool m_isPlaying;
         public bool IsPlaying
         {
@@ -299,6 +326,8 @@ namespace Battlehub.RTEditor
                             state.speed = 0;
                         }
                     }
+
+                    m_animation.wrapMode = m_loop ? WrapMode.Loop : WrapMode.ClampForever;
                 }
             }
         }
@@ -364,6 +393,21 @@ namespace Battlehub.RTEditor
             }
 
             m_animation.playAutomatically = false;
+
+            if(!m_runningInRuntimeEditor)
+            {
+                if (PlayOnAwake || IsPlaying)
+                {
+                    m_isPlaying = false;
+                    IsPlaying = true;
+                }
+            }
+        }
+
+        private bool m_runningInRuntimeEditor;
+        private void EditorAwake()
+        {
+            m_runningInRuntimeEditor = true;
         }
 
         private void OnDestroy()

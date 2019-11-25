@@ -19,6 +19,11 @@ namespace Battlehub.RTEditor
         private GameObject m_dropTarget;
         private AssetItem m_dragItem;
 
+        protected GameObject PrefabInstance
+        {
+            get { return m_prefabInstance; }
+        }
+
         private RuntimeWindow m_window;
         protected RuntimeWindow Window
         {

@@ -130,8 +130,17 @@ namespace Battlehub.RTHandles
                 transform.localToWorldMatrix * Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1);
 
             m_commandBuffer.Clear();
-            m_commandBuffer.DrawMeshInstanced(m_grid0Mesh, 0, m_grid0Material, 0, new[] { grid0 });
-            m_commandBuffer.DrawMeshInstanced(m_grid1Mesh, 0, m_grid1Material, 0, new[] { grid1 });
+
+            if (RenderPipelineInfo.Type == RPType.Legacy)
+            {
+                m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material);
+                m_commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material);
+            }
+            else
+            {
+                m_commandBuffer.DrawMeshInstanced(m_grid0Mesh, 0, m_grid0Material, 0, new[] { grid0 });
+                m_commandBuffer.DrawMeshInstanced(m_grid1Mesh, 0, m_grid1Material, 0, new[] { grid1 });
+            }
         }
 
         private Vector3 GetGridPostion(float spacing)

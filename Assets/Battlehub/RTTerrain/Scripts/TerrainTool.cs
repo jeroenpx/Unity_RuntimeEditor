@@ -131,6 +131,10 @@ namespace Battlehub.RTTerrain
             get { return m_activeTerrain; }
             set
             {
+                if(gameObject == null)
+                {
+                    return;
+                }
                 gameObject.SetActive(m_activeTerrain != null);
                 if (m_activeTerrain != value)
                 {
