@@ -7,14 +7,15 @@ namespace Battlehub.RTEditor
     [DefaultExecutionOrder(-91)]
     public class AutoSaveLayout : EditorOverride
     {
-        private const string SavedLayoutName = "Saved_Layout";
-
         private IWindowManager m_wm;
+
+        private string m_savedLayoutName;
 
         protected override void OnEditorCreated(object obj)
         {    
             OverrideDefaultLayout();
             m_wm = IOC.Resolve<IWindowManager>();
+            m_savedLayoutName = m_wm.DefaultPersistentLayoutName;
         }
 
         protected override void OnEditorExist()
@@ -32,12 +33,16 @@ namespace Battlehub.RTEditor
         protected override void OnEditorClosed()
         {
             base.OnEditorClosed();
-            m_wm.SaveLayout(SavedLayoutName);
+            string layoutName = m_wm.DefaultPersistentLayoutName;
+            m_wm.SaveLayout(m_savedLayoutName);
         }
 
         private void OnApplicationQuit()
         {
-            m_wm.SaveLayout(SavedLayoutName);
+            if(m_wm != null)
+            {
+                m_wm.SaveLayout(m_savedLayoutName);
+            }
         }
 
         private void OverrideDefaultLayout()
@@ -46,11 +51,11 @@ namespace Battlehub.RTEditor
             wm.OverrideDefaultLayout(DefaultLayout, RuntimeWindowType.Scene.ToString());
         }
 
-        static LayoutInfo DefaultLayout(IWindowManager wm)
+        protected virtual LayoutInfo DefaultLayout(IWindowManager wm)
         {
-            if (wm.LayoutExist(SavedLayoutName))
+            if (wm.LayoutExist(m_savedLayoutName))
             {
-                LayoutInfo layout = wm.GetLayout(SavedLayoutName);
+                LayoutInfo layout = wm.GetLayout(m_savedLayoutName);
                 return layout;
             }
 

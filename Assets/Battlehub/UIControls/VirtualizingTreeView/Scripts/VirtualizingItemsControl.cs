@@ -303,6 +303,7 @@ namespace Battlehub.UIControls
         /// Root canvas
         /// </summary>
         private Canvas m_canvas;
+        private CanvasGroup m_canvasGroup;
 
         /// <summary>
         /// Raycasting camera (used with world space canvas)
@@ -790,6 +791,7 @@ namespace Battlehub.UIControls
                 }
             }
             m_canvas = GetComponentInParent<Canvas>();
+            m_canvasGroup = GetComponentInParent<CanvasGroup>();
             StartOverride();
         }
 
@@ -800,6 +802,11 @@ namespace Battlehub.UIControls
 
         private void Update()
         {
+            if(m_canvasGroup != null && !m_canvasGroup.interactable)
+            {
+                return;
+            }
+
             if (m_scrollDir != ScrollDir.None)
             {
                 float verDelta = (m_scrollRect.content.rect.height - m_scrollRect.viewport.rect.height);

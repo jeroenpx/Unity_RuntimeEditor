@@ -26,7 +26,13 @@ namespace Battlehub.RTHandles
 
         protected override float CurrentGridUnitSize
         {
+            get { return SizeOfGrid; }
+        }
+
+        public override float SizeOfGrid
+        {
             get { return GridSize; }
+            set { GridSize = value; }
         }
 
         private static readonly List<RectTool> m_connectedTools = new List<RectTool>();

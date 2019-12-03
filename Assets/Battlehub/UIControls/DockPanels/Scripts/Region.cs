@@ -28,6 +28,7 @@ namespace Battlehub.UIControls.DockPanels
         public bool CanDrag = true;
         public bool CanClose = true;
         public bool IsHeaderVisible = true;
+        public bool IsOn = true;
         public PersistentLayoutInfo[] TabGroup;
     }
 
@@ -44,6 +45,7 @@ namespace Battlehub.UIControls.DockPanels
         public bool CanDrag = true;
         public bool CanClose = true;
         public bool IsHeaderVisible = true;
+        public bool IsOn = true;
 
         public LayoutInfo[] TabGroup;
 
@@ -467,6 +469,13 @@ namespace Battlehub.UIControls.DockPanels
                     region.Add(tab.Icon, tab.Header, tab.Content, false, RegionSplitType.None, 0.3f, tab.CanDrag, tab.CanClose);
                     ((RectTransform)tab.Content).Stretch();
                 }
+
+                LayoutInfo onLayoutInfo = layout.TabGroup.Where(t => t.IsOn).FirstOrDefault();
+                if(onLayoutInfo != null)
+                {
+                    Tab tab = FindTab(onLayoutInfo.Content);
+                    tab.IsOn = true;
+                }    
             }
             else if (layout.Child0 != null && layout.Child1 != null)
             {

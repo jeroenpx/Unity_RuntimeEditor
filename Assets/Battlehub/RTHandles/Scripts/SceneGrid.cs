@@ -35,6 +35,20 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private bool m_zTest = true;
+        public bool ZTest
+        {
+            get { return m_zTest; }
+            set
+            {
+                if(m_zTest != value)
+                {
+                    m_zTest = value;
+                    Rebuild();
+                }
+            }
+        }
+
         [SerializeField]
         private float m_alpha = 1.0f;
         public float Alpha
@@ -50,7 +64,16 @@ namespace Battlehub.RTHandles
 
             m_commandBuffer = new CommandBuffer();
             m_commandBuffer.name = "SceneGrid Command Buffer";
-            Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            if(RenderPipelineInfo.Type == RPType.Legacy)
+            {
+                Window.Camera.AddCommandBuffer(CameraEvent.AfterSkybox, m_commandBuffer);
+            }
+            else
+            {
+                #warning Check if this can work with AfterSkybox?
+                Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            }
+            
             Rebuild();
         }
 
@@ -68,8 +91,16 @@ namespace Battlehub.RTHandles
         {
             if (Window != null && Window.Camera != null && m_commandBuffer != null)
             {
-                Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+                if (RenderPipelineInfo.Type == RPType.Legacy)
+                {
+                    Window.Camera.RemoveCommandBuffer(CameraEvent.AfterSkybox, m_commandBuffer);
+                }
+                else
+                {
+                    Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+                }
             }
+            
 
             base.OnDestroyOverride();
             Cleanup();
@@ -98,9 +129,13 @@ namespace Battlehub.RTHandles
         private void Rebuild()
         {
             Cleanup();
+            if (Appearance == null)
+            {
+                return;
+            }
 
-            m_grid0Material = CreateGridMaterial(0.5f);
-            m_grid1Material = CreateGridMaterial(0.5f);
+            m_grid0Material = CreateGridMaterial(0.5f, m_zTest);
+            m_grid1Material = CreateGridMaterial(0.5f, m_zTest);
 
             m_grid0Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
             m_grid1Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
@@ -172,11 +207,12 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private Material CreateGridMaterial(float scale)
+        private Material CreateGridMaterial(float scale, bool zTest)
         {
             Shader shader =  Shader.Find("Battlehub/RTHandles/Grid");
             Material material = new Material(shader);
             material.SetColor("_GridColor", Appearance.Colors.GridColor);
+            material.SetFloat("_ZTest", zTest ? (float)CompareFunction.LessEqual : (float)CompareFunction.Always);
             material.enableInstancing = true;
             return material;
         }

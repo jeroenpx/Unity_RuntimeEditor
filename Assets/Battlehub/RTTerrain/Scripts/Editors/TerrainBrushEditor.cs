@@ -110,7 +110,7 @@ namespace Battlehub.RTTerrain
 
                 m_brushSizeEditor.Min = 0.5f;
                 m_brushSizeEditor.Max = 40;
-                m_brushSizeEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushSize));
+                m_brushSizeEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushSize), null, "Brush Size", null, null, null, false);
             }
 
             if(m_opacityEditor != null)
@@ -119,7 +119,7 @@ namespace Battlehub.RTTerrain
 
                 m_opacityEditor.Min = 0;
                 m_opacityEditor.Max = 100;
-                m_opacityEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushOpacity));
+                m_opacityEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushOpacity), null, "Brush Opacity", null, null, null, false);
             }
 
             if (m_createButton != null)

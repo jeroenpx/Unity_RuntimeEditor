@@ -139,42 +139,71 @@ namespace Battlehub.RTHandles
             {
                 m_materials[m_xMatIndex].color = Colors.DisabledColor;
                 m_materials[m_xArrowMatIndex].color = Colors.DisabledColor;
+
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_xMatIndex].SetFloat("_ZWrite", 0);
+                    m_materials[m_xArrowMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_xMatIndex].color = Colors.XColor;
                 m_materials[m_xArrowMatIndex].color = Colors.XColor;
+                m_materials[m_xMatIndex].SetFloat("_ZWrite", 1);
+                m_materials[m_xArrowMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if (m_lockObj.ScaleY)
             {
                 m_materials[m_yMatIndex].color = Colors.DisabledColor;
                 m_materials[m_yArrowMatIndex].color = Colors.DisabledColor;
+
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_yMatIndex].SetFloat("_ZWrite", 0);
+                    m_materials[m_yArrowMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_yMatIndex].color = Colors.YColor;
                 m_materials[m_yArrowMatIndex].color = Colors.YColor;
+                m_materials[m_yMatIndex].SetFloat("_ZWrite", 1);
+                m_materials[m_yArrowMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if (m_lockObj.ScaleZ)
             {
                 m_materials[m_zMatIndex].color = Colors.DisabledColor;
                 m_materials[m_zArrowMatIndex].color = Colors.DisabledColor;
+
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_zMatIndex].SetFloat("_ZWrite", 0);
+                    m_materials[m_zArrowMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_zMatIndex].color = Colors.ZColor;
                 m_materials[m_zArrowMatIndex].color = Colors.ZColor;
+                m_materials[m_zMatIndex].SetFloat("_ZWrite", 1);
+                m_materials[m_zArrowMatIndex].SetFloat("_ZWrite", 1);
             }
 
-            if(m_lockObj.IsPositionLocked)
+            if(m_lockObj.IsScaleLocked)
             {
                 m_materials[m_xyzMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_xyzMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_xyzMatIndex].color = Colors.AltColor;
+                m_materials[m_xyzMatIndex].SetFloat("_ZWrite", 1);
             }
         }
 

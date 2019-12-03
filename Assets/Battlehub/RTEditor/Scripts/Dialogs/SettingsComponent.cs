@@ -19,6 +19,12 @@ namespace Battlehub.RTEditor
             set;
         }
 
+        bool GridZTest
+        {
+            get;
+            set;
+        }
+
         float GridSize
         {
             get;
@@ -87,6 +93,21 @@ namespace Battlehub.RTEditor
                 foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
                 {
                     sceneComponent.IsGridEnabled = value;
+                }
+            }
+        }
+
+        [SerializeField]
+        private bool m_gridZTest = true;
+        public bool GridZTest
+        {
+            get { return GetBool("GridZTest", m_gridZTest); }
+            set
+            {
+                SetBool("GridZTest", value);
+                foreach(IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.GridZTest = value;
                 }
             }
         }
@@ -251,6 +272,7 @@ namespace Battlehub.RTEditor
             sceneComponent.IsGridVisible = IsGridVisible;
             sceneComponent.IsGridEnabled = IsGridEnabled;
             sceneComponent.SizeOfGrid = GridSize;
+            sceneComponent.GridZTest = GridZTest;
             sceneComponent.ZoomSpeed = ZoomSpeed;
             sceneComponent.ConstantZoomSpeed = ConstantZoomSpeed;
         }
@@ -270,6 +292,7 @@ namespace Battlehub.RTEditor
             DeleteKey("IsGridVisible");
             DeleteKey("IsGridEnabled");
             DeleteKey("GridSize");
+            DeleteKey("GridZTest");
             DeleteKey("UIAutoScale");
             DeleteKey("UIScale");
             DeleteKey("ZoomSpeed");

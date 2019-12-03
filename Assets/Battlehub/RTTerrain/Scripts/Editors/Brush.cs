@@ -47,6 +47,20 @@ namespace Battlehub.RTTerrain
         protected float m_clampMin;
         protected float m_clampMax;
 
+        protected virtual Vector2 Scale
+        {
+            get
+            {
+                if(Terrain == null || Terrain.terrainData == null)
+                {
+                    return Vector2.one;
+                }
+
+                TerrainData terrainData = Terrain.terrainData;
+                return new Vector2(terrainData.heightmapScale.x, terrainData.heightmapScale.z);
+            }
+        }
+
         protected Vector2 Clamp(Vector2 v, Vector2 min, Vector2 max)
         {
             return new Vector2(Mathf.Clamp(v.x, min.x, max.x), Mathf.Clamp(v.y, min.y, max.y));
@@ -115,8 +129,8 @@ namespace Battlehub.RTTerrain
             m_clampMax = Max / data.heightmapScale.y;
 
             // Calculate bounds
-            Vector2 center = new Vector2(pos.x / data.heightmapScale.x, pos.z / data.heightmapScale.z);
-            Vector2 radius_ext = new Vector2(Radius / data.heightmapScale.x, Radius / data.heightmapScale.z);
+            Vector2 center = new Vector2(pos.x / Scale.x, pos.z / Scale.y);
+            Vector2 radius_ext = new Vector2(Radius / Scale.x, Radius / Scale.y);
 
             Vector2Int minPos = Floor(center - radius_ext);
             Vector2Int maxPos = Ceil(center + radius_ext);

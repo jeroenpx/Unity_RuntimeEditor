@@ -146,6 +146,10 @@ namespace Battlehub.RTEditor
         private PropertyEditorCallback m_valueChangingCallback;
         private PropertyEditorCallback m_valueChangedCallback;
         private PropertyEditorCallback m_endEditCallback;
+        private PropertyEditorCallback m_beginRecordCallback;
+        private PropertyEditorCallback m_endRecordCallback;
+        private PropertyEditorCallback m_afterRedoCallback;
+        private PropertyEditorCallback m_afterUndoCallback;
 
         private Dictionary<MemberInfo, PropertyDescriptor> m_childDescriptors;
         protected Dictionary<MemberInfo, PropertyDescriptor> ChildDescriptors
@@ -160,6 +164,7 @@ namespace Battlehub.RTEditor
         private int m_effectiveIndent;
         private bool m_enableUndo;
         private bool m_isEditing;
+
         private bool m_lockValue;
         protected bool LockValue
         {
@@ -308,12 +313,21 @@ namespace Battlehub.RTEditor
             PropertyEditorCallback valueChangedCallback = null,
             PropertyEditorCallback endEditCallback = null,
             bool enableUndo = true,
-            PropertyDescriptor[] childDescriptors = null)
+            PropertyDescriptor[] childDescriptors = null,
+            PropertyEditorCallback beginRecordCallback = null,
+            PropertyEditorCallback endRecordCallback = null,
+            PropertyEditorCallback afterRedoCallback = null,
+            PropertyEditorCallback afterUndoCallback = null)
         {
             m_enableUndo = enableUndo;
             m_valueChangingCallback = valueChangingCallback;
             m_valueChangedCallback = valueChangedCallback;
             m_endEditCallback = endEditCallback;
+            m_beginRecordCallback = beginRecordCallback;
+            m_endRecordCallback = endRecordCallback;
+            m_afterRedoCallback = afterRedoCallback;
+            m_afterUndoCallback = afterUndoCallback;
+
             if (childDescriptors != null)
             {
                 m_childDescriptors = childDescriptors.ToDictionary(d => d.MemberInfo);
@@ -405,12 +419,12 @@ namespace Battlehub.RTEditor
         protected void BeginEdit(bool record = true)
         {
             if(!m_isEditing && !m_lockValue)
-            {
+            {                
                 if(record)
                 {
                     BeginRecord();
                 }
-                
+                              
                 m_isEditing = true;
             }
         }
@@ -443,13 +457,34 @@ namespace Battlehub.RTEditor
             {
                 Editor.Undo.BeginRecordValue(Target, Accessor, MemberInfo);
             }
+            else
+            {
+                if (m_beginRecordCallback != null)
+                {
+                    m_beginRecordCallback();
+                }
+            }
         }
 
         protected void EndRecord()
         {
             if(m_enableUndo)
             {
-                Editor.Undo.EndRecordValue(Target, Accessor, MemberInfo, m_eraseTargetCallback);
+                if(m_afterRedoCallback != null && m_afterUndoCallback != null)
+                {
+                    Editor.Undo.EndRecordValue(Target, Accessor, MemberInfo, m_eraseTargetCallback, () => m_afterRedoCallback(), () => m_afterUndoCallback());
+                }
+                else
+                {
+                    Editor.Undo.EndRecordValue(Target, Accessor, MemberInfo, m_eraseTargetCallback);
+                }
+            }
+            else
+            {
+                if (m_endRecordCallback != null)
+                {
+                    m_endRecordCallback();
+                }
             }
         }
 
@@ -557,6 +592,7 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
+            
             
             m_nextUpate = Time.time + m_updateInterval;
             

@@ -228,7 +228,7 @@ namespace Battlehub.RTCommon
         private bool m_useBuiltinUndo = true;
 
         [SerializeField]
-        private bool m_enableVRIfAvailable = false;
+        private bool m_enableVRIfAvailable = true;
 
         [SerializeField]
         private bool m_isOpened = true;
@@ -530,7 +530,7 @@ namespace Battlehub.RTCommon
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Init()
         {
-            Debug.Log("RTE Initialized, 2_1_x");
+            Debug.Log("RTE Initialized, 2_1_z");
             IOC.RegisterFallback<IRTE>(RegisterRTE);
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }

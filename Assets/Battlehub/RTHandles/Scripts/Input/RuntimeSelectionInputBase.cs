@@ -45,7 +45,7 @@ namespace Battlehub.RTHandles
         protected virtual void SelectGO()
         {
             RuntimeTools tools = m_component.Editor.Tools;
-            IRuntimeSelection selection = m_component.Editor.Selection;
+            IRuntimeSelection selection = m_component.Selection;
             IInput input = m_component.Editor.Input;
 
             if (tools.ActiveTool != null && tools.ActiveTool != m_component.BoxSelection)

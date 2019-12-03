@@ -257,7 +257,7 @@ namespace Battlehub.RTCommon
 
         protected virtual void UpdateOverride()
         {
-            if(m_camera != null)
+            if(m_camera != null && m_rectTransform != null)
             {
                 if(m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
                 {
@@ -303,7 +303,10 @@ namespace Battlehub.RTCommon
                     m_isActivated = true;
                     if(WindowType == RuntimeWindowType.Game)
                     {
-                        m_background.raycastTarget = false;  // allow to interact with world space ui
+                        if(m_background != null)
+                        {
+                            m_background.raycastTarget = false;  // allow to interact with world space ui
+                        }
                     }
                     OnActivated();
                 }
@@ -313,7 +316,10 @@ namespace Battlehub.RTCommon
                 if (m_isActivated)
                 {   
                     m_isActivated = false;
-                    m_background.raycastTarget = true;
+                    if(m_background != null)
+                    {
+                        m_background.raycastTarget = true;
+                    }
                     OnDeactivated();
                 }
             }

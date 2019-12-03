@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.Utils;
+using System;
 using UnityEngine;
 namespace Battlehub.RTHandles
 {
@@ -449,23 +450,23 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (Editor.Selection.activeTransform == null)
+            if (Selection.activeTransform == null)
             {
                 return;
             }
 
-            if (!m_canFocusTerrain && Editor.Selection.activeTransform.GetComponent<Terrain>())
+            if (!m_canFocusTerrain && Selection.activeTransform.GetComponent<Terrain>())
             {
                 return;
             }
 
-            m_autoFocusTransform = Editor.Selection.activeTransform;
-            if ((Editor.Selection.activeTransform.gameObject.hideFlags & HideFlags.DontSave) != 0)
+            m_autoFocusTransform = Selection.activeTransform;
+            if ((Selection.activeTransform.gameObject.hideFlags & HideFlags.DontSave) != 0)
             {
                 return;
             }
 
-            Bounds bounds = CalculateBounds(Editor.Selection.activeTransform);
+            Bounds bounds = CalculateBounds(Selection.activeTransform);
             float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z) * 2.0f;
             float distance;
             if(ChangeOrthographicSizeOnly && IsOrthographic)
@@ -479,7 +480,7 @@ namespace Battlehub.RTHandles
             }
 
             PivotTransform.position = bounds.center;
-            SecondaryPivotTransform.position = Editor.Selection.activeTransform.position;
+            SecondaryPivotTransform.position = Selection.activeTransform.position;
             const float duration = 0.1f;
 
             m_focusAnimation = new Vector3AnimationInfo(Window.Camera.transform.position, PivotTransform.position - distance * Window.Camera.transform.forward, duration, Vector3AnimationInfo.EaseOutCubic,
@@ -633,15 +634,15 @@ namespace Battlehub.RTHandles
             Transform camTransform = Window.Camera.transform;
 
             m_targetRotation = Quaternion.Inverse(
-                Quaternion.Euler(rotate.y, 0, 0) * 
-                Quaternion.Inverse(m_targetRotation) * 
+                Quaternion.Euler(rotate.y, 0, 0) *
+                Quaternion.Inverse(m_targetRotation) *
                 Quaternion.Euler(0, -rotate.x, 0));
-           
+
             camTransform.rotation = Quaternion.Slerp(
                 camTransform.rotation,
                 m_targetRotation,
                 m_freeSmoothRotateSpeed * Time.deltaTime);
-            
+
             Vector3 zoomOffset = Vector3.zero;
             if (Window.Camera.orthographic)
             {
@@ -653,7 +654,7 @@ namespace Battlehub.RTHandles
                 {
                     move.y /= 10.0f;
                 }
-                
+
                 if (!Mathf.Approximately(move.y, 0))
                 {
                     Vector3 position = camTransform.position;
@@ -674,14 +675,22 @@ namespace Battlehub.RTHandles
             m_targetPosition = m_targetPosition + zoomOffset +
                 camTransform.forward * move.y + camTransform.right * move.x + camTransform.up * move.z;
 
-            camTransform.position = Vector3.Lerp(
-                camTransform.position, 
+
+            Vector3 newPosition = Vector3.Lerp(
+                camTransform.position,
                 m_targetPosition,
                 m_freeSmoothMoveSpeed * Time.deltaTime);
+
+            newPosition.x = (float)Math.Round(newPosition.x, 5);
+            newPosition.y = (float)Math.Round(newPosition.y, 5);
+            newPosition.z = (float)Math.Round(newPosition.z, 5);
+
+            camTransform.position = newPosition;
 
             Vector3 newPivot = camTransform.position + camTransform.forward * m_orbitDistance;
             SecondaryPivotTransform.position += newPivot - Pivot;
             PivotTransform.position = newPivot;
+
         }
 
         private void OnSceneGizmoOrientationChanging()

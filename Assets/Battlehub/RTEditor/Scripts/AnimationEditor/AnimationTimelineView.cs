@@ -62,9 +62,22 @@ namespace Battlehub.RTEditor
             {
                 if(m_target != value)
                 {
-                    m_dopesheet.SetSample(0);
                     m_target = value;
+                    SetCurrentSample();
                 }
+            }
+        }
+
+        private void SetCurrentSample()
+        {
+            if (m_target != null && m_target.Clips != null && m_target.ClipIndex > -1 && m_target.ClipIndex < m_target.Clips.Count && m_target.Clips[m_target.ClipIndex] != null && m_target.State != null)
+            {
+                int frameNumber = Mathf.CeilToInt(m_target.State.time * m_target.Clips[m_target.ClipIndex].Clip.frameRate);
+                m_dopesheet.SetSample(frameNumber);
+            }
+            else
+            {
+                m_dopesheet.SetSample(0);
             }
         }
 
@@ -125,6 +138,8 @@ namespace Battlehub.RTEditor
                 {
                     m_timeline.SetActive(m_clip != null);
                 }
+
+                SetCurrentSample();
             }
         }
 
@@ -157,7 +172,7 @@ namespace Battlehub.RTEditor
                 Dopesheet.SetNormalizedTime(Target.NormalizedTime % 1, false);
                 if(Target.NormalizedTime > 1)
                 {
-                    Target.NormalizedTime = 0;
+                    Target.NormalizedTime %= 1;
                 }
             }
         }

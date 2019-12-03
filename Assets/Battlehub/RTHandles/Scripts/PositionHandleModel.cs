@@ -292,39 +292,99 @@ namespace Battlehub.RTHandles
             {
                 m_materials[m_xMatIndex].color = Colors.DisabledColor;
                 m_materials[m_xArrowMatIndex].color = Colors.DisabledColor;
+
+                if(Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_xMatIndex].SetFloat("_ZWrite", 0);
+                    m_materials[m_xArrowMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_xMatIndex].color = Colors.XColor;
                 m_materials[m_xArrowMatIndex].color = Colors.XColor;
+                m_materials[m_xMatIndex].SetFloat("_ZWrite", 1);
+                m_materials[m_xArrowMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if (m_lockObj.PositionY)
             {
                 m_materials[m_yMatIndex].color = Colors.DisabledColor;
                 m_materials[m_yArrowMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_yMatIndex].SetFloat("_ZWrite", 0);
+                    m_materials[m_yArrowMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_yMatIndex].color = Colors.YColor;
                 m_materials[m_yArrowMatIndex].color = Colors.YColor;
+                m_materials[m_yMatIndex].SetFloat("_ZWrite", 1);
+                m_materials[m_yArrowMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if (m_lockObj.PositionZ)
             {
                 m_materials[m_zMatIndex].color = Colors.DisabledColor;
                 m_materials[m_zArrowMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_zMatIndex].SetFloat("_ZWrite", 0);
+                    m_materials[m_zArrowMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_materials[m_zMatIndex].color = Colors.ZColor;
                 m_materials[m_zArrowMatIndex].color = Colors.ZColor;
+                m_materials[m_zMatIndex].SetFloat("_ZWrite", 1);
+                m_materials[m_zArrowMatIndex].SetFloat("_ZWrite", 1);
             }
 
-            m_materials[m_xQMatIndex].color = m_lockObj.PositionY || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.XColor;
-            m_materials[m_yQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.YColor;
-            m_materials[m_zQMatIndex].color = m_lockObj.PositionX || m_lockObj.PositionY ? Colors.DisabledColor : Colors.ZColor;
-
+            if (m_lockObj.PositionY || m_lockObj.PositionZ)
+            {
+                m_materials[m_xQMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_xQMatIndex].SetFloat("_ZWrite", 0);
+                }
+            }
+            else
+            {
+                m_materials[m_xQMatIndex].color = Colors.XColor;
+                m_materials[m_xQMatIndex].SetFloat("_ZWrite", 1);
+            }
+            
+            if(m_lockObj.PositionX || m_lockObj.PositionZ)
+            {
+                m_materials[m_yQMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_yQMatIndex].SetFloat("_ZWrite", 0);
+                }
+            }
+            else
+            {
+                m_materials[m_yQMatIndex].color = Colors.YColor;
+                m_materials[m_yQMatIndex].SetFloat("_ZWrite", 1);
+            }
+            
+            if (m_lockObj.PositionX || m_lockObj.PositionY)
+            {
+                m_materials[m_zQMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_materials[m_zQMatIndex].SetFloat("_ZWrite", 0);
+                }
+            }
+            else
+            {
+                m_materials[m_zQMatIndex].color = Colors.ZColor;
+                m_materials[m_zQMatIndex].SetFloat("_ZWrite", 1);
+            }
+                
             Color xQuadColor = m_lockObj.PositionY || m_lockObj.PositionZ ? Colors.DisabledColor : Colors.XColor; xQuadColor.a = Mathf.Min(m_quadTransparency, xQuadColor.a);
             m_materials[m_xQuadMatIndex].color =  xQuadColor;
 
@@ -542,64 +602,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-
-        public int SetCameraPosition(Vector3 pos)
-        {
-
-            Vector3 toCam = (pos - transform.position).normalized;
-            toCam = transform.InverseTransformDirection(toCam);
-            float[] dots =
-                transform.localScale.z < 0 ?
-                new[]
-                {
-                    Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1,  1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1, -1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3( 1, -1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3( 1,  1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1,  1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1, -1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3( 1, -1,  1).normalized, toCam),
-                } :
-                new[]
-                {
-                    Vector3.Dot(new Vector3( 1,  1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1,  1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1, -1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3( 1, -1,  1).normalized, toCam),
-                    Vector3.Dot(new Vector3( 1,  1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1,  1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3(-1, -1, -1).normalized, toCam),
-                    Vector3.Dot(new Vector3( 1, -1, -1).normalized, toCam),
-                };
-
-            float maxDot = float.MinValue;
-            int maxIndex = -1;
-            for (int i = 0; i < dots.Length; ++i)
-            {
-                if (dots[i] > maxDot)
-                {
-                    maxDot = dots[i];
-                    maxIndex = i;
-                }
-            } 
-
-            for (int i = 0; i < m_models.Length - 1; ++i)
-            {
-                if (i != maxIndex)
-                {
-                    m_models[i].SetActive(false);
-                }
-            }
-
-            if (maxIndex >= 0)
-            {
-                m_models[maxIndex].SetActive(true);
-            }
-            return maxIndex;
-
-        }
-
         public override RuntimeHandleAxis HitTest(Ray ray, out float distance)
         {
             if (!m_useColliders)
@@ -708,6 +710,90 @@ namespace Battlehub.RTHandles
         private Vector3 m_prevCameraPosition = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         private Vector3 m_prevPosition;
         private Quaternion m_prevRotation;
+        private int m_prevIndex = -1;
+
+        public int SetCameraPosition(Vector3 pos)
+        {
+            Vector3 toCam = (pos - transform.position).normalized;
+            toCam = transform.InverseTransformDirection(toCam);
+
+            int index = -1;
+            if (toCam.x >= 0)
+            {
+                if (toCam.y >= 0)
+                {
+                    if (toCam.z >= 0)
+                    {
+                        index = 0;
+                    }
+                    else
+                    {
+                        index = 4;
+                    }
+                }
+                else
+                {
+                    if (toCam.z >= 0)
+                    {
+                        index = 3;
+                    }
+                    else
+                    {
+                        index = 7;
+                    }
+                }
+            }
+            else
+            {
+                if (toCam.y >= 0)
+                {
+                    if (toCam.z >= 0)
+                    {
+                        index = 1;
+                    }
+                    else
+                    {
+                        index = 5;
+                    }
+                }
+                else
+                {
+                    if (toCam.z >= 0)
+                    {
+                        index = 2;
+                    }
+                    else
+                    {
+                        index = 6;
+                    }
+                }
+            }
+
+            index = (index + (transform.localScale.z < 0 ? 4 : 0)) % 8;
+
+            if (m_lockObj != null && (m_lockObj.PositionX || m_lockObj.PositionY || m_lockObj.PositionZ))
+            {
+                index = 0;
+            }
+
+            if(m_prevIndex == index)
+            {
+                return -1;
+            }
+            
+            if(m_prevIndex >= 0)
+            {
+                m_models[m_prevIndex].SetActive(false);
+            }
+
+            if(index >= 0)
+            {
+                m_models[index].SetActive(true);
+            }
+
+            m_prevIndex = index;
+            return index;
+        }
 
         protected override void Update()
         {

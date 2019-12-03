@@ -11,6 +11,20 @@ namespace Battlehub.RTTerrain
             set;
         }
 
+        protected override Vector2 Scale
+        {
+            get
+            {
+                if(Terrain == null || Terrain.terrainData == null)
+                {
+                    return Vector2.one;
+                }
+
+                TerrainData terrainData = Terrain.terrainData;
+                return new Vector2(terrainData.size.x / terrainData.alphamapWidth, terrainData.size.z / terrainData.alphamapHeight);
+            }
+        }
+
         private float[,,] m_oldAlphamaps;
         private IRTE m_editor;
 
@@ -37,12 +51,20 @@ namespace Battlehub.RTTerrain
 
             m_editor.Undo.CreateRecord(record =>
             {
-                terrain.terrainData.SetAlphamaps(0, 0, newAlphamaps);
+                if(terrain.terrainData != null)
+                {
+                    terrain.terrainData.SetAlphamaps(0, 0, newAlphamaps);
+                }
+                
                 return true;
             },
             record =>
             {
-                terrain.terrainData.SetAlphamaps(0, 0, oldAlphamaps);
+                if(terrain.terrainData != null)
+                {
+                    terrain.terrainData.SetAlphamaps(0, 0, oldAlphamaps);
+                }
+                
                 return true;
             });
         }
@@ -56,14 +78,18 @@ namespace Battlehub.RTTerrain
 
         public override void Modify(Vector2Int minPos, Vector2Int maxPos, float value)
         {
-            float heightMapResoulution = Terrain.terrainData.heightmapResolution;
+            if(TerrainLayerIndex < 0)
+            {
+                return;
+            }
+
             int px = Mathf.Max(0, minPos.x);
             int py = Mathf.Max(0, minPos.y);
             float[,,] alphaMaps = Terrain.terrainData.GetAlphamaps(
                 px,
                 py,
-                Mathf.Min((int)heightMapResoulution - 1, maxPos.x) - px,
-                Mathf.Min((int)heightMapResoulution - 1, maxPos.y) - py);
+                Mathf.Min(Terrain.terrainData.alphamapWidth, maxPos.x) - px,
+                Mathf.Min(Terrain.terrainData.alphamapHeight, maxPos.y) - py);
 
             int sizeY = maxPos.y - minPos.y;
             int sizeX = maxPos.x - minPos.x;
@@ -89,17 +115,25 @@ namespace Battlehub.RTTerrain
                     float v = (y - minPos.y) / (float)(sizeY - 1);
                     float f = Eval(u, v);
 
-                    alphaMaps[y, x, TerrainLayerIndex] = m_blender(alphaMaps[y, x, TerrainLayerIndex], f * value);
+                    
+                    alphaMaps[y, x, TerrainLayerIndex] = Mathf.Clamp01(alphaMaps[y, x, TerrainLayerIndex] + f * value);
+
+                    float total = alphaMaps[y, x, TerrainLayerIndex];
                     for (int z = 0; z < amapZ; z++)
                     {
-                        if(z == TerrainLayerIndex)
+                        if (z == TerrainLayerIndex)
                         {
                             continue;
                         }
 
-                        alphaMaps[y, x, z] = (1 - alphaMaps[y, x, TerrainLayerIndex]);
+                        alphaMaps[y, x, z] = Mathf.Clamp01(alphaMaps[y, x, z] - f * value);
+                        total += alphaMaps[y, x, z];
                     }
 
+                    if(amapZ > 0 && total < 1)
+                    {
+                        alphaMaps[y, x, 0] += (1 - total);
+                    }
                 }
             }
 

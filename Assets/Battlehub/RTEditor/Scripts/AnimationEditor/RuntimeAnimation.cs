@@ -233,7 +233,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private AnimationState State
+        public AnimationState State
         {
             get
             {
@@ -326,8 +326,6 @@ namespace Battlehub.RTEditor
                             state.speed = 0;
                         }
                     }
-
-                    m_animation.wrapMode = m_loop ? WrapMode.Loop : WrapMode.ClampForever;
                 }
             }
         }
@@ -431,6 +429,7 @@ namespace Battlehub.RTEditor
                 }
                 clip.Refresh();
                 clip.Clip.wrapMode = WrapMode.ClampForever;
+                
 
                 float speed = 0;
                 float normalizedTime = 0;
@@ -483,6 +482,8 @@ namespace Battlehub.RTEditor
                 m_isPlaying = false;
                 m_animation.Stop();
             }
+
+            m_animation.wrapMode = m_loop ? WrapMode.Loop : WrapMode.ClampForever;
         }
 
         public void SetClips(IList<RuntimeAnimationClip> clips, int currentClipIndex)

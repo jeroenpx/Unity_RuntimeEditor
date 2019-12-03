@@ -125,6 +125,7 @@ namespace Battlehub.RTTerrain
                 }
                 else if (m_editor.Input.GetPointer(0))
                 {
+                    m_terrainBrush.Terrain = m_terrain;
                     m_terrainBrush.Paint(m_terrain.transform.InverseTransformPoint(m_position), (m_editor.Input.GetKey(KeyCode.LeftShift) ? -Time.deltaTime : Time.deltaTime) * Opacity);
                 }
             }

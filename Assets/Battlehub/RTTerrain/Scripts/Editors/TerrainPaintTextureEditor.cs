@@ -17,15 +17,6 @@ namespace Battlehub.RTTerrain
         {
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
             m_terrainEditor.TerrainChanged += OnTerrainChanged;
-
-            if(m_terrainLayerEditor != null)
-            {
-                if(m_terrainEditor.Terrain != null)
-                {
-                    m_terrainLayerEditor.TerrainData = m_terrainEditor.Terrain.terrainData;
-                }
-                m_terrainLayerEditor.SelectedLayerChanged += OnSelectedLayerChanged;
-            }
             
             if(m_terrainBrushEditor != null)
             {
@@ -41,10 +32,6 @@ namespace Battlehub.RTTerrain
                 m_terrainEditor.TerrainChanged -= OnTerrainChanged;
             }
 
-            if(m_terrainLayerEditor != null)
-            {
-                m_terrainLayerEditor.SelectedLayerChanged -= OnSelectedLayerChanged;
-            }
 
             if (m_terrainBrushEditor != null)
             {
@@ -55,7 +42,20 @@ namespace Battlehub.RTTerrain
 
         private void OnEnable()
         {
-            //m_terrainEditor.Projector.gameObject.SetActive(true);
+            if (m_terrainLayerEditor != null)
+            {
+                if (m_terrainEditor.Terrain != null)
+                {
+                    m_terrainLayerEditor.Terrain = m_terrainEditor.Terrain;
+                }
+                m_terrainLayerEditor.SelectedLayerChanged += OnSelectedLayerChanged;
+            }
+
+            if (m_terrainEditor.Projector != null)
+            {
+                m_terrainEditor.Projector.gameObject.SetActive(GetTerrainLayerIndex() >= 0);
+            }
+            
             if (m_terrainBrushEditor.SelectedBrush != null)
             {
                 OnSelectedBrushChanged(this, EventArgs.Empty);
@@ -65,6 +65,11 @@ namespace Battlehub.RTTerrain
 
         private void OnDisable()
         {
+            if (m_terrainLayerEditor != null)
+            {
+                m_terrainLayerEditor.SelectedLayerChanged -= OnSelectedLayerChanged;
+            }
+
             //m_terrainEditor.Projector.gameObject.SetActive(false);
         }
 
@@ -73,6 +78,7 @@ namespace Battlehub.RTTerrain
             InitializeTerrainTextureBrush();
             TerrainTextureBrush brush = (TerrainTextureBrush)m_terrainEditor.Projector.TerrainBrush;
             brush.TerrainLayerIndex = GetTerrainLayerIndex();
+            m_terrainEditor.Projector.gameObject.SetActive(brush.TerrainLayerIndex >= 0);
         }
 
         private void OnSelectedBrushChanged(object sender, EventArgs e)
@@ -104,24 +110,25 @@ namespace Battlehub.RTTerrain
             {
                 TerrainLayerIndex = GetTerrainLayerIndex()
             };
+            m_terrainEditor.Projector.gameObject.SetActive(GetTerrainLayerIndex() >= 0);
         }
 
         private int GetTerrainLayerIndex()
         {
-            return m_terrainLayerEditor.SelectedLayer != null ? Array.IndexOf(m_terrainLayerEditor.TerrainData.terrainLayers, m_terrainLayerEditor.SelectedLayer) : 0;
+            return m_terrainLayerEditor.SelectedLayer != null ? Array.IndexOf(m_terrainLayerEditor.Terrain.terrainData.terrainLayers, m_terrainLayerEditor.SelectedLayer) : -1;
         }
 
         private void OnTerrainChanged()
         {
             if (m_terrainLayerEditor != null)
             {
-                if (m_terrainEditor.Terrain == null)
+                if (m_terrainEditor.Terrain == null || m_terrainEditor.Terrain.terrainData == null)
                 {
-                    m_terrainLayerEditor.TerrainData = null;
+                    m_terrainLayerEditor.Terrain = null;
                 }
                 else
                 {
-                    m_terrainLayerEditor.TerrainData = m_terrainEditor.Terrain.terrainData;
+                    m_terrainLayerEditor.Terrain = m_terrainEditor.Terrain;
                 }
             }
         }

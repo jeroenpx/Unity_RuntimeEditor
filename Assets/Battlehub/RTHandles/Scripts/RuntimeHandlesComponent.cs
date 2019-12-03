@@ -252,6 +252,7 @@ namespace Battlehub.RTHandles
             m_linesClipUsingClipPlaneMaterial.enableInstancing = true;
 
             m_linesBillboardMaterial = new Material(Shader.Find("Battlehub/RTHandles/VertexColorBillboard"));
+            m_linesBillboardMaterial.DisableKeyword("_USE_CAMERA_POSITION");
             m_linesBillboardMaterial.color = Color.white;
             m_linesBillboardMaterial.enableInstancing = true;
 

@@ -1,6 +1,5 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.UIControls.Dialogs;
-using Battlehub.UIControls.DockPanels;
 using Battlehub.Utils;
 using System.Collections;
 using UnityEngine;
@@ -11,6 +10,9 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         private BoolEditor m_isGridVisibleEditor = null;
+
+        [SerializeField]
+        private BoolEditor m_gridZTest = null;
 
         [SerializeField]
         private BoolEditor m_snapToGridEditor = null;
@@ -72,6 +74,11 @@ namespace Battlehub.RTEditor
             if(m_isGridVisibleEditor != null)
             {
                 m_isGridVisibleEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.IsGridVisible), null, "Is Grid Visible");
+            }
+
+            if(m_gridZTest != null)
+            {
+                m_gridZTest.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.GridZTest), null, "Grid Z Test");
             }
 
             if(m_snapToGridEditor != null)

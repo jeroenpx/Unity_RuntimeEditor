@@ -23,13 +23,13 @@ namespace Battlehub.RTHandles
         private Bounds[] m_snapTargetsBounds;
         private ExposeToEditor[] m_allExposedToEditor;
 
-        public bool SnapToGround
+        public override float SizeOfGrid
         {
-            get;
-            set;
+            get { return GridSize; }
+            set { GridSize = value; }
         }
 
-        public bool SnapToGrid
+        public bool SnapToGround
         {
             get;
             set;
@@ -87,7 +87,7 @@ namespace Battlehub.RTHandles
 
         protected override float CurrentGridUnitSize
         {
-            get { return GridSize; }
+            get { return SizeOfGrid; }
         }
 
         protected override void AwakeOverride()
@@ -858,8 +858,8 @@ namespace Battlehub.RTHandles
 
                     if (SnapToGrid)
                     {
-                        float gridSize = GridSize;
-                        if (!Mathf.Approximately(GridSize, 0))
+                        float gridSize = SizeOfGrid;
+                        if (!Mathf.Approximately(gridSize, 0))
                         {
                             gridOffset = GetGridOffset(gridSize, Position);
                             m_currentPosition += gridOffset;
@@ -891,7 +891,7 @@ namespace Battlehub.RTHandles
 
         private void SnapActiveTargetsToGrid()
         {
-            float gridSize = GridSize;
+            float gridSize = SizeOfGrid;
             if (Mathf.Approximately(gridSize, 0))
             {
                 return;

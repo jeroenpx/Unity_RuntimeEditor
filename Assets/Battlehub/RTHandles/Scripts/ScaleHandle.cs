@@ -18,6 +18,18 @@ namespace Battlehub.RTHandles
         private Vector3[] m_refScales;
         private float m_screenScale;
 
+        public override bool SnapToGrid
+        {
+            get { return AbsouluteGrid; }
+            set { AbsouluteGrid = value; }
+        }
+
+        public override float SizeOfGrid
+        {
+            get { return GridSize; }
+            set { GridSize = value; }
+        }
+
         public override RuntimeTool Tool
         {
             get { return RuntimeTool.Scale; }
@@ -25,7 +37,7 @@ namespace Battlehub.RTHandles
 
         protected override float CurrentGridUnitSize
         {
-            get { return GridSize; }
+            get { return SizeOfGrid; }
         }
 
         protected override void AwakeOverride()
@@ -212,7 +224,7 @@ namespace Battlehub.RTHandles
                     }
                 }
 
-                if(AbsouluteGrid)
+                if(SnapToGrid)
                 {
                     for (int i = 0; i < m_refScales.Length; ++i)
                     {

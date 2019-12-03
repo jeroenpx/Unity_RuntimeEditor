@@ -68,13 +68,8 @@ namespace Battlehub.RTTerrain
             terrainData.size = new Vector3(200, 20, 200);
             terrainData.terrainLayers = new[]
             {
-                            #if UNITY_2019_2
-                            //2019.2.12 unity terrain issue fix (2 same layers to make texture visibile) 
-                            new TerrainLayer() { diffuseTexture = (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") },
-                            #endif
-                            new TerrainLayer() { diffuseTexture = (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") }
-
-                        };
+                new TerrainLayer() { diffuseTexture = (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") }
+            };
 
             GameObject go = Terrain.CreateTerrainGameObject(terrainData);
             go.isStatic = false;

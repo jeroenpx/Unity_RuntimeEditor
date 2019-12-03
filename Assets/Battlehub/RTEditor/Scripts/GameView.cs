@@ -19,9 +19,16 @@ namespace Battlehub.RTEditor
         //This static variable (m_gameView) needed to fix this issue. Probably DestroyImmediate also could work...
         private static GameView m_gameView;
 
+        private IRuntimeEditor m_editor;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Game;
+
+            m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_editor.BeforeSceneSave += OnBeforeSceneSave;
+            m_editor.SceneSaved += OnSceneSaved;
+
             m_gameCameras = Editor.Object.Get(false).Select(obj => obj.GetComponent<GameViewCamera>()).Where(obj => obj != null && obj.IsAwaked).ToList();
             
             if (m_gameCameras.Count > 0)
@@ -56,6 +63,12 @@ namespace Battlehub.RTEditor
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
+
+            if(m_editor != null)
+            {
+                m_editor.BeforeSceneSave -= OnBeforeSceneSave;
+                m_editor.SceneSaved -= OnSceneSaved;
+            }
 
             GameViewCamera._Awaked -= OnCameraAwaked;
             GameViewCamera._Destroyed -= OnCameraDestroyed;
@@ -124,7 +137,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-
         public override void SetCameraDepth(int depth)
         {
             base.SetCameraDepth(depth);
@@ -132,6 +144,24 @@ namespace Battlehub.RTEditor
             {
                 GameViewCamera gameCamera = m_gameCameras[i];
                 gameCamera.Camera.depth = depth + gameCamera.Depth;
+            }
+        }
+
+        private void OnBeforeSceneSave(UIControls.CancelArgs arg)
+        {
+            for (int i = 0; i < m_gameCameras.Count; ++i)
+            {
+                GameViewCamera gameCamera = m_gameCameras[i];
+                gameCamera.Camera.enabled = gameCamera.IsCameraEnabled;
+            }
+        }
+
+        private void OnSceneSaved()
+        {
+            for (int i = 0; i < m_gameCameras.Count; ++i)
+            {
+                GameViewCamera gameCamera = m_gameCameras[i];
+                gameCamera.Camera.enabled = enabled;
             }
         }
 

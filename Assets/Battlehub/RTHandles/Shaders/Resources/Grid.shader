@@ -29,10 +29,9 @@ Shader "Battlehub/RTHandles/Grid" {
 		{
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull[_Cull]
-			ZTest On
+			ZTest[_ZTest]
 			ZWrite Off
 			Offset -0.02, 0
-
 
 			CGPROGRAM
 

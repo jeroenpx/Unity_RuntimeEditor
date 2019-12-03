@@ -231,9 +231,14 @@ namespace Battlehub.RTEditor
             
         }
 
-      
         public void SetDefaultLayout()
         {
+            string persistentLayoutName = m_wm.DefaultPersistentLayoutName;
+            if(m_wm.LayoutExist(persistentLayoutName))
+            {
+                m_wm.DeleteLayout(persistentLayoutName);
+            }
+
             m_wm.SetDefaultLayout();
         }
 

@@ -82,7 +82,7 @@ namespace Battlehub.RTTerrain
                 return;
             }
 
-            if (TerrainEditor.Projector.TerrainBrush == m_heightBrush)
+            if (TerrainEditor.Projector.TerrainBrush != null && TerrainEditor.Projector.TerrainBrush == m_heightBrush)
             {
                 return;
             }

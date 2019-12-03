@@ -34,6 +34,7 @@ namespace Battlehub.RTCommon
         Vertex,
     }
 
+    public delegate void RuntimeToolsEvent<T1, T2>(T1 arg1, T2 arg2);
     public delegate void RuntimeToolsEvent();
     public delegate void SpawnPrefabChanged(GameObject oldPrefab);
   
@@ -42,6 +43,7 @@ namespace Battlehub.RTCommon
     /// </summary>
     public class RuntimeTools
     {
+        public event RuntimeToolsEvent<RuntimeTool, object> ToolChanging;
         public event RuntimeToolsEvent ToolChanged;
 
         public event RuntimeToolsEvent PivotRotationChanging;
@@ -219,7 +221,15 @@ namespace Battlehub.RTCommon
             {
                 if (m_current != value)
                 {
+                    if(ToolChanging != null)
+                    {
+                        ToolChanging(value, null);
+                    }
                     m_current = value;
+                    if(m_current != RuntimeTool.Custom)
+                    {
+                        m_isBoxSelectionEnabled = true;
+                    }
                     m_custom = null;
                     if (ToolChanged != null)
                     {
@@ -237,6 +247,10 @@ namespace Battlehub.RTCommon
             {
                 if(m_custom != value)
                 {
+                    if (ToolChanging != null)
+                    {
+                        ToolChanging(RuntimeTool.Custom, value);
+                    }
                     m_current = RuntimeTool.Custom;
                     m_custom = value;
                     if(ToolChanged != null)
@@ -245,6 +259,13 @@ namespace Battlehub.RTCommon
                     }
                 }
             }
+        }
+
+        private bool m_isBoxSelectionEnabled = true;
+        public bool IsBoxSelectionEnabled
+        {
+            get { return m_isBoxSelectionEnabled; }
+            set { m_isBoxSelectionEnabled = value; }
         }
 
         public RuntimePivotRotation PivotRotation

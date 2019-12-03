@@ -5,7 +5,6 @@ using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,15 +37,32 @@ namespace Battlehub.RTTerrain
 
         [SerializeField]
         private string m_selectTextureWindow = RuntimeWindowType.SelectObject.ToString();
-        public string SelecteTextureWindowName
+        public string SelectTextureWindowName
         {
             get { return m_selectTextureWindow; }
             set { m_selectTextureWindow = value; }
         }
 
+        private Terrain m_terrain;
+        public Terrain Terrain
+        {
+            get { return m_terrain; }
+            set
+            {
+                m_terrain = value;
+                if (m_terrain == null)
+                {
+                    TerrainData = null;
+                }
+                else
+                {
+                    TerrainData = m_terrain.terrainData;
+                }
+            }
+        }
 
         private TerrainData m_terrainData;
-        public TerrainData TerrainData
+        private TerrainData TerrainData
         {
             get { return m_terrainData; }
             set
@@ -56,7 +72,15 @@ namespace Battlehub.RTTerrain
                     m_terrainData = value;
                     if (m_layersList != null)
                     {
-                        m_layersList.Items = TerrainData.terrainLayers;
+                        if(m_terrainData != null)
+                        {
+                            m_layersList.Items = m_terrainData.terrainLayers;
+                        }
+                        else
+                        {
+                            m_layersList.Items = null;
+                        }
+                        
                         UpdateVisualState();
                     }
                 }
@@ -65,14 +89,23 @@ namespace Battlehub.RTTerrain
 
         public TerrainLayer SelectedLayer
         {
-            get { return (TerrainLayer)m_layersList.SelectedItem; }
+            get
+            {
+                if(m_layersList.SelectedItem == null)
+                {
+                    return null;
+                }
+
+                return (TerrainLayer)m_layersList.SelectedItem;
+            }
         }
+
 
         public Vector2 TileSize
         {
             get
             {
-                if(SelectedLayer == null)
+                if (SelectedLayer == null)
                 {
                     return Vector2.zero;
                 }
@@ -80,10 +113,12 @@ namespace Battlehub.RTTerrain
             }
             set
             {
-                if(SelectedLayer != null)
+                if (SelectedLayer != null)
                 {
                     SelectedLayer.tileSize = value;
                 }
+
+
             }
         }
 
@@ -106,6 +141,46 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private Vector2 m_initialTileSize;
+        private Vector2 m_initialTileOffset;
+        private void BeginRecordLayerProperties()
+        {
+            m_initialTileOffset = TileOffset;
+            m_initialTileSize = TileSize;
+        }
+
+        private void EndRecordLayerProperties()
+        {
+            IRTE editor = IOC.Resolve<IRTE>();
+            Terrain terrain = Terrain;
+            int layerIndex = m_layersList.SelectedIndex;
+
+            Vector2 tileSize = SelectedLayer.tileSize;
+            Vector2 tileOffset = SelectedLayer.tileOffset;
+
+            editor.Undo.CreateRecord(record =>
+            {
+                TerrainLayer layer = terrain.terrainData.terrainLayers[layerIndex];
+                if(layer != null)
+                {
+                    layer.tileOffset = tileOffset;
+                    layer.tileSize = tileSize;
+                }
+                return true;
+            },
+           record =>
+           {
+               TerrainLayer layer = terrain.terrainData.terrainLayers[layerIndex];
+               if (layer != null)
+               {
+                   layer.tileOffset = m_initialTileOffset;
+                   layer.tileSize = m_initialTileSize;
+               }
+
+               return true;
+           });
+        }
+
         private void Awake()
         {
             if (m_createLayer != null) m_createLayer.onClick.AddListener(OnCreateLayer);
@@ -124,8 +199,9 @@ namespace Battlehub.RTTerrain
                 m_layersList.CanSelectAll = false;
             }
 
-            if (m_tileSizeEditor != null) m_tileSizeEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileSize));
-            if (m_tileOffsetEditor != null) m_tileOffsetEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileOffset));
+            if (m_tileSizeEditor != null) m_tileSizeEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileSize), null, "Tile Size", null, null, null, false, null, BeginRecordLayerProperties, EndRecordLayerProperties);
+            if (m_tileOffsetEditor != null) m_tileOffsetEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileOffset), null, "Tile Offset", null, null, null, false, null, BeginRecordLayerProperties, EndRecordLayerProperties);
+
         }
 
         private void Start()
@@ -152,6 +228,16 @@ namespace Battlehub.RTTerrain
             if(m_createLayer != null) m_createLayer.onClick.RemoveListener(OnCreateLayer);
             if(m_replaceLayer != null) m_replaceLayer.onClick.RemoveListener(OnReplaceLayer);
             if(m_removeLayer != null) m_removeLayer.onClick.RemoveListener(OnRemoveLayer);
+        }
+
+        private void OnEnable()
+        {
+            IOC.Register("TerrainLayerEditor", this);
+        }
+
+        private void OnDisable()
+        {
+            IOC.Unregister("TerrainLayerEditor", this);
         }
 
         private void OnLayersDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -204,11 +290,23 @@ namespace Battlehub.RTTerrain
 
         private void OnRemoveLayer()
         {
+            float[,,] oldAlphamaps = GetAlphamaps();
+            TerrainLayer[] oldLayers = TerrainData.terrainLayers.ToArray();
+
             List<TerrainLayer> layers = TerrainData.terrainLayers.ToList();
             TerrainLayer selectedLayer = (TerrainLayer)m_layersList.SelectedItem;
             layers.Remove(selectedLayer);
             TerrainData.terrainLayers = layers.ToArray();
             m_layersList.RemoveSelectedItems();
+
+            RecordState(oldAlphamaps, oldLayers);
+
+            UpdateVisualState();
+
+            if (SelectedLayerChanged != null)
+            {
+                SelectedLayerChanged(this, EventArgs.Empty);
+            }
         }
 
         private void SelectTexture(bool create)
@@ -222,23 +320,44 @@ namespace Battlehub.RTTerrain
                          OnTextureSelected((Texture2D)objectSelector.SelectedObject, create);
                      }
                  });
-            objectSelector = IOC.Resolve<ISelectObjectDialog>();// dialogTransform.GetComponentInChildren<SelectObjectDialog>();
+            objectSelector = IOC.Resolve<ISelectObjectDialog>();
             objectSelector.ObjectType = typeof(Texture2D);
         }
 
         private void OnTextureSelected(Texture2D texture, bool create)
         {
+            float[,,] oldAlphamaps = GetAlphamaps();
+            TerrainLayer[] oldLayers = TerrainData.terrainLayers.ToArray();
+
             TerrainLayer layer;
             if(create)
             {
+                
                 layer = new TerrainLayer() { name = "TerrainLayer" };
                 layer.diffuseTexture = texture;
-
+                
                 List<TerrainLayer> layers = TerrainData.terrainLayers.ToList();
                 layers.Add(layer);
                 TerrainData.terrainLayers = layers.ToArray();
 
                 m_layersList.Add(layer);
+
+                if(layers.Count == 1)
+                {
+                    float[,,] alphaMaps = TerrainData.GetAlphamaps(0, 0, TerrainData.alphamapWidth, TerrainData.alphamapHeight);
+                    int amapY = alphaMaps.GetLength(0);
+                    int amapX = alphaMaps.GetLength(1);
+
+                    for (int y = 0; y < amapY; y++)
+                    {
+                        for (int x = 0; x < amapX; x++)
+                        {
+                            alphaMaps[y, x, 0] = 1;
+                        }
+                    }
+
+                    TerrainData.SetAlphamaps(0, 0, alphaMaps);
+                }
             }
             else
             {
@@ -246,6 +365,63 @@ namespace Battlehub.RTTerrain
                 layer.diffuseTexture = texture;
 
                 m_layersList.DataBindItem(layer);
+            }
+
+            RecordState(oldAlphamaps, oldLayers);
+        }
+
+        private float[,,] GetAlphamaps()
+        {
+            int w = Terrain.terrainData.alphamapWidth;
+            int h = Terrain.terrainData.alphamapHeight;
+            return Terrain.terrainData.GetAlphamaps(0, 0, w, h);
+        }
+
+        private void RecordState(float[,,] oldAlphamap, TerrainLayer[] oldLayers)
+        {
+            Terrain terrain = Terrain;
+
+            float[,,] newAlphamap = GetAlphamaps();
+            TerrainLayer[] newLayers = terrain.terrainData.terrainLayers.ToArray();
+
+            IRTE editor = IOC.Resolve<IRTE>();
+            editor.Undo.CreateRecord(record =>
+            {
+                if(terrain.terrainData != null)
+                {
+                    terrain.terrainData.terrainLayers = newLayers;
+                    terrain.terrainData.SetAlphamaps(0, 0, newAlphamap);
+                    UpdateLayersList(terrain);
+                }
+
+                return true;
+            },
+            record =>
+            {
+                if(terrain.terrainData != null)
+                {
+                    terrain.terrainData.terrainLayers = oldLayers;
+                    terrain.terrainData.SetAlphamaps(0, 0, oldAlphamap);
+                    UpdateLayersList(terrain);
+                }
+                
+                return true;
+            });
+
+            
+        }
+
+        private static void UpdateLayersList(Terrain terrain)
+        {
+            TerrainLayerEditor layerEditor = IOC.Resolve<TerrainLayerEditor>("TerrainLayerEditor");
+            if (layerEditor != null)
+            {
+                VirtualizingTreeView layerList = layerEditor.m_layersList;
+                layerList.Items = terrain.terrainData.terrainLayers;
+                if (layerList.Items == null || !layerList.Items.OfType<TerrainLayer>().Contains(layerList.SelectedItem))
+                {
+                    layerList.SelectedItem = null;
+                }
             }
         }
     }

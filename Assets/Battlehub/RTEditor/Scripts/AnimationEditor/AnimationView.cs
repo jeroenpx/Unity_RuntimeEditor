@@ -87,7 +87,7 @@ namespace Battlehub.RTEditor
 
         private void SetCurrentClip(RuntimeAnimationClip value)
         {
-            m_timelineView.SetSample(0);
+            //m_timelineView.SetSample(0);
             m_propertiesView.Clip = value;
             m_timelineView.Clip = value;
             if (m_target != null)
@@ -105,8 +105,13 @@ namespace Battlehub.RTEditor
             {
                 if(m_target != value && m_target != null)
                 {
-                   // m_target.IsPlaying = false;
-                   // m_target.IsInPreviewMode = false;
+                    if (!Editor.IsPlaying)
+                    {
+                        m_target.IsPlaying = false;
+                    }
+                    
+                    //m_target.IsInPreviewMode = false;
+                    //m_timelineView.SetSample(0);
                 }
 
                 if(m_target != null)

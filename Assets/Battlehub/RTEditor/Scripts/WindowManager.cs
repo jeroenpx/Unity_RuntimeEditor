@@ -6,7 +6,6 @@ using Battlehub.UIControls.DockPanels;
 using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -81,10 +80,16 @@ namespace Battlehub.RTEditor
              float preferredWidth = 700,
              float preferredHeight = 400);
 
+        string DefaultPersistentLayoutName
+        {
+            get;
+        }
+
         bool LayoutExist(string name);
         void SaveLayout(string name);
         LayoutInfo GetLayout(string name);
         void LoadLayout(string name);
+        void DeleteLayout(string name);
         void ForceLayoutUpdate();
     }
 
@@ -163,7 +168,6 @@ namespace Battlehub.RTEditor
         public bool IsDialog;
         public WindowDescriptor Descriptor;
     }
-
 
     [DefaultExecutionOrder(-89)]
     public class WindowManager : MonoBehaviour, IWindowManager
@@ -902,8 +906,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-       
-
         public void OverrideWindow(string windowTypeName, WindowDescriptor descriptor)
         {
             windowTypeName = windowTypeName.ToLower();
@@ -1063,20 +1065,26 @@ namespace Battlehub.RTEditor
             }
 
             LayoutInfo layout = buildLayoutCallback(this);
-            m_dockPanels.RootRegion.Build(layout);
-
+            if(layout.Content != null || layout.Child0 != null && layout.Child1 != null)
+            {
+                m_dockPanels.RootRegion.Build(layout);
+            }
+            
             if (!string.IsNullOrEmpty(activateWindowOfType))
             {
                 ActivateWindow(activateWindowOfType);
             }
 
             RuntimeWindow[] windows = Windows;
-            for (int i = 0; i < windows.Length; ++i)
+            if(windows != null)
             {
-                windows[i].EnableRaycasts();
-                windows[i].HandleResize();
+                for (int i = 0; i < windows.Length; ++i)
+                {
+                    windows[i].EnableRaycasts();
+                    windows[i].HandleResize();
+                }
             }
-
+            
             if (AfterLayout != null)
             {
                 AfterLayout(this);
@@ -1515,7 +1523,13 @@ namespace Battlehub.RTEditor
             m_dialogManager.ShowDialog(icon, header, content, ok, okText, cancel, cancelText, minWidth, minHeight, preferredWidth, preferredHeight);
         }
 
-
+        public string DefaultPersistentLayoutName
+        {
+            get
+            {
+                return "Persistent_Layout";
+            }
+        }
 
         public bool LayoutExist(string name)
         {
@@ -1574,8 +1588,8 @@ namespace Battlehub.RTEditor
                     for (int i = 0; i < region.ContentPanel.childCount; ++i)
                     {
                         Transform content = region.ContentPanel.GetChild(i);
-
                         PersistentLayoutInfo tabLayout = new PersistentLayoutInfo();
+
                         ToPersistentLayout(region, content, tabLayout);
                         layoutInfo.TabGroup[i] = tabLayout;
                     }
@@ -1601,6 +1615,7 @@ namespace Battlehub.RTEditor
                     {
                         layoutInfo.CanDrag = tab.CanDrag;
                         layoutInfo.CanClose = tab.CanClose;
+                        layoutInfo.IsOn = tab.IsOn;
                     }
                     layoutInfo.IsHeaderVisible = region.IsHeaderVisible;
                     break;
@@ -1663,6 +1678,7 @@ namespace Battlehub.RTEditor
                 layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
                 layoutInfo.CanClose = persistentLayoutInfo.CanClose;
                 layoutInfo.IsHeaderVisible = persistentLayoutInfo.IsHeaderVisible;
+                layoutInfo.IsOn = persistentLayoutInfo.IsOn;
             }
             else
             {
@@ -1690,6 +1706,11 @@ namespace Battlehub.RTEditor
                     }
                 }
             }
+        }
+
+        public void DeleteLayout(string name)
+        {
+            PlayerPrefs.DeleteKey("Battlehub.RTEditor.Layout" + name);
         }
 
         public void ForceLayoutUpdate()

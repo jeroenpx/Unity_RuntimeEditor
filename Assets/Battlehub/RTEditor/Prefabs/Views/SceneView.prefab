@@ -143,6 +143,7 @@ MonoBehaviour:
   m_rotationHandle: {fileID: 114886837775755408}
   m_scaleHandle: {fileID: 114885577000948754}
   m_rectTool: {fileID: 6765689039206119964}
+  m_customHandle: {fileID: 0}
   m_boxSelection: {fileID: 114487925011074116}
   m_selectionGizmoPrefab: {fileID: 0}
   m_grid: {fileID: 0}

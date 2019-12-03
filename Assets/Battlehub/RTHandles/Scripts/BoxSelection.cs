@@ -235,7 +235,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (Editor.Tools.IsViewing || Editor.Tools.Current == RuntimeTool.None || Editor.Tools.Current == RuntimeTool.Custom)
+            if (Editor.Tools.IsViewing || Editor.Tools.Current == RuntimeTool.None || !Editor.Tools.IsBoxSelectionEnabled)
             {
                 if(Editor.Tools.ActiveTool == this)
                 {

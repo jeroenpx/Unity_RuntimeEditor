@@ -3,22 +3,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTCommon
 {
-    public class SpriteGizmoManager : MonoBehaviour
+    public interface ISpriteGizmoManager
     {
-        private static readonly Dictionary<Type, string> m_typeToMaterialName = new Dictionary<Type, string>
+        void Register(Type type, Material material);
+        void Refresh();
+    }
+
+    [DefaultExecutionOrder(-1)]
+    public class SpriteGizmoManager : MonoBehaviour, ISpriteGizmoManager
+    {
+        private readonly Dictionary<Type, string> m_builtIn = new Dictionary<Type, string>
             {
                 {  typeof(Light), "BattlehubLightGizmo" },
                 {  typeof(Camera), "BattlehubCameraGizmo" },
                 {  typeof(AudioSource), "BattlehubAudioSourceGizmo" }
             };
 
-        private static Dictionary<Type, Material> m_typeToMaterial;
-        private static Type[] m_types;
+        private Dictionary<Type, Material> m_registered = new Dictionary<Type, Material>();
+        private Dictionary<Type, Material> m_typeToMaterial;
+        private Type[] m_types;
         private IRTE m_editor;
+
+        [SerializeField]
+        private float m_gizmoScale = 1;
+        public float GizmoScale
+        {
+            get { return m_gizmoScale; }
+            set { m_gizmoScale = value; }
+        }
 
         private void Awake()
         {
@@ -28,15 +42,13 @@ namespace Battlehub.RTCommon
                 Debug.LogError("RTE is null");
             }
 
-
+            IOC.RegisterFallback<ISpriteGizmoManager>(this);
             AwakeOverride();
         }
 
         private void Start()
         {
-            Cleanup();
-            Initialize();
-
+            Refresh();
             StartOverride();
         }
 
@@ -48,6 +60,8 @@ namespace Battlehub.RTCommon
             m_types = null;
 
             OnDestroyOverride();
+
+            IOC.UnregisterFallback<ISpriteGizmoManager>(this);
         }
 
         protected virtual void AwakeOverride()
@@ -69,7 +83,18 @@ namespace Battlehub.RTCommon
         {
             return types;
         }
-        
+
+        public void Register(Type type, Material material)
+        {
+            m_registered[type] = material;
+        }
+
+        public void Refresh()
+        {
+            Cleanup();
+            Initialize();
+        }
+
         protected virtual void GreateGizmo(GameObject go, Type type)
         {
             Material material;
@@ -103,8 +128,21 @@ namespace Battlehub.RTCommon
             }
 
             m_typeToMaterial = new Dictionary<Type, Material>();
-            foreach (KeyValuePair<Type, string> kvp in m_typeToMaterialName)
+            foreach(KeyValuePair<Type, Material> kvp in m_registered)
             {
+                if (kvp.Value != null)
+                {
+                    m_typeToMaterial.Add(kvp.Key, kvp.Value);
+                }   
+            }
+
+            foreach (KeyValuePair<Type, string> kvp in m_builtIn)
+            {
+                if(m_typeToMaterial.ContainsKey(kvp.Key))
+                {
+                    continue;
+                }
+
                 Material material = Resources.Load<Material>(kvp.Value);
                 if (material != null)
                 {
@@ -213,5 +251,4 @@ namespace Battlehub.RTCommon
             }
         }
     }
-
 }

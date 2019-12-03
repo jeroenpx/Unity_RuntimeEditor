@@ -1,5 +1,4 @@
 ﻿using Battlehub.RTCommon;
-
 using UnityEngine;
 
 namespace Battlehub.RTTerrain
@@ -14,24 +13,38 @@ namespace Battlehub.RTTerrain
             WindowType = RuntimeWindowType.Custom;
             base.AwakeOverride();
 
-            if(m_terrainEditor != null)
-            {
-                m_terrainEditor.Terrain = Terrain.activeTerrain;
-            }
-        }
-
-        protected override void UpdateOverride()
-        {
-            base.UpdateOverride();
-            if(m_terrainEditor.Terrain != Terrain.activeTerrain && Terrain.activeTerrain != null)
-            {
-                m_terrainEditor.Terrain = Terrain.activeTerrain;
-            }
+            TryRefreshTerrainEditor();
+            Editor.Selection.SelectionChanged += OnSelectionChanged;
         }
 
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
+
+            if(Editor != null)
+            {
+                Editor.Selection.SelectionChanged -= OnSelectionChanged;
+            }
+        }
+
+        private void OnSelectionChanged(Object[] unselectedObjects)
+        {
+            TryRefreshTerrainEditor();
+        }
+
+        private void TryRefreshTerrainEditor()
+        {
+            if (Editor.Selection.activeGameObject == null)
+            {
+                m_terrainEditor.gameObject.SetActive(false);
+                m_terrainEditor.Terrain = null;
+            }
+            else
+            {
+                Terrain terrain = Editor.Selection.activeGameObject.GetComponent<Terrain>();
+                m_terrainEditor.Terrain = terrain;
+                m_terrainEditor.gameObject.SetActive(m_terrainEditor.Terrain != null);
+            }
         }
     }
 }

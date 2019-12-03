@@ -172,28 +172,43 @@ namespace Battlehub.RTHandles
             if (m_lockObj.RotationX)
             {
                 m_xyzMaterials[m_xMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_xyzMaterials[m_xMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_xyzMaterials[m_xMatIndex].color = Colors.XColor;
+                m_xyzMaterials[m_xMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if (m_lockObj.RotationY)
             {
                 m_xyzMaterials[m_yMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_xyzMaterials[m_yMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_xyzMaterials[m_yMatIndex].color = Colors.YColor;
+                m_xyzMaterials[m_yMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if (m_lockObj.RotationZ)
             {
                 m_xyzMaterials[m_zMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_xyzMaterials[m_zMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_xyzMaterials[m_zMatIndex].color = Colors.ZColor;
+                m_xyzMaterials[m_zMatIndex].SetFloat("_ZWrite", 1);
             }
 
             if(m_lockObj.RotationScreen)
@@ -209,10 +224,15 @@ namespace Battlehub.RTHandles
             if (m_lockObj.RotationFree)
             {
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.DisabledColor;
+                if (Mathf.Approximately(Colors.DisabledColor.a, 0))
+                {
+                    m_innerCircleMaterials[m_innerCircleBorderMatIndex].SetFloat("_ZWrite", 0);
+                }
             }
             else
             {
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.AltColor2;
+                m_innerCircleMaterials[m_innerCircleBorderMatIndex].SetFloat("_ZWrite", 1);
             }
 
             m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0);

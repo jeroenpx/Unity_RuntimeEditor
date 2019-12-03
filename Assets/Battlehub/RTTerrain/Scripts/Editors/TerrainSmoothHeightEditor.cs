@@ -80,6 +80,7 @@ namespace Battlehub.RTTerrain
         {
             m_terrainBrush = new TerrainBrush();
             m_terrainBrush.Blend = Brush.BlendFunction.Smooth;
+            m_terrainBrush.AllowNegativeValue = false;
            // m_terrainBrush.InvertValue = true;
             return m_terrainBrush;
         }

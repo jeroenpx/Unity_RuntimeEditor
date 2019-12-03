@@ -7,6 +7,20 @@ namespace Battlehub.RTCommon
         public Material Material;
         [SerializeField, HideInInspector]
         private SphereCollider m_collider;
+        [SerializeField]
+        private float m_scale = 1.0f;
+        public float Scale
+        {
+            get { return m_scale; }
+            set
+            {
+                if(m_scale != value)
+                {
+                    m_scale = value;
+                    UpdateCollider();
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -31,7 +45,6 @@ namespace Battlehub.RTCommon
             if(m_collider == null)
             {
                 m_collider = gameObject.AddComponent<SphereCollider>();
-                m_collider.radius = 0.25f;
             }
             if(m_collider != null)
             {
@@ -39,6 +52,8 @@ namespace Battlehub.RTCommon
                 {
                     m_collider.hideFlags = HideFlags.HideInInspector;
                 }
+
+                UpdateCollider();
             } 
         }
 
@@ -57,13 +72,20 @@ namespace Battlehub.RTCommon
             }
         }
 
-        void IGL.Draw(int cullingMask, Camera camera)
+        private void UpdateCollider()
         {
-            Material.SetPass(0);
-            RuntimeGraphics.DrawQuad(transform.localToWorldMatrix);
+            if(m_collider != null)
+            {
+                m_collider.radius = 0.25f * m_scale;
+            }
         }
 
 
+        void IGL.Draw(int cullingMask, Camera camera)
+        {
+            Material.SetPass(0);
+            RuntimeGraphics.DrawQuad(Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one * m_scale));
+        }
     }
 }
 

@@ -69,12 +69,18 @@ namespace Battlehub.RTTerrain
 
             m_editor.Undo.CreateRecord(record =>
             {
-                terrain.terrainData.SetHeights(0, 0, newHeightmap);
+                if(terrain.terrainData != null)
+                {
+                    terrain.terrainData.SetHeights(0, 0, newHeightmap);
+                }
                 return true;
             },
             record =>
             {
-                terrain.terrainData.SetHeights(0, 0, oldHeightmap);
+                if(terrain.terrainData != null)
+                {
+                    terrain.terrainData.SetHeights(0, 0, oldHeightmap);
+                }
                 return true;
             });
         }

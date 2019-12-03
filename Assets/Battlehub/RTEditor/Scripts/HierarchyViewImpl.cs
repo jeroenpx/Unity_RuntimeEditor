@@ -396,11 +396,10 @@ namespace Battlehub.RTEditor
             ExposeToEditor dataItem = (ExposeToEditor)e.Item;
             if (dataItem != null)
             {
-
                 TMP_InputField inputField = e.EditorPresenter.GetComponentInChildren<TMP_InputField>(true);
                 if (!string.IsNullOrEmpty(inputField.text))
                 {
-                    dataItem.name = inputField.text;
+                    dataItem.SetName(inputField.text);
                     TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                     text.text = dataItem.name;
                 }

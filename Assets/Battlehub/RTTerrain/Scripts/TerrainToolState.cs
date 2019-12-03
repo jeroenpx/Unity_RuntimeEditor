@@ -7,7 +7,7 @@ namespace Battlehub.RTTerrain
     public class TerrainToolState : MonoBehaviour
     {
         [SerializeField]
-        public TerrainTool.Interpolation Interpolation = TerrainTool.Interpolation.Bicubic;
+        public TerrainSelectionHandlesTool.Interpolation Interpolation = TerrainSelectionHandlesTool.Interpolation.Bicubic;
 
         [SerializeField]
         public float Height = 32;
