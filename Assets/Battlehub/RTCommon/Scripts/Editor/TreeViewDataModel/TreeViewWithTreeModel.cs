@@ -113,8 +113,12 @@ namespace Battlehub.RTCommon.EditorTreeView
 			const int kItemDepth = 0; // tree is flattened when searching
 
 			Stack<T> stack = new Stack<T>();
-			foreach (var element in searchFromThis.children)
-				stack.Push((T)element);
+            if(searchFromThis != null && searchFromThis.children != null)
+            {
+                foreach (var element in searchFromThis.children)
+                    stack.Push((T)element);
+            }
+			
 			while (stack.Count > 0)
 			{
 				T current = stack.Pop();

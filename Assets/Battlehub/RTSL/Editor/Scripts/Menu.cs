@@ -260,18 +260,6 @@ namespace Battlehub.RTSL
             string name = "/AssetLibrary" + ((identity == 0) ? "" : identity.ToString());
             string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + name + ".asset");
 
-
-            asset.AssetLibrary.Folders[1].Assets = new List<AssetInfo>
-                    {
-                        new AssetInfo
-                        {
-                            id = 1,
-                            name = "Material",
-                            Object = AssetDatabase.LoadAssetAtPath<Material>("Assets/New Material.mat")
-                        }
-                    };
-            
-
             AssetDatabase.CreateAsset(asset, assetPathAndName);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

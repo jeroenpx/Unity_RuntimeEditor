@@ -7,9 +7,8 @@ using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 using UnityEngine.UI;
 using System.IO;
-using System;
 
-namespace Battlehub.RTSL
+namespace Battlehub.RTSL.Demo
 {
     public class RTSLDemo : MonoBehaviour
     {

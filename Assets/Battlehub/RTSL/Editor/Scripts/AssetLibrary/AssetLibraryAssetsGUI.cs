@@ -259,7 +259,29 @@ namespace Battlehub.RTSL
                 int identity = m_asset.AssetLibrary.Identity + 1;
                 List<PrefabPartInfo> prefabParts = new List<PrefabPartInfo>();
                 CreatePefabParts(go, ref identity, prefabParts);
-                if(identity >= AssetLibraryInfo.MAX_ASSETS)
+
+
+                string prefabPath = AssetDatabase.GetAssetPath(go);
+                if (!string.IsNullOrEmpty(prefabPath))
+                {
+                    UnityObject[] assetRepresentations = AssetDatabase.LoadAllAssetRepresentationsAtPath(prefabPath);
+                    foreach (UnityObject assetRepresentation in assetRepresentations)
+                    {
+                        //Add avatar as prefab part
+                        if (assetRepresentation is Avatar)
+                        {
+                            PrefabPartInfo prefabPart = new PrefabPartInfo();
+                            prefabPart.ParentPersistentID = -1;
+                            prefabPart.PersistentID = identity;
+                            prefabPart.Object = assetRepresentation;
+                            prefabPart.Depth = 0;
+                            identity++;
+                            prefabParts.Add(prefabPart);
+                        }
+                    }
+                }
+
+                if (identity >= AssetLibraryInfo.MAX_ASSETS)
                 {
                     return false;
                 }
@@ -321,17 +343,17 @@ namespace Battlehub.RTSL
             return true;
         }
 
-        public static void CreatePefabParts(GameObject go, ref int indenitity, List<PrefabPartInfo> prefabParts, int parentId = -1, int depth = 0)
+        public static void CreatePefabParts(GameObject go, ref int identity, List<PrefabPartInfo> prefabParts, int parentId = -1, int depth = 0)
         {
             Component[] components = go.GetComponents<Component>();
             foreach (Component component in components)
             {
                 PrefabPartInfo componentPart = new PrefabPartInfo();
                 componentPart.ParentPersistentID = parentId;
-                componentPart.PersistentID = indenitity;
+                componentPart.PersistentID = identity;
                 componentPart.Object = component;
                 componentPart.Depth = depth;
-                indenitity++;
+                identity++;
                 prefabParts.Add(componentPart);
             }
 
@@ -341,12 +363,12 @@ namespace Battlehub.RTSL
                 {
                     PrefabPartInfo childPart = new PrefabPartInfo();
                     childPart.ParentPersistentID = parentId;
-                    childPart.PersistentID = indenitity;
+                    childPart.PersistentID = identity;
                     childPart.Object = child.gameObject;
                     childPart.Depth = depth;
-                    indenitity++;
+                    identity++;
                     prefabParts.Add(childPart);
-                    CreatePefabParts(child.gameObject, ref indenitity, prefabParts, childPart.PersistentID,  depth + 1);
+                    CreatePefabParts(child.gameObject, ref identity, prefabParts, childPart.PersistentID,  depth + 1);
                 }
             }
         }

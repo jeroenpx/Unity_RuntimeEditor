@@ -261,8 +261,6 @@ namespace Battlehub.RTSL
               
                     string path = AssetDatabase.GetAssetPath(dragged_object);
 
-                    
-
                     if (!string.IsNullOrEmpty(path) && File.Exists(path))
                     {
                         if (!outside)
@@ -438,7 +436,7 @@ namespace Battlehub.RTSL
 
         private void DoTreeView()
         {
-            Rect rect = GUILayoutUtility.GetRect(0, 0, GUILayout.MaxHeight((Screen.height - 280) * 0.5f));
+            Rect rect = GUILayoutUtility.GetRect(0, 0, GUILayout.MaxHeight(Screen.height * 0.5f - 120 ));
             TreeView.OnGUI(rect);
         }
 
