@@ -42,10 +42,9 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     return Quaternion.identity;
                 }
-                if (selection.HasEdges)
-                {
-                    selection.EdgesToFaces(false, false);
-                }
+
+                selection = selection.ToFaces(false, false);
+
                 IList<int> faceIndexes;
                 if (selection.SelectedFaces.TryGetValue(m_edgeSelection.LastMesh, out faceIndexes))
                 {
@@ -94,9 +93,20 @@ namespace Battlehub.ProBuilderIntegration
             m_edgeSelection.Clear();
             m_selection.Clear();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
+            if (selection != null)
             {
-                m_edgeSelection.Add(kvp.Key, kvp.Value);
+                selection = selection.ToEdges(false);
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
+                {
+                    PBMesh pbMesh = kvp.Key.GetComponent<PBMesh>();
+                    if(pbMesh.IsMarkedAsDestroyed)
+                    {
+                        continue;
+                    }
+
+                    m_edgeSelection.Add(kvp.Key, kvp.Value);
+                }
             }
         }
 
@@ -379,7 +389,7 @@ namespace Battlehub.ProBuilderIntegration
         public override MeshSelection Select(Material material)
         {
             MeshSelection selection = IMeshEditorExt.Select(material);
-            selection.FacesToEdges(false);
+            selection = selection.ToEdges(false, false);
 
             foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges.ToArray())
             {
@@ -414,7 +424,7 @@ namespace Battlehub.ProBuilderIntegration
         public override MeshSelection Unselect(Material material)
         {
             MeshSelection selection = IMeshEditorExt.Select(material);
-            selection.FacesToEdges(true);
+            selection = selection.ToEdges(true, false);
 
             foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges.ToArray())
             {
@@ -446,42 +456,42 @@ namespace Battlehub.ProBuilderIntegration
             return selection;
         }
 
-        public override void ApplySelection(MeshSelection selection)
-        {
-            if(selection == null)
-            {
-                return;
-            }
+        //public override void ApplySelection(MeshSelection selection)
+        //{
+        //    if(selection == null)
+        //    {
+        //        return;
+        //    }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges)
-            {
-                m_edgeSelection.Remove(kvp.Key, kvp.Value);
-            }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges)
+        //    {
+        //        m_edgeSelection.Remove(kvp.Key, kvp.Value);
+        //    }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
-            {
-                m_edgeSelection.Add(kvp.Key, kvp.Value);
-            }
-        }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
+        //    {
+        //        m_edgeSelection.Add(kvp.Key, kvp.Value);
+        //    }
+        //}
 
 
-        public override void RollbackSelection(MeshSelection selection)
-        {
-            if(selection == null)
-            {
-                return;
-            }
+        //public override void RollbackSelection(MeshSelection selection)
+        //{
+        //    if(selection == null)
+        //    {
+        //        return;
+        //    }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
-            {
-                m_edgeSelection.Remove(kvp.Key, kvp.Value);
-            }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.SelectedEdges)
+        //    {
+        //        m_edgeSelection.Remove(kvp.Key, kvp.Value);
+        //    }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges)
-            {
-                m_edgeSelection.Add(kvp.Key, kvp.Value);
-            }
-        }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<Edge>> kvp in selection.UnselectedEdges)
+        //    {
+        //        m_edgeSelection.Add(kvp.Key, kvp.Value);
+        //    }
+        //}
 
         private void MoveTo(Vector3 to)
         {
@@ -687,7 +697,33 @@ namespace Battlehub.ProBuilderIntegration
             ProBuilderMesh[] meshes = m_edgeSelection.Meshes.OrderBy(m => m == m_edgeSelection.LastMesh).ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
-                IList<Edge> edges = m_edgeSelection.GetEdges(mesh).ToArray();
+                IList<Edge> edges = m_edgeSelection.GetEdges(mesh).ToList();
+                for(int i = edges.Count - 1; i >= 0; i--)
+                {
+                    Edge currentEdge = edges[i];
+
+                    bool hasCoEdges = false;
+                    IList<Edge> coEdges =  m_edgeSelection.GetCoincidentEdges(new[] { currentEdge });
+                    for(int j = 0; j < coEdges.Count; ++j)
+                    {
+                        Edge coEdge = coEdges[j];
+                        if(coEdge == currentEdge)
+                        {
+                            continue;
+                        }
+
+                        if(edges.Contains(coEdge))
+                        {
+                            hasCoEdges = true;
+                            break;
+                        }
+                    }
+
+                    if(hasCoEdges)
+                    {
+                        edges.RemoveAt(i);
+                    }
+                }
                 m_edgeSelection.Remove(mesh);
 
                 Edge[] newEdges = mesh.Extrude(edges, distance, false, true);
@@ -720,7 +756,7 @@ namespace Battlehub.ProBuilderIntegration
         public override void Delete()
         {
             MeshSelection selection = GetSelection();
-            selection.EdgesToFaces(false, true);
+            selection = selection.ToFaces(false, true);
 
             foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
             {

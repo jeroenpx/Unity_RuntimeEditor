@@ -8,7 +8,7 @@ namespace Battlehub.RTCommon
     public enum RPType
     {
         Unknown,
-        Legacy,
+        Standard,
         LWRP,
         HDRP,
         URP,
@@ -16,6 +16,12 @@ namespace Battlehub.RTCommon
 
     public static class RenderPipelineInfo 
     {
+        public static bool ForceUseRenderTextures = true;
+        public static bool UseRenderTextures
+        {
+            get { return Type != RPType.Standard || ForceUseRenderTextures; }
+        }
+
         public static readonly RPType Type;
         public static readonly string DefaultShaderName;
         public static readonly int MSAASampleCount;
@@ -38,7 +44,7 @@ namespace Battlehub.RTCommon
         {
             if (GraphicsSettings.renderPipelineAsset == null)
             {
-                Type = RPType.Legacy;
+                Type = RPType.Standard;
                 DefaultShaderName = "Standard";
                 MSAASampleCount = QualitySettings.antiAliasing;
             }

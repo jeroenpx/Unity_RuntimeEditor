@@ -1,6 +1,9 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
+using Battlehub.RTSL.Interface;
 using System;
+using System.Collections;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -30,8 +33,18 @@ namespace Battlehub.RTTerrain
             get;
             set;
         }
+
+        Texture2D DefaultTexture
+        {
+            get;
+            set;
+        }
+
+        void ApplyDefaultTexture();
         void Refresh();
         void InitEditor(PropertyEditor editor, PropertyInfo property, string label);
+        void InitTexturePicker(TexturePicker editor, PropertyInfo property);
+        
     }
 
     public class TerrainSettings : EditorOverride, ITerrainSettings
@@ -68,6 +81,27 @@ namespace Battlehub.RTTerrain
             set;
         }
 
+        private Texture2D m_defaultTexture;
+        public Texture2D DefaultTexture
+        {
+            get
+            {
+                return m_defaultTexture;
+            }
+            set
+            {
+                if(m_defaultTexture != value)
+                {
+                    m_defaultTexture = value;
+                    m_editor.IsBusy = true;
+                    m_playerPrefs.SetValue("Battlehub.RTTerrain.TerrainSettings.Texture", value, (error) =>
+                    {
+                        m_editor.IsBusy = false;
+                    });
+                }   
+            }
+        }
+
         private T GetValueSafe<T>(Func<T> func)
         {
             if (m_terrain == null || m_terrain.terrainData == null)
@@ -96,14 +130,29 @@ namespace Battlehub.RTTerrain
         }
 
         private IRTE m_editor;
+        private IPlayerPrefsStorage m_playerPrefs;
 
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
             m_editor = IOC.Resolve<IRTE>();
+            m_playerPrefs = IOC.Resolve<IPlayerPrefsStorage>();
+
             OnSelectionChanged(null);
             m_editor.Selection.SelectionChanged += OnSelectionChanged;
             IOC.RegisterFallback<ITerrainSettings>(this);
+
+            m_playerPrefs.GetValue<Texture2D>("Battlehub.RTTerrain.TerrainSettings.Texture", (error, texture) =>
+            {
+                if (texture == null)
+                {
+                    m_defaultTexture = (Texture2D)Resources.Load("Textures/RTT_DefaultGrass");
+                }
+                else
+                {
+                    m_defaultTexture = texture;
+                }
+            });
         }
 
         protected override void OnEditorClosed()
@@ -133,6 +182,50 @@ namespace Battlehub.RTTerrain
                 Length = GetValueSafe(() => m_terrain.terrainData.size.z);
                 Resolution = GetValueSafe(() => m_terrain.terrainData.heightmapResolution);
             }
+        }
+
+        public void ApplyDefaultTexture()
+        {
+            Terrain[] terrainObjects = m_editor.Object.Get(false).Where(o => o != null).Select(o => o.GetComponent<Terrain>()).Where(t => t != null).ToArray();
+            m_editor.Undo.BeginRecord();
+
+            for(int i = 0; i < terrainObjects.Length; ++i)
+            {
+                Terrain terrain = terrainObjects[i];
+                TerrainLayer[] oldLayers = terrain.terrainData.terrainLayers.ToArray();
+                TerrainLayer[] newLayers = terrain.terrainData.terrainLayers.ToArray();
+                if(newLayers.Length > 0 && newLayers[0] != null)
+                {
+                    TerrainLayer layer = Instantiate(newLayers[0]);
+                    layer.diffuseTexture = m_defaultTexture;
+                    newLayers[0] = layer;
+                    terrain.terrainData.terrainLayers = newLayers;
+
+                    m_editor.Undo.CreateRecord(record =>
+                    {
+                        if (terrain != null && terrain.terrainData != null)
+                        {
+                            terrain.terrainData.terrainLayers = newLayers;
+                            TerrainLayerEditor.UpdateLayersList(terrain);
+                        }
+
+                        return true;
+                    },
+                    record =>
+                    {
+                        if (terrain != null && terrain.terrainData != null)
+                        {
+                            terrain.terrainData.terrainLayers = oldLayers;
+                            TerrainLayerEditor.UpdateLayersList(terrain);
+                        }
+
+                        return true;
+                    });
+                }
+            }
+
+            m_editor.Undo.EndRecord();
+
         }
 
         public void Refresh()
@@ -211,6 +304,11 @@ namespace Battlehub.RTTerrain
         public void InitEditor(PropertyEditor editor, PropertyInfo property, string label)
         {
             editor.Init(m_terrain, this, property, null, label, null, null, Refresh, false);
+        }
+
+        public void InitTexturePicker(TexturePicker picker, PropertyInfo property)
+        {
+            picker.Init(this, property);
         }
     }
 }

@@ -97,7 +97,10 @@ namespace Battlehub.RTCommon
             if (m_renderTextureCamera == null)
             {
                 #if UNITY_2019_1_OR_NEWER
-                UnityEngine.Rendering.RenderPipelineManager.endFrameRendering += OnEndFrameRendering;
+                if(RenderPipelineInfo.Type != RPType.Standard)
+                {
+                    UnityEngine.Rendering.RenderPipelineManager.endFrameRendering += OnEndFrameRendering;
+                }
                 #endif
                 m_graphicsLayerCamera.clearFlags = CameraClearFlags.Depth;
             }

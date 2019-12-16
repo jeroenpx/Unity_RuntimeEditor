@@ -64,9 +64,9 @@ namespace Battlehub.RTHandles
 
             m_commandBuffer = new CommandBuffer();
             m_commandBuffer.name = "SceneGrid Command Buffer";
-            if(RenderPipelineInfo.Type == RPType.Legacy)
+            if(RenderPipelineInfo.Type == RPType.Standard)
             {
-                Window.Camera.AddCommandBuffer(CameraEvent.AfterSkybox, m_commandBuffer);
+                Window.Camera.AddCommandBuffer(CameraEvent.AfterImageEffectsOpaque, m_commandBuffer);
             }
             else
             {
@@ -91,9 +91,9 @@ namespace Battlehub.RTHandles
         {
             if (Window != null && Window.Camera != null && m_commandBuffer != null)
             {
-                if (RenderPipelineInfo.Type == RPType.Legacy)
+                if (RenderPipelineInfo.Type == RPType.Standard)
                 {
-                    Window.Camera.RemoveCommandBuffer(CameraEvent.AfterSkybox, m_commandBuffer);
+                    Window.Camera.RemoveCommandBuffer(CameraEvent.AfterImageEffectsOpaque, m_commandBuffer);
                 }
                 else
                 {
@@ -166,7 +166,7 @@ namespace Battlehub.RTHandles
 
             m_commandBuffer.Clear();
 
-            if (RenderPipelineInfo.Type == RPType.Legacy)
+            if (RenderPipelineInfo.Type == RPType.Standard)
             {
                 m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material);
                 m_commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material);

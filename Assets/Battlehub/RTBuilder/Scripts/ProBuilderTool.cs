@@ -61,13 +61,14 @@ namespace Battlehub.RTBuilder
         }
 
         IMeshEditor GetEditor();
-        void UpdatePivot();
+        void TryUpdatePivotTransform();
 
         void ApplyMaterial(Material material);
         void ApplyMaterial(Material material, int submeshIndex);
         void ApplyMaterial(Material material, Camera camera, Vector3 mousePosition);
         void SelectFaces(Material material);
         void UnselectFaces(Material material);
+        void Extrude(float value);
         void Delete();
         void SubdivideFaces();
         void MergeFaces();
@@ -83,109 +84,6 @@ namespace Battlehub.RTBuilder
         void ResetUVs();
     }
 
-    public static class IProBuilderToolExt
-    {
-        public static void Extrude(this IProBuilderTool tool, float distance)
-        {
-            IMeshEditor meshEditor = tool.GetEditor();
-            MeshSelection oldSelection = meshEditor.GetSelection();
-            MeshEditorState oldState = meshEditor.GetState(false);
-            meshEditor.Extrude(distance);
-            MeshSelection newSelection = meshEditor.GetSelection();
-            MeshEditorState newState = meshEditor.GetState(false);
-            tool.UpdatePivot();
-            tool.RecordStateAndSelection(meshEditor, oldState, newState, oldSelection, newSelection);
-        }
-
-        public static void RecordStateWithAction(this IProBuilderTool tool, IMeshEditor meshEditor, MeshEditorState oldState, Action<Record> newState, bool changed = true)
-        {
-            UndoRedoCallback redo = record =>
-            {
-                newState(record);
-                return changed;
-            };
-
-            UndoRedoCallback undo = record =>
-            {
-                meshEditor.SetState(oldState);
-                return true;
-            };
-
-            IOC.Resolve<IRTE>().Undo.CreateRecord(redo, undo);
-        }
-
-
-        public static void RecordState(this IProBuilderTool tool,
-            IMeshEditor meshEditor, MeshEditorState oldState, MeshEditorState newState, 
-            bool oldStateChanged = true,
-            bool newStateChanged = true)
-        {
-            UndoRedoCallback redo = record =>
-            {
-                if(newState != null)
-                {
-                    meshEditor.SetState(newState);
-                    return newStateChanged;
-                }
-                return false;
-            };
-
-            UndoRedoCallback undo = record =>
-            {
-                if(oldState != null)
-                {
-                    meshEditor.SetState(oldState);
-                    return oldStateChanged;
-                }
-                return false;
-            };
-
-            IOC.Resolve<IRTE>().Undo.CreateRecord(redo, undo);
-        }
-
-        public static void RecordStateAndSelection(this IProBuilderTool tool,
-           IMeshEditor meshEditor, 
-           MeshEditorState oldState, MeshEditorState newState, 
-           MeshSelection oldSelection, MeshSelection newSelection,
-           bool oldStateChanged = true,
-           bool newStateChanged = true)
-        {
-            UndoRedoCallback redo = record =>
-            {
-                if (newState != null)
-                {
-                    meshEditor.SetState(newState);
-
-                    if(newSelection != null)
-                    {
-                        meshEditor.SetSelection(newSelection);
-                    }
-
-                    return newStateChanged;
-                }
-                return false;
-            };
-
-            UndoRedoCallback undo = record =>
-            {
-                if (oldState != null)
-                {
-                    meshEditor.SetState(oldState);
-
-                    if(oldSelection != null)
-                    {
-                        meshEditor.SetSelection(oldSelection);
-                    }
-
-                    return oldStateChanged;
-                }
-                return false;
-            };
-
-            IOC.Resolve<IRTE>().Undo.CreateRecord(redo, undo);
-        }
-    }
-
     [DefaultExecutionOrder(-90)]
     public class ProBuilderTool : MonoBehaviour, IProBuilderTool
     {
@@ -195,30 +93,6 @@ namespace Battlehub.RTBuilder
 
         private ProBuilderToolMode m_mode = ProBuilderToolMode.Object;
         public ProBuilderToolMode Mode
-        {
-            get { return ModeInternal; }
-            set
-            {
-                if(ModeInternal != value)
-                {
-                    var propertyInfo = Strong.PropertyInfo((ProBuilderTool x) => x.ModeInternal);
-                    bool isRecording = m_rte.Undo.IsRecording;
-                    if(!isRecording)
-                    {
-                        m_rte.Undo.BeginRecord();
-                    }
-                    m_rte.Undo.BeginRecordValue(this, propertyInfo);
-                    ModeInternal = value;
-                    m_rte.Undo.EndRecordValue(this, propertyInfo);
-                    if(!isRecording)
-                    {
-                        m_rte.Undo.EndRecord();
-                    }
-                }
-            }
-        }
-
-        private ProBuilderToolMode ModeInternal
         {
             get { return m_mode; }
             set
@@ -247,20 +121,13 @@ namespace Battlehub.RTBuilder
             get
             {
                 IMeshEditor editor = GetEditor();
-                if(editor == null || !editor.HasSelection)
+                if (editor == null || !editor.HasSelection)
                 {
                     return false;
                 }
 
                 MeshSelection selection = editor.GetSelection();
-                if(selection.HasEdges)
-                {
-                    selection.EdgesToFaces(false, false);
-                }
-                else if(selection.HasVertices)
-                {
-                    selection.VerticesToFaces(false, false);
-                }
+                selection = selection.ToFaces(false, false);
 
                 return selection.HasFaces;
             }
@@ -300,25 +167,9 @@ namespace Battlehub.RTBuilder
             }
         }
 
+
         private bool m_uvEditingMode = false;
         public bool UVEditingMode
-        {
-            get { return UVEditingModeInternal; }
-            set
-            {
-                if(UVEditingModeInternal != value)
-                {
-                    var propertyInfo = Strong.PropertyInfo((ProBuilderTool x) => x.UVEditingModeInternal);
-                    m_rte.Undo.BeginRecord();
-                    m_rte.Undo.BeginRecordValue(this, propertyInfo);
-                    UVEditingModeInternal = value;
-                    m_rte.Undo.EndRecordValue(this, propertyInfo);
-                    m_rte.Undo.EndRecord();
-                }
-            }
-        }
-
-        private bool UVEditingModeInternal
         {
             get { return m_uvEditingMode; }
             set
@@ -334,13 +185,15 @@ namespace Battlehub.RTBuilder
                     lockAxes.RotationScreen = m_uvEditingMode;
                     lockAxes.ScaleZ = m_uvEditingMode;
                     lockAxes.PositionZ = m_uvEditingMode;
+                    lockAxes.PivotRotation = m_uvEditingMode;
+                    lockAxes.PivotRotationValue = RuntimePivotRotation.Local;
 
-                    if(m_rte.Selection.IsSelected(m_pivot.gameObject))
+                    if (m_rte.Selection.IsSelected(m_pivot.gameObject))
                     {
                         m_rte.Selection.Select(null, null);
                         m_rte.Selection.Select(m_pivot.gameObject, new[] { m_pivot.gameObject });
                     }
-                    
+
                     foreach (IMeshEditor editor in m_meshEditors)
                     {
                         if (editor == null)
@@ -351,10 +204,15 @@ namespace Battlehub.RTBuilder
                     }
 
                     IMeshEditor currentEditor = GetEditor();
-                    if(currentEditor != null)
+                    if (currentEditor != null)
                     {
                         PivotPosition = currentEditor.Position;
                         PivotRotation = GetPivotRotation(currentEditor);
+                    }
+
+                    if(m_uvEditingMode)
+                    {
+                        CurrentSelection = CurrentSelection;
                     }
 
                     if (UVEditingModeChanged != null)
@@ -381,16 +239,47 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        public Quaternion PivotRotation
+        private Quaternion PivotRotation
         {
             get { return m_pivot.rotation; }
             set { m_pivot.rotation = value; }
         }
 
-        public Vector3 PivotLocalScale
+        private Vector3 PivotLocalScale
         {
             get { return m_pivot.localScale; }
             set { m_pivot.localScale = value; }
+        }
+
+        public IMeshEditor GetEditor()
+        {
+            return m_meshEditors[(int)m_mode];
+        }
+
+        private MeshSelection m_faceGroupSelection;
+        private MeshSelection m_currentSelection;
+        private MeshSelection CurrentSelection
+        {
+            get { return m_currentSelection; }
+            set
+            {
+                m_currentSelection = value;
+                if(m_currentSelection == null)
+                {
+                    m_faceGroupSelection = null;
+                }
+                else
+                {
+                    if(UVEditingMode)
+                    {
+                        m_faceGroupSelection = m_autoUVEditor.SelectFaceGroup(m_currentSelection);
+                    }
+                    else
+                    {
+                        m_faceGroupSelection = null;
+                    }
+                }
+            }
         }
 
         private IRuntimeSelectionComponent m_selectionComponent;
@@ -403,6 +292,17 @@ namespace Battlehub.RTBuilder
         private Transform m_pivot;
         private IPolyShapeEditor m_polyShapeEditor;
 
+        private Vector2 m_initialUVOffset;
+        private PBTextureMoveTool m_textureMoveTool = new PBTextureMoveTool();
+        private Vector3 m_initialRight;
+        private Quaternion m_initialRotation;
+        private float m_initialUVRotation;
+        private PBTextureRotateTool m_textureRotateTool = new PBTextureRotateTool();
+        private Vector2 m_initialUVScale;
+        private PBTextureScaleTool m_textureScaleTool = new PBTextureScaleTool();
+        private bool m_hasManualUVs;
+        private bool m_hasAutoUVs;
+        
         private void Awake()
         {
             IOC.RegisterFallback<IProBuilderTool>(this);
@@ -414,6 +314,7 @@ namespace Battlehub.RTBuilder
             m_wm.AfterLayout += OnAfterLayout;
             InitCullingMask();
 
+            gameObject.AddComponent<MaterialPaletteManager>();
             m_materialEditor = gameObject.AddComponent<PBMaterialEditor>();
             m_autoUVEditor = gameObject.AddComponent<PBAutoUVEditor>();
             m_polyShapeEditor = gameObject.AddComponent<ProBuilderPolyShapeEditor>();
@@ -461,7 +362,7 @@ namespace Battlehub.RTBuilder
         private void Start()
         {
             SetCanSelect(Mode == ProBuilderToolMode.Object);
-         
+
             if (m_rte != null)
             {
                 if (m_rte.ActiveWindow != null && m_rte.ActiveWindow.WindowType == RuntimeWindowType.Scene)
@@ -472,6 +373,8 @@ namespace Battlehub.RTBuilder
                     SubscribeToEvents();
                 }
 
+                m_rte.Selection.SelectionChanged += OnEditorSelectionChanged;
+                m_rte.Tools.ToolChanged += OnEditorToolChanged;
                 m_rte.ActiveWindowChanged += OnActiveWindowChanged;
                 m_rte.Tools.PivotModeChanging += OnPivotModeChanging;
                 m_rte.Tools.PivotModeChanged += OnPivotModeChanged;
@@ -487,8 +390,10 @@ namespace Battlehub.RTBuilder
 
             IOC.UnregisterFallback<IProBuilderTool>(this);
 
-            if(m_rte != null)
+            if (m_rte != null)
             {
+                m_rte.Selection.SelectionChanged -= OnEditorSelectionChanged;
+                m_rte.Tools.ToolChanged -= OnEditorToolChanged;
                 m_rte.ActiveWindowChanged -= OnActiveWindowChanged;
                 m_rte.Tools.PivotModeChanging -= OnPivotModeChanging;
                 m_rte.Tools.PivotModeChanged -= OnPivotModeChanged;
@@ -505,30 +410,30 @@ namespace Battlehub.RTBuilder
                 m_wm.AfterLayout -= OnAfterLayout;
             }
 
-            for(int i = 0; i < m_meshEditors.Length; ++i)
+            for (int i = 0; i < m_meshEditors.Length; ++i)
             {
                 MonoBehaviour meshEditor = m_meshEditors[i] as MonoBehaviour;
-                if(meshEditor != null)
+                if (meshEditor != null)
                 {
                     Destroy(meshEditor);
                 }
             }
-            if(m_materialEditor != null)
+            if (m_materialEditor != null)
             {
                 Destroy(m_materialEditor as MonoBehaviour);
             }
 
-            if(m_autoUVEditor != null)
+            if (m_autoUVEditor != null)
             {
                 Destroy(m_autoUVEditor as MonoBehaviour);
             }
 
-            if(m_polyShapeEditor != null)
+            if (m_polyShapeEditor != null)
             {
                 Destroy(m_polyShapeEditor as MonoBehaviour);
             }
 
-            if(m_pivot != null)
+            if (m_pivot != null)
             {
                 Destroy(m_pivot.gameObject);
             }
@@ -541,7 +446,222 @@ namespace Battlehub.RTBuilder
                 }
             }
 
-            m_uv.Changed -= OnUVChanged; 
+            m_uv.Changed -= OnUVChanged;
+        }
+
+        private void LateUpdate()
+        {
+            if (m_rte.ActiveWindow == null)
+            {
+                return;
+            }
+
+            if (m_rte.ActiveWindow.WindowType != RuntimeWindowType.Scene)
+            {
+                return;
+            }
+
+            if (!m_rte.ActiveWindow.Camera)
+            {
+                return;
+            }
+
+            if (m_mode == ProBuilderToolMode.PolyShape)
+            {
+                return;
+            }
+
+            IMeshEditor meshEditor = GetEditor();
+            if (meshEditor == null)
+            {
+                return;
+            }
+
+            if (m_rte.Tools.ActiveTool != null)
+            {
+                if (UVEditingMode)
+                {
+                    if (m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
+                    {
+                        if (m_hasAutoUVs)
+                        {
+                            Vector2 uv = (Quaternion.Inverse(PivotRotation) * (PivotPosition - meshEditor.Position));
+                            if (!UV.flipU)
+                            {
+                                uv.x = -uv.x;
+                            }
+
+                            if (UV.flipV)
+                            {
+                                uv.x = -uv.x;
+                            }
+
+                            if (UV.swapUV)
+                            {
+                                uv.x = -uv.x;
+                            }
+
+                            UV.offset = m_initialUVOffset + (Vector2.one * Vector2.Scale(uv, UV.scale));
+                        }
+                        else if (m_hasManualUVs)
+                        {
+                            m_textureMoveTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
+                        }
+                    }
+                    else if (m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
+                    {
+                        if (m_hasAutoUVs)
+                        {
+                            Vector3 fwd = m_pivot.forward;
+                            if(Mathf.Sign(UV.scale.x) != Mathf.Sign(UV.scale.y))
+                            {
+                                fwd = -fwd;
+                            }
+
+                            UV.rotation = m_initialUVRotation - Vector3.SignedAngle(m_initialRight, m_pivot.right, fwd);
+                        }
+                        else if (m_hasManualUVs)
+                        {
+                            //m_textureRotateTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
+                            m_textureRotateTool.Drag(m_pivot);
+                        }
+                    }
+                    else if (m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
+                    {
+                        if (m_hasAutoUVs)
+                        {
+                            Vector2 scale = PivotLocalScale;
+                    
+                            if (UV.swapUV)
+                            {
+                                float x = scale.x;
+                                scale.x = scale.y;
+                                scale.y = x;
+                            }
+
+                            if (Mathf.Approximately(scale.x, 0))
+                            {
+                                scale.x = Mathf.Epsilon;
+                            }
+                            if (Mathf.Approximately(scale.y, 0))
+                            {
+                                scale.y = Mathf.Epsilon;
+                            }
+
+                            UV.scale =  Quaternion.Inverse(PivotRotation) * Vector2.Scale(new Vector2(1 / scale.x, 1 / scale.y), PivotRotation * m_initialUVScale);
+                        }
+                        else
+                        {
+                            m_textureScaleTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
+                        }
+                    }
+                }
+                else
+                {
+                    if (m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
+                    {
+                        meshEditor.Position = PivotPosition;
+                    }
+                    else if (m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
+                    {
+                        meshEditor.Rotate(PivotRotation);
+                    }
+                    else if (m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
+                    {
+                        Vector3 localScale = PivotLocalScale;
+                        if (Mathf.Approximately(localScale.x, 0))
+                        {
+                            localScale.x = 0.00001f;
+                        }
+                        if (Mathf.Approximately(localScale.y, 0))
+                        {
+                            localScale.y = 0.000001f;
+                        }
+                        if (Mathf.Approximately(localScale.z, 0))
+                        {
+                            localScale.z = 0.000001f;
+                        }
+                        PivotLocalScale = localScale;
+                        meshEditor.Scale(PivotLocalScale, PivotRotation);
+                    }
+                }
+            }
+            else
+            {
+                if (m_pivotPosition != m_pivot.position)
+                {
+                    PivotPosition = m_pivot.position;
+                    meshEditor.Position = PivotPosition;
+                }
+
+                if (!m_rte.ActiveWindow.IsPointerOver)
+                {
+                    return;
+                }
+
+                RuntimeWindow window = m_rte.ActiveWindow;
+                meshEditor.Hover(window.Camera, m_rte.Input.GetPointerXY(0));
+
+                if (m_rte.Input.GetPointerDown(0))
+                {
+                    bool ctrl = m_rte.Input.GetKey(KeyCode.LeftControl);
+                    bool shift = m_rte.Input.GetKey(KeyCode.LeftShift);
+
+                    bool depthTest = IsDepthTestEnabled(window);
+
+                    m_rte.Undo.BeginRecord();
+
+                    if(m_rte.Selection.activeGameObject != m_pivot.gameObject)
+                    {
+                        CurrentSelection = null;
+                    }
+
+                    MeshSelection oldSelection = CurrentSelection;
+                    if (meshEditor.Select(window.Camera, m_rte.Input.GetPointerXY(0), shift, ctrl, depthTest) != null)
+                    {
+                        CurrentSelection = meshEditor.GetSelection();
+                        RecordSelection(oldSelection, CurrentSelection);
+                    }
+
+                    if (meshEditor.HasSelection)
+                    {
+                        TryUpdatePivotTransform();
+                        TrySelectPivot(meshEditor);
+                        TryUpdatePivotVisibility();
+                    }
+                    else
+                    {
+                        if (m_rte.Selection.activeGameObject == m_pivot.gameObject)
+                        {
+                            m_rte.Selection.activeGameObject = null;
+                        }
+                    }
+
+
+                    m_rte.Undo.EndRecord();
+
+                }
+                else if (m_rte.Input.GetKeyDown(KeyCode.Delete))
+                {
+                    Delete();
+                }
+                else if (m_rte.Input.GetKeyDown(KeyCode.H))
+                {
+                    FillHoles();
+                }
+            }
+        }
+
+
+        private void InitCullingMask()
+        {
+            foreach (RuntimeWindow window in m_rte.Windows)
+            {
+                if (window.WindowType == RuntimeWindowType.Scene)
+                {
+                    SetCullingMask(window);
+                }
+            }
         }
 
         private void SetCullingMask(RuntimeWindow window)
@@ -554,180 +674,77 @@ namespace Battlehub.RTBuilder
             window.Camera.cullingMask &= ~(1 << m_rte.CameraLayerSettings.AllScenesLayer);
         }
 
+        private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
+        {
+            IMeshEditor editor = GetEditor();
+            if (editor != null)
+            {
+                if (m_rte.Selection.IsSelected(m_pivot.gameObject))
+                {
+                    editor.SetSelection(CurrentSelection);
+                }
+                else
+                {
+                    editor.ClearSelection();
+                }
+            }
+        }
+
+        private void OnEditorToolChanged()
+        {
+            RuntimeTool current = m_rte.Tools.Current;
+            if (current != RuntimeTool.Move && current != RuntimeTool.Rotate && current != RuntimeTool.Scale)
+            {
+                if(Mode != ProBuilderToolMode.Object)
+                {
+                    Mode = ProBuilderToolMode.Object;
+                }
+            }
+        }
+
         private void OnCurrentModeChanged(ProBuilderToolMode oldMode)
         {
-            if(oldMode == ProBuilderToolMode.Face && m_mode != ProBuilderToolMode.Face)
+            if (m_mode != ProBuilderToolMode.Object)
             {
-                var propertyInfo = Strong.PropertyInfo((ProBuilderTool x) => x.UVEditingModeInternal);
-                m_rte.Undo.BeginRecord();
-                m_rte.Undo.BeginRecordValue(this, propertyInfo);
-                UVEditingModeInternal = false;
-                m_rte.Undo.EndRecordValue(this, propertyInfo);
+                RuntimeTool current = m_rte.Tools.Current;
+                if (current != RuntimeTool.Move && current != RuntimeTool.Rotate && current != RuntimeTool.Scale)
+                {
+                    m_rte.Tools.Current = RuntimeTool.Move;
+                }
             }
 
             IMeshEditor disabledEditor = m_meshEditors[(int)oldMode];
             IMeshEditor enabledEditor = m_meshEditors[(int)m_mode];
 
-            GameObject target = null;
-            if(disabledEditor != null)
+            if (disabledEditor != null)
             {
-                target = disabledEditor.Target;
+                disabledEditor.ClearSelection();
+            }
 
-                MeshSelection disabledSelection = disabledEditor.ClearSelection();
-                MeshSelection selection = null;
-                if(disabledSelection != null)
+            if (enabledEditor != null)
+            {
+                if (CurrentSelection != null)
                 {
-                    selection = new MeshSelection(disabledSelection);
+                    enabledEditor.SetSelection(CurrentSelection);
+
+                    TryUpdatePivotTransform();
+                    TrySelectPivot(enabledEditor, false);
+                    OnSelectionChanged();
                 }
-                
-                if(selection != null)
-                {
-                    if (oldMode == ProBuilderToolMode.Face)
-                    {
-                        if (m_mode == ProBuilderToolMode.Vertex)
-                        {
-                            selection.FacesToVertices(true);
-                            enabledEditor.ApplySelection(selection);
-                        }
-                        else if(m_mode == ProBuilderToolMode.Edge)
-                        {
-                            selection.FacesToEdges(true);
-                            enabledEditor.ApplySelection(selection);
-                        }
-                    }
-                    else if(oldMode == ProBuilderToolMode.Edge)
-                    {
-                        if(m_mode == ProBuilderToolMode.Vertex)
-                        {
-                            selection.EdgesToVertices(true);
-                            enabledEditor.ApplySelection(selection);
-                        }
-                        else if(m_mode == ProBuilderToolMode.Face)
-                        {
-                            selection.EdgesToFaces(true, false);
-                            enabledEditor.ApplySelection(selection);
+            }
 
-                            if (!selection.HasFaces)
-                            {
-                                m_rte.Selection.activeObject = target;
-                            }
-                        }
-                    }
-                    else if (oldMode == ProBuilderToolMode.Vertex)
-                    {
-                        if (m_mode == ProBuilderToolMode.Face)
-                        {
-                            selection.VerticesToFaces(true, false);
-                            enabledEditor.ApplySelection(selection);
-                            if (!selection.HasFaces)
-                            {
-                                m_rte.Selection.activeObject = target;
-                            }
-                        }
-                        else if(m_mode == ProBuilderToolMode.Edge)
-                        {
-                            selection.VerticesToEdges(true, false);
-                            enabledEditor.ApplySelection(selection);
-
-                            if (!selection.HasEdges)
-                            {
-                                m_rte.Selection.activeObject = target;
-                            }
-                        }
-                    }
-
-                    if(enabledEditor != null && m_rte.Selection.activeObject != m_pivot)
-                    {
-                        GameObject[] gameObjects = m_rte.Selection.gameObjects;
-                        if (gameObjects != null)
-                        {
-                            enabledEditor.ApplySelection(new MeshSelection(gameObjects));
-                        }
-                    }
-                }
-                else
-                {
-                    m_rte.Selection.activeObject = target;
-                }
-
-                if(selection != null)
-                {
-                    UndoRedoCallback redo = record =>
-                    {
-                        if (enabledEditor != null)
-                        {
-                            enabledEditor.ApplySelection(selection);
-                            PivotPosition = enabledEditor.Position;
-                            PivotRotation = GetPivotRotation(enabledEditor);
-                            OnSelectionChanged();
-                        }
-
-                        return true;
-                    };
-
-                    UndoRedoCallback undo = record =>
-                    {
-                        if (disabledEditor != null)
-                        {
-                            disabledEditor.RollbackSelection(disabledSelection);
-                            PivotPosition = disabledEditor.Position;
-                            PivotRotation = GetPivotRotation(disabledEditor);
-                            OnSelectionChanged();
-                        }
-
-                        return true;
-                    };
-                    m_rte.Undo.CreateRecord(redo, undo);
-                }
+            if (Mode == ProBuilderToolMode.Object)
+            {
+                SetCanSelect(true);
             }
             else
             {
-                if (enabledEditor != null)
-                {
-                    GameObject[] gameObjects = m_rte.Selection.gameObjects;
-                    if (gameObjects != null)
-                    {
-                        enabledEditor.ApplySelection(new MeshSelection(gameObjects));
-                        OnSelectionChanged();
-                    }
-                }
-            }
-
-            if (oldMode == ProBuilderToolMode.Object)
-            {
                 SetCanSelect(false);
-                if(disabledEditor != null)
-                {
-                    if (disabledEditor.HasSelection)
-                    {
-                        m_rte.Selection.activeObject = m_pivot.gameObject;
-                    }
-
-                    disabledEditor.CenterMode = m_rte.Tools.PivotMode == RuntimePivotMode.Center;
-                }
-            }
-            else if(Mode == ProBuilderToolMode.Object)
-            {
-                SetCanSelect(true);
-                if(m_rte.Selection.activeGameObject == m_pivot.gameObject)
-                {
-                    if(disabledEditor != null)
-                    {
-                        m_rte.Selection.activeObject = target;
-                    }
-                    else
-                    {
-                        m_rte.Selection.activeObject = null;
-                    }       
-                }
             }
 
-            if(enabledEditor != null)
-            {
-                PivotPosition = enabledEditor.Position;
-                PivotRotation = GetPivotRotation(enabledEditor); 
-            }
+            TryUpdatePivotVisibility();
         }
+
 
         private void SetCanSelect(bool value)
         {
@@ -763,10 +780,53 @@ namespace Battlehub.RTBuilder
         private void OnPivotRotationChanged()
         {
             m_rte.Undo.EndRecordValue(m_rte.Tools, Strong.PropertyInfo((RuntimeTools x) => x.PivotRotation));
-            UpdatePivot();
+            TryUpdatePivotTransform();
         }
 
-        public void UpdatePivot()
+        private void TryUpdatePivotVisibility()
+        {
+            ExposeToEditor exposeToEditor = m_pivot.GetComponent<ExposeToEditor>();
+            if (Mode == ProBuilderToolMode.Object)
+            {
+                exposeToEditor.CanTransform = false;
+            }
+            else
+            {
+                IMeshEditor meshEditor = GetEditor();
+                exposeToEditor.CanTransform = meshEditor == null || meshEditor.HasSelection;
+                if(HasSelectedManualUVs && HasSelectedAutoUVs)
+                {
+                    exposeToEditor.CanTransform = false;
+                }
+            }
+
+            if (m_rte.Selection.activeGameObject == m_pivot.gameObject)
+            {
+                bool wasEnabled = m_rte.Undo.Enabled;
+                m_rte.Undo.Enabled = false;
+                m_rte.Selection.SelectionChanged -= OnEditorSelectionChanged;
+                m_rte.Selection.Select(null, null);
+                m_rte.Selection.Select(m_pivot.gameObject, new[] { m_pivot.gameObject });
+                m_rte.Selection.SelectionChanged += OnEditorSelectionChanged;
+                m_rte.Undo.Enabled = true;
+            }
+        }
+
+        private void TrySelectPivot(IMeshEditor meshEditor, bool record = true)
+        {
+            bool wasEnabled = m_rte.Undo.Enabled;
+            m_rte.Undo.Enabled = record;
+
+            if (meshEditor != null && meshEditor.HasSelection)
+            {
+                m_rte.Selection.activeObject = m_pivot.gameObject;
+            }
+     
+            m_rte.Undo.Enabled = wasEnabled;
+        }
+
+
+        public void TryUpdatePivotTransform()
         {
             UpdateCenterMode();
             UpdateGlobalMode();
@@ -809,13 +869,54 @@ namespace Battlehub.RTBuilder
                 {
                     continue;
                 }
-                editor.GlobalMode = m_rte.Tools.PivotRotation == RuntimePivotRotation.Global;
+
+                if(UVEditingMode)
+                {
+                    editor.GlobalMode = false;
+                }
+                else
+                {
+                    editor.GlobalMode = m_rte.Tools.PivotRotation == RuntimePivotRotation.Global;
+                }
             }
 
             IMeshEditor currentEditor = GetEditor();
             if(currentEditor != null)
             {
                 PivotRotation = GetPivotRotation(currentEditor);
+            }
+        }
+
+        private Quaternion GetPivotRotation(IMeshEditor meshEditor)
+        {
+            if(UVEditingMode)
+            {
+                return meshEditor.Rotation;
+            }
+
+            return m_rte.Tools.PivotRotation == RuntimePivotRotation.Global ? Quaternion.identity : meshEditor.Rotation;
+        }
+
+        private void OnWindowCreated(Transform windowTransform)
+        {
+            if (m_mode == ProBuilderToolMode.Object)
+            {
+                return;
+            }
+
+            RuntimeWindow window = windowTransform.GetComponentInChildren<RuntimeWindow>(true);
+            if (window.WindowType != RuntimeWindowType.Scene)
+            {
+                return;
+            }
+
+            SetCullingMask(window);
+
+            ISelectionComponentState selectionComponent = window.IOCContainer.Resolve<ISelectionComponentState>();
+            if (selectionComponent != null)
+            {
+                selectionComponent.CanSelect(this, false);
+                selectionComponent.CanSelectAll(this, false);
             }
         }
 
@@ -835,6 +936,21 @@ namespace Battlehub.RTBuilder
             }
 
             SubscribeToEvents();
+        }
+
+        private void OnAfterLayout(IWindowManager obj)
+        {
+            InitCullingMask();
+        }
+
+        private void OnSceneLoading()
+        {
+            IMeshEditor meshEditor = GetEditor();
+            if (meshEditor != null)
+            {
+                meshEditor.ClearSelection();
+            }
+            Mode = ProBuilderToolMode.Object;
         }
 
         private void SubscribeToEvents()
@@ -879,70 +995,32 @@ namespace Battlehub.RTBuilder
                 {
                     m_selectionComponent.PositionHandle.BeforeDrag.RemoveListener(OnBeginMove);
                     m_selectionComponent.PositionHandle.Drop.RemoveListener(OnEndMove);
+                    if(m_selectionComponent.PositionHandle.IsDragging)
+                    {
+                        OnEndMove(m_selectionComponent.PositionHandle);
+                    }
                 }
 
                 if (m_selectionComponent.RotationHandle != null)
                 {
                     m_selectionComponent.RotationHandle.BeforeDrag.RemoveListener(OnBeginRotate);
                     m_selectionComponent.RotationHandle.Drop.RemoveListener(OnEndRotate);
+                    if (m_selectionComponent.RotationHandle.IsDragging)
+                    {
+                        OnEndRotate(m_selectionComponent.RotationHandle);
+                    }
                 }
 
                 if (m_selectionComponent.ScaleHandle != null)
                 {
                     m_selectionComponent.ScaleHandle.BeforeDrag.RemoveListener(OnBeginScale);
                     m_selectionComponent.ScaleHandle.Drop.RemoveListener(OnEndScale);
+                    if (m_selectionComponent.ScaleHandle.IsDragging)
+                    {
+                        OnEndScale(m_selectionComponent.ScaleHandle);
+                    }
                 }
             }
-        }
-
-        private void OnWindowCreated(Transform windowTransform)
-        {
-            if(m_mode == ProBuilderToolMode.Object)
-            {
-                return;
-            }
-
-            RuntimeWindow window = windowTransform.GetComponentInChildren<RuntimeWindow>(true);
-            if(window.WindowType != RuntimeWindowType.Scene)
-            {
-                return;
-            }
-
-            SetCullingMask(window);
-
-            ISelectionComponentState selectionComponent = window.IOCContainer.Resolve<ISelectionComponentState>();
-            if(selectionComponent != null)
-            {
-                selectionComponent.CanSelect(this, false);
-                selectionComponent.CanSelectAll(this, false);
-            }
-        }
-
-        private void InitCullingMask()
-        {
-            foreach (RuntimeWindow window in m_rte.Windows)
-            {
-                if (window.WindowType == RuntimeWindowType.Scene)
-                {
-                    SetCullingMask(window);
-                }
-            }
-        }
-
-        private void OnAfterLayout(IWindowManager obj)
-        {
-            InitCullingMask();
-        }
-
-        private void OnSceneLoading()
-        {
-            IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
-            {
-                meshEditor.ClearSelection();
-            }
-
-            Mode = ProBuilderToolMode.Object;
         }
 
         private void OnBoxSelection(object sender, BoxSelectionArgs e)
@@ -981,234 +1059,66 @@ namespace Battlehub.RTBuilder
                 rect = new Rect(new Vector2(min.x, rt.rect.height - max.y), m_boxSelection.SelectionBounds.size);
             }
 
-            MeshSelection selection = meshEditor.Select(window.Camera, rect, canvas.pixelRect, e.GameObjects.Where(g => g.GetComponent<ExposeToEditor>() != null).ToArray(), depthTest, MeshEditorSelectionMode.Add);
-          
             m_rte.Undo.BeginRecord();
 
-            if (selection != null)
+            MeshSelection oldSelection = CurrentSelection;
+            if (meshEditor.Select(window.Camera, rect, canvas.pixelRect, e.GameObjects.Where(g => g.GetComponent<ExposeToEditor>() != null).ToArray(), depthTest, MeshEditorSelectionMode.Add) != null) 
             {
-                RecordSelection(meshEditor, selection);
+                CurrentSelection = meshEditor.GetSelection();
+                RecordSelection(oldSelection, CurrentSelection);
             }
 
-            PivotPosition = meshEditor.Position;
-            PivotRotation = GetPivotRotation(meshEditor);
-            
+            TryUpdatePivotTransform();
             TrySelectPivot(meshEditor);
+            TryUpdatePivotVisibility();
 
             m_rte.Undo.EndRecord();
         }
 
-        private void TrySelectPivot(IMeshEditor meshEditor)
-        {
-            if (meshEditor.HasSelection)
-            {
-                m_rte.Selection.activeObject = m_pivot.gameObject;
-            }
-            else
-            {
-                m_rte.Selection.activeObject = null;
-            }
-        }
-
-        public IMeshEditor GetEditor()
-        {
-            return m_meshEditors[(int)m_mode]; 
-        }
-
-        private void LateUpdate()
-        {
-            if (m_rte.ActiveWindow == null)
-            {
-                return;
-            }
-
-            if (m_rte.ActiveWindow.WindowType != RuntimeWindowType.Scene)
-            {
-                return;
-            }
-
-            if (!m_rte.ActiveWindow.Camera)
-            {
-                return;
-            }
-
-            if (m_mode == ProBuilderToolMode.PolyShape)
-            {
-                return;
-            }
-
-            IMeshEditor meshEditor = GetEditor();
-            if (meshEditor == null)
-            {
-                return;
-            }
-
-            if (m_rte.Tools.ActiveTool != null)
-            {
-                if (UVEditingMode)
-                {
-                    if (m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
-                    {
-                        //Vector2 uv = (Quaternion.Inverse(PivotRotation) * (PivotPosition - meshEditor.Position));
-
-                        //if(!UV.flipU)
-                        //{
-                        //    uv.x = -uv.x;
-                        //}
-
-                        //if(UV.flipV)
-                        //{
-                        //    uv.y = -uv.y;
-                        //}
-
-                        //if(UV.swapUV)
-                        //{
-                        //    float u = uv.x;
-                        //    uv.x = uv.y;
-                        //    uv.y = u;
-                        //}
-
-
-                        //UV.offset = m_initialUVOffset + (Vector2)(Quaternion.AngleAxis(UV.rotation, Vector3.back) * Vector2.Scale(uv, UV.scale));
-
-                        m_textureMoveTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
-                    }
-                    else if (m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
-                    {
-                        UV.rotation = m_initialUVRotation - Vector3.SignedAngle(m_initialRight, m_pivot.right, m_pivot.forward);
-                        //m_textureRotateTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
-                    }
-                    else if (m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
-                    {
-                        //Vector2 scale = PivotLocalScale;
-                        //if (Mathf.Approximately(scale.x, 0))
-                        //{
-                        //    scale.x = Mathf.Epsilon;
-                        //}
-                        //if (Mathf.Approximately(scale.y, 0))
-                        //{
-                        //    scale.y = Mathf.Epsilon;
-                        //}
-
-                        //UV.scale = Vector2.Scale(new Vector2(1 / scale.x, 1 / scale.y), m_initialUVScale);
-
-                        m_textureScaleTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
-                    }
-                }
-                else
-                {
-                    if (m_selectionComponent.PositionHandle != null && m_selectionComponent.PositionHandle.IsDragging)
-                    {
-                        meshEditor.Position = PivotPosition;
-                    }
-                    else if (m_selectionComponent.RotationHandle != null && m_selectionComponent.RotationHandle.IsDragging)
-                    {
-                        meshEditor.Rotate(PivotRotation);
-                    }
-                    else if (m_selectionComponent.ScaleHandle != null && m_selectionComponent.ScaleHandle.IsDragging)
-                    {
-                        Vector3 localScale = PivotLocalScale;
-                        if (Mathf.Approximately(localScale.x, 0))
-                        {
-                            localScale.x = 0.00001f;
-                        }
-                        if (Mathf.Approximately(localScale.y, 0))
-                        {
-                            localScale.y = 0.000001f;
-                        }
-                        if (Mathf.Approximately(localScale.z, 0))
-                        {
-                            localScale.z = 0.000001f;
-                        }
-                        PivotLocalScale = localScale;
-                        meshEditor.Scale(PivotLocalScale, PivotRotation);
-                    }
-                }
-            }
-            else
-            {
-                if(m_pivotPosition != m_pivot.position)
-                {
-                    PivotPosition = m_pivot.position;
-                    meshEditor.Position = PivotPosition;
-                }
-
-                if (!m_rte.ActiveWindow.IsPointerOver)
-                {
-                    return;
-                }
-
-                RuntimeWindow window = m_rte.ActiveWindow;
-                meshEditor.Hover(window.Camera, m_rte.Input.GetPointerXY(0));
-
-                if (m_rte.Input.GetPointerDown(0))
-                {
-                    bool ctrl = m_rte.Input.GetKey(KeyCode.LeftControl);
-                    bool shift = m_rte.Input.GetKey(KeyCode.LeftShift);
-
-                    bool depthTest = IsDepthTestEnabled(window);
-
-                    MeshSelection selection = meshEditor.Select(window.Camera, m_rte.Input.GetPointerXY(0), shift, ctrl, depthTest);
-                    m_rte.Undo.BeginRecord();
-
-                    if (selection != null)
-                    {
-                        RecordSelection(meshEditor, selection);
-                    }
-
-                    PivotPosition = meshEditor.Position;
-                    PivotRotation = GetPivotRotation(meshEditor);
-                    TrySelectPivot(meshEditor);
-
-                    m_rte.Undo.EndRecord();
-                }
-                else if (m_rte.Input.GetKeyDown(KeyCode.Delete))
-                {
-                    Delete();
-                }
-                else if (m_rte.Input.GetKeyDown(KeyCode.H))
-                {
-                    FillHoles();
-                }
-            }
-        }
-
-        // private Vector2 m_initialUVOffset;
-        //private bool m_control;
-
-        private PBTextureMoveTool m_textureMoveTool = new PBTextureMoveTool();
         private void OnBeginMove(BaseHandle positionHandle)
         {
             IMeshEditor meshEditor = GetEditor();
-            if(meshEditor != null)
+            if(meshEditor != null && CurrentSelection != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 positionHandle.EnableUndo = false;
 
-                m_rte.Undo.BeginRecord();
                 if (UVEditingMode)
                 {
-                    m_textureMoveTool.BeginDrag(meshEditor.GetSelection(), PivotPosition, PivotRotation);
-                    m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset));
+                    m_hasAutoUVs = HasSelectedAutoUVs;
+                    m_hasManualUVs = HasSelectedManualUVs;
+                    if(m_hasAutoUVs && m_hasManualUVs)
+                    {
+                        m_hasAutoUVs = false;
+                        m_hasManualUVs = false;
+                    }
+
+                    if(m_hasAutoUVs)
+                    {
+                        m_initialUVOffset = UV.offset;
+                        m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset));
+                    }
+                    else if(m_hasManualUVs)
+                    {
+                        MeshEditorState oldState = meshEditor.GetState(true);
+                        RecordState(oldState, null);
+
+                        MeshSelection selection = CurrentSelection;
+                        m_textureMoveTool.BeginDrag(selection, PivotPosition, PivotRotation);
+                    }
                 }
                 else
                 {
-                    m_rte.Undo.BeginRecordTransform(m_pivot);
-                    m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
+                    MeshEditorState oldState = meshEditor.GetState(false);
+                    MeshSelection oldSelection = CurrentSelection;
                     bool control = m_rte.Input.GetKey(KeyCode.LeftControl);
                     if (control)
                     {
-                        MeshEditorState oldState = meshEditor.GetState(false);
-                        MeshSelection oldSelection = meshEditor.GetSelection();
                         meshEditor.Extrude(0.01f);
-                        //MeshEditorState newState = meshEditor.GetState(false);
-                        //MeshSelection newSelection = meshEditor.GetSelection();
-                        //this.RecordState(meshEditor, oldState, null, false);
-                        this.RecordStateAndSelection(meshEditor, oldState, null, oldSelection, null, false, false);
                     }
+
+                    RecordStateAndSelection(oldState, null, oldSelection, null);
                 }
             
-                m_rte.Undo.EndRecord();
-              //  m_initialUVOffset = UV.offset;
                 meshEditor.BeginMove();
             }
         }
@@ -1216,60 +1126,86 @@ namespace Battlehub.RTBuilder
         private void OnEndMove(BaseHandle positionHandle)
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
+            if (meshEditor != null && CurrentSelection != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 positionHandle.EnableUndo = true;
 
-                m_rte.Undo.BeginRecord();
-
                 if (UVEditingMode)
                 {
-                    m_textureMoveTool.EndDrag();
+                    if(m_hasAutoUVs)
+                    {
+                        m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset));
+                        TryUpdatePivotTransform();
+                    }
+                    else if(m_hasManualUVs)
+                    {
+                        MeshEditorState newState = meshEditor.GetState(true);
+                        RecordState(null, newState);
+
+                        m_textureMoveTool.EndDrag();
+                    }
+                    
                     PivotPosition = meshEditor.Position;
-                    m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset));
                 }
                 else
                 {
                     MeshEditorState newState = meshEditor.GetState(false);
                     MeshSelection newSelection = meshEditor.GetSelection();
-                    //this.RecordState(meshEditor, null, newState, false, false);
-                    this.RecordStateAndSelection(meshEditor, null, newState, null, newSelection, false, false);
-
-                    m_rte.Undo.EndRecordTransform(m_pivot);
-                    m_rte.Undo.RecordValue(meshEditor, Strong.PropertyInfo((IMeshEditor x) => x.Position));
+                    CurrentSelection = newSelection;
+                    RecordStateAndSelection(null, newState, null, newSelection);
                 }
-                m_rte.Undo.EndRecord();
                 meshEditor.EndMove();
             }
         }
 
-        private Vector3 m_initialRight;
-        private Quaternion m_initialRotation;
-        private float m_initialUVRotation;
-        private PBTextureRotateTool m_textureRotateTool = new PBTextureRotateTool();
+        
         private void OnBeginRotate(BaseHandle rotationHandle)
         {
             IMeshEditor meshEditor = GetEditor();
-            if(meshEditor != null)
+            if(meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 rotationHandle.EnableUndo = false;
+
                 m_initialRotation = GetPivotRotation(meshEditor);
                 PivotRotation = m_initialRotation;
-                m_initialRight = m_pivot.TransformDirection(Vector3.right);
-                m_initialUVRotation = UV.rotation;
+                
                 if(UVEditingMode)
                 {
-                   // m_textureRotateTool.BeginDrag(meshEditor.GetSelection(), PivotPosition, PivotRotation);
-                    m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation));
+                    m_hasAutoUVs = HasSelectedAutoUVs;
+                    m_hasManualUVs = HasSelectedManualUVs;
+                    if (m_hasAutoUVs && m_hasManualUVs)
+                    {
+                        m_hasAutoUVs = false;
+                        m_hasManualUVs = false;
+                    }
+
+                    if(m_hasAutoUVs)
+                    {
+                        m_initialRight = m_pivot.TransformDirection(Vector3.right);
+                        m_initialUVRotation = UV.rotation;
+                        m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation));
+                    }
+                    else if(m_hasManualUVs)
+                    {
+                        MeshEditorState oldState = meshEditor.GetState(true);
+                        RecordState(oldState, null);
+                        m_textureRotateTool.BeginDrag(meshEditor.GetSelection(), PivotPosition, PivotRotation);
+                    }
+                }
+                else
+                {
+                    MeshEditorState oldState = meshEditor.GetState(false);
+                    RecordState(oldState, null);
                 }
                 meshEditor.BeginRotate(m_initialRotation);
+                
             }
         }
 
         private void OnEndRotate(BaseHandle rotationHandle)
         {
             IMeshEditor meshEditor = GetEditor();
-            if(meshEditor != null)
+            if(meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 rotationHandle.EnableUndo = true;
 
@@ -1282,49 +1218,61 @@ namespace Battlehub.RTBuilder
 
                 if (UVEditingMode)
                 {
-                   // m_textureRotateTool.EndDrag(true);
-                    //UpdatePivot();
-                    m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation));
+                    if(m_hasAutoUVs)
+                    {
+                        m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation));
+                        TryUpdatePivotTransform();
+                    }
+                    else if(m_hasManualUVs)
+                    {
+                        MeshEditorState newState = meshEditor.GetState(true);
+                        RecordState(null, newState);
+                        m_textureRotateTool.EndDrag(true);
+                    }
+
+                    TryUpdatePivotTransform();
                 }
                 else
                 {
-                    m_rte.Undo.CreateRecord(record =>
-                    {
-                        meshEditor.BeginRotate(initialRotation);
-                        meshEditor.Rotate(endRotation);
-                        meshEditor.EndRotate();
-
-                        PivotRotation = newStartRotation;
-                        return true;
-                    },
-                    record =>
-                    {
-                        meshEditor.BeginRotate(endRotation);
-                        meshEditor.Rotate(initialRotation);
-                        meshEditor.EndRotate();
-
-                        PivotRotation = initialRotation;
-                        return true;
-                    });
+                    MeshEditorState newState = meshEditor.GetState(false);
+                    RecordState(null, newState);
                 }  
             }
         }
 
-
-        private PBTextureScaleTool m_textureScaleTool = new PBTextureScaleTool();
-       // private Vector2 m_initialUVScale;
         private void OnBeginScale(BaseHandle scaleHandle)
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
+            if (meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 scaleHandle.EnableUndo = false;
                 PivotLocalScale = Vector3.one;
-                //m_initialUVScale = UV.scale;
                 if (UVEditingMode)
                 {
-                    m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale));
-                    m_textureScaleTool.BeginDrag(meshEditor.GetSelection(), PivotPosition, PivotRotation);
+                    m_hasAutoUVs = HasSelectedAutoUVs;
+                    m_hasManualUVs = HasSelectedManualUVs;
+                    if (m_hasAutoUVs && m_hasManualUVs)
+                    {
+                        m_hasAutoUVs = false;
+                        m_hasManualUVs = false;
+                    }
+
+                    if(m_hasAutoUVs)
+                    {
+                        m_initialUVScale = UV.scale;
+                        m_rte.Undo.BeginRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale));
+                    }
+                    else if(m_hasManualUVs)
+                    {
+                        MeshEditorState oldState = meshEditor.GetState(true);
+                        RecordState(oldState, null);
+                        m_textureScaleTool.BeginDrag(meshEditor.GetSelection(), PivotPosition, PivotRotation);
+                    }
+                }
+                else
+                {
+                    MeshEditorState oldState = meshEditor.GetState(false);
+                    RecordState(oldState, null);
                 }
                 meshEditor.BeginScale();
             }
@@ -1333,7 +1281,7 @@ namespace Battlehub.RTBuilder
         private void OnEndScale(BaseHandle scaleHandle)
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
+            if (meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 scaleHandle.EnableUndo = true;
                 meshEditor.EndScale();
@@ -1344,32 +1292,24 @@ namespace Battlehub.RTBuilder
 
                 if (UVEditingMode)
                 {
-                    m_textureScaleTool.EndDrag();
-                    m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale));
+                    if (m_hasAutoUVs)
+                    {
+                        m_rte.Undo.EndRecordValue(UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale));
+                        TryUpdatePivotTransform();
+                    }
+                    else if(m_hasManualUVs)
+                    {
+                        MeshEditorState newState = meshEditor.GetState(true);
+                        RecordState(null, newState);
+                        m_textureScaleTool.EndDrag();
+                    }                    
                 }
                 else
                 {
-                    m_rte.Undo.CreateRecord(record =>
-                    {
-                        meshEditor.BeginScale();
-                        meshEditor.Scale(newScale, rotation);
-                        meshEditor.EndScale();
-                        return true;
-                    },
-                    record =>
-                    {
-                        meshEditor.BeginScale();
-                        meshEditor.Scale(new Vector3(1.0f / newScale.x, 1.0f / newScale.y, 1.0f / newScale.z), rotation);
-                        meshEditor.EndRotate();
-                        return true;
-                    });
+                    MeshEditorState newState = meshEditor.GetState(false);
+                    RecordState(null, newState);
                 } 
             }
-        }
-
-        private Quaternion GetPivotRotation(IMeshEditor meshEditor)
-        {
-            return m_rte.Tools.PivotRotation == RuntimePivotRotation.Global ? Quaternion.identity : meshEditor.Rotation;
         }
 
         public void ApplyMaterial(Material material, Camera camera, Vector3 mousePosition)
@@ -1425,10 +1365,12 @@ namespace Battlehub.RTBuilder
 
         private void ApplyMaterialToSelectedGameObjects(Material material, int submeshIndex)
         {
+            m_rte.Undo.BeginRecord();
+
             GameObject[] gameObjects = m_rte.Selection.gameObjects;
             if (gameObjects != null)
             {
-                m_rte.Undo.BeginRecord();
+                
                 for (int i = 0; i < gameObjects.Length; ++i)
                 {
                     if (gameObjects[i] == null)
@@ -1439,27 +1381,28 @@ namespace Battlehub.RTBuilder
                     ApplyMaterialResult result = m_materialEditor.ApplyMaterial(material, gameObjects[i], submeshIndex);
                     RecordApplyMaterialResult(result);
                 }
-                m_rte.Undo.EndRecord();
             }
+
+            m_rte.Undo.EndRecord();
         }
 
         public void SelectFaces(Material material)
         {
             IMeshEditor meshEditor = GetEditor();
-            if(meshEditor != null)
+            if(meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
-                MeshSelection selection = meshEditor.Select(material);
                 m_rte.Undo.BeginRecord();
 
-                if (selection != null)
+                MeshSelection oldSelection = CurrentSelection;
+                if (meshEditor.Select(material) != null)
                 {
-                    RecordSelection(meshEditor, selection);
+                    CurrentSelection = meshEditor.GetSelection();
+                    RecordSelection(oldSelection, CurrentSelection);
                 }
 
-                PivotPosition = meshEditor.Position;
-                PivotRotation = GetPivotRotation(meshEditor);
-
+                TryUpdatePivotTransform();
                 TrySelectPivot(meshEditor);
+                TryUpdatePivotVisibility();
 
                 m_rte.Undo.EndRecord();
             }
@@ -1468,20 +1411,20 @@ namespace Battlehub.RTBuilder
         public void UnselectFaces(Material material)
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
+            if (meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
-                MeshSelection selection = meshEditor.Unselect(material);
                 m_rte.Undo.BeginRecord();
 
-                if (selection != null)
+                MeshSelection oldSelection = CurrentSelection;
+                if (meshEditor.Unselect(material) != null)
                 {
-                    RecordSelection(meshEditor, selection);
+                    CurrentSelection = meshEditor.GetSelection();
+                    RecordSelection(oldSelection, CurrentSelection);
                 }
 
-                PivotPosition = meshEditor.Position;
-                PivotRotation = GetPivotRotation(meshEditor);
-
+                TryUpdatePivotTransform();
                 TrySelectPivot(meshEditor);
+                TryUpdatePivotVisibility();
 
                 m_rte.Undo.EndRecord();
             }
@@ -1490,6 +1433,19 @@ namespace Battlehub.RTBuilder
         public void CenterPivot()
         {
             RunPBMeshAction(pbMesh => pbMesh.CenterPivot(), true);
+        }
+
+        public void Extrude(float distance)
+        {
+            IMeshEditor meshEditor = GetEditor();
+            MeshSelection oldSelection = CurrentSelection;
+            MeshEditorState oldState = meshEditor.GetState(false);
+            meshEditor.Extrude(distance);
+            MeshSelection newSelection = meshEditor.GetSelection();
+            MeshEditorState newState = meshEditor.GetState(false);
+            TryUpdatePivotTransform();
+            CurrentSelection = newSelection;
+            RecordStateAndSelection(oldState, newState, oldSelection, newSelection);
         }
 
         public void Subdivide()
@@ -1559,12 +1515,13 @@ namespace Battlehub.RTBuilder
         public void SelectHoles()
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
+            if (meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
-                MeshSelection selection = meshEditor.SelectHoles();
-                if(selection != null)
+                MeshSelection oldSelection = CurrentSelection;
+                if(meshEditor.SelectHoles() != null)
                 {
-                    RecordSelection(meshEditor, selection);
+                    CurrentSelection = meshEditor.GetSelection();
+                    RecordSelection(oldSelection, CurrentSelection);
                 }
             }
         }
@@ -1586,38 +1543,25 @@ namespace Battlehub.RTBuilder
 
         public void SelectFaceGroup()
         {
-            IMeshEditor editor = GetEditor();
-            if(editor == null)
+            IMeshEditor meshEditor = GetEditor();
+            if (meshEditor == null)
             {
                 return;
             }
 
-            MeshSelection selection = editor.GetSelection();
-            if (selection.HasVertices)
+            MeshSelection oldSelection = CurrentSelection;
+            MeshSelection faceGroupSelection = m_autoUVEditor.SelectFaceGroup(oldSelection);
+            if(faceGroupSelection != null)
             {
-                selection.VerticesToFaces(false, false);
-            }
-            if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
-            if (selection.HasFaces)
-            {
-                MeshSelection faceGroupSelection = m_autoUVEditor.SelectFaceGroup(selection);
-                
+                meshEditor.SetSelection(faceGroupSelection);
+
                 m_rte.Undo.BeginRecord();
+                CurrentSelection = meshEditor.GetSelection();
+                RecordSelection(oldSelection, CurrentSelection);
 
-                if (selection != null)
-                {
-                    RecordSelection(editor, faceGroupSelection);
-                }
-
-                editor.ApplySelection(faceGroupSelection);
-
-                PivotPosition = editor.Position;
-                PivotRotation = GetPivotRotation(editor);
-
-                TrySelectPivot(editor);
+                TryUpdatePivotTransform();
+                TrySelectPivot(meshEditor);
+                TryUpdatePivotVisibility();
 
                 m_rte.Undo.EndRecord();
             }
@@ -1650,21 +1594,25 @@ namespace Battlehub.RTBuilder
         }
 
         private void OnUVChanged()
-        {
-            IMeshEditor editor = GetEditor();
-            if (editor != null)
+        {            
+            if(m_faceGroupSelection != null)
             {
-                MeshSelection selection = editor.GetSelection();
-                m_autoUVEditor.ApplySettings(m_uv, selection);
+                m_autoUVEditor.ApplySettings(m_uv, m_faceGroupSelection);
             }
 
-            UpdatePivot();
+            if(m_selectionComponent == null ||
+               (m_selectionComponent.PositionHandle == null || !m_selectionComponent.PositionHandle.IsDragging) &&
+               (m_selectionComponent.RotationHandle == null || !m_selectionComponent.RotationHandle.IsDragging) &&
+               (m_selectionComponent.ScaleHandle == null || !m_selectionComponent.ScaleHandle.IsDragging))
+            {
+                TryUpdatePivotTransform();
+            }
         }
 
         private void RunUVEditingAction(Action<MeshSelection> action)
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor == null)
+            if (meshEditor == null || m_rte.Selection.activeGameObject != m_pivot.gameObject)
             {
                 return;
             }
@@ -1676,15 +1624,17 @@ namespace Battlehub.RTBuilder
             MeshSelection selection = meshEditor.GetSelection();
             action(selection);
             MeshEditorState newState = meshEditor.GetState(true);
-            RecordState(meshEditor, oldState, newState);
+            RecordState(oldState, newState);
+            TryUpdatePivotTransform();
             TrySelectPivot(meshEditor);
+            TryUpdatePivotVisibility();
             m_rte.Undo.EndRecord();
         }
 
         private void RunStateChangeAction(Action<IMeshEditor> action, bool clearSelection)
         {
             IMeshEditor meshEditor = GetEditor();
-            if (meshEditor != null)
+            if (meshEditor != null && m_rte.Selection.activeGameObject == m_pivot.gameObject)
             {
                 m_rte.Undo.BeginRecord();
                 m_rte.Undo.BeginRecordTransform(m_pivot);
@@ -1693,37 +1643,136 @@ namespace Battlehub.RTBuilder
                 MeshEditorState oldState = meshEditor.GetState(false);
                 action(meshEditor);
                 MeshEditorState newState = meshEditor.GetState(false);
-                MeshSelection selection = null;
+                MeshSelection oldSelection = null;
                 if (clearSelection)
                 {
-                    selection = meshEditor.ClearSelection();
+                    oldSelection = CurrentSelection;
+                    meshEditor.ClearSelection();
+                    CurrentSelection = meshEditor.GetSelection();
+                    RecordStateAndSelection(oldState, newState, oldSelection, CurrentSelection);
+                }
+                else
+                {
+                    RecordState(oldState, newState, true);
                 }
 
-                RecordStateAndSelection(meshEditor, selection, oldState, newState);
                 TrySelectPivot(meshEditor);
+                TryUpdatePivotVisibility();
                 m_rte.Undo.EndRecord();
             }
         }
 
-        private void RecordStateAndSelection(IMeshEditor meshEditor, MeshSelection selection, MeshEditorState oldState, MeshEditorState newState)
+
+        public void RecordStateAndSelection(
+           MeshEditorState oldState, MeshEditorState newState,
+           MeshSelection oldSelection, MeshSelection newSelection,
+           bool oldStateChanged = true,
+           bool newStateChanged = true)
         {
             UndoRedoCallback redo = record =>
             {
                 if (newState != null)
                 {
-                    meshEditor.ClearSelection();
-                    meshEditor.SetState(newState);
-                    foreach (PBMesh mesh in newState.GetMeshes())
+                    CurrentSelection = newSelection;
+
+                    IMeshEditor meshEditor = GetEditor();
+                    if (meshEditor != null)
                     {
-                        mesh.RaiseChanged(false, true);
+                        meshEditor.ClearSelection();
+                        meshEditor.SetState(newState);
+                        foreach (PBMesh mesh in newState.GetMeshes())
+                        {
+                            mesh.RaiseChanged(false, true);
+                        }
+
+                        meshEditor.SetSelection(CurrentSelection);
+                    }
+                    else
+                    {
+                        newState.Apply();
+                        foreach (PBMesh mesh in newState.GetMeshes())
+                        {
+                            mesh.RaiseChanged(false, true);
+                        }
                     }
 
-                    meshEditor.ApplySelection(selection);
-                    PivotPosition = meshEditor.Position;
-                    PivotRotation = GetPivotRotation(meshEditor);// Quaternion.LookRotation(meshEditor.Normal);
+                    TryUpdatePivotTransform();
+                    TrySelectPivot(meshEditor, false);
+                    TryUpdatePivotVisibility();
                     OnSelectionChanged();
+                    return newStateChanged;
+                }
+                return false;
+            };
 
-                  
+            UndoRedoCallback undo = record =>
+            {
+                if (oldState != null)
+                {
+                    CurrentSelection = oldSelection;
+
+                    IMeshEditor meshEditor = GetEditor();
+                    if (meshEditor != null)
+                    {
+                        meshEditor.ClearSelection();
+                        meshEditor.SetState(oldState);
+                        foreach (PBMesh mesh in oldState.GetMeshes())
+                        {
+                            mesh.RaiseChanged(false, true);
+                        }
+
+                        meshEditor.SetSelection(CurrentSelection);
+                    }
+                    else
+                    {
+                        oldState.Apply();
+                        foreach (PBMesh mesh in oldState.GetMeshes())
+                        {
+                            mesh.RaiseChanged(false, true);
+                        }
+                    }
+
+                    TryUpdatePivotTransform();
+                    TrySelectPivot(meshEditor, false);
+                    TryUpdatePivotVisibility();
+                    OnSelectionChanged();
+                    return oldStateChanged;
+                }
+                return false;
+            };
+
+            m_rte.Undo.CreateRecord(redo, undo);
+            OnSelectionChanged();
+        }
+
+        private void RecordState(MeshEditorState oldState, MeshEditorState newState, bool raiseMeshChanged = false)
+        {
+            UndoRedoCallback redo = record =>
+            {
+                if (newState != null)
+                {
+                    IMeshEditor meshEditor = GetEditor();
+                    if(meshEditor != null)
+                    {
+                        meshEditor.SetState(newState);
+                    }
+                    else
+                    {
+                        newState.Apply();
+                    }
+
+                    if(raiseMeshChanged)
+                    {
+                        foreach (PBMesh mesh in newState.GetMeshes())
+                        {
+                            mesh.RaiseChanged(false, true);
+                        }
+                    }
+                    
+                    TryUpdatePivotTransform();
+                    TrySelectPivot(meshEditor, false);
+                    TryUpdatePivotVisibility();
+                    OnSelectionChanged();
                     return true;
                 }
                 return false;
@@ -1733,50 +1782,27 @@ namespace Battlehub.RTBuilder
             {
                 if (oldState != null)
                 {
-                    meshEditor.ClearSelection();
-                    meshEditor.SetState(oldState);
-                    foreach (PBMesh mesh in oldState.GetMeshes())
+                    IMeshEditor meshEditor = GetEditor();
+                    if (meshEditor != null)
                     {
-                        mesh.RaiseChanged(false, true);
+                        meshEditor.SetState(oldState);
+                    }
+                    else
+                    {
+                        oldState.Apply();
                     }
 
-                    meshEditor.RollbackSelection(selection);
-                    PivotPosition = meshEditor.Position;
-                    PivotRotation = GetPivotRotation(meshEditor);// Quaternion.LookRotation(meshEditor.Normal);
-                    OnSelectionChanged();
-
-                    return true;
-                }
-                return false;
-            };
-
-            m_rte.Undo.CreateRecord(redo, undo);
-            OnSelectionChanged();
-        }
-
-
-        private void RecordState(IMeshEditor meshEditor, MeshEditorState oldState, MeshEditorState newState)
-        {
-            UndoRedoCallback redo = record =>
-            {
-                if (newState != null)
-                {
-                    meshEditor.SetState(newState);
-                    PivotPosition = meshEditor.Position;
-                    PivotRotation = GetPivotRotation(meshEditor);
-                    OnSelectionChanged();
-                    return true;
-                }
-                return false;
-            };
-
-            UndoRedoCallback undo = record =>
-            {
-                if (oldState != null)
-                {
-                    meshEditor.SetState(oldState);
-                    PivotPosition = meshEditor.Position;
-                    PivotRotation = GetPivotRotation(meshEditor);
+                    if(raiseMeshChanged)
+                    {
+                        foreach (PBMesh mesh in newState.GetMeshes())
+                        {
+                            mesh.RaiseChanged(false, true);
+                        }
+                    }
+                    
+                    TryUpdatePivotTransform();
+                    TrySelectPivot(meshEditor, false);
+                    TryUpdatePivotVisibility();
                     OnSelectionChanged();
                     return true;
                 }
@@ -1787,24 +1813,40 @@ namespace Battlehub.RTBuilder
             OnSelectionChanged();
         }
 
-        private void RecordSelection(IMeshEditor meshEditor, MeshSelection selection)
+        private void RecordSelection(MeshSelection oldSelection, MeshSelection newSelection, bool oldStateChanged = true, bool newStateChanged = true)
         {
             UndoRedoCallback redo = record =>
             {
-                meshEditor.ApplySelection(selection);
-                PivotPosition = meshEditor.Position;
-                PivotRotation = GetPivotRotation(meshEditor);// Quaternion.LookRotation(meshEditor.Normal);
+                CurrentSelection = newSelection;
+
+                IMeshEditor meshEditor = GetEditor();
+                if(meshEditor != null)
+                {
+                    meshEditor.SetSelection(CurrentSelection);
+                }
+
+                TryUpdatePivotTransform();
+                TrySelectPivot(meshEditor, false);
+                TryUpdatePivotVisibility();
                 OnSelectionChanged();
-                return true;
+                return newStateChanged;
             };
 
             UndoRedoCallback undo = record =>
             {
-                meshEditor.RollbackSelection(selection);
-                PivotPosition = meshEditor.Position;
-                PivotRotation = GetPivotRotation(meshEditor);// Quaternion.LookRotation(meshEditor.Normal);
+                CurrentSelection = oldSelection;
+
+                IMeshEditor meshEditor = GetEditor();
+                if (meshEditor != null)
+                {
+                    meshEditor.SetSelection(CurrentSelection);
+                }
+                
+                TryUpdatePivotTransform();
+                TrySelectPivot(meshEditor, false);
+                TryUpdatePivotVisibility();
                 OnSelectionChanged();
-                return true;
+                return oldStateChanged;
             };
 
             m_rte.Undo.CreateRecord(redo, undo);
@@ -1833,5 +1875,3 @@ namespace Battlehub.RTBuilder
         }
     }
 }
-
-

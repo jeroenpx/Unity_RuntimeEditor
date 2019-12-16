@@ -27,6 +27,7 @@ namespace Battlehub.ProBuilderIntegration
                 int[] indexes = Indexes[m];
 
                 Vector2[] textures = mesh.textures.ToArray();
+                IList<Vector4> tangents = mesh.tangents;
 
                 // Account for object scale
                 delta *= k_vector3Magnitude / mesh.transform.lossyScale.magnitude;
@@ -35,7 +36,7 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     int index = indexes[i];
                     var uvTransform = uvTransforms[i];
-                    textures[index] = origins[i] + new Vector2(delta.x / uvTransform.scale.x, delta.y / uvTransform.scale.y);
+                    textures[index] = origins[i] + new Vector2(tangents[index].w * delta.x / uvTransform.scale.x, delta.y / uvTransform.scale.y);
                 }
 
                 mesh.textures = textures;

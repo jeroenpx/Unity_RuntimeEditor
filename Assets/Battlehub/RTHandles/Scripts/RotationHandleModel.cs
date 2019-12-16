@@ -223,16 +223,27 @@ namespace Battlehub.RTHandles
 
             if (m_lockObj.RotationFree)
             {
+                
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.DisabledColor;
                 if (Mathf.Approximately(Colors.DisabledColor.a, 0))
                 {
                     m_innerCircleMaterials[m_innerCircleBorderMatIndex].SetFloat("_ZWrite", 0);
+
+                    if(m_lockObj.RotationX && m_lockObj.RotationY || m_lockObj.RotationY && m_lockObj.RotationZ || m_lockObj.RotationX && m_lockObj.RotationZ)
+                    {
+                        m_innerCircle.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        m_innerCircle.gameObject.SetActive(true);
+                    }
                 }
             }
             else
             {
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.AltColor2;
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].SetFloat("_ZWrite", 1);
+                m_innerCircle.gameObject.SetActive(true);
             }
 
             m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0);

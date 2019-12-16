@@ -66,9 +66,12 @@ namespace Battlehub.RTTerrain
             terrainData.SetDetailResolution(1024, 32);
             terrainData.heightmapResolution = 513;
             terrainData.size = new Vector3(200, 20, 200);
+
+            ITerrainSettings terrainSettings = IOC.Resolve<ITerrainSettings>();
+
             terrainData.terrainLayers = new[]
             {
-                new TerrainLayer() { diffuseTexture = (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") }
+                new TerrainLayer() { diffuseTexture = terrainSettings != null ? terrainSettings.DefaultTexture : (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") }
             };
 
             GameObject go = Terrain.CreateTerrainGameObject(terrainData);

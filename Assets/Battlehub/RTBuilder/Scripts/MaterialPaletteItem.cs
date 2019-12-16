@@ -61,7 +61,7 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        private MaterialPaletteViewImpl m_paletteView;
+        private MaterialPaletteEditor m_paletteEditor;
 
         private void Awake()
         {
@@ -82,7 +82,7 @@ namespace Battlehub.RTBuilder
         private void Start()
         {
             m_objectEditor.Init(this, this, Strong.PropertyInfo((MaterialPaletteItem x) => x.Material));
-            m_paletteView = GetComponentInParent<MaterialPaletteViewImpl>();   
+            m_paletteEditor = GetComponentInParent<MaterialPaletteEditor>();   
         }
 
         private void OnDestroy()
@@ -115,27 +115,27 @@ namespace Battlehub.RTBuilder
 
         private void OnSelect()
         {
-            m_paletteView.SelectFacesByMaterial(Material);
+            m_paletteEditor.SelectFacesByMaterial(Material);
         }
 
         private void OnUnselect()
         {
-            m_paletteView.UnselectFacesByMaterial(Material);
+            m_paletteEditor.UnselectFacesByMaterial(Material);
         }
 
         private void OnApply()
         {
-            m_paletteView.ApplyMaterial(Material);
+            m_paletteEditor.ApplyMaterial(Material);
         }
 
         private void OnRemove()
         {
-            m_paletteView.RemoveMaterial(Material);
+            m_paletteEditor.RemoveMaterial(Material);
         }
 
         private void OnObjectEditorPointerDown(object sender, PointerEventData e)
         {
-            m_paletteView.SelectMaterial(Material);
+            m_paletteEditor.SelectMaterial(Material);
         }
     }
 }

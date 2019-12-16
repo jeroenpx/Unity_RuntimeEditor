@@ -19,6 +19,7 @@ namespace Battlehub.RTSL
         private IProject m_project;
         private IRuntimeShaderUtil m_shaderUtil;
         private IAssetBundleLoader m_assetBundleLoader;
+        private IPlayerPrefsStorage m_playerPrefs;
 
         protected virtual IAssetBundleLoader AssetBundleLoader
         {
@@ -78,6 +79,11 @@ namespace Battlehub.RTSL
             }
         }
 
+        protected virtual IPlayerPrefsStorage PlayerPrefs
+        {
+            get { return new PlayerPrefsStorage(); }
+        }
+
         private void Awake()
         {
             if(m_instance != null)
@@ -104,6 +110,7 @@ namespace Battlehub.RTSL
             m_serializer = Serializer;
             m_storage = Storage;
             m_project = Project;
+            m_playerPrefs = PlayerPrefs;
         }
 
         private void OnDestroy()
@@ -123,6 +130,7 @@ namespace Battlehub.RTSL
             m_serializer = null;
             m_storage = null;
             m_project = null;
+            m_playerPrefs = null;
         }
 
         protected virtual void OnDestroyOverride()
@@ -177,6 +185,7 @@ namespace Battlehub.RTSL
             IOC.RegisterFallback<IIDMap>(() => Instance.m_assetDB);
             IOC.RegisterFallback(() => Instance.m_project);
             IOC.RegisterFallback(() => Instance.m_shaderUtil);
+            IOC.RegisterFallback(() => Instance.m_playerPrefs);
         }
 
         private static void OnSceneUnloaded(Scene arg0)

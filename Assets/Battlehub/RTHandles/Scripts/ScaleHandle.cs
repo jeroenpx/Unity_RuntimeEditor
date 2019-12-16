@@ -134,7 +134,7 @@ namespace Battlehub.RTHandles
             m_refScales = new Vector3[ActiveTargets.Length];
             for (int i = 0; i < m_refScales.Length; ++i)
             {
-                Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? ActiveTargets[i].rotation : Quaternion.identity;
+                Quaternion rotation = PivotRotation == RuntimePivotRotation.Global ? ActiveTargets[i].rotation : Quaternion.identity;
                 m_refScales[i] = rotation * ActiveTargets[i].localScale;
             }
 
@@ -228,7 +228,7 @@ namespace Battlehub.RTHandles
                 {
                     for (int i = 0; i < m_refScales.Length; ++i)
                     {
-                        Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
+                        Quaternion rotation = PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
 
                         float gridSize = EffectiveGridUnitSize * 2;
 
@@ -270,7 +270,7 @@ namespace Battlehub.RTHandles
 
                     for (int i = 0; i < m_refScales.Length; ++i)
                     {
-                        Quaternion rotation = Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
+                        Quaternion rotation = PivotRotation == RuntimePivotRotation.Global ? Targets[i].rotation : Quaternion.identity;
 
                         Vector3 scale = Quaternion.Inverse(rotation) * Vector3.Scale(m_refScales[i], m_roundedScale);
                         

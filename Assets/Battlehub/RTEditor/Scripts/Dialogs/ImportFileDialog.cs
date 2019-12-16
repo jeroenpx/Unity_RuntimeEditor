@@ -205,9 +205,9 @@ namespace Battlehub.RTEditor
 
             IProjectTree projectTree = IOC.Resolve<IProjectTree>();
             string targetPath = Path.GetFileNameWithoutExtension(path);
-            if (projectTree != null && projectTree.SelectedFolder != null)
+            if (projectTree != null && projectTree.SelectedItem != null)
             {
-                ProjectItem folder = projectTree.SelectedFolder;
+                ProjectItem folder = projectTree.SelectedItem;
 
                 targetPath = folder.RelativePath(false) + "/" + targetPath;
                 targetPath = targetPath.TrimStart('/');

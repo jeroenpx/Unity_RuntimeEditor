@@ -1,6 +1,8 @@
 ﻿using Battlehub.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -300,11 +302,11 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static bool IsExposedToEditor(ExposeToEditor exposeToEditor)
+        private static bool HasValidState(ExposeToEditor exposeToEditor)
         {
             return exposeToEditor != null &&
                 !exposeToEditor.MarkAsDestroyed &&
-                (exposeToEditor.hideFlags & HideFlags.HideInHierarchy) == 0;
+                (exposeToEditor.hideFlags & HideFlags.HideInHierarchy) == 0 && exposeToEditor.IsAwaked;
         }
 
         private static List<ExposeToEditor> FindAll()
@@ -323,7 +325,7 @@ namespace Battlehub.RTCommon
                     continue;
                 }
 
-                if(!IsExposedToEditor(obj))
+                if(!HasValidState(obj))
                 {
                     continue;
                 }
@@ -347,7 +349,7 @@ namespace Battlehub.RTCommon
                 for (int j = 0; j < exposedObjects.Length; ++j)
                 {
                     ExposeToEditor obj = exposedObjects[j];
-                    if (IsExposedToEditor(obj))
+                    if (HasValidState(obj))
                     {
                         result.Add(obj);
                     }
@@ -558,6 +560,7 @@ namespace Battlehub.RTCommon
                         {
                             ExposeToEditor child = children[i];
                             m_playModeCache.Remove(child);
+                            SendMessageTo(child.gameObject, "OnMarkAsDestroyed");
                         }
                     }
                     else
@@ -566,6 +569,7 @@ namespace Battlehub.RTCommon
                         {
                             ExposeToEditor child = children[i];
                             m_playModeCache.Add(child);
+                            SendMessageTo(child.gameObject, "OnMarkAsRestored");
                         }
                     }
                 }
@@ -574,13 +578,14 @@ namespace Battlehub.RTCommon
                     if (obj.MarkAsDestroyed)
                     {
                         m_playModeCache.Remove(obj);
+                        SendMessageTo(obj.gameObject, "OnMarkAsDestroyed");
                     }
                     else
                     {
                         m_playModeCache.Add(obj);
+                        SendMessageTo(obj.gameObject, "OnMarkAsRestored");
                     }
                 }
-
             }
             else
             {
@@ -593,6 +598,7 @@ namespace Battlehub.RTCommon
                         {
                             ExposeToEditor child = children[i];
                             m_editModeCache.Remove(child);
+                            SendMessageTo(child.gameObject, "OnMarkAsDestroyed");
                         }
                     }
                     else
@@ -601,6 +607,7 @@ namespace Battlehub.RTCommon
                         {
                             ExposeToEditor child = children[i];
                             m_editModeCache.Add(child);
+                            SendMessageTo(child.gameObject, "OnMarkAsRestored");
                         }
                     }
                 }
@@ -608,19 +615,41 @@ namespace Battlehub.RTCommon
                 {
                     if (obj.MarkAsDestroyed)
                     {
+                        
                         m_editModeCache.Remove(obj);
+                        SendMessageTo(obj.gameObject, "OnMarkAsDestroyed");
                     }
                     else
                     {
                         m_editModeCache.Add(obj);
+                        SendMessageTo(obj.gameObject, "OnMarkAsRestored");
                     }
                 }
-               
             }
 
             if(MarkAsDestroyedChanging != null)
             {
                 MarkAsDestroyedChanging(obj);
+            }
+        }
+
+        public void SendMessageTo(GameObject gameobject, string methodName, params object[] parameters)
+        {
+            MonoBehaviour[] components = gameobject.GetComponentsInChildren<MonoBehaviour>(true);
+            foreach (MonoBehaviour m in components)
+            {
+                InvokeIfExists(m, methodName, parameters);
+            }
+        }
+
+        private void InvokeIfExists(object objectToCheck, string methodName, params object[] parameters)
+        {
+            Type type = objectToCheck.GetType();
+            
+            MethodInfo methodInfo = type.GetMethod(methodName);
+            if (methodInfo != null)
+            {
+                methodInfo.Invoke(objectToCheck, parameters);
             }
         }
 

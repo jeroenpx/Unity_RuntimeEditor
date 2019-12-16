@@ -37,9 +37,10 @@ namespace Battlehub.RTTerrain
             set;
         }
 
-        IRuntimeSelection Selection
+        bool SelectObjectsMode
         {
             get;
+            set;
         }
 
         bool Refresh(Action redo = null, Action undo = null);
@@ -59,11 +60,13 @@ namespace Battlehub.RTTerrain
         private float[,] m_oldHeightmap;
         private TerrainToolState.Record m_oldState;
 
+        
         private Dictionary<GameObject, int> m_handleToKey;
         private Dictionary<int, GameObject> m_keyToHandle;
         private int[] m_selectedHandles;
         private TerrainToolState m_state;
 
+        private Transform m_handlesRoot;
         [SerializeField]
         public TerrainSelectionHandle m_handlePrefab = null;
         [SerializeField]
@@ -81,16 +84,11 @@ namespace Battlehub.RTTerrain
         private Interpolation m_prevInterpolation;
         private CachedBicubicInterpolator m_interpolator;
 
-        private IWindowManager m_wm;
         private IRTE m_editor;
       
         private ITerrainCutoutMaskRenderer m_cutoutMaskRenderer;
-        private IRuntimeSelection m_terrainHandlesSelection;
-        public IRuntimeSelection Selection
-        {
-            get { return m_terrainHandlesSelection; }
-        }
-
+        private ICustomSelectionComponent m_terrainHandlesSelection;
+      
         [SerializeField]
         private bool m_enableZTest = true;
 
@@ -163,16 +161,32 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private bool m_selectObjectsMode;
+        public bool SelectObjectsMode
+        {
+            get { return m_selectObjectsMode; }
+            set
+            {
+                if(m_selectObjectsMode != value)
+                {
+                    m_selectObjectsMode = value;
+                    m_terrainHandlesSelection.Selection.activeGameObject = null;
+                    m_handlesRoot.gameObject.SetActive(!m_selectObjectsMode);
+                }
+            }
+        }
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
 
             m_editor = IOC.Resolve<IRTE>();
-            m_wm = IOC.Resolve<IWindowManager>();
             
-            m_terrainHandlesSelection = new RuntimeSelection(m_editor);
-            m_terrainHandlesSelection.EnableUndo = false;
+            m_handlesRoot = new GameObject("Handles").transform;
+            m_handlesRoot.SetParent(transform, false);
 
+            m_terrainHandlesSelection = IOC.Resolve<ICustomSelectionComponent>();
+         
             m_cutoutMaskRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
             m_cutoutMaskRenderer.ObjectImageLayer = m_editor.CameraLayerSettings.ResourcePreviewLayer;
 
@@ -185,9 +199,27 @@ namespace Battlehub.RTTerrain
         protected override void OnEditorClosed()
         {
             base.OnEditorClosed();
-            if(m_editor != null)
+            Cleanup();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Cleanup();
+        }
+
+        private void Cleanup()
+        {
+            if (m_editor != null)
             {
                 m_editor.Selection.SelectionChanged -= OnEditorSelectionChanged;
+            }
+
+            if (m_terrainHandlesSelection != null)
+            {
+                m_terrainHandlesSelection.Enabled = false;
+                m_terrainHandlesSelection.CreateCustomHandle -= OnCreateCustomHandle;
+                m_terrainHandlesSelection.DestroyCustomHandle -= OnDestroyCustomHandle;
             }
 
             if (m_state != null)
@@ -217,17 +249,12 @@ namespace Battlehub.RTTerrain
 
         private void Enable()
         {
-            m_terrainHandlesSelection.activeGameObject = null;
+            m_terrainHandlesSelection.Selection.activeGameObject = null;
+            m_terrainHandlesSelection.Selection.SelectionChanged += OnSelectionChanged;
+            m_terrainHandlesSelection.CreateCustomHandle += OnCreateCustomHandle;
+            m_terrainHandlesSelection.DestroyCustomHandle += OnDestroyCustomHandle;
+            m_terrainHandlesSelection.Enabled = true;
 
-            foreach (Transform windowTransform in m_wm.GetWindows(RuntimeWindowType.Scene.ToString()))
-            {
-                TryToCreateCustomHandle(windowTransform);
-            }
-
-            m_wm.WindowCreated += OnWindowCreated;
-            m_wm.WindowDestroyed += OnWindowDestroyed;
-
-            m_terrainHandlesSelection.SelectionChanged += OnSelectionChanged;
             m_interpolator = new CachedBicubicInterpolator();
 
             TerrainData data = TerrainData;
@@ -237,7 +264,7 @@ namespace Battlehub.RTTerrain
             m_state = Terrain.GetComponent<TerrainToolState>();
             if (m_state == null)
             {
-                m_additiveHeights = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapHeight);
+                m_additiveHeights = GetHeightmap();
                 m_interpolatedHeights = new float[data.heightmapHeight, data.heightmapWidth];
 
                 m_state = Terrain.gameObject.GetComponent<TerrainToolState>();
@@ -267,27 +294,19 @@ namespace Battlehub.RTTerrain
                 InitAdditiveAndInterpolatedHeights();
             }
 
-            InitHandles();
+            CreateHandles();
             EnableZTest = EnableZTest;
         }
 
         private void Disable()
         {
-            if(m_wm != null)
-            {
-                m_wm.WindowCreated -= OnWindowCreated;
-                m_wm.WindowDestroyed -= OnWindowDestroyed;
-
-                foreach (Transform windowTransform in m_wm.GetWindows(RuntimeWindowType.Scene.ToString()))
-                {
-                    TryToDestroyCustomHandle(windowTransform);
-                }
-            }
-
             if(m_terrainHandlesSelection != null)
             {
-                m_terrainHandlesSelection.activeGameObject = null;
-                m_terrainHandlesSelection.SelectionChanged -= OnSelectionChanged;
+                m_terrainHandlesSelection.Selection.activeGameObject = null;
+                m_terrainHandlesSelection.Enabled = false;
+                m_terrainHandlesSelection.Selection.SelectionChanged -= OnSelectionChanged;
+                m_terrainHandlesSelection.CreateCustomHandle -= OnCreateCustomHandle;
+                m_terrainHandlesSelection.DestroyCustomHandle -= OnDestroyCustomHandle;
             }
 
             DestroyHandles();
@@ -308,7 +327,7 @@ namespace Battlehub.RTTerrain
                 return false;
             }
 
-            m_terrainHandlesSelection.activeGameObject = null;
+            m_terrainHandlesSelection.Selection.activeGameObject = null;
 
             TerrainToolState.Record oldState = m_state.Save();
 
@@ -328,7 +347,7 @@ namespace Battlehub.RTTerrain
             InitAdditiveAndInterpolatedHeights();
             if(IsEnabled)
             {
-                InitHandles();
+                CreateHandles();
             }
 
             TerrainToolState.Record newState = m_state.Save();
@@ -344,7 +363,7 @@ namespace Battlehub.RTTerrain
                     m_state.Load(newState);
                 }
 
-                m_terrainHandlesSelection.activeGameObject = null;
+                m_terrainHandlesSelection.Selection.activeGameObject = null;
 
                 XSpacing = m_state.XSpacing;
                 ZSpacing = m_state.ZSpacing;
@@ -355,7 +374,7 @@ namespace Battlehub.RTTerrain
 
                 if(IsEnabled)
                 {
-                    InitHandles();
+                    CreateHandles();
                 }
                 
                 return true;
@@ -372,7 +391,7 @@ namespace Battlehub.RTTerrain
                     m_state.Load(oldState);
                 }
 
-                m_terrainHandlesSelection.activeGameObject = null;
+                m_terrainHandlesSelection.Selection.activeGameObject = null;
 
                 XSpacing = m_state.XSpacing;
                 ZSpacing = m_state.ZSpacing;
@@ -383,7 +402,7 @@ namespace Battlehub.RTTerrain
 
                 if(IsEnabled)
                 {
-                    InitHandles();
+                    CreateHandles();
                 }
                 
                 return true;
@@ -411,7 +430,8 @@ namespace Battlehub.RTTerrain
                     UpdateTerrain(hid, pos, GetInterpolatedHeights, SetTerrainHeights);
                 }
 
-                foreach (Transform windowTransform in m_wm.GetWindows(RuntimeWindowType.Scene.ToString()))
+                IWindowManager wm = IOC.Resolve<IWindowManager>();
+                foreach (Transform windowTransform in wm.GetWindows(RuntimeWindowType.Scene.ToString()))
                 {
                     RuntimeWindow window = windowTransform.GetComponent<RuntimeWindow>();
                     if(window == null)
@@ -434,8 +454,16 @@ namespace Battlehub.RTTerrain
 
         public void CutHoles()
         {
-            GameObject[] objects = m_editor.Selection.gameObjects;
-            objects = CreateAndApplyCutoutTexture(objects);
+            GameObject[] objects = m_terrainHandlesSelection.Selection.gameObjects;
+
+            if(objects != null && objects.Length > 0)
+            {
+                float[,] heightMap = GetHeightmap();
+                TerrainToolState.Record state = m_state.Save();
+
+                objects = CreateAndApplyCutoutTexture(objects);
+                RecordState(heightMap, state);
+            }
         }
 
         private GameObject[] CreateAndApplyCutoutTexture(GameObject[] objects)
@@ -457,7 +485,7 @@ namespace Battlehub.RTTerrain
             return objects;
         }
 
-        private void InitHandles()
+        private void CreateHandles()
         {
             m_prevInterpolation = m_state.Interpolation;
             InitLerpGrid();
@@ -476,7 +504,7 @@ namespace Battlehub.RTTerrain
                     TerrainSelectionHandle handle;
                     LockAxes lockAxes;
 
-                    handle = Instantiate(m_handlePrefab, transform);
+                    handle = Instantiate(m_handlePrefab, m_handlesRoot);
                     lockAxes = handle.gameObject.AddComponent<LockAxes>();
 
                     lockAxes.PositionZ = false;
@@ -542,7 +570,7 @@ namespace Battlehub.RTTerrain
         {
             TerrainData data = TerrainData;
 
-            m_additiveHeights = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapHeight);
+            m_additiveHeights = GetHeightmap();
             m_interpolatedHeights = new float[data.heightmapHeight, data.heightmapWidth];
 
             for (int i = 0; i < data.heightmapHeight; ++i)
@@ -641,13 +669,13 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            if (m_terrainHandlesSelection.gameObjects == null || m_terrainHandlesSelection.gameObjects.Length == 0)
+            if (m_terrainHandlesSelection.Selection.gameObjects == null || m_terrainHandlesSelection.Selection.gameObjects.Length == 0)
             {
                 m_selectedHandles = null;
             }
             else
             {
-                IEnumerable<GameObject> selectedHandles = m_terrainHandlesSelection.gameObjects.Where(go => go != null && m_handleToKey.ContainsKey(go));
+                IEnumerable<GameObject> selectedHandles = m_terrainHandlesSelection.Selection.gameObjects.Where(go => go != null && m_handleToKey.ContainsKey(go));
                 foreach (GameObject go in selectedHandles)
                 {
                     TerrainSelectionHandle handle = go.GetComponent<TerrainSelectionHandle>();
@@ -662,58 +690,42 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void OnWindowCreated(Transform windowTransform)
+        private void OnCreateCustomHandle(IRuntimeSelectionComponent selectionComponent)
         {
-            TryToCreateCustomHandle(windowTransform);
-        }
-
-        private void OnWindowDestroyed(Transform windowTransform)
-        {
-            TryToDestroyCustomHandle(windowTransform);
-        }
-
-        private void TryToCreateCustomHandle(Transform windowTransform)
-        {
-            RuntimeWindow window = windowTransform.GetComponent<RuntimeWindow>();
-            if (window != null && window.WindowType == RuntimeWindowType.Scene)
+            if (selectionComponent != null && selectionComponent.CustomHandle == null)
             {
-                IRuntimeSelectionComponent selectionComponent = window.IOCContainer.Resolve<IRuntimeSelectionComponent>();
-                if (selectionComponent != null && selectionComponent.CustomHandle == null)
-                {
-                    m_positionHandlePrefab.gameObject.SetActive(false);
+                m_positionHandlePrefab.gameObject.SetActive(false);
 
-                    selectionComponent.Selection = m_terrainHandlesSelection;
-                    selectionComponent.CustomHandle = Instantiate(m_positionHandlePrefab, transform);
-                    selectionComponent.Filtering += OnSelectionFiltering;
-                    selectionComponent.SelectionChanging += OnSelectionChanging;
-                    selectionComponent.CustomHandle.BeforeDrag.AddListener(OnBeforeDrag);
-                    selectionComponent.CustomHandle.Drop.AddListener(OnDrop);   
-                }
+                selectionComponent.CustomHandle = Instantiate(m_positionHandlePrefab, transform);
+                selectionComponent.Filtering += OnSelectionFiltering;
+                selectionComponent.SelectionChanging += OnSelectionChanging;
+                selectionComponent.CustomHandle.BeforeDrag.AddListener(OnBeforeDrag);
+                selectionComponent.CustomHandle.Drop.AddListener(OnDrop);
             }
         }
 
-        private void TryToDestroyCustomHandle(Transform windowTransform)
+        private void OnDestroyCustomHandle(IRuntimeSelectionComponent selectionComponent)
         {
-            RuntimeWindow window = windowTransform.GetComponent<RuntimeWindow>();
-            if (window != null && window.WindowType == RuntimeWindowType.Scene)
+            if (selectionComponent != null && selectionComponent.CustomHandle != null)
             {
-                IRuntimeSelectionComponent selectionComponent = window.IOCContainer.Resolve<IRuntimeSelectionComponent>();
-                if (selectionComponent != null && selectionComponent.CustomHandle != null)
-                {
-                    selectionComponent.Filtering -= OnSelectionFiltering;
-                    selectionComponent.SelectionChanging -= OnSelectionChanging;
-                    selectionComponent.CustomHandle.BeforeDrag.RemoveListener(OnBeforeDrag);
-                    selectionComponent.CustomHandle.Drop.RemoveListener(OnDrop);
-                    selectionComponent.Selection = null;
-                    Destroy(selectionComponent.CustomHandle.gameObject);
-                    selectionComponent.CustomHandle = null;
-                }
+                selectionComponent.Filtering -= OnSelectionFiltering;
+                selectionComponent.SelectionChanging -= OnSelectionChanging;
+                selectionComponent.CustomHandle.BeforeDrag.RemoveListener(OnBeforeDrag);
+                selectionComponent.CustomHandle.Drop.RemoveListener(OnDrop);
+                selectionComponent.Selection = null;
+                Destroy(selectionComponent.CustomHandle.gameObject);
+                selectionComponent.CustomHandle = null;
             }
-        }
+        }   
 
         private void OnSelectionFiltering(object sender, RuntimeSelectionFilteringArgs e)
         {
             if(EnableZTest)
+            {
+                return;
+            }
+
+            if(SelectObjectsMode)
             {
                 return;
             }
@@ -731,6 +743,11 @@ namespace Battlehub.RTTerrain
 
         private void OnSelectionChanging(object sender, RuntimeSelectionChangingArgs e)
         {
+            if (SelectObjectsMode)
+            {
+                return;
+            }
+
             IList<UnityObject> selected = e.Selected;
             for (int i = selected.Count - 1; i >= 0; i--)
             {
@@ -768,53 +785,55 @@ namespace Battlehub.RTTerrain
                         UpdateTerrain(selectedHandles[i], selectedHandle.transform.localPosition, GetInterpolatedHeights, SetTerrainHeights);
                     }
 
-                    Terrain terrain = Terrain;
-                    float[,] oldHeightmap = m_oldHeightmap;
-                    float[,] newHeightmap = GetHeightmap();
-
-                    TerrainToolState.Record oldState = m_oldState;
-                    TerrainToolState.Record newState = m_state.Save();
-
-                    m_oldHeightmap = null;
-                    m_oldState = null;
-
-                    m_editor.Undo.CreateRecord(redoRecord =>
-                    {
-                        if (terrain.terrainData != null)
-                        {
-                            terrain.terrainData.SetHeights(0, 0, newHeightmap);
-                        }
-
-                        if(m_state != null)
-                        {
-                            m_state.Load(newState);
-                        }
-
-                        UpdateHandlePositions();
-                        InitAdditiveAndInterpolatedHeights();
-
-                        return true;
-                    },
-                    undoRecord =>
-                    {
-                        if (terrain.terrainData != null)
-                        {
-                            terrain.terrainData.SetHeights(0, 0, oldHeightmap);
-                        }
-
-                        if(m_state != null)
-                        {
-                            m_state.Load(oldState);
-                        }
-
-                        UpdateHandlePositions();
-                        InitAdditiveAndInterpolatedHeights();
-
-                        return true;
-                    });   
+                    RecordState(m_oldHeightmap, m_oldState);
                 }
                 handle.EnableUndo = true;
             }
+        }
+
+        private void RecordState(float[,] oldHeightmap, TerrainToolState.Record oldState)
+        {
+            Terrain terrain = Terrain;
+            float[,] newHeightmap = GetHeightmap();
+            TerrainToolState.Record newState = m_state.Save();
+
+            m_oldHeightmap = null;
+            m_oldState = null;
+
+            m_editor.Undo.CreateRecord(redoRecord =>
+            {
+                if (terrain.terrainData != null)
+                {
+                    terrain.terrainData.SetHeights(0, 0, newHeightmap);
+                }
+
+                if (m_state != null)
+                {
+                    m_state.Load(newState);
+                }
+
+                UpdateHandlePositions();
+                InitAdditiveAndInterpolatedHeights();
+
+                return true;
+            },
+            undoRecord =>
+            {
+                if (terrain.terrainData != null)
+                {
+                    terrain.terrainData.SetHeights(0, 0, oldHeightmap);
+                }
+
+                if (m_state != null)
+                {
+                    m_state.Load(oldState);
+                }
+
+                UpdateHandlePositions();
+                InitAdditiveAndInterpolatedHeights();
+
+                return true;
+            });
         }
 
         private void LateUpdate()

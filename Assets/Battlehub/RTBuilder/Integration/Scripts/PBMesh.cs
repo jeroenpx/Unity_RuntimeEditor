@@ -118,6 +118,12 @@ namespace Battlehub.ProBuilderIntegration
             get { return m_pbMesh; }
         }
 
+        public bool IsMarkedAsDestroyed
+        {
+            get;
+            private set;
+        }
+
         private void Awake()
         {
             Init(this, Vector2.one);
@@ -162,6 +168,16 @@ namespace Battlehub.ProBuilderIntegration
             {
                 Destroy(m_pbMesh);
             }
+        }
+
+        public void OnMarkAsDestroyed()
+        {
+            IsMarkedAsDestroyed = true;
+        }
+
+        public void OnMarkAsRestored()
+        {
+            IsMarkedAsDestroyed = false;
         }
 
         public MeshState GetState(bool recordUV)

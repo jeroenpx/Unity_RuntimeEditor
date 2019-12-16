@@ -22,6 +22,7 @@ namespace Battlehub.RTHandles
         private int m_idRTID;
 
         private List<Renderer> m_objectRenderers;
+        private HashSet<Renderer> m_objectRenderersHs;
         private Material m_outlineMaterial;
         private Camera m_camera;
         private int m_rtWidth = 512;
@@ -31,14 +32,18 @@ namespace Battlehub.RTHandles
         
         public bool ContainsRenderer(Renderer renderer)
         {
-            return m_objectRenderers.Contains(renderer);
+            return m_objectRenderersHs.Contains(renderer);
         }
 
         public void AddRenderers(Renderer[] renderers)
         {
             foreach (Renderer renderer in renderers)
             {
-                m_objectRenderers.Add(renderer);
+                if(!m_objectRenderersHs.Contains(renderer))
+                {
+                    m_objectRenderers.Add(renderer);
+                    m_objectRenderersHs.Add(renderer);
+                }
             }
 
             RecreateCommandBuffer();
@@ -49,6 +54,7 @@ namespace Battlehub.RTHandles
             foreach (Renderer renderer in renderers)
             {
                 m_objectRenderers.Remove(renderer);
+                m_objectRenderersHs.Remove(renderer);
             }
 
             RecreateCommandBuffer();
@@ -57,12 +63,14 @@ namespace Battlehub.RTHandles
         public void ClearOutlineData()
         {
             m_objectRenderers.Clear();
+            m_objectRenderersHs.Clear();
             RecreateCommandBuffer();
         }
 
         private void Awake()
         {
             m_objectRenderers = new List<Renderer>();
+            m_objectRenderersHs = new HashSet<Renderer>();
 
             m_commandBuffer = new CommandBuffer();
             m_commandBuffer.name = "UnityOutlineFX Command Buffer";
@@ -85,7 +93,7 @@ namespace Battlehub.RTHandles
 
         public void RecreateCommandBuffer()
         {
-            if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Legacy)
+            if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Standard)
             {
                 m_rtWidth = Screen.width;
                 m_rtHeight = Screen.height;
@@ -111,7 +119,7 @@ namespace Battlehub.RTHandles
             m_commandBuffer.SetRenderTarget(m_depthRTID, BuiltinRenderTextureType.CurrentActive);
             m_commandBuffer.ClearRenderTarget(false, true, Color.clear);
 
-            if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Legacy)
+            if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Standard)
             {
                 m_commandBuffer.SetViewport(m_camera.pixelRect);
             }
@@ -140,6 +148,7 @@ namespace Battlehub.RTHandles
                 else
                 {
                     m_objectRenderers.Remove(renderer);
+                    m_objectRenderersHs.Remove(renderer);
                 }
 
             }

@@ -40,7 +40,7 @@ namespace Battlehub.RTCommon
         public static event ExposeToEditorChangeEvent<ExposeToEditor> _ParentChanged;
         public static event ExposeToEditorEvent<Component> _ComponentAdded;
         public static event ExposeToEditorEvent<Component, bool> _ReloadComponentEditor;
-        
+
         [SerializeField]
         [HideInInspector]
         private Collider[] m_colliders;
@@ -82,11 +82,11 @@ namespace Battlehub.RTCommon
         public bool CanRename = true;
         public bool CanCreatePrefab = true;
         public bool ShowSelectionGizmo = true;
-        
+
         [HideInInspector]
         public bool CanSnap = true;
         public bool AddColliders = true;
-        
+
 
         private bool m_markAsDestroyed;
         public bool MarkAsDestroyed
@@ -138,7 +138,7 @@ namespace Battlehub.RTCommon
                     {
                         return m_skinned.sharedMesh.bounds;
                     }
-                    else if(m_spriteRenderer != null)
+                    else if (m_spriteRenderer != null)
                     {
                         return m_spriteRenderer.sprite.bounds;
                     }
@@ -160,7 +160,7 @@ namespace Battlehub.RTCommon
                         return m_skinned.sharedMesh.bounds;
                     }
                 }
-                else if(m_effectiveBoundsType == BoundsType.Sprite)
+                else if (m_effectiveBoundsType == BoundsType.Sprite)
                 {
                     if (m_spriteRenderer != null)
                     {
@@ -190,9 +190,16 @@ namespace Battlehub.RTCommon
             m_initialized = true;
         }
 
+        public bool IsAwaked
+        {
+            get;
+            private set;
+        }
+
         private void Awake()
         {
             Init();
+            IsAwaked = true;
 
             m_effectiveBoundsType = BoundsType;
             m_filter = BoundsObject.GetComponent<MeshFilter>();
@@ -204,7 +211,7 @@ namespace Battlehub.RTCommon
             }
 
             bool visible = (hideFlags & HideFlags.HideInHierarchy) == 0;
-            if(visible)
+            if (visible)
             {
                 if (transform.parent != null && transform.parent.GetComponent<ExposeToEditor>() == null)
                 {

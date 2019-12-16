@@ -121,7 +121,6 @@ namespace Battlehub.ProBuilderIntegration
                 BeginEdit();
             }
         }
-
         private void OnDestroy()
         {
             EndEdit();
@@ -129,7 +128,6 @@ namespace Battlehub.ProBuilderIntegration
 
         private void BeginEdit()
         {
-            
             m_selection = gameObject.GetComponent<PBPolyShapeSelection>();
             if(m_selection == null)
             {
@@ -155,13 +153,6 @@ namespace Battlehub.ProBuilderIntegration
 
             m_isEditing = false;
         }
-
-        //public void AddVertexWorld(Vector3 position)
-        //{
-        //    position = transform.InverseTransformPoint(position);
-        //    AddVertex(position);
-        //    m_positions.Add(position);
-        //}
 
         private void AddVertex(Vector3 position)
         {
@@ -237,6 +228,8 @@ namespace Battlehub.ProBuilderIntegration
                 MeshState meshState = state.State[mesh];
                 mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
             }
+
+            m_target.RaiseChanged(false, true);
         }
     }
 }

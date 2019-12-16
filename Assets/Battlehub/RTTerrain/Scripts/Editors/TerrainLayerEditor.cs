@@ -332,10 +332,9 @@ namespace Battlehub.RTTerrain
             TerrainLayer layer;
             if(create)
             {
-                
                 layer = new TerrainLayer() { name = "TerrainLayer" };
                 layer.diffuseTexture = texture;
-                
+                                
                 List<TerrainLayer> layers = TerrainData.terrainLayers.ToList();
                 layers.Add(layer);
                 TerrainData.terrainLayers = layers.ToArray();
@@ -411,7 +410,7 @@ namespace Battlehub.RTTerrain
             
         }
 
-        private static void UpdateLayersList(Terrain terrain)
+        public static void UpdateLayersList(Terrain terrain)
         {
             TerrainLayerEditor layerEditor = IOC.Resolve<TerrainLayerEditor>("TerrainLayerEditor");
             if (layerEditor != null)

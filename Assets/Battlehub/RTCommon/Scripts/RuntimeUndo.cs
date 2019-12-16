@@ -610,6 +610,7 @@ namespace Battlehub.RTCommon
                     }
                 }
                 m_purgeRecords.Clear();
+                m_markAsDestroyedDuringLastOperation.Clear();
 
                 if (StateChanged != null)
                 {
@@ -912,6 +913,7 @@ namespace Battlehub.RTCommon
                     }
                 }
 
+
                 m_purgeRecords.Clear();
 
                 if (StateChanged != null)
@@ -1048,7 +1050,9 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private static bool MarkAsDestroyed(Record record, bool destroyed)
+
+        
+        private bool MarkAsDestroyed(Record record, bool destroyed)
         {
             ExposeToEditor[] objects = (ExposeToEditor[])record.Target;
             for (int i = 0; i < objects.Length; ++i)
@@ -1062,15 +1066,19 @@ namespace Battlehub.RTCommon
             return true;
         }
 
-        private static void PurgeMarkedAsDestoryed(Record record)
+        private void PurgeMarkedAsDestoryed(Record record)
         {
             ExposeToEditor[] objects = (ExposeToEditor[])record.Target;
             for (int i = 0; i < objects.Length; ++i)
             {
                 ExposeToEditor obj = objects[i];
+
                 if (obj != null && obj.MarkAsDestroyed)
                 {
-                    UnityObject.DestroyImmediate(obj.gameObject);
+                    if(!m_markAsDestroyedDuringLastOperation.Contains(obj))
+                    {
+                        UnityObject.DestroyImmediate(obj.gameObject);
+                    }
                 }
             }
         }
@@ -1136,6 +1144,10 @@ namespace Battlehub.RTCommon
             }
         }
 
+
+        //To prevent gameobject from being destroyed during purge operation (in case if they are referenced somewhere in the stack)
+        private HashSet<ExposeToEditor> m_markAsDestroyedDuringLastOperation = new HashSet<ExposeToEditor>();
+
         public void DestroyObjects(ExposeToEditor[] destoryedObjects)
         {
             if (!Enabled)
@@ -1146,6 +1158,15 @@ namespace Battlehub.RTCommon
             {
                 return;
             }
+
+            for(int i = 0; i < destoryedObjects.Length; ++i)
+            {
+                if (!m_markAsDestroyedDuringLastOperation.Contains(destoryedObjects[i]))
+                {
+                    m_markAsDestroyedDuringLastOperation.Add(destoryedObjects[i]);
+                }
+            }
+
             Record newRecord = CreateRecord(destoryedObjects, true, false,
                record => MarkAsDestroyed(record, (bool)record.NewState),
                record => MarkAsDestroyed(record, (bool)record.OldState),
@@ -1156,6 +1177,11 @@ namespace Battlehub.RTCommon
             {
                 newRecord.Redo();
             }
+
+            if(!IsRecording)
+            {
+                m_markAsDestroyedDuringLastOperation.Clear();
+            }    
         }
 
         private static object GetDefault(Type type)

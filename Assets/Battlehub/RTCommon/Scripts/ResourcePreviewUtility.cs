@@ -146,7 +146,8 @@ namespace Battlehub.RTCommon
                     texture = texture.DeCompress();
                 }
 
-                TextureScale.Bilinear(texture, m_objectToTextureCamera.snapshotTextureWidth, m_objectToTextureCamera.snapshotTextureHeight);
+                float textureAspect = (texture.width * m_objectToTextureCamera.snapshotTextureHeight) / (float)Mathf.Max(1, texture.height * m_objectToTextureCamera.snapshotTextureWidth);
+                TextureScale.Bilinear(texture, Mathf.RoundToInt(m_objectToTextureCamera.snapshotTextureWidth * textureAspect), m_objectToTextureCamera.snapshotTextureHeight);
                 previewData = texture.EncodeToPNG();
                 Destroy(texture);
             }

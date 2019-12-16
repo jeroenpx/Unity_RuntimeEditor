@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
+using Battlehub.RTSL;
+using Battlehub.RTSL.Interface;
+using Battlehub.UIControls;
+using Battlehub.UIControls.MenuControl;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Battlehub.RTCommon;
-using Battlehub.RTSL.Interface;
-using Battlehub.UIControls.MenuControl;
-
 using UnityObject = UnityEngine.Object;
-using Battlehub.RTHandles;
-using Battlehub.UIControls;
-using Battlehub.RTSL;
 
 namespace Battlehub.RTEditor
 {
@@ -84,7 +83,6 @@ namespace Battlehub.RTEditor
         }
     }
 
-
     [DefaultExecutionOrder(-90)]
     [RequireComponent(typeof(RuntimeObjects))]
     public class RuntimeEditor : RTEBase, IRuntimeEditor
@@ -102,11 +100,18 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject m_progressIndicator = null;
 
+        [Serializable]
+        public class Settings
+        {
+            public bool OpenDefaultProject = true;
+            public string DefaultProjectName = null;
+            public bool CreateCamera = true;
+            public bool CreateLight = true;
+        }
+
         [SerializeField]
-        private bool m_openDefaultProject = true;
-        [SerializeField]
-        private string m_defaultProjectName = null;
-        
+        private Settings m_extraSettings;
+
         public override bool IsBusy
         {
             get { return base.IsBusy; }
@@ -161,6 +166,37 @@ namespace Battlehub.RTEditor
 
         protected override void Awake()
         {
+            if (!RenderPipelineInfo.UseRenderTextures)
+            {
+                CameraLayerSettings layerSettings = CameraLayerSettings;
+                Transform uiBgCameraTransform = transform.Find("UIBackgroundCamera");
+                Transform uiCameraTransform = transform.Find("UICamera");
+                Transform uiBgTransform = transform.Find("UIBackground");
+                if(uiBgCameraTransform != null && uiCameraTransform != null && uiBgTransform != null)
+                {
+                    Camera uiBgCamera = uiBgCameraTransform.GetComponent<Camera>();
+                    Camera uiCamera = uiCameraTransform.GetComponent<Camera>();
+                    Canvas uiBg = uiBgTransform.GetComponent<Canvas>();
+                    if(uiBgCamera != null && uiCamera != null && uiBg != null)
+                    {
+                        uiBgCamera.enabled = true;
+                        uiBg.worldCamera = uiBgCamera;
+                        uiBgCamera.gameObject.SetActive(true);
+
+                        uiCamera.clearFlags = CameraClearFlags.Depth;
+                        uiCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
+                    }
+                }
+            }
+            else
+            {
+                Transform uiBgCameraTransform = transform.Find("UIBackgroundCamera");
+                if(uiBgCameraTransform != null)
+                {
+                    Destroy(uiBgCameraTransform.gameObject);
+                }
+            }
+
             base.Awake();
       
             IOC.Resolve<IRTEAppearance>();
@@ -176,15 +212,20 @@ namespace Battlehub.RTEditor
             m_project.OpenProjectCompleted += OnProjectOpened;
             m_project.DeleteProjectCompleted += OnProjectDeleted;
 
-            if(m_openDefaultProject)
+            if(m_extraSettings == null)
             {
-                if (string.IsNullOrEmpty(m_defaultProjectName))
+                m_extraSettings = new Settings();
+            }
+
+            if(m_extraSettings.OpenDefaultProject)
+            {
+                if (string.IsNullOrEmpty(m_extraSettings.DefaultProjectName))
                 {
-                    m_defaultProjectName = PlayerPrefs.GetString("RuntimeEditor.DefaultProject", "DefaultProject");
+                    m_extraSettings.DefaultProjectName = PlayerPrefs.GetString("RuntimeEditor.DefaultProject", "DefaultProject");
                 }
 
                 IsBusy = true;
-                m_project.OpenProject(m_defaultProjectName, (error, projectInfo) =>
+                m_project.OpenProject(m_extraSettings.DefaultProjectName, (error, projectInfo) =>
                 {
                     IsBusy = false;
                 });
@@ -813,26 +854,32 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if(m_project.ToGuid(typeof(Light)) != Guid.Empty)
+            if (m_extraSettings.CreateLight)
             {
-                GameObject lightGO = new GameObject("Directional Light");
-                lightGO.transform.position = Vector3.up * 3;
-                lightGO.transform.rotation = Quaternion.Euler(50, -30, 0);
+                if (m_project.ToGuid(typeof(Light)) != Guid.Empty)
+                {
+                    GameObject lightGO = new GameObject("Directional Light");
+                    lightGO.transform.position = Vector3.up * 3;
+                    lightGO.transform.rotation = Quaternion.Euler(50, -30, 0);
 
-                Light light = lightGO.AddComponent<Light>();
-                light.type = LightType.Directional;
-                light.shadows = LightShadows.Soft;
-                lightGO.AddComponent<ExposeToEditor>();
+                    Light light = lightGO.AddComponent<Light>();
+                    light.type = LightType.Directional;
+                    light.shadows = LightShadows.Soft;
+                    lightGO.AddComponent<ExposeToEditor>();
+                }
             }
 
-            if(m_project.ToGuid(typeof(Camera)) != Guid.Empty)
-            {
-                GameObject cameraGO = new GameObject("Camera");
-                cameraGO.transform.position = new Vector3(0, 1, -10);
+            if(m_extraSettings.CreateCamera)
+            { 
+                if (m_project.ToGuid(typeof(Camera)) != Guid.Empty)
+                {
+                    GameObject cameraGO = new GameObject("Camera");
+                    cameraGO.transform.position = new Vector3(0, 1, -10);
 
-                cameraGO.AddComponent<Camera>();
-                cameraGO.AddComponent<ExposeToEditor>();
-                cameraGO.AddComponent<GameViewCamera>();
+                    cameraGO.AddComponent<Camera>();
+                    cameraGO.AddComponent<ExposeToEditor>();
+                    cameraGO.AddComponent<GameViewCamera>();
+                }
             }
 
             Selection.objects = null;

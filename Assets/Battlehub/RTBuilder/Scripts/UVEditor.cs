@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTBuilder
 {
-    public class UVEditorView : RuntimeWindow
+    public class UVEditor : MonoBehaviour
     {
         private IProBuilderTool m_tool;
         private IWindowManager m_wm;
@@ -27,31 +27,29 @@ namespace Battlehub.RTBuilder
         private GameObject m_uvManualEditorPanel = null;
 
         [SerializeField]
+        private GameObject m_uvNoSelectedFacesPanel = null;
+
+        [SerializeField]
         private TextMeshProUGUI m_modeText = null;
 
         private Transform m_proBuilderWindow;
+        private IRTE m_editor;
 
-        protected override void AwakeOverride()
-        {
-            WindowType = RuntimeWindowType.Custom;
-            base.AwakeOverride();
-        }
-
-        protected virtual void Start()
+        private void Awake()
         {
             m_tool = IOC.Resolve<IProBuilderTool>();
+            m_editor = IOC.Resolve<IRTE>();
+        }
 
-            m_wm = IOC.Resolve<IWindowManager>();
-            m_wm.WindowCreated += OnWindowCreated;
-            m_wm.WindowDestroyed += OnWindowDestroyed;
-
+        private void Start()
+        {
             if(m_tool != null)
             {
                 OnToolSelectionChanged();
                 m_tool.SelectionChanged += OnToolSelectionChanged;
             }
-            
-            Editor.Selection.SelectionChanged += OnSelectionChanged;
+
+            m_editor.Selection.SelectionChanged += OnSelectionChanged;
 
             if (m_convertToAutoUVsButton != null)
             {
@@ -64,24 +62,36 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        protected override void OnDestroyOverride()
+        private void OnEnable()
         {
-            base.OnDestroyOverride();
+            m_tool.UVEditingMode = true;
+            UpdateVisualState();
+        }
 
-            if(m_wm != null)
+        private bool m_quit = false;
+        private void OnApplicationQuit()
+        {
+            m_quit = true;
+        }
+
+        private void OnDisable()
+        {
+            if(!m_quit)
             {
-                m_wm.WindowCreated -= OnWindowCreated;
-                m_wm.WindowDestroyed -= OnWindowDestroyed;
+                m_tool.UVEditingMode = false;
             }
+        }
 
+        private void OnDestroy()
+        {
             if(m_tool != null)
             {
                 m_tool.SelectionChanged -= OnToolSelectionChanged;
             }
 
-            if(Editor != null)
+            if(m_editor != null)
             {
-                Editor.Selection.SelectionChanged -= OnSelectionChanged;
+                m_editor.Selection.SelectionChanged -= OnSelectionChanged;
             }
 
             if (m_convertToAutoUVsButton != null)
@@ -138,10 +148,19 @@ namespace Battlehub.RTBuilder
                 {
                     m_uvModePanel.gameObject.SetActive(false);
                 }
+                if(m_uvNoSelectedFacesPanel != null)
+                {
+                    m_uvNoSelectedFacesPanel.gameObject.SetActive(true);
+                }
             }
             else
             {
-                m_tool.UpdatePivot();
+                if (m_uvNoSelectedFacesPanel != null)
+                {
+                    m_uvNoSelectedFacesPanel.gameObject.SetActive(false);
+                }
+
+                m_tool.TryUpdatePivotTransform();
 
                 bool hasSelectedManualUVs = m_tool.HasSelectedManualUVs;
                 bool hasSelectedAutoUVs = m_tool.HasSelectedAutoUVs;
@@ -184,49 +203,6 @@ namespace Battlehub.RTBuilder
                 {
                     m_convertToManualUVsButton.gameObject.SetActive(!hasSelectedManualUVs || hasSelectedAutoUVs);
                 }
-            }
-        }
-
-        private void OnWindowCreated(Transform obj)
-        {
-            if(obj == m_wm.GetWindow("ProBuilder"))
-            {
-                m_proBuilderWindow = obj;
-                if (m_tool != null)
-                {
-                    m_tool.SelectionChanged -= OnToolSelectionChanged;
-                }
-                m_tool = IOC.Resolve<IProBuilderTool>();
-                OnToolSelectionChanged();
-                m_tool.SelectionChanged += OnToolSelectionChanged;
-
-                UVAutoEditorPanel autoUV = m_uvAutoEditorPanel.GetComponent<UVAutoEditorPanel>();
-                autoUV.Tool = m_tool;
-
-                UVManualEditorPanel manualUV = m_uvManualEditorPanel.GetComponent<UVManualEditorPanel>();
-                manualUV.Tool = m_tool;
-            }
-        }
-
-        private void OnWindowDestroyed(Transform obj)
-        {
-            if (obj == m_proBuilderWindow)
-            {
-                m_proBuilderWindow = null;
-
-                UVAutoEditorPanel autoUV = m_uvAutoEditorPanel.GetComponent<UVAutoEditorPanel>();
-                if(autoUV)
-                {
-                    autoUV.Tool = null;
-                }
-                
-
-                UVManualEditorPanel manualUV = m_uvManualEditorPanel.GetComponent<UVManualEditorPanel>();
-                if(manualUV)
-                {
-                    manualUV.Tool = null;
-                }
-                
             }
         }
     }

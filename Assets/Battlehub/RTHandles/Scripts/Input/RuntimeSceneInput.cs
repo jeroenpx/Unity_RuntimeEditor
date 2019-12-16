@@ -22,8 +22,10 @@ namespace Battlehub.RTHandles
         private bool m_rotate;
         private bool m_pan;
         private bool m_freeMove;
+        [SerializeField]
+        private bool m_beginFreeMoveImmediately = true;
+        private bool m_freeMoveActive;
         private bool m_isActive;
-
        
         protected RuntimeSceneComponent SceneComponent
         {
@@ -180,20 +182,34 @@ namespace Battlehub.RTHandles
             if(beginFreeMove && !isPointerOverAndSelected)
             {
                 freeMove = false;
+                
             }
             bool endFreeMove = m_freeMove != freeMove && !freeMove;
             m_freeMove = freeMove;
+            if(!m_freeMove)
+            {
+                m_freeMoveActive = false;
+            }
 
             Vector3 pointerPosition = input.GetPointerXY(0);
             tools.IsViewing = m_rotate || m_pan || m_freeMove;
 
-            if (beginPan || endPan || beginRotate || endRotate || beginFreeMove || endFreeMove)
+            if (beginPan || endPan || beginRotate || endRotate || beginFreeMove && m_beginFreeMoveImmediately || endFreeMove)
             {
-                SceneComponent.UpdateCursorState(true, m_pan, m_rotate, m_freeMove);
-            } 
+                SceneComponent.UpdateCursorState(true, m_pan, m_rotate, beginFreeMove && m_beginFreeMoveImmediately);
+            }
+
             if (m_freeMove)
             {
-                SceneComponent.FreeMove(RotateAxes() * FreeRotateSensitivity, MoveAxes() * FreeMoveSensitivity, ZoomAxis());
+                Vector2 rotateAxes = RotateAxes() * FreeRotateSensitivity;
+                Vector3 moveAxes = MoveAxes() * FreeMoveSensitivity;
+                float zoomAxis = ZoomAxis();
+                SceneComponent.FreeMove(rotateAxes, moveAxes, zoomAxis);
+                if(!m_freeMoveActive && (rotateAxes != Vector2.zero || moveAxes != Vector3.zero || zoomAxis != 0))
+                {
+                    SceneComponent.UpdateCursorState(true, m_pan, m_rotate, m_freeMove);
+                    m_freeMoveActive = true;
+                }
             }
             else if (m_rotate)
             {

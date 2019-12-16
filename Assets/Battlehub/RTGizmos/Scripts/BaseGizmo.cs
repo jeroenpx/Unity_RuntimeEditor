@@ -394,7 +394,6 @@ namespace Battlehub.RTGizmos
 
             if (SceneCamera == null)
             {
-                Debug.LogError("Camera is null");
                 return;
             }
 

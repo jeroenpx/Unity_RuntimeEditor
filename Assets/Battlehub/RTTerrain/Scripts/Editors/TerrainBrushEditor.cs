@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
+using Battlehub.RTHandles;
 using Battlehub.UIControls;
 using Battlehub.Utils;
 using System;
@@ -28,7 +29,19 @@ namespace Battlehub.RTTerrain
         private RangeIntEditor m_opacityEditor = null;
 
         [SerializeField]
+        private GameObject m_buttonsPanel = null;
+
+        [SerializeField]
+        private Button m_beginCreateButton = null;
+
+        [SerializeField]
+        private GameObject m_createBrushEditor = null;
+
+        [SerializeField]
         private Button m_createButton = null;
+
+        [SerializeField]
+        private Button m_cancelCreateButton = null;
 
         [SerializeField]
         private Button m_addButton = null;
@@ -74,14 +87,17 @@ namespace Battlehub.RTTerrain
 
         private TerrainBrushSource m_source;
         private ITerrainCutoutMaskRenderer m_terrainCutoutRenderer;
+        private ICustomSelectionComponent m_customSelection;
         private IRTE m_editor;
         private TerrainEditor m_terrainEditor;
-       
+        
         private void Awake()
         {
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
             m_editor = IOC.Resolve<IRTE>();
             m_editor.Selection.SelectionChanged += OnEditorSelectionChanged;
+            m_customSelection = IOC.Resolve<ICustomSelectionComponent>();
+
             m_terrainCutoutRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
             m_terrainCutoutRenderer.ObjectImageLayer = m_editor.CameraLayerSettings.ResourcePreviewLayer;
 
@@ -122,9 +138,9 @@ namespace Battlehub.RTTerrain
                 m_opacityEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushOpacity), null, "Brush Opacity", null, null, null, false);
             }
 
-            if (m_createButton != null)
+            if (m_beginCreateButton != null)
             {
-                m_createButton.onClick.AddListener(OnCreateButtonClick);
+                m_beginCreateButton.onClick.AddListener(BeginCreateButtonClick);
             }
 
             if (m_addButton != null)
@@ -146,11 +162,26 @@ namespace Battlehub.RTTerrain
             m_brushesList.SelectedItem = brushes.FirstOrDefault();
         }
 
+        private void OnDisable()
+        {
+            if (m_customSelection != null)
+            {
+                m_customSelection.Enabled = false;
+                EndCreateBrush();
+            }
+        }
+
         private void OnDestroy()
         {
             if(m_editor != null)
             {
                 m_editor.Selection.SelectionChanged -= OnEditorSelectionChanged;
+            }
+
+            if(m_customSelection != null)
+            {
+                m_customSelection.Enabled = false;
+                EndCreateBrush();
             }
 
             if (m_brushesList != null)
@@ -159,9 +190,9 @@ namespace Battlehub.RTTerrain
                 m_brushesList.ItemDataBinding -= OnBrushesDataBinding;
             }
 
-            if (m_createButton != null)
+            if (m_beginCreateButton != null)
             {
-                m_createButton.onClick.RemoveListener(OnCreateButtonClick);
+                m_beginCreateButton.onClick.RemoveListener(BeginCreateButtonClick);
             }
 
             if (m_addButton != null)
@@ -172,6 +203,17 @@ namespace Battlehub.RTTerrain
             if (m_deleteButton != null)
             {
                 m_deleteButton.onClick.RemoveListener(OnDeleteButtonClick);
+            }
+        }
+
+        private void Update()
+        {
+            if (m_createBrushEditor != null && m_createBrushEditor.activeSelf)
+            {
+                if (m_editor.Input.GetKeyDown(KeyCode.Escape))
+                {
+                    EndCreateButtonClick();
+                }
             }
         }
 
@@ -213,22 +255,70 @@ namespace Battlehub.RTTerrain
                 m_deleteButton.interactable = !m_source.IsBuiltInBrush(SelectedBrush);
             }
 
-            if(m_createButton != null)
+            if(m_beginCreateButton != null)
             {
-                m_createButton.interactable = m_editor.Selection.activeGameObject != null;
+                m_beginCreateButton.interactable = m_editor.Selection.activeGameObject != null;
             }
         }
 
-        private void OnCreateButtonClick()
+        private void BeginCreateButtonClick()
         {
             if(m_terrainEditor.Terrain == null || m_terrainEditor.Terrain.terrainData == null)
             {
                 return;
             }
+            
+            if(m_createBrushEditor != null)
+            {
+                m_createBrushEditor.SetActive(true);
+                m_buttonsPanel.SetActive(false);
+                m_brushSizeEditor.gameObject.SetActive(false);
+                m_opacityEditor.gameObject.SetActive(false);
+                UnityEventHelper.AddListener(m_createButton, button => button.onClick, CreateButtonClick);
+                UnityEventHelper.AddListener(m_cancelCreateButton, button => button.onClick, EndCreateButtonClick);
+                if (m_customSelection != null)
+                {
+                    m_customSelection.Enabled = true;
+                    if(m_terrainEditor.Projector != null)
+                    {
+                        m_terrainEditor.Projector.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
 
-            Texture2D texuture = m_terrainCutoutRenderer.CreateMask(m_terrainEditor.Terrain.terrainData, m_editor.Selection.gameObjects, false);
-            CreateBrush(texuture);
-            Destroy(texuture);
+        private void CreateButtonClick()
+        {
+            Texture2D texture = m_terrainCutoutRenderer.CreateMask(m_terrainEditor.Terrain.terrainData, m_customSelection.Selection.gameObjects, false);
+            CreateBrush(texture);
+            Destroy(texture);
+            EndCreateButtonClick();
+        }
+
+        private void EndCreateButtonClick()
+        {
+            EndCreateBrush();
+            if(m_terrainEditor.Projector != null)
+            {
+                m_terrainEditor.Projector.gameObject.SetActive(true);
+            }
+        }
+
+        private void EndCreateBrush()
+        {
+            if (m_createBrushEditor != null && m_createBrushEditor.activeSelf)
+            {
+                m_createBrushEditor.SetActive(false);
+                m_buttonsPanel.SetActive(true);
+                m_brushSizeEditor.gameObject.SetActive(true);
+                m_opacityEditor.gameObject.SetActive(true);
+                UnityEventHelper.RemoveListener(m_createButton, button => button.onClick, CreateButtonClick);
+                UnityEventHelper.RemoveListener(m_cancelCreateButton, button => button.onClick, EndCreateButtonClick);
+                if (m_customSelection != null)
+                {
+                    m_customSelection.Enabled = false;
+                }
+            }
         }
 
         private void OnAddButtonClick()

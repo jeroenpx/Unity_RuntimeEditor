@@ -32,7 +32,6 @@ namespace Battlehub.RTTerrain
                 m_terrainEditor.TerrainChanged -= OnTerrainChanged;
             }
 
-
             if (m_terrainBrushEditor != null)
             {
                 m_terrainBrushEditor.SelectedBrushChanged -= OnSelectedBrushChanged;

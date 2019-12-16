@@ -793,7 +793,8 @@ namespace Battlehub.RTSL
             m_root = null;
             m_projectPath = null;
 
-            CreateNewScene();
+            ClearScene();
+            m_loadedScene = null;
 
             if (CloseProjectCompleted != null)
             {
@@ -3900,7 +3901,7 @@ namespace Battlehub.RTSL
             return m_ordinalToStaticAssetLibrary;
         }
 
-        public ProjectAsyncOperation<T[]> GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback = null) where T : new()
+        public ProjectAsyncOperation<T[]> GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback = null)
         {
             if (m_root == null)
             {
@@ -3921,7 +3922,7 @@ namespace Battlehub.RTSL
             return ao;
         }
 
-        private void _GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback, ProjectAsyncOperation<T[]> ao) where T : new()
+        private void _GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback, ProjectAsyncOperation<T[]> ao)
         {
             Type objType = typeof(T);
             Type persistentType = m_typeMap.ToPersistentType(objType);
@@ -3954,7 +3955,7 @@ namespace Battlehub.RTSL
                 {
                     for (int i = 0; i < result.Length; ++i)
                     {
-                        result[i] = new T();
+                        result[i] = (T)persistentObjects[i].Instantiate(typeof(T));
                         persistentObjects[i].WriteTo(result[i]);
                     }
                 }
@@ -3977,7 +3978,7 @@ namespace Battlehub.RTSL
         }
 
 
-        public ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) where T : new()
+        public ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) 
         {
             if (m_root == null)
             {
@@ -3998,7 +3999,7 @@ namespace Battlehub.RTSL
             return ao;
         }
 
-        private void _GetValue<T>(string key, ProjectEventHandler<T> callback, ProjectAsyncOperation<T> ao) where T : new()
+        private void _GetValue<T>(string key, ProjectEventHandler<T> callback, ProjectAsyncOperation<T> ao) 
         {
             Type objType = typeof(T);
             Type persistentType = m_typeMap.ToPersistentType(objType);
@@ -4024,7 +4025,7 @@ namespace Battlehub.RTSL
                 }
                 else
                 {
-                    result = new T();
+                    result = (T)persistentObject.Instantiate(typeof(T));
                 }
                  
                 persistentObject.WriteTo(result);

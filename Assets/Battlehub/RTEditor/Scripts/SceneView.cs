@@ -1,14 +1,16 @@
 ﻿using Battlehub.RTCommon;
+using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
     public class SceneView : RuntimeWindow
-    {      
+    {
         protected override void AwakeOverride()
         {
             ActivateOnAnyKey = true;
             WindowType = RuntimeWindowType.Scene;
             base.AwakeOverride();
+            
         }
 
         protected virtual void Start()

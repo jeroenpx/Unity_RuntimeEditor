@@ -85,6 +85,16 @@ namespace Battlehub.RTCommon
         private Vector3 m_position;
         private RenderTexture m_texture;
 
+        /// <summary>
+        /// In certain cases (when using StandaloneFileBrowser for example) several TryResizeRenderTexture calls must be skipped to avoid glitches due to incorrect values returned by Screen.width and Screen.height
+        /// </summary>
+        private static int m_skipFrames = 0;
+        public static int SkipFrames
+        {
+            get { return m_skipFrames; }
+            set { m_skipFrames = value; }
+        }
+        
         private void Awake()
         {
             m_camera = GetComponent<Camera>();
@@ -93,7 +103,7 @@ namespace Battlehub.RTCommon
                 m_camera.rect = new Rect(0, 0, 1, 1);
             }
 
-            if(RenderPipelineInfo.Type != RPType.Legacy)
+            if(RenderPipelineInfo.Type != RPType.Standard)
             {
                 m_camera.allowMSAA = m_allowMSAA;
             }
@@ -138,7 +148,6 @@ namespace Battlehub.RTCommon
             }
         }
 
-
         private void OnDestroy()
         {
             if (m_texture != null)
@@ -166,6 +175,12 @@ namespace Battlehub.RTCommon
 
         public bool TryResizeRenderTexture(bool canResizeOutput = true)
         {
+            if (m_skipFrames > 0)
+            {
+                m_skipFrames--;
+                return false;
+            }
+
             bool resizeRenderTexture = m_outputRect != m_output.rectTransform.rect || m_screenWidth != Screen.width || m_screenHeight != Screen.height;
             bool resizeOutput = canResizeOutput && (resizeRenderTexture || m_output.rectTransform.position != m_position);
 
@@ -195,7 +210,7 @@ namespace Battlehub.RTCommon
             int sizeX;
             int sizeY;
 
-            if (RenderPipelineInfo.Type != RPType.Legacy)
+            if (RenderPipelineInfo.Type != RPType.Standard)
             {
                 Rect rect = m_output.rectTransform.rect;
 
@@ -252,7 +267,7 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            if (RenderPipelineInfo.Type != RPType.Legacy)
+            if (RenderPipelineInfo.Type != RPType.Standard)
             {
                 if(m_camera == null)
                 {

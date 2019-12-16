@@ -183,12 +183,22 @@ namespace Battlehub.ProBuilderIntegration
                 m_initialPositions[meshIndex] = mesh.GetVertices(m_initialIndexes[meshIndex]).Select(v => mesh.transform.TransformPoint(v.position)).ToArray();
                 meshIndex++;
             }
+
+            if (UVEditingMode)
+            {
+                m_faceSelection.IsRendererEnabled = false;
+            }
         }
 
         public override void EndRotate()
         {
             m_initialPositions = null;
             m_initialIndexes = null;
+
+            if (UVEditingMode)
+            {
+                m_faceSelection.IsRendererEnabled = true;
+            }
         }
 
         public override void Rotate(Quaternion rotation)
@@ -239,12 +249,22 @@ namespace Battlehub.ProBuilderIntegration
                 m_initialPositions[meshIndex] = mesh.GetVertices(m_initialIndexes[meshIndex]).Select(v => mesh.transform.TransformPoint(v.position)).ToArray();
                 meshIndex++;
             }
+
+            if (UVEditingMode)
+            {
+                m_faceSelection.IsRendererEnabled = false;
+            }
         }
 
         public override void EndScale()
         {
             m_initialPositions = null;
             m_initialIndexes = null;
+
+            if (UVEditingMode)
+            {
+                m_faceSelection.IsRendererEnabled = true;
+            }
         }
 
         public override void Scale(Vector3 scale, Quaternion rotation)
@@ -546,18 +566,28 @@ namespace Battlehub.ProBuilderIntegration
                 m_faceSelection.Clear();
             }
 
-            m_faceSelection.BeginChange();
-
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            if (selection != null)
             {
-                ProBuilderMesh mesh = kvp.Key;
-                foreach (int face in kvp.Value)
-                {
-                    m_faceSelection.Add(mesh, face);
-                }
-            }
+                selection = selection.ToFaces(false);
 
-            m_faceSelection.EndChange();
+                m_faceSelection.BeginChange();
+
+                foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+                {
+                    ProBuilderMesh mesh = kvp.Key;
+                    PBMesh pbMesh = mesh.GetComponent<PBMesh>();
+                    if (pbMesh.IsMarkedAsDestroyed)
+                    {
+                        continue;
+                    }
+                    foreach (int face in kvp.Value)
+                    {
+                        m_faceSelection.Add(mesh, face);
+                    }
+                }
+
+                m_faceSelection.EndChange();
+            }
         }
 
         public override MeshSelection GetSelection()
@@ -586,53 +616,53 @@ namespace Battlehub.ProBuilderIntegration
             return meshSelection;
         }
 
-        public override void RollbackSelection(MeshSelection selection)
-        {
-            m_faceSelection.BeginChange();
+        //public override void RollbackSelection(MeshSelection selection)
+        //{
+        //    m_faceSelection.BeginChange();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
-            {
-                foreach (int face in kvp.Value)
-                {
-                    m_faceSelection.Remove(kvp.Key, face);
-                }
-            }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+        //    {
+        //        foreach (int face in kvp.Value)
+        //        {
+        //            m_faceSelection.Remove(kvp.Key, face);
+        //        }
+        //    }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
-            {
-                ProBuilderMesh mesh = kvp.Key;
-                foreach (int face in kvp.Value)
-                {
-                    m_faceSelection.Add(mesh, face);
-                }
-            }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
+        //    {
+        //        ProBuilderMesh mesh = kvp.Key;
+        //        foreach (int face in kvp.Value)
+        //        {
+        //            m_faceSelection.Add(mesh, face);
+        //        }
+        //    }
 
-            m_faceSelection.EndChange();
-        }
+        //    m_faceSelection.EndChange();
+        //}
 
-        public override void ApplySelection(MeshSelection selection)
-        {
-            m_faceSelection.BeginChange();
+        //public override void ApplySelection(MeshSelection selection)
+        //{
+        //    m_faceSelection.BeginChange();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
-            {
-                foreach (int face in kvp.Value)
-                {
-                    m_faceSelection.Remove(kvp.Key, face);
-                }
-            }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
+        //    {
+        //        foreach (int face in kvp.Value)
+        //        {
+        //            m_faceSelection.Remove(kvp.Key, face);
+        //        }
+        //    }
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
-            {
-                ProBuilderMesh mesh = kvp.Key;
-                foreach (int face in kvp.Value)
-                {
-                    m_faceSelection.Add(mesh, face);
-                }
-            }
+        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+        //    {
+        //        ProBuilderMesh mesh = kvp.Key;
+        //        foreach (int face in kvp.Value)
+        //        {
+        //            m_faceSelection.Add(mesh, face);
+        //        }
+        //    }
 
-            m_faceSelection.EndChange();
-        }
+        //    m_faceSelection.EndChange();
+        //}
 
         public override MeshEditorState GetState(bool recordUV)
         {

@@ -50,12 +50,12 @@ namespace Battlehub.RTEditor
 
             m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
             m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
-            m_projectResources.ItemDeleted += OnProjectResourcesDeleted;
+            m_projectResources.ItemsDeleted += OnProjectResourcesDeleted;
             m_projectResources.SelectionChanged += OnProjectResourcesSelectionChanged;
                 
             m_projectTree.SelectionChanged += OnProjectTreeSelectionChanged;
             m_projectTree.ItemRenamed += OnProjectTreeItemRenamed;
-            m_projectTree.ItemDeleted += OnProjectTreeItemDeleted;
+            m_projectTree.ItemsDeleted += OnProjectTreeItemDeleted;
 
             m_project.OpenProjectCompleted += OnProjectOpenCompleted;
             m_project.CloseProjectCompleted += OnCloseProjectCompleted;
@@ -71,7 +71,7 @@ namespace Battlehub.RTEditor
             if (m_project.IsOpened)
             {
                 m_projectTree.LoadProject(m_project.Root);
-                m_projectTree.SelectedFolder = m_project.Root;
+                m_projectTree.SelectedItem = m_project.Root;
             }
         }
 
@@ -83,14 +83,14 @@ namespace Battlehub.RTEditor
             {
                 m_projectResources.ItemDoubleClick -= OnProjectResourcesDoubleClick;
                 m_projectResources.ItemRenamed -= OnProjectResourcesRenamed;
-                m_projectResources.ItemDeleted -= OnProjectResourcesDeleted;
+                m_projectResources.ItemsDeleted -= OnProjectResourcesDeleted;
                 m_projectResources.SelectionChanged -= OnProjectResourcesSelectionChanged;
             }
 
             if(m_projectTree != null)
             {
                 m_projectTree.SelectionChanged -= OnProjectTreeSelectionChanged;
-                m_projectTree.ItemDeleted -= OnProjectTreeItemDeleted;
+                m_projectTree.ItemsDeleted -= OnProjectTreeItemDeleted;
                 m_projectTree.ItemRenamed -= OnProjectTreeItemRenamed;
             }
 
@@ -118,8 +118,8 @@ namespace Battlehub.RTEditor
             }
             
             m_projectTree.LoadProject(m_project.Root);
-            m_projectTree.SelectedFolder = null;
-            m_projectTree.SelectedFolder = m_project.Root;
+            m_projectTree.SelectedItem = null;
+            m_projectTree.SelectedItem = m_project.Root;
         }
 
         private void OnCloseProjectCompleted(Error error)
@@ -131,7 +131,7 @@ namespace Battlehub.RTEditor
             }
 
             m_projectTree.LoadProject(null);
-            m_projectTree.SelectedFolder = null;
+            m_projectTree.SelectedItem = null;
             m_projectResources.SetItems(null, null, true);
         }
 
@@ -144,25 +144,25 @@ namespace Battlehub.RTEditor
             }
 
             string path = string.Empty;
-            if (m_projectTree.SelectedFolder != null)
+            if (m_projectTree.SelectedItem != null)
             {
-                path = m_projectTree.SelectedFolder.ToString();
+                path = m_projectTree.SelectedItem.ToString();
             }
 
             m_projectTree.LoadProject(m_project.Root);
 
             if (!string.IsNullOrEmpty(path))
             {
-                if (m_projectTree.SelectedFolder == m_project.Root)
+                if (m_projectTree.SelectedItem == m_project.Root)
                 {
-                    m_projectTree.SelectedFolder = null;
+                    m_projectTree.SelectedItem = null;
                 }
 
-                m_projectTree.SelectedFolder = m_project.Root.Get(path);
+                m_projectTree.SelectedItem = m_project.Root.Get(path);
             }
             else
             {
-                m_projectTree.SelectedFolder = m_project.Root;
+                m_projectTree.SelectedItem = m_project.Root;
             }
         }
 
@@ -216,7 +216,7 @@ namespace Battlehub.RTEditor
             }
 
             m_projectTree.AddItem(result.Parent, result);
-            m_projectTree.SelectedFolder = result;
+            m_projectTree.SelectedItem = result;
         }
 
         private void OnMoveCompleted(Error error, ProjectItem[] projectItems, ProjectItem[] oldParents)
@@ -296,7 +296,7 @@ namespace Battlehub.RTEditor
 
             if(e.ProjectItem.IsFolder)
             {
-                m_projectTree.SelectedFolder = e.ProjectItem;
+                m_projectTree.SelectedItem = e.ProjectItem;
             }
             else
             {

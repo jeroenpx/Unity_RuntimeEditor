@@ -54,13 +54,13 @@ namespace Battlehub.ProBuilderIntegration
             get;
         }
 
-        public virtual void ApplySelection(MeshSelection selection)
-        {
-        }
+        //public virtual void ApplySelection(MeshSelection selection)
+        //{
+        //}
 
-        public virtual void RollbackSelection(MeshSelection selection)
-        {
-        }
+        //public virtual void RollbackSelection(MeshSelection selection)
+        //{
+        //}
 
         public virtual MeshSelection ClearSelection()
         {
@@ -101,11 +101,6 @@ namespace Battlehub.ProBuilderIntegration
         }
 
         public virtual MeshSelection GetSelection()
-        {
-            return null;
-        }
-
-        public virtual MeshEditorState GetState(bool recordUV)
         {
             return null;
         }
@@ -172,11 +167,16 @@ namespace Battlehub.ProBuilderIntegration
             return null;
         }
 
-        public virtual void SetState(MeshEditorState state)
+
+        public virtual MeshEditorState GetState(bool recordUV)
         {
+            return null;
         }
 
-        
+        public virtual void SetState(MeshEditorState state)
+        {
+            
+        }
     }
 }
 

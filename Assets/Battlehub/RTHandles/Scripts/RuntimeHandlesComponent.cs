@@ -189,7 +189,9 @@ namespace Battlehub.RTHandles
                     m_instance = FindObjectOfType<RuntimeHandlesComponent>();
                     if (m_instance == null)
                     {
+                        IRTE rte = IOC.Resolve<IRTE>();
                         GameObject runtimeHandles = new GameObject("RuntimeHandlesComponent");
+                        runtimeHandles.transform.SetParent(rte.Root.transform, false);
                         m_instance = runtimeHandles.AddComponent<RuntimeHandlesComponent>();
                     }
                 }

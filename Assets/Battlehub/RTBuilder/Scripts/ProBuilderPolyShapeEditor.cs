@@ -3,19 +3,34 @@
 using Battlehub.ProBuilderIntegration;
 using Battlehub.RTCommon;
 using Battlehub.RTHandles;
-using Battlehub.Utils;
+using System.Linq;
 
 namespace Battlehub.RTBuilder
 {
-    public interface IPolyShapeEditor
-    {
-        
-    }
+    public interface IPolyShapeEditor { }
 
     [DefaultExecutionOrder(-89)]
     public class ProBuilderPolyShapeEditor : MonoBehaviour, IPolyShapeEditor
     {
+        private ExposeToEditor m_exposeToEditor;
         private PBPolyShape m_polyShape;
+        private PBPolyShape PolyShape
+        {
+            get { return m_polyShape; }
+            set
+            {
+                m_polyShape = value;
+                if(m_polyShape != null)
+                {
+                    m_exposeToEditor = m_polyShape.GetComponent<ExposeToEditor>();
+                }
+                else
+                {
+                    m_exposeToEditor = null;
+                }
+            }
+        }
+
         private bool m_endEditOnPointerUp;
         private Transform m_pivot;
 
@@ -111,26 +126,29 @@ namespace Battlehub.RTBuilder
         {
             if(m_tool.Mode == ProBuilderToolMode.PolyShape)
             {
-                m_polyShape = m_rte.Selection.activeGameObject.GetComponent<PBPolyShape>();
-                PolyShapeUpdatePivot();
-                m_polyShape.IsEditing = true;
-                SetLayer(m_polyShape.gameObject);
-
-                if (m_polyShape.Stage > 0)
-                {
-                    m_rte.Selection.Enabled = false;
-                }
-
-                MeshEditorState oldState = m_polyShape.GetState(false);
-                m_polyShape.Refresh();
-                MeshEditorState newState = m_polyShape.GetState(false);
-                RecordState(oldState, newState);
+                PolyShape = m_rte.Selection.activeGameObject.GetComponent<PBPolyShape>();
+                PolyShapeUpdatePivot(PolyShape);
+                PolyShape.IsEditing = true;
+                SetLayer(PolyShape.gameObject);
             }
             else if(oldMode == ProBuilderToolMode.PolyShape)
             {
-                m_polyShape.IsEditing = false;
-                m_rte.Selection.Enabled = true;
-                m_rte.Selection.activeGameObject = m_polyShape.gameObject;
+                if(PolyShape != null)
+                {
+                    PolyShape.IsEditing = false;
+                }
+                
+                if (m_exposeToEditor != null && !m_exposeToEditor.MarkAsDestroyed)
+                {
+                    bool wasEnabled = m_rte.Undo.Enabled;
+                    m_rte.Undo.Enabled = false;
+
+                    m_rte.Selection.activeObject = PolyShape.gameObject;
+                    PolyShapeUpdatePivot(PolyShape);
+                    m_rte.Undo.Enabled = wasEnabled;
+                }
+                
+                PolyShape = null;
             }
         }
 
@@ -138,9 +156,14 @@ namespace Battlehub.RTBuilder
         {
             int layer = m_rte.CameraLayerSettings.AllScenesLayer;
 
-            foreach(Transform child in go.GetComponentsInChildren<Transform>(true))
+            foreach (Transform child in go.GetComponentsInChildren<Transform>(true))
             {
-                if(child.transform == go.transform)
+                if (child.transform == go.transform)
+                {
+                    continue;
+                }
+
+                if(child.GetComponent<WireframeMesh>() != null)
                 {
                     continue;
                 }
@@ -166,14 +189,21 @@ namespace Battlehub.RTBuilder
                 return;
             }
 
-            if (m_polyShape != null && m_polyShape.IsEditing)
+            if(m_exposeToEditor != null && m_exposeToEditor.MarkAsDestroyed)
+            {
+                EndEditing(true);
+                m_exposeToEditor = null;
+                return;
+            }
+
+            if (PolyShape != null && PolyShape.IsEditing)
             {
                 BaseHandle baseHandle = m_rte.Tools.ActiveTool as BaseHandle;
                 if (baseHandle != null && baseHandle.IsDragging && m_rte.Selection.activeGameObject == m_pivot.gameObject)
                 {
                     if(baseHandle is PositionHandle)
                     {
-                        m_polyShape.SelectedPosition = m_polyShape.transform.InverseTransformPoint(m_pivot.position);
+                        PolyShape.SelectedPosition = PolyShape.transform.InverseTransformPoint(m_pivot.position);
                         m_endEditOnPointerUp = false;
                     }
                 }
@@ -205,10 +235,9 @@ namespace Battlehub.RTBuilder
                         if (m_endEditOnPointerUp)
                         {
                             RuntimeWindow window = m_rte.ActiveWindow;
-                            int oldSelectedIndex = m_polyShape.SelectedIndex;
-                            if (m_polyShape.Click(window.Camera, m_rte.Input.GetPointerXY(0)))
+                            if (PolyShape.Click(window.Camera, m_rte.Input.GetPointerXY(0)))
                             {
-                                EndEditing(false, oldSelectedIndex);
+                                EndEditing(false);
                             }
                         }
                     }
@@ -216,27 +245,27 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        private void EndEditing(bool forceEndEditing, int oldSelectedIndex = -1)
+        private void EndEditing(bool forceEndEditing)
         {
-            m_rte.Selection.Enabled = true;
-            if (m_polyShape == null || !m_polyShape.IsEditing)
+            if (PolyShape == null || !PolyShape.IsEditing)
             {
                 return;
             }
-            if (m_polyShape.Stage == 0)
+
+            if (PolyShape.Stage == 0)
             {
-                if (m_polyShape.VertexCount < 3)
+                if (PolyShape.VertexCount < 3)
                 {
                     m_tool.Mode = ProBuilderToolMode.Object;
                     return;
                 }
                 else
                 {
-                    m_polyShape.Stage++;
+                    PolyShape.Stage++;
                 }
             }
 
-            if (m_polyShape.Stage > 0)
+            if (PolyShape.Stage > 0)
             {
                 if (forceEndEditing)
                 {
@@ -244,76 +273,43 @@ namespace Battlehub.RTBuilder
                 }
                 else
                 {
-                    Debug.Assert(m_polyShape.SelectedIndex >= 0);
-                    m_rte.Undo.BeginRecord();
-                    RecordSelection(m_polyShape, oldSelectedIndex);
-                    PolyShapeUpdatePivot();
+
+                    bool wasEnabled = m_rte.Undo.Enabled;
+                    m_rte.Undo.Enabled = false;
                     m_rte.Selection.activeObject = m_pivot.gameObject;
-                    m_rte.Undo.EndRecord();
-                    m_rte.Selection.Enabled = false;
+                    PolyShapeUpdatePivot(PolyShape);
+                    m_rte.Undo.Enabled = wasEnabled;
                 }
             }
         }
 
-        private void PolyShapeUpdatePivot()
+        private void PolyShapeUpdatePivot(PBPolyShape polyShape)
         {
-            if (m_polyShape.SelectedIndex >= 0)
+            if (polyShape.SelectedIndex >= 0)
             {
-                m_pivot.position = m_polyShape.transform.TransformPoint(m_polyShape.SelectedPosition);
+                m_pivot.position = PolyShape.transform.TransformPoint(polyShape.SelectedPosition);
                 m_pivot.rotation = Quaternion.identity;
             }
         }
 
-
-        private void RecordIsEditing(PBPolyShape polyShape, bool value)
+        public void RecordState(
+            MeshEditorState oldState, Vector3[] oldPositions,
+            MeshEditorState newState, Vector3[] newPositions,
+            bool oldStateChanged = true, bool newStateChanged = true)
         {
-            UndoRedoCallback redo = record =>
-            {
-                m_polyShape = polyShape;
-                m_polyShape.IsEditing = value;
-                return true;
-            };
 
-            UndoRedoCallback undo = record =>
-            {
-                m_polyShape = polyShape;
-                m_polyShape.IsEditing = !value;
-                return true;
-            };
-
-            m_rte.Undo.CreateRecord(redo, undo);
-        }
-
-        private void RecordSelection(PBPolyShape polyShape, int oldSelectedIndex)
-        {
-            int selectedIndex = polyShape.SelectedIndex;
-            UndoRedoCallback redo = record =>
-            {
-                m_polyShape = polyShape;
-                m_polyShape.SelectedIndex = selectedIndex;
-                PolyShapeUpdatePivot();
-                return true;
-            };
-
-            UndoRedoCallback undo = record =>
-            {
-                m_polyShape = polyShape;
-                m_polyShape.SelectedIndex = oldSelectedIndex;
-                PolyShapeUpdatePivot();
-                return true;
-            };
-
-            m_rte.Undo.CreateRecord(redo, undo);
-        }
-
-        public void RecordState(MeshEditorState oldState, MeshEditorState newState,
-           bool oldStateChanged = true, bool newStateChanged = true)
-        {
+            PBPolyShape polyShape = PolyShape;
             UndoRedoCallback redo = record =>
             {
                 if (newState != null)
                 {
-                    m_polyShape.SetState(newState);
+                    m_tool.Mode = ProBuilderToolMode.Object;
+                    polyShape.SetState(newState);
+                    if(newPositions != null)
+                    {
+                        polyShape.Positions = newPositions.ToList();
+                        PolyShapeUpdatePivot(polyShape);
+                    }
                     return newStateChanged;
                 }
                 return false;
@@ -323,7 +319,13 @@ namespace Battlehub.RTBuilder
             {
                 if (oldState != null)
                 {
-                    m_polyShape.SetState(oldState);
+                    m_tool.Mode = ProBuilderToolMode.Object;
+                    polyShape.SetState(oldState);
+                    if(oldPositions != null)
+                    {
+                        polyShape.Positions = oldPositions.ToList();
+                        PolyShapeUpdatePivot(polyShape);
+                    }
                     return oldStateChanged;
                 }
                 return false;
@@ -332,6 +334,8 @@ namespace Battlehub.RTBuilder
             IOC.Resolve<IRTE>().Undo.CreateRecord(redo, undo);
         }
 
+        private MeshEditorState m_oldState;
+        private Vector3[] m_oldPositions;
         private void OnBeginMove(BaseHandle positionHandle)
         {
             if (m_tool.Mode != ProBuilderToolMode.PolyShape)
@@ -339,7 +343,7 @@ namespace Battlehub.RTBuilder
                 return;
             }
 
-            if(m_polyShape.Stage == 0)
+            if(PolyShape.Stage == 0)
             {
                 return;
             }
@@ -350,11 +354,8 @@ namespace Battlehub.RTBuilder
             }
 
             positionHandle.EnableUndo = false;
-
-            m_rte.Undo.BeginRecord();
-            m_rte.Undo.BeginRecordTransform(m_pivot);
-            m_rte.Undo.RecordValue(m_polyShape, Strong.PropertyInfo((PBPolyShape x) => x.SelectedPosition));
-            m_rte.Undo.EndRecord();
+            m_oldPositions = PolyShape.Positions.ToArray();
+            m_oldState = PolyShape.GetState(false);
         }
 
         private void OnEndMove(BaseHandle positionHandle)
@@ -363,7 +364,7 @@ namespace Battlehub.RTBuilder
             {
                 return;
             }
-            if (m_polyShape.Stage == 0)
+            if (PolyShape.Stage == 0)
             {
                 return;
             }
@@ -374,10 +375,9 @@ namespace Battlehub.RTBuilder
 
             positionHandle.EnableUndo = true;
 
-            m_rte.Undo.BeginRecord();
-            m_rte.Undo.EndRecordTransform(m_pivot);
-            m_rte.Undo.RecordValue(m_polyShape, Strong.PropertyInfo((PBPolyShape x) => x.SelectedPosition));
-            m_rte.Undo.EndRecord();
+            PolyShape.Refresh();
+            MeshEditorState newState = PolyShape.GetState(false);
+            RecordState(m_oldState, m_oldPositions, newState, PolyShape.Positions.ToArray()); 
         }
     }
 }

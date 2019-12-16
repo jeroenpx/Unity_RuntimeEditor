@@ -712,8 +712,8 @@ namespace Battlehub.UIControls
             {
                 VirtualizingTreeViewItemDataBindingArgs args = new VirtualizingTreeViewItemDataBindingArgs();
                 args.Item = item;
-                args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
-                args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
+                args.ItemPresenter = itemContainer.ItemPresenter == null ? itemContainer.gameObject : itemContainer.ItemPresenter;
+                args.EditorPresenter = itemContainer.EditorPresenter == null ? itemContainer.gameObject : itemContainer.EditorPresenter;
 
                 RaiseItemDataBinding(args);
 

@@ -22,7 +22,7 @@ namespace Battlehub.RTEditor
         {
             m_editor = IOC.Resolve<IRuntimeEditor>();   
 
-            if(RenderPipelineInfo.Type != RPType.Legacy)
+            if(RenderPipelineInfo.Type != RPType.Standard)
             {
                 m_defaultMaterial = RenderPipelineInfo.DefaultMaterial;
             }

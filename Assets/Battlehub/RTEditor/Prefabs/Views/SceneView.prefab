@@ -125,6 +125,7 @@ MonoBehaviour:
   FreeMoveSensitivity: 0.25
   FreeRotateSensitivity: 7.5
   SwapLRMB: 0
+  m_beginFreeMoveImmediately: 1
 --- !u!114 &114970690636574616
 MonoBehaviour:
   m_ObjectHideFlags: 0

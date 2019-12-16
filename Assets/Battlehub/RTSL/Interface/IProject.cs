@@ -123,8 +123,8 @@ namespace Battlehub.RTSL.Interface
         ProjectAsyncOperation<string[]> GetAssetBundles(ProjectEventHandler<string[]> callback = null);
         Dictionary<int, string> GetStaticAssetLibraries();
 
-        ProjectAsyncOperation<T[]> GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback = null) where T : new();
-        ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) where T : new();
+        ProjectAsyncOperation<T[]> GetValues<T>(string searchPattern, ProjectEventHandler<T[]> callback = null);
+        ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null);
         ProjectAsyncOperation SetValue<T>(string key, T obj, ProjectEventHandler callback = null);
         ProjectAsyncOperation DeleteValue<T>(string key, ProjectEventHandler callback = null);
     }

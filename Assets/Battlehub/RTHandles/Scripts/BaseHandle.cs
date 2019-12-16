@@ -194,7 +194,30 @@ namespace Battlehub.RTHandles
 
         protected virtual RuntimePivotMode PivotMode
         {
-            get { return Editor.Tools.PivotMode; }
+            get
+            {
+                LockObject lockObject = LockObject;
+                if(lockObject != null && lockObject.PivotMode != null)
+                {
+                    return lockObject.PivotMode.Value;
+                }
+
+                return Editor.Tools.PivotMode;
+            }
+        }
+
+        protected virtual RuntimePivotRotation PivotRotation
+        {
+            get
+            {
+                LockObject lockObject = LockObject;
+                if (lockObject != null && lockObject.PivotRotation != null)
+                {
+                    return lockObject.PivotRotation.Value;
+                }
+
+                return Editor.Tools.PivotRotation;
+            }
         }
 
         protected virtual Vector3 GetCommonCenterPosition()
@@ -394,7 +417,7 @@ namespace Battlehub.RTHandles
                     return Quaternion.identity;
                 }
 
-                return Editor.Tools.PivotRotation == RuntimePivotRotation.Local ? Target.rotation : Quaternion.identity;
+                return PivotRotation == RuntimePivotRotation.Local ? Target.rotation : Quaternion.identity;
             }
         }
 

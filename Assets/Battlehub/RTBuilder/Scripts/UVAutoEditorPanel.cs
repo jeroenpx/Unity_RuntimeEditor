@@ -10,9 +10,6 @@ namespace Battlehub.RTBuilder
     public class UVAutoEditorPanel : MonoBehaviour
     {
         [SerializeField]
-        private Toggle m_useGizmosToggle = null;
-
-        [SerializeField]
         private EnumEditor m_fillModeEditor = null;
 
         [SerializeField]
@@ -59,15 +56,15 @@ namespace Battlehub.RTBuilder
             get { return m_tool; }
             set
             {
-                if (m_tool != null)
-                {
-                    m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
-                }
+                //if (m_tool != null)
+                //{
+                //    m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
+                //}
                 m_tool = value;
-                if (m_tool != null)
-                {
-                    m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
-                }
+                //if (m_tool != null)
+                //{
+                //    m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
+                //}
             }
         }
 
@@ -77,14 +74,7 @@ namespace Battlehub.RTBuilder
             
 
             m_editor = IOC.Resolve<IRuntimeEditor>();
-            m_editor.Undo.UndoCompleted += OnUpdateVisualState;
-            m_editor.Undo.RedoCompleted += OnUpdateVisualState;
-            m_editor.Undo.StateChanged += OnUpdateVisualState;
-            
-            if(m_useGizmosToggle != null)
-            {
-                m_useGizmosToggle.onValueChanged.AddListener(OnUseGizmosValueChanged);
-            }
+        
 
             if(m_fillModeEditor != null)
             {
@@ -152,26 +142,11 @@ namespace Battlehub.RTBuilder
             {
                 m_resetUVs.onClick.AddListener(OnResetUVs);
             }
-
-            OnUpdateVisualState();
         }
 
         private void OnDestroy()
         {
-            if(m_useGizmosToggle != null)
-            {
-                m_useGizmosToggle.isOn = false;
-                m_useGizmosToggle.onValueChanged.RemoveListener(OnUseGizmosValueChanged);
-            }
-
             Tool = null;
-
-            if(m_editor != null)
-            {
-                m_editor.Undo.UndoCompleted -= OnUpdateVisualState;
-                m_editor.Undo.RedoCompleted -= OnUpdateVisualState;
-                m_editor.Undo.StateChanged -= OnUpdateVisualState;
-            }
 
             if (m_btnGroupFaces != null)
             {
@@ -193,22 +168,6 @@ namespace Battlehub.RTBuilder
                 m_resetUVs.onClick.RemoveListener(OnResetUVs);
             }
         }
-
-        private void OnUseGizmosValueChanged(bool value)
-        {
-            m_tool.UVEditingMode = value;
-        }
-
-        private void OnUpdateVisualState()
-        {
-            m_useGizmosToggle.isOn = m_tool.UVEditingMode;
-        }
-
-        private void OnUVEditingModeChanged(bool obj)
-        {
-            OnUpdateVisualState();
-        }
-
 
         private void OnGroupFaces()
         {

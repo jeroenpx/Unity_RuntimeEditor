@@ -161,20 +161,40 @@ namespace Battlehub.RTEditor
         }
     }
 
+    public class ProjectTreeCancelEventArgs : ProjectTreeEventArgs
+    {
+        public bool Cancel;
+
+        public ProjectTreeCancelEventArgs(ProjectItem[] items) : base(items)
+        {
+        }
+    }
+
     public interface IProjectTree
     {
-        ProjectItem SelectedFolder
+        event EventHandler<ItemDataBindingArgs> ItemDataBinding;
+        event EventHandler<SelectionChangedArgs<ProjectItem>> SelectionChanged;
+        event EventHandler<ProjectTreeCancelEventArgs> ItemsDeleting;
+        event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
+        event EventHandler<ProjectTreeEventArgs> ItemsDeleted;
+        event EventHandler Destroyed;
+
+        ProjectItem SelectedItem
         {
             get;
         }
+
+        void DeleteSelectedItems();
     }
 
     public class ProjectTreeView : RuntimeWindow, IProjectTree
     {
+        public event EventHandler<ItemDataBindingArgs> ItemDataBinding;
         public event EventHandler<SelectionChangedArgs<ProjectItem>> SelectionChanged;
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
-        public event EventHandler<ProjectTreeEventArgs> ItemDeleted;
-        //public event EventHandler<ItemDropArgs> Drop;
+        public event EventHandler<ProjectTreeCancelEventArgs> ItemsDeleting;
+        public event EventHandler<ProjectTreeEventArgs> ItemsDeleted;
+        public event EventHandler Destroyed;
 
         private IProject m_project;
         private IWindowManager m_wm;
@@ -205,7 +225,7 @@ namespace Battlehub.RTEditor
             }
         }
       
-        public ProjectItem SelectedFolder
+        public ProjectItem SelectedItem
         {
             get
             {
@@ -322,11 +342,13 @@ namespace Battlehub.RTEditor
             {
                 gameObject.AddComponent<ProjectTreeViewInput>();
             }
+
+            IOC.RegisterFallback<IProjectTree>(this);
         }
 
         protected virtual void Start()
         {
-            IOC.RegisterFallback<IProjectTree>(this);
+            //IOC.RegisterFallback<IProjectTree>(this);
         }
 
         private void OnItemClick(object sender, ItemArgs e)
@@ -361,6 +383,10 @@ namespace Battlehub.RTEditor
         {
             base.OnDestroyOverride();
             Unsubscribe();
+            if(Destroyed != null)
+            {
+                Destroyed(this, EventArgs.Empty);
+            }
             IOC.UnregisterFallback<IProjectTree>(this);
         }
     
@@ -642,9 +668,9 @@ namespace Battlehub.RTEditor
 
         private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
         {
-            if(ItemDeleted != null)
+            if(ItemsDeleted != null)
             {
-                ItemDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                ItemsDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
             }
         }
 
@@ -682,6 +708,11 @@ namespace Battlehub.RTEditor
                 e.CanEdit = !m_project.IsStatic(item) && item.Parent != null;
                 e.CanDrag = !m_project.IsStatic(item) && item.Parent != null;
                 e.HasChildren = item.Children != null && item.Children.Count(projectItem => CanDisplayFolder(projectItem)) > 0;
+            }
+
+            if (ItemDataBinding != null)
+            {
+                ItemDataBinding(this, e);
             }
         }
 
@@ -824,7 +855,7 @@ namespace Battlehub.RTEditor
 
         private void DeleteFolder(string arg)
         {
-            DeleteSelectedFolders();
+            DeleteSelectedItems();
         }
 
         private void RenameFolder(string arg)
@@ -836,11 +867,21 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void DeleteSelectedFolders()
+        public void DeleteSelectedItems()
         {
             if (m_treeView.SelectedItem != null)
             {
                 ProjectItem[] projectItems = m_treeView.SelectedItems.OfType<ProjectItem>().ToArray();
+                if(ItemsDeleting != null)
+                {
+                    ProjectTreeCancelEventArgs args = new ProjectTreeCancelEventArgs(projectItems);
+                    ItemsDeleting(this, args);
+                    if(args.Cancel)
+                    {
+                        return;
+                    }
+                }
+
                 if (projectItems.Any(p => p.Parent == null))
                 {
                     m_wm.MessageBox("Unable to Remove", "Unable to remove root folder");

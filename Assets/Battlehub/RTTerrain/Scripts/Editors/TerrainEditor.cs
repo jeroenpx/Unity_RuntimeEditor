@@ -278,7 +278,13 @@ namespace Battlehub.RTTerrain
 
         private void OnSelectionChanging(object sender, RuntimeSelectionChangingArgs e)
         {
-            if(m_editor.Tools.Custom is EditorType)
+            IRuntimeSelectionComponent selectionComponent = (IRuntimeSelectionComponent)sender;
+            if (selectionComponent.Selection != m_editor.Selection)
+            {
+                return;
+            }
+
+            if (m_editor.Tools.Custom is EditorType)
             {
                 EditorType editorType = (EditorType)m_editor.Tools.Custom;
                 if(editorType != EditorType.Empty && editorType != EditorType.Selection_Handles)

@@ -1,88 +1,88 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
 namespace Battlehub.RTCommon
 {
-    public class VRTracker : MonoBehaviour
+    public interface IVRTracker
     {
-        private GameObject m_leftHandModel;
-        private GameObject m_rightHandModel;
-        private List<XRNodeState> nodeStates = new List<XRNodeState>();
-        private Vector3 m_headPos;
+        event Action<IVRInputDevice> TrackingAquired;
+        event Action<IVRInputDevice> TrackingLost;
 
-        private void Start()
+        IVRInputDevice LeftHand
         {
-            InputTracking.nodeAdded += OnNodeAdded;
-            InputTracking.nodeRemoved += OnNodeRemoved;
+            get;
+        }
+
+        IVRInputDevice RightHand
+        {
+            get;
+        }
+
+        Vector3 Origin
+        {
+            get;
+        }
+    }
+
+    public class VRTracker : RTEComponent, IVRTracker
+    {
+        public event Action<IVRInputDevice> TrackingAquired;
+        public event Action<IVRInputDevice> TrackingLost;
+
+        private List<XRNodeState> nodeStates = new List<XRNodeState>();
+        private Vector3 m_origin;
+        public Vector3 Origin
+        {
+            get { return m_origin; }
+        }
+
+        private VRInputDevice m_nullDevice;
+        private VRInputDevice m_leftHand;
+        public IVRInputDevice LeftHand
+        {
+            get { return m_leftHand; }
+        }
+
+        private VRInputDevice m_rightHand;
+        public IVRInputDevice RightHand
+        {
+            get { return m_rightHand; }
+        }
+
+        protected override void AwakeOverride()
+        {
+            base.AwakeOverride();
+            m_nullDevice = gameObject.AddComponent<VRInputDevice>();
+            m_nullDevice.enabled = false;
+
+            m_leftHand = m_nullDevice;
+            m_rightHand = m_nullDevice;
+
+            IOC.RegisterFallback<IVRTracker>(this);
 
             InputTracking.trackingAcquired += OnTrackingAquired;
             InputTracking.trackingLost += OnTrackingLost;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroyOverride()
         {
-            InputTracking.nodeAdded -= OnNodeAdded;
-            InputTracking.nodeRemoved -= OnNodeRemoved;
-
+            base.OnDestroyOverride();
+        
             InputTracking.trackingAcquired -= OnTrackingAquired;
             InputTracking.trackingLost -= OnTrackingLost;
-        }
 
-        private GameObject CreateModel(Color color, string name)
-        {
-            GameObject root = new GameObject();
-            root.name = name;
+            IOC.UnregisterFallback<IVRTracker>(this);
 
-            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            go.transform.SetParent(root.transform, false);
-            go.transform.localScale = Vector3.one * 0.05f;
-            go.transform.localRotation = Quaternion.AngleAxis(90, Vector3.right);
-            go.transform.localPosition = Vector3.forward * -0.09f;
-            go.name = "model";
-
-            MeshRenderer renderer = go.GetComponent<MeshRenderer>();
-            Material m = renderer.material;
-            m.color = color;
-            renderer.sharedMaterial = m;
-
-            GameObject lineRendererGo = new GameObject("Line Renderer");
-            lineRendererGo.transform.SetParent(root.transform, false);
-            lineRendererGo.transform.localRotation = Quaternion.AngleAxis(45, Vector3.right);
-            lineRendererGo.transform.localPosition = Vector3.forward * -0.04f;
-            LineRenderer lineRenderer = lineRendererGo.AddComponent<LineRenderer>();
-            lineRenderer.useWorldSpace = false;
-            lineRenderer.SetPositions(new[] { Vector3.zero, Vector3.forward * 10 });
-            lineRenderer.startColor = color;
-            lineRenderer.endColor = color;
-            lineRenderer.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
-            lineRenderer.startWidth = 0.004f;
-            lineRenderer.endWidth = 0.004f;
-
-            return root;
-        }
-
-        private void OnNodeAdded(XRNodeState state)
-        {
-            Debug.Log("Node added: " + state.nodeType);
-        }
-
-        private void OnNodeRemoved(XRNodeState state)
-        {
-            Debug.Log("Node removed " + state.nodeType);
-        }
-
-        private void OnTrackingLost(XRNodeState state)
-        {
-            Debug.Log("Tracking Lost " + state.nodeType);
-
-            if (state.nodeType == XRNode.LeftHand)
+            if(m_leftHand != m_nullDevice)
             {
-                Destroy(m_leftHandModel);
+                OnTrackingLost(XRNode.LeftHand);
             }
-            else if (state.nodeType == XRNode.RightHand)
+
+            if(m_rightHand != m_nullDevice)
             {
-                Destroy(m_rightHandModel);
+                OnTrackingLost(XRNode.RightHand);
             }
         }
 
@@ -92,65 +92,118 @@ namespace Battlehub.RTCommon
 
             if (state.nodeType == XRNode.LeftHand)
             {
-                m_leftHandModel = CreateModel(Color.red, "Left Hand");
-                CreateVRInputDevice(m_leftHandModel, state);
+                if(m_leftHand == m_nullDevice)
+                {
+                    m_leftHand = CreateVRInputDevice(gameObject, state);
+                    RaiseTrackingAcquired(m_leftHand);
+                }
             }
             else if (state.nodeType == XRNode.RightHand)
             {
-                m_rightHandModel = CreateModel(Color.yellow, "Right Hand");
-                CreateVRInputDevice(m_rightHandModel, state);
+                if(m_rightHand == m_nullDevice)
+                {
+                    m_rightHand = CreateVRInputDevice(gameObject, state);
+                    RaiseTrackingAcquired(m_rightHand);
+                }   
             }
         }
 
-        private static void CreateVRInputDevice(GameObject go, XRNodeState state)
+        private void OnTrackingLost(XRNodeState state)
         {
-            if (go != null)
+            Debug.Log("Tracking Lost " + state.nodeType);
+            OnTrackingLost(state.nodeType);
+        }
+
+        private void OnTrackingLost(XRNode nodeType)
+        {
+            if (nodeType == XRNode.LeftHand)
             {
-                InputDevice device = InputDevices.GetDeviceAtXRNode(state.nodeType);
-                if (device != null)
+                if(m_leftHand != m_nullDevice)
                 {
-                    VRInputDevice vrInput = go.AddComponent<VRInputDevice>();
-                    vrInput.Device = device;
+                    RaiseTrackingLost(m_leftHand);
+                    Destroy(m_leftHand);
+                    m_leftHand = m_nullDevice;
                 }
             }
+            else if (nodeType == XRNode.RightHand)
+            {
+                if(m_rightHand != m_nullDevice)
+                {
+                    RaiseTrackingLost(m_rightHand);
+                    Destroy(m_rightHand);
+                    m_rightHand = m_nullDevice;
+                }
+            }
+        }
+
+        private static VRInputDevice CreateVRInputDevice(GameObject go, XRNodeState state)
+        {
+            InputDevice device = InputDevices.GetDeviceAtXRNode(state.nodeType);
+            if (device != null)
+            {
+                VRInputDevice vrInputDevice = go.AddComponent<VRInputDevice>();
+                vrInputDevice.Device = device;
+                return vrInputDevice;
+            }
+
+            return null;
         }
 
         private void Update()
         {
             nodeStates.Clear();
 
-            Transform ht = Camera.main.transform;
-
             InputTracking.GetNodeStates(nodeStates);
-
             foreach (XRNodeState state in nodeStates)
             {
                 Vector3 pos;
-                Quaternion rot;
-                if (state.TryGetPosition(out pos) && state.TryGetRotation(out rot))
+                if (state.TryGetPosition(out pos))
                 {
                     if (state.nodeType == XRNode.Head)
                     {
-                        m_headPos = pos;
+                        m_origin = Window.Camera.transform.position - pos;
                     }
                     if (state.nodeType == XRNode.LeftHand)
                     {
-                        if(m_leftHandModel != null)
+                        if(m_leftHand == m_nullDevice)
                         {
-                            m_leftHandModel.transform.position = ht.position - m_headPos + pos;
-                            m_leftHandModel.transform.rotation = rot;
+                            OnTrackingAquired(state);
                         }
-                        
                     }
                     else if (state.nodeType == XRNode.RightHand)
                     {
-                        if(m_rightHandModel != null)
+                        if (m_rightHand == m_nullDevice)
                         {
-                            m_rightHandModel.transform.position = ht.position - m_headPos + pos;
-                            m_rightHandModel.transform.rotation = rot;
+                            OnTrackingAquired(state);
                         }
                     }
                 }
+            }
+        }
+
+        private void RaiseTrackingAcquired(IVRInputDevice device)
+        {
+            if(device == null || ((object)device) == m_nullDevice)
+            {
+                return;
+            }
+
+            if(TrackingAquired != null)
+            {
+                TrackingAquired(device);
+            }
+        }
+
+        private void RaiseTrackingLost(IVRInputDevice device)
+        {
+            if(device == null || ((object)device) == m_nullDevice)
+            {
+                return;
+            }
+
+            if(TrackingLost != null)
+            {
+                TrackingLost(device);
             }
         }
     }

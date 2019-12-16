@@ -169,7 +169,7 @@ namespace Battlehub.RTHandles
 
             m_camera = GetComponent<Camera>();
             m_renderTextureCamera = GetComponent<RenderTextureCamera>();
-            if(m_renderTextureCamera == null)
+            if (m_renderTextureCamera == null)
             {
                 m_camera.clearFlags = CameraClearFlags.Depth;
                 m_camera.renderingPath = RenderingPath.Forward;
@@ -183,7 +183,7 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                if (RenderPipelineInfo.Type != RPType.Legacy)
+                if (RenderPipelineInfo.Type != RPType.Standard)
                 {
                     m_camera.allowMSAA = false;
                     m_camera.allowHDR = false;
@@ -241,6 +241,7 @@ namespace Battlehub.RTHandles
             {
                 IsOrthographic = Window.Camera.orthographic;
             }
+
         }
 
         protected override void OnDestroyOverride()
@@ -393,6 +394,7 @@ namespace Battlehub.RTHandles
             {
                 if (!m_mouseOver || updateAlpha)
                 {
+                    InitColliders();
                     EnableColliders();
                 }
 
@@ -524,6 +526,7 @@ namespace Battlehub.RTHandles
                 m_rotation = transform.rotation;
             }
 
+            
             if (m_screenHeight != Screen.height || m_screenWidth != Screen.width || m_cameraPixelRect != Window.Camera.pixelRect || m_scale != Appearance.SceneGizmoScale)
             {
                 UpdateLayout();
@@ -630,7 +633,7 @@ namespace Battlehub.RTHandles
         {
             return transform.TransformPoint(Vector3.forward * 5);
         }
-
+        
         private void InitColliders()
         {
             m_gizmoPosition = GetGizmoPosition();

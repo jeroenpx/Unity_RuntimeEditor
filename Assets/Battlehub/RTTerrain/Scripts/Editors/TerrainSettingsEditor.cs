@@ -17,6 +17,8 @@ namespace Battlehub.RTTerrain
         private FloatEditor m_heightmapResolutionEditor = null;
         [SerializeField]
         private Vector3Editor m_positionEditor = null;
+        [SerializeField]
+        private TexturePicker m_texturePicker = null;
 
         private TerrainEditor m_terrainEditor;
         protected TerrainEditor TerrainEditor
@@ -32,13 +34,24 @@ namespace Battlehub.RTTerrain
 
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
             m_terrainEditor.TerrainChanged += OnTerrainChanged;
+
+            if (m_texturePicker != null)
+            {
+                m_terrainSettings.InitTexturePicker(m_texturePicker, Strong.PropertyInfo((ITerrainSettings x) => x.DefaultTexture));
+                m_texturePicker.TextureChanged += OnDefaultTextureChanged;
+            }
         }
-        
+
         protected virtual void OnDestroy()
         {
             if(m_terrainEditor != null)
             {
                 m_terrainEditor.TerrainChanged -= OnTerrainChanged;
+            }
+
+            if(m_texturePicker != null)
+            {
+                m_texturePicker.TextureChanged -= OnDefaultTextureChanged;
             }
         }
 
@@ -50,6 +63,17 @@ namespace Battlehub.RTTerrain
         protected virtual void OnDisable()
         {
             
+        }
+
+        private void OnDefaultTextureChanged(object sender, EventArgs e)
+        {
+            IWindowManager wm = IOC.Resolve<IWindowManager>();
+            wm.Confirmation("Default terrain texture changed", "Would you like to apply this texture to the terrain in the scene?", (dialog, okArgs) =>
+            {
+                m_terrainSettings.ApplyDefaultTexture();
+            },
+            (dialog, cancelArgs) => { }, "Yes", "No");
+
         }
 
         private void OnTerrainChanged()

@@ -9,6 +9,12 @@ using UnityEngine.UI;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTEditor
 {
+    public interface IObjectEditorLoader
+    {
+        void Load(object obj, Type memberInfoType, Action<UnityObject> callback);
+        Type GetObjectType(object obj, Type memberInfoType);
+    }
+
     public class ObjectEditor : PropertyEditor<UnityObject>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
@@ -17,6 +23,9 @@ namespace Battlehub.RTEditor
         private TMP_InputField Input = null;
         [SerializeField]
         private Button BtnSelect = null;
+
+        private IObjectEditorLoader m_loader;
+
         protected override void SetInputField(UnityObject value)
         {
             if (value != null)
@@ -33,6 +42,12 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
             BtnSelect.onClick.AddListener(OnSelect);
+
+            m_loader = IOC.Resolve<IObjectEditorLoader>();
+            if(m_loader == null)
+            {
+                m_loader = Editor.Root.gameObject.AddComponent<ObjectEditorLoader>();
+            }
         }
 
         protected override void OnDestroyOverride()
@@ -48,80 +63,65 @@ namespace Battlehub.RTEditor
                 Editor.DragDrop.Drop -= OnDrop;
             }
         }
-
+        
         private void OnSelect()
         {
             ISelectObjectDialog objectSelector = null;
-            Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
-                 (sender, args) =>
-                 {
-                     if (objectSelector.IsNoneSelected)
-                     {
-                         SetValue(null);
-                         EndEdit();
-                         SetInputField(null);
-                     }
-                     else
-                     {
-                         SetValue(objectSelector.SelectedObject);
-                         EndEdit();
-                         SetInputField(objectSelector.SelectedObject);
-                     }
-                 });
-            objectSelector = IOC.Resolve<ISelectObjectDialog>();// dialogTransform.GetComponentInChildren<SelectObjectDialog>();
+
+            IWindowManager wm = IOC.Resolve<IWindowManager>();
+            if(wm.IsWindowRegistered("Select" + MemberInfoType.Name))
+            {
+                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow("Select" + MemberInfoType.Name, "Select " + MemberInfoType.Name,
+                      (sender, args) =>
+                      {
+                          if (objectSelector.IsNoneSelected)
+                          {
+                              SetObject(null);
+                          }
+                          else
+                          {
+                              SetObject(objectSelector.SelectedObject);
+                          }
+                      });
+            }
+            else
+            {
+                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
+                    (sender, args) =>
+                    {
+                        if (objectSelector.IsNoneSelected)
+                        {
+                            SetObject(null);
+                        }
+                        else
+                        {
+                            SetObject(objectSelector.SelectedObject);
+                        }
+                    });
+            }
+            
+            objectSelector = IOC.Resolve<ISelectObjectDialog>();
             objectSelector.ObjectType = MemberInfoType;
+        }
+
+        public void SetObject(UnityObject obj)
+        {
+            SetValue(obj);
+            EndEdit();
+            SetInputField(obj);
         }
 
         private void OnDrop(PointerEventData pointerEventData)
         {
             object dragObject = Editor.DragDrop.DragObjects[0];
-            if(dragObject is AssetItem)
+            
+            Editor.IsBusy = true;
+            m_loader.Load(dragObject, MemberInfoType, loadedObject =>
             {
-                AssetItem assetItem = (AssetItem)dragObject;
-                IProject project = IOC.Resolve<IProject>();
-                Editor.IsBusy = true;
-                project.Load(new[] { assetItem }, (error, loadedObjects) =>
-                {
-                    Editor.IsBusy = false;
-                    if (error.HasError)
-                    {
-                        IWindowManager wnd = IOC.Resolve<IWindowManager>();
-                        wnd.MessageBox("Unable to load object", error.ErrorText);
-                        return;
-                    }
-
-                    SetValue(loadedObjects[0]);
-                    EndEdit();
-                    SetInputField(loadedObjects[0]);
-                    HideDragHighlight();
-                });
-            }
-            else if(dragObject is GameObject)
-            {
-                UnityObject value = GetGameObjectOrComponent((GameObject)dragObject);
-                SetValue(value);
-                EndEdit();
-                SetInputField(value);
+                Editor.IsBusy = false;
+                SetObject(loadedObject);
                 HideDragHighlight();
-            }
-            else if(dragObject is ExposeToEditor)
-            {
-                UnityObject value = GetGameObjectOrComponent(((ExposeToEditor)dragObject).gameObject);
-                SetValue(value);
-                EndEdit();
-                SetInputField(value);
-                HideDragHighlight();
-            }
-        }
-
-        private UnityObject GetGameObjectOrComponent(GameObject go)
-        {
-            Component component = go.GetComponent(MemberInfoType);
-            if (component != null)
-            {
-                return component;
-            }
-            return go;
+            });
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -131,24 +131,8 @@ namespace Battlehub.RTEditor
                 return;
             }
             object dragObject = Editor.DragDrop.DragObjects[0];            
-            Type type = null;
-            if(dragObject is ExposeToEditor)
-            {
-                ExposeToEditor exposeToEditor = (ExposeToEditor)dragObject;
-                GameObject go = exposeToEditor.gameObject;
-                type = ToType(go);
-            }
-            else if(dragObject is GameObject)
-            {
-                type = ToType((GameObject)dragObject);
-            }
-            else if(dragObject is AssetItem)
-            {
-                AssetItem assetItem = (AssetItem)dragObject;
-                IProject project = IOC.Resolve<IProject>();
-                type = project.ToType(assetItem);
-            }
-
+            Type type = m_loader.GetObjectType(dragObject, MemberInfoType);
+           
             if (type != null && MemberInfoType.IsAssignableFrom(type))
             {
                 Editor.DragDrop.Drop -= OnDrop;
@@ -156,21 +140,6 @@ namespace Battlehub.RTEditor
                 ShowDragHighlight();
                 Editor.DragDrop.SetCursor(Utils.KnownCursor.DropAllowed);
             }
-        }
-
-        private Type ToType(GameObject go)
-        {
-            Type type;
-            if (typeof(Component).IsAssignableFrom(MemberInfoType) && go.GetComponent(MemberInfoType) != null)
-            {
-                type = MemberInfoType;
-            }
-            else
-            {
-                type = typeof(GameObject);
-            }
-
-            return type;
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)

@@ -246,14 +246,7 @@ namespace Battlehub.ProBuilderIntegration
                 return false;
             }
 
-            if (selection.HasVertices)
-            {
-                selection.VerticesToFaces(false, false);
-            }
-            else if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
+            selection = selection.ToFaces(false, false);
 
             IList<Face> faces = new List<Face>();
             foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
@@ -291,14 +284,7 @@ namespace Battlehub.ProBuilderIntegration
                 return;
             }
 
-            if (selection.HasVertices)
-            {
-                selection.VerticesToFaces(false, false);
-            }
-            else if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
+            selection = selection.ToFaces(false, false);
 
             List<Face> faces = new List<Face>();
             foreach(KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
@@ -309,7 +295,6 @@ namespace Battlehub.ProBuilderIntegration
                 mesh.GetFaces(kvp.Value, faces);
 
                 PBAutoUVConversion.SetAutoUV(mesh, faces.ToArray(), auto);
-
                 mesh.ToMesh();
                 mesh.Refresh();
             }
@@ -322,14 +307,7 @@ namespace Battlehub.ProBuilderIntegration
                 return;
             }
 
-            if (selection.HasVertices)
-            {
-                selection.VerticesToFaces(false, false);
-            }
-            else if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
+            selection = selection.ToFaces(false, false);
 
             List<Face> faces = new List<Face>();
             foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
@@ -359,14 +337,7 @@ namespace Battlehub.ProBuilderIntegration
                 return;
             }
 
-            if (selection.HasVertices)
-            {
-                selection.VerticesToFaces(false, false);
-            }
-            else if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
+            selection = selection.ToFaces(false, false);
 
             AutoUnwrapSettings unwrapSettings = settings;
             IList<Face> faces = new List<Face>();
@@ -397,14 +368,7 @@ namespace Battlehub.ProBuilderIntegration
                 return PBAutoUnwrapSettings.defaultAutoUnwrapSettings;
             }
 
-            if (selection.HasVertices)
-            {
-                selection.VerticesToFaces(false, false);
-            }
-            else if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
+            selection = selection.ToFaces(false, false);
 
             PBAutoUnwrapSettings unwrapSettings = PBAutoUnwrapSettings.defaultAutoUnwrapSettings;
             IList<Face> faces = new List<Face>();
@@ -431,14 +395,7 @@ namespace Battlehub.ProBuilderIntegration
 
         private void SetTextureGroup(MeshSelection selection, int textureGroup = 0)
         {
-            if (selection.HasVertices)
-            {
-                selection.VerticesToFaces(false, false);
-            }
-            else if (selection.HasEdges)
-            {
-                selection.EdgesToFaces(false, false);
-            }
+            selection = selection.ToFaces(false, false);
 
             List<Face> faces = new List<Face>();
             Dictionary<ProBuilderMesh, IList<int>> selectedFaces = selection.SelectedFaces;
@@ -458,7 +415,6 @@ namespace Battlehub.ProBuilderIntegration
 
                 mesh.RefreshUV(faces);
 
-
                 mesh.ToMesh();
                 mesh.Refresh();
             }
@@ -476,20 +432,35 @@ namespace Battlehub.ProBuilderIntegration
 
         public MeshSelection SelectFaceGroup(MeshSelection currentSelection)
         {
-            MeshSelection selection = new MeshSelection();
+            if(currentSelection == null)
+            {
+                return null;
+            }
 
+            currentSelection = currentSelection.ToFaces(false);
+            if(!currentSelection.HasFaces)
+            {
+                return null;
+            }
+
+            
             ProBuilderMesh mesh = currentSelection.SelectedFaces.Last().Key;
             IList<int> currentlySelectedFaces = currentSelection.SelectedFaces.Last().Value;
-            HashSet<int> facesHs = new HashSet<int>(currentlySelectedFaces);
+            //HashSet<int> facesHs = new HashSet<int>(currentlySelectedFaces);
             int faceIndex = currentlySelectedFaces.Last();
             int textureGroup = mesh.faces[faceIndex].textureGroup;
+            if(textureGroup == -1)
+            {
+                return currentSelection;
+            }
 
+            MeshSelection selection = new MeshSelection();
             IList<Face> faces = mesh.faces;
             List<int> selectedFaces = new List<int>();
             for (int i = 0; i < faces.Count; ++i)
             {
                 Face face = faces[i];
-                if (face.textureGroup == textureGroup && !facesHs.Contains(i))
+                if (face.textureGroup == textureGroup /*&& !facesHs.Contains(i)*/)
                 {
                     selectedFaces.Add(i);
                 }

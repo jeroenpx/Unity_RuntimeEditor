@@ -28,7 +28,7 @@ namespace Battlehub.RTCommon
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct CameraLayerSettings
     {
         public int ResourcePreviewLayer;
@@ -37,7 +37,8 @@ namespace Battlehub.RTCommon
         public int AllScenesLayer;
         public int ExtraLayer2;
         public int ExtraLayer;
-        
+        public int UIBackgroundLayer;
+
         public int RaycastMask
         {
             get
@@ -46,7 +47,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers, int allSceneLayer, int extraLayer, int hiddenLayer)
+        public CameraLayerSettings(int resourcePreviewLayer, int runtimeGraphicsLayer, int maxLayers, int allSceneLayer, int extraLayer, int hiddenLayer, int uiBackgroundLayer)
         {
             ResourcePreviewLayer = resourcePreviewLayer;
             RuntimeGraphicsLayer = runtimeGraphicsLayer;
@@ -54,6 +55,7 @@ namespace Battlehub.RTCommon
             AllScenesLayer = allSceneLayer;
             ExtraLayer = extraLayer;
             ExtraLayer2 = hiddenLayer;
+            UIBackgroundLayer = uiBackgroundLayer;
         }
     }
 
@@ -223,7 +225,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
         [SerializeField]
-        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 17, 18, 19);
+        private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 17, 18, 19, 16);
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
@@ -251,7 +253,9 @@ namespace Battlehub.RTCommon
         public event RTEEvent<GameObject[]> ObjectsDuplicated;
         public event RTEEvent<GameObject[]> ObjectsDeleted;
 
-        private IInput m_input;
+        private IInput m_disabledInput;
+        private InputLow m_input;
+        private IInput m_activeInput;
         private RuntimeSelection m_selection;
         private RuntimeTools m_tools = new RuntimeTools();
         private CursorHelper m_cursorHelper = new CursorHelper();
@@ -335,7 +339,7 @@ namespace Battlehub.RTCommon
         {
             get
             {
-                return m_input;
+                return m_activeInput;
             }
         }
 
@@ -624,6 +628,8 @@ namespace Battlehub.RTCommon
 
             if (m_instance.IsVR)
             {
+                gameObject.AddComponent<VRTracker>();
+
                 RTEVRGraphicsRaycaster raycaster = ui.AddComponent<RTEVRGraphicsRaycaster>();
                 raycaster.SceneWindow = sceneView;
                 m_instance.m_raycaster = raycaster;
@@ -681,13 +687,12 @@ namespace Battlehub.RTCommon
                 m_raycaster = GetComponent<GraphicRaycaster>();
             }
 
-
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
             m_object = gameObject.GetComponent<RuntimeObjects>();
-
-            SetInput();
+            m_disabledInput = new DisabledInput();
+            m_activeInput = m_disabledInput;
 
             m_instance = this;
 
@@ -698,6 +703,17 @@ namespace Battlehub.RTCommon
         
         protected virtual void Start()
         {
+            if (IsVR)
+            {
+                IVRTracker tracker = IOC.Resolve<IVRTracker>();
+                m_input = new InputLowVR(tracker);
+            }
+            else
+            {
+                m_input = new InputLow();
+            }
+            SetInput();
+
             if (GetComponent<RTEBaseInput>() == null)
             {
                 gameObject.AddComponent<RTEBaseInput>();
@@ -742,21 +758,13 @@ namespace Battlehub.RTCommon
 
         private void SetInput()
         {
-            if (!IsOpened || IsBusy)
+            if (!IsOpened || IsBusy || m_input == null)
             {
-                //m_input = new InputLow();
-                m_input = new DisabledInput();
+                m_activeInput = m_disabledInput;
             }
             else
             {
-                if (IsVR)
-                {
-                    m_input = new InputLowVR();
-                }
-                else
-                {
-                    m_input = new InputLow();
-                }
+                m_activeInput = m_input;
             }
         }
 

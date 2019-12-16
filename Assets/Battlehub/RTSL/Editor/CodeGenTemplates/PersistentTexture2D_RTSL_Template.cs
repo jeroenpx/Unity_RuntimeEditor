@@ -47,12 +47,26 @@ namespace Battlehub.RTSL.Internal
 
                 if (texture.isReadable && supportedFormat)
                 {
-                    m_bytes = texture.EncodeToPNG();
+                    if(texture.format == TextureFormat.RGB24)
+                    {
+                        m_bytes = texture.EncodeToJPG();
+                    }
+                    else
+                    {
+                        m_bytes = texture.EncodeToPNG();
+                    }
                 }
                 else
                 {
                     Texture2D decompressed = texture.DeCompress();
-                    m_bytes = decompressed.EncodeToPNG();
+                    if (texture.format == TextureFormat.RGB24)
+                    {
+                        m_bytes = decompressed.EncodeToJPG();
+                    }
+                    else
+                    {
+                        m_bytes = decompressed.EncodeToPNG();
+                    }
                     UnityEngine.Object.Destroy(decompressed);
                 }
 

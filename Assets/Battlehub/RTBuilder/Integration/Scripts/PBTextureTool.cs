@@ -36,16 +36,8 @@ namespace Battlehub.ProBuilderIntegration
 
         public virtual void BeginDrag(MeshSelection selection, Vector3 initialPosition, Quaternion initialRotation)
         {
-            Selection = selection;
-            if(Selection.HasEdges)
-            {
-                Selection.EdgesToFaces(false, false);
-            }
-            if(Selection.HasVertices)
-            {
-                Selection.VerticesToFaces(false, false);
-            }
-
+            Selection = selection.ToFaces(false, false);
+            
             InitialPosition = initialPosition;
             InitialRotation = initialRotation;
             Matrix = Matrix4x4.TRS(InitialPosition, InitialRotation, Vector3.one);
@@ -71,6 +63,7 @@ namespace Battlehub.ProBuilderIntegration
                 mesh.GetFaces(kvp.Value, faces);
 
                 IList<Vector2> textures = mesh.textures;
+               // IList<Vector4> tangents = mesh.tangents;
 
                 for (int f = 0; f < faces.Count; ++f)
                 {
@@ -92,6 +85,7 @@ namespace Battlehub.ProBuilderIntegration
                                 scale.x = -scale.x;
                                 transform.scale = scale;
                             }
+
                             uvTransforms.Add(transform);
                         }
                     }
@@ -121,6 +115,11 @@ namespace Battlehub.ProBuilderIntegration
             UVTransforms = allUVTransforms.ToArray();
             IsManualUv = allIsManualUv.ToArray();
             Meshes = allMeshes.ToArray();
+        }
+
+        public virtual void Drag(Transform pivot)
+        {
+            Drag(pivot.position, pivot.rotation, pivot.localScale);
         }
 
         public virtual void Drag(Vector3 position, Quaternion rotation, Vector3 scale)

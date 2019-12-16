@@ -58,7 +58,6 @@ namespace Battlehub.ProBuilderIntegration
             edgesGo.AddComponent<MeshFilter>();
             edgesGo.AddComponent<MeshRenderer>();
             edgesGo.hideFlags = HideFlags.HideInHierarchy;
-            
 
             m_polyShapeVertices = verticesGo.GetComponent<MeshFilter>();
             m_polyShapeVertices.mesh = new Mesh();
@@ -152,12 +151,12 @@ namespace Battlehub.ProBuilderIntegration
 
         private void SetVertexColors()
         {
-            if (m_hoveredIndex >= 0)
+            if (m_hoveredIndex >= 0 && m_hoveredIndex < m_polyShapeVertices.sharedMesh.vertexCount)
             {
                 SetVerticesColor(m_polyShapeVertices, m_vertexHoverColor, new[] { m_hoveredIndex });
             }
 
-            if (m_selectedIndex >= 0)
+            if (m_selectedIndex >= 0 && m_selectedIndex < m_polyShapeVertices.sharedMesh.vertexCount)
             {
                 SetVerticesColor(m_polyShapeVertices, m_vertexSelectedColor, new[] { m_selectedIndex });
             }

@@ -102,6 +102,10 @@ namespace Battlehub.RTBuilder
             for (int i = 0; i < gameObjects.Length; ++i)
             {
                 GameObject obj = gameObjects[i];
+                if ((obj.hideFlags & HideFlags.HideInHierarchy) != 0)
+                {
+                    continue;
+                }
                 selectionParents[i] = obj.transform.parent;
                 obj.transform.SetParent(null, true);
             }
@@ -113,6 +117,11 @@ namespace Battlehub.RTBuilder
             List<Mesh> meshes = new List<Mesh>();
             foreach (GameObject obj in gameObjects)
             {
+                if((obj.hideFlags & HideFlags.HideInHierarchy) != 0)
+                {
+                    continue;
+                }
+
                 MeshFilter f = obj.GetComponent<MeshFilter>();
                 if (f != null && f.sharedMesh != null)
                 {
@@ -148,6 +157,10 @@ namespace Battlehub.RTBuilder
             for (int i = 0; i < gameObjects.Length; ++i)
             {
                 GameObject obj = gameObjects[i];
+                if ((obj.hideFlags & HideFlags.HideInHierarchy) != 0)
+                {
+                    continue;
+                }
                 obj.transform.SetParent(selectionParents[i], true);
             }
 

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using Region = Battlehub.UIControls.DockPanels.Region;
+
 namespace Battlehub.RTCommon
 {
     public enum RuntimeWindowType
@@ -169,6 +171,28 @@ namespace Battlehub.RTCommon
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
+            if(!RenderPipelineInfo.UseRenderTextures)
+            {
+                if(Camera != null)
+                {
+                    Image windowBackground = GetComponent<Image>();
+                    if(windowBackground != null)
+                    {
+                        Color color = windowBackground.color;
+                        color.a = 0;
+                        windowBackground.color = color;
+                    }
+
+                    RenderTextureCamera renderTextureCamera = Camera.GetComponent<RenderTextureCamera>();
+                    if(renderTextureCamera != null)
+                    {
+                        DestroyImmediate(renderTextureCamera);
+                    }
+
+                    Camera.allowMSAA = true;
+                }
+            }
+
             if(m_background == null)
             {
                 if(!Editor.IsVR)
@@ -262,6 +286,7 @@ namespace Battlehub.RTCommon
                 if(m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
                 {
                     HandleResize();
+
                     m_rect = m_rectTransform.rect;
                     m_position = m_rectTransform.position;
                 }
@@ -333,7 +358,7 @@ namespace Battlehub.RTCommon
         {
             if (m_camera != null && m_rectTransform != null && m_resizeCamera)
             {
-                if(RenderPipelineInfo.Type != RPType.Legacy)
+                if(RenderPipelineInfo.Type != RPType.Standard)
                 {
                     m_camera.rect = new Rect(0, 0, 1, 1);
                 }

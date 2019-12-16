@@ -23,11 +23,12 @@ namespace Battlehub.ProBuilderIntegration
                 int[] indexes = Indexes[m];
 
                 Vector2[] textures = mesh.textures.ToArray();
+                IList<Vector4> tangents = mesh.tangents;
 
                 for (int i = 0; i < indexes.Length; ++i)
                 {
                     int index = indexes[i];
-                    textures[index] = centers[i] + PBMath.RotateAroundPoint(origins[i] - centers[i], Vector2.zero, uvTransforms[i].rotation + angle);
+                    textures[index] = centers[i] + PBMath.RotateAroundPoint(origins[i] - centers[i], Vector2.zero, uvTransforms[i].rotation + angle * tangents[index].w);
                 }
 
                 mesh.textures = textures;

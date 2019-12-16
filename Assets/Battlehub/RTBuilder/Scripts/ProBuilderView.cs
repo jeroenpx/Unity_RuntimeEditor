@@ -16,7 +16,12 @@ namespace Battlehub.RTBuilder
     {
         [SerializeField]
         private VirtualizingTreeView m_commandsList = null;
-
+        [SerializeField]
+        private GameObject m_uvEditor = null;
+        [SerializeField]
+        private GameObject m_materialPaletteEditor = null;
+        [SerializeField]
+        private EnumEditor m_modeSelector = null;
         [SerializeField]
         private bool m_useSceneViewToolbar = true;
         [SerializeField]
@@ -27,16 +32,54 @@ namespace Battlehub.RTBuilder
         private ProBuilderToolbar m_toolbar = null;
 
         private ToolCmd[] m_commands;
-        private GameObject m_proBuilderToolGO;
         private IProBuilderTool m_proBuilderTool;
 
-        
         private bool m_isProBuilderMeshSelected = false;
         private bool m_isNonProBuilderMeshSelected = false;
         private bool m_isPolyShapeSelected = false;
         
         private IWindowManager m_wm;
-        
+
+        public enum UIModes
+        {
+            Mesh_Editing,
+            UV_Editing,
+            Materials_Editing
+        }
+
+        [SerializeField]
+        private UIModes m_uiMode;
+        public UIModes UIMode
+        {
+            get { return m_uiMode; }
+            set
+            {
+                if (m_uiMode != value)
+                {
+                    m_uiMode = value;
+                    OnUIModeChanged();
+                }
+            }
+        }
+
+        private void OnUIModeChanged()
+        {
+            if (m_commandsList != null)
+            {
+                m_commandsList.gameObject.SetActive(m_uiMode == UIModes.Mesh_Editing);
+            }
+
+            if (m_uvEditor != null)
+            {
+                m_uvEditor.gameObject.SetActive(m_uiMode == UIModes.UV_Editing);
+            }
+
+            if (m_materialPaletteEditor != null)
+            {
+                m_materialPaletteEditor.gameObject.SetActive(m_uiMode == UIModes.Materials_Editing);
+            }
+        }
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Custom;
@@ -46,17 +89,19 @@ namespace Battlehub.RTBuilder
             m_wm.WindowCreated += OnWindowCreated;
             m_wm.WindowDestroyed += OnWindowDestroyed;
 
-            m_proBuilderToolGO = new GameObject("ProBuilderTool");
-            m_proBuilderToolGO.transform.SetParent(Editor.Root, false);
-            m_proBuilderTool = m_proBuilderToolGO.AddComponent<ProBuilderTool>();
-            m_proBuilderToolGO.AddComponent<MaterialPaletteManager>();
+            m_proBuilderTool = IOC.Resolve<IProBuilderTool>();
+            if(m_proBuilderTool == null)
+            {
+                GameObject proBuilderToolGO = new GameObject("ProBuilderTool");
+                proBuilderToolGO.transform.SetParent(Editor.Root, false);
+                m_proBuilderTool = proBuilderToolGO.AddComponent<ProBuilderTool>();
+            }
+
             m_proBuilderTool.ModeChanged += OnProBuilderToolModeChanged;
             m_proBuilderTool.SelectionChanged += OnProBuilderToolSelectionChanged;
             
             CreateToolbar();
             m_toolbar.gameObject.SetActive(m_useToolbar);
-
-            Editor.Undo.Store();
 
             Editor.Selection.SelectionChanged += OnSelectionChanged;
 
@@ -75,6 +120,11 @@ namespace Battlehub.RTBuilder
             m_commandsList.CanSelectAll = false;
             m_commandsList.CanUnselectAll = true;
             m_commandsList.CanRemove = false;
+
+            if (m_modeSelector != null)
+            {
+                m_modeSelector.Init(this, this, Strong.PropertyInfo((ProBuilderView x) => x.UIMode), null, "Mode:", null, null, null, false);
+            }
         }
 
         protected override void OnDestroyOverride()
@@ -87,13 +137,6 @@ namespace Battlehub.RTBuilder
                 m_wm.WindowDestroyed -= OnWindowDestroyed;
                 DestroyToolbar();
             }
-
-            if (m_proBuilderToolGO != null)
-            {
-                Destroy(m_proBuilderToolGO);
-            }
-
-            Editor.Undo.Restore();
 
             if (Editor != null)
             {
@@ -116,6 +159,7 @@ namespace Battlehub.RTBuilder
             {
                 m_proBuilderTool.ModeChanged -= OnProBuilderToolModeChanged;
                 m_proBuilderTool.SelectionChanged -= OnProBuilderToolSelectionChanged;
+                m_proBuilderTool.Mode = ProBuilderToolMode.Object;
             }
         }
 
@@ -124,6 +168,7 @@ namespace Battlehub.RTBuilder
             UpdateFlags();
             m_commands = GetCommands().ToArray();
             m_commandsList.Items = m_commands;
+            OnUIModeChanged();
         }
 
         private void OnProBuilderToolModeChanged(ProBuilderToolMode mode)
@@ -211,8 +256,6 @@ namespace Battlehub.RTBuilder
             commands.Add(newShapeCmd);
             commands.Add(new ToolCmd("New Poly Shape", OnNewPolyShape, true));
             commands.Add(new ToolCmd("Edit Poly Shape", OnEditPolyShape, () => m_isPolyShapeSelected));
-            commands.Add(new ToolCmd("Edit Materials", OnEditMaterials));
-            commands.Add(new ToolCmd("Edit UV", OnEditUV));
             return commands;
         }
 
@@ -408,16 +451,6 @@ namespace Battlehub.RTBuilder
             m_proBuilderTool.Mode = ProBuilderToolMode.PolyShape;
         }
 
-        private void OnEditMaterials()
-        {
-            m_wm.CreateWindow("MaterialPalette", false, UIControls.DockPanels.RegionSplitType.Left, 0.2f);
-        }
-
-        private void OnEditUV()
-        {
-            m_wm.CreateWindow("UVEditor", false, UIControls.DockPanels.RegionSplitType.Left, 0.2f);
-        }
-
         private void OnCenterPivot()
         {
             m_proBuilderTool.CenterPivot();           
@@ -461,6 +494,9 @@ namespace Battlehub.RTBuilder
                 float minScale = Mathf.Min(scale.x, scale.y, scale.z);
                 PBMesh.ProBuilderize(gameObjects[i], true, new Vector2(minScale, minScale));
             }
+
+            UpdateFlags();
+            m_commandsList.DataBindVisible();
             return null;
         }
 

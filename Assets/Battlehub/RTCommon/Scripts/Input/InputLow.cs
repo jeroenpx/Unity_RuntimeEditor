@@ -35,6 +35,13 @@ namespace Battlehub.RTCommon
 
     public class InputLowVR : InputLow
     {
+        private IVRTracker m_tracker;
+
+        public InputLowVR(IVRTracker tracker)
+        {
+            m_tracker = tracker;
+        }
+
         public override float GetAxis(InputAxis axis)
         {
             switch (axis)
@@ -57,17 +64,17 @@ namespace Battlehub.RTCommon
 
         public override bool GetPointerDown(int index)
         {
-            return Input.GetKeyDown(KeyCode.Space);
+            return m_tracker.RightHand.GetKeyDown(VRInputKey.Trigger);
         }
 
         public override bool GetPointerUp(int index)
         {
-            return Input.GetKeyUp(KeyCode.Space);
+            return m_tracker.RightHand.GetKeyUp(VRInputKey.Trigger);
         }
 
         public override bool GetPointer(int index)
         {
-            return Input.GetKey(KeyCode.Space);
+            return m_tracker.RightHand.GetKey(VRInputKey.Trigger);
         }
     }
 

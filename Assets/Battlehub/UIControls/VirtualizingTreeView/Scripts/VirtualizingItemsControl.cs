@@ -40,8 +40,8 @@ namespace Battlehub.UIControls
             {
                 TDataBindingArgs args = new TDataBindingArgs();
                 args.Item = itemContainer.Item;
-                args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
-                args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
+                args.ItemPresenter = itemContainer.ItemPresenter == null ? itemContainer.gameObject : itemContainer.ItemPresenter;
+                args.EditorPresenter = itemContainer.EditorPresenter == null ? itemContainer.gameObject : itemContainer.EditorPresenter;
                 ItemBeginEdit(this, args);
             }
         }
@@ -58,8 +58,8 @@ namespace Battlehub.UIControls
             {
                 TDataBindingArgs args = new TDataBindingArgs();
                 args.Item = itemContainer.Item;
-                args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
-                args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
+                args.ItemPresenter = itemContainer.ItemPresenter == null ? itemContainer.gameObject : itemContainer.ItemPresenter;
+                args.EditorPresenter = itemContainer.EditorPresenter == null ? itemContainer.gameObject : itemContainer.EditorPresenter;
                 ItemEndEdit(this, args);
             } 
             IsSelected = true;
@@ -69,8 +69,8 @@ namespace Battlehub.UIControls
         {
             TDataBindingArgs args = new TDataBindingArgs();
             args.Item = item;
-            args.ItemPresenter = itemContainer.ItemPresenter == null ? gameObject : itemContainer.ItemPresenter;
-            args.EditorPresenter = itemContainer.EditorPresenter == null ? gameObject : itemContainer.EditorPresenter;
+            args.ItemPresenter = itemContainer.ItemPresenter == null ? itemContainer.gameObject : itemContainer.ItemPresenter;
+            args.EditorPresenter = itemContainer.EditorPresenter == null ? itemContainer.gameObject : itemContainer.EditorPresenter;
 
             itemContainer.Clear();
 
@@ -100,9 +100,7 @@ namespace Battlehub.UIControls
             {
                 ItemDataBinding(this, args);
             }
-        }
-
-      
+        } 
     }
 
     public class ItemContainerData

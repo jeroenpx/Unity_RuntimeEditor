@@ -690,7 +690,6 @@ namespace Battlehub.RTHandles
             Vector3 newPivot = camTransform.position + camTransform.forward * m_orbitDistance;
             SecondaryPivotTransform.position += newPivot - Pivot;
             PivotTransform.position = newPivot;
-
         }
 
         private void OnSceneGizmoOrientationChanging()

@@ -6,6 +6,11 @@ namespace Battlehub.RTHandles
 {
     public interface IOutlineManager
     {
+        IRuntimeSelection Selection
+        {
+            get;
+            set;
+        }
         bool ContainsRenderer(Renderer renderer);
         void AddRenderers(Renderer[] renderers);
         void RemoveRenderers(Renderer[] renderers);
@@ -24,14 +29,49 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        private IRuntimeSelection m_selectionOverride;
+        public IRuntimeSelection Selection
+        {
+            get
+            {
+                if (m_selectionOverride != null)
+                {
+                    return m_selectionOverride;
+                }
+
+                return m_editor.Selection;
+            }
+            set
+            {
+                if (m_selectionOverride != value)
+                {
+                    if (m_selectionOverride != null)
+                    {
+                        m_selectionOverride.SelectionChanged -= OnSelectionChanged;
+                    }
+
+                    m_selectionOverride = value;
+                    if (m_selectionOverride == m_editor.Selection)
+                    {
+                        m_selectionOverride = null;
+                    }
+
+                    if (m_selectionOverride != null)
+                    {
+                        m_selectionOverride.SelectionChanged += OnSelectionChanged;
+                    }
+                }
+            }
+        }
+
         private void Start()
         {
             m_outlineEffect =  Camera.gameObject.AddComponent<OutlineEffect>();
 
             m_editor = IOC.Resolve<IRTE>();
 
-            TryToAddRenderers();
-            m_editor.Selection.SelectionChanged += OnSelectionChanged;
+            TryToAddRenderers(m_editor.Selection);
+            m_editor.Selection.SelectionChanged += OnRuntimeEditorSelectionChanged;
 
             RTEComponent rteComponent = GetComponentInParent<RTEComponent>();
             if(rteComponent != null)
@@ -43,7 +83,7 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if(RenderPipelineInfo.Type != RPType.Legacy)
+            if(RenderPipelineInfo.Type != RPType.Standard)
             {
                 Debug.Log("OutlineManager is not supported");
                 Destroy(this);
@@ -54,7 +94,12 @@ namespace Battlehub.RTHandles
         {
             if(m_editor != null)
             {
-                m_editor.Selection.SelectionChanged -= OnSelectionChanged;
+                m_editor.Selection.SelectionChanged -= OnRuntimeEditorSelectionChanged;
+            }
+
+            if(m_selectionOverride != null)
+            {
+                m_selectionOverride.SelectionChanged -= OnSelectionChanged;
             }
 
             if(m_outlineEffect != null)
@@ -68,22 +113,31 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private void OnRuntimeEditorSelectionChanged(Object[] unselectedObject)
+        {
+            OnSelectionChanged(m_editor.Selection, unselectedObject);
+        }
+
         private void OnSelectionChanged(Object[] unselectedObjects)
+        {
+            OnSelectionChanged(m_selectionOverride, unselectedObjects);
+        }
+
+        private void OnSelectionChanged(IRuntimeSelection selection, Object[] unselectedObjects)
         {
             if (unselectedObjects != null)
             {
                 Renderer[] renderers = unselectedObjects.Select(go => go as GameObject).Where(go => go != null).SelectMany(go => go.GetComponentsInChildren<Renderer>(true)).ToArray();
                 m_outlineEffect.RemoveRenderers(renderers);
             }
-
-            TryToAddRenderers();
+            TryToAddRenderers(selection);
         }
 
-        private void TryToAddRenderers()
+        private void TryToAddRenderers(IRuntimeSelection selection)
         {
-            if (m_editor.Selection.gameObjects != null)
+            if (selection.gameObjects != null)
             {
-                Renderer[] renderers = m_editor.Selection.gameObjects.Where(go => go != null).Select(go => go.GetComponent<ExposeToEditor>()).Where(e => e != null && e.ShowSelectionGizmo).SelectMany(e => e.GetComponentsInChildren<Renderer>().Where(r => (r.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)).ToArray();
+                Renderer[] renderers = selection.gameObjects.Where(go => go != null).Select(go => go.GetComponent<ExposeToEditor>()).Where(e => e != null && e.ShowSelectionGizmo).SelectMany(e => e.GetComponentsInChildren<Renderer>().Where(r => (r.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)).ToArray();
                 m_outlineEffect.AddRenderers(renderers);
             }
         }

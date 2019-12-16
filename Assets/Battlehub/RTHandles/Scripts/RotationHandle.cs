@@ -28,13 +28,13 @@ namespace Battlehub.RTHandles
         private Quaternion m_startingRotation = Quaternion.identity;
         private Quaternion StartingRotation
         {
-            get { return Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? m_startingRotation : Quaternion.identity; }
+            get { return PivotRotation == RuntimePivotRotation.Global ? m_startingRotation : Quaternion.identity; }
         }
 
         private Quaternion m_startinRotationInv = Quaternion.identity;
         private Quaternion StartingRotationInv
         {
-            get { return Editor.Tools.PivotRotation == RuntimePivotRotation.Global ? m_startinRotationInv : Quaternion.identity; }
+            get { return PivotRotation == RuntimePivotRotation.Global ? m_startinRotationInv : Quaternion.identity; }
         }
 
         private Quaternion m_targetInverse = Quaternion.identity;

@@ -15,13 +15,28 @@ using UnityObject = UnityEngine.Object;
 
 namespace Battlehub.RTEditor
 {
-    public class ProjectFolderView : RuntimeWindow
+    public interface IProjectFolder
     {
-        public event EventHandler<ProjectTreeEventArgs> ItemDeleted;
+        event EventHandler<ItemDataBindingArgs> ItemDataBinding;
+        event EventHandler<ProjectTreeCancelEventArgs> ItemsDeleting;
+        event EventHandler<ProjectTreeEventArgs> ItemsDeleted;
+        event EventHandler<ProjectTreeEventArgs> ItemDoubleClick;
+        event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
+        event EventHandler<ProjectTreeEventArgs> SelectionChanged;
+        event EventHandler Destroyed;
+        void DeleteSelectedItems();
+    }
+
+    public class ProjectFolderView : RuntimeWindow, IProjectFolder
+    {
+        public event EventHandler<ItemDataBindingArgs> ItemDataBinding;
+        public event EventHandler<ProjectTreeCancelEventArgs> ItemsDeleting;
+        public event EventHandler<ProjectTreeEventArgs> ItemsDeleted;
         public event EventHandler<ProjectTreeEventArgs> ItemDoubleClick;
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
         public event EventHandler<ProjectTreeEventArgs> SelectionChanged;
-        
+        public event EventHandler Destroyed;
+
         private IProject m_project;
         private IWindowManager m_windowManager;
 
@@ -193,11 +208,8 @@ namespace Battlehub.RTEditor
             {
                 gameObject.AddComponent<ProjectFolderViewInput>();
             }
-        }
 
-        private void Start()
-        {
-                
+            IOC.RegisterFallback<IProjectFolder>(this);
         }
 
         protected override void OnDestroyOverride()
@@ -228,6 +240,13 @@ namespace Battlehub.RTEditor
             {
                 Editor.Selection.SelectionChanged -= EditorSelectionChanged;
             }
+
+            if (Destroyed != null)
+            {
+                Destroyed(this, EventArgs.Empty);
+            }
+
+            IOC.UnregisterFallback<IProjectFolder>(this);
         }
 
         private void OnItemBeginDrag(object sender, ItemArgs e)
@@ -326,6 +345,11 @@ namespace Battlehub.RTEditor
                 ProjectItemView itemView = e.ItemPresenter.GetComponentInChildren<ProjectItemView>(true);
                 itemView.ProjectItem = projectItem;
             }
+
+            if(ItemDataBinding != null)
+            {
+                ItemDataBinding(this, e);
+            }
         }
 
         private void OnItemRemoving(object sender, ItemsCancelArgs e)
@@ -344,9 +368,9 @@ namespace Battlehub.RTEditor
 
             if(m_raiseItemDeletedEvent)
             {
-                if (ItemDeleted != null)
+                if (ItemsDeleted != null)
                 {
-                    ItemDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
+                    ItemsDeleted(this, new ProjectTreeEventArgs(e.Items.OfType<ProjectItem>().ToArray()));
                 }
             }
         }
@@ -738,7 +762,7 @@ namespace Battlehub.RTEditor
 
         private void Delete(string arg)
         {
-            DeleteSelectedAssets();
+            DeleteSelectedItems();
         }
 
         private void Rename(string arg)
@@ -750,8 +774,21 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void DeleteSelectedAssets()
+        public void DeleteSelectedItems()
         {
+            if(ItemsDeleting != null)
+            {
+                if(m_listBox.SelectedItems != null)
+                {
+                    ProjectTreeCancelEventArgs args = new ProjectTreeCancelEventArgs(m_listBox.SelectedItems.OfType<ProjectItem>().ToArray());
+                    ItemsDeleting(this, args);
+                    if(args.Cancel)
+                    {
+                        return;
+                    }
+                }
+            }
+
             m_windowManager.Confirmation("Delete Selected Assets", "You cannot undo this action", (sender, arg) =>
             {
                 m_listBox.RemoveSelectedItems();

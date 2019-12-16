@@ -639,6 +639,11 @@ namespace Battlehub.RTHandles
                     {
                         m_selectionOverride.SelectionChanged += OnRuntimeSelectionChanged;
                     }
+
+                    if(m_outlineManager != null)
+                    {
+                        m_outlineManager.Selection = m_selectionOverride;
+                    }
                 }
             }
         }
@@ -1330,8 +1335,10 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnRuntimeSelectionChanged(UnityObject[] unselectedObjects)
+        private void OnRuntimeSelectionChanged(UnityObject[] unselected)
         {
+            HandleRuntimeSelectionChange(m_selectionOverride, unselected);
+
             UpdateHandlesState();
         }
 

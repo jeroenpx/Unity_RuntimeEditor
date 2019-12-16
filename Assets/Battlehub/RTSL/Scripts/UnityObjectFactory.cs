@@ -66,6 +66,11 @@ namespace Battlehub.RTSL
             }
             else if (type == typeof(Texture2D))
             {
+                if (surrogate != null && surrogate.CanInstantiate(typeof(Texture2D)))
+                {
+                    return (UnityObject)surrogate.Instantiate(type);
+                }
+
                 Texture2D texture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
                 return texture;
             }
