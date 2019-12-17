@@ -52,7 +52,7 @@ namespace Battlehub.ProBuilderIntegration
 
                 selection = selection.ToFaces(false, false);
                 IList<int> faceIndexes;
-                if (selection.SelectedFaces.TryGetValue(m_vertexSelection.LastMesh, out faceIndexes))
+                if (selection.SelectedFaces.TryGetValue(m_vertexSelection.LastMesh.gameObject, out faceIndexes))
                 {
                     if (faceIndexes.Count != 0)
                     {
@@ -61,7 +61,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
 
                 IList<int> vertices;
-                if (!selection.SelectedIndices.TryGetValue(m_vertexSelection.LastMesh, out vertices) || vertices.Count == 0)
+                if (!selection.SelectedIndices.TryGetValue(m_vertexSelection.LastMesh.gameObject, out vertices) || vertices.Count == 0)
                 {
                     return Quaternion.identity;
                 }
@@ -96,7 +96,7 @@ namespace Battlehub.ProBuilderIntegration
             if (selection != null)
             {
                 selection = selection.ToVertices(false);
-                foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices)
+                foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedIndices)
                 {
                     PBMesh pbMesh = kvp.Key.GetComponent<PBMesh>();
                     if (pbMesh.IsMarkedAsDestroyed)
@@ -104,7 +104,7 @@ namespace Battlehub.ProBuilderIntegration
                         continue;
                     }
 
-                    m_vertexSelection.Add(kvp.Key, kvp.Value);
+                    m_vertexSelection.Add(kvp.Key.GetComponent<ProBuilderMesh>(), kvp.Value);
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace Battlehub.ProBuilderIntegration
 
             foreach (ProBuilderMesh mesh in m_vertexSelection.Meshes)
             {
-                selection.SelectedIndices.Add(mesh, m_vertexSelection.GetVertices(mesh).ToArray());
+                selection.SelectedIndices.Add(mesh.gameObject, m_vertexSelection.GetVertices(mesh).ToArray());
             }
             if (selection.SelectedIndices.Count > 0)
             {
@@ -130,7 +130,7 @@ namespace Battlehub.ProBuilderIntegration
 
             foreach(ProBuilderMesh mesh in m_vertexSelection.Meshes)
             {
-                selection.UnselectedIndices.Add(mesh, m_vertexSelection.GetVertices(mesh).ToArray());
+                selection.UnselectedIndices.Add(mesh.gameObject, m_vertexSelection.GetVertices(mesh).ToArray());
             }
 
             m_vertexSelection.Clear();
@@ -183,15 +183,15 @@ namespace Battlehub.ProBuilderIntegration
                         List<int> indices = m_selection.mesh.GetCoincidentVertices(new[] { m_selection.vertex });
                         m_vertexSelection.Remove(m_selection.mesh, indices);
                         selection = new MeshSelection();
-                        selection.UnselectedIndices.Add(m_selection.mesh, indices);
+                        selection.UnselectedIndices.Add(m_selection.mesh.gameObject, indices);
                     }
                     else
                     {
                         List<int> indices = m_selection.mesh.GetCoincidentVertices(new[] { m_selection.vertex });
 
                         selection = ReadSelection();
-                        selection.UnselectedIndices[m_selection.mesh] = selection.UnselectedIndices[m_selection.mesh].Where(i => i != m_selection.vertex).ToArray();
-                        selection.SelectedIndices.Add(m_selection.mesh, indices);
+                        selection.UnselectedIndices[m_selection.mesh.gameObject] = selection.UnselectedIndices[m_selection.mesh.gameObject].Where(i => i != m_selection.vertex).ToArray();
+                        selection.SelectedIndices.Add(m_selection.mesh.gameObject, indices);
                         m_vertexSelection.Clear();
                         m_vertexSelection.Add(m_selection.mesh, indices);
                     }
@@ -211,7 +211,7 @@ namespace Battlehub.ProBuilderIntegration
                     List<int> indices = m_selection.mesh.GetCoincidentVertices(new[] { m_selection.vertex });
 
                     m_vertexSelection.Add(m_selection.mesh, indices);
-                    selection.SelectedIndices.Add(m_selection.mesh, indices);
+                    selection.SelectedIndices.Add(m_selection.mesh.gameObject, indices);
                 }
             }
             else
@@ -238,7 +238,7 @@ namespace Battlehub.ProBuilderIntegration
                 IList<int> indices = m_vertexSelection.GetVertices(mesh);
                 if (indices != null)
                 {
-                    selection.UnselectedIndices.Add(mesh, indices.ToArray());
+                    selection.UnselectedIndices.Add(mesh.gameObject, indices.ToArray());
                 }
             }
             return selection;
@@ -276,14 +276,14 @@ namespace Battlehub.ProBuilderIntegration
                 {
 
                     IList<int> selected = mesh.GetCoincidentVertices(indices).Where(index => m_vertexSelection.IsSelected(mesh, index)).ToArray();
-                    selection.UnselectedIndices.Add(mesh, selected);
+                    selection.UnselectedIndices.Add(mesh.gameObject, selected);
                     m_vertexSelection.Remove(mesh, selected);
                 }
 
                 if (mode == MeshEditorSelectionMode.Add || mode == MeshEditorSelectionMode.Difference)
                 {
                     IList<int> notSelected = mesh.GetCoincidentVertices(indices).Where(index => !m_vertexSelection.IsSelected(mesh, index)).ToArray();
-                    selection.SelectedIndices.Add(mesh, notSelected);
+                    selection.SelectedIndices.Add(mesh.gameObject, notSelected);
                     m_vertexSelection.Add(mesh, notSelected);
                 }
             }
@@ -295,13 +295,14 @@ namespace Battlehub.ProBuilderIntegration
             MeshSelection selection = IMeshEditorExt.Select(material);
             selection = selection.ToVertices(false);
             
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices.ToArray())
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedIndices.ToArray())
             {
                 IList<int> indices = kvp.Value;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
                 for (int i = indices.Count - 1; i >= 0; i--)
                 {
                     int index = indices[i];
-                    if (m_vertexSelection.IsSelected(kvp.Key, index))
+                    if (m_vertexSelection.IsSelected(mesh, index))
                     {
                         indices.Remove(index);
                     }
@@ -313,7 +314,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
                 else
                 {
-                    m_vertexSelection.Add(kvp.Key, indices);
+                    m_vertexSelection.Add(mesh, indices);
                 }
             }
             if (selection.SelectedIndices.Count == 0)
@@ -328,13 +329,14 @@ namespace Battlehub.ProBuilderIntegration
             MeshSelection selection = IMeshEditorExt.Select(material);
             selection = selection.ToVertices(true);
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedIndices.ToArray())
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.UnselectedIndices.ToArray())
             {
                 IList<int> indices = kvp.Value;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
                 for (int i = indices.Count - 1; i >= 0; i--)
                 {
                     int index = indices[i];
-                    if (!m_vertexSelection.IsSelected(kvp.Key, index))
+                    if (!m_vertexSelection.IsSelected(mesh, index))
                     {
                         indices.Remove(index);
                     }
@@ -346,7 +348,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
                 else
                 {
-                    m_vertexSelection.Remove(kvp.Key, indices);
+                    m_vertexSelection.Remove(mesh, indices);
                 }
             }
             if (selection.UnselectedIndices.Count == 0)
@@ -362,15 +364,14 @@ namespace Battlehub.ProBuilderIntegration
             ProBuilderMesh[] meshes = m_vertexSelection.Meshes.OrderBy(m => m == m_vertexSelection.LastMesh).ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
-                state.State.Add(mesh, new MeshState(mesh.positions.ToArray(), mesh.faces.ToArray(), mesh.textures.ToArray(), recordUV));
+                state.State.Add(mesh.gameObject, new MeshState(mesh.positions.ToArray(), mesh.faces.ToArray(), mesh.textures.ToArray(), recordUV));
             }
             return state;
         }
 
         public override void SetState(MeshEditorState state)
-        {
-            
-            ProBuilderMesh[] meshes = state.State.Keys.ToArray();
+        {   
+            ProBuilderMesh[] meshes = state.State.Keys.Select(k => k.GetComponent<ProBuilderMesh>()).ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
                 IList<int> vertices = m_vertexSelection.GetVertices(mesh);
@@ -380,7 +381,7 @@ namespace Battlehub.ProBuilderIntegration
                     m_vertexSelection.Remove(mesh, vertices);
                 }
                 
-                MeshState meshState = state.State[mesh];
+                MeshState meshState = state.State[mesh.gameObject];
                 mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
 
                 if(vertices != null)
@@ -573,11 +574,12 @@ namespace Battlehub.ProBuilderIntegration
             MeshSelection selection = GetSelection();
             selection = selection.ToFaces(false, true);
 
-            foreach(KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
-            {                
-                kvp.Key.DeleteFaces(kvp.Value);
-                kvp.Key.ToMesh();
-                kvp.Key.Refresh();
+            foreach(KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
+            {
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
+                mesh.DeleteFaces(kvp.Value);
+                mesh.ToMesh();
+                mesh.Refresh();
             }
         }
     }

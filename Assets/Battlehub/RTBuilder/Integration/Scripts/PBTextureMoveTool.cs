@@ -40,7 +40,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
 
                 mesh.textures = textures;
-                mesh.GetFaces(Selection.SelectedFaces[mesh], faces);
+                mesh.GetFaces(Selection.SelectedFaces[mesh.gameObject], faces);
                
                 mesh.RefreshUV(faces);
                 faces.Clear();

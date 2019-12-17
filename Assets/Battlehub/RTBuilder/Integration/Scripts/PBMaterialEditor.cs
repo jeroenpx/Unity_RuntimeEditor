@@ -92,9 +92,9 @@ namespace Battlehub.ProBuilderIntegration
             MeshMaterialsState newState = new MeshMaterialsState();
 
             List<Face> faces = new List<Face>();
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
 
                 AddAllFacesToState(oldState, mesh);
                 AddMaterialsToState(oldState, mesh);
@@ -137,7 +137,7 @@ namespace Battlehub.ProBuilderIntegration
             state.Materials.Add(mesh, materials);
         }
 
-        private static void GetFaceToSubmeshIndexes(List<FaceToSubmeshIndex> result, KeyValuePair<ProBuilderMesh, IList<int>> kvp, ProBuilderMesh mesh)
+        private static void GetFaceToSubmeshIndexes(List<FaceToSubmeshIndex> result, KeyValuePair<GameObject, IList<int>> kvp, ProBuilderMesh mesh)
         {
             IList<Face> faces = mesh.faces;
             foreach (int faceIndex in kvp.Value)
@@ -157,7 +157,7 @@ namespace Battlehub.ProBuilderIntegration
                 int faceIndex = meshAndFace.mesh.faces.IndexOf(meshAndFace.face);
 
                 IList<int> faceIndexes;
-                if(selection != null && selection.SelectedFaces.TryGetValue(meshAndFace.mesh, out faceIndexes))
+                if(selection != null && selection.SelectedFaces.TryGetValue(meshAndFace.mesh.gameObject, out faceIndexes))
                 {
                     if(faceIndexes.Contains(faceIndex))
                     {

@@ -799,7 +799,7 @@ namespace Battlehub.RTCommon
                         }
                     }
 
-                    if(node.Data.Length == erased)
+                    if(erased > 0 && node.Data.Length == erased)
                     {
                         m_purgeNodes.Add(node);
                     }

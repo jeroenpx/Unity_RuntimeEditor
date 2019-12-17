@@ -162,17 +162,6 @@ namespace Battlehub.RTSL
             }    
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Init()
-        {
-            if(!Application.isPlaying)
-            {
-                return;
-            }
-
-            RegisterRTSL();
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-        }
 
         private static void RegisterRTSL()
         {
@@ -188,9 +177,32 @@ namespace Battlehub.RTSL
             IOC.RegisterFallback(() => Instance.m_playerPrefs);
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Init()
+        {
+            if(!Application.isPlaying)
+            {
+                return;
+            }
+
+            RegisterRTSL();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+        }
+
+        private static int m_loadedScenes;
+        private static void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            m_loadedScenes++;
+        }
+
         private static void OnSceneUnloaded(Scene arg0)
         {
-            m_instance = null;
+            m_loadedScenes--;
+            if(m_loadedScenes == 0)
+            {
+                m_instance = null;
+            }
         }
     }
 }

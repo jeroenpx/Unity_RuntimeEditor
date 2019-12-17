@@ -5,6 +5,7 @@ using Battlehub.RTHandles;
 using Battlehub.UIControls;
 using Battlehub.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -98,12 +99,15 @@ namespace Battlehub.RTBuilder
             }
 
             m_proBuilderTool.ModeChanged += OnProBuilderToolModeChanged;
-            m_proBuilderTool.SelectionChanged += OnProBuilderToolSelectionChanged;
+            m_proBuilderTool.SelectionChanged += UpdateFlagsAndDataBindVisible;
             
             CreateToolbar();
             m_toolbar.gameObject.SetActive(m_useToolbar);
 
             Editor.Selection.SelectionChanged += OnSelectionChanged;
+            Editor.Undo.UndoCompleted += OnUndoStateChanged;
+            Editor.Undo.RedoCompleted += OnUndoStateChanged;
+            Editor.Undo.StateChanged += OnUndoStateChanged;
 
             m_commandsList.ItemClick += OnItemClick;
             m_commandsList.ItemDataBinding += OnItemDataBinding;
@@ -125,6 +129,8 @@ namespace Battlehub.RTBuilder
             {
                 m_modeSelector.Init(this, this, Strong.PropertyInfo((ProBuilderView x) => x.UIMode), null, "Mode:", null, null, null, false);
             }
+
+            OnSelectionChanged(null);
         }
 
         protected override void OnDestroyOverride()
@@ -141,6 +147,9 @@ namespace Battlehub.RTBuilder
             if (Editor != null)
             {
                 Editor.Selection.SelectionChanged -= OnSelectionChanged;
+                Editor.Undo.UndoCompleted -= OnUndoStateChanged;
+                Editor.Undo.RedoCompleted -= OnUndoStateChanged;
+                Editor.Undo.StateChanged -= OnUndoStateChanged;
             }
 
             if (m_commandsList != null)
@@ -158,7 +167,7 @@ namespace Battlehub.RTBuilder
             if (m_proBuilderTool != null)
             {
                 m_proBuilderTool.ModeChanged -= OnProBuilderToolModeChanged;
-                m_proBuilderTool.SelectionChanged -= OnProBuilderToolSelectionChanged;
+                m_proBuilderTool.SelectionChanged -= UpdateFlagsAndDataBindVisible;
                 m_proBuilderTool.Mode = ProBuilderToolMode.Object;
             }
         }
@@ -278,11 +287,25 @@ namespace Battlehub.RTBuilder
 
         private void OnSelectionChanged(UnityEngine.Object[] unselectedObjects)
         {
-            UpdateFlags();
-            m_commandsList.DataBindVisible();
+            UpdateFlagsAndDataBindVisible();
         }
 
-        private void OnProBuilderToolSelectionChanged()
+        private void OnUndoStateChanged()
+        {
+            UpdateFlagsAndDataBindVisible();
+            if(m_isProBuilderMeshSelected)
+            {
+                StartCoroutine(CoUpdateFlagsAndDataBindVisible());
+            }
+        }
+
+        private IEnumerator CoUpdateFlagsAndDataBindVisible()
+        {
+            yield return new WaitForEndOfFrame();
+            UpdateFlagsAndDataBindVisible();
+        }
+
+        private void UpdateFlagsAndDataBindVisible()
         {
             UpdateFlags();
             m_commandsList.DataBindVisible();
@@ -492,12 +515,67 @@ namespace Battlehub.RTBuilder
             {
                 Vector3 scale = gameObjects[i].transform.localScale;
                 float minScale = Mathf.Min(scale.x, scale.y, scale.z);
-                PBMesh.ProBuilderize(gameObjects[i], true, new Vector2(minScale, minScale));
+                ProBuilderize(gameObjects[i], true, new Vector2(minScale, minScale));
             }
 
-            UpdateFlags();
-            m_commandsList.DataBindVisible();
+            OnSelectionChanged(null);
             return null;
+        }
+
+        public PBMesh ProBuilderize(GameObject gameObject, bool hierarchy, Vector2 uvScale)
+        {
+            bool wasActive = false;
+            if (uvScale != Vector2.one)
+            {
+                wasActive = gameObject.activeSelf;
+                gameObject.SetActive(false);
+            }
+
+            if (hierarchy)
+            {
+                MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>(true);
+                for (int i = 0; i < meshFilters.Length; ++i)
+                {
+                    if (meshFilters[i].GetComponent<PBMesh>() == null)
+                    {
+                        ExposeToEditor exposeToEditor = meshFilters[i].GetComponent<ExposeToEditor>();
+                        if(exposeToEditor != null)
+                        {
+                            Editor.Undo.AddComponent(exposeToEditor, typeof(PBMesh));
+                            PBMesh pbMesh = exposeToEditor.GetComponent<PBMesh>();
+                            PBMesh.Init(pbMesh, uvScale);
+                        }
+                        
+                    }
+                }
+
+                if (uvScale != Vector2.one)
+                {
+                    gameObject.SetActive(wasActive);
+                }
+
+                return gameObject.GetComponent<PBMesh>();
+            }
+            else
+            {
+                PBMesh mesh = gameObject.GetComponent<PBMesh>();
+                if (mesh != null)
+                {
+                    if (uvScale != Vector2.one)
+                    {
+                        gameObject.SetActive(wasActive);
+                    }
+                    return mesh;
+                }
+
+                mesh = gameObject.AddComponent<PBMesh>();
+                PBMesh.Init(mesh, uvScale);
+                if (uvScale != Vector2.one)
+                {
+                    gameObject.SetActive(wasActive);
+                }
+                return mesh;
+            }
         }
 
         private object OnExtrudeFace(object arg)

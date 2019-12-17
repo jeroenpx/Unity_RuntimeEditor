@@ -249,9 +249,9 @@ namespace Battlehub.ProBuilderIntegration
             selection = selection.ToFaces(false, false);
 
             IList<Face> faces = new List<Face>();
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
 
                 faces.Clear();
                 mesh.GetFaces(kvp.Value, faces);
@@ -287,9 +287,9 @@ namespace Battlehub.ProBuilderIntegration
             selection = selection.ToFaces(false, false);
 
             List<Face> faces = new List<Face>();
-            foreach(KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            foreach(KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
 
                 faces.Clear();
                 mesh.GetFaces(kvp.Value, faces);
@@ -310,9 +310,9 @@ namespace Battlehub.ProBuilderIntegration
             selection = selection.ToFaces(false, false);
 
             List<Face> faces = new List<Face>();
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
 
                 faces.Clear();
                 mesh.GetFaces(kvp.Value, faces);
@@ -341,9 +341,9 @@ namespace Battlehub.ProBuilderIntegration
 
             AutoUnwrapSettings unwrapSettings = settings;
             IList<Face> faces = new List<Face>();
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
 
                 faces.Clear();
                 mesh.GetFaces(kvp.Value, faces);
@@ -372,9 +372,9 @@ namespace Battlehub.ProBuilderIntegration
 
             PBAutoUnwrapSettings unwrapSettings = PBAutoUnwrapSettings.defaultAutoUnwrapSettings;
             IList<Face> faces = new List<Face>();
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
                 faces.Clear();
                 mesh.GetFaces(kvp.Value, faces);
                 for (int i = 0; i < faces.Count;)
@@ -398,12 +398,12 @@ namespace Battlehub.ProBuilderIntegration
             selection = selection.ToFaces(false, false);
 
             List<Face> faces = new List<Face>();
-            Dictionary<ProBuilderMesh, IList<int>> selectedFaces = selection.SelectedFaces;
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selectedFaces)
+            Dictionary<GameObject, IList<int>> selectedFaces = selection.SelectedFaces;
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in selectedFaces)
             {
                 faces.Clear();
 
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
                 mesh.GetFaces(kvp.Value, faces);
 
                 int texGroup = textureGroup >= 0 ? GetUnusedTextureGroup(mesh) : -1;
@@ -444,7 +444,7 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             
-            ProBuilderMesh mesh = currentSelection.SelectedFaces.Last().Key;
+            ProBuilderMesh mesh = currentSelection.SelectedFaces.Last().Key.GetComponent<ProBuilderMesh>();
             IList<int> currentlySelectedFaces = currentSelection.SelectedFaces.Last().Value;
             //HashSet<int> facesHs = new HashSet<int>(currentlySelectedFaces);
             int faceIndex = currentlySelectedFaces.Last();
@@ -466,7 +466,7 @@ namespace Battlehub.ProBuilderIntegration
                 }
             }
 
-            selection.SelectedFaces.Add(mesh, selectedFaces);
+            selection.SelectedFaces.Add(mesh.gameObject, selectedFaces);
             return selection;
         }
     }

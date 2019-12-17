@@ -1053,7 +1053,7 @@ namespace Battlehub.RTHandles
                             else
                             {
                                 filteredSelection = filteredSelection.OrderByDescending(o => o == hitGO).ToArray();
-                                Editor.Undo.Select(Selection, selection, Editor.Selection.objects.FirstOrDefault());
+                                Editor.Undo.Select(Selection, selection, Editor.Selection.objects != null ? Editor.Selection.objects.FirstOrDefault() : selection.FirstOrDefault());
                             }
                             RaiseSelectionChanged();
                         }

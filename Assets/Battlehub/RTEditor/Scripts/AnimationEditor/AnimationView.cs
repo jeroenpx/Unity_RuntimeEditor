@@ -408,7 +408,7 @@ namespace Battlehub.RTEditor
             {
                 m_blockUI.SetActive(CurrentClip == null);
 
-                if (CurrentClip == null)
+                if (CurrentClip == null && EventSystem.current != null)
                 {
                     EventSystem.current.SetSelectedGameObject(null);
                 }

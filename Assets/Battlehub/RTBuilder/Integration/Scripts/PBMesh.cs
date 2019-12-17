@@ -76,7 +76,7 @@ namespace Battlehub.ProBuilderIntegration
         public event PBMeshEvent<bool> Selected;
         public event PBMeshEvent Unselected;
         public event PBMeshEvent<bool, bool> Changed;
-
+        
         private ProBuilderMesh m_pbMesh;
         private MeshFilter m_meshFilter;
 
@@ -129,7 +129,7 @@ namespace Battlehub.ProBuilderIntegration
             Init(this, Vector2.one);
         }
 
-        private static void Init(PBMesh mesh, Vector2 scale)
+        public static void Init(PBMesh mesh, Vector2 scale)
         {
             if(mesh.m_pbMesh != null)
             {
@@ -167,7 +167,8 @@ namespace Battlehub.ProBuilderIntegration
             if(m_pbMesh != null)
             {
                 Destroy(m_pbMesh);
-            }
+                m_pbMesh = null;                
+            }   
         }
 
         public void OnMarkAsDestroyed()

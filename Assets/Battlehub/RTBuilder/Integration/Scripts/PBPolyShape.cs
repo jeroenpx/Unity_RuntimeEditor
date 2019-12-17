@@ -216,16 +216,16 @@ namespace Battlehub.ProBuilderIntegration
         public MeshEditorState GetState(bool recordUV)
         {
             MeshEditorState state = new MeshEditorState();
-            state.State.Add(m_targetMesh, new MeshState(m_targetMesh.positions.ToArray(), m_targetMesh.faces.ToArray(), m_targetMesh.textures.ToArray(), recordUV));
+            state.State.Add(m_targetMesh.gameObject, new MeshState(m_targetMesh.positions.ToArray(), m_targetMesh.faces.ToArray(), m_targetMesh.textures.ToArray(), recordUV));
             return state;
         }
 
         public void SetState(MeshEditorState state)
         {
-            ProBuilderMesh[] meshes = state.State.Keys.ToArray();
+            ProBuilderMesh[] meshes = state.State.Keys.Select(key => key.GetComponent<ProBuilderMesh>()).ToArray();
             foreach (ProBuilderMesh mesh in meshes)
             {
-                MeshState meshState = state.State[mesh];
+                MeshState meshState = state.State[mesh.gameObject];
                 mesh.Rebuild(meshState.Positions, meshState.Faces.Select(f => f.ToFace()).ToArray(), meshState.Textures);
             }
 

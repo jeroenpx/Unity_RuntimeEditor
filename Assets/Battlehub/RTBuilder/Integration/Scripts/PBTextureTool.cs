@@ -57,9 +57,9 @@ namespace Battlehub.ProBuilderIntegration
             List<bool> isManualUv = new List<bool>();
             List<Face> faces = new List<Face>();
 
-            foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in Selection.SelectedFaces)
+            foreach (KeyValuePair<GameObject, IList<int>> kvp in Selection.SelectedFaces)
             {
-                ProBuilderMesh mesh = kvp.Key;
+                ProBuilderMesh mesh = kvp.Key.GetComponent<ProBuilderMesh>();
                 mesh.GetFaces(kvp.Value, faces);
 
                 IList<Vector2> textures = mesh.textures;
@@ -136,7 +136,7 @@ namespace Battlehub.ProBuilderIntegration
                 bool[] isManualUv = IsManualUv[m];
                 int[] indexes = Indexes[m];
 
-                mesh.GetFaces(Selection.SelectedFaces[mesh], faces);
+                mesh.GetFaces(Selection.SelectedFaces[mesh.gameObject], faces);
 
                 for (int i = 0; i < isManualUv.Length; ++i)
                 {
