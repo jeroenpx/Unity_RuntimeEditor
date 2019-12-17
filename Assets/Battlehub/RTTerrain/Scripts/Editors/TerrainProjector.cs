@@ -57,7 +57,7 @@ namespace Battlehub.RTTerrain
 
         private void Update()
         {
-            if(m_terrainBrush.IsPainting)
+            if(m_terrainBrush != null && m_terrainBrush.IsPainting)
             {
                 if(m_editor.Input.GetPointerUp(0))
                 {

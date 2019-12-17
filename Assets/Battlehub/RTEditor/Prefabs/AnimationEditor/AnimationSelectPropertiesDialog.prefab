@@ -258,17 +258,17 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: m_eventSystem
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 114766226435074124, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: ContainerPrefab
       value: 
       objectReference: {fileID: 224568699337757300, guid: d5d265f9cefac2f49b028eb4e9226ad2,
         type: 3}
+    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: m_eventSystem
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 114171284073095840, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: m_Color.r

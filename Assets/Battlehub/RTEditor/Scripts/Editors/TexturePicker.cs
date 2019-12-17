@@ -52,9 +52,11 @@ namespace Battlehub.RTEditor
 
         private object m_target;
         private PropertyInfo m_property;
+        private bool m_enableUndo = true;
 
         public void Init(object target, PropertyInfo property, bool enableUndo = true)
         {
+            m_enableUndo = enableUndo;
             m_target = target;
             m_property = property;
 
@@ -97,10 +99,15 @@ namespace Battlehub.RTEditor
                 if(m_property != null && m_target != null)
                 {
                     IRTE rte = IOC.Resolve<IRTE>();
-                    rte.Undo.BeginRecordValue(m_target, m_property);
+                    if(m_enableUndo)
+                    {
+                        rte.Undo.BeginRecordValue(m_target, m_property);
+                    }
                     m_property.SetValue(m_target, obj);
-                    rte.Undo.EndRecordValue(m_target, m_property);
-
+                    if(m_enableUndo)
+                    {
+                        rte.Undo.EndRecordValue(m_target, m_property);
+                    }
                     Texture = obj as Texture2D;
                 }
             });

@@ -112,6 +112,14 @@ namespace Battlehub.RTTerrain
             Projector = Instantiate(m_terrainProjectorPrefab, m_editor.Root);
             Projector.gameObject.SetActive(false);
 
+            if(IOC.Resolve<ITerrainSelectionHandlesTool>() == null)
+            {
+                if(m_toggles[(int)EditorType.Selection_Handles])
+                {
+                    m_toggles[(int)EditorType.Selection_Handles].gameObject.SetActive(false);
+                }
+            }
+
             for(int i = 0; i < m_toggles.Length; ++i)
             {
                 Toggle toggle = m_toggles[i];

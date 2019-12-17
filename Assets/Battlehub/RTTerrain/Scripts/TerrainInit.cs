@@ -16,6 +16,16 @@ namespace Battlehub.RTTerrain
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
+
+            if(IOC.Resolve<ITerrainSettings>() == null)
+            {
+                gameObject.AddComponent<TerrainSettings>();
+            }
+            if(IOC.Resolve<ITerrainCutoutMaskRenderer>() == null)
+            {
+                gameObject.AddComponent<TerrainCutoutMaskRenderer>();
+            }
+
             Register();
         }
 
@@ -73,6 +83,20 @@ namespace Battlehub.RTTerrain
             {
                 new TerrainLayer() { diffuseTexture = terrainSettings != null ? terrainSettings.DefaultTexture : (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") }
             };
+
+            float[,,] alphaMaps = terrainData.GetAlphamaps(0, 0, terrainData.alphamapWidth, terrainData.alphamapHeight);
+            int amapY = alphaMaps.GetLength(0);
+            int amapX = alphaMaps.GetLength(1);
+
+            for (int y = 0; y < amapY; y++)
+            {
+                for (int x = 0; x < amapX; x++)
+                {
+                    alphaMaps[y, x, 0] = 1;
+                }
+            }
+
+            terrainData.SetAlphamaps(0, 0, alphaMaps);
 
             GameObject go = Terrain.CreateTerrainGameObject(terrainData);
             go.isStatic = false;

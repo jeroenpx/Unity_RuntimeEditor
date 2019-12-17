@@ -166,7 +166,7 @@ namespace Battlehub.RTEditor
             }
 
             IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-            appearance.UIScaler.scaleFactor = scale;
+            appearance.UIScale = scale;
 
             IRuntimeHandlesComponent handles = IOC.Resolve<IRuntimeHandlesComponent>();
             handles.HandleScale = scale;

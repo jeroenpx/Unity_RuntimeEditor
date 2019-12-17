@@ -60,7 +60,6 @@ namespace Battlehub.RTTerrain
         private float[,] m_oldHeightmap;
         private TerrainToolState.Record m_oldState;
 
-        
         private Dictionary<GameObject, int> m_handleToKey;
         private Dictionary<int, GameObject> m_keyToHandle;
         private int[] m_selectedHandles;
@@ -187,9 +186,6 @@ namespace Battlehub.RTTerrain
 
             m_terrainHandlesSelection = IOC.Resolve<ICustomSelectionComponent>();
          
-            m_cutoutMaskRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
-            m_cutoutMaskRenderer.ObjectImageLayer = m_editor.CameraLayerSettings.ResourcePreviewLayer;
-
             IOC.RegisterFallback<ITerrainSelectionHandlesTool>(this);
 
             OnEditorSelectionChanged(null);
@@ -249,6 +245,9 @@ namespace Battlehub.RTTerrain
 
         private void Enable()
         {
+            m_cutoutMaskRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
+            m_cutoutMaskRenderer.ObjectImageLayer = m_editor.CameraLayerSettings.ResourcePreviewLayer;
+
             m_terrainHandlesSelection.Selection.activeGameObject = null;
             m_terrainHandlesSelection.Selection.SelectionChanged += OnSelectionChanged;
             m_terrainHandlesSelection.CreateCustomHandle += OnCreateCustomHandle;

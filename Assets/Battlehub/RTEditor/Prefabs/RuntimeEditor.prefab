@@ -4457,7 +4457,7 @@ MonoBehaviour:
   m_colors:
     DisabledColor:
       serializedVersion: 2
-      rgba: 2189459584
+      rgba: 8421504
     XColor:
       serializedVersion: 2
       rgba: 4281157307
@@ -5824,8 +5824,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_cursorSettings: []
   m_uiBackgroundScaler: {fileID: 9174941219733222014}
-  m_uiForegroundScaler: {fileID: 9174941219733222014}
-  m_uiScaler: {fileID: 9174941219733222014}
+  m_uiForegroundScaler: {fileID: 8562282175041704604}
+  m_uiScaler: {fileID: 8562282175041704604}
   m_colors:
     Primary: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
     Secondary: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}

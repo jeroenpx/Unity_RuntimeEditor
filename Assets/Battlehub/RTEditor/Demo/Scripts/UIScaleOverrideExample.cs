@@ -12,7 +12,7 @@ namespace Battlehub.RTEditor.Demo
         protected override void OnEditorExist()
         {
             IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-            appearance.UIScaler.scaleFactor = Scale;
+            appearance.UIScale = Scale;
 
             IRuntimeHandlesComponent handles = IOC.Resolve<IRuntimeHandlesComponent>();
             handles.HandleScale = Scale;

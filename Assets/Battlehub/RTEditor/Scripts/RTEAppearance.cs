@@ -24,21 +24,26 @@ namespace Battlehub.RTEditor
             set;
         }
 
-        [Obsolete("Use UIScaler instead")]
         CanvasScaler UIBackgroundScaler
         {
             get;
         }
 
-        [Obsolete("Use UIScaler instead")]
         CanvasScaler UIForegroundScaler
         {
             get;
         }
 
+        [Obsolete("Use scale property instead")]
         CanvasScaler UIScaler
         {
             get;
+        }
+
+        float UIScale
+        {
+            get;
+            set;
         }
 
         void ApplyColors(GameObject root);
@@ -288,7 +293,6 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private CanvasScaler m_uiBackgroundScaler = null;
-        [Obsolete("Use UIScaler instead")]
         public CanvasScaler UIBackgroundScaler
         {
             get { return m_uiBackgroundScaler; }
@@ -296,17 +300,34 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private CanvasScaler m_uiForegroundScaler = null;
-        [Obsolete("Use UIScaler instead")]
         public CanvasScaler UIForegroundScaler
         {
             get { return m_uiForegroundScaler; }
         }
 
-        [SerializeField]
+        [SerializeField, Obsolete]
         private CanvasScaler m_uiScaler = null;
+        [Obsolete]
         public CanvasScaler UIScaler
         {
             get { return m_uiScaler; }
+        }
+
+        public float UIScale
+        {
+            get { return m_uiForegroundScaler.scaleFactor; }
+            set
+            {
+                if(m_uiForegroundScaler != null)
+                {
+                    m_uiForegroundScaler.scaleFactor = value;
+                }
+                
+                if(m_uiBackgroundScaler != null)
+                {
+                    m_uiBackgroundScaler.scaleFactor = value;
+                }
+            }
         }
 
         [SerializeField]

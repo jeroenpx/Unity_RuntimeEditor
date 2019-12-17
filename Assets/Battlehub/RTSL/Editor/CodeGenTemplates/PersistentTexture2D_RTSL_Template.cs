@@ -1,7 +1,6 @@
 ﻿//#define RTSL_COMPILE_TEMPLATES
 #if RTSL_COMPILE_TEMPLATES
 //<TEMPLATE_USINGS_START>
-using Battlehub.RTSL;
 using ProtoBuf;
 using System;
 using Battlehub.Utils;

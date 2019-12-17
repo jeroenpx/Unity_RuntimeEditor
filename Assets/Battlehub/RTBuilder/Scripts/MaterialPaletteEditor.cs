@@ -52,7 +52,9 @@ namespace Battlehub.RTBuilder
 
         [SerializeField]
         private TexturePicker m_texturePicker = null;
-        
+        [SerializeField]
+        private GameObject m_texturePickerPlaceholder = null;
+
         private IProBuilderTool m_proBuilderTool;
         private IMaterialPaletteManager m_paletteManager;
 
@@ -172,11 +174,13 @@ namespace Battlehub.RTBuilder
             if (material != null)
             {
                 Texture = material.mainTexture;
+                m_texturePickerPlaceholder.gameObject.SetActive(true);
                 m_texturePicker.gameObject.SetActive(true);
                 TreeView.ScrollIntoView(material);
             }
             else
             {
+                m_texturePickerPlaceholder.gameObject.SetActive(false);
                 m_texturePicker.gameObject.SetActive(false);
                 Texture = null;
             }
