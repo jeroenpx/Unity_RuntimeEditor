@@ -29,6 +29,7 @@ namespace Battlehub.RTTerrain
                         Texture2D texture = value[i];
                         if(texture != null)
                         {
+                            texture.wrapMode = TextureWrapMode.Clamp;
                             Sprite brush = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                             m_userBrushes.Add(brush);
                         }

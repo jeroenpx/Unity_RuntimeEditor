@@ -2658,13 +2658,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: SphereCollider
     PersistentName: m_First
-    MappedAssemblyName: UnityEngine.PhysicsModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: SphereCollider
-    MappedName: m_First
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -2673,13 +2673,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: SphereCollider
     PersistentName: m_Second
-    MappedAssemblyName: UnityEngine.PhysicsModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: SphereCollider
-    MappedName: m_Second
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -10939,12 +10939,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: GlyphValueRecord
     PersistentName: m_FirstGlyphAdjustments
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: GlyphValueRecord
-    MappedName: m_FirstGlyphAdjustments
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -10969,12 +10969,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: GlyphValueRecord
     PersistentName: m_SecondGlyphAdjustments
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: GlyphValueRecord
-    MappedName: m_SecondGlyphAdjustments
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -25109,10 +25109,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: IntPtr
     PersistentName: m_Ptr
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: IntPtr
-    MappedName: m_Ptr
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -25124,10 +25124,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32
     PersistentName: m_Version
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: m_Version
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -26643,10 +26643,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: String
     PersistentName: m_TypeName
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: m_TypeName
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32342,10 +32342,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32
     PersistentName: id
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: id
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32357,10 +32357,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: x
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: x
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32372,10 +32372,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: y
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: y
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32387,10 +32387,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: width
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: width
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32402,10 +32402,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: height
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: height
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32417,10 +32417,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: xOffset
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: xOffset
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32432,10 +32432,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: yOffset
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: yOffset
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32447,10 +32447,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: xAdvance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: xAdvance
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32462,10 +32462,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: scale
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: scale
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -40409,10 +40409,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: RenderTextureFormat
     PersistentName: <colorFormat>k__BackingField
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: RenderTextureFormat
-    MappedName: <colorFormat>k__BackingField
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -43404,7 +43404,7 @@ GameObject:
   - component: {fileID: 5114501035391644904}
   - component: {fileID: 2198127083688506600}
   m_Layer: 0
-  m_Name: SurrogatesMappingsStorage
+  m_Name: SurrogatesMappingsTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43750,7 +43750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  PatchCounter: 0
+  PatchCounter: 1
 --- !u!1 &8142288403558126190
 GameObject:
   m_ObjectHideFlags: 0
@@ -46791,12 +46791,12 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Object
     PersistentName: Value
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Object
-    MappedName: Value
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -47955,12 +47955,12 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: Vector3[]
     PersistentName: m_corners
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3[]
-    MappedName: m_corners
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0

@@ -79,16 +79,13 @@ namespace Battlehub.RTSL.Battlehub.SL2
                         {
                             if (!m_assetDB.IsMapped(uo))
                             {
-                                if(uo is Texture2D)
+                                if (uo is Texture2D)
                                 {
                                     Texture2D texture = (Texture2D)uo;
-                                    if(texture.isReadable)  //
-                                    {
-                                        persistentObject.ReadFrom(uo);
-                                        assets.Add(persistentObject);
-                                        assetIdentifiers.Add(uo.GetInstanceID());
-                                        persistentObject.GetDepsFrom(uo, getDepsCtx);
-                                    }
+                                    persistentObject.ReadFrom(uo);
+                                    assets.Add(persistentObject);
+                                    assetIdentifiers.Add(uo.GetInstanceID());
+                                    persistentObject.GetDepsFrom(uo, getDepsCtx);
                                 }
                                 else
                                 {

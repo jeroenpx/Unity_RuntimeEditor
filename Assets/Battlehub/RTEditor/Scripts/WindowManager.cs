@@ -598,6 +598,24 @@ namespace Battlehub.RTEditor
         private void OnDialogDestroyed(Dialog dialog)
         {
             OnContentDestroyed(dialog.Content);
+
+            Transform pointerOverWindow = dialog.Content != null ? FindPointerOverWindow(dialog.Content.GetComponentInParent<RuntimeWindow>()) : null;
+            if (pointerOverWindow != null)
+            {
+                RuntimeWindow window = pointerOverWindow.GetComponentInChildren<RuntimeWindow>();
+                if (window == null)
+                {
+                    window = m_editor.GetWindow(RuntimeWindowType.Scene);
+                }
+                m_editor.ActivateWindow(window);
+            }
+            else
+            {
+                RuntimeWindow window = m_editor.GetWindow(RuntimeWindowType.Scene);
+                m_editor.ActivateWindow(window);
+            }
+
+            m_skipUpdate = true;
         }
 
         private void OnRegionSelected(Region region)
@@ -777,7 +795,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if (activeRegion.GetDragRegion() != region.GetDragRegion())
+            if (!region.IsModal() && activeRegion.GetDragRegion() != region.GetDragRegion())
             {
                 arg.Cancel = true;
             }

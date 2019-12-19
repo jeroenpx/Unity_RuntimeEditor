@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -51,12 +52,17 @@ namespace Battlehub.RTSL
 
         public static string EditorPrefabsPath { get { return SaveLoadRoot + "/Editor/Prefabs"; } }
         public static string UserPrefabsPath { get { return UserRoot + "/Mappings/Editor"; } }
-
         public static string FilePathStoragePath { get { return "Assets" + UserPrefabsPath + @"/FilePathStorage.prefab"; } }
         public static string ClassMappingsStoragePath { get { return "Assets" + UserPrefabsPath + @"/ClassMappingsStorage.prefab"; } }
-        public static string ClassMappingsTemplatePath { get { return "Assets" + EditorPrefabsPath + @"/ClassMappingsTemplate.prefab"; } }
         public static string SurrogatesMappingsStoragePath { get { return "Assets" + UserPrefabsPath + @"/SurrogatesMappingsStorage.prefab"; } }
-        public static string SurrogatesMappingsTemplatePath { get { return "Assets" + EditorPrefabsPath + @"/SurrogatesMappingsTemplate.prefab"; } }
+        public static IList<string> ClassMappingsTemplatePath = new List<string>
+        {
+            "Assets" + EditorPrefabsPath + @"/ClassMappingsTemplate.prefab"
+        };
+        public static readonly IList<string> SurrogatesMappingsTemplatePath = new List<string>
+        {
+            "Assets" + EditorPrefabsPath + @"/SurrogatesMappingsTemplate.prefab"
+        };
 
         public const string ScriptsAutoFolder = "Scripts";
         public const string PersistentClassesFolder = "PersistentClasses";

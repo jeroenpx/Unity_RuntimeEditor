@@ -151,7 +151,7 @@ namespace Battlehub.RTSL
         private Dictionary<Type, int> m_dependencyTypes;
         private ClassMappingInfo[] m_mappings;
         private string m_mappingStoragePath;
-        private string m_mappingTemplateStoragePath;
+        private string[] m_mappingTemplateStoragePath;
 
         private Dictionary<string, UnityObject> m_typeToScriptObject;
         private CodeGen m_codeGen;
@@ -178,7 +178,7 @@ namespace Battlehub.RTSL
             int uniqueId,
             CodeGen codeGen,
             string mappingStorage,
-            string mappingTemplateStorage,
+            string[] mappingTemplateStorage,
             FilePathStorage filePathStorage,
             Type baseType,
             Type[] types,
@@ -922,19 +922,39 @@ namespace Battlehub.RTSL
             return GetMappings(m_mappingStoragePath, m_mappingTemplateStoragePath, out storage);
         }
 
-        public static PersistentClassMapping[] GetMappings(string mappingStoragePath, string mappingTemplateStoragePath, out PersistentClassMappingsStorage storage)
+        public static PersistentClassMapping[] GetMappings(string mappingStoragePath, string[] mappingTemplateStoragePath, out PersistentClassMappingsStorage storage)
         {
+            List<GameObject> storageList = new List<GameObject>();
+
             GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(mappingStoragePath, typeof(GameObject));
-            if (storageGO == null)
+            if(storageGO != null)
             {
-                storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(mappingTemplateStoragePath, typeof(GameObject));
+                storageList.Add(storageGO);
+            }
+            else
+            {
+                for(int i = 0; i < mappingTemplateStoragePath.Length; ++i)
+                {
+                    storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(mappingTemplateStoragePath[i], typeof(GameObject));
+                    if(storageGO != null)
+                    {
+                        storageList.Add(storageGO);
+                    }
+                }    
             }
 
-            if (storageGO != null)
+            if (storageList != null && storageList.Count > 0)
             {
-                storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
-                PersistentClassMapping[] mappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true);
-                return mappings;
+                List<PersistentClassMapping> mappingsList = new List<PersistentClassMapping>();
+                for (int i = 0; i < storageList.Count; ++i)
+                {
+                    storage = storageList[i].GetComponent<PersistentClassMappingsStorage>();
+                    PersistentClassMapping[] mappings = storage.gameObject.GetComponentsInChildren<PersistentClassMapping>(true);
+                    mappingsList.AddRange(mappings);
+                }
+
+                storage = storageList[0].GetComponent<PersistentClassMappingsStorage>();
+                return mappingsList.ToArray();
             }
             storage = null;
             return new PersistentClassMapping[0];
@@ -945,7 +965,7 @@ namespace Battlehub.RTSL
             GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingStoragePath, typeof(GameObject));
             if (storageGO == null)
             {
-                storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingTemplateStoragePath, typeof(GameObject));
+                storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingTemplateStoragePath[0], typeof(GameObject));
             }
 
             Dictionary<string, PersistentClassMapping> existingMappings;
@@ -1615,6 +1635,7 @@ namespace Battlehub.RTSL
             {
                 PersistentPropertyMapping mapping = fieldMappings[i];
                 string key = mapping.MappedFullTypeName + " " + mapping.MappedName;
+
                 if (!fieldHs.Contains(key))
                 {
                     mapping.MappedName = null;
@@ -1677,11 +1698,6 @@ namespace Battlehub.RTSL
             {
                 PersistentPropertyMapping mapping = propertyMappings[i];
                 string key = mapping.MappedFullTypeName + " " + mapping.MappedName;
-
-                if(mapping.MappedType == null)
-                {
-                    Debug.LogWarning("Unable to find type " + mapping.MappedFullTypeName);
-                }
 
                 if (!propertyHs.Contains(key) || mapping.MappedType == null)
                 {
@@ -1981,7 +1997,7 @@ namespace Battlehub.RTSL
                 m_uoMapperGUI = new PersistentClassMapperGUI(/*GetInstanceID()*/0,
                     m_codeGen,
                     RTSLPath.ClassMappingsStoragePath,
-                    RTSLPath.ClassMappingsTemplatePath,
+                    RTSLPath.ClassMappingsTemplatePath.ToArray(),
                     m_filePathStorage,
                     typeof(object),
                     uoTypes,
@@ -2000,7 +2016,7 @@ namespace Battlehub.RTSL
                 m_surrogatesMapperGUI = new PersistentClassMapperGUI(/*GetInstanceID() + 1*/1,
                     m_codeGen,
                     RTSLPath.SurrogatesMappingsStoragePath,
-                    RTSLPath.SurrogatesMappingsTemplatePath,
+                    RTSLPath.SurrogatesMappingsTemplatePath.ToArray(),
                     m_filePathStorage,
                     typeof(object),
                     types, 
@@ -2108,8 +2124,8 @@ namespace Battlehub.RTSL
         {
             Type[] types = GetAllTypes();
             PersistentClassMappingsStorage storageGo;
-            PersistentClassMapping[] uoMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.ClassMappingsStoragePath, RTSLPath.ClassMappingsTemplatePath, out storageGo);
-            PersistentClassMapping[] surrogateMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.SurrogatesMappingsStoragePath, RTSLPath.SurrogatesMappingsTemplatePath, out storageGo);
+            PersistentClassMapping[] uoMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.ClassMappingsStoragePath, RTSLPath.ClassMappingsTemplatePath.ToArray(), out storageGo);
+            PersistentClassMapping[] surrogateMappings = PersistentClassMapperGUI.GetMappings(RTSLPath.SurrogatesMappingsStoragePath, RTSLPath.SurrogatesMappingsTemplatePath.ToArray(), out storageGo);
             Dictionary<Type, PersistentTemplateInfo> templates = GetPersistentTemplates(types);
             CreatePersistentClasses(uoMappings, templates, surrogateMappings, templates);
         }
@@ -2506,10 +2522,10 @@ namespace Battlehub.RTSL
         /// </summary>
         private void PatchPersistentClassMappings()
         {
-            UpdateTags(RTSLPath.ClassMappingsTemplatePath);
+            UpdateTags(RTSLPath.ClassMappingsTemplatePath[0]);
             UpdateTags(RTSLPath.ClassMappingsStoragePath);
 
-            UpdateTags(RTSLPath.SurrogatesMappingsTemplatePath);
+            UpdateTags(RTSLPath.SurrogatesMappingsTemplatePath[0]);
             UpdateTags(RTSLPath.SurrogatesMappingsStoragePath);
         }
 

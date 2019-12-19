@@ -72,7 +72,7 @@ MonoBehaviour:
     MappedTypeName: Color
     MappedName: PointColor
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -7832,7 +7832,7 @@ MonoBehaviour:
     MappedTypeName: Face[]
     MappedName: m_Faces
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7877,7 +7877,7 @@ MonoBehaviour:
     MappedTypeName: Vector3[]
     MappedName: m_Positions
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7892,7 +7892,7 @@ MonoBehaviour:
     MappedTypeName: Vector2[]
     MappedName: m_Textures0
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7900,16 +7900,14 @@ MonoBehaviour:
     IsProperty: 0
     PersistentTag: 7
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
-    PersistentTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null]]
+    PersistentTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule]]
     PersistentName: m_Textures2
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null]]
+    MappedTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule]]
     MappedName: m_Textures2
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7917,16 +7915,14 @@ MonoBehaviour:
     IsProperty: 0
     PersistentTag: 8
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
-    PersistentTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null]]
+    PersistentTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule]]
     PersistentName: m_Textures3
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null]]
+    MappedTypeName: List`1[[UnityEngine.Vector4, UnityEngine.CoreModule]]
     MappedName: m_Textures3
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7941,7 +7937,7 @@ MonoBehaviour:
     MappedTypeName: Vector4[]
     MappedName: m_Tangents
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7956,7 +7952,7 @@ MonoBehaviour:
     MappedTypeName: Color[]
     MappedName: m_Colors
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -7971,7 +7967,7 @@ MonoBehaviour:
     MappedTypeName: UnwrapParameters
     MappedName: m_UnwrapParameters
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -8046,7 +8042,7 @@ MonoBehaviour:
     MappedTypeName: Edge[]
     MappedName: m_SelectedEdges
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -8091,7 +8087,7 @@ MonoBehaviour:
     MappedTypeName: UnwrapParameters
     MappedName: unwrapParameters
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -12920,10 +12916,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_InputSourceProp
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_InputSourceProp
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -12935,10 +12931,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_HavePropertiesChangedProp
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_HavePropertiesChangedProp
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -12950,10 +12946,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_IsInputPasingRequiredProp
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_IsInputPasingRequiredProp
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -13376,7 +13372,7 @@ MonoBehaviour:
     MappedTypeName: Vector2
     MappedName: scrollPosition
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -13864,10 +13860,10 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: TMP_FontAsset+FontAssetTypes
     PersistentName: fontAssetType
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: TMP_FontAsset+FontAssetTypes
-    MappedName: fontAssetType
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -13901,7 +13897,7 @@ MonoBehaviour:
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
+    IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
     IsProperty: 0
@@ -13916,7 +13912,7 @@ MonoBehaviour:
     UseSurrogate: 1
     UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
+    IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
     IsProperty: 0
@@ -13924,13 +13920,13 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: TMP_FontWeights[]
     PersistentName: fontWeights
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: TMP_FontWeights[]
-    MappedName: fontWeights
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -14029,12 +14025,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: FaceInfo
     PersistentName: m_fontInfo
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: FaceInfo
-    MappedName: m_fontInfo
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -14059,12 +14055,12 @@ MonoBehaviour:
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
     PersistentTypeName: Dictionary`2[[System.Int32, mscorlib],[TMPro.TMP_Glyph, Unity.TextMeshPro]]
     PersistentName: m_characterDictionary
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: Dictionary`2[[System.Int32, mscorlib],[TMPro.TMP_Glyph, Unity.TextMeshPro]]
-    MappedName: m_characterDictionary
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
-    UseSurrogate2: 1
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -14075,12 +14071,12 @@ MonoBehaviour:
     PersistentTypeName: Dictionary`2[[System.Int32, mscorlib],[TMPro.KerningPair,
       Unity.TextMeshPro]]
     PersistentName: m_kerningDictionary
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: Dictionary`2[[System.Int32, mscorlib],[TMPro.KerningPair, Unity.TextMeshPro]]
-    MappedName: m_kerningDictionary
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
-    UseSurrogate2: 1
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -14090,12 +14086,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: KerningTable
     PersistentName: m_kerningInfo
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: KerningTable
-    MappedName: m_kerningInfo
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -14105,12 +14101,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: KerningPair
     PersistentName: m_kerningPair
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: KerningPair
-    MappedName: m_kerningPair
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -14120,10 +14116,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32[]
     PersistentName: m_characterSet
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32[]
-    MappedName: m_characterSet
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -20696,10 +20692,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: IMECompositionMode
     PersistentName: imeCompositionMode
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: IMECompositionMode
-    MappedName: imeCompositionMode
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -27903,10 +27899,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: String
     PersistentName: m_defaultProjectName
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: m_defaultProjectName
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -27918,10 +27914,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_openDefaultProject
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_openDefaultProject
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -32994,10 +32990,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: selfCollision
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: selfCollision
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -33855,10 +33851,10 @@ MonoBehaviour:
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
     PersistentTypeName: Dictionary`2[[System.Int32, mscorlib],[System.Int32, mscorlib]]
     PersistentName: m_UnicodeLookup
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: Dictionary`2[[System.Int32, mscorlib],[System.Int32, mscorlib]]
-    MappedName: m_UnicodeLookup
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34367,13 +34363,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: TextAsset
     PersistentName: m_CharacterList
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: TextAsset
-    MappedName: m_CharacterList
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -34412,10 +34408,10 @@ MonoBehaviour:
     PersistentNamespace: TMPro.EditorUtilities.Battlehub.SL2
     PersistentTypeName: FaceStyles
     PersistentName: m_FontStyle
-    MappedAssemblyName: Unity.TextMeshPro.Editor
-    MappedNamespace: TMPro.EditorUtilities
-    MappedTypeName: FaceStyles
-    MappedName: m_FontStyle
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34427,10 +34423,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Single
     PersistentName: m_FontStyleValue
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: m_FontStyleValue
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34442,10 +34438,10 @@ MonoBehaviour:
     PersistentNamespace: TMPro.EditorUtilities.Battlehub.SL2
     PersistentTypeName: RenderModes
     PersistentName: m_RenderMode
-    MappedAssemblyName: Unity.TextMeshPro.Editor
-    MappedNamespace: TMPro.EditorUtilities
-    MappedTypeName: RenderModes
-    MappedName: m_RenderMode
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34487,12 +34483,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.EditorUtilities.Battlehub.SL2
     PersistentTypeName: FT_FaceInfo
     PersistentName: m_FontFaceInfo
-    MappedAssemblyName: Unity.TextMeshPro.Editor
-    MappedNamespace: TMPro.EditorUtilities
-    MappedTypeName: FT_FaceInfo
-    MappedName: m_FontFaceInfo
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -34502,12 +34498,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.EditorUtilities.Battlehub.SL2
     PersistentTypeName: FT_GlyphInfo[]
     PersistentName: m_FontGlyphInfo
-    MappedAssemblyName: Unity.TextMeshPro.Editor
-    MappedNamespace: TMPro.EditorUtilities
-    MappedTypeName: FT_GlyphInfo[]
-    MappedName: m_FontGlyphInfo
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -34517,10 +34513,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Byte[]
     PersistentName: m_TextureBuffer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Byte[]
-    MappedName: m_TextureBuffer
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34532,13 +34528,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: Texture2D
     PersistentName: m_FontAtlas
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Texture2D
-    MappedName: m_FontAtlas
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -34562,10 +34558,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_IncludeKerningPairs
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_IncludeKerningPairs
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34577,10 +34573,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32[]
     PersistentName: m_KerningSet
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32[]
-    MappedName: m_KerningSet
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34592,10 +34588,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_Locked
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_Locked
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -36876,10 +36872,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_fontInfo_prop
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_fontInfo_prop
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -36891,10 +36887,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_glyphInfoList_prop
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_glyphInfoList_prop
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -36906,10 +36902,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_kerningInfo_prop
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_kerningInfo_prop
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -36921,12 +36917,12 @@ MonoBehaviour:
     PersistentNamespace: TMPro.Battlehub.SL2
     PersistentTypeName: KerningTable
     PersistentName: m_kerningTable
-    MappedAssemblyName: Unity.TextMeshPro
-    MappedNamespace: TMPro
-    MappedTypeName: KerningTable
-    MappedName: m_kerningTable
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -36936,10 +36932,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_kerningPairs_prop
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_kerningPairs_prop
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -36951,10 +36947,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_kerningPair_prop
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_kerningPair_prop
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -37284,14 +37280,13 @@ MonoBehaviour:
     PersistentTypeName: Dictionary`2[[UnityEditor.Collaboration.HistoryState, UnityEditor],[UnityEngine.Experimental.UIElements.VisualElement,
       UnityEngine.UIElementsModule]]
     PersistentName: m_Views
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: Dictionary`2[[UnityEditor.Collaboration.HistoryState, UnityEditor],[UnityEngine.Experimental.UIElements.VisualElement,
-      UnityEngine.UIElementsModule]]
-    MappedName: m_Views
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 1
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -37315,13 +37310,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Experimental.UIElements.Battlehub.SL2
     PersistentTypeName: VisualElement
     PersistentName: m_Container
-    MappedAssemblyName: UnityEngine.UIElementsModule
-    MappedNamespace: UnityEngine.Experimental.UIElements
-    MappedTypeName: VisualElement
-    MappedName: m_Container
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -37330,13 +37325,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Experimental.UIElements.Battlehub.SL2
     PersistentTypeName: ScrollView
     PersistentName: m_HistoryView
-    MappedAssemblyName: UnityEngine.UIElementsModule
-    MappedNamespace: UnityEngine.Experimental.UIElements
-    MappedTypeName: ScrollView
-    MappedName: m_HistoryView
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -51386,16 +51381,14 @@ MonoBehaviour:
     IsProperty: 0
     PersistentTag: 1
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
-    PersistentTypeName: List`1[[UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null]]
+    PersistentTypeName: List`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]
     PersistentName: m_Points
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null]]
+    MappedTypeName: List`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]
     MappedName: m_Points
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
@@ -56714,10 +56707,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: SnapToGrid
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: SnapToGrid
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -58362,13 +58355,13 @@ MonoBehaviour:
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
     PersistentTypeName: List`1[[UnityEngine.EventSystems.EventTrigger+Entry, UnityEngine.UI]]
     PersistentName: delegates
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[UnityEngine.EventSystems.EventTrigger+Entry, UnityEngine.UI]]
-    MappedName: delegates
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -67411,13 +67404,13 @@ MonoBehaviour:
     PersistentNamespace: UnityEngine.Battlehub.SL2
     PersistentTypeName: GameObject[]
     PersistentName: m_prefabs
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: GameObject[]
-    MappedName: m_prefabs
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
+    HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
   - IsEnabled: 0
@@ -68431,7 +68424,7 @@ GameObject:
   - component: {fileID: 8436613821827462723}
   - component: {fileID: 5414357387876244330}
   m_Layer: 0
-  m_Name: ClassMappingsStorage
+  m_Name: ClassMappingsTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69334,7 +69327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  PatchCounter: 0
+  PatchCounter: 1
 --- !u!1 &5530759860288048912
 GameObject:
   m_ObjectHideFlags: 0
@@ -79661,13 +79654,11 @@ MonoBehaviour:
     IsProperty: 0
     PersistentTag: 1
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
-    PersistentTypeName: List`1[[UnityEngine.ProBuilder.BezierPoint, Unity.ProBuilder,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+    PersistentTypeName: List`1[[UnityEngine.ProBuilder.BezierPoint, Unity.ProBuilder]]
     PersistentName: points
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[UnityEngine.ProBuilder.BezierPoint, Unity.ProBuilder,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+    MappedTypeName: List`1[[UnityEngine.ProBuilder.BezierPoint, Unity.ProBuilder]]
     MappedName: points
     UseSurrogate: 0
     UseSurrogate2: 0
@@ -86523,10 +86514,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32
     PersistentName: m_page
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: m_page
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -86538,10 +86529,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: String
     PersistentName: m_searchPattern
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: m_searchPattern
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -86553,10 +86544,10 @@ MonoBehaviour:
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
     PersistentTypeName: List`1[[System.Int32, mscorlib]]
     PersistentName: m_searchList
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[System.Int32, mscorlib]]
-    MappedName: m_searchList
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -86568,10 +86559,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_isSearchDirty
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_isSearchDirty
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -86613,10 +86604,10 @@ MonoBehaviour:
     PersistentNamespace: UnityEditor.Battlehub.SL2
     PersistentTypeName: SerializedProperty
     PersistentName: m_spriteInfoList_prop
-    MappedAssemblyName: UnityEditor
-    MappedNamespace: UnityEditor
-    MappedTypeName: SerializedProperty
-    MappedName: m_spriteInfoList_prop
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -88571,12 +88562,12 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: ProjectItem
     PersistentName: SelectedFolder
-    MappedAssemblyName: Assembly-CSharp
-    MappedNamespace: Battlehub.RTSL.Interface
-    MappedTypeName: ProjectItem
-    MappedName: SelectedFolder
-    UseSurrogate: 1
-    UseSurrogate2: 1
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
+    UseSurrogate: 0
+    UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -100233,7 +100224,7 @@ MonoBehaviour:
     MappedTypeName: Color
     MappedName: current
     UseSurrogate: 1
-    UseSurrogate2: 0
+    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -115015,10 +115006,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32
     PersistentName: m_fontWeight
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: m_fontWeight
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -115105,10 +115096,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_isAlignmentEnumConverted
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_isAlignmentEnumConverted
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -115585,10 +115576,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_havePropertiesChanged
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_havePropertiesChanged
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -115645,10 +115636,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Boolean
     PersistentName: m_isInputParsingRequired
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: m_isInputParsingRequired
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -115960,10 +115951,10 @@ MonoBehaviour:
     PersistentNamespace: System.Battlehub.SL2
     PersistentTypeName: Int32
     PersistentName: fontWeight
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: fontWeight
+    MappedAssemblyName: 
+    MappedNamespace: 
+    MappedTypeName: 
+    MappedName: 
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0

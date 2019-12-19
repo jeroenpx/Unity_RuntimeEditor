@@ -108,14 +108,16 @@ namespace Battlehub.RTSL.Internal
                 o.SetHeights(0, 0, data);
             }
 
-            if(m_alphamaps != null)
+            obj = base.WriteTo(obj);
+
+            if (m_alphamaps != null)
             {
                 float[,,] alphamaps = new float[m_alphamapWidth, m_alphamapHeight, m_terrainLayersLength];
                 Buffer.BlockCopy(m_alphamaps, 0, alphamaps, 0, m_alphamaps.Length * sizeof(float));
                 o.SetAlphamaps(0, 0, alphamaps);
             }
 
-            return base.WriteTo(obj);
+            return obj;
         }
 
         public override void ReadFrom(object obj)
