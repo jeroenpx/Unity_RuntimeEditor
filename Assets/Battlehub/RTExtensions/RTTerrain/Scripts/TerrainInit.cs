@@ -35,13 +35,19 @@ namespace Battlehub.RTTerrain
             if (m_terrainView != null)
             {
                 RegisterWindow(wm, "TerrainEditor", "Terrain Editor", 
-                    Resources.Load<Sprite>("icons8-earth-element-24"), m_terrainView, false); 
+                    Resources.Load<Sprite>("icons8-earth-element-24"), m_terrainView, false);
+
+                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+                appearance.ApplyColors(m_terrainView);
             }
 
             if(m_terrainComponentEditor != null)
             {
                 IEditorsMap editorsMap = IOC.Resolve<IEditorsMap>();
                 editorsMap.AddMapping(typeof(Terrain), m_terrainComponentEditor.gameObject, true, false);
+
+                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+                appearance.ApplyColors(m_terrainComponentEditor.gameObject);
             }
         }
 

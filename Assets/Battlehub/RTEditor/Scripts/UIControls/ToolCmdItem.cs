@@ -87,12 +87,27 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private Color m_normalColor = Color.white;
+        public Color NormalColor
+        {
+            get { return m_normalColor; }
+            set { m_normalColor = value; }
+        }
 
         [SerializeField]
         private Color m_pointerOverColor = Color.white;
+        public Color PointerOverColor
+        {
+            get { return m_pointerOverColor; }
+            set { m_pointerOverColor = value; }
+        }
 
         [SerializeField]
         private Color m_pressedColor = Color.white;
+        public Color PressedColor
+        {
+            get { return m_pressedColor; }
+            set { m_pressedColor = value; }
+        }
 
         private bool m_isPointerOver;
         private bool m_isPointerPressed;

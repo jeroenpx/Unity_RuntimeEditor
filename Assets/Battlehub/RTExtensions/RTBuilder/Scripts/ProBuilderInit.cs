@@ -22,7 +22,10 @@ namespace Battlehub.RTBuilder
             if (m_proBuilderWindow != null)
             {
                 RegisterWindow(wm, "ProBuilder", "Builder", 
-                    Resources.Load<Sprite>("hammer-24"), m_proBuilderWindow, false); 
+                    Resources.Load<Sprite>("hammer-24"), m_proBuilderWindow, false);
+
+                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+                appearance.ApplyColors(m_proBuilderWindow);
             }
         }
 

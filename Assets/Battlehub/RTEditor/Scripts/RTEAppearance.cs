@@ -47,6 +47,7 @@ namespace Battlehub.RTEditor
         }
 
         void ApplyColors(GameObject root);
+        void RegisterPrefab(GameObject prefab);
     }
 
     [Serializable]
@@ -173,6 +174,7 @@ namespace Battlehub.RTEditor
         public static readonly RTESelectableColors DefaultButton2 = new RTESelectableColors(new Color(0xFF, 0xFF, 0xFF, 0xFF), new Color32(0xF5, 0xF5, 0xF5, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0x7F));
         public static readonly RTESelectableColors DefaultSlider = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x55, 0x55, 0x55, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F), new Color32(0x5C, 0x5C, 0x5C, 0x66));
         public static readonly RTESelectableColors DefaultDropdown = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x55, 0x55, 0x55, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F), new Color32(0x5C, 0x5C, 0x5C, 0x66));
+        public static readonly RTESelectableColors DefaultToolCmdItem = new RTESelectableColors(new Color32(0x00, 0x97, 0xFF, 0xC0), new Color32(0x00, 0x97, 0xFF, 0xFF), new Color32(0x00, 0xB0, 0xFF, 0xFF), new Color32());
 
         public Color Primary;
         public Color Secondary;
@@ -202,6 +204,7 @@ namespace Battlehub.RTEditor
         public RTESelectableColors Button2;
         public RTESelectableColors Slider;
         public RTESelectableColors Dropdown;
+        public RTESelectableColors ToolCmdItem;
         
         public RTEColors()
         {
@@ -233,6 +236,7 @@ namespace Battlehub.RTEditor
             Button2 = DefaultButton2;
             Slider = DefaultSlider;
             Dropdown = DefaultDropdown;
+            ToolCmdItem = DefaultToolCmdItem;
         }
 
         public bool IsDefault
@@ -267,7 +271,8 @@ namespace Battlehub.RTEditor
                     Button.EqualTo(DefaultButton) &&
                     Button2.EqualTo(DefaultButton2) &&
                     Slider.EqualTo(DefaultSlider) &&
-                    Dropdown.EqualTo(DefaultDropdown);
+                    Dropdown.EqualTo(DefaultDropdown) &&
+                    ToolCmdItem.EqualTo(DefaultToolCmdItem);
                     
             }
         }
@@ -343,7 +348,7 @@ namespace Battlehub.RTEditor
         }
 
         [SerializeField]
-        private GameObject[] m_prefabs = null;
+        private List<GameObject> m_prefabs = null;
 
         private IRTE m_editor;
         private void Awake()
@@ -521,8 +526,17 @@ namespace Battlehub.RTEditor
                     case "DropdownColor":
                         style.ApplySelectableColor(Colors.Dropdown.Normal, Colors.Dropdown.Highlight, Colors.Dropdown.Pressed, Colors.Dropdown.Disabled);
                         break;
+                    case "ToolCmdItemColor":
+                        style.ApplyToolCmdItemColor(Colors.ToolCmdItem.Normal, Colors.ToolCmdItem.Highlight, Colors.ToolCmdItem.Pressed);
+                        break;
+                        
                 }
             }
+        }
+
+        public void RegisterPrefab(GameObject prefab)
+        {
+            m_prefabs.Add(prefab);
         }
     }
 

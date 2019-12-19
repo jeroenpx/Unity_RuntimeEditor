@@ -14,5 +14,16 @@ namespace Battlehub.UIControls
                 hierarchy.DisabledItemColor = disabledItem;
             }
         }
+
+        public void ApplyToolCmdItemColor(Color normalColor, Color pointerOverColor, Color pressedColor)
+        {
+            ToolCmdItem cmdItem = GetComponent<ToolCmdItem>();
+            if(cmdItem != null)
+            {
+                cmdItem.NormalColor = normalColor;
+                cmdItem.PointerOverColor = pointerOverColor;
+                cmdItem.PressedColor = pressedColor;
+            }
+        }
     }
 }

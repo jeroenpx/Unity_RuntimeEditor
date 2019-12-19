@@ -378,7 +378,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
+  m_Color: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5916,6 +5916,12 @@ MonoBehaviour:
       Pressed: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 0.49803922}
       Disabled: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 0.4}
       Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
+    ToolCmdItem:
+      Normal: {r: 0, g: 0.5921569, b: 1, a: 0.7529412}
+      Highlight: {r: 0, g: 0.5921569, b: 1, a: 1}
+      Pressed: {r: 0, g: 0.6901961, b: 1, a: 1}
+      Disabled: {r: 0, g: 0, b: 0, a: 0}
+      Selected: {r: 0, g: 0.5921569, b: 1, a: 1}
   m_prefabs:
   - {fileID: 3817590832400499690, guid: f43d236fa1937fc44829764302e692ed, type: 3}
   - {fileID: 4964585891035153497, guid: 531aab43aab19364f8d25da82db890be, type: 3}
@@ -5984,6 +5990,7 @@ MonoBehaviour:
   - {fileID: 6235332028712555590, guid: d95561211dd22b54a9c2b9d191897485, type: 3}
   - {fileID: 2988903589737829857, guid: ff633b48cfc26fa40bb4e2f72b927818, type: 3}
   - {fileID: 6214601539033552238, guid: c2729ee08e8494a4cb122d0a4b831d2e, type: 3}
+  - {fileID: 1402118384106398, guid: d5e5d41772ef7a748ae511c30429dc86, type: 3}
 --- !u!114 &5849259614496068631
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -88,7 +88,7 @@ namespace Battlehub.ProBuilderIntegration
 
             var geo = Shader.Find(lineShader);
             s_GeometryShadersSupported = geo != null && geo.isSupported;
-            Debug.Log("Geometry Shaders Support: " + s_GeometryShadersSupported);
+            //Debug.Log("Geometry Shaders Support: " + s_GeometryShadersSupported);
 
             s_SelectionPickerShader = (Shader)Shader.Find("Battlehub/RTBuilder/SelectionPicker");
 

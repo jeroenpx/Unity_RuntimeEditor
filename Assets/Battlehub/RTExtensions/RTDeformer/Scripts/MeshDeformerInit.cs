@@ -30,6 +30,9 @@ namespace Battlehub.MeshDeformer3
             {
                 RegisterWindow(wm, "MeshDeformer", "Deformer",
                     Resources.Load<Sprite>("meshdeformer-24"), m_meshDeformerWindow, false);
+
+                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+                appearance.ApplyColors(m_meshDeformerWindow);
             }
         }
 
