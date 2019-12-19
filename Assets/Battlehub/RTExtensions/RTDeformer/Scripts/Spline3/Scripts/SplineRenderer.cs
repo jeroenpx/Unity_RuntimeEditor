@@ -32,7 +32,7 @@ namespace Battlehub.Spline3
         private static Material m_controlPointMaterial;
 
         private void Start()
-        {
+        {            
             if(m_lineMaterial == null)
             {
                 m_lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));

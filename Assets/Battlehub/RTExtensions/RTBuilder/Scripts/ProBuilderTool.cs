@@ -91,19 +91,36 @@ namespace Battlehub.RTBuilder
         public event Action<bool> UVEditingModeChanged;
         public event Action SelectionChanged;
 
+        private bool m_modeChaning;
         private ProBuilderToolMode m_mode = ProBuilderToolMode.Object;
         public ProBuilderToolMode Mode
         {
             get { return m_mode; }
             set
             {
-                ProBuilderToolMode oldMode = m_mode;
-                m_mode = value;
-                OnCurrentModeChanged(oldMode);
-                if (ModeChanged != null)
+                try
                 {
-                    ModeChanged(oldMode);
+                    if(m_modeChaning)
+                    {
+                        return;
+                    }
+
+                    m_modeChaning = true;
+                    ProBuilderToolMode oldMode = m_mode;
+                    m_mode = value;
+
+                    OnCurrentModeChanged(oldMode);
+                    if (ModeChanged != null)
+                    {
+                        ModeChanged(oldMode);
+                    }
                 }
+                finally
+                {
+                    m_modeChaning = false;
+                }
+
+              
             }
         }
 
@@ -707,9 +724,14 @@ namespace Battlehub.RTBuilder
             if (m_mode != ProBuilderToolMode.Object)
             {
                 RuntimeTool current = m_rte.Tools.Current;
+                m_rte.Tools.Current = RuntimeTool.None; //This is required to notifiy other tools
                 if (current != RuntimeTool.Move && current != RuntimeTool.Rotate && current != RuntimeTool.Scale)
                 {
                     m_rte.Tools.Current = RuntimeTool.Move;
+                }
+                else
+                {
+                    m_rte.Tools.Current = current;
                 }
             }
 

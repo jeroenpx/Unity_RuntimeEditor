@@ -75,6 +75,7 @@ namespace Battlehub.Spline3
         protected virtual void Awake()
         {
             m_renderer = gameObject.AddComponent<SplineRenderer>();
+            m_renderer.enabled = false;
         }
 
         protected virtual void OnDestroy()

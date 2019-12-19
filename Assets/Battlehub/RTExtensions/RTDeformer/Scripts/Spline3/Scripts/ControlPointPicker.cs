@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace Battlehub.Spline3
     [DefaultExecutionOrder(-1)]
     public class ControlPointPicker : MonoBehaviour
     {
+        public event Action SelectionChanged;
+
         private IRTE m_editor;
         private bool m_isControlPointSelected;
         private PickResult m_pickResult;
@@ -54,13 +57,18 @@ namespace Battlehub.Spline3
                 {
                     transform.position = m_pickResult.GetSpline().GetControlPoint(m_pickResult.Index);
                 }
+
+                if(SelectionChanged != null)
+                {
+                    SelectionChanged();
+                }
             }
         }
 
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
-            m_editor.Selection.SelectionChanged += OnSelectionChanged;
+            m_editor.Selection.SelectionChanged += OnEditorSelectionChanged;
             m_prevPosition = transform.position;
         }
 
@@ -68,7 +76,7 @@ namespace Battlehub.Spline3
         {
             if(m_editor != null)
             {
-                m_editor.Selection.SelectionChanged -= OnSelectionChanged;
+                m_editor.Selection.SelectionChanged -= OnEditorSelectionChanged;
             }
         }
 
@@ -151,7 +159,7 @@ namespace Battlehub.Spline3
             transform.position = spline.GetControlPoint(m_pickResult.Index);
         }
 
-        private void OnSelectionChanged(Object[] unselectedObjects)
+        private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
         {
             m_isControlPointSelected = m_editor.Selection.activeGameObject == gameObject;
             if(!m_isControlPointSelected)
@@ -159,8 +167,6 @@ namespace Battlehub.Spline3
                 m_pickResult = null;
             }
         }
-
-       
 
         private List<PickResult> m_nearestControlPoints = new List<PickResult>();
         public PickResult PickControlPoint(Camera camera, Vector3 mousePosition, float maxDistance)
