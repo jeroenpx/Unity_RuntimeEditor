@@ -673,7 +673,7 @@ namespace Battlehub.RTEditor
 
         private void UpdateCreateViewState()
         {
-            if (Editor.Selection.activeGameObject == null)
+            if (Editor.Selection.activeGameObject == null || Editor.Selection.activeGameObject.isStatic)
             {
                 m_animationCreateView.gameObject.SetActive(false);
             }

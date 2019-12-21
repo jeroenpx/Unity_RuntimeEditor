@@ -75,9 +75,11 @@ namespace Battlehub.RTSL.Interface
 
         string GetExt(object obj);
         string GetExt(Type type);
+        
         string GetUniqueName(string name, string[] names);
-        string GetUniqueName(string name, Type type, ProjectItem folder);
-        string GetUniquePath(string path, Type type, ProjectItem folder);
+        string GetUniqueName(string name, Type type, ProjectItem folder, bool noSpace = false);
+        string GetUniqueName(string name, string ext, ProjectItem folder, bool noSpace = false);
+        string GetUniquePath(string path, Type type, ProjectItem folder, bool noSpace = false);
 
         void ClearScene();
         void CreateNewScene();
@@ -192,7 +194,12 @@ namespace Battlehub.RTSL.Interface
 
         public static string[] Find(this IProject project, string filter, bool allowSubclasses, Type typeofT)
         {
-            List<string> result = new List<string>();
+            return project.FindAssetItems(filter, allowSubclasses, typeofT).Select(item => item.RelativePath(allowSubclasses)).ToArray();
+        }
+
+        public static AssetItem[] FindAssetItems(this IProject project, string filter, bool allowSubclasses, Type typeofT)
+        {
+            List<AssetItem> result = new List<AssetItem>();
             ProjectItem[] projectItems = project.Root.Flatten(true);
             for (int i = 0; i < projectItems.Length; ++i)
             {
@@ -216,7 +223,7 @@ namespace Battlehub.RTSL.Interface
                     continue;
                 }
 
-                result.Add(assetItem.RelativePath(allowSubclasses));
+                result.Add(assetItem);
             }
             return result.ToArray();
         }

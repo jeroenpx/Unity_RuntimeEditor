@@ -161,6 +161,21 @@ namespace Battlehub.RTEditor
         }
     }
 
+    public class ProjectTreeContextMenuEventArgs : ProjectTreeEventArgs
+    {
+        public List<MenuItemInfo> MenuItems
+        {
+            get;
+            private set;
+        }
+        
+        public ProjectTreeContextMenuEventArgs(ProjectItem[] projectItems, List<MenuItemInfo> menuItems)
+            : base(projectItems)
+        {
+            MenuItems = menuItems;
+        }
+    }
+
     public class ProjectTreeCancelEventArgs : ProjectTreeEventArgs
     {
         public bool Cancel;
@@ -177,12 +192,15 @@ namespace Battlehub.RTEditor
         event EventHandler<ProjectTreeCancelEventArgs> ItemsDeleting;
         event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
         event EventHandler<ProjectTreeEventArgs> ItemsDeleted;
+        event EventHandler<ProjectTreeContextMenuEventArgs> ContextMenu;
         event EventHandler Destroyed;
 
         ProjectItem SelectedItem
         {
             get;
         }
+
+      
 
         void DeleteSelectedItems();
     }
@@ -194,6 +212,7 @@ namespace Battlehub.RTEditor
         public event EventHandler<ProjectTreeRenamedEventArgs> ItemRenamed;
         public event EventHandler<ProjectTreeCancelEventArgs> ItemsDeleting;
         public event EventHandler<ProjectTreeEventArgs> ItemsDeleted;
+        public event EventHandler<ProjectTreeContextMenuEventArgs> ContextMenu;
         public event EventHandler Destroyed;
 
         private IProject m_project;
@@ -207,7 +226,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Sprite ExposedFolderIcon = null;
         private VirtualizingTreeView m_treeView;
-
+  
         public KeyCode RemoveKey = KeyCode.Delete;
         [HideInInspector]
         public bool ShowRootFolder = true;
@@ -369,15 +388,25 @@ namespace Battlehub.RTEditor
                 renameFolder.Action = new MenuItemEvent();
                 renameFolder.Action.AddListener(RenameFolder);
 
-                menu.Open(new[] 
+                List<MenuItemInfo> menuItems = new List<MenuItemInfo>
                 {
                     createFolder,
                     deleteFolder,
                     renameFolder
-                });
+                };
+
+                if (ContextMenu != null)
+                {
+                    ProjectTreeContextMenuEventArgs args = new ProjectTreeContextMenuEventArgs(e.Items.OfType<ProjectItem>().ToArray(), menuItems);
+                    ContextMenu(this, args);
+                }
+
+                if(menuItems.Count > 0)
+                {
+                    menu.Open(menuItems.ToArray());
+                }
             }
         }
-
 
         protected override void OnDestroyOverride()
         {

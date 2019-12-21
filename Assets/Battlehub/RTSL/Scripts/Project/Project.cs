@@ -268,6 +268,18 @@ namespace Battlehub.RTSL
             {
                 return null;
             }
+
+            if(obj is RuntimeTextAsset)
+            {
+                RuntimeTextAsset textAsset = (RuntimeTextAsset)obj;
+                return textAsset.Ext;
+            }
+            else if(obj is RuntimeBinaryAsset)
+            {
+                RuntimeBinaryAsset binaryAsset = (RuntimeBinaryAsset)obj;
+                return binaryAsset.Ext;
+            }
+
             return GetExt(obj.GetType());
         }
 
@@ -309,6 +321,16 @@ namespace Battlehub.RTSL
             {
                 return ".rtterlayer";
             }
+            if(type == typeof(RuntimeTextAsset))
+            {
+                Debug.LogWarning("string GetExt(Type type) method should not be used for RuntimeTextAsset");
+                return ".txt";
+            }
+            if(type == typeof(RuntimeBinaryAsset))
+            {
+                Debug.LogWarning("string GetExt(Type type) method should not be used for RuntimeBinaryAsset");
+                return ".bin";
+            }
             return ".rt" + type.Name.ToLower().Substring(0, 3);
         }
 
@@ -317,7 +339,7 @@ namespace Battlehub.RTSL
             return PathHelper.GetUniqueName(name, names.ToList());
         }
 
-        public string GetUniqueName(string name, Type type, ProjectItem folder)
+        public string GetUniqueName(string name, Type type, ProjectItem folder, bool noSpace = false)
         {
             if(folder.Children == null)
             {
@@ -325,15 +347,25 @@ namespace Battlehub.RTSL
             }
 
             string ext = GetExt(type);
-
             List<string> existingNames = folder.Children.Where(c => !c.IsFolder).Select(c => c.NameExt).ToList();
-            return PathHelper.GetUniqueName(name, ext, existingNames);
+            return PathHelper.GetUniqueName(name, ext, existingNames, noSpace);
         }
 
-        public string GetUniquePath(string path, Type type, ProjectItem folder)
+        public string GetUniqueName(string name, string ext, ProjectItem folder, bool noSpace = false)
+        {
+            if (folder.Children == null)
+            {
+                return name;
+            }
+
+            List<string> existingNames = folder.Children.Where(c => !c.IsFolder).Select(c => c.NameExt).ToList();
+            return PathHelper.GetUniqueName(name, ext, existingNames, noSpace);
+        }
+
+        public string GetUniquePath(string path, Type type, ProjectItem folder, bool noSpace = false)
         {
             string name = Path.GetFileName(path);
-            name = GetUniqueName(name, type, folder);
+            name = GetUniqueName(name, type, folder, noSpace);
 
             path = Path.GetDirectoryName(path).Replace(@"\", "/");
             

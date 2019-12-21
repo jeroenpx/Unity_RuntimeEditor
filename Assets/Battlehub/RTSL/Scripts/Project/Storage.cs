@@ -515,9 +515,23 @@ namespace Battlehub.RTSL
                             }
 
                             File.Delete(path + "/" + assetItem.NameExt);
-                            using (FileStream fs = File.Create(path + "/" + assetItem.NameExt))
+
+                            if(persistentObject is PersistentRuntimeTextAsset)
                             {
-                                serializer.Serialize(persistentObject, fs);
+                                PersistentRuntimeTextAsset textAsset = (PersistentRuntimeTextAsset)persistentObject;
+                                File.WriteAllText(path + "/" + assetItem.NameExt, textAsset.Text);
+                            }
+                            else if(persistentObject is PersistentRuntimeBinaryAsset)
+                            {
+                                PersistentRuntimeBinaryAsset binAsset = (PersistentRuntimeBinaryAsset)persistentObject;
+                                File.WriteAllBytes(path + "/" + assetItem.NameExt, binAsset.Data);
+                            }
+                            else
+                            {
+                                using (FileStream fs = File.Create(path + "/" + assetItem.NameExt))
+                                {
+                                    serializer.Serialize(persistentObject, fs);
+                                }
                             }
                         }
                     }
@@ -581,10 +595,30 @@ namespace Battlehub.RTSL
                     {
                         if (File.Exists(assetPath))
                         {
-                            using (FileStream fs = File.OpenRead(assetPath))
+                            if (types[i] == typeof(PersistentRuntimeTextAsset))
                             {
-                                result[i] = (PersistentObject)serializer.Deserialize(fs, types[i]);
+                                PersistentRuntimeTextAsset textAsset = new PersistentRuntimeTextAsset();
+                                textAsset.name = Path.GetFileName(assetPath);
+                                textAsset.Text = File.ReadAllText(assetPath);
+                                textAsset.Ext = Path.GetExtension(assetPath);
+                                result[i] = textAsset;
                             }
+                            else if(types[i] == typeof(PersistentRuntimeBinaryAsset))
+                            {
+                                PersistentRuntimeBinaryAsset binAsset = new PersistentRuntimeBinaryAsset();
+                                binAsset.name = Path.GetFileName(assetPath);
+                                binAsset.Data = File.ReadAllBytes(assetPath);
+                                binAsset.Ext = Path.GetExtension(assetPath);
+                                result[i] = binAsset;
+                            }
+                            else
+                            {
+                                using (FileStream fs = File.OpenRead(assetPath))
+                                {
+                                    result[i] = (PersistentObject)serializer.Deserialize(fs, types[i]);
+                                }
+                            }
+                            
                         }
                         else
                         {
@@ -742,11 +776,30 @@ namespace Battlehub.RTSL
             path = path + "/" + key;
             if (File.Exists(path))
             {
-                ISerializer serializer = IOC.Resolve<ISerializer>();
                 object result = null;
-                using (FileStream fs = File.OpenRead(path))
+                if (type == typeof(PersistentRuntimeTextAsset))
                 {
-                    result = serializer.Deserialize(fs, type);
+                    PersistentRuntimeTextAsset textAsset = new PersistentRuntimeTextAsset();
+                    textAsset.name = Path.GetFileName(path);
+                    textAsset.Text = File.ReadAllText(path);
+                    textAsset.Ext = Path.GetExtension(path);
+                    result = textAsset;
+                }
+                else if(type == typeof(PersistentRuntimeBinaryAsset))
+                {
+                    PersistentRuntimeBinaryAsset binaryAsset = new PersistentRuntimeBinaryAsset();
+                    binaryAsset.name = Path.GetFileName(path);
+                    binaryAsset.Data = File.ReadAllBytes(path);
+                    binaryAsset.Ext = Path.GetExtension(path);
+                    result = binaryAsset;
+                }
+                else
+                {
+                    ISerializer serializer = IOC.Resolve<ISerializer>();
+                    using (FileStream fs = File.OpenRead(path))
+                    {
+                        result = serializer.Deserialize(fs, type);
+                    }
                 }
 
                 callback(new Error(Error.OK), (PersistentObject)result);
@@ -775,10 +828,29 @@ namespace Battlehub.RTSL
                 ISerializer serializer = IOC.Resolve<ISerializer>();
                 for (int i = 0; i < files.Length; ++i)
                 {
-                    using (FileStream fs = File.OpenRead(files[i]))
+                    if (type == typeof(PersistentRuntimeTextAsset))
                     {
-                        result[i] = (PersistentObject)serializer.Deserialize(fs, type);
+                        PersistentRuntimeTextAsset textAsset = new PersistentRuntimeTextAsset();
+                        textAsset.name = Path.GetFileName(files[i]);
+                        textAsset.Text = File.ReadAllText(files[i]);
+                        textAsset.Ext = Path.GetExtension(files[i]);
+                        result[i] = textAsset;
                     }
+                    else if(type == typeof(PersistentRuntimeBinaryAsset))
+                    {
+                        PersistentRuntimeBinaryAsset binaryAsset = new PersistentRuntimeBinaryAsset();
+                        binaryAsset.name = Path.GetFileName(files[i]);
+                        binaryAsset.Data = File.ReadAllBytes(files[i]);
+                        binaryAsset.Ext = Path.GetExtension(files[i]);
+                        result[i] = binaryAsset;
+                    }
+                    else
+                    {
+                        using (FileStream fs = File.OpenRead(files[i]))
+                        {
+                            result[i] = (PersistentObject)serializer.Deserialize(fs, type);
+                        }
+                    }   
                 }
 
                 Callback(() => callback(Error.NoError, result));
@@ -800,13 +872,26 @@ namespace Battlehub.RTSL
                 File.Delete(path);
             }
 
-            ISerializer serializer = IOC.Resolve<ISerializer>();
-            using (FileStream fs = File.Create(path))
+            if (persistentObject is PersistentRuntimeTextAsset)
             {
-                serializer.Serialize(persistentObject, fs);
+                PersistentRuntimeTextAsset textAsset = (PersistentRuntimeTextAsset)persistentObject;
+                File.WriteAllText(path, textAsset.Text);
             }
-            serializer.Serialize(persistentObject);
-
+            else if(persistentObject is PersistentRuntimeBinaryAsset)
+            {
+                PersistentRuntimeBinaryAsset binaryAsset = (PersistentRuntimeBinaryAsset)persistentObject;
+                File.WriteAllBytes(path, binaryAsset.Data);
+            }
+            else
+            {
+                ISerializer serializer = IOC.Resolve<ISerializer>();
+                using (FileStream fs = File.Create(path))
+                {
+                    serializer.Serialize(persistentObject, fs);
+                }
+                serializer.Serialize(persistentObject);
+            }
+            
             callback(new Error(Error.OK));
         }
 

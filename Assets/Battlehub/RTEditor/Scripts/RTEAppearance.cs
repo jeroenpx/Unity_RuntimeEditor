@@ -6,12 +6,21 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
     public interface IRTEAppearance
     {
+        AssetIcon[] AssetIcons
+        {
+            get;
+            set;
+        }
+
+        Sprite GetAssetIcon(string type);
+        
         RTECursor[] CursorSettings
         {
             get;
@@ -49,6 +58,14 @@ namespace Battlehub.RTEditor
         void ApplyColors(GameObject root);
         void RegisterPrefab(GameObject prefab);
     }
+
+    [Serializable]
+    public class AssetIcon
+    {
+        public string AssetTypeName;
+        public Sprite Icon;
+    }
+
 
     [Serializable]
     public struct RTECursor
@@ -272,8 +289,7 @@ namespace Battlehub.RTEditor
                     Button2.EqualTo(DefaultButton2) &&
                     Slider.EqualTo(DefaultSlider) &&
                     Dropdown.EqualTo(DefaultDropdown) &&
-                    ToolCmdItem.EqualTo(DefaultToolCmdItem);
-                    
+                    ToolCmdItem.EqualTo(DefaultToolCmdItem);   
             }
         }
     }
@@ -281,6 +297,50 @@ namespace Battlehub.RTEditor
     [DefaultExecutionOrder(-90)]
     public class RTEAppearance : MonoBehaviour, IRTEAppearance
     {
+        [SerializeField]
+        public AssetIcon[] m_assetIcons;
+        public AssetIcon[] AssetIcons
+        {
+            get { return m_assetIcons; }
+            set
+            {
+                m_assetIcons = value;
+                UpdateAssetTypeToIconDictionary();
+            }
+        }
+
+        private readonly Dictionary<string, Sprite> m_assetTypeToIcon = new Dictionary<string, Sprite>();
+        public Sprite GetAssetIcon(string type)
+        {
+            Sprite sprite;
+            if(m_assetTypeToIcon.TryGetValue(type, out sprite))
+            {
+                return sprite;
+            }
+            return null;
+        }
+
+        private void UpdateAssetTypeToIconDictionary()
+        {
+            m_assetTypeToIcon.Clear();
+            if(m_assetIcons == null)
+            {
+                return;
+            }
+
+            for(int i = 0; i < m_assetIcons.Length; ++i)
+            {
+                AssetIcon icon = m_assetIcons[i];
+                if(icon.AssetTypeName != null && icon.Icon != null)
+                {
+                    if(!m_assetTypeToIcon.ContainsKey(icon.AssetTypeName))
+                    {
+                        m_assetTypeToIcon.Add(icon.AssetTypeName, icon.Icon);
+                    }
+                }
+            }
+        }
+
         [SerializeField]
         private RTECursor[] m_cursorSettings = null;
         public RTECursor[] CursorSettings
@@ -353,7 +413,22 @@ namespace Battlehub.RTEditor
         private IRTE m_editor;
         private void Awake()
         {
+            if(m_assetIcons == null || m_assetIcons.Length == 0)
+            {
+                AssetIcons =  new[]
+                {
+                    new AssetIcon { AssetTypeName = "Folder", Icon = Resources.Load<Sprite>("FolderLarge")  },
+                    new AssetIcon { AssetTypeName = "Default", Icon = Resources.Load<Sprite>("RTE_Object")  },
+                    new AssetIcon { AssetTypeName = "None", Icon = Resources.Load<Sprite>("None")  },
+                    new AssetIcon { AssetTypeName = typeof(Scene).FullName, Icon = Resources.Load<Sprite>("FileLarge")  },
+                    new AssetIcon { AssetTypeName = typeof(Mesh).FullName, Icon = Resources.Load<Sprite>("RTE_Mesh")  },
+                    new AssetIcon { AssetTypeName = typeof(RuntimeAnimationClip).FullName, Icon = Resources.Load<Sprite>("RTE_AnimationClip")  },
+                };
+            }
+
             m_editor = IOC.Resolve<IRTE>();
+
+            UpdateAssetTypeToIconDictionary();
 
             List<RTECursor> cursorSettings;
             if (m_cursorSettings == null)

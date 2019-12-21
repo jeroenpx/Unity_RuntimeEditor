@@ -24,17 +24,11 @@ namespace Battlehub.RTTerrain
         protected override void DestroyEditor()
         {
             DestroyGizmo();
-            //foreach (Transform t in EditorsPanel)
-            //{
-            //    Destroy(t.gameObject);
-            //}
         }
 
         protected override void BuildEditor(IComponentDescriptor componentDescriptor, PropertyDescriptor[] descriptors)
         {
-            //base.BuildEditor(componentDescriptor, descriptors);
+            
         }
-
     }
-
 }

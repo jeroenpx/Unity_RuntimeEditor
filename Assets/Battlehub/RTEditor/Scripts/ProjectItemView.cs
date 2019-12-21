@@ -1,11 +1,9 @@
-﻿
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 using Battlehub.RTSL.Interface;
 using Battlehub.RTCommon;
-using UnityEngine.SceneManagement;
 using System.Collections;
 
 using UnityObject = UnityEngine.Object;
@@ -19,21 +17,6 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         private Image m_imgPreview = null;
-
-        [SerializeField]
-        public Sprite m_folder = null;
-        [SerializeField]
-        public Sprite m_readonlyFolder = null;
-        [SerializeField]
-        public Sprite m_scene = null;
-        [SerializeField]
-        private Sprite m_mesh = null;
-        [SerializeField]
-        private Sprite m_runtimeAnimationClip = null;
-        [SerializeField]
-        public Sprite m_defaultPrefab = null;
-        [SerializeField]
-        public Sprite m_none = null;
 
         private Texture2D m_texture;
 
@@ -82,6 +65,7 @@ namespace Battlehub.RTEditor
                 }
             }
 
+            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
             if (m_texture != null)
             {
                 Destroy(m_texture);
@@ -90,31 +74,27 @@ namespace Battlehub.RTEditor
             if (m_projectItem == null)
             {
                 m_imgPreview.sprite = null;
-                
             }
             else if (m_projectItem is AssetItem)
             {
                 AssetItem assetItem = (AssetItem)m_projectItem;
                 Type assetItemType = m_project.ToType(assetItem);
-                if (assetItemType == typeof(Scene))
+                if (assetItem.Preview == null || assetItem.Preview.PreviewData == null)
                 {
-                    m_imgPreview.sprite = m_scene;
+                    m_imgPreview.sprite = appearance.GetAssetIcon("None");
                 }
-                else if(assetItemType == typeof(Mesh))
+                else if (assetItem.Preview.PreviewData.Length == 0)
                 {
-                    m_imgPreview.sprite = m_mesh;
-                }
-                else if(assetItemType == typeof(RuntimeAnimationClip))
-                {
-                    m_imgPreview.sprite = m_runtimeAnimationClip;
-                }
-                else if(assetItem.Preview == null || assetItem.Preview.PreviewData == null)
-                {
-                    m_imgPreview.sprite = m_none;
-                }
-                else if(assetItem.Preview.PreviewData.Length == 0)
-                {
-                    m_imgPreview.sprite = m_defaultPrefab;
+                    m_imgPreview.sprite = appearance.GetAssetIcon(assetItemType.FullName + assetItem.Ext);
+                    if (m_imgPreview.sprite == null)
+                    {
+                        m_imgPreview.sprite = appearance.GetAssetIcon(assetItemType.FullName);
+                    }
+
+                    if (m_imgPreview.sprite == null)
+                    {
+                        m_imgPreview.sprite = appearance.GetAssetIcon("Default");
+                    }
                 }
                 else
                 {
@@ -125,14 +105,7 @@ namespace Battlehub.RTEditor
             }
             else if (m_projectItem.IsFolder)
             {
-                if(m_project.IsStatic(m_projectItem))
-                {
-                    m_imgPreview.sprite = m_readonlyFolder;
-                }
-                else
-                {
-                    m_imgPreview.sprite = m_folder;
-                }
+                m_imgPreview.sprite = appearance.GetAssetIcon("Folder");
             }
             else
             {

@@ -18,6 +18,8 @@ namespace Battlehub.RTEditor
 
         void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor);
         void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor);
+        void RemoveMapping(Type type);
+
         bool IsObjectEditorEnabled(Type type);
         bool IsPropertyEditorEnabled(Type type, bool strict = false);
         bool IsMaterialEditorEnabled(Shader shader);
@@ -261,6 +263,11 @@ namespace Battlehub.RTEditor
             }
 
             AddMapping(type, editor, enabled, isPropertyEditor);
+        }
+
+        public void RemoveMapping(Type type)
+        {
+            m_map.Remove(type);
         }
 
         public void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor)

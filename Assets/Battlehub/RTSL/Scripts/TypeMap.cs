@@ -109,6 +109,20 @@ namespace Battlehub.RTSL
             Guid sceneGuid = new Guid("d144fbe0-d2c0-4bcf-aa9f-251376262202");
             m_toGuid[typeof(Scene)] = sceneGuid;
             m_toType[sceneGuid] = typeof(Scene);
+
+            m_toPeristentType[typeof(RuntimeTextAsset)] = typeof(PersistentRuntimeTextAsset);
+            m_toUnityType[typeof(PersistentRuntimeTextAsset)] = typeof(RuntimeTextAsset);
+            m_toGuid[typeof(PersistentRuntimeTextAsset)] = new Guid("82b9517d-9b1e-494d-a398-f20a084e7f14");
+            m_toGuid[typeof(RuntimeTextAsset)] = new Guid("cbe0eb96-429b-4231-85e4-e25644b6c145");
+            m_toType[new Guid("82b9517d-9b1e-494d-a398-f20a084e7f14")] = typeof(PersistentRuntimeTextAsset);
+            m_toType[new Guid("cbe0eb96-429b-4231-85e4-e25644b6c145")] = typeof(RuntimeTextAsset);
+
+            m_toPeristentType[typeof(RuntimeBinaryAsset)] = typeof(PersistentRuntimeBinaryAsset);
+            m_toUnityType[typeof(PersistentRuntimeBinaryAsset)] = typeof(RuntimeBinaryAsset);
+            m_toGuid[typeof(PersistentRuntimeBinaryAsset)] = new Guid("22af8a02-307a-4a7f-97e4-139efce7006a");
+            m_toGuid[typeof(RuntimeBinaryAsset)] = new Guid("4be06fec-1084-4e90-a179-1bf0e8c0e970");
+            m_toType[new Guid("22af8a02-307a-4a7f-97e4-139efce7006a")] = typeof(PersistentRuntimeBinaryAsset);
+            m_toType[new Guid("4be06fec-1084-4e90-a179-1bf0e8c0e970")] = typeof(RuntimeBinaryAsset);
         }
 
         partial void RegisterAutoTypes();

@@ -33,7 +33,7 @@ namespace Battlehub.RTSL
             return name;
         }
 
-        public static string GetUniqueName(string desiredName, string ext, List<string> existingNames)
+        public static string GetUniqueName(string desiredName, string ext, List<string> existingNames, bool noSpace = false)
         {
             if (existingNames == null || existingNames.Count == 0)
             {
@@ -86,9 +86,21 @@ namespace Battlehub.RTSL
                     uniqueName = string.Format("{0} {1}{2}", desiredName, number, ext);
                 }
 
+                if(noSpace)
+                {
+                    uniqueName = uniqueName.Replace(" ", "");
+                }
+
                 if (!existingNamesHS.Contains(uniqueName.ToLower()))
                 {
-                    return string.Format("{0} {1}", desiredName, number);
+                    if(noSpace)
+                    {
+                        return string.Format("{0} {1}", desiredName, number).Replace(" ", "");
+                    }
+                    else
+                    {
+                        return string.Format("{0} {1}", desiredName, number);
+                    }
                 }
 
                 number++;

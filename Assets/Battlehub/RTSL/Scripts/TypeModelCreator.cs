@@ -94,7 +94,7 @@ namespace Battlehub.RTSL
             
             model.Add(typeof(PersistentGameObject), true);
             model.Add(typeof(PersistentTransform), true);
-
+            
             model.Add(typeof(PersistentObject), true)
                .AddSubType(1025, typeof(PersistentGameObject))
                .AddSubType(1029, typeof(PersistentComponent))
