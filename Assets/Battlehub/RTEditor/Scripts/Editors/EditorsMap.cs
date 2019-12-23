@@ -16,6 +16,7 @@ namespace Battlehub.RTEditor
 
         PropertyDescriptor[] GetPropertyDescriptors(Type componentType, ComponentEditor componentEditor = null, object converter = null);
 
+        void RegisterEditor(ComponentEditor editor);
         void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor);
         void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor);
         void RemoveMapping(Type type);
@@ -252,6 +253,12 @@ namespace Battlehub.RTEditor
             {
                 Debug.LogError("Editors map is null");
             }
+        }
+
+        public void RegisterEditor(ComponentEditor editor)
+        {
+            Array.Resize(ref m_editors, m_editors.Length + 1);
+            m_editors[m_editors.Length - 1] = editor.gameObject;
         }
 
         public void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor)

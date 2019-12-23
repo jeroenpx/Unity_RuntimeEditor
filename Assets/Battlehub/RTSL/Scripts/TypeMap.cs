@@ -19,6 +19,8 @@ namespace Battlehub.RTSL
         protected readonly Dictionary<Type, Guid> m_toGuid = new Dictionary<Type, Guid>();
         protected readonly Dictionary<Guid, Type> m_toType = new Dictionary<Guid, Type>();
 
+        protected readonly Guid m_persistentRuntimeSerializableObjectGuid = new Guid("be030c1e-582e-4ffa-8bc9-5c3a3018b033");
+
         private bool m_registerDefault = true;
         public TypeMap()
         {
@@ -123,6 +125,9 @@ namespace Battlehub.RTSL
             m_toGuid[typeof(RuntimeBinaryAsset)] = new Guid("4be06fec-1084-4e90-a179-1bf0e8c0e970");
             m_toType[new Guid("22af8a02-307a-4a7f-97e4-139efce7006a")] = typeof(PersistentRuntimeBinaryAsset);
             m_toType[new Guid("4be06fec-1084-4e90-a179-1bf0e8c0e970")] = typeof(RuntimeBinaryAsset);
+
+            m_toType[m_persistentRuntimeSerializableObjectGuid] = typeof(PersistentRuntimeSerializableObject);
+            m_toGuid[typeof(PersistentRuntimeSerializableObject)] = m_persistentRuntimeSerializableObjectGuid;
         }
 
         partial void RegisterAutoTypes();
@@ -134,6 +139,7 @@ namespace Battlehub.RTSL
             {
                 return persistentType;
             }
+
             return null;
         }
 
@@ -144,6 +150,12 @@ namespace Battlehub.RTSL
             {
                 return unityType;
             }
+
+            if(persistentType == typeof(PersistentRuntimeSerializableObject))
+            {
+                throw new InvalidOperationException(string.Format("Unable to resolve type. PersistentType: {0}", persistentType.Name));
+            }
+
             return null;
         }
 
@@ -165,8 +177,29 @@ namespace Battlehub.RTSL
                 return guid;
             }
 
+
+          
             return Guid.Empty;
         }
+
+        public void RegisterRuntimeSerializableType(Type type, Guid typeGuid)
+        {
+            m_toPeristentType.Add(type, typeof(PersistentRuntimeSerializableObject));
+            m_toGuid.Add(type, typeGuid);
+            m_toType.Add(typeGuid, type);
+        }
+
+        public void UnregisterRuntimeSerialzableType(Type type)
+        {
+            Guid typeGuid;
+            if(m_toGuid.TryGetValue(type, out typeGuid))
+            {
+                m_toGuid.Remove(type);
+                m_toType.Remove(typeGuid);
+                m_toPeristentType.Remove(type);
+            }
+        }
+
     }
 }
 

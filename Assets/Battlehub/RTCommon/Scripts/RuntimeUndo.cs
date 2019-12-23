@@ -1748,6 +1748,20 @@ namespace Battlehub.RTCommon
                 if(record.OldState == oldReference)
                 {
                     record.OldState = newReference;
+
+                    //Handling runtime script reload;
+                    if(record.NewState != null && newReference != null)
+                    {
+                        if(record.NewState is Type)
+                        {
+                            Type t = (Type)record.NewState;
+                            Type refType = newReference.GetType();
+                            if(t.FullName == refType.FullName)
+                            {
+                                record.NewState = refType;
+                            }
+                        }
+                    }
                 }
 
                 if ((record.Target as ExposeToEditor) == null)

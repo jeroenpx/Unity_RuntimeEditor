@@ -21,6 +21,9 @@ namespace Battlehub.RTScripting
         [SerializeField]
         private GameObject m_editRuntimeScriptDialog = null;
 
+        [SerializeField]
+        private ComponentEditor m_runtimeScriptEditor = null;
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -50,6 +53,12 @@ namespace Battlehub.RTScripting
 
                 IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
                 appearance.ApplyColors(m_editRuntimeScriptDialog);
+            }
+
+            if(m_runtimeScriptEditor != null)
+            {
+                IEditorsMap map = IOC.Resolve<IEditorsMap>();
+                map.RegisterEditor(m_runtimeScriptEditor);
             }
         }
 
@@ -90,6 +99,8 @@ namespace Battlehub.RTScripting
             m_wm.WindowDestroyed += OnWindowDestroyed;
             m_scriptManager.Loading += OnScriptManagerLoading;
             m_scriptManager.Loaded += OnScriptManagerLoaded;
+            m_scriptManager.Compiling += OnScriptManagerCompiling;
+            m_scriptManager.Complied += OnScriptManagerCompiled;
             UpdateContextMenuHandler();
         }
 
@@ -106,6 +117,8 @@ namespace Battlehub.RTScripting
             {
                 m_scriptManager.Loading -= OnScriptManagerLoading;
                 m_scriptManager.Loaded -= OnScriptManagerLoaded;
+                m_scriptManager.Compiling -= OnScriptManagerCompiling;
+                m_scriptManager.Complied -= OnScriptManagerCompiled;
             }
 
             if (m_projectFolder != null)
@@ -203,6 +216,15 @@ namespace Battlehub.RTScripting
             m_editor.IsBusy = false;
         }
 
+        private void OnScriptManagerCompiling()
+        {
+            m_editor.IsBusy = true;
+        }
+
+        private void OnScriptManagerCompiled(bool success)
+        {
+            m_editor.IsBusy = false;
+        }
     }
 
 }

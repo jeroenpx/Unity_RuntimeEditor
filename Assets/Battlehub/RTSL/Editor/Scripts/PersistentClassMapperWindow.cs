@@ -41,7 +41,7 @@ namespace Battlehub.RTSL
             typeof(RuntimeScene),
             typeof(UnityEventBase),
             typeof(UnityEvent),
-
+         //   typeof(RuntimeSerializableObject),
         };
 
         public event Action<Type> TypeLocked;

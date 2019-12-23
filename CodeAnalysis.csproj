@@ -63,7 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Battlehub\RTExtensions\RTScripting\CodeAnalysis\Complier.cs" />
-    <Compile Include="Assets\Battlehub\RTExtensions\RTScripting\CodeAnalysis\RoslynTest.cs" />
     <Reference Include="UnityEditor.UI">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>

@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace Battlehub
 {
@@ -15,6 +16,16 @@ namespace Battlehub
 
     public static class Reflection
     {
+        public static string GetAssemblyQualifiedName(Type type)
+        {
+            string name = type.AssemblyQualifiedName;
+            name = Regex.Replace(name, @", Version=\d+.\d+.\d+.\d+", string.Empty);
+            name = Regex.Replace(name, @", Culture=\w+", string.Empty);
+            name = Regex.Replace(name, @", PublicKeyToken=\w+", string.Empty);
+            return name;
+        }
+
+
         public static Type GetUnderlyingType(this MemberInfo member)
         {
             switch (member.MemberType)

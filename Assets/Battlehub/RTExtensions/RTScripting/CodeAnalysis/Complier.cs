@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Battlehub.CodeAnalysis
 {
@@ -30,6 +31,7 @@ namespace Battlehub.CodeAnalysis
                 typeof(object).Assembly.Location,
                 typeof(Enumerable).Assembly.Location,
                 typeof(Object).Assembly.Location,
+                Assembly.GetCallingAssembly().Location
             };
 
             if(extraReferences != null)

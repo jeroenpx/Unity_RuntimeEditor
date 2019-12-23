@@ -2473,7 +2473,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
     m_PressedColor: {r: 0.15294118, g: 0.15294118, b: 0.15294118, a: 1}
     m_SelectedColor: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.49803922}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -3353,6 +3353,76 @@ PrefabInstance:
       propertyPath: m_Name
       value: InputField
       objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_ReadOnly
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_LineType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Colors.m_NormalColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Colors.m_PressedColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_textAlignment
+      value: 257
+      objectReference: {fileID: 0}
+    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_enableWordWrapping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3849523543463818082, guid: f43d236fa1937fc44829764302e692ed,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4026937081627534330, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3457,76 +3527,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3849523543463818082, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_ReadOnly
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_LineType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Colors.m_NormalColor.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Colors.m_HighlightedColor.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_Colors.m_PressedColor.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_TargetGraphic
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_textAlignment
-      value: 257
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_enableWordWrapping
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5568657113070715690, guid: f43d236fa1937fc44829764302e692ed,
-        type: 3}
-      propertyPath: m_text
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f43d236fa1937fc44829764302e692ed, type: 3}

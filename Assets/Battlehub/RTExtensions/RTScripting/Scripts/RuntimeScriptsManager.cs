@@ -10,12 +10,17 @@ using UnityEngine;
 using System;
 
 using UnityObject = UnityEngine.Object;
+using System.Collections.Generic;
+using Battlehub.Utils;
+
 namespace Battlehub.RTScripting
 {
     public interface IRuntimeScriptManager
     {
         event Action Loading;
         event Action Loaded;
+        event Action Compiling;
+        event Action<bool> Complied;
 
         string Ext
         {
@@ -28,57 +33,111 @@ namespace Battlehub.RTScripting
         ProjectAsyncOperation Compile();
     }
 
+    [Serializable]
+    public class RuntimeTypeGuid
+    {
+        public string FullName;
+        public string Guid;
+    }
+
+    [Serializable]
+    public class RuntimeTypeGuids
+    {
+        public RuntimeTypeGuid[] Guids;
+    }
+
+    
     [DefaultExecutionOrder(-1)]
     public class RuntimeScriptsManager : MonoBehaviour, IRuntimeScriptManager
     {
         public event Action Loading;
         public event Action Loaded;
-
+        public event Action Compiling;
+        public event Action<bool> Complied;
+        
         private static object m_syncRoot = new object();
-        private const string RuntimeAssemblyName = "RuntimeAssembly";
+        private const string RuntimeAssemblyKey = "RuntimeAssembly";
+        private const string RuntimeTypeGuids = "RuntimeTypeGuids";
         public string Ext
         {
             get { return ".cs"; }
         }
 
         private IProject m_project;
-        private IEditorsMap m_map;
+        private IEditorsMap m_editorsMap;
+        private ITypeMap m_typeMap;
         private IRTE m_editor;
         private Assembly m_runtimeAssembly;
+        private Dictionary<string, Guid> m_typeNameToGuid;
+        private RuntimeTextAsset m_runtimeTypeGuidsAsset;
 
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
             m_project = IOC.Resolve<IProject>();
-            m_map = IOC.Resolve<IEditorsMap>();
+            m_project.DeleteCompleted += OnDeleteProjectItemCompleted;
+            m_editorsMap = IOC.Resolve<IEditorsMap>();
+            m_typeMap = IOC.Resolve<ITypeMap>();
             IOC.RegisterFallback<IRuntimeScriptManager>(this);
         }
+
 
         private IEnumerator Start()
         {
             yield return new WaitUntil(() => m_project.IsOpened);
-            yield return new WaitUntil(() => m_editor.IsBusy);
+            yield return new WaitWhile(() => m_editor.IsBusy);
 
-            if(Loading != null)
+            if (Loading != null)
             {
                 Loading();
             }
 
-            ProjectAsyncOperation<RuntimeBinaryAsset> getValueAo = m_project.GetValue<RuntimeBinaryAsset>(RuntimeAssemblyName);
-            yield return getValueAo;
-            if (getValueAo.HasError)
+            ProjectAsyncOperation<RuntimeBinaryAsset> getAssemblyAo = m_project.GetValue<RuntimeBinaryAsset>(RuntimeAssemblyKey);
+            yield return getAssemblyAo;
+            if (getAssemblyAo.HasError)
             {
-                if (getValueAo.Error.ErrorCode != Error.E_NotFound)
+                if (getAssemblyAo.Error.ErrorCode != Error.E_NotFound)
                 {
-                    Debug.LogError(getValueAo.Error);
+                    Debug.LogError(getAssemblyAo.Error);
+                }
+                else
+                {
+                    m_typeNameToGuid = new Dictionary<string, Guid>();
+                    m_runtimeTypeGuidsAsset = ScriptableObject.CreateInstance<RuntimeTextAsset>();
                 }
             }
             else
             {
-                LoadAssembly(getValueAo.Result.Data);
+                ProjectAsyncOperation<RuntimeTextAsset> getGuidsAo = m_project.GetValue<RuntimeTextAsset>(RuntimeTypeGuids);
+                yield return getGuidsAo;
+                if (getGuidsAo.HasError)
+                {
+                    Debug.LogError(getGuidsAo.Error);
+                }
+                else
+                {
+                    m_typeNameToGuid = new Dictionary<string, Guid>();
+                    m_runtimeTypeGuidsAsset = getGuidsAo.Result;
+
+                    string xml = m_runtimeTypeGuidsAsset.Text;
+                    if (!string.IsNullOrEmpty(xml))
+                    {
+                        RuntimeTypeGuids typeGuids = XmlUtility.FromXml<RuntimeTypeGuids>(xml);
+                        foreach (RuntimeTypeGuid typeGuid in typeGuids.Guids)
+                        {
+                            Guid guid;
+                            if (!m_typeNameToGuid.ContainsKey(typeGuid.FullName) && Guid.TryParse(typeGuid.Guid, out guid))
+                            {
+                                m_typeNameToGuid.Add(typeGuid.FullName, guid);
+                            }
+                        }
+                    }
+
+                    LoadAssembly(getAssemblyAo.Result.Data);
+                }
             }
-            
-            if(Loaded != null)
+
+            if (Loaded != null)
             {
                 Loaded();
             }
@@ -86,8 +145,27 @@ namespace Battlehub.RTScripting
 
         private void OnDestroy()
         {
+            if(m_project != null)
+            {
+                m_project.DeleteCompleted -= OnDeleteProjectItemCompleted;
+            }
             IOC.UnregisterFallback<IRuntimeScriptManager>(this);
-            UnloadTypes(m_map);
+            UnloadTypes();
+        }
+
+        private void OnDeleteProjectItemCompleted(Error error, ProjectItem[] result)
+        {
+            for(int i = 0; i < result.Length; ++i)
+            {
+                if(result[i] is AssetItem)
+                {
+                    AssetItem assetItem = (AssetItem)result[i];
+                    if(assetItem.Ext == Ext)
+                    {
+                        Compile();
+                    }
+                }
+            }
         }
 
         public void CreateScript(ProjectItem folder)
@@ -145,6 +223,23 @@ namespace Battlehub.RTScripting
             return m_project.Save(new[] { assetItem }, new[] { script });
         }
 
+        private void RaiseCompiling()
+        {
+            if(Compiling != null)
+            {
+                Compiling();
+            }
+            
+        }
+
+        private void RaiseCompiled(bool completed)
+        {
+            if(Complied != null)
+            {
+                Complied(completed);
+            }
+        }
+
         public ProjectAsyncOperation Compile()
         {
             ProjectAsyncOperation ao = new ProjectAsyncOperation();
@@ -154,13 +249,18 @@ namespace Battlehub.RTScripting
 
         private IEnumerator CoCompile(ProjectAsyncOperation ao)
         {
+            RaiseCompiling();
+
             AssetItem[] assetItems = m_project.FindAssetItems(null, true, typeof(RuntimeTextAsset)).Where(assetItem => assetItem.Ext == Ext).ToArray();
             ProjectAsyncOperation<UnityObject[]> loadAo = m_project.Load(assetItems);
             yield return loadAo;
             if (loadAo.HasError)
             {
+                RaiseCompiled(false);
+
                 ao.Error = loadAo.Error;
                 ao.IsCompleted = true;
+                
                 yield break;
             }
 
@@ -175,8 +275,11 @@ namespace Battlehub.RTScripting
                 byte[] binData = await Task.Run(() => compiler.Compile(scripts));
                 if(binData == null)
                 {
+                    RaiseCompiled(false);
+
                     ao.Error = new Error(Error.E_Failed) { ErrorText = "Compilation failed" };
                     ao.IsCompleted = true;
+                    
                 }
                 else
                 {
@@ -185,6 +288,8 @@ namespace Battlehub.RTScripting
             }
             catch(Exception e)
             {
+                RaiseCompiled(false);
+
                 ao.Error = new Error(Error.E_Exception)
                 {
                     ErrorText = e.ToString()
@@ -198,43 +303,128 @@ namespace Battlehub.RTScripting
             RuntimeBinaryAsset asmBinaryData = ScriptableObject.CreateInstance<RuntimeBinaryAsset>();
             asmBinaryData.Data = binData;
             
-            ProjectAsyncOperation setValueAo = m_project.SetValue(RuntimeAssemblyName, asmBinaryData);
+            ProjectAsyncOperation setValueAo = m_project.SetValue(RuntimeAssemblyKey, asmBinaryData);
             yield return setValueAo;
             if(setValueAo.HasError)
             {
+                RaiseCompiled(false);
+
                 ao.Error = setValueAo.Error;
                 ao.IsCompleted = true;
                 yield break;
             }
             
             LoadAssembly(binData);
-            ao.Error = Error.NoError;
+
+            RuntimeTypeGuids guids = new RuntimeTypeGuids
+            {
+                Guids = m_typeNameToGuid.Select(kvp => new RuntimeTypeGuid { FullName = kvp.Key, Guid = kvp.Value.ToString() }).ToArray()
+            };
+
+            m_runtimeTypeGuidsAsset.Text = XmlUtility.ToXml(guids);
+            ProjectAsyncOperation setGuidsAo = m_project.SetValue(RuntimeTypeGuids, m_runtimeTypeGuidsAsset);
+            yield return setGuidsAo;
+            if (setGuidsAo.HasError)
+            {
+                RaiseCompiled(false);
+
+                Debug.LogError(setGuidsAo.Error);
+                ao.Error = setGuidsAo.Error;
+            }
+            else
+            {
+                RaiseCompiled(true);
+
+                ao.Error = Error.NoError;
+            }
             ao.IsCompleted = true;
         }
 
         private void LoadAssembly(byte[] binData)
         {
-            UnloadTypes(m_map);
+            Dictionary<string, List<UnityObject>> typeToDestroyedObjects = UnloadTypes();
 
+            Dictionary<string, Guid> typeNameToGuidNew = new Dictionary<string, Guid>();
             m_runtimeAssembly = Assembly.Load(binData);
             Type[] loadedTypes = m_runtimeAssembly.GetTypes().Where(t => typeof(MonoBehaviour).IsAssignableFrom(typeof(MonoBehaviour))).ToArray();
             foreach (Type type in loadedTypes)
             {
-                m_map.AddMapping(type, typeof(ComponentEditor), true, false);
+                Guid guid;
+                string typeName = type.FullName;
+                if (!m_typeNameToGuid.TryGetValue(typeName, out guid))
+                {
+                    guid = Guid.NewGuid();
+                    m_typeNameToGuid.Add(typeName, guid);
+                }
+
+                m_editorsMap.AddMapping(type, typeof(RuntimeScriptEditor), true, false);
+                m_typeMap.RegisterRuntimeSerializableType(type, guid);
+                typeNameToGuidNew.Add(typeName, guid);
+            }
+
+            m_typeNameToGuid = typeNameToGuidNew;
+            EraseDestroyedObjects(typeToDestroyedObjects);
+        }
+
+        private void EraseDestroyedObjects(Dictionary<string, List<UnityObject>> typeToDestroyedObjects)
+        {
+            foreach (KeyValuePair<string, List<UnityObject>> kvp in typeToDestroyedObjects)
+            {
+                List<UnityObject> destroyedObjects = kvp.Value;
+                Type type = m_runtimeAssembly.GetType(kvp.Key);
+                if (!m_typeNameToGuid.ContainsKey(kvp.Key))
+                {
+                    for (int i = 0; i < destroyedObjects.Count; ++i)
+                    {
+                        m_editor.Undo.Erase(destroyedObjects[i], null);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < destroyedObjects.Count; ++i)
+                    {
+                        UnityObject destroyedObject = destroyedObjects[i];
+                        UnityObject obj = null;
+                        if (destroyedObject is Component)
+                        {
+                            obj = ((Component)destroyedObject).gameObject.AddComponent(type);
+                        }
+                        else if (destroyedObject is ScriptableObject)
+                        {
+                            obj = ScriptableObject.CreateInstance(type);
+                        }
+                        m_editor.Undo.Erase(destroyedObject, obj);
+                    }
+                }
             }
         }
 
-        private void UnloadTypes(IEditorsMap map)
+        private Dictionary<string, List<UnityObject>> UnloadTypes()
         {
+            Dictionary<string, List<UnityObject>> typeToDestroyedObjects = new Dictionary<string, List<UnityObject>>();
             if (m_runtimeAssembly != null)
             {
                 Type[] unloadedTypes = m_runtimeAssembly.GetTypes().Where(t => typeof(MonoBehaviour).IsAssignableFrom(typeof(MonoBehaviour))).ToArray();
                 foreach (Type type in unloadedTypes)
                 {
-                    map.RemoveMapping(type);
+                    List<UnityObject> destroyedObjects = new List<UnityObject>();
+                    UnityObject[] objectsOfType = Resources.FindObjectsOfTypeAll(type);
+                    foreach (UnityObject obj in objectsOfType)
+                    {
+                        Destroy(obj);
+                        destroyedObjects.Add(obj);
+                        //m_editor.Undo.Erase(obj, null);
+                    }
+                    typeToDestroyedObjects.Add(type.FullName, destroyedObjects);
+                    m_editorsMap.RemoveMapping(type);
+                    m_typeMap.UnregisterRuntimeSerialzableType(type);
                 }
             }
+
+            return typeToDestroyedObjects;
         }
+
+        
     }
 
 }

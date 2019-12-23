@@ -8,5 +8,8 @@ namespace Battlehub.RTSL.Interface
         Type ToUnityType(Type persistentType);
         Type ToType(Guid typeGuid);
         Guid ToGuid(Type type);
+
+        void RegisterRuntimeSerializableType(Type type, Guid typeGuid);
+        void UnregisterRuntimeSerialzableType(Type type);
     }
 }

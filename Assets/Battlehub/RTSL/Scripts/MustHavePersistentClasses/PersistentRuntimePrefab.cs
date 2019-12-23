@@ -203,20 +203,35 @@ namespace Battlehub.RTSL.Battlehub.SL2
                     PersistentDescriptor componentDescriptor = descriptor.Components[i];
 
                     Type persistentComponentType = m_typeMap.ToType(componentDescriptor.PersistentTypeGuid);
-                    if (persistentComponentType == null)
+                    Type componentType;
+                    if (persistentComponentType != typeof(PersistentRuntimeSerializableObject))
                     {
-                        Debug.LogWarningFormat("Unknown type {0} associated with component Descriptor {1}", componentDescriptor.PersistentTypeGuid, componentDescriptor.ToString());
-                        idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
-                        continue;
-                    }
-                    Type componentType = typeMap.ToUnityType(persistentComponentType);
-                    if (componentType == null)
-                    {
-                        Debug.LogWarningFormat("There is no mapped type for " + persistentComponentType.FullName + " in TypeMap");
-                        idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
-                        continue;
-                    }
+                        if (persistentComponentType == null)
+                        {
+                            Debug.LogWarningFormat("Unknown type {0} associated with component Descriptor {1}", componentDescriptor.PersistentTypeGuid, componentDescriptor.ToString());
+                            idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
+                            continue;
+                        }
 
+                        componentType = typeMap.ToUnityType(persistentComponentType);
+                        if (componentType == null)
+                        {
+                            Debug.LogWarningFormat("There is no mapped type for " + persistentComponentType.FullName + " in TypeMap");
+                            idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        componentType = typeMap.ToType(componentDescriptor.RuntimeTypeGuid);
+                        if(componentType == null)
+                        {
+                            Debug.LogWarningFormat("There is no runtime type with guid {0}", componentDescriptor.RuntimeTypeGuid);
+                            idToObj.Add(m_assetDB.ToInt(componentDescriptor.PersistentID), null);
+                            continue;
+                        }
+                    }
+                    
                     if (!componentType.IsSubclassOf(typeof(Component)))
                     {
                         Debug.LogErrorFormat("{0} is not subclass of {1}", componentType.FullName, typeof(Component).FullName);
@@ -378,7 +393,8 @@ namespace Battlehub.RTSL.Battlehub.SL2
                 //Do not save persistent ignore objects
                 return null;
             }
-            Type persistentType = m_typeMap.ToPersistentType(go.GetType());
+            Type type = go.GetType();
+            Type persistentType = m_typeMap.ToPersistentType(type);
             if (persistentType == null)
             {
                 return null;
@@ -391,7 +407,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
             //    usings.Add(ordinal);
             //}
             
-            PersistentDescriptor descriptor = new PersistentDescriptor(m_typeMap.ToGuid(persistentType), persistentID, go.name);
+            PersistentDescriptor descriptor = new PersistentDescriptor(m_typeMap.ToGuid(persistentType), persistentID, go.name, m_typeMap.ToGuid(type));
             descriptor.Parent = parentDescriptor;
 
             PersistentObject goData = (PersistentObject)Activator.CreateInstance(persistentType);
@@ -407,7 +423,8 @@ namespace Battlehub.RTSL.Battlehub.SL2
                 for (int i = 0; i < components.Length; ++i)
                 {
                     Component component = components[i];
-                    Type persistentComponentType = m_typeMap.ToPersistentType(component.GetType());
+                    Type componentType = component.GetType();
+                    Type persistentComponentType = m_typeMap.ToPersistentType(componentType);
                     if (persistentComponentType == null)
                     {
                         continue;
@@ -419,7 +436,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
                     //    int ordinal = m_assetDB.ToOrdinal(componentID);
                     //    usings.Add(ordinal);
                     //}
-                    PersistentDescriptor componentDescriptor = new PersistentDescriptor(m_typeMap.ToGuid(persistentComponentType), componentID, component.name);
+                    PersistentDescriptor componentDescriptor = new PersistentDescriptor(m_typeMap.ToGuid(persistentComponentType), componentID, component.name, m_typeMap.ToGuid(componentType));
                     componentDescriptor.Parent = descriptor;
                     componentDescriptors.Add(componentDescriptor);
 

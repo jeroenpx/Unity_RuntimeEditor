@@ -323,12 +323,10 @@ namespace Battlehub.RTSL
             }
             if(type == typeof(RuntimeTextAsset))
             {
-                Debug.LogWarning("string GetExt(Type type) method should not be used for RuntimeTextAsset");
                 return ".txt";
             }
             if(type == typeof(RuntimeBinaryAsset))
             {
-                Debug.LogWarning("string GetExt(Type type) method should not be used for RuntimeBinaryAsset");
                 return ".bin";
             }
             return ".rt" + type.Name.ToLower().Substring(0, 3);
@@ -1011,10 +1009,19 @@ namespace Battlehub.RTSL
                     }
                     else
                     {
-                        Type type = m_typeMap.ToUnityType(persistentType);
+                        Type type;
+                        if(persistentType != typeof(PersistentRuntimeSerializableObject))
+                        {
+                            type = m_typeMap.ToUnityType(persistentType);
+                        }
+                        else
+                        {
+                            type = m_typeMap.ToType(descriptor.RuntimeTypeGuid);
+                        }
+                        
                         if (type == null)
                         {
-                            Debug.LogWarningFormat("Unable to get unity type from persistent type {1}", type.FullName);
+                            Debug.LogWarningFormat("Unable to get unity type from persistent type {1}", persistentType.FullName);
                             checkPassed = false;
                         }
                         else

@@ -45,3 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_editRuntimeScriptDialog: {fileID: 5186639825075379583, guid: ab7be08276b1a1344837658cde457a69,
     type: 3}
+  m_runtimeScriptEditor: {fileID: 7860281736731727758, guid: 664e636f62a35a849b48ce7bcbd3d302,
+    type: 3}

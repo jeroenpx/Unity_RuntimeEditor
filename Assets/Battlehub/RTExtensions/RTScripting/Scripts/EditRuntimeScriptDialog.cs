@@ -54,10 +54,9 @@ namespace Battlehub.RTScripting
                 m_parentDialog.IsCancelVisible = true;
             }
 
-            Editor.IsBusy = true;
             ProjectAsyncOperation<RuntimeTextAsset> ao = m_scriptManager.LoadScript(m_assetItem);
             yield return ao;
-            Editor.IsBusy = false;
+
             if(ao.HasError)
             {
                 Debug.LogError(ao.Error);
@@ -87,7 +86,6 @@ namespace Battlehub.RTScripting
 
         private IEnumerator CoSave()
         {
-            Editor.IsBusy = true;
             m_textAsset.Text = m_text.text;
             ProjectAsyncOperation ao = m_scriptManager.SaveScript(m_assetItem, m_textAsset);
             yield return ao;
@@ -97,7 +95,6 @@ namespace Battlehub.RTScripting
             }
             else
             {
-                Editor.IsBusy = true;
                 ao = m_scriptManager.Compile();
                 yield return ao;
                 if(ao.HasError)
@@ -105,10 +102,6 @@ namespace Battlehub.RTScripting
                     Debug.LogError(ao.Error);
                 }
             }
-
-
-            Editor.IsBusy = false;
-            
         }
     }
 }

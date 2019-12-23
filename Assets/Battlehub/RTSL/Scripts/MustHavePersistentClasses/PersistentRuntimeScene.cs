@@ -204,9 +204,18 @@ namespace Battlehub.RTSL.Battlehub.SL2
                 assetInstances = new UnityObject[AssetIdentifiers.Length];
                 for (int i = 0; i < AssetIdentifiers.Length; ++i)
                 {
+                    Type uoType;
                     PersistentObject asset = Assets[i];
-
-                    Type uoType = m_typeMap.ToUnityType(asset.GetType());
+                    if(asset is PersistentRuntimeSerializableObject)
+                    {
+                        PersistentRuntimeSerializableObject runtimeSerializableObject = (PersistentRuntimeSerializableObject)asset;
+                        uoType = runtimeSerializableObject.ObjectType;
+                    }
+                    else
+                    {
+                        uoType = m_typeMap.ToUnityType(asset.GetType());
+                    }
+                    
                     if (uoType != null)
                     {
                         if(factory.CanCreateInstance(uoType, asset))
