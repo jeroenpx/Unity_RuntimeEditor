@@ -41,12 +41,13 @@ namespace Battlehub.RTEditor
     }
 
     public delegate void RuntimeConsoleEventHandler<T>(IRuntimeConsole console, T arg);
-
+    public delegate void RuntimeConsoleEventHandler(IRuntimeConsole console);
     public interface IRuntimeConsole
     {
         event RuntimeConsoleEventHandler<ConsoleLogCancelArgs> BeforeMessageAdded;
         event RuntimeConsoleEventHandler<ConsoleLogEntry> MessageAdded;
         event RuntimeConsoleEventHandler<ConsoleLogEntry[]> MessagesRemoved;
+        event RuntimeConsoleEventHandler Cleared;
 
         bool Store
         {
@@ -92,6 +93,7 @@ namespace Battlehub.RTEditor
         public event RuntimeConsoleEventHandler<ConsoleLogCancelArgs> BeforeMessageAdded;
         public event RuntimeConsoleEventHandler<ConsoleLogEntry> MessageAdded;
         public event RuntimeConsoleEventHandler<ConsoleLogEntry[]> MessagesRemoved;
+        public event RuntimeConsoleEventHandler Cleared;
 
         [SerializeField]
         private bool m_store = false;
@@ -256,6 +258,11 @@ namespace Battlehub.RTEditor
             if(MessagesRemoved != null)
             {
                 MessagesRemoved(this, logEntries);
+            }
+
+            if(Cleared != null)
+            {
+                Cleared(this);
             }
         }
     }

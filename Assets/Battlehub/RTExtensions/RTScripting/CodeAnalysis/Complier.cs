@@ -31,6 +31,7 @@ namespace Battlehub.CodeAnalysis
                 typeof(object).Assembly.Location,
                 typeof(Enumerable).Assembly.Location,
                 typeof(Object).Assembly.Location,
+                typeof(Input).Assembly.Location,
                 Assembly.GetCallingAssembly().Location
             };
 
