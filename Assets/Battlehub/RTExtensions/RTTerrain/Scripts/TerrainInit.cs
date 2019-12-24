@@ -17,11 +17,11 @@ namespace Battlehub.RTTerrain
         {
             base.OnEditorExist();
 
-            if(IOC.Resolve<ITerrainSettings>() == null)
+            if(IOC.Resolve<ITerrainSettings>() == null && gameObject.GetComponent<TerrainSettings>() == null)
             {
                 gameObject.AddComponent<TerrainSettings>();
             }
-            if(IOC.Resolve<ITerrainCutoutMaskRenderer>() == null)
+            if(IOC.Resolve<ITerrainCutoutMaskRenderer>() == null && gameObject.GetComponent<TerrainCutoutMaskRenderer>() == null)
             {
                 gameObject.AddComponent<TerrainCutoutMaskRenderer>();
             }

@@ -150,7 +150,7 @@ namespace Battlehub.RTScripting
                 m_project.DeleteCompleted -= OnDeleteProjectItemCompleted;
             }
             IOC.UnregisterFallback<IRuntimeScriptManager>(this);
-            UnloadTypes();
+            UnloadTypes(false);
         }
 
         private void OnDeleteProjectItemCompleted(Error error, ProjectItem[] result)
@@ -342,7 +342,7 @@ namespace Battlehub.RTScripting
 
         private void LoadAssembly(byte[] binData)
         {
-            Dictionary<string, List<UnityObject>> typeToDestroyedObjects = UnloadTypes();
+            Dictionary<string, List<UnityObject>> typeToDestroyedObjects = UnloadTypes(true);
 
             Dictionary<string, Guid> typeNameToGuidNew = new Dictionary<string, Guid>();
             m_runtimeAssembly = Assembly.Load(binData);
@@ -399,7 +399,7 @@ namespace Battlehub.RTScripting
             }
         }
 
-        private Dictionary<string, List<UnityObject>> UnloadTypes()
+        private Dictionary<string, List<UnityObject>> UnloadTypes(bool destroyObjects)
         {
             Dictionary<string, List<UnityObject>> typeToDestroyedObjects = new Dictionary<string, List<UnityObject>>();
             if (m_runtimeAssembly != null)
@@ -407,15 +407,19 @@ namespace Battlehub.RTScripting
                 Type[] unloadedTypes = m_runtimeAssembly.GetTypes().Where(t => typeof(MonoBehaviour).IsAssignableFrom(typeof(MonoBehaviour))).ToArray();
                 foreach (Type type in unloadedTypes)
                 {
-                    List<UnityObject> destroyedObjects = new List<UnityObject>();
-                    UnityObject[] objectsOfType = Resources.FindObjectsOfTypeAll(type);
-                    foreach (UnityObject obj in objectsOfType)
+                    if(destroyObjects)
                     {
-                        Destroy(obj);
-                        destroyedObjects.Add(obj);
-                        //m_editor.Undo.Erase(obj, null);
+                        List<UnityObject> destroyedObjects = new List<UnityObject>();
+                        UnityObject[] objectsOfType = Resources.FindObjectsOfTypeAll(type);
+                        foreach (UnityObject obj in objectsOfType)
+                        {
+                            Destroy(obj);
+                            destroyedObjects.Add(obj);
+                            //m_editor.Undo.Erase(obj, null);
+                        }
+                        typeToDestroyedObjects.Add(type.FullName, destroyedObjects);
                     }
-                    typeToDestroyedObjects.Add(type.FullName, destroyedObjects);
+
                     m_editorsMap.RemoveMapping(type);
                     m_typeMap.UnregisterRuntimeSerialzableType(type);
                 }

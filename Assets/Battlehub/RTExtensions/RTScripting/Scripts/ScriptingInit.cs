@@ -33,7 +33,11 @@ namespace Battlehub.RTScripting
             m_compiler = new Complier();
             IOC.RegisterFallback(m_compiler);
 
-            m_scriptManager = gameObject.AddComponent<RuntimeScriptsManager>();
+            if(m_scriptManager == null)
+            {
+                m_scriptManager = gameObject.AddComponent<RuntimeScriptsManager>();
+            }
+            
             Subscribe();
 
             IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
@@ -82,6 +86,7 @@ namespace Battlehub.RTScripting
         {
             base.OnEditorClosed();
             IOC.UnregisterFallback(m_compiler);
+            DestroyScriptManager();
             Unsubscribe();
         }
 
@@ -89,8 +94,19 @@ namespace Battlehub.RTScripting
         {
             base.OnDestroy();
             IOC.UnregisterFallback(m_compiler);
+            DestroyScriptManager();
             Unsubscribe();
         }
+
+        private void DestroyScriptManager()
+        {
+            if (m_scriptManager != null)
+            {
+                Destroy(m_scriptManager as MonoBehaviour);
+                m_scriptManager = null;
+            }
+        }
+
 
         private void Subscribe()
         {
