@@ -14,6 +14,7 @@ namespace Battlehub.RTEditor
         public Toggle MoveToggle;
         public Toggle RotateToggle;
         public Toggle ScaleToggle;
+        public Toggle RectToggle;
 
         public Toggle PivotRotationToggle;
         public Toggle PivotModeToggle;
@@ -94,6 +95,10 @@ namespace Battlehub.RTEditor
             if (ScaleToggle != null)
             {
                 ScaleToggle.onValueChanged.AddListener(OnScaleToggleValueChanged);
+            }
+            if(RectToggle != null)
+            {
+                RectToggle.onValueChanged.AddListener(OnRectToggleValueChanged);
             }
             if(PivotRotationToggle != null)
             {
@@ -186,6 +191,10 @@ namespace Battlehub.RTEditor
             {
                 ScaleToggle.onValueChanged.RemoveListener(OnScaleToggleValueChanged);
             }
+            if (RectToggle != null)
+            {
+                RectToggle.onValueChanged.RemoveListener(OnRectToggleValueChanged);
+            }
             if (PivotRotationToggle != null)
             {
                 PivotRotationToggle.onValueChanged.RemoveListener(OnPivotRotationToggleValueChanged);
@@ -252,6 +261,7 @@ namespace Battlehub.RTEditor
                 RotateToggle.isOn = false;
                 ScaleToggle.isOn = false;
                 MoveToggle.isOn = false;
+                RectToggle.isOn = false;
                 m_handleValueChange = true;
             }
             else
@@ -275,6 +285,7 @@ namespace Battlehub.RTEditor
                 RotateToggle.isOn = false;
                 ScaleToggle.isOn = false;
                 ViewToggle.isOn = false;
+                RectToggle.isOn = false;
                 m_handleValueChange = true;
 
             }
@@ -300,6 +311,7 @@ namespace Battlehub.RTEditor
                 ViewToggle.isOn = false;
                 ScaleToggle.isOn = false;
                 MoveToggle.isOn = false;
+                RectToggle.isOn = false;
                 m_handleValueChange = true;
             }
             else
@@ -325,6 +337,7 @@ namespace Battlehub.RTEditor
                 ViewToggle.isOn = false;
                 RotateToggle.isOn = false;
                 MoveToggle.isOn = false;
+                RectToggle.isOn = false;
                 m_handleValueChange = true;
             }
             else
@@ -335,6 +348,33 @@ namespace Battlehub.RTEditor
                 }
             }
         }
+
+
+        protected virtual void OnRectToggleValueChanged(bool value)
+        {
+            if (!m_handleValueChange)
+            {
+                return;
+            }
+            if (value)
+            {
+                Editor.Tools.Current = RuntimeTool.Rect;
+                m_handleValueChange = false;
+                ViewToggle.isOn = false;
+                RotateToggle.isOn = false;
+                MoveToggle.isOn = false;
+                ScaleToggle.isOn = false;
+                m_handleValueChange = true;
+            }
+            else
+            {
+                if (Editor.Tools.Current == RuntimeTool.Scale)
+                {
+                    RectToggle.isOn = true;
+                }
+            }
+        }
+
 
         protected virtual void OnPivotRotationToggleValueChanged(bool value)
         {
@@ -447,6 +487,10 @@ namespace Battlehub.RTEditor
             if (ScaleToggle != null)
             {
                 ScaleToggle.isOn = Editor.Tools.Current == RuntimeTool.Scale;
+            }
+            if(RectToggle != null)
+            {
+                RectToggle.isOn = Editor.Tools.Current == RuntimeTool.Rect;
             }
         }
 

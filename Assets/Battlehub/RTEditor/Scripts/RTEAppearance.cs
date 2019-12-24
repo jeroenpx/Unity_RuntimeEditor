@@ -173,9 +173,9 @@ namespace Battlehub.RTEditor
         public static readonly Color DefaultText = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
         public static readonly Color DefaultText2 = new Color32(0xFF, 0xFF, 0xFF, 0x7F);
         public static readonly Color DefaultModalOverlay = new Color32(0x00, 0x00, 0x00, 0x40);
-        public static readonly Color DefaultMainMenuBar = new Color32(0x6F, 0x6F, 0x6F, 0xFF);
+        public static readonly Color DefaultMainMenuBar = new Color32(0x38, 0x38, 0x38, 0xFF);
         public static readonly Color DefaultToolsToggle = new Color32(0xC8, 0xC8, 0xC8, 0x7F);
-        public static readonly Color DefaultFooter = new Color32(0x6F, 0x6F, 0x6F, 0xFF);
+        public static readonly Color DefaultFooter = new Color32(0x38, 0x38, 0x38, 0xFF);
         public static readonly RTESelectableColors DefaultMainMenuButton = new RTESelectableColors(new Color32(0xff, 0xff, 0xff, 0x00), new Color32(0x0, 0x97, 0xFF, 0x7F), new Color32(0x0, 0x97, 0xFF, 0xFF), new Color32(0, 0, 0, 0));
         public static readonly RTEMenuItemColors DefaultMenuItem = new RTEMenuItemColors(new Color32(0x00, 0x97, 0xFF, 0xFF), new Color32(0xFF, 0xFF, 0xFF, 0xFF), new Color32(0x95, 0x93, 0x93, 0x7F), new Color32(0x71, 0x71, 0x71, 0xFF));
         public static readonly RTEHierarchyColors DefaultHierarchy = new RTEHierarchyColors(Color.white, new Color32(0x93, 0x92, 0x92, 0xFF));
