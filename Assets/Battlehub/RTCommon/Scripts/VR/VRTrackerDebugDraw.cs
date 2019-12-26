@@ -47,11 +47,11 @@ namespace Battlehub.RTCommon
 
         private void OnTrackingAquired(IVRInputDevice device)
         {   
-            if(device.Device.role == UnityEngine.XR.InputDeviceRole.LeftHanded)
+            if(device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Left)
             {
                 m_leftHand = CreateModel(Color.yellow, "Left Hand").transform;
             }
-            else if(device.Device.role == UnityEngine.XR.InputDeviceRole.RightHanded)
+            else if(device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Right)
             {
                 m_rightHand = CreateModel(Color.red, "Right Hand").transform;
             }
@@ -59,11 +59,11 @@ namespace Battlehub.RTCommon
 
         private void OnTrackingLost(IVRInputDevice device)
         {
-            if (device.Device.role == UnityEngine.XR.InputDeviceRole.LeftHanded)
+            if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Left)
             {
                 Destroy(m_leftHand.gameObject);
             }
-            else if (device.Device.role == UnityEngine.XR.InputDeviceRole.RightHanded)
+            else if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Right)
             {
                 Destroy(m_rightHand.gameObject);
             }

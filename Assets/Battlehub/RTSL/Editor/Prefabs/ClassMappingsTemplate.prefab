@@ -1208,7 +1208,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 221
+  m_RootOrder: 223
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2962108112060650518
 MonoBehaviour:
@@ -7079,6 +7079,607 @@ MonoBehaviour:
   UseTemplate: 1
   Subclasses: []
   PropertyMappings: []
+--- !u!1 &740439519154063648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2673361130955705216}
+  - component: {fileID: 6336934699177036455}
+  m_Layer: 0
+  m_Name: UnityEngine.Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2673361130955705216
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740439519154063648}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8436613821827462723}
+  m_RootOrder: 220
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6336934699177036455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740439519154063648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Version: 2.1
+  IsSelected: 1
+  IsLocked: 0
+  PersistentPropertyTag: 36
+  PersistentSubclassTag: 0
+  MappedAssemblyName: UnityEngine.TerrainModule
+  MappedNamespace: UnityEngine
+  MappedTypeName: Terrain
+  MappedTypeGUID: ec433d15-bad3-4085-b4e3-7057a6a4cf1a
+  PersistentNamespace: UnityEngine.Battlehub.SL2
+  PersistentTypeName: PersistentTerrain
+  PersistentTypeGUID: 9f3c54de-52f8-496b-9257-b183c754f56b
+  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
+  PersistentBaseTypeName: PersistentBehaviour
+  CreateCustomImplementation: 0
+  UseTemplate: 1
+  Subclasses: []
+  PropertyMappings:
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 1
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: TerrainData
+    PersistentName: terrainData
+    MappedAssemblyName: UnityEngine.TerrainModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: TerrainData
+    MappedName: terrainData
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 1
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 2
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: treeDistance
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: treeDistance
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 3
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: treeBillboardDistance
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: treeBillboardDistance
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 4
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: treeCrossFadeLength
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: treeCrossFadeLength
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 5
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: treeMaximumFullLODCount
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: treeMaximumFullLODCount
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 6
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: detailObjectDistance
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: detailObjectDistance
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 7
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: detailObjectDensity
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: detailObjectDensity
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 8
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: heightmapPixelError
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: heightmapPixelError
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 9
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: heightmapMaximumLOD
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: heightmapMaximumLOD
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 10
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: basemapDistance
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: basemapDistance
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 11
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: splatmapDistance
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: splatmapDistance
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 12
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: lightmapIndex
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: lightmapIndex
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 13
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: realtimeLightmapIndex
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: realtimeLightmapIndex
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 14
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Vector4
+    PersistentName: lightmapScaleOffset
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Vector4
+    MappedName: lightmapScaleOffset
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 15
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Vector4
+    PersistentName: realtimeLightmapScaleOffset
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Vector4
+    MappedName: realtimeLightmapScaleOffset
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 16
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: freeUnusedRenderingResources
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: freeUnusedRenderingResources
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 17
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: castShadows
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: castShadows
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 18
+    PersistentNamespace: UnityEngine.Rendering.Battlehub.SL2
+    PersistentTypeName: ReflectionProbeUsage
+    PersistentName: reflectionProbeUsage
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine.Rendering
+    MappedTypeName: ReflectionProbeUsage
+    MappedName: reflectionProbeUsage
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 19
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Terrain+MaterialType
+    PersistentName: materialType
+    MappedAssemblyName: UnityEngine.TerrainModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Terrain+MaterialType
+    MappedName: materialType
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 20
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Material
+    PersistentName: materialTemplate
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Material
+    MappedName: materialTemplate
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 1
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 21
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Color
+    PersistentName: legacySpecular
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Color
+    MappedName: legacySpecular
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 22
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: legacyShininess
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: legacyShininess
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 23
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: drawHeightmap
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: drawHeightmap
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 24
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: drawTreesAndFoliage
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: drawTreesAndFoliage
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 25
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Vector3
+    PersistentName: patchBoundsMultiplier
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Vector3
+    MappedName: patchBoundsMultiplier
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 26
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: treeLODBiasMultiplier
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: treeLODBiasMultiplier
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 27
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: collectDetailPatches
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: collectDetailPatches
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 28
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: TerrainRenderFlags
+    PersistentName: editorRenderFlags
+    MappedAssemblyName: UnityEngine.TerrainModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: TerrainRenderFlags
+    MappedName: editorRenderFlags
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 29
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: bakeLightProbesForTrees
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: bakeLightProbesForTrees
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 30
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: preserveTreePrototypeLayers
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: preserveTreePrototypeLayers
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 31
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: allowAutoConnect
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: allowAutoConnect
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 32
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: groupingID
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: groupingID
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 33
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: drawInstanced
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: drawInstanced
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 34
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: deringLightProbesForTrees
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: deringLightProbesForTrees
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 35
+    PersistentNamespace: UnityEngine.Rendering.Battlehub.SL2
+    PersistentTypeName: ShadowCastingMode
+    PersistentName: shadowCastingMode
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine.Rendering
+    MappedTypeName: ShadowCastingMode
+    MappedName: shadowCastingMode
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 36
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: UInt32
+    PersistentName: renderingLayerMask
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: UInt32
+    MappedName: renderingLayerMask
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
 --- !u!1 &740691212833812997
 GameObject:
   m_ObjectHideFlags: 0
@@ -10080,7 +10681,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 231
+  m_RootOrder: 233
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2073253015509917615
 MonoBehaviour:
@@ -12688,8 +13289,8 @@ MonoBehaviour:
   CreateCustomImplementation: 0
   UseTemplate: 1
   Subclasses:
-  - MappedAssemblyQualifiedName: UnityEngine.EventSystems.StandaloneInputModule, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  - MappedAssemblyQualifiedName: UnityEngine.EventSystems.StandaloneInputModule,
+      UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
     PersistentTag: 1
     Namespace: UnityEngine.EventSystems.Battlehub.SL2
     TypeName: PersistentStandaloneInputModule
@@ -13209,7 +13810,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 234
+  m_RootOrder: 236
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6289290357470161361
 MonoBehaviour:
@@ -18184,7 +18785,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 238
+  m_RootOrder: 240
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3410869630060399298
 MonoBehaviour:
@@ -25547,8 +26148,8 @@ MonoBehaviour:
     Namespace: UnityEngine.UI.Battlehub.SL2
     TypeName: PersistentText
     IsEnabled: 0
-  - MappedAssemblyQualifiedName: UnityEngine.UI.MaskableGraphic, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  - MappedAssemblyQualifiedName: UnityEngine.UI.MaskableGraphic, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
     PersistentTag: 3
     Namespace: UnityEngine.UI.Battlehub.SL2
     TypeName: PersistentMaskableGraphic
@@ -26818,8 +27419,8 @@ MonoBehaviour:
     Namespace: Battlehub.Cubeman.Battlehub.SL2
     TypeName: PersistentCubemanUserControl
     IsEnabled: 1
-  - MappedAssemblyQualifiedName: Battlehub.Cubeman.CubemenGame, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  - MappedAssemblyQualifiedName: Battlehub.Cubeman.CubemenGame, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     PersistentTag: 8
     Namespace: Battlehub.Cubeman.Battlehub.SL2
     TypeName: PersistentCubemenGame
@@ -28139,577 +28740,6 @@ MonoBehaviour:
     MappedNamespace: System
     MappedTypeName: Int32
     MappedName: colliderMask
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
---- !u!1 &2654545774422784205
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2615964480138254682}
-  - component: {fileID: 4418101197965497686}
-  m_Layer: 0
-  m_Name: UnityEngine.Terrain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2615964480138254682
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2654545774422784205}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 244
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4418101197965497686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2654545774422784205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 1
-  IsLocked: 0
-  PersistentPropertyTag: 34
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.TerrainModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: Terrain
-  MappedTypeGUID: ec433d15-bad3-4085-b4e3-7057a6a4cf1a
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentTerrain
-  PersistentTypeGUID: 9f3c54de-52f8-496b-9257-b183c754f56b
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentBehaviour
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: TerrainData
-    PersistentName: terrainData
-    MappedAssemblyName: UnityEngine.TerrainModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: TerrainData
-    MappedName: terrainData
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: treeDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: treeDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: treeBillboardDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: treeBillboardDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: treeCrossFadeLength
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: treeCrossFadeLength
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: treeMaximumFullLODCount
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: treeMaximumFullLODCount
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: detailObjectDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: detailObjectDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: detailObjectDensity
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: detailObjectDensity
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 8
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: heightmapPixelError
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: heightmapPixelError
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 9
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: heightmapMaximumLOD
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: heightmapMaximumLOD
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 10
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: basemapDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: basemapDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 11
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: splatmapDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: splatmapDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 12
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: lightmapIndex
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: lightmapIndex
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 13
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: realtimeLightmapIndex
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: realtimeLightmapIndex
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 14
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector4
-    PersistentName: lightmapScaleOffset
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector4
-    MappedName: lightmapScaleOffset
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 15
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector4
-    PersistentName: realtimeLightmapScaleOffset
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector4
-    MappedName: realtimeLightmapScaleOffset
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 16
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: freeUnusedRenderingResources
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: freeUnusedRenderingResources
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 17
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: castShadows
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: castShadows
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 18
-    PersistentNamespace: UnityEngine.Rendering.Battlehub.SL2
-    PersistentTypeName: ReflectionProbeUsage
-    PersistentName: reflectionProbeUsage
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine.Rendering
-    MappedTypeName: ReflectionProbeUsage
-    MappedName: reflectionProbeUsage
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 19
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Terrain+MaterialType
-    PersistentName: materialType
-    MappedAssemblyName: UnityEngine.TerrainModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Terrain+MaterialType
-    MappedName: materialType
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 20
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Material
-    PersistentName: materialTemplate
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Material
-    MappedName: materialTemplate
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 21
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Color
-    PersistentName: legacySpecular
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Color
-    MappedName: legacySpecular
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 22
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: legacyShininess
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: legacyShininess
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 23
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: drawHeightmap
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: drawHeightmap
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 24
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: drawTreesAndFoliage
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: drawTreesAndFoliage
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 25
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: patchBoundsMultiplier
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: patchBoundsMultiplier
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 26
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: treeLODBiasMultiplier
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: treeLODBiasMultiplier
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 27
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: collectDetailPatches
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: collectDetailPatches
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 28
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: TerrainRenderFlags
-    PersistentName: editorRenderFlags
-    MappedAssemblyName: UnityEngine.TerrainModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: TerrainRenderFlags
-    MappedName: editorRenderFlags
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 29
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: bakeLightProbesForTrees
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: bakeLightProbesForTrees
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 30
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: preserveTreePrototypeLayers
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: preserveTreePrototypeLayers
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 31
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: allowAutoConnect
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: allowAutoConnect
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 32
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: groupingID
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: groupingID
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 33
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: drawInstanced
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: drawInstanced
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 34
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: deringLightProbesForTrees
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: deringLightProbesForTrees
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -40193,7 +40223,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 226
+  m_RootOrder: 228
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3696219536792342154
 MonoBehaviour:
@@ -42126,7 +42156,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 243
+  m_RootOrder: 245
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3335412455599571126
 MonoBehaviour:
@@ -43063,7 +43093,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 225
+  m_RootOrder: 227
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4639052181084046334
 MonoBehaviour:
@@ -46825,202 +46855,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &4452733130830875877
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4083882102684141452}
-  - component: {fileID: 8391646568671419096}
-  m_Layer: 0
-  m_Name: UnityEngine.TerrainData
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4083882102684141452
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4452733130830875877}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 246
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8391646568671419096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4452733130830875877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 1
-  PersistentPropertyTag: 14
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.TerrainModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: TerrainData
-  MappedTypeGUID: 548bd390-1220-4cb3-a7b2-09561b076c95
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentTerrainData
-  PersistentTypeGUID: aab4876c-6cef-47ec-95f9-2d8415b3226a
-  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
-  PersistentBaseTypeName: PersistentObject
-  CreateCustomImplementation: 1
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: thickness
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: thickness
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: wavingGrassStrength
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: wavingGrassStrength
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: wavingGrassAmount
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: wavingGrassAmount
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: wavingGrassSpeed
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: wavingGrassSpeed
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Color
-    PersistentName: wavingGrassTint
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Color
-    MappedName: wavingGrassTint
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 11
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: alphamapResolution
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: alphamapResolution
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 12
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: baseMapResolution
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: baseMapResolution
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 13
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: SplatPrototype[]
-    PersistentName: splatPrototypes
-    MappedAssemblyName: UnityEngine.TerrainModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: SplatPrototype[]
-    MappedName: splatPrototypes
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 14
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: TerrainLayer[]
-    PersistentName: terrainLayers
-    MappedAssemblyName: UnityEngine.TerrainModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: TerrainLayer[]
-    MappedName: terrainLayers
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &4466053920829734240
 GameObject:
   m_ObjectHideFlags: 0
@@ -47505,7 +47339,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 232
+  m_RootOrder: 234
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9073894264920113215
 MonoBehaviour:
@@ -52312,7 +52146,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 229
+  m_RootOrder: 231
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6061569975714907417
 MonoBehaviour:
@@ -54481,8 +54315,8 @@ MonoBehaviour:
   CreateCustomImplementation: 0
   UseTemplate: 1
   Subclasses:
-  - MappedAssemblyQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  - MappedAssemblyQualifiedName: UnityEngine.GameObject, UnityEngine.CoreModule,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     PersistentTag: 1
     Namespace: UnityEngine.Battlehub.SL2
     TypeName: PersistentGameObject
@@ -54763,7 +54597,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 233
+  m_RootOrder: 235
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &922746635644183010
 MonoBehaviour:
@@ -59874,8 +59708,8 @@ MonoBehaviour:
     Namespace: UnityEngine.Battlehub.SL2
     TypeName: PersistentTransform
     IsEnabled: 1
-  - MappedAssemblyQualifiedName: UnityEngine.MeshFilter, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  - MappedAssemblyQualifiedName: UnityEngine.MeshFilter, UnityEngine.CoreModule,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     PersistentTag: 3
     Namespace: UnityEngine.Battlehub.SL2
     TypeName: PersistentMeshFilter
@@ -60944,6 +60778,8 @@ Transform:
   - {fileID: 4625443172589378814}
   - {fileID: 8201431628078020096}
   - {fileID: 365638950802709331}
+  - {fileID: 2673361130955705216}
+  - {fileID: 1737905005578337980}
   - {fileID: 3983082383529101024}
   - {fileID: 6623405890199544}
   - {fileID: 1286255138032683314}
@@ -60968,9 +60804,7 @@ Transform:
   - {fileID: 1352750142220470645}
   - {fileID: 956652244200300867}
   - {fileID: 7891818640720979680}
-  - {fileID: 2615964480138254682}
   - {fileID: 1149864667284196319}
-  - {fileID: 4083882102684141452}
   - {fileID: 8446119312280252263}
   - {fileID: 332945708415542821}
   - {fileID: 595602563671770498}
@@ -62317,7 +62151,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 236
+  m_RootOrder: 238
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7281428061957436384
 MonoBehaviour:
@@ -66095,7 +65929,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 220
+  m_RootOrder: 222
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8570917861947309524
 MonoBehaviour:
@@ -67913,7 +67747,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 224
+  m_RootOrder: 226
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1725541872783127240
 MonoBehaviour:
@@ -69562,7 +69396,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 240
+  m_RootOrder: 242
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &463273251045315105
 MonoBehaviour:
@@ -69714,7 +69548,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 237
+  m_RootOrder: 239
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7965189484508271532
 MonoBehaviour:
@@ -74294,7 +74128,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 239
+  m_RootOrder: 241
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &124267610635978231
 MonoBehaviour:
@@ -78656,8 +78490,8 @@ MonoBehaviour:
     Namespace: UnityEngine.Battlehub.SL2
     TypeName: PersistentSkybox
     IsEnabled: 1
-  - MappedAssemblyQualifiedName: UnityEngine.Terrain, UnityEngine.TerrainModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  - MappedAssemblyQualifiedName: UnityEngine.Terrain, UnityEngine.TerrainModule,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     PersistentTag: 9
     Namespace: UnityEngine.Battlehub.SL2
     TypeName: PersistentTerrain
@@ -79025,7 +78859,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 223
+  m_RootOrder: 225
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1773691054039624745
 MonoBehaviour:
@@ -79507,7 +79341,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 242
+  m_RootOrder: 244
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3978636594023948780
 MonoBehaviour:
@@ -80293,7 +80127,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 235
+  m_RootOrder: 237
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3513981990171793494
 MonoBehaviour:
@@ -80354,7 +80188,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 227
+  m_RootOrder: 229
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2433764208031547305
 MonoBehaviour:
@@ -83518,7 +83352,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 228
+  m_RootOrder: 230
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1820714143423969352
 MonoBehaviour:
@@ -86130,7 +85964,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 245
+  m_RootOrder: 246
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &940533068023071281
 MonoBehaviour:
@@ -88034,7 +87868,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 230
+  m_RootOrder: 232
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5467537363165530176
 MonoBehaviour:
@@ -89986,6 +89820,217 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
+--- !u!1 &8139308763760237806
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1737905005578337980}
+  - component: {fileID: 6893684414510477161}
+  m_Layer: 0
+  m_Name: UnityEngine.TerrainData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1737905005578337980
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8139308763760237806}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8436613821827462723}
+  m_RootOrder: 221
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6893684414510477161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8139308763760237806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Version: 2.1
+  IsSelected: 0
+  IsLocked: 1
+  PersistentPropertyTag: 15
+  PersistentSubclassTag: 0
+  MappedAssemblyName: UnityEngine.TerrainModule
+  MappedNamespace: UnityEngine
+  MappedTypeName: TerrainData
+  MappedTypeGUID: 548bd390-1220-4cb3-a7b2-09561b076c95
+  PersistentNamespace: UnityEngine.Battlehub.SL2
+  PersistentTypeName: PersistentTerrainData
+  PersistentTypeGUID: aab4876c-6cef-47ec-95f9-2d8415b3226a
+  PersistentBaseNamespace: UnityEngine.Battlehub.SL2
+  PersistentBaseTypeName: PersistentObject
+  CreateCustomImplementation: 1
+  UseTemplate: 1
+  Subclasses: []
+  PropertyMappings:
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 3
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: thickness
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: thickness
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 4
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: wavingGrassStrength
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: wavingGrassStrength
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 5
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: wavingGrassAmount
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: wavingGrassAmount
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 6
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: wavingGrassSpeed
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: wavingGrassSpeed
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 7
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Color
+    PersistentName: wavingGrassTint
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Color
+    MappedName: wavingGrassTint
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 11
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: alphamapResolution
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: alphamapResolution
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 12
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: baseMapResolution
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: baseMapResolution
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 13
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: SplatPrototype[]
+    PersistentName: splatPrototypes
+    MappedAssemblyName: UnityEngine.TerrainModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: SplatPrototype[]
+    MappedName: splatPrototypes
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 1
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 14
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: TerrainLayer[]
+    PersistentName: terrainLayers
+    MappedAssemblyName: UnityEngine.TerrainModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: TerrainLayer[]
+    MappedName: terrainLayers
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 1
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 15
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: enableHolesTextureCompression
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: enableHolesTextureCompression
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
 --- !u!1 &8153284432938062777
 GameObject:
   m_ObjectHideFlags: 0
@@ -90091,7 +90136,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 222
+  m_RootOrder: 224
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &910332617287574735
 MonoBehaviour:
@@ -98072,7 +98117,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8436613821827462723}
-  m_RootOrder: 241
+  m_RootOrder: 243
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &878063658787275749
 MonoBehaviour:

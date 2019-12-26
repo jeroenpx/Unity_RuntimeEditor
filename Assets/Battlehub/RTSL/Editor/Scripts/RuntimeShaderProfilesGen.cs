@@ -48,6 +48,8 @@ namespace Battlehub.RTSL
             dir = dir + "/Lists";
 
             string path = "Assets" + RTSLPath.UserRoot + "/" + RTSLPath.LibrariesFolder + "/Resources/Lists/ShaderProfiles.asset";
+
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             AssetDatabase.DeleteAsset(path);
             AssetDatabase.CreateAsset(asset, path);
             AssetDatabase.SaveAssets();

@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -146,8 +147,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 12618794}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -416,11 +418,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2992654425466272143, guid: f522faeab6bc4ca4993bf23bdaeaf451,
-        type: 3}
-      propertyPath: m_Name
-      value: CreateEditorUI
-      objectReference: {fileID: 0}
     - target: {fileID: 2992654425466272131, guid: f522faeab6bc4ca4993bf23bdaeaf451,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -525,6 +522,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992654425466272143, guid: f522faeab6bc4ca4993bf23bdaeaf451,
+        type: 3}
+      propertyPath: m_Name
+      value: CreateEditorUI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f522faeab6bc4ca4993bf23bdaeaf451, type: 3}
@@ -656,32 +658,12 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 878578355}
-    - target: {fileID: 6809747796679483129, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.28
-      objectReference: {fileID: 0}
-    - target: {fileID: 6809747796679483129, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 1398855387405768621, guid: 4c109d3ea16741141a43286324be75c4,
         type: 3}
       propertyPath: InitialModule.startSizeY.minMaxState
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1398855387405768621, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: InitialModule.startSizeZ.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
-        type: 3}
-      propertyPath: InitialModule.startSizeY.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
         type: 3}
       propertyPath: InitialModule.startSizeZ.minMaxState
       value: 3
@@ -705,6 +687,26 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startRotationY.minMaxState
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642896873696331985, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6809747796679483129, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6809747796679483129, guid: 4c109d3ea16741141a43286324be75c4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c109d3ea16741141a43286324be75c4, type: 3}

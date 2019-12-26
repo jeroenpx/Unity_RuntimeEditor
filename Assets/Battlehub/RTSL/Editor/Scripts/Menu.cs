@@ -168,7 +168,6 @@ namespace Battlehub.RTSL
                     AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
                     AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
                 }
-                //AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Mappings");
             }
         }
 
@@ -176,22 +175,17 @@ namespace Battlehub.RTSL
         private static void BuildTypeModel()
         {
             RuntimeTypeModel model = TypeModelCreator.Create();
-            string dllName = RTSLPath.TypeModelDll;
 
-            model.Compile(new RuntimeTypeModel.CompilerOptions() { OutputPath = dllName, TypeName = "RTSLTypeModel" });
+            model.Compile(new RuntimeTypeModel.CompilerOptions() { OutputPath = RTSLPath.TypeModelDll, TypeName = "RTSLTypeModel" });
 
-            string srcPath = Application.dataPath.Remove(Application.dataPath.LastIndexOf("Assets")) + dllName;
-            string dstPath = Application.dataPath + RTSLPath.UserRoot + "/" + dllName;
+            string srcPath = Application.dataPath.Remove(Application.dataPath.LastIndexOf("Assets")) + RTSLPath.TypeModelDll;
+            string dstPath = Application.dataPath + RTSLPath.UserRoot + "/" + RTSLPath.TypeModelDll;
             Debug.LogFormat("Done! Move {0} to {1} ...", srcPath, dstPath);
             File.Delete(dstPath);
             File.Move(srcPath, dstPath);
 
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
-            PluginImporter importer = AssetImporter.GetAtPath("Assets" + RTSLPath.UserRoot + "/" + dllName) as PluginImporter;
-            importer.SetCompatibleWithAnyPlatform(true);
-            importer.SetExcludeEditorFromAnyPlatform(true);
-            importer.SaveAndReimport();
+            EditorPrefs.SetBool("UpdateTypeModelImportSettings", true);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         [MenuItem("Tools/Runtime SaveLoad/Libraries/Collect Scene Dependencies")]
@@ -272,12 +266,13 @@ namespace Battlehub.RTSL
         [DidReloadScripts]
         private static void OnScriptsReloaded()
         {
-            if(EditorPrefs.GetBool("RTSLBuildAll"))
+            if (EditorPrefs.GetBool("RTSLBuildAll"))
             {
                 EditorPrefs.SetBool("RTSLBuildAll", false);
-
                 try
                 {
+                    AssetDatabase.StartAssetEditing();
+
                     CreateAssetLibraryForActiveScene();
                     Debug.Log("Asset Libraries Updated");
 
@@ -286,15 +281,39 @@ namespace Battlehub.RTSL
 
                     CreateShaderProfiles();
                     Debug.Log("Shader Profiles Updated");
+                }
+                finally
+                {
+                    AssetDatabase.StopAssetEditing();
+                }
 
+                try
+                {
                     EditorUtility.DisplayProgressBar("Build All", "Building Type Model...", 0.66f);
                     BuildTypeModel();
+                    EditorUtility.DisplayProgressBar("Build All", "Updating type model import settings", 0.99f);
+                }
+                catch
+                {
+                    EditorUtility.ClearProgressBar();
+                }
+            }
+
+            if (EditorPrefs.GetBool("UpdateTypeModelImportSettings"))
+            {
+                EditorPrefs.SetBool("UpdateTypeModelImportSettings", false);
+                try
+                {
+                    PluginImporter importer = AssetImporter.GetAtPath("Assets" + RTSLPath.UserRoot + "/" + RTSLPath.TypeModelDll) as PluginImporter;
+                    importer.SetCompatibleWithAnyPlatform(true);
+                    importer.SetExcludeEditorFromAnyPlatform(true);
+                    importer.SaveAndReimport();
                 }
                 finally
                 {
                     EditorUtility.ClearProgressBar();
                 }
-            }
+            }            
         }
 
         [MenuItem("Tools/Runtime SaveLoad/Build All")]
@@ -304,7 +323,7 @@ namespace Battlehub.RTSL
             try
             {
                 CreatePersistentClasses();
-                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
                 Debug.Log("Persistent Classes Created");
 
                 Selection.activeObject = AssetDatabase.LoadAssetAtPath("Assets" + RTSLPath.UserRoot + "/" + RTSLPath.ScriptsAutoFolder, typeof(UnityObject));

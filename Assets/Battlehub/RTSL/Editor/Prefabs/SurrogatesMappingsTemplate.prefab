@@ -6373,7 +6373,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 87
+  m_RootOrder: 86
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9006034311863289288
 MonoBehaviour:
@@ -16537,14 +16537,14 @@ MonoBehaviour:
     PersistentTag: 1
     PersistentNamespace: System.Collections.Generic.Battlehub.SL2
     PersistentTypeName: Dictionary`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089]]
+      PublicKeyToken=b77a5c561934e089],[System.Int32, mscorlib, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089]]
     PersistentName: InstanceIDtoPID
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
     MappedTypeName: Dictionary`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089]]
+      PublicKeyToken=b77a5c561934e089],[System.Int32, mscorlib, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089]]
     MappedName: InstanceIDtoPID
     UseSurrogate: 0
     UseSurrogate2: 0
@@ -21780,7 +21780,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 88
+  m_RootOrder: 87
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3638194239004824339
 MonoBehaviour:
@@ -25910,7 +25910,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 86
+  m_RootOrder: 85
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3564345061501484106
 MonoBehaviour:
@@ -28672,6 +28672,367 @@ MonoBehaviour:
     MappedNamespace: System
     MappedTypeName: Single
     MappedName: w
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+--- !u!1 &5610256439834899312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2062320776470596474}
+  - component: {fileID: 5416187494304892669}
+  m_Layer: 0
+  m_Name: UnityEngine.ParticleSystem+TextureSheetAnimationModule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2062320776470596474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5610256439834899312}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5114501035391644904}
+  m_RootOrder: 88
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5416187494304892669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5610256439834899312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Version: 2.1
+  IsSelected: 0
+  IsLocked: 1
+  PersistentPropertyTag: 20
+  PersistentSubclassTag: 0
+  MappedAssemblyName: UnityEngine.ParticleSystemModule
+  MappedNamespace: UnityEngine
+  MappedTypeName: ParticleSystem+TextureSheetAnimationModule
+  MappedTypeGUID: 3d893a1f-848b-46bc-b9e2-674643023716
+  PersistentNamespace: UnityEngine.Battlehub.SL2
+  PersistentTypeName: PersistentParticleSystem+TextureSheetAnimationModule
+  PersistentTypeGUID: 7fcc89c7-4ab1-4de0-8405-d088bea8adff
+  PersistentBaseNamespace: Battlehub.RTSL
+  PersistentBaseTypeName: PersistentSurrogate
+  CreateCustomImplementation: 1
+  UseTemplate: 1
+  Subclasses: []
+  PropertyMappings:
+  - IsEnabled: 0
+    IsProperty: 0
+    PersistentTag: 19
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystem
+    PersistentName: m_ParticleSystem
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystem
+    MappedName: m_ParticleSystem
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 1
+    IsNonPublic: 1
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 1
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: enabled
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: enabled
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 2
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystemAnimationMode
+    PersistentName: mode
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystemAnimationMode
+    MappedName: mode
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 3
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: numTilesX
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: numTilesX
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 4
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: numTilesY
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: numTilesY
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 5
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystemAnimationType
+    PersistentName: animation
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystemAnimationType
+    MappedName: animation
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 6
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Boolean
+    PersistentName: useRandomRow
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Boolean
+    MappedName: useRandomRow
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 7
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystem+MinMaxCurve
+    PersistentName: frameOverTime
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystem+MinMaxCurve
+    MappedName: frameOverTime
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 8
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: frameOverTimeMultiplier
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: frameOverTimeMultiplier
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 9
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystem+MinMaxCurve
+    PersistentName: startFrame
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystem+MinMaxCurve
+    MappedName: startFrame
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 10
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: startFrameMultiplier
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: startFrameMultiplier
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 11
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: cycleCount
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: cycleCount
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 12
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Int32
+    PersistentName: rowIndex
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Int32
+    MappedName: rowIndex
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 13
+    PersistentNamespace: UnityEngine.Rendering.Battlehub.SL2
+    PersistentTypeName: UVChannelFlags
+    PersistentName: uvChannelMask
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine.Rendering
+    MappedTypeName: UVChannelFlags
+    MappedName: uvChannelMask
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 14
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: flipU
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: flipU
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 0
+    IsProperty: 1
+    PersistentTag: 15
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: flipV
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: flipV
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 16
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystemAnimationTimeMode
+    PersistentName: timeMode
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystemAnimationTimeMode
+    MappedName: timeMode
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 17
+    PersistentNamespace: System.Battlehub.SL2
+    PersistentTypeName: Single
+    PersistentName: fps
+    MappedAssemblyName: mscorlib
+    MappedNamespace: System
+    MappedTypeName: Single
+    MappedName: fps
+    UseSurrogate: 0
+    UseSurrogate2: 0
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 18
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: Vector2
+    PersistentName: speedRange
+    MappedAssemblyName: UnityEngine.CoreModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: Vector2
+    MappedName: speedRange
+    UseSurrogate: 1
+    UseSurrogate2: 1
+    HasDependenciesOrIsDependencyItself: 0
+    IsNonPublic: 0
+    HasPropertyInTemplate: 0
+  - IsEnabled: 1
+    IsProperty: 1
+    PersistentTag: 20
+    PersistentNamespace: UnityEngine.Battlehub.SL2
+    PersistentTypeName: ParticleSystemAnimationRowMode
+    PersistentName: rowMode
+    MappedAssemblyName: UnityEngine.ParticleSystemModule
+    MappedNamespace: UnityEngine
+    MappedTypeName: ParticleSystemAnimationRowMode
+    MappedName: rowMode
     UseSurrogate: 0
     UseSurrogate2: 0
     HasDependenciesOrIsDependencyItself: 0
@@ -34580,352 +34941,6 @@ MonoBehaviour:
   UseTemplate: 1
   Subclasses: []
   PropertyMappings: []
---- !u!1 &6938053275138953626
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8888005643284587260}
-  - component: {fileID: 2206563824332632083}
-  m_Layer: 0
-  m_Name: UnityEngine.ParticleSystem+TextureSheetAnimationModule
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8888005643284587260
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6938053275138953626}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 85
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2206563824332632083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6938053275138953626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 1
-  PersistentPropertyTag: 19
-  PersistentSubclassTag: 0
-  MappedAssemblyName: UnityEngine.ParticleSystemModule
-  MappedNamespace: UnityEngine
-  MappedTypeName: ParticleSystem+TextureSheetAnimationModule
-  MappedTypeGUID: 3d893a1f-848b-46bc-b9e2-674643023716
-  PersistentNamespace: UnityEngine.Battlehub.SL2
-  PersistentTypeName: PersistentParticleSystem+TextureSheetAnimationModule
-  PersistentTypeGUID: 7fcc89c7-4ab1-4de0-8405-d088bea8adff
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 1
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 19
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: ParticleSystem
-    PersistentName: m_ParticleSystem
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: ParticleSystem
-    MappedName: m_ParticleSystem
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: enabled
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: enabled
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: ParticleSystemAnimationMode
-    PersistentName: mode
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: ParticleSystemAnimationMode
-    MappedName: mode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: numTilesX
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: numTilesX
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: numTilesY
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: numTilesY
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: ParticleSystemAnimationType
-    PersistentName: animation
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: ParticleSystemAnimationType
-    MappedName: animation
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: useRandomRow
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: useRandomRow
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: ParticleSystem+MinMaxCurve
-    PersistentName: frameOverTime
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: ParticleSystem+MinMaxCurve
-    MappedName: frameOverTime
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 8
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: frameOverTimeMultiplier
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: frameOverTimeMultiplier
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 9
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: ParticleSystem+MinMaxCurve
-    PersistentName: startFrame
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: ParticleSystem+MinMaxCurve
-    MappedName: startFrame
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 10
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: startFrameMultiplier
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: startFrameMultiplier
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 11
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: cycleCount
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: cycleCount
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 12
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: rowIndex
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: rowIndex
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 13
-    PersistentNamespace: UnityEngine.Rendering.Battlehub.SL2
-    PersistentTypeName: UVChannelFlags
-    PersistentName: uvChannelMask
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine.Rendering
-    MappedTypeName: UVChannelFlags
-    MappedName: uvChannelMask
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 14
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: flipU
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: flipU
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 15
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: flipV
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: flipV
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 16
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: ParticleSystemAnimationTimeMode
-    PersistentName: timeMode
-    MappedAssemblyName: UnityEngine.ParticleSystemModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: ParticleSystemAnimationTimeMode
-    MappedName: timeMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 17
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: fps
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: fps
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 1
-    IsProperty: 1
-    PersistentTag: 18
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector2
-    PersistentName: speedRange
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector2
-    MappedName: speedRange
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &6942402607484201592
 GameObject:
   m_ObjectHideFlags: 0
@@ -41158,10 +41173,10 @@ Transform:
   - {fileID: 5549772462029065228}
   - {fileID: 5063875346718416691}
   - {fileID: 8944260488177072856}
-  - {fileID: 8888005643284587260}
   - {fileID: 3471169214152343164}
   - {fileID: 5264012906134189662}
   - {fileID: 2630197814245387943}
+  - {fileID: 2062320776470596474}
   - {fileID: 5258205408166440498}
   - {fileID: 6236445824715819176}
   - {fileID: 2005521210121320111}
