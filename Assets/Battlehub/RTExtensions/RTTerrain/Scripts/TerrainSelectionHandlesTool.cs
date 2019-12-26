@@ -264,7 +264,7 @@ namespace Battlehub.RTTerrain
             if (m_state == null)
             {
                 m_additiveHeights = GetHeightmap();
-                m_interpolatedHeights = new float[data.heightmapHeight, data.heightmapWidth];
+                m_interpolatedHeights = new float[data.heightmapResolution, data.heightmapResolution];
 
                 m_state = Terrain.gameObject.GetComponent<TerrainToolState>();
                 if (m_state == null)
@@ -282,7 +282,7 @@ namespace Battlehub.RTTerrain
                 m_state.XSpacing = m_state.XSize / (m_xCount - 1);
 
                 m_state.Grid = new float[Mathf.FloorToInt(m_zCount) * Mathf.FloorToInt(m_xCount)];
-                m_state.HeightMap = new float[data.heightmapWidth * data.heightmapHeight];
+                m_state.HeightMap = new float[data.heightmapResolution * data.heightmapResolution];
                 m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(data, null);
 
                 XSpacing = m_state.XSpacing;
@@ -319,7 +319,7 @@ namespace Battlehub.RTTerrain
                 return false;
             }
 
-            if (m_state.HeightMap.Length == data.heightmapWidth * data.heightmapHeight &&
+            if (m_state.HeightMap.Length == data.heightmapResolution * data.heightmapResolution &&
                 m_state.Grid.Length == Mathf.FloorToInt(m_state.ZSize / ZSpacing + 1) * Mathf.FloorToInt(m_state.XSize / XSpacing + 1) &&
                 m_state.ZSize == data.size.z && m_state.XSize == data.size.x)
             {
@@ -337,7 +337,7 @@ namespace Battlehub.RTTerrain
             m_zCount = m_state.ZSize / ZSpacing + 1;
 
             m_state.Grid = new float[Mathf.FloorToInt(m_zCount) * Mathf.FloorToInt(m_xCount)];
-            m_state.HeightMap = new float[data.heightmapWidth * data.heightmapHeight];
+            m_state.HeightMap = new float[data.heightmapResolution * data.heightmapResolution];
             m_state.CutoutTexture = m_cutoutMaskRenderer.CreateMask(data, null);
 
             m_state.ZSpacing = m_state.ZSize / (m_zCount - 1);
@@ -570,13 +570,13 @@ namespace Battlehub.RTTerrain
             TerrainData data = TerrainData;
 
             m_additiveHeights = GetHeightmap();
-            m_interpolatedHeights = new float[data.heightmapHeight, data.heightmapWidth];
+            m_interpolatedHeights = new float[data.heightmapResolution, data.heightmapResolution];
 
-            for (int i = 0; i < data.heightmapHeight; ++i)
+            for (int i = 0; i < data.heightmapResolution; ++i)
             {
-                for (int j = 0; j < data.heightmapWidth; ++j)
+                for (int j = 0; j < data.heightmapResolution; ++j)
                 {
-                    m_interpolatedHeights[i, j] = m_state.HeightMap[i * data.heightmapWidth + j];
+                    m_interpolatedHeights[i, j] = m_state.HeightMap[i * data.heightmapResolution + j];
                     if (!IsCutout(data, j, i))
                     {
                         m_additiveHeights[i, j] -= m_interpolatedHeights[i, j];
@@ -587,8 +587,8 @@ namespace Battlehub.RTTerrain
 
         private bool IsCutout(TerrainData data, int x, int y)
         {
-            int width = data.heightmapWidth;
-            int height = data.heightmapHeight;
+            int width = data.heightmapResolution;
+            int height = data.heightmapResolution;
 
             float u = (float)(x) / width;
             float v = (float)(y) / height;
@@ -645,8 +645,8 @@ namespace Battlehub.RTTerrain
 
         private float[,] GetHeightmap()
         {
-            int w = Terrain.terrainData.heightmapWidth;
-            int h = Terrain.terrainData.heightmapHeight;
+            int w = Terrain.terrainData.heightmapResolution;
+            int h = Terrain.terrainData.heightmapResolution;
             return Terrain.terrainData.GetHeights(0, 0, w, h);
         }
 
@@ -1049,8 +1049,8 @@ namespace Battlehub.RTTerrain
                                 {
                                     float tx = (float)x / block_size.x;
                                     float height = m_interpolator.GetValue(tx, ty);
-                                    float u = (float)(r.x + (_x - r.xMin)) / data.heightmapWidth;
-                                    float v = (float)(r.y + (_y - r.yMin)) / data.heightmapHeight;
+                                    float u = (float)(r.x + (_x - r.xMin)) / data.heightmapResolution;
+                                    float v = (float)(r.y + (_y - r.yMin)) / data.heightmapResolution;
                                     if (u >= 0 && u <= 1 && v >= 0 && v <= 1)
                                     {
                                         Color color = m_state.CutoutTexture.GetPixelBilinear(u, v);
@@ -1082,7 +1082,7 @@ namespace Battlehub.RTTerrain
                 for(int x = 0; x < r.width; ++x)
                 {
                     float height = terrainHeightMap[y, x] - m_additiveHeights[r.y + y, r.x + x];
-                    m_state.HeightMap[(r.y + y) * data.heightmapWidth + r.x + x] = height;
+                    m_state.HeightMap[(r.y + y) * data.heightmapResolution + r.x + x] = height;
                     m_interpolatedHeights[r.y + y, r.x + x] = height;
                 }
             }

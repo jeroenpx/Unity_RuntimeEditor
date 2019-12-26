@@ -134,8 +134,8 @@ namespace Battlehub.RTTerrain
 
         private float[,] GetHeightmap()
         {
-            int w = TerrainEditor.Terrain.terrainData.heightmapWidth;
-            int h = TerrainEditor.Terrain.terrainData.heightmapHeight;
+            int w = TerrainEditor.Terrain.terrainData.heightmapResolution;
+            int h = TerrainEditor.Terrain.terrainData.heightmapResolution;
             return TerrainEditor.Terrain.terrainData.GetHeights(0, 0, w, h);
         }
 

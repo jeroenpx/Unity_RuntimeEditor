@@ -27,7 +27,7 @@ namespace GoogleARCoreInternal
     {
         private static int s_GroupFieldIndent = 15;
 
-        [MenuItem("Tool/ARCore")]
+        [MenuItem("Tools/ARCore")]
         private static void ShowARCoreProjectSettingsWindow()
         {
             ARCoreProjectSettings.Instance.Load();

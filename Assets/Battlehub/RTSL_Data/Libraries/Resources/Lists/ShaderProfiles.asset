@@ -26,10 +26,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000
+    PropertyTexDims: 0000000000000000
     IsHidden: 0000
   - Name: ARCore/ARBackground
     PropertyCount: 3
@@ -47,12 +47,12 @@ MonoBehaviour:
       Min: 0
       Max: 0
     - Def: 0
-      Min: 1
-      Max: 1
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
-      Max: 1
-    PropertyTexDims: 020000000100000001000000
+      Max: 0
+    PropertyTexDims: 020000000000000000000000
     IsHidden: 000000
   - Name: ARCore/AugmentedFaceOccluder
     PropertyCount: 0
@@ -92,16 +92,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
+    - Def: 0
+      Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 30
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000
+    PropertyTexDims: 02000000000000000000000000000000
     IsHidden: 00000000
   - Name: ARCore/PointCloud
     PropertyCount: 3
@@ -115,16 +115,16 @@ MonoBehaviour:
     - _ScreenHeight
     PropertyTypes: 000000000200000002000000
     PropertyRangeLimits:
-    - Def: 0.121
-      Min: 0.737
-      Max: 0.823
-    - Def: 1440
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 2560
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000101
   - Name: ARCore/SpecularWithLightEstimation
     PropertyCount: 3
@@ -147,7 +147,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Autodesk Interactive
     PropertyCount: 26
@@ -207,9 +207,9 @@ MonoBehaviour:
     - _ZWrite
     PropertyTypes: 0000000004000000030000000300000004000000030000000400000002000000020000000200000004000000030000000400000003000000040000000000000004000000040000000400000002000000040000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -228,13 +228,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -264,7 +264,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -276,16 +282,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    PropertyTexDims: 0100000002000000010000000100000002000000010000000200000001000000010000000100000002000000010000000200000001000000020000000100000002000000020000000200000001000000020000000100000001000000010000000100000001000000
+    PropertyTexDims: 0000000002000000000000000000000002000000000000000200000000000000000000000000000002000000000000000200000000000000020000000000000002000000020000000200000000000000020000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000000000000000000001010101
   - Name: Battlehub/RTBuilder/EdgePicker
     PropertyCount: 0
@@ -307,16 +307,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTBuilder/FacePicker
     PropertyCount: 0
@@ -338,16 +338,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000300000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 7
       Min: 0
       Max: 20
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTBuilder/PointBillboard
     PropertyCount: 3
@@ -361,16 +361,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000300000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 7
       Min: 0
       Max: 20
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTBuilder/SelectionPicker
     PropertyCount: 0
@@ -403,13 +403,13 @@ MonoBehaviour:
     - Def: 3.3
       Min: 1
       Max: 7
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTCommon/Billboard
     PropertyCount: 2
@@ -421,13 +421,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Battlehub/RTCommon/RenderTextureOverlay
     PropertyCount: 9
@@ -456,10 +456,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -468,19 +468,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: Battlehub/RTEditor/Demo/NewSurfaceShader
     PropertyCount: 4
@@ -496,9 +496,9 @@ MonoBehaviour:
     - _Metallic
     PropertyTypes: 00000000040000000300000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -508,8 +508,21 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 1
-    PropertyTexDims: 01000000020000000100000001000000
+    PropertyTexDims: 00000000020000000000000000000000
     IsHidden: 00000000
+  - Name: Battlehub/RTEditor/TimelineGrid
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Main Color
+    PropertyNames:
+    - _Color
+    PropertyTypes: 00000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000
+    IsHidden: 00
   - Name: Battlehub/RTEditor/Unlit/TextureInstanced
     PropertyCount: 2
     PropertyDescriptions:
@@ -520,13 +533,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Battlehub/RTGizmos/Handles
     PropertyCount: 7
@@ -551,9 +564,6 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -566,10 +576,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.2
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000
   - Name: Battlehub/RTHandles/BoxSelectionShader
     PropertyCount: 0
@@ -603,61 +616,71 @@ MonoBehaviour:
     - _StencilOp
     PropertyTypes: 000000000200000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 4
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 50
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 5
-      Min: 0
-      Max: 0
-    - Def: 99
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: Battlehub/RTHandles/Models/ArrowShader
-    PropertyCount: 1
+    PropertyCount: 2
     PropertyDescriptions:
     - Color
+    - ZWrite
     PropertyNames:
     - _Color
-    PropertyTypes: 00000000
+    - _ZWrite
+    PropertyTypes: 0000000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
-    IsHidden: 00
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000
+    IsHidden: 0000
   - Name: Battlehub/RTHandles/Models/AxisShader
-    PropertyCount: 1
+    PropertyCount: 2
     PropertyDescriptions:
     - Color
+    - ZWrite
     PropertyNames:
     - _Color
-    PropertyTypes: 00000000
+    - _ZWrite
+    PropertyTypes: 0000000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
-    IsHidden: 00
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000
+    IsHidden: 0000
   - Name: Battlehub/RTHandles/Models/DepthMaskColor
     PropertyCount: 1
     PropertyDescriptions:
@@ -666,10 +689,10 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000
     IsHidden: 00
   - Name: Battlehub/RTHandles/Models/DepthMaskColorBillboard
     PropertyCount: 1
@@ -679,42 +702,52 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
-    IsHidden: 00
-  - Name: Battlehub/RTHandles/Models/QuadShader
-    PropertyCount: 1
-    PropertyDescriptions:
-    - Color
-    PropertyNames:
-    - _Color
-    PropertyTypes: 00000000
-    PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
-    IsHidden: 00
-  - Name: Battlehub/RTHandles/Models/SSCircleShader
-    PropertyCount: 2
-    PropertyDescriptions:
-    - Color
-    - ZTest
-    PropertyNames:
-    - _Color
-    - _ZTest
-    PropertyTypes: 0000000002000000
-    PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000
+    PropertyTexDims: 00000000
+    IsHidden: 00
+  - Name: Battlehub/RTHandles/Models/QuadShader
+    PropertyCount: 2
+    PropertyDescriptions:
+    - Color
+    - ZWrite
+    PropertyNames:
+    - _Color
+    - _ZWrite
+    PropertyTypes: 0000000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000
     IsHidden: 0000
+  - Name: Battlehub/RTHandles/Models/SSCircleShader
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - ZTest
+    - ZWrite
+    PropertyNames:
+    - _Color
+    - _ZTest
+    - _ZWrite
+    PropertyTypes: 000000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
+    IsHidden: 000000
   - Name: Battlehub/RTHandles/Models/SSQuadShader
     PropertyCount: 1
     PropertyDescriptions:
@@ -723,10 +756,10 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000
     IsHidden: 00
   - Name: Battlehub/RTHandles/Outline
     PropertyCount: 5
@@ -747,19 +780,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.2
-      Min: 0.2
-      Max: 0.2
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000000000000000000000000000
     IsHidden: 0000000001
   - Name: Battlehub/RTHandles/Shape
     PropertyCount: 6
@@ -779,9 +812,6 @@ MonoBehaviour:
     - _OUnits
     PropertyTypes: 000000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -797,7 +827,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000000000000000000000000000
     IsHidden: 000000000000
   - Name: Battlehub/RTHandles/VertexColor
     PropertyCount: 3
@@ -820,7 +853,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTHandles/VertexColorBillboard
     PropertyCount: 0
@@ -851,7 +884,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTHandles/VertexColorClipUsingClipPlane
     PropertyCount: 3
@@ -874,7 +907,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Battlehub/RTTerrain/Projectors/Default
     PropertyCount: 3
@@ -888,16 +921,16 @@ MonoBehaviour:
     - _ShadowTex
     PropertyTypes: 000000000300000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 1
       Min: 0
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000002000000
+    PropertyTexDims: 000000000000000002000000
     IsHidden: 000000
   - Name: Battlehub/RTTerrain/Unlit/TerrainHandleShader
     PropertyCount: 3
@@ -911,16 +944,16 @@ MonoBehaviour:
     - _ZTest
     PropertyTypes: 000000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Battlehub/UIControls/DepthMask
     PropertyCount: 9
@@ -949,10 +982,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -961,19 +994,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: EdgeDetectionBackground
     PropertyCount: 1
@@ -1014,10 +1047,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 0200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: Hidden/BlitCopy
     PropertyCount: 2
@@ -1032,10 +1065,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 0100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0100000000000000
     IsHidden: 0000
   - Name: Hidden/BlitCopyDepth
     PropertyCount: 1
@@ -1063,10 +1096,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 0100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0100000000000000
     IsHidden: 0000
   - Name: Hidden/BlitToDepth
     PropertyCount: 2
@@ -1081,10 +1114,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 0100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0100000000000000
     IsHidden: 0000
   - Name: Hidden/BlitToDepth_MSAA
     PropertyCount: 1
@@ -1146,7 +1179,7 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 040000000400000001000000
+    PropertyTexDims: 040000000400000000000000
     IsHidden: 000000
   - Name: Hidden/CubeBlur
     PropertyCount: 4
@@ -1165,16 +1198,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.0078125
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 04000000010000000100000001000000
+    PropertyTexDims: 04000000000000000000000000000000
     IsHidden: 00000000
   - Name: Hidden/CubeCopy
     PropertyCount: 2
@@ -1192,7 +1225,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0400000001000000
+    PropertyTexDims: 0400000000000000
     IsHidden: 0000
   - Name: Hidden/FrameDebuggerRenderTargetDisplay
     PropertyCount: 1
@@ -1227,13 +1260,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000020000000100000001000000
+    PropertyTexDims: 02000000020000000000000000000000
     IsHidden: 00000000
   - Name: Hidden/GIDebug/TextureUV
     PropertyCount: 1
@@ -1256,10 +1289,10 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000
     IsHidden: 00
   - Name: Hidden/GIDebug/VertexColors
     PropertyCount: 1
@@ -1302,19 +1335,10 @@ MonoBehaviour:
     - _ZBias
     PropertyTypes: 00000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 10
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 4
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -1323,7 +1347,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000
   - Name: Hidden/Internal-CombineDepthNormals
     PropertyCount: 0
@@ -1356,13 +1389,13 @@ MonoBehaviour:
     - _DstBlend
     PropertyTypes: 0200000002000000
     PropertyRangeLimits:
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000
+    PropertyTexDims: 0000000000000000
     IsHidden: 0000
   - Name: Hidden/Internal-DeferredShading
     PropertyCount: 5
@@ -1389,13 +1422,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000010000000100000001000000
+    PropertyTexDims: 0100000002000000010000000000000000000000
     IsHidden: 0000000000
   - Name: Hidden/Internal-DepthNormalsTexture
     PropertyCount: 3
@@ -1412,13 +1445,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 020000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000
     IsHidden: 000000
   - Name: Hidden/InternalErrorShader
     PropertyCount: 0
@@ -1451,13 +1484,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 10
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 010000000000000000000000
     IsHidden: 000000
   - Name: Hidden/Internal-GUITexture
     PropertyCount: 1
@@ -1542,13 +1575,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 020000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000
     IsHidden: 000000
   - Name: Hidden/Internal-PrePassLighting
     PropertyCount: 3
@@ -1599,6 +1632,122 @@ MonoBehaviour:
     PropertyRangeLimits: []
     PropertyTexDims: 
     IsHidden: 
+  - Name: Hidden/Internal-UIRAtlasBlitCopy
+    PropertyCount: 8
+    PropertyDescriptions:
+    - Texture
+    - Texture
+    - Texture
+    - Texture
+    - Texture
+    - Texture
+    - Texture
+    - Texture
+    PropertyNames:
+    - _MainTex0
+    - _MainTex1
+    - _MainTex2
+    - _MainTex3
+    - _MainTex4
+    - _MainTex5
+    - _MainTex6
+    - _MainTex7
+    PropertyTypes: 0400000004000000040000000400000004000000040000000400000004000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0100000001000000010000000100000001000000010000000100000001000000
+    IsHidden: 0000000000000000
+  - Name: Hidden/Internal-UIRDefault
+    PropertyCount: 12
+    PropertyDescriptions:
+    - Atlas
+    - Font
+    - Custom
+    - Tint
+    - __scf
+    - __spf
+    - __szf
+    - __sff
+    - __scb
+    - __spb
+    - __szb
+    - __sfb
+    PropertyNames:
+    - _MainTex
+    - _FontTex
+    - _CustomTex
+    - _Color
+    - _StencilCompFront
+    - _StencilPassFront
+    - _StencilZFailFront
+    - _StencilFailFront
+    - _StencilCompBack
+    - _StencilPassBack
+    - _StencilZFailBack
+    - _StencilFailBack
+    PropertyTypes: 040000000400000004000000000000000200000002000000020000000200000002000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000200000002000000000000000000000000000000000000000000000000000000000000000000000000000000
+    IsHidden: 010101010101010101010101
   - Name: Hidden/Nature/Terrain/Utilities
     PropertyCount: 0
     PropertyDescriptions: []
@@ -1627,9 +1776,9 @@ MonoBehaviour:
     - _TranslucencyMap
     PropertyTypes: 00000000030000000300000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.5
       Min: 0
       Max: 1
@@ -1648,7 +1797,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000200000002000000
+    PropertyTexDims: 00000000000000000000000000000000020000000200000002000000
     IsHidden: 00000000000000
   - Name: Hidden/Nature/Tree Creator Bark Optimized
     PropertyCount: 9
@@ -1674,9 +1823,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 000000000400000004000000040000000300000000000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -1689,19 +1838,19 @@ MonoBehaviour:
     - Def: 0.3
       Min: 0
       Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000020000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000020000000000000000000000000000000000000000000000
     IsHidden: 000000000000010101
   - Name: Hidden/Nature/Tree Creator Bark Rendertex
     PropertyCount: 4
@@ -1726,10 +1875,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
-    PropertyTexDims: 02000000020000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000020000000200000000000000
     IsHidden: 00000000
   - Name: Hidden/Nature/Tree Creator Leaves Fast Optimized
     PropertyCount: 10
@@ -1757,12 +1906,12 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 00000000000000000300000003000000030000000400000004000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.3
       Min: 0
       Max: 1
@@ -1778,16 +1927,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000200000002000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000000000000200000002000000000000000000000000000000
     IsHidden: 00000000000000010101
   - Name: Hidden/Nature/Tree Creator Leaves Optimized
     PropertyCount: 13
@@ -1821,12 +1970,12 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 00000000000000000300000003000000030000000200000004000000040000000400000004000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.3
       Min: 0
       Max: 1
@@ -1836,7 +1985,16 @@ MonoBehaviour:
     - Def: 0.8
       Min: 0
       Max: 1
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -1851,16 +2009,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 0
-      Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000100000002000000020000000200000002000000010000000100000001000000
+    PropertyTexDims: 00000000000000000000000000000000000000000000000002000000020000000200000002000000000000000000000000000000
     IsHidden: 00000000000000000000010101
   - Name: Hidden/Nature/Tree Creator Leaves Rendertex
     PropertyCount: 7
@@ -1882,9 +2031,9 @@ MonoBehaviour:
     - _TranslucencyMap
     PropertyTypes: 00000000030000000300000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.5
       Min: 0
       Max: 1
@@ -1903,7 +2052,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000200000002000000
+    PropertyTexDims: 00000000000000000000000000000000020000000200000002000000
     IsHidden: 00000000000000
   - Name: Hidden/Nature/Tree Creator Normal Rendertex
     PropertyCount: 7
@@ -1925,9 +2074,9 @@ MonoBehaviour:
     - _TranslucencyMap
     PropertyTypes: 00000000030000000300000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.5
       Min: 0
       Max: 1
@@ -1946,7 +2095,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000200000002000000
+    PropertyTexDims: 00000000000000000000000000000000020000000200000002000000
     IsHidden: 00000000000000
   - Name: Hidden/Nature/Tree Soft Occlusion Bark Rendertex
     PropertyCount: 7
@@ -1968,9 +2117,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 00000000040000000300000003000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -1980,16 +2129,16 @@ MonoBehaviour:
     - Def: 2.4
       Min: 0
       Max: 10
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000000000000000000000000000000000000000000
     IsHidden: 00000000010101
   - Name: Hidden/Nature/Tree Soft Occlusion Leaves Rendertex
     PropertyCount: 10
@@ -2017,9 +2166,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 00000000040000000300000003000000030000000300000003000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -2038,16 +2187,16 @@ MonoBehaviour:
     - Def: 7.5
       Min: 0
       Max: 20
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000010101
   - Name: Hidden/ProBuilder/EdgePicker
     PropertyCount: 0
@@ -2069,16 +2218,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Hidden/ProBuilder/FacePicker
     PropertyCount: 0
@@ -2108,16 +2257,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000300000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 7
       Min: 0
       Max: 20
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Hidden/ProBuilder/NormalPreview
     PropertyCount: 0
@@ -2139,16 +2288,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000300000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 7
       Min: 0
       Max: 20
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Hidden/ProBuilder/ScrollHighlight
     PropertyCount: 5
@@ -2166,22 +2315,22 @@ MonoBehaviour:
     - _LineDistance
     PropertyTypes: 0000000000000000030000000200000002000000
     PropertyRangeLimits:
-    - Def: 0.07843138
-      Min: 0.3921569
-      Max: 0.7843137
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.5
       Min: 0
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 18
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000100000001000000
+    PropertyTexDims: 0000000000000000000000000000000000000000
     IsHidden: 0000000000
   - Name: Hidden/ProBuilder/SelectionPicker
     PropertyCount: 0
@@ -2199,10 +2348,10 @@ MonoBehaviour:
     - _Opacity
     PropertyTypes: 02000000
     PropertyRangeLimits:
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000
+    PropertyTexDims: 00000000
     IsHidden: 00
   - Name: Hidden/ProBuilder/TransparentOverlay
     PropertyCount: 1
@@ -2240,13 +2389,13 @@ MonoBehaviour:
     - Def: 3.3
       Min: 1
       Max: 7
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Hidden/RTHandles/LineBillboard
     PropertyCount: 3
@@ -2260,16 +2409,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000300000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 7
       Min: 0
       Max: 20
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Hidden/RTHandles/PointBillboard
     PropertyCount: 3
@@ -2283,16 +2432,16 @@ MonoBehaviour:
     - _HandleZTest
     PropertyTypes: 000000000300000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 7
       Min: 0
       Max: 20
-    - Def: 8
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000
+    PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
   - Name: Hidden/TerrainEngine/BillboardTree
     PropertyCount: 1
@@ -2316,18 +2465,20 @@ MonoBehaviour:
     PropertyTexDims: 
     IsHidden: 
   - Name: Hidden/TerrainEngine/CameraFacingBillboardTree
-    PropertyCount: 4
+    PropertyCount: 5
     PropertyDescriptions:
     - Base (RGB) Alpha (A)
     - Base (RGB) Alpha (A)
     - View dependency
     - Translucency Color
+    - AlphaToMask
     PropertyNames:
     - _MainTex
     - _NormalTex
     - _TranslucencyViewDependency
     - _TranslucencyColor
-    PropertyTypes: 04000000040000000300000000000000
+    - _AlphaToMask
+    PropertyTypes: 0400000004000000030000000000000002000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -2338,10 +2489,41 @@ MonoBehaviour:
     - Def: 0.7
       Min: 0
       Max: 1
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
-    PropertyTexDims: 02000000020000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000002000000000000000000000000000000
+    IsHidden: 0000000000
+  - Name: Hidden/TerrainEngine/CrossBlendNeighbors
+    PropertyCount: 4
+    PropertyDescriptions:
+    - Top Texture
+    - Bottom Texture
+    - Left Texture
+    - Right Texture
+    PropertyNames:
+    - _TopTex
+    - _BottomTex
+    - _LeftTex
+    - _RightTex
+    PropertyTypes: 04000000040000000400000004000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 01000000010000000100000001000000
     IsHidden: 00000000
   - Name: Hidden/TerrainEngine/Details/BillboardWavingDoublePass
     PropertyCount: 4
@@ -2357,19 +2539,19 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 00000000040000000100000002000000
     PropertyRangeLimits:
-    - Def: 0.7
-      Min: 0.6
-      Max: 0.5
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 12
-      Min: 3.6
-      Max: 1
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000000000000000000
     IsHidden: 00000000
   - Name: Hidden/TerrainEngine/Details/Vertexlit
     PropertyCount: 1
@@ -2398,19 +2580,19 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 00000000040000000100000002000000
     PropertyRangeLimits:
-    - Def: 0.7
-      Min: 0.6
-      Max: 0.5
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 12
-      Min: 3.6
-      Max: 1
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000000000000000000
     IsHidden: 00000000
   - Name: Hidden/TerrainEngine/GenerateNormalmap
     PropertyCount: 1
@@ -2456,52 +2638,27 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Hidden/TerrainEngine/Splatmap/Diffuse-BaseGen
-    PropertyCount: 6
+    PropertyCount: 1
     PropertyDescriptions:
-    - AlphaMap
-    - Layer 0 (R)
-    - Layer 1 (G)
-    - Layer 2 (B)
-    - Layer 3 (A)
     - DstBlend
     PropertyNames:
-    - _Control
-    - _Splat0
-    - _Splat1
-    - _Splat2
-    - _Splat3
     - _DstBlend
-    PropertyTypes: 040000000400000004000000040000000400000002000000
+    PropertyTypes: 02000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 020000000200000002000000020000000200000001000000
-    IsHidden: 010101010101
+    PropertyTexDims: 00000000
+    IsHidden: 01
   - Name: Hidden/TerrainEngine/Splatmap/Specular-AddPass
     PropertyCount: 2
     PropertyDescriptions:
@@ -2512,13 +2669,13 @@ MonoBehaviour:
     - _Shininess
     PropertyTypes: 0000000003000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.03
       Max: 1
-    PropertyTexDims: 0100000001000000
+    PropertyTexDims: 0000000000000000
     IsHidden: 0000
   - Name: Hidden/TerrainEngine/Splatmap/Specular-Base
     PropertyCount: 4
@@ -2534,19 +2691,19 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000030000000400000000000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.03
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000010000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000200000000000000
     IsHidden: 00000000
   - Name: Hidden/TerrainEngine/Splatmap/Standard-AddPass
     PropertyCount: 0
@@ -2574,89 +2731,24 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 020000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000200000000000000
     IsHidden: 000000
   - Name: Hidden/TerrainEngine/Splatmap/Standard-BaseGen
-    PropertyCount: 14
+    PropertyCount: 1
     PropertyDescriptions:
-    - AlphaMap
-    - Layer 0 (R)
-    - Layer 1 (G)
-    - Layer 2 (B)
-    - Layer 3 (A)
-    - Metallic 0
-    - Metallic 1
-    - Metallic 2
-    - Metallic 3
-    - Smoothness 0
-    - Smoothness 1
-    - Smoothness 2
-    - Smoothness 3
     - DstBlend
     PropertyNames:
-    - _Control
-    - _Splat0
-    - _Splat1
-    - _Splat2
-    - _Splat3
-    - _Metallic0
-    - _Metallic1
-    - _Metallic2
-    - _Metallic3
-    - _Smoothness0
-    - _Smoothness1
-    - _Smoothness2
-    - _Smoothness3
     - _DstBlend
-    PropertyTypes: 0400000004000000040000000400000004000000030000000300000003000000030000000300000003000000030000000300000002000000
+    PropertyTypes: 02000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 1
-      Min: 0
-      Max: 1
-    - Def: 1
-      Min: 0
-      Max: 1
-    - Def: 1
-      Min: 0
-      Max: 1
-    - Def: 1
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 0200000002000000020000000200000002000000010000000100000001000000010000000100000001000000010000000100000001000000
-    IsHidden: 0101010101010101010101010101
+    PropertyTexDims: 00000000
+    IsHidden: 01
   - Name: Hidden/TerrainEngine/TerrainLayerUtils
     PropertyCount: 1
     PropertyDescriptions:
@@ -2670,6 +2762,315 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 01000000
     IsHidden: 00
+  - Name: Hidden/TextCore/Distance Field
+    PropertyCount: 17
+    PropertyDescriptions:
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Thickness
+    - Outline Softness
+    - Weight Normal
+    - Weight Bold
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Sharpness
+    - Vertex OffsetX
+    - Vertex OffsetY
+    PropertyNames:
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _WeightNormal
+    - _WeightBold
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _Sharpness
+    - _VertexOffsetX
+    - _VertexOffsetY
+    PropertyTypes: 0000000003000000000000000300000003000000020000000200000002000000020000000200000004000000020000000200000002000000030000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000
+    IsHidden: 0000000000000000000000000000000000
+  - Name: Hidden/TextCore/Distance Field SSD
+    PropertyCount: 25
+    PropertyDescriptions:
+    - Face Color
+    - Face Dilate
+    - Outline Color
+    - Outline Thickness
+    - Outline Softness
+    - Border Color
+    - Border OffsetX
+    - Border OffsetY
+    - Border Dilate
+    - Border Softness
+    - Weight Normal
+    - Weight Bold
+    - Flags
+    - Scale RatioA
+    - Scale RatioB
+    - Scale RatioC
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Sharpness
+    - Vertex OffsetX
+    - Vertex OffsetY
+    PropertyNames:
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineColor
+    - _OutlineWidth
+    - _OutlineSoftness
+    - _UnderlayColor
+    - _UnderlayOffsetX
+    - _UnderlayOffsetY
+    - _UnderlayDilate
+    - _UnderlaySoftness
+    - _WeightNormal
+    - _WeightBold
+    - _ShaderFlags
+    - _ScaleRatioA
+    - _ScaleRatioB
+    - _ScaleRatioC
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _Sharpness
+    - _VertexOffsetX
+    - _VertexOffsetY
+    PropertyTypes: 00000000030000000000000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000
+    IsHidden: 00000000000000000000000000000000000000000000000000
+  - Name: Hidden/TextMeshPro/Internal/Distance Field SSD
+    PropertyCount: 15
+    PropertyDescriptions:
+    - Face Color
+    - Face Dilate
+    - Outline Softness
+    - Weight Normal
+    - Weight Bold
+    - Font Atlas
+    - Texture Width
+    - Texture Height
+    - Gradient Scale
+    - Scale X
+    - Scale Y
+    - Sharpness
+    - Vertex OffsetX
+    - Vertex OffsetY
+    - Color Mask
+    PropertyNames:
+    - _FaceColor
+    - _FaceDilate
+    - _OutlineSoftness
+    - _WeightNormal
+    - _WeightBold
+    - _MainTex
+    - _TextureWidth
+    - _TextureHeight
+    - _GradientScale
+    - _ScaleX
+    - _ScaleY
+    - _Sharpness
+    - _VertexOffsetX
+    - _VertexOffsetY
+    - _ColorMask
+    PropertyTypes: 000000000300000003000000020000000200000004000000020000000200000002000000020000000200000003000000020000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0.02
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000
+    IsHidden: 000000000000000000000000000000
   - Name: Hidden/UI/CompositeOverdraw
     PropertyCount: 1
     PropertyDescriptions:
@@ -2710,10 +3111,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -2722,19 +3123,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: Hidden/UnityOutline
     PropertyCount: 2
@@ -2752,8 +3153,21 @@ MonoBehaviour:
     - Def: 0.01
       Min: 0
       Max: 1
-    PropertyTexDims: 0200000001000000
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
+  - Name: Hidden/VideoComposite
+    PropertyCount: 1
+    PropertyDescriptions:
+    - _MainTex (A)
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
   - Name: Hidden/VideoDecode
     PropertyCount: 3
     PropertyDescriptions:
@@ -2785,6 +3199,14 @@ MonoBehaviour:
     PropertyRangeLimits: []
     PropertyTexDims: 
     IsHidden: 
+  - Name: Hidden/VideoDecodeML
+    PropertyCount: 0
+    PropertyDescriptions: []
+    PropertyNames: []
+    PropertyTypes: 
+    PropertyRangeLimits: []
+    PropertyTexDims: 
+    IsHidden: 
   - Name: Hidden/VideoDecodeOSX
     PropertyCount: 0
     PropertyDescriptions: []
@@ -2793,6 +3215,19 @@ MonoBehaviour:
     PropertyRangeLimits: []
     PropertyTexDims: 
     IsHidden: 
+  - Name: Hidden/VR/BlitFromTex2DToTexArraySlice
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Texture
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 00
   - Name: Hidden/VR/BlitTexArraySlice
     PropertyCount: 1
     PropertyDescriptions:
@@ -2878,16 +3313,16 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Legacy Shaders/Bumped Specular
     PropertyCount: 5
@@ -2905,12 +3340,12 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 0000000000000000030000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.03
       Max: 1
@@ -2920,7 +3355,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000200000002000000
+    PropertyTexDims: 0000000000000000000000000200000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Decal
     PropertyCount: 3
@@ -2934,16 +3369,16 @@ MonoBehaviour:
     - _DecalTex
     PropertyTypes: 000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Legacy Shaders/Diffuse
     PropertyCount: 2
@@ -2955,13 +3390,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Legacy Shaders/Diffuse Detail
     PropertyCount: 3
@@ -2975,16 +3410,16 @@ MonoBehaviour:
     - _Detail
     PropertyTypes: 000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Legacy Shaders/Diffuse Fast
     PropertyCount: 2
@@ -2996,13 +3431,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Legacy Shaders/Lightmapped/Bumped Diffuse
     PropertyCount: 4
@@ -3018,9 +3453,6 @@ MonoBehaviour:
     - _LightMap
     PropertyTypes: 00000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -3030,7 +3462,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000200000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000200000002000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Lightmapped/Bumped Specular
     PropertyCount: 6
@@ -3050,12 +3485,12 @@ MonoBehaviour:
     - _LightMap
     PropertyTypes: 000000000000000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -3068,7 +3503,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000020000000200000002000000
+    PropertyTexDims: 000000000000000000000000020000000200000002000000
     IsHidden: 000000000000
   - Name: Legacy Shaders/Lightmapped/Diffuse
     PropertyCount: 3
@@ -3082,16 +3517,16 @@ MonoBehaviour:
     - _LightMap
     PropertyTypes: 000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Legacy Shaders/Lightmapped/Specular
     PropertyCount: 5
@@ -3109,12 +3544,12 @@ MonoBehaviour:
     - _LightMap
     PropertyTypes: 0000000000000000030000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -3124,7 +3559,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000200000002000000
+    PropertyTexDims: 0000000000000000000000000200000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Lightmapped/VertexLit
     PropertyCount: 5
@@ -3142,12 +3577,12 @@ MonoBehaviour:
     - _LightMap
     PropertyTypes: 0000000000000000030000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.7
       Min: 0.01
       Max: 1
@@ -3157,7 +3592,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000200000002000000
+    PropertyTexDims: 0000000000000000000000000200000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Parallax Diffuse
     PropertyCount: 5
@@ -3175,9 +3610,9 @@ MonoBehaviour:
     - _ParallaxMap
     PropertyTypes: 0000000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.02
       Min: 0.005
       Max: 0.08
@@ -3190,7 +3625,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000200000002000000
+    PropertyTexDims: 0000000000000000020000000200000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Parallax Specular
     PropertyCount: 7
@@ -3212,12 +3647,12 @@ MonoBehaviour:
     - _ParallaxMap
     PropertyTypes: 00000000000000000300000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -3233,7 +3668,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000200000002000000
+    PropertyTexDims: 00000000000000000000000000000000020000000200000002000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Particles/~Additive-Multiply
     PropertyCount: 3
@@ -3247,16 +3682,16 @@ MonoBehaviour:
     - _InvFade
     PropertyTypes: 000000000400000003000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 010000000200000001000000
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Legacy Shaders/Particles/Additive
     PropertyCount: 3
@@ -3270,16 +3705,16 @@ MonoBehaviour:
     - _InvFade
     PropertyTypes: 000000000400000003000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 010000000200000001000000
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Legacy Shaders/Particles/Additive (Soft)
     PropertyCount: 2
@@ -3297,7 +3732,7 @@ MonoBehaviour:
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 0200000001000000
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: Legacy Shaders/Particles/Alpha Blended
     PropertyCount: 3
@@ -3311,16 +3746,16 @@ MonoBehaviour:
     - _InvFade
     PropertyTypes: 000000000400000003000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 010000000200000001000000
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Legacy Shaders/Particles/Alpha Blended Premultiply
     PropertyCount: 2
@@ -3338,7 +3773,7 @@ MonoBehaviour:
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 0200000001000000
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: Legacy Shaders/Particles/Anim Alpha Blended
     PropertyCount: 3
@@ -3352,16 +3787,16 @@ MonoBehaviour:
     - _InvFade
     PropertyTypes: 000000000400000003000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 010000000200000001000000
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Legacy Shaders/Particles/Multiply
     PropertyCount: 2
@@ -3379,7 +3814,7 @@ MonoBehaviour:
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 0200000001000000
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: Legacy Shaders/Particles/Multiply (Double)
     PropertyCount: 2
@@ -3397,7 +3832,7 @@ MonoBehaviour:
     - Def: 1
       Min: 0.01
       Max: 3
-    PropertyTexDims: 0200000001000000
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: Legacy Shaders/Particles/VertexLit Blended
     PropertyCount: 2
@@ -3409,13 +3844,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 0.2
-      Min: 0.2
-      Max: 0.2
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Legacy Shaders/Reflective/Bumped Diffuse
     PropertyCount: 5
@@ -3433,12 +3868,6 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 0000000000000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -3448,7 +3877,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000400000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000400000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Reflective/Bumped Specular
     PropertyCount: 7
@@ -3470,18 +3905,15 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 00000000000000000300000000000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -3491,7 +3923,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000400000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000020000000400000002000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Reflective/Bumped Unlit
     PropertyCount: 5
@@ -3509,12 +3944,6 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 0000000000000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -3524,7 +3953,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000400000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000400000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Reflective/Bumped VertexLit
     PropertyCount: 7
@@ -3546,18 +3981,15 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 00000000000000000300000000000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.7
       Min: 0.1
       Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -3567,7 +3999,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000400000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000020000000400000002000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Reflective/Diffuse
     PropertyCount: 4
@@ -3583,19 +4018,19 @@ MonoBehaviour:
     - _Cube
     PropertyTypes: 00000000000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000200000004000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000200000004000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Reflective/Parallax Diffuse
     PropertyCount: 7
@@ -3617,12 +4052,12 @@ MonoBehaviour:
     - _ParallaxMap
     PropertyTypes: 00000000000000000300000004000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.02
       Min: 0.005
       Max: 0.08
@@ -3638,7 +4073,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000002000000040000000200000002000000
+    PropertyTexDims: 00000000000000000000000002000000040000000200000002000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Reflective/Parallax Specular
     PropertyCount: 9
@@ -3664,18 +4099,18 @@ MonoBehaviour:
     - _ParallaxMap
     PropertyTypes: 000000000000000003000000000000000300000004000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.02
       Min: 0.005
       Max: 0.08
@@ -3691,7 +4126,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000010000000100000002000000040000000200000002000000
+    PropertyTexDims: 000000000000000000000000000000000000000002000000040000000200000002000000
     IsHidden: 000000000000000000
   - Name: Legacy Shaders/Reflective/Specular
     PropertyCount: 6
@@ -3711,25 +4146,25 @@ MonoBehaviour:
     - _Cube
     PropertyTypes: 000000000000000003000000000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000010000000200000004000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000000000000200000004000000
     IsHidden: 000000000000
   - Name: Legacy Shaders/Reflective/VertexLit
     PropertyCount: 4
@@ -3745,19 +4180,19 @@ MonoBehaviour:
     - _Cube
     PropertyTypes: 00000000000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000200000004000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000200000004000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Self-Illumin/Bumped Diffuse
     PropertyCount: 5
@@ -3775,9 +4210,6 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 0000000004000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -3787,10 +4219,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000020000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000020000000200000000000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Self-Illumin/Bumped Specular
     PropertyCount: 7
@@ -3812,12 +4247,12 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 00000000000000000300000004000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -3830,10 +4265,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000002000000020000000200000001000000
+    PropertyTexDims: 00000000000000000000000002000000020000000200000000000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Self-Illumin/Diffuse
     PropertyCount: 4
@@ -3849,19 +4284,19 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 00000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000200000000000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Self-Illumin/Parallax Diffuse
     PropertyCount: 7
@@ -3883,9 +4318,9 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 00000000030000000400000004000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.02
       Min: 0.005
       Max: 0.08
@@ -3901,10 +4336,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000200000002000000020000000200000001000000
+    PropertyTexDims: 00000000000000000200000002000000020000000200000000000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Self-Illumin/Parallax Specular
     PropertyCount: 9
@@ -3930,12 +4365,12 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 000000000000000003000000030000000400000004000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -3954,10 +4389,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000010000000200000002000000020000000200000001000000
+    PropertyTexDims: 000000000000000000000000000000000200000002000000020000000200000000000000
     IsHidden: 000000000000000000
   - Name: Legacy Shaders/Self-Illumin/Specular
     PropertyCount: 6
@@ -3977,12 +4412,12 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 000000000000000003000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -3992,10 +4427,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000020000000200000001000000
+    PropertyTexDims: 000000000000000000000000020000000200000000000000
     IsHidden: 000000000000
   - Name: Legacy Shaders/Self-Illumin/VertexLit
     PropertyCount: 6
@@ -4015,12 +4450,12 @@ MonoBehaviour:
     - _Emission
     PropertyTypes: 000000000000000003000000040000000400000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.7
       Min: 0.1
       Max: 1
@@ -4030,10 +4465,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000020000000200000001000000
+    PropertyTexDims: 000000000000000000000000020000000200000000000000
     IsHidden: 000000000000
   - Name: Legacy Shaders/Specular
     PropertyCount: 4
@@ -4049,19 +4484,19 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 00000000000000000300000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000002000000
+    PropertyTexDims: 00000000000000000000000002000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Transparent/Bumped Diffuse
     PropertyCount: 3
@@ -4075,16 +4510,16 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 000000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Legacy Shaders/Transparent/Bumped Specular
     PropertyCount: 5
@@ -4102,12 +4537,12 @@ MonoBehaviour:
     - _BumpMap
     PropertyTypes: 0000000000000000030000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -4117,7 +4552,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000200000002000000
+    PropertyTexDims: 0000000000000000000000000200000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Transparent/Cutout/Bumped Diffuse
     PropertyCount: 4
@@ -4133,9 +4568,9 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 00000000040000000400000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -4145,7 +4580,7 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 01000000020000000200000001000000
+    PropertyTexDims: 00000000020000000200000000000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Transparent/Cutout/Bumped Specular
     PropertyCount: 6
@@ -4165,12 +4600,12 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 000000000000000003000000040000000400000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -4183,7 +4618,7 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 010000000100000001000000020000000200000001000000
+    PropertyTexDims: 000000000000000000000000020000000200000000000000
     IsHidden: 000000000000
   - Name: Legacy Shaders/Transparent/Cutout/Diffuse
     PropertyCount: 3
@@ -4197,16 +4632,16 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 000000000400000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 010000000200000001000000
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Legacy Shaders/Transparent/Cutout/Soft Edge Unlit
     PropertyCount: 3
@@ -4220,16 +4655,16 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 000000000400000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0.5
       Min: 0
       Max: 0.9
-    PropertyTexDims: 010000000200000001000000
+    PropertyTexDims: 000000000200000000000000
     IsHidden: 000000
   - Name: Legacy Shaders/Transparent/Cutout/Specular
     PropertyCount: 5
@@ -4247,12 +4682,12 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 0000000000000000030000000400000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -4262,7 +4697,7 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 0100000001000000010000000200000001000000
+    PropertyTexDims: 0000000000000000000000000200000000000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Transparent/Cutout/VertexLit
     PropertyCount: 6
@@ -4282,12 +4717,12 @@ MonoBehaviour:
     - _Cutoff
     PropertyTypes: 000000000000000000000000030000000400000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -4300,7 +4735,7 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 010000000100000001000000010000000200000001000000
+    PropertyTexDims: 000000000000000000000000000000000200000000000000
     IsHidden: 000000000000
   - Name: Legacy Shaders/Transparent/Diffuse
     PropertyCount: 2
@@ -4312,13 +4747,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Legacy Shaders/Transparent/Parallax Diffuse
     PropertyCount: 5
@@ -4336,9 +4771,9 @@ MonoBehaviour:
     - _ParallaxMap
     PropertyTypes: 0000000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.02
       Min: 0.005
       Max: 0.08
@@ -4351,7 +4786,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000200000002000000
+    PropertyTexDims: 0000000000000000020000000200000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/Transparent/Parallax Specular
     PropertyCount: 7
@@ -4373,12 +4808,12 @@ MonoBehaviour:
     - _ParallaxMap
     PropertyTypes: 00000000000000000300000003000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -4394,7 +4829,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000020000000200000002000000
+    PropertyTexDims: 00000000000000000000000000000000020000000200000002000000
     IsHidden: 00000000000000
   - Name: Legacy Shaders/Transparent/Specular
     PropertyCount: 4
@@ -4410,19 +4845,19 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 00000000000000000300000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000002000000
+    PropertyTexDims: 00000000000000000000000002000000
     IsHidden: 00000000
   - Name: Legacy Shaders/Transparent/VertexLit
     PropertyCount: 5
@@ -4440,12 +4875,12 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000000000000000000000300000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -4455,7 +4890,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000100000002000000
+    PropertyTexDims: 0000000000000000000000000000000002000000
     IsHidden: 0000000000
   - Name: Legacy Shaders/VertexLit
     PropertyCount: 5
@@ -4473,12 +4908,12 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000000000000000000000300000004000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -4488,8 +4923,31 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000100000002000000
+    PropertyTexDims: 0000000000000000000000000000000002000000
     IsHidden: 0000000000
+  - Name: LineBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 7
+      Min: 0
+      Max: 20
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
+    IsHidden: 000000
   - Name: Mobile/Bumped Diffuse
     PropertyCount: 2
     PropertyDescriptions:
@@ -4529,7 +4987,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Mobile/Bumped Specular (1 Directional Realtime Light)
     PropertyCount: 3
@@ -4552,7 +5010,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000002000000
+    PropertyTexDims: 000000000200000002000000
     IsHidden: 000000
   - Name: Mobile/Diffuse
     PropertyCount: 1
@@ -4580,10 +5038,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.34
-      Min: 0.85
-      Max: 0.92
-    PropertyTexDims: 0200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: Mobile/Particles/Additive
     PropertyCount: 1
@@ -4634,13 +5092,13 @@ MonoBehaviour:
     - _MainTex
     PropertyTypes: 0000000004000000
     PropertyRangeLimits:
-    - Def: 0.2
-      Min: 0.2
-      Max: 0.2
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000002000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000002000000
     IsHidden: 0000
   - Name: Mobile/Skybox
     PropertyCount: 6
@@ -4741,11 +5199,11 @@ MonoBehaviour:
     - _WindQuality
     PropertyTypes: 0000000000000000040000000400000004000000030000000200000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
       Max: 0
     - Def: 0
       Min: 0
@@ -4759,13 +5217,13 @@ MonoBehaviour:
     - Def: 0.333
       Min: 0
       Max: 1
-    - Def: 2
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 5
-    PropertyTexDims: 0100000001000000020000000200000002000000010000000100000001000000
+    PropertyTexDims: 0000000000000000020000000200000002000000000000000000000000000000
     IsHidden: 0000000000000000
   - Name: Nature/SpeedTree Billboard
     PropertyCount: 6
@@ -4785,11 +5243,11 @@ MonoBehaviour:
     - _WindQuality
     PropertyTypes: 000000000000000004000000040000000300000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
       Max: 0
     - Def: 0
       Min: 0
@@ -4803,7 +5261,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 1
-    PropertyTexDims: 010000000100000002000000020000000100000001000000
+    PropertyTexDims: 000000000000000002000000020000000000000000000000
     IsHidden: 000000000000
   - Name: Nature/SpeedTree8
     PropertyCount: 17
@@ -4848,14 +5306,14 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
       Max: 0
     - Def: 0
       Min: 0
@@ -4878,9 +5336,9 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.25
       Min: 0
       Max: 1
@@ -4890,13 +5348,13 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    - Def: 2
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 5
-    PropertyTexDims: 0200000001000000010000000100000001000000020000000200000001000000010000000100000002000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 0200000000000000000000000000000000000000020000000200000000000000000000000000000002000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000000000
   - Name: Nature/Terrain/Diffuse
     PropertyCount: 2
@@ -4911,10 +5369,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 0200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000
     IsHidden: 0101
   - Name: Nature/Terrain/Specular
     PropertyCount: 4
@@ -4930,19 +5388,19 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000030000000400000000000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.03
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000010000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000200000000000000
     IsHidden: 00000101
   - Name: Nature/Terrain/Standard
     PropertyCount: 2
@@ -4957,10 +5415,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 0200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000
     IsHidden: 0101
   - Name: Nature/Tree Creator Bark
     PropertyCount: 9
@@ -4986,9 +5444,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 000000000300000004000000040000000400000000000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -5001,19 +5459,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000002000000020000000200000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000002000000020000000200000000000000000000000000000000000000
     IsHidden: 000000000000010101
   - Name: Nature/Tree Creator Leaves
     PropertyCount: 11
@@ -5043,9 +5501,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 0000000003000000040000000400000004000000040000000400000003000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.078125
       Min: 0.01
       Max: 1
@@ -5067,16 +5525,16 @@ MonoBehaviour:
     - Def: 0.3
       Min: 0
       Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000200000002000000020000000200000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000200000002000000020000000200000000000000000000000000000000000000
     IsHidden: 0000000000000000010101
   - Name: Nature/Tree Creator Leaves Fast
     PropertyCount: 9
@@ -5102,12 +5560,12 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 000000000000000003000000030000000300000004000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.73
-      Min: 0.85
-      Max: 0.41
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.3
       Min: 0
       Max: 1
@@ -5120,16 +5578,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000010000000100000002000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000000000000000000002000000000000000000000000000000
     IsHidden: 000000000000010101
   - Name: Nature/Tree Soft Occlusion Bark
     PropertyCount: 7
@@ -5151,9 +5609,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 00000000040000000300000003000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -5163,16 +5621,16 @@ MonoBehaviour:
     - Def: 2.4
       Min: 0
       Max: 10
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000020000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000020000000000000000000000000000000000000000000000
     IsHidden: 00000000010101
   - Name: Nature/Tree Soft Occlusion Leaves
     PropertyCount: 9
@@ -5198,9 +5656,9 @@ MonoBehaviour:
     - _SquashAmount
     PropertyTypes: 000000000400000003000000030000000300000003000000010000000100000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -5216,16 +5674,16 @@ MonoBehaviour:
     - Def: 7.5
       Min: 0
       Max: 20
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000200000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000010101
   - Name: Particles/Standard Surface
     PropertyCount: 31
@@ -5298,9 +5756,9 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.5
       Min: 0
       Max: 1
@@ -5313,9 +5771,6 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -5325,7 +5780,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.5
@@ -5334,22 +5792,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 2
-      Min: 0
-      Max: 0
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
       Min: 0
       Max: 0
     - Def: 0
@@ -5361,16 +5804,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 2
       Min: 0
       Max: 0
     - Def: 0
@@ -5388,7 +5822,31 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000002000000010000000100000001000000020000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000002000000000000000000000000000000020000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000000000000000010101010101010101010101010101
   - Name: Particles/Standard Unlit
     PropertyCount: 30
@@ -5459,25 +5917,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0.5
-      Min: 0
-      Max: 1
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
       Min: 0
       Max: 0
     - Def: 0.5
@@ -5486,13 +5926,40 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 2
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0.5
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -5516,16 +5983,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 2
       Min: 0
       Max: 0
     - Def: 0
@@ -5546,7 +6004,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000200000001000000020000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 020000000000000000000000000000000200000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000101010101010101010101010101010101
   - Name: ProBuilder/Diffuse Texture Blend
     PropertyCount: 4
@@ -5616,9 +6074,9 @@ MonoBehaviour:
     - _Metallic
     PropertyTypes: 00000000040000000300000003000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -5628,7 +6086,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 1
-    PropertyTexDims: 01000000020000000100000001000000
+    PropertyTexDims: 00000000020000000000000000000000
     IsHidden: 00000000
   - Name: ProBuilder/Unlit Solid Color
     PropertyCount: 1
@@ -5638,10 +6096,10 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000
     IsHidden: 00
   - Name: ProBuilder/UnlitVertexColor
     PropertyCount: 0
@@ -5675,9 +6133,9 @@ MonoBehaviour:
     - _DownTex
     PropertyTypes: 000000000300000003000000040000000400000004000000040000000400000004000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 1
       Min: 0
       Max: 8
@@ -5702,7 +6160,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000001000000020000000200000002000000020000000200000002000000
+    PropertyTexDims: 000000000000000000000000020000000200000002000000020000000200000002000000
     IsHidden: 000000000000000000
   - Name: Skybox/Cubemap
     PropertyCount: 4
@@ -5718,9 +6176,9 @@ MonoBehaviour:
     - _Tex
     PropertyTypes: 00000000030000000300000004000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 1
       Min: 0
       Max: 8
@@ -5730,7 +6188,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000004000000
+    PropertyTexDims: 00000000000000000000000004000000
     IsHidden: 00000000
   - Name: Skybox/Panoramic
     PropertyCount: 8
@@ -5754,9 +6212,9 @@ MonoBehaviour:
     - _Layout
     PropertyTypes: 0000000003000000030000000400000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 1
       Min: 0
       Max: 8
@@ -5766,9 +6224,6 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -5778,7 +6233,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000010000000200000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000000000000200000000000000000000000000000000000000
     IsHidden: 0000000000000000
   - Name: Skybox/Procedural
     PropertyCount: 7
@@ -5800,7 +6258,7 @@ MonoBehaviour:
     - _Exposure
     PropertyTypes: 02000000030000000300000003000000000000000000000003000000
     PropertyRangeLimits:
-    - Def: 2
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.04
@@ -5812,16 +6270,16 @@ MonoBehaviour:
     - Def: 1
       Min: 0
       Max: 5
-    - Def: 0.5
-      Min: 0.5
-      Max: 0.5
-    - Def: 0.369
-      Min: 0.349
-      Max: 0.341
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 1.3
       Min: 0
       Max: 8
-    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 00000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000
   - Name: Sprites/Default
     PropertyCount: 7
@@ -5846,25 +6304,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000200000000000000
     IsHidden: 00000001010000
   - Name: Sprites/Diffuse
     PropertyCount: 7
@@ -5889,25 +6347,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000200000000000000
     IsHidden: 00000001010000
   - Name: Sprites/Mask
     PropertyCount: 6
@@ -5936,16 +6394,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000200000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000200000000000000000000000000000000000000
     IsHidden: 000001000000
   - Name: Sprites/ZTestAlways
     PropertyCount: 7
@@ -5970,25 +6428,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000200000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000200000000000000
     IsHidden: 00000001010000
   - Name: Standard
     PropertyCount: 27
@@ -6050,9 +6508,9 @@ MonoBehaviour:
     - _ZWrite
     PropertyTypes: 000000000400000003000000030000000300000002000000030000000400000002000000020000000200000004000000030000000400000003000000040000000000000004000000040000000400000002000000040000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -6074,13 +6532,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -6110,7 +6568,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -6122,16 +6586,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    PropertyTexDims: 010000000200000001000000010000000100000001000000010000000200000001000000010000000100000002000000010000000200000001000000020000000100000002000000020000000200000001000000020000000100000001000000010000000100000001000000
+    PropertyTexDims: 000000000200000000000000000000000000000000000000000000000200000000000000000000000000000002000000000000000200000000000000020000000000000002000000020000000200000000000000020000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000000000000000000000001010101
   - Name: Standard (Specular setup)
     PropertyCount: 27
@@ -6193,9 +6651,9 @@ MonoBehaviour:
     - _ZWrite
     PropertyTypes: 000000000400000003000000030000000300000002000000000000000400000002000000020000000200000004000000030000000400000003000000040000000000000004000000040000000400000002000000040000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -6211,19 +6669,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.2
-      Min: 0.2
-      Max: 0.2
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -6253,7 +6711,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -6265,16 +6729,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    PropertyTexDims: 010000000200000001000000010000000100000001000000010000000200000001000000010000000100000002000000010000000200000001000000020000000100000002000000020000000200000001000000020000000100000001000000010000000100000001000000
+    PropertyTexDims: 000000000200000000000000000000000000000000000000000000000200000000000000000000000000000002000000000000000200000000000000020000000000000002000000020000000200000000000000020000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000000000000000000000001010101
   - Name: TextMeshPro/Bitmap
     PropertyCount: 14
@@ -6316,9 +6774,6 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -6331,10 +6786,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -6343,16 +6798,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000
   - Name: TextMeshPro/Bitmap Custom Atlas
     PropertyCount: 15
@@ -6396,9 +6854,6 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -6411,13 +6866,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 8
       Min: 0
       Max: 0
     - Def: 0
@@ -6426,16 +6875,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000000
   - Name: TextMeshPro/Distance Field
     PropertyCount: 64
@@ -6580,9 +7038,9 @@ MonoBehaviour:
     - Def: 0
       Min: -5
       Max: 5
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: -1
       Max: 1
@@ -6622,9 +7080,9 @@ MonoBehaviour:
     - Def: 3.1416
       Min: 0
       Max: 6.2831855
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 2
       Min: 0
       Max: 4
@@ -6674,7 +7132,7 @@ MonoBehaviour:
       Min: 0
       Max: 1
     - Def: 0
-      Min: 1
+      Min: 0
       Max: 0
     - Def: 0
       Min: -1
@@ -6691,37 +7149,37 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -6735,17 +7193,8 @@ MonoBehaviour:
       Max: 0
     - Def: 0
       Min: 0
-      Max: 32767
-    - Def: -32767
-      Min: -32767
-      Max: 32767
-    - Def: 0
-      Min: 0
       Max: 0
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 8
       Min: 0
       Max: 0
     - Def: 0
@@ -6754,16 +7203,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000004000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Distance Field (Surface)
     PropertyCount: 46
@@ -6872,9 +7330,9 @@ MonoBehaviour:
     - Def: 0
       Min: -5
       Max: 5
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: -1
       Max: 1
@@ -6942,7 +7400,7 @@ MonoBehaviour:
       Min: 0
       Max: 1
     - Def: 0
-      Min: 1
+      Min: 0
       Max: 0
     - Def: 0
       Min: -1
@@ -6959,37 +7417,37 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -7001,7 +7459,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000004000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 02000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Distance Field Overlay
     PropertyCount: 64
@@ -7146,9 +7604,9 @@ MonoBehaviour:
     - Def: 0
       Min: -5
       Max: 5
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: -1
       Max: 1
@@ -7188,9 +7646,9 @@ MonoBehaviour:
     - Def: 3.1416
       Min: 0
       Max: 6.2831855
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 2
       Min: 0
       Max: 4
@@ -7240,7 +7698,7 @@ MonoBehaviour:
       Min: 0
       Max: 1
     - Def: 0
-      Min: 1
+      Min: 0
       Max: 0
     - Def: 0
       Min: -1
@@ -7257,37 +7715,37 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -7301,17 +7759,8 @@ MonoBehaviour:
       Max: 0
     - Def: 0
       Min: 0
-      Max: 32767
-    - Def: -32767
-      Min: -32767
-      Max: 32767
-    - Def: 0
-      Min: 0
       Max: 0
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 8
       Min: 0
       Max: 0
     - Def: 0
@@ -7320,16 +7769,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000004000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000002000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Mobile/Bitmap
     PropertyCount: 14
@@ -7368,9 +7826,9 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 1
       Min: 1
       Max: 4
@@ -7386,10 +7844,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -7398,16 +7856,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 0200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000
   - Name: TextMeshPro/Mobile/Distance Field
     PropertyCount: 34
@@ -7483,21 +7941,6 @@ MonoBehaviour:
     - _ColorMask
     PropertyTypes: 00000000030000000000000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000010000000200000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0
-      Min: -1
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -7505,48 +7948,63 @@ MonoBehaviour:
       Min: -1
       Max: 1
     - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: -1
       Max: 1
     - Def: 0
       Min: -1
       Max: 1
     - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
       Min: 0
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -7558,16 +8016,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 8
       Min: 0
       Max: 0
     - Def: 0
@@ -7576,16 +8025,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Mobile/Distance Field - Masking
     PropertyCount: 39
@@ -7671,21 +8129,6 @@ MonoBehaviour:
     - _ColorMask
     PropertyTypes: 000000000300000000000000030000000300000000000000030000000300000003000000030000000200000002000000020000000200000002000000020000000400000002000000020000000200000002000000020000000300000002000000020000000100000002000000020000000400000002000000000000000300000003000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0
-      Min: -1
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -7693,48 +8136,63 @@ MonoBehaviour:
       Min: -1
       Max: 1
     - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: -1
       Max: 1
     - Def: 0
       Min: -1
       Max: 1
     - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
       Min: 0
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -7746,9 +8204,6 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
     - Def: 0
       Min: 0
       Max: 0
@@ -7761,16 +8216,22 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0.01
       Min: 0
       Max: 1
     - Def: 0.5
       Min: 0
       Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -7779,16 +8240,13 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
-      Min: 0
-      Max: 0
-    PropertyTexDims: 010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Mobile/Distance Field (Surface)
     PropertyCount: 27
@@ -7853,9 +8311,9 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: -1
       Max: 1
@@ -7872,7 +8330,7 @@ MonoBehaviour:
       Min: 0
       Max: 1
     - Def: 0
-      Min: 1
+      Min: 0
       Max: 0
     - Def: 0
       Min: -1
@@ -7889,37 +8347,37 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -7931,7 +8389,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000200000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000
+    PropertyTexDims: 020000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Mobile/Distance Field Overlay
     PropertyCount: 34
@@ -8007,21 +8465,6 @@ MonoBehaviour:
     - _ColorMask
     PropertyTypes: 00000000030000000000000003000000030000000000000003000000030000000300000003000000020000000200000002000000020000000200000002000000040000000200000002000000020000000200000002000000030000000200000002000000010000000200000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 0
-      Min: -1
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 1
     - Def: 0
       Min: 0
       Max: 0
@@ -8029,48 +8472,63 @@ MonoBehaviour:
       Min: -1
       Max: 1
     - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: -1
       Max: 1
     - Def: 0
       Min: -1
       Max: 1
     - Def: 0
+      Min: -1
+      Max: 1
+    - Def: 0
       Min: 0
       Max: 1
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 0.5
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0
-      Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 512
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 5
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0.875
@@ -8082,16 +8540,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 8
       Min: 0
       Max: 0
     - Def: 0
@@ -8100,16 +8549,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
+    - Def: 0
       Min: 0
       Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000020000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000000000000000000000000000000000000000000000000000
   - Name: TextMeshPro/Sprite
     PropertyCount: 10
@@ -8140,10 +8598,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8152,22 +8610,22 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
-      Min: 0
-      Max: 0
-    - Def: -32767
-      Min: -32767
-      Max: 32767
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000
   - Name: UI/Default
     PropertyCount: 9
@@ -8196,10 +8654,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8208,19 +8666,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: UI/Default Font
     PropertyCount: 9
@@ -8249,10 +8707,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8261,19 +8719,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: UI/DefaultETC1
     PropertyCount: 10
@@ -8307,10 +8765,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8319,19 +8777,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000
   - Name: UI/Lit/Bumped
     PropertyCount: 12
@@ -8363,9 +8821,9 @@ MonoBehaviour:
     - _UseUIAlphaClip
     PropertyTypes: 000000000000000004000000040000000300000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -8378,7 +8836,10 @@ MonoBehaviour:
     - Def: 0.2
       Min: 0.01
       Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8387,19 +8848,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000002000000020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000002000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000
   - Name: UI/Lit/Detail
     PropertyCount: 15
@@ -8437,9 +8895,9 @@ MonoBehaviour:
     - _UseUIAlphaClip
     PropertyTypes: 000000000000000004000000040000000400000004000000030000000300000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -8461,7 +8919,10 @@ MonoBehaviour:
     - Def: 0.2
       Min: 0.01
       Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8470,19 +8931,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 010000000100000002000000020000000200000002000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000002000000020000000200000002000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000000000000000
   - Name: UI/Lit/Refraction
     PropertyCount: 14
@@ -8518,9 +8976,9 @@ MonoBehaviour:
     - _UseUIAlphaClip
     PropertyTypes: 0000000000000000040000000400000004000000030000000300000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -8539,7 +8997,10 @@ MonoBehaviour:
     - Def: -100
       Min: -100
       Max: 100
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8548,19 +9009,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000200000002000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000200000002000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000
   - Name: UI/Lit/Refraction Detail
     PropertyCount: 17
@@ -8602,9 +9060,9 @@ MonoBehaviour:
     - _UseUIAlphaClip
     PropertyTypes: 0000000000000000040000000400000004000000040000000400000004000000030000000300000002000000020000000200000002000000020000000200000002000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
@@ -8632,7 +9090,10 @@ MonoBehaviour:
     - Def: -100
       Min: -100
       Max: 100
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8641,19 +9102,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0100000001000000020000000200000002000000020000000200000002000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000200000002000000020000000200000002000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000000000
   - Name: UI/Lit/Transparent
     PropertyCount: 10
@@ -8684,13 +9142,7 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
     - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 8
       Min: 0
       Max: 0
     - Def: 0
@@ -8699,19 +9151,25 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 02000000010000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000000000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 00000000000000000000
   - Name: UI/Unlit/Detail
     PropertyCount: 11
@@ -8744,16 +9202,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0.2
       Min: 0
       Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8762,19 +9223,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000001000000020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000
   - Name: UI/Unlit/Text
     PropertyCount: 9
@@ -8803,10 +9261,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8815,19 +9273,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: UI/Unlit/Text Detail
     PropertyCount: 11
@@ -8860,16 +9318,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
+    - Def: 0
+      Min: 0
+      Max: 0
     - Def: 0
       Min: 0
       Max: 0
     - Def: 0.2
       Min: 0
       Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8878,19 +9339,16 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000001000000020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000
   - Name: UI/Unlit/Transparent
     PropertyCount: 9
@@ -8919,10 +9377,10 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 1
-      Min: 1
-      Max: 1
-    - Def: 8
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
@@ -8931,19 +9389,19 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 255
-      Min: 0
-      Max: 0
-    - Def: 15
+    - Def: 0
       Min: 0
       Max: 0
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000100000001000000010000000100000001000000010000000100000001000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
   - Name: Unlit/Color
     PropertyCount: 1
@@ -8953,10 +9411,10 @@ MonoBehaviour:
     - _Color
     PropertyTypes: 00000000
     PropertyRangeLimits:
-    - Def: 1
-      Min: 1
-      Max: 1
-    PropertyTexDims: 01000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000
     IsHidden: 00
   - Name: Unlit/Texture
     PropertyCount: 1
@@ -9000,7 +9458,7 @@ MonoBehaviour:
     - Def: 0.5
       Min: 0
       Max: 1
-    PropertyTexDims: 0200000001000000
+    PropertyTexDims: 0200000000000000
     IsHidden: 0000
   - Name: VR/SpatialMapping/Occlusion
     PropertyCount: 0
@@ -9021,5 +9479,5 @@ MonoBehaviour:
     - Def: 100
       Min: 0
       Max: 800
-    PropertyTexDims: 01000000
+    PropertyTexDims: 00000000
     IsHidden: 00

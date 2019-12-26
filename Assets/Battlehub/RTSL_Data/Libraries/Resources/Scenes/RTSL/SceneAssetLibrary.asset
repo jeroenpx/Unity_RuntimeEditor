@@ -234,10 +234,4 @@ MonoBehaviour:
         Object: {fileID: 2100000, guid: b3447251bc65b704dabf20c3b7c78b02, type: 2}
         IsEnabled: 0
         PrefabParts: []
-      - m_ID: 38
-        m_Name: Mega Drive - Take Me Home
-        m_Depth: 0
-        Object: {fileID: 8300000, guid: 47acc2e5856437344a004b588f6d3783, type: 3}
-        IsEnabled: 0
-        PrefabParts: []
       IsEnabled: 1

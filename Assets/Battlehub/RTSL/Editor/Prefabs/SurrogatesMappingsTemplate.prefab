@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 241
+  m_RootOrder: 229
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7434720726579593990
 MonoBehaviour:
@@ -255,7 +255,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 311
+  m_RootOrder: 289
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2732690686187076106
 MonoBehaviour:
@@ -1401,367 +1401,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &109246183780593597
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6276789491433059081}
-  - component: {fileID: 9157591025598113308}
-  m_Layer: 0
-  m_Name: Vuforia.VuforiaConfiguration+GenericVuforiaConfiguration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6276789491433059081
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109246183780593597}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 131
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9157591025598113308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109246183780593597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 20
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: VuforiaConfiguration+GenericVuforiaConfiguration
-  MappedTypeGUID: 9bcc480f-cf6e-4e09-b0d4-dd1f5ea8fc20
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentVuforiaConfiguration+GenericVuforiaConfiguration
-  PersistentTypeGUID: 118aeb3d-4968-4af4-9608-8ed5d6f5c0a6
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 10
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: vuforiaLicenseKey
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: vuforiaLicenseKey
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 11
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: ufoLicenseKey
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: ufoLicenseKey
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 12
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: delayedInitialization
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: delayedInitialization
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 13
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: CameraDevice+CameraDeviceMode
-    PersistentName: cameraDeviceModeSetting
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: CameraDevice+CameraDeviceMode
-    MappedName: cameraDeviceModeSetting
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 14
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: maxSimultaneousImageTargets
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: maxSimultaneousImageTargets
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 15
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: maxSimultaneousObjectTargets
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: maxSimultaneousObjectTargets
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 16
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: useDelayedLoadingObjectTargets
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: useDelayedLoadingObjectTargets
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 17
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: CameraDevice+CameraDirection
-    PersistentName: cameraDirection
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: CameraDevice+CameraDirection
-    MappedName: cameraDirection
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 18
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: VuforiaRenderer+VideoBackgroundReflection
-    PersistentName: mirrorVideoBackground
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: VuforiaRenderer+VideoBackgroundReflection
-    MappedName: mirrorVideoBackground
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 19
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: version
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: version
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 20
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: eulaAcceptedVersions
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: eulaAcceptedVersions
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: LicenseKey
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: LicenseKey
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: DelayedInitialization
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: DelayedInitialization
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: CameraDevice+CameraDeviceMode
-    PersistentName: CameraDeviceMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: CameraDevice+CameraDeviceMode
-    MappedName: CameraDeviceMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: MaxSimultaneousImageTargets
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: MaxSimultaneousImageTargets
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: MaxSimultaneousObjectTargets
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: MaxSimultaneousObjectTargets
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: UseDelayedLoadingObjectTargets
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: UseDelayedLoadingObjectTargets
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: CameraDevice+CameraDirection
-    PersistentName: CameraDirection
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: CameraDevice+CameraDirection
-    MappedName: CameraDirection
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 8
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: VuforiaRenderer+VideoBackgroundReflection
-    PersistentName: MirrorVideoBackground
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: VuforiaRenderer+VideoBackgroundReflection
-    MappedName: MirrorVideoBackground
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 9
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: Version
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: Version
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &135959547927895291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1791,7 +1430,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 192
+  m_RootOrder: 181
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1943487059792824271
 MonoBehaviour:
@@ -1897,7 +1536,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 281
+  m_RootOrder: 264
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1224584592940354584
 MonoBehaviour:
@@ -2259,7 +1898,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 158
+  m_RootOrder: 149
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1398772346514245184
 MonoBehaviour:
@@ -2712,67 +2351,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &267813007498495890
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8208099423402346077}
-  - component: {fileID: 6072890959032939243}
-  m_Layer: 0
-  m_Name: GoogleARCore.Examples.ObjectManipulation.TwistGestureRecognizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8208099423402346077
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267813007498495890}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 289
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6072890959032939243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 267813007498495890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: GoogleARCore.Examples.ObjectManipulation
-  MappedTypeName: TwistGestureRecognizer
-  MappedTypeGUID: 85e5493f-7c0f-4d9e-999f-a9c322b783f9
-  PersistentNamespace: GoogleARCore.Examples.ObjectManipulation.Battlehub.SL2
-  PersistentTypeName: PersistentTwistGestureRecognizer
-  PersistentTypeGUID: 0eb76664-59c0-42a8-86e0-7c900c1d7e90
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &322084235868514940
 GameObject:
   m_ObjectHideFlags: 0
@@ -3013,7 +2591,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 145
+  m_RootOrder: 138
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4738161016515773938
 MonoBehaviour:
@@ -3181,7 +2759,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 245
+  m_RootOrder: 233
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3208881524334179360
 MonoBehaviour:
@@ -3347,7 +2925,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 184
+  m_RootOrder: 173
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &416631158075855300
 MonoBehaviour:
@@ -3589,7 +3167,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 229
+  m_RootOrder: 217
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &590364702317481403
 MonoBehaviour:
@@ -3741,7 +3319,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 247
+  m_RootOrder: 235
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5775711193414359706
 MonoBehaviour:
@@ -4524,7 +4102,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 117
+  m_RootOrder: 116
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7581378748604697356
 MonoBehaviour:
@@ -4630,7 +4208,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 270
+  m_RootOrder: 257
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &832634921545489660
 MonoBehaviour:
@@ -4721,7 +4299,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 268
+  m_RootOrder: 255
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6539088389314258606
 MonoBehaviour:
@@ -5474,217 +5052,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &751549696955509577
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1594304539061594591}
-  - component: {fileID: 8703389122985084344}
-  m_Layer: 0
-  m_Name: Vuforia.VuforiaConfiguration+VideoBackgroundConfiguration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1594304539061594591
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 751549696955509577}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 170
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8703389122985084344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 751549696955509577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 10
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: VuforiaConfiguration+VideoBackgroundConfiguration
-  MappedTypeGUID: 3d487e4d-8216-49a6-b0b9-cef02dc4b191
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentVuforiaConfiguration+VideoBackgroundConfiguration
-  PersistentTypeGUID: 7da2c052-3298-4ba7-adf9-4a365527f7b3
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 6
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: HideExcessAreaUtility+CLIPPING_MODE
-    PersistentName: clippingMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: HideExcessAreaUtility+CLIPPING_MODE
-    MappedName: clippingMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 7
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: numDivisions
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: numDivisions
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 8
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Shader
-    PersistentName: videoBackgroundShader
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Shader
-    MappedName: videoBackgroundShader
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 9
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Shader
-    PersistentName: matteShader
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Shader
-    MappedName: matteShader
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 10
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: videoBackgroundEnabled
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: videoBackgroundEnabled
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: HideExcessAreaUtility+CLIPPING_MODE
-    PersistentName: ClippingMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: HideExcessAreaUtility+CLIPPING_MODE
-    MappedName: ClippingMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: NumDivisions
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: NumDivisions
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Shader
-    PersistentName: VideoBackgroundShader
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Shader
-    MappedName: VideoBackgroundShader
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Shader
-    PersistentName: MatteShader
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Shader
-    MappedName: MatteShader
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 1
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: VideoBackgroundEnabled
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: VideoBackgroundEnabled
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &756519317448581293
 GameObject:
   m_ObjectHideFlags: 0
@@ -5714,7 +5081,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 194
+  m_RootOrder: 183
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3771397940011112286
 MonoBehaviour:
@@ -5775,7 +5142,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 129
+  m_RootOrder: 125
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7470933881825946677
 MonoBehaviour:
@@ -6017,7 +5384,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 307
+  m_RootOrder: 285
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8981047718178980614
 MonoBehaviour:
@@ -6078,7 +5445,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 251
+  m_RootOrder: 239
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5288242088340429103
 MonoBehaviour:
@@ -6169,7 +5536,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 135
+  m_RootOrder: 128
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6399632990607018644
 MonoBehaviour:
@@ -6264,7 +5631,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 258
+  m_RootOrder: 245
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1235194412567945673
 MonoBehaviour:
@@ -6355,7 +5722,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 204
+  m_RootOrder: 193
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4403539517207125441
 MonoBehaviour:
@@ -6476,7 +5843,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 260
+  m_RootOrder: 247
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5715443227419706982
 MonoBehaviour:
@@ -6627,7 +5994,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 227
+  m_RootOrder: 215
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3807480180887203390
 MonoBehaviour:
@@ -6809,7 +6176,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 182
+  m_RootOrder: 171
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7709558505044147101
 MonoBehaviour:
@@ -6915,7 +6282,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 237
+  m_RootOrder: 225
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1194563059772132492
 MonoBehaviour:
@@ -6974,337 +6341,6 @@ MonoBehaviour:
     MappedName: PreviewData
     UseSurrogate: 0
     UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
---- !u!1 &1116538482017210302
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8939893534587626208}
-  - component: {fileID: 2306613205467994812}
-  m_Layer: 0
-  m_Name: Vuforia.VuforiaConfiguration+DigitalEyewearConfiguration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8939893534587626208
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1116538482017210302}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 124
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2306613205467994812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1116538482017210302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 18
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: VuforiaConfiguration+DigitalEyewearConfiguration
-  MappedTypeGUID: 126c6bf9-83c0-4622-bdae-5968cf455c5b
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentVuforiaConfiguration+DigitalEyewearConfiguration
-  PersistentTypeGUID: 66232cb4-8de4-4795-b008-267e0e8095b1
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 10
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: cameraOffset
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: cameraOffset
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 11
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: distortionRenderingLayer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: distortionRenderingLayer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 12
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+EyewearType
-    PersistentName: eyewearType
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+EyewearType
-    MappedName: eyewearType
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 13
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+StereoFramework
-    PersistentName: stereoFramework
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+StereoFramework
-    MappedName: stereoFramework
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 14
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+SeeThroughConfiguration
-    PersistentName: seeThroughConfiguration
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+SeeThroughConfiguration
-    MappedName: seeThroughConfiguration
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 15
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: viewerName
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: viewerName
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 16
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: viewerManufacturer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: viewerManufacturer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 17
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: useCustomViewer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: useCustomViewer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 18
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+SerializableViewerParameters
-    PersistentName: customViewer
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+SerializableViewerParameters
-    MappedName: customViewer
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: CameraOffset
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: CameraOffset
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: DistortionRenderingLayer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: DistortionRenderingLayer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+EyewearType
-    PersistentName: EyewearType
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+EyewearType
-    MappedName: EyewearType
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+StereoFramework
-    PersistentName: StereoFramework
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+StereoFramework
-    MappedName: StereoFramework
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+SeeThroughConfiguration
-    PersistentName: SeeThroughConfiguration
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+SeeThroughConfiguration
-    MappedName: SeeThroughConfiguration
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: ViewerName
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: ViewerName
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 7
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: ViewerManufacturer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: ViewerManufacturer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 8
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: UseCustomViewer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: UseCustomViewer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 9
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DigitalEyewearARController+SerializableViewerParameters
-    PersistentName: CustomViewer
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DigitalEyewearARController+SerializableViewerParameters
-    MappedName: CustomViewer
-    UseSurrogate: 1
-    UseSurrogate2: 1
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
@@ -7503,7 +6539,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 186
+  m_RootOrder: 175
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7377203573023555470
 MonoBehaviour:
@@ -7985,7 +7021,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 198
+  m_RootOrder: 187
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8466313522601690241
 MonoBehaviour:
@@ -8934,7 +7970,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 143
+  m_RootOrder: 136
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4691383557697734903
 MonoBehaviour:
@@ -8995,7 +8031,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 219
+  m_RootOrder: 207
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6851458472713077544
 MonoBehaviour:
@@ -9101,7 +8137,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 144
+  m_RootOrder: 137
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1978895825191384996
 MonoBehaviour:
@@ -9435,7 +8471,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 202
+  m_RootOrder: 191
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8428202210444463310
 MonoBehaviour:
@@ -9813,7 +8849,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 136
+  m_RootOrder: 129
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3480186493639192530
 MonoBehaviour:
@@ -10131,7 +9167,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 233
+  m_RootOrder: 221
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2082943863322320983
 MonoBehaviour:
@@ -10343,7 +9379,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 214
+  m_RootOrder: 202
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6078944562733086906
 MonoBehaviour:
@@ -10871,7 +9907,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 177
+  m_RootOrder: 166
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6522213175404783658
 MonoBehaviour:
@@ -11219,7 +10255,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 306
+  m_RootOrder: 284
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1531603510834529780
 MonoBehaviour:
@@ -11280,7 +10316,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 154
+  m_RootOrder: 145
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3160041453157367736
 MonoBehaviour:
@@ -11462,7 +10498,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 217
+  m_RootOrder: 205
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6043448774558021609
 MonoBehaviour:
@@ -11688,7 +10724,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 188
+  m_RootOrder: 177
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3517109074537008206
 MonoBehaviour:
@@ -12501,7 +11537,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 139
+  m_RootOrder: 132
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8411883483837132678
 MonoBehaviour:
@@ -12562,7 +11598,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 165
+  m_RootOrder: 156
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &450341839102496641
 MonoBehaviour:
@@ -13827,7 +12863,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 218
+  m_RootOrder: 206
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6476121485727580082
 MonoBehaviour:
@@ -13888,7 +12924,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 309
+  m_RootOrder: 287
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5553774794581819272
 MonoBehaviour:
@@ -14070,7 +13106,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 293
+  m_RootOrder: 271
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6706980740587204952
 MonoBehaviour:
@@ -14102,99 +13138,6 @@ MonoBehaviour:
   UseTemplate: 1
   Subclasses: []
   PropertyMappings: []
---- !u!1 &2518682798163440463
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7437830464845629684}
-  - component: {fileID: 540724061650006879}
-  m_Layer: 0
-  m_Name: CustomType1000
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7437830464845629684
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2518682798163440463}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 208
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &540724061650006879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2518682798163440463}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 2
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: 
-  MappedTypeName: CustomType1000
-  MappedTypeGUID: 68af9c75-d068-4338-bd08-f91d69367329
-  PersistentNamespace: Battlehub.SL2
-  PersistentTypeName: PersistentCustomType1000
-  PersistentTypeGUID: 22af9a44-b793-45d6-b267-92017e67e712
-  PersistentBaseNamespace: Battlehub.RTSaveLoad2
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 1
-    PersistentNamespace: System.Collections.Generic.Battlehub.SL2
-    PersistentTypeName: List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089]]
-    PersistentName: m_list
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089]]
-    MappedName: m_list
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: intValue
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: intValue
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &2525168830211259902
 GameObject:
   m_ObjectHideFlags: 0
@@ -14224,7 +13167,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 295
+  m_RootOrder: 273
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1464347543348816300
 MonoBehaviour:
@@ -14285,7 +13228,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 261
+  m_RootOrder: 248
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &721329619659201577
 MonoBehaviour:
@@ -14391,7 +13334,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 286
+  m_RootOrder: 268
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8757603573998298424
 MonoBehaviour:
@@ -14753,7 +13696,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 211
+  m_RootOrder: 199
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2783338360503179550
 MonoBehaviour:
@@ -14874,7 +13817,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 190
+  m_RootOrder: 179
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3796956222988423630
 MonoBehaviour:
@@ -14965,7 +13908,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 187
+  m_RootOrder: 176
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7691310135607299535
 MonoBehaviour:
@@ -15041,7 +13984,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 244
+  m_RootOrder: 232
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9160804150764075356
 MonoBehaviour:
@@ -15855,7 +14798,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 178
+  m_RootOrder: 167
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3498087896205742526
 MonoBehaviour:
@@ -16067,7 +15010,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 151
+  m_RootOrder: 144
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7255366885732043474
 MonoBehaviour:
@@ -16249,7 +15192,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 180
+  m_RootOrder: 169
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7745983177725777365
 MonoBehaviour:
@@ -16672,7 +15615,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 167
+  m_RootOrder: 158
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1122677573187982950
 MonoBehaviour:
@@ -16754,7 +15697,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 304
+  m_RootOrder: 282
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6669810320539671117
 MonoBehaviour:
@@ -16876,7 +15819,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 280
+  m_RootOrder: 263
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4935462965430628832
 MonoBehaviour:
@@ -16967,7 +15910,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 232
+  m_RootOrder: 220
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8222417403556471011
 MonoBehaviour:
@@ -17088,7 +16031,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 274
+  m_RootOrder: 261
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8836626519330874213
 MonoBehaviour:
@@ -17360,7 +16303,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 271
+  m_RootOrder: 258
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3109971812664686959
 MonoBehaviour:
@@ -17496,7 +16439,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 199
+  m_RootOrder: 188
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6054534122177997903
 MonoBehaviour:
@@ -17557,7 +16500,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 220
+  m_RootOrder: 208
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4967594450666020035
 MonoBehaviour:
@@ -17675,7 +16618,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 125
+  m_RootOrder: 121
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5238523059562135640
 MonoBehaviour:
@@ -18056,7 +16999,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 254
+  m_RootOrder: 242
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6259251948414501266
 MonoBehaviour:
@@ -18478,7 +17421,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 169
+  m_RootOrder: 160
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7893315823218416520
 MonoBehaviour:
@@ -18599,7 +17542,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 273
+  m_RootOrder: 260
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6243063716804446811
 MonoBehaviour:
@@ -19113,7 +18056,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 242
+  m_RootOrder: 230
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3324072174996694722
 MonoBehaviour:
@@ -20123,7 +19066,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 250
+  m_RootOrder: 238
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4845732861214598842
 MonoBehaviour:
@@ -20260,7 +19203,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 160
+  m_RootOrder: 151
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2490863379873229107
 MonoBehaviour:
@@ -20518,67 +19461,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
---- !u!1 &4015105741476595866
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8976454929554235940}
-  - component: {fileID: 649182158937562841}
-  m_Layer: 0
-  m_Name: GoogleARCore.Examples.ObjectManipulation.TapGestureRecognizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8976454929554235940
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015105741476595866}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 288
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &649182158937562841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4015105741476595866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: GoogleARCore.Examples.ObjectManipulation
-  MappedTypeName: TapGestureRecognizer
-  MappedTypeGUID: 3f9f48fc-04e3-4355-b8ee-c0c69d7947e1
-  PersistentNamespace: GoogleARCore.Examples.ObjectManipulation.Battlehub.SL2
-  PersistentTypeName: PersistentTapGestureRecognizer
-  PersistentTypeGUID: b26db1da-3ac6-4edb-87a6-47fadacb0c39
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &4080751557341391703
 GameObject:
   m_ObjectHideFlags: 0
@@ -20608,7 +19490,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 272
+  m_RootOrder: 259
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5609122254202027526
 MonoBehaviour:
@@ -20744,7 +19626,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 253
+  m_RootOrder: 241
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6644282275683988234
 MonoBehaviour:
@@ -21136,7 +20018,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 137
+  m_RootOrder: 130
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &879302042796246067
 MonoBehaviour:
@@ -21934,7 +20816,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 189
+  m_RootOrder: 178
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4978567923099116560
 MonoBehaviour:
@@ -22326,128 +21208,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &4201903506882150148
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5815237109908545268}
-  - component: {fileID: 8604259504328289304}
-  m_Layer: 0
-  m_Name: UnityEngine.ProBuilder.UnwrapParameters
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5815237109908545268
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4201903506882150148}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 291
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8604259504328289304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4201903506882150148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Unity.ProBuilder
-  MappedNamespace: UnityEngine.ProBuilder
-  MappedTypeName: UnwrapParameters
-  MappedTypeGUID: 07770e32-1dc5-4ac9-b1ab-af613ee48b76
-  PersistentNamespace: UnityEngine.ProBuilder.Battlehub.SL2
-  PersistentTypeName: PersistentUnwrapParameters
-  PersistentTypeGUID: 9fcf6d0e-4b61-447a-a2d9-d85b084dd3c6
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
---- !u!1 &4232513587082797544
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3122422579905676431}
-  - component: {fileID: 6110158209400259860}
-  m_Layer: 0
-  m_Name: UnityEngine.ProBuilder.AutoUnwrapSettings
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3122422579905676431
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4232513587082797544}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 275
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6110158209400259860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4232513587082797544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Unity.ProBuilder
-  MappedNamespace: UnityEngine.ProBuilder
-  MappedTypeName: AutoUnwrapSettings
-  MappedTypeGUID: 9a4ced9e-9710-4f06-bec6-4c5e3a1ee534
-  PersistentNamespace: UnityEngine.ProBuilder.Battlehub.SL2
-  PersistentTypeName: PersistentAutoUnwrapSettings
-  PersistentTypeGUID: ed3475a9-7ddc-4e7b-9688-d1ce2a508aa4
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &4306340628924563954
 GameObject:
   m_ObjectHideFlags: 0
@@ -22477,7 +21237,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 130
+  m_RootOrder: 126
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7853809991897101551
 MonoBehaviour:
@@ -22778,7 +21538,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 287
+  m_RootOrder: 269
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5886667604799264089
 MonoBehaviour:
@@ -22914,7 +21674,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 276
+  m_RootOrder: 262
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4761529275592119793
 MonoBehaviour:
@@ -23456,7 +22216,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 225
+  m_RootOrder: 213
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3384717677053965586
 MonoBehaviour:
@@ -23607,7 +22367,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 267
+  m_RootOrder: 254
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9042766287324004113
 MonoBehaviour:
@@ -23743,7 +22503,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 161
+  m_RootOrder: 152
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8481616387801938705
 MonoBehaviour:
@@ -24362,7 +23122,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 216
+  m_RootOrder: 204
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3482915077784559949
 MonoBehaviour:
@@ -24814,7 +23574,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 185
+  m_RootOrder: 174
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4992411916530560710
 MonoBehaviour:
@@ -24950,7 +23710,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 236
+  m_RootOrder: 224
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2678360499229774306
 MonoBehaviour:
@@ -25071,7 +23831,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 215
+  m_RootOrder: 203
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1166935009106685854
 MonoBehaviour:
@@ -25133,67 +23893,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
---- !u!1 &4568056607094472161
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8606028886965720020}
-  - component: {fileID: 1644293156209890855}
-  m_Layer: 0
-  m_Name: GoogleARCore.Examples.ObjectManipulation.PinchGestureRecognizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8606028886965720020
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4568056607094472161}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 282
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1644293156209890855
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4568056607094472161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: GoogleARCore.Examples.ObjectManipulation
-  MappedTypeName: PinchGestureRecognizer
-  MappedTypeGUID: c0ccd04d-0bc8-4e62-8957-10cb83d0ca4f
-  PersistentNamespace: GoogleARCore.Examples.ObjectManipulation.Battlehub.SL2
-  PersistentTypeName: PersistentPinchGestureRecognizer
-  PersistentTypeGUID: 2af82590-32a7-416b-a5e5-5fef057981d0
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &4599413696923374603
 GameObject:
   m_ObjectHideFlags: 0
@@ -25223,7 +23922,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 240
+  m_RootOrder: 228
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9176995160310997205
 MonoBehaviour:
@@ -25314,7 +24013,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 262
+  m_RootOrder: 249
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9101320709133101780
 MonoBehaviour:
@@ -25405,7 +24104,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 265
+  m_RootOrder: 252
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1416754212138672896
 MonoBehaviour:
@@ -25514,7 +24213,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 292
+  m_RootOrder: 270
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7748621423719579876
 MonoBehaviour:
@@ -25575,7 +24274,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 148
+  m_RootOrder: 141
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6846578367156443043
 MonoBehaviour:
@@ -25696,7 +24395,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 200
+  m_RootOrder: 189
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1641838252427905946
 MonoBehaviour:
@@ -26526,7 +25225,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 299
+  m_RootOrder: 277
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1972660666856105865
 MonoBehaviour:
@@ -26587,7 +25286,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 168
+  m_RootOrder: 159
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3559950411130557470
 MonoBehaviour:
@@ -26696,7 +25395,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 234
+  m_RootOrder: 222
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1184010070037477455
 MonoBehaviour:
@@ -26998,7 +25697,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 224
+  m_RootOrder: 212
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5238045163268438946
 MonoBehaviour:
@@ -27059,7 +25758,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 285
+  m_RootOrder: 267
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3388090920889806802
 MonoBehaviour:
@@ -27150,7 +25849,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 308
+  m_RootOrder: 286
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2958089035132879878
 MonoBehaviour:
@@ -27602,7 +26301,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 255
+  m_RootOrder: 243
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5703385631434916643
 MonoBehaviour:
@@ -27738,7 +26437,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 297
+  m_RootOrder: 275
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4654136069629993159
 MonoBehaviour:
@@ -27799,7 +26498,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 128
+  m_RootOrder: 124
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2745733304611086422
 MonoBehaviour:
@@ -28146,67 +26845,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &5013448517322929821
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8899938193488249736}
-  - component: {fileID: 5640306479779441303}
-  m_Layer: 0
-  m_Name: Vuforia.HitTestEvent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8899938193488249736
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013448517322929821}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 132
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5640306479779441303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5013448517322929821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: HitTestEvent
-  MappedTypeGUID: ddea99f1-51dd-4ab4-8f91-7ae3a3532a32
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentHitTestEvent
-  PersistentTypeGUID: 8f3bf8bc-1e1f-431a-8145-de2bb613af16
-  PersistentBaseNamespace: UnityEngine.Events.Battlehub.SL2
-  PersistentBaseTypeName: PersistentUnityEventBase
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &5073310908861540380
 GameObject:
   m_ObjectHideFlags: 0
@@ -28236,7 +26874,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 296
+  m_RootOrder: 274
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8967880829843032323
 MonoBehaviour:
@@ -28297,7 +26935,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 163
+  m_RootOrder: 154
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7269906520034056624
 MonoBehaviour:
@@ -28598,7 +27236,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 248
+  m_RootOrder: 236
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6674811664117440159
 MonoBehaviour:
@@ -28929,7 +27567,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 174
+  m_RootOrder: 163
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1538639358037940468
 MonoBehaviour:
@@ -29020,7 +27658,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 179
+  m_RootOrder: 168
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7681345526175761634
 MonoBehaviour:
@@ -29218,7 +27856,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 164
+  m_RootOrder: 155
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8718734392458722577
 MonoBehaviour:
@@ -29354,7 +27992,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 294
+  m_RootOrder: 272
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3784186044560440740
 MonoBehaviour:
@@ -29415,7 +28053,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 191
+  m_RootOrder: 180
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3109173526840302117
 MonoBehaviour:
@@ -29748,7 +28386,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 118
+  m_RootOrder: 117
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2305049589619287639
 MonoBehaviour:
@@ -29856,7 +28494,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 146
+  m_RootOrder: 139
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6459974753464299853
 MonoBehaviour:
@@ -30068,7 +28706,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 298
+  m_RootOrder: 276
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3816918537558760833
 MonoBehaviour:
@@ -30235,7 +28873,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 201
+  m_RootOrder: 190
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5170950121191218439
 MonoBehaviour:
@@ -30296,7 +28934,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 196
+  m_RootOrder: 185
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &396572148953839773
 MonoBehaviour:
@@ -30417,7 +29055,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 223
+  m_RootOrder: 211
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &113104779059599962
 MonoBehaviour:
@@ -30613,7 +29251,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 228
+  m_RootOrder: 216
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7932115568917997183
 MonoBehaviour:
@@ -30674,7 +29312,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 140
+  m_RootOrder: 133
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4124244886467425708
 MonoBehaviour:
@@ -30810,7 +29448,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 149
+  m_RootOrder: 142
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &435102348261237373
 MonoBehaviour:
@@ -31021,7 +29659,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 119
+  m_RootOrder: 118
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5158765875174881812
 MonoBehaviour:
@@ -31172,7 +29810,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 263
+  m_RootOrder: 250
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6385678537600982601
 MonoBehaviour:
@@ -31670,7 +30308,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 207
+  m_RootOrder: 196
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8926779977539639090
 MonoBehaviour:
@@ -32047,7 +30685,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 195
+  m_RootOrder: 184
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7541420302929181456
 MonoBehaviour:
@@ -32304,7 +30942,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 162
+  m_RootOrder: 153
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7283483485071129462
 MonoBehaviour:
@@ -32471,67 +31109,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &6189076626711090713
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6953070804335370636}
-  - component: {fileID: 5421846932556708655}
-  m_Layer: 0
-  m_Name: Vuforia.AnchorInputListenerBehaviour+InputReceivedEvent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6953070804335370636
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6189076626711090713}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 134
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5421846932556708655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6189076626711090713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: AnchorInputListenerBehaviour+InputReceivedEvent
-  MappedTypeGUID: d5a7fcbf-2bf0-4648-93d9-841bd3b9faa5
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentAnchorInputListenerBehaviour+InputReceivedEvent
-  PersistentTypeGUID: 5ba5ba57-0827-4c99-90d9-c26705f31277
-  PersistentBaseNamespace: UnityEngine.Events.Battlehub.SL2
-  PersistentBaseTypeName: PersistentUnityEventBase
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &6193505697910764163
 GameObject:
   m_ObjectHideFlags: 0
@@ -32561,7 +31138,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 156
+  m_RootOrder: 147
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8075939757335274688
 MonoBehaviour:
@@ -33343,7 +31920,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 213
+  m_RootOrder: 201
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1640806126231715518
 MonoBehaviour:
@@ -33689,7 +32266,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 259
+  m_RootOrder: 246
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4021865235082593054
 MonoBehaviour:
@@ -33810,7 +32387,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 147
+  m_RootOrder: 140
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8923446007041749658
 MonoBehaviour:
@@ -34715,7 +33292,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 126
+  m_RootOrder: 122
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8707565995973876511
 MonoBehaviour:
@@ -34776,7 +33353,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 300
+  m_RootOrder: 278
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4485686431244314460
 MonoBehaviour:
@@ -34837,7 +33414,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 157
+  m_RootOrder: 148
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &706472587454799149
 MonoBehaviour:
@@ -34928,7 +33505,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 269
+  m_RootOrder: 256
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7536817994145608851
 MonoBehaviour:
@@ -35170,7 +33747,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 203
+  m_RootOrder: 192
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3471372632455047218
 MonoBehaviour:
@@ -35261,7 +33838,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 166
+  m_RootOrder: 157
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &514361074290457823
 MonoBehaviour:
@@ -35563,7 +34140,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 193
+  m_RootOrder: 182
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2731492134114831221
 MonoBehaviour:
@@ -35729,7 +34306,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 183
+  m_RootOrder: 172
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7690302502729935591
 MonoBehaviour:
@@ -35971,7 +34548,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 305
+  m_RootOrder: 283
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1623049357710432476
 MonoBehaviour:
@@ -36378,7 +34955,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 173
+  m_RootOrder: 162
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &301658574852627127
 MonoBehaviour:
@@ -36623,247 +35200,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &6999968825288737356
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 684387811805842568}
-  - component: {fileID: 9060664057719909037}
-  m_Layer: 0
-  m_Name: Vuforia.VuforiaConfiguration+DeviceTrackerConfiguration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &684387811805842568
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6999968825288737356}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 123
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9060664057719909037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6999968825288737356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 12
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: VuforiaConfiguration+DeviceTrackerConfiguration
-  MappedTypeGUID: 368149e0-1638-48d9-8e4d-465d7636bf24
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentVuforiaConfiguration+DeviceTrackerConfiguration
-  PersistentTypeGUID: 8ea7f5bb-358c-40a2-a9ae-3e59bcaaa4c2
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 7
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DeviceTracker+TRACKING_MODE
-    PersistentName: trackingMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DeviceTracker+TRACKING_MODE
-    MappedName: trackingMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 8
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: posePrediction
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: posePrediction
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 9
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: RotationalDeviceTracker+MODEL_CORRECTION_MODE
-    PersistentName: modelCorrectionMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: RotationalDeviceTracker+MODEL_CORRECTION_MODE
-    MappedName: modelCorrectionMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 10
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: modelTransformEnabled
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: modelTransformEnabled
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 11
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: modelTransform
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: modelTransform
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 12
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: FusionProviderType
-    PersistentName: fusionMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: FusionProviderType
-    MappedName: fusionMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 1
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: DeviceTracker+TRACKING_MODE
-    PersistentName: TrackingMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: DeviceTracker+TRACKING_MODE
-    MappedName: TrackingMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: PosePrediction
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: PosePrediction
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 3
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: RotationalDeviceTracker+MODEL_CORRECTION_MODE
-    PersistentName: ModelCorrectionMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: RotationalDeviceTracker+MODEL_CORRECTION_MODE
-    MappedName: ModelCorrectionMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: ModelTransformEnabled
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: ModelTransformEnabled
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 5
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector3
-    PersistentName: ModelTransform
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector3
-    MappedName: ModelTransform
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 1
-    PersistentTag: 6
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: FusionProviderType
-    PersistentName: FusionMode
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: FusionProviderType
-    MappedName: FusionMode
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &7046964129412790364
 GameObject:
   m_ObjectHideFlags: 0
@@ -36893,7 +35229,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 302
+  m_RootOrder: 280
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2711251879235441288
 MonoBehaviour:
@@ -36954,7 +35290,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 312
+  m_RootOrder: 290
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4147377742494950124
 MonoBehaviour:
@@ -37015,7 +35351,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 303
+  m_RootOrder: 281
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8754041497168736787
 MonoBehaviour:
@@ -37047,232 +35383,6 @@ MonoBehaviour:
   UseTemplate: 1
   Subclasses: []
   PropertyMappings: []
---- !u!1 &7159445534166974462
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 720551815496386489}
-  - component: {fileID: 4945340168741510987}
-  m_Layer: 0
-  m_Name: Vuforia.DigitalEyewearARController+SerializableViewerParameters
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &720551815496386489
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7159445534166974462}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 152
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4945340168741510987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7159445534166974462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 11
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: DigitalEyewearARController+SerializableViewerParameters
-  MappedTypeGUID: 6cda0582-f972-43f3-bc43-51022565ba6c
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentDigitalEyewearARController+SerializableViewerParameters
-  PersistentTypeGUID: 3fe4be08-c92b-4a6a-87a3-3d0eb3d3e136
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: Version
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: Version
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: Name
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: Name
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 3
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: Manufacturer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: Manufacturer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 4
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: ViewerButtonType
-    PersistentName: ButtonType
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: ViewerButtonType
-    MappedName: ButtonType
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 5
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: ScreenToLensDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: ScreenToLensDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 6
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: InterLensDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: InterLensDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 7
-    PersistentNamespace: Vuforia.Battlehub.SL2
-    PersistentTypeName: ViewerTrayAlignment
-    PersistentName: TrayAlignment
-    MappedAssemblyName: Vuforia.UnityExtensions
-    MappedNamespace: Vuforia
-    MappedTypeName: ViewerTrayAlignment
-    MappedName: TrayAlignment
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 8
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Single
-    PersistentName: LensCenterToTrayDistance
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Single
-    MappedName: LensCenterToTrayDistance
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 9
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector2
-    PersistentName: DistortionCoefficients
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector2
-    MappedName: DistortionCoefficients
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 10
-    PersistentNamespace: UnityEngine.Battlehub.SL2
-    PersistentTypeName: Vector4
-    PersistentName: FieldOfView
-    MappedAssemblyName: UnityEngine.CoreModule
-    MappedNamespace: UnityEngine
-    MappedTypeName: Vector4
-    MappedName: FieldOfView
-    UseSurrogate: 1
-    UseSurrogate2: 1
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 11
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: ContainsMagnet
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: ContainsMagnet
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &7164710987364230626
 GameObject:
   m_ObjectHideFlags: 0
@@ -37302,7 +35412,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 284
+  m_RootOrder: 266
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9220837446735365412
 MonoBehaviour:
@@ -37440,99 +35550,6 @@ MonoBehaviour:
   UseTemplate: 1
   Subclasses: []
   PropertyMappings: []
---- !u!1 &7243898431019791221
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4454906860928002413}
-  - component: {fileID: 482311765440852550}
-  m_Layer: 0
-  m_Name: CustomType10002
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4454906860928002413
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7243898431019791221}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 256
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &482311765440852550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7243898431019791221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 2
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: 
-  MappedTypeName: CustomType10002
-  MappedTypeGUID: d74ff6c2-97d3-4ba7-bc2b-dc1214448ea1
-  PersistentNamespace: Battlehub.SL2
-  PersistentTypeName: PersistentCustomType10002
-  PersistentTypeGUID: 16911c56-546a-4c80-9905-e0ba8288c614
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 1
-    PersistentNamespace: System.Collections.Generic.Battlehub.SL2
-    PersistentTypeName: List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089]]
-    PersistentName: m_list
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089]]
-    MappedName: m_list
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: intValue
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: intValue
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 0
-    HasPropertyInTemplate: 0
 --- !u!1 &7249809610119569309
 GameObject:
   m_ObjectHideFlags: 0
@@ -37774,7 +35791,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 252
+  m_RootOrder: 240
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6261842659178717424
 MonoBehaviour:
@@ -38016,7 +36033,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 175
+  m_RootOrder: 164
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5353586609765163448
 MonoBehaviour:
@@ -38199,67 +36216,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &7320593182026906290
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3474388538976810045}
-  - component: {fileID: 1112024547142993562}
-  m_Layer: 0
-  m_Name: Vuforia.VuforiaConfiguration+SmartTerrainConfiguration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3474388538976810045
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7320593182026906290}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 153
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1112024547142993562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7320593182026906290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: VuforiaConfiguration+SmartTerrainConfiguration
-  MappedTypeGUID: a6250083-7023-469c-808d-02d2257f1c06
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentVuforiaConfiguration+SmartTerrainConfiguration
-  PersistentTypeGUID: 376c7b5a-fd2a-403a-9463-a753b470c737
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &7405196635007731587
 GameObject:
   m_ObjectHideFlags: 0
@@ -38289,7 +36245,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 226
+  m_RootOrder: 214
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6650588180992870243
 MonoBehaviour:
@@ -38937,7 +36893,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 266
+  m_RootOrder: 253
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8818835045745457467
 MonoBehaviour:
@@ -39480,67 +37436,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &7500982568022259165
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2242685253407240401}
-  - component: {fileID: 4526463776493540104}
-  m_Layer: 0
-  m_Name: UnityEngine.ProBuilder.Edge
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2242685253407240401
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7500982568022259165}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 278
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4526463776493540104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7500982568022259165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Unity.ProBuilder
-  MappedNamespace: UnityEngine.ProBuilder
-  MappedTypeName: Edge
-  MappedTypeGUID: 6d61f456-b95e-4d8a-8be3-d3608c0c3636
-  PersistentNamespace: UnityEngine.ProBuilder.Battlehub.SL2
-  PersistentTypeName: PersistentEdge
-  PersistentTypeGUID: b3bdead9-29ab-40e5-bf05-56fb6890a86d
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &7576201815900100627
 GameObject:
   m_ObjectHideFlags: 0
@@ -39661,7 +37556,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 159
+  m_RootOrder: 150
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6988826507120133701
 MonoBehaviour:
@@ -39827,7 +37722,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 155
+  m_RootOrder: 146
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3702758042865846007
 MonoBehaviour:
@@ -39888,7 +37783,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 239
+  m_RootOrder: 227
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2648589757878474442
 MonoBehaviour:
@@ -40762,7 +38657,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 150
+  m_RootOrder: 143
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4417480695329536721
 MonoBehaviour:
@@ -41378,7 +39273,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 238
+  m_RootOrder: 226
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3712725935200607444
 MonoBehaviour:
@@ -41740,7 +39635,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 210
+  m_RootOrder: 198
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1817727928787289752
 MonoBehaviour:
@@ -41816,7 +39711,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 283
+  m_RootOrder: 265
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6195912164310905080
 MonoBehaviour:
@@ -42479,7 +40374,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 243
+  m_RootOrder: 231
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2697252947106908354
 MonoBehaviour:
@@ -42541,128 +40436,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &7862345722686968397
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 693898453645095064}
-  - component: {fileID: 2301235197269429106}
-  m_Layer: 0
-  m_Name: UnityEngine.ProBuilder.Face
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &693898453645095064
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7862345722686968397}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 279
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2301235197269429106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7862345722686968397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Unity.ProBuilder
-  MappedNamespace: UnityEngine.ProBuilder
-  MappedTypeName: Face
-  MappedTypeGUID: 465712cf-eced-402f-a4d3-b39d28436786
-  PersistentNamespace: UnityEngine.ProBuilder.Battlehub.SL2
-  PersistentTypeName: PersistentFace
-  PersistentTypeGUID: 9da3926f-1a95-4796-9f85-e65d61535bb8
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
---- !u!1 &7904178949590164901
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1056817468553067383}
-  - component: {fileID: 763861988201695381}
-  m_Layer: 0
-  m_Name: GoogleARCore.Examples.ObjectManipulation.TwoFingerDragGestureRecognizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1056817468553067383
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7904178949590164901}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 290
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &763861988201695381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7904178949590164901}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: GoogleARCore.Examples.ObjectManipulation
-  MappedTypeName: TwoFingerDragGestureRecognizer
-  MappedTypeGUID: b25804e9-b95c-4ed3-bafd-3ecf1483bd7d
-  PersistentNamespace: GoogleARCore.Examples.ObjectManipulation.Battlehub.SL2
-  PersistentTypeName: PersistentTwoFingerDragGestureRecognizer
-  PersistentTypeGUID: 278a12da-c754-4a4a-ad1d-faeaaa679505
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &7913227800061497676
 GameObject:
   m_ObjectHideFlags: 0
@@ -42692,7 +40465,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 122
+  m_RootOrder: 120
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6439801410935983125
 MonoBehaviour:
@@ -42800,7 +40573,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 172
+  m_RootOrder: 161
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3436136458273264410
 MonoBehaviour:
@@ -43181,127 +40954,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
---- !u!1 &8065082010300244136
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2995446359377694104}
-  - component: {fileID: 7673960833701879039}
-  m_Layer: 0
-  m_Name: Vuforia.VuforiaConfiguration+WebCamConfiguration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2995446359377694104
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8065082010300244136}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 171
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7673960833701879039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8065082010300244136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 4
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: VuforiaConfiguration+WebCamConfiguration
-  MappedTypeGUID: bea2e648-5023-458c-8394-46ebc140d884
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentVuforiaConfiguration+WebCamConfiguration
-  PersistentTypeGUID: 9af9665f-e6bb-4d5c-ac8b-8e7c99b34ef4
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings:
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 1
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: String
-    PersistentName: deviceNameSetInEditor
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: String
-    MappedName: deviceNameSetInEditor
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 2
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: flipHorizontally
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: flipHorizontally
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 3
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Boolean
-    PersistentName: turnOffWebCam
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Boolean
-    MappedName: turnOffWebCam
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
-  - IsEnabled: 0
-    IsProperty: 0
-    PersistentTag: 4
-    PersistentNamespace: System.Battlehub.SL2
-    PersistentTypeName: Int32
-    PersistentName: renderTextureLayer
-    MappedAssemblyName: mscorlib
-    MappedNamespace: System
-    MappedTypeName: Int32
-    MappedName: renderTextureLayer
-    UseSurrogate: 0
-    UseSurrogate2: 0
-    HasDependenciesOrIsDependencyItself: 0
-    IsNonPublic: 1
-    HasPropertyInTemplate: 0
 --- !u!1 &8066038543030490307
 GameObject:
   m_ObjectHideFlags: 0
@@ -43331,7 +40983,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 257
+  m_RootOrder: 244
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2819859472959699051
 MonoBehaviour:
@@ -43537,25 +41189,18 @@ Transform:
   - {fileID: 2148910672435218926}
   - {fileID: 901797423432770407}
   - {fileID: 7550642309708011065}
-  - {fileID: 4202443779073140031}
   - {fileID: 1338002071510797328}
   - {fileID: 686892040373363133}
   - {fileID: 4403557819312833835}
   - {fileID: 4021927393462335827}
-  - {fileID: 3082291916817229506}
   - {fileID: 1089193369338321692}
-  - {fileID: 684387811805842568}
-  - {fileID: 8939893534587626208}
   - {fileID: 2265591243547539091}
   - {fileID: 7882273880463871393}
   - {fileID: 2452445417049399969}
   - {fileID: 2744444717112586826}
   - {fileID: 349923947621675556}
   - {fileID: 8930289448479933052}
-  - {fileID: 6276789491433059081}
-  - {fileID: 8899938193488249736}
   - {fileID: 8301709293964727997}
-  - {fileID: 6953070804335370636}
   - {fileID: 7612607509653305386}
   - {fileID: 4766021309290133979}
   - {fileID: 291630403572034658}
@@ -43573,8 +41218,6 @@ Transform:
   - {fileID: 668175264262430104}
   - {fileID: 9005351597731886392}
   - {fileID: 4641542334444023111}
-  - {fileID: 720551815496386489}
-  - {fileID: 3474388538976810045}
   - {fileID: 530725111734044682}
   - {fileID: 407394160674192423}
   - {fileID: 4261992792960483504}
@@ -43591,8 +41234,6 @@ Transform:
   - {fileID: 735868545141238038}
   - {fileID: 6750576830326684137}
   - {fileID: 2154753939095248716}
-  - {fileID: 1594304539061594591}
-  - {fileID: 2995446359377694104}
   - {fileID: 1334801647139534285}
   - {fileID: 5293042817778998545}
   - {fileID: 2660086834427916265}
@@ -43629,7 +41270,6 @@ Transform:
   - {fileID: 2993157881994423641}
   - {fileID: 3836564949913095636}
   - {fileID: 3850367372771920916}
-  - {fileID: 7437830464845629684}
   - {fileID: 7047310213541390688}
   - {fileID: 7033524549094264974}
   - {fileID: 2185318901167735330}
@@ -43677,7 +41317,6 @@ Transform:
   - {fileID: 6005527833588722308}
   - {fileID: 772325648552747370}
   - {fileID: 7170497704237056984}
-  - {fileID: 4454906860928002413}
   - {fileID: 4599828817557954446}
   - {fileID: 6584838097126603643}
   - {fileID: 7130941495343461052}
@@ -43696,23 +41335,14 @@ Transform:
   - {fileID: 4793773448175042291}
   - {fileID: 6489466222345888108}
   - {fileID: 8394402166046094349}
-  - {fileID: 3122422579905676431}
   - {fileID: 4983172817741717779}
-  - {fileID: 765456415302982450}
-  - {fileID: 2242685253407240401}
-  - {fileID: 693898453645095064}
   - {fileID: 8300461006030633217}
   - {fileID: 7162109379208042677}
-  - {fileID: 8606028886965720020}
   - {fileID: 4770324476563779737}
   - {fileID: 9191688148699021970}
   - {fileID: 2138107292502803189}
   - {fileID: 6652663277426328615}
   - {fileID: 3404652382755538039}
-  - {fileID: 8976454929554235940}
-  - {fileID: 8208099423402346077}
-  - {fileID: 1056817468553067383}
-  - {fileID: 5815237109908545268}
   - {fileID: 2019776846464084771}
   - {fileID: 6366825544643438422}
   - {fileID: 5220716320417436018}
@@ -43780,7 +41410,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 310
+  m_RootOrder: 288
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3107815776360682707
 MonoBehaviour:
@@ -43992,7 +41622,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 264
+  m_RootOrder: 251
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1081093559612910342
 MonoBehaviour:
@@ -44083,7 +41713,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 181
+  m_RootOrder: 170
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5183189432146472262
 MonoBehaviour:
@@ -44204,7 +41834,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 230
+  m_RootOrder: 218
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &203120798607552529
 MonoBehaviour:
@@ -44745,7 +42375,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 246
+  m_RootOrder: 234
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6979460112582234248
 MonoBehaviour:
@@ -44912,7 +42542,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 138
+  m_RootOrder: 131
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3112652574454764558
 MonoBehaviour:
@@ -45018,7 +42648,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 120
+  m_RootOrder: 119
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7452549084767893174
 MonoBehaviour:
@@ -45139,7 +42769,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 209
+  m_RootOrder: 197
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8647511842883439473
 MonoBehaviour:
@@ -45245,7 +42875,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 176
+  m_RootOrder: 165
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6448723424551158929
 MonoBehaviour:
@@ -45366,7 +42996,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 141
+  m_RootOrder: 134
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3283145863090348421
 MonoBehaviour:
@@ -45608,67 +43238,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
---- !u!1 &8479322007136391991
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3082291916817229506}
-  - component: {fileID: 8799082418021099337}
-  m_Layer: 0
-  m_Name: Vuforia.ContentPlacedEvent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3082291916817229506
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8479322007136391991}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 121
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8799082418021099337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8479322007136391991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: ContentPlacedEvent
-  MappedTypeGUID: ff73ddad-ceda-4b09-80ba-4e60938df4f5
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentContentPlacedEvent
-  PersistentTypeGUID: 4f898e60-9bdb-45ef-84ce-9ab38f7909aa
-  PersistentBaseNamespace: UnityEngine.Events.Battlehub.SL2
-  PersistentBaseTypeName: PersistentUnityEventBase
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &8509557725655357036
 GameObject:
   m_ObjectHideFlags: 0
@@ -46014,7 +43583,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 206
+  m_RootOrder: 195
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7683130424834580455
 MonoBehaviour:
@@ -46240,7 +43809,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 127
+  m_RootOrder: 123
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7790411071611624270
 MonoBehaviour:
@@ -46497,7 +44066,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 231
+  m_RootOrder: 219
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &286101384977543907
 MonoBehaviour:
@@ -46618,7 +44187,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 301
+  m_RootOrder: 279
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4054741198699780926
 MonoBehaviour:
@@ -46829,7 +44398,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 235
+  m_RootOrder: 223
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &708245468905219509
 MonoBehaviour:
@@ -46905,7 +44474,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 222
+  m_RootOrder: 210
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6701529151846519049
 MonoBehaviour:
@@ -46952,67 +44521,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
---- !u!1 &8651076532864537315
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4202443779073140031}
-  - component: {fileID: 1069303199224478315}
-  m_Layer: 0
-  m_Name: Vuforia.MidAirPositionerBehaviour+AnchorPositionConfirmedEvent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4202443779073140031
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8651076532864537315}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 116
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1069303199224478315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8651076532864537315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 2.1
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Vuforia.UnityExtensions
-  MappedNamespace: Vuforia
-  MappedTypeName: MidAirPositionerBehaviour+AnchorPositionConfirmedEvent
-  MappedTypeGUID: caf33dc4-0d46-4626-8f43-321c23020d95
-  PersistentNamespace: Vuforia.Battlehub.SL2
-  PersistentTypeName: PersistentMidAirPositionerBehaviour+AnchorPositionConfirmedEvent
-  PersistentTypeGUID: a84030a1-b1ed-4601-aeba-e7857a1de05f
-  PersistentBaseNamespace: UnityEngine.Events.Battlehub.SL2
-  PersistentBaseTypeName: PersistentUnityEventBase
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &8674328211646750055
 GameObject:
   m_ObjectHideFlags: 0
@@ -47600,67 +45108,6 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 1
     HasPropertyInTemplate: 0
---- !u!1 &8708837048232365846
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 765456415302982450}
-  - component: {fileID: 5035143721639925084}
-  m_Layer: 0
-  m_Name: GoogleARCore.Examples.ObjectManipulation.DragGestureRecognizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &765456415302982450
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8708837048232365846}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 277
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5035143721639925084
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8708837048232365846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Version: 
-  IsSelected: 0
-  IsLocked: 0
-  PersistentPropertyTag: 0
-  PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
-  MappedNamespace: GoogleARCore.Examples.ObjectManipulation
-  MappedTypeName: DragGestureRecognizer
-  MappedTypeGUID: e0d3dc6c-ff07-4e62-8ee1-5f6a0d9b918c
-  PersistentNamespace: GoogleARCore.Examples.ObjectManipulation.Battlehub.SL2
-  PersistentTypeName: PersistentDragGestureRecognizer
-  PersistentTypeGUID: 16b4cac6-8748-489b-b6c2-db31290108e6
-  PersistentBaseNamespace: Battlehub.RTSL
-  PersistentBaseTypeName: PersistentSurrogate
-  CreateCustomImplementation: 0
-  UseTemplate: 1
-  Subclasses: []
-  PropertyMappings: []
 --- !u!1 &8713953450478600229
 GameObject:
   m_ObjectHideFlags: 0
@@ -47781,7 +45228,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 221
+  m_RootOrder: 209
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4429649038568876962
 MonoBehaviour:
@@ -47993,7 +45440,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 142
+  m_RootOrder: 135
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2850870274787705049
 MonoBehaviour:
@@ -48129,7 +45576,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 133
+  m_RootOrder: 127
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5136128630980254937
 MonoBehaviour:
@@ -48220,7 +45667,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 197
+  m_RootOrder: 186
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1403155276477319813
 MonoBehaviour:
@@ -48612,7 +46059,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 212
+  m_RootOrder: 200
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &224013984302922140
 MonoBehaviour:
@@ -50071,7 +47518,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 205
+  m_RootOrder: 194
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8359182818569495191
 MonoBehaviour:
@@ -50297,7 +47744,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5114501035391644904}
-  m_RootOrder: 249
+  m_RootOrder: 237
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1590329512863270505
 MonoBehaviour:
