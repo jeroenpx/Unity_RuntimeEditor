@@ -49,10 +49,13 @@ namespace Battlehub.RTScripting
 
         private void Register()
         {
+            ILocalization lc = IOC.Resolve<ILocalization>();
+            lc.LoadStringResources("RTScripting.StringResources");
+
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             if (m_editRuntimeScriptDialog != null)
             {
-                RegisterWindow(wm, "EditRuntimeScript", "Edit Script",
+                RegisterWindow(wm, "EditRuntimeScript", lc.GetString("ID_RTScripting_WM_Header_EditScript", "Edit Script"),
                     Resources.Load<Sprite>("RTE_Script"), m_editRuntimeScriptDialog, true);
 
                 IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
@@ -210,7 +213,13 @@ namespace Battlehub.RTScripting
 
         private void OnProjectFolderContextMenu(object sender, ProjectTreeContextMenuEventArgs e)
         {
-            MenuItemInfo createAsset = new MenuItemInfo { Path = "Create/Script" };
+            ILocalization lc = IOC.Resolve<ILocalization>();
+            MenuItemInfo createAsset = new MenuItemInfo
+            {
+                Path = string.Format("{0}/{1}",
+                        lc.GetString("ID_RTScripting_ProjectFolderView_Create", "Create"),
+                        lc.GetString("ID_RTScripting_ProjectFolderView_Script", "Script"))
+            };
             createAsset.Action = new MenuItemEvent();
             createAsset.Action.AddListener(arg =>
             {

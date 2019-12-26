@@ -89,11 +89,14 @@ namespace Battlehub.RTTerrain
         private ITerrainCutoutMaskRenderer m_terrainCutoutRenderer;
         private ICustomSelectionComponent m_customSelection;
         private IRTE m_editor;
+        private ILocalization m_localization;
         private TerrainEditor m_terrainEditor;
         
         private void Awake()
         {
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
+
+            m_localization = IOC.Resolve<ILocalization>();
             m_editor = IOC.Resolve<IRTE>();
             m_editor.Selection.SelectionChanged += OnEditorSelectionChanged;
             m_customSelection = IOC.Resolve<ICustomSelectionComponent>();
@@ -126,7 +129,7 @@ namespace Battlehub.RTTerrain
 
                 m_brushSizeEditor.Min = 0.5f;
                 m_brushSizeEditor.Max = 40;
-                m_brushSizeEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushSize), null, "Brush Size", null, null, null, false);
+                m_brushSizeEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushSize), null, m_localization.GetString("ID_RTTerrain_TerrainBrushEditor_BrushSize", "Brush Size"), null, null, null, false);
             }
 
             if(m_opacityEditor != null)
@@ -135,7 +138,7 @@ namespace Battlehub.RTTerrain
 
                 m_opacityEditor.Min = 0;
                 m_opacityEditor.Max = 100;
-                m_opacityEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushOpacity), null, "Brush Opacity", null, null, null, false);
+                m_opacityEditor.Init(this, this, Strong.MemberInfo((TerrainBrushEditor x) => x.BrushOpacity), null, m_localization.GetString("ID_RTTerrain_TerrainBrushEditor_BrushOpacity", "Brush Opacity"), null, null, null, false);
             }
 
             if (m_beginCreateButton != null)

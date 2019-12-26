@@ -25,10 +25,13 @@ namespace Battlehub.MeshDeformer3
 
         private void Register()
         {
+            ILocalization lc = IOC.Resolve<ILocalization>();
+            lc.LoadStringResources("RTDeformer.StringResources");
+
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             if (m_meshDeformerWindow != null)
             {
-                RegisterWindow(wm, "MeshDeformer", "Deformer",
+                RegisterWindow(wm, "MeshDeformer", lc.GetString("ID_RTDeformer_WM_Header_Deformer", "Deformer"),
                     Resources.Load<Sprite>("meshdeformer-24"), m_meshDeformerWindow, false);
 
                 IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
@@ -52,7 +55,7 @@ namespace Battlehub.MeshDeformer3
             });
         }
 
-        [MenuCommand("MenuWindow/MeshDeformer")]
+        [MenuCommand("MenuWindow/ID_RTDeformer_WM_Header_Deformer")]
         public static void OpenMeshDeformer()
         {
             IWindowManager wm = IOC.Resolve<IWindowManager>();

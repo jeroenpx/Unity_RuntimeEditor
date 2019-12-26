@@ -39,12 +39,8 @@ namespace Battlehub.RTTerrain
         private EnumEditor m_paintToolSelector = null;
         [SerializeField]
         private GameObject[] m_paintTools = null;
-
         [SerializeField]
         private TerrainProjector m_terrainProjectorPrefab = null;
-
-        private IRTE m_editor;
-        private IWindowManager m_wm;
 
         public TerrainProjector Projector
         {
@@ -101,8 +97,13 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        private IRTE m_editor;
+        private IWindowManager m_wm;
+        private ILocalization m_localization;
+
         private void Awake()
         {
+            m_localization = IOC.Resolve<ILocalization>();
             m_editor = IOC.Resolve<IRTE>();
             m_editor.Tools.ToolChanging += OnEditorToolChanging;
             m_wm = IOC.Resolve<IWindowManager>();
@@ -152,7 +153,7 @@ namespace Battlehub.RTTerrain
 
             if(m_paintToolSelector != null)
             {
-                m_paintToolSelector.Init(this, this, Strong.PropertyInfo((TerrainEditor x) => x.SelectedPaintTool), null, "Tool:", null, null, null, false);
+                m_paintToolSelector.Init(this, this, Strong.PropertyInfo((TerrainEditor x) => x.SelectedPaintTool), null, m_localization.GetString("ID_RTTerrain_TerrainEditor_Tool", "Tool:"), null, null, null, false);
             }
             
             SubscribeSelectionChangingEvent(true);

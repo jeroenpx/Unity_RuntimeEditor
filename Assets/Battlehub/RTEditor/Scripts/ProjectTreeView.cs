@@ -217,6 +217,7 @@ namespace Battlehub.RTEditor
 
         private IProject m_project;
         private IWindowManager m_wm;
+        private ILocalization m_localization;
 
         [SerializeField]
         private GameObject TreeViewPrefab = null;
@@ -329,6 +330,7 @@ namespace Battlehub.RTEditor
 
             m_project = IOC.Resolve<IProject>();
             m_wm = IOC.Resolve<IWindowManager>();
+            m_localization = IOC.Resolve<ILocalization>();
 
             m_treeView = Instantiate(TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
             m_treeView.name = "ProjectTreeView";
@@ -367,7 +369,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void Start()
         {
-            //IOC.RegisterFallback<IProjectTree>(this);
+            
         }
 
         private void OnItemClick(object sender, ItemArgs e)
@@ -376,15 +378,15 @@ namespace Battlehub.RTEditor
             {
                 IContextMenu menu = IOC.Resolve<IContextMenu>();
 
-                MenuItemInfo createFolder = new MenuItemInfo { Path = "Create Folder" };
+                MenuItemInfo createFolder = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectTreeView_CreateFolder", "Create Folder") };
                 createFolder.Action = new MenuItemEvent();
                 createFolder.Action.AddListener(CreateFolder);
 
-                MenuItemInfo deleteFolder = new MenuItemInfo { Path = "Delete" };
+                MenuItemInfo deleteFolder = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectTreeView_Delete",  "Delete") };
                 deleteFolder.Action = new MenuItemEvent();
                 deleteFolder.Action.AddListener(DeleteFolder);
 
-                MenuItemInfo renameFolder = new MenuItemInfo { Path = "Rename" };
+                MenuItemInfo renameFolder = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectTreeView_Rename", "Rename") };
                 renameFolder.Action = new MenuItemEvent();
                 renameFolder.Action.AddListener(RenameFolder);
 
@@ -872,7 +874,7 @@ namespace Battlehub.RTEditor
             ProjectItem folder = new ProjectItem();
 
             string[] existingNames = parentFolder.Children.Where(c => c.IsFolder).Select(c => c.Name).ToArray();
-            folder.Name = m_project.GetUniqueName("Folder", parentFolder.Children == null ? new string[0] : existingNames);
+            folder.Name = m_project.GetUniqueName(m_localization.GetString("ID_RTEditor_ProjectTreeView_Folder", "Folder"), parentFolder.Children == null ? new string[0] : existingNames);
             folder.Children = new List<ProjectItem>();
             parentFolder.AddChild(folder);
 
@@ -913,16 +915,21 @@ namespace Battlehub.RTEditor
 
                 if (projectItems.Any(p => p.Parent == null))
                 {
-                    m_wm.MessageBox("Unable to Remove", "Unable to remove root folder");
+                    m_wm.MessageBox(
+                        m_localization.GetString("ID_RTEditor_ProjectTreeView_UnableToRemove", "Unable to remove"),
+                        m_localization.GetString("ID_RTEditor_ProjectTreeView_UnableToRemoveRootFolder", "Unable to remove root folder"));
                 }
                 else
                 {
-                    m_wm.Confirmation("Delete Selected Assets", "You cannot undo this action", (dialog, arg) =>
+                    m_wm.Confirmation(
+                        m_localization.GetString("ID_RTEditor_ProjectTreeView_DeleteSelectedAssets", "Delete selected assets"),
+                        m_localization.GetString("ID_RTEditor_ProjectTreeView_YouCannotUndoThisAction", "You cannot undo this action"), (dialog, arg) =>
                     {
                         m_treeView.RemoveSelectedItems();
                     },
                     (dialog, arg) => { },
-                    "Delete", "Cancel");
+                        m_localization.GetString("ID_RTEditor_ProjectTreeView_Btn_Delete", "Delete"),
+                        m_localization.GetString("ID_RTEditor_ProjectTreeView_Btn_Cancel", "Cancel"));
                 }
             }
         }

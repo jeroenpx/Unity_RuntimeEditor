@@ -40,6 +40,7 @@ namespace Battlehub.RTBuilder
         private bool m_isPolyShapeSelected = false;
         
         private IWindowManager m_wm;
+        private ILocalization m_localization;
 
         public enum UIModes
         {
@@ -86,6 +87,7 @@ namespace Battlehub.RTBuilder
             WindowType = RuntimeWindowType.Custom;
             base.AwakeOverride();
 
+            m_localization = IOC.Resolve<ILocalization>();
             m_wm = IOC.Resolve<IWindowManager>();
             m_wm.WindowCreated += OnWindowCreated;
             m_wm.WindowDestroyed += OnWindowDestroyed;
@@ -127,7 +129,7 @@ namespace Battlehub.RTBuilder
 
             if (m_modeSelector != null)
             {
-                m_modeSelector.Init(this, this, Strong.PropertyInfo((ProBuilderView x) => x.UIMode), null, "Mode:", null, null, null, false);
+                m_modeSelector.Init(this, this, Strong.PropertyInfo((ProBuilderView x) => x.UIMode), null, m_localization.GetString("ID_RTBuilder_View_Mode", "Mode:"), null, null, null, false);
             }
 
             OnSelectionChanged(null);
@@ -205,9 +207,9 @@ namespace Battlehub.RTBuilder
         private List<ToolCmd> GetObjectCommands()
         {
             List<ToolCmd> commands = GetCommonCommands();
-            commands.Add(new ToolCmd("ProBuilderize", OnProBuilderize, CanProBuilderize));
-            commands.Add(new ToolCmd("Subdivide", () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
-            commands.Add(new ToolCmd("Center Pivot", OnCenterPivot, () => m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_ProBuilderize", "ProBuilderize"), OnProBuilderize, CanProBuilderize));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Subdivide", "Subdivide"), () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_CenterPivot", "Center Pivot"), OnCenterPivot, () => m_isProBuilderMeshSelected));
 
             return commands;
         }
@@ -215,56 +217,56 @@ namespace Battlehub.RTBuilder
         private List<ToolCmd> GetFaceCommands()
         {
             List<ToolCmd> commands = GetCommonCommands();
-            commands.Add(new ToolCmd("Extrude Face", OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ToolCmd("Delete Face", OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ToolCmd("Subdivide Faces", OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
-            commands.Add(new ToolCmd("Merge Faces", OnMergeFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_ExtrudeFace", "Extrude Face"), OnExtrudeFace, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_DeleteFace", "Delete Face"), OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_SubdivideFaces", "Subdivide Faces"), OnSubdivideFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_MergeFaces", "Merge Faces"), OnMergeFaces, () => m_proBuilderTool.Mode == ProBuilderToolMode.Face && m_proBuilderTool.HasSelection));
             return commands;
         }
 
         private List<ToolCmd> GetEdgeCommands()
         {
             List<ToolCmd> commands = GetCommonCommands();
-            commands.Add(new ToolCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ToolCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ToolCmd("Delete Edge", OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
-            commands.Add(new ToolCmd("Subdivide Edges", OnSubdivideEdges, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_FindHoles", "Find Holes"), () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_FillHoles", "Fill Holes"), () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_DeleteEdge", "Delete Edge"), OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_SubdivideEdges", "Subdivide Edges"), OnSubdivideEdges, () => m_proBuilderTool.Mode == ProBuilderToolMode.Edge && m_proBuilderTool.HasSelection));
             return commands;
         }
 
         private List<ToolCmd> GetVertexCommands()
         {
             List<ToolCmd> commands = GetCommonCommands();
-            commands.Add(new ToolCmd("Find Holes", () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ToolCmd("Fill Holes", () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
-            commands.Add(new ToolCmd("Delete Vertex", OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Vertex && m_proBuilderTool.HasSelection));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_FindHoles", "Find Holes"), () => m_proBuilderTool.SelectHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_FillHoles", "Fill Holes"), () => m_proBuilderTool.FillHoles(), () => m_proBuilderTool.HasSelection || m_isProBuilderMeshSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_DeleteVertex", "Delete Vertex"), OnDelete, () => m_proBuilderTool.Mode == ProBuilderToolMode.Vertex && m_proBuilderTool.HasSelection));
             return commands;
         }
 
         private List<ToolCmd> GetCommonCommands()
         {
             List<ToolCmd> commands = new List<ToolCmd>();
-            ToolCmd newShapeCmd = new ToolCmd("New Shape", OnNewShape, true) { Arg = PBShapeType.Cube };
+            ToolCmd newShapeCmd = new ToolCmd(m_localization.GetString("ID_RTBuilder_View_NewShape", "New Shape"), OnNewShape, true) { Arg = PBShapeType.Cube };
             newShapeCmd.Children = new List<ToolCmd>
             {
-                new ToolCmd("Arch", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Arch },
-                new ToolCmd("Cone", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cone },
-                new ToolCmd("Cube", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cube },
-                new ToolCmd("Curved Stair", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.CurvedStair },
-                new ToolCmd("Cylinder", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cylinder },
-                new ToolCmd("Door", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Door },
-                new ToolCmd("Pipe", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Pipe },
-                new ToolCmd("Plane", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Plane },
-                new ToolCmd("Prism", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Prism },
-                new ToolCmd("Sphere", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sphere },
-                new ToolCmd("Sprite", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sprite },
-                new ToolCmd("Stair", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Stair },
-                new ToolCmd("Torus", OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Torus },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Arch", "Arch"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Arch },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Cone", "Cone"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cone },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Cube", "Cube"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cube },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_CurvedStair", "Curved Stair"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.CurvedStair },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Cylinder", "Cylinder"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Cylinder },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Door", "Door"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Door },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Pipe", "Pipe"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Pipe },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Plane", "Plane"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Plane },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Prism", "Prism"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Prism },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Sphere", "Sphere"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sphere },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Sprite", "Sprite"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Sprite },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Stair", "Stair"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Stair },
+                new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Torus", "Torus"), OnNewShape, true) { Parent = newShapeCmd, Arg = PBShapeType.Torus },
             };
 
             commands.Add(newShapeCmd);
-            commands.Add(new ToolCmd("New Poly Shape", OnNewPolyShape, true));
-            commands.Add(new ToolCmd("Edit Poly Shape", OnEditPolyShape, () => m_isPolyShapeSelected));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_NewPolyShape", "New Poly Shape"), OnNewPolyShape, true));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_EditPolyShape", "Edit Poly Shape"), OnEditPolyShape, () => m_isPolyShapeSelected));
             return commands;
         }
 

@@ -42,22 +42,26 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private IWindowManager m_windowManager;
+        private ILocalization m_localization;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.SelectAssetLibrary;
             base.AwakeOverride();
+
+            m_localization = IOC.Resolve<ILocalization>();
         }
 
-        private IWindowManager m_windowManager;
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();
             if(m_parentDialog != null)
             {
                 m_parentDialog.IsOkVisible = true;
-                m_parentDialog.OkText = "Select";
+                m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_AssetLibSelectDialog_Select", "Select");
                 m_parentDialog.IsCancelVisible = true;
-                m_parentDialog.CancelText = "Cancel";
+                m_parentDialog.CancelText = m_localization.GetString("ID_RTEditor_AssetLibSelectDialog_Cancel", "Cancel");
                 m_parentDialog.Ok += OnOk;
             }
             
@@ -101,7 +105,7 @@ namespace Battlehub.RTEditor
                 editor.IsBusy = false;
                 if (error.HasError)
                 {
-                    PopupWindow.Show("Unable to list asset bundles", error.ToString(), "OK");
+                    m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_AssetLibSelectDialog_UnableToListBundles", "Unable to list asset bundles"), error.ToString());
                     return;
                 }
                 m_externalTreeView.Items = assetBundles;

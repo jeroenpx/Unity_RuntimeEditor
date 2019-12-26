@@ -49,6 +49,7 @@ namespace Battlehub.RTBuilder
         private Button m_resetUVs = null;
 
         private IRTE m_editor;
+        private ILocalization m_localization;
 
         private IProBuilderTool m_tool;
         public IProBuilderTool Tool
@@ -56,71 +57,61 @@ namespace Battlehub.RTBuilder
             get { return m_tool; }
             set
             {
-                //if (m_tool != null)
-                //{
-                //    m_tool.UVEditingModeChanged -= OnUVEditingModeChanged;
-                //}
                 m_tool = value;
-                //if (m_tool != null)
-                //{
-                //    m_tool.UVEditingModeChanged += OnUVEditingModeChanged;
-                //}
             }
         }
 
         private void Awake()
         {
             Tool = IOC.Resolve<IProBuilderTool>();
-            
-
             m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_localization = IOC.Resolve<ILocalization>();
         
-
             if(m_fillModeEditor != null)
             {
-                m_fillModeEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.fill), null, "Fill");
+                m_fillModeEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.fill), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_Fill", "Fill"));
             }
 
             if (m_anchorEditor != null)
             {
-                m_anchorEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.anchor), null, "Anchor");
+                m_anchorEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.anchor), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_Anchor", "Anchor"));
             }
 
             if (m_offsetEditor != null)
             {
-                m_offsetEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset), null, "Offset");
+                m_offsetEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.offset), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_Offset", "Offset"));
             }
 
             if(m_rotationEditor != null)
             {
                 m_rotationEditor.Min = 0;
                 m_rotationEditor.Max = 360;
-                m_rotationEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation), null, "Rotation");
+                m_rotationEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.rotation), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_Rotation", "Rotation"));
             }
 
             if(m_tilingEditor != null)
             {
-                m_tilingEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale), null, "Tiling");
+                m_tilingEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.scale), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_Tiling", "Tiling"));
             }
 
             if(m_worldSpaceEditor != null)
             {
-                m_worldSpaceEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.useWorldSpace), null, "World Space");
+                m_worldSpaceEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.useWorldSpace), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_WorldSpace", "World Space"));
             }
 
             if(m_flipUEditor != null)
             {
-                m_flipUEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.flipU), null, "Flip U");
+                m_flipUEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.flipU), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_FlipU", "Flip U"));
             }
 
             if(m_flipVEditor != null)
             {
-                m_flipVEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.flipV), null, "Flip V");
+                m_flipVEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.flipV), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_FlipV", "Flip V"));
             }
 
             if(m_swapUVEditor != null)
             {
-                m_swapUVEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.swapUV), null, "Swap UV");
+                m_swapUVEditor.Init(m_tool.UV, m_tool.UV, Strong.PropertyInfo((PBAutoUnwrapSettings x) => x.swapUV), null, m_localization.GetString("ID_RTBuilder_UVEditorAuto_SwapUV", "Swap UV"));
             }
 
             if(m_btnGroupFaces != null)

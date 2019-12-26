@@ -18,10 +18,13 @@ namespace Battlehub.RTBuilder
 
         private void Register()
         {
+            ILocalization lc = IOC.Resolve<ILocalization>();
+            lc.LoadStringResources("RTBuilder.StringResources");
+
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             if (m_proBuilderWindow != null)
             {
-                RegisterWindow(wm, "ProBuilder", "Builder", 
+                RegisterWindow(wm, "ProBuilder", lc.GetString("ID_RTBuilder_WM_Header_Builder", "Builder"),
                     Resources.Load<Sprite>("hammer-24"), m_proBuilderWindow, false);
 
                 IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
@@ -45,7 +48,7 @@ namespace Battlehub.RTBuilder
             });
         }
 
-        [MenuCommand("MenuWindow/Builder")]
+        [MenuCommand("MenuWindow/ID_RTBuilder_WM_Header_Builder")]
         public static void OpenProBuilder()
         {
             IWindowManager wm = IOC.Resolve<IWindowManager>();

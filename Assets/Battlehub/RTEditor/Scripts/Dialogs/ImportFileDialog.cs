@@ -51,11 +51,15 @@ namespace Battlehub.RTEditor
         private FileBrowser m_fileBrowser;
 
         private Dictionary<string, IFileImporter> m_extToFileImporter = new Dictionary<string, IFileImporter>();
-        
+
+        private ILocalization m_localization;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.ImportFile;
             base.AwakeOverride();
+
+            m_localization = IOC.Resolve<ILocalization>();
         }
 
         private void Start()
@@ -76,9 +80,9 @@ namespace Battlehub.RTEditor
 
             m_parentDialog = GetComponentInParent<Dialog>();
             m_parentDialog.Ok += OnOk;
-            m_parentDialog.OkText = "Open";
+            m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_ImportFileDialog_Btn_Open", "Open");
             m_parentDialog.IsOkVisible = true;
-            m_parentDialog.CancelText = "Cancel";
+            m_parentDialog.CancelText = m_localization.GetString("ID_RTEditor_ImportFileDialog_Btn_Cancel", "Cancel");
             m_parentDialog.IsCancelVisible = true;
 
             m_fileBrowser = GetComponent<FileBrowser>();
@@ -167,11 +171,11 @@ namespace Battlehub.RTEditor
         {
             if (File.Exists(path))
             {
-                m_parentDialog.OkText = "Import";
+                m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_ImportFileDialog_Btn_Import", "Import");
             }
             else
             {
-                m_parentDialog.OkText = "Open";
+                m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_ImportFileDialog_Btn_Open", "Open");
             }
         }
 

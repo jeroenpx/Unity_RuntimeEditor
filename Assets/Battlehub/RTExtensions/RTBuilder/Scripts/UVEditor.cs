@@ -175,17 +175,19 @@ namespace Battlehub.RTBuilder
 
                 if(m_modeText != null)
                 {
+                    ILocalization lc = IOC.Resolve<ILocalization>();
+
                     if(hasSelectedAutoUVs && hasSelectedManualUVs)
                     {
-                        m_modeText.text = "UV Mode: Mixed";
+                        m_modeText.text = lc.GetString("ID_RTBuilder_UVEditorAuto_UVModeMixed", "UV Mode: Mixed");
                     }
                     else if(hasSelectedAutoUVs)
-                    {
-                        m_modeText.text = "UV Mode: Auto";
+                    { 
+                        m_modeText.text = lc.GetString("ID_RTBuilder_UVEditorAuto_UVModeAuto", "UV Mode: Auto");
                     }
                     else if (hasSelectedManualUVs)
                     {
-                        m_modeText.text = "UV Mode: Manual";
+                        m_modeText.text = lc.GetString("ID_RTBuilder_UVEditorAuto_UVModeManual", "UV Mode: Manual");
                     }
                 }
 

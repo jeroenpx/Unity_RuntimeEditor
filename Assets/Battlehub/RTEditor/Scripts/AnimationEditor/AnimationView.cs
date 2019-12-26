@@ -132,10 +132,15 @@ namespace Battlehub.RTEditor
             }
         }
 
+
+        private ILocalization m_localization;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Animation;
             base.AwakeOverride();
+
+            m_localization = IOC.Resolve<ILocalization>();
 
             m_propertiesView = GetComponentInChildren<AnimationPropertiesView>(true);
             m_propertiesView.BeforePropertiesAdded += OnBeforePropertiesAdded;
@@ -152,7 +157,6 @@ namespace Battlehub.RTEditor
             m_timelineView.IsDopesheet = m_dopesheetToggle.isOn;
             m_timelineView.ClipBeginModify += OnClipBeginModify;
             m_timelineView.ClipModified += OnClipModified;
-
 
             m_animationCreateView = GetComponentInChildren<AnimationCreateView>(true);
             m_animationCreateView.Click += OnCreateClick;
@@ -444,12 +448,12 @@ namespace Battlehub.RTEditor
 
         private void OnCreateClick()
         {
-            IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SaveAsset.ToString(), "Save Animation Clip",
+            IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SaveAsset.ToString(), m_localization.GetString("ID_RTEditor_AnimationView_SaveAnimationClip", "Save Animation Clip"),
                 (sender, args) => {});
 
             ISaveAssetDialog saveAssetDialog = IOC.Resolve<ISaveAssetDialog>();
             RuntimeAnimationClip clip = ScriptableObject.CreateInstance<RuntimeAnimationClip>();
-            clip.name = "New Animation Clip";
+            clip.name = m_localization.GetString("ID_RTEditor_AnimationView_NewAnimationClip", "New Animation Clip");
             
             saveAssetDialog.Asset = clip;
             saveAssetDialog.AssetIcon = Resources.Load<Sprite>("RTE_AnimationClip");
@@ -681,12 +685,12 @@ namespace Battlehub.RTEditor
             {
                 if (Target == null)
                 {
-                    m_animationCreateView.Text = string.Format("To begin animating {0}, create a RuntimeAnimation and a RuntimeAnimation Clip", Editor.Selection.activeGameObject.name);
+                    m_animationCreateView.Text = string.Format(m_localization.GetString("ID_RTEditor_AnimationView_Condition2", "To begin animating {0}, create a RuntimeAnimation and a RuntimeAnimation Clip"), Editor.Selection.activeGameObject.name);
                 }
 
                 if (m_clips.Count == 0)
                 {
-                    m_animationCreateView.Text = string.Format("To begin animating {0}, create a RuntimeAnimation Clip", Editor.Selection.activeGameObject.name);
+                    m_animationCreateView.Text = string.Format(m_localization.GetString("ID_RTEditor_AnimationView_Condition1", "To begin animating {0}, create a RuntimeAnimation Clip"), Editor.Selection.activeGameObject.name);
                 }
 
                 if (Target != null && m_clips.Count > 0)

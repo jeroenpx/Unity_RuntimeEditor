@@ -181,8 +181,12 @@ namespace Battlehub.RTTerrain
            });
         }
 
+        private ILocalization m_localization;
+
         private void Awake()
         {
+            m_localization = IOC.Resolve<ILocalization>();
+
             if (m_createLayer != null) m_createLayer.onClick.AddListener(OnCreateLayer);
             if (m_replaceLayer != null) m_replaceLayer.onClick.AddListener(OnReplaceLayer);
             if (m_removeLayer != null) m_removeLayer.onClick.AddListener(OnRemoveLayer);
@@ -199,8 +203,8 @@ namespace Battlehub.RTTerrain
                 m_layersList.CanSelectAll = false;
             }
 
-            if (m_tileSizeEditor != null) m_tileSizeEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileSize), null, "Tile Size", null, null, null, false, null, BeginRecordLayerProperties, EndRecordLayerProperties);
-            if (m_tileOffsetEditor != null) m_tileOffsetEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileOffset), null, "Tile Offset", null, null, null, false, null, BeginRecordLayerProperties, EndRecordLayerProperties);
+            if (m_tileSizeEditor != null) m_tileSizeEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileSize), null, m_localization.GetString("ID_RTTerrain_TerrainLayerEditor_TileSize", "Tile Size"), null, null, null, false, null, BeginRecordLayerProperties, EndRecordLayerProperties);
+            if (m_tileOffsetEditor != null) m_tileOffsetEditor.Init(this, this, Strong.PropertyInfo((TerrainLayerEditor x) => x.TileOffset), null, m_localization.GetString("ID_RTTerrain_TerrainLayerEditor_TileOffset", "Tile Offset"), null, null, null, false, null, BeginRecordLayerProperties, EndRecordLayerProperties);
 
         }
 

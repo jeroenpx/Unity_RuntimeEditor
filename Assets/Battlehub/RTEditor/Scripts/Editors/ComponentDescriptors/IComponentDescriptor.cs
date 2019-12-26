@@ -56,8 +56,10 @@ namespace Battlehub.RTEditor
     {
         public virtual HeaderDescriptor GetHeaderDescriptor(IRTE editor)
         {
+            ILocalization localization = IOC.Resolve<ILocalization>();
+            
             return new HeaderDescriptor(
-                ComponentType.Name,
+                localization.GetString("ID_RTEditor_CD_" + ComponentType.Name, ComponentType.Name),
                 editor.ComponentEditorSettings.ShowExpander,
                 editor.ComponentEditorSettings.ShowResetButton,
                 editor.ComponentEditorSettings.ShowEnableButton);

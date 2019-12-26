@@ -70,7 +70,6 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                #warning Check if this can work with AfterSkybox?
                 Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             }
             

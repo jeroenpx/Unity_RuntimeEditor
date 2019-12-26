@@ -257,7 +257,9 @@ namespace Battlehub.RTEditor
                     }
                     else
                     {
-                        Header.text = Component.GetType().Name;
+                        string typeName = Component.GetType().Name;
+                        ILocalization localization = IOC.Resolve<ILocalization>();
+                        Header.text = localization.GetString("ID_RTEditor_CD_" + typeName, typeName);
                     }
                 }
                 

@@ -81,19 +81,34 @@ namespace Battlehub.UIControls.TooltipControl
             }
             else
             {
-                if (m_prefab != null)
+                ShowToolTip();
+            }
+        }
+
+        public void Refresh()
+        {
+            if(m_tooltip != null)
+            {
+                DestroyImmediate(m_tooltip.gameObject);
+                m_tooltip = null;
+                ShowToolTip();
+            }
+        }
+
+        private void ShowToolTip()
+        {
+            if (m_prefab != null)
+            {
+                m_tooltip = Instantiate(m_prefab, m_target);
+                m_tooltip.Text = m_text;
+                m_tooltip.RectTransform.SetInsetAndSizeFromParentEdge(m_location, -3, 0);
+
+                if (m_layer != null)
                 {
-                    m_tooltip = Instantiate(m_prefab, m_target);
-                    m_tooltip.Text = m_text;
-                    m_tooltip.RectTransform.SetInsetAndSizeFromParentEdge(m_location, -3, 0);
-
-                    if(m_layer != null)
-                    {
-                        m_tooltip.transform.SetParent(m_layer, true);
-                    }
-
-                    m_tooltip.Show();
+                    m_tooltip.transform.SetParent(m_layer, true);
                 }
+
+                m_tooltip.Show();
             }
         }
 

@@ -64,6 +64,8 @@ namespace Battlehub.RTEditor
         private Dialog m_parentDialog;
         private IWindowManager m_windowManager;
         private IProject m_project;
+        private ILocalization m_localization;
+
         private Guid m_noneGuid = Guid.NewGuid();
         private bool m_previewsCreated;
         private AssetItem[] m_assetsCache;
@@ -75,6 +77,8 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback<ISelectObjectDialog>(this);
             WindowType = RuntimeWindowType.SelectObject;
             base.AwakeOverride();
+
+            m_localization = IOC.Resolve<ILocalization>();
         }
 
         private void Start()
@@ -82,8 +86,8 @@ namespace Battlehub.RTEditor
             m_parentDialog = GetComponentInParent<Dialog>();
             m_parentDialog.IsOkVisible = true;
             m_parentDialog.IsCancelVisible = true;
-            m_parentDialog.OkText = "Select";
-            m_parentDialog.CancelText = "Cancel";
+            m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_SelectObjectDialog_Select", "Select");
+            m_parentDialog.CancelText = m_localization.GetString("ID_RTEditor_SelectObjectDialog_Cancel", "Cancel");
             m_parentDialog.Ok += OnOk;
 
             m_toggleAssets.onValueChanged.AddListener(OnAssetsTabSelectionChanged);
@@ -112,12 +116,12 @@ namespace Battlehub.RTEditor
                 if (error.HasError)
                 {
                     Editor.IsBusy = false;
-                    m_windowManager.MessageBox("Can't GetAssets", error.ToString());
+                    m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_SelectObjectDialog_CantGetAssets", "Can't GetAssets"), error.ToString());
                     return;
                 }
 
                 AssetItem none = new AssetItem();
-                none.Name = "None";
+                none.Name = m_localization.GetString("ID_RTEditor_SelectObjectDialog_None", "None");
                 none.TypeGuid = m_noneGuid;
 
                 assetItemsWithPreviews = new[] { none }.Union(assetItemsWithPreviews).ToArray();

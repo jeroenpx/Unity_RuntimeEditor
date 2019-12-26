@@ -43,6 +43,8 @@ namespace Battlehub.RTEditor
 
         public void Exec(string cmd)
         {
+            ILocalization localization = IOC.Resolve<ILocalization>();
+
             cmd = cmd.ToLower();
             switch (cmd)
             {
@@ -66,7 +68,7 @@ namespace Battlehub.RTEditor
                     break;
                 case "settings":
                     IWindowManager wm = IOC.Resolve<IWindowManager>();
-                    wm.CreateDialogWindow("settings", "Settings",
+                    wm.CreateDialogWindow("settings", "ID_RTEditor_WM_Header_Settings",
                         (sender, args) => { }, (sender, args) => { }, 380, 380, 380, 380, false);
                     break;
 

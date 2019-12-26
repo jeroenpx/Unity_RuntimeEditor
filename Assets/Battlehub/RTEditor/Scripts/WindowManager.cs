@@ -258,7 +258,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private RectTransform m_rightBar = null;
 
-
+        private ILocalization m_localization;
         private IRTE m_editor;
         private Func<IWindowManager, LayoutInfo> m_overrideLayoutCallback;
         private string m_activateWindowOfType;
@@ -304,6 +304,7 @@ namespace Battlehub.RTEditor
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
+            m_localization = IOC.Resolve<ILocalization>();
         }
 
         private void Start()
@@ -423,11 +424,11 @@ namespace Battlehub.RTEditor
                 foreach(Transform content in kvp.Value)
                 {
                     RuntimeWindow window = content.GetComponentInChildren<RuntimeWindow>();
-                    
-                    if(window != null && window != exceptWindow && IsPointerOver(window) && !IsOverlapped(window, exceptWindow))
+
+                    if(window != null && window != exceptWindow && IsPointerOver(window) /* && !IsOverlapped(window, exceptWindow)*/)
                     {
-                        Tab tab = Region.FindTab(content);
-                        if(tab.IsOn)
+                        Tab tab = Region.FindTab(window.transform);
+                        if(tab != null && tab.IsOn)
                         {
                             return content;
                         }
@@ -1274,7 +1275,10 @@ namespace Battlehub.RTEditor
                 {
                     header = wd.Header;
                 }
-                Dialog dialog = m_dialogManager.ShowDialog(wd.Icon, header, content.transform, okAction, "OK", cancelAction, "Cancel", minWidth, minHeight, preferredWidth, preferredHeight, canResize);
+                Dialog dialog = m_dialogManager.ShowDialog(wd.Icon, header, content.transform, 
+                    okAction, m_localization.GetString("ID_RTEditor_WM_Dialog_OK", "OK"),
+                    cancelAction, m_localization.GetString("ID_RTEditor_WM_Dialog_Cancel", "Cancel"), 
+                    minWidth, minHeight, preferredWidth, preferredHeight, canResize);
                 dialog.IsCancelVisible = false;
                 dialog.IsOkVisible = false;
             }
@@ -1346,8 +1350,6 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                //Debug.LogWarningFormat("{0} WindowDescriptor.ContentPrefab is null", windowTypeName);
-
                 content = new GameObject();
                 content.AddComponent<RectTransform>();
                 content.name = "Empty Content";
@@ -1482,12 +1484,16 @@ namespace Battlehub.RTEditor
 
         public void MessageBox(string header, string text, DialogAction<DialogCancelArgs> ok = null)
         {
-            m_dialogManager.ShowDialog(null, header, text, ok);
+            m_dialogManager.ShowDialog(null, header, text, 
+                ok, m_localization.GetString("ID_RTEditor_WM_Dialog_OK", "OK"), 
+                null, m_localization.GetString("ID_RTEditor_WM_Dialog_Cancel", "Cancel"));
         }
 
         public void MessageBox(Sprite icon, string header, string text, DialogAction<DialogCancelArgs> ok = null)
         {
-            m_dialogManager.ShowDialog(icon, header, text, ok);
+            m_dialogManager.ShowDialog(icon, header, text,
+                ok, m_localization.GetString("ID_RTEditor_WM_Dialog_OK", "OK"),
+                null, m_localization.GetString("ID_RTEditor_WM_Dialog_Cancel", "Cancel"));
         }
 
         public void Confirmation(string header, string text, DialogAction<DialogCancelArgs> ok, DialogAction<DialogCancelArgs> cancel, string okText = "OK", string cancelText = "Cancel")

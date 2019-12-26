@@ -67,6 +67,7 @@ namespace Battlehub.RTScripting
         private IEditorsMap m_editorsMap;
         private ITypeMap m_typeMap;
         private IRTE m_editor;
+        private ILocalization m_localization;
         private Assembly m_runtimeAssembly;
         private Dictionary<string, Guid> m_typeNameToGuid;
         private RuntimeTextAsset m_runtimeTypeGuidsAsset;
@@ -74,6 +75,7 @@ namespace Battlehub.RTScripting
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
+            m_localization = IOC.Resolve<ILocalization>();
             m_project = IOC.Resolve<IProject>();
             m_project.DeleteCompleted += OnDeleteProjectItemCompleted;
             m_editorsMap = IOC.Resolve<IEditorsMap>();
@@ -170,7 +172,7 @@ namespace Battlehub.RTScripting
 
         public void CreateScript(ProjectItem folder)
         {
-            string name = m_project.GetUniqueName("Script", Ext, folder, true);
+            string name = m_project.GetUniqueName(m_localization.GetString("ID_RTScripting_ScriptsManager_Script", "Script"), Ext, folder, true);
 
             string nl = Environment.NewLine;
             RuntimeTextAsset csFile = ScriptableObject.CreateInstance<RuntimeTextAsset>();
@@ -277,7 +279,7 @@ namespace Battlehub.RTScripting
                 {
                     RaiseCompiled(false);
 
-                    ao.Error = new Error(Error.E_Failed) { ErrorText = "Compilation failed" };
+                    ao.Error = new Error(Error.E_Failed) { ErrorText = m_localization.GetString("ID_RTScripting_ScriptsManager_CompilationFailed", "Compilation failed") };
                     ao.IsCompleted = true;
                     
                 }

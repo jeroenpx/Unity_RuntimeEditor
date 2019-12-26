@@ -948,7 +948,6 @@ GameObject:
   - component: {fileID: 222970579461971030}
   - component: {fileID: 114455302697402200}
   - component: {fileID: 114440641545203254}
-  - component: {fileID: 8535298592113067922}
   m_Layer: 5
   m_Name: Selection
   m_TagString: Untagged
@@ -1031,19 +1030,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &8535298592113067922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1589877599901792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: AccentColor
 --- !u!1 &1608803110550858
 GameObject:
   m_ObjectHideFlags: 0

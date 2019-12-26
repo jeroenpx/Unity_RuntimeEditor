@@ -50,6 +50,7 @@ namespace Battlehub.RTEditor
         private VirtualizingTreeView m_treeView = null;
         private IProject m_project;
         private IWindowManager m_windowManager;
+        private ILocalization m_localization;
 
         public Sprite AssetIcon
         {
@@ -85,14 +86,16 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback<ISaveAssetDialog>(this);
             WindowType = RuntimeWindowType.SaveAsset;
             base.AwakeOverride();
+
+            m_localization = IOC.Resolve<ILocalization>();
         }
         private void Start()
         {
             m_parentDialog = GetComponentInParent<Dialog>();
             m_parentDialog.Ok += OnOk;
-            m_parentDialog.OkText = "Save";
+            m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_SaveAssetsDialog_Save", "Save");
             m_parentDialog.IsOkVisible = true;
-            m_parentDialog.CancelText = "Cancel";
+            m_parentDialog.CancelText = m_localization.GetString("ID_RTEditor_SaveAssetsDialog_Cancel", "Cancel");
             m_parentDialog.IsCancelVisible = true;
 
             m_treeView = GetComponentInChildren<VirtualizingTreeView>();
@@ -165,7 +168,9 @@ namespace Battlehub.RTEditor
 
             if(Editor.IsPlaying)
             {
-                m_windowManager.MessageBox("Unable to save asset", "Unable to save asset in play mode");
+                m_windowManager.MessageBox(
+                    m_localization.GetString("ID_RTEditor_SaveAssetsDialog_UnableToSaveAsset", "Unable to save asset"),
+                    m_localization.GetString("ID_RTEditor_SaveAssetsDialog_UnableToSaveAssetInPlayMode", "Unable to save asset in play mode"));
                 return;
             }
 
@@ -178,14 +183,18 @@ namespace Battlehub.RTEditor
 
             if (Input.text != null && Input.text.Length > 0 && (!char.IsLetter(Input.text[0]) || Input.text[0] == '-'))
             {
-                m_windowManager.MessageBox("Asset name is invalid", "Asset name should start with letter");
+                m_windowManager.MessageBox(
+                    m_localization.GetString("ID_RTEditor_SaveAssetsDialog_AssetNameIsInvalid", "Asset name is invalid"),
+                    m_localization.GetString("ID_RTEditor_SaveAssetsDialog_AssetNameShouldStartWith", "Asset name should start with letter"));
                 args.Cancel = true;
                 return;
             }
 
             if (!ProjectItem.IsValidName(Input.text))
             {
-                m_windowManager.MessageBox("Asset name is invalid", "Asset name contains invalid characters");
+                m_windowManager.MessageBox(
+                    m_localization.GetString("ID_RTEditor_SaveAssetsDialog_AssetNameIsInvalid", "Asset name is invalid"),
+                    m_localization.GetString("ID_RTEditor_SaveAssetsDialog_AssetNameInvalidCharacters", "Asset name contains invalid characters"));
                 args.Cancel = true;
                 return;
             }
@@ -213,7 +222,10 @@ namespace Battlehub.RTEditor
 
         private void Overwrite(AssetItem selectedItem)
         {
-            m_windowManager.Confirmation("Asset with same name already exits", "Do you want to override it?", (sender, yes) =>
+            m_windowManager.Confirmation(
+                m_localization.GetString("ID_RTEditor_SaveAssetsDialog_AssetWithSameNameExists", "Asset with same name already exits"),
+                m_localization.GetString("ID_RTEditor_SaveAssetsDialog_DoYouWantToOverwriteIt", "Do you want to overwrite it?"),
+                (sender, yes) =>
             {
                 m_parentDialog.Close(null);
 
@@ -225,7 +237,7 @@ namespace Battlehub.RTEditor
                     if(deleteError.HasError)
                     {
                         Editor.IsBusy = false;
-                        m_windowManager.MessageBox("Unable to delete asset ", deleteError.ToString());
+                        m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_SaveAssetsDialog_UnableToDeleteAsset", "Unable to delete asset"), deleteError.ToString());
                         RaseSaveCompleted(null);
                     }
                     else
@@ -236,8 +248,8 @@ namespace Battlehub.RTEditor
 
             },
             (sender, no) => Input.ActivateInputField(),
-            "Yes",
-            "No");
+            m_localization.GetString("ID_RTEditor_SaveAssetsDialog_Yes", "Yes"),
+            m_localization.GetString("ID_RTEditor_SaveAssetsDialog_No", "No"));
         }
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -338,7 +350,7 @@ namespace Battlehub.RTEditor
                 if (saveError.HasError)
                 {
                     Editor.IsBusy = false;
-                    m_windowManager.MessageBox("Unable to save asset", saveError.ToString());
+                    m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_SaveAssetsDialog_UnableToSaveAsset", "Unable to save asset"), saveError.ToString());
                     RaseSaveCompleted(null);
                 }
                 else
@@ -349,7 +361,7 @@ namespace Battlehub.RTEditor
                         Editor.IsBusy = false;
                         if (loadError.HasError)
                         {
-                            m_windowManager.MessageBox("Unable to save asset", loadError.ToString());
+                            m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_SaveAssetsDialog_UnableToSaveAsset", "Unable to save asset"), loadError.ToString());
                             RaseSaveCompleted(null);
                         }
                         else

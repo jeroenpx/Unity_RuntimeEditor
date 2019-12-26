@@ -57,6 +57,7 @@ namespace Battlehub.RTBuilder
 
         private IProBuilderTool m_proBuilderTool;
         private IMaterialPaletteManager m_paletteManager;
+        private ILocalization m_localization;
 
         private IRTE m_editor;
         public IRTE Editor
@@ -80,6 +81,7 @@ namespace Battlehub.RTBuilder
             
             m_proBuilderTool = IOC.Resolve<IProBuilderTool>();
             m_paletteManager = IOC.Resolve<IMaterialPaletteManager>();
+            m_localization = IOC.Resolve<ILocalization>();
 
             TreeView.ItemDataBinding += OnItemDataBinding;
             TreeView.ItemDrop += OnItemDrop;
@@ -144,11 +146,11 @@ namespace Battlehub.RTBuilder
             int index = m_paletteManager.Palette.Materials.IndexOf(material);
             if (index > 10)
             {
-                paletteItem.Text = "Apply";
+                paletteItem.Text = m_localization.GetString("ID_RTBuilder_MaterialPalette_Apply", "Apply");
             }
             else
             {
-                paletteItem.Text = "Alt + " + (m_paletteManager.Palette.Materials.IndexOf(material) + 1) % 10;
+                paletteItem.Text = m_localization.GetString("ID_RTBuilder_MaterialPalette_Alt", "Alt + ") + (m_paletteManager.Palette.Materials.IndexOf(material) + 1) % 10;
             }
         }
 

@@ -25,16 +25,18 @@ namespace Battlehub.RTEditor
         private Button BtnSelect = null;
 
         private IObjectEditorLoader m_loader;
+        private ILocalization m_localization;
 
         protected override void SetInputField(UnityObject value)
         {
+            string memberInfoTypeName = m_localization.GetString("ID_RTEditor_PE_TypeName_" + MemberInfoType.Name, MemberInfoType.Name);
             if (value != null)
             {
-                Input.text = string.Format("{1} ({0})", MemberInfoType.Name, value.name);
+                Input.text = string.Format("{1} ({0})", memberInfoTypeName, value.name);
             }
             else
             {
-                Input.text = string.Format("None ({0})", MemberInfoType.Name);
+                Input.text = string.Format(m_localization.GetString("ID_RTEditor_PE_ObjectEditor_None", "None") + " ({0})", memberInfoTypeName);
             }
         }
 
@@ -43,6 +45,7 @@ namespace Battlehub.RTEditor
             base.AwakeOverride();
             BtnSelect.onClick.AddListener(OnSelect);
 
+            m_localization = IOC.Resolve<ILocalization>();
             m_loader = IOC.Resolve<IObjectEditorLoader>();
             if(m_loader == null)
             {
@@ -69,9 +72,12 @@ namespace Battlehub.RTEditor
             ISelectObjectDialog objectSelector = null;
 
             IWindowManager wm = IOC.Resolve<IWindowManager>();
-            if(wm.IsWindowRegistered("Select" + MemberInfoType.Name))
+
+            string memberInfoTypeName = m_localization.GetString("ID_RTEditor_PE_TypeName_" + MemberInfoType.Name, MemberInfoType.Name);
+            string select = m_localization.GetString("ID_RTEditor_PE_ObjectEditor_Select", "Select") + " ";
+            if (wm.IsWindowRegistered("Select" + MemberInfoType.Name))
             {
-                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow("Select" + MemberInfoType.Name, "Select " + MemberInfoType.Name,
+                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow("Select" + MemberInfoType.Name, select + memberInfoTypeName,
                       (sender, args) =>
                       {
                           if (objectSelector.IsNoneSelected)
@@ -86,7 +92,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectObject.ToString(), "Select " + MemberInfoType.Name,
+                Transform dialogTransform = IOC.Resolve<IWindowManager>().CreateDialogWindow(RuntimeWindowType.SelectObject.ToString(), select + memberInfoTypeName,
                     (sender, args) =>
                     {
                         if (objectSelector.IsNoneSelected)

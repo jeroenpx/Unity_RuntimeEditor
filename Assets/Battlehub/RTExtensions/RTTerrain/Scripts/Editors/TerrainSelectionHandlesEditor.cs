@@ -39,6 +39,7 @@ namespace Battlehub.RTTerrain
         private ITerrainSelectionHandlesTool m_terrainTool;
         private ICustomSelectionComponent m_customSelection;
         private IRuntimeEditor m_editor;
+        private ILocalization m_localization;
 
         private bool m_isTerrainHandleSelected = false;
 
@@ -62,6 +63,7 @@ namespace Battlehub.RTTerrain
             m_commandsList.CanUnselectAll = true;
             m_commandsList.CanRemove = false;
 
+            m_localization = IOC.Resolve<ILocalization>();
             m_terrainTool = IOC.Resolve<ITerrainSelectionHandlesTool>();
             m_customSelection = IOC.Resolve<ICustomSelectionComponent>();
             m_customSelection.Selection.SelectionChanged += OnTerrainToolSelectionChanged;
@@ -70,19 +72,19 @@ namespace Battlehub.RTTerrain
             {
                 m_xSpacingEditor.Min = 5;
                 m_xSpacingEditor.Max = 40;
-                m_xSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.XSpacing), null, "X Space", null, null, () => m_terrainTool.Refresh(), false);
+                m_xSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.XSpacing), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_XSpacing", "X Space"), null, null, () => m_terrainTool.Refresh(), false);
             }
 
             if (m_zSpacingEditor != null)
             {
                 m_zSpacingEditor.Min = 5;
                 m_zSpacingEditor.Max = 40;
-                m_zSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.ZSpacing), null, "Z Space", null, null, () => m_terrainTool.Refresh(), false);
+                m_zSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.ZSpacing), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_ZSpacing", "Z Space"), null, null, () => m_terrainTool.Refresh(), false);
             }
 
             if (m_zTestEditor != null)
             {
-                m_zTestEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.EnableZTest), null, "Z Test");
+                m_zTestEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.EnableZTest), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_ZTest", "Z Test"));
             }
         }
 
@@ -153,9 +155,9 @@ namespace Battlehub.RTTerrain
         {
             return new List<ToolCmd>()
             {
-                new ToolCmd("Reset Position", () => m_terrainTool.ResetPosition(), () => m_isTerrainHandleSelected),
-                new ToolCmd("Cut Holes", () => BeginCutHoles()),
-                new ToolCmd("Clear Holes", () => m_terrainTool.ClearHoles()),
+                new ToolCmd(m_localization.GetString("ID_RTTerrain_SelectionHandles_ResetPosition", "Reset Position"), () => m_terrainTool.ResetPosition(), () => m_isTerrainHandleSelected),
+                new ToolCmd(m_localization.GetString("ID_RTTerrain_SelectionHandles_CutHoles", "Cut Holes"), () => BeginCutHoles()),
+                new ToolCmd(m_localization.GetString("ID_RTTerrain_SelectionHandles_ClearHoles", "Clear Holes"), () => m_terrainTool.ClearHoles()),
             };
         }
 

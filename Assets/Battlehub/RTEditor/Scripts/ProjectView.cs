@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using Battlehub.RTCommon;
 using System.Linq;
-using Battlehub.UIControls;
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls.DockPanels;
 using System.Collections;
@@ -13,6 +11,8 @@ namespace Battlehub.RTEditor
     {
         private IWindowManager m_windowManager;
         private IProject m_project;
+        private ILocalization m_localization;
+
         private IResourcePreviewUtility m_resourcePreview;
         [SerializeField]
         private ProjectTreeView m_projectTree = null;
@@ -29,7 +29,8 @@ namespace Battlehub.RTEditor
         {
             m_windowManager = IOC.Resolve<IWindowManager>();
             m_project = IOC.Resolve<IProject>();
-            if(m_project == null)
+            m_localization = IOC.Resolve<ILocalization>();
+            if (m_project == null)
             {
                 Debug.LogWarning("RTSLDeps.Get.Project is null");
                 Destroy(gameObject);
@@ -113,7 +114,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Can't open project", error.ToString());
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_CantOpenProject", "Can't open project"), error.ToString());
                 return;
             }
             
@@ -126,7 +127,7 @@ namespace Battlehub.RTEditor
         {
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Can't close project", error.ToString());
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_CantCloseProject", "Can't close project"), error.ToString());
                 return;
             }
 
@@ -140,7 +141,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Unable to Import assets", error.ErrorText);
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToImportAssets", "Unable to import assets") , error.ErrorText);
             }
 
             string path = string.Empty;
@@ -171,7 +172,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Unable to remove", error.ErrorText);
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToRemove", "Unable to remove"), error.ErrorText);
             }
            
         }
@@ -202,7 +203,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Unable to rename asset", error.ToString());
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToRenameAsset", "Unable to rename asset"), error.ToString());
             }
         }
 
@@ -211,7 +212,7 @@ namespace Battlehub.RTEditor
             Editor.IsBusy = false;
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Unable to create folder", error.ToString());
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToCreateFolder", "Unable to create folder"), error.ToString());
                 return;
             }
 
@@ -223,7 +224,7 @@ namespace Battlehub.RTEditor
         {
             if (error.HasError)
             {
-                m_windowManager.MessageBox("Unable to move assets", error.ErrorText);
+                m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToMoveAssets", "Unable to move assets"), error.ErrorText);
                 return;
             }
 
@@ -256,7 +257,7 @@ namespace Battlehub.RTEditor
             {  
                 if (error.HasError)
                 {
-                    m_windowManager.MessageBox("Can't GetAssets", error.ToString());
+                    m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_CantGetAssets", "Can't get assets"), error.ToString());
                     return;
                 }
 
@@ -309,7 +310,7 @@ namespace Battlehub.RTEditor
                         Editor.IsBusy = false;
                         if(error.HasError)
                         {
-                            m_windowManager.MessageBox("Unable to load scene " + e.ProjectItem.ToString(), error.ToString());
+                            m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToLoadScene", "Unable to load scene") + " " + e.ProjectItem.ToString(), error.ToString());
                         }
                     });
                 }

@@ -13,6 +13,7 @@ namespace Battlehub.RTEditor
     public class GameObjectCmd : MonoBehaviour, IGameObjectCmd
     {
         private IRuntimeEditor m_editor;
+        private ILocalization m_localization;
 
         [SerializeField]
         private Material m_defaultMaterial = null;
@@ -20,7 +21,8 @@ namespace Battlehub.RTEditor
      
         private void Awake()
         {
-            m_editor = IOC.Resolve<IRuntimeEditor>();   
+            m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_localization = IOC.Resolve<ILocalization>();
 
             if(RenderPipelineInfo.Type != RPType.Standard)
             {
@@ -41,7 +43,7 @@ namespace Battlehub.RTEditor
             {
                 case "createempty":
                     go = new GameObject();
-                    go.name = "Empty";
+                    go.name = m_localization.GetString("ID_RTEditor_GameObjectCmd_Empty", "Empty");
                     break;
                 case "createemptychild":
                     go = new GameObject();
@@ -76,7 +78,7 @@ namespace Battlehub.RTEditor
                 case "directionallight":
                     {
                         go = new GameObject();
-                        go.name = "Directional Light";
+                        go.name = m_localization.GetString("ID_RTEditor_GameObjectCmd_DirectionalLight", "Directional Light");
                         Light light = go.AddComponent<Light>();
                         light.type = LightType.Directional;
                     }
@@ -84,7 +86,7 @@ namespace Battlehub.RTEditor
                 case "pointlight":
                     {
                         go = new GameObject();
-                        go.name = "Point Light";
+                        go.name = m_localization.GetString("ID_RTEditor_GameObjectCmd_PointLight", "Point Light");
                         Light light = go.AddComponent<Light>();
                         light.type = LightType.Point;
                     }
@@ -92,7 +94,7 @@ namespace Battlehub.RTEditor
                 case "spotlight":
                     {
                         go = new GameObject();
-                        go.name = "Spot Light";
+                        go.name = m_localization.GetString("ID_RTEditor_GameObjectCmd_SpotLight", "Spot Light");
                         Light light = go.AddComponent<Light>();
                         light.type = LightType.Spot;
                     }
@@ -101,7 +103,7 @@ namespace Battlehub.RTEditor
                     {
                         go = new GameObject();
                         go.SetActive(false);
-                        go.name = "Camera";
+                        go.name = m_localization.GetString("ID_RTEditor_GameObjectCmd_Camera", "Camera");
                         go.AddComponent<Camera>();
                         go.AddComponent<GameViewCamera>();
                     }

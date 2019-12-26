@@ -120,10 +120,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Rect Tool
+  m_text: ID_RTEditor_ToolsPanel_RectTool
 --- !u!1 &2394338926478211776
 GameObject:
   m_ObjectHideFlags: 0
@@ -2279,7 +2280,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 135, g: 135, b: 135, a: 255}
+  m_Color: {r: 4.6182942, g: 4.6182942, b: 4.6182942, a: 255}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2326,7 +2327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Border4Color
+  Name: SecondaryColor
 --- !u!1 &3345052166070029183
 GameObject:
   m_ObjectHideFlags: 0
@@ -2874,7 +2875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 135, g: 135, b: 135, a: 255}
+  m_Color: {r: 4.6182942, g: 4.6182942, b: 4.6182942, a: 255}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2921,7 +2922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Border4Color
+  Name: SecondaryColor
 --- !u!1 &3345052166385055100
 GameObject:
   m_ObjectHideFlags: 0
@@ -3371,10 +3372,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Move Tool
+  m_text: ID_RTEditor_ToolsPanel_MoveTool
 --- !u!1 &7791289664756282780
 GameObject:
   m_ObjectHideFlags: 0
@@ -3541,10 +3543,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Redo
+  m_text: ID_RTEditor_ToolsPanel_Redo
 --- !u!1 &7791289664807636601
 GameObject:
   m_ObjectHideFlags: 0
@@ -3665,10 +3668,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Scale Tool
+  m_text: ID_RTEditor_ToolsPanel_ScaleTool
 --- !u!1 &7791289664813350890
 GameObject:
   m_ObjectHideFlags: 0
@@ -4829,7 +4833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 135, g: 135, b: 135, a: 255}
+  m_Color: {r: 4.6182942, g: 4.6182942, b: 4.6182942, a: 255}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4876,7 +4880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Border4Color
+  Name: SecondaryColor
 --- !u!1 &7791289665807632464
 GameObject:
   m_ObjectHideFlags: 0
@@ -5011,10 +5015,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Play
+  m_text: ID_RTEditor_ToolsPanel_Play
 --- !u!1 &7791289665891079403
 GameObject:
   m_ObjectHideFlags: 0
@@ -5135,10 +5140,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Rotate Tool
+  m_text: ID_RTEditor_ToolsPanel_RotateTool
 --- !u!1 &7791289665949597433
 GameObject:
   m_ObjectHideFlags: 0
@@ -5305,10 +5311,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Undo
+  m_text: ID_RTEditor_ToolsPanel_Undo
 --- !u!1 &7791289666101515660
 GameObject:
   m_ObjectHideFlags: 0
@@ -5535,10 +5542,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Hand Tool
+  m_text: ID_RTEditor_ToolsPanel_HandTool
 --- !u!1 &7791289666118959662
 GameObject:
   m_ObjectHideFlags: 0
@@ -5660,7 +5668,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
   m_text: Tooltip
@@ -5677,8 +5686,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_toggle: {fileID: 0}
-  m_onText: Tool handles are in global rotation.
-  m_offText: Tool handles are in active object's rotation.
+  m_onText: ID_RTEditor_ToolsPanel_InGlobalRotation
+  m_offText: ID_RTEditor_ToolsPanel_InObjectsRotation
 --- !u!1 &7791289666246578803
 GameObject:
   m_ObjectHideFlags: 0
@@ -5917,7 +5926,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
   m_text: Tooltip
@@ -5934,8 +5944,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_toggle: {fileID: 0}
-  m_onText: The tool handle is placed at the center of the selection.
-  m_offText: The tool handle is placed at the active object's pivot point.
+  m_onText: ID_RTEditor_ToolsPanel_AtTheCenter
+  m_offText: ID_RTEditor_ToolsPanel_AtThePivotPoint
 --- !u!1 &7791289666557006216
 GameObject:
   m_ObjectHideFlags: 0

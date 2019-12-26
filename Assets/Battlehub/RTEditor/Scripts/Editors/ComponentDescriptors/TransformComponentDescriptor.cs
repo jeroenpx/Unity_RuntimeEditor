@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Reflection;
 using Battlehub.Utils;
+using Battlehub.RTCommon;
 
 namespace Battlehub.RTEditor
 {
@@ -15,6 +16,8 @@ namespace Battlehub.RTEditor
 
         public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
         {
+            ILocalization lc = IOC.Resolve<ILocalization>();
+
             TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
 
             MemberInfo position = Strong.PropertyInfo((Transform x) => x.localPosition, "localPosition");
@@ -24,9 +27,9 @@ namespace Battlehub.RTEditor
 
             return new[]
                 {
-                    new PropertyDescriptor( "Position", editor.Component, position, position) ,
-                    new PropertyDescriptor( "Rotation", converter, rotationConverted, rotation),
-                    new PropertyDescriptor( "Scale", editor.Component, scale, scale)
+                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Position", "Position"), editor.Component, position, position) ,
+                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Rotation", "Rotation"), converter, rotationConverted, rotation),
+                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Scale", "Scale"), editor.Component, scale, scale)
                 };
         }
     }

@@ -208,10 +208,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Edge Selection
+  m_text: ID_RTBuilder_ToolBar_Tooltip_EdgeSelection
 --- !u!1 &503547740642702079
 GameObject:
   m_ObjectHideFlags: 0
@@ -681,10 +682,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Face Selection
+  m_text: ID_RTBuilder_ToolBar_Tooltip_FaceSelection
 --- !u!1 &2004064005204633335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1412,10 +1414,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Object Selection
+  m_text: ID_RTBuilder_ToolBar_Tooltip_ObjectSelection
 --- !u!1 &4810101701751329175
 GameObject:
   m_ObjectHideFlags: 0
@@ -2354,10 +2357,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Vertex Selection
+  m_text: ID_RTBuilder_ToolBar_Tooltip_VertexSelection
 --- !u!1 &6792270730077814414
 GameObject:
   m_ObjectHideFlags: 0

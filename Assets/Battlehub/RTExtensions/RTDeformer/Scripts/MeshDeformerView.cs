@@ -168,21 +168,23 @@ namespace Battlehub.MeshDeformer3
 
         private List<ToolCmd> GetCommands()
         {
+            ILocalization lc = IOC.Resolve<ILocalization>();
+
             List<ToolCmd> commands = new List<ToolCmd>();
             if(m_tool.Mode == MeshDeformerToolMode.Object)
             {
-                ToolCmd deformCmd = new ToolCmd("Deform", () => DeformAxis(Axis.Z), CanDeform);
+                ToolCmd deformCmd = new ToolCmd(lc.GetString("ID_RTDeformer_View_Deform", "Deform"), () => DeformAxis(Axis.Z), CanDeform);
                 deformCmd.Children = new List<ToolCmd>
                 {
-                    new ToolCmd("Deform X", () => DeformAxis(Axis.X), CanDeform) { Parent = deformCmd },
-                    new ToolCmd("Deform Y", () => DeformAxis(Axis.Y), CanDeform) { Parent = deformCmd },
+                    new ToolCmd(lc.GetString("ID_RTDeformer_View_DeformX", "Deform X"), () => DeformAxis(Axis.X), CanDeform) { Parent = deformCmd },
+                    new ToolCmd(lc.GetString("ID_RTDeformer_View_DeformY", "Deform Y"), () => DeformAxis(Axis.Y), CanDeform) { Parent = deformCmd },
                 };
                 commands.Add(deformCmd);
             }
             else if(m_tool.Mode == MeshDeformerToolMode.ControlPoint)
             {
-                commands.Add(new ToolCmd("Append", Append, CanAppend));
-                commands.Add(new ToolCmd("Remove", Remove, () => m_isMeshDeformerSelected));
+                commands.Add(new ToolCmd(lc.GetString("ID_RTDeformer_View_Append", "Append"), Append, CanAppend));
+                commands.Add(new ToolCmd(lc.GetString("ID_RTDeformer_View_Remove", "Remove"), Remove, () => m_isMeshDeformerSelected));
             }
 
             return commands;

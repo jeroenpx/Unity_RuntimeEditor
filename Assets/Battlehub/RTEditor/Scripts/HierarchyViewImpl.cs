@@ -55,9 +55,11 @@ namespace Battlehub.RTEditor
         }
 
         private HierarchyView m_hierarchyView;
+        private ILocalization m_localization;
 
         protected virtual void Awake()
         {
+            m_localization = IOC.Resolve<ILocalization>();
             m_hierarchyView = GetComponent<HierarchyView>();
             if (!m_hierarchyView.TreeViewPrefab)
             {
@@ -864,7 +866,7 @@ namespace Battlehub.RTEditor
                         if (error.HasError)
                         {
                             IWindowManager wm = IOC.Resolve<IWindowManager>();
-                            wm.MessageBox("Unable to load asset items.", error.ErrorText);
+                            wm.MessageBox(m_localization.GetString("ID_RTEditor_HierarchyView_UnableToLoadAssetItems", "Unable to load asset items"), error.ErrorText);
                             return;
                         }
 

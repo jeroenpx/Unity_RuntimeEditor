@@ -27,9 +27,11 @@ namespace Battlehub.RTTerrain
         }
 
         private ITerrainSettings m_terrainSettings;
+        private ILocalization m_localization;
 
         protected virtual void Awake()
         {
+            m_localization = IOC.Resolve<ILocalization>();
             m_terrainSettings = IOC.Resolve<ITerrainSettings>();
 
             m_terrainEditor = GetComponentInParent<TerrainEditor>();
@@ -68,11 +70,16 @@ namespace Battlehub.RTTerrain
         private void OnDefaultTextureChanged(object sender, EventArgs e)
         {
             IWindowManager wm = IOC.Resolve<IWindowManager>();
-            wm.Confirmation("Default terrain texture changed", "Would you like to apply this texture to the terrain in the scene?", (dialog, okArgs) =>
-            {
-                m_terrainSettings.ApplyDefaultTexture();
-            },
-            (dialog, cancelArgs) => { }, "Yes", "No");
+            wm.Confirmation(
+                m_localization.GetString("ID_RTTerrain_Settings_DefaultTextureChanged", "Default terrain texture changed"), 
+                m_localization.GetString("ID_RTTerrain_Settings_WouldYouLikeToApplyTexture", "Would you like to apply this texture to the terrain in the scene?"),
+                (dialog, okArgs) =>
+                {
+                    m_terrainSettings.ApplyDefaultTexture();
+                },
+                (dialog, cancelArgs) => { },
+                m_localization.GetString("ID_RTTerrain_Settings_Yes", "Yes"),
+                m_localization.GetString("ID_RTTerrain_Settings_No", "No"));
 
         }
 
@@ -88,22 +95,22 @@ namespace Battlehub.RTTerrain
             {
                 if (m_widthEditor != null)
                 {
-                    m_terrainSettings.InitEditor(m_widthEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Width), "Width");
+                    m_terrainSettings.InitEditor(m_widthEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Width), m_localization.GetString("ID_RTTerrain_Settings_Width", "Width"));
                 }
 
                 if (m_lengthEditor != null)
                 {
-                    m_terrainSettings.InitEditor(m_lengthEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Length), "Length");
+                    m_terrainSettings.InitEditor(m_lengthEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Length), m_localization.GetString("ID_RTTerrain_Settings_Length", "Length"));
                 }
 
                 if(m_heightmapResolutionEditor != null)
                 {
-                    m_terrainSettings.InitEditor(m_heightmapResolutionEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Resolution), "Resolution");
+                    m_terrainSettings.InitEditor(m_heightmapResolutionEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Resolution), m_localization.GetString("ID_RTTerrain_Settings_Resolution", "Resolution"));
                 }
 
                 if(m_positionEditor != null)
                 {
-                    m_terrainSettings.InitEditor(m_positionEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Position), "Position");
+                    m_terrainSettings.InitEditor(m_positionEditor, Strong.PropertyInfo((ITerrainSettings x) => x.Position), m_localization.GetString("ID_RTTerrain_Settings_Position", "Position"));
                 }
             }
         }

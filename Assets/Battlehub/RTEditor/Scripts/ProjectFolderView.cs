@@ -47,6 +47,7 @@ namespace Battlehub.RTEditor
         public event EventHandler<ProjectTreeContextMenuEventArgs> ContextMenu;
         public event EventHandler Destroyed;
 
+        private ILocalization m_localization;
         private IProject m_project;
         private IWindowManager m_windowManager;
 
@@ -183,6 +184,7 @@ namespace Battlehub.RTEditor
 
             m_project = IOC.Resolve<IProject>();
             m_windowManager = IOC.Resolve<IWindowManager>();
+            m_localization = IOC.Resolve<ILocalization>();
 
             m_listBox = GetComponentInChildren<VirtualizingTreeView>();
             if (m_listBox == null)
@@ -605,36 +607,43 @@ namespace Battlehub.RTEditor
                 IContextMenu menu = IOC.Resolve<IContextMenu>();
                 List<MenuItemInfo> menuItems = new List<MenuItemInfo>();
 
-                MenuItemInfo createFolder = new MenuItemInfo { Path = "Create/Folder" };
+                MenuItemInfo createFolder = new MenuItemInfo
+                {
+                    Path = string.Format("{0}/{1}",
+                        m_localization.GetString("ID_RTEditor_ProjectFolderView_Create", "Create"),
+                        m_localization.GetString("ID_RTEditor_ProjectFolderView_Folder", "Folder"))
+                };
                 createFolder.Action = new MenuItemEvent();
                 createFolder.Action.AddListener(CreateFolder);
                 createFolder.Validate = new MenuItemValidationEvent();
                 createFolder.Validate.AddListener(CreateValidate);
                 menuItems.Add(createFolder);
 
-                CreateMenuItem("Material", "Material", typeof(Material), menuItems);
-                CreateMenuItem("Animation Clip", "AnimationClip", typeof(RuntimeAnimationClip), menuItems);
+                string materialStr = m_localization.GetString("ID_RTEditor_ProjectFolderView_Material", "Material");
+                string animationClipStr = m_localization.GetString("ID_RTEditor_ProjectFolderView_AnimationClip", "Animation Clip");
+                CreateMenuItem(materialStr, materialStr, typeof(Material), menuItems);
+                CreateMenuItem(animationClipStr, animationClipStr.Replace(" ", ""), typeof(RuntimeAnimationClip), menuItems);
 
-                MenuItemInfo open = new MenuItemInfo { Path = "Open" };
+                MenuItemInfo open = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectFolderView_Open", "Open") };
                 open.Action = new MenuItemEvent();
                 open.Action.AddListener(Open);
                 open.Validate = new MenuItemValidationEvent();
                 open.Validate.AddListener(OpenValidate);
                 menuItems.Add(open);
 
-                MenuItemInfo duplicate = new MenuItemInfo { Path = "Duplicate" };
+                MenuItemInfo duplicate = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectFolderView_Duplicate", "Duplicate") };
                 duplicate.Action = new MenuItemEvent();
                 duplicate.Action.AddListener(Duplicate);
                 duplicate.Validate = new MenuItemValidationEvent();
                 duplicate.Validate.AddListener(DuplicateValidate);
                 menuItems.Add(duplicate);
 
-                MenuItemInfo deleteFolder = new MenuItemInfo { Path = "Delete" };
+                MenuItemInfo deleteFolder = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectFolderView_Delete", "Delete") };
                 deleteFolder.Action = new MenuItemEvent();
                 deleteFolder.Action.AddListener(Delete);
                 menuItems.Add(deleteFolder);
 
-                MenuItemInfo renameFolder = new MenuItemInfo { Path = "Rename" };
+                MenuItemInfo renameFolder = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectFolderView_Rename", "Rename") };
                 renameFolder.Action = new MenuItemEvent();
                 renameFolder.Action.AddListener(Rename);
                 menuItems.Add(renameFolder);
@@ -656,14 +665,21 @@ namespace Battlehub.RTEditor
 
                 List<MenuItemInfo> menuItems = new List<MenuItemInfo>();
 
-                MenuItemInfo createFolder = new MenuItemInfo { Path = "Create/Folder" };
+                MenuItemInfo createFolder = new MenuItemInfo
+                {
+                    Path = string.Format("{0}/{1}",
+                        m_localization.GetString("ID_RTEditor_ProjectFolderView_Create", "Create"),
+                        m_localization.GetString("ID_RTEditor_ProjectFolderView_Folder", "Folder"))
+                };
                 createFolder.Action = new MenuItemEvent();
                 createFolder.Command = "CurrentFolder";
                 createFolder.Action.AddListener(CreateFolder);
                 menuItems.Add(createFolder);
 
-                CreateMenuItem("Material", "Material", typeof(Material), menuItems);
-                CreateMenuItem("Animation Clip", "AnimationClip", typeof(RuntimeAnimationClip), menuItems);
+                string materialStr = m_localization.GetString("ID_RTEditor_ProjectFolderView_Material", "Material");
+                string animationClipStr = m_localization.GetString("ID_RTEditor_ProjectFolderView_AnimationClip", "Animation Clip");
+                CreateMenuItem(materialStr, materialStr, typeof(Material), menuItems);
+                CreateMenuItem(animationClipStr, animationClipStr.Replace(" ", ""), typeof(RuntimeAnimationClip), menuItems);
 
                 if (ContextMenu != null)
                 {
@@ -678,7 +694,7 @@ namespace Battlehub.RTEditor
         {
             if (m_project.ToGuid(type) != Guid.Empty)
             {
-                MenuItemInfo createAsset = new MenuItemInfo { Path = "Create/" + text };
+                MenuItemInfo createAsset = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_ProjectFolderView_Create", "Create") + "/" + text };
                 createAsset.Action = new MenuItemEvent();
                 createAsset.Command = "CurrentFolder";
                 createAsset.Action.AddListener(arg => CreateAsset(arg, type, defaultName));
@@ -709,7 +725,7 @@ namespace Battlehub.RTEditor
             ProjectItem folder = new ProjectItem();
 
             string[] existingNames = parentFolder.Children.Where(c => c.IsFolder).Select(c => c.Name).ToArray();
-            folder.Name = m_project.GetUniqueName("Folder", parentFolder.Children == null ? new string[0] : existingNames);
+            folder.Name = m_project.GetUniqueName(m_localization.GetString("ID_RTEditor_ProjectFolderView_Folder", "Folder"), parentFolder.Children == null ? new string[0] : existingNames);
             folder.Children = new List<ProjectItem>();
             parentFolder.AddChild(folder);
 
@@ -838,7 +854,10 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            m_windowManager.Confirmation("Delete Selected Assets", "You cannot undo this action", (sender, arg) =>
+            m_windowManager.Confirmation(
+                m_localization.GetString("ID_RTEditor_ProjectFolderView_DeleteSelectedAssets", "Delete Selected Assets"), 
+                m_localization.GetString("ID_RTEditor_ProjectFolderView_YouCanNotUndoThisAction", "You cannot undo this action"), 
+                (sender, arg) =>
             {
                 m_listBox.RemoveSelectedItems();
                 bool wasEnabled = Editor.Undo.Enabled;
@@ -847,7 +866,8 @@ namespace Battlehub.RTEditor
                 Editor.Undo.Enabled = wasEnabled;
             },
             (sender, arg) => { },
-            "Delete");
+            m_localization.GetString("ID_RTEditor_ProjectFolderView_BtnDelete", "Delete"),
+            m_localization.GetString("ID_RTEditor_ProjectFolderView_BtnCancel", "Cancel"));
         }
 
         public void OnDeleted(ProjectItem[] projectItems)

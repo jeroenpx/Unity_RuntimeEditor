@@ -48,10 +48,12 @@ namespace Battlehub.UIControls.TooltipControl
             if(value)
             {
                 m_tooltip.Text = m_onText;
+                m_tooltip.Refresh();
             }
             else
             {
                 m_tooltip.Text = m_offText;
+                m_tooltip.Refresh();
             }
         }
     }

@@ -121,10 +121,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Control Point Selection
+  m_text: ID_RTDeformer_View_ControlPointSelection
 --- !u!1 &2838773646910385719
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,10 +675,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_location: 3
-  m_prefab: {fileID: 0}
+  m_prefab: {fileID: 4640333784749677183, guid: ca2b9fe494a790f49951bf989e02e420,
+    type: 3}
   m_target: {fileID: 0}
   m_layer: {fileID: 0}
-  m_text: Object Selection
+  m_text: ID_RTDeformer_View_ObjectSelection
 --- !u!1 &4406083563065236922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,7 +1290,7 @@ MonoBehaviour:
   m_resizeCamera: 1
   m_activateOnAnyKey: 0
   m_canActivate: 1
-  m_windowType: 2
+  m_windowType: 65536
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}

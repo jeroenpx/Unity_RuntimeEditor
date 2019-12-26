@@ -28,11 +28,14 @@ namespace Battlehub.RTTerrain
                 }
             }
         }
-        
+
+        private ILocalization m_localization;
 
         protected override void Awake()
         {
             base.Awake();
+
+            m_localization = IOC.Resolve<ILocalization>();
 
             OnTerrainChanged();
         }
@@ -45,7 +48,7 @@ namespace Battlehub.RTTerrain
                 m_heightEditor.Min = 0;
                 m_heightEditor.Max = TerrainEditor.Terrain.terrainData.size.y;
                 m_height = m_heightEditor.Max / 3;
-                m_heightEditor.Init(this, this, Strong.PropertyInfo((TerrainStampEditor x) => x.Height));
+                m_heightEditor.Init(this, this, Strong.PropertyInfo((TerrainStampEditor x) => x.Height), null, m_localization.GetString("ID_RTTerrain_TerrainStampEditor_Height", "Height"));
             }
         }
 
