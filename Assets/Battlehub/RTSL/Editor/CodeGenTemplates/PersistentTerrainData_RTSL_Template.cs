@@ -133,8 +133,8 @@ namespace Battlehub.RTSL.Internal
             m_detailResolution = o.detailResolution;
             m_detailResolutionPerPatch = o.detailResolutionPerPatch;
             m_heightmapResolution = o.heightmapResolution;
-            m_heightMapWidth = o.heightmapWidth;
-            m_heightMapHeight = o.heightmapHeight;
+            m_heightMapWidth = o.heightmapResolution;
+            m_heightMapHeight = o.heightmapResolution;
 
             m_size = o.size;
 

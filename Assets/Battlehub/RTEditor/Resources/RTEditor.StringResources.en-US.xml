@@ -85,6 +85,7 @@
 		<StringResource id="ID_RTEditor_ToolsPanel_HandTool" value="Hand Tool"/>
 		<StringResource id="ID_RTEditor_ToolsPanel_MoveTool" value="Move Tool"/>
 		<StringResource id="ID_RTEditor_ToolsPanel_RotateTool" value="Rotate Tool"/>
+		<StringResource id="ID_RTEditor_ToolsPanel_ScaleTool" value="Scale Tool"/>
 		<StringResource id="ID_RTEditor_ToolsPanel_RectTool" value="Rect Tool"/>
 		<StringResource id="ID_RTEditor_ToolsPanel_InGlobalRotation" value="Tool handles are in global rotation."/>
 		<StringResource id="ID_RTEditor_ToolsPanel_InObjectsRotation" value="Tool handles are in active object's rotation."/>

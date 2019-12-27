@@ -83,6 +83,9 @@ namespace Battlehub.RTCommon
         public bool CanCreatePrefab = true;
         public bool ShowSelectionGizmo = true;
 
+        [HideInInspector, Obsolete]
+        public bool CanSelect = true;
+
         [HideInInspector]
         public bool CanSnap = true;
         public bool AddColliders = true;

@@ -31,124 +31,6 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 0000000000000000
     IsHidden: 0000
-  - Name: ARCore/ARBackground
-    PropertyCount: 3
-    PropertyDescriptions:
-    - Main Texture
-    - UV of top corners
-    - UV of bottom corners
-    PropertyNames:
-    - _MainTex
-    - _UvTopLeftRight
-    - _UvBottomLeftRight
-    PropertyTypes: 040000000100000001000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 020000000000000000000000
-    IsHidden: 000000
-  - Name: ARCore/AugmentedFaceOccluder
-    PropertyCount: 0
-    PropertyDescriptions: []
-    PropertyNames: []
-    PropertyTypes: 
-    PropertyRangeLimits: []
-    PropertyTexDims: 
-    IsHidden: 
-  - Name: ARCore/DiffuseWithLightEstimation
-    PropertyCount: 1
-    PropertyDescriptions:
-    - Base (RGB)
-    PropertyNames:
-    - _MainTex
-    PropertyTypes: 04000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 02000000
-    IsHidden: 00
-  - Name: ARCore/PlaneGrid
-    PropertyCount: 4
-    PropertyDescriptions:
-    - Texture
-    - Grid Color
-    - Plane Normal
-    - UV Rotation
-    PropertyNames:
-    - _MainTex
-    - _GridColor
-    - _PlaneNormal
-    - _UvRotation
-    PropertyTypes: 04000000000000000100000002000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 02000000000000000000000000000000
-    IsHidden: 00000000
-  - Name: ARCore/PointCloud
-    PropertyCount: 3
-    PropertyDescriptions:
-    - PointCloud Color
-    - 
-    - 
-    PropertyNames:
-    - _Color
-    - _ScreenWidth
-    - _ScreenHeight
-    PropertyTypes: 000000000200000002000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 000000000000000000000000
-    IsHidden: 000101
-  - Name: ARCore/SpecularWithLightEstimation
-    PropertyCount: 3
-    PropertyDescriptions:
-    - Shininess
-    - Base (RGB) Gloss (A)
-    - Normalmap
-    PropertyNames:
-    - _Shininess
-    - _MainTex
-    - _BumpMap
-    PropertyTypes: 030000000400000004000000
-    PropertyRangeLimits:
-    - Def: 0.078125
-      Min: 0.03
-      Max: 1
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 000000000200000002000000
-    IsHidden: 000000
   - Name: Autodesk Interactive
     PropertyCount: 26
     PropertyDescriptions:
@@ -1008,19 +890,6 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 020000000000000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000000000
-  - Name: EdgeDetectionBackground
-    PropertyCount: 1
-    PropertyDescriptions:
-    - Texture
-    PropertyNames:
-    - _ImageTex
-    PropertyTypes: 04000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 02000000
-    IsHidden: 00
   - Name: FX/Flare
     PropertyCount: 1
     PropertyDescriptions:
@@ -1470,6 +1339,29 @@ MonoBehaviour:
     PropertyTexDims: 
     IsHidden: 
   - Name: Hidden/Internal-GUIRoundedRect
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Texture
+    - SrcBlend
+    - DstBlend
+    PropertyNames:
+    - _MainTex
+    - _SrcBlend
+    - _DstBlend
+    PropertyTypes: 040000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 010000000000000000000000
+    IsHidden: 000000
+  - Name: Hidden/Internal-GUIRoundedRectWithColorPerBorder
     PropertyCount: 3
     PropertyDescriptions:
     - Texture
@@ -2268,6 +2160,34 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
+  - Name: Hidden/ProBuilder/LineBillboardMetal
+    PropertyCount: 4
+    PropertyDescriptions:
+    - Scale
+    - Color
+    - _HandleZTest
+    - _HandleZWrite
+    PropertyNames:
+    - _Scale
+    - _Color
+    - _HandleZTest
+    - _HandleZWrite
+    PropertyTypes: 03000000000000000200000002000000
+    PropertyRangeLimits:
+    - Def: 3.3
+      Min: 1
+      Max: 7
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 00000000000000000000000000000000
+    IsHidden: 00000000
   - Name: Hidden/ProBuilder/NormalPreview
     PropertyCount: 0
     PropertyDescriptions: []
@@ -2607,6 +2527,19 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 01000000
     IsHidden: 00
+  - Name: Hidden/TerrainEngine/HeightBlitCopy
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Texture
+    PropertyNames:
+    - _MainTex
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 01000000
+    IsHidden: 00
   - Name: Hidden/TerrainEngine/PaintHeight
     PropertyCount: 1
     PropertyDescriptions:
@@ -2621,22 +2554,29 @@ MonoBehaviour:
     PropertyTexDims: 01000000
     IsHidden: 00
   - Name: Hidden/TerrainEngine/Splatmap/Diffuse-AddPass
-    PropertyCount: 0
-    PropertyDescriptions: []
-    PropertyNames: []
-    PropertyTypes: 
-    PropertyRangeLimits: []
-    PropertyTexDims: 
-    IsHidden: 
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Holes Map (RGB)
+    PropertyNames:
+    - _TerrainHolesTexture
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 01
   - Name: Hidden/TerrainEngine/Splatmap/Diffuse-Base
-    PropertyCount: 2
+    PropertyCount: 3
     PropertyDescriptions:
     - Main Color
     - Base (RGB)
+    - Holes Map (RGB)
     PropertyNames:
     - _Color
     - _MainTex
-    PropertyTypes: 0000000004000000
+    - _TerrainHolesTexture
+    PropertyTypes: 000000000400000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -2644,8 +2584,11 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0000000002000000
-    IsHidden: 0000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000200000002000000
+    IsHidden: 000001
   - Name: Hidden/TerrainEngine/Splatmap/Diffuse-BaseGen
     PropertyCount: 1
     PropertyDescriptions:
@@ -2660,14 +2603,16 @@ MonoBehaviour:
     PropertyTexDims: 00000000
     IsHidden: 01
   - Name: Hidden/TerrainEngine/Splatmap/Specular-AddPass
-    PropertyCount: 2
+    PropertyCount: 3
     PropertyDescriptions:
     - Specular Color
     - Shininess
+    - Holes Map (RGB)
     PropertyNames:
     - _SpecColor
     - _Shininess
-    PropertyTypes: 0000000003000000
+    - _TerrainHolesTexture
+    PropertyTypes: 000000000300000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -2675,21 +2620,26 @@ MonoBehaviour:
     - Def: 0.078125
       Min: 0.03
       Max: 1
-    PropertyTexDims: 0000000000000000
-    IsHidden: 0000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000002000000
+    IsHidden: 000001
   - Name: Hidden/TerrainEngine/Splatmap/Specular-Base
-    PropertyCount: 4
+    PropertyCount: 5
     PropertyDescriptions:
     - Specular Color
     - Shininess
     - Base (RGB) Gloss (A)
     - Main Color
+    - Holes Map (RGB)
     PropertyNames:
     - _SpecColor
     - _Shininess
     - _MainTex
     - _Color
-    PropertyTypes: 00000000030000000400000000000000
+    - _TerrainHolesTexture
+    PropertyTypes: 0000000003000000040000000000000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -2703,27 +2653,37 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 00000000000000000200000000000000
-    IsHidden: 00000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000000000002000000
+    IsHidden: 0000000001
   - Name: Hidden/TerrainEngine/Splatmap/Standard-AddPass
-    PropertyCount: 0
-    PropertyDescriptions: []
-    PropertyNames: []
-    PropertyTypes: 
-    PropertyRangeLimits: []
-    PropertyTexDims: 
-    IsHidden: 
+    PropertyCount: 1
+    PropertyDescriptions:
+    - Holes Map (RGB)
+    PropertyNames:
+    - _TerrainHolesTexture
+    PropertyTypes: 04000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000
+    IsHidden: 01
   - Name: Hidden/TerrainEngine/Splatmap/Standard-Base
-    PropertyCount: 3
+    PropertyCount: 4
     PropertyDescriptions:
     - Base (RGB) Smoothness (A)
     - Metallic (R)
     - Main Color
+    - Holes Map (RGB)
     PropertyNames:
     - _MainTex
     - _MetallicTex
     - _Color
-    PropertyTypes: 040000000400000000000000
+    - _TerrainHolesTexture
+    PropertyTypes: 04000000040000000000000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -2734,8 +2694,11 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 020000000200000000000000
-    IsHidden: 000000
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 02000000020000000000000002000000
+    IsHidden: 00000001
   - Name: Hidden/TerrainEngine/Splatmap/Standard-BaseGen
     PropertyCount: 1
     PropertyDescriptions:
@@ -3267,28 +3230,7 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 01000000
     IsHidden: 00
-  - Name: Hidden/VR/ClippingMask
-    PropertyCount: 0
-    PropertyDescriptions: []
-    PropertyNames: []
-    PropertyTypes: 
-    PropertyRangeLimits: []
-    PropertyTexDims: 
-    IsHidden: 
   - Name: Hidden/VR/Internal-VRDistortion
-    PropertyCount: 1
-    PropertyDescriptions:
-    - Texture
-    PropertyNames:
-    - _MainTex
-    PropertyTypes: 04000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 02000000
-    IsHidden: 00
-  - Name: Hidden/VR/VideoBackground
     PropertyCount: 1
     PropertyDescriptions:
     - Texture
@@ -5357,14 +5299,16 @@ MonoBehaviour:
     PropertyTexDims: 0200000000000000000000000000000000000000020000000200000000000000000000000000000002000000000000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000000000
   - Name: Nature/Terrain/Diffuse
-    PropertyCount: 2
+    PropertyCount: 3
     PropertyDescriptions:
     - BaseMap (RGB)
     - Main Color
+    - Holes Map (RGB)
     PropertyNames:
     - _MainTex
     - _Color
-    PropertyTypes: 0400000000000000
+    - _TerrainHolesTexture
+    PropertyTypes: 040000000000000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -5372,21 +5316,26 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000000000000
-    IsHidden: 0101
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000002000000
+    IsHidden: 010101
   - Name: Nature/Terrain/Specular
-    PropertyCount: 4
+    PropertyCount: 5
     PropertyDescriptions:
     - Specular Color
     - Shininess
     - BaseMap (RGB)
     - Main Color
+    - Holes Map (RGB)
     PropertyNames:
     - _SpecColor
     - _Shininess
     - _MainTex
     - _Color
-    PropertyTypes: 00000000030000000400000000000000
+    - _TerrainHolesTexture
+    PropertyTypes: 0000000003000000040000000000000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -5400,17 +5349,22 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 00000000000000000200000000000000
-    IsHidden: 00000101
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0000000000000000020000000000000002000000
+    IsHidden: 0000010101
   - Name: Nature/Terrain/Standard
-    PropertyCount: 2
+    PropertyCount: 3
     PropertyDescriptions:
     - BaseMap (RGB)
     - Main Color
+    - Holes Map (RGB)
     PropertyNames:
     - _MainTex
     - _Color
-    PropertyTypes: 0400000000000000
+    - _TerrainHolesTexture
+    PropertyTypes: 040000000000000004000000
     PropertyRangeLimits:
     - Def: 0
       Min: 0
@@ -5418,8 +5372,11 @@ MonoBehaviour:
     - Def: 0
       Min: 0
       Max: 0
-    PropertyTexDims: 0200000000000000
-    IsHidden: 0101
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 020000000000000002000000
+    IsHidden: 010101
   - Name: Nature/Tree Creator Bark
     PropertyCount: 9
     PropertyDescriptions:

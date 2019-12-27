@@ -142,6 +142,7 @@ namespace Battlehub.RTSL
         [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Create")]
         private static void CreatePersistentClasses()
         {
+            PersistentClassMapperWindow.TryToCreateMappings();
             PersistentClassMapperWindow.CreatePersistentClasses();
         }
 
@@ -156,24 +157,43 @@ namespace Battlehub.RTSL
         {
             if(EditorUtility.DisplayDialog("Clean", "Do you want to remove persistent classes and type model?", "Yes", "No"))
             {
-                if(EditorUtility.DisplayDialog("Clean", "Do you want to remove files from " + "Assets" + RTSLPath.UserRoot + "/CustomImplementation ?", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Clean", "Do you want to remove files from " + "Assets" + RTSLPath.UserRoot + "/CustomImplementation ?", "Yes", "No"))
                 {
-                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/CustomImplementation");
-                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Mappings/Editor/FilePathStorage.prefab");
-                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
-                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
+                    try
+                    {
+                        AssetDatabase.StartAssetEditing();
+                        AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/CustomImplementation");
+                        AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Mappings/Editor/FilePathStorage.prefab");
+                        AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
+                        AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
+                    }
+                    finally
+                    {
+                        AssetDatabase.StopAssetEditing();
+                    }                    
                 }
                 else
                 {
-                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
-                    AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
+                    try
+                    {
+                        AssetDatabase.StartAssetEditing();
+                        AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/Scripts");
+                        AssetDatabase.DeleteAsset("Assets" + RTSLPath.UserRoot + "/RTSLTypeModel.dll");
+                    }
+                    finally
+                    {
+                        AssetDatabase.StopAssetEditing();
+                    }
                 }
+
+                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             }
         }
 
         [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Build Type Model")]
         private static void BuildTypeModel()
         {
+            EditorUtility.DisplayProgressBar("Build", "Building Type Model...", 0.66f);
             RuntimeTypeModel model = TypeModelCreator.Create();
 
             model.Compile(new RuntimeTypeModel.CompilerOptions() { OutputPath = RTSLPath.TypeModelDll, TypeName = "RTSLTypeModel" });
@@ -184,7 +204,7 @@ namespace Battlehub.RTSL
             File.Delete(dstPath);
             File.Move(srcPath, dstPath);
 
-            EditorPrefs.SetBool("UpdateTypeModelImportSettings", true);
+            EditorPrefs.SetBool("RTSL_UpdateTypeModelImportSettings", true);
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
@@ -266,9 +286,9 @@ namespace Battlehub.RTSL
         [DidReloadScripts]
         private static void OnScriptsReloaded()
         {
-            if (EditorPrefs.GetBool("RTSLBuildAll"))
+            if (EditorPrefs.GetBool("RTSL_BuildAll"))
             {
-                EditorPrefs.SetBool("RTSLBuildAll", false);
+                EditorPrefs.SetBool("RTSL_BuildAll", false);
                 try
                 {
                     AssetDatabase.StartAssetEditing();
@@ -289,7 +309,7 @@ namespace Battlehub.RTSL
 
                 try
                 {
-                    EditorUtility.DisplayProgressBar("Build All", "Building Type Model...", 0.66f);
+                    AssetDatabase.StartAssetEditing();
                     BuildTypeModel();
                     EditorUtility.DisplayProgressBar("Build All", "Updating type model import settings", 0.99f);
                 }
@@ -297,11 +317,15 @@ namespace Battlehub.RTSL
                 {
                     EditorUtility.ClearProgressBar();
                 }
+                finally
+                {
+                    AssetDatabase.StopAssetEditing();
+                }
             }
 
-            if (EditorPrefs.GetBool("UpdateTypeModelImportSettings"))
+            if (EditorPrefs.GetBool("RTSL_UpdateTypeModelImportSettings"))
             {
-                EditorPrefs.SetBool("UpdateTypeModelImportSettings", false);
+                EditorPrefs.SetBool("RTSL_UpdateTypeModelImportSettings", false);
                 try
                 {
                     PluginImporter importer = AssetImporter.GetAtPath("Assets" + RTSLPath.UserRoot + "/" + RTSLPath.TypeModelDll) as PluginImporter;
@@ -319,6 +343,7 @@ namespace Battlehub.RTSL
         [MenuItem("Tools/Runtime SaveLoad/Build All")]
         public static void BuildAll()
         {
+            Selection.activeObject = null;
             EditorUtility.DisplayProgressBar("Build All", "Creating persistent classes", 0.0f);
             try
             {
@@ -330,7 +355,7 @@ namespace Battlehub.RTSL
                 EditorGUIUtility.PingObject(Selection.activeObject);
 
                 EditorUtility.DisplayProgressBar("Build All", "Updating asset libraries and shader profiles", 0.33f);
-                EditorPrefs.SetBool("RTSLBuildAll", true);
+                EditorPrefs.SetBool("RTSL_BuildAll", true);
             }
             catch
             {

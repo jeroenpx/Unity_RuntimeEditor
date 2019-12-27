@@ -77,7 +77,7 @@ namespace Battlehub.RTCommon
             return m_tracker.RightHand.GetKey(VRInputKey.Trigger);
         }
     }
-
+    
     public class DisabledInput : IInput
     {
         public MultitouchEmulator MultitouchEmulator { get { return null; } set { } }

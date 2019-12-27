@@ -247,6 +247,35 @@ MonoBehaviour:
   ShowSelectionGizmo: 1
   CanSnap: 1
   AddColliders: 1
+--- !u!1 &727516251 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 131456, guid: 4c109d3ea16741141a43286324be75c4,
+    type: 3}
+  m_PrefabInstance: {fileID: 5717869558775213474}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &727516255
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727516251}
+  m_Mesh: {fileID: 0}
+--- !u!114 &727516256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727516251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21113ef7811796447bffa71ce0b9812d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Color: {r: 0, g: 1, b: 1, a: 1}
+  Length: 0.1
+  Show: 1
 --- !u!1 &878578351
 GameObject:
   m_ObjectHideFlags: 0

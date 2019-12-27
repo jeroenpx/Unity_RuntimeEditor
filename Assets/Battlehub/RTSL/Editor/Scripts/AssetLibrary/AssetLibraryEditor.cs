@@ -73,7 +73,6 @@ namespace Battlehub.RTSL
                 click = GUILayout.Button("Synchronize");
             }
 
-            
 
             m_projectGUI.OnGUI();
             EditorGUILayout.Space();
