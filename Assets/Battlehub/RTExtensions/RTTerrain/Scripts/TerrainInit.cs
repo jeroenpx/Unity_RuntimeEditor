@@ -70,14 +70,14 @@ namespace Battlehub.RTTerrain
             });
         }
 
-        [MenuCommand("MenuWindow/ID_RTTerrain_WM_Header_TerrainEditor")]
+        [MenuCommand("MenuWindow/ID_RTTerrain_WM_Header_TerrainEditor", "", true)]
         public static void OpenTerrainEditor()
         {
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             wm.CreateWindow("TerrainEditor");
         }
 
-        [MenuCommand("MenuGameObject/3D Object/ID_RTTerrain_MenuGameObject_Terrain")]
+        [MenuCommand("MenuGameObject/3D Object/ID_RTTerrain_MenuGameObject_Terrain", "", true)]
         public static void CreateTerrain()
         {
             IRTE editor = IOC.Resolve<IRTE>();

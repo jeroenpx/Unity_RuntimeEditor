@@ -1673,13 +1673,21 @@ namespace Battlehub.RTEditor
                 bool isDialog;
                 CreateWindow(persistentLayoutInfo.WindowType, out wd, out content, out isDialog);
 
-                layoutInfo.Content = content.transform;
-                layoutInfo.Header = wd.Header;
-                layoutInfo.Icon = wd.Icon;
-                layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
-                layoutInfo.CanClose = persistentLayoutInfo.CanClose;
-                layoutInfo.IsHeaderVisible = persistentLayoutInfo.IsHeaderVisible;
-                layoutInfo.IsOn = persistentLayoutInfo.IsOn;
+                if(content == null)
+                {
+                    layoutInfo.Content = new GameObject("Empty").AddComponent<RectTransform>();
+                    layoutInfo.Header = "Empty";
+                }
+                else
+                {
+                    layoutInfo.Content = content.transform;
+                    layoutInfo.Header = wd.Header;
+                    layoutInfo.Icon = wd.Icon;
+                    layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
+                    layoutInfo.CanClose = persistentLayoutInfo.CanClose;
+                    layoutInfo.IsHeaderVisible = persistentLayoutInfo.IsHeaderVisible;
+                    layoutInfo.IsOn = persistentLayoutInfo.IsOn;
+                }   
             }
             else
             {

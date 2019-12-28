@@ -55,7 +55,7 @@ namespace Battlehub.MeshDeformer3
             });
         }
 
-        [MenuCommand("MenuWindow/ID_RTDeformer_WM_Header_Deformer")]
+        [MenuCommand("MenuWindow/ID_RTDeformer_WM_Header_Deformer", "", true)]
         public static void OpenMeshDeformer()
         {
             IWindowManager wm = IOC.Resolve<IWindowManager>();

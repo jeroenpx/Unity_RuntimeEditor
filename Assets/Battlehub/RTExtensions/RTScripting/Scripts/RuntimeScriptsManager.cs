@@ -1,5 +1,4 @@
-﻿using Battlehub.CodeAnalysis;
-using Battlehub.RTCommon;
+﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
 using Battlehub.RTSL.Interface;
 using System.Collections;
@@ -12,6 +11,9 @@ using System;
 using UnityObject = UnityEngine.Object;
 using System.Collections.Generic;
 using Battlehub.Utils;
+#if UNITY_STANDALONE
+using Battlehub.CodeAnalysis;
+#endif
 
 namespace Battlehub.RTScripting
 {
@@ -46,7 +48,7 @@ namespace Battlehub.RTScripting
         public RuntimeTypeGuid[] Guids;
     }
 
-    
+
     [DefaultExecutionOrder(-1)]
     public class RuntimeScriptsManager : MonoBehaviour, IRuntimeScriptManager
     {
@@ -54,7 +56,7 @@ namespace Battlehub.RTScripting
         public event Action Loaded;
         public event Action Compiling;
         public event Action<bool> Complied;
-        
+
         private static object m_syncRoot = new object();
         private const string RuntimeAssemblyKey = "RuntimeAssembly";
         private const string RuntimeTypeGuids = "RuntimeTypeGuids";
@@ -147,7 +149,7 @@ namespace Battlehub.RTScripting
 
         private void OnDestroy()
         {
-            if(m_project != null)
+            if (m_project != null)
             {
                 m_project.DeleteCompleted -= OnDeleteProjectItemCompleted;
             }
@@ -157,12 +159,12 @@ namespace Battlehub.RTScripting
 
         private void OnDeleteProjectItemCompleted(Error error, ProjectItem[] result)
         {
-            for(int i = 0; i < result.Length; ++i)
+            for (int i = 0; i < result.Length; ++i)
             {
-                if(result[i] is AssetItem)
+                if (result[i] is AssetItem)
                 {
                     AssetItem assetItem = (AssetItem)result[i];
-                    if(assetItem.Ext == Ext)
+                    if (assetItem.Ext == Ext)
                     {
                         Compile();
                     }
@@ -213,7 +215,7 @@ namespace Battlehub.RTScripting
             yield return loadAo;
 
             ao.Error = loadAo.Error;
-            if(!ao.HasError)
+            if (!ao.HasError)
             {
                 ao.Result = (RuntimeTextAsset)loadAo.Result[0];
             }
@@ -227,16 +229,16 @@ namespace Battlehub.RTScripting
 
         private void RaiseCompiling()
         {
-            if(Compiling != null)
+            if (Compiling != null)
             {
                 Compiling();
             }
-            
+
         }
 
         private void RaiseCompiled(bool completed)
         {
-            if(Complied != null)
+            if (Complied != null)
             {
                 Complied(completed);
             }
@@ -262,7 +264,7 @@ namespace Battlehub.RTScripting
 
                 ao.Error = loadAo.Error;
                 ao.IsCompleted = true;
-                
+
                 yield break;
             }
 
@@ -271,24 +273,29 @@ namespace Battlehub.RTScripting
 
         public async void RunCompilerAsync(string[] scripts, ProjectAsyncOperation ao)
         {
+#if UNITY_STANDALONE
             ICompiler compiler = IOC.Resolve<ICompiler>();
+#endif
             try
             {
-                byte[] binData = await Task.Run(() => compiler.Compile(scripts));
-                if(binData == null)
+                byte[] binData = null;
+#if UNITY_STANDALONE
+                binData = await Task.Run(() => compiler.Compile(scripts));
+#endif
+                if (binData == null)
                 {
                     RaiseCompiled(false);
 
                     ao.Error = new Error(Error.E_Failed) { ErrorText = m_localization.GetString("ID_RTScripting_ScriptsManager_CompilationFailed", "Compilation failed") };
                     ao.IsCompleted = true;
-                    
+
                 }
                 else
                 {
                     StartCoroutine(CoSaveAssembly(binData, ao));
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 RaiseCompiled(false);
 
@@ -304,10 +311,10 @@ namespace Battlehub.RTScripting
         {
             RuntimeBinaryAsset asmBinaryData = ScriptableObject.CreateInstance<RuntimeBinaryAsset>();
             asmBinaryData.Data = binData;
-            
+
             ProjectAsyncOperation setValueAo = m_project.SetValue(RuntimeAssemblyKey, asmBinaryData);
             yield return setValueAo;
-            if(setValueAo.HasError)
+            if (setValueAo.HasError)
             {
                 RaiseCompiled(false);
 
@@ -315,7 +322,7 @@ namespace Battlehub.RTScripting
                 ao.IsCompleted = true;
                 yield break;
             }
-            
+
             LoadAssembly(binData);
 
             RuntimeTypeGuids guids = new RuntimeTypeGuids
@@ -409,7 +416,7 @@ namespace Battlehub.RTScripting
                 Type[] unloadedTypes = m_runtimeAssembly.GetTypes().Where(t => typeof(MonoBehaviour).IsAssignableFrom(typeof(MonoBehaviour))).ToArray();
                 foreach (Type type in unloadedTypes)
                 {
-                    if(destroyObjects)
+                    if (destroyObjects)
                     {
                         List<UnityObject> destroyedObjects = new List<UnityObject>();
                         UnityObject[] objectsOfType = Resources.FindObjectsOfTypeAll(type);
@@ -430,7 +437,7 @@ namespace Battlehub.RTScripting
             return typeToDestroyedObjects;
         }
 
-        
+
     }
 
 }

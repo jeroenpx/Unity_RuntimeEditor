@@ -55,19 +55,28 @@ namespace Battlehub.UIControls.MenuControl
             private set;
         }
 
-        public MenuCommandAttribute(string path, bool validate = false, bool hide = false, int priority = int.MaxValue)
+        public bool RequiresInstance
+        {
+            get;
+            private set;
+        }
+
+        public MenuCommandAttribute(string path, bool validate = false, bool hide = false, int priority = int.MaxValue, bool requiresInstance = false)
         {
             Path = path;
             Validate = validate;
             Hide = hide;
             Priority = priority;
+            RequiresInstance = requiresInstance;
         }
 
-        public MenuCommandAttribute(string path, string iconPath)
+        public MenuCommandAttribute(string path, string iconPath, bool requiresInstance = false)
         {
             Path = path;
             Validate = false;
             IconPath = iconPath;
+            Priority = int.MaxValue;
+            RequiresInstance = requiresInstance;
         }
     }
 
@@ -183,6 +192,14 @@ namespace Battlehub.UIControls.MenuControl
                     if (cmd == null || string.IsNullOrEmpty(cmd.Path))
                     {
                         continue;
+                    }
+
+                    if(cmd.RequiresInstance)
+                    {
+                        if(FindObjectOfType(menuDef) == null)
+                        {
+                            continue;
+                        }
                     }
 
                     string[] pathParts = cmd.Path.Split('/');

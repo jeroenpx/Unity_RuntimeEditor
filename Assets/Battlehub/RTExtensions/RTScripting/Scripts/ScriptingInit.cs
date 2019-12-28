@@ -1,4 +1,5 @@
-﻿using Battlehub.CodeAnalysis;
+﻿#if UNITY_STANDALONE
+using Battlehub.CodeAnalysis;
 using Battlehub.RTCommon;
 using Battlehub.RTEditor;
 using Battlehub.RTSL.Interface;
@@ -6,23 +7,29 @@ using Battlehub.UIControls.MenuControl;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#else
+using UnityEngine;
+using Battlehub.RTEditor;
+#endif
 
 namespace Battlehub.RTScripting
 {
     public class ScriptingInit : EditorOverride
     {
+        [SerializeField]
+        private GameObject m_editRuntimeScriptDialog = null;
+
+        [SerializeField]
+        private ComponentEditor m_runtimeScriptEditor = null;
+
+#if UNITY_STANDALONE
+
         private IWindowManager m_wm;
         private IProjectFolder m_projectFolder;
         private IRuntimeScriptManager m_scriptManager;
         private ICompiler m_compiler;
         private IRTE m_editor;
         private const string Ext = ".cs";
-
-        [SerializeField]
-        private GameObject m_editRuntimeScriptDialog = null;
-
-        [SerializeField]
-        private ComponentEditor m_runtimeScriptEditor = null;
 
         protected override void OnEditorExist()
         {
@@ -33,11 +40,11 @@ namespace Battlehub.RTScripting
             m_compiler = new Complier();
             IOC.RegisterFallback(m_compiler);
 
-            if(m_scriptManager == null)
+            if (m_scriptManager == null)
             {
                 m_scriptManager = gameObject.AddComponent<RuntimeScriptsManager>();
             }
-            
+
             Subscribe();
 
             IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
@@ -62,7 +69,7 @@ namespace Battlehub.RTScripting
                 appearance.ApplyColors(m_editRuntimeScriptDialog);
             }
 
-            if(m_runtimeScriptEditor != null)
+            if (m_runtimeScriptEditor != null)
             {
                 IEditorsMap map = IOC.Resolve<IEditorsMap>();
                 map.RegisterEditor(m_runtimeScriptEditor);
@@ -132,7 +139,7 @@ namespace Battlehub.RTScripting
                 m_wm = null;
             }
 
-            if(m_scriptManager != null)
+            if (m_scriptManager != null)
             {
                 m_scriptManager.Loading -= OnScriptManagerLoading;
                 m_scriptManager.Loaded -= OnScriptManagerLoaded;
@@ -184,11 +191,11 @@ namespace Battlehub.RTScripting
 
         private void OnProjectFolderValidateContextMenuOpenCommand(object sender, ProjectTreeCancelEventArgs e)
         {
-            if(e.ProjectItem is AssetItem)
+            if (e.ProjectItem is AssetItem)
             {
                 AssetItem assetItem = (AssetItem)e.ProjectItem;
                 ITypeMap typeMap = IOC.Resolve<ITypeMap>();
-                if(typeMap.ToType(assetItem.TypeGuid) == typeof(RuntimeTextAsset) && e.ProjectItem.Ext == Ext)
+                if (typeMap.ToType(assetItem.TypeGuid) == typeof(RuntimeTextAsset) && e.ProjectItem.Ext == Ext)
                 {
                     e.Cancel = false;
                 }
@@ -250,7 +257,7 @@ namespace Battlehub.RTScripting
         {
             m_editor.IsBusy = false;
         }
+#endif
     }
-
 }
 

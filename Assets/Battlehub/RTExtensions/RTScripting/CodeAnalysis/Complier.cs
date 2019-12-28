@@ -15,6 +15,7 @@ namespace Battlehub.CodeAnalysis
         byte[] Compile(string[] text, string[] references = null);
     }
 
+#if !UNITY_WEBGL
     public class Complier : ICompiler
     {
         public byte[] Compile(string[] text, string[] extraReferences = null)
@@ -74,5 +75,6 @@ namespace Battlehub.CodeAnalysis
             }
         }
     }
+#endif
 }
 

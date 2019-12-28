@@ -48,7 +48,7 @@ namespace Battlehub.RTBuilder
             });
         }
 
-        [MenuCommand("MenuWindow/ID_RTBuilder_WM_Header_Builder")]
+        [MenuCommand("MenuWindow/ID_RTBuilder_WM_Header_Builder", "", true)]
         public static void OpenProBuilder()
         {
             IWindowManager wm = IOC.Resolve<IWindowManager>();
