@@ -388,7 +388,7 @@ namespace Battlehub.RTBuilder
             GameObject go;
             ExposeToEditor exposeToEditor;
             CreateNewShape(PBShapeType.Cube, out go, out exposeToEditor);
-            go.name = "Poly Shape";
+            exposeToEditor.SetName("Poly Shape");
           
             IRuntimeEditor rte = IOC.Resolve<IRuntimeEditor>();
             RuntimeWindow scene = rte.GetWindow(RuntimeWindowType.Scene);

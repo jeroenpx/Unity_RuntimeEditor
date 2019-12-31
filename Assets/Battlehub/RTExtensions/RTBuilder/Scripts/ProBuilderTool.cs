@@ -565,7 +565,8 @@ namespace Battlehub.RTBuilder
                                 scale.y = Mathf.Epsilon;
                             }
 
-                            UV.scale =  Quaternion.Inverse(PivotRotation) * Vector2.Scale(new Vector2(1 / scale.x, 1 / scale.y), PivotRotation * m_initialUVScale);
+                            Vector2 s = new Vector2(1 / scale.x, 1 / scale.y);
+                            UV.scale = Vector2.Scale(m_initialUVScale, s);
                         }
                         else
                         {

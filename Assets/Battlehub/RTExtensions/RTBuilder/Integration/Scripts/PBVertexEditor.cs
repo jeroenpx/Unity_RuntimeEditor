@@ -145,27 +145,7 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Hover(Camera camera, Vector3 pointer)
         {
-            //if(m_nextUpdate > Time.time)
-            //{
-            //    return;
-            //}
-
-            //m_nextUpdate = Time.time + 0.3f;
-
-            //if(m_vertexSelection.MeshesCount == 0)
-            //{
-            //    return;
-            //}
-
-            //float result = PBUtility.PickVertex(camera, pointer, 20, null, m_vertexSelection.Meshes, ref m_selection);
-            //if (result != Mathf.Infinity)
-            //{
-            //    m_vertexSelection.Hover(m_selection.mesh, m_selection.vertex);
-            //}
-            //else
-            //{
-            //    m_vertexSelection.Leave();
-            //}
+          
         }
 
         public override MeshSelection Select(Camera camera, Vector3 pointer, bool shift, bool ctrl, bool depthTest)
@@ -392,35 +372,13 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        //public override void ApplySelection(MeshSelection selection)
-        //{
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedIndices)
-        //    {
-        //        m_vertexSelection.Remove(kvp.Key, kvp.Value);
-        //    }
-
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices)
-        //    {
-        //        m_vertexSelection.Add(kvp.Key, kvp.Value);
-        //    }
-        //}
-
-
-        //public override void RollbackSelection(MeshSelection selection)
-        //{
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedIndices)
-        //    {
-        //        m_vertexSelection.Remove(kvp.Key, kvp.Value);
-        //    }
-
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedIndices)
-        //    {
-        //        m_vertexSelection.Add(kvp.Key, kvp.Value);
-        //    }
-        //}
-
         private void MoveTo(Vector3 to)
         {
+            if (m_vertexSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 from = Position;
             Vector3 offset = to - from;
 
@@ -473,6 +431,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Rotate(Quaternion rotation)
         {
+            if (m_vertexSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 center = Position;
             int meshIndex = 0;
             IEnumerable<ProBuilderMesh> meshes = m_vertexSelection.Meshes;
@@ -496,6 +459,7 @@ namespace Battlehub.ProBuilderIntegration
                 meshIndex++;
             }
 
+           
             m_vertexSelection.Synchronize(
                 m_vertexSelection.CenterOfMass,
                 center + rotation * m_initialRotation * (m_initialPostion - center),
@@ -529,6 +493,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Scale(Vector3 scale, Quaternion rotation)
         {
+            if (m_vertexSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 center = Position;
             int meshIndex = 0;
             IEnumerable<ProBuilderMesh> meshes = m_vertexSelection.Meshes;

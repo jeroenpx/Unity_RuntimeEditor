@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.Emit;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.UI;
 
 namespace Battlehub.CodeAnalysis
 {
@@ -28,17 +29,23 @@ namespace Battlehub.CodeAnalysis
             
             string assemblyName = Path.GetRandomFileName();
             HashSet<string> references = new HashSet<string>
-            {           
+            {
                 typeof(object).Assembly.Location,
                 typeof(Enumerable).Assembly.Location,
                 typeof(Object).Assembly.Location,
                 typeof(Input).Assembly.Location,
+                typeof(Rigidbody).Assembly.Location,
+                typeof(AudioSource).Assembly.Location,
+                typeof(Animator).Assembly.Location,
+                typeof(ParticleSystem).Assembly.Location,
+                typeof(Text).Assembly.Location,
+                typeof(Canvas).Assembly.Location,                
                 Assembly.GetCallingAssembly().Location
             };
 
             if(extraReferences != null)
             {
-                for(int i = 0; i < extraReferences.Length; ++i)
+                for (int i = 0; i < extraReferences.Length; ++i)
                 {
                     if (!references.Contains(extraReferences[i]))
                     {

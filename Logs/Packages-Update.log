@@ -59,3 +59,11 @@ The following packages were updated:
   com.unity.timeline from version 1.1.0 to 1.2.6
 The following packages were removed:
   com.unity.package-manager-ui@2.2.0
+
+=== Tue Dec 31 18:37:59 2019
+
+Packages were changed.
+Update Mode: mergeDefaultDependencies
+
+The following packages were updated:
+  com.unity.probuilder from version 4.1.0 to 4.2.1

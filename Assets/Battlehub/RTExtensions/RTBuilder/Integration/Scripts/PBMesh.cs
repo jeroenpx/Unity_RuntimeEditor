@@ -85,6 +85,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             get
             {
+                Init(this, Vector2.one);
                 m_faces = m_pbMesh.faces.Select(f => new PBFace(f, true)).ToArray();
                 return m_faces;
             }
@@ -96,6 +97,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             get
             {
+                Init(this, Vector2.one);
                 m_positions = m_pbMesh.positions.ToArray();
                 return m_positions;
             }
@@ -107,6 +109,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             get
             {
+                Init(this, Vector2.one);
                 m_textures = m_pbMesh.textures.ToArray();
                 return m_textures;
             }

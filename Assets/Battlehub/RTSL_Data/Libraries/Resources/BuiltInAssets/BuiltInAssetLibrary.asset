@@ -18,7 +18,7 @@ MonoBehaviour:
     m_ID: 0
     m_Name: Root
     m_Depth: -1
-    Identity: 24
+    Identity: 25
     FolderIdentity: 4
     Folders:
     - m_ID: 0
@@ -148,6 +148,12 @@ MonoBehaviour:
         m_Name: Arial
         m_Depth: 0
         Object: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+        IsEnabled: 0
+        PrefabParts: []
+      - m_ID: 24
+        m_Name: Default-Terrain-Standard
+        m_Depth: 0
+        Object: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
         IsEnabled: 0
         PrefabParts: []
       IsEnabled: 1

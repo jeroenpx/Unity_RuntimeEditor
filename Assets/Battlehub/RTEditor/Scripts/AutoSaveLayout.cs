@@ -35,6 +35,7 @@ namespace Battlehub.RTEditor
             base.OnEditorClosed();
             string layoutName = m_wm.DefaultPersistentLayoutName;
             m_wm.SaveLayout(m_savedLayoutName);
+            m_wm = null;
         }
 
         private void OnApplicationQuit()

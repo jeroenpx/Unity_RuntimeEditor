@@ -88,7 +88,7 @@ namespace Battlehub.RTSL
         {
             if(m_instance != null)
             {
-                Debug.LogWarning("AnotherInstance of RTSL exists");
+                Debug.LogWarning("Another instance of RTSL exists");
             }
             m_instance = this;
 

@@ -760,6 +760,11 @@ namespace Battlehub.RTHandles
                 Renderer renderer = child.GetComponent<Renderer>();
                 if (renderer)
                 {
+                    if(renderer is ParticleSystemRenderer)
+                    {
+                        continue; //Skip ParticleSystemRenderer rebderer
+                    }
+
                     Bounds bounds = renderer.bounds;
                     if (bounds.size == Vector3.zero && bounds.center != renderer.transform.position)
                     {

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1012495203263741894}
   - component: {fileID: 1012495203263741893}
+  - component: {fileID: 4488577733346686937}
   m_Layer: 0
   m_Name: ProBuilderInit
   m_TagString: Untagged
@@ -45,3 +46,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_proBuilderWindow: {fileID: 5186639825075379583, guid: 58758e7aa7b8a8d4eb7e3c1c79986fff,
     type: 3}
+--- !u!114 &4488577733346686937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012495203263741895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4bedfade19368748a6ddea46aea32e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

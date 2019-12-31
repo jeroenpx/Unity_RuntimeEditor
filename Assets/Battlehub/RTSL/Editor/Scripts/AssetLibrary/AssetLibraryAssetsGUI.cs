@@ -267,8 +267,8 @@ namespace Battlehub.RTSL
                     UnityObject[] assetRepresentations = AssetDatabase.LoadAllAssetRepresentationsAtPath(prefabPath);
                     foreach (UnityObject assetRepresentation in assetRepresentations)
                     {
-                        //Add avatar as prefab part
-                        if (assetRepresentation is Avatar)
+                        //Add avatar or mesh as prefab part
+                        if (assetRepresentation is Avatar || assetRepresentation is Mesh)
                         {
                             PrefabPartInfo prefabPart = new PrefabPartInfo();
                             prefabPart.ParentPersistentID = -1;

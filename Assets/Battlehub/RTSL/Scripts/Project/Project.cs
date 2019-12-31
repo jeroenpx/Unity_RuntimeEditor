@@ -2791,6 +2791,13 @@ namespace Battlehub.RTSL
                 UnityObject obj = bundle.LoadAsset<UnityObject>(assetName);
                 if (obj is GameObject)
                 {
+
+                    //TODO: Generate identifiers for subassets such as Avatars and meshes
+                    //UnityObject[] subAssets = bundle.LoadAssetWithSubAssets<UnityObject>(assetName);
+                    //for(int s = 0; s < subAssets.Length; ++s)
+                    //{       
+                    //}
+
                     GenerateIdentifiersForPrefab(assetName, (GameObject)obj, info, pathToBundleItem);
                 }
             }

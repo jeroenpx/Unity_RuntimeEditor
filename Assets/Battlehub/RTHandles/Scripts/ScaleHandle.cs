@@ -6,7 +6,7 @@ namespace Battlehub.RTHandles
     [DefaultExecutionOrder(2)]
     public class ScaleHandle : BaseHandle
     {
-        public bool AbsouluteGrid = false;
+        public bool AbsoluteGrid = false;
         public float GridSize = 0.1f;
         public Vector3 MinScale = new Vector3(float.MinValue, float.MinValue, float.MinValue);
         private Vector3 m_prevPoint;
@@ -20,8 +20,8 @@ namespace Battlehub.RTHandles
 
         public override bool SnapToGrid
         {
-            get { return AbsouluteGrid; }
-            set { AbsouluteGrid = value; }
+            get { return AbsoluteGrid; }
+            set { AbsoluteGrid = value; }
         }
 
         public override float SizeOfGrid

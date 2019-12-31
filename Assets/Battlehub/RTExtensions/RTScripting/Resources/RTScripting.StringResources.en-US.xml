@@ -7,6 +7,7 @@
 		<StringResource id="ID_RTScripting_ProjectFolderView_Create" value="Create"/>
 		<StringResource id="ID_RTScripting_ProjectFolderView_Script" value="Script"/>
 		<StringResource id="ID_RTScripting_ScriptsManager_CompilationFailed" value="Compilation failed"/>
+		<StringResource id="ID_RTScripting_ScriptsManager_CompilationSucceeded" value="Compilation completed successfully"/>
 		<StringResource id="ID_RTScripting_ScriptsManager_Script" value="Script"/>
 
 	</Resources>

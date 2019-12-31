@@ -10170,7 +10170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 31
   PersistentSubclassTag: 0
@@ -10187,7 +10187,7 @@ MonoBehaviour:
   UseTemplate: 1
   Subclasses: []
   PropertyMappings:
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 1
     PersistentNamespace: System.Battlehub.SL2
@@ -10202,7 +10202,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 2
     PersistentNamespace: System.Battlehub.SL2
@@ -10247,7 +10247,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 5
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -10262,7 +10262,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 6
     PersistentNamespace: UnityEngine.Audio.Battlehub.SL2
@@ -10277,7 +10277,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 1
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 7
     PersistentNamespace: System.Battlehub.SL2
@@ -10307,7 +10307,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 9
     PersistentNamespace: System.Battlehub.SL2
@@ -35141,7 +35141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
@@ -35610,7 +35610,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
@@ -44130,7 +44130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 1
   PersistentSubclassTag: 0
@@ -44297,7 +44297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 1
   PersistentPropertyTag: 28
   PersistentSubclassTag: 0
@@ -78738,7 +78738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 1
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
@@ -81200,7 +81200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
@@ -85180,7 +85180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.1
-  IsSelected: 0
+  IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 17
   PersistentSubclassTag: 0
@@ -85212,7 +85212,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 2
     PersistentNamespace: System.Battlehub.SL2
@@ -85227,7 +85227,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 3
     PersistentNamespace: System.Battlehub.SL2
@@ -85242,7 +85242,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 4
     PersistentNamespace: System.Battlehub.SL2
@@ -85257,7 +85257,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 5
     PersistentNamespace: System.Battlehub.SL2
@@ -85272,7 +85272,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 6
     PersistentNamespace: System.Battlehub.SL2
@@ -85287,7 +85287,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 7
     PersistentNamespace: System.Battlehub.SL2
@@ -85302,7 +85302,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 8
     PersistentNamespace: System.Battlehub.SL2
@@ -85317,7 +85317,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 9
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -85332,7 +85332,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 10
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -85347,7 +85347,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 11
     PersistentNamespace: System.Battlehub.SL2
@@ -85362,7 +85362,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 12
     PersistentNamespace: System.Battlehub.SL2
@@ -85377,7 +85377,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 13
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -85392,7 +85392,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 14
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -85407,7 +85407,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 15
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -85422,7 +85422,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 16
     PersistentNamespace: UnityEngine.Battlehub.SL2
@@ -85437,7 +85437,7 @@ MonoBehaviour:
     HasDependenciesOrIsDependencyItself: 0
     IsNonPublic: 0
     HasPropertyInTemplate: 0
-  - IsEnabled: 0
+  - IsEnabled: 1
     IsProperty: 1
     PersistentTag: 17
     PersistentNamespace: System.Battlehub.SL2

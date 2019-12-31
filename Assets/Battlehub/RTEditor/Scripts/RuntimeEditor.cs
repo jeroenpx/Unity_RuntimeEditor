@@ -885,8 +885,11 @@ namespace Battlehub.RTEditor
                     GameObject cameraGO = new GameObject(m_localization.GetString("ID_RTEditor_Camera", "Camera"));
                     cameraGO.transform.position = new Vector3(0, 1, -10);
 
+                    cameraGO.gameObject.SetActive(false);
                     cameraGO.AddComponent<Camera>();
                     cameraGO.AddComponent<ExposeToEditor>();
+                    cameraGO.gameObject.SetActive(true);
+
                     cameraGO.AddComponent<GameViewCamera>();
                 }
             }

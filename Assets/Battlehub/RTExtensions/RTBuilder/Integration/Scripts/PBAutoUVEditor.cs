@@ -445,6 +445,10 @@ namespace Battlehub.ProBuilderIntegration
             
             ProBuilderMesh mesh = currentSelection.SelectedFaces.Last().Key.GetComponent<ProBuilderMesh>();
             IList<int> currentlySelectedFaces = currentSelection.SelectedFaces.Last().Value;
+            if(currentlySelectedFaces.Count == 0)
+            {
+                return currentSelection;
+            }
             //HashSet<int> facesHs = new HashSet<int>(currentlySelectedFaces);
             int faceIndex = currentlySelectedFaces.Last();
             int textureGroup = mesh.faces[faceIndex].textureGroup;

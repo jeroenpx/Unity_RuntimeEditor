@@ -715,7 +715,18 @@ namespace Battlehub.RTSL
                 }
                 else if (Directory.Exists(path))
                 {
-                    Directory.Move(path, fullPath + paths[i] + "/" + names[i]);
+                    if(string.Equals(Path.GetFullPath(path), Path.GetFullPath(fullPath + paths[i] + "/" + names[i]), StringComparison.OrdinalIgnoreCase))
+                    {
+                        string tempDirName = Guid.NewGuid().ToString();
+
+                        var dir = new DirectoryInfo(path);
+                        dir.MoveTo(fullPath + "/" + tempDirName);
+                        dir.MoveTo(fullPath + paths[i] + "/" + names[i]);
+                    }
+                    else
+                    {
+                        Directory.Move(path, fullPath + paths[i] + "/" + names[i]);
+                    }   
                 }
             }
 

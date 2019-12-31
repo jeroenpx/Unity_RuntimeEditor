@@ -174,10 +174,6 @@ namespace Battlehub.ProBuilderIntegration
 
             foreach (ProBuilderMesh mesh in m_edgeSelection.Meshes)
             {
-                //MeshSelection selection = new MeshSelection();
-                //selection.SelectedEdges.Add(mesh, m_edgeSelection.GetEdges(mesh));
-                //selection.EdgesToVertices(false);
-
                 HashSet<int> indexes = new HashSet<int>();
                 for (int i = 0; i < mesh.vertexCount; ++i)
                 {
@@ -189,8 +185,6 @@ namespace Battlehub.ProBuilderIntegration
 
                 List<WingedEdge> wings = WingedEdge.GetWingedEdges(mesh);
                 HashSet<Face> appendedFaces = new HashSet<Face>();
-
-                // const bool wholePath = false;
 
                 foreach (List<Edge> hole in holes)
                 {
@@ -268,7 +262,6 @@ namespace Battlehub.ProBuilderIntegration
 
                 mesh.ToMesh();
                 mesh.Refresh();
-                //mesh.Optimize();
             }
         }
 
@@ -460,6 +453,11 @@ namespace Battlehub.ProBuilderIntegration
 
         private void MoveTo(Vector3 to)
         {
+            if (m_edgeSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 from = Position;
             Vector3 offset = to - from;
 
@@ -520,6 +518,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Rotate(Quaternion rotation)
         {
+            if (m_edgeSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 center = Position;
             int meshIndex = 0;
             IEnumerable<ProBuilderMesh> meshes = m_edgeSelection.Meshes;
@@ -579,6 +582,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Scale(Vector3 scale, Quaternion rotation)
         {
+            if (m_edgeSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 center = Position;
             int meshIndex = 0;
             IEnumerable<ProBuilderMesh> meshes = m_edgeSelection.Meshes;

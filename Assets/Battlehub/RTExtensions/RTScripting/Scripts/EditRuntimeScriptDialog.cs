@@ -1,12 +1,10 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTEditor;
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls.Dialogs;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 
-using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTScripting
 {
     public interface IEditRuntimeScriptDialog
@@ -32,7 +30,7 @@ namespace Battlehub.RTScripting
         {
             set { m_assetItem = value; }
         }
-        
+
         protected override void AwakeOverride()
         {
             IOC.RegisterFallback<IEditRuntimeScriptDialog>(this);
@@ -57,7 +55,7 @@ namespace Battlehub.RTScripting
             ProjectAsyncOperation<RuntimeTextAsset> ao = m_scriptManager.LoadScript(m_assetItem);
             yield return ao;
 
-            if(ao.HasError)
+            if (ao.HasError)
             {
                 Debug.LogError(ao.Error);
                 m_parentDialog.Close(false);
@@ -66,14 +64,14 @@ namespace Battlehub.RTScripting
 
             m_textAsset = ao.Result;
             m_text.text = m_textAsset.Text;
-            
+
         }
 
         protected override void OnDestroyOverride()
         {
             IOC.UnregisterFallback<IEditRuntimeScriptDialog>(this);
             base.OnDestroyOverride();
-            if(m_parentDialog != null)
+            if (m_parentDialog != null)
             {
                 m_parentDialog.Ok -= OnSave;
             }
@@ -97,9 +95,14 @@ namespace Battlehub.RTScripting
             {
                 ao = m_scriptManager.Compile();
                 yield return ao;
-                if(ao.HasError)
+                if (ao.HasError)
                 {
                     Debug.LogError(ao.Error);
+                }
+                else
+                {
+                    ILocalization lc = IOC.Resolve<ILocalization>();
+                    Debug.Log(lc.GetString("ID_RTScripting_ScriptsManager_CompilationSucceeded", "Compilation succeeded"));
                 }
             }
         }

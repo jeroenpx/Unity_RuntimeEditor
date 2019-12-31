@@ -209,6 +209,7 @@ namespace Battlehub.RTBuilder
                 }
                 else
                 {
+                   
                     if (m_rte.Input.GetPointerDown(0))
                     {
                         m_endEditOnPointerUp = true;
@@ -227,7 +228,7 @@ namespace Battlehub.RTBuilder
                     }
                     else if (m_rte.Input.GetPointerUp(0))
                     {
-                        if (!m_rte.ActiveWindow.IsPointerOver)
+                        if (!m_rte.ActiveWindow.IsPointerOver || m_rte.Tools.ActiveTool != null && !(m_rte.Tools.ActiveTool is BoxSelection))
                         {
                             return;
                         }

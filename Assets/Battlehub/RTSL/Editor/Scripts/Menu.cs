@@ -680,6 +680,8 @@ namespace Battlehub.RTSL
                 {  "UI/Skin/Knob.psd", typeof(Sprite) },
                 {  "UI/Skin/UIMask.psd", typeof(Sprite) },
                 {  "UI/Skin/UISprite.psd", typeof(Sprite) },
+                {  "Default-Terrain-Standard.mat", typeof(Material) },
+                {  "Default-Particle.psd", typeof(Texture2D) },
             };
 
             Dictionary<string, Type> builtIn = new Dictionary<string, Type>

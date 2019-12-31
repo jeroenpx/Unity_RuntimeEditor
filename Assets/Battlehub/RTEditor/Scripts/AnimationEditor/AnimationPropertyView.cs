@@ -280,107 +280,84 @@ namespace Battlehub.RTEditor
             {
                 m_item = value;
 
-                if (m_item != null && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialAddButton && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialEmptySpace)
+                if (m_started)
                 {
-                    if(!m_item.ComponentIsNull)
+                    OnItemChanged();
+                }
+            }
+        }
+
+        private void OnItemChanged()
+        {
+            if (m_item != null && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialAddButton && m_item.ComponentTypeName != RuntimeAnimationProperty.k_SpecialEmptySpace)
+            {
+                if (!m_item.ComponentIsNull)
+                {
+                    bool isBool = m_item.Value is bool;
+                    bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
+
+                    if (m_toggle != null)
                     {
-                        bool isBool = m_item.Value is bool;
-                        bool hasChildren = m_item.Children != null && m_item.Children.Count > 0;
-
-                        if (m_toggle != null)
+                        m_toggle.gameObject.SetActive(isBool && !hasChildren);
+                        if (isBool)
                         {
-                            m_toggle.gameObject.SetActive(isBool && !hasChildren);
-                            if (isBool)
-                            {
-                                m_toggle.isOn = (bool)m_item.Value;
-                            }
+                            m_toggle.isOn = (bool)m_item.Value;
                         }
+                    }
 
-                        if (m_dragField != null)
-                        {
-                            m_dragField.enabled = !isBool && !hasChildren;
-                        }
+                    if (m_dragField != null)
+                    {
+                        m_dragField.enabled = !isBool && !hasChildren;
+                    }
 
-                        if (m_inputField != null)
+                    if (m_inputField != null)
+                    {
+                        if (!hasChildren)
                         {
-                            if (!hasChildren)
+                            m_inputField.transform.parent.gameObject.SetActive(!isBool);
+                            m_inputField.DeactivateInputField();
+
+                            if (!isBool && m_item.Value != null)
                             {
-                                m_inputField.transform.parent.gameObject.SetActive(!isBool);
-                                m_inputField.DeactivateInputField();
-
-                                if (!isBool && m_item.Value != null)
+                                Type type = m_item.Value.GetType();
+                                if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte))
                                 {
-                                    Type type = m_item.Value.GetType();
-                                    if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(uint) || type == typeof(ulong) || type == typeof(ushort) || type == typeof(byte))
+                                    m_inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
+                                    if (m_dragField != null)
                                     {
-                                        m_inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
-                                        if (m_dragField != null)
-                                        {
-                                            m_dragField.IncrementFactor = 1.0f;
-                                        }
+                                        m_dragField.IncrementFactor = 1.0f;
                                     }
-                                    else if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
+                                }
+                                else if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
+                                {
+                                    m_inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
+                                    if (m_dragField != null)
                                     {
-                                        m_inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
-                                        if (m_dragField != null)
-                                        {
-                                            m_dragField.IncrementFactor = 0.1f;
-                                        }
+                                        m_dragField.IncrementFactor = 0.1f;
                                     }
-                                    else
-                                    {
-                                        m_inputField.contentType = TMP_InputField.ContentType.Standard;
-                                        if (m_dragField != null)
-                                        {
-                                            m_dragField.IncrementFactor = 1.0f;
-                                        }
-                                    }
-
-                                    m_inputField.text = m_item.Value + "";
                                 }
                                 else
                                 {
                                     m_inputField.contentType = TMP_InputField.ContentType.Standard;
-                                    m_inputField.text = "";
+                                    if (m_dragField != null)
+                                    {
+                                        m_dragField.IncrementFactor = 1.0f;
+                                    }
                                 }
+
+                                m_inputField.text = m_item.Value + "";
                             }
                             else
                             {
-                                m_inputField.transform.parent.gameObject.SetActive(false);
+                                m_inputField.contentType = TMP_InputField.ContentType.Standard;
                                 m_inputField.text = "";
                             }
                         }
-                    }
-                    else
-                    {
-                        if (m_inputField != null)
-                        {
-                            m_inputField.transform.parent.gameObject.SetActive(false);
-                        }
-                        if (m_toggle != null)
-                        {
-                            m_toggle.gameObject.SetActive(false);
-                        }
-                    }
-                    
-
-                    if (m_label != null)
-                    {
-                        if (m_item.Parent == null)
-                        {
-                            m_label.text = string.Format("{0} : {1}", m_item.ComponentDisplayName, m_item.PropertyDisplayName);
-                        }
                         else
                         {
-                            m_label.text = string.Format("{0} : {1}", m_item.Parent.PropertyDisplayName, m_item.PropertyDisplayName);
+                            m_inputField.transform.parent.gameObject.SetActive(false);
+                            m_inputField.text = "";
                         }
-
-                        m_label.gameObject.SetActive(true);
-                    }
-
-                    if (m_addPropertyButton != null)
-                    {
-                        m_addPropertyButton.gameObject.SetActive(false);
                     }
                 }
                 else
@@ -393,21 +370,51 @@ namespace Battlehub.RTEditor
                     {
                         m_toggle.gameObject.SetActive(false);
                     }
-                    if (m_label != null)
-                    {
-                        m_label.gameObject.SetActive(false);
-                    }
-
-                    if (m_addPropertyButton != null)
-                    {
-                        m_addPropertyButton.gameObject.SetActive(m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialAddButton);
-                    }
-
                 }
+
+
+                if (m_label != null)
+                {
+                    if (m_item.Parent == null)
+                    {
+                        m_label.text = string.Format("{0} : {1}", m_item.ComponentDisplayName, m_item.PropertyDisplayName);
+                    }
+                    else
+                    {
+                        m_label.text = string.Format("{0} : {1}", m_item.Parent.PropertyDisplayName, m_item.PropertyDisplayName);
+                    }
+
+                    m_label.gameObject.SetActive(true);
+                }
+
+                if (m_addPropertyButton != null)
+                {
+                    m_addPropertyButton.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (m_inputField != null)
+                {
+                    m_inputField.transform.parent.gameObject.SetActive(false);
+                }
+                if (m_toggle != null)
+                {
+                    m_toggle.gameObject.SetActive(false);
+                }
+                if (m_label != null)
+                {
+                    m_label.gameObject.SetActive(false);
+                }
+
+                if (m_addPropertyButton != null)
+                {
+                    m_addPropertyButton.gameObject.SetActive(m_item.ComponentTypeName == RuntimeAnimationProperty.k_SpecialAddButton);
+                }
+
             }
         }
 
-   
         public AnimationPropertiesView View
         {
             get;
@@ -415,6 +422,7 @@ namespace Battlehub.RTEditor
         }
 
         private bool m_isDragging;
+        private bool m_started;
 
         private void Awake()
         {
@@ -423,6 +431,12 @@ namespace Battlehub.RTEditor
             UnityEventHelper.AddListener(m_toggle, toggle => toggle.onValueChanged, OnToggleValueChange);
             UnityEventHelper.AddListener(m_dragField, dragField => dragField.BeginDrag, OnDragFieldBeginDrag);
             UnityEventHelper.AddListener(m_dragField, dragField => dragField.EndDrag, OnDragFieldEndDrag);
+        }
+
+        private void Start()
+        {
+            m_started = true;
+            OnItemChanged();
         }
 
         private void OnDestroy()

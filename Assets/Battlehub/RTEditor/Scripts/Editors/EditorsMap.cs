@@ -212,6 +212,8 @@ namespace Battlehub.RTEditor
                 { typeof(Cubeman.GameCameraFollow), new EditorDescriptor(21, true, false) },
                 { typeof(Cubeman.GameCharacter), new EditorDescriptor(21, true, false) },
                 { typeof(RuntimeAnimation), new EditorDescriptor(21, true, false) },
+                { typeof(AudioSource), new EditorDescriptor(21, true, false) },
+                { typeof(AudioListener), new EditorDescriptor(21, true, false) },                
             };
         }
 

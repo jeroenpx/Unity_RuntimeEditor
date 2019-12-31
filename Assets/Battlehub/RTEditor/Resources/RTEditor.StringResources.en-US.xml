@@ -94,6 +94,8 @@
 		
 		<!-- Component Descriptors -->
 		<StringResource id="ID_RTEditor_CD_AudioSource" value="Audio Source"/>
+		<StringResource id="ID_RTEditor_CD_AudioSource_PlayOnAwake" value="Play On Awake"/>
+		<StringResource id="ID_RTEditor_CD_AudioSource_Loop" value="Loop"/>
 		<StringResource id="ID_RTEditor_CD_AudioSource_Clip" value="Clip"/>
 		<StringResource id="ID_RTEditor_CD_AudioSource_Volume" value="Volume"/>
 		

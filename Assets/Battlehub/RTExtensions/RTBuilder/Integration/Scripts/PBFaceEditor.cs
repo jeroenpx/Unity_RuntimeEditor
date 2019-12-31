@@ -135,6 +135,11 @@ namespace Battlehub.ProBuilderIntegration
 
         private void MoveTo(Vector3 to)
         {
+            if (m_faceSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 from = Position;
             Vector3 offset = to - from;
 
@@ -203,6 +208,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Rotate(Quaternion rotation)
         {
+            if (m_faceSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 center = Position;
             int meshIndex = 0;
             IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
@@ -269,6 +279,11 @@ namespace Battlehub.ProBuilderIntegration
 
         public override void Scale(Vector3 scale, Quaternion rotation)
         {
+            if (m_faceSelection.MeshesCount == 0)
+            {
+                return;
+            }
+
             Vector3 center = Position;
             int meshIndex = 0;
             IEnumerable<ProBuilderMesh> meshes = m_faceSelection.Meshes;
@@ -623,54 +638,6 @@ namespace Battlehub.ProBuilderIntegration
             return meshSelection;
         }
 
-        //public override void RollbackSelection(MeshSelection selection)
-        //{
-        //    m_faceSelection.BeginChange();
-
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
-        //    {
-        //        foreach (int face in kvp.Value)
-        //        {
-        //            m_faceSelection.Remove(kvp.Key, face);
-        //        }
-        //    }
-
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
-        //    {
-        //        ProBuilderMesh mesh = kvp.Key;
-        //        foreach (int face in kvp.Value)
-        //        {
-        //            m_faceSelection.Add(mesh, face);
-        //        }
-        //    }
-
-        //    m_faceSelection.EndChange();
-        //}
-
-        //public override void ApplySelection(MeshSelection selection)
-        //{
-        //    m_faceSelection.BeginChange();
-
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.UnselectedFaces)
-        //    {
-        //        foreach (int face in kvp.Value)
-        //        {
-        //            m_faceSelection.Remove(kvp.Key, face);
-        //        }
-        //    }
-
-        //    foreach (KeyValuePair<ProBuilderMesh, IList<int>> kvp in selection.SelectedFaces)
-        //    {
-        //        ProBuilderMesh mesh = kvp.Key;
-        //        foreach (int face in kvp.Value)
-        //        {
-        //            m_faceSelection.Add(mesh, face);
-        //        }
-        //    }
-
-        //    m_faceSelection.EndChange();
-        //}
-
         public override MeshEditorState GetState(bool recordUV)
         {
             MeshEditorState state = new MeshEditorState();
@@ -857,7 +824,6 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             MeshValidation.RemoveUnusedVertices(mesh);
-            //mesh.RemoveUnusedVertices();
         }
 
         private void RaisePBMeshesChanged(bool positionsOnly)

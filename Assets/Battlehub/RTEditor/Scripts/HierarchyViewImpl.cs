@@ -895,6 +895,15 @@ namespace Battlehub.RTEditor
                 GameObject prefabInstance = InstantiatePrefab(prefab);
                 prefab.SetActive(wasPrefabEnabled);
 
+                Transform[] transforms = prefabInstance.GetComponentsInChildren<Transform>();
+                foreach (Transform transform in transforms)
+                {
+                    if (transform.GetComponent<ExposeToEditor>() == null)
+                    {
+                        transform.gameObject.AddComponent<ExposeToEditor>();
+                    }
+                }
+
                 ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
                 if (exposeToEditor == null)
                 {
@@ -910,14 +919,14 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    if (m_treeView.DropAction == ItemDropAction.SetLastChild)
+                    if (m_lastDropAction == ItemDropAction.SetLastChild)
                     {
                         exposeToEditor.transform.SetParent(dropTarget.transform);
                         m_treeView.AddChild(dropTarget, exposeToEditor);
                         treeViewItem.CanExpand = true;
                         treeViewItem.IsExpanded = true;
                     }
-                    if (m_lastDropAction != ItemDropAction.None)
+                    if (m_lastDropAction != ItemDropAction.None && m_lastDropAction != ItemDropAction.SetLastChild)
                     {
                         int index;
                         int siblingIndex;
