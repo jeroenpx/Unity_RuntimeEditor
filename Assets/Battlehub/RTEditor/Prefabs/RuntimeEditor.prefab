@@ -1846,7 +1846,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Path: Manage Projets
+  - Path: Manage Projects
     Text: Manage Projects
     Icon: {fileID: 21300000, guid: 1d809aa58d8449f44be584087c1a618a, type: 3}
     Command: OpenProject
