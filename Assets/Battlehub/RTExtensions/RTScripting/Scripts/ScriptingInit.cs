@@ -211,7 +211,7 @@ namespace Battlehub.RTScripting
                 if (typeMap.ToType(assetItem.TypeGuid) == typeof(RuntimeTextAsset) && e.ProjectItem.Ext == Ext)
                 {
                     IWindowManager wm = IOC.Resolve<IWindowManager>();
-                    wm.CreateWindow("EditRuntimeScript");
+                    wm.CreateDialogWindow("EditRuntimeScript", "Edit " + assetItem.Name, (s, okArgs) => { });
                     IEditRuntimeScriptDialog dialog = IOC.Resolve<IEditRuntimeScriptDialog>();
                     dialog.AssetItem = assetItem;
                 }

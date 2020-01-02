@@ -92,6 +92,13 @@ namespace Battlehub.RTHandles
         private Vector3[] m_defaultB3XScale;
         private Vector3[] m_defaultB3YScale;
         private Vector3[] m_defaultB3ZScale;
+        private Vector3[] m_defaultSigns = new[]
+        {
+            new Vector3(1, 1, 1), new Vector3(-1, 1, 1), new Vector3(-1,-1, 1), new Vector3(1,-1, 1),
+            new Vector3(1, 1,-1), new Vector3(-1, 1,-1), new Vector3(-1,-1,-1), new Vector3(1,-1,-1),
+            new Vector3(1, 1, 1)
+        };
+
 
         private const float DefaultRadius = 0.05f;
         private const float DefaultLength = 1.0f;
@@ -516,9 +523,9 @@ namespace Battlehub.RTHandles
                 m_b3z[i].localScale = Vector3.up * arrowScale +
                     new Vector3(1, 0, 1) * arrowRadiusScale;
 
-                m_b1x[i].position = transform.TransformPoint(Mathf.Sign(Vector3.Dot(right, m_b1x[i].position - p)) * Vector3.right * quadLength);
-                m_b1y[i].position = transform.TransformPoint(Mathf.Sign(Vector3.Dot(up, m_b1y[i].position - p)) * Vector3.up * quadLength);
-                m_b1z[i].position = transform.TransformPoint(Mathf.Sign(Vector3.Dot(forward, m_b1z[i].position - p)) * Vector3.forward * quadLength);
+                m_b1x[i].position = transform.TransformPoint(m_defaultSigns[i].x * Vector3.right * quadLength);
+                m_b1y[i].position = transform.TransformPoint(m_defaultSigns[i].y * Vector3.up * quadLength);
+                m_b1z[i].position = transform.TransformPoint(m_defaultSigns[i].z * Vector3.forward * quadLength);
 
                 m_bSx[i].position = p + (m_b1y[i].position - p) + (m_b1z[i].position - p);
                 m_bSy[i].position = p + (m_b1x[i].position - p) + (m_b1z[i].position - p);

@@ -179,7 +179,14 @@ namespace Battlehub.RTSL
             if(m_persistentIDToDynamicResource.TryGetValue(persistentID, out obj))
             {
                 m_persistentIDToDynamicResource.Remove(persistentID);
-                m_dynamicResourceIDToPersistentID.Remove(obj.GetInstanceID());
+                if(((object)obj) != null)
+                {
+                    m_dynamicResourceIDToPersistentID.Remove(obj.GetInstanceID());
+                }
+                else
+                {
+                    Debug.LogWarning("obj with persistent id " + persistentID + " is null");
+                }   
             }
         }
 

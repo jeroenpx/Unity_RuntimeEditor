@@ -7,7 +7,16 @@ namespace Battlehub.RTCommon
     {
         public virtual Ray Ray
         {
-            get { return m_window.Camera.ScreenPointToRay(ScreenPoint); }
+            get
+            {
+                Vector2 screenPoint = ScreenPoint;
+                Rect pixelRect = m_window.Camera.pixelRect;
+                if(!pixelRect.Contains(screenPoint))
+                {
+                    return new Ray(m_window.Camera.transform.position, m_window.Camera.transform.forward);
+                }
+                return m_window.Camera.ScreenPointToRay(screenPoint);
+            }
         }
 
         public virtual Vector2 ScreenPoint
