@@ -24,6 +24,12 @@ namespace Battlehub.RTScripting
         event Action Compiling;
         event Action<bool> Complied;
 
+        bool IsLoaded
+        {
+            get;
+        }
+
+
         string Ext
         {
             get;
@@ -57,6 +63,12 @@ namespace Battlehub.RTScripting
         public event Action Compiling;
         public event Action<bool> Complied;
 
+        public bool IsLoaded
+        {
+            get;
+            private set;
+        }
+
         private static object m_syncRoot = new object();
         private const string RuntimeAssemblyKey = "RuntimeAssembly";
         private const string RuntimeTypeGuids = "RuntimeTypeGuids";
@@ -73,23 +85,43 @@ namespace Battlehub.RTScripting
         private Assembly m_runtimeAssembly;
         private Dictionary<string, Guid> m_typeNameToGuid;
         private RuntimeTextAsset m_runtimeTypeGuidsAsset;
-
+        
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
             m_localization = IOC.Resolve<ILocalization>();
             m_project = IOC.Resolve<IProject>();
+            m_project.OpenProjectCompleted += OnProjectOpened;
             m_project.DeleteCompleted += OnDeleteProjectItemCompleted;
             m_editorsMap = IOC.Resolve<IEditorsMap>();
             m_typeMap = IOC.Resolve<ITypeMap>();
             IOC.RegisterFallback<IRuntimeScriptManager>(this);
+
+            if(m_project.IsOpened)
+            {
+                StartCoroutine(CoLoad());
+            }
         }
 
-
-        private IEnumerator Start()
+        private void OnDestroy()
         {
-            yield return new WaitUntil(() => m_project.IsOpened);
-            yield return new WaitWhile(() => m_editor.IsBusy);
+            if (m_project != null)
+            {
+                m_project.OpenProjectCompleted -= OnProjectOpened;
+                m_project.DeleteCompleted -= OnDeleteProjectItemCompleted;
+            }
+            IOC.UnregisterFallback<IRuntimeScriptManager>(this);
+            UnloadTypes(false);
+        }
+
+        private void OnProjectOpened(Error error, ProjectInfo result)
+        {
+            StartCoroutine(CoLoad());
+        }
+
+        private IEnumerator CoLoad()
+        {
+            IsLoaded = false;
 
             if (Loading != null)
             {
@@ -141,21 +173,15 @@ namespace Battlehub.RTScripting
                 }
             }
 
+            IsLoaded = true;
+
             if (Loaded != null)
             {
                 Loaded();
             }
         }
 
-        private void OnDestroy()
-        {
-            if (m_project != null)
-            {
-                m_project.DeleteCompleted -= OnDeleteProjectItemCompleted;
-            }
-            IOC.UnregisterFallback<IRuntimeScriptManager>(this);
-            UnloadTypes(false);
-        }
+
 
         private void OnDeleteProjectItemCompleted(Error error, ProjectItem[] result)
         {
