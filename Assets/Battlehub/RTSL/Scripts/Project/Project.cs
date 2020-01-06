@@ -522,12 +522,13 @@ namespace Battlehub.RTSL
                 return;
             }
 
+            UnloadUnregisterDestroy();
+
             if (m_projectInfo != null && createNewScene)
             {
                 CreateNewScene();
             }
 
-            //UnloadUnregisterDestroy();
             m_projectInfo = null;
             m_root = null;
 
