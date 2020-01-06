@@ -359,7 +359,7 @@ namespace Battlehub.RTTerrain
                         }
                     }
 
-                    TerrainData.SetAlphamaps(0, 0, alphaMaps);
+                    Terrain.SetAlphamaps(0, 0, alphaMaps);
                 }
             }
             else
@@ -393,7 +393,7 @@ namespace Battlehub.RTTerrain
                 if(terrain.terrainData != null)
                 {
                     terrain.terrainData.terrainLayers = newLayers;
-                    terrain.terrainData.SetAlphamaps(0, 0, newAlphamap);
+                    terrain.SetAlphamaps(0, 0, newAlphamap);
                     UpdateLayersList(terrain);
                 }
 
@@ -404,7 +404,7 @@ namespace Battlehub.RTTerrain
                 if(terrain.terrainData != null)
                 {
                     terrain.terrainData.terrainLayers = oldLayers;
-                    terrain.terrainData.SetAlphamaps(0, 0, oldAlphamap);
+                    terrain.SetAlphamaps(0, 0, oldAlphamap);
                     UpdateLayersList(terrain);
                 }
                 

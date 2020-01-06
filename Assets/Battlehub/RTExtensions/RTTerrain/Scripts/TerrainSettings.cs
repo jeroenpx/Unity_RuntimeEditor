@@ -263,9 +263,9 @@ namespace Battlehub.RTTerrain
                 if (terrain.terrainData.heightmapResolution != oldHeightmapResolution)
                 {
                     terrain.terrainData.heightmapResolution = oldHeightmapResolution;
-                    terrain.terrainData.SetHeights(0, 0, oldHeightMap);
+                    terrain.SetHeights(0, 0, oldHeightMap);
                 }
-                terrain.terrainData.size = oldSize;
+                terrain.SetSize(oldSize);
 
                 Width = terrain.terrainData.size.x;
                 Length = terrain.terrainData.size.z;
@@ -282,9 +282,9 @@ namespace Battlehub.RTTerrain
                 if (terrain.terrainData.heightmapResolution != newHeightmapResolution)
                 {
                     terrain.terrainData.heightmapResolution = newHeightmapResolution;
-                    terrain.terrainData.SetHeights(0, 0, newHeightMap);
+                    terrain.SetHeights(0, 0, newHeightMap);
                 }
-                terrain.terrainData.size = newSize;
+                terrain.SetSize(newSize);
 
                 Width = terrain.terrainData.size.x;
                 Length = terrain.terrainData.size.z;

@@ -58,13 +58,7 @@ namespace Battlehub.RTEditor
             {
                 rt.offsetMin = new Vector2(Indent, rt.offsetMin.y);
             }
-        }
-
-        protected override void StartOverride()
-        {
-            base.StartOverride();
-
-        }
+        }   
 
         protected override void OnDestroyOverride()
         {
@@ -292,9 +286,9 @@ namespace Battlehub.RTEditor
         {
             if (value == null)
             {
-               
                 IList newArray = (IList)Activator.CreateInstance(PropertyType);
                 SetValue(newArray);
+                SizeInput.text = "0";
                 return;
             }
 

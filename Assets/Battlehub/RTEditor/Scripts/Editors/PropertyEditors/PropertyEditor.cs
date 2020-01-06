@@ -88,7 +88,16 @@ namespace Battlehub.RTEditor
     public class IListElementAccessor
     {
         private int m_index;
+        public int Index
+        {
+            get { return m_index; }
+        }
+
         private IListEditor m_editor;
+        public IListEditor Editor
+        {
+            get { return m_editor; }
+        }
 
         public string Name
         {
@@ -171,13 +180,13 @@ namespace Battlehub.RTEditor
             get { return m_lockValue; }
         }
 
-        protected object Target
+        public object Target
         {
             get;
             private set;
         }
 
-        protected object Accessor
+        public object Accessor
         {
             get;
             private set;

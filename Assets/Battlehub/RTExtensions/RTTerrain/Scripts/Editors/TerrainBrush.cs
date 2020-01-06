@@ -71,7 +71,7 @@ namespace Battlehub.RTTerrain
             {
                 if(terrain.terrainData != null)
                 {
-                    terrain.terrainData.SetHeights(0, 0, newHeightmap);
+                    terrain.SetHeights(0, 0, newHeightmap);
                 }
                 return true;
             },
@@ -79,7 +79,7 @@ namespace Battlehub.RTTerrain
             {
                 if(terrain.terrainData != null)
                 {
-                    terrain.terrainData.SetHeights(0, 0, oldHeightmap);
+                    terrain.SetHeights(0, 0, oldHeightmap);
                 }
                 return true;
             });
@@ -129,7 +129,7 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            Terrain.terrainData.SetHeights(px, py, hmap);
+            Terrain.SetHeights(px, py, hmap);
         }
 
         public override void Smooth(Vector2Int minPos, Vector2Int maxPos, float value)
@@ -172,7 +172,7 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            Terrain.terrainData.SetHeights(px, py, hmap);
+            Terrain.SetHeights(px, py, hmap);
         }    
     }
 }

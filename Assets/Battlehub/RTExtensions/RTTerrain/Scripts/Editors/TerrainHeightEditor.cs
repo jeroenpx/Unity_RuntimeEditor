@@ -117,17 +117,17 @@ namespace Battlehub.RTTerrain
                     newHeightmap[i, j] = Height / heightmapScale;
                 }
             }
-            terrain.terrainData.SetHeights(0, 0, newHeightmap);
+            terrain.SetHeights(0, 0, newHeightmap);
 
             IRTE editor = IOC.Resolve<IRTE>();
             editor.Undo.CreateRecord(record =>
             {
-                terrain.terrainData.SetHeights(0, 0, newHeightmap);
+                terrain.SetHeights(0, 0, newHeightmap);
                 return true;
             },
             record =>
             {
-                terrain.terrainData.SetHeights(0, 0, oldHeightmap);
+                terrain.SetHeights(0, 0, oldHeightmap);
                 return true;
             });
         }

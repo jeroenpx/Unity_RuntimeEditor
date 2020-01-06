@@ -968,6 +968,9 @@ namespace Battlehub.RTBuilder
 
         private void OnSceneLoading()
         {
+            m_faceGroupSelection = null;
+            m_currentSelection = null;
+
             IMeshEditor meshEditor = GetEditor();
             if (meshEditor != null)
             {

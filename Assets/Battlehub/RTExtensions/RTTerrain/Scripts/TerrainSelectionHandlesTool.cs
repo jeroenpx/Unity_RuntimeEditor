@@ -605,12 +605,12 @@ namespace Battlehub.RTTerrain
 
         private void SetTerrainHeights(int x, int y, float[,] heights)
         {
-            TerrainData data = TerrainData;
+            TerrainData data = Terrain.terrainData;
 
             int h = heights.GetLength(0);
             int w = heights.GetLength(1);
 
-            float[,] currentHeights = TerrainData.GetHeights(x, y, w, h);
+            float[,] currentHeights = data.GetHeights(x, y, w, h);
             for (int i = 0; i < h; i++)
             {
                 for (int j = 0; j < w; j++)
@@ -626,7 +626,7 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            TerrainData.SetHeights(x, y, currentHeights);
+            Terrain.SetHeights(x, y, currentHeights);
         }
 
         private float[,] GetInterpolatedHeights(int x, int y, int w, int h)
@@ -803,7 +803,7 @@ namespace Battlehub.RTTerrain
             {
                 if (terrain.terrainData != null)
                 {
-                    terrain.terrainData.SetHeights(0, 0, newHeightmap);
+                    terrain.SetHeights(0, 0, newHeightmap);
                 }
 
                 if (m_state != null)
@@ -820,7 +820,7 @@ namespace Battlehub.RTTerrain
             {
                 if (terrain.terrainData != null)
                 {
-                    terrain.terrainData.SetHeights(0, 0, oldHeightmap);
+                    terrain.SetHeights(0, 0, oldHeightmap);
                 }
 
                 if (m_state != null)

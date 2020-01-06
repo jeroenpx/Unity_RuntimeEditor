@@ -325,7 +325,6 @@ namespace Battlehub.RTEditor
         public override void ActivateWindow(RuntimeWindow window)
         {
             base.ActivateWindow(window);
-
             if (window != null)
             {
                 m_wm.ActivateWindow(window.transform);

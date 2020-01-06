@@ -53,7 +53,7 @@ namespace Battlehub.RTTerrain
             {
                 if(terrain.terrainData != null)
                 {
-                    terrain.terrainData.SetAlphamaps(0, 0, newAlphamaps);
+                    terrain.SetAlphamaps(0, 0, newAlphamaps);
                 }
                 
                 return true;
@@ -62,7 +62,7 @@ namespace Battlehub.RTTerrain
             {
                 if(terrain.terrainData != null)
                 {
-                    terrain.terrainData.SetAlphamaps(0, 0, oldAlphamaps);
+                    terrain.SetAlphamaps(0, 0, oldAlphamaps);
                 }
                 
                 return true;
@@ -137,7 +137,7 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            Terrain.terrainData.SetAlphamaps(px, py, alphaMaps);
+            Terrain.SetAlphamaps(px, py, alphaMaps);
         }
     }
 }

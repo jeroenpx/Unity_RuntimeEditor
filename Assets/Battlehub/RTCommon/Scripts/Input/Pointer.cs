@@ -13,7 +13,7 @@ namespace Battlehub.RTCommon
                 Rect pixelRect = m_window.Camera.pixelRect;
                 if(!pixelRect.Contains(screenPoint))
                 {
-                    return new Ray(m_window.Camera.transform.position, m_window.Camera.transform.forward);
+                    return new Ray(Vector3.up * float.MaxValue, Vector3.up);
                 }
                 return m_window.Camera.ScreenPointToRay(screenPoint);
             }

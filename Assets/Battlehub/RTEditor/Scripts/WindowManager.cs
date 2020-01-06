@@ -608,6 +608,7 @@ namespace Battlehub.RTEditor
                 {
                     window = m_editor.GetWindow(RuntimeWindowType.Scene);
                 }
+                window.IsPointerOver = true;
                 m_editor.ActivateWindow(window);
             }
             else

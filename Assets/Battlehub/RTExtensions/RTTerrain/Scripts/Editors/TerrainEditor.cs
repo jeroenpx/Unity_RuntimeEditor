@@ -10,9 +10,88 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTTerrain
 {
+    public delegate void TerrainEvent<T>(T data);
+    public delegate void TerrainEvent();
+
+    public static class TerrainDataExt
+    {
+        public static event TerrainEvent<Terrain> SizeChanged;
+        public static event TerrainEvent<Terrain> HeightsChanged;
+        public static event TerrainEvent<Terrain> AlphamapsChanged;
+        public static event TerrainEvent<Terrain> TerrainDataChanged;
+        public static event TerrainEvent<Terrain> TerrainModified;
+
+        public static void SetSize(this Terrain terrain, Vector3 size)
+        {
+            if (terrain.terrainData == null)
+            {
+                return;
+            }
+
+            terrain.terrainData.size = size;
+            if(SizeChanged != null)
+            {
+                SizeChanged(terrain);
+            }
+            if(TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+
+        public static void SetHeights(this Terrain terrain, int xBase, int yBase, float[,] heights)
+        {
+            if(terrain.terrainData == null)
+            {
+                return;
+            }
+
+            terrain.terrainData.SetHeights(xBase, yBase, heights);
+            if(HeightsChanged != null)
+            {
+                HeightsChanged(terrain);
+            }
+            if (TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+
+        public static void SetAlphamaps(this Terrain terrain, int x, int y, float[,,] alphamaps)
+        {
+            if(terrain.terrainData == null)
+            {
+                return;
+            }
+
+            terrain.terrainData.SetAlphamaps(x, y, alphamaps);
+            if(AlphamapsChanged != null)
+            {
+                AlphamapsChanged(terrain);
+            }
+            if (TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+
+        public static void SetTerrainData(this Terrain terrain, TerrainData terrainData)
+        {
+            terrain.terrainData = terrainData;
+            if(TerrainDataChanged != null)
+            {
+                TerrainDataChanged(terrain);
+            }
+            if (TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+    }
+
     public class TerrainEditor : MonoBehaviour
     {
-        public event Action TerrainChanged;
+        public event TerrainEvent TerrainChanged;
 
         public enum EditorType
         {
@@ -53,7 +132,7 @@ namespace Battlehub.RTTerrain
         {
             get { return m_terrain; }
             set
-            {
+            {                
                 if (m_terrain != value)
                 {
                     m_terrain = value;

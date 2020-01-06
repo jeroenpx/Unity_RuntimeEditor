@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Battlehub.RTCommon;
 using System.Reflection;
 
 namespace Battlehub.RTEditor
@@ -17,6 +16,7 @@ namespace Battlehub.RTEditor
         PropertyDescriptor[] GetPropertyDescriptors(Type componentType, ComponentEditor componentEditor = null, object converter = null);
 
         void RegisterEditor(ComponentEditor editor);
+        void RegisterEditor(PropertyEditor editor);
         void AddMapping(Type type, Type editorType, bool enabled, bool isPropertyEditor);
         void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor);
         void RemoveMapping(Type type);
@@ -152,18 +152,18 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public void Reset()
-        {
-            if(!m_isLoaded)
-            {
-                return;
-            }
-            m_materialMap = new Dictionary<Shader, MaterialEditorDescriptor>();
-            m_map = new Dictionary<Type, EditorDescriptor>();
-            m_editors = new GameObject[0];
-            m_defaultMaterialEditor = null;
-            m_isLoaded = false;
-        }
+        //public void Reset()
+        //{
+        //    if(!m_isLoaded)
+        //    {
+        //        return;
+        //    }
+        //    m_materialMap = new Dictionary<Shader, MaterialEditorDescriptor>();
+        //    m_map = new Dictionary<Type, EditorDescriptor>();
+        //    m_editors = new GameObject[0];
+        //    m_defaultMaterialEditor = null;
+        //    m_isLoaded = false;
+        //}
 
         private void DefaultEditorsMap()
         {
@@ -258,6 +258,12 @@ namespace Battlehub.RTEditor
         }
 
         public void RegisterEditor(ComponentEditor editor)
+        {
+            Array.Resize(ref m_editors, m_editors.Length + 1);
+            m_editors[m_editors.Length - 1] = editor.gameObject;
+        }
+
+        public void RegisterEditor(PropertyEditor editor)
         {
             Array.Resize(ref m_editors, m_editors.Length + 1);
             m_editors[m_editors.Length - 1] = editor.gameObject;
