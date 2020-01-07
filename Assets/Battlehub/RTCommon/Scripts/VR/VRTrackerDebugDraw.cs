@@ -4,6 +4,7 @@ namespace Battlehub.RTCommon
 {
     public class VRTrackerDebugDraw : MonoBehaviour
     {
+#if UNITY_2019_3_OR_NEWER
         private IVRTracker m_tracker;
         private Transform m_leftHand;
         private Transform m_rightHand;
@@ -11,7 +12,7 @@ namespace Battlehub.RTCommon
         private void Start()
         {
             m_tracker = IOC.Resolve<IVRTracker>();
-            if(m_tracker != null)
+            if (m_tracker != null)
             {
                 m_tracker.TrackingAquired += OnTrackingAquired;
                 m_tracker.TrackingLost += OnTrackingLost;
@@ -20,7 +21,7 @@ namespace Battlehub.RTCommon
 
         private void OnDestroy()
         {
-            if(m_tracker != null)
+            if (m_tracker != null)
             {
                 m_tracker.TrackingAquired -= OnTrackingAquired;
                 m_tracker.TrackingLost -= OnTrackingLost;
@@ -46,12 +47,12 @@ namespace Battlehub.RTCommon
         }
 
         private void OnTrackingAquired(IVRInputDevice device)
-        {   
-            if(device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Left)
+        {
+            if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Left)
             {
                 m_leftHand = CreateModel(Color.yellow, "Left Hand").transform;
             }
-            else if(device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Right)
+            else if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Right)
             {
                 m_rightHand = CreateModel(Color.red, "Right Hand").transform;
             }
@@ -90,7 +91,7 @@ namespace Battlehub.RTCommon
             GameObject lineRendererGo = new GameObject("Line Renderer");
             lineRendererGo.transform.SetParent(root.transform, false);
             lineRendererGo.transform.localRotation = Quaternion.AngleAxis(45, Vector3.right);
-           // lineRendererGo.transform.localPosition = Vector3.forward * -0.04f;
+            // lineRendererGo.transform.localPosition = Vector3.forward * -0.04f;
             LineRenderer lineRenderer = lineRendererGo.AddComponent<LineRenderer>();
             lineRenderer.useWorldSpace = false;
             lineRenderer.SetPositions(new[] { Vector3.zero, Vector3.forward * 10 });
@@ -101,6 +102,7 @@ namespace Battlehub.RTCommon
             lineRenderer.endWidth = 0.004f;
 
             return root;
-        } 
+        }
+#endif
     }
 }
