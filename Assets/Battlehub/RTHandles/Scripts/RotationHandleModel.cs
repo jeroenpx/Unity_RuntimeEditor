@@ -243,7 +243,7 @@ namespace Battlehub.RTHandles
             {
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].color = Colors.AltColor2;
                 m_innerCircleMaterials[m_innerCircleBorderMatIndex].SetFloat("_ZWrite", 1);
-                m_innerCircle.gameObject.SetActive(true);
+                m_inner.gameObject.SetActive(true);
             }
 
             m_innerCircleMaterials[m_innerCircleFillMatIndex].color = new Color(0, 0, 0, 0);

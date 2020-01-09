@@ -33,26 +33,36 @@ namespace Battlehub.RTCommon
             IVRInputDevice lh = m_tracker.LeftHand;
             IVRInputDevice rh = m_tracker.RightHand;
 
-            if (lh.IsTracking)
+            if (lh.IsTracking && m_leftHand != null)
             {
                 m_leftHand.position = m_tracker.Origin + lh.Postion;
                 m_leftHand.rotation = lh.Rotation;
             }
 
-            if (rh.IsTracking)
+            if (rh.IsTracking && m_rightHand != null)
             {
                 m_rightHand.position = m_tracker.Origin + rh.Postion;
                 m_rightHand.rotation = rh.Rotation;
             }
         }
 
+        private bool IsTrackedDevice(IVRInputDevice device)
+        {
+            return (device.Device.characteristics & UnityEngine.XR.InputDeviceCharacteristics.TrackedDevice) != 0;
+        }
+
         private void OnTrackingAquired(IVRInputDevice device)
         {
-            if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Left)
+            if(!IsTrackedDevice(device))
+            {
+                return;
+            }
+
+            if ((device.Device.characteristics & UnityEngine.XR.InputDeviceCharacteristics.Left) != 0)
             {
                 m_leftHand = CreateModel(Color.yellow, "Left Hand").transform;
             }
-            else if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Right)
+            else if ((device.Device.characteristics & UnityEngine.XR.InputDeviceCharacteristics.Right) != 0)
             {
                 m_rightHand = CreateModel(Color.red, "Right Hand").transform;
             }
@@ -60,11 +70,16 @@ namespace Battlehub.RTCommon
 
         private void OnTrackingLost(IVRInputDevice device)
         {
-            if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Left)
+            if (!IsTrackedDevice(device))
+            {
+                return;
+            }
+
+            if ((device.Device.characteristics & UnityEngine.XR.InputDeviceCharacteristics.Left) != 0)
             {
                 Destroy(m_leftHand.gameObject);
             }
-            else if (device.Device.characteristics == UnityEngine.XR.InputDeviceCharacteristics.Right)
+            else if ((device.Device.characteristics & UnityEngine.XR.InputDeviceCharacteristics.Right) != 0)
             {
                 Destroy(m_rightHand.gameObject);
             }

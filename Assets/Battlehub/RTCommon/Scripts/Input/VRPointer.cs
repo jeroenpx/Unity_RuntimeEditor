@@ -59,6 +59,8 @@ namespace Battlehub.RTCommon
                 return false;
             }
 
+            ray.origin = camPos;
+
             Vector3 planePos = camPos - toCam * m_window.Camera.nearClipPlane;
             Matrix4x4 planeMatrix = Matrix4x4.TRS(planePos, Quaternion.LookRotation(-toCam), Vector3.one);
 
