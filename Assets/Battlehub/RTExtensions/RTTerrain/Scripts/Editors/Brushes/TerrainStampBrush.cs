@@ -29,7 +29,7 @@ namespace Battlehub.RTTerrain
             m_allowPaint = false;
         }
 
-        public override void Paint(Vector3 pos, float value)
+        public override void Paint(Vector3 pos, float value, float opacity)
         {
             if(!m_allowPaint)
             {
@@ -37,7 +37,7 @@ namespace Battlehub.RTTerrain
             }
             m_allowPaint = false;
 
-            base.Paint(pos, value);
+            base.Paint(pos, value, opacity);
         }
 
         protected override float ClampValue(float value)

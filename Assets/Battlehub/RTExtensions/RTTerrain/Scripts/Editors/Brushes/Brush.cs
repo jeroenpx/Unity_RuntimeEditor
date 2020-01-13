@@ -121,7 +121,7 @@ namespace Battlehub.RTTerrain
             IsPainting = false;
         }
 
-        public virtual void Paint(Vector3 pos, float value)
+        public virtual void Paint(Vector3 pos, float value, float opacity)
         {
             var data = Terrain.terrainData;
 
@@ -137,20 +137,20 @@ namespace Battlehub.RTTerrain
 
             if (Blend != BlendFunction.Smooth)
             {
-                Modify(minPos, maxPos, value);
+                Modify(minPos, maxPos, value, opacity);
             }
             else
             {
-                Smooth(minPos, maxPos, value);
+                Smooth(minPos, maxPos, value, opacity);
             }
         }
 
-        public virtual void Modify(Vector2Int minPos, Vector2Int maxPos, float value)
+        public virtual void Modify(Vector2Int minPos, Vector2Int maxPos, float value, float opacity)
         {
            
         }
 
-        public virtual void Smooth(Vector2Int minPos, Vector2Int maxPos, float value)
+        public virtual void Smooth(Vector2Int minPos, Vector2Int maxPos, float value, float opacity)
         {
           
         }

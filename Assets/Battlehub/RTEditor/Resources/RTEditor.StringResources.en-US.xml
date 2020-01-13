@@ -327,6 +327,9 @@
 		
 		<!-- HierarchyView -->
 		<StringResource id="ID_RTEditor_HierarchyView_UnableToLoadAssetItems" value="Unable to load asset items"/>
+    <StringResource id="ID_RTEditor_HierarchyViewImpl_Duplicate" value="Duplicate"/>
+    <StringResource id="ID_RTEditor_HierarchyViewImpl_Delete" value="Delete"/>
+    <StringResource id="ID_RTEditor_HierarchyViewImpl_Rename" value="Rename"/>
 		
 		<!-- SaveSceneDialog -->
 		<StringResource id="ID_RTEditor_SaveSceneDialog_Save" value="Save"/>

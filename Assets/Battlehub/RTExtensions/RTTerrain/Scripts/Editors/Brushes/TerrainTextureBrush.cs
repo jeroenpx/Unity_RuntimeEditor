@@ -45,6 +45,8 @@ namespace Battlehub.RTTerrain
             base.EndPaint();
 
             Terrain terrain = Terrain;
+            terrain.TerrainColliderWithoutHoles();
+
             float[,,] oldAlphamaps = m_oldAlphamaps;
             float[,,] newAlphamaps = GetAlphamaps();
             m_oldAlphamaps = null;
@@ -54,8 +56,9 @@ namespace Battlehub.RTTerrain
                 if(terrain.terrainData != null)
                 {
                     terrain.SetAlphamaps(0, 0, newAlphamaps);
+                    terrain.TerrainColliderWithoutHoles();
                 }
-                
+
                 return true;
             },
             record =>
@@ -63,8 +66,9 @@ namespace Battlehub.RTTerrain
                 if(terrain.terrainData != null)
                 {
                     terrain.SetAlphamaps(0, 0, oldAlphamaps);
+                    terrain.TerrainColliderWithoutHoles();
                 }
-                
+
                 return true;
             });
         }
@@ -76,7 +80,7 @@ namespace Battlehub.RTTerrain
             return Terrain.terrainData.GetAlphamaps(0, 0, w, h);
         }
 
-        public override void Modify(Vector2Int minPos, Vector2Int maxPos, float value)
+        public override void Modify(Vector2Int minPos, Vector2Int maxPos, float value, float opacity)
         {
             if(TerrainLayerIndex < 0)
             {
@@ -116,7 +120,7 @@ namespace Battlehub.RTTerrain
                     float f = Eval(u, v);
 
                     
-                    alphaMaps[y, x, TerrainLayerIndex] = Mathf.Clamp01(alphaMaps[y, x, TerrainLayerIndex] + f * value);
+                    alphaMaps[y, x, TerrainLayerIndex] = Mathf.Clamp01(alphaMaps[y, x, TerrainLayerIndex] + f * value * opacity);
 
                     float total = alphaMaps[y, x, TerrainLayerIndex];
                     for (int z = 0; z < amapZ; z++)
@@ -126,7 +130,7 @@ namespace Battlehub.RTTerrain
                             continue;
                         }
 
-                        alphaMaps[y, x, z] = Mathf.Clamp01(alphaMaps[y, x, z] - f * value);
+                        alphaMaps[y, x, z] = Mathf.Clamp01(alphaMaps[y, x, z] - f * value * opacity);
                         total += alphaMaps[y, x, z];
                     }
 

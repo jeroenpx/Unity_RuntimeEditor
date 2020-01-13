@@ -5,6 +5,15 @@ namespace Battlehub.UIControls
 {
     public partial class UIStyle
     {
+        public void ApplyTimelineControlBackgroundColor(Color background)
+        {
+            TimelineControl timelineControl = GetComponent<TimelineControl>();
+            if(timelineControl != null)
+            {
+                timelineControl.BackgroundColor = background;
+            }
+        }
+
         public void ApplyHierarchyColors(Color enabledItem, Color disabledItem)
         {
             HierarchyView hierarchy = GetComponent<HierarchyView>();

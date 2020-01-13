@@ -604,6 +604,9 @@ namespace Battlehub.RTEditor
                     case "ToolCmdItemColor":
                         style.ApplyToolCmdItemColor(Colors.ToolCmdItem.Normal, Colors.ToolCmdItem.Highlight, Colors.ToolCmdItem.Pressed);
                         break;
+                    case "TimlineControlBackgroundColor":
+                        style.ApplyTimelineControlBackgroundColor(Colors.Secondary);
+                        break;
                         
                 }
             }

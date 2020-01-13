@@ -137,24 +137,26 @@ namespace Battlehub.RTEditor
 
                 prefab.SetActive(wasPrefabEnabled);
 
-                Transform[] transforms = m_prefabInstance.GetComponentsInChildren<Transform>();
-                foreach (Transform transform in transforms)
-                {
-                    ExposeToEditor exposeToEditor = transform.GetComponent<ExposeToEditor>();
-                    if (exposeToEditor == null)
-                    {
-                        exposeToEditor = transform.gameObject.AddComponent<ExposeToEditor>();
-                    }
-                }
-
-                {
-                    ExposeToEditor exposeToEditor = m_prefabInstance.GetComponent<ExposeToEditor>();
-                    exposeToEditor.SetName(obj[0].name);
-                }
-
+                ExposeToEditor exposeToEditor = ExposePrefabInstance(m_prefabInstance);
+                exposeToEditor.SetName(obj[0].name);
 
                 OnActivatePrefabInstance(m_prefabInstance);
             }
+        }
+
+        protected virtual ExposeToEditor ExposePrefabInstance(GameObject prefabInstance)
+        {
+            Transform[] transforms = prefabInstance.GetComponentsInChildren<Transform>(true);
+            foreach (Transform transform in transforms)
+            {
+                ExposeToEditor exposeToEditor = transform.GetComponent<ExposeToEditor>();
+                if (exposeToEditor == null)
+                {
+                    exposeToEditor = transform.gameObject.AddComponent<ExposeToEditor>();
+                }
+            }
+
+            return prefabInstance.GetComponent<ExposeToEditor>();
         }
 
         private void CreateDragPlane()

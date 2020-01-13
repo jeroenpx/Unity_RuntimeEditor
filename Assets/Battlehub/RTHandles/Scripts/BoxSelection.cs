@@ -264,7 +264,7 @@ namespace Battlehub.RTHandles
 
         private void HitTest()
         {
-            if (m_rectTransform.sizeDelta.magnitude < 5f)
+            if (m_rectTransform.sizeDelta.magnitude < 25f)
             {
                 return;
             }

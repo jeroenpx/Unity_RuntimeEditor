@@ -1,6 +1,7 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls;
+using Battlehub.UIControls.MenuControl;
 using Battlehub.Utils;
 using System.Collections;
 using System.Collections.Generic;
@@ -91,6 +92,7 @@ namespace Battlehub.RTEditor
             m_treeView.ItemDragEnter += OnItemDragEnter;
             m_treeView.ItemDragExit += OnItemDragExit;
             m_treeView.ItemDoubleClick += OnItemDoubleClicked;
+            m_treeView.ItemClick += OnItemClick;
             m_treeView.ItemBeginEdit += OnItemBeginEdit;
             m_treeView.ItemEndEdit += OnItemEndEdit;
             m_treeView.PointerEnter += OnTreeViewPointerEnter;
@@ -151,6 +153,7 @@ namespace Battlehub.RTEditor
                 m_treeView.ItemDragEnter -= OnItemDragEnter;
                 m_treeView.ItemDragExit -= OnItemDragExit;
                 m_treeView.ItemDoubleClick -= OnItemDoubleClicked;
+                m_treeView.ItemClick -= OnItemClick;
                 m_treeView.ItemBeginEdit -= OnItemBeginEdit;
                 m_treeView.ItemEndEdit -= OnItemEndEdit;
                 m_treeView.PointerEnter -= OnTreeViewPointerEnter;
@@ -371,8 +374,84 @@ namespace Battlehub.RTEditor
         {
             ExposeToEditor exposeToEditor = (ExposeToEditor)e.Items[0];
             Editor.Selection.activeObject = exposeToEditor.gameObject;
-        }    
-        
+        }
+
+        protected virtual void OnItemClick(object sender, ItemArgs e)
+        {
+            if (e.PointerEventData.button == PointerEventData.InputButton.Right)
+            {
+                IContextMenu menu = IOC.Resolve<IContextMenu>();
+                List<MenuItemInfo> menuItems = new List<MenuItemInfo>();
+
+                MenuItemInfo duplicate = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Duplicate", "Duplicate") };
+                duplicate.Action = new MenuItemEvent();
+                duplicate.Action.AddListener(DuplicateContextMenuCmd);
+                duplicate.Validate = new MenuItemValidationEvent();
+                duplicate.Validate.AddListener(DuplicateValidateContextMenuCmd);
+                menuItems.Add(duplicate);
+
+                MenuItemInfo delete = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Delete", "Delete") };
+                delete.Action = new MenuItemEvent();
+                delete.Action.AddListener(DeleteContextMenuCmd);
+                delete.Validate = new MenuItemValidationEvent();
+                delete.Validate.AddListener(DeleteValidateContextMenuCmd);
+                menuItems.Add(delete);
+
+                MenuItemInfo rename = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Rename", "Rename") };
+                rename.Action = new MenuItemEvent();
+                rename.Action.AddListener(RenameContextMenuCmd);
+                rename.Validate = new MenuItemValidationEvent();
+                rename.Validate.AddListener(RenameValidateContextMenuCmd);
+                menuItems.Add(rename);
+
+                menu.Open(menuItems.ToArray());
+            }
+        }
+
+        protected virtual void RenameValidateContextMenuCmd(MenuItemValidationArgs args)
+        {
+            if (m_treeView.SelectedItem == null || !((ExposeToEditor)m_treeView.SelectedItem).CanRename) 
+            {
+                args.IsValid = false;
+            }
+        }
+
+        protected virtual void RenameContextMenuCmd(string arg)
+        {
+            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(m_treeView.SelectedItem);
+            if (treeViewItem != null && treeViewItem.CanEdit)
+            {
+                treeViewItem.IsEditing = true;
+            }
+        }
+
+        protected virtual void DuplicateValidateContextMenuCmd(MenuItemValidationArgs args)
+        {
+            if (m_treeView.SelectedItem == null || !m_treeView.SelectedItems.OfType<ExposeToEditor>().Any(o => o.CanDuplicate))
+            {
+                args.IsValid = false;
+            }
+        }
+
+        protected virtual void DuplicateContextMenuCmd(string arg)
+        {
+            GameObject[] gameObjects = m_treeView.SelectedItems.OfType<ExposeToEditor>().Select(o => o.gameObject).ToArray();
+            Editor.Duplicate(gameObjects);
+        }
+
+        protected virtual void DeleteValidateContextMenuCmd(MenuItemValidationArgs args)
+        {
+            if (m_treeView.SelectedItem == null || !m_treeView.SelectedItems.OfType<ExposeToEditor>().Any(o => o.CanDelete))
+            {
+                args.IsValid = false;
+            }
+        }
+
+        protected virtual void DeleteContextMenuCmd(string arg)
+        {
+            GameObject[] gameObjects = m_treeView.SelectedItems.OfType<ExposeToEditor>().Select(o => o.gameObject).ToArray();
+            Editor.Delete(gameObjects);
+        }
 
         protected virtual void OnItemBeginEdit(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
@@ -884,7 +963,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnAssetItemsLoaded(Object[] objects, ExposeToEditor dropTarget, VirtualizingTreeViewItem treeViewItem)
+        protected void OnAssetItemsLoaded(Object[] objects, ExposeToEditor dropTarget, VirtualizingTreeViewItem treeViewItem)
         {
             GameObject[] createdObjects = new GameObject[objects.Length];
             for (int i = 0; i < objects.Length; ++i)
@@ -895,21 +974,7 @@ namespace Battlehub.RTEditor
                 GameObject prefabInstance = InstantiatePrefab(prefab);
                 prefab.SetActive(wasPrefabEnabled);
 
-                Transform[] transforms = prefabInstance.GetComponentsInChildren<Transform>();
-                foreach (Transform transform in transforms)
-                {
-                    if (transform.GetComponent<ExposeToEditor>() == null)
-                    {
-                        transform.gameObject.AddComponent<ExposeToEditor>();
-                    }
-                }
-
-                ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
-                if (exposeToEditor == null)
-                {
-                    exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
-                }
-
+                ExposeToEditor exposeToEditor = ExposePrefabInstance(prefabInstance);
                 exposeToEditor.SetName(prefab.name);
 
                 if (dropTarget == null)
@@ -971,6 +1036,26 @@ namespace Battlehub.RTEditor
             m_isSpawningPrefab = false;
         }
 
+        protected virtual ExposeToEditor ExposePrefabInstance(GameObject prefabInstance)
+        {
+            Transform[] transforms = prefabInstance.GetComponentsInChildren<Transform>(true);
+            foreach (Transform transform in transforms)
+            {
+                if (transform.GetComponent<ExposeToEditor>() == null)
+                {
+                    transform.gameObject.AddComponent<ExposeToEditor>();
+                }
+            }
+
+            ExposeToEditor exposeToEditor = prefabInstance.GetComponent<ExposeToEditor>();
+            if (exposeToEditor == null)
+            {
+                exposeToEditor = prefabInstance.AddComponent<ExposeToEditor>();
+            }
+
+            return exposeToEditor;
+        }
+
         protected virtual void OnActivatePrefabInstance(GameObject prefabInstance)
         {
             prefabInstance.SetActive(true);
@@ -980,6 +1065,7 @@ namespace Battlehub.RTEditor
         {
             return Instantiate(prefab, Vector3.zero, Quaternion.identity);
         }
+
     }
 
 }

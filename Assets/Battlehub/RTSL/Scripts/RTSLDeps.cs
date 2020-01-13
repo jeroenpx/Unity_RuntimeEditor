@@ -25,11 +25,13 @@ namespace Battlehub.RTSL
         {
             get
             {
+                #if USE_GOOGLE_DRIVE
                 if(File.Exists(Application.streamingAssetsPath + "/credentials.json"))
                 {
                     return new GoogleDriveAssetBundleLoader();
                 }
                 else
+                #endif
                 {
                     return new AssetBundleLoader();
                 }

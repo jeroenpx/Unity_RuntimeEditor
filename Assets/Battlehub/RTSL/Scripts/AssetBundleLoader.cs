@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+#if USE_GOOGLE_DRIVE
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using Google.Apis.Download;
 using System.Threading;
 using System.Linq;
-using Google.Apis.Download;
+
 using Battlehub;
 using Battlehub.Utils;
+#endif
+
+
 
 namespace Battlehub.RTSL
 {
@@ -23,6 +28,7 @@ namespace Battlehub.RTSL
         void Load(string name, LoadAssetBundleHandler callback);
     }
 
+    #if USE_GOOGLE_DRIVE
     public class GoogleDriveAssetBundleLoader : IAssetBundleLoader
     {
         static string[] Scopes = { DriveService.Scope.DriveReadonly };
@@ -227,7 +233,7 @@ namespace Battlehub.RTSL
             }
         }
     }
-
+    #endif
     public class AssetBundleLoader : IAssetBundleLoader
     {
         public void GetAssetBundles(ListAssetBundlesHandler callback)

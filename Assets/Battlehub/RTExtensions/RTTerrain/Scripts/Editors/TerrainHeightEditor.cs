@@ -9,8 +9,6 @@ namespace Battlehub.RTTerrain
         [SerializeField]
         private Button m_flattenButton = null;
 
-        private TerrainBrush m_heightBrush;
-
         private IRTE m_editor;
 
         public override float Height
@@ -21,9 +19,9 @@ namespace Battlehub.RTTerrain
                 if (m_height != value)
                 {
                     m_height = value;
-                    if (m_heightBrush != null)
+                    if (TerrainEditor.Projector.TerrainBrush != null)
                     {
-                        m_heightBrush.Max = value;
+                        TerrainEditor.Projector.TerrainBrush.Max = value;
                     }
                 }
             }
@@ -75,27 +73,13 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        protected override void InitializeTerrainBrush()
-        {
-            if (!gameObject.activeInHierarchy)
-            {
-                return;
-            }
-
-            if (TerrainEditor.Projector.TerrainBrush != null && TerrainEditor.Projector.TerrainBrush == m_heightBrush)
-            {
-                return;
-            }
-            TerrainEditor.Projector.TerrainBrush = CreateBrush();
-        }
-
         protected override Brush CreateBrush()
         {
-            m_heightBrush = new TerrainBrush();
-            m_heightBrush.Blend = Brush.BlendFunction.Clamp;
-            m_heightBrush.Max = Height;
-            m_heightBrush.AllowNegativeValue = false;
-            return m_heightBrush;
+            TerrainBrush brush = new TerrainBrush();
+            brush.Blend = Brush.BlendFunction.Clamp;
+            brush.Max = Height;
+            brush.AllowNegativeValue = false;
+            return brush;
         }
 
         private void OnFlatten()

@@ -44,11 +44,13 @@ namespace Battlehub.RTSL
             {
                 GameObject projGo = new GameObject();
                 IAssetBundleLoader bundleLoader;
+#if USE_GOOGLE_DRIVE
                 if (File.Exists(Application.streamingAssetsPath + "/credentials.json"))
                 {
                     bundleLoader = new GoogleDriveAssetBundleLoader();
                 }
                 else
+#endif
                 {
                     bundleLoader = new AssetBundleLoader();
                 }
@@ -695,6 +697,8 @@ namespace Battlehub.RTSL
                { "Arial.ttf", typeof(Font) }
             };
 
+            
+
             List<object> builtInAssets = new List<object>();
             foreach (KeyValuePair<string, Type> kvp in builtInExtra)
             {
@@ -713,6 +717,23 @@ namespace Battlehub.RTSL
                     builtInAssets.Add(obj);
                 }
             }
+
+            GameObject defaultTree = Resources.Load<GameObject>("Tree/RTT_DefaultTree");
+            if(defaultTree != null)
+            {
+                builtInAssets.Add(defaultTree);
+                Material barkMaterial = Resources.Load<Material>("Tree/Materials/RTT_DefaultTreeBark");
+                if(barkMaterial != null)
+                {
+                    builtInAssets.Add(barkMaterial);
+                }
+                Material branchesMaterial = Resources.Load<Material>("Tree/Materials/RTT_DefaultTreeBranches");
+                if(branchesMaterial != null)
+                {
+                    builtInAssets.Add(branchesMaterial);
+                }
+            }
+
             CreateAssetLibrary(builtInAssets.ToArray(), "BuiltInAssets", "BuiltInAssetLibrary", index, asset, folder, hs);
         }
     }

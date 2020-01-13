@@ -75,12 +75,17 @@ namespace Battlehub.RTTerrain
                 return;
             }
 
+            Camera cam = m_editor.ActiveWindow.Camera;
+            if(cam == null)
+            {
+                return;
+            }
+
             if(!m_projector.enabled)
             {
                 m_projector.enabled = true;
             }
 
-            Camera cam = m_editor.ActiveWindow.Camera;
             if(m_prevPos != m_editor.ActiveWindow.Pointer.ScreenPoint || m_prevCamPos != cam.transform.position || m_prevCamRot != cam.transform.rotation)
             {
                 m_prevPos = m_editor.ActiveWindow.Pointer.ScreenPoint;
@@ -126,7 +131,7 @@ namespace Battlehub.RTTerrain
                 else if (m_editor.Input.GetPointer(0))
                 {
                     m_terrainBrush.Terrain = m_terrain;
-                    m_terrainBrush.Paint(m_terrain.transform.InverseTransformPoint(m_position), (m_editor.Input.GetKey(KeyCode.LeftShift) ? -Time.deltaTime : Time.deltaTime) * Opacity);
+                    m_terrainBrush.Paint(m_terrain.transform.InverseTransformPoint(m_position), (m_editor.Input.GetKey(KeyCode.LeftShift) ? -Time.deltaTime : Time.deltaTime) * 100.0f, Opacity / 100.0f);
                 }
             }
         }

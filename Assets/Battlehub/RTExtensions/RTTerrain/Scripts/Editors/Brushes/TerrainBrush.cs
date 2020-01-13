@@ -19,6 +19,11 @@ namespace Battlehub.RTTerrain
             set;
         }
 
+        protected IRTE Editor
+        {
+            get { return m_editor; }
+        }
+
         public TerrainBrush()
         { 
             AllowNegativeValue = true;
@@ -32,7 +37,7 @@ namespace Battlehub.RTTerrain
             m_oldHeightmap = GetHeightmap();
         }
 
-        public override void Paint(Vector3 pos, float value)
+        public override void Paint(Vector3 pos, float value, float opacity)
         {
             if(Terrain == null)
             {
@@ -49,7 +54,7 @@ namespace Battlehub.RTTerrain
                 value = -value;
             }
 
-            base.Paint(pos, ClampValue(value));
+            base.Paint(pos, ClampValue(value), opacity);
         }
 
         protected virtual float ClampValue(float value)
@@ -61,8 +66,10 @@ namespace Battlehub.RTTerrain
         public override void EndPaint()
         {
             base.EndPaint();
-
+            
             Terrain terrain = Terrain;
+            terrain.TerrainColliderWithoutHoles();
+
             float[,] oldHeightmap = m_oldHeightmap;
             float[,] newHeightmap = GetHeightmap();
             m_oldHeightmap = null;
@@ -72,6 +79,7 @@ namespace Battlehub.RTTerrain
                 if(terrain.terrainData != null)
                 {
                     terrain.SetHeights(0, 0, newHeightmap);
+                    terrain.TerrainColliderWithoutHoles();
                 }
                 return true;
             },
@@ -80,6 +88,7 @@ namespace Battlehub.RTTerrain
                 if(terrain.terrainData != null)
                 {
                     terrain.SetHeights(0, 0, oldHeightmap);
+                    terrain.TerrainColliderWithoutHoles();
                 }
                 return true;
             });
@@ -92,7 +101,7 @@ namespace Battlehub.RTTerrain
             return Terrain.terrainData.GetHeights(0, 0, w, h);
         }
 
-        public override void Modify(Vector2Int minPos, Vector2Int maxPos, float value)
+        public override void Modify(Vector2Int minPos, Vector2Int maxPos, float value, float opacity)
         {
             float heightMapResoulution = Terrain.terrainData.heightmapResolution;
             int px = Mathf.Max(0, minPos.x);
@@ -125,14 +134,14 @@ namespace Battlehub.RTTerrain
                     float u = (x - minPos.x) / (float)(sizeX - 1);
                     float v = (y - minPos.y) / (float)(sizeY - 1);
                     float f = Eval(u, v);
-                    hmap[y, x] = m_blender(hmap[y, x], f * value);
+                    hmap[y, x] = m_blender(hmap[y, x], f * value * opacity);
                 }
             }
 
             Terrain.SetHeights(px, py, hmap);
         }
 
-        public override void Smooth(Vector2Int minPos, Vector2Int maxPos, float value)
+        public override void Smooth(Vector2Int minPos, Vector2Int maxPos, float value, float opacity)
         {
             value *= 25;
             float heightMapResoulution = Terrain.terrainData.heightmapResolution;
@@ -168,7 +177,7 @@ namespace Battlehub.RTTerrain
 
                     float s = (hmap[Mathf.Max(y - 1, 0), x] + hmap[Mathf.Min(y + 1, hmapY - 1), x] + hmap[y, Mathf.Max(x - 1, 0)] + hmap[y, Mathf.Min(x + 1, hmapX - 1)]) * 0.25f;
                     float f = Eval(u, v);
-                    hmap[y, x] += f * (s - hmap[y, x]) * value;
+                    hmap[y, x] += f * (s - hmap[y, x]) * value * opacity;
                 }
             }
 

@@ -326,27 +326,6 @@
     <Reference Include="protobuf-net">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Auth">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Auth.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Auth.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Core">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Drive.v3">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.Drive.v3.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.PlatformServices">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Google.Apis.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/Deps/GoogleDriveAPI/Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Ookii.Dialogs">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Assets/Battlehub/ThirdParty/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
     </Reference>

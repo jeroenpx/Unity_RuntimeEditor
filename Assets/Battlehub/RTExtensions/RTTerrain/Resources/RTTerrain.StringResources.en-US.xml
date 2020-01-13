@@ -30,6 +30,9 @@
 		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Stamp_Terrain" value="Stamp Terrain"/>
 		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Set_Height" value="Set Height"/>
 		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Smooth_Height" value="Smooth Height"/>
+    <StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Paint_Holes" value="Paint Holes"/>
+    <StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Paint_Details" value="Paint Details"/>
+    <StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Paint_Trees" value="Paint Trees"/>
 		
 		<!-- Terrain Brush Editor -->
 		<StringResource id="ID_RTTerrain_TerrainBrushEditor_Header" value="Brushes"/>
@@ -49,8 +52,37 @@
 		<StringResource id="ID_RTTerrain_TerrainLayerEditor_Delete" value="Delete"/>
 		<StringResource id="ID_RTTerrain_TerrainLayerEditor_TileSize" value="Tile Size"/>
 		<StringResource id="ID_RTTerrain_TerrainLayerEditor_TileOffset" value="Tile Offset"/>
-		
-		<!-- Terrain Raise Lower Editor -->
+    
+    <!-- Terrain Detail Editor-->
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_Header" value="Details"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_Create" value="Create"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_Delete" value="Delete"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_DetailTexture" value="Detail Texture"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_Detail" value="Detail"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_RenderMode" value="Render Mode"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_BendFactor" value="Bend Factor"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_DryColor" value="Dry Color"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_HealthyColor" value="Healthy Color"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_MaxHeight" value="Max Height"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_MinHeight" value="Min Height"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_MinWidth" value="Min Width"/>
+    <StringResource id="ID_RTTerrain_TerrainDetailEditor_NoiseSpread" value="Noise Spread"/>
+
+    <!-- Terrain Tree Editor-->
+    <StringResource id="ID_RTTerrain_TerrainTreeEditor_Header" value="Trees"/>
+    <StringResource id="ID_RTTerrain_TerrainTreeEditor_Create" value="Create"/>
+    <StringResource id="ID_RTTerrain_TerrainTreeEditor_Delete" value="Delete"/>
+    <StringResource id="ID_RTTerrain_TerrainTreeEditor_Prefab" value="Prefab"/>
+    <StringResource id="ID_RTTerrain_TerrainTreeEditor_BendFactor" value="Bend Factor"/>
+
+    <!-- Terrain Paint Trees Editor-->
+    <StringResource id="ID_RTTerrain_TerrainPaintTreesEditor_LockWidthToHeight" value="Lock Width to Height"/>
+    <StringResource id="ID_RTTerrain_TerrainPaintTreesEditor_MinTreeHeight" value="Min Tree Height"/>
+    <StringResource id="ID_RTTerrain_TerrainPaintTreesEditor_MaxTreeHeight" value="Max Tree Height"/>
+    <StringResource id="ID_RTTerrain_TerrainPaintTreesEditor_MinTreeWidth" value="Min Tree Width"/>
+    <StringResource id="ID_RTTerrain_TerrainPaintTreesEditor_MaxTreeWidth" value="Max Tree Widht"/>
+    
+    <!-- Terrain Raise Lower Editor -->
 		<StringResource id="ID_RTTerrain_TerrainRaiseLowerEditor_Tooltip" value="Left click to raise &lt;br&gt;Hold left shift and click to lower."/>
 		
 		<!-- Terrain PaintTexture Editor -->
@@ -66,6 +98,15 @@
 		
 		<!-- Terrain Smooth Editor -->
 		<StringResource id="ID_RTTerrain_TerrainSmoothHeightEditor_Tooltip" value="Click to smooth the terrain height."/>
+		
+    <!-- Terrain PaintHoles Editor -->
+		<StringResource id="ID_RTTerrain_TerrainPaintHolesEditor_Tooltip" value="Left click to paint hole &lt;br&gt;Hold left shift and click to erase it."/>
+
+    <!-- Terrain PaintDetails Editor -->
+    <StringResource id="ID_RTTerrain_TerrainPaintDetailsEditor_Tooltip" value="Left click to paint details &lt;br&gt;Hold left shift and click to erase details."/>
+
+    <!-- Terrain PaintDetails Editor -->
+    <StringResource id="ID_RTTerrain_TerrainPaintTreesEditor_Tooltip" value="Left click to paint trees &lt;br&gt;Hold left shift and click to erase trees."/>
 		
 		<!-- Terrain Selection Handles Editor -->
 		<StringResource id="ID_RTTerrain_SelectionHandles_ZTest" value="Z Test"/>

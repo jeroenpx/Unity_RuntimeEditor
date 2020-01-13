@@ -83,15 +83,6 @@ namespace Battlehub.RTSL.Internal
                 o.detailPrototypes = new DetailPrototype[0];
             }
 
-            if(treeInstances != null)
-            {
-                o.treeInstances = Assign(treeInstances, v_ => (TreeInstance)v_);
-            }
-            else
-            {
-                o.treeInstances = new TreeInstance[0];
-            }
-            
             if(treePrototypes != null)
             {
                 o.treePrototypes = Assign(treePrototypes, v_ => (TreePrototype)v_);
@@ -101,6 +92,15 @@ namespace Battlehub.RTSL.Internal
                 o.treePrototypes = new TreePrototype[0];
             }
 
+            if(treeInstances != null)
+            {
+                o.treeInstances = Assign(treeInstances, v_ => (TreeInstance)v_);
+            }
+            else
+            {
+                o.treeInstances = new TreeInstance[0];
+            }
+            
             if (m_data != null)
             {
                 float[,] data = new float[m_heightMapWidth, m_heightMapHeight];
@@ -155,6 +155,24 @@ namespace Battlehub.RTSL.Internal
             Buffer.BlockCopy(alphamaps, 0, m_alphamaps, 0, m_alphamaps.Length * sizeof(float));
         }
 
+        public override void GetDeps(GetDepsContext context)
+        {
+            base.GetDeps(context);
+
+            AddSurrogateDeps(detailPrototypes, context);
+            AddSurrogateDeps(treePrototypes, context);
+            AddSurrogateDeps(treeInstances, context);
+        }
+
+        public override void GetDepsFrom(object obj, GetDepsFromContext context)
+        {
+            base.GetDepsFrom(obj, context);
+
+            TerrainData terrainData = (TerrainData)obj;
+            AddSurrogateDeps(terrainData.detailPrototypes, v => (PersistentDetailPrototype)v, context);
+            AddSurrogateDeps(terrainData.treePrototypes, v => (PersistentTreePrototype)v, context);
+            AddSurrogateDeps(terrainData.treeInstances, v => (PersistentTreeInstance)v, context);
+        }
 
         //<TEMPLATE_BODY_END>
 #endif

@@ -127,6 +127,11 @@ namespace Battlehub.RTEditor
         
         [SerializeField]
         private Color m_backgroundColor = new Color32(0x27, 0x27, 0x27, 0xFF);
+        public Color BackgroundColor
+        {
+            get { return m_backgroundColor; }
+            set { m_backgroundColor = value; }
+        }
 
         private Vector2 m_interval = Vector2.one;
 

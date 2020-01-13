@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battlehub.RTTerrain
 {
-    public class TerrainStampEditor : TerrainRaiseOrLowerEditor
+    public class TerrainStampEditor : TerrainPaintEditor
     {
         [SerializeField]
         private RangeEditor m_heightEditor = null;

@@ -52,7 +52,7 @@ namespace Battlehub.RTTerrain
         [SerializeField]
         private string m_selectTextureWindow = RuntimeWindowType.SelectObject.ToString();
 
-        private float m_brushSize = 5;
+        private float m_brushSize = 2.5f;
         public float BrushSize
         {
             get { return m_brushSize; }
@@ -125,7 +125,8 @@ namespace Battlehub.RTTerrain
 
             if(m_brushSizeEditor != null)
             {
-                BrushSize = 2.5f;
+                //BrushSize = 2.5f;
+                RaiseBrushParamsChanged();
 
                 m_brushSizeEditor.Min = 0.5f;
                 m_brushSizeEditor.Max = 40;
@@ -134,7 +135,8 @@ namespace Battlehub.RTTerrain
 
             if(m_opacityEditor != null)
             {
-                BrushOpacity = 100;
+                //BrushOpacity = 100;
+                RaiseBrushParamsChanged();
 
                 m_opacityEditor.Min = 0;
                 m_opacityEditor.Max = 100;

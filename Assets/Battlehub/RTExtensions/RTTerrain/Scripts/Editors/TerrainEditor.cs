@@ -18,6 +18,9 @@ namespace Battlehub.RTTerrain
         public static event TerrainEvent<Terrain> SizeChanged;
         public static event TerrainEvent<Terrain> HeightsChanged;
         public static event TerrainEvent<Terrain> AlphamapsChanged;
+        public static event TerrainEvent<Terrain> HolesChanged;
+        public static event TerrainEvent<Terrain> DetailsChanged;
+        public static event TerrainEvent<Terrain> TreeInstancesChanged;
         public static event TerrainEvent<Terrain> TerrainDataChanged;
         public static event TerrainEvent<Terrain> TerrainModified;
 
@@ -75,6 +78,62 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        public static void SetHoles(this Terrain terrain, int xBase, int yBase, bool[,] holes)
+        {
+            if (terrain.terrainData == null)
+            {
+                return;
+            }
+
+            terrain.terrainData.SetHoles(xBase, yBase, holes);
+            if (HolesChanged != null)
+            {
+                HolesChanged(terrain);
+            }
+            if (TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+
+        public static void SetDetails(this Terrain terrain, int xBase, int yBase, int layer, int[,] details)
+        {
+            if(terrain.terrainData == null)
+            {
+                return;
+            }
+
+            terrain.terrainData.SetDetailLayer(xBase, yBase, layer, details);
+            if(DetailsChanged != null)
+            {
+                DetailsChanged(terrain);
+            }
+
+            if (TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+
+        public static void SetTreeInstances(this Terrain terrain, TreeInstance[] instances, bool snapToHeightmap)
+        {
+            if (terrain.terrainData == null)
+            {
+                return;
+            }
+
+            terrain.terrainData.SetTreeInstances(instances, snapToHeightmap);
+            if (TreeInstancesChanged != null)
+            {
+                TreeInstancesChanged(terrain);
+            }
+
+            if (TerrainModified != null)
+            {
+                TerrainModified(terrain);
+            }
+        }
+
         public static void SetTerrainData(this Terrain terrain, TerrainData terrainData)
         {
             terrain.terrainData = terrainData;
@@ -86,6 +145,84 @@ namespace Battlehub.RTTerrain
             {
                 TerrainModified(terrain);
             }
+        }
+
+        public static TerrainData CopyTerrainData(this TerrainData terrainData, bool copyHoles = true)
+        {
+            TerrainData copyTerrainData = new TerrainData();
+            copyTerrainData.SetDetailResolution(terrainData.detailResolution, terrainData.detailResolutionPerPatch);
+            copyTerrainData.heightmapResolution = terrainData.heightmapResolution;
+            copyTerrainData.size = terrainData.size;
+            copyTerrainData.SetHeights(0, 0, terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution));
+
+            if(copyHoles)
+            {
+                int holRes = terrainData.holesResolution;
+                copyTerrainData.SetHoles(0, 0, terrainData.GetHoles(0, 0, holRes, holRes));
+            }
+
+            copyTerrainData.terrainLayers = terrainData.terrainLayers;
+
+            float[,,] alphaMaps = terrainData.GetAlphamaps(0, 0, terrainData.alphamapWidth, terrainData.alphamapHeight);
+            copyTerrainData.SetAlphamaps(0, 0, alphaMaps);
+            return copyTerrainData;
+        }
+
+        public static void TerrainColliderWithoutHoles(this Terrain terrain)
+        {
+            TerrainCollider collider = terrain.GetComponent<TerrainCollider>();
+            if(collider != null && terrain.terrainData != null)
+            {
+                collider.terrainData = CopyTerrainData(terrain.terrainData, false);
+            }
+        }
+
+        public static void CreateTerrain()
+        {
+            GameObject go = new GameObject("Terrain");
+            Terrain terrain = go.AddComponent<Terrain>();
+            TerrainCollider collider = go.AddComponent<TerrainCollider>();
+            TerrainData terrainData = DefaultTerrainData();
+
+            terrain.terrainData = terrainData;
+            collider.terrainData = terrainData;
+
+            go.transform.position = Vector3.Scale(-terrainData.size / 2, new Vector3(1, 0, 1));
+        }
+
+        public static TerrainData DefaultTerrainData(Vector3 size, int resoultion)
+        {
+            TerrainData terrainData = new TerrainData();
+            terrainData.SetDetailResolution(1024, 32);
+            terrainData.heightmapResolution = resoultion;
+            terrainData.size = new Vector3(size.x, size.y, size.z);
+            terrainData.SetHoles(0, 0, new bool[,] { { true } });
+
+            ITerrainSettings terrainSettings = IOC.Resolve<ITerrainSettings>();
+            terrainData.terrainLayers = new[]
+            {
+                new TerrainLayer() { diffuseTexture = terrainSettings != null ? terrainSettings.DefaultTexture : (Texture2D)Resources.Load("Textures/RTT_DefaultGrass") }
+            };
+
+            float[,,] alphaMaps = terrainData.GetAlphamaps(0, 0, terrainData.alphamapWidth, terrainData.alphamapHeight);
+            int amapY = alphaMaps.GetLength(0);
+            int amapX = alphaMaps.GetLength(1);
+
+            for (int y = 0; y < amapY; y++)
+            {
+                for (int x = 0; x < amapX; x++)
+                {
+                    alphaMaps[y, x, 0] = 1;
+                }
+            }
+
+            terrainData.SetAlphamaps(0, 0, alphaMaps);
+            return terrainData;
+        }
+
+        public static TerrainData DefaultTerrainData()
+        {
+            return DefaultTerrainData(new Vector3(200, 64, 200), 513);
         }
     }
 
@@ -108,6 +245,9 @@ namespace Battlehub.RTTerrain
             Stamp_Terrain = 2,
             Set_Height = 3,
             Smooth_Height = 4,
+            Paint_Holes = 5,
+            Paint_Details = 6,
+            Paint_Trees = 7,
         }
 
         [SerializeField]
@@ -172,6 +312,8 @@ namespace Battlehub.RTTerrain
 
                     m_selectedPaintTool = value;
                     m_paintTools[(int)m_selectedPaintTool].SetActive(true);
+
+                    PlayerPrefs.SetInt("TerrainEditor.SelectedPaintTool", (int)m_selectedPaintTool);
                 }
             }
         }
@@ -229,16 +371,19 @@ namespace Battlehub.RTTerrain
                     emptyEditor.gameObject.SetActive(true);
                 }
             }
-
-            if(m_paintToolSelector != null)
-            {
-                m_paintToolSelector.Init(this, this, Strong.PropertyInfo((TerrainEditor x) => x.SelectedPaintTool), null, m_localization.GetString("ID_RTTerrain_TerrainEditor_Tool", "Tool:"), null, null, null, false);
-            }
             
             SubscribeSelectionChangingEvent(true);
         }
 
-   
+        private void Start()
+        {
+            SelectedPaintTool = (PaintTool)PlayerPrefs.GetInt("TerrainEditor.SelectedPaintTool", (int)PaintTool.Raise_Or_Lower_Terrain);
+            if (m_paintToolSelector != null)
+            {
+                m_paintToolSelector.Init(this, this, Strong.PropertyInfo((TerrainEditor x) => x.SelectedPaintTool), null, m_localization.GetString("ID_RTTerrain_TerrainEditor_Tool", "Tool:"), null, null, null, false);
+            }
+        }
+
         private void OnDestroy()
         {
             if(m_wm != null)

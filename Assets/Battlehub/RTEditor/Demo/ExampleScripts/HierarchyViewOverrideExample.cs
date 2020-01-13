@@ -12,10 +12,9 @@ namespace Battlehub.RTEditor.Demo
         protected override void Awake()
         {
             base.Awake();
-            TreeView.ItemClick += OnItemClick;
         }
 
-        private void OnItemClick(object sender, ItemArgs e)
+        protected override void OnItemClick(object sender, ItemArgs e)
         {
             if (e.PointerEventData.button == PointerEventData.InputButton.Right)
             {

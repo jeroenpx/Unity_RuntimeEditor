@@ -40,6 +40,11 @@ namespace Battlehub.Utils
             return (BlendMode)material.GetFloat("_Mode");
         }
 
+        public static void SetBlendMode(Material material, BlendMode blendMode)
+        {
+            material.SetFloat("_Mode", (float)blendMode);
+        }
+
         public static SmoothnessMapChannel GetSmoothnessMapChannel(Material material)
         {
             int ch = (int)material.GetFloat("_SmoothnessTextureChannel");
@@ -47,6 +52,11 @@ namespace Battlehub.Utils
                 return SmoothnessMapChannel.AlbedoAlpha;
             else
                 return SmoothnessMapChannel.SpecularMetallicAlpha;
+        }
+
+        public static void SetSmoothnessMapChannel(Material material, SmoothnessMapChannel channel)
+        {
+            material.SetFloat("_SmoothnessTextureChannel", (int)channel); 
         }
 
         public static bool ShouldEmissionBeEnabled(Material mat, Color color)

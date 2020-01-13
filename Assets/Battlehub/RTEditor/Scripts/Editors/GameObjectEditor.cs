@@ -61,7 +61,7 @@ namespace Battlehub.RTEditor
             GameObject go = m_editor.Selection.activeGameObject;
             HashSet<Component> ignoreComponents = IgnoreComponents(go);
             InputName.text = go.name;
-            InputName.readOnly = true;
+           // InputName.readOnly = true;
             TogEnableDisable.isOn = go.activeSelf;
 
             InputName.onEndEdit.AddListener(OnEndEditName);
@@ -191,7 +191,7 @@ namespace Battlehub.RTEditor
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             if(exposeToEditor != null)
             {
-                exposeToEditor.SetName(name);
+                exposeToEditor.SetName(name, true);
             }
             else
             {

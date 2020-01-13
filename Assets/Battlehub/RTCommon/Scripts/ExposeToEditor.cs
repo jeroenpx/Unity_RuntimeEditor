@@ -348,10 +348,10 @@ namespace Battlehub.RTCommon
             m_oldParent = null;
         }
 
-        public void SetName(string name)
+        public void SetName(string name, bool ignoreHideFlags = false)
         {
             gameObject.name = name;
-            if ((hideFlags & HideFlags.HideInHierarchy) == 0)
+            if ((hideFlags & HideFlags.HideInHierarchy) == 0 || ignoreHideFlags)
             {
                 if (_NameChanged != null)
                 {
