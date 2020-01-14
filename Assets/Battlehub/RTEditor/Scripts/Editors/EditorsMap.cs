@@ -87,7 +87,7 @@ namespace Battlehub.RTEditor
                 .Where(p => type.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract);
 #else
             var types = type.GetTypeInfo().Assembly.GetTypes().
-                Where(p => type.IsAssignableFrom(p) && p.GetTypeInfo().IsClass);
+                Where(p => type.IsAssignableFrom(p) && p.GetTypeInfo().IsClass && !p.IsAbstract);
 #endif
 
             m_componentDescriptors = new Dictionary<Type, IComponentDescriptor>();
@@ -122,7 +122,7 @@ namespace Battlehub.RTEditor
             ComponentEditor editor = componentEditor != null ? componentEditor : VoidComponentEditor;
 
             IComponentDescriptor componentDescriptor;
-            if(!ComponentDescriptors.TryGetValue(componentType, out componentDescriptor))
+            if (!ComponentDescriptors.TryGetValue(componentType, out componentDescriptor))
             {
                 componentDescriptor = null;
             }
@@ -213,7 +213,7 @@ namespace Battlehub.RTEditor
                 { typeof(Cubeman.GameCharacter), new EditorDescriptor(21, true, false) },
                 { typeof(RuntimeAnimation), new EditorDescriptor(21, true, false) },
                 { typeof(AudioSource), new EditorDescriptor(21, true, false) },
-                { typeof(AudioListener), new EditorDescriptor(21, true, false) },                
+                { typeof(AudioListener), new EditorDescriptor(21, true, false) },
             };
         }
 
@@ -221,7 +221,7 @@ namespace Battlehub.RTEditor
 
         public void LoadMap()
         {
-            if(m_isLoaded)
+            if (m_isLoaded)
             {
                 return;
             }
@@ -238,13 +238,13 @@ namespace Battlehub.RTEditor
             if (editorsMap != null)
             {
                 m_editors = editorsMap.Editors;
-                
-                for(int i = 0; i < editorsMap.MaterialEditors.Length; ++i)
+
+                for (int i = 0; i < editorsMap.MaterialEditors.Length; ++i)
                 {
                     GameObject materialEditor = editorsMap.MaterialEditors[i];
                     Shader shader = editorsMap.Shaders[i];
                     bool enabled = editorsMap.IsMaterialEditorEnabled[i];
-                    if(!m_materialMap.ContainsKey(shader))
+                    if (!m_materialMap.ContainsKey(shader))
                     {
                         m_materialMap.Add(shader, new MaterialEditorDescriptor(materialEditor, enabled));
                     }
@@ -288,7 +288,7 @@ namespace Battlehub.RTEditor
         public void AddMapping(Type type, GameObject editor, bool enabled, bool isPropertyEditor)
         {
             int index = Array.IndexOf(m_editors, editor);
-            if(index < 0)
+            if (index < 0)
             {
                 Array.Resize(ref m_editors, m_editors.Length + 1);
                 index = m_editors.Length - 1;
@@ -351,12 +351,12 @@ namespace Battlehub.RTEditor
         public GameObject GetMaterialEditor(Shader shader, bool strict = false)
         {
             MaterialEditorDescriptor descriptor = GetEditorDescriptor(shader);
-            if(descriptor != null)
+            if (descriptor != null)
             {
                 return descriptor.Editor;
             }
 
-            if(strict)
+            if (strict)
             {
                 return null;
             }
@@ -367,7 +367,7 @@ namespace Battlehub.RTEditor
         private MaterialEditorDescriptor GetEditorDescriptor(Shader shader)
         {
             MaterialEditorDescriptor descriptor;
-            if(m_materialMap.TryGetValue(shader, out descriptor))
+            if (m_materialMap.TryGetValue(shader, out descriptor))
             {
                 return m_materialMap[shader];
             }
