@@ -16,11 +16,13 @@ namespace Battlehub.RTScripting
 {
     public class ScriptingInit : EditorOverride
     {
+#pragma warning disable CS0414
         [SerializeField]
         private GameObject m_editRuntimeScriptDialog = null;
 
         [SerializeField]
         private ComponentEditor m_runtimeScriptEditor = null;
+#pragma warning restore CS0414
 
 #if UNITY_STANDALONE
 

@@ -297,6 +297,7 @@ namespace Battlehub.RTScripting
             RunCompilerAsync(loadAo.Result.OfType<RuntimeTextAsset>().Select(s => s.Text).ToArray(), ao);
         }
 
+#pragma warning disable CS1998
         public async void RunCompilerAsync(string[] scripts, ProjectAsyncOperation ao)
         {
 #if UNITY_STANDALONE
@@ -332,6 +333,7 @@ namespace Battlehub.RTScripting
                 ao.IsCompleted = true;
             }
         }
+#pragma warning restore CS1998
 
         private IEnumerator CoSaveAssembly(byte[] binData, ProjectAsyncOperation ao)
         {
