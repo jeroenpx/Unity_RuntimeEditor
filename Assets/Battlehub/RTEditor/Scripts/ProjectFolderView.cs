@@ -333,8 +333,12 @@ namespace Battlehub.RTEditor
         private void OnItemEndDrag(object sender, ItemArgs e)
         {
             Editor.DragDrop.RaiseDrop(e.PointerEventData);
+            Remove(e.Items.OfType<ProjectItem>().ToArray());
+        }
 
-            foreach (ProjectItem item in e.Items)
+        public void Remove(ProjectItem[] items)
+        {
+            foreach (ProjectItem item in items)
             {
                 if (m_folders.All(f => f.Children == null || !f.Children.Contains(item)))
                 {
@@ -346,7 +350,7 @@ namespace Battlehub.RTEditor
                     finally
                     {
                         m_raiseItemDeletedEvent = true;
-                    }   
+                    }
                 }
             }
         }

@@ -228,6 +228,8 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            m_projectResources.Remove(projectItems);
+
             for (int i = 0; i < projectItems.Length; ++i)
             {
                 ProjectItem projectItem = projectItems[i];
