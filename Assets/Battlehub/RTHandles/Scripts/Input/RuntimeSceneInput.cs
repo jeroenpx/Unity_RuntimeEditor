@@ -15,7 +15,7 @@ namespace Battlehub.RTHandles
         public float RotateYSensitivity = 5.0f;
         public float MoveZSensitivity = 1.0f;
         public float FreeMoveSensitivity = 0.25f;
-        public float FreeRotateSensitivity = 7.5f;
+        public float FreeRotateSensitivity = 5.0f;
 
         public bool SwapLRMB = false;
         

@@ -121,9 +121,9 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private bool m_constantZoomSpeed = false;
         [SerializeField]
-        private float m_freeSmoothMoveSpeed = 7.5f;
+        private float m_freeMovementSpeed = 10.0f;
         [SerializeField]
-        private float m_freeSmoothRotateSpeed = 5.0f;
+        private float m_freeRotationSpeed = 10.0f;
 
         private Quaternion m_targetRotation;
         private Vector3 m_targetPosition;
@@ -588,7 +588,7 @@ namespace Battlehub.RTHandles
                 return;
             }
             m_lastMousePosition = mousePosition;
-            //m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
+            
             RaycastHit hitInfo;
             if (Physics.Raycast(Window.Pointer, out hitInfo))
             {
@@ -596,7 +596,8 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
+                //m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
+                m_dragPlane = new Plane(-Window.Camera.transform.forward, Window.Camera.transform.forward * 10);
             }
         }
 
@@ -641,7 +642,7 @@ namespace Battlehub.RTHandles
             camTransform.rotation = Quaternion.Slerp(
                 camTransform.rotation,
                 m_targetRotation,
-                m_freeSmoothRotateSpeed * Time.deltaTime);
+                m_freeRotationSpeed * Time.deltaTime);
 
             Vector3 zoomOffset = Vector3.zero;
             if (Window.Camera.orthographic)
@@ -675,11 +676,10 @@ namespace Battlehub.RTHandles
             m_targetPosition = m_targetPosition + zoomOffset +
                 camTransform.forward * move.y + camTransform.right * move.x + camTransform.up * move.z;
 
-
             Vector3 newPosition = Vector3.Lerp(
                 camTransform.position,
                 m_targetPosition,
-                m_freeSmoothMoveSpeed * Time.deltaTime);
+                m_freeMovementSpeed * Time.deltaTime);
 
             newPosition.x = (float)Math.Round(newPosition.x, 5);
             newPosition.y = (float)Math.Round(newPosition.y, 5);
