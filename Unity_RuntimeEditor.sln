@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProBuilderIntegration", "ProBuilderIntegration.csproj", "{DD736506-3B83-86EF-CCA0-8CCCB114BD0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandaloneFileBrowser", "StandaloneFileBrowser.csproj", "{1459CD07-FA33-4F20-FBFC-54147EA2B559}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeAnalysis", "CodeAnalysis.csproj", "{555569C0-C0E7-B453-DD42-BE35B304098F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{58BC3553-E71B-A08C-C842-69EB1B16D857}"
@@ -23,6 +25,10 @@ Global
 		{DD736506-3B83-86EF-CCA0-8CCCB114BD0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD736506-3B83-86EF-CCA0-8CCCB114BD0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD736506-3B83-86EF-CCA0-8CCCB114BD0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Release|Any CPU.Build.0 = Release|Any CPU
 		{555569C0-C0E7-B453-DD42-BE35B304098F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{555569C0-C0E7-B453-DD42-BE35B304098F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{555569C0-C0E7-B453-DD42-BE35B304098F}.Release|Any CPU.ActiveCfg = Release|Any CPU

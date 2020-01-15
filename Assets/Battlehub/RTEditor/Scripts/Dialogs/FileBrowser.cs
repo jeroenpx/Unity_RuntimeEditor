@@ -42,6 +42,9 @@ namespace Battlehub.RTEditor
         public event Action<string> SelectionChanged;
 
         [SerializeField]
+        private TMP_Dropdown Drives = null;
+
+        [SerializeField]
         private TMP_InputField Input = null;
 
         [SerializeField]
@@ -101,6 +104,8 @@ namespace Battlehub.RTEditor
                         m_currentDir = oldDir;
                         BindDataItems(m_currentDir);
                     }
+
+                    PlayerPrefs.SetString("Battlehub.FileBrowser.CurrentDir", m_currentDir);
                 }
             }
         }
@@ -147,6 +152,11 @@ namespace Battlehub.RTEditor
                 m_allowedExtHs = new HashSet<string>(m_allowedExt.Distinct());
             }
 
+            if(string.IsNullOrEmpty(CurrentDir))
+            {
+                CurrentDir = PlayerPrefs.GetString("Battlehub.FileBrowser.CurrentDir");
+            }
+
             if (string.IsNullOrEmpty(CurrentDir))
             {
                 CurrentDir = NormalizePath(Application.persistentDataPath);
@@ -156,6 +166,37 @@ namespace Battlehub.RTEditor
                 m_currentDir = NormalizePath(m_currentDir);
                 BindDataItems(m_currentDir);
             }
+
+            FileInfo f = new FileInfo(m_currentDir);
+            string currentDrive = Path.GetPathRoot(f.FullName);
+
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
+            int driveIndex = 0;
+            for(int i = 0; i < drives.Length; ++i)
+            {
+                DriveInfo drive = drives[i];
+                if(!drive.IsReady)
+                {
+                    continue;
+                }
+
+                if(drive.DriveType != DriveType.Fixed && drive.DriveType != DriveType.Removable)
+                {
+                    continue;
+                }
+
+                options.Add(new TMP_Dropdown.OptionData(drive.VolumeLabel));
+                if(currentDrive == drive.VolumeLabel)
+                {
+                    driveIndex = i;
+                }
+                
+            }
+
+            Drives.options = options;
+            Drives.value = driveIndex;
+            Drives.onValueChanged.AddListener(OnDriveChanged);
         }
 
         private void ExtToIcon()
@@ -183,8 +224,7 @@ namespace Battlehub.RTEditor
             if (content.Count > 0)
             {
                 m_treeView.SelectedItem = content[0];
-            }
-            
+            }   
         }
 
         private void OnDestroy()
@@ -195,6 +235,16 @@ namespace Battlehub.RTEditor
                 m_treeView.SelectionChanged -= OnSelectionChanged;
                 m_treeView.ItemDoubleClick -= OnItemDoubleClick;
             }
+
+            if(Drives != null)
+            {
+                Drives.onValueChanged.RemoveListener(OnDriveChanged);
+            }
+        }
+
+        private void OnDriveChanged(int value)
+        {
+            CurrentDir = Drives.options[value].text;
         }
 
         public string Open()

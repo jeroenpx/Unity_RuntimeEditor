@@ -726,8 +726,8 @@ namespace Battlehub.RTCommon
                 {
                     GameObject eventSystem = new GameObject("EventSystem");
                     eventSystem.transform.SetParent(transform, false);
-                    eventSystem.AddComponent<StandaloneInputModule>();
                     m_eventSystem = eventSystem.AddComponent<EventSystem>();
+                    eventSystem.AddComponent<StandaloneInputModule>();
                 }
             }
 
