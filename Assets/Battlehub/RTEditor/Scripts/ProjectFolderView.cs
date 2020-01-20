@@ -56,7 +56,7 @@ namespace Battlehub.RTEditor
         private ProjectItem[] m_folders;
         public void SetItems(ProjectItem[] folders, ProjectItem[] items, bool reload)
         {
-            if(folders == null || items == null)
+            if (folders == null || items == null)
             {
                 m_folders = null;
                 m_items = null;
@@ -79,13 +79,13 @@ namespace Battlehub.RTEditor
 
         public void InsertItems(ProjectItem[] items, bool selectAndScrollIntoView)
         {
-            if(m_folders == null)
+            if (m_folders == null)
             {
                 return;
             }
 
             items = items.Where(item => m_folders.Contains(item.Parent)).ToArray();
-            if(items.Length == 0)
+            if (items.Length == 0)
             {
                 return;
             }
@@ -93,9 +93,9 @@ namespace Battlehub.RTEditor
             m_items = m_items.Union(items).ToList();
             List<ProjectItem> sorted = m_items.Where(item => item.IsFolder).OrderBy(item => item.Name).Union(m_items.Where(item => !item.IsFolder).OrderBy(item => item.Name)).ToList();
             ProjectItem selectItem = null;
-            for(int i = 0; i < sorted.Count; ++i)
+            for (int i = 0; i < sorted.Count; ++i)
             {
-                if(items.Contains(sorted[i]))
+                if (items.Contains(sorted[i]))
                 {
                     m_listBox.Insert(i, sorted[i]);
                     selectItem = sorted[i];
@@ -103,22 +103,22 @@ namespace Battlehub.RTEditor
                 else
                 {
                     VirtualizingItemContainer itemContainer = m_listBox.GetItemContainer(sorted[i]);
-                    if(itemContainer != null)
+                    if (itemContainer != null)
                     {
                         m_listBox.DataBindItem(sorted[i], itemContainer);
                     }
                 }
 
-                if(!m_idToItem.ContainsKey(sorted[i].ItemID))
+                if (!m_idToItem.ContainsKey(sorted[i].ItemID))
                 {
                     m_idToItem.Add(sorted[i].ItemID, sorted[i]);
                 }
             }
             m_items = sorted;
 
-            if(selectItem != null)
+            if (selectItem != null)
             {
-                if(selectAndScrollIntoView)
+                if (selectAndScrollIntoView)
                 {
                     m_listBox.SelectedItem = selectItem;
                     m_listBox.ScrollIntoView(selectItem);
@@ -175,7 +175,7 @@ namespace Battlehub.RTEditor
         {
             WindowType = RuntimeWindowType.ProjectFolder;
             base.AwakeOverride();
-            
+
             if (!ListBoxPrefab)
             {
                 Debug.LogError("Set ListBoxPrefab field");
@@ -226,7 +226,7 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback<IProjectFolder>(this);
         }
 
-   
+
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
@@ -251,14 +251,14 @@ namespace Battlehub.RTEditor
                 m_listBox.SelectionChanged -= OnSelectionChanged;
             }
 
-            if(Editor != null)
+            if (Editor != null)
             {
-                if(Editor.Selection != null)
+                if (Editor.Selection != null)
                 {
                     Editor.Selection.SelectionChanged -= EditorSelectionChanged;
                 }
-                
-                if(Editor.Object != null)
+
+                if (Editor.Object != null)
                 {
                     Editor.Object.NameChanged -= OnNameChanged;
                 }
@@ -280,14 +280,14 @@ namespace Battlehub.RTEditor
         private bool FolderContainsItemWithSameName(object dropTarget, object[] dragItems)
         {
             ProjectItem folder = (ProjectItem)dropTarget;
-            if(folder.Children == null || folder.Children.Count == 0)
+            if (folder.Children == null || folder.Children.Count == 0)
             {
                 return false;
             }
 
-            foreach(ProjectItem projectItem in dragItems)
+            foreach (ProjectItem projectItem in dragItems)
             {
-                if(folder.Children.Any(child => child.NameExt == projectItem.NameExt))
+                if (folder.Children.Any(child => child.NameExt == projectItem.NameExt))
                 {
                     return true;
                 }
@@ -340,7 +340,7 @@ namespace Battlehub.RTEditor
         {
             foreach (ProjectItem item in items)
             {
-                if (m_folders.All(f => f.Children == null || !f.Children.Contains(item)))
+                if (m_folders != null && (m_folders.All(f => f.Children == null || !f.Children.Contains(item))))
                 {
                     m_raiseItemDeletedEvent = false;
                     try
@@ -373,7 +373,7 @@ namespace Battlehub.RTEditor
                 itemView.ProjectItem = projectItem;
             }
 
-            if(ItemDataBinding != null)
+            if (ItemDataBinding != null)
             {
                 ItemDataBinding(this, e);
             }
@@ -381,19 +381,19 @@ namespace Battlehub.RTEditor
 
         private void OnItemRemoving(object sender, ItemsCancelArgs e)
         {
-            
+
         }
 
         private void OnItemRemoved(object sender, ItemsRemovedArgs e)
         {
-            for(int i = 0; i < e.Items.Length; ++i)
+            for (int i = 0; i < e.Items.Length; ++i)
             {
                 ProjectItem item = (ProjectItem)e.Items[i];
                 m_items.Remove(item);
-                m_idToItem.Remove(item.ItemID);               
+                m_idToItem.Remove(item.ItemID);
             }
 
-            if(m_raiseItemDeletedEvent)
+            if (m_raiseItemDeletedEvent)
             {
                 if (ItemsDeleted != null)
                 {
@@ -404,7 +404,7 @@ namespace Battlehub.RTEditor
 
         private void OnItemDoubleClick(object sender, ItemArgs e)
         {
-            if(e.PointerEventData.button == PointerEventData.InputButton.Left)
+            if (e.PointerEventData.button == PointerEventData.InputButton.Left)
             {
                 if (ItemDoubleClick != null)
                 {
@@ -438,7 +438,7 @@ namespace Battlehub.RTEditor
                 text.text = item.Name;
 
                 LayoutElement layout = inputField.GetComponent<LayoutElement>();
-                if(layout != null)
+                if (layout != null)
                 {
                     RectTransform rt = text.GetComponent<RectTransform>();
                     layout.preferredWidth = rt.rect.width;
@@ -462,7 +462,7 @@ namespace Battlehub.RTEditor
         private bool Rename(TextMeshProUGUI text, ProjectItem projectItem, string newName)
         {
             bool result = false;
-            
+
             string oldName = projectItem.Name;
             if (projectItem.Parent != null)
             {
@@ -490,7 +490,7 @@ namespace Battlehub.RTEditor
         protected virtual void OnNameChanged(ExposeToEditor obj)
         {
             AssetItem assetItem = m_project.ToAssetItem(obj);
-            if(assetItem == null)
+            if (assetItem == null)
             {
                 return;
             }
@@ -500,7 +500,7 @@ namespace Battlehub.RTEditor
                 return;
             }
             TextMeshProUGUI text = tvItem.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
-            if(!Rename(text, assetItem, obj.name))
+            if (!Rename(text, assetItem, obj.name))
             {
                 obj.SetName(assetItem.Name);
             }
@@ -508,12 +508,12 @@ namespace Battlehub.RTEditor
 
         private void OnSelectionChanged(object sender, SelectionChangedArgs e)
         {
-            if(!m_raiseSelectionChange)
+            if (!m_raiseSelectionChange)
             {
                 return;
             }
 
-            if(SelectionChanged != null)
+            if (SelectionChanged != null)
             {
                 ProjectItem[] selectedItems = e.NewItems == null ? new ProjectItem[0] : e.NewItems.OfType<ProjectItem>().ToArray();
                 SelectionChanged(this, new ProjectTreeEventArgs(selectedItems));
@@ -528,7 +528,7 @@ namespace Battlehub.RTEditor
                 return false;
             }
 
-            if(!objects.All(o => o.CanCreatePrefab))
+            if (!objects.All(o => o.CanCreatePrefab))
             {
                 return false;
             }
@@ -583,16 +583,19 @@ namespace Battlehub.RTEditor
                 if (dropTarget.IsFolder)
                 {
                     editor.CreatePrefab(dropTarget, dragObject, null, assetItem => { });
-                } 
+                }
             }
             else
             {
-                if(dragObjects[0] is ExposeToEditor)
+                if (dragObjects[0] is ExposeToEditor)
                 {
                     ExposeToEditor dragObject = (ExposeToEditor)dragObjects[0];
-                    if(dragObject.CanCreatePrefab)
+                    if (dragObject.CanCreatePrefab)
                     {
-                        editor.CreatePrefab(m_folders[0], dragObject, null, assetItem => { });
+                        if (m_folders != null)
+                        {
+                            editor.CreatePrefab(m_folders[0], dragObject, null, assetItem => { });
+                        }
                     }
                 }
             }
@@ -601,34 +604,34 @@ namespace Battlehub.RTEditor
 
         private void EditorSelectionChanged(UnityObject[] unselectedObjects)
         {
-            if(!HandleEditorSelectionChange)
+            if (!HandleEditorSelectionChange)
             {
                 return;
             }
 
             m_raiseSelectionChange = false;
             UnityObject[] selectedObjects = Editor.Selection.objects;
-            if(selectedObjects != null)
+            if (selectedObjects != null)
             {
                 List<ProjectItem> selectedItems = new List<ProjectItem>();
                 for (int i = 0; i < selectedObjects.Length; ++i)
                 {
                     UnityObject selectedObject = selectedObjects[i];
                     long id = m_project.ToID(selectedObject);
-                    if(m_idToItem.ContainsKey(id))
+                    if (m_idToItem.ContainsKey(id))
                     {
                         ProjectItem item = m_idToItem[id];
-                        if(item != null)
+                        if (item != null)
                         {
                             selectedItems.Add(item);
                         }
                     }
                 }
-                if(selectedItems.Count > 0)
+                if (selectedItems.Count > 0)
                 {
                     m_listBox.SelectedItems = selectedItems;
                 }
-                else if(m_listBox.SelectedItem != null)
+                else if (m_listBox.SelectedItem != null)
                 {
                     m_listBox.SelectedItem = null;
                 }
@@ -688,9 +691,9 @@ namespace Battlehub.RTEditor
                 renameFolder.Action.AddListener(RenameContextMenuCmd);
                 menuItems.Add(renameFolder);
 
-                if(ContextMenu != null)
+                if (ContextMenu != null)
                 {
-                    ContextMenu(this, new ProjectTreeContextMenuEventArgs(e.Items.OfType<ProjectItem>().ToArray() , menuItems));
+                    ContextMenu(this, new ProjectTreeContextMenuEventArgs(e.Items.OfType<ProjectItem>().ToArray(), menuItems));
                 }
 
                 menu.Open(menuItems.ToArray());
@@ -723,7 +726,7 @@ namespace Battlehub.RTEditor
 
                 if (ContextMenu != null)
                 {
-                    ContextMenu(this, new ProjectTreeContextMenuEventArgs(m_folders.Take(1).ToArray(), menuItems));
+                    ContextMenu(this, new ProjectTreeContextMenuEventArgs(m_folders != null ? m_folders.Take(1).ToArray() : new ProjectItem[0], menuItems));
                 }
 
                 menu.Open(menuItems.ToArray());
@@ -747,7 +750,7 @@ namespace Battlehub.RTEditor
         protected virtual void CreateValidateContextMenuCmd(MenuItemValidationArgs args)
         {
             ProjectItem selectedItem = (ProjectItem)m_listBox.SelectedItem;
-            if(selectedItem != null && !selectedItem.IsFolder)
+            if (selectedItem != null && !selectedItem.IsFolder)
             {
                 args.IsValid = false;
             }
@@ -755,10 +758,15 @@ namespace Battlehub.RTEditor
 
         protected virtual void CreateFolderContextMenuCmd(string arg)
         {
+            if (m_folders == null)
+            {
+                return;
+            }
+
             bool currentFolder = !string.IsNullOrEmpty(arg);
 
             ProjectItem parentFolder = currentFolder ? m_folders.FirstOrDefault() : (ProjectItem)m_listBox.SelectedItem;
-            if(parentFolder == null)
+            if (parentFolder == null)
             {
                 return;
             }
@@ -769,7 +777,7 @@ namespace Battlehub.RTEditor
             folder.Children = new List<ProjectItem>();
             parentFolder.AddChild(folder);
 
-            if(currentFolder)
+            if (currentFolder)
             {
                 InsertItems(new[] { folder }, true);
             }
@@ -780,6 +788,11 @@ namespace Battlehub.RTEditor
 
         private void CreateAsset(string arg, Type type, string defaultName)
         {
+            if (m_folders == null)
+            {
+                return;
+            }
+
             bool currentFolder = !string.IsNullOrEmpty(arg);
 
             ProjectItem parentFolder = currentFolder ? m_folders.FirstOrDefault() : (ProjectItem)m_listBox.SelectedItem;
@@ -801,6 +814,11 @@ namespace Battlehub.RTEditor
 
         public void CreateAsset(UnityObject asset, ProjectItem parentFolder)
         {
+            if (m_folders == null)
+            {
+                return;
+            }
+
             IResourcePreviewUtility resourcePreview = IOC.Resolve<IResourcePreviewUtility>();
             byte[] preview = resourcePreview.CreatePreviewData(asset);
             Editor.IsBusy = true;
@@ -844,7 +862,7 @@ namespace Battlehub.RTEditor
             {
                 ItemDoubleClick(this, new ProjectTreeEventArgs(new[] { selectedItem }));
             }
-            if(ItemOpen != null)
+            if (ItemOpen != null)
             {
                 ItemOpen(this, new ProjectTreeEventArgs(new[] { selectedItem }));
             }
@@ -881,13 +899,13 @@ namespace Battlehub.RTEditor
 
         public void DeleteSelectedItems()
         {
-            if(ItemsDeleting != null)
+            if (ItemsDeleting != null)
             {
-                if(m_listBox.SelectedItems != null)
+                if (m_listBox.SelectedItems != null)
                 {
                     ProjectTreeCancelEventArgs args = new ProjectTreeCancelEventArgs(m_listBox.SelectedItems.OfType<ProjectItem>().ToArray());
                     ItemsDeleting(this, args);
-                    if(args.Cancel)
+                    if (args.Cancel)
                     {
                         return;
                     }
@@ -895,16 +913,16 @@ namespace Battlehub.RTEditor
             }
 
             m_windowManager.Confirmation(
-                m_localization.GetString("ID_RTEditor_ProjectFolderView_DeleteSelectedAssets", "Delete Selected Assets"), 
-                m_localization.GetString("ID_RTEditor_ProjectFolderView_YouCanNotUndoThisAction", "You cannot undo this action"), 
+                m_localization.GetString("ID_RTEditor_ProjectFolderView_DeleteSelectedAssets", "Delete Selected Assets"),
+                m_localization.GetString("ID_RTEditor_ProjectFolderView_YouCanNotUndoThisAction", "You cannot undo this action"),
                 (sender, arg) =>
-            {
-                m_listBox.RemoveSelectedItems();
-                bool wasEnabled = Editor.Undo.Enabled;
-                Editor.Undo.Enabled = false;
-                Editor.Selection.objects = null;
-                Editor.Undo.Enabled = wasEnabled;
-            },
+                {
+                    m_listBox.RemoveSelectedItems();
+                    bool wasEnabled = Editor.Undo.Enabled;
+                    Editor.Undo.Enabled = false;
+                    Editor.Selection.objects = null;
+                    Editor.Undo.Enabled = wasEnabled;
+                },
             (sender, arg) => { },
             m_localization.GetString("ID_RTEditor_ProjectFolderView_BtnDelete", "Delete"),
             m_localization.GetString("ID_RTEditor_ProjectFolderView_BtnCancel", "Cancel"));
@@ -912,7 +930,7 @@ namespace Battlehub.RTEditor
 
         public void OnDeleted(ProjectItem[] projectItems)
         {
-            for(int i = 0; i < projectItems.Length; ++i)
+            for (int i = 0; i < projectItems.Length; ++i)
             {
                 m_listBox.RemoveChild(null, projectItems[i]);
             }

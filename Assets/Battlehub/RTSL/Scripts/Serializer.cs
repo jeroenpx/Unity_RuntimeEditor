@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using Battlehub.RTSL.Interface;
 namespace Battlehub.RTSL
-{  
+{
     [ProtoBuf.ProtoContract]
     public class NilContainer { }
 
@@ -15,17 +15,21 @@ namespace Battlehub.RTSL
         {
 #if !UNITY_EDITOR
             Type type = Type.GetType("RTSLTypeModel, RTSLTypeModel");
-            model = Activator.CreateInstance(type) as TypeModel;
-            if(model == null)
+
+            if(type != null)
             {
-                UnityEngine.Debug.LogError("RTSLTypeModel.dll was not found. Please build type model using Tools->Runtime SaveLoad->Build All menu item from Unity Editor");
-            }
+                model = Activator.CreateInstance(type) as TypeModel;
+                if(model == null)
+                {
+                    UnityEngine.Debug.LogError("RTSLTypeModel.dll was not found. Please build type model using Tools->Runtime SaveLoad->Build All menu item from Unity Editor");
+                }
+            }  
 #endif
-            if(model == null)
+            if (model == null)
             {
                 model = TypeModelCreator.Create();
             }
-            
+
             model.DynamicTypeFormatting += (sender, args) =>
             {
                 if (args.FormattedName == null)
@@ -39,13 +43,13 @@ namespace Battlehub.RTSL
                 }
             };
 
-#if UNITY_EDITOR
-            RuntimeTypeModel runtimeTypeModel = model as RuntimeTypeModel;
-            if(runtimeTypeModel != null)
-            {
-                runtimeTypeModel.CompileInPlace();
-            }      
-#endif
+            //#if UNITY_EDITOR
+            //RuntimeTypeModel runtimeTypeModel = model as RuntimeTypeModel;
+            //if (runtimeTypeModel != null)
+            //{
+            //    runtimeTypeModel.CompileInPlace();
+            //}
+            //#endif
         }
 
 
@@ -107,4 +111,4 @@ namespace Battlehub.RTSL
             }
         }
     }
- }
+}
