@@ -5,10 +5,10 @@ namespace Battlehub.RTEditor
     public class BusyIndicator : MonoBehaviour
     {
         [SerializeField]
-        private Transform m_graphics;
+        private Transform m_graphics = null;
 
         [SerializeField]
-        private GameObject[] m_overlays;
+        private GameObject[] m_overlays = null;
 
         [SerializeField]
         private float m_interval = 0.2f;
