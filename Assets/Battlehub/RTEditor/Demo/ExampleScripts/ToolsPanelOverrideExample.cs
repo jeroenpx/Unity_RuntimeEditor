@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class ToolsPanelOverrideExample : EditorOverride
+    public class ToolsPanelOverrideExample : EditorExtension
     {
         [SerializeField]
         private Transform m_toolsPrefab = null;

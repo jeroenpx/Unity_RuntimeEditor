@@ -198,9 +198,8 @@ namespace Battlehub.RTEditor
         ProjectItem SelectedItem
         {
             get;
+            set;
         }
-
-      
 
         void DeleteSelectedItems();
     }
@@ -945,7 +944,7 @@ namespace Battlehub.RTEditor
             AddItem(parentFolder, folder, existingNames);
         }
 
-        private  void AddItem(ProjectItem parentFolder, ProjectItem folder, string[] existingNames)
+        private void AddItem(ProjectItem parentFolder, ProjectItem folder, string[] existingNames)
         {
             m_treeView.AddChild(parentFolder, folder);
 
@@ -968,8 +967,8 @@ namespace Battlehub.RTEditor
             m_treeView.ScrollIntoView(folder);
             m_treeView.SelectedItem = folder;
 
-            VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(folder);
-            treeViewItem.IsEditing = true;
+          // VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(folder);
+          // treeViewItem.IsEditing = true;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Battlehub.RTSL.Interface
         event ProjectEventHandler<ProjectItem[]> DeleteCompleted;
         event ProjectEventHandler<ProjectItem[], ProjectItem[]> MoveCompleted;
         event ProjectEventHandler<ProjectItem> RenameCompleted;
-        event ProjectEventHandler<ProjectItem> CreateCompleted;
+        event ProjectEventHandler<ProjectItem[]> CreateCompleted;
 
         bool IsBusy
         {
@@ -117,6 +117,7 @@ namespace Battlehub.RTSL.Interface
         //ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null);
 
         ProjectAsyncOperation<ProjectItem> CreateFolder(ProjectItem projectItem, ProjectEventHandler<ProjectItem> callback = null);
+        ProjectAsyncOperation<ProjectItem[]> CreateFolders(ProjectItem[] projectItem, ProjectEventHandler<ProjectItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[], ProjectItem[]> Move(ProjectItem[] projectItems, ProjectItem target, ProjectEventHandler<ProjectItem[], ProjectItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem[]> Delete(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null);
@@ -294,6 +295,12 @@ namespace Battlehub.RTSL.Interface
         {
             ProjectItem folder = project.Root.Get(string.Format("{0}/{1}", project.Root.Name, path), true);
             return project.CreateFolder(folder);
+        }
+
+        public static ProjectAsyncOperation CreateFolders(this IProject project, string[] path)
+        {
+            ProjectItem[] folders = path.Select(p => project.Root.Get(string.Format("{0}/{1}", project.Root.Name, p), true)).ToArray();
+            return project.CreateFolders(folders);
         }
 
         public static ProjectAsyncOperation RenameFolder(this IProject project, string path, string newName)

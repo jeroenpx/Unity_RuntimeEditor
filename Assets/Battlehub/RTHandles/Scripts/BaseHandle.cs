@@ -468,6 +468,7 @@ namespace Battlehub.RTHandles
         }
 
         public BaseHandleUnityEvent BeforeDrag;
+        public BaseHandleUnityEvent Drag;
         public BaseHandleUnityEvent Drop;
 
         protected override void AwakeOverride()
@@ -795,6 +796,11 @@ namespace Battlehub.RTHandles
 
             if (m_isDragging)
             {
+                if(Drag != null)
+                {
+                    Drag.Invoke(this);
+                }
+                
                 if (PivotMode == RuntimePivotMode.Center && m_commonCenterTarget != null && m_realTargets != null && m_realTargets.Length > 1)
                 {
                     for (int i = 0; i < m_commonCenterTarget.Length; ++i)

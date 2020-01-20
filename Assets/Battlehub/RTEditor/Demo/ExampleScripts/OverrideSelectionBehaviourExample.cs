@@ -4,43 +4,18 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class OverrideSelectionBehaviourExample : EditorOverride
+    public class OverrideSelectionBehaviourExample : SceneComponentExtension
     {
-        private IRTE m_editor;
-        private IRuntimeSelectionComponent m_selectionComponent;
-        protected override void OnEditorExist()
+        protected override void OnSceneActivated(IRuntimeSceneComponent sceneComponent)
         {
-            base.OnEditorExist();
-            m_editor = IOC.Resolve<IRTE>();
-            OnActiveWindowChanged(null);
-            m_editor.ActiveWindowChanged += OnActiveWindowChanged;
+            base.OnSceneActivated(sceneComponent);
+            sceneComponent.SelectionChanging += OnSelectionChanging;
         }
 
-        protected override void OnEditorClosed()
+        protected override void OnSceneDeactivated(IRuntimeSceneComponent sceneComponent)
         {
-            base.OnEditorClosed();
-            if (m_editor != null)
-            {
-                m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
-            }
-            if (m_selectionComponent != null)
-            {
-                m_selectionComponent.SelectionChanging -= OnSelectionChanging;
-            }
-        }
-
-        private void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
-        {
-            if (m_selectionComponent != null)
-            {
-                m_selectionComponent.SelectionChanging -= OnSelectionChanging;
-            }
-
-            if (m_editor.ActiveWindow != null && m_editor.ActiveWindow.WindowType == RuntimeWindowType.Scene)
-            {
-                m_selectionComponent = m_editor.ActiveWindow.IOCContainer.Resolve<IRuntimeSelectionComponent>();
-                m_selectionComponent.SelectionChanging += OnSelectionChanging;
-            }
+            base.OnSceneDeactivated(sceneComponent);
+            sceneComponent.SelectionChanging -= OnSelectionChanging;
         }
 
         private void OnSelectionChanging(object sender, RuntimeSelectionChangingArgs e)

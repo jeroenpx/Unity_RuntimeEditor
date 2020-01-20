@@ -63,7 +63,6 @@ namespace Battlehub.RTEditor
             }
         }
         
-
         [SerializeField]
         private Sprite FolderIcon = null;
 
@@ -77,7 +76,6 @@ namespace Battlehub.RTEditor
         private IWindowManager m_windowManager;
 
         private readonly Dictionary<string, Sprite> m_extToIcon = new Dictionary<string, Sprite>();
-
         private string m_currentDir;
         public string CurrentDir
         {
@@ -104,6 +102,16 @@ namespace Battlehub.RTEditor
                         m_currentDir = oldDir;
                         BindDataItems(m_currentDir);
                     }
+
+                    if(m_started)
+                    {
+                        Drives.onValueChanged.RemoveListener(OnDriveChanged);
+                        FileInfo f = new FileInfo(m_currentDir);
+                        string currentDrive = Path.GetPathRoot(f.FullName);
+                        Drives.value = Array.IndexOf(Drives.options.Select(o => o.text).ToArray(), currentDrive);
+                        Drives.onValueChanged.AddListener(OnDriveChanged);
+                    }
+                    
 
                     PlayerPrefs.SetString("Battlehub.FileBrowser.CurrentDir", m_currentDir);
                 }
@@ -132,7 +140,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-
+        private bool m_started = false;
         private void Start()
         {
             ExtToIcon();
@@ -194,9 +202,14 @@ namespace Battlehub.RTEditor
                 
             }
 
+            Drives.onValueChanged.RemoveListener(OnDriveChanged);
             Drives.options = options;
             Drives.value = driveIndex;
             Drives.onValueChanged.AddListener(OnDriveChanged);
+
+            Input.onSubmit.AddListener(OnSubmit);
+
+            m_started = true;
         }
 
         private void ExtToIcon()
@@ -240,11 +253,21 @@ namespace Battlehub.RTEditor
             {
                 Drives.onValueChanged.RemoveListener(OnDriveChanged);
             }
+
+            if(Input != null)
+            {
+                Input.onSubmit.RemoveListener(OnSubmit);
+            }
         }
 
         private void OnDriveChanged(int value)
         {
             CurrentDir = Drives.options[value].text;
+        }
+
+        private void OnSubmit(string value)
+        {
+            CurrentDir = value;
         }
 
         public string Open()

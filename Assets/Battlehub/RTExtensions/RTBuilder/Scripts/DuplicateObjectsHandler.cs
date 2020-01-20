@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battlehub.RTBuilder
 {
-    public class DuplicateObjectsHandler : EditorOverride
+    public class DuplicateObjectsHandler : EditorExtension
     {
         private IRTE m_rte;
 

@@ -141,6 +141,13 @@ namespace Battlehub.RTEditor
                 exposeToEditor.SetName(obj[0].name);
 
                 OnActivatePrefabInstance(m_prefabInstance);
+
+                if(!Editor.DragDrop.InProgress)
+                {
+                    RecordUndo();
+                    m_prefabInstance = null;
+                    m_prefabInstanceTransforms = null;
+                }
             }
         }
 
@@ -190,7 +197,6 @@ namespace Battlehub.RTEditor
             {
                 Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
             }
-
 
             if (m_prefabInstance != null)
             {

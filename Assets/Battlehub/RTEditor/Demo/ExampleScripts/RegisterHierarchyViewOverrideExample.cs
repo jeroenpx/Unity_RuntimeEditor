@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class RegisterHierarchyViewOverrideExample : EditorOverride
+    public class RegisterHierarchyViewOverrideExample : EditorExtension
     {
         private IWindowManager m_wm;
 

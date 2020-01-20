@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class UIColorsOverrideExample : EditorOverride
+    public class UIColorsOverrideExample : EditorExtension
     {
         protected override void OnEditorExist()
         {

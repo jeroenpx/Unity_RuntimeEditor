@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Battlehub.RTBuilder
 {
     [MenuDefinition(-1)]
-    public class ProBuilderInit : EditorOverride
+    public class ProBuilderInit : EditorExtension
     {
         [SerializeField]
         private GameObject m_proBuilderWindow = null;

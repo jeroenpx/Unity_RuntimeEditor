@@ -207,7 +207,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnCreateCompleted(Error error, ProjectItem result)
+        private void OnCreateCompleted(Error error, ProjectItem[] result)
         {
             Editor.IsBusy = false;
             if (error.HasError)
@@ -216,8 +216,11 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_projectTree.AddItem(result.Parent, result);
-            m_projectTree.SelectedItem = result;
+            foreach(ProjectItem item in result)
+            {
+                m_projectTree.AddItem(item.Parent, item);
+            }
+            m_projectTree.SelectedItem = result.Last();
         }
 
         private void OnMoveCompleted(Error error, ProjectItem[] projectItems, ProjectItem[] oldParents)

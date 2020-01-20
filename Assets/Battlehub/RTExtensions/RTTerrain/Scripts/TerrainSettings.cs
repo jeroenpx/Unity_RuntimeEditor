@@ -47,7 +47,7 @@ namespace Battlehub.RTTerrain
         
     }
 
-    public class TerrainSettings : EditorOverride, ITerrainSettings
+    public class TerrainSettings : EditorExtension, ITerrainSettings
     {
         private Terrain m_terrain;
 

@@ -15,7 +15,6 @@ namespace Battlehub.RTHandles
 
         protected IRTE m_editor;
 
-
         private void OnEnable()
         {
             if (m_handle == null)

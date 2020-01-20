@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class LayoutOverrideExample : EditorOverride
+    public class LayoutOverrideExample : EditorExtension
     {
         protected override void OnEditorCreated(object obj)
         {

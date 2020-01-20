@@ -526,7 +526,11 @@ namespace Battlehub.RTEditor
 
                 if (!results.Any(r => r.gameObject.GetComponent<Menu>() || r.gameObject.GetComponent<WindowOverlay>()))
                 {
-                    foreach (Region region in results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z))
+                    IOrderedEnumerable<Region> regions = results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z);
+
+                    Region[] arr = regions.ToArray();
+
+                    foreach (Region region in regions)
                     {
                         RuntimeWindow window = region.ActiveContent != null ? region.ActiveContent.GetComponentInChildren<RuntimeWindow>() : region.ContentPanel.GetComponentInChildren<RuntimeWindow>();
                         if (window != null && (!activeWindowContainsScreenPoint || window.Depth >= ActiveWindow.Depth))

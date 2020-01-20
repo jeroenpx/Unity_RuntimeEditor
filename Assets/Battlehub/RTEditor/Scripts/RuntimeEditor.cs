@@ -6,6 +6,7 @@ using Battlehub.UIControls;
 using Battlehub.UIControls.MenuControl;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -123,7 +124,6 @@ namespace Battlehub.RTEditor
                     m_progressIndicator.gameObject.SetActive(value);
                 }
 
-                
                 base.IsBusy = value;
             }
         }
@@ -287,7 +287,7 @@ namespace Battlehub.RTEditor
 
         public void CmdCreateWindowValidate(MenuItemValidationArgs args)
         {
-            #if !(UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
+            #if !(UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN || UNITY_WSA)
             if (args.Command.ToLower() == RuntimeWindowType.ImportFile.ToString().ToLower())
             {
                 args.IsVisible = false;          
@@ -618,27 +618,80 @@ namespace Battlehub.RTEditor
                         previewData[i] = previewUtility.CreatePreviewData((UnityObject)objects[i]);
                     }
                 }
+
                 CreatePrefab(dropTarget, previewData, objects, done);
             });
         }
 
         private void CreatePrefab(ProjectItem dropTarget, byte[][] previewData, object[] objects, Action<AssetItem[]> done)
         {
-            IsBusy = true;
-            m_project.Save(new[] { dropTarget }, previewData, objects, null, (error, assetItems) =>
+            StartCoroutine(CoCreatePrefab(dropTarget, previewData, objects, done));
+        }
+
+        private IEnumerator CoCreatePrefab(ProjectItem dropTarget, byte[][] previewData, object[] objects, Action<AssetItem[]> done)
+        {            
+            if(objects.Any(o => !(o is GameObject)))
             {
-                IsBusy = false;
-                if (error.HasError)
+                IsBusy = true;
+
+                if (dropTarget.Children == null || dropTarget.Get("DropTarget/Data") == null)
                 {
-                    m_wm.MessageBox(m_localization.GetString("ID_RTEditor_UnableToCreatePrefab", "Unable to create prefab"), error.ErrorText);
-                    return;
+                    ProjectAsyncOperation createFoldersAo = m_project.CreateFolder(dropTarget.Get("DropTarget/Data", true));
+                    yield return createFoldersAo;
+                    if (createFoldersAo.HasError)
+                    {
+                        m_wm.MessageBox("Unable to create data folder", createFoldersAo.Error.ToString());
+                        IsBusy = false;
+                        if (done != null)
+                        {
+                            done(null);
+                        }
+                        yield break;
+                    }
                 }
 
+                IProjectTree projectTree = IOC.Resolve<IProjectTree>();
+                if (projectTree != null)
+                {
+                    projectTree.SelectedItem = dropTarget;
+                }
+            }
+
+            IsBusy = true;
+
+            ProjectItem dataFolder = dropTarget.Get("DropTarget/Data");
+            List<ProjectItem> parents = new List<ProjectItem>();
+            for (int i = 0; i < objects.Length; ++i)
+            {
+                object obj = objects[i];
+                if (obj is GameObject)
+                {
+                    parents.Add(dropTarget);
+                }
+                else
+                {
+                    parents.Add(dataFolder);
+                }
+            }
+
+            ProjectAsyncOperation<AssetItem[]> saveAo = m_project.Save(parents.ToArray(), previewData, objects, null);
+            yield return saveAo;
+            if (saveAo.HasError)
+            {
+                m_wm.MessageBox(m_localization.GetString("ID_RTEditor_UnableToCreatePrefab", "Unable to create prefab"), saveAo.Error.ErrorText);
+                IsBusy = false;
                 if(done != null)
                 {
-                    done(assetItems);
+                    done(null);
                 }
-            });
+                yield break;
+            }
+
+            IsBusy = false;
+            if (done != null)
+            {
+                done(saveAo.Result.ToArray());
+            }
         }
 
         public ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done)
@@ -1005,5 +1058,7 @@ namespace Battlehub.RTEditor
                 PlayerPrefs.DeleteKey("RuntimeEditor.DefaultProject");
             }
         }
+
+
     }
 }

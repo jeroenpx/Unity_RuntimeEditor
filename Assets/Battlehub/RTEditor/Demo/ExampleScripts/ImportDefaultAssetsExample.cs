@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class ImportDefaultAssetsExample : EditorOverride
+    public class ImportDefaultAssetsExample : EditorExtension
     {
         public bool FirstRun
         {

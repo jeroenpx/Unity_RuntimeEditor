@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class PreventFolderRemovalExample : EditorOverride
+    public class PreventFolderRemovalExample : EditorExtension
     {
         private IWindowManager m_wm;
         private IProjectFolder m_projectFolder;

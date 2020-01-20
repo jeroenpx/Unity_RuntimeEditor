@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Battlehub.MeshDeformer3
 {
     [MenuDefinition(-1)]
-    public class MeshDeformerInit : EditorOverride
+    public class MeshDeformerInit : EditorExtension
     {
         [SerializeField]
         private GameObject m_meshDeformerWindow = null;

@@ -8,6 +8,9 @@ namespace Battlehub.RTEditor
         private Transform m_graphics;
 
         [SerializeField]
+        private GameObject[] m_overlays;
+
+        [SerializeField]
         private float m_interval = 0.2f;
 
         private float m_nextT;
@@ -15,6 +18,22 @@ namespace Battlehub.RTEditor
         private void Awake()
         {
             m_graphics = transform;
+        }
+
+        private void OnEnable()
+        {
+            foreach(GameObject overlay in m_overlays)
+            {
+                overlay.gameObject.SetActive(true);
+            }
+        }
+
+        private void OnDisable()
+        {
+            foreach (GameObject overlay in m_overlays)
+            {
+                overlay.gameObject.SetActive(false);
+            }
         }
 
         private void Update()

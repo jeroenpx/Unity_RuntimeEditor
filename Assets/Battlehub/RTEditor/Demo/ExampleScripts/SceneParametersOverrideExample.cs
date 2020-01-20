@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class SceneParametersOverrideExample : EditorOverride
+    public class SceneParametersOverrideExample : EditorExtension
     {
         protected override void OnEditorExist()
         {

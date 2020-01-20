@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class SetWindowSizeExample : EditorOverride
+    public class SetWindowSizeExample : EditorExtension
     {
         private IWindowManager m_wm;
 

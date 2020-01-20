@@ -42,7 +42,7 @@ namespace Battlehub.RTSL
         public event ProjectEventHandler<ProjectItem[]> DeleteCompleted;
         public event ProjectEventHandler<ProjectItem[], ProjectItem[]> MoveCompleted;
         public event ProjectEventHandler<ProjectItem> RenameCompleted;
-        public event ProjectEventHandler<ProjectItem> CreateCompleted;
+        public event ProjectEventHandler<ProjectItem[]> CreateCompleted;
         
         private IStorage m_storage;
         private IAssetDB m_assetDB;
@@ -1508,7 +1508,6 @@ namespace Battlehub.RTSL
                 }
             }
             
-
             int assetIdBackup = m_projectInfo.AssetIdentifier;
             int[] rootIds = new int[objects.Length];
             int[] rootOrdinals = new int[objects.Length];
@@ -1665,6 +1664,7 @@ namespace Battlehub.RTSL
                     }
 
                     List<ProjectItem> potentialChildren = parentToPotentialChildren[parents[objIndex]];
+                    persistentObject.name = PathHelper.RemoveInvalidFileNameCharacters(persistentObject.name);
                     persistentObject.name = PathHelper.GetUniqueName(persistentObject.name, GetExt(obj), potentialChildren.Select(c => c.NameExt).ToList());
                     assetItem = new AssetItem();
                     if (obj is Scene)
@@ -1677,6 +1677,7 @@ namespace Battlehub.RTSL
                     }
                     assetItem.Parent = parents[objIndex];
                     assetItem.Name = persistentObject.name;
+                    
                     assetItem.Ext = GetExt(obj);
                     assetItem.TypeGuid = m_typeMap.ToGuid(obj.GetType());
                     potentialChildren.Add(assetItem);
@@ -3616,38 +3617,76 @@ namespace Battlehub.RTSL
             }
 
             ProjectAsyncOperation<ProjectItem> ao = new ProjectAsyncOperation<ProjectItem>();
+            StartCoroutine(CoCreate(projectItem, ao, callback));
+            return ao;
+        }
+
+        private IEnumerator CoCreate(ProjectItem projectItem, ProjectAsyncOperation<ProjectItem> ao, ProjectEventHandler<ProjectItem> callback = null)
+        {
+            ProjectAsyncOperation<ProjectItem[]> createAo = new ProjectAsyncOperation<ProjectItem[]>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _Create(projectItem, callback, ao));
+                m_actionsQueue.Enqueue(() => _Create(new[] { projectItem }, (err, projectItems) => { callback?.Invoke(err, projectItems.FirstOrDefault()); }, createAo));
             }
             else
             {
                 IsBusy = true;
-                _Create(projectItem, callback, ao);
+                _Create(new[] { projectItem }, (err, projectItems) => { callback?.Invoke(err, projectItems.FirstOrDefault()); }, createAo);
+            };
+
+            yield return createAo;
+            ao.Error = createAo.Error;
+            if(createAo.Result != null)
+            {
+                ao.Result = createAo.Result.FirstOrDefault();
             }
-            return ao;
+            ao.IsCompleted = true;
         }
 
-        private void _Create(ProjectItem projectItem, ProjectEventHandler<ProjectItem> callback, ProjectAsyncOperation<ProjectItem> ao)
+        private void _Create(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback, ProjectAsyncOperation<ProjectItem[]> ao)
         {
-            m_storage.Create(m_projectPath, new[] { projectItem.Parent.ToString() }, new[] { projectItem.NameExt }, error =>
+            m_storage.Create(m_projectPath, projectItems.Select(projectItem => projectItem.Parent.ToString()).ToArray(),  projectItems.Select(projectItem => projectItem.NameExt).ToArray(), error =>
             {
                 if (callback != null)
                 {
-                    callback(error, projectItem);
+                    callback(error, projectItems);
                 }
 
-                ao.Result = projectItem;
+                ao.Result = projectItems;
                 ao.Error = error;
                 ao.IsCompleted = true;
 
                 if (CreateCompleted != null)
                 {
-                    CreateCompleted(error, projectItem);
+                    CreateCompleted(error, projectItems);
                 }
 
                 IsBusy = false;
             });
+        }
+
+        public ProjectAsyncOperation<ProjectItem[]> CreateFolders(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback = null)
+        {
+            if (m_root == null)
+            {
+                throw new InvalidOperationException("Project is not opened. Use OpenProject method");
+            }
+            if (projectItems.Any(projectItem => !projectItem.IsFolder))
+            {
+                throw new InvalidOperationException("is not a folder");
+            }
+
+            ProjectAsyncOperation<ProjectItem[]> ao = new ProjectAsyncOperation<ProjectItem[]>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _Create(projectItems, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _Create(projectItems, callback, ao);
+            }
+            return ao;
         }
 
         /// <summary>

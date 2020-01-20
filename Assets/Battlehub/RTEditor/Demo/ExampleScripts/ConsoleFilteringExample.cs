@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class ConsoleFilteringExample : EditorOverride
+    public class ConsoleFilteringExample : EditorExtension
     {
         private IRuntimeConsole m_console;
 

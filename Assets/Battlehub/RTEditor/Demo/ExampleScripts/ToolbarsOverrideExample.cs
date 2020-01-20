@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class ToolbarsOverrideExample : EditorOverride
+    public class ToolbarsOverrideExample : EditorExtension
     {
         [SerializeField]
         private Transform m_leftBarPrefab = null;

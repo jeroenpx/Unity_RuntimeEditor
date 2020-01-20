@@ -223,8 +223,6 @@ namespace Battlehub.RTEditor
             yield return StartCoroutine(importer.Import(path, targetPath));
             rte.IsBusy = false;
             m_parentDialog.Close();
-            
-            rte.ActivateWindow(RuntimeWindowType.Scene);
         }
 
         

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Battlehub.RTTerrain
 {
     [MenuDefinition(-1)]
-    public class TerrainInit : EditorOverride
+    public class TerrainInit : EditorExtension
     {
         [SerializeField]
         private GameObject m_terrainView = null;

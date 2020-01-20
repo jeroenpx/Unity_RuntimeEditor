@@ -82,14 +82,14 @@ namespace Battlehub.RTHandles
         public Texture2D ViewTexture;
         public Texture2D MoveTexture;
         public Texture2D FreeMoveTexture;
-
+        
         private Plane m_dragPlane;
         private Vector3 m_lastMousePosition;
         private bool m_lockInput;
 
         private IAnimationInfo m_focusAnimation;
         private Transform m_autoFocusTransform;
-
+       
         [SerializeField]
         private SceneGizmo m_sceneGizmo;
         public SceneGizmo SceneGizmo
@@ -130,14 +130,14 @@ namespace Battlehub.RTHandles
         private Quaternion m_prevCamRotation;
         private Vector3 m_prevCamPosition;
         private bool m_isSceneGizmoOrientationChanging;
-
+        
         public bool IsSceneGizmoEnabled
         {
             get { return m_isSceneGizmoEnabled && m_sceneGizmo != null; }
             set
             {
                 m_isSceneGizmoEnabled = value;
-                if (m_sceneGizmo != null)
+                if(m_sceneGizmo != null)
                 {
                     m_sceneGizmo.gameObject.SetActive(value);
                 }
@@ -164,7 +164,7 @@ namespace Battlehub.RTHandles
         public bool CanZoom
         {
             get { return m_canZoom; }
-            set { m_canZoom = value; }
+            set { m_canZoom = value; }                 
         }
 
         public float ZoomSpeed
@@ -230,9 +230,9 @@ namespace Battlehub.RTHandles
             get { return base.IsOrthographic; }
             set
             {
-                if (m_sceneGizmo != null)
+                if(m_sceneGizmo != null)
                 {
-                    if (m_sceneGizmo.IsOrthographic != value)
+                    if(m_sceneGizmo.IsOrthographic != value)
                     {
                         m_sceneGizmo.IsOrthographic = value;
                     }
@@ -263,7 +263,7 @@ namespace Battlehub.RTHandles
             {
                 MoveTexture = Resources.Load<Texture2D>("RTH_Hand");
             }
-            if (FreeMoveTexture == null)
+            if(FreeMoveTexture == null)
             {
                 FreeMoveTexture = Resources.Load<Texture2D>("RTH_FreeMove");
             }
@@ -341,7 +341,7 @@ namespace Battlehub.RTHandles
                         break;
                     }
 
-                    if (m_lockInput)
+                    if(m_lockInput)
                     {
                         break;
                     }
@@ -354,7 +354,7 @@ namespace Battlehub.RTHandles
                 while (false);
             }
 
-            if (Grid != null)
+            if(Grid != null)
             {
                 if (IsOrthographic)
                 {
@@ -367,7 +367,7 @@ namespace Battlehub.RTHandles
                     }
                     else
                     {
-                        if (!m_isSceneGizmoOrientationChanging)
+                        if(!m_isSceneGizmoOrientationChanging)
                         {
                             Grid.Alpha += Time.deltaTime * 5;
                         }
@@ -375,7 +375,7 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-                    if (IsGridCloseToCamera())
+                    if(IsGridCloseToCamera())
                     {
                         Grid.Alpha -= Time.deltaTime * 25;
                     }
@@ -469,7 +469,7 @@ namespace Battlehub.RTHandles
             Bounds bounds = CalculateBounds(Selection.activeTransform);
             float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z) * 2.0f;
             float distance;
-            if (ChangeOrthographicSizeOnly && IsOrthographic)
+            if(ChangeOrthographicSizeOnly && IsOrthographic)
             {
                 distance = m_orbitDistance;
             }
@@ -511,7 +511,7 @@ namespace Battlehub.RTHandles
 
         public virtual void Zoom(float deltaZ, Quaternion rotation)
         {
-            if (m_lockInput)
+            if(m_lockInput)
             {
                 return;
             }
@@ -540,13 +540,13 @@ namespace Battlehub.RTHandles
             Vector3 fwd = (rotation * Vector3.forward) * deltaZ;
             if (m_constantZoomSpeed)
             {
-                fwd *= m_zoomSpeed;
+                 fwd *= m_zoomSpeed;
             }
             else
             {
                 fwd *= Mathf.Max(m_zoomSpeed, Mathf.Abs(m_orbitDistance));
             }
-
+            
             Transform cameraTransform = Window.Camera.transform;
             m_orbitDistance = m_orbitDistance - fwd.z;
 
@@ -588,7 +588,7 @@ namespace Battlehub.RTHandles
                 return;
             }
             m_lastMousePosition = mousePosition;
-
+            
             RaycastHit hitInfo;
             if (Physics.Raycast(Window.Pointer, out hitInfo))
             {
@@ -599,7 +599,7 @@ namespace Battlehub.RTHandles
                 Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
                 float d;
                 Ray ray = Window.Pointer;
-                if (groundPlane.Raycast(ray, out d))
+                if(groundPlane.Raycast(ray, out d))
                 {
                     m_dragPlane = groundPlane;
                     m_dragPlane = new Plane(-Window.Camera.transform.forward, ray.GetPoint(d));
@@ -610,7 +610,7 @@ namespace Battlehub.RTHandles
                 }
 
                 //m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
-
+                
             }
         }
 
@@ -735,7 +735,7 @@ namespace Battlehub.RTHandles
             float objSize = distance * Mathf.Sin(fov / 2);
             Window.Camera.orthographicSize = objSize;
 
-            if (!IsOrthographic)
+            if(!IsOrthographic)
             {
                 Grid.transform.rotation = Quaternion.Euler(0, 0, 0);
                 if (IsGridCloseToCamera())
@@ -773,7 +773,7 @@ namespace Battlehub.RTHandles
                 Renderer renderer = child.GetComponent<Renderer>();
                 if (renderer)
                 {
-                    if (renderer is ParticleSystemRenderer)
+                    if(renderer is ParticleSystemRenderer)
                     {
                         continue; //Skip ParticleSystemRenderer rebderer
                     }

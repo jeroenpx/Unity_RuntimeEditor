@@ -3,7 +3,7 @@ using Battlehub.UIControls;
 
 namespace Battlehub.RTEditor
 {
-    public class BeforeSaveSceneExample : EditorOverride
+    public class BeforeSaveSceneExample : EditorExtension
     {
         private IRuntimeEditor m_editor;
 

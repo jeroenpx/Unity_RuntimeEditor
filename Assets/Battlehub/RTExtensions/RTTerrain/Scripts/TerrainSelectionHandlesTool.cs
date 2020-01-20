@@ -49,7 +49,7 @@ namespace Battlehub.RTTerrain
         void ClearHoles();
     }
 
-    public class TerrainSelectionHandlesTool : EditorOverride, ITerrainSelectionHandlesTool
+    public class TerrainSelectionHandlesTool : EditorExtension, ITerrainSelectionHandlesTool
     {
         private float m_zCount;
         private float m_xCount;

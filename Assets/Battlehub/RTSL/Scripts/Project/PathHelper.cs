@@ -23,7 +23,7 @@ namespace Battlehub.RTSL
             return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
         }
 
-        public static string RemoveInvalidFineNameCharacters(string name)
+        public static string RemoveInvalidFileNameCharacters(string name)
         {
             char[] invalidChars = Path.GetInvalidFileNameChars();
             for (int i = 0; i < invalidChars.Length; ++i)

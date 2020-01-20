@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Battlehub.RTEditor
 {
     [DefaultExecutionOrder(-91)]
-    public class AutoSaveLayout : EditorOverride
+    public class AutoSaveLayout : EditorExtension
     {
         private IWindowManager m_wm;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class UIScaleOverrideExample : EditorOverride
+    public class UIScaleOverrideExample : EditorExtension
     {
         [SerializeField]
         private float Scale = 2;

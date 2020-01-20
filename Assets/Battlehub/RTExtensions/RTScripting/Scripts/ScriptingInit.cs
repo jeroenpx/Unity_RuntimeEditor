@@ -14,7 +14,7 @@ using Battlehub.RTEditor;
 
 namespace Battlehub.RTScripting
 {
-    public class ScriptingInit : EditorOverride
+    public class ScriptingInit : EditorExtension
     {
 #pragma warning disable CS0414
         [SerializeField]

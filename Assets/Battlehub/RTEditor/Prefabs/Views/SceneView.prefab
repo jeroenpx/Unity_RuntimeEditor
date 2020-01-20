@@ -53,10 +53,13 @@ MonoBehaviour:
   BeforeDrag:
     m_PersistentCalls:
       m_Calls: []
+  Drag:
+    m_PersistentCalls:
+      m_Calls: []
   Drop:
     m_PersistentCalls:
       m_Calls: []
-  AbsouluteGrid: 0
+  AbsoluteGrid: 0
   GridSize: 0.1
   MinScale: {x: -3.4028235e+38, y: -3.4028235e+38, z: -3.4028235e+38}
 --- !u!1 &1192367540956640
@@ -172,8 +175,8 @@ MonoBehaviour:
   m_orbitDistance: 5
   m_zoomSpeed: 5
   m_constantZoomSpeed: 0
-  m_freeSmoothMoveSpeed: 5
-  m_freeSmoothRotateSpeed: 5
+  m_freeMovementSpeed: 10
+  m_freeRotationSpeed: 10
 --- !u!114 &8513267411312411289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +241,9 @@ MonoBehaviour:
   Model: {fileID: 114767379241590584, guid: adb919ab9b79d7f4baf715f244ee94c7, type: 3}
   m_targets: []
   BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+  Drag:
     m_PersistentCalls:
       m_Calls: []
   Drop:
@@ -606,6 +612,9 @@ MonoBehaviour:
   Model: {fileID: 114798909188857192, guid: e853e678f4be9c249a551a35b3366492, type: 3}
   m_targets: []
   BeforeDrag:
+    m_PersistentCalls:
+      m_Calls: []
+  Drag:
     m_PersistentCalls:
       m_Calls: []
   Drop:
