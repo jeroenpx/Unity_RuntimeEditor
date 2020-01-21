@@ -962,16 +962,14 @@ namespace Battlehub.RTSL
 
         public void SaveMappings()
         {
-            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingStoragePath, typeof(GameObject));
-            if (storageGO == null)
-            {
-                storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(m_mappingTemplateStoragePath[0], typeof(GameObject));
-            }
+            PersistentClassMappingsStorage mappingsStorage;
+            Dictionary<string, PersistentClassMapping> exisitingMappingsFromAllSources = GetMappings(out mappingsStorage).ToDictionary(m => m.name);
 
+            GameObject storageGO;
             Dictionary<string, PersistentClassMapping> existingMappings;
-            if (storageGO != null)
+            if (mappingsStorage != null)
             {
-                storageGO = UnityObject.Instantiate(storageGO);
+                storageGO = UnityObject.Instantiate(mappingsStorage.gameObject);
                 existingMappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true).ToDictionary(m => m.name);
             }
             else
@@ -1068,7 +1066,6 @@ namespace Battlehub.RTSL
                 }
             }
 
-            PersistentClassMapping[] savedMappings = new PersistentClassMapping[m_mappings.Length];
             for (int typeIndex = 0; typeIndex < m_mappings.Length; ++typeIndex)
             {
                 if (m_types[typeIndex].BaseType == null)
@@ -1084,11 +1081,19 @@ namespace Battlehub.RTSL
 
                     typeStorageGO.name = FullName(m_types[typeIndex]);
                     classMapping = typeStorageGO.AddComponent<PersistentClassMapping>();
-                    classMapping.PersistentTypeGUID = Guid.NewGuid().ToString();
-                    classMapping.MappedTypeGUID = Guid.NewGuid().ToString();
-                }
 
-                savedMappings[typeIndex] = classMapping;
+                    PersistentClassMapping existingMapping;
+                    if(exisitingMappingsFromAllSources.TryGetValue(FullName(m_types[typeIndex]), out existingMapping))
+                    {
+                        classMapping.PersistentTypeGUID = existingMapping.PersistentTypeGUID;
+                        classMapping.MappedTypeGUID = existingMapping.MappedTypeGUID;
+                    }
+                    else
+                    {
+                        classMapping.PersistentTypeGUID = Guid.NewGuid().ToString();
+                        classMapping.MappedTypeGUID = Guid.NewGuid().ToString();
+                    } 
+                }
 
                 PersistentTemplateInfo templateInfo;
                 if (!classMapping.CreateCustomImplementation || !classMapping.UseTemplate || !m_templates.TryGetValue(m_types[typeIndex], out templateInfo))
@@ -1162,11 +1167,11 @@ namespace Battlehub.RTSL
             }
 
             PersistentClassMappingsStorage storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
-            if (storage == null)
+            if (mappingsStorage == null)
             {
-                storage = storageGO.AddComponent<PersistentClassMappingsStorage>();
+                mappingsStorage = storageGO.AddComponent<PersistentClassMappingsStorage>();
             }
-            storage.Version = RTSLVersion.Version.ToString();
+            mappingsStorage.Version = RTSLVersion.Version.ToString();
 
             EditorUtility.SetDirty(storageGO);
 

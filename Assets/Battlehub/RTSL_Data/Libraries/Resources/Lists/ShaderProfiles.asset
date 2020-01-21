@@ -5642,6 +5642,29 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 000000000200000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000010101
+  - Name: Particles/Priority Alpha Blended
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Tint Color
+    - Particle Texture
+    - Soft Particles Factor
+    PropertyNames:
+    - _TintColor
+    - _MainTex
+    - _InvFade
+    PropertyTypes: 000000000400000003000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0.01
+      Max: 3
+    PropertyTexDims: 000000000200000000000000
+    IsHidden: 000000
   - Name: Particles/Standard Surface
     PropertyCount: 31
     PropertyDescriptions:

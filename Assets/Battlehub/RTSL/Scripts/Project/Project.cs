@@ -43,16 +43,16 @@ namespace Battlehub.RTSL
         public event ProjectEventHandler<ProjectItem[], ProjectItem[]> MoveCompleted;
         public event ProjectEventHandler<ProjectItem> RenameCompleted;
         public event ProjectEventHandler<ProjectItem[]> CreateCompleted;
-
+        
         private IStorage m_storage;
         private IAssetDB m_assetDB;
         private ITypeMap m_typeMap;
         private IUnityObjectFactory m_factory;
-
+        
         [SerializeField]
         private AssetLibrariesListAsset m_staticAssetLibraries = null;
         private Dictionary<int, string> m_ordinalToStaticAssetLibrary;
-
+     
 
         [SerializeField]
         private string m_sceneDepsLibrary = null;
@@ -87,7 +87,7 @@ namespace Battlehub.RTSL
 
         [SerializeField]
         private Transform m_dynamicPrefabsRoot;
-
+        
         private Dictionary<int, AssetBundleInfo> m_ordinalToAssetBundleInfo = new Dictionary<int, AssetBundleInfo>();
         private Dictionary<int, AssetBundle> m_ordinalToAssetBundle = new Dictionary<int, AssetBundle>();
 
@@ -109,7 +109,7 @@ namespace Battlehub.RTSL
                     }
                     else
                     {
-                        if (m_actionsQueue.Count > 0)
+                        if(m_actionsQueue.Count > 0)
                         {
                             Action workItem = m_actionsQueue.Dequeue();
                             workItem();
@@ -197,7 +197,7 @@ namespace Battlehub.RTSL
             m_assetDB.UnregisterDynamicResources();
             foreach (UnityObject dynamicResource in dynamicResources)
             {
-                if (dynamicResource is Transform)
+                if(dynamicResource is Transform)
                 {
                     continue;
                 }
@@ -250,7 +250,7 @@ namespace Battlehub.RTSL
         {
             AssetItem result;
             long id = ToID(obj);
-            if (!m_idToAssetItem.TryGetValue(id, out result))
+            if(!m_idToAssetItem.TryGetValue(id, out result))
             {
                 return null;
             }
@@ -269,12 +269,12 @@ namespace Battlehub.RTSL
                 return null;
             }
 
-            if (obj is RuntimeTextAsset)
+            if(obj is RuntimeTextAsset)
             {
                 RuntimeTextAsset textAsset = (RuntimeTextAsset)obj;
                 return textAsset.Ext;
             }
-            else if (obj is RuntimeBinaryAsset)
+            else if(obj is RuntimeBinaryAsset)
             {
                 RuntimeBinaryAsset binaryAsset = (RuntimeBinaryAsset)obj;
                 return binaryAsset.Ext;
@@ -317,15 +317,15 @@ namespace Battlehub.RTSL
             {
                 return ".rtterdata";
             }
-            if (type == typeof(TerrainLayer))
+            if(type == typeof(TerrainLayer))
             {
                 return ".rtterlayer";
             }
-            if (type == typeof(RuntimeTextAsset))
+            if(type == typeof(RuntimeTextAsset))
             {
                 return ".txt";
             }
-            if (type == typeof(RuntimeBinaryAsset))
+            if(type == typeof(RuntimeBinaryAsset))
             {
                 return ".bin";
             }
@@ -339,7 +339,7 @@ namespace Battlehub.RTSL
 
         public string GetUniqueName(string name, Type type, ProjectItem folder, bool noSpace = false)
         {
-            if (folder.Children == null)
+            if(folder.Children == null)
             {
                 return name;
             }
@@ -366,7 +366,7 @@ namespace Battlehub.RTSL
             name = GetUniqueName(name, type, folder, noSpace);
 
             path = Path.GetDirectoryName(path).Replace(@"\", "/");
-
+            
             return path + (path.EndsWith("/") ? name : "/" + name);
         }
 
@@ -430,7 +430,7 @@ namespace Battlehub.RTSL
                 {
                     callback(error, projects);
                 }
-
+                
                 ao.Error = error;
                 ao.Result = projects;
                 ao.IsCompleted = true;
@@ -699,7 +699,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _DeleteProject(project, callback, pao);
             }
-
+            
             return pao;
         }
 
@@ -707,7 +707,7 @@ namespace Battlehub.RTSL
         {
             if (m_projectInfo != null && project == m_projectInfo.Name)
             {
-                CloseProject();
+                CloseProject();        
             }
             m_storage.DeleteProject(project, error =>
             {
@@ -715,7 +715,7 @@ namespace Battlehub.RTSL
                 {
                     callback(error, project);
                 }
-
+                
                 ao.Error = error;
                 ao.Result = project;
                 ao.IsCompleted = true;
@@ -758,14 +758,14 @@ namespace Battlehub.RTSL
                 ao.Result = project;
                 ao.IsCompleted = true;
 
-                if (!error.HasError)
+                if(!error.HasError)
                 {
                     if (ExportProjectCompleted != null)
                     {
                         ExportProjectCompleted(error, project);
                     }
                 }
-
+                
                 IsBusy = false;
             });
         }
@@ -799,14 +799,14 @@ namespace Battlehub.RTSL
                 ao.Result = project;
                 ao.IsCompleted = true;
 
-                if (!error.HasError)
+                if(!error.HasError)
                 {
                     if (ImportProjectCompleted != null)
                     {
                         ImportProjectCompleted(error, project);
                     }
                 }
-
+                
                 IsBusy = false;
             });
         }
@@ -816,7 +816,7 @@ namespace Battlehub.RTSL
         /// </summary>
         public void CloseProject()
         {
-            if (m_projectInfo != null)
+            if(m_projectInfo != null)
             {
                 UnloadUnregisterDestroy();
             }
@@ -882,7 +882,7 @@ namespace Battlehub.RTSL
                 IsBusy = false;
             });
         }
-
+            
         /// <summary>
         /// Get Asset Items with previews
         /// </summary>
@@ -901,7 +901,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _GetAssetItems(folders, callback, ao);
             }
-
+            
             return ao;
         }
 
@@ -919,7 +919,7 @@ namespace Battlehub.RTSL
                     ao.Result = new AssetItem[0];
                     ao.Error = error;
                     ao.IsCompleted = true;
-
+                    
                     if (GetAssetItemsCompleted != null)
                     {
                         GetAssetItemsCompleted(error, new AssetItem[0]);
@@ -974,7 +974,7 @@ namespace Battlehub.RTSL
             {
                 callback(error, projectItems);
             }
-
+            
             ao.Error = error;
             ao.Result = projectItems;
             ao.IsCompleted = true;
@@ -1011,7 +1011,7 @@ namespace Battlehub.RTSL
                     else
                     {
                         Type type;
-                        if (persistentType != typeof(PersistentRuntimeSerializableObject))
+                        if(persistentType != typeof(PersistentRuntimeSerializableObject))
                         {
                             type = m_typeMap.ToUnityType(persistentType);
                         }
@@ -1019,7 +1019,7 @@ namespace Battlehub.RTSL
                         {
                             type = m_typeMap.ToType(descriptor.RuntimeTypeGuid);
                         }
-
+                        
                         if (type == null)
                         {
                             Debug.LogWarningFormat("Unable to get unity type from persistent type {1}", persistentType.FullName);
@@ -1109,7 +1109,7 @@ namespace Battlehub.RTSL
             {
                 if (!done)
                 {
-                    if (ordinal == AssetLibraryInfo.SCENELIB_FIRST)
+                    if(ordinal == AssetLibraryInfo.SCENELIB_FIRST)
                     {
                         Debug.LogWarning("Library with scene dependencies was not loaded");
                     }
@@ -1140,7 +1140,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _GetDependencies(obj, exceptMappedObjects, callback, ao);
             }
-
+            
             return ao;
         }
 
@@ -1269,7 +1269,7 @@ namespace Battlehub.RTSL
                         persistentObject.GetDepsFrom(uo, getDepsCtx);
 
                         foreach (UnityObject dep in getDepsCtx.Dependencies)
-                        {
+                        {   
                             if (!ctx.Dependencies.Contains(dep))
                             {
                                 if (dep is GameObject)
@@ -1284,7 +1284,7 @@ namespace Battlehub.RTSL
                                 {
                                     ctx.Dependencies.Add(dep);
                                 }
-
+                                
                                 depsQueue.Enqueue(dep);
                             }
                         }
@@ -1293,20 +1293,20 @@ namespace Battlehub.RTSL
             }
         }
 
-
+   
         public AssetItem[] GetDependantAssetItems(AssetItem[] assetItems)
         {
             HashSet<AssetItem> resultHs = new HashSet<AssetItem>();
             Queue<AssetItem> queue = new Queue<AssetItem>();
-            for (int i = 0; i < assetItems.Length; ++i)
+            for(int i = 0; i < assetItems.Length; ++i)
             {
                 queue.Enqueue(assetItems[i]);
             }
 
-            while (queue.Count > 0)
+            while(queue.Count > 0)
             {
                 AssetItem assetItem = queue.Dequeue();
-                if (resultHs.Contains(assetItem))
+                if(resultHs.Contains(assetItem))
                 {
                     continue;
                 }
@@ -1314,7 +1314,7 @@ namespace Battlehub.RTSL
 
                 foreach (AssetItem item in m_idToAssetItem.Values)
                 {
-                    if (item.Dependencies != null)
+                    if(item.Dependencies != null)
                     {
                         for (int i = 0; i < item.Dependencies.Length; ++i)
                         {
@@ -1329,7 +1329,7 @@ namespace Battlehub.RTSL
 
             }
 
-            for (int i = 0; i < assetItems.Length; ++i)
+            for(int i = 0; i < assetItems.Length; ++i)
             {
                 AssetItem assetItem = assetItems[i];
                 resultHs.Remove(assetItem);
@@ -1339,7 +1339,7 @@ namespace Battlehub.RTSL
 
         public ProjectAsyncOperation<AssetItem[]> SaveScene(string name, ProjectEventHandler<AssetItem[]> callback = null)
         {
-            return Save(new[] { Root }, new[] { new byte[0] }, new object[] { SceneManager.GetActiveScene() }, new[] { name }, callback);
+            return Save(new[] { Root }, new [] { new byte[0] }, new object[] { SceneManager.GetActiveScene() }, new[] { name }, callback);
         }
 
         /// <summary>
@@ -1397,7 +1397,7 @@ namespace Battlehub.RTSL
             }
             _Save(parents, previewData, objects, nameOverrides, existingAssetItems, callback, ao, () =>
             {
-                if (gameObject.activeInHierarchy)
+                if(gameObject.activeInHierarchy)
                 {
                     if (SaveCompleted != null)
                     {
@@ -1433,9 +1433,9 @@ namespace Battlehub.RTSL
                 throw new ArgumentNullException("objects");
             }
 
-            if (existingAssetItems != null)
+            if(existingAssetItems != null)
             {
-                if (existingAssetItems.Length != objects.Length)
+                if(existingAssetItems.Length != objects.Length)
                 {
                     throw new ArgumentException("existingAssetItems.Length != objects.Length", "existingAssetItems");
                 }
@@ -1460,10 +1460,10 @@ namespace Battlehub.RTSL
         {
             if (parents == null)
             {
-                if (existingAssetItems == null)
+                if(existingAssetItems == null)
                 {
                     parents = new ProjectItem[objects.Length];
-                    for (int i = 0; i < parents.Length; ++i)
+                    for(int i = 0; i < parents.Length; ++i)
                     {
                         parents[i] = Root;
                     }
@@ -1473,7 +1473,7 @@ namespace Battlehub.RTSL
             {
                 for (int i = 0; i < parents.Length; ++i)
                 {
-                    if (!parents[i].IsFolder)
+                    if(!parents[i].IsFolder)
                     {
                         throw new ArgumentException("parent is not folder", "parent");
                     }
@@ -1488,7 +1488,7 @@ namespace Battlehub.RTSL
                         callback(error, new AssetItem[0]);
                     }
 
-                    if (!ao.IsCompleted)
+                    if(!ao.IsCompleted)
                     {
                         ao.Error = error;
                         ao.Result = new AssetItem[0];
@@ -1502,12 +1502,12 @@ namespace Battlehub.RTSL
                 int parentIndex = parents.Length - 1;
                 ProjectItem lastParent = parents[parentIndex];
                 Array.Resize(ref parents, objects.Length);
-                for (int i = parentIndex + 1; i < parents.Length; ++i)
+                for(int i = parentIndex + 1; i < parents.Length; ++i)
                 {
                     parents[i] = lastParent;
                 }
             }
-
+            
             int assetIdBackup = m_projectInfo.AssetIdentifier;
             int[] rootIds = new int[objects.Length];
             int[] rootOrdinals = new int[objects.Length];
@@ -1533,7 +1533,7 @@ namespace Battlehub.RTSL
 
                 int rootOrdinal;
                 int rootId;
-                if (existingAssetItem == null)
+                if(existingAssetItem == null)
                 {
                     if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out rootOrdinal, out rootId))
                     {
@@ -1547,13 +1547,13 @@ namespace Battlehub.RTSL
                     rootOrdinal = m_assetDB.ToOrdinal(existingAssetItem.ItemID);
                     rootId = m_assetDB.ToInt(existingAssetItem.ItemID);
                 }
-
+                
                 rootOrdinals[o] = rootOrdinal;
                 rootIds[o] = rootId;
 
-                if (existingAssetItem == null || m_assetDB.IsDynamicResourceID(existingAssetItem.ItemID))
+                if(existingAssetItem == null || m_assetDB.IsDynamicResourceID(existingAssetItem.ItemID))
                 {
-                    if (existingAssetItem != null)
+                    if(existingAssetItem != null)
                     {
                         /* object with correct identifier already exists. Only new prefab parts should be processed */
                         Debug.Assert(existingAssetItem.ItemID == m_assetDB.ToID((UnityObject)obj));
@@ -1562,11 +1562,11 @@ namespace Battlehub.RTSL
                     if (obj is GameObject)
                     {
                         GameObject go = (GameObject)obj;
-                        if (!m_assetDB.IsMapped(go))
+                        if(!m_assetDB.IsMapped(go))
                         {
                             idToObj.Add(m_assetDB.ToInt(m_assetDB.ToDynamicResourceID(rootOrdinal, rootId)), go);
                         }
-
+                        
                         Transform[] transforms = go.GetComponentsInChildren<Transform>(true);
                         for (int i = 0; i < transforms.Length; ++i)
                         {
@@ -1589,7 +1589,7 @@ namespace Battlehub.RTSL
                             for (int j = 0; j < components.Length; ++j)
                             {
                                 Component comp = components[j];
-                                if (!m_assetDB.IsMapped(comp))
+                                if(!m_assetDB.IsMapped(comp))
                                 {
                                     int ordinal;
                                     int id;
@@ -1607,7 +1607,7 @@ namespace Battlehub.RTSL
                     }
                     else if (obj is UnityObject)
                     {
-                        if (!m_assetDB.IsMapped((UnityObject)obj))
+                        if(!m_assetDB.IsMapped((UnityObject)obj))
                         {
                             idToObj.Add(m_assetDB.ToInt(m_assetDB.ToDynamicResourceID(rootOrdinal, rootId)), (UnityObject)obj);
                         }
@@ -1619,14 +1619,14 @@ namespace Battlehub.RTSL
             AssetItem[] assetItems = existingAssetItems == null ? new AssetItem[objects.Length] : existingAssetItems;
             PersistentObject[] persistentObjects = new PersistentObject[objects.Length];
             Dictionary<ProjectItem, List<ProjectItem>> parentToPotentialChildren = null;
-            if (parents != null)
+            if(parents != null)
             {
                 parentToPotentialChildren = new Dictionary<ProjectItem, List<ProjectItem>>();
-                for (int i = 0; i < parents.Length; ++i)
+                for(int i = 0; i < parents.Length; ++i)
                 {
-                    if (!parentToPotentialChildren.ContainsKey(parents[i]))
+                    if(!parentToPotentialChildren.ContainsKey(parents[i]))
                     {
-                        if (parents[i].Children == null)
+                        if(parents[i].Children == null)
                         {
                             parents[i].Children = new List<ProjectItem>();
                         }
@@ -1656,7 +1656,7 @@ namespace Battlehub.RTSL
                 persistentObject.ReadFrom(obj);
 
                 AssetItem assetItem = assetItems[objIndex];
-                if (assetItem == null)
+                if(assetItem == null)
                 {
                     if (!string.IsNullOrEmpty(nameOverride))
                     {
@@ -1677,12 +1677,12 @@ namespace Battlehub.RTSL
                     }
                     assetItem.Parent = parents[objIndex];
                     assetItem.Name = persistentObject.name;
-
+                    
                     assetItem.Ext = GetExt(obj);
                     assetItem.TypeGuid = m_typeMap.ToGuid(obj.GetType());
                     potentialChildren.Add(assetItem);
                 }
-                if (previewData != null)
+                if(previewData != null)
                 {
                     assetItem.Preview = new Preview
                     {
@@ -1690,7 +1690,7 @@ namespace Battlehub.RTSL
                         PreviewData = previewData[objIndex]
                     };
                 }
-
+                
                 if (persistentObject is PersistentRuntimePrefab && !(persistentObject is PersistentRuntimeScene))
                 {
                     PersistentRuntimePrefab persistentPrefab = (PersistentRuntimePrefab)persistentObject;
@@ -1719,14 +1719,14 @@ namespace Battlehub.RTSL
             {
                 if (!error.HasError)
                 {
-                    for (int objIndex = 0; objIndex < assetItems.Length; ++objIndex)
+                    for(int objIndex = 0; objIndex < assetItems.Length; ++objIndex)
                     {
                         AssetItem assetItem = assetItems[objIndex];
                         if (assetItem.Parts != null)
                         {
                             for (int i = 0; i < assetItem.Parts.Length; ++i)
                             {
-                                if (!m_idToAssetItem.ContainsKey(assetItem.Parts[i].PartID))
+                                if(!m_idToAssetItem.ContainsKey(assetItem.Parts[i].PartID))
                                 {
                                     m_idToAssetItem.Add(assetItem.Parts[i].PartID, assetItem);
                                 }
@@ -1737,8 +1737,8 @@ namespace Battlehub.RTSL
                         {
                             m_idToAssetItem.Add(assetItem.ItemID, assetItem);
                         }
-
-                        if (parents != null)
+                        
+                        if(parents != null)
                         {
                             parents[objIndex].AddChild(assetItem);
                         }
@@ -1826,7 +1826,7 @@ namespace Battlehub.RTSL
                 {
                     callback(error, assetItems);
                 }
-
+                
                 ao.Result = assetItems;
                 ao.Error = error;
                 ao.IsCompleted = true;
@@ -1859,15 +1859,15 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _Duplicate(assetItems, callback, ao);
             }
-
+            
             return ao;
         }
 
         private void _Duplicate(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback, ProjectAsyncOperation<AssetItem[]> ao)
         {
-            AssetItem[] scenes = assetItems.Where(ai => IsScene(ai)).ToArray();
+            AssetItem[] scenes =  assetItems.Where(ai => IsScene(ai)).ToArray();
             int[] sceneIndices = new int[scenes.Length];
-            for (int i = 0; i < scenes.Length; ++i)
+            for(int i = 0; i < scenes.Length; ++i)
             {
                 sceneIndices[i] = Array.IndexOf(assetItems, scenes[i]);
             }
@@ -1891,7 +1891,7 @@ namespace Battlehub.RTSL
                         return;
                     }
 
-                    for (int i = 0; i < loadedObjects.Length; ++i)
+                    for(int i = 0; i < loadedObjects.Length; ++i)
                     {
                         string name = loadedObjects[i].name;
                         loadedObjects[i] = Instantiate(loadedObjects[i]);
@@ -1900,37 +1900,37 @@ namespace Battlehub.RTSL
 
                     _Save(nonScenes.Select(ai => ai.Parent).ToArray(), nonScenes.Select(ai => ai.Preview.PreviewData).ToArray(), loadedObjects, null, null, (saveError, nonSceneDuplicates) =>
                     {
-                        for (int i = 0; i < loadedObjects.Length; ++i)
+                        for(int i = 0; i < loadedObjects.Length; ++i)
                         {
                             Destroy(loadedObjects[i]);
                         }
 
                         AssetItem[] result = null;
-                        if (!saveError.HasError)
+                        if(!saveError.HasError)
                         {
                             result = new AssetItem[sceneDuplicates.Length + nonSceneDuplicates.Length];
                             for (int i = 0; i < sceneIndices.Length; ++i)
                             {
                                 result[sceneIndices[i]] = sceneDuplicates[i];
                             }
-                            for (int i = 0; i < nonSceneIndices.Length; ++i)
+                            for(int i = 0; i < nonSceneIndices.Length; ++i)
                             {
                                 result[nonSceneIndices[i]] = nonSceneDuplicates[i];
                             }
                         }
-
+                        
                         callback(saveError, result);
 
                         ao.Result = result;
                         ao.Error = saveError;
                         ao.IsCompleted = true;
-                    },
-                    ao,
+                    }, 
+                    ao, 
                     () =>
                     {
                         RaiseDuplicateCompleted(ao);
                     });
-                },
+                }, 
                 loadAo, () => { });
             });
         }
@@ -1959,7 +1959,7 @@ namespace Battlehub.RTSL
                     PreviewData = assetItem.Preview.PreviewData != null ? assetItem.Preview.PreviewData.ToArray() : null
                 };
             }
-
+            
             int ordinal;
             int id;
             if (!GetOrdinalAndId(ref m_projectInfo.AssetIdentifier, out ordinal, out id))
@@ -2008,44 +2008,44 @@ namespace Battlehub.RTSL
             }
 
 
-            m_storage.Load(m_projectPath, scenes.Select(item => item.ToString()).ToArray(), scenes.Select(s => typeof(PersistentRuntimeScene)).ToArray(), (loadError, persistentObjects) =>
-            {
-                if (loadError.HasError)
-                {
-                    if (callback != null)
-                    {
-                        callback(loadError, null);
-                    }
-                    ao.Error = loadError;
-                    ao.Result = null;
-                    ao.IsCompleted = true;
-                    RaiseDuplicateCompleted(ao);
-                    return;
-                }
+           m_storage.Load(m_projectPath, scenes.Select(item => item.ToString()).ToArray(), scenes.Select(s => typeof(PersistentRuntimeScene)).ToArray(), (loadError, persistentObjects) =>
+           {
+               if (loadError.HasError)
+               {
+                   if (callback != null)
+                   {
+                       callback(loadError, null);
+                   }
+                   ao.Error = loadError;
+                   ao.Result = null;
+                   ao.IsCompleted = true;
+                   RaiseDuplicateCompleted(ao);
+                   return;
+               }
 
-                m_storage.Save(m_projectPath, scenes.Select(ai => ai.Parent.ToString()).ToArray(), duplicates, persistentObjects, m_projectInfo, false, saveError =>
-                {
-                    if (saveError.HasError)
-                    {
-                        if (callback != null)
-                        {
-                            callback(saveError, null);
-                        }
-                        ao.Error = saveError;
-                        ao.Result = null;
-                        ao.IsCompleted = true;
-                        RaiseDuplicateCompleted(ao);
-                        return;
-                    }
+               m_storage.Save(m_projectPath, scenes.Select(ai => ai.Parent.ToString()).ToArray(), duplicates, persistentObjects, m_projectInfo, false, saveError =>
+               {
+                   if (saveError.HasError)
+                   {
+                       if (callback != null)
+                       {
+                           callback(saveError, null);
+                       }
+                       ao.Error = saveError;
+                       ao.Result = null;
+                       ao.IsCompleted = true;
+                       RaiseDuplicateCompleted(ao);
+                       return;
+                   }
 
-                    for (int i = 0; i < scenes.Length; ++i)
-                    {
-                        scenes[i].Parent.AddChild(duplicates[i]);
-                    }
+                   for (int i = 0; i < scenes.Length; ++i)
+                   {
+                       scenes[i].Parent.AddChild(duplicates[i]);
+                   }
 
-                    done(duplicates);
-                });
-            });
+                   done(duplicates);
+               });
+           });
         }
 
         /// <summary>
@@ -2066,7 +2066,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _Load(assetItems, callback, ao);
             }
-
+           
             return ao;
         }
 
@@ -2079,7 +2079,7 @@ namespace Battlehub.RTSL
 
             _Load(assetItems, callback, ao, () =>
             {
-                if (Application.isPlaying)
+                if(Application.isPlaying)
                 {
                     StartCoroutine(CoCallback(() =>
                     {
@@ -2115,7 +2115,7 @@ namespace Battlehub.RTSL
                     }
 
                     IsBusy = false;
-                }
+                } 
             });
         }
 
@@ -2177,7 +2177,7 @@ namespace Battlehub.RTSL
 
         private void GetAssetItemsToLoad(AssetItem[] assetItems, HashSet<AssetItem> loadHs, HashSet<long> unresolvedDependencies)
         {
-            for (int a = 0; a < assetItems.Length; ++a)
+            for(int a = 0; a < assetItems.Length; ++a)
             {
                 AssetItem assetItem = assetItems[a];
                 Type type = m_typeMap.ToType(assetItem.TypeGuid);
@@ -2215,14 +2215,14 @@ namespace Battlehub.RTSL
                             }
                         }
 
-                        if (deps.Count > 0)
+                        if(deps.Count > 0)
                         {
                             GetAssetItemsToLoad(deps.ToArray(), loadHs, unresolvedDependencies);
                         }
                     }
                 }
             }
-
+          
         }
 
         private void OnDependenciesResolved(AssetItem[] rootAssetItems, HashSet<AssetItem> loadAssetItemsHs, ProjectEventHandler<UnityObject[]> callback, ProjectAsyncOperation<UnityObject[]> ao, Action done)
@@ -2244,7 +2244,7 @@ namespace Battlehub.RTSL
                     {
                         callback(error, null);
                     }
-
+                    
                     ao.Error = error;
                     ao.Result = new UnityObject[0];
                     ao.IsCompleted = true;
@@ -2284,7 +2284,7 @@ namespace Battlehub.RTSL
         }
 
         private void DoLoadAssetLibraries(HashSet<int> assetLibrariesToLoad, Action callback)
-        {
+        {   
             if (assetLibrariesToLoad.Count == 0)
             {
                 callback();
@@ -2297,15 +2297,15 @@ namespace Battlehub.RTSL
                 foreach (int ordinal in assetLibrariesToLoad)
                 {
                     string assetLibraryName = null;
-                    if (ordinalToStaticLib.ContainsKey(ordinal))
+                    if(ordinalToStaticLib.ContainsKey(ordinal))
                     {
                         assetLibraryName = ordinalToStaticLib[ordinal];
                     }
                     else
                     {
-                        if (m_assetDB.IsBuiltinLibrary(ordinal))
+                        if(m_assetDB.IsBuiltinLibrary(ordinal))
                         {
-                            if (ordinal != AssetLibraryInfo.BUILTIN_FIRST)
+                            if(ordinal != AssetLibraryInfo.BUILTIN_FIRST)
                             {
                                 assetLibraryName = m_builtInLibrary + ((ordinal - AssetLibraryInfo.BUILTIN_FIRST) + 1);
                             }
@@ -2314,25 +2314,25 @@ namespace Battlehub.RTSL
                                 assetLibraryName = m_builtInLibrary;
                             }
                         }
-                        else if (m_assetDB.IsSceneLibrary(ordinal))
+                        else if(m_assetDB.IsSceneLibrary(ordinal))
                         {
-                            if (ordinal != AssetLibraryInfo.SCENELIB_FIRST)
+                            if(ordinal != AssetLibraryInfo.SCENELIB_FIRST)
                             {
                                 assetLibraryName = m_sceneDepsLibrary + ((ordinal - AssetLibraryInfo.SCENELIB_FIRST) + 1);
                             }
                             else
                             {
                                 assetLibraryName = m_sceneDepsLibrary;
-                            }
+                            }       
                         }
-                        else if (m_assetDB.IsBundledLibrary(ordinal))
+                        else if(m_assetDB.IsBundledLibrary(ordinal))
                         {
                             AssetBundleInfo assetBundleInfo = m_ordinalToAssetBundleInfo[ordinal];
                             assetLibraryName = assetBundleInfo.UniqueName;
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(assetLibraryName))
+                    if(!string.IsNullOrEmpty(assetLibraryName))
                     {
                         LoadLibrary(ordinal, true, true, done =>
                         {
@@ -2370,7 +2370,7 @@ namespace Battlehub.RTSL
             if (m_assetDB.IsStaticLibrary(ordinal))
             {
                 Dictionary<int, string> staticAssetLibraries = GetStaticAssetLibraries();
-                if (!staticAssetLibraries.ContainsKey(ordinal))
+                if(!staticAssetLibraries.ContainsKey(ordinal))
                 {
                     Debug.LogError("Unable to load static library " + ordinal);
                     callback(false);
@@ -2378,21 +2378,21 @@ namespace Battlehub.RTSL
                 }
                 m_assetDB.LoadLibrary(staticAssetLibraries[ordinal], ordinal, loadIIDtoPID, loadPIDtoObj, callback);
             }
-            else if (m_assetDB.IsBuiltinLibrary(ordinal))
+            else if(m_assetDB.IsBuiltinLibrary(ordinal))
             {
                 int num = ordinal - AssetLibraryInfo.BUILTIN_FIRST;
                 string builtinLibraryName = m_builtInLibrary;
-                if (num > 0)
+                if(num > 0)
                 {
                     builtinLibraryName += (num + 1);
                 }
                 m_assetDB.LoadLibrary(builtinLibraryName, ordinal, loadIIDtoPID, loadPIDtoObj, callback);
             }
-            else if (m_assetDB.IsSceneLibrary(ordinal))
+            else if(m_assetDB.IsSceneLibrary(ordinal))
             {
                 int num = ordinal - AssetLibraryInfo.SCENELIB_FIRST;
                 string sceneLibraryName = m_sceneDepsLibrary;
-                if (num > 0)
+                if(num > 0)
                 {
                     sceneLibraryName += (num + 1);
                 }
@@ -2463,7 +2463,7 @@ namespace Battlehub.RTSL
                             else
                             {
                                 Type type = m_typeMap.ToType(assetItem.TypeGuid);
-                                if (type != null)
+                                if(type != null)
                                 {
                                     if (m_factory.CanCreateInstance(type, persistentObject))
                                     {
@@ -2481,7 +2481,7 @@ namespace Battlehub.RTSL
                                 else
                                 {
                                     Debug.LogWarning("Unable to resolve type by guid " + assetItem.TypeGuid);
-                                }
+                                }   
                             }
                         }
                     }
@@ -2597,7 +2597,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _Unload(callback, ao);
             }
-
+            
             return ao;
         }
 
@@ -2642,7 +2642,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _LoadImportItems(libraryName, isBuiltIn, callback, ao);
             }
-
+            
             return ao;
         }
 
@@ -2662,7 +2662,7 @@ namespace Battlehub.RTSL
                 Dictionary<int, string> ordinalToStaticAssetLibrary = GetStaticAssetLibraries();
                 foreach (KeyValuePair<int, string> kvp in m_ordinalToStaticAssetLibrary)
                 {
-                    if (kvp.Value == libraryName)
+                    if(kvp.Value == libraryName)
                     {
                         ordinal = kvp.Key;
                         break;
@@ -2694,7 +2694,7 @@ namespace Battlehub.RTSL
             }
             else
             {
-                if (m_projectInfo.BundleIdentifier >= AssetLibraryInfo.MAX_BUNDLEDLIBS - 1)
+                if(m_projectInfo.BundleIdentifier >= AssetLibraryInfo.MAX_BUNDLEDLIBS - 1)
                 {
                     Error error = new Error(Error.E_NotFound);
                     error.ErrorText = "Unable to load asset bundle. Bundle identifiers exhausted";
@@ -2703,13 +2703,13 @@ namespace Battlehub.RTSL
                 }
                 m_storage.Load(m_projectPath, libraryName, (loadError, assetBundleInfo) =>
                 {
-                    if (loadError.HasError && loadError.ErrorCode != Error.E_NotFound)
+                    if(loadError.HasError && loadError.ErrorCode != Error.E_NotFound)
                     {
                         RaiseLoadAssetLibraryCallback(callback, ao, loadError);
                         return;
                     }
 
-                    if (assetBundleInfo == null)
+                    if(assetBundleInfo == null)
                     {
                         assetBundleInfo = new AssetBundleInfo();
                         assetBundleInfo.UniqueName = libraryName;
@@ -2719,7 +2719,7 @@ namespace Battlehub.RTSL
                     }
 
                     AssetBundle loadedAssetBundle;
-                    if (m_ordinalToAssetBundle.TryGetValue(assetBundleInfo.Ordinal, out loadedAssetBundle))
+                    if(m_ordinalToAssetBundle.TryGetValue(assetBundleInfo.Ordinal, out loadedAssetBundle))
                     {
                         Debug.Assert(m_assetDB.IsLibraryLoaded(assetBundleInfo.Ordinal));
                         LoadImportItemsFromAssetBundle(libraryName, callback, assetBundleInfo, loadedAssetBundle, ao);
@@ -2732,7 +2732,7 @@ namespace Battlehub.RTSL
                             LoadImportItemsFromAssetBundle(libraryName, callback, assetBundleInfo, assetBundle, ao);
                         });
                     }
-
+                    
                 });
             }
         }
@@ -2775,11 +2775,11 @@ namespace Battlehub.RTSL
             Dictionary<string, AssetBundleItemInfo> pathToBundleItem = info.AssetBundleItems != null ? info.AssetBundleItems.ToDictionary(i => i.Path) : new Dictionary<string, AssetBundleItemInfo>();
 
             string[] assetNames = bundle.GetAllAssetNames();
-            for (int i = 0; i < assetNames.Length; ++i)
+            for(int i = 0; i < assetNames.Length; ++i)
             {
                 string assetName = assetNames[i];
                 AssetBundleItemInfo bundleItem;
-                if (!pathToBundleItem.TryGetValue(assetName, out bundleItem))
+                if(!pathToBundleItem.TryGetValue(assetName, out bundleItem))
                 {
                     bundleItem = new AssetBundleItemInfo
                     {
@@ -2810,10 +2810,10 @@ namespace Battlehub.RTSL
         private void GenerateIdentifiersForPrefab(string assetName, GameObject go, AssetBundleInfo info, Dictionary<string, AssetBundleItemInfo> pathToBundleItem)
         {
             Component[] components = go.GetComponents<Component>();
-            for (int i = 0; i < components.Length; ++i)
+            for(int i = 0; i < components.Length; ++i)
             {
-                Component component = components[i];
-                if (component != null)
+                Component component = components[i]; 
+                if(component != null)
                 {
                     string componentName = assetName + "/" + component.GetType().FullName;
                     AssetBundleItemInfo bundleItem;
@@ -2832,22 +2832,22 @@ namespace Battlehub.RTSL
             }
 
             Dictionary<string, int> nameToIndex = new Dictionary<string, int>();
-            foreach (Transform child in go.transform)
+            foreach(Transform child in go.transform)
             {
                 GameObject childGo = child.gameObject;
                 string childName = assetName + "/" + childGo.name + "###";  //Children re-arrangement will lead to new (wrong) identifiers will be generated
                 int index = 0;
-                if (!nameToIndex.TryGetValue(childName, out index))
+                if(!nameToIndex.TryGetValue(childName, out index))
                 {
                     nameToIndex.Add(childName, 2);
                 }
 
-                if (index > 0)
+                if(index > 0)
                 {
                     childName += index;
                     nameToIndex[childName]++;
                 }
-
+                
                 AssetBundleItemInfo bundleItem;
                 if (!pathToBundleItem.TryGetValue(childName, out bundleItem))
                 {
@@ -2868,49 +2868,49 @@ namespace Battlehub.RTSL
         private AssetLibraryAsset ToAssetLibraryAsset(AssetBundle bundle, AssetBundleInfo info)
         {
             UnityObject[] allAssets = bundle.LoadAllAssets();
-            for (int i = 0; i < allAssets.Length; ++i)
+            for(int i = 0; i < allAssets.Length; ++i)
             {
                 UnityObject asset = allAssets[i];
-                if (asset is AssetLibraryAsset)
+                if(asset is AssetLibraryAsset)
                 {
                     AssetLibraryAsset assetLibraryAsset = (AssetLibraryAsset)asset;
                     assetLibraryAsset.Ordinal = info.Ordinal;
-
+                    
                 }
             }
-
+  
             AssetLibraryAsset result = ScriptableObject.CreateInstance<AssetLibraryAsset>();
             result.Ordinal = info.Ordinal;
 
             AssetLibraryInfo assetLib = result.AssetLibrary;
             AssetFolderInfo assetsFolder = assetLib.Folders[1];
-            if (assetsFolder.children == null)
+            if(assetsFolder.children == null)
             {
                 assetsFolder.children = new List<TreeElement>();
             }
-            if (assetsFolder.Assets == null)
+            if(assetsFolder.Assets == null)
             {
                 assetsFolder.Assets = new List<AssetInfo>();
             }
             int folderId = assetsFolder.id + 1;
             AssetBundleItemInfo[] assetBundleItems = info.AssetBundleItems.OrderBy(i => i.Path.Length).ToArray(); //components will have greater indices
             List<AssetInfo> assetsList = new List<AssetInfo>();
-            for (int i = 0; i < assetBundleItems.Length; ++i)
+            for(int i = 0; i < assetBundleItems.Length; ++i)
             {
                 AssetFolderInfo folder = assetsFolder;
                 AssetBundleItemInfo bundleItem = info.AssetBundleItems[i];
                 string[] pathParts = bundleItem.Path.Split('/');
                 int p = 1;
-                for (; p < pathParts.Length; ++p)
+                for(;p < pathParts.Length; ++p)
                 {
                     string pathPart = pathParts[p];
-                    if (pathPart.Contains("."))
+                    if(pathPart.Contains("."))
                     {
                         break;
                     }
 
                     AssetFolderInfo childFolder = (AssetFolderInfo)folder.children.FirstOrDefault(f => f.name == pathPart);
-                    if (childFolder == null)
+                    if(childFolder == null)
                     {
                         childFolder = new AssetFolderInfo(pathPart, folder.depth + 1, folderId);
                         childFolder.children = new List<TreeElement>();
@@ -2918,10 +2918,10 @@ namespace Battlehub.RTSL
                         folderId++;
                         folder.children.Add(childFolder);
                     }
-                    folder = childFolder;
+                    folder = childFolder;                    
                 }
 
-                if (pathParts.Length > 1)
+                if(pathParts.Length > 1)
                 {
                     AssetInfo assetInfo = folder.Assets != null ? folder.Assets.Where(a => a.name == pathParts[p]).FirstOrDefault() : null;
                     if (assetInfo == null)
@@ -2931,7 +2931,7 @@ namespace Battlehub.RTSL
 
                         Debug.Assert(p == pathParts.Length - 1);
                         assetInfo.Object = bundle.LoadAsset(bundleItem.Path);
-
+                        
                         folder.Assets.Add(assetInfo);
                         assetsList.Add(assetInfo);
                     }
@@ -2953,27 +2953,27 @@ namespace Battlehub.RTSL
             }
 
             //fix names
-            for (int i = 0; i < assetsList.Count; ++i)
+            for(int i = 0; i < assetsList.Count; ++i)
             {
                 assetsList[i].name = Path.GetFileNameWithoutExtension(assetsList[i].name);
             }
 
             //convert folders tree to assetLibraryInfo folders array;
-            if (assetsFolder.hasChildren)
+            if(assetsFolder.hasChildren)
             {
                 for (int i = 0; i < assetsFolder.children.Count; ++i)
                 {
                     FoldersTreeToArray(assetLib, (AssetFolderInfo)assetsFolder.children[i]);
                 }
             }
-
+            
             return result;
         }
 
         private UnityObject GetPrefabPartAtPath(GameObject go, string[] path, int pathPartIndex)
         {
             string pathPart = path[pathPartIndex];
-            if (pathPart.Contains("###"))
+            if(pathPart.Contains("###"))
             {
                 string[] nameAndNumber = pathPart.Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
                 string name = nameAndNumber[0];
@@ -2987,7 +2987,7 @@ namespace Battlehub.RTSL
                     {
                         if (child.name == name)
                         {
-                            if (n == number)
+                            if(n == number)
                             {
                                 childGo = child.gameObject;
                                 break;
@@ -3001,9 +3001,9 @@ namespace Battlehub.RTSL
                 }
                 else
                 {
-                    foreach (Transform child in go.transform)
+                    foreach(Transform child in go.transform)
                     {
-                        if (child.name == name)
+                        if(child.name == name)
                         {
                             childGo = child.gameObject;
                             break;
@@ -3011,19 +3011,19 @@ namespace Battlehub.RTSL
                     }
                 }
 
-                if (childGo != null)
+                if(childGo != null)
                 {
                     if (pathPartIndex < path.Length - 1)
                     {
                         return GetPrefabPartAtPath(childGo, path, pathPartIndex + 1);
                     }
                 }
-
+                
                 return childGo;
             }
-
+            
             Debug.Assert(pathPartIndex == path.Length - 1);
-
+            
             Component component = go.GetComponents<Component>().Where(c => c != null && c.GetType().FullName == path[pathPartIndex]).FirstOrDefault();
             return component;
         }
@@ -3031,7 +3031,7 @@ namespace Battlehub.RTSL
         private void FoldersTreeToArray(AssetLibraryInfo assetLibraryInfo, AssetFolderInfo folder)
         {
             assetLibraryInfo.Folders.Add(folder);
-            if (folder.hasChildren)
+            if(folder.hasChildren)
             {
                 for (int i = 0; i < folder.children.Count; ++i)
                 {
@@ -3198,7 +3198,7 @@ namespace Battlehub.RTSL
                         }
 
                         const bool doNotOverwriteItems = true;
-                        if (!doNotOverwriteItems || status != ImportStatus.Overwrite)
+                        if(!doNotOverwriteItems || status != ImportStatus.Overwrite)
                         {
                             importItem.Status = status;
                             projectItem.AddChild(importItem);
@@ -3213,7 +3213,7 @@ namespace Battlehub.RTSL
 
         private void RemoveEmptyFolders(ProjectItem item)
         {
-            if (item.Children != null)
+            if(item.Children != null)
             {
                 for (int i = item.Children.Count - 1; i >= 0; --i)
                 {
@@ -3228,7 +3228,7 @@ namespace Battlehub.RTSL
 
         public void UnloadImportItems(ProjectItem importItemsRoot)
         {
-            if (importItemsRoot == null)
+            if(importItemsRoot == null)
             {
                 Debug.LogWarning("importItemsRoot == null");
                 return;
@@ -3247,10 +3247,10 @@ namespace Battlehub.RTSL
                             DestroyImmediate(importItems[i].Object, true);
                             importItems[i].Object = null;
                         }
-                        else if (m_assetDB.IsBuiltinLibrary(ordinal) || m_assetDB.IsSceneLibrary(ordinal) || m_assetDB.IsStaticLibrary(ordinal))
+                        else if(m_assetDB.IsBuiltinLibrary(ordinal) || m_assetDB.IsSceneLibrary(ordinal) || m_assetDB.IsStaticLibrary(ordinal))
                         {
                             UnityObject uo = importItems[i].Object;
-                            if (!(uo is GameObject) && !(uo is Component))
+                            if(!(uo is GameObject) && !(uo is Component))
                             {
                                 Resources.UnloadAsset(uo);
                             }
@@ -3294,14 +3294,14 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _Import(importItems, callback, ao);
             }
-
+            
             return ao;
         }
 
         private void _Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback, ProjectAsyncOperation<AssetItem[]> ao)
         {
             HashSet<int> assetLibraryIds = new HashSet<int>();
-
+            
             if (m_root == null)
             {
                 Error error = new Error(Error.E_InvalidOperation);
@@ -3348,13 +3348,13 @@ namespace Battlehub.RTSL
                 }
             }
 
-            if (assetLibraryIds.Count == 0)
+            if(assetLibraryIds.Count == 0)
             {
                 RaiseImportAssetsCompletedCallback(new Error(Error.OK), null, callback, ao);
                 return;
             }
 
-            if (assetLibraryIds.Count > 1)
+            if(assetLibraryIds.Count > 1)
             {
                 Error error = new Error(Error.E_InvalidOperation);
                 error.ErrorText = "Unable to import more then one AssetLibrary";
@@ -3364,7 +3364,7 @@ namespace Battlehub.RTSL
 
             int ordinal = assetLibraryIds.First();
 
-            if (m_assetDB.IsLibraryLoaded(ordinal))
+            if(m_assetDB.IsLibraryLoaded(ordinal))
             {
                 CompleteImportAssets(importItems, ordinal, ao, false, callback);
             }
@@ -3401,7 +3401,7 @@ namespace Battlehub.RTSL
                     parent = assetItem.Parent;
 
                     string path = assetItem.ToString();
-                    if (!removePathHs.Contains(path))
+                    if(!removePathHs.Contains(path))
                     {
                         removePathHs.Add(path);
                     }
@@ -3420,7 +3420,7 @@ namespace Battlehub.RTSL
                             {
                                 removePathHs.Add(path);
                             }
-                            if (assetItem != partAssetItem)
+                            if(assetItem != partAssetItem)
                             {
                                 RemoveAssetItem(partAssetItem);
                             }
@@ -3428,7 +3428,7 @@ namespace Battlehub.RTSL
                     }
                 }
 
-                if (assetItem == null)
+                if(assetItem == null)
                 {
                     assetItem = new AssetItem();
                     assetItem.ItemID = importItem.ItemID;
@@ -3450,7 +3450,7 @@ namespace Battlehub.RTSL
                     for (int p = 0; p < assetItem.Parts.Length; ++p)
                     {
                         PrefabPart part = assetItem.Parts[p];
-                        if (!m_idToAssetItem.ContainsKey(part.PartID))
+                        if(!m_idToAssetItem.ContainsKey(part.PartID))
                         {
                             m_idToAssetItem.Add(part.PartID, assetItem);
                         }
@@ -3467,7 +3467,7 @@ namespace Battlehub.RTSL
 
                 UnityObject obj = m_assetDB.FromID<UnityObject>(importItem.ItemID);
                 objects[i] = obj;
-                if (obj != null)
+                if(obj != null)
                 {
                     if (m_assetDB.TryToReplaceID(obj, importItem.ItemID))
                     {
@@ -3478,7 +3478,7 @@ namespace Battlehub.RTSL
 
             m_storage.Delete(m_projectPath, removePathHs.ToArray(), deleteError =>
             {
-                if (deleteError.HasError)
+                if(deleteError.HasError)
                 {
                     RaiseImportAssetsCompletedCallback(deleteError, null, callback, ao);
                 }
@@ -3487,19 +3487,19 @@ namespace Battlehub.RTSL
                     ProjectAsyncOperation<AssetItem[]> saveAo = new ProjectAsyncOperation<AssetItem[]>();
                     _Save(null, null, objects, null, assetItems, (saveError, savedAssetItems) =>
                     {
-                        if (unloadWhenDone)
+                        if(unloadWhenDone)
                         {
                             m_assetDB.UnloadLibrary(ordinal);
 
                             AssetBundle assetBundle;
-                            if (m_ordinalToAssetBundle.TryGetValue(ordinal, out assetBundle))
+                            if(m_ordinalToAssetBundle.TryGetValue(ordinal, out assetBundle))
                             {
                                 assetBundle.Unload(true);
                                 m_ordinalToAssetBundle.Remove(ordinal);
                             }
                         }
                         RaiseImportAssetsCompletedCallback(saveError, savedAssetItems, callback, ao);
-                    },
+                    }, 
                     saveAo, () => { });
                 }
             });
@@ -3511,7 +3511,7 @@ namespace Battlehub.RTSL
             {
                 callback(error, assetItems);
             }
-
+           
             ao.Result = assetItems;
             ao.Error = error;
             ao.IsCompleted = true;
@@ -3559,7 +3559,7 @@ namespace Battlehub.RTSL
             }
         }
 
-
+   
         private void RemoveFolder(ProjectItem projectItem)
         {
             if (projectItem.Children != null)
@@ -3636,7 +3636,7 @@ namespace Battlehub.RTSL
 
             yield return createAo;
             ao.Error = createAo.Error;
-            if (createAo.Result != null)
+            if(createAo.Result != null)
             {
                 ao.Result = createAo.Result.FirstOrDefault();
             }
@@ -3645,7 +3645,7 @@ namespace Battlehub.RTSL
 
         private void _Create(ProjectItem[] projectItems, ProjectEventHandler<ProjectItem[]> callback, ProjectAsyncOperation<ProjectItem[]> ao)
         {
-            m_storage.Create(m_projectPath, projectItems.Select(projectItem => projectItem.Parent.ToString()).ToArray(), projectItems.Select(projectItem => projectItem.NameExt).ToArray(), error =>
+            m_storage.Create(m_projectPath, projectItems.Select(projectItem => projectItem.Parent.ToString()).ToArray(),  projectItems.Select(projectItem => projectItem.NameExt).ToArray(), error =>
             {
                 if (callback != null)
                 {
@@ -3821,7 +3821,7 @@ namespace Battlehub.RTSL
             {
                 IsBusy = true;
                 _Delete(projectPath, projectItemsPath, callback, ao);
-            }
+            } 
             return ao;
         }
 
@@ -3834,7 +3834,7 @@ namespace Battlehub.RTSL
                     callback(error);
                 }
 
-                ao.Error = error;
+                ao.Error = error;                
                 ao.IsCompleted = true;
 
                 IsBusy = false;
@@ -3930,7 +3930,7 @@ namespace Battlehub.RTSL
                 IsBusy = true;
                 _GetAssetBundles(callback, ao);
             }
-
+            
             return ao;
         }
 
@@ -4045,7 +4045,7 @@ namespace Battlehub.RTSL
                         persistentObjects[i].WriteTo(result[i]);
                     }
                 }
-
+                
                 RaiseGetValuesCompleted(result, callback, ao, getValuesError);
             });
         }
@@ -4064,7 +4064,7 @@ namespace Battlehub.RTSL
         }
 
 
-        public ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null)
+        public ProjectAsyncOperation<T> GetValue<T>(string key, ProjectEventHandler<T> callback = null) 
         {
             if (m_root == null)
             {
@@ -4079,13 +4079,13 @@ namespace Battlehub.RTSL
             else
             {
                 IsBusy = true;
-                _GetValue(key, callback, ao);
+                _GetValue(key,  callback, ao);
             }
 
             return ao;
         }
 
-        private void _GetValue<T>(string key, ProjectEventHandler<T> callback, ProjectAsyncOperation<T> ao)
+        private void _GetValue<T>(string key, ProjectEventHandler<T> callback, ProjectAsyncOperation<T> ao) 
         {
             Type objType = typeof(T);
             Type persistentType = m_typeMap.ToPersistentType(objType);
@@ -4113,7 +4113,7 @@ namespace Battlehub.RTSL
                 {
                     result = (T)persistentObject.Instantiate(typeof(T));
                 }
-
+                 
                 persistentObject.WriteTo(result);
                 RaiseGetValueCompleted((T)result, callback, ao, getValueError);
             });
@@ -4180,11 +4180,11 @@ namespace Battlehub.RTSL
 
         private void RaiseSetValueCompleted(ProjectEventHandler callback, ProjectAsyncOperation ao, Error error)
         {
-            if (callback != null)
+            if(callback != null)
             {
                 callback(error);
             }
-
+            
             ao.Error = error;
             ao.IsCompleted = true;
 

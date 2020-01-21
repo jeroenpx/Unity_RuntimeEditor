@@ -10,13 +10,13 @@ using Battlehub.RTScripting;
 
 namespace Battlehub.RTEditor.Demo
 {
-    public class InitializeSurvialGameDemo : EditorOverride
+    public class InitializeSurvialGameDemo : EditorExtension
     {
         protected override void Awake()
         {
-            if(!PlayerPrefs.HasKey("InitializeSurvialGameDemo"))
+            if(!PlayerPrefs.HasKey("Initialize_SurvialGameDemo"))
             {
-                PlayerPrefs.SetInt("InitializeSurvialGameDemo", 1);
+                PlayerPrefs.SetInt("Initialize_SurvialGameDemo", 1);
                 TextAsset textAsset = Resources.Load("SurvivalGameProject", typeof(TextAsset)) as TextAsset;
     
                 using (Stream stream = new MemoryStream(textAsset.bytes))

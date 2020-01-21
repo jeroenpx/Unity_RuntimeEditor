@@ -610,7 +610,7 @@ namespace Battlehub.RTCommon
                 }
             }
 
-
+           
             RectTransform rectTransform = sceneView.GetComponent<RectTransform>();
             if (rectTransform != null)
             {
@@ -700,7 +700,7 @@ namespace Battlehub.RTCommon
             m_isOpened = !isOpened;
             IsOpened = isOpened;
         }
-
+        
         protected virtual void Start()
         {
             if (IsVR)
@@ -951,11 +951,11 @@ namespace Battlehub.RTCommon
 
         public virtual void ActivateWindow(RuntimeWindow window)
         {
-            if (m_activeWindow != window && (window == null || window.CanActivate))
+            if (m_activeWindow != window && (window == null ||  window.CanActivate))
             {
                 RuntimeWindow deactivatedWindow = m_activeWindow;
 
-                if (ActiveWindowChanging != null)
+                if(ActiveWindowChanging != null)
                 {
                     ActiveWindowChanging(window);
                 }
@@ -1011,7 +1011,7 @@ namespace Battlehub.RTCommon
                     }
                 }
 
-                if (ObjectsDuplicated != null)
+                if(ObjectsDuplicated != null)
                 {
                     ObjectsDuplicated(gameObjects);
                 }
@@ -1045,7 +1045,7 @@ namespace Battlehub.RTCommon
                 duplicates.Add(duplicate);
             }
 
-            if (duplicates.Count > 0)
+            if(duplicates.Count > 0)
             {
                 ExposeToEditor[] exposeToEditor = duplicates.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
                 Undo.BeginRecord();
@@ -1076,7 +1076,7 @@ namespace Battlehub.RTCommon
                     {
                         ExposeToEditor exposed = go.GetComponent<ExposeToEditor>();
 
-                        if (exposed == null || exposed.CanDelete)
+                        if(exposed == null || exposed.CanDelete)
                         {
                             Destroy(go);
                         }
@@ -1092,25 +1092,25 @@ namespace Battlehub.RTCommon
             }
 
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(exposed => exposed != null && exposed.CanDelete).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
-            if (exposeToEditor.Length == 0)
+            if(exposeToEditor.Length == 0)
             {
                 return;
             }
 
             HashSet<GameObject> removeObjectsHs = new HashSet<GameObject>(exposeToEditor.Select(exposed => exposed.gameObject));
             bool isRecording = Undo.IsRecording;
-            if (!isRecording)
+            if(!isRecording)
             {
                 Undo.BeginRecord();
             }
-
+            
             if (Selection.objects != null)
             {
                 List<UnityEngine.Object> selection = Selection.objects.ToList();
                 for (int i = selection.Count - 1; i >= 0; --i)
                 {
                     if (removeObjectsHs.Contains(selection[i]))
-                    {
+                    {   
                         selection.RemoveAt(i);
                     }
                 }
@@ -1120,7 +1120,7 @@ namespace Battlehub.RTCommon
 
             Undo.DestroyObjects(exposeToEditor);
 
-            if (!isRecording)
+            if(!isRecording)
             {
                 Undo.EndRecord();
             }
