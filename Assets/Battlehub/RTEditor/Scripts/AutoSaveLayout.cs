@@ -54,10 +54,26 @@ namespace Battlehub.RTEditor
 
         protected virtual LayoutInfo DefaultLayout(IWindowManager wm)
         {
+
             if (wm.LayoutExist(m_savedLayoutName))
             {
                 LayoutInfo layout = wm.GetLayout(m_savedLayoutName);
-                return layout;
+                if (layout.Child0 != null || layout.Child1 != null)
+                {
+                    if (wm.ValidateLayout(layout))
+                    {
+                        return layout;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Saved layout is corrupted. Restoring default layout");
+                        Transform[] allWindows = wm.GetWindows();
+                        for (int i = 0; i < allWindows.Length; ++i)
+                        {
+                            wm.DestroyWindow(allWindows[i]);
+                        }
+                    }
+                }
             }
 
             return wm.GetBuiltInDefaultLayout();
