@@ -12,6 +12,16 @@ namespace Battlehub.RTTerrain
 {
     public class TerrainDetailEditor : MonoBehaviour
     {
+        public class DetailPrototypeWrapper
+        {
+            public readonly DetailPrototype Prototype;
+
+            public DetailPrototypeWrapper(DetailPrototype prototype)
+            {
+                Prototype = prototype;
+            }
+        }
+
         public event EventHandler SelectedDetailChanged;
 
         [SerializeField]
@@ -118,7 +128,7 @@ namespace Battlehub.RTTerrain
                     return null;
                 }
 
-                return (DetailPrototype)m_detailsList.SelectedItem;
+                return ((DetailPrototypeWrapper)m_detailsList.SelectedItem).Prototype;
             }
         }
 
@@ -356,7 +366,7 @@ namespace Battlehub.RTTerrain
 
                     if (m_detailsList != null)
                     {
-                        m_detailsList.Items = terrain.terrainData.detailPrototypes;
+                        m_detailsList.Items = terrain.terrainData.detailPrototypes.Select(p => new DetailPrototypeWrapper(p));
                         m_detailsList.SelectedIndex = index;
                     }
                 }
@@ -382,7 +392,7 @@ namespace Battlehub.RTTerrain
 
                    if (m_detailsList != null)
                    {
-                       m_detailsList.Items = terrain.terrainData.detailPrototypes;
+                       m_detailsList.Items = terrain.terrainData.detailPrototypes.Select(p => new DetailPrototypeWrapper(p));
                        m_detailsList.SelectedIndex = index;
                    }
                }
@@ -435,7 +445,7 @@ namespace Battlehub.RTTerrain
             {
                 if(TerrainData != null)
                 {
-                    m_detailsList.Items = TerrainData.detailPrototypes;
+                    m_detailsList.Items = TerrainData.detailPrototypes.Select(p => new DetailPrototypeWrapper(p)); 
                 }
                 
                 UpdateVisualState();
@@ -456,7 +466,7 @@ namespace Battlehub.RTTerrain
 
         private void OnDetailsDatabinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
         {
-            DetailPrototype details = (DetailPrototype)e.Item;
+            DetailPrototypeWrapper details = (DetailPrototypeWrapper)e.Item;
             RawImage image = e.ItemPresenter.GetComponentInChildren<RawImage>();
             if(image != null)
             {
@@ -465,17 +475,17 @@ namespace Battlehub.RTTerrain
                     Destroy(image.texture);
                 }
 
-                if(details.usePrototypeMesh && details.prototype != null)
+                if(details.Prototype.usePrototypeMesh && details.Prototype.prototype != null)
                 {
                     IResourcePreviewUtility previewUtil = IOC.Resolve<IResourcePreviewUtility>();
                     Texture2D texture = new Texture2D(1, 1, TextureFormat.ARGB32, true);
                     texture.name = "TemporaryPreview";
-                    texture.LoadImage(previewUtil.CreatePreviewData(details.prototype));
+                    texture.LoadImage(previewUtil.CreatePreviewData(details.Prototype.prototype));
                     image.texture = texture;
                 }
                 else
                 {
-                    image.texture = details.prototypeTexture;
+                    image.texture = details.Prototype.prototypeTexture;
                 }
             }
         }
@@ -515,8 +525,9 @@ namespace Battlehub.RTTerrain
             List<DetailPrototype> newDetails = TerrainData.detailPrototypes.ToList();
             newDetails.Add(detail);
             TerrainData.detailPrototypes = newDetails.ToArray();
-            m_detailsList.Add(detail);
-            m_detailsList.SelectedItem = detail;
+            DetailPrototypeWrapper wrapper = new DetailPrototypeWrapper(detail);
+            m_detailsList.Add(wrapper);
+            m_detailsList.SelectedItem = wrapper;
 
             RecordState(oldDetails);
         }
@@ -526,7 +537,7 @@ namespace Battlehub.RTTerrain
             DetailPrototype[] oldDetails = TerrainData.detailPrototypes.ToArray();
 
             List<DetailPrototype> details = TerrainData.detailPrototypes.ToList();
-            DetailPrototype selectedDetail = (DetailPrototype)m_detailsList.SelectedItem;
+            DetailPrototype selectedDetail = ((DetailPrototypeWrapper)m_detailsList.SelectedItem).Prototype;
             details.Remove(selectedDetail);
             TerrainData.detailPrototypes = details.ToArray();
             m_detailsList.RemoveSelectedItems();

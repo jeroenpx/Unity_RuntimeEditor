@@ -75,7 +75,9 @@
 		<StringResource id="ID_RTEditor_WM_Header_SelectAnimationProperties" value="Select Properties"/>
 		<StringResource id="ID_RTEditor_WM_Header_ImportFile" value="Import File"/>
 		<StringResource id="ID_RTEditor_WM_Header_Settings" value="Settings"/>
-		<StringResource id="ID_RTEditor_WM_Dialog_OK" value="OK"/>
+    <StringResource id="ID_RTEditor_WM_Header_SaveFile" value="Save File"/>
+    <StringResource id="ID_RTEditor_WM_Header_OpenFile" value="Open File"/>
+    <StringResource id="ID_RTEditor_WM_Dialog_OK" value="OK"/>
 		<StringResource id="ID_RTEditor_WM_Dialog_Cancel" value="Cancel"/>
 	
 		<!-- Tools Panel -->
@@ -361,8 +363,18 @@
 		<StringResource id="ID_RTEditor_ImportFileDialog_Btn_Open" value="Open"/>
 		<StringResource id="ID_RTEditor_ImportFileDialog_Btn_Cancel" value="Cancel"/>
 		<StringResource id="ID_RTEditor_ImportFileDialog_Btn_Import" value="Import"/>
-		
-		<!-- ProjectsDialog -->
+
+    <!-- SaveFileDialog -->
+    <StringResource id="ID_RTEditor_SaveFileDialog_Btn_Open" value="Open"/>
+    <StringResource id="ID_RTEditor_SaveFileDialog_Btn_Cancel" value="Cancel"/>
+    <StringResource id="ID_RTEditor_SaveFileDialog_Btn_Save" value="Save"/>
+    <StringResource id="ID_RTEditor_SaveFileDialog_SaveAsConfirmationHeader" value="Save As Confirmation"/>
+    <StringResource id="ID_RTEditor_SaveFileDialog_SaveAsConfirmation" value="File with the same name already exist. Do you want to overwrite it?"/>
+    <!-- OpenFileDialog -->
+    <StringResource id="ID_RTEditor_OpenFileDialog_Btn_Open" value="Open"/>
+    <StringResource id="ID_RTEditor_OpenFileDialog_Btn_Cancel" value="Cancel"/>
+
+    <!-- ProjectsDialog -->
 		<StringResource id="ID_RTEditor_ProjectsDialog_Btn_Create" value="Create"/>
 		<StringResource id="ID_RTEditor_ProjectsDialog_Btn_Delete" value="Delete"/>
 		<StringResource id="ID_RTEditor_ProjectsDialog_Btn_Open" value="Open"/>

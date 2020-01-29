@@ -235,6 +235,12 @@ namespace Battlehub.RTEditor
         private WindowDescriptor m_selectAnimationPropertiesDialog = null;
 
         [SerializeField]
+        private WindowDescriptor m_saveFileDialog = null;
+
+        [SerializeField]
+        private WindowDescriptor m_openFileDialog = null;
+
+        [SerializeField]
         private CustomWindowDescriptor[] m_customWindows = null;
 
         [SerializeField]
@@ -602,26 +608,31 @@ namespace Battlehub.RTEditor
 
         private void OnDialogDestroyed(Dialog dialog)
         {
+            RuntimeWindow dialogWindow = dialog.Content.GetComponentInParent<RuntimeWindow>();
+
             OnContentDestroyed(dialog.Content);
 
-            Transform pointerOverWindow = dialog.Content != null ? FindPointerOverWindow(dialog.Content.GetComponentInParent<RuntimeWindow>()) : null;
-            if (pointerOverWindow != null)
+            if(!m_dialogManager.IsDialogOpened)
             {
-                RuntimeWindow window = pointerOverWindow.GetComponentInChildren<RuntimeWindow>();
-                if (window == null)
+                Transform pointerOverWindow = dialog.Content != null ? FindPointerOverWindow(dialogWindow) : null;
+                if (pointerOverWindow != null)
                 {
-                    window = m_editor.GetWindow(RuntimeWindowType.Scene);
+                    RuntimeWindow window = pointerOverWindow.GetComponentInChildren<RuntimeWindow>();
+                    if (window == null)
+                    {
+                        window = m_editor.GetWindow(RuntimeWindowType.Scene);
+                    }
+                    window.IsPointerOver = true;
+                    m_editor.ActivateWindow(window);
                 }
-                window.IsPointerOver = true;
-                m_editor.ActivateWindow(window);
-            }
-            else
-            {
-                RuntimeWindow window = m_editor.GetWindow(RuntimeWindowType.Scene);
-                m_editor.ActivateWindow(window);
-            }
+                else
+                {
+                    RuntimeWindow window = m_editor.GetWindow(RuntimeWindowType.Scene);
+                    m_editor.ActivateWindow(window);
+                }
 
-            m_skipUpdate = true;
+                m_skipUpdate = true;
+            }
         }
 
         private void OnRegionSelected(Region region)
@@ -945,6 +956,14 @@ namespace Battlehub.RTEditor
             {
                 m_selectAnimationPropertiesDialog = descriptor;
             }
+            else if(windowTypeName == RuntimeWindowType.SaveFile.ToString().ToLower())
+            {
+                m_saveFileDialog = descriptor;
+            }
+            else if(windowTypeName == RuntimeWindowType.OpenFile.ToString().ToLower())
+            {
+                m_openFileDialog = descriptor;
+            }
         }
 
         public void OverrideTools(Transform contentPrefab)
@@ -1237,13 +1256,6 @@ namespace Battlehub.RTEditor
             return window;
         }
 
-        //private IEnumerator CoRaiseDepthChanged(Region region)
-        //{
-        //    yield return new WaitForEndOfFrame();
-        //    Debug.Log("RaiseDepthChanged");
-            
-        //}
-
         public void DestroyWindow(Transform content)
         {
             Tab tab = Region.FindTab(content);
@@ -1458,6 +1470,16 @@ namespace Battlehub.RTEditor
             else if (windowTypeName == RuntimeWindowType.SelectAnimationProperties.ToString().ToLower())
             {
                 wd = m_selectAnimationPropertiesDialog;
+                isDialog = true;
+            }
+            else if (windowTypeName == RuntimeWindowType.SaveFile.ToString().ToLower())
+            {
+                wd = m_saveFileDialog;
+                isDialog = true;
+            }
+            else if(windowTypeName == RuntimeWindowType.OpenFile.ToString().ToLower())
+            {
+                wd = m_openFileDialog;
                 isDialog = true;
             }
             else

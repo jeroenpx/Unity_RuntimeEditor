@@ -210,36 +210,16 @@ namespace Battlehub.UIControls.MenuControl
 
                     string menuName = pathParts[0];
 
-                    Menu menu;
                     if (!menuDictionary.ContainsKey(menuName))
                     {
-                        m_menuButtonPrefab.gameObject.SetActive(false);
-                        m_menuPrefab.gameObject.SetActive(false);
+                        MainMenuButton btn = _CreateMenu(menuName);
 
-                        menu = Instantiate(m_menuPrefab, m_menuPanel.transform, false);
-                        menu.Items = null;
-
-                        MainMenuButton btn = Instantiate(m_menuButtonPrefab, m_topMenu.transform, false);
-                        btn.name = menuName;
-                        btn.Menu = menu;
-
-                        Text txt = btn.GetComponentInChildren<Text>(true);
-                        if (txt != null)
-                        {
-                            txt.text = menuName;
-                        }
-
-                        btn.gameObject.SetActive(true);
-
-                        menuDictionary.Add(menuName, menu);
+                        menuDictionary.Add(menuName, btn.Menu);
                         menuItemsDictionary.Add(menuName, new List<MenuItemWithPriority>());
                     }
-                    else
-                    {
-                        menu = menuDictionary[menuName];
-                    }
 
-                    if(pathParts.Length == 1)
+
+                    if (pathParts.Length == 1)
                     {
                         if (cmd.Hide)
                         {
@@ -308,6 +288,40 @@ namespace Battlehub.UIControls.MenuControl
             {
                 menuDictionary[kvp.Key].SetMenuItems(kvp.Value.OrderBy(m => m.Priority).Select(m => m.Info).ToArray(), false);
             }
+        }
+
+        public MainMenuButton CreateMenu(string menuName)
+        {
+            bool wasButtonPrefabActive = m_menuButtonPrefab.gameObject.activeSelf;
+            bool wasMenuPrefabActive = m_menuPrefab.gameObject.activeSelf;
+
+            m_menuButtonPrefab.gameObject.SetActive(false);
+            m_menuPrefab.gameObject.SetActive(false);
+            MainMenuButton result = _CreateMenu(menuName);
+
+            m_menuPrefab.gameObject.SetActive(wasMenuPrefabActive);
+            m_menuButtonPrefab.gameObject.SetActive(wasButtonPrefabActive);
+            return result;
+        }
+
+        private MainMenuButton _CreateMenu(string menuName)
+        {
+            Menu menu = Instantiate(m_menuPrefab, m_menuPanel.transform, false);
+            menu.Items = null;
+
+            MainMenuButton btn = Instantiate(m_menuButtonPrefab, m_topMenu.transform, false);
+            btn.name = menuName;
+            btn.Text = menuName;
+            btn.Menu = menu;
+
+            Text txt = btn.GetComponentInChildren<Text>(true);
+            if (txt != null)
+            {
+                txt.text = menuName;
+            }
+
+            btn.gameObject.SetActive(true);
+            return btn;
         }
     }
 }

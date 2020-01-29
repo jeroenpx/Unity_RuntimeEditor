@@ -23,7 +23,7 @@ namespace Battlehub.UIControls.Dialogs
 
         public event DialogAction<DialogCancelArgs> Ok;
         public event DialogAction<DialogCancelArgs> Cancel;
-        public event DialogAction Closed;
+        public event DialogAction<bool?> Closed;
         public DialogAction<DialogCancelArgs> OkAction;
         public DialogAction<DialogCancelArgs> CancelAction;
 
@@ -431,7 +431,7 @@ namespace Battlehub.UIControls.Dialogs
             Destroy(m_parentRegion.gameObject);
             if(Closed != null)
             {
-                Closed(this);
+                Closed(this, result);
             }
         }
     }

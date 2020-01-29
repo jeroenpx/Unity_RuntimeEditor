@@ -27,6 +27,8 @@ namespace Battlehub.RTCommon
         SaveScene = 54,
         About = 55,
         SaveAsset = 56,
+        SaveFile = 70,
+        OpenFile = 72,
                 
         SelectObject = 101,
         SelectColor = 102,

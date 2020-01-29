@@ -40,6 +40,7 @@ namespace Battlehub.RTEditor
     {
         public event Action<string> DoubleClick;
         public event Action<string> SelectionChanged;
+        public event Action<string> PathChanged;
 
         [SerializeField]
         private TMP_Dropdown Drives = null;
@@ -116,6 +117,12 @@ namespace Battlehub.RTEditor
                     PlayerPrefs.SetString("Battlehub.FileBrowser.CurrentDir", m_currentDir);
                 }
             }
+        }
+
+        public string Text
+        {
+            get { return Input.text; }
+            set { Input.text = value; }
         }
 
         private List<string> m_allowedExt;
@@ -207,6 +214,7 @@ namespace Battlehub.RTEditor
             Drives.value = driveIndex;
             Drives.onValueChanged.AddListener(OnDriveChanged);
 
+            Input.onValueChanged.AddListener(OnPathChanged);
             Input.onSubmit.AddListener(OnSubmit);
 
             m_started = true;
@@ -256,6 +264,7 @@ namespace Battlehub.RTEditor
 
             if(Input != null)
             {
+                Input.onValueChanged.RemoveListener(OnPathChanged);
                 Input.onSubmit.RemoveListener(OnSubmit);
             }
         }
@@ -265,9 +274,22 @@ namespace Battlehub.RTEditor
             CurrentDir = Drives.options[value].text;
         }
 
+        private void OnPathChanged(string value)
+        {
+            if(PathChanged != null)
+            {
+                PathChanged(value);
+            }
+        }
+
         private void OnSubmit(string value)
         {
             CurrentDir = value;
+        }
+
+        public string Save()
+        {
+            return Input.text;
         }
 
         public string Open()

@@ -1797,7 +1797,7 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            for(int i = VisibleItemIndex; i < VisibleItemIndex + VisibleItemsCount; ++i)
+            for(int i = VisibleItemIndex; i < VisibleItemIndex + VisibleItemsCount && i < m_scrollRect.ItemsCount; ++i)
             {
                 object item = m_scrollRect.Items[i];
                 DataBindItem(item);
