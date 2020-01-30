@@ -487,7 +487,7 @@ namespace Battlehub.RTHandles
             set { m_canSelectAll = value; }
         }
 
-        private bool m_isGridVisible;
+        private bool m_isGridVisible = true;
         public bool IsGridVisible
         {
             get { return m_isGridVisible; }

@@ -89,6 +89,7 @@ namespace Battlehub.UIControls
     {
         public static event EventHandler<VirtualizingParentChangedEventArgs> ParentChanging;
         public static event EventHandler<VirtualizingParentChangedEventArgs> ParentChanged;
+        public static bool Internal_RaiseEvents = true;
 
         private TreeViewItemContainerData m_parent;
         public TreeViewItemContainerData Parent
@@ -101,16 +102,24 @@ namespace Battlehub.UIControls
                     return;
                 }
 
-                if (ParentChanging != null)
+                if(Internal_RaiseEvents)
                 {
-                    ParentChanging(this, new VirtualizingParentChangedEventArgs(m_parent, value));
+                    if (ParentChanging != null)
+                    {
+                        ParentChanging(this, new VirtualizingParentChangedEventArgs(m_parent, value));
+                    }
                 }
+               
 
                 TreeViewItemContainerData oldParent = m_parent;
                 m_parent = value;
-                if (ParentChanged != null)
+
+                if(Internal_RaiseEvents)
                 {
-                    ParentChanged(this, new VirtualizingParentChangedEventArgs(oldParent, m_parent));
+                    if (ParentChanged != null)
+                    {
+                        ParentChanged(this, new VirtualizingParentChangedEventArgs(oldParent, m_parent));
+                    }
                 }
             }
         }
@@ -569,7 +578,6 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            
             if (ItemExpanding != null)
             {
                 VirtualizingItemExpandingArgs args = new VirtualizingItemExpandingArgs(treeViewItemData.Item);
@@ -590,6 +598,7 @@ namespace Battlehub.UIControls
 
                 if (treeViewItemData.CanExpand)
                 {
+                    TreeViewItemContainerData.Internal_RaiseEvents = false;
                     foreach (object childItem in children)
                     {
                         itemIndex++;
@@ -605,6 +614,7 @@ namespace Battlehub.UIControls
                             childData.Parent = treeViewItemData;
                         }
                     }
+                    TreeViewItemContainerData.Internal_RaiseEvents = true;
 
                     UpdateSelectedItemIndex();
                 }
