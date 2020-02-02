@@ -309,6 +309,8 @@ namespace Battlehub.UIControls.MenuControl
             Menu menu = Instantiate(m_menuPrefab, m_menuPanel.transform, false);
             menu.Items = null;
 
+            m_menuButtonPrefab.gameObject.SetActive(false);
+
             MainMenuButton btn = Instantiate(m_menuButtonPrefab, m_topMenu.transform, false);
             btn.name = menuName;
             btn.Text = menuName;
