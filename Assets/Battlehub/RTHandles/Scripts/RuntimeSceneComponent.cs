@@ -41,6 +41,30 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        float FreeRotationSmoothSpeed
+        {
+            get;
+            set;
+        }
+
+        bool RotationInvertX
+        {
+            get;
+            set;
+        }
+
+        bool RotationInvertY
+        {
+            get;
+            set;
+        }
+
+        float FreeMovementSmoothSpeed
+        {
+            get;
+            set;
+        }
+        
         float ZoomSpeed
         {
             get;
@@ -121,9 +145,13 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private bool m_constantZoomSpeed = false;
         [SerializeField]
-        private float m_freeMovementSpeed = 10.0f;
+        private float m_freeMovementSmoothSpeed = 10.0f;
         [SerializeField]
-        private float m_freeRotationSpeed = 10.0f;
+        private float m_freeRotationSmoothSpeed = 10.0f;
+        [SerializeField]
+        private bool m_rotationInvertX = false;
+        [SerializeField]
+        private bool m_rotationInvertY = false;
 
         private Quaternion m_targetRotation;
         private Vector3 m_targetPosition;
@@ -167,18 +195,6 @@ namespace Battlehub.RTHandles
             set { m_canZoom = value; }                 
         }
 
-        public float ZoomSpeed
-        {
-            get { return m_zoomSpeed; }
-            set { m_zoomSpeed = value; }
-        }
-
-        public bool ConstantZoomSpeed
-        {
-            get { return m_constantZoomSpeed; }
-            set { m_constantZoomSpeed = value; }
-        }
-
         public bool ChangeOrthographicSizeOnly
         {
             get { return m_changeOrthographicSizeOnly; }
@@ -195,6 +211,42 @@ namespace Battlehub.RTHandles
         {
             get { return m_canFreeMove; }
             set { m_canFreeMove = value; }
+        }
+
+        public float FreeMovementSmoothSpeed
+        {
+            get { return m_freeMovementSmoothSpeed; }
+            set { m_freeMovementSmoothSpeed = value; }
+        }
+
+        public float FreeRotationSmoothSpeed
+        {
+            get { return m_freeRotationSmoothSpeed; }
+            set { m_freeRotationSmoothSpeed = value; }
+        }
+
+        public bool RotationInvertX
+        {
+            get { return m_rotationInvertX; }
+            set { m_rotationInvertX = value; }
+        }
+
+        public bool RotationInvertY
+        {
+            get { return m_rotationInvertY; }
+            set { m_rotationInvertY = value; }
+        }
+
+        public float ZoomSpeed
+        {
+            get { return m_zoomSpeed; }
+            set { m_zoomSpeed = value; }
+        }
+
+        public bool ConstantZoomSpeed
+        {
+            get { return m_constantZoomSpeed; }
+            set { m_constantZoomSpeed = value; }
         }
 
         public GameObject GameObject
@@ -569,6 +621,16 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            if(m_rotationInvertY)
+            {
+                deltaY = -deltaY;
+            }
+
+            if(m_rotationInvertX)
+            {
+                deltaX = -deltaX;
+            }
+
             Transform cameraTransform = Window.Camera.transform;
 
             m_targetRotation = Quaternion.Inverse(
@@ -608,9 +670,6 @@ namespace Battlehub.RTHandles
                 {
                     m_dragPlane = new Plane(-Window.Camera.transform.forward, Window.Camera.transform.position + Window.Camera.transform.forward * 10);
                 }
-
-                //m_dragPlane = new Plane(-Window.Camera.transform.forward, PivotTransform.position);
-                
             }
         }
 
@@ -647,6 +706,16 @@ namespace Battlehub.RTHandles
 
             Transform camTransform = Window.Camera.transform;
 
+            if(m_rotationInvertY)
+            {
+                rotate.y = -rotate.y;
+            }
+
+            if(m_rotationInvertX)
+            {
+                rotate.x = -rotate.x;
+            }
+
             m_targetRotation = Quaternion.Inverse(
                 Quaternion.Euler(rotate.y, 0, 0) *
                 Quaternion.Inverse(m_targetRotation) *
@@ -655,7 +724,7 @@ namespace Battlehub.RTHandles
             camTransform.rotation = Quaternion.Slerp(
                 camTransform.rotation,
                 m_targetRotation,
-                m_freeRotationSpeed * Time.deltaTime);
+                m_freeRotationSmoothSpeed * Time.deltaTime);
 
             Vector3 zoomOffset = Vector3.zero;
             if (Window.Camera.orthographic)
@@ -692,7 +761,7 @@ namespace Battlehub.RTHandles
             Vector3 newPosition = Vector3.Lerp(
                 camTransform.position,
                 m_targetPosition,
-                m_freeMovementSpeed * Time.deltaTime);
+                m_freeMovementSmoothSpeed * Time.deltaTime);
 
             newPosition.x = (float)Math.Round(newPosition.x, 5);
             newPosition.y = (float)Math.Round(newPosition.y, 5);

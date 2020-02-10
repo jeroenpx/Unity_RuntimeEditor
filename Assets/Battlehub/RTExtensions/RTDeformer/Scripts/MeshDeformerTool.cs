@@ -56,11 +56,11 @@ namespace Battlehub.MeshDeformer3
                     UnsubscribeEvents();
                     if (m_mode != MeshDeformerToolMode.Object)
                     {
-                        RuntimeTool current = m_editor.Tools.Current;
-                        m_editor.Tools.ToolChanged -= OnEditorToolChanged;
-                        m_editor.Tools.Current = RuntimeTool.None;
-                        m_editor.Tools.Current = current;
-                        m_editor.Tools.ToolChanged += OnEditorToolChanged;
+                        //RuntimeTool current = m_editor.Tools.Current;
+                        //m_editor.Tools.ToolChanged -= OnEditorToolChanged;
+                        //m_editor.Tools.Current = RuntimeTool.None;
+                        //m_editor.Tools.Current = current;
+                        //m_editor.Tools.ToolChanged += OnEditorToolChanged;
 
                         SetupSelectionComponentAndSubscribeEvents();
                         m_editor.ActiveWindowChanged += OnActiveWindowChanged;
@@ -209,7 +209,10 @@ namespace Battlehub.MeshDeformer3
             for (int i = 0; i < splineRenderers.Length; ++i)
             {
                 SplineRenderer splineRenderer = splineRenderers[i];
-                splineRenderer.enabled = enable;
+                if(splineRenderer.GetComponent<Deformer>() != null)
+                {
+                    splineRenderer.enabled = enable;
+                }
             }
         }
 

@@ -7,11 +7,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
 {
+    [Obsolete]
     public struct ComponentEditorSettings
     {
         public bool ShowResetButton;
@@ -74,6 +74,7 @@ namespace Battlehub.RTCommon
         event RTEEvent<GameObject[]> ObjectsDuplicated;
         event RTEEvent<GameObject[]> ObjectsDeleted;
 
+        [Obsolete("Use ISettingsComponent.InspectorSettings instead")]
         ComponentEditorSettings ComponentEditorSettings
         {
             get;
@@ -222,8 +223,9 @@ namespace Battlehub.RTCommon
         [SerializeField]
         protected EventSystem m_eventSystem;
 
-        [SerializeField]
-        private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
+        //[SerializeField]
+        //private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
+
         [SerializeField]
         private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 17, 18, 19, 16);
         [SerializeField]
@@ -318,10 +320,15 @@ namespace Battlehub.RTCommon
             return m_windows.Contains(window.gameObject);
         }
 
+#pragma warning disable CS0612
+        private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings();
+        [Obsolete]
         public virtual ComponentEditorSettings ComponentEditorSettings
         {
             get { return m_componentEditorSettings; }
         }
+#pragma warning restore CS0612
+
 
         public virtual CameraLayerSettings CameraLayerSettings
         {
@@ -536,7 +543,6 @@ namespace Battlehub.RTCommon
         {
             Debug.Log("RTE Initialized, 2_1_final");
             IOC.RegisterFallback<IRTE>(RegisterRTE);
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         private static RTEBase RegisterRTE()
@@ -548,11 +554,6 @@ namespace Battlehub.RTCommon
                 m_instance.BuildUp(editor);
             }
             return m_instance;
-        }
-
-        private static void OnSceneUnloaded(Scene arg0)
-        {
-            m_instance = null;
         }
 
         protected virtual void BuildUp(GameObject editor)
@@ -600,9 +601,9 @@ namespace Battlehub.RTCommon
                 eventSystem = editor.AddComponent<EventSystem>();
                 if (m_instance.IsVR)
                 {
-                    RTEVRInputModule inputModule = editor.AddComponent<RTEVRInputModule>();
-                    inputModule.rayTransform = sceneView.Camera.transform;
-                    inputModule.Editor = this;
+                    //RTEVRInputModule inputModule = editor.AddComponent<RTEVRInputModule>();
+                    //inputModule.rayTransform = sceneView.Camera.transform;
+                    //inputModule.Editor = this;
                 }
                 else
                 {
@@ -630,9 +631,9 @@ namespace Battlehub.RTCommon
             {
                 gameObject.AddComponent<VRTracker>();
 
-                RTEVRGraphicsRaycaster raycaster = ui.AddComponent<RTEVRGraphicsRaycaster>();
-                raycaster.SceneWindow = sceneView;
-                m_instance.m_raycaster = raycaster;
+                //RTEVRGraphicsRaycaster raycaster = ui.AddComponent<RTEVRGraphicsRaycaster>();
+                //raycaster.SceneWindow = sceneView;
+                //m_instance.m_raycaster = raycaster;
             }
             else
             {

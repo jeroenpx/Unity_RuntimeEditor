@@ -115,38 +115,47 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnAssetItemLoaded(Error error, Object[] obj)
         {
-            if (obj[0] is GameObject)
+            if(error.HasError)
             {
-                CreateDragPlane();
-
-                GameObject prefab = (GameObject)obj[0];
-                bool wasPrefabEnabled = prefab.activeSelf;
-                prefab.SetActive(false);
-
-                Vector3 point;
-                if (GetPointOnDragPlane(out point))
+                Debug.LogError(error.ToString());
+                m_prefabInstance = null;
+                m_prefabInstanceTransforms = null;
+            }
+            else
+            {
+                if (obj[0] is GameObject)
                 {
-                    m_prefabInstance = InstantiatePrefab(prefab, point, prefab.GetComponent<Transform>().rotation);
-                }
-                else
-                {
-                    m_prefabInstance = InstantiatePrefab(prefab, Vector3.zero, prefab.GetComponent<Transform>().rotation);
-                }
+                    CreateDragPlane();
 
-                m_prefabInstanceTransforms = new HashSet<Transform>(m_prefabInstance.GetComponentsInChildren<Transform>(true));
+                    GameObject prefab = (GameObject)obj[0];
+                    bool wasPrefabEnabled = prefab.activeSelf;
+                    prefab.SetActive(false);
 
-                prefab.SetActive(wasPrefabEnabled);
+                    Vector3 point;
+                    if (GetPointOnDragPlane(out point))
+                    {
+                        m_prefabInstance = InstantiatePrefab(prefab, point, prefab.GetComponent<Transform>().rotation);
+                    }
+                    else
+                    {
+                        m_prefabInstance = InstantiatePrefab(prefab, Vector3.zero, prefab.GetComponent<Transform>().rotation);
+                    }
 
-                ExposeToEditor exposeToEditor = ExposePrefabInstance(m_prefabInstance);
-                exposeToEditor.SetName(obj[0].name);
+                    m_prefabInstanceTransforms = new HashSet<Transform>(m_prefabInstance.GetComponentsInChildren<Transform>(true));
 
-                OnActivatePrefabInstance(m_prefabInstance);
+                    prefab.SetActive(wasPrefabEnabled);
 
-                if(!Editor.DragDrop.InProgress)
-                {
-                    RecordUndo();
-                    m_prefabInstance = null;
-                    m_prefabInstanceTransforms = null;
+                    ExposeToEditor exposeToEditor = ExposePrefabInstance(m_prefabInstance);
+                    exposeToEditor.SetName(obj[0].name);
+
+                    OnActivatePrefabInstance(m_prefabInstance);
+
+                    if (!Editor.DragDrop.InProgress)
+                    {
+                        RecordUndo();
+                        m_prefabInstance = null;
+                        m_prefabInstanceTransforms = null;
+                    }
                 }
             }
         }

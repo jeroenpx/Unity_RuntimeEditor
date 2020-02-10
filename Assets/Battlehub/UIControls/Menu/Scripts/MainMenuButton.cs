@@ -12,7 +12,10 @@ namespace Battlehub.UIControls.MenuControl
         public Menu Menu
         {
             get { return m_menu; }
-            set { m_menu = value; }
+            set
+            {
+                m_menu = value;
+            }
         }
 
         [SerializeField]

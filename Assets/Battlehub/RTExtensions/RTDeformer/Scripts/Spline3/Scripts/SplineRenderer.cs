@@ -37,14 +37,14 @@ namespace Battlehub.Spline3
             {
                 m_lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
                 m_lineMaterial.SetFloat("_Scale", 0.9f);
-                m_lineMaterial.SetColor("_Color", m_lineColor);
+                m_lineMaterial.SetColor("_Color", Color.white);
                 m_lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             }
             if(m_normalMaterial == null)
             {
                 m_normalMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
                 m_normalMaterial.SetFloat("_Scale", 0.9f);
-                m_normalMaterial.SetColor("_Color", m_lineColor);
+                m_normalMaterial.SetColor("_Color", Color.white);
                 m_normalMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             }
 
@@ -205,7 +205,7 @@ namespace Battlehub.Spline3
                 target.subMeshCount = 1;
 
                 target.name = "SplineMesh" + target.GetInstanceID();
-                Color[] colors = new Color[target.vertexCount];
+                Color[] colors = new Color[vertices.Length];
                 for (int i = 0; i < colors.Length; ++i)
                 {
                     colors[i] = color;
@@ -263,7 +263,7 @@ namespace Battlehub.Spline3
                 target.subMeshCount = 1;
 
                 target.name = "SplineMesh" + target.GetInstanceID();
-                Color[] colors = new Color[target.vertexCount];
+                Color[] colors = new Color[vertices.Length];
                 for (int i = 0; i < colors.Length; ++i)
                 {
                     colors[i] = color;

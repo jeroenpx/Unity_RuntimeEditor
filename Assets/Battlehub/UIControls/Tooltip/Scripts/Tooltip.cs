@@ -123,10 +123,6 @@ namespace Battlehub.UIControls.TooltipControl
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            //if (m_tooltip != null)
-            //{
-            //    Destroy(m_tooltip.gameObject);
-            //}
         }
 
         private IEnumerable<string> SplitToLines(string stringToSplit, int maximumLineLength)

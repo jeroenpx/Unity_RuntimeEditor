@@ -5,9 +5,6 @@ using UnityEngine;
 using Battlehub.RTCommon;
 using UnityObject = UnityEngine.Object;
 using Battlehub.RTSL.Interface;
-using UnityEngine.UI;
-using System.Collections;
-using TMPro;
 
 namespace Battlehub.RTEditor
 {
@@ -32,6 +29,8 @@ namespace Battlehub.RTEditor
 
         private IEditorsMap m_editorsMap;
 
+        private ISettingsComponent m_settingsComponent;
+
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Inspector;
@@ -47,6 +46,7 @@ namespace Battlehub.RTEditor
             }
 
             m_editorsMap = IOC.Resolve<IEditorsMap>();
+            m_settingsComponent = IOC.Resolve<ISettingsComponent>();
 
             Editor.Selection.SelectionChanged += OnRuntimeSelectionChanged;
             CreateEditor();
@@ -187,7 +187,7 @@ namespace Battlehub.RTEditor
                 m_editor.transform.SetAsFirstSibling();
             }
 
-            if (m_addComponentRoot != null && exposeToEditor)
+            if (m_addComponentRoot != null && exposeToEditor && (m_settingsComponent == null || m_settingsComponent.BuiltInWindowsSettings.Inspector.ShowAddComponentButton))
             {
                 IProject project = IOC.Resolve<IProject>();
                 if(project == null || project.ToAssetItem(Editor.Selection.activeGameObject) == null)

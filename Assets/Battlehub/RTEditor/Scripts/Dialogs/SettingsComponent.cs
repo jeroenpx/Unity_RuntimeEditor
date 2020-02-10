@@ -1,12 +1,64 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
+    [Serializable]
+    public struct InspectorSettings
+    {
+        [Serializable]
+        public struct ComponentEditorSettings
+        {
+            public bool ShowResetButton;
+            public bool ShowExpander;
+            public bool ShowEnableButton;
+            public bool ShowRemoveButton;
+
+            public ComponentEditorSettings(bool showExpander, bool showResetButton, bool showEnableButton, bool showRemoveButton)
+            {
+                ShowResetButton = showResetButton;
+                ShowExpander = showExpander;
+                ShowEnableButton = showEnableButton;
+                ShowRemoveButton = showRemoveButton;
+            }
+        }
+
+        public ComponentEditorSettings ComponentEditor;
+        public bool ShowAddComponentButton;
+
+        public InspectorSettings(ComponentEditorSettings componentEditorSettings, bool showAddComponentButton)
+        {
+            ComponentEditor = componentEditorSettings;
+            ShowAddComponentButton = showAddComponentButton;
+        }
+
+        public InspectorSettings(bool showAddComponentButton)
+        {
+            ComponentEditor = new ComponentEditorSettings(true, true, true, true);
+            ShowAddComponentButton = showAddComponentButton;
+        }
+    }
+
+    [Serializable]
+    public class BuiltInWindowsSettings
+    {
+        public static readonly BuiltInWindowsSettings Default = new BuiltInWindowsSettings();
+
+        public InspectorSettings Inspector;
+        public BuiltInWindowsSettings()
+        {
+            Inspector = new InspectorSettings(true);
+        }
+    }
+
+
     public interface ISettingsComponent
     {
+        event EventHandler ResetToDefaultsEvent;
+
         bool IsGridVisible
         {
             get;
@@ -45,6 +97,30 @@ namespace Battlehub.RTEditor
 
         void EndEditUIScale();
 
+        float FreeRotationSmoothSpeed
+        {
+            get;
+            set;
+        }
+
+        bool RotationInvertX
+        {
+            get;
+            set;
+        }
+
+        bool RotationInvertY
+        {
+            get;
+            set;
+        }
+
+        float FreeMovementSmoothSpeed
+        {
+            get;
+            set;
+        }
+        
         float ZoomSpeed
         {
             get;
@@ -57,15 +133,36 @@ namespace Battlehub.RTEditor
             set;
         }
 
+        BuiltInWindowsSettings BuiltInWindowsSettings
+        {
+            get;
+        }
+
+        IList<GameObject> CustomSettings
+        {
+            get;
+        }
+
         void ResetToDefaults();
+        void RegisterCustomSettings(GameObject prefab);
+        void UnregsiterCustomSettings(GameObject prefab);
     }
 
-
+    [DefaultExecutionOrder(-1)]
     public class SettingsComponent : MonoBehaviour, ISettingsComponent
     {
+        public event EventHandler ResetToDefaultsEvent;
+
         private IWindowManager m_wm;
 
         private Dictionary<Transform, IRuntimeSceneComponent> m_sceneComponents = new Dictionary<Transform, IRuntimeSceneComponent>();
+
+        [SerializeField]
+        private BuiltInWindowsSettings m_windowSettingsDefault = new BuiltInWindowsSettings();
+        public BuiltInWindowsSettings BuiltInWindowsSettings
+        {
+            get { return m_windowSettingsDefault; }
+        }
 
         [SerializeField]
         private bool m_isGridVisibleDefault = true;
@@ -174,6 +271,67 @@ namespace Battlehub.RTEditor
         }
 
         [SerializeField]
+        private float m_freeMovementSmoothSpeed = 10.0f;
+        public float FreeMovementSmoothSpeed
+        {
+            get { return GetFloat("FreeMovementSmoothSpeed", m_freeMovementSmoothSpeed); }
+            set
+            {
+                SetFloat("FreeMovementSmoothSpeed", value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.FreeMovementSmoothSpeed = value;
+                }
+            }
+        }
+
+        [SerializeField]
+        private float m_freeRotationSmoothSpeed = 10.0f;
+        public float FreeRotationSmoothSpeed
+        {
+            get { return GetFloat("FreeRotationSmoothSpeed", m_freeRotationSmoothSpeed); }
+            set
+            {
+                SetFloat("FreeRotationSmoothSpeed", value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.FreeRotationSmoothSpeed = value;
+                }
+            }
+        }
+
+        [SerializeField]
+        private bool m_rotationInvertX = false;
+        public bool RotationInvertX
+        {
+            get { return GetBool("RotationInvertX", m_rotationInvertX); }
+            set
+            {
+                SetBool("RotationInvertX", value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.RotationInvertX = value;
+                }
+            }
+        }
+
+        [SerializeField]
+        private bool m_rotationInvertY = false;
+        public bool RotationInvertY
+        {
+            get { return GetBool("RotationInvertY", m_rotationInvertY); }
+            set
+            {
+                SetBool("RotationInvertY", value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.RotationInvertY = value;
+                }
+            }
+        }
+
+
+        [SerializeField]
         private float m_zoomSpeedDefault = 5.0f;
         public float ZoomSpeed
         {
@@ -201,6 +359,12 @@ namespace Battlehub.RTEditor
                     sceneComponent.ConstantZoomSpeed = value;
                 }
             }
+        }
+
+        private List<GameObject> m_customSettings = new List<GameObject>();
+        public IList<GameObject> CustomSettings
+        {
+            get { return m_customSettings; }
         }
 
         private void Awake()
@@ -273,6 +437,10 @@ namespace Battlehub.RTEditor
             sceneComponent.IsGridEnabled = IsGridEnabled;
             sceneComponent.SizeOfGrid = GridSize;
             sceneComponent.GridZTest = GridZTest;
+            sceneComponent.FreeRotationSmoothSpeed = FreeRotationSmoothSpeed;
+            sceneComponent.RotationInvertX = RotationInvertX;
+            sceneComponent.RotationInvertY = RotationInvertY;
+            sceneComponent.FreeMovementSmoothSpeed = FreeMovementSmoothSpeed;
             sceneComponent.ZoomSpeed = ZoomSpeed;
             sceneComponent.ConstantZoomSpeed = ConstantZoomSpeed;
         }
@@ -295,10 +463,29 @@ namespace Battlehub.RTEditor
             DeleteKey("GridZTest");
             DeleteKey("UIAutoScale");
             DeleteKey("UIScale");
+            DeleteKey("FreeRotationSmoothSpeed");
+            DeleteKey("RotationInvertX");
+            DeleteKey("RotationInvertY");
+            DeleteKey("FreeMovementSmoothSpeed");
             DeleteKey("ZoomSpeed");
             DeleteKey("ConstantZoomSpeed");
+
+            if(ResetToDefaultsEvent != null)
+            {
+                ResetToDefaultsEvent(this, EventArgs.Empty);
+            }
             
             ApplySettings();
+        }
+
+        public void RegisterCustomSettings(GameObject prefab)
+        {
+            m_customSettings.Add(prefab);
+        }
+
+        public void UnregsiterCustomSettings(GameObject prefab)
+        {
+            m_customSettings.Remove(prefab);
         }
 
         private const string KeyPrefix = "Battlehub.RTEditor.Settings.";

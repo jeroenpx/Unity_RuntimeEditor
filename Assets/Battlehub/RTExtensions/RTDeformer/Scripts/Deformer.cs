@@ -83,6 +83,11 @@ namespace Battlehub.MeshDeformer3
             set { m_spline.LocalControlPoints = value; }
         }
 
+        public override int ControlPointCount
+        {
+            get { return m_spline.ControlPointCount; }
+        }
+
         public override int SegmentsCount
         {
             get { return m_spline.SegmentsCount; }

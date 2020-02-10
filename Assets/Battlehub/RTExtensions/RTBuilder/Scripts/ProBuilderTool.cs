@@ -684,12 +684,12 @@ namespace Battlehub.RTBuilder
 
         private void SetCullingMask(RuntimeWindow window)
         {
-            window.Camera.cullingMask |= 1 << m_rte.CameraLayerSettings.AllScenesLayer;
+            //window.Camera.cullingMask |= 1 << m_rte.CameraLayerSettings.AllScenesLayer;
         }
 
         private void ResetCullingMask(RuntimeWindow window)
         {
-            window.Camera.cullingMask &= ~(1 << m_rte.CameraLayerSettings.AllScenesLayer);
+            //window.Camera.cullingMask &= ~(1 << m_rte.CameraLayerSettings.AllScenesLayer);
         }
 
         private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)

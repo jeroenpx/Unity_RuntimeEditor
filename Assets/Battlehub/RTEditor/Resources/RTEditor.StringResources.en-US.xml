@@ -416,13 +416,17 @@
 		
 		<!-- SettingsDialog -->
 		<StringResource id="ID_RTEditor_SettingsDialog_Reset" value="Reset"/>
-		<StringResource id="ID_RTEditor_SettingsDialog_Cancel" value="Cancel"/>
+		<StringResource id="ID_RTEditor_SettingsDialog_Close" value="Close"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_IsGridVisible" value="Is Grid Visible"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_GridZTest" value="Grid Z Test"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_SnapToGrid" value="Snap To Grid"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_GridSize" value="Grid Size"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_UIAutoScale" value="UI Auto Scale"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_UIScale" value="UI Scale"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_FreeMovementSmoothSpeed" value="Movement Smooth Speed"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_FreeRotationSmoothSpeed" value="Rotation Smooth Speed"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_RotationInvertX" value="Rotation Invert X"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_RotationInvertY" value="Rotation Invert Y"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_ZoomSpeed" value="Zoom Speed"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_ConstantZoomSpeed" value="Constant Zoom Speed"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_UISettings" value="UI Settings"/>

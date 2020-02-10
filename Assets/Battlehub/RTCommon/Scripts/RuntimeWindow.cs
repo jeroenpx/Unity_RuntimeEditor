@@ -413,7 +413,8 @@ namespace Battlehub.RTCommon
         protected virtual void SetCullingMask(Camera camera)
         {
             CameraLayerSettings settings = Editor.CameraLayerSettings;
-            camera.cullingMask &= ~((((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer) | (1 << settings.AllScenesLayer) | (1 << settings.ExtraLayer) | (1 << settings.ExtraLayer2));
+            //camera.cullingMask &= ~((((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer) | (1 << settings.AllScenesLayer) | (1 << settings.ExtraLayer) | (1 << settings.ExtraLayer2));
+            camera.cullingMask &= ~((((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer) | (1 << settings.ExtraLayer) | (1 << settings.ExtraLayer2));
         }
 
         protected virtual void ResetCullingMask()

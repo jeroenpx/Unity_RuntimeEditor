@@ -458,19 +458,29 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            
+            ISettingsComponent settingsComponent = IOC.Resolve<ISettingsComponent>();
+            BuiltInWindowsSettings settings;
+            if (settingsComponent == null)
+            {
+                settings = BuiltInWindowsSettings.Default;
+            }
+            else
+            {
+                settings = settingsComponent.BuiltInWindowsSettings;
+            }
+
             if (ResetButton != null)
             {
                 ResetButton.gameObject.SetActive(componentDescriptor != null ?
                     componentDescriptor.GetHeaderDescriptor(m_editor).ShowResetButton :
-                    m_editor.ComponentEditorSettings.ShowResetButton);
+                    settings.Inspector.ComponentEditor.ShowResetButton);
             }
 
             if (RemoveButton != null)
             {
                 bool showRemoveButton = componentDescriptor != null ?
                     componentDescriptor.GetHeaderDescriptor(m_editor).ShowRemoveButton :
-                    m_editor.ComponentEditorSettings.ShowRemoveButton;
+                    settings.Inspector.ComponentEditor.ShowRemoveButton;
                 if (showRemoveButton)
                 {
                     bool canRemove = m_project == null || m_project.ToAssetItem(Component.gameObject) == null;
@@ -487,7 +497,7 @@ namespace Battlehub.RTEditor
             {
                 EnabledEditor.gameObject.SetActive(componentDescriptor != null ?
                     componentDescriptor.GetHeaderDescriptor(m_editor).ShowEnableButton :
-                    m_editor.ComponentEditorSettings.ShowEnableButton);
+                    settings.Inspector.ComponentEditor.ShowEnableButton);
             }
 
             if (Expander == null)
@@ -496,7 +506,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                if (componentDescriptor != null ? !componentDescriptor.GetHeaderDescriptor(m_editor).ShowExpander : !m_editor.ComponentEditorSettings.ShowExpander)
+                if (componentDescriptor != null ? !componentDescriptor.GetHeaderDescriptor(m_editor).ShowExpander : !settings.Inspector.ComponentEditor.ShowExpander)
                 {
                     Expander.isOn = true;
                     Expander.enabled = false;
@@ -506,7 +516,7 @@ namespace Battlehub.RTEditor
                 {
                     if (ExpanderGraphics != null)
                     {
-                        ExpanderGraphics.SetActive(componentDescriptor != null ? componentDescriptor.GetHeaderDescriptor(m_editor).ShowExpander : m_editor.ComponentEditorSettings.ShowExpander);
+                        ExpanderGraphics.SetActive(componentDescriptor != null ? componentDescriptor.GetHeaderDescriptor(m_editor).ShowExpander : settings.Inspector.ComponentEditor.ShowExpander);
                     }
                     BuildEditor(componentDescriptor, descriptors);
                 }

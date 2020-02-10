@@ -39,7 +39,7 @@
 				float4 color : COLOR;
 				float2 uv : TEXCOORD0;
 				float4 baryc : TEXCOORD1;
-				UNITY_FOG_COORDS(1)
+				UNITY_FOG_COORDS(2)
 				float4 vertex : SV_POSITION;
 			};
 

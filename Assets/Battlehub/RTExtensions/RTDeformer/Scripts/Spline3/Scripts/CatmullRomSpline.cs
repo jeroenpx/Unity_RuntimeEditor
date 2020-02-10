@@ -28,6 +28,11 @@ namespace Battlehub.Spline3
             set;
         }
 
+        public abstract int ControlPointCount
+        {
+            get;
+        }
+
         public abstract int SegmentsCount
         {
             get;
@@ -112,6 +117,11 @@ namespace Battlehub.Spline3
             set { m_controlPoints = value; }
         }
 
+        public override int ControlPointCount
+        {
+            get { return m_controlPoints != null ? m_controlPoints.Length : 0; }
+        }
+
         public override int SegmentsCount
         {
             get
@@ -125,7 +135,7 @@ namespace Battlehub.Spline3
                 {
                     return m_controlPoints.Length;
                 }
-                return m_controlPoints.Length - 3;
+                return Mathf.Max(0, m_controlPoints.Length - 3);
             }
         }
 
@@ -150,8 +160,24 @@ namespace Battlehub.Spline3
 
         public override void Append(float distance = 0)
         {
-            Vector3 position = m_controlPoints[m_controlPoints.Length - 1];
-            Vector3 tangent = position - m_controlPoints[m_controlPoints.Length - 2];
+            Vector3 position;
+            Vector3 tangent;
+            int controlPointsCount = ControlPointCount;
+            if (controlPointsCount > 1)
+            {
+                position = m_controlPoints[m_controlPoints.Length - 1];
+                tangent = position - m_controlPoints[m_controlPoints.Length - 2];
+            }
+            else if(controlPointsCount == 1)
+            {
+                position = Vector3.forward;
+                tangent = Vector3.forward;
+            }
+            else
+            {
+                position = Vector3.zero;
+                tangent = Vector3.forward;
+            }
 
             Array.Resize(ref m_controlPoints, m_controlPoints.Length + 1);
             m_controlPoints[m_controlPoints.Length - 1] = position + tangent.normalized * distance;
@@ -161,8 +187,24 @@ namespace Battlehub.Spline3
 
         public override void Prepend(float distance = 0)
         {
-            Vector3 position = m_controlPoints[0];
-            Vector3 tangent = position - m_controlPoints[1];
+            Vector3 position;
+            Vector3 tangent;
+            int controlPointsCount = ControlPointCount;
+            if (controlPointsCount > 1)
+            {
+                position = m_controlPoints[0];
+                tangent = position - m_controlPoints[1];
+            }
+            else if (controlPointsCount == 1)
+            {
+                position = Vector3.back;
+                tangent = Vector3.back;
+            }
+            else
+            {
+                position = Vector3.zero;
+                tangent = Vector3.back;
+            }
 
             Array.Resize(ref m_controlPoints, m_controlPoints.Length + 1);
             for(int i = m_controlPoints.Length - 1; i > 0; --i)
@@ -422,48 +464,20 @@ namespace Battlehub.Spline3
             return GetCatmullRomTangent(t, p0, p1, p2, p3);
         }
 
-        //Returns a position between 4 Vector3 with Catmull-Rom spline algorithm
-        //http://www.iquilezles.org/www/articles/minispline/minispline.htm
-        private Vector3 GetCatmullRomPosition(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+        private Vector3 GetCatmullRomPosition(float t, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
         {
-            //The coefficients of the cubic polynomial (except the 0.5f * which I added later for performance)
-            Vector3 a = 2f * p1;
-            Vector3 b = p2 - p0;
-            Vector3 c = 2f * p0 - 5f * p1 + 4f * p2 - p3;
-            Vector3 d = -p0 + 3f * p1 - 3f * p2 + p3;
-
-            //The cubic polynomial: a + b * t + c * t^2 + d * t^3
-            Vector3 pos = 0.5f * (a + (b * t) + (c * t * t) + (d * t * t * t));
-            return pos;
+            return .5f * (
+                (-a + 3f * b - 3f * c + d) * (t * t * t)
+                + (2f * a - 5f * b + 4f * c - d) * (t * t)
+                + (-a + c) * t
+                + 2f * b);
         }
 
-        private Vector3 GetCatmullRomTangent(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+        public static Vector3 GetCatmullRomTangent(float t, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
         {
-            /*
-            Vector3 a = 2f * p1;
-            Vector3 b = p2 - p0;
-            Vector3 c = 2f * p0 - 5f * p1 + 4f * p2 - p3;
-            Vector3 d = -p0 + 3f * p1 - 3f * p2 + p3;
-            return 0.5f * ((-a + c) + 2f * (2f * a - 5f * b + 4f * c - d) * t + 3f * (-a + 3f * b - 3f * c + d) * t * t);
-            */
-
-            float t0;
-            float t1;
-
-            if(t >= 1.0f)
-            {
-                t0 = t - 0.0001f;
-                t1 = t;
-            }
-            else
-            {
-                t0 = t;
-                t1 = t + 0.0001f;
-            }
-
-            Vector3 a = GetCatmullRomPosition(t0, p0, p1, p2, p3);
-            Vector3 b = GetCatmullRomPosition(t1, p0, p1, p2, p3);
-            return (b - a).normalized;
+            return 1.5f * (-a + 3f * b - 3f * c + d) * (t * t)
+                    + (2f * a - 5f * b + 4f * c - d) * t
+                    + .5f * c - .5f * a;
         }
 
         public override BaseSplineState GetState()

@@ -156,7 +156,11 @@ namespace Battlehub.Spline3
             {
                 m_pickResult.Index--;
             }
-            transform.position = spline.GetControlPoint(m_pickResult.Index);
+
+            if(0 <= m_pickResult.Index && m_pickResult.Index < spline.ControlPointCount)
+            {
+                transform.position = spline.GetControlPoint(m_pickResult.Index);
+            }
         }
 
         private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)

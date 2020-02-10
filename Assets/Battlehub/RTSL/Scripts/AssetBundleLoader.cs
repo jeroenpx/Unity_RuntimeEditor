@@ -16,14 +16,17 @@ using Battlehub;
 using Battlehub.Utils;
 #endif
 
-
-
 namespace Battlehub.RTSL
 {
     public delegate void LoadAssetBundleHandler(AssetBundle bundle);
     public delegate void ListAssetBundlesHandler(string[] bundleNames);
     public interface IAssetBundleLoader
     {
+        string AssetBundlesPath
+        {
+            get;
+            set;
+        }
         void GetAssetBundles(ListAssetBundlesHandler assetBundles);
         void Load(string name, LoadAssetBundleHandler callback);
     }
@@ -236,13 +239,20 @@ namespace Battlehub.RTSL
     #endif
     public class AssetBundleLoader : IAssetBundleLoader
     {
+        private string m_assetBundlesPath = Application.streamingAssetsPath;
+        public string AssetBundlesPath
+        {
+            get { return m_assetBundlesPath; }
+            set { m_assetBundlesPath = value; }
+        }
+
         public void GetAssetBundles(ListAssetBundlesHandler callback)
         {
             List<string> result = new List<string>();
 
-            if (Directory.Exists(Application.streamingAssetsPath))
+            if (Directory.Exists(AssetBundlesPath))
             {
-                string[] manifestFiles = Directory.GetFiles(Application.streamingAssetsPath, "*.manifest");
+                string[] manifestFiles = Directory.GetFiles(AssetBundlesPath, "*.manifest");
                 for (int i = 0; i < manifestFiles.Length; ++i)
                 {
                     string assetBundleFile = Path.GetDirectoryName(manifestFiles[i]) + "/" + Path.GetFileNameWithoutExtension(manifestFiles[i]);
@@ -262,13 +272,13 @@ namespace Battlehub.RTSL
 
         public void Load(string bundleName, LoadAssetBundleHandler callback)
         {
-            if (!File.Exists(Application.streamingAssetsPath + "/" + bundleName))
+            if (!File.Exists(AssetBundlesPath + "/" + bundleName))
             {
                 callback(null);
                 return;
             }
 
-            AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(Application.streamingAssetsPath + "/" + bundleName);
+            AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(AssetBundlesPath + "/" + bundleName);
             if (request.isDone)
             {
                 AssetBundle bundle = request.assetBundle;

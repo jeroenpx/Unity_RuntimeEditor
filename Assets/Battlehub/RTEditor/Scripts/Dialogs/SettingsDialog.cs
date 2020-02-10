@@ -1,8 +1,11 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
 using Battlehub.Utils;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
@@ -36,10 +39,30 @@ namespace Battlehub.RTEditor
         private HeaderLabel m_sceneNavigationSettingsHeader = null;
 
         [SerializeField]
+        private RangeEditor m_freeRotationSmoothSpeedEditor = null;
+
+        [SerializeField]
+        private BoolEditor m_rotationInvertXEditor = null;
+
+        [SerializeField]
+        private BoolEditor m_rotationInvertYEditor = null;
+
+        [SerializeField]
+        private RangeEditor m_freeMovementSmoothSpeedEditor = null;
+
+        [SerializeField]
         private RangeEditor m_zoomSpeedEditor = null;
 
         [SerializeField]
         private BoolEditor m_constantZoomSpeedEditor = null;
+
+        [SerializeField]
+        private Transform m_panel = null;
+
+        private List<GameObject> m_customSettings = new List<GameObject>();
+
+        [SerializeField]
+        private Button m_resetButton = null;
 
         public bool UIAutoScale
         {
@@ -75,11 +98,9 @@ namespace Battlehub.RTEditor
             m_parentDialog = GetComponentInParent<Dialog>();
             if(m_parentDialog != null)
             {
-                m_parentDialog.IsOkVisible = true;
-                m_parentDialog.OkText = m_localization.GetString("ID_RTEditor_SettingsDialog_Reset", "Reset");
-                m_parentDialog.Ok += OnResetClick;
+                m_parentDialog.IsOkVisible = false;
                 m_parentDialog.IsCancelVisible = true;
-                m_parentDialog.CancelText = m_localization.GetString("ID_RTEditor_SettingsDialog_Cancel", "Cancel");
+                m_parentDialog.CancelText = m_localization.GetString("ID_RTEditor_SettingsDialog_Close", "Close");
             }
 
             if(m_uiSettingsHeader != null)
@@ -145,6 +166,30 @@ namespace Battlehub.RTEditor
                 }
             }
 
+            if (m_freeMovementSmoothSpeedEditor != null)
+            {
+                m_freeMovementSmoothSpeedEditor.Min = 1.0f;
+                m_freeMovementSmoothSpeedEditor.Max = 100.0f;
+                m_freeMovementSmoothSpeedEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.FreeMovementSmoothSpeed), null, m_localization.GetString("ID_RTEditor_SettingsDialog_FreeMovementSmoothSpeed", "Movement Smooth Speed"));
+            }
+
+            if (m_freeRotationSmoothSpeedEditor != null)
+            {
+                m_freeRotationSmoothSpeedEditor.Min = 1.0f;
+                m_freeRotationSmoothSpeedEditor.Max = 100.0f;
+                m_freeRotationSmoothSpeedEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.FreeRotationSmoothSpeed), null, m_localization.GetString("ID_RTEditor_SettingsDialog_FreeRotationSmoothSpeed", "Rotation Smooth Speed"));
+            }
+
+            if (m_rotationInvertXEditor != null)
+            {
+                m_rotationInvertXEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.RotationInvertX), null, m_localization.GetString("ID_RTEditor_SettingsDialog_RotationInvertX", "Rotation Invert X"));
+            }
+
+            if (m_rotationInvertYEditor != null)
+            {
+                m_rotationInvertYEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.RotationInvertY), null, m_localization.GetString("ID_RTEditor_SettingsDialog_RotationInvertY", "Rotation Invert Y"));
+            }
+
             if (m_zoomSpeedEditor != null)
             {
                 m_zoomSpeedEditor.Min = 1.0f;
@@ -156,6 +201,21 @@ namespace Battlehub.RTEditor
             {
                 m_constantZoomSpeedEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.ConstantZoomSpeed), null, m_localization.GetString("ID_RTEditor_SettingsDialog_ConstantZoomSpeed", "Constant Zoom Speed"));
             }
+
+            m_customSettings.Clear();
+            for(int i = 0; i < m_settings.CustomSettings.Count; ++i)
+            {
+                GameObject prefab = m_settings.CustomSettings[i];
+                if(prefab != null)
+                {
+                    GameObject customSettings = Instantiate(prefab);
+                    customSettings.transform.SetParent(m_panel, false);
+                    customSettings.transform.SetSiblingIndex(m_panel.childCount - 2);
+                    m_customSettings.Add(customSettings);
+                }
+            }
+
+            UnityEventHelper.AddListener(m_resetButton, btn => btn.onClick, OnResetClick);
         }
 
         private IEnumerator CoEndEditUIScale()
@@ -167,16 +227,12 @@ namespace Battlehub.RTEditor
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
-            if(m_parentDialog != null)
-            {
-                m_parentDialog.Ok -= OnResetClick;
-            }
+
+            UnityEventHelper.RemoveListener(m_resetButton, btn => btn.onClick, OnResetClick);
         }
 
-        private void OnResetClick(Dialog sender, DialogCancelArgs args)
+        private void OnResetClick()
         {
-            args.Cancel = true;
-
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             wm.Confirmation("Reset to defaults confirmation", "Are you sure you want to reset to default settings?",
                 (dialog, yes) => 
