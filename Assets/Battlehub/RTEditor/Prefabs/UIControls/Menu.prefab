@@ -141,6 +141,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Item1/SubItem1
     Text: Child Item
     Icon: {fileID: 0}
@@ -151,6 +152,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Item2
     Text: Item
     Icon: {fileID: 0}
@@ -161,6 +163,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 7f9ab2a07e35b35428a88d28fc4c6b3f,
     type: 3}
   m_anchor: {fileID: 0}

@@ -199,7 +199,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            StartCoroutine(CoImport(importer, path));
+           Editor.StartCoroutine(CoImport(importer, path));
         }
 
         private IEnumerator CoImport(IFileImporter importer, string path)
@@ -220,7 +220,7 @@ namespace Battlehub.RTEditor
                 targetPath = project.GetUniquePath(targetPath, typeof(Texture2D), folder);    
             }
 
-            yield return StartCoroutine(importer.Import(path, targetPath));
+            yield return Editor.StartCoroutine(importer.Import(path, targetPath));
             rte.IsBusy = false;
             m_parentDialog.Close();
         }

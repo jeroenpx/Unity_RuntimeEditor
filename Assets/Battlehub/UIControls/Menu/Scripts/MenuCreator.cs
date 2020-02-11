@@ -218,7 +218,6 @@ namespace Battlehub.UIControls.MenuControl
                         menuItemsDictionary.Add(menuName, new List<MenuItemWithPriority>());
                     }
 
-
                     if (pathParts.Length == 1)
                     {
                         if (cmd.Hide)
