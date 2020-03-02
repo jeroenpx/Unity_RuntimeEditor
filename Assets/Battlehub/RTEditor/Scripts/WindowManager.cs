@@ -56,6 +56,7 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(Transform content);
 
         Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
+        //Transform CreateWindow(string windowTypeName, out Dialog dialog);
         Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null);
         void DestroyWindow(Transform conent);
 
@@ -1197,7 +1198,18 @@ namespace Battlehub.RTEditor
             return true;
         }
 
+        //public Transform CreateWindow(string windowTypeName, out Dialog dialog)
+        //{
+        //    return CreateWindow(windowTypeName, out dialog, true, RegionSplitType.None, 0.3f, null);
+        //}
+
         public Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null)
+        {
+            Dialog dialog;
+            return CreateWindow(windowTypeName, out dialog, isFree, splitType, flexibleSize, parentWindow);
+        }
+
+        private Transform CreateWindow(string windowTypeName, out Dialog dialog,  bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null)
         {
             WindowDescriptor wd;
             GameObject content;
@@ -1206,17 +1218,20 @@ namespace Battlehub.RTEditor
             Transform window = CreateWindow(windowTypeName, out wd, out content, out isDialog);
             if (!window)
             {
+                dialog = null;
                 return window;
             }
 
             if (isDialog && isFree)
             {
-                Dialog dialog = m_dialogManager.ShowDialog(wd.Icon, wd.Header, content.transform);
+                dialog = m_dialogManager.ShowDialog(wd.Icon, wd.Header, content.transform);
                 dialog.IsCancelVisible = false;
                 dialog.IsOkVisible = false;
             }
             else
             {
+                dialog = null;
+
                 Region targetRegion = null;
                 if(parentWindow != null)
                 {

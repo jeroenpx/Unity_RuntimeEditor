@@ -5,7 +5,7 @@ namespace Battlehub.Spline3
     public class SplineFollower : MonoBehaviour
     {
         [SerializeField]
-        private BaseSpline m_spline = null;
+        protected BaseSpline m_spline = null;
         public BaseSpline Spline
         {
             get { return m_spline; }
@@ -13,16 +13,32 @@ namespace Battlehub.Spline3
         }
 
         [SerializeField]
-        private float m_speed = 1.0f;
+        protected float m_speed = 1.0f;
         public float Speed
         {
             get { return m_speed; }
             set { m_speed = value; }
         }
 
-        private float m_t;
+        [SerializeField]
+        protected bool m_autoDestroy = false;
+        public bool AutoDestroy
+        {
+            get { return m_autoDestroy; }
+            set { m_autoDestroy = value; }
+        }
 
-        private void Start()
+        [SerializeField]
+        protected bool m_loop = true;
+        public bool Loop
+        {
+            get { return m_loop; }
+            set { m_loop = value; }
+        }
+
+        protected float m_t;
+        protected float m_nextT;
+        protected virtual void Start()
         {
             float len = 0;
             Vector3 p0 = m_spline.GetPosition(0);
@@ -32,23 +48,38 @@ namespace Battlehub.Spline3
                 len += (p1 - p0).magnitude;
                 p0 = p1;
             }
-            Debug.Log(name + " length: " + len);
+
+            Vector3 tangent = m_spline.GetTangent(m_t);
+
+            transform.position = m_spline.GetPosition(0);
+            transform.rotation = Quaternion.LookRotation(tangent);
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             Vector3 tangent = m_spline.GetTangent(m_t);
             float v = tangent.magnitude;
             v *= m_spline.SegmentsCount;
-
             m_t += (Time.deltaTime * m_speed) / v;
-            transform.position = m_spline.GetPosition(m_t);
-            transform.rotation = Quaternion.LookRotation(tangent);
 
-            if(m_t == 1)
+            if (m_t >= 1)
             {
-                Destroy(this);
+                if (m_autoDestroy)
+                {
+                    Destroy(this);
+                }
+                else if (m_loop)
+                {
+                    m_t %= 1;
+                }
+                else
+                {
+                    m_t = 1;
+                }
             }
+
+            transform.position = m_spline.GetPosition(m_t);
+            transform.rotation = Quaternion.LookRotation(m_spline.GetTangent(m_t));
         }
     }
 

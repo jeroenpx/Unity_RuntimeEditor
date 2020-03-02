@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.RTCommon;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTMeasurement
 {
     public class MeasureDistanceTool : MeasureTool
     {
+        [SerializeField]
+        private bool m_metric = true;
+
         protected List<Vector3> m_points = new List<Vector3>();
         
         protected override void UpdateOverride()
@@ -44,12 +48,15 @@ namespace Battlehub.RTMeasurement
 
                     if (Output != null && Canvas != null)
                     {
+                        Camera worldCamera = Canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Canvas.worldCamera;
+
                         Vector2 position;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Output.transform.parent, Editor.Input.GetPointerXY(0), Canvas.worldCamera, out position);
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Output.transform.parent, Editor.Input.GetPointerXY(0), worldCamera, out position);
                         Output.transform.localPosition = position;
                         if(m_points.Count == 2)
                         {
-                            Output.text = (m_points[1] - m_points[0]).magnitude.ToString("F2");
+                            float mag = (m_points[1] - m_points[0]).magnitude;
+                            Output.text = m_metric ? mag.ToString("F2") : UnitsConverter.MetersToFeetInches(mag);
                         }
                         else
                         {

@@ -365,8 +365,10 @@ namespace Battlehub.RTHandles
 
             Vector2 guiMousePositon = Window.Pointer.ScreenPoint;
             guiMousePositon.y = Screen.height - guiMousePositon.y;
+
+            Camera canvasCamera = (m_canvas == null || m_canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : m_canvas.worldCamera;
             bool isMouseOverButton = BtnProjection != null ?
-                RectTransformUtility.RectangleContainsScreenPoint((RectTransform)BtnProjection.transform, m_editor.Input.GetPointerXY(0), m_canvas.worldCamera)  : 
+                RectTransformUtility.RectangleContainsScreenPoint((RectTransform)BtnProjection.transform, m_editor.Input.GetPointerXY(0), canvasCamera)  : 
                 m_buttonRect.Contains(guiMousePositon, true);
             if(isMouseOverButton)
             {
@@ -387,7 +389,7 @@ namespace Battlehub.RTHandles
             }
             else
             {
-                pointerOverSceneGizmo = RectTransformUtility.RectangleContainsScreenPoint(m_renderTextureCamera.RectTransform, m_editor.Input.GetPointerXY(0), m_canvas.worldCamera);
+                pointerOverSceneGizmo = RectTransformUtility.RectangleContainsScreenPoint(m_renderTextureCamera.RectTransform, m_editor.Input.GetPointerXY(0), canvasCamera);
             }
 
             if (pointerOverSceneGizmo && Editor.ActiveWindow == Window && Window.IsPointerOver)
@@ -595,8 +597,9 @@ namespace Battlehub.RTHandles
                 return screenPoint;
             }
 
+            Camera canvasCamera = (m_camera == null || m_canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : m_canvas.worldCamera;
             Vector2 viewPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransform, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransform, screenPoint, canvasCamera, out viewPoint);
 
             if (m_canvasScaler != null)
             {

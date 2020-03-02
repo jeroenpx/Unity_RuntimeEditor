@@ -102,13 +102,13 @@ namespace Battlehub.RTEditor
 
     public class SceneComponentExtension : EditorExtension
     {
-        private IRuntimeEditor m_editor;
+        private IRTE m_editor;
         private IRuntimeSceneComponent m_sceneComponent;
 
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
-            m_editor = IOC.Resolve<IRuntimeEditor>();
+            m_editor = IOC.Resolve<IRTE>();
             m_editor.ActiveWindowChanged += OnActiveWindowChanged;
             OnActiveWindowChanged(m_editor.ActiveWindow);
         }

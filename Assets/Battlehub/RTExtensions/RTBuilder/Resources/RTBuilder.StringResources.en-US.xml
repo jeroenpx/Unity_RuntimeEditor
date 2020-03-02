@@ -17,7 +17,8 @@
 		<StringResource id="ID_Battlehub.RTBuilder.ProBuilderView+UIModes.UV_Editing" value="UV Editing"/>
 		<StringResource id="ID_Battlehub.RTBuilder.ProBuilderView+UIModes.Materials_Editing" value="Materials Editing"/>
 		<StringResource id="ID_RTBuilder_View_ProBuilderize" value="ProBuilderize"/>
-		<StringResource id="ID_RTBuilder_View_Subdivide" value="Subdivide"/>
+    <StringResource id="ID_RTBuilder_View_UnproBuilderize" value="UnproBuilderize"/>
+    <StringResource id="ID_RTBuilder_View_Subdivide" value="Subdivide"/>
 		<StringResource id="ID_RTBuilder_View_CenterPivot" value="Center Pivot"/>
 		<StringResource id="ID_RTBuilder_View_ExtrudeFace" value="Extrude Face"/>
 		<StringResource id="ID_RTBuilder_View_DeleteFace" value="Delete Face"/>

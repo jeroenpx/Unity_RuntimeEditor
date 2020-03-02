@@ -524,9 +524,17 @@ namespace Battlehub.RTSL
 
             UnloadUnregisterDestroy();
 
-            if (m_projectInfo != null && createNewScene)
+            if (m_projectInfo != null)
             {
-                CreateNewScene();
+                if(createNewScene)
+                {
+                    CreateNewScene();
+                }
+                else
+                {
+                    ClearScene();
+                    m_loadedScene = null;
+                }
             }
 
             m_projectInfo = null;

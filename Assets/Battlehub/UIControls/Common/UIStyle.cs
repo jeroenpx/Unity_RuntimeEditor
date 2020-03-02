@@ -53,6 +53,7 @@ namespace Battlehub.UIControls
                 colors.highlightedColor = highlighedColor;
                 colors.pressedColor = pressedColor;
                 colors.disabledColor = disabledColor;
+                colors.selectedColor = highlighedColor;
                 inputField.colors = colors;
                 inputField.selectionColor = selectedColor;
             }
@@ -65,12 +66,13 @@ namespace Battlehub.UIControls
                 colors.highlightedColor = highlighedColor;
                 colors.pressedColor = pressedColor;
                 colors.disabledColor = disabledColor;
+                colors.selectedColor = highlighedColor;
                 uiInputField.colors = colors;
                 uiInputField.selectionColor = selectedColor;
             }
         }
 
-        public void ApplySelectableColor(Color normalColor, Color highlighedColor, Color pressedColor, Color disabledColor)
+        public void ApplySelectableColor(Color normalColor, Color highlighedColor, Color pressedColor, Color disabledColor, Color selectedColor)
         {
             Selectable selectable = GetComponent<Selectable>();
             if(selectable != null)
@@ -80,6 +82,7 @@ namespace Battlehub.UIControls
                 colors.highlightedColor = highlighedColor;
                 colors.pressedColor = pressedColor;
                 colors.disabledColor = disabledColor;
+                colors.selectedColor = highlighedColor;
                 selectable.colors = colors;
                 
             }

@@ -719,7 +719,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnResetClick()
+        protected virtual void OnResetClick()
         {
             GameObject go = new GameObject();
             go.SetActive(false);
@@ -795,10 +795,10 @@ namespace Battlehub.RTEditor
             m_editor.Undo.EndRecord();
         }
 
-        private void OnRemove()
+        protected virtual void OnRemove()
         {
             PropertyDescriptor[] descriptors = m_editorsMap.GetPropertyDescriptors(Component.GetType(), this, m_converter);
-            Editor.Undo.DestroyComponent(Component, descriptors.Select(d => d.ComponentMemberInfo).ToArray());
+            Editor.Undo.DestroyComponent(Component, descriptors.Where(d => d.Target == (object)Component).Select(d => d.ComponentMemberInfo).ToArray());
         }
     }
 

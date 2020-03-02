@@ -31,6 +31,7 @@ namespace Battlehub.RTEditor
 
         void CreateAsset(UnityObject asset, ProjectItem parentFolder);
         void DeleteSelectedItems();
+        void Rename(ProjectItem projectItem, string newName);
     }
 
     public class ProjectFolderView : RuntimeWindow, IProjectFolder
@@ -433,7 +434,6 @@ namespace Battlehub.RTEditor
                 image.sprite = itemImage.sprite;
                 image.gameObject.SetActive(true);
 
-
                 TextMeshProUGUI text = e.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
                 text.text = item.Name;
 
@@ -456,6 +456,21 @@ namespace Battlehub.RTEditor
             if (EventSystem.current != null && !EventSystem.current.alreadySelecting)
             {
                 EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+
+        public void Rename(ProjectItem projectItem, string newName)
+        {
+            VirtualizingTreeViewItem tvItem = m_listBox.GetTreeViewItem(projectItem);
+            if (tvItem == null)
+            {
+                return;
+            }
+
+            TextMeshProUGUI text = tvItem.ItemPresenter.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (text != null)
+            {
+                Rename(text, projectItem, newName);
             }
         }
 
@@ -487,6 +502,7 @@ namespace Battlehub.RTEditor
             return result;
         }
 
+     
         protected virtual void OnNameChanged(ExposeToEditor obj)
         {
             AssetItem assetItem = m_project.ToAssetItem(obj);

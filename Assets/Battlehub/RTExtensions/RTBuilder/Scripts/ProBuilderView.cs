@@ -35,6 +35,8 @@ namespace Battlehub.RTBuilder
         private ToolCmd[] m_commands;
         private IProBuilderTool m_proBuilderTool;
 
+        private bool m_canProBuilderize = false;
+        private bool m_canUnproBuilderize = false;
         private bool m_isProBuilderMeshSelected = false;
         private bool m_isNonProBuilderMeshSelected = false;
         private bool m_isPolyShapeSelected = false;
@@ -208,6 +210,7 @@ namespace Battlehub.RTBuilder
         {
             List<ToolCmd> commands = GetCommonCommands();
             commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_ProBuilderize", "ProBuilderize"), OnProBuilderize, CanProBuilderize));
+            commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_UnproBuilderize", "UnproBuilderize"), OnUnproBuilderize, CanUnproBuilderize));
             commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_Subdivide", "Subdivide"), () => m_proBuilderTool.Subdivide(), () => m_isProBuilderMeshSelected));
             commands.Add(new ToolCmd(m_localization.GetString("ID_RTBuilder_View_CenterPivot", "Center Pivot"), OnCenterPivot, () => m_isProBuilderMeshSelected));
 
@@ -275,12 +278,16 @@ namespace Battlehub.RTBuilder
             GameObject[] selected = Editor.Selection.gameObjects;
             if (selected != null && selected.Length > 0)
             {
+                m_canProBuilderize = selected.Where(go => go.GetComponentsInChildren<MeshFilter>(true).Any(f => (f.hideFlags & HideFlags.HideInHierarchy) == 0 && f.GetComponent<PBMesh>() == null)).Any();
+                m_canUnproBuilderize = selected.Where(go => go.GetComponentsInChildren<MeshFilter>(true).Any(f => f.GetComponent<PBMesh>() != null)).Any();
                 m_isProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() != null).Any();
                 m_isNonProBuilderMeshSelected = selected.Where(go => go.GetComponent<PBMesh>() == null).Any();
                 m_isPolyShapeSelected = selected.Where(go => go.GetComponent<PBPolyShape>() != null).Count() == 1;
             }
             else
             {
+                m_canProBuilderize = false;
+                m_canUnproBuilderize = false;
                 m_isProBuilderMeshSelected = false;
                 m_isNonProBuilderMeshSelected = false;
                 m_isPolyShapeSelected = false;
@@ -483,7 +490,12 @@ namespace Battlehub.RTBuilder
 
         private bool CanProBuilderize()
         {
-            return m_isNonProBuilderMeshSelected;
+            return m_canProBuilderize;
+        }
+
+        private bool CanUnproBuilderize()
+        {
+            return m_canUnproBuilderize;
         }
 
         private bool IsDescendant(Transform ancestor, Transform obj)
@@ -502,6 +514,126 @@ namespace Battlehub.RTBuilder
             return false;
         }
 
+        private class ProBuilderizer
+        {
+            private GameObject[] m_gameObjects;
+            private Dictionary<GameObject, Mesh> m_gameObjectToMesh;
+            
+            public ProBuilderizer(GameObject[] gameObjects)
+            {
+                MeshFilter[] filters = gameObjects.SelectMany(g => g.GetComponentsInChildren<MeshFilter>(true)).ToArray();
+                m_gameObjectToMesh = filters.ToDictionary(f => f.gameObject, f => f.sharedMesh);
+                m_gameObjects = gameObjects;
+            }
+
+            public void Redo()
+            {
+                for (int i = 0; i < m_gameObjects.Length; ++i)
+                {
+                    GameObject go = m_gameObjects[i];
+                    Vector3 scale = go.transform.localScale;
+                    float minScale = Mathf.Min(scale.x, scale.y, scale.z);
+                    ProBuilderize(go, true, new Vector2(minScale, minScale));
+                }
+                RaiseOnSelectionChanged();
+            }
+
+            public void Undo()
+            {
+                foreach(var kvp in m_gameObjectToMesh)
+                {
+                    GameObject go = kvp.Key;
+                    if(go == null)
+                    {
+                        continue;
+                    }
+                    Mesh mesh = kvp.Value;
+
+                    MeshFilter filter = go.GetComponent<MeshFilter>();
+                    if(filter)
+                    {
+                        filter.sharedMesh = mesh;
+                    }
+                    
+                    PBMesh pbMesh = go.GetComponent<PBMesh>();
+                    if(pbMesh)
+                    {
+                        pbMesh.DestroyImmediate();
+                    }
+                }
+                RaiseOnSelectionChanged();
+            }
+
+            private static void RaiseOnSelectionChanged()
+            {
+                IRTE rte = IOC.Resolve<IRTE>();
+                foreach (RuntimeWindow window in rte.Windows)
+                {
+                    if (window is ProBuilderView)
+                    {
+                        ProBuilderView pb = (ProBuilderView)window;
+                        pb.OnSelectionChanged(null);
+                    }
+                }
+            }
+
+
+            public PBMesh ProBuilderize(GameObject gameObject, bool hierarchy, Vector2 uvScale)
+            {
+                bool wasActive = false;
+                if (uvScale != Vector2.one)
+                {
+                    wasActive = gameObject.activeSelf;
+                    gameObject.SetActive(false);
+                }
+
+                if (hierarchy)
+                {
+                    MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>(true);
+                    for (int i = 0; i < meshFilters.Length; ++i)
+                    {
+                        if (meshFilters[i].GetComponent<PBMesh>() == null)
+                        {
+                            ExposeToEditor exposeToEditor = meshFilters[i].GetComponent<ExposeToEditor>();
+                            if (exposeToEditor != null)
+                            {
+                                exposeToEditor.AddComponent(typeof(PBMesh));
+                                PBMesh pbMesh = exposeToEditor.GetComponent<PBMesh>();
+                                PBMesh.Init(pbMesh, uvScale);
+                            }
+                        }
+                    }
+
+                    if (uvScale != Vector2.one)
+                    {
+                        gameObject.SetActive(wasActive);
+                    }
+
+                    return gameObject.GetComponent<PBMesh>();
+                }
+                else
+                {
+                    PBMesh mesh = gameObject.GetComponent<PBMesh>();
+                    if (mesh != null)
+                    {
+                        if (uvScale != Vector2.one)
+                        {
+                            gameObject.SetActive(wasActive);
+                        }
+                        return mesh;
+                    }
+
+                    mesh = gameObject.AddComponent<PBMesh>();
+                    PBMesh.Init(mesh, uvScale);
+                    if (uvScale != Vector2.one)
+                    {
+                        gameObject.SetActive(wasActive);
+                    }
+                    return mesh;
+                }
+            }
+        }
+
         private object OnProBuilderize(object arg)
         {
             GameObject[] gameObjects = Editor.Selection.gameObjects;
@@ -513,71 +645,41 @@ namespace Battlehub.RTBuilder
             Transform[] transforms = gameObjects.Select(g => g.transform).ToArray();
             gameObjects = gameObjects.Where(g => !transforms.Any(t => IsDescendant(t, g.transform))).ToArray();
 
-            for(int i = 0; i < gameObjects.Length; ++i)
-            {
-                Vector3 scale = gameObjects[i].transform.localScale;
-                float minScale = Mathf.Min(scale.x, scale.y, scale.z);
-                ProBuilderize(gameObjects[i], true, new Vector2(minScale, minScale));
-            }
-
-            OnSelectionChanged(null);
+            ProBuilderizer proBuilderizer = new ProBuilderizer(gameObjects);
+            Editor.Undo.CreateRecord(proBuilderizer, null, null, RedoProbuilderize, UndoProbuilderize);
+            proBuilderizer.Redo();
             return null;
         }
 
-        public PBMesh ProBuilderize(GameObject gameObject, bool hierarchy, Vector2 uvScale)
+        private object OnUnproBuilderize(object arg)
         {
-            bool wasActive = false;
-            if (uvScale != Vector2.one)
+            GameObject[] gameObjects = Editor.Selection.gameObjects;
+            if (gameObjects == null)
             {
-                wasActive = gameObject.activeSelf;
-                gameObject.SetActive(false);
+                return null;
             }
 
-            if (hierarchy)
-            {
-                MeshFilter[] meshFilters = gameObject.GetComponentsInChildren<MeshFilter>(true);
-                for (int i = 0; i < meshFilters.Length; ++i)
-                {
-                    if (meshFilters[i].GetComponent<PBMesh>() == null)
-                    {
-                        ExposeToEditor exposeToEditor = meshFilters[i].GetComponent<ExposeToEditor>();
-                        if(exposeToEditor != null)
-                        {
-                            Editor.Undo.AddComponent(exposeToEditor, typeof(PBMesh));
-                            PBMesh pbMesh = exposeToEditor.GetComponent<PBMesh>();
-                            PBMesh.Init(pbMesh, uvScale);
-                        }
-                        
-                    }
-                }
+            Transform[] transforms = gameObjects.Select(g => g.transform).ToArray();
+            gameObjects = gameObjects.Where(g => !transforms.Any(t => IsDescendant(t, g.transform))).ToArray();
 
-                if (uvScale != Vector2.one)
-                {
-                    gameObject.SetActive(wasActive);
-                }
+            ProBuilderizer proBuilderizer = new ProBuilderizer(gameObjects);
+            Editor.Undo.CreateRecord(proBuilderizer, null, null, UndoProbuilderize, RedoProbuilderize);
+            proBuilderizer.Undo();
+            return null;
+        }
 
-                return gameObject.GetComponent<PBMesh>();
-            }
-            else
-            {
-                PBMesh mesh = gameObject.GetComponent<PBMesh>();
-                if (mesh != null)
-                {
-                    if (uvScale != Vector2.one)
-                    {
-                        gameObject.SetActive(wasActive);
-                    }
-                    return mesh;
-                }
+        private static bool UndoProbuilderize(Record record)
+        {
+            ProBuilderizer proBuilderizer = (ProBuilderizer)record.Target;
+            proBuilderizer.Undo();
+            return true;
+        }
 
-                mesh = gameObject.AddComponent<PBMesh>();
-                PBMesh.Init(mesh, uvScale);
-                if (uvScale != Vector2.one)
-                {
-                    gameObject.SetActive(wasActive);
-                }
-                return mesh;
-            }
+        private static bool RedoProbuilderize(Record record)
+        {
+            ProBuilderizer proBuilderizer = (ProBuilderizer)record.Target;
+            proBuilderizer.Redo();
+            return true;
         }
 
         private object OnExtrudeFace(object arg)

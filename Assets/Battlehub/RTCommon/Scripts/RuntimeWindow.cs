@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using Region = Battlehub.UIControls.DockPanels.Region;
-
 namespace Battlehub.RTCommon
 {
     public enum RuntimeWindowType

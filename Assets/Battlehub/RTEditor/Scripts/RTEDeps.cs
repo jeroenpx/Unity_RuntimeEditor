@@ -1,7 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Battlehub.RTEditor
 {
@@ -213,7 +212,6 @@ namespace Battlehub.RTEditor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
             IOC.RegisterFallback(() => Instance.m_console);
             IOC.RegisterFallback(() => Instance.m_resourcePreview);
             IOC.RegisterFallback(() => Instance.m_rteAppearance);
@@ -223,11 +221,6 @@ namespace Battlehub.RTEditor
             IOC.RegisterFallback(() => Instance.m_contextMenu);
             IOC.RegisterFallback(() => Instance.m_runtimeHandlesComponent);
             IOC.RegisterFallback(() => Instance.m_editorsMap);
-        }
-
-        private static void OnSceneUnloaded(Scene arg0)
-        {
-            m_instance = null;
         }
     }
 }

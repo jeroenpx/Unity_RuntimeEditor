@@ -57,14 +57,14 @@ namespace Battlehub.MeshDeformer3
 
     public class Segment : MonoBehaviour
     {
+        public static event Action<Deformer, Segment> Deformed;
+
         private Vector3 m_up;
         private Quaternion m_axisRotation;
-        private Mesh m_mesh;
-        private Mesh m_colliderMesh;
+        private MeshFilter m_meshFilter;
+        private MeshCollider m_meshCollider;
         private Slice[] m_slices;
         private Slice[] m_colliderSlices;
-        private MeshCollider m_collider = null;
-
 
         public int[] CurveIndices
         {
@@ -72,12 +72,17 @@ namespace Battlehub.MeshDeformer3
             private set;
         }
 
-        private void Awake()
+        public Mesh Mesh
         {
-            m_collider = GetComponent<MeshCollider>();
+            get { return m_meshFilter != null ? m_meshFilter.sharedMesh : null; }
         }
 
-        public void Wrap(Mesh mesh, Mesh colliderMesh, Axis axis, int[] curveIndices, int sliceCount)
+        public Mesh ColliderMesh
+        {
+            get { return m_meshCollider != null ? m_meshCollider.sharedMesh : null; }
+        }
+        
+        public void Wrap(MeshFilter meshFilter, MeshCollider meshCollider, Axis axis, int[] curveIndices, int sliceCount)
         {
             if (curveIndices.Length < 1)
             {
@@ -99,10 +104,10 @@ namespace Battlehub.MeshDeformer3
                 m_axisRotation = Quaternion.AngleAxis(90.0f, Vector3.right);
             }
 
-            if (mesh == null)
+            if (meshFilter == null || meshFilter.sharedMesh == null)
             {
-                m_mesh = null;
-                m_colliderMesh = null;
+                m_meshFilter = null;
+                m_meshCollider = null;
                 m_slices = new Slice[curveIndices.Length * (sliceCount + 1)];
                 m_colliderSlices = new Slice[curveIndices.Length * (sliceCount + 1)];
                 for (int i = 0; i < m_slices.Length; ++i)
@@ -117,14 +122,14 @@ namespace Battlehub.MeshDeformer3
 
             Vector3 boundsFrom;
             Vector3 boundsTo;
-            mesh.GetBounds(axis, out boundsFrom, out boundsTo);
+            meshFilter.sharedMesh.GetBounds(axis, out boundsFrom, out boundsTo);
 
-            m_mesh = mesh;
-            m_slices = CreateSlices(m_mesh, boundsFrom, boundsTo, axis, curveIndices, sliceCount);
+            m_meshFilter = meshFilter;
+            m_slices = CreateSlices(m_meshFilter.sharedMesh, boundsFrom, boundsTo, axis, curveIndices, sliceCount);
 
-            if (colliderMesh == null)
+            if (meshCollider == null || meshCollider.sharedMesh == null)
             {
-                m_colliderMesh = null;
+                m_meshCollider = null;
                 m_colliderSlices = new Slice[curveIndices.Length * (sliceCount + 1)];
                 for (int i = 0; i < m_colliderSlices.Length; ++i)
                 {
@@ -133,8 +138,8 @@ namespace Battlehub.MeshDeformer3
             }
             else
             {
-                m_colliderMesh = colliderMesh;
-                m_colliderSlices = CreateSlices(m_colliderMesh, boundsFrom, boundsTo, axis, curveIndices, sliceCount);
+                m_meshCollider = meshCollider;
+                m_colliderSlices = CreateSlices(m_meshCollider.sharedMesh, boundsFrom, boundsTo, axis, curveIndices, sliceCount);
             }
         }
 
@@ -212,14 +217,14 @@ namespace Battlehub.MeshDeformer3
             Mesh nextMesh = null;
             if (prev != null)
             {
-                prevMesh = prev.m_mesh;
+                prevMesh = prev.Mesh;
             }
 
             if (next != null)
             {
-                nextMesh = next.m_mesh;
+                nextMesh = next.Mesh;
             }
-            SlerpContacts(deformer, m_mesh, deformer.Contacts, prev, prevMesh, next, nextMesh);
+            SlerpContacts(deformer, Mesh, deformer.Contacts, prev, prevMesh, next, nextMesh);
 
 
             if (colliderOriginal == null)
@@ -228,19 +233,21 @@ namespace Battlehub.MeshDeformer3
             }
             if (prev != null)
             {
-                prevMesh = prev.m_colliderMesh;
+                prevMesh = prev.ColliderMesh;
             }
 
             if (next != null)
             {
-                nextMesh = next.m_colliderMesh;
+                nextMesh = next.ColliderMesh;
             }
-            SlerpContacts(deformer, m_colliderMesh, deformer.ColliderContacts, prev, prevMesh, next, nextMesh);
+            SlerpContacts(deformer, ColliderMesh, deformer.ColliderContacts, prev, prevMesh, next, nextMesh);
 
-            if (m_collider != null)
+            if (m_meshCollider != null)
             {
-                m_collider.sharedMesh = null;
-                m_collider.sharedMesh = m_colliderMesh;
+                Mesh colliderMesh = ColliderMesh;
+
+                m_meshCollider.sharedMesh = null;
+                m_meshCollider.sharedMesh = colliderMesh;
             }
         }
 
@@ -342,18 +349,31 @@ namespace Battlehub.MeshDeformer3
         {
             if (original != null)
             {
-                m_mesh.vertices = Deform(m_slices, original, deformer, isRigid);
-                m_mesh.RecalculateBounds();
-                m_mesh.RecalculateNormals();
+                Mesh mesh = Mesh;
+                if(mesh != null)
+                {
+                    mesh.vertices = Deform(m_slices, original, deformer, isRigid);
+                    mesh.RecalculateBounds();
+                    mesh.RecalculateNormals();
+                }
             }
 
-            if (colliderOriginal != null && m_collider != null)
+            if (colliderOriginal != null && m_meshCollider != null)
             {
-                m_colliderMesh.vertices = Deform(m_colliderSlices, colliderOriginal, deformer, isRigid);
-                m_colliderMesh.RecalculateBounds();
-                m_colliderMesh.RecalculateNormals();
-                m_collider.sharedMesh = null;
-                m_collider.sharedMesh = m_colliderMesh;
+                Mesh colliderMesh = ColliderMesh;
+                if(colliderMesh != null)
+                {
+                    colliderMesh.vertices = Deform(m_colliderSlices, colliderOriginal, deformer, isRigid);
+                    colliderMesh.RecalculateBounds();
+                    colliderMesh.RecalculateNormals();
+                    m_meshCollider.sharedMesh = null;
+                    m_meshCollider.sharedMesh = colliderMesh;
+                }
+            }
+
+            if(Deformed != null)
+            {
+                Deformed(deformer, this);
             }
         }
 

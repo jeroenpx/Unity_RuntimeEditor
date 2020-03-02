@@ -2,6 +2,7 @@
 using Battlehub.Spline3;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace Battlehub.MeshDeformer3
 {
@@ -9,8 +10,8 @@ namespace Battlehub.MeshDeformer3
     {
         public Axis Axis;
 
-        public DeformerState(Vector3[] controlPoints, bool isSelectable, bool isLooping, Axis axis)
-            : base(controlPoints, isSelectable, isLooping)
+        public DeformerState(Vector3[] controlPoints, ControlPointSettings[] settings, bool isSelectable, bool isLooping, Axis axis)
+            : base(controlPoints, settings, isSelectable, isLooping)
         {
             Axis = axis;
         }
@@ -18,6 +19,9 @@ namespace Battlehub.MeshDeformer3
 
     public class Deformer : BaseSpline
     {
+        public static event Action<Deformer> Created;
+        public static event Action<Deformer> Destroyed;
+
         private BaseSpline m_spline;
         private MeshFilter m_filter;
         private MeshCollider m_collider;
@@ -28,13 +32,19 @@ namespace Battlehub.MeshDeformer3
         private List<Segment> m_segments = new List<Segment>();
         private Mesh Mesh
         {
-            get { return m_filter.sharedMesh; }
+            get { return m_filter != null ? m_filter.sharedMesh : null; }
         }
 
         private Mesh ColliderMesh
         {
-            get { return m_collider.sharedMesh; }
-            set { m_collider.sharedMesh = value; }
+            get { return m_collider != null ? m_collider.sharedMesh : null; }
+            set
+            {
+                if (m_collider != null)
+                {
+                    m_collider.sharedMesh = value;
+                }
+            }
         }
 
         public Contact[] Contacts
@@ -107,6 +117,12 @@ namespace Battlehub.MeshDeformer3
             set { m_isSelectable = value; }
         }
 
+        public override ControlPointSettings[] Settings
+        {
+            get { return m_spline.Settings; }
+            set { m_spline.Settings = value; }
+        }
+
         private bool m_initialize;
         protected override void Awake()
         {
@@ -122,6 +138,11 @@ namespace Battlehub.MeshDeformer3
                 m_initialize = m_spline.SegmentsCount == 0;
             }
             m_spline.IsSelectable = false;
+
+            if(Created != null)
+            {
+                Created(this);
+            }
         }
 
         protected override void OnDestroy()
@@ -145,6 +166,11 @@ namespace Battlehub.MeshDeformer3
             {
                 m_collider.enabled = true;
             }
+
+            if (Destroyed != null)
+            {
+                Destroyed(this);
+            }
         }
 
         private void Start()
@@ -152,8 +178,15 @@ namespace Battlehub.MeshDeformer3
             m_filter = GetComponent<MeshFilter>();
             m_collider = GetComponent<MeshCollider>();
             m_meshRenderer = GetComponent<MeshRenderer>();
-            m_meshRenderer.enabled = false;
-            m_collider.enabled = false;
+            if(m_meshRenderer != null)
+            {
+                m_meshRenderer.enabled = false;
+            }
+            
+            if(m_collider != null)
+            {
+                m_collider.enabled = false;
+            }
 
             if(m_initialize)
             {
@@ -190,7 +223,10 @@ namespace Battlehub.MeshDeformer3
                 Mesh.GetBounds(m_axis, out from, out to);
 
                 m_contacts = Mesh.FindContacts(m_axis);
-                m_colliderContacts = ColliderMesh.FindContacts(from, to, m_axis);
+                if(ColliderMesh != null)
+                {
+                    m_colliderContacts = ColliderMesh.FindContacts(from, to, m_axis);
+                }
 
                 for (int i = 0; i < m_spline.SegmentsCount; ++i)
                 {
@@ -205,12 +241,19 @@ namespace Battlehub.MeshDeformer3
                     MeshCollider segmentCollider = segmentGO.AddComponent<MeshCollider>();
 
                     segmentRenderer.sharedMaterials = m_meshRenderer.sharedMaterials;
-                    segmentFilter.sharedMesh = Instantiate(Mesh);
-                    segmentCollider.sharedMesh = Instantiate(ColliderMesh);
-
+                    if(Mesh != null)
+                    {
+                        segmentFilter.sharedMesh = Instantiate(Mesh);
+                    }
+                    
+                    if(ColliderMesh != null)
+                    {
+                        segmentCollider.sharedMesh = Instantiate(ColliderMesh);
+                    }
+                    
                     segmentGO.SetActive(true);
 
-                    segment.Wrap(segmentFilter.sharedMesh, segmentCollider.sharedMesh, Axis, new[] { i }, Approximation);
+                    segment.Wrap(segmentFilter, segmentCollider, Axis, new[] { i }, Approximation);
                     segment.Deform(this, Mesh, ColliderMesh, false);
                     m_segments.Add(segment);
                 }
@@ -357,6 +400,10 @@ namespace Battlehub.MeshDeformer3
             return m_spline.GetLocalDirection(segmentIndex, t);
         }
 
+        public override int GetSegmentIndex(ref float t)
+        {
+            return m_spline.GetSegmentIndex(ref t);
+        }
 
         public float GetTwist(int index, float t)
         {
@@ -376,8 +423,9 @@ namespace Battlehub.MeshDeformer3
         public override BaseSplineState GetState()
         {
             Vector3[] controlPoints = LocalControlPoints != null ? LocalControlPoints.ToArray() : new Vector3[0];
-            return new DeformerState(controlPoints, IsSelectable, IsLooping, Axis);
+            return new DeformerState(controlPoints, Settings, IsSelectable, IsLooping, Axis);
         }
+
 
         public override void SetState(BaseSplineState state)
         {
@@ -385,6 +433,16 @@ namespace Battlehub.MeshDeformer3
             m_spline.SetState(state);
             m_axis = deformerState.Axis;
             Refresh();
+        }
+
+        public override void SetSettings(int index, ControlPointSettings settings)
+        {
+            m_spline.SetSettings(index, settings);
+        }
+
+        public override ControlPointSettings GetSettings(int index)
+        {
+            return m_spline.GetSettings(index);
         }
     }
 }

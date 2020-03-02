@@ -13,11 +13,6 @@ namespace Battlehub.RTCommon
 
     public interface IInput
     {
-        MultitouchEmulator MultitouchEmulator
-        {
-            get;
-            set;
-        }
 
         bool IsAnyKeyDown();
 
@@ -80,8 +75,6 @@ namespace Battlehub.RTCommon
     
     public class DisabledInput : IInput
     {
-        public MultitouchEmulator MultitouchEmulator { get { return null; } set { } }
-
         public float GetAxis(InputAxis axis)
         {
             return 0;
@@ -136,16 +129,8 @@ namespace Battlehub.RTCommon
         }
     }
 
-
     public class InputLow : IInput
     {
-        private MultitouchEmulator m_multitouchEmulator;
-        public MultitouchEmulator MultitouchEmulator
-        {
-            get { return m_multitouchEmulator; }
-            set { m_multitouchEmulator = value; }
-        }
-
         public virtual bool IsAnyKeyDown()
         {
             return Input.anyKeyDown;
@@ -187,12 +172,6 @@ namespace Battlehub.RTCommon
 
         public virtual Vector3 GetPointerXY(int pointer)
         {
-//#if DEBUG
-//            if(m_multitouchEmulator != null)
-//            {
-//                return m_multitouchEmulator.GetPosition(pointer);
-//            }
-//#endif
             if (pointer == 0)
             {
                 return Input.mousePosition;
@@ -206,37 +185,17 @@ namespace Battlehub.RTCommon
 
         public virtual bool GetPointerDown(int index)
         {
-//#if DEBUG
-//            if (m_multitouchEmulator != null)
-//            {
-//                return m_multitouchEmulator.IsTouchDown(index);
-//            }
-//#endif
-
             bool buttonDown = Input.GetMouseButtonDown(index);
             return buttonDown;
         }
 
         public virtual bool GetPointerUp(int index)
         {
-//#if DEBUG
-//            if (m_multitouchEmulator != null)
-//            {
-//                return m_multitouchEmulator.IsTouchUp(index);
-//            }
-//#endif
             return Input.GetMouseButtonUp(index);
         }
 
         public virtual bool GetPointer(int index)
         {
-//#if DEBUG
-//            if (m_multitouchEmulator != null)
-//            {
-//                return m_multitouchEmulator.IsTouch(index);
-//            }
-//#endif
-
             return Input.GetMouseButton(index);
         }
     }

@@ -41,7 +41,7 @@ namespace Battlehub.MeshDeformer3
         public event Action ModeChanged;
 
         private ISelectionComponentState m_selectionComponentState;
-        private ControlPointPicker m_picker;
+        private ControlPointPicker m_controlPointPicker;
         private IRTE m_editor;
         
         private MeshDeformerToolMode m_mode = MeshDeformerToolMode.Object;
@@ -84,24 +84,20 @@ namespace Battlehub.MeshDeformer3
         {
             m_editor = IOC.Resolve<IRTE>();
             m_editor.Tools.ToolChanged += OnEditorToolChanged;
-            
+
             IOC.RegisterFallback<IMeshDeformerTool>(this);
 
-            m_picker = FindObjectOfType<ControlPointPicker>();
-            if(m_picker == null)
-            {
-                GameObject controlPointPicker = new GameObject("ControlPointPicker");
-                
-                controlPointPicker.transform.SetParent(transform, false);
-                controlPointPicker.gameObject.SetActive(false);
-                controlPointPicker.hideFlags = HideFlags.HideInHierarchy;
-                ExposeToEditor exposeToEditor = controlPointPicker.AddComponent<ExposeToEditor>();
-                exposeToEditor.CanInspect = false;
-                controlPointPicker.gameObject.SetActive(true);
+            GameObject controlPointPicker = new GameObject("ControlPointPicker");
 
-                m_picker = controlPointPicker.AddComponent<ControlPointPicker>();
-            }
-            m_picker.SelectionChanged += OnPickerSelectionChanged;
+            controlPointPicker.transform.SetParent(transform, false);
+            controlPointPicker.gameObject.SetActive(false);
+            controlPointPicker.hideFlags = HideFlags.HideInHierarchy;
+            ExposeToEditor exposeToEditor = controlPointPicker.AddComponent<ExposeToEditor>();
+            exposeToEditor.CanInspect = false;
+            controlPointPicker.gameObject.SetActive(true);
+
+            m_controlPointPicker = controlPointPicker.AddComponent<ControlPointPicker>();
+            m_controlPointPicker.SelectionChanged += OnPickerSelectionChanged;
         }
     
         private void OnActiveWindowChanged(RuntimeWindow arg)
@@ -117,9 +113,9 @@ namespace Battlehub.MeshDeformer3
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
             }
 
-            if(m_picker != null)
+            if(m_controlPointPicker != null)
             {
-                m_picker.SelectionChanged -= OnPickerSelectionChanged;
+                m_controlPointPicker.SelectionChanged -= OnPickerSelectionChanged;
             }
 
             UnsubscribeEvents();
@@ -211,6 +207,7 @@ namespace Battlehub.MeshDeformer3
                 SplineRenderer splineRenderer = splineRenderers[i];
                 if(splineRenderer.GetComponent<Deformer>() != null)
                 {
+                    splineRenderer.Layer = m_editor.CameraLayerSettings.AllScenesLayer;
                     splineRenderer.enabled = enable;
                 }
             }
@@ -225,18 +222,25 @@ namespace Battlehub.MeshDeformer3
 
             if (m_selectionComponentState.Component.IsPositionHandleEnabled)
             {
+                BaseSpline spline = m_controlPointPicker.Selection != null ? m_controlPointPicker.Selection.GetSpline() : null;
+                if (spline != null && !(spline is Deformer))
+                {
+                    return;
+                }
+
                 m_editor.Undo.BeginRecord();
-                PickResult oldSelection = m_picker.Selection != null ? new PickResult(m_picker.Selection) : null;
-                m_picker.Pick(camera, point);
-                PickResult newSelection = m_picker.Selection != null ? new PickResult(m_picker.Selection) : null;
+                PickResult oldSelection = m_controlPointPicker.Selection != null ? new PickResult(m_controlPointPicker.Selection) : null;
+                PickResult newSelection = m_controlPointPicker.Pick(camera, point);
+                m_controlPointPicker.ApplySelection(newSelection);
+                newSelection = newSelection != null ? new PickResult(newSelection) : null;
                 m_editor.Undo.CreateRecord(record =>
                 {
-                    m_picker.Selection = newSelection;
+                    m_controlPointPicker.Selection = newSelection;
                     return true;
                 },
                 record =>
                 {
-                    m_picker.Selection = oldSelection;
+                    m_controlPointPicker.Selection = oldSelection;
                     return true;
                 });
                 m_editor.Undo.EndRecord();
@@ -246,15 +250,20 @@ namespace Battlehub.MeshDeformer3
         public bool DragControlPoint(bool extend)
         {
             PositionHandle positionHandle = m_editor.Tools.ActiveTool as PositionHandle;
-            if (m_picker.IsControlPointSelected && positionHandle != null && positionHandle.IsDragging)
+            if (m_controlPointPicker.IsPointSelected && positionHandle != null && positionHandle.IsDragging)
             {
                 if (extend)
                 {
                     ControlPointPicker picker = m_editor.Selection.activeGameObject.GetComponent<ControlPointPicker>();
                     BaseSpline spline = picker.Selection.GetSpline();
+                    if(!(spline is Deformer))
+                    {
+                        return false;
+                    }
+
                     BaseSplineState oldState = spline.GetState();
                     PickResult oldSelection = picker.Selection != null ? new PickResult(picker.Selection) : null;
-                    m_picker.Drag(true);
+                    m_controlPointPicker.Drag(true);
                     spline = picker.Selection.GetSpline();
                     BaseSplineState newState = spline.GetState();
                     PickResult newSelection = picker.Selection != null ? new PickResult(picker.Selection) : null;
@@ -262,7 +271,7 @@ namespace Battlehub.MeshDeformer3
                 }
                 else
                 {
-                    m_picker.Drag(false);
+                    m_controlPointPicker.Drag(false);
                 }
                 return true;
             }
@@ -294,11 +303,11 @@ namespace Battlehub.MeshDeformer3
             else
             {
                 BaseSplineState oldState = deformer.GetState();
-                PickResult oldSelection = m_picker.Selection != null ? new PickResult(m_picker.Selection) : null;
+                PickResult oldSelection = m_controlPointPicker.Selection != null ? new PickResult(m_controlPointPicker.Selection) : null;
                 deformer.Axis = axis;
                 BaseSplineState newState = deformer.GetState();
-                PickResult newSelection = m_picker.Selection != null ? new PickResult(m_picker.Selection) : null;
-                RecordState(deformer.gameObject, oldState, newState, m_picker, oldSelection, newSelection);
+                PickResult newSelection = m_controlPointPicker.Selection != null ? new PickResult(m_controlPointPicker.Selection) : null;
+                RecordState(deformer.gameObject, oldState, newState, m_controlPointPicker, oldSelection, newSelection);
             }
 
             EnableSplineRenderers(false);
@@ -336,7 +345,7 @@ namespace Battlehub.MeshDeformer3
 
         public bool CanRemove()
         {
-            return m_picker != null && m_picker.Selection != null && m_picker.Selection.GetSpline().SegmentsCount > 1;
+            return m_controlPointPicker != null && m_controlPointPicker.Selection != null && m_controlPointPicker.Selection.GetSpline().SegmentsCount > 1;
         }
 
         public void Remove()
@@ -378,7 +387,7 @@ namespace Battlehub.MeshDeformer3
 
         private void OnPositionHandleBeforeDrag(BaseHandle handle)
         {
-            //handle.EnableUndo = false;
+           // handle.EnableUndo = false;
         }
 
         private void OnPositionHandleDrop(BaseHandle handle)

@@ -163,9 +163,6 @@ namespace Battlehub.RTBuilder
                 UpdateColorCache();
             }
         }
-
-
-
     }
 
 }

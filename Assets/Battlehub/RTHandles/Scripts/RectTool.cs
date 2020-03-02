@@ -793,21 +793,6 @@ namespace Battlehub.RTHandles
             target.RecalculateBounds();
         }
 
-        private string ConvertMetersToFeetInches(float meters)
-        {
-            double inchfeet = Mathf.Abs(meters) / 0.3048;
-            int feet = (int)inchfeet;
-            int inchesleft = (int)((inchfeet - System.Math.Truncate(inchfeet)) / 0.08333);
-
-            if (inchesleft == 12)
-            {
-                inchesleft = 0;
-                feet += 1;
-            }
-
-            return feet.ToString("0′") + inchesleft.ToString(" 0″");
-        }
-
         private void UpdateText()
         {
             if (m_txtSize1 == null && m_txtSize2 == null)
@@ -839,7 +824,7 @@ namespace Battlehub.RTHandles
 
                 m_txtSize1.transform.localRotation = m_rotation * textRotation;
                 m_txtSize1.transform.position = m_points.transform.TransformPoint(v[0] + (v[1] - v[0]) / 2);
-                m_txtSize1.text = m_metric ? size.ToString("F2") : ConvertMetersToFeetInches(size);
+                m_txtSize1.text = m_metric ? size.ToString("F2") : UnitsConverter.MetersToFeetInches(size);
             }
 
             if (m_txtSize2 != null)
@@ -866,7 +851,7 @@ namespace Battlehub.RTHandles
 
                 m_txtSize2.transform.localRotation = m_rotation * textRotation;
                 m_txtSize2.transform.position = position;
-                m_txtSize2.text = m_metric ? size.ToString("F2") : ConvertMetersToFeetInches(size);
+                m_txtSize2.text = m_metric ? size.ToString("F2") : UnitsConverter.MetersToFeetInches(size);
             }
         }
 

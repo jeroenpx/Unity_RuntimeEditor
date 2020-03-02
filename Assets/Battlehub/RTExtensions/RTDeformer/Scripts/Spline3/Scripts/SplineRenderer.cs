@@ -7,15 +7,33 @@ namespace Battlehub.Spline3
     public class SplineRenderer : MonoBehaviour
     {
         [SerializeField]
-        private float m_step = 0.05f;
+        protected float m_step = 0.05f;
         [SerializeField]
-        private float m_normalLength = 0.0f;
+        protected float m_normalLength = 0.0f;
         [SerializeField]
-        private Color m_lineColor = Color.green;
+        protected Color m_lineColor = Color.green;
         [SerializeField]
-        private Color m_controlPointColor = Color.gray;
-        
+        protected Color m_controlPointColor = Color.gray;
+        [SerializeField]
+        private int m_layer;
+        public int Layer
+        {
+            get { return m_layer; }
+            set
+            {
+                if(m_layer != value)
+                {
+                    m_layer = value;
+                    OnLayerChanged();
+                }   
+            }
+        }
+
         private BaseSpline m_spline;
+        protected BaseSpline Spline
+        {
+            get { return m_spline; }
+        }
         private int m_segCount;
         private int m_perSegCount;
         private int[] m_indexes;
@@ -27,11 +45,11 @@ namespace Battlehub.Spline3
         private Renderer m_normalRenderer;
         private Renderer m_pointRenderer;
 
-        private static Material m_lineMaterial;
-        private static Material m_normalMaterial;
-        private static Material m_controlPointMaterial;
+        protected static Material m_lineMaterial;
+        protected static Material m_normalMaterial;
+        protected static Material m_controlPointMaterial;
 
-        private void Start()
+        protected virtual void Start()
         {            
             if(m_lineMaterial == null)
             {
@@ -40,6 +58,7 @@ namespace Battlehub.Spline3
                 m_lineMaterial.SetColor("_Color", Color.white);
                 m_lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             }
+
             if(m_normalMaterial == null)
             {
                 m_normalMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
@@ -91,10 +110,12 @@ namespace Battlehub.Spline3
             m_pointRenderer = pointsGo.AddComponent<MeshRenderer>();
             m_pointRenderer.sharedMaterial = m_controlPointMaterial;
 
+            OnLayerChanged();
+
             Refresh();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (m_lineRenderer != null)
             {
@@ -112,7 +133,7 @@ namespace Battlehub.Spline3
             }
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             if(m_lineRenderer != null)
             {
@@ -130,7 +151,7 @@ namespace Battlehub.Spline3
             }
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if(m_lineRenderer != null)
             {
@@ -148,28 +169,44 @@ namespace Battlehub.Spline3
             }
         }
 
-        public void Refresh(bool positionsOnly = false)
+        protected virtual void OnLayerChanged()
+        {
+            if (m_lineMeshFilter != null)
+            {
+                m_lineMeshFilter.gameObject.layer = m_layer;
+            }
+            if (m_normalMeshFilter != null)
+            {
+                m_normalMeshFilter.gameObject.layer = m_layer;
+            }
+            if (m_pointMeshFilter != null)
+            {
+                m_pointMeshFilter.gameObject.layer = m_layer;
+            }
+        }
+
+        public virtual void Refresh(bool positionsOnly = false)
         {
             if(m_spline == null)
             {
                 return;
             }
 
-            BuildLineMesh(m_lineMeshFilter.sharedMesh, m_lineColor, positionsOnly);
+            BuildLineMesh(m_lineMeshFilter.sharedMesh, positionsOnly);
             if(m_normalLength > 0)
             {
                 m_normalMeshFilter.gameObject.SetActive(true);
-                BuildNormalMesh(m_normalMeshFilter.sharedMesh, m_lineColor, positionsOnly);
+                BuildNormalMesh(m_normalMeshFilter.sharedMesh, positionsOnly);
             }
             else
             {
                 m_normalMeshFilter.gameObject.SetActive(false);
             }
             
-            BuildPointsMesh(m_pointMeshFilter.sharedMesh, m_controlPointColor);
+            BuildPointsMesh(m_pointMeshFilter.sharedMesh);
         }
 
-        private void BuildLineMesh(Mesh target, Color color, bool positionsOnly)
+        protected void BuildLineMesh(Mesh target, bool positionsOnly)
         {
             int segCount = m_spline.SegmentsCount;
             int perSegCount = Mathf.RoundToInt(1.0f / Mathf.Max(0.0001f, m_step));
@@ -206,11 +243,8 @@ namespace Battlehub.Spline3
 
                 target.name = "SplineMesh" + target.GetInstanceID();
                 Color[] colors = new Color[vertices.Length];
-                for (int i = 0; i < colors.Length; ++i)
-                {
-                    colors[i] = color;
-                }
-
+                UpdateColors(segCount, perSegCount, colors);
+                
                 target.vertices = vertices;
                 target.SetIndices(indexes, MeshTopology.Lines, 0);
                 target.colors = colors;
@@ -218,7 +252,15 @@ namespace Battlehub.Spline3
             }
         }
 
-        private void UpdateLineVertices(int segCount, int perSegCount, Vector3[] vertices)
+        protected virtual void UpdateColors(int segCount, int perSegCount, Color[] colors)
+        {
+            for (int i = 0; i < colors.Length; ++i)
+            {
+                colors[i] = m_lineColor;
+            }
+        }
+
+        protected void UpdateLineVertices(int segCount, int perSegCount, Vector3[] vertices)
         {
             for (int segIndex = 0; segIndex < segCount; segIndex++)
             {
@@ -230,7 +272,7 @@ namespace Battlehub.Spline3
             vertices[vertices.Length - 1] = m_spline.GetLocalPosition(segCount - 1, 1.0f);
         }
 
-        private void BuildNormalMesh(Mesh target, Color color, bool positionsOnly)
+        private void BuildNormalMesh(Mesh target, bool positionsOnly)
         {
             int segCount = m_spline.SegmentsCount;
             int perSegCount = Mathf.RoundToInt(1.0f / Mathf.Max(0.0001f, m_step));
@@ -264,9 +306,10 @@ namespace Battlehub.Spline3
 
                 target.name = "SplineMesh" + target.GetInstanceID();
                 Color[] colors = new Color[vertices.Length];
+
                 for (int i = 0; i < colors.Length; ++i)
                 {
-                    colors[i] = color;
+                    colors[i] = m_lineColor;
                 }
 
                 target.vertices = vertices;
@@ -296,7 +339,7 @@ namespace Battlehub.Spline3
             vertices[vertices.Length - 1] = lastPosition + Vector3.Cross(lastTangent, Vector3.up) * m_normalLength;
         }
 
-        private void BuildPointsMesh(Mesh target, Color color)
+        private void BuildPointsMesh(Mesh target)
         {
             Vector3[] vertices = m_spline.LocalControlPoints.ToArray();
             if(m_indexes == null)
@@ -317,7 +360,7 @@ namespace Battlehub.Spline3
                 Color[] colors = new Color[vertices.Length];
                 for (int i = 0; i < colors.Length; ++i)
                 {
-                    colors[i] = color;
+                    colors[i] = m_controlPointColor;
                 }
 
                 target.vertices = vertices;

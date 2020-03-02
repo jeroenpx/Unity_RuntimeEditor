@@ -7,6 +7,11 @@ namespace Battlehub.RTCommon
 {
     public interface IResourcePreviewUtility
     {
+        Camera Camera
+        {
+            get;
+        }
+
         byte[] CreatePreviewData(UnityObject obj);
         Texture2D TakeSnapshot(GameObject go);
     }
@@ -23,6 +28,18 @@ namespace Battlehub.RTCommon
         private Vector3 m_scale = new Vector3(0.9f, 0.9f, 0.9f);
 
         private Shader m_unlitTexShader;
+
+        public Camera Camera
+        {
+            get
+            {
+                if(m_objectToTextureCamera != null)
+                {
+                    return m_objectToTextureCamera.GetComponent<Camera>();
+                }
+                return null;
+            }
+        }
 
         private void Awake()
         {
@@ -61,7 +78,6 @@ namespace Battlehub.RTCommon
                 light.type = LightType.Directional;
                 light.cullingMask = 1 << rte.CameraLayerSettings.ResourcePreviewLayer;
             }
-
         }
 
         private void OnDestroy()

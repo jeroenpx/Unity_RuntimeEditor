@@ -241,7 +241,7 @@ namespace Battlehub.RTHandles
                 if (isPointerOverAndSelected)
                 {
                     SceneComponent.Zoom(ZoomAxis() * MoveZSensitivity, Quaternion.identity);
-                  
+
                     if (SelectAction())
                     {
                         SelectGO();
@@ -263,6 +263,11 @@ namespace Battlehub.RTHandles
                     }
                 }   
             }
+
+            //if (SelectAction())
+            //{
+            //    SelectGO();
+            //}
         }
     }
 

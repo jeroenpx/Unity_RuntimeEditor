@@ -47,8 +47,10 @@ namespace Battlehub.RTMeasurement
 
                     if (Output != null && Canvas != null)
                     {
+                        Camera worldCamera = Canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Canvas.worldCamera;
+
                         Vector2 position;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Output.transform.parent, Editor.Input.GetPointerXY(0), Canvas.worldCamera, out position);
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Output.transform.parent, Editor.Input.GetPointerXY(0), worldCamera, out position);
                         Output.transform.localPosition = position;
                         if (m_points.Count == 3)
                         {

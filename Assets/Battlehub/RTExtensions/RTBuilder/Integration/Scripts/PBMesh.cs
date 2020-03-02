@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 using UnityEngine.ProBuilder.MeshOperations;
+using UnityEngine.Rendering;
 
 namespace Battlehub.ProBuilderIntegration
 {
@@ -73,6 +74,9 @@ namespace Battlehub.ProBuilderIntegration
     [RequireComponent(typeof(MeshRenderer))]
     public class PBMesh : MonoBehaviour
     {
+        public static event PBMeshEvent<PBMesh> Initialized;
+        public static event PBMeshEvent<PBMesh> Destroyed;
+        
         public event PBMeshEvent<bool> Selected;
         public event PBMeshEvent Unselected;
         public event PBMeshEvent<bool, bool> Changed;
@@ -162,7 +166,21 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     ImportMesh(mesh.m_meshFilter, mesh.m_pbMesh, scale);
                 }
+
+                if(Initialized != null)
+                {
+                    Initialized(mesh);
+                }
             }
+        }
+
+        public void DestroyImmediate()
+        {
+            if (Destroyed != null)
+            {
+                Destroyed(this);
+            }
+            DestroyImmediate(this);
         }
 
         private void OnDestroy()
@@ -170,7 +188,7 @@ namespace Battlehub.ProBuilderIntegration
             if(m_pbMesh != null)
             {
                 Destroy(m_pbMesh);
-                m_pbMesh = null;                
+                m_pbMesh = null;  
             }   
         }
 
@@ -328,6 +346,10 @@ namespace Battlehub.ProBuilderIntegration
             if (!positionsOnly)
             {
                 target.Clear();
+                if(vertices.Length > ushort.MaxValue)
+                {
+                    target.indexFormat = IndexFormat.UInt32;
+                }
                 target.name = "EdgeMesh" + target.GetInstanceID();
                 target.vertices = vertices.ToArray();
                 Color[] colors = new Color[target.vertexCount];
@@ -412,11 +434,13 @@ namespace Battlehub.ProBuilderIntegration
             ImportMesh(filter, mesh, uvScale);
         }
 
+        private static readonly MeshImportSettings m_defaultImportSettings = new MeshImportSettings() { smoothing = false };
         private static void ImportMesh(MeshFilter filter, ProBuilderMesh mesh, Vector2 uvScale)
         {
             MeshImporter importer = new MeshImporter(mesh);
             Renderer renderer = mesh.GetComponent<Renderer>();
-            importer.Import(filter.sharedMesh, renderer.sharedMaterials);
+
+            importer.Import(filter.sharedMesh, renderer.sharedMaterials, m_defaultImportSettings);
 
             Dictionary<int, List<Face>> submeshIndexToFace = new Dictionary<int, List<Face>>();
             int submeshCount = filter.sharedMesh.subMeshCount;

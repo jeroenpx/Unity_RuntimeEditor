@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -1499,6 +1500,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4873884717078076525}
     m_Modifications:
+    - target: {fileID: 1523839484634906711, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1947683894075773443, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2290264491671209939, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1554,25 +1565,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6704696278579976529, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
-        type: 3}
-      propertyPath: m_Name
-      value: RectTool
-      objectReference: {fileID: 0}
-    - target: {fileID: 1523839484634906711, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5500671987627388092, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5500671987627388092, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 5
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6704696278579976529, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
+        type: 3}
+      propertyPath: m_Name
+      value: RectTool
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9fd029cb189ca43abd4a0945cbbff3, type: 3}
@@ -2499,8 +2505,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283404369}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -5482,6 +5489,7 @@ MonoBehaviour:
   FreeMoveSensitivity: 0.25
   FreeRotateSensitivity: 7.5
   SwapLRMB: 0
+  m_beginFreeMoveImmediately: 1
 --- !u!4 &4873884717078076525
 Transform:
   m_ObjectHideFlags: 0
@@ -5540,6 +5548,7 @@ MonoBehaviour:
   m_rotationHandle: {fileID: 0}
   m_scaleHandle: {fileID: 0}
   m_rectTool: {fileID: 0}
+  m_customHandle: {fileID: 0}
   m_boxSelection: {fileID: 4873884717718742015}
   m_selectionGizmoPrefab: {fileID: 0}
   m_grid: {fileID: 0}
@@ -5567,8 +5576,10 @@ MonoBehaviour:
   m_orbitDistance: 5
   m_zoomSpeed: 5
   m_constantZoomSpeed: 0
-  m_freeSmoothMoveSpeed: 7.5
-  m_freeSmoothRotateSpeed: 5
+  m_freeMovementSmoothSpeed: 10
+  m_freeRotationSmoothSpeed: 10
+  m_rotationInvertX: 0
+  m_rotationInvertY: 0
 --- !u!114 &4873884717376568504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5937,6 +5948,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4873884717078076525}
     m_Modifications:
+    - target: {fileID: 3800740545066089881, guid: 2d9bfb3b4e4352f4694d7fac04a13356,
+        type: 3}
+      propertyPath: m_Name
+      value: RotationHandle
+      objectReference: {fileID: 0}
     - target: {fileID: 5601095128738636516, guid: 2d9bfb3b4e4352f4694d7fac04a13356,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5991,11 +6007,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3800740545066089881, guid: 2d9bfb3b4e4352f4694d7fac04a13356,
-        type: 3}
-      propertyPath: m_Name
-      value: RotationHandle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d9bfb3b4e4352f4694d7fac04a13356, type: 3}
@@ -6109,6 +6120,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4873884717078076525}
     m_Modifications:
+    - target: {fileID: 3800740545066089881, guid: 9016f79b1d7a3344f870dd896a833441,
+        type: 3}
+      propertyPath: m_Name
+      value: PositionHandle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3800740545066089881, guid: 9016f79b1d7a3344f870dd896a833441,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5601095128738636516, guid: 9016f79b1d7a3344f870dd896a833441,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6163,16 +6184,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3800740545066089881, guid: 9016f79b1d7a3344f870dd896a833441,
-        type: 3}
-      propertyPath: m_Name
-      value: PositionHandle
-      objectReference: {fileID: 0}
-    - target: {fileID: 3800740545066089881, guid: 9016f79b1d7a3344f870dd896a833441,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9016f79b1d7a3344f870dd896a833441, type: 3}
@@ -6294,6 +6305,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4873884717078076525}
     m_Modifications:
+    - target: {fileID: 3800740545066089881, guid: 87f6eba2ed552cb4986730638936711e,
+        type: 3}
+      propertyPath: m_Name
+      value: ScaleHandle
+      objectReference: {fileID: 0}
     - target: {fileID: 5601095128738636516, guid: 87f6eba2ed552cb4986730638936711e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6348,11 +6364,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3800740545066089881, guid: 87f6eba2ed552cb4986730638936711e,
-        type: 3}
-      propertyPath: m_Name
-      value: ScaleHandle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87f6eba2ed552cb4986730638936711e, type: 3}

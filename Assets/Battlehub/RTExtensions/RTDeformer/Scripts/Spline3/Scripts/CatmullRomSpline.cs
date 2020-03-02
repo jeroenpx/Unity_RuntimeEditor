@@ -5,24 +5,156 @@ using System;
 
 namespace Battlehub.Spline3
 {
-
     public class BaseSplineState
     {
         public Vector3[] ControlPoints;
+        public ControlPointSettings[] Settings;
         public bool IsSelectable;
         public bool IsLooping;    
 
-        public BaseSplineState(Vector3[] controlPoints, bool isSelectable, bool isLooping)
+        public BaseSplineState(Vector3[] controlPoints, ControlPointSettings[] settings, bool isSelectable, bool isLooping)
         {
             ControlPoints = controlPoints;
             IsSelectable = isSelectable;
             IsLooping = isLooping;
+            Settings = settings.Select(s => new ControlPointSettings(s)).ToArray();
+        }
+    }
+
+    public class ControlPointValue
+    {
+        public float FloatValue;
+        public int IntValue;
+        public Vector4 VectorValue;
+
+        public ControlPointValue()
+        {
+        }
+
+        public ControlPointValue(ControlPointValue value)
+        {
+            FloatValue = value.FloatValue;
+            IntValue = value.IntValue;
+            VectorValue = value.VectorValue;
+        }
+
+        public ControlPointValue(float value)
+        {
+            FloatValue = value;
+        }
+
+        public ControlPointValue(int value)
+        {
+            IntValue = value;
+        }
+
+        public ControlPointValue(Vector4 value)
+        {
+            VectorValue = value;
+        }
+    }
+
+    public class ControlPointSettings
+    {
+        public static readonly ControlPointValue m_defaultValue = new ControlPointValue();
+        public Dictionary<string, ControlPointValue> Settings;
+
+        public ControlPointSettings()
+        {
+
+        }
+
+        public ControlPointSettings(ControlPointSettings settings)
+        {
+            if(settings.Settings != null)
+            {
+                Settings = settings.Settings.ToDictionary(kvp => kvp.Key, kvp => new ControlPointValue(kvp.Value));
+            }   
+        }
+
+        public bool ContainsKey(string key)
+        {
+            return Settings != null && Settings.ContainsKey(key);
+        }
+
+        public void Remove(string key)
+        {
+            if(Settings != null)
+            {
+                Settings.Remove(key);
+            }
+        }
+
+        private ControlPointValue Get(string key)
+        {
+            ControlPointValue val;
+            if (Settings == null || !Settings.TryGetValue(key, out val))
+            {
+                return m_defaultValue;
+            }
+            return val;
+        }
+
+        private void Set(string key, ControlPointValue val)
+        {
+            if(Settings == null)
+            {
+                Settings = new Dictionary<string, ControlPointValue>();
+            }
+
+            Settings[key] = val;
+        }
+
+        public float GetFloat(string key)
+        {
+            return Get(key).FloatValue;
+        }
+
+        public void SetFloat(string key, float value)
+        {
+            Set(key, new ControlPointValue(value));
+        }
+
+        public bool GetBool(string key)
+        {
+            return Get(key).IntValue == 1;
+        }
+
+        public void SetBool(string key, bool value)
+        {
+            Set(key, new ControlPointValue(value ? 1 : 0));
+        }
+
+        public int GetInt(string key)
+        {
+            return Get(key).IntValue;
+        }
+
+        public void SetInt(string key, int value)
+        {
+            Set(key, new ControlPointValue(value));
+        }
+
+        public Vector4 GetVector(string key)
+        {
+            return Get(key).VectorValue;
+        }
+
+        public void SetVector(string key, Vector4 value)
+        {
+            Set(key, new ControlPointValue(value));
         }
     }
 
     public abstract class BaseSpline : MonoBehaviour
     {
         public abstract Vector3[] LocalControlPoints
+        {
+            get;
+            set;
+        }
+
+        public abstract ControlPointSettings[] Settings
         {
             get;
             set;
@@ -50,6 +182,7 @@ namespace Battlehub.Spline3
             set;
         }
 
+        public virtual int Insert(int segmentIndex, float offset = 0.5f) { throw new NotImplementedException(); }
         public abstract void Append(float distance = 0);
         public abstract void Prepend(float distance = 0);
         public abstract void Remove(int segmentIndex);
@@ -66,11 +199,20 @@ namespace Battlehub.Spline3
         public abstract Vector3 GetDirection(int segmentIndex, float t);
         public abstract Vector3 GetLocalDirection(float t);
         public abstract Vector3 GetLocalDirection(int segmentIndex, float t);
-
+        
         public abstract void SetControlPoint(int index, Vector3 position);
         public abstract void SetLocalControlPoint(int index, Vector3 position);
+        public abstract void SetSettings(int index, ControlPointSettings settings);
+        public virtual void Refresh(bool positionsOnly)
+        {
+            m_renderer.Refresh(positionsOnly);
+        }
+
+        public abstract int GetSegmentIndex(ref float t);
+
         public abstract Vector3 GetControlPoint(int index);
         public abstract Vector3 GetLocalControlPoint(int index);
+        public abstract ControlPointSettings GetSettings(int index);
 
         public abstract BaseSplineState GetState();
         public abstract void SetState(BaseSplineState state);
@@ -79,7 +221,11 @@ namespace Battlehub.Spline3
 
         protected virtual void Awake()
         {
-            m_renderer = gameObject.AddComponent<SplineRenderer>();
+            m_renderer = gameObject.GetComponent<SplineRenderer>();
+            if(m_renderer == null)
+            {
+                m_renderer = gameObject.AddComponent<SplineRenderer>();
+            }
             m_renderer.enabled = false;
         }
 
@@ -94,6 +240,7 @@ namespace Battlehub.Spline3
     {
         [SerializeField]
         private Vector3[] m_controlPoints = null;
+        private ControlPointSettings[] m_settings;
         [SerializeField]
         private bool m_isLooping = true;
         [SerializeField]
@@ -108,13 +255,23 @@ namespace Battlehub.Spline3
         public override bool IsLooping
         {
             get { return m_isLooping; }
-            set { m_isLooping = value; }
+            set
+            {
+                m_isLooping = value;
+                m_renderer.Refresh(false);
+            }
         }
 
         public override Vector3[] LocalControlPoints
         {
             get { return m_controlPoints; }
             set { m_controlPoints = value; }
+        }
+
+        public override ControlPointSettings[] Settings
+        {
+            get { return m_settings; }
+            set { m_settings = value; }
         }
 
         public override int ControlPointCount
@@ -145,12 +302,16 @@ namespace Battlehub.Spline3
             if(m_controlPoints == null || m_controlPoints.Length == 0)
             {
                 m_controlPoints = new[] { Vector3.back * 3f, Vector3.back, Vector3.forward, Vector3.forward * 3f };
+                m_settings = new ControlPointSettings[]
+                {
+                    new ControlPointSettings(), new ControlPointSettings(), new ControlPointSettings(), new ControlPointSettings()
+                };
             }
 
-            foreach (Transform child in transform)
-            {
-                Destroy(child.gameObject);
-            }
+            //foreach (Transform child in transform)
+            //{
+            //    child.gameObject.SetActive(false);
+            //}
         }
 
         protected override void OnDestroy()
@@ -158,29 +319,67 @@ namespace Battlehub.Spline3
             base.OnDestroy();
         }
 
+        public override int Insert(int segmentIndex, float offset = 0.5f)
+        {
+            offset = Mathf.Clamp01(offset);
+            List<Vector3> controlPoints = m_controlPoints.ToList();
+            List<ControlPointSettings> settings = m_settings.ToList();
+
+            if(IsLooping)
+            {
+                offset = (segmentIndex + offset) / SegmentsCount;
+            }
+            else
+            {
+                if (segmentIndex == ControlPointCount - 2)
+                {
+                    segmentIndex--;
+                }
+                offset = (segmentIndex + offset - 1) / SegmentsCount;
+            }
+            int ctrlPointIndex = segmentIndex + 1;
+
+            controlPoints.Insert(ctrlPointIndex, GetPosition(offset));
+
+            ControlPointSettings copy = new ControlPointSettings(Settings[ctrlPointIndex]);
+            settings.Insert(ctrlPointIndex, copy);
+            m_controlPoints = controlPoints.ToArray();
+            m_settings = settings.ToArray();
+            m_renderer.Refresh(false);
+
+            return ctrlPointIndex;
+        }
+
         public override void Append(float distance = 0)
         {
             Vector3 position;
             Vector3 tangent;
+            ControlPointSettings settings;
             int controlPointsCount = ControlPointCount;
+            
             if (controlPointsCount > 1)
             {
                 position = m_controlPoints[m_controlPoints.Length - 1];
                 tangent = position - m_controlPoints[m_controlPoints.Length - 2];
+                settings = new ControlPointSettings(m_settings[m_settings.Length - 1]);
             }
             else if(controlPointsCount == 1)
             {
                 position = Vector3.forward;
                 tangent = Vector3.forward;
+                settings = new ControlPointSettings(m_settings[m_settings.Length - 1]);
             }
             else
             {
                 position = Vector3.zero;
                 tangent = Vector3.forward;
+                settings = new ControlPointSettings();
             }
 
             Array.Resize(ref m_controlPoints, m_controlPoints.Length + 1);
+            Array.Resize(ref m_settings, m_settings.Length + 1);
             m_controlPoints[m_controlPoints.Length - 1] = position + tangent.normalized * distance;
+            m_settings[m_settings.Length - 1] = settings;
 
             m_renderer.Refresh(false);
         }
@@ -189,37 +388,47 @@ namespace Battlehub.Spline3
         {
             Vector3 position;
             Vector3 tangent;
+            ControlPointSettings settings;
             int controlPointsCount = ControlPointCount;
             if (controlPointsCount > 1)
             {
                 position = m_controlPoints[0];
                 tangent = position - m_controlPoints[1];
+                settings = new ControlPointSettings(m_settings[0]);
             }
             else if (controlPointsCount == 1)
             {
                 position = Vector3.back;
                 tangent = Vector3.back;
+                settings = new ControlPointSettings(m_settings[0]);
             }
             else
             {
                 position = Vector3.zero;
                 tangent = Vector3.back;
+                settings = new ControlPointSettings();
             }
 
             Array.Resize(ref m_controlPoints, m_controlPoints.Length + 1);
+            Array.Resize(ref m_settings, m_settings.Length + 1);
             for(int i = m_controlPoints.Length - 1; i > 0; --i)
             {
                 m_controlPoints[i] = m_controlPoints[i - 1];
+                m_settings[i] = m_settings[i - 1];
             }
             m_controlPoints[0] = position + tangent.normalized * distance;
+            m_settings[0] = settings;
             m_renderer.Refresh(false);
         }
 
         public override void Remove(int index)
         {
             List<Vector3> controlPoints = m_controlPoints.ToList();
+            List<ControlPointSettings> settings = m_settings.ToList();
             controlPoints.RemoveAt(index);
+            settings.RemoveAt(index);
             m_controlPoints = controlPoints.ToArray();
+            m_settings = settings.ToArray();
             m_renderer.Refresh(false);
         }
 
@@ -330,6 +539,11 @@ namespace Battlehub.Spline3
             }
         }
 
+        public override void SetSettings(int index, ControlPointSettings settings)
+        {
+            m_settings[index] = settings;
+        }
+
         public override Vector3 GetControlPoint(int index)
         {
             return transform.TransformPoint(m_controlPoints[index]);
@@ -338,6 +552,11 @@ namespace Battlehub.Spline3
         public override Vector3 GetLocalControlPoint(int index)
         {
             return m_controlPoints[index];
+        }
+
+        public override ControlPointSettings GetSettings(int index)
+        {
+            return m_settings[index];
         }
 
         private void OnDrawGizmos()
@@ -403,10 +622,19 @@ namespace Battlehub.Spline3
             return pos;
         }
 
-        private int GetSegmentIndex(ref float t)
+        public override int GetSegmentIndex(ref float t)
         {
             t = Mathf.Clamp01(t);
             float segmentSize;
+            int segmentIndex = GetSegmentIndex(t, out segmentSize);
+
+            t = t % segmentSize;
+            t = t / segmentSize;
+            return segmentIndex;
+        }
+
+        private int GetSegmentIndex(float t, out float segmentSize)
+        {
             int segmentIndex;
             if (m_isLooping)
             {
@@ -418,9 +646,6 @@ namespace Battlehub.Spline3
                 segmentSize = 1.0f / (m_controlPoints.Length - 3);
                 segmentIndex = ClampIndex(Mathf.FloorToInt(t / segmentSize) + 1);
             }
-
-            t = t % segmentSize;
-            t = t / segmentSize;
             return segmentIndex;
         }
 
@@ -482,17 +707,15 @@ namespace Battlehub.Spline3
 
         public override BaseSplineState GetState()
         {
-            return new BaseSplineState(m_controlPoints.ToArray(), IsSelectable, IsLooping);
+            return new BaseSplineState(m_controlPoints.ToArray(), m_settings, IsSelectable, IsLooping);
         }
 
         public override void SetState(BaseSplineState state)
         {
             m_controlPoints = state.ControlPoints.ToArray();
-            m_isLooping = state.IsLooping;
+            m_settings = state.Settings.Select(s => new ControlPointSettings(s)).ToArray();
             m_isSelectable = state.IsSelectable;
             m_renderer.Refresh();
         }
-
-
     }
 }

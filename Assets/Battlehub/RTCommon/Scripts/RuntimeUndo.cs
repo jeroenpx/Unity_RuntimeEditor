@@ -422,8 +422,8 @@ namespace Battlehub.RTCommon
         Record CreateRecord(object target, object newState, object oldState, UndoRedoCallback redoCallback, UndoRedoCallback undoCallback, PurgeCallback purgeCallback = null, EraseReferenceCallback eraseCallback = null);
         void Select(IRuntimeSelection selection, UnityObject[] objects, UnityObject activeObject);
 
-        void RegisterCreatedObjects(ExposeToEditor[] createdObjects);
-        void DestroyObjects(ExposeToEditor[] destoryedObjects);
+        void RegisterCreatedObjects(ExposeToEditor[] createdObjects, Action afterRedo = null, Action afterUndo = null);
+        void DestroyObjects(ExposeToEditor[] destoryedObjects, Action afterRedo = null, Action afterUndo = null);
 
         void RecordValue(object target, MemberInfo memberInfo, Action afterRedo = null, Action afterUndo = null);
         void RecordValue(object target, object accessor, MemberInfo memberInfo, Action afterRedo = null, Action afterUndo = null);
@@ -1122,7 +1122,7 @@ namespace Battlehub.RTCommon
             return objects.Length == 0;
         }
 
-        public void RegisterCreatedObjects(ExposeToEditor[] createdObjects)
+        public void RegisterCreatedObjects(ExposeToEditor[] createdObjects, Action afterRedo = null, Action afterUndo = null)
         {
             if (!Enabled)
             {
@@ -1133,8 +1133,8 @@ namespace Battlehub.RTCommon
                 return;
             }
             Record newRecord = CreateRecord(createdObjects, false, true,
-                record => MarkAsDestroyed(record, (bool)record.NewState),
-                record => MarkAsDestroyed(record, (bool)record.OldState),
+                record => { bool result = MarkAsDestroyed(record, (bool)record.NewState); afterRedo?.Invoke(); return result; },
+                record => { bool result = MarkAsDestroyed(record, (bool)record.OldState); afterUndo?.Invoke(); return result; },
                 record => PurgeMarkedAsDestoryed(record),
                 (record, oldReference, newReference) => EraseMarkedAsDestroyed(record, newReference, oldReference));
 
@@ -1144,11 +1144,9 @@ namespace Battlehub.RTCommon
             }
         }
 
-
         //To prevent gameobject from being destroyed during purge operation (in case if they are referenced somewhere in the stack)
         private HashSet<ExposeToEditor> m_markAsDestroyedDuringLastOperation = new HashSet<ExposeToEditor>();
-
-        public void DestroyObjects(ExposeToEditor[] destoryedObjects)
+        public void DestroyObjects(ExposeToEditor[] destoryedObjects, Action afterRedo = null, Action afterUndo = null)
         {
             if (!Enabled)
             {
@@ -1168,8 +1166,8 @@ namespace Battlehub.RTCommon
             }
 
             Record newRecord = CreateRecord(destoryedObjects, true, false,
-               record => MarkAsDestroyed(record, (bool)record.NewState),
-               record => MarkAsDestroyed(record, (bool)record.OldState),
+               record => { bool result = MarkAsDestroyed(record, (bool)record.NewState); afterRedo?.Invoke(); return result; },
+               record => { bool result = MarkAsDestroyed(record, (bool)record.OldState); afterUndo?.Invoke(); return result; },
                record => PurgeMarkedAsDestoryed(record),
                (record, oldReference, newReference) => EraseMarkedAsDestroyed(record, newReference, oldReference));
 
@@ -1809,7 +1807,7 @@ namespace Battlehub.RTCommon
                 GameObject go = record.Target as GameObject;
                 Component component = AddComponent(go, componentType);
                 AssingValues(component, memberInfo, (object[])record.NewState);
-
+                
                 object repacement = record.OldState;
                 Erase(repacement, component, true);
                 record.OldState = component;
@@ -1964,12 +1962,12 @@ namespace Battlehub.RTCommon
          
         }
 
-        public void RegisterCreatedObjects(ExposeToEditor[] createdObjects)
+        public void RegisterCreatedObjects(ExposeToEditor[] createdObjects, Action afterRedo = null, Action afterUndo = null)
         {
          
         }
 
-        public void DestroyObjects(ExposeToEditor[] destoryedObjects)
+        public void DestroyObjects(ExposeToEditor[] destoryedObjects, Action afterRedo = null, Action afterUndo = null)
         {
             
         }

@@ -369,13 +369,17 @@ namespace Battlehub.UIControls.Dialogs
 
         public void Show()
         {
-            m_parentRegion.gameObject.SetActive(true);
+            if(m_parentRegion != null)
+            {
+                m_parentRegion.gameObject.SetActive(true);
+            }
         }
 
         public void Close(bool? result = null, bool raiseEvents = true, bool invokeActions = true)
         {
             if(m_parentRegion == null)
             {
+                Debug.LogWarning("m_parentRegion == null");
                 return;
             }
 

@@ -3881,6 +3881,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -4020,6 +4021,7 @@ MonoBehaviour:
   CanRename: 1
   CanCreatePrefab: 1
   ShowSelectionGizmo: 1
+  CanSelect: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1243314675393952
@@ -7845,6 +7847,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -11774,6 +11777,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -11879,6 +11883,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -11949,6 +11954,7 @@ MonoBehaviour:
   CanRename: 1
   CanCreatePrefab: 1
   ShowSelectionGizmo: 1
+  CanSelect: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1463707715302862
@@ -15841,6 +15847,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -19770,6 +19777,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -19858,8 +19866,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610450072503744}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 0, g: 0.37931037, b: 1, a: 1}
   m_Intensity: 8
   m_Range: 6
@@ -19941,6 +19950,7 @@ MonoBehaviour:
   CanRename: 1
   CanCreatePrefab: 1
   ShowSelectionGizmo: 1
+  CanSelect: 1
   CanSnap: 1
   AddColliders: 1
 --- !u!1 &1744681733381040
@@ -23824,6 +23834,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:

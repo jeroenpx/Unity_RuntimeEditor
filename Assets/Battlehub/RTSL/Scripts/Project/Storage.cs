@@ -118,36 +118,39 @@ namespace Battlehub.RTSL
 
         public void CopyProject(string projectPath, string targetPath, StorageEventHandler callback)
         {
-            try
+            QueueUserWorkItem(() =>
             {
-                string projectFullPath = FullPath(projectPath);
-                string projectTargetPath = FullPath(targetPath);
-
-                DirectoryInfo diSource = new DirectoryInfo(projectFullPath);
-                DirectoryInfo diTarget = new DirectoryInfo(projectTargetPath);
-
-                CopyAll(diSource, diTarget);
-
-                ProjectInfo projectInfo;
-                using (FileStream fs = File.OpenRead(projectTargetPath + "/Project.rtmeta"))
+                try
                 {
-                    projectInfo = Serializer.Deserialize<ProjectInfo>(fs);
+                    string projectFullPath = FullPath(projectPath);
+                    string projectTargetPath = FullPath(targetPath);
+
+                    DirectoryInfo diSource = new DirectoryInfo(projectFullPath);
+                    DirectoryInfo diTarget = new DirectoryInfo(projectTargetPath);
+
+                    CopyAll(diSource, diTarget);
+
+                    ProjectInfo projectInfo;
+                    using (FileStream fs = File.OpenRead(projectTargetPath + "/Project.rtmeta"))
+                    {
+                        projectInfo = Serializer.Deserialize<ProjectInfo>(fs);
+                    }
+
+                    projectInfo.Name = Path.GetFileNameWithoutExtension(targetPath);
+                    projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectTargetPath + "/Project.rtmeta");
+
+                    using (FileStream fs = File.OpenWrite(projectTargetPath + "/Project.rtmeta"))
+                    {
+                        Serializer.Serialize(fs, projectInfo);
+                    }
+
+                    Callback(() => callback(new Error(Error.OK)));
                 }
-
-                projectInfo.Name = Path.GetFileNameWithoutExtension(targetPath);
-                projectInfo.LastWriteTime = File.GetLastWriteTimeUtc(projectTargetPath + "/Project.rtmeta");
-
-                using (FileStream fs = File.OpenWrite(projectTargetPath + "/Project.rtmeta"))
+                catch (Exception e)
                 {
-                    Serializer.Serialize(fs, projectInfo);
+                    Callback(() => callback(new Error(Error.E_Exception) { ErrorText = e.ToString() }));
                 }
-            
-                callback(new Error(Error.OK));
-            }
-            catch (Exception e)
-            {
-                callback(new Error(Error.E_Exception) { ErrorText = e.ToString() });
-            }
+            });
         }
 
         public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
@@ -224,12 +227,19 @@ namespace Battlehub.RTSL
 
         public void DeleteProject(string projectPath, StorageEventHandler callback)
         {
-            string projectDir = FullPath(projectPath);
-            if(Directory.Exists(projectDir))
+            QueueUserWorkItem(() =>
             {
-                Directory.Delete(projectDir, true);
-            }
-            callback(new Error(Error.OK));
+                string projectDir = FullPath(projectPath);
+                if (Directory.Exists(projectDir))
+                {
+                    Directory.Delete(projectDir, true);
+                }
+                Callback(() =>
+                {
+                    callback(new Error(Error.OK));
+                });
+            });
+  
         }
 
         public void GetProjects(StorageEventHandler<ProjectInfo[]> callback)

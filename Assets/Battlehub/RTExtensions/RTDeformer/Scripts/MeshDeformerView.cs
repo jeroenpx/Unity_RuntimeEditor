@@ -101,9 +101,12 @@ namespace Battlehub.MeshDeformer3
             {
                 return;
             }
+            if (m_tool.Mode == MeshDeformerToolMode.Object)
+            {
+                return;
+            }
 
             IInput input = Editor.Input;
-
             bool remove = input.GetKeyDown(KeyCode.Delete);
             if (m_isMeshDeformerSelected && remove && m_tool.CanRemove())
             {

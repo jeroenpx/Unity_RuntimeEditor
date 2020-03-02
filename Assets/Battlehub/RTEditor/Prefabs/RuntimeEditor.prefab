@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3207547, g: 0.2980598, b: 0.2980598, a: 1}
+  m_Color: {r: 0.32156864, g: 0.29803923, b: 0.29803923, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Border3
+  Name: Border3Color
 --- !u!1 &6005130086743319
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,6 +826,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Create Empty Child
     Text: Create Empty Child
     Icon: {fileID: 0}
@@ -858,6 +859,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: 3D Object/Cube
     Text: Cube
     Icon: {fileID: 0}
@@ -890,6 +892,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: 3D Object/Sphere
     Text: Sphere
     Icon: {fileID: 0}
@@ -922,6 +925,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: 3D Object/Capsule
     Text: Capsule
     Icon: {fileID: 0}
@@ -954,6 +958,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: 3D Object/Cylinder
     Text: Cylinder
     Icon: {fileID: 0}
@@ -986,6 +991,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: 3D Object/Plane
     Text: Plane
     Icon: {fileID: 0}
@@ -1018,6 +1024,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: 3D Object/Quad
     Text: Quad
     Icon: {fileID: 0}
@@ -1050,6 +1057,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Light/Directional
     Text: Directional
     Icon: {fileID: 0}
@@ -1082,6 +1090,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Light/Point
     Text: Point
     Icon: {fileID: 0}
@@ -1114,6 +1123,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Light/Spot
     Text: Spot
     Icon: {fileID: 0}
@@ -1146,6 +1156,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Camera
     Text: Camera
     Icon: {fileID: 0}
@@ -1178,6 +1189,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 7f9ab2a07e35b35428a88d28fc4c6b3f,
     type: 3}
   m_anchor: {fileID: 5849259614052136183}
@@ -1391,6 +1403,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Scene
     Text: Scene
     Icon: {fileID: 21300000, guid: adee4d2c74aa3ed489dc78650267d5c9, type: 3}
@@ -1412,6 +1425,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Game
     Text: Game
     Icon: {fileID: 21300000, guid: 0f5af8f5573802443896110107c644a1, type: 3}
@@ -1433,6 +1447,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Inspector
     Text: Inspector
     Icon: {fileID: 21300000, guid: f7581d993ea6f4942b835e5f922cdef6, type: 3}
@@ -1454,6 +1469,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Hierarchy
     Text: Hierarchy
     Icon: {fileID: 21300000, guid: 598ffc666bd444c4dac6b492130f5578, type: 3}
@@ -1475,6 +1491,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Project
     Text: Project
     Icon: {fileID: 21300000, guid: 747b49ea2fbd21c4a94d5bab52037e80, type: 3}
@@ -1496,6 +1513,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Console
     Text: Console
     Icon: {fileID: 21300000, guid: b7b061b91660ed7428cff11f4afc7180, type: 3}
@@ -1517,6 +1535,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: General/Animation
     Text: Animation
     Icon: {fileID: 21300000, guid: db09905cb4d2c194d82eb81bfe79940e, type: 3}
@@ -1538,6 +1557,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 7f9ab2a07e35b35428a88d28fc4c6b3f,
     type: 3}
   m_anchor: {fileID: 5849259614183290822}
@@ -1751,6 +1771,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Save Scene
     Text: Save Scene
     Icon: {fileID: 21300000, guid: 2bf42b484d381ed4b821684e5cc7b604, type: 3}
@@ -1772,6 +1793,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Save Scene As...
     Text: Save Scene As...
     Icon: {fileID: 21300000, guid: e5a00995c2633e046bcc7a83ad24c42e, type: 3}
@@ -1793,6 +1815,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Import Assets
     Text: Import Assets
     Icon: {fileID: 21300000, guid: ce113772eb0f6574ca2b9651349b34d0, type: 3}
@@ -1814,6 +1837,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Import From File
     Text: Import From File
     Icon: {fileID: 21300000, guid: 93e198295d49d7348b9328fcfb88d0cb, type: 3}
@@ -1846,6 +1870,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Manage Projects
     Text: Manage Projects
     Icon: {fileID: 21300000, guid: 1d809aa58d8449f44be584087c1a618a, type: 3}
@@ -1867,6 +1892,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   - Path: Close
     Text: Close
     Icon: {fileID: 0}
@@ -1888,6 +1914,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 7f9ab2a07e35b35428a88d28fc4c6b3f,
     type: 3}
   m_anchor: {fileID: 5849259614214296018}
@@ -2112,6 +2139,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Redo
     Text: Redo
     Icon: {fileID: 0}
@@ -2144,6 +2172,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Duplicate
     Text: Duplicate
     Icon: {fileID: 0}
@@ -2176,6 +2205,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Delete
     Text: Delete
     Icon: {fileID: 0}
@@ -2208,6 +2238,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Play
     Text: Play
     Icon: {fileID: 0}
@@ -2240,6 +2271,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Stop
     Text: Stop
     Icon: {fileID: 0}
@@ -2272,6 +2304,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   - Path: Settings
     Text: Settings
     Icon: {fileID: 21300000, guid: 89a4e12e4493f6341928b4e2f80ec665, type: 3}
@@ -2304,6 +2337,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    IsVisible: 1
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 7f9ab2a07e35b35428a88d28fc4c6b3f,
     type: 3}
   m_anchor: {fileID: 5849259613376326648}
@@ -2517,6 +2551,7 @@ MonoBehaviour:
     Validate:
       m_PersistentCalls:
         m_Calls: []
+    IsVisible: 1
   m_menuItemPrefab: {fileID: 114996007241749652, guid: 7f9ab2a07e35b35428a88d28fc4c6b3f,
     type: 3}
   m_anchor: {fileID: 5849259614669755914}
@@ -2764,7 +2799,7 @@ RectTransform:
   - {fileID: 4350177821589181146}
   - {fileID: 436286296837115800}
   m_Father: {fileID: 6389508947412869166}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3720,7 +3755,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2479318248405338867
 CanvasRenderer:
@@ -3814,12 +3849,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4211b7b52c3f2ec4db19f3e5aa9e9a39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_windowSettingsDefault:
+    Inspector:
+      ComponentEditor:
+        ShowResetButton: 1
+        ShowExpander: 1
+        ShowEnableButton: 1
+        ShowRemoveButton: 1
+      ShowAddComponentButton: 1
   m_isGridVisibleDefault: 1
   m_isGridEnabledDefault: 0
   m_gridZTest: 1
   m_gridSizeDefault: 0.5
   m_uiAutoScaleDefault: 0
   m_uiScaleDefault: 1
+  m_freeMovementSmoothSpeed: 10
+  m_freeRotationSmoothSpeed: 10
+  m_rotationInvertX: 0
+  m_rotationInvertY: 0
   m_zoomSpeedDefault: 5
   m_constantZoomSpeedDefault: 0
 --- !u!1 &5849259612615065805
@@ -4339,7 +4386,7 @@ RectTransform:
   - {fileID: 5964698429461579628}
   - {fileID: 1638548488}
   m_Father: {fileID: 6389508947412869166}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -6364,8 +6411,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1777419699227269926}
   - {fileID: 5849259613100401303}
+  - {fileID: 1777419699227269926}
   - {fileID: 5849259612951747679}
   - {fileID: 5849259614334939581}
   m_Father: {fileID: 5849259614496068638}
@@ -6618,6 +6665,7 @@ GameObject:
   - component: {fileID: 5964698429461579628}
   - component: {fileID: 9086696585132411615}
   - component: {fileID: 9105326539730775742}
+  - component: {fileID: 9052402558814565229}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -6762,6 +6810,19 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &9052402558814565229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7454090364825333757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!1 &7981581632936811403
 GameObject:
   m_ObjectHideFlags: 0

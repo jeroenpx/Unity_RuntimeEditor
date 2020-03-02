@@ -1,7 +1,6 @@
 ﻿using Battlehub.ProBuilderIntegration;
 using Battlehub.RTCommon;
 using Battlehub.RTHandles;
-using Battlehub.RTSL;
 using System.Linq;
 using UnityEngine;
 
@@ -13,7 +12,22 @@ namespace Battlehub.RTBuilder
         private RuntimeWindow m_window;
         private IRuntimeSceneComponent m_sceneComponent;
 
-        private void Awake()
+        protected IRTE Editor
+        {
+            get { return m_editor; }
+        }
+
+        protected RuntimeWindow Window
+        {
+            get { return m_window; }
+        }
+
+        protected IRuntimeSceneComponent SceneComponent
+        {
+            get { return m_sceneComponent; }
+        }
+        
+        protected virtual void Awake()
         {
             m_window = GetComponent<RuntimeWindow>();
             
@@ -25,20 +39,16 @@ namespace Battlehub.RTBuilder
 
             foreach (ExposeToEditor obj in m_editor.Object.Get(false))
             {
-                PBMesh pbMesh = obj.GetComponent<PBMesh>();
-                if (pbMesh != null)
-                {
-                    CreateWireframeMesh(pbMesh);
-                }
+                TryCreateWireframe(obj);
             }
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             SetCullingMask(m_window);
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if(m_editor != null && m_editor.Object != null)
             {
@@ -47,20 +57,7 @@ namespace Battlehub.RTBuilder
 
                 foreach (ExposeToEditor obj in m_editor.Object.Get(false))
                 {
-                    PBMesh pbMesh = obj.GetComponent<PBMesh>();
-                    if (pbMesh != null)
-                    {
-                        WireframeMesh[] wireframeMesh = pbMesh.GetComponentsInChildren<WireframeMesh>(true);
-                        for(int i = 0; i < wireframeMesh.Length; ++i)
-                        {
-                            WireframeMesh wireframe = wireframeMesh[i];
-                            if (!wireframe.IsIndividual)
-                            {
-                                Destroy(wireframe.gameObject);
-                                break;
-                            }
-                        }
-                    }
+                    TryDestroyWireframe(obj);
                 }
             }
 
@@ -70,31 +67,54 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        private void OnObjectStarted(ExposeToEditor obj)
+
+        protected virtual void OnObjectStarted(ExposeToEditor obj)
+        {
+            TryCreateWireframe(obj);
+        }
+
+        protected virtual void TryCreateWireframe(ExposeToEditor obj)
         {
             PBMesh pbMesh = obj.GetComponent<PBMesh>();
-            if(pbMesh != null)
+            if (pbMesh != null)
             {
                 CreateWireframeMesh(pbMesh);
             }
         }
 
-        private void CreateWireframeMesh(PBMesh pbMesh)
+        protected virtual void CreateWireframeMesh(PBMesh pbMesh)
         {
             GameObject wireframe = new GameObject("Wireframe");
             wireframe.transform.SetParent(pbMesh.transform, false);
-
             wireframe.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
             wireframe.layer = m_editor.CameraLayerSettings.ExtraLayer;
             WireframeMesh wireframeMesh = wireframe.AddComponent<WireframeMesh>();
 
-            if (m_editor.Selection.IsSelected(pbMesh.gameObject))
+            if(IsSelected(pbMesh.gameObject))
             {
                 wireframeMesh.IsSelected = true;
             }
         }
 
-        private void SetCullingMask(RuntimeWindow window)
+        protected virtual void TryDestroyWireframe(ExposeToEditor obj)
+        {
+            PBMesh pbMesh = obj.GetComponent<PBMesh>();
+            if (pbMesh != null)
+            {
+                WireframeMesh[] wireframeMesh = pbMesh.GetComponentsInChildren<WireframeMesh>(true);
+                for (int i = 0; i < wireframeMesh.Length; ++i)
+                {
+                    WireframeMesh wireframe = wireframeMesh[i];
+                    if (!wireframe.IsIndividual)
+                    {
+                        Destroy(wireframe.gameObject);
+                        break;
+                    }
+                }
+            }
+        }
+
+        protected virtual void SetCullingMask(RuntimeWindow window)
         {
             window.Camera.cullingMask = (1 << LayerMask.NameToLayer("UI")) | (1 << m_editor.CameraLayerSettings.AllScenesLayer) | (1 << m_editor.CameraLayerSettings.ExtraLayer);
             window.Camera.backgroundColor = Color.white;
@@ -106,7 +126,7 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        private void ResetCullingMask(RuntimeWindow window)
+        protected virtual void ResetCullingMask(RuntimeWindow window)
         {
             CameraLayerSettings settings = m_editor.CameraLayerSettings;
             window.Camera.cullingMask = ~((1 << m_editor.CameraLayerSettings.ExtraLayer) | ((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer);
@@ -118,7 +138,7 @@ namespace Battlehub.RTBuilder
             }
         }
 
-        private void OnSelectionChanged(Object[] unselectedObjects)
+        protected virtual void OnSelectionChanged(Object[] unselectedObjects)
         {
             if (unselectedObjects != null)
             {
@@ -132,7 +152,7 @@ namespace Battlehub.RTBuilder
             TryToSelect();
         }
 
-        private void TryToSelect()
+        protected virtual void TryToSelect()
         {
             if (m_editor.Selection.gameObjects != null)
             {
@@ -143,7 +163,21 @@ namespace Battlehub.RTBuilder
                 }
             }
         }
-    }
 
+        protected bool IsSelected(GameObject gameObject)
+        {
+            Transform parent = gameObject.transform;
+            while (parent != null)
+            {
+                if (m_editor.Selection.IsSelected(parent.gameObject))
+                {
+                    return true;
+                }
+
+                parent = parent.parent;
+            }
+            return false;
+        }
+    }
 }
 

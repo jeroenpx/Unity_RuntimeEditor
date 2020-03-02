@@ -7,11 +7,53 @@ namespace Battlehub.Wireframe
     public class ObjectWireframe : MonoBehaviour
     {
         private static Material m_wMaterial;
+        private MeshFilter m_filter;
         private GameObject m_wireframe;
+        private MeshRenderer m_wireframeRenderer;
+        private MaterialPropertyBlock m_props;
+        private int m_colorPropID = Shader.PropertyToID("_Color");
+
+        [SerializeField]
+        private int m_wireframeLayer = 0;
+        public int WireframeLayer
+        {
+            get { return m_wireframeLayer; }
+            set
+            {
+                m_wireframeLayer = value;
+                if(m_wireframe != null)
+                {
+                    m_wireframe.layer = m_wireframeLayer;
+                }
+            }
+        }
+
+        [SerializeField]
+        private Color m_color = Color.yellow;
+        public Color Color
+        {
+            get { return m_color; }
+            set
+            {
+                m_color = value;
+                ApplyColor();
+            }
+        }
+
+        [SerializeField]
+        private Color m_selectionColor = new Color(1, 0.35f, 0, 1);
+        public Color SelectionColor
+        {
+            get { return m_selectionColor; }
+            set
+            {
+                m_selectionColor = value;
+                ApplyColor();
+            }
+        }
 
         [SerializeField]
         private bool m_showWireframeOnly = false;
-
         [SerializeField]
         private bool m_isOn = true;
         public bool IsOn
@@ -40,6 +82,30 @@ namespace Battlehub.Wireframe
             }
         }
 
+        private bool m_isSelected;
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set
+            {
+                if (m_isSelected != value)
+                {
+                    m_isSelected = value;
+                    ApplyColor();
+                }
+            }
+        }
+
+        private void ApplyColor()
+        {
+            if (m_wireframeRenderer != null)
+            {
+                m_props.SetColor(m_colorPropID, IsSelected ? SelectionColor : Color);
+                m_wireframeRenderer.SetPropertyBlock(m_props);
+            }
+        }
+
+ 
         private void Awake()
         {
             if(m_wMaterial == null)
@@ -52,24 +118,44 @@ namespace Battlehub.Wireframe
             if (mesh != null)
             {
                 m_wireframe = new GameObject("Wireframe");
+                m_wireframe.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideAndDontSave;
                 m_wireframe.transform.SetParent(transform, false);
                 m_wireframe.gameObject.AddComponent<RTSLIgnore>();
+                m_wireframe.layer = m_wireframeLayer;
 
-                meshFilter = m_wireframe.AddComponent<MeshFilter>();
-                meshFilter.sharedMesh = CreateWirefameMesh(mesh);
+                m_filter = m_wireframe.AddComponent<MeshFilter>();
+                m_filter.sharedMesh = CreateWirefameMesh(mesh);
 
-                MeshRenderer meshRenderer = m_wireframe.AddComponent<MeshRenderer>();
-                meshRenderer.sharedMaterial = m_wMaterial;
+                m_wireframeRenderer = m_wireframe.AddComponent<MeshRenderer>();
+                m_wireframeRenderer.sharedMaterial = m_wMaterial;
+                m_props = new MaterialPropertyBlock();
+                ApplyColor();
 
                 m_wireframe.SetActive(m_isOn);
                 if (m_showWireframeOnly)
                 {
-                    meshRenderer = GetComponent<MeshRenderer>();
+                    MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
                     if (meshRenderer != null)
                     {
                         meshRenderer.enabled = !m_isOn;
                     }
                 }
+            }
+        }
+
+        private void OnEnable()
+        {
+            if(m_wireframe != null)
+            {
+                m_wireframe.SetActive(true);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if(m_wireframe != null)
+            {
+                m_wireframe.SetActive(false);
             }
         }
 
@@ -81,18 +167,18 @@ namespace Battlehub.Wireframe
             }
         }
 
+        public void Refresh(Mesh mesh)
+        {
+            Mesh wireframe = m_filter.sharedMesh;
+            wireframe.vertices = mesh.vertices;
+        }
 
-        private static Mesh CreateWirefameMesh(Mesh mesh)
+        private Mesh CreateWirefameMesh(Mesh mesh)
         {
             int[] triangles = mesh.triangles;
             int[] wIndices = new int[triangles.Length * 2];
 
             Vector3[] vertices = mesh.vertices;
-            Color[] colors = new Color[vertices.Length];
-            for (int i = 0; i < colors.Length; ++i)
-            {
-                colors[i] = Color.white;
-            }
             for (int i = 0; i < triangles.Length; i += 3)
             {
                 int v0 = triangles[i];
@@ -112,7 +198,6 @@ namespace Battlehub.Wireframe
             Mesh wMesh = new Mesh();
             wMesh.name = mesh.name + " Wireframe";
             wMesh.vertices = vertices;
-            wMesh.colors = colors;
             wMesh.subMeshCount = 1;
             wMesh.SetIndices(wIndices, MeshTopology.Lines, 0);
 

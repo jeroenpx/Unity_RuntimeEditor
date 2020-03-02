@@ -47,9 +47,14 @@ namespace Battlehub.RTBuilder
             {
                 if(!wireframe)
                 {
-                    gameObject.AddComponent<Wireframe>();
+                    AddComponent();
                 }
             }
+        }
+
+        protected virtual void AddComponent()
+        {
+            gameObject.AddComponent<Wireframe>();
         }
     }
 
