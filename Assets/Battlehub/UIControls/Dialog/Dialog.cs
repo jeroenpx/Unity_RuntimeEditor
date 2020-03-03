@@ -304,57 +304,12 @@ namespace Battlehub.UIControls.Dialogs
 
         private void OnOkClick()
         {
-            if(Ok != null)
-            {
-                DialogCancelArgs args = new DialogCancelArgs();
-                Ok(this, args);
-
-                if (args.Cancel)
-                {
-                    return;
-                }
-            }
-
-            if (OkAction != null)
-            {
-                DialogCancelArgs args = new DialogCancelArgs();
-                OkAction(this, args);
-
-                if (args.Cancel)
-                {
-                    return;
-                }
-            }
-
-            Close();
+            Close(true);
         }
 
         private void OnCancelClick()
         {
-            if (Cancel != null)
-            {
-                DialogCancelArgs args = new DialogCancelArgs();
-                Cancel(this, args);
-
-                if (args.Cancel)
-                {
-                    return;
-                }
-            }
-
-            if (CancelAction != null)
-            {
-                DialogCancelArgs args = new DialogCancelArgs();
-                CancelAction(this, args);
-
-                if (args.Cancel)
-                {
-                    return;
-                }
-            }
-
-
-            Close();
+            Close(false);
         }     
         
         public void Hide()

@@ -138,7 +138,7 @@ namespace Battlehub.RTEditor
 
         private void OnImportCompleted(Error error, AssetItem[] result)
         {
-            Editor.IsBusy = false;
+            //Editor.IsBusy = false;
             if (error.HasError)
             {
                 m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToImportAssets", "Unable to import assets") , error.ErrorText);

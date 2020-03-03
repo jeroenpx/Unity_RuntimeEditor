@@ -2,6 +2,7 @@
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls;
 using Battlehub.UIControls.Dialogs;
+using System.Collections;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -168,10 +169,6 @@ namespace Battlehub.RTEditor
             }
 
             args.Cancel = true;
-            if(m_parentDialog != null)
-            {
-                m_parentDialog.Close();
-            }
             Import(SelectedLibrary, IsBuiltInLibrary);
         }
 
@@ -181,6 +178,21 @@ namespace Battlehub.RTEditor
             AssetLibraryImportDialog assetLibraryImporter = transform.GetComponentInChildren<AssetLibraryImportDialog>();
             assetLibraryImporter.SelectedLibrary = assetLibrary;
             assetLibraryImporter.IsBuiltIn = isBuiltIn;
+            Dialog dlg = assetLibraryImporter.GetComponentInParent<Dialog>();
+            dlg.Closed += OnAssetLibraryImporterClosed;
+        }
+
+        private void OnAssetLibraryImporterClosed(Dialog sender, bool? args)
+        {
+            sender.Closed -= OnAssetLibraryImporterClosed;
+
+            if(args == true)
+            {
+                if (m_parentDialog != null)
+                {
+                    m_parentDialog.Close();
+                }
+            }
         }
     }
 }

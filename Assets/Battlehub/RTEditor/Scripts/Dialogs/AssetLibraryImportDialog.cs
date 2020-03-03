@@ -230,8 +230,14 @@ namespace Battlehub.RTEditor
                 return;
             }
 
+            Editor.StartCoroutine(CoImport());
+        }
+
+        private IEnumerator CoImport()
+        {
             Editor.IsBusy = true;
-            m_project.Import(SelectedAssets);
+            yield return m_project.Import(SelectedAssets);
+            Editor.IsBusy = false;
         }
 
 

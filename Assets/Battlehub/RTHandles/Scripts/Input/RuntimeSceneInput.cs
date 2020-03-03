@@ -152,7 +152,7 @@ namespace Battlehub.RTHandles
             RuntimeTools tools = m_component.Editor.Tools;
 
             bool canRotate = AllowRotateAction();
-            bool rotate = RotateAction();
+            bool rotate = RotateAction() || SwapLRMB && canRotate;
             bool pan = PanAction();
             bool freeMove = FreeMoveAction();
 
