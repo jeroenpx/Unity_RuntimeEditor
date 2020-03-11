@@ -289,6 +289,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            if(m_scale.x <= 0 || m_scale.y <= 0 || m_scale.z <= 0)
+            {
+                return;
+            }
+
             float size = 2 * m_arrowRadius * SelectionMargin;
 
             Transform root = m_xCollider.transform.parent;

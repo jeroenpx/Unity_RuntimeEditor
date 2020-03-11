@@ -141,6 +141,8 @@ namespace Battlehub.RTEditor
                         m_prefabInstance = InstantiatePrefab(prefab, Vector3.zero, prefab.GetComponent<Transform>().rotation);
                     }
 
+                    Editor.AddGameObjectToHierarchy(m_prefabInstance);
+                    
                     m_prefabInstanceTransforms = new HashSet<Transform>(m_prefabInstance.GetComponentsInChildren<Transform>(true));
 
                     prefab.SetActive(wasPrefabEnabled);

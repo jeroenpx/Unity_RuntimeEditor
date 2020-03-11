@@ -49,7 +49,7 @@ namespace Battlehub.Spline3
         protected static Material m_normalMaterial;
         protected static Material m_controlPointMaterial;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {            
             if(m_lineMaterial == null)
             {
@@ -75,44 +75,33 @@ namespace Battlehub.Spline3
                 m_controlPointMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             }
 
+            InitDrawing("Line", m_lineMaterial, out m_lineMeshFilter, out m_lineRenderer);
+            InitDrawing("Normals", m_normalMaterial, out m_normalMeshFilter, out m_normalRenderer);
+            InitDrawing("Points", m_controlPointMaterial, out m_pointMeshFilter, out m_pointRenderer);
+        }
+
+        protected GameObject InitDrawing(string name, Material material, out MeshFilter meshFilter, out Renderer renderer)
+        {
+            GameObject go = new GameObject();
+            go.hideFlags = HideFlags.DontSave;
+            go.name = name;
+            go.transform.SetParent(transform, false);
+
+            meshFilter = go.AddComponent<MeshFilter>();
+            meshFilter.sharedMesh = new Mesh();
+            meshFilter.sharedMesh.MarkDynamic();
+
+            renderer = go.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+
+            return go;
+        }
+
+        protected virtual void Start()
+        {
             m_spline = GetComponent<BaseSpline>();
-
-            GameObject lineGo = new GameObject();
-            lineGo.name = "Line";
-            lineGo.transform.SetParent(transform, false);
-
-            m_lineMeshFilter = lineGo.AddComponent<MeshFilter>();
-            m_lineMeshFilter.sharedMesh = new Mesh();
-            m_lineMeshFilter.sharedMesh.MarkDynamic();
-
-            m_lineRenderer = lineGo.AddComponent<MeshRenderer>();
-            m_lineRenderer.sharedMaterial = m_lineMaterial;
-
-            GameObject normalGo = new GameObject();
-            normalGo.name = "Normals";
-            normalGo.transform.SetParent(transform, false);
-
-            m_normalMeshFilter = normalGo.AddComponent<MeshFilter>();
-            m_normalMeshFilter.sharedMesh = new Mesh();
-            m_normalMeshFilter.sharedMesh.MarkDynamic();
-
-            m_normalRenderer = normalGo.AddComponent<MeshRenderer>();
-            m_normalRenderer.sharedMaterial = m_normalMaterial;
-
-            GameObject pointsGo = new GameObject();
-            pointsGo.name = "Points";
-            pointsGo.transform.SetParent(transform, false);
-
-            m_pointMeshFilter = pointsGo.AddComponent<MeshFilter>();
-            m_pointMeshFilter.sharedMesh = new Mesh();
-            m_pointMeshFilter.sharedMesh.MarkDynamic();
-
-            m_pointRenderer = pointsGo.AddComponent<MeshRenderer>();
-            m_pointRenderer.sharedMaterial = m_controlPointMaterial;
-
-            OnLayerChanged();
-
             Refresh();
+            OnLayerChanged();
         }
 
         protected virtual void OnDestroy()

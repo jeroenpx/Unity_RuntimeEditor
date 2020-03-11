@@ -27,6 +27,8 @@ namespace Battlehub.RTCommon
     [DisallowMultipleComponent]
     public class ExposeToEditor : MonoBehaviour
     {
+        public const string HierarchyRootTag = "HierarchyRoot";
+
         public static event ExposeToEditorEvent _Awaked;
         public static event ExposeToEditorEvent _Destroying;
         public static event ExposeToEditorEvent _Destroyed;
@@ -216,7 +218,7 @@ namespace Battlehub.RTCommon
             bool visible = (hideFlags & HideFlags.HideInHierarchy) == 0;
             if (visible)
             {
-                if (transform.parent != null && transform.parent.GetComponent<ExposeToEditor>() == null)
+                if (transform.parent != null && transform.parent.GetComponent<ExposeToEditor>() == null && transform.parent.tag != HierarchyRootTag)
                 {
                     //gameObject.hideFlags = HideFlags.HideInHierarchy;
                     visible = false;

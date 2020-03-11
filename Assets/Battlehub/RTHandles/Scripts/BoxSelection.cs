@@ -83,6 +83,10 @@ namespace Battlehub.RTHandles
         protected Vector2 m_startPt;
         protected Vector2 m_endPt;
 
+        private Camera m_windowCanvasCamera;
+        private RectTransform m_windowRectTransform;
+
+        public Vector2 ScreenSpaceMargin = new Vector2(2, 2);
         public bool UseCameraSpace = true;
         public BoxSelectionMethod Method;
        
@@ -166,6 +170,12 @@ namespace Battlehub.RTHandles
             m_image.raycastTarget = false;
         }
 
+        protected virtual void Start()
+        {
+            m_windowRectTransform = (RectTransform)m_window.transform;
+            Canvas windowCanvas = m_windowRectTransform.GetComponentInParent<Canvas>();
+            m_windowCanvasCamera = windowCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? windowCanvas.worldCamera : null;
+        }
 
         protected override void OnDestroyOverride()
         {
@@ -511,7 +521,19 @@ namespace Battlehub.RTHandles
                 cam = m_canvas.worldCamera;
             }
 
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), Window.Pointer.ScreenPoint, cam, out localPoint);
+            Vector3 screenPoint = Window.Pointer.ScreenPoint;
+            if (!UseCameraSpace)
+            {
+                Rect rect = m_windowRectTransform.rect;
+
+                Vector2 min = RectTransformUtility.WorldToScreenPoint(m_windowCanvasCamera, m_windowRectTransform.TransformPoint(rect.min)) + ScreenSpaceMargin;
+                Vector2 max = RectTransformUtility.WorldToScreenPoint(m_windowCanvasCamera, m_windowRectTransform.TransformPoint(rect.max)) - ScreenSpaceMargin;
+
+                screenPoint.x = Mathf.Clamp(screenPoint.x, min.x, max.x);
+                screenPoint.y = Mathf.Clamp(screenPoint.y, min.y, max.y);
+            }
+
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(m_canvas.GetComponent<RectTransform>(), screenPoint, cam, out localPoint);
         }
     }
 

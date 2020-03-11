@@ -314,6 +314,15 @@ namespace Battlehub.RTEditor
 
         }
 
+        public void Init(object target, MemberInfo memberInfo, string label, bool enableUndo = true,
+            PropertyEditorCallback beginRecordCallback = null,
+            PropertyEditorCallback endRecordCallback = null,
+            PropertyEditorCallback afterRedoCallback = null,
+            PropertyEditorCallback afterUndoCallback = null)
+        {
+            Init(target, target, memberInfo, null, label, null, null, null, enableUndo, null, beginRecordCallback, endRecordCallback, afterRedoCallback, afterUndoCallback);
+        }
+
         public void Init(object target, object accessor,
             MemberInfo memberInfo,
             Action<object, object> eraseTargetCallback = null,

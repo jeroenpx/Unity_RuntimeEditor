@@ -92,6 +92,14 @@ namespace Battlehub.RTCommon
             set { m_depth = value; }
         }
 
+        [SerializeField]
+        private bool m_forceUseRenderTextures = false;
+        protected bool ForceUseRenderTextures
+        {
+            get { return m_forceUseRenderTextures; }
+            set { m_forceUseRenderTextures = value; }
+        }
+
         private Vector3 m_position;
         private Rect m_rect;
         private RectTransform m_rectTransform;
@@ -171,7 +179,7 @@ namespace Battlehub.RTCommon
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            if(!RenderPipelineInfo.UseRenderTextures)
+            if(!RenderPipelineInfo.UseRenderTextures && !ForceUseRenderTextures)
             {
                 if(Camera != null)
                 {

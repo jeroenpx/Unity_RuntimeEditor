@@ -30,6 +30,7 @@ namespace Battlehub.MeshDeformer3
         private Contact[] m_colliderContacts;
 
         private List<Segment> m_segments = new List<Segment>();
+           
         private Mesh Mesh
         {
             get { return m_filter != null ? m_filter.sharedMesh : null; }
@@ -231,6 +232,7 @@ namespace Battlehub.MeshDeformer3
                 for (int i = 0; i < m_spline.SegmentsCount; ++i)
                 {
                     GameObject segmentGO = new GameObject();
+                    segmentGO.hideFlags = HideFlags.DontSave;
                     segmentGO.SetActive(false);
                     segmentGO.name = "Segment";
                     segmentGO.transform.SetParent(transform, false);

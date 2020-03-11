@@ -98,11 +98,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2313200134059558518, guid: d95561211dd22b54a9c2b9d191897485,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4354368557085557366, guid: d95561211dd22b54a9c2b9d191897485,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -318,6 +313,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6871973592052947092, guid: d95561211dd22b54a9c2b9d191897485,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6871973592688412535, guid: d95561211dd22b54a9c2b9d191897485,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -353,6 +353,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6871973593207383901, guid: d95561211dd22b54a9c2b9d191897485,
+        type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6871973593207383902, guid: d95561211dd22b54a9c2b9d191897485,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -362,6 +367,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871973593207383903, guid: d95561211dd22b54a9c2b9d191897485,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6871973593317886061, guid: d95561211dd22b54a9c2b9d191897485,
         type: 3}
@@ -407,11 +417,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8550975632839290284, guid: d95561211dd22b54a9c2b9d191897485,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d95561211dd22b54a9c2b9d191897485, type: 3}

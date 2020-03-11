@@ -10,7 +10,7 @@ namespace Battlehub.RTHandles
         public KeyCode RotateKey = KeyCode.LeftAlt;
         public KeyCode RotateKey2 = KeyCode.RightAlt;
         public KeyCode RotateKey3 = KeyCode.AltGr;
-        
+
         public float RotateXSensitivity = 5.0f;
         public float RotateYSensitivity = 5.0f;
         public float MoveZSensitivity = 1.0f;
@@ -18,7 +18,7 @@ namespace Battlehub.RTHandles
         public float FreeRotateSensitivity = 5.0f;
 
         public bool SwapLRMB = false;
-        
+
         private bool m_rotate;
         private bool m_pan;
         private bool m_freeMove;
@@ -26,7 +26,7 @@ namespace Battlehub.RTHandles
         private bool m_beginFreeMoveImmediately = true;
         private bool m_freeMoveActive;
         private bool m_isActive;
-       
+
         protected RuntimeSceneComponent SceneComponent
         {
             get { return (RuntimeSceneComponent)m_component; }
@@ -57,8 +57,8 @@ namespace Battlehub.RTHandles
         {
             IInput input = m_component.Editor.Input;
             RuntimeTools tools = m_component.Editor.Tools;
-            
-            if(SwapLRMB)
+
+            if (SwapLRMB)
             {
                 return input.GetPointer(0) && RotateAction();
             }
@@ -97,6 +97,7 @@ namespace Battlehub.RTHandles
             IInput input = m_component.Editor.Input;
             float deltaX = input.GetAxis(InputAxis.Horizontal);
             float deltaY = input.GetAxis(InputAxis.Vertical);
+         
             float deltaZ = 0;
             if (input.GetKey(KeyCode.Q))
             {
@@ -118,7 +119,7 @@ namespace Battlehub.RTHandles
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            if(m_component != null && m_component.Editor != null)
+            if (m_component != null && m_component.Editor != null)
             {
                 m_component.Editor.ActiveWindowChanged -= Editor_ActiveWindowChanged;
             }
@@ -126,9 +127,9 @@ namespace Battlehub.RTHandles
 
         private void Editor_ActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
-            if(m_component != null)
+            if (m_component != null)
             {
-                if(m_isActive)
+                if (m_isActive)
                 {
                     SceneComponent.UpdateCursorState(false, false, false, false);
                     m_pan = false;
@@ -138,6 +139,7 @@ namespace Battlehub.RTHandles
                 m_isActive = m_component.IsWindowActive;
             }
         }
+
 
         protected override void LateUpdate()
         {
@@ -156,22 +158,22 @@ namespace Battlehub.RTHandles
             bool pan = PanAction();
             bool freeMove = FreeMoveAction();
 
-            if(pan && tools.Current != RuntimeTool.View)
+            if (pan && tools.Current != RuntimeTool.View)
             {
                 rotate = false;
             }
 
             bool beginRotate = m_rotate != rotate && rotate;
-            if(beginRotate && !isPointerOverAndSelected)
+            if (beginRotate && !isPointerOverAndSelected)
             {
                 rotate = false;
                 beginRotate = false;
             }
             bool endRotate = m_rotate != rotate && !rotate;
             m_rotate = rotate;
-            
+
             bool beginPan = m_pan != pan && pan;
-            if(beginPan && !isPointerOverAndSelected)
+            if (beginPan && !isPointerOverAndSelected)
             {
                 pan = false;
             }
@@ -179,14 +181,14 @@ namespace Battlehub.RTHandles
             m_pan = pan;
 
             bool beginFreeMove = m_freeMove != freeMove && freeMove;
-            if(beginFreeMove && !isPointerOverAndSelected)
+            if (beginFreeMove && !isPointerOverAndSelected)
             {
                 freeMove = false;
-                
+
             }
             bool endFreeMove = m_freeMove != freeMove && !freeMove;
             m_freeMove = freeMove;
-            if(!m_freeMove)
+            if (!m_freeMove)
             {
                 m_freeMoveActive = false;
             }
@@ -205,7 +207,7 @@ namespace Battlehub.RTHandles
                 Vector3 moveAxes = MoveAxes() * FreeMoveSensitivity;
                 float zoomAxis = ZoomAxis();
                 SceneComponent.FreeMove(rotateAxes, moveAxes, zoomAxis);
-                if(!m_freeMoveActive && (rotateAxes != Vector2.zero || moveAxes != Vector3.zero || zoomAxis != 0))
+                if (!m_freeMoveActive && (rotateAxes != Vector2.zero || moveAxes != Vector3.zero || zoomAxis != 0))
                 {
                     SceneComponent.UpdateCursorState(true, m_pan, m_rotate, m_freeMove);
                     m_freeMoveActive = true;
@@ -226,7 +228,7 @@ namespace Battlehub.RTHandles
                 }
                 SceneComponent.FreeMove(Vector2.zero, Vector3.zero, 0);
             }
-            else if(m_pan)
+            else if (m_pan)
             {
                 if (beginPan)
                 {
@@ -257,11 +259,11 @@ namespace Battlehub.RTHandles
                         SceneComponent.Focus();
                     }
 
-                    if(SelectAllAction())
+                    if (SelectAllAction())
                     {
                         SceneComponent.SelectAll();
                     }
-                }   
+                }
             }
 
             //if (SelectAction())

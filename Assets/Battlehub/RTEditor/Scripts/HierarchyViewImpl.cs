@@ -972,6 +972,7 @@ namespace Battlehub.RTEditor
                 bool wasPrefabEnabled = prefab.activeSelf;
                 prefab.SetActive(false);
                 GameObject prefabInstance = InstantiatePrefab(prefab);
+                Editor.AddGameObjectToHierarchy(prefabInstance);
                 prefab.SetActive(wasPrefabEnabled);
 
                 ExposeToEditor exposeToEditor = ExposePrefabInstance(prefabInstance);

@@ -95,6 +95,16 @@ namespace Battlehub.Spline3
             return val;
         }
 
+        private bool TryGet(string key, out ControlPointValue val)
+        {
+            if (Settings == null || !Settings.TryGetValue(key, out val))
+            {
+                val = m_defaultValue;
+                return false;
+            }
+            return true;
+        }
+
         private void Set(string key, ControlPointValue val)
         {
             if(Settings == null)
@@ -110,6 +120,18 @@ namespace Battlehub.Spline3
             return Get(key).FloatValue;
         }
 
+        public bool TryGetFloat(string key, out float value)
+        {
+            ControlPointValue val;
+            if(TryGet(key, out val))
+            {
+                value = val.FloatValue;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+
         public void SetFloat(string key, float value)
         {
             Set(key, new ControlPointValue(value));
@@ -118,6 +140,18 @@ namespace Battlehub.Spline3
         public bool GetBool(string key)
         {
             return Get(key).IntValue == 1;
+        }
+
+        public bool TryGetBool(string key, out bool value)
+        {
+            ControlPointValue val;
+            if (TryGet(key, out val))
+            {
+                value = val.IntValue == 1;
+                return true;
+            }
+            value = default;
+            return false;
         }
 
         public void SetBool(string key, bool value)
@@ -130,6 +164,30 @@ namespace Battlehub.Spline3
             return Get(key).IntValue;
         }
 
+        public bool TryGetInt(string key, out int value)
+        {
+            ControlPointValue val;
+            if (TryGet(key, out val))
+            {
+                value = val.IntValue;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+
+        public bool TryGetEnum<T>(string key, out T value) where T : Enum
+        {
+            ControlPointValue val;
+            if (TryGet(key, out val))
+            {
+                value = (T)Enum.ToObject(typeof(T), val.IntValue);
+                return true;
+            }
+            value = default;
+            return false;
+        }
+
         public void SetInt(string key, int value)
         {
             Set(key, new ControlPointValue(value));
@@ -138,6 +196,18 @@ namespace Battlehub.Spline3
         public Vector4 GetVector(string key)
         {
             return Get(key).VectorValue;
+        }
+
+        public bool TryGetVector(string key, out Vector4 value)
+        {
+            ControlPointValue val;
+            if (TryGet(key, out val))
+            {
+                value = val.VectorValue;
+                return true;
+            }
+            value = default;
+            return false;
         }
 
         public void SetVector(string key, Vector4 value)
@@ -258,7 +328,10 @@ namespace Battlehub.Spline3
             set
             {
                 m_isLooping = value;
-                m_renderer.Refresh(false);
+                if(m_renderer != null)
+                {
+                    m_renderer.Refresh(false);
+                }
             }
         }
 
@@ -339,10 +412,11 @@ namespace Battlehub.Spline3
             }
             int ctrlPointIndex = segmentIndex + 1;
 
-            controlPoints.Insert(ctrlPointIndex, GetPosition(offset));
+            controlPoints.Insert(ctrlPointIndex, GetLocalPosition(offset));
 
-            ControlPointSettings copy = new ControlPointSettings(Settings[ctrlPointIndex]);
-            settings.Insert(ctrlPointIndex, copy);
+            //ControlPointSettings copy = new ControlPointSettings(Settings[segmentIndex]);
+            ControlPointSettings defaultSettings = new ControlPointSettings();
+            settings.Insert(ctrlPointIndex, defaultSettings);
             m_controlPoints = controlPoints.ToArray();
             m_settings = settings.ToArray();
             m_renderer.Refresh(false);
@@ -517,7 +591,7 @@ namespace Battlehub.Spline3
 
         public override Vector3 GetLocalDirection(int segmentIndex, float t)
         {
-            return GetLocalDirection(segmentIndex, t);
+            return GetLocalTangent(segmentIndex, t).normalized;
         }
 
         public override void SetControlPoint(int index, Vector3 position)

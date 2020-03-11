@@ -5730,6 +5730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_window: {fileID: 0}
   Graphics: {fileID: 0}
+  ScreenSpaceMargin: {x: 2, y: 2}
   UseCameraSpace: 1
   Method: 0
 --- !u!114 &4873884717784022120

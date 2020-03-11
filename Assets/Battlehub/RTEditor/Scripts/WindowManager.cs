@@ -22,6 +22,11 @@ namespace Battlehub.RTEditor
             get;
         }
 
+        Transform ComponentsRoot
+        {
+            get;
+        }
+
         event Action<IWindowManager> AfterLayout;
         event Action<Transform> WindowCreated;
         event Action<Transform> WindowDestroyed;
@@ -308,6 +313,11 @@ namespace Battlehub.RTEditor
             get { return m_dialogManager.IsDialogOpened; }
         }
 
+        public Transform ComponentsRoot
+        {
+            get { return m_componentsRoot; }
+        }
+
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
@@ -546,7 +556,7 @@ namespace Battlehub.RTEditor
                             {
                                 if (pointerDownOrUp || window.ActivateOnAnyKey)
                                 {
-                                    if (window != null && window.WindowType == RuntimeWindowType.Scene)
+                                    if (window != null)
                                     {
                                         IEnumerable<Selectable> selectables = results.Select(r => r.gameObject.GetComponent<Selectable>()).Where(s => s != null);
                                         int count = selectables.Count();

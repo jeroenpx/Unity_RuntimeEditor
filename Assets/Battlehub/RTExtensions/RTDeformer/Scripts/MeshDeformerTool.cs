@@ -231,21 +231,59 @@ namespace Battlehub.MeshDeformer3
                 m_editor.Undo.BeginRecord();
                 PickResult oldSelection = m_controlPointPicker.Selection != null ? new PickResult(m_controlPointPicker.Selection) : null;
                 PickResult newSelection = m_controlPointPicker.Pick(camera, point);
-                m_controlPointPicker.ApplySelection(newSelection);
+                if (newSelection != null && newSelection.Spline != null && newSelection.Spline.GetComponent<Deformer>() == null)
+                {
+                    newSelection = null;
+                }
+
+                GameObject deformerGo = null;
+                if(newSelection == null)
+                {
+                    RaycastHit hit;
+                    if (Physics.Raycast(camera.ScreenPointToRay(point), out hit))
+                    {
+                        Segment segment = hit.collider.GetComponent<Segment>();
+                        if (segment != null)
+                        {
+                            Deformer deformer = segment.GetComponentInParent<Deformer>();
+                            if(deformer != null)
+                            {
+                                deformerGo = deformer.gameObject;
+                            }
+                        }
+                    }
+                }
+
+                if(deformerGo != null)
+                {
+                    m_editor.Selection.Select(deformerGo, new[] { deformerGo });
+                }
+
+                m_controlPointPicker.ApplySelection(newSelection, true);
                 newSelection = newSelection != null ? new PickResult(newSelection) : null;
                 m_editor.Undo.CreateRecord(record =>
                 {
                     m_controlPointPicker.Selection = newSelection;
+                    if (deformerGo != null)
+                    {
+                        m_editor.Selection.Select(deformerGo, new[] { deformerGo });
+                    }
                     return true;
                 },
                 record =>
                 {
                     m_controlPointPicker.Selection = oldSelection;
+                    if (deformerGo != null)
+                    {
+                        m_editor.Selection.Select(deformerGo, new[] { deformerGo });
+                    }
                     return true;
                 });
                 m_editor.Undo.EndRecord();
             }
         }
+
+    
 
         public bool DragControlPoint(bool extend)
         {

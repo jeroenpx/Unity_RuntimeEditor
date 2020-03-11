@@ -27,6 +27,7 @@ namespace Battlehub.MeshDeformer3
         private bool m_isMeshDeformerSelected;
         private bool m_isDragging;
         private IMeshDeformerTool m_tool;
+        private IRuntimeEditor m_runtimeEditor;
 
         protected override void AwakeOverride()
         {
@@ -37,8 +38,11 @@ namespace Battlehub.MeshDeformer3
             m_tool.ModeChanged += OnModeChanged;
             m_tool.SelectionChanged += OnSelectionChanged;
 
-            Editor.Selection.SelectionChanged += OnEditorSelectionChanged;
-                        
+            m_runtimeEditor = IOC.Resolve<IRuntimeEditor>();
+            m_runtimeEditor.SceneLoading += OnSceneLoading;
+            m_runtimeEditor.SceneLoaded += OnSceneLoaded;
+            m_runtimeEditor.Selection.SelectionChanged += OnEditorSelectionChanged;
+
             m_commandsList.ItemClick += OnItemClick;
             m_commandsList.ItemDataBinding += OnItemDataBinding;
             m_commandsList.ItemExpanding += OnItemExpanding;
@@ -70,6 +74,16 @@ namespace Battlehub.MeshDeformer3
                 m_tool.Mode = MeshDeformerToolMode.Object;
             }
 
+            if (m_runtimeEditor != null)
+            {
+                if (m_runtimeEditor.Selection != null)
+                {
+                    m_runtimeEditor.Selection.SelectionChanged -= OnEditorSelectionChanged;
+                }
+                m_runtimeEditor.SceneLoading -= OnSceneLoading;
+                m_runtimeEditor.SceneLoaded -= OnSceneLoaded;
+            }
+
             if (m_commandsList != null)
             {
                 m_commandsList.ItemClick -= OnItemClick;
@@ -88,10 +102,7 @@ namespace Battlehub.MeshDeformer3
 
         protected virtual void Start()
         {
-            UpdateFlags();
-            m_commands = GetCommands().ToArray();
-            m_commandsList.Items = m_commands;
-            m_commandsList.Expand(m_commands[0]);
+            UpdateFlagsAndDataBind();
         }
 
         protected virtual void LateUpdate()
@@ -146,29 +157,24 @@ namespace Battlehub.MeshDeformer3
 
         private void OnSelectionChanged()
         {
-            UpdateFlags();
-            m_commands = GetCommands().ToArray();
-            m_commandsList.Items = m_commands;
-            m_commandsList.Expand(m_commands[0]);
+            UpdateFlagsAndDataBind();
         }
 
         private void OnModeChanged()
         {
-            if(m_tool.Mode == MeshDeformerToolMode.Object)
+            if (m_tool.Mode == MeshDeformerToolMode.Object)
             {
                 m_toggleObject.isOn = true;
             }
-            else if(m_tool.Mode == MeshDeformerToolMode.ControlPoint)
+            else if (m_tool.Mode == MeshDeformerToolMode.ControlPoint)
             {
                 m_toggleControlPoints.isOn = true;
             }
 
-            UpdateFlags();
-            m_commands = GetCommands().ToArray();
-            m_commandsList.Items = m_commands;
-            m_commandsList.Expand(m_commands[0]);
-        }        
+            UpdateFlagsAndDataBind();
+        }
 
+    
         private List<ToolCmd> GetCommands()
         {
             ILocalization lc = IOC.Resolve<ILocalization>();
@@ -240,10 +246,31 @@ namespace Battlehub.MeshDeformer3
             }
         }
 
+        private void UpdateFlagsAndDataBind()
+        {
+            UpdateFlags();
+            m_commands = GetCommands().ToArray();
+            m_commandsList.Items = m_commands;
+            m_commandsList.Expand(m_commands[0]);
+        }
+
         private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
         {
             UpdateFlags();
             m_commandsList.DataBindVisible();
+        }
+
+        private void OnSceneLoading()
+        {
+            if (m_tool != null)
+            {
+                m_tool.Mode = MeshDeformerToolMode.Object;
+            }
+        }
+
+        private void OnSceneLoaded()
+        {
+            UpdateFlagsAndDataBind();
         }
 
         private void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)

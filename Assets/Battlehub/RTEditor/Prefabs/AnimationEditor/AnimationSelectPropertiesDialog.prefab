@@ -110,6 +110,7 @@ MonoBehaviour:
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 109
+  m_forceUseRenderTextures: 0
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}
@@ -145,17 +146,17 @@ PrefabInstance:
     - target: {fileID: 114171284073095840, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.8867924
+      value: 0.15294118
       objectReference: {fileID: 0}
     - target: {fileID: 114171284073095840, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.15294118
       objectReference: {fileID: 0}
     - target: {fileID: 114171284073095840, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 0.15294118
       objectReference: {fileID: 0}
     - target: {fileID: 114171284073095840, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}

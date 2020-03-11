@@ -55,6 +55,7 @@ namespace Battlehub.Spline3
                 m_pickResult = value;
                 if (m_pickResult != null)
                 {
+                    GetLocalPoints(m_pickResult.GetSpline()); //instead of refresh
                     transform.position = GetPoint(m_pickResult.GetSpline(), m_pickResult.Index);
                 }
 
@@ -115,7 +116,7 @@ namespace Battlehub.Spline3
             return PickControlPoint(camera, position, 20);
         }
 
-        public virtual void ApplySelection(PickResult pickResult)
+        public virtual void ApplySelection(PickResult pickResult, bool canClearSelection)
         {
             PickResult oldPickResult = m_pickResult;
             m_pickResult = pickResult;
@@ -125,7 +126,7 @@ namespace Battlehub.Spline3
                 transform.position = GetPoint(spline, m_pickResult.Index);
                 m_editor.Selection.activeGameObject = gameObject;
             }
-            else if (oldPickResult != null)
+            else if (oldPickResult != null && canClearSelection)
             {
                 m_editor.Selection.activeGameObject = null;
             }
@@ -207,11 +208,12 @@ namespace Battlehub.Spline3
             }
         }
 
-        protected abstract void SetPoint(BaseSpline spline, int index, Vector3 position);
+  
+        public abstract void SetPoint(BaseSpline spline, int index, Vector3 position);
 
-        protected abstract Vector3 GetPoint(BaseSpline spline, int index);
+        public abstract Vector3 GetPoint(BaseSpline spline, int index);
 
-        protected abstract IEnumerable<Vector3> GetLocalPoints(BaseSpline spline);
+        public abstract IEnumerable<Vector3> GetLocalPoints(BaseSpline spline);
     }
 
 }

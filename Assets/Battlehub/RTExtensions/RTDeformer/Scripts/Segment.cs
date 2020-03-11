@@ -19,7 +19,6 @@ namespace Battlehub.MeshDeformer3
         [SerializeField]
         public int[] m_indices;
 
-
         public Vector3 Center
         {
             get { return m_center; }

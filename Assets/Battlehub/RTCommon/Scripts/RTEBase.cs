@@ -209,6 +209,8 @@ namespace Battlehub.RTCommon
         void Delete(GameObject[] go);
         void Close();
 
+        void AddGameObjectToHierarchy(GameObject go, bool scaleStays = true);
+
         Coroutine StartCoroutine(IEnumerator method);
     }
 
@@ -223,11 +225,11 @@ namespace Battlehub.RTCommon
         [SerializeField]
         protected EventSystem m_eventSystem;
 
-        //[SerializeField]
-        //private ComponentEditorSettings m_componentEditorSettings = new ComponentEditorSettings(true, true, true, true);
-
         [SerializeField]
         private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 17, 18, 19, 16);
+        [SerializeField]
+        private bool m_createHierarchyRoot = false;
+                
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
@@ -708,6 +710,17 @@ namespace Battlehub.RTCommon
             bool isOpened = m_isOpened;
             m_isOpened = !isOpened;
             IsOpened = isOpened;
+
+            if(m_createHierarchyRoot)
+            {
+                GameObject hierarchyRoot = GameObject.FindGameObjectWithTag(ExposeToEditor.HierarchyRootTag);
+                if(hierarchyRoot == null)
+                {
+                    hierarchyRoot = new GameObject("HierarchyRoot");
+                }
+                hierarchyRoot.transform.position = Vector3.zero;
+                hierarchyRoot.tag = ExposeToEditor.HierarchyRootTag;
+            }
         }
         
         protected virtual void Start()
@@ -1140,11 +1153,29 @@ namespace Battlehub.RTCommon
             }
         }
 
-
         public void Close()
         {
             IsOpened = false;
             Destroy(gameObject);
+        }
+
+        public void AddGameObjectToHierarchy(GameObject go, bool scaleStays = true)
+        {
+            if(m_createHierarchyRoot)
+            {
+                GameObject hierarchyRoot = GameObject.FindGameObjectWithTag(ExposeToEditor.HierarchyRootTag);
+                if(hierarchyRoot != null)
+                {
+                    Vector3 localScale = go.transform.localScale;
+
+                    go.transform.SetParent(hierarchyRoot.transform, true);
+
+                    if(scaleStays)
+                    {
+                        go.transform.localScale = localScale;
+                    }
+                }
+            }
         }
     }
 }

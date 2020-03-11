@@ -1070,9 +1070,11 @@ namespace Battlehub.RTBuilder
             {
                 RectTransform sceneOutput = (RectTransform)window.GetComponent<RectTransform>().GetChild(0);
 
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneOutput, min, canvas.worldCamera, out min);
+                Camera canvasCamera = canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneOutput, min, canvasCamera, out min);
                 min.y = sceneOutput.rect.height - min.y;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneOutput, max, canvas.worldCamera, out max);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(sceneOutput, max, canvasCamera, out max);
                 max.y = sceneOutput.rect.height - max.y;
 
                 rect = new Rect(new Vector2(Mathf.Min(min.x, max.x), Mathf.Min(min.y, max.y)), new Vector2(Mathf.Abs(max.x - min.x), Mathf.Abs(max.y - min.y)));

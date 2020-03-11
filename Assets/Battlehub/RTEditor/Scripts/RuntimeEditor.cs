@@ -77,6 +77,9 @@ namespace Battlehub.RTEditor
             {
                 pivot = scenePivot.SecondaryPivot;
             }
+
+            editor.AddGameObjectToHierarchy(go);
+
             go.transform.position = pivot;
             go.AddComponent<ExposeToEditor>();
             go.SetActive(true);

@@ -9,6 +9,16 @@ namespace Battlehub.Utils
             return (number == 0) ? 1.0f : Mathf.Ceil(Mathf.Log10(Mathf.Abs(number) + 0.5f));
         }
 
+        public static bool Approximately(Vector3 a, Vector3 b, float epsilonSq = 0.01f * 0.01f)
+        {
+            return Vector3.SqrMagnitude(a - b) <= epsilonSq;
+        }
+
+        public static bool Approximately(Quaternion a, Quaternion b, float range = 1 - 0.99999998f)
+        {
+            return Quaternion.Dot(a, b) >= 1f - range;
+        }
+
         public static bool RayIntersectsTriangle(Ray inRay, Vector3 inTriA, Vector3 inTriB, Vector3 inTriC, out float outDistance, out Vector3 outPoint)
         {
             outDistance = 0f;

@@ -24,6 +24,11 @@ namespace Battlehub.Spline3
                     spline.Append();
                     m_pickResult.Index++;
                 }
+                else
+                {
+                    spline.Insert(m_pickResult.Index, 0);
+                    m_pickResult.Index++;
+                }
             }
 
             base.Drag(extend);
@@ -70,17 +75,17 @@ namespace Battlehub.Spline3
             }
         }
 
-        protected override Vector3 GetPoint(BaseSpline spline, int index)
+        public override Vector3 GetPoint(BaseSpline spline, int index)
         {
             return spline.GetControlPoint(index);
         }
 
-        protected override void SetPoint(BaseSpline spline, int index, Vector3 position)
+        public override void SetPoint(BaseSpline spline, int index, Vector3 position)
         {
             spline.SetControlPoint(index, position);
         }
 
-        protected override IEnumerable<Vector3> GetLocalPoints(BaseSpline spline)
+        public override IEnumerable<Vector3> GetLocalPoints(BaseSpline spline)
         {
             return spline.LocalControlPoints;
         }

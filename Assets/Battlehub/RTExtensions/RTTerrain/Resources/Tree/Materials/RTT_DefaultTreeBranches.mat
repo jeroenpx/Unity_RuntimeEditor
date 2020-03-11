@@ -24,10 +24,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AO: 1.0377358
-    - _BaseLight: 0.10377359
-    - _Cutoff: 0.5490566
-    - _Occlusion: 5.471698
+    - _AO: 0.29
+    - _BaseLight: 0.511
+    - _Cutoff: 0.5
+    - _Occlusion: 0.68
     - _SquashAmount: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

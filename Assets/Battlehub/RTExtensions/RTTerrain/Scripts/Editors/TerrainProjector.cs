@@ -121,7 +121,7 @@ namespace Battlehub.RTTerrain
                 transform.position = m_position;
             }
            
-            if(m_terrain != null && !m_editor.Tools.IsViewing)
+            if(m_terrain != null && !m_editor.Tools.IsViewing && m_terrainBrush != null)
             {
                 if(m_editor.Input.GetPointerDown(0))
                 {

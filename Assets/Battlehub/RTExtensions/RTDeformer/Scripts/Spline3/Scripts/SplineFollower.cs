@@ -21,6 +21,14 @@ namespace Battlehub.Spline3
         }
 
         [SerializeField]
+        protected float m_smoothRotation = 1.0f;
+        public float SmoothRotation
+        {
+            get { return m_smoothRotation; }
+            set { m_smoothRotation = value; }
+        }
+
+        [SerializeField]
         protected bool m_autoDestroy = false;
         public bool AutoDestroy
         {
@@ -37,7 +45,12 @@ namespace Battlehub.Spline3
         }
 
         protected float m_t;
-        protected float m_nextT;
+        public float T
+        {
+            get { return m_t; }
+            set { m_t = value; }
+        }
+
         protected virtual void Start()
         {
             float len = 0;
@@ -71,6 +84,12 @@ namespace Battlehub.Spline3
                 else if (m_loop)
                 {
                     m_t %= 1;
+
+                    if(!m_spline.IsLooping)
+                    {
+                        ResetFollower();
+                    }
+                    
                 }
                 else
                 {
@@ -78,8 +97,24 @@ namespace Battlehub.Spline3
                 }
             }
 
+            UpdateFollower();
+        }
+
+        protected virtual void ResetFollower()
+        {
             transform.position = m_spline.GetPosition(m_t);
             transform.rotation = Quaternion.LookRotation(m_spline.GetTangent(m_t));
+        }
+
+        protected virtual void UpdateFollower()
+        {
+            transform.position = m_spline.GetPosition(m_t);
+
+            transform.rotation = SmoothRotation <= 0 ?
+                Quaternion.LookRotation(m_spline.GetTangent(m_t)) :
+                Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(m_spline.GetTangent(m_t)), Time.deltaTime * Speed / SmoothRotation);
+
+
         }
     }
 

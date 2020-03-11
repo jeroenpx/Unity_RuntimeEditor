@@ -1,7 +1,5 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.Utils;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -139,7 +137,6 @@ namespace Battlehub.RTHandles
             m_grid0Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
             m_grid1Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
         }
-
 
         protected virtual void Update()
         {

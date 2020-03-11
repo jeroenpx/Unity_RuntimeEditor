@@ -11,7 +11,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             base.Drag(position, rotation, scale);
 
-            float angle = rotation.eulerAngles.z;
+            float angle = (Quaternion.Inverse(InitialRotation) * rotation).eulerAngles.z;
 
             List<Face> faces = new List<Face>();
             for (int m = 0; m < Meshes.Length; ++m)
@@ -28,7 +28,7 @@ namespace Battlehub.ProBuilderIntegration
                 for (int i = 0; i < indexes.Length; ++i)
                 {
                     int index = indexes[i];
-                    textures[index] = centers[i] + PBMath.RotateAroundPoint(origins[i] - centers[i], Vector2.zero, uvTransforms[i].rotation + angle * tangents[index].w);
+                    textures[index] = centers[i] + PBMath.RotateAroundPoint(origins[i] - centers[i], Vector2.zero, angle * tangents[index].w);
                 }
 
                 mesh.textures = textures;

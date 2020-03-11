@@ -634,9 +634,10 @@ namespace Battlehub.RTHandles
                     {
                         m_selectionOverride = null;
                     }
-
+                  
                     if(m_selectionOverride != null)
                     {
+                        OnRuntimeSelectionChanged(Editor.Selection.objects);
                         m_selectionOverride.SelectionChanged += OnRuntimeSelectionChanged;
                     }
 
@@ -821,9 +822,9 @@ namespace Battlehub.RTHandles
                 m_rectTool.gameObject.SetActive(false);
             }
 
-            RuntimeTool tool = Editor.Tools.Current;
-            Editor.Tools.Current = RuntimeTool.None;
-            Editor.Tools.Current = tool;
+            //RuntimeTool tool = Editor.Tools.Current;
+            //Editor.Tools.Current = RuntimeTool.None;
+            //Editor.Tools.Current = tool;
         }
 
         protected override void OnDestroyOverride()

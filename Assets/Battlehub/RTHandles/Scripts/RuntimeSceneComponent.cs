@@ -302,11 +302,14 @@ namespace Battlehub.RTHandles
 
             Window.IOCContainer.RegisterFallback<IRuntimeSceneComponent>(this);
 
-            GameObject runGO = new GameObject("Run");
-            runGO.transform.SetParent(transform, false);
-            runGO.name = "Run";
-            runGO.AddComponent<Run>();
-
+            if(Run.Instance == null)
+            {
+                GameObject runGO = new GameObject("Run");
+                runGO.transform.SetParent(transform, false);
+                runGO.name = "Run";
+                runGO.AddComponent<Run>();
+            }
+            
             if (ViewTexture == null)
             {
                 ViewTexture = Resources.Load<Texture2D>("RTH_Eye");
@@ -563,6 +566,11 @@ namespace Battlehub.RTHandles
 
         public virtual void Zoom(float deltaZ, Quaternion rotation)
         {
+            Zoom(deltaZ, rotation, 0.0001f);
+        }
+
+        public virtual void Zoom(float deltaZ, Quaternion rotation, float epsilonSq)
+        {
             if(m_lockInput)
             {
                 return;
@@ -606,7 +614,11 @@ namespace Battlehub.RTHandles
 
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -m_orbitDistance);
             m_targetPosition = cameraTransform.TransformVector(fwd) + cameraTransform.rotation * negDistance + PivotTransform.position;
-            cameraTransform.position = m_targetPosition;
+
+            if (!MathHelper.Approximately(m_targetPosition, cameraTransform.position, epsilonSq))
+            {
+                cameraTransform.position = m_targetPosition;
+            }
         }
 
 
@@ -640,7 +652,7 @@ namespace Battlehub.RTHandles
 
             cameraTransform.rotation = m_targetRotation;
 
-            Zoom(deltaZ, Quaternion.identity);
+            Zoom(deltaZ, Quaternion.identity, 0);
         }
 
         public void BeginPan(Vector3 mousePosition)
@@ -721,10 +733,20 @@ namespace Battlehub.RTHandles
                 Quaternion.Inverse(m_targetRotation) *
                 Quaternion.Euler(0, -rotate.x, 0));
 
-            camTransform.rotation = Quaternion.Slerp(
-                camTransform.rotation,
-                m_targetRotation,
-                m_freeRotationSmoothSpeed * Time.deltaTime);
+            if(m_freeRotationSmoothSpeed <= 0)
+            {
+                camTransform.rotation = m_targetRotation;
+            }
+            else
+            {
+                if (!MathHelper.Approximately(camTransform.rotation, m_targetRotation))
+                {
+                    camTransform.rotation = Quaternion.Slerp(
+                        camTransform.rotation,
+                        m_targetRotation,
+                        m_freeRotationSmoothSpeed * Time.deltaTime);
+                }
+            }
 
             Vector3 zoomOffset = Vector3.zero;
             if (Window.Camera.orthographic)
@@ -758,17 +780,23 @@ namespace Battlehub.RTHandles
             m_targetPosition = m_targetPosition + zoomOffset +
                 camTransform.forward * move.y + camTransform.right * move.x + camTransform.up * move.z;
 
-            Vector3 newPosition = Vector3.Lerp(
-                camTransform.position,
-                m_targetPosition,
-                m_freeMovementSmoothSpeed * Time.deltaTime);
+            if (m_freeMovementSmoothSpeed <= 0 )
+            {
+                camTransform.position = m_targetPosition;
+            }
+            else
+            {
+                if (!MathHelper.Approximately(m_targetPosition, camTransform.position))
+                {
+                    Vector3 newPosition = Vector3.Lerp(
+                        camTransform.position,
+                        m_targetPosition,
+                        m_freeMovementSmoothSpeed * Time.deltaTime);
 
-            newPosition.x = (float)Math.Round(newPosition.x, 5);
-            newPosition.y = (float)Math.Round(newPosition.y, 5);
-            newPosition.z = (float)Math.Round(newPosition.z, 5);
-
-            camTransform.position = newPosition;
-
+                    camTransform.position = newPosition;
+                }
+            }
+          
             Vector3 newPivot = camTransform.position + camTransform.forward * m_orbitDistance;
             SecondaryPivotTransform.position += newPivot - Pivot;
             PivotTransform.position = newPivot;

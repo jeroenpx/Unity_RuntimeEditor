@@ -173,7 +173,7 @@ namespace Battlehub.RTEditor
                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
                 editor.OverwriteScene(selectedItem, error =>
                 {
-                    sender.Close(null);
+                    //sender.Close(null);
                     if (error.HasError)
                     {
                         m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_SaveSceneDialog_UnableToSaveScene", "Unable to save scene"), error.ErrorText);
