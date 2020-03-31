@@ -18,7 +18,7 @@ namespace Battlehub.RTSL
               { ShaderUtil.ShaderPropertyType.Vector, RTShaderPropertyType.Vector }};
 
         
-        public static void CreateProfile()
+        public static RuntimeShaderProfilesAsset CreateProfile()
         {
             RuntimeShaderProfilesAsset asset = Create();
             string dir = RTSLPath.UserRoot;
@@ -53,9 +53,7 @@ namespace Battlehub.RTSL
             AssetDatabase.DeleteAsset(path);
             AssetDatabase.CreateAsset(asset, path);
             AssetDatabase.SaveAssets();
-
-            Selection.activeObject = asset;
-            EditorGUIUtility.PingObject(asset);
+            return asset;
         }
 
 

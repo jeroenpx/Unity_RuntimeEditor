@@ -1,10 +1,8 @@
 ﻿using Battlehub.ProBuilderIntegration;
 using Battlehub.RTCommon;
 using Battlehub.RTEditor;
-using Battlehub.RTSL;
-using Battlehub.RTSL.Interface;
+using Battlehub.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -55,6 +53,7 @@ namespace Battlehub.RTBuilder
             get { return m_palette; }
         }
 
+        private IRTE m_rte;
         private IRuntimeEditor m_editor;
         private IProBuilderTool m_proBuilderTool;
 
@@ -62,9 +61,13 @@ namespace Battlehub.RTBuilder
         {
             IOC.RegisterFallback<IMaterialPaletteManager>(this);
 
+            m_rte = IOC.Resolve<IRTE>();
             m_editor = IOC.Resolve<IRuntimeEditor>();
-            m_editor.SceneLoaded += OnSceneLoaded;
-
+            if(m_editor != null)
+            {
+                m_editor.SceneLoaded += OnSceneLoaded;
+            }
+            
             m_proBuilderTool = IOC.Resolve<IProBuilderTool>();
 
             InitPalette();
@@ -145,7 +148,7 @@ namespace Battlehub.RTBuilder
             Texture newTexture = texture;
             material.mainTexture = newTexture;
 
-            m_editor.Undo.CreateRecord(record =>
+            m_rte.Undo.CreateRecord(record =>
             {
                 material.mainTexture = newTexture;
                 return true;
@@ -171,12 +174,12 @@ namespace Battlehub.RTBuilder
 
         protected virtual void Update()
         {
-            if (m_editor.ActiveWindow == null || m_editor.ActiveWindow != this && m_editor.ActiveWindow.WindowType != RuntimeWindowType.Scene)
+            if (m_rte.ActiveWindow == null || m_rte.ActiveWindow != this && m_rte.ActiveWindow.WindowType != RuntimeWindowType.Scene)
             {
                 return;
             }
 
-            IInput input = m_editor.Input;
+            IInput input = m_rte.Input;
             bool select = input.GetKey(KeyCode.S);
             bool unselect = input.GetKey(KeyCode.U);
 

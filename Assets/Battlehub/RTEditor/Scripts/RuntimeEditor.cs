@@ -45,11 +45,11 @@ namespace Battlehub.RTEditor
 
     public static class IRuntimEditorExt
     {
-        public static IScenePivot GetScenePivot(this IRTE editor)
+        public static IRuntimeSelectionComponent GetScenePivot(this IRTE editor)
         {
             if (editor.ActiveWindow != null)
             {
-                IScenePivot scenePivot = editor.ActiveWindow.IOCContainer.Resolve<IScenePivot>();
+                IRuntimeSceneComponent scenePivot = editor.ActiveWindow.IOCContainer.Resolve<IRuntimeSceneComponent>();
                 if (scenePivot != null)
                 {
                     return scenePivot;
@@ -59,7 +59,7 @@ namespace Battlehub.RTEditor
             RuntimeWindow sceneWindow = editor.GetWindow(RuntimeWindowType.Scene);
             if (sceneWindow != null)
             {
-                IScenePivot scenePivot = sceneWindow.IOCContainer.Resolve<IScenePivot>();
+                IRuntimeSelectionComponent scenePivot = sceneWindow.IOCContainer.Resolve<IRuntimeSelectionComponent>();
                 if (scenePivot != null)
                 {
                     return scenePivot;
@@ -72,10 +72,10 @@ namespace Battlehub.RTEditor
         public static void AddGameObjectToScene(this IRTE editor, GameObject go)
         {
             Vector3 pivot = Vector3.zero;
-            IScenePivot scenePivot = editor.GetScenePivot();
-            if (scenePivot != null)
+            IRuntimeSelectionComponent selectionComponent = editor.GetScenePivot();
+            if (selectionComponent != null)
             {
-                pivot = scenePivot.SecondaryPivot;
+                pivot = selectionComponent.SecondaryPivot;
             }
 
             editor.AddGameObjectToHierarchy(go);
@@ -83,8 +83,9 @@ namespace Battlehub.RTEditor
             go.transform.position = pivot;
             go.AddComponent<ExposeToEditor>();
             go.SetActive(true);
-            editor.RegisterCreatedObjects(new[] { go });
+            editor.RegisterCreatedObjects(new[] { go }, selectionComponent != null ? selectionComponent.CanSelect : true);
         }
+
     }
 
     [DefaultExecutionOrder(-90)]

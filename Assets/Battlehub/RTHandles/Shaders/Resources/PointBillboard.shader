@@ -11,8 +11,10 @@ Shader "Hidden/RTHandles/PointBillboard"
     {
         Tags
         {
-            "RenderType"="Geometry"
-            "Queue"="Geometry+5"
+			"RenderType" = "Transparent"
+			"Queue" = "Transparent+5"
+            //"RenderType"="Geometry"
+            //"Queue"="Geometry+5"
             "IgnoreProjector"="True"
             "ForceNoShadowCasting"="True"
             "DisableBatching"="True"
@@ -25,7 +27,8 @@ Shader "Hidden/RTHandles/PointBillboard"
             ZTest [_HandleZTest]
             ZWrite On
             Cull Off
-            Blend Off
+            //Blend Off
+			Blend SrcAlpha OneMinusSrcAlpha
             Offset -1, -1
 
             CGPROGRAM

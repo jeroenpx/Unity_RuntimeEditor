@@ -896,11 +896,11 @@ namespace Battlehub.RTHandles
                 Vector3 prevScale = Model.transform.localScale;
                 Vector3 newScale = Vector3.Scale(scale, lossyScale);
                 Model.transform.localScale = newScale;
+                
                 if (prevScale == Vector3.zero && prevScale != newScale)
                 {
                     Model.UpdateModel();
                 }
-
             }
         }
 

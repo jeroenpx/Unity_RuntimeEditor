@@ -100,6 +100,7 @@ namespace Battlehub.RTBuilder
                 GameObject proBuilderToolGO = new GameObject("ProBuilderTool");
                 proBuilderToolGO.transform.SetParent(Editor.Root, false);
                 m_proBuilderTool = proBuilderToolGO.AddComponent<ProBuilderTool>();
+                proBuilderToolGO.AddComponent<ManualUVEditor>();
             }
 
             m_proBuilderTool.ModeChanged += OnProBuilderToolModeChanged;
@@ -382,8 +383,20 @@ namespace Battlehub.RTBuilder
             ExposeToEditor exposeToEditor;
             CreateNewShape((PBShapeType)arg, out go, out exposeToEditor);
 
+            IRuntimeEditor rte = IOC.Resolve<IRuntimeEditor>();
+            RuntimeWindow scene = rte.GetWindow(RuntimeWindowType.Scene);
+            IRuntimeSelectionComponent selectionComponent = null;
+            if (scene != null)
+            {
+                selectionComponent = scene.IOCContainer.Resolve<IRuntimeSelectionComponent>();
+            }
+
             Editor.Undo.BeginRecord();
-            Editor.Selection.activeGameObject = go;
+            if (selectionComponent == null || selectionComponent.CanSelect)
+            {
+                Editor.Selection.activeGameObject = go;
+            }
+
             Editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
             Editor.Undo.EndRecord();
 
@@ -399,6 +412,7 @@ namespace Battlehub.RTBuilder
           
             IRuntimeEditor rte = IOC.Resolve<IRuntimeEditor>();
             RuntimeWindow scene = rte.GetWindow(RuntimeWindowType.Scene);
+          
             Vector3 position;
             Quaternion rotation;
             GetPositionAndRotation(scene, out position, out rotation);

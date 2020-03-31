@@ -1645,7 +1645,8 @@ namespace Battlehub.RTSL
                 PersistentPropertyMapping mapping = fieldMappings[i];
                 string key = mapping.MappedFullTypeName + " " + mapping.MappedName;
 
-                if (!fieldHs.Contains(key))
+                Type mappedType = mapping.MappedType;
+                if (!fieldHs.Contains(key) || mappedType == null)
                 {
                     mapping.MappedName = null;
                     mapping.MappedTypeName = null;
@@ -1660,15 +1661,14 @@ namespace Battlehub.RTSL
                 else
                 {
                     mapping.IsNonPublic = type.GetField(mapping.MappedName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) != null;
-                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType, 0) != null;
-                    mapping.UseSurrogate2 = CodeGen.GetSurrogateType(mapping.MappedType, 1) != null;
-                    mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
+                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mappedType, 0) != null;
+                    mapping.UseSurrogate2 = CodeGen.GetSurrogateType(mappedType, 1) != null;
+                    mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mappedType);
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
 
                 pMappings.Add(mapping);
             }
-
 
             for (int f = 0; f < fields.Length; ++f)
             {
@@ -1708,7 +1708,8 @@ namespace Battlehub.RTSL
                 PersistentPropertyMapping mapping = propertyMappings[i];
                 string key = mapping.MappedFullTypeName + " " + mapping.MappedName;
 
-                if (!propertyHs.Contains(key) || mapping.MappedType == null)
+                Type mappedType = mapping.MappedType;
+                if (!propertyHs.Contains(key) || mappedType == null)
                 {
                     mapping.MappedName = null;
                     mapping.MappedTypeName = null;
@@ -1723,9 +1724,9 @@ namespace Battlehub.RTSL
                 }
                 else
                 {
-                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mapping.MappedType, 0) != null;
-                    mapping.UseSurrogate2 = CodeGen.GetSurrogateType(mapping.MappedType, 1) != null;
-                    mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mapping.MappedType);
+                    mapping.UseSurrogate = CodeGen.GetSurrogateType(mappedType, 0) != null;
+                    mapping.UseSurrogate2 = CodeGen.GetSurrogateType(mappedType, 1) != null;
+                    mapping.HasDependenciesOrIsDependencyItself = m_codeGen.HasDependencies(mappedType);
 
                     pMappingsEnabled.Add(mapping.IsEnabled);
                 }
@@ -1994,7 +1995,7 @@ namespace Battlehub.RTSL
             Buttons();
         }
 
-        public static void TryToCreateMappings()
+        public static void CreateOrPatchMappings()
         {
             if (!File.Exists(Application.dataPath + RTSLPath.UserPrefabsPath + @"/ClassMappingsStorage.prefab"))
             {
@@ -2003,6 +2004,10 @@ namespace Battlehub.RTSL
                 window.Initialize();
                 window.SaveMappings();
                 DestroyImmediate(window);
+            }
+            else
+            {
+                PatchPersistentClassMappings();
             }
         }
 
@@ -2109,13 +2114,14 @@ namespace Battlehub.RTSL
             EditorGUILayout.Separator();
             EditorGUILayout.BeginHorizontal();
 
-            if (m_uoMapperGUI != null && (m_uoMapperGUI.Storage == null || m_uoMapperGUI.Storage.PatchCounter == 0) ||
-               m_surrogatesMapperGUI != null && (m_surrogatesMapperGUI.Storage == null || m_surrogatesMapperGUI.Storage.PatchCounter == 0))
+            bool patchRequired = m_uoMapperGUI != null && (m_uoMapperGUI.Storage == null || m_uoMapperGUI.Storage.PatchCounter < 2) || m_surrogatesMapperGUI != null && (m_surrogatesMapperGUI.Storage == null || m_surrogatesMapperGUI.Storage.PatchCounter < 2);
+
+            if (patchRequired)
             {
                 if (!EditorApplication.isCompiling && !EditorApplication.isUpdating)
                 {
                     EditorGUI.BeginChangeCheck();
-                    GUILayout.Button("Patch Mappings", GUILayout.Height(20));
+                    GUILayout.Button("Update Mappings", GUILayout.Height(20));
                     if (EditorGUI.EndChangeCheck())
                     {
                         PatchPersistentClassMappings();
@@ -2129,53 +2135,56 @@ namespace Battlehub.RTSL
                     }
                 }
             }
-
-            EditorGUI.BeginChangeCheck();
-
-            EditorGUI.BeginChangeCheck();
-            GUILayout.Button("Undo & Reload", GUILayout.Height(20));
-            if (EditorGUI.EndChangeCheck())
+            else
             {
-                m_uoMapperGUI.ClearDependencies();
-                m_surrogatesMapperGUI.ClearDependencies();
-                m_uoMapperGUI.Reset();
-                m_surrogatesMapperGUI.Reset();
-                m_uoMapperGUI.LockTypes();
-                m_surrogatesMapperGUI.LockTypes();
-            }
-
-            EditorGUI.BeginChangeCheck();
-
-            GUILayout.Button("Build All", GUILayout.Height(20));
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                try
+                EditorGUI.BeginChangeCheck();
+                GUILayout.Button("Undo & Reload", GUILayout.Height(20));
+                if (EditorGUI.EndChangeCheck())
                 {
-                    Selection.activeObject = null;
-                    EditorUtility.DisplayProgressBar("Build All", "Creating persistent classes", 0.33f);
-                    EditorPrefs.SetBool("RTSL_BuildAll", true);
+                    m_uoMapperGUI.ClearDependencies();
+                    m_surrogatesMapperGUI.ClearDependencies();
+                    m_uoMapperGUI.Reset();
+                    m_surrogatesMapperGUI.Reset();
+                    m_uoMapperGUI.LockTypes();
+                    m_surrogatesMapperGUI.LockTypes();
+                }
+
+                EditorGUI.BeginChangeCheck();
+                GUILayout.Button("Build All", GUILayout.Height(20));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    try
+                    {
+                        Selection.activeObject = null;
+                        EditorUtility.DisplayProgressBar("Build All", "Creating persistent classes", 0.33f);
+                        EditorPrefs.SetBool("RTSL_BuildAll", true);
+                        SaveMappingsAndCreatePersistentClasses();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e.ToString());
+                        EditorPrefs.SetBool("RTSL_BuildAll", false);
+                        EditorUtility.ClearProgressBar();
+                    }
+                }
+
+                EditorGUI.BeginChangeCheck();
+                GUILayout.Button("Create Persistent Classes", GUILayout.Height(20));
+                if (EditorGUI.EndChangeCheck())
+                {
                     SaveMappingsAndCreatePersistentClasses();
                 }
-                catch (Exception e)
-                {
-                    Debug.LogError(e.ToString());
-                    EditorPrefs.SetBool("RTSL_BuildAll", false);
-                    EditorUtility.ClearProgressBar();
-                }
-            }
-
-            EditorGUI.BeginChangeCheck();
-
-            GUILayout.Button("Create Persistent Classes", GUILayout.Height(20));
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                SaveMappingsAndCreatePersistentClasses();
             }
 
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.HelpBox("Please note that most of the data are stored and restored using public properties which may cause undesired side effects. For example accessing renderer.material or meshfilter.mesh will instantiate new objects.", MessageType.Info);
+            if(patchRequired)
+            {
+                EditorGUILayout.HelpBox("Persistent Class Mappings must be updated. Please click \"Update Mappings\" button", MessageType.Info);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Please note that most of the data are stored and restored using public properties which may cause undesired side effects. For example accessing renderer.material or meshfilter.mesh will instantiate new objects.", MessageType.Info);
+            }
             EditorGUILayout.Separator();
         }
 
@@ -2575,23 +2584,52 @@ namespace Battlehub.RTSL
             return path;
         }
 
-
         /// <summary>
         /// This method should be used make persistent to be compatible with saved files after CodeGen.cs fix from 10/23/2019.
         /// </summary>
-        private void PatchPersistentClassMappings()
+        public static void PatchPersistentClassMappings()
         {
+            //2.05 -> 2.1
             UpdateTags(RTSLPath.ClassMappingsTemplatePath[0]);
             UpdateTags(RTSLPath.ClassMappingsStoragePath);
 
             UpdateTags(RTSLPath.SurrogatesMappingsTemplatePath[0]);
             UpdateTags(RTSLPath.SurrogatesMappingsStoragePath);
+
+            //2.1 -> 2.2
+            foreach(string path in RTSLPath.ClassMappingsTemplatePath)
+            {
+                UpdateMappedAssemblyNames(path);
+            }
+            UpdateMappedAssemblyNames(RTSLPath.ClassMappingsStoragePath);
+            foreach (string path in RTSLPath.SurrogatesMappingsTemplatePath)
+            {
+                UpdateMappedAssemblyNames(path);
+            }
+            UpdateMappedAssemblyNames(RTSLPath.SurrogatesMappingsStoragePath);
+
         }
 
-        private void UpdateTags(string storagePath)
+        private static bool IsUpdateRequired(GameObject storageGo, int patchCounter)
+        {
+            PersistentClassMappingsStorage storage = storageGo.GetComponent<PersistentClassMappingsStorage>();
+            if(storage == null)
+            {
+                return false;
+            }
+            return storage.PatchCounter < patchCounter;
+        }
+
+        //2.05 -> 2.1
+        private static void UpdateTags(string storagePath)
         {
             GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(storagePath, typeof(GameObject));
             if (storageGO == null)
+            {
+                return;
+            }
+
+            if(!IsUpdateRequired(storageGO, 1))
             {
                 return;
             }
@@ -2602,13 +2640,7 @@ namespace Battlehub.RTSL
             {
                 storage = storageGO.AddComponent<PersistentClassMappingsStorage>();
             }
-            storage.Version = RTSLVersion.Version.ToString();
-            if (storage.PatchCounter > 0)
-            {
-                DestroyImmediate(storageGO);
-                return;
-            }
-
+            storage.Version = new Version(2, 1).ToString();
             storage.PatchCounter = 1;
 
             PersistentClassMapping[] mappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true);
@@ -2629,5 +2661,119 @@ namespace Battlehub.RTSL
             DestroyImmediate(storageGO);
         }
 
+        //2.1.1 -> 2.2
+        private static void UpdateMappedAssemblyNames(string storagePath)
+        {
+            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(storagePath, typeof(GameObject));
+            if (storageGO == null)
+            {
+                return;
+            }
+
+            if (!IsUpdateRequired(storageGO, 2))
+            {
+                return;
+            }
+
+            storageGO = Instantiate(storageGO);
+            PersistentClassMappingsStorage storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
+            if (storage == null)
+            {
+                storage = storageGO.AddComponent<PersistentClassMappingsStorage>();
+            }
+            storage.Version = RTSLVersion.Version.ToString();
+            storage.PatchCounter = 2;
+
+            PersistentClassMapping[] mappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true);
+            for (int i = 0; i < mappings.Length; ++i)
+            {
+                PersistentClassMapping mapping = mappings[i];
+                mapping.Version = RTSLVersion.Version.ToString();
+                mapping.MappedTypeName = FixTypeName(mapping.MappedTypeName);
+                mapping.MappedAssemblyName = FixAssemblyName(mapping.MappedAssemblyQualifiedName, mapping.MappedNamespace, mapping.MappedAssemblyName);
+
+                PersistentPropertyMapping[] properties = mapping.PropertyMappings;
+                for (int j = 0; j < properties.Length; ++j)
+                {
+                    PersistentPropertyMapping property = properties[j];
+                    property.MappedTypeName = FixTypeName(property.MappedTypeName);
+                    property.MappedAssemblyName = FixAssemblyName(property.MappedAssemblyQualifiedName, property.MappedNamespace, property.MappedAssemblyName);
+                }
+            }
+
+            EditorUtility.SetDirty(storageGO);
+            PrefabUtility.SaveAsPrefabAsset(storageGO, storagePath);
+            DestroyImmediate(storageGO);
+        }
+
+        private static string FixTypeName(string typeName)
+        {
+            if (typeName.Contains("Battlehub.RTEditor"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.RTEditor]");
+            }
+            else if (typeName.Contains("Battlehub.UIControls"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.UIControls]");
+            }
+            else if (typeName.Contains("Battlehub.Utils"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.Utils]");
+            }
+            else if (typeName.Contains("Battlehub.RTCommon"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.RTCommon]");
+            }
+            else if (typeName.Contains("Battlehub.RTSL.Interface"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.RTSL.Interface]");
+            }
+            else if(typeName.Contains("Battlehub.RTSL.RuntimeShaderInfo"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.RTSL.Interface]");
+            }
+           
+            return typeName; 
+        }
+
+        private static string FixAssemblyName(string assemblyQualifiedName, string ns, string mappedAssemblyName)
+        {
+            if(!ns.Contains("Battlehub") || ns.Contains("ProBuilderIntegration") || ns.Contains("Battlehub.RTSaveLoad"))
+            {
+                return mappedAssemblyName;
+            }
+
+            if(ns.Contains("Battlehub.Spline3"))
+            {
+                return "Battlehub.RTDeformer";
+            }
+
+            if(ns.Contains("Battlehub.RTSL"))
+            {
+                return "Battlehub.RTSL.Interface";
+            }
+
+            if(ns.Contains("Battlehub.Cubeman"))
+            {
+                return "Battlehub.RTDemoGame";
+            }
+
+            if(assemblyQualifiedName.Contains("Battlehub.Utils.ObjectToTexture"))
+            {
+                return "Battlehub.ObjectToTexture";
+            }
+
+            if (assemblyQualifiedName.Contains("ColorPicker,Assembly-CSharp"))
+            {
+                return "HSVPicker";
+            }
+
+            if(assemblyQualifiedName.Contains("Battlehub.Utils.ObjectToTexture,Assembly-CSharp"))
+            {
+                return "Battlehub.Utils.ObjectToTexture,Battlehub.Tools";
+            }
+
+            return string.Join(".", ns.Split('.').Take(2));
+        }
     }
 }

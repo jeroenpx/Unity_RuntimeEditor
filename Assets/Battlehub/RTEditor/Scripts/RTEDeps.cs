@@ -16,7 +16,7 @@ namespace Battlehub.RTEditor
         private IGameObjectCmd m_gameObjectCmd;
         private IEditCmd m_editCmd;
         private IContextMenu m_contextMenu;
-        private IEditorsMap m_editorsMap;
+        //private IEditorsMap m_editorsMap;
 
         protected virtual IResourcePreviewUtility ResourcePreview
         {
@@ -120,20 +120,20 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected virtual IEditorsMap EditorsMap
-        {
-            get
-            {
+        //protected virtual IEditorsMap EditorsMap
+        //{
+        //    get
+        //    {
                 
-                EditorsMap editorsMap = new EditorsMap();
+        //        EditorsMap editorsMap = new EditorsMap();
 
-                GameObject voidComponentEditor = new GameObject("VoidComponentEditor");
-                voidComponentEditor.transform.SetParent(transform, false);
-                editorsMap.VoidComponentEditor  = voidComponentEditor.AddComponent<VoidComponentEditor>();
+        //        GameObject voidComponentEditor = new GameObject("VoidComponentEditor");
+        //        voidComponentEditor.transform.SetParent(transform, false);
+        //        editorsMap.VoidComponentEditor  = voidComponentEditor.AddComponent<VoidComponentEditor>();
 
-                return editorsMap;
-            }
-        }
+        //        return editorsMap;
+        //    }
+        //}
 
 
         private void Awake()
@@ -160,7 +160,7 @@ namespace Battlehub.RTEditor
             m_editCmd = EditCmd;
             m_contextMenu = ContextMenu;
             m_runtimeHandlesComponent = RuntimeHandlesComponent;
-            m_editorsMap = EditorsMap;
+            //m_editorsMap = EditorsMap;
         }
 
         private void OnDestroy()
@@ -183,7 +183,7 @@ namespace Battlehub.RTEditor
             m_editCmd = null;
             m_contextMenu = null;
             m_runtimeHandlesComponent = null;
-            m_editorsMap = null;
+            //m_editorsMap = null;
         }
 
         protected virtual void OnDestroyOverride()
@@ -199,11 +199,6 @@ namespace Battlehub.RTEditor
                 if (m_instance == null)
                 {
                     m_instance = FindObjectOfType<RTEDeps>();
-                    if(m_instance == null)
-                    {
-                        GameObject go = new GameObject("RTEDeps");
-                        go.AddComponent<RTEDeps>();
-                    }
                 }
                 return m_instance;
             }
@@ -212,15 +207,14 @@ namespace Battlehub.RTEditor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-            IOC.RegisterFallback(() => Instance.m_console);
-            IOC.RegisterFallback(() => Instance.m_resourcePreview);
-            IOC.RegisterFallback(() => Instance.m_rteAppearance);
-            IOC.RegisterFallback(() => Instance.m_windowManager);
-            IOC.RegisterFallback(() => Instance.m_gameObjectCmd);
-            IOC.RegisterFallback(() => Instance.m_editCmd);
-            IOC.RegisterFallback(() => Instance.m_contextMenu);
-            IOC.RegisterFallback(() => Instance.m_runtimeHandlesComponent);
-            IOC.RegisterFallback(() => Instance.m_editorsMap);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_console : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_resourcePreview : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_rteAppearance : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_windowManager : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_gameObjectCmd : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_editCmd : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_contextMenu : null);
+            IOC.RegisterFallback(() => Instance != null ? Instance.m_runtimeHandlesComponent : null);
         }
     }
 }

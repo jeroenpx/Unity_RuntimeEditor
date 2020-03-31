@@ -97,6 +97,22 @@ namespace Battlehub.ProBuilderIntegration
             return meshes.Select(m => m.GetComponent<PBMesh>()).Where(pbMesh => pbMesh != null);
         }
 
+        public IEnumerable<int> GetFaces(PBMesh mesh)
+        {
+            return SelectedFaces[mesh.gameObject];
+        }
+
+        public IEnumerable<int> GetEdges(PBMesh mesh)
+        {
+            PBEdge[] edges = mesh.Edges;
+            return SelectedEdges[mesh.gameObject].Select(e => Array.IndexOf(edges, new PBEdge(e, -1)));
+        }
+
+        public IEnumerable<int> GetIndices(PBMesh mesh)
+        {
+            return SelectedIndices[mesh.gameObject];
+        }
+
         public MeshSelection()
         {
 

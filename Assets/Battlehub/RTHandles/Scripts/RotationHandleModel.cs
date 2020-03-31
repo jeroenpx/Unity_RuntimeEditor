@@ -228,14 +228,24 @@ namespace Battlehub.RTHandles
                 if (Mathf.Approximately(Colors.DisabledColor.a, 0))
                 {
                     m_innerCircleMaterials[m_innerCircleBorderMatIndex].SetFloat("_ZWrite", 0);
-
-                    if(m_lockObj.RotationX && m_lockObj.RotationY || m_lockObj.RotationY && m_lockObj.RotationZ || m_lockObj.RotationX && m_lockObj.RotationZ)
+                    
+                    if (m_lockObj.RotationX && m_lockObj.RotationY || m_lockObj.RotationY && m_lockObj.RotationZ || m_lockObj.RotationX && m_lockObj.RotationZ)
                     {
                         m_innerCircle.gameObject.SetActive(false);
+                        Renderer renderer = m_innerCircle.GetComponent<Renderer>();
+                        if(renderer != null)
+                        {
+                            renderer.forceRenderingOff = true;
+                        }
                     }
                     else
                     {
                         m_innerCircle.gameObject.SetActive(true);
+                        Renderer renderer = m_innerCircle.GetComponent<Renderer>();
+                        if (renderer != null)
+                        {
+                            renderer.forceRenderingOff = false;
+                        }
                     }
                 }
             }
@@ -526,6 +536,8 @@ namespace Battlehub.RTHandles
             UpdateCircle(m_inner.sharedMesh, m_innerCircleMesh, m_inner.transform, majorRadius, minorRadius);
             UpdateCircle(m_outer.sharedMesh, m_outerCircleMesh, m_outer.transform, outerRadius, minorRadius);
             UpdateColliders();
+
+            base.UpdateModel();
         }
     }
 

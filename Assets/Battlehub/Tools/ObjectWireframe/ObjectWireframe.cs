@@ -1,5 +1,4 @@
-﻿using Battlehub.RTSL;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Battlehub.Wireframe
 {
@@ -120,7 +119,7 @@ namespace Battlehub.Wireframe
                 m_wireframe = new GameObject("Wireframe");
                 m_wireframe.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideAndDontSave;
                 m_wireframe.transform.SetParent(transform, false);
-                m_wireframe.gameObject.AddComponent<RTSLIgnore>();
+                //m_wireframe.gameObject.AddComponent<RTSLIgnore>();
                 m_wireframe.layer = m_wireframeLayer;
 
                 m_filter = m_wireframe.AddComponent<MeshFilter>();

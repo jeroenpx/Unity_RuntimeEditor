@@ -4,7 +4,7 @@ namespace Battlehub.RTSL
 {
     public class RTSLVersion
     {
-        public static readonly Version Version = new Version(2, 1);
+        public static readonly Version Version = new Version(2, 2);
     }
 }
 

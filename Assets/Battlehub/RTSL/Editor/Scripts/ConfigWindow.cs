@@ -32,7 +32,6 @@ namespace Battlehub.RTSL
         static ConfigWindow()
         {
             EditorApplication.update += OnFirstUpdate;
-    
         }
 
         private static void OnFirstUpdate()

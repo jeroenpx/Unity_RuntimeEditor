@@ -64,7 +64,7 @@ namespace Battlehub.RTHandles
             m_commandBuffer.name = "SceneGrid Command Buffer";
             if(RenderPipelineInfo.Type == RPType.Standard)
             {
-                Window.Camera.AddCommandBuffer(CameraEvent.AfterImageEffectsOpaque, m_commandBuffer);
+                Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             }
             else
             {
@@ -90,7 +90,7 @@ namespace Battlehub.RTHandles
             {
                 if (RenderPipelineInfo.Type == RPType.Standard)
                 {
-                    Window.Camera.RemoveCommandBuffer(CameraEvent.AfterImageEffectsOpaque, m_commandBuffer);
+                    Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
                 }
                 else
                 {

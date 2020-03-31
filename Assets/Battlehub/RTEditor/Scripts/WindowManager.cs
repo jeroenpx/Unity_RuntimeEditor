@@ -545,7 +545,7 @@ namespace Battlehub.RTEditor
                 {
                     IOrderedEnumerable<Region> regions = results.Select(r => r.gameObject.GetComponentInParent<Region>()).Where(r => r != null).OrderBy(r => r.transform.localPosition.z);
 
-                    Region[] arr = regions.ToArray();
+                   // Region[] arr = regions.ToArray();
 
                     foreach (Region region in regions)
                     {

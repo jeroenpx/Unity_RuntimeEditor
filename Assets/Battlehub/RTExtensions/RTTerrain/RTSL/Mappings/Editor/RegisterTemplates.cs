@@ -1,6 +1,6 @@
-﻿using Battlehub.RTSL;
+﻿#if UNITY_EDITOR
+using Battlehub.RTSL;
 using UnityEditor;
-using UnityEngine;
 
 namespace Battlehub.RTTerrain
 {
@@ -9,7 +9,8 @@ namespace Battlehub.RTTerrain
         [InitializeOnLoadMethod]
         public static void Register()
         {
-            RTSLPath.ClassMappingsTemplatePath.Add("Assets/" + BHPath.Root +"/RTExtensions/RTTerrain/RTSL/Mappings/Editor/RTTerrain.ClassMappingsTemplate.prefab");
+            RTSLPath.ClassMappingsTemplatePath.Add("Assets/" + BHRoot.Path +"/RTExtensions/RTTerrain/RTSL/Mappings/Editor/RTTerrain.ClassMappingsTemplate.prefab");
         }
     }
 }
+#endif

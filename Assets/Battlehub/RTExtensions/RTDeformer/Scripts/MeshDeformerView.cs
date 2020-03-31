@@ -133,7 +133,9 @@ namespace Battlehub.MeshDeformer3
             }
             else
             {
-                bool extend = input.GetKey(KeyCode.LeftControl) && !m_isDragging || input.GetKeyDown(KeyCode.LeftControl);
+                KeyCode key = Application.isEditor ? KeyCode.LeftControl : KeyCode.LeftShift;
+
+                bool extend = input.GetKey(key) && !m_isDragging || input.GetKeyDown(key);
                 m_isDragging = m_tool.DragControlPoint(extend);
             }
         }

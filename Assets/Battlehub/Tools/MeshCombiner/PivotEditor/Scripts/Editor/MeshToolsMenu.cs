@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
@@ -65,8 +66,7 @@ namespace Battlehub.MeshTools
             GameObject[] selectedObjects = Selection.gameObjects;
             MeshUtils.SaveMesh(selectedObjects, "Battlehub/");
         }
-
-
     }
 }
+#endif
 

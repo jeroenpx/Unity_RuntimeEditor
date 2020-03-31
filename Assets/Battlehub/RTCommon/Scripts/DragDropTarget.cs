@@ -44,7 +44,7 @@ namespace Battlehub.RTCommon
             get { return m_editor; }
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
             if (m_editor == null)
@@ -69,7 +69,7 @@ namespace Battlehub.RTCommon
             AwakeOverride();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             m_dragDropTargets = null;
             OnDestroyOverride();

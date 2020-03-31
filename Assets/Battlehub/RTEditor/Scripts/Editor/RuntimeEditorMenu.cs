@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using UnityEngine.EventSystems;
 
@@ -9,8 +10,11 @@ namespace Battlehub.RTEditor
 {
     public static class RTEditorMenu
     {
-        const string root = BHPath.Root + @"/RTEditor/";
-
+        public static string Root
+        {
+            get { return BHRoot.Path + @"/RTEditor/"; }
+        }
+            
         [MenuItem("Tools/Runtime Editor/Create")]
         public static void CreateRuntimeEditor()
         {
@@ -46,8 +50,9 @@ namespace Battlehub.RTEditor
 
         public static GameObject InstantiatePrefab(string name)
         {
-            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + root + "Prefabs/" + name, typeof(GameObject));
+            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + Root + "Prefabs/" + name, typeof(GameObject));
             return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         } 
     }
 }
+#endif

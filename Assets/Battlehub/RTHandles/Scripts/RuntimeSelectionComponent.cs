@@ -179,6 +179,12 @@ namespace Battlehub.RTHandles
             set;
         }
 
+        bool IsSelectionVisible
+        {
+            get;
+            set;
+        }
+
         bool CanSelect
         {
             get;
@@ -268,6 +274,8 @@ namespace Battlehub.RTHandles
         private bool m_isRectToolEnabled = true;
         [SerializeField]
         private bool m_isBoxSelectionEnabled = true;
+        [SerializeField]
+        private bool m_isSelectionVisible = true;
         [SerializeField]
         private bool m_canSelect = true;
         [SerializeField]
@@ -470,9 +478,25 @@ namespace Battlehub.RTHandles
                 m_isBoxSelectionEnabled = value;
                 if(m_boxSelection != null)
                 {
-                    m_boxSelection.enabled = value && Editor.ActiveWindow == Window;
+                    if(value)
+                    {
+                        if (Editor.ActiveWindow == Window)
+                        {
+                            m_boxSelection.enabled = true;
+                        }
+                    }
+                    else
+                    {
+                        m_boxSelection.enabled = false;
+                    }
                 }
             }
+        }
+
+        public bool IsSelectionVisible
+        {
+            get { return m_isSelectionVisible; }
+            set { m_isSelectionVisible = value; }
         }
 
         public bool CanSelect
@@ -541,7 +565,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private bool m_gridZTest;
+        private bool m_gridZTest = true;
         public bool GridZTest
         {
             get { return m_gridZTest; }
@@ -900,24 +924,6 @@ namespace Battlehub.RTHandles
             {
                 m_selectionOverride.SelectionChanged -= OnRuntimeSelectionChanged;
                 m_selectionOverride = null;
-            }
-        }
-
-        protected override void OnWindowActivated()
-        {
-            base.OnWindowActivated();
-            if (m_boxSelection != null)
-            {
-                m_boxSelection.enabled = true && IsBoxSelectionEnabled;
-            }
-        }
-
-        protected override void OnWindowDeactivated()
-        {
-            base.OnWindowDeactivated();
-            if(m_boxSelection != null)
-            {
-                m_boxSelection.enabled = false;
             }
         }
 
@@ -1358,6 +1364,11 @@ namespace Battlehub.RTHandles
 
         private void HandleRuntimeSelectionChange(IRuntimeSelection selection, UnityObject[] unselected)
         {
+            if(!IsSelectionVisible)
+            {
+                return;
+            }
+
             if (unselected != null)
             {
                 for (int i = 0; i < unselected.Length; ++i)

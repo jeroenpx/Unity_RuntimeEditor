@@ -14,10 +14,15 @@ namespace Battlehub.Spline3
 
         [SerializeField]
         protected float m_speed = 1.0f;
-        public float Speed
+        public virtual float Speed
         {
             get { return m_speed; }
             set { m_speed = value; }
+        }
+
+        protected virtual float CurrentSpeed
+        {
+            get { return m_speed; }
         }
 
         [SerializeField]
@@ -29,14 +34,6 @@ namespace Battlehub.Spline3
         }
 
         [SerializeField]
-        protected bool m_autoDestroy = false;
-        public bool AutoDestroy
-        {
-            get { return m_autoDestroy; }
-            set { m_autoDestroy = value; }
-        }
-
-        [SerializeField]
         protected bool m_loop = true;
         public bool Loop
         {
@@ -44,77 +41,143 @@ namespace Battlehub.Spline3
             set { m_loop = value; }
         }
 
+        [SerializeField]
+        protected bool m_playOnStart = true;
+        public bool PlayOnStart
+        {
+            get { return m_playOnStart; }
+            set { m_playOnStart = value; }
+        }
+
+        protected bool m_isPlaying = false;
+        public virtual bool IsPlaying
+        {
+            get { return m_isPlaying; }
+            set
+            {
+                if(m_isPlaying != value)
+                {
+                    m_isPlaying = value;
+                    enabled = value;
+                    OnStarted();
+                }
+            }
+        }
+
+        protected float m_segT;
+        public virtual float SegT
+        {
+            get { return m_segT; }
+        }
+
         protected float m_t;
-        public float T
+        public virtual float T
         {
             get { return m_t; }
-            set { m_t = value; }
+            set
+            {
+                m_t = value;
+                m_segT = m_t;
+                m_segment = m_spline.GetSegmentIndex(ref m_segT);
+            }
+        }
+
+        protected int m_segment;
+        protected int SegmentIndex
+        {
+            get { return m_segment; }
+            set
+            {
+                m_segment = value;
+                m_t = m_spline.GetT(m_segment);
+                m_segT = 0;
+            }
         }
 
         protected virtual void Start()
         {
-            float len = 0;
-            Vector3 p0 = m_spline.GetPosition(0);
-            for(int i = 1; i <= 100; ++i)
-            {
-                Vector3 p1 = m_spline.GetPosition((float)i / 100);
-                len += (p1 - p0).magnitude;
-                p0 = p1;
-            }
-
             Vector3 tangent = m_spline.GetTangent(m_t);
-
             transform.position = m_spline.GetPosition(0);
             transform.rotation = Quaternion.LookRotation(tangent);
+
+            if(PlayOnStart)
+            {
+                IsPlaying = true;
+            }
+            else
+            {
+                enabled = false;
+            }
         }
 
         protected virtual void Update()
         {
+            if(!IsPlaying)
+            {
+                return;
+            }
+
+            float prevT = m_t;
+            int prevSegment = m_segment;
+
             Vector3 tangent = m_spline.GetTangent(m_t);
             float v = tangent.magnitude;
             v *= m_spline.SegmentsCount;
-            m_t += (Time.deltaTime * m_speed) / v;
+            m_t += (Time.deltaTime * CurrentSpeed) / v;
+            m_segT = m_t;
+            m_segment = m_spline.GetSegmentIndex(ref m_segT);
 
             if (m_t >= 1)
             {
-                if (m_autoDestroy)
-                {
-                    Destroy(this);
-                }
-                else if (m_loop)
+                OnCompleted();
+
+                if (m_loop)
                 {
                     m_t %= 1;
-
-                    if(!m_spline.IsLooping)
-                    {
-                        ResetFollower();
-                    }
-                    
                 }
                 else
                 {
                     m_t = 1;
+                    IsPlaying = false;
+                }
+
+                m_segT = m_t;
+                m_segment = m_spline.GetSegmentIndex(ref m_segT);
+                prevSegment = m_segment;
+
+                if(IsPlaying)
+                {
+                    OnStarted();
                 }
             }
 
-            UpdateFollower();
+            UpdateFollower(prevT, prevSegment);
         }
 
-        protected virtual void ResetFollower()
+        protected virtual void OnStarted()
         {
-            transform.position = m_spline.GetPosition(m_t);
-            transform.rotation = Quaternion.LookRotation(m_spline.GetTangent(m_t));
+            m_segT = m_t;
+            m_segment = m_spline.GetSegmentIndex(ref m_segT);
+
+            if (!m_spline.IsLooping)
+            {
+                transform.position = m_spline.GetPosition(m_t);
+                transform.rotation = Quaternion.LookRotation(m_spline.GetTangent(m_t));
+            }
         }
 
-        protected virtual void UpdateFollower()
+        protected virtual void OnCompleted()
+        {
+            
+        }
+
+        protected virtual void UpdateFollower(float prevT, int prevSegment)
         {
             transform.position = m_spline.GetPosition(m_t);
 
             transform.rotation = SmoothRotation <= 0 ?
                 Quaternion.LookRotation(m_spline.GetTangent(m_t)) :
-                Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(m_spline.GetTangent(m_t)), Time.deltaTime * Speed / SmoothRotation);
-
-
+                Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(m_spline.GetTangent(m_t)), Time.deltaTime * CurrentSpeed / SmoothRotation);
         }
     }
 

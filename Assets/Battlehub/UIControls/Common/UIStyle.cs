@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.UIControls
 {
-    public partial class UIStyle : MonoBehaviour
+    public class UIStyle : MonoBehaviour
     {
         public string Name;
 

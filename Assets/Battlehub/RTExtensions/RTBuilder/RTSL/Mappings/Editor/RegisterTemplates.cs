@@ -1,6 +1,6 @@
-﻿using Battlehub.RTSL;
+﻿#if UNITY_EDITOR
+using Battlehub.RTSL;
 using UnityEditor;
-using UnityEngine;
 
 namespace Battlehub.RTBuilder
 {
@@ -9,8 +9,9 @@ namespace Battlehub.RTBuilder
         [InitializeOnLoadMethod]
         public static void Register()
         {
-            RTSLPath.ClassMappingsTemplatePath.Add("Assets/" + BHPath.Root + "/RTExtensions/RTBuilder/RTSL/Mappings/Editor/RTBuilder.ClassMappingsTemplate.prefab");
-            RTSLPath.SurrogatesMappingsTemplatePath.Add("Assets/" + BHPath.Root + "/RTExtensions/RTBuilder/RTSL/Mappings/Editor/RTBuilder.SurrogatesMappingsTemplate.prefab");
+            RTSLPath.ClassMappingsTemplatePath.Add("Assets/" + BHRoot.Path + "/RTExtensions/RTBuilder/RTSL/Mappings/Editor/RTBuilder.ClassMappingsTemplate.prefab");
+            RTSLPath.SurrogatesMappingsTemplatePath.Add("Assets/" + BHRoot.Path + "/RTExtensions/RTBuilder/RTSL/Mappings/Editor/RTBuilder.SurrogatesMappingsTemplate.prefab");
         }
     }
 }
+#endif

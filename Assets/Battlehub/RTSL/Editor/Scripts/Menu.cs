@@ -141,10 +141,10 @@ namespace Battlehub.RTSL
             }
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Create")]
+        //[MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Create")]
         private static void CreatePersistentClasses()
         {
-            PersistentClassMapperWindow.TryToCreateMappings();
+            PersistentClassMapperWindow.CreateOrPatchMappings();
             PersistentClassMapperWindow.CreatePersistentClasses();
         }
 
@@ -192,7 +192,7 @@ namespace Battlehub.RTSL
             }
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Build Type Model")]
+        //[MenuItem("Tools/Runtime SaveLoad/Persistent Classes/Build Type Model")]
         private static void BuildTypeModel()
         {
             EditorUtility.DisplayProgressBar("Build", "Building Type Model...", 0.66f);
@@ -210,7 +210,7 @@ namespace Battlehub.RTSL
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Libraries/Collect Scene Dependencies")]
+        //[MenuItem("Tools/Runtime SaveLoad/Libraries/Collect Scene Dependencies")]
         private static void CreateAssetLibraryForActiveScene()
         {
             CreateBuiltInAssetLibrary();
@@ -239,8 +239,16 @@ namespace Battlehub.RTSL
             CreateAssetLibraryForScene(scene, index, asset, folder, hs2);
         }
 
+        [MenuItem("Tools/Runtime SaveLoad/Update Libraries")]
+        private static void UpdateLibraries()
+        {
+            CreateAssetLibraryForActiveScene();
+            CreateBuiltInAssetLibrary();
+            CreateShaderProfiles();
+            CreateAssetLibrariesList();
+        }
 
-        [MenuItem("Tools/Runtime SaveLoad/Libraries/Update Built-In Assets Library")]
+        //[MenuItem("Tools/Runtime SaveLoad/Libraries/Update Built-In Assets Library")]
         private static void CreateBuiltInAssetLibrary()
         {
             int index;
@@ -250,13 +258,19 @@ namespace Battlehub.RTSL
             CreateBuiltInAssetLibrary(index, asset, folder, hs);
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Libraries/Update Shader Profiles")]
+        //[MenuItem("Tools/Runtime SaveLoad/Libraries/Update Shader Profiles")]
         private static void CreateShaderProfiles()
         {
             RuntimeShaderProfilesGen.CreateProfile();
+
+            /*
+            RuntimeShaderProfilesAsset asset = RuntimeShaderProfilesGen.CreateProfile();
+            Selection.activeObject = asset;
+            EditorGUIUtility.PingObject(asset);
+            */
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Libraries/Update Asset Libraries List")]
+        //[MenuItem("Tools/Runtime SaveLoad/Libraries/Update Asset Libraries List")]
         private static void CreateAssetLibrariesList()
         {
             AssetLibrariesListAsset asset = AssetLibrariesListGen.UpdateList();
@@ -280,7 +294,7 @@ namespace Battlehub.RTSL
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
                         
-            Selection.activeObject = asset;
+            //Selection.activeObject = asset;
 
             AssetLibrariesListGen.UpdateList(identity + 1);
         }
@@ -530,8 +544,8 @@ namespace Battlehub.RTSL
             SaveAssetLibrary(asset, folderName, assetLibraryName, index);
             index++;
 
-            Selection.activeObject = asset;
-            EditorGUIUtility.PingObject(asset);
+            //Selection.activeObject = asset;
+            //EditorGUIUtility.PingObject(asset);
         }
 
         private static void SaveAssetLibrary(AssetLibraryAsset asset, string folderName, string assetLibraryName, int index)

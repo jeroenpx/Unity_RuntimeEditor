@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1231a511ac909f64eb91de5a7253a6c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
-  PatchCounter: 1
+  Version: 2.2
+  PatchCounter: 2
 --- !u!1 &4178846667452585530
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 11
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTTerrain
   MappedNamespace: Battlehub.RTTerrain
   MappedTypeName: TerrainToolState
   MappedTypeGUID: 76c9ec0f-7072-43d2-a0c8-452bfb32dfaa
@@ -114,7 +114,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTTerrain.Battlehub.SL2
     PersistentTypeName: TerrainSelectionHandlesTool+Interpolation
     PersistentName: Interpolation
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTTerrain
     MappedNamespace: Battlehub.RTTerrain
     MappedTypeName: TerrainSelectionHandlesTool+Interpolation
     MappedName: Interpolation
@@ -321,7 +321,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTTerrain
   MappedNamespace: Battlehub.RTTerrain
   MappedTypeName: TerrainBrushSource
   MappedTypeGUID: 45ec761a-d38b-482b-87cb-248c268baba4

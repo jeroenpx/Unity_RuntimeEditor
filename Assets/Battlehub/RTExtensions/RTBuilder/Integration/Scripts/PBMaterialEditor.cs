@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
@@ -71,6 +72,8 @@ namespace Battlehub.ProBuilderIntegration
 
     public interface IMaterialEditor
     {
+        event Action MaterialsApplied;
+
         ApplyMaterialResult ApplyMaterial(Material material, MeshSelection selection, Camera camera, Vector3 mousePosition);
         ApplyMaterialResult ApplyMaterial(Material material, MeshSelection selection);
         ApplyMaterialResult ApplyMaterial(Material material, GameObject gameObject, int submeshIndex);
@@ -79,6 +82,8 @@ namespace Battlehub.ProBuilderIntegration
 
     public class PBMaterialEditor : MonoBehaviour, IMaterialEditor
     {
+        public event Action MaterialsApplied;
+
         public ApplyMaterialResult ApplyMaterial(Material material, MeshSelection selection)
         {
             if(selection == null)
@@ -112,6 +117,11 @@ namespace Battlehub.ProBuilderIntegration
 
                 GetFaceToSubmeshIndexes(newState.FaceToSubmeshIndex, kvp, mesh);
                 AddMaterialsToState(newState, mesh);
+            }
+
+            if (MaterialsApplied != null)
+            {
+                MaterialsApplied();
             }
 
             if (oldState.FaceToSubmeshIndex.Count == 0 && newState.FaceToSubmeshIndex.Count == 0)
@@ -180,6 +190,11 @@ namespace Battlehub.ProBuilderIntegration
                 newState.FaceToSubmeshIndex.Add(newFaceToIndex);
                 AddMaterialsToState(newState, meshAndFace.mesh);
 
+                if (MaterialsApplied != null)
+                {
+                    MaterialsApplied();
+                }
+
                 return new ApplyMaterialResult(oldState, newState);
             }
             return null;
@@ -214,6 +229,11 @@ namespace Battlehub.ProBuilderIntegration
 
                 AddAllFacesToState(newState, mesh);
                 AddMaterialsToState(newState, mesh);
+            }
+
+            if (MaterialsApplied != null)
+            {
+                MaterialsApplied();
             }
 
             if (oldState.FaceToSubmeshIndex.Count == 0 && newState.FaceToSubmeshIndex.Count == 0)
@@ -303,7 +323,12 @@ namespace Battlehub.ProBuilderIntegration
 
                 mesh.Refresh();
                 mesh.ToMesh();
-            }   
+            }
+
+            if (MaterialsApplied != null)
+            {
+                MaterialsApplied();
+            }
         }
 
         private void RemoveUnusedMaterials(ProBuilderMesh mesh)

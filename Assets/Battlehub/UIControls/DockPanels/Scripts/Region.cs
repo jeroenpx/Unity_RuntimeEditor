@@ -309,9 +309,12 @@ namespace Battlehub.UIControls.DockPanels
                 m_root = GetComponentInParent<DockPanel>();
             }
 
-            m_layoutElement.minWidth = m_minWidth;
-            m_layoutElement.minHeight = m_minHeight;
-
+            if(m_layoutElement != null)
+            {
+                m_layoutElement.minWidth = m_minWidth;
+                m_layoutElement.minHeight = m_minHeight;
+            }
+            
             if (Created != null)
             {
                 Created(this);

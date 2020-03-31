@@ -505,6 +505,8 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            m_autoFocusTransform = null;
+
             if (Selection.activeTransform == null)
             {
                 return;
@@ -515,11 +517,12 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            m_autoFocusTransform = Selection.activeTransform;
-            if ((Selection.activeTransform.gameObject.hideFlags & HideFlags.DontSave) != 0)
+            if ((Selection.activeTransform.gameObject.hideFlags & HideFlags.DontSave) != 0 || Selection.activeGameObject.IsPrefab())
             {
                 return;
             }
+
+            m_autoFocusTransform = Selection.activeTransform;
 
             Bounds bounds = CalculateBounds(Selection.activeTransform);
             float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z) * 2.0f;

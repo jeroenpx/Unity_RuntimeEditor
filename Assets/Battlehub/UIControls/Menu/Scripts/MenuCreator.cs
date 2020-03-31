@@ -83,6 +83,7 @@ namespace Battlehub.UIControls.MenuControl
     [DefaultExecutionOrder(-25)]
     public class MenuCreator : MonoBehaviour
     {
+   
         [SerializeField]
         private GameObject m_topMenu = null;
 
@@ -116,7 +117,7 @@ namespace Battlehub.UIControls.MenuControl
         private void Awake()
         {
             List<Assembly> assemblies = new List<Assembly>();
-            foreach(string assemblyName in BHPath.RootAssemblies)
+            foreach(string assemblyName in BHRoot.Assemblies)
             {
                 var asName = new AssemblyName();
                 asName.Name = assemblyName;

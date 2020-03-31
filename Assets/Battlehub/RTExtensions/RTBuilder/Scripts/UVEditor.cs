@@ -134,7 +134,7 @@ namespace Battlehub.RTBuilder
                 return;
             }
 
-            if (!m_tool.HasSelectedFaces)
+            if (!m_tool.HasSelection)
             {
                 if (m_uvAutoEditorPanel != null)
                 {
@@ -164,15 +164,20 @@ namespace Battlehub.RTBuilder
 
                 bool hasSelectedManualUVs = m_tool.HasSelectedManualUVs;
                 bool hasSelectedAutoUVs = m_tool.HasSelectedAutoUVs;
+                if(!hasSelectedManualUVs && !hasSelectedAutoUVs)
+                {
+                    hasSelectedManualUVs = true;
+                }
+
                 if (m_uvAutoEditorPanel != null)
                 {
                     m_uvAutoEditorPanel.gameObject.SetActive(hasSelectedAutoUVs && !hasSelectedManualUVs);
                 }
-                if(m_uvManualEditorPanel != null)
+                if (m_uvManualEditorPanel != null)
                 {
                     m_uvManualEditorPanel.gameObject.SetActive(hasSelectedManualUVs && !hasSelectedAutoUVs);
                 }
-
+                
                 if(m_modeText != null)
                 {
                     ILocalization lc = IOC.Resolve<ILocalization>();

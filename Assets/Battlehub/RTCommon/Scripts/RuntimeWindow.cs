@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Battlehub.RTCommon
@@ -38,6 +39,8 @@ namespace Battlehub.RTCommon
     [DefaultExecutionOrder(-60)]
     public class RuntimeWindow : DragDropTarget
     {
+        public event Action CameraResized;
+
         [SerializeField]
         private bool m_resizeCamera = true;
 
@@ -104,6 +107,10 @@ namespace Battlehub.RTCommon
         private Rect m_rect;
         private RectTransform m_rectTransform;
         private CanvasGroup m_canvasGroup;        
+        protected CanvasGroup CanvasGroup
+        {
+            get { return m_canvasGroup; }
+        }
 
         private Canvas m_canvas;
         [SerializeField]
@@ -247,8 +254,15 @@ namespace Battlehub.RTCommon
             
             Editor.ActiveWindowChanged += OnActiveWindowChanged;
 
-            m_index = Editor.GetIndex(WindowType);
-
+            if(WindowType != RuntimeWindowType.Custom)
+            {
+                m_index = Editor.GetIndex(WindowType);
+            }
+            else
+            {
+                m_index = 0;
+            }
+            
             if (m_camera != null)
             {
                 SetCullingMask();
@@ -282,16 +296,31 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void Update()
+        protected virtual void OnEnable()
+        {
+            TryResize();
+        }
+
+        protected virtual void OnDisable()
+        {
+
+        }
+
+        protected virtual void Update()
         {
             UpdateOverride();
         }
 
         protected virtual void UpdateOverride()
         {
-            if(m_camera != null && m_rectTransform != null)
+            TryResize();
+        }
+
+        private void TryResize()
+        {
+            if (m_camera != null && m_rectTransform != null)
             {
-                if(m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
+                if (m_rectTransform.rect != m_rect || m_rectTransform.position != m_position)
                 {
                     HandleResize();
 
@@ -401,6 +430,10 @@ namespace Battlehub.RTCommon
         protected virtual void ResizeCamera(Rect pixelRect)
         {
             m_camera.pixelRect = pixelRect;
+            if (CameraResized != null)
+            {
+                CameraResized();
+            }            
         }
 
         protected virtual void OnActivated()
@@ -419,7 +452,6 @@ namespace Battlehub.RTCommon
         protected virtual void SetCullingMask(Camera camera)
         {
             CameraLayerSettings settings = Editor.CameraLayerSettings;
-            //camera.cullingMask &= ~((((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer) | (1 << settings.AllScenesLayer) | (1 << settings.ExtraLayer) | (1 << settings.ExtraLayer2));
             camera.cullingMask &= ~((((1 << settings.MaxGraphicsLayers) - 1) << settings.RuntimeGraphicsLayer) | (1 << settings.ExtraLayer) | (1 << settings.ExtraLayer2));
         }
 

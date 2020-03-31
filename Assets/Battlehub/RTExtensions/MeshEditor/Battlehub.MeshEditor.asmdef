@@ -1,0 +1,18 @@
+{
+    "name": "Battlehub.MeshEditor",
+    "references": [
+        "GUID:b9f5efe54bcd2ad429a32b7c3dbfb90f",
+        "GUID:fb20bc2d30583e34fba2eb37c20bd497",
+        "GUID:d04e78915aa543c4f85e76b063a0baca",
+        "GUID:26441a3f7503e0f42b3fd97b6f274fcd"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

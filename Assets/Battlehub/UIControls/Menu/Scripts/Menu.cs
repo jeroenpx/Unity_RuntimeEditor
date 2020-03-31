@@ -66,6 +66,7 @@ namespace Battlehub.UIControls.MenuControl
         public MenuItemValidationEvent Validate;
 
         public bool IsVisible = true;
+        public bool IsOn = false;
     }
 
 

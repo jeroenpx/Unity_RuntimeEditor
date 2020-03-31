@@ -402,6 +402,11 @@ namespace Battlehub.MeshDeformer3
             return m_spline.GetLocalDirection(segmentIndex, t);
         }
 
+        public override float GetT(int controlPointIndex)
+        {
+            return m_spline.GetT(controlPointIndex);
+        }
+
         public override int GetSegmentIndex(ref float t)
         {
             return m_spline.GetSegmentIndex(ref t);
@@ -442,9 +447,9 @@ namespace Battlehub.MeshDeformer3
             m_spline.SetSettings(index, settings);
         }
 
-        public override ControlPointSettings GetSettings(int index)
+        public override ControlPointSettings GetSettings(int index, bool useSegmentIndex = false)
         {
-            return m_spline.GetSettings(index);
+            return m_spline.GetSettings(index, useSegmentIndex);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Battlehub.RTScripting
             get;
         }
 
+        void AddReference(string assemblyLocation);
         void CreateScript(ProjectItem folder);
         ProjectAsyncOperation<RuntimeTextAsset> LoadScript(AssetItem assetItem);
         ProjectAsyncOperation SaveScript(AssetItem assetItem, RuntimeTextAsset script);
@@ -85,6 +86,7 @@ namespace Battlehub.RTScripting
         private Assembly m_runtimeAssembly;
         private Dictionary<string, Guid> m_typeNameToGuid;
         private RuntimeTextAsset m_runtimeTypeGuidsAsset;
+        private HashSet<string> m_assemblyReferences = new HashSet<string>();
         
         private void Awake()
         {
@@ -181,8 +183,6 @@ namespace Battlehub.RTScripting
             }
         }
 
-
-
         private void OnDeleteProjectItemCompleted(Error error, ProjectItem[] result)
         {
             for (int i = 0; i < result.Length; ++i)
@@ -195,6 +195,14 @@ namespace Battlehub.RTScripting
                         Compile();
                     }
                 }
+            }
+        }
+
+        public void AddReference(string assemblyLocation)
+        {
+            if(!m_assemblyReferences.Contains(assemblyLocation))
+            {
+                m_assemblyReferences.Add(assemblyLocation);
             }
         }
 
@@ -307,7 +315,7 @@ namespace Battlehub.RTScripting
             {
                 byte[] binData = null;
 #if UNITY_STANDALONE
-                binData = await Task.Run(() => compiler.Compile(scripts));
+                binData = await Task.Run(() => compiler.Compile(scripts, m_assemblyReferences.ToArray()));
 #endif
                 if (binData == null)
                 {

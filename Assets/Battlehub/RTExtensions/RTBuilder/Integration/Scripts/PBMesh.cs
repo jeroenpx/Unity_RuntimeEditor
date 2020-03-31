@@ -22,6 +22,39 @@ namespace Battlehub.ProBuilderIntegration
         }
     }
 
+    public struct PBEdge
+    {
+        public int A;
+        public int B;
+        public int FaceIndex;
+
+        public PBEdge(Edge edge, int faceIndex)
+        {
+            A = edge.a;
+            B = edge.b;
+            FaceIndex = faceIndex;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is PBEdge))
+            {
+                return false;
+            }
+
+            PBEdge other = (PBEdge)obj;
+            return other.A == A && other.B == B;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashcode = 23;
+            hashcode = (hashcode * 37) + A;
+            hashcode = (hashcode * 37) + B;
+            return hashcode;
+        }
+    }
+
     public struct PBFace
     {
         public int[] Indexes;
@@ -96,6 +129,25 @@ namespace Battlehub.ProBuilderIntegration
             set { m_faces = value; }
         }
 
+        public PBEdge[] Edges
+        {
+            get
+            {
+                Init(this, Vector2.one);
+                List<PBEdge> edges = new List<PBEdge>();
+                IList<Face> faces = m_pbMesh.faces;
+                for(int i = 0; i < faces.Count; ++i)
+                {
+                    ReadOnlyCollection<Edge> faceEdges = faces[i].edges;
+                    for(int j = 0; j < faceEdges.Count; ++j)
+                    {
+                        edges.Add(new PBEdge(faceEdges[j], i));
+                    }
+                }
+                return edges.ToArray();
+            }
+        }
+
         private Vector3[] m_positions;
         public Vector3[] Positions
         {
@@ -117,7 +169,10 @@ namespace Battlehub.ProBuilderIntegration
                 m_textures = m_pbMesh.textures.ToArray();
                 return m_textures;
             }
-            set { m_textures = value; }
+            set
+            {
+                m_textures = value;
+            }
         }
 
         internal ProBuilderMesh Mesh
@@ -262,6 +317,16 @@ namespace Battlehub.ProBuilderIntegration
             RaiseChanged(false, true);
         }
 
+        public void RefreshUV()
+        {
+            m_pbMesh.textures = m_textures;
+            m_pbMesh.Refresh(RefreshMask.UV);
+
+            m_pbMesh.ToMesh();
+            m_pbMesh.Refresh();
+        }
+
+
         public void RaiseSelected(bool clear)
         {
             if(Selected != null)
@@ -286,6 +351,7 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
+    
         public void BuildEdgeMesh(Mesh target, Color color, bool positionsOnly)
         {
             IList<Vector3> positions = m_pbMesh.positions;
@@ -489,6 +555,7 @@ namespace Battlehub.ProBuilderIntegration
             mesh.ToMesh();
             mesh.Refresh();
         }
+
 
         public bool UvTo3D(Vector2 uv, out Vector3 p3d)
         {

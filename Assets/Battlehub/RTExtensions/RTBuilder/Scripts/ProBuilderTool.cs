@@ -20,6 +20,7 @@ namespace Battlehub.RTBuilder
 
     public interface IProBuilderTool
     {
+        event Action SelectionChanging;
         event Action SelectionChanged;
         event Action<ProBuilderToolMode> ModeChanged;
         ProBuilderToolMode Mode
@@ -89,6 +90,7 @@ namespace Battlehub.RTBuilder
     {
         public event Action<ProBuilderToolMode> ModeChanged;
         public event Action<bool> UVEditingModeChanged;
+        public event Action SelectionChanging;
         public event Action SelectionChanged;
 
         private bool m_modeChaning;
@@ -304,7 +306,8 @@ namespace Battlehub.RTBuilder
         private IMaterialEditor m_materialEditor;
         private IAutoUVEditor m_autoUVEditor;
         private IWindowManager m_wm;
-        private IRuntimeEditor m_rte;
+        private IRTE m_rte;
+        private IRuntimeEditor m_runtimeEditor;
         private IBoxSelection m_boxSelection;
         private Transform m_pivot;
         private IPolyShapeEditor m_polyShapeEditor;
@@ -324,17 +327,23 @@ namespace Battlehub.RTBuilder
         {
             IOC.RegisterFallback<IProBuilderTool>(this);
 
-            m_rte = IOC.Resolve<IRuntimeEditor>();
-
+            m_runtimeEditor = IOC.Resolve<IRuntimeEditor>();
+            m_rte = IOC.Resolve<IRTE>();
             m_wm = IOC.Resolve<IWindowManager>();
-            m_wm.WindowCreated += OnWindowCreated;
-            m_wm.AfterLayout += OnAfterLayout;
+            if(m_wm != null)
+            {
+                m_wm.WindowCreated += OnWindowCreated;
+                m_wm.AfterLayout += OnAfterLayout;
+            }
+            
             InitCullingMask();
 
             gameObject.AddComponent<MaterialPaletteManager>();
             m_materialEditor = gameObject.AddComponent<PBMaterialEditor>();
             m_autoUVEditor = gameObject.AddComponent<PBAutoUVEditor>();
             m_polyShapeEditor = gameObject.AddComponent<ProBuilderPolyShapeEditor>();
+
+            IOC.RegisterFallback<IMaterialEditor>(m_materialEditor);
 
             m_uv = new PBAutoUnwrapSettings();
             m_uv.Changed += OnUVChanged;
@@ -397,7 +406,13 @@ namespace Battlehub.RTBuilder
                 m_rte.Tools.PivotModeChanged += OnPivotModeChanged;
                 m_rte.Tools.PivotRotationChanging += OnPivotRotationChanging;
                 m_rte.Tools.PivotRotationChanged += OnPivotRotationChanged;
-                m_rte.SceneLoading += OnSceneLoading;
+
+                if(m_runtimeEditor != null)
+                {
+                    m_runtimeEditor.SceneLoading += OnSceneLoading;
+                }
+
+                
             }
         }
 
@@ -406,6 +421,7 @@ namespace Battlehub.RTBuilder
             Mode = ProBuilderToolMode.Object;
 
             IOC.UnregisterFallback<IProBuilderTool>(this);
+            IOC.UnregisterFallback<IMaterialEditor>(m_materialEditor);
 
             if (m_rte != null)
             {
@@ -416,7 +432,12 @@ namespace Battlehub.RTBuilder
                 m_rte.Tools.PivotModeChanged -= OnPivotModeChanged;
                 m_rte.Tools.PivotRotationChanging -= OnPivotRotationChanging;
                 m_rte.Tools.PivotRotationChanged -= OnPivotRotationChanged;
-                m_rte.SceneLoading -= OnSceneLoading;
+
+                if (m_runtimeEditor != null)
+                {
+                    m_runtimeEditor.SceneLoading -= OnSceneLoading;
+                }
+               
             }
 
             UnsubscribeFromEvents();
@@ -673,13 +694,17 @@ namespace Battlehub.RTBuilder
 
         private void InitCullingMask()
         {
-            foreach (RuntimeWindow window in m_rte.Windows)
+            if(m_rte != null)
             {
-                if (window.WindowType == RuntimeWindowType.Scene)
+                foreach (RuntimeWindow window in m_rte.Windows)
                 {
-                    SetCullingMask(window);
+                    if (window.WindowType == RuntimeWindowType.Scene)
+                    {
+                        SetCullingMask(window);
+                    }
                 }
             }
+            
         }
 
         private void SetCullingMask(RuntimeWindow window)
@@ -705,6 +730,8 @@ namespace Battlehub.RTBuilder
                 {
                     editor.ClearSelection();
                 }
+
+                OnSelectionChanged();
             }
         }
 
@@ -771,15 +798,28 @@ namespace Battlehub.RTBuilder
 
         private void SetCanSelect(bool value)
         {
-            Transform[] windows = m_wm.GetWindows(RuntimeWindowType.Scene.ToString());
-            for (int i = 0; i < windows.Length; ++i)
+            if(m_wm != null)
             {
-                RuntimeWindow window = windows[i].GetComponent<RuntimeWindow>();
-                ISelectionComponentState selectionComponent = window.IOCContainer.Resolve<ISelectionComponentState>();
-                if (selectionComponent != null)
+                Transform[] windows = m_wm.GetWindows(RuntimeWindowType.Scene.ToString());
+                for (int i = 0; i < windows.Length; ++i)
                 {
-                    selectionComponent.CanSelect(this, value);
-                    selectionComponent.CanSelectAll(this, value);
+                    RuntimeWindow window = windows[i].GetComponent<RuntimeWindow>();
+                    ISelectionComponentState selectionComponent = window.IOCContainer.Resolve<ISelectionComponentState>();
+                    if (selectionComponent != null)
+                    {
+                        selectionComponent.CanSelect(this, value);
+                        selectionComponent.CanSelectAll(this, value);
+                    }
+                }
+            }
+            else
+            {
+                RuntimeWindow sceneWindow = m_rte.GetWindow(RuntimeWindowType.Scene);
+                IRuntimeSelectionComponent selectionComponent = sceneWindow.IOCContainer.Resolve<IRuntimeSelectionComponent>();
+                if(selectionComponent != null)
+                {
+                    selectionComponent.CanSelect = value;
+                    selectionComponent.CanSelectAll = value;
                 }
             }
         }
@@ -1068,7 +1108,12 @@ namespace Battlehub.RTBuilder
             Rect rect;
             if(depthTest || Mode != ProBuilderToolMode.Face)
             {
-                RectTransform sceneOutput = (RectTransform)window.GetComponent<RectTransform>().GetChild(0);
+                RectTransform sceneOutput = window.GetComponent<RectTransform>();
+                if(sceneOutput.childCount > 0 )
+                {
+                    sceneOutput = (RectTransform)sceneOutput.GetChild(0);
+                }
+                
 
                 Camera canvasCamera = canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
 
@@ -1607,12 +1652,25 @@ namespace Battlehub.RTBuilder
             
         private void OnSelectionChanged()
         {
+            if(SelectionChanging != null)
+            {
+                SelectionChanging();
+            }
+
             IMeshEditor editor = GetEditor();
             if (editor != null)
             {
                 MeshSelection selection = editor.GetSelection();
                 PBAutoUnwrapSettings settings = m_autoUVEditor.GetSettings(selection);
                 m_uv.CopyFrom(settings);
+
+                if (UVEditingMode)
+                {
+                    LockAxes lockAxes = m_pivot.gameObject.GetComponent<LockAxes>();
+                    lockAxes.PositionX = lockAxes.PositionY = !HasSelectedFaces;
+                    lockAxes.ScaleX = lockAxes.ScaleY = !HasSelectedFaces;
+                    lockAxes.RotationZ = !HasSelectedFaces;
+                }
             }
 
             if (SelectionChanged != null)

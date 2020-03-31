@@ -1,5 +1,4 @@
-﻿using Battlehub.RTCommon;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -112,10 +111,7 @@ namespace Battlehub.RTSL.Interface
         void UnloadImportItems(ProjectItem importItemsRoot);
         ProjectAsyncOperation<AssetItem[]> Import(ImportItem[] importItems, ProjectEventHandler<AssetItem[]> callback = null);
 
-        //ProjectAsyncOperation ExportProject(string path, AssetItem[] items, ProjectEventHandler callback = null);
-        //ProjectAsyncOperation<AssetItem> LoadPackage(string path, ProjectEventHandler<AssetItem> callback = null);
-        //ProjectAsyncOperation ImportPackage(AssetItem package, ProjectEventHandler callback = null);
-
+        ProjectAsyncOperation CreatePrefab(string folderPath, GameObject prefab, bool includeDeps, Func<UnityObject, byte[]> createPreview = null);
         ProjectAsyncOperation<ProjectItem> CreateFolder(ProjectItem projectItem, ProjectEventHandler<ProjectItem> callback = null);
         ProjectAsyncOperation<ProjectItem[]> CreateFolders(ProjectItem[] projectItem, ProjectEventHandler<ProjectItem[]> callback = null);
         ProjectAsyncOperation<ProjectItem> Rename(ProjectItem projectItem, string oldName, ProjectEventHandler<ProjectItem> callback = null);
@@ -339,75 +335,6 @@ namespace Battlehub.RTSL.Interface
             return project.Delete(new[] { projectItem });
         }
 
-        public static ProjectAsyncOperation CreatePrefab(this IProject project, string folderPath, GameObject prefab, bool includeDeps, Func<UnityObject, byte[]> createPreview = null)
-        {
-            ProjectAsyncOperation ao = new ProjectAsyncOperation();
-
-            folderPath = string.Format("{0}/{1}", project.Root.Name, folderPath);
-            ProjectItem folder = project.Root.Get(folderPath, true) as ProjectItem;
-            if(folder is AssetItem)
-            {
-                throw new ArgumentException("folderPath");
-            }
-
-            if(includeDeps)
-            {
-                project.GetDependencies(prefab, true, (error, deps) =>
-                {
-                    object[] objects;
-                    if (!deps.Contains(prefab))
-                    {
-                        objects = new object[deps.Length + 1];
-                        objects[deps.Length] = prefab;
-                        for (int i = 0; i < deps.Length; ++i)
-                        {
-                            objects[i] = deps[i];
-                        }
-                    }
-                    else
-                    {
-                        objects = deps;
-                    }
-
-                    IUnityObjectFactory uoFactory = IOC.Resolve<IUnityObjectFactory>();
-                    objects = objects.Where(obj => uoFactory.CanCreateInstance(obj.GetType())).ToArray();
-
-                    byte[][] previewData = new byte[objects.Length][];
-                    if (createPreview != null)
-                    {
-                        for (int i = 0; i < objects.Length; ++i)
-                        {
-                            if (objects[i] is UnityObject)
-                            {
-                                previewData[i] = createPreview((UnityObject)objects[i]);
-                            }
-                        }
-                    }
-
-                    project.Save(new[] { folder }, previewData, objects, null, (saveErr, assetItems) =>
-                    {
-                        ao.Error = saveErr;
-                        ao.IsCompleted = true;
-                    });
-                });
-            }
-            else
-            {
-                byte[][] previewData = new byte[1][];
-                if (createPreview != null)
-                {
-                    previewData[0] = createPreview(prefab);
-                }
-
-                project.Save(new[] { folder }, previewData, new[] { prefab }, null, (saveErr, assetItems) =>
-                {
-                    ao.Error = saveErr;
-                    ao.IsCompleted = true;
-                });
-            }
-
-            return ao;
-        }
 
         public static ProjectAsyncOperation<AssetItem[]> Save(this IProject project, string path, object obj, byte[] preview = null)
         {

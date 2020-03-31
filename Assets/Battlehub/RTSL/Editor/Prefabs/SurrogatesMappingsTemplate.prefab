@@ -4227,7 +4227,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: Preview
   MappedTypeGUID: 5f7fa829-8d68-4e90-bf23-cb964f559d72
@@ -4318,7 +4318,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: PrefabPart
   MappedTypeGUID: c15b94a1-e61c-4515-b7cf-05804bae7d04
@@ -5403,7 +5403,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: TimelineGridParameters
   MappedTypeGUID: d22d8660-6389-4956-8c9a-0f047baa5345
@@ -5555,7 +5555,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTCommon
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: IOCContainer
   MappedTypeGUID: f75879ac-5352-4041-b6ee-9660a970512e
@@ -5578,7 +5578,7 @@ MonoBehaviour:
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
     MappedTypeName: Dictionary`2[[System.Type, mscorlib],[Battlehub.RTCommon.IOCContainer+Item,
-      Assembly-CSharp]]
+      Battlehub.RTCommon]]
     MappedName: m_registered
     UseSurrogate: 0
     UseSurrogate2: 0
@@ -5595,7 +5595,7 @@ MonoBehaviour:
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
     MappedTypeName: Dictionary`2[[System.Type, mscorlib],[Battlehub.RTCommon.IOCContainer+Item,
-      Assembly-CSharp]]
+      Battlehub.RTCommon]]
     MappedName: m_fallbacks
     UseSurrogate: 0
     UseSurrogate2: 0
@@ -5650,7 +5650,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetFolderInfo
   MappedTypeGUID: 37dd456e-13be-4b3b-97a1-0bc8105247a5
@@ -5862,7 +5862,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: AssetItem
   MappedTypeGUID: 90ebcc6f-fa14-4f78-a471-5ff7d4b04219
@@ -5896,7 +5896,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: PrefabPart[]
     PersistentName: Parts
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: PrefabPart[]
     MappedName: Parts
@@ -5941,7 +5941,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: Preview
     PersistentName: m_preview
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: Preview
     MappedName: m_preview
@@ -5956,7 +5956,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: Preview
     PersistentName: Preview
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: Preview
     MappedName: Preview
@@ -7040,7 +7040,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTHandles
   MappedNamespace: Battlehub.RTHandles
   MappedTypeName: BaseHandleUnityEvent
   MappedTypeGUID: 8ee715da-4a70-461a-9f30-900a137a3b54
@@ -7989,7 +7989,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.UIControls
   MappedNamespace: Battlehub.UIControls
   MappedTypeName: PopupWindowEvent
   MappedTypeGUID: 713bab42-eb99-4f2d-a0dc-4999c870a99c
@@ -10743,7 +10743,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RTEAppearance+Cursor
   MappedTypeGUID: e1ecaa4b-7636-40d0-a14b-de89fe54ba1d
@@ -10777,7 +10777,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.Utils.Battlehub.SL2
     PersistentTypeName: KnownCursor
     PersistentName: Type
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.Utils
     MappedNamespace: Battlehub.Utils
     MappedTypeName: KnownCursor
     MappedName: Type
@@ -13247,7 +13247,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetLibraryInfo
   MappedTypeGUID: 375e471d-99fc-459a-aded-1f262524b3d3
@@ -13353,7 +13353,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RTEMenuItemColors
   MappedTypeGUID: 33d82c8e-1e63-4371-b364-aab53c91eba8
@@ -13927,7 +13927,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 1
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.SL2
   MappedNamespace: Battlehub.SL2
   MappedTypeName: PersistentTest
   MappedTypeGUID: 3b4f0621-eff4-45d1-9893-2cf6464b17f3
@@ -15838,7 +15838,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: FileIcon
   MappedTypeGUID: 88b220ec-e5b3-46c9-9d1b-934b57332891
@@ -16050,7 +16050,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 8
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: RuntimeShaderInfo
   MappedTypeGUID: 41bd7528-4988-4151-b71e-c227f757fcd3
@@ -16129,7 +16129,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Battlehub.SL2
     PersistentTypeName: RTShaderPropertyType[]
     PersistentName: PropertyTypes
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL
     MappedTypeName: RTShaderPropertyType[]
     MappedName: PropertyTypes
@@ -16174,7 +16174,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Battlehub.SL2
     PersistentTypeName: RuntimeShaderInfo+RangeLimits[]
     PersistentName: PropertyRangeLimits
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL
     MappedTypeName: RuntimeShaderInfo+RangeLimits[]
     MappedName: PropertyRangeLimits
@@ -16322,7 +16322,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: ProjectInfo
   MappedTypeGUID: 64eadb32-f760-4a65-8d22-e5affb130a74
@@ -17561,7 +17561,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: RuntimeShaderInfo+RangeLimits
   MappedTypeGUID: 2acd2984-6eaa-4c53-b872-8a1053173924
@@ -19509,7 +19509,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: ProjectItem
   MappedTypeGUID: 2669da4b-1420-493c-a230-5654aaf4031e
@@ -19573,7 +19573,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: ProjectItem
     PersistentName: Parent
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: ProjectItem
     MappedName: Parent
@@ -19590,7 +19590,7 @@ MonoBehaviour:
     PersistentName: Children
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[Battlehub.RTSL.Interface.ProjectItem, Assembly-CSharp]]
+    MappedTypeName: List`1[[Battlehub.RTSL.Interface.ProjectItem, Battlehub.RTSL.Interface]]
     MappedName: Children
     UseSurrogate: 1
     UseSurrogate2: 1
@@ -20037,7 +20037,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 34
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTCommon
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: LockObject
   MappedTypeGUID: a12eaed3-f577-4e2a-b8db-79704eedad01
@@ -20221,7 +20221,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: LockObject
     PersistentName: m_globalLock
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: LockObject
     MappedName: m_globalLock
@@ -21557,7 +21557,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RTESelectableColors
   MappedTypeGUID: 5e69be23-e54f-43dd-a51e-2fb842689e94
@@ -21693,7 +21693,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.UIControls
   MappedNamespace: Battlehub.UIControls
   MappedTypeName: DataItem
   MappedTypeGUID: d88c80d6-568f-451e-8658-687665923da8
@@ -21727,7 +21727,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.Battlehub.SL2
     PersistentTypeName: DataItem
     PersistentName: Parent
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.UIControls
     MappedNamespace: Battlehub.UIControls
     MappedTypeName: DataItem
     MappedName: Parent
@@ -21744,7 +21744,7 @@ MonoBehaviour:
     PersistentName: Children
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[Battlehub.UIControls.DataItem, Assembly-CSharp]]
+    MappedTypeName: List`1[[Battlehub.UIControls.DataItem, Battlehub.UIControls]]
     MappedName: Children
     UseSurrogate: 1
     UseSurrogate2: 1
@@ -22235,7 +22235,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.UIControls
   MappedNamespace: Battlehub.UIControls.MenuControl
   MappedTypeName: MenuItemInfo
   MappedTypeGUID: 69bd10c9-4326-438d-a6a8-6879583d651e
@@ -22314,7 +22314,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.MenuControl.Battlehub.SL2
     PersistentTypeName: MenuItemEvent
     PersistentName: Action
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.UIControls
     MappedNamespace: Battlehub.UIControls.MenuControl
     MappedTypeName: MenuItemEvent
     MappedName: Action
@@ -22329,7 +22329,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.MenuControl.Battlehub.SL2
     PersistentTypeName: MenuItemValidationEvent
     PersistentName: Validate
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.UIControls
     MappedNamespace: Battlehub.UIControls.MenuControl
     MappedTypeName: MenuItemValidationEvent
     MappedName: Validate
@@ -22386,7 +22386,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: PersistentSubclass
   MappedTypeGUID: 18c82222-2080-45d8-b193-a92c9a9486ef
@@ -24032,7 +24032,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetLibraryListEntry
   MappedTypeGUID: deeb1a91-7af0-47e8-8354-9b7dee497f74
@@ -24123,7 +24123,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: MappingInfo
   MappedTypeGUID: 35eaaa78-367d-414e-8652-50e8dbeaec61
@@ -25716,7 +25716,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.UIControls
   MappedNamespace: Battlehub.UIControls.MenuControl
   MappedTypeName: MenuItemEvent
   MappedTypeGUID: 435778c4-fb46-4dd0-a19d-26d79792ea88
@@ -25777,7 +25777,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RTEHierarchyColors
   MappedTypeGUID: de79b8f4-9a66-49f4-a06d-50942e290b73
@@ -26320,7 +26320,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: WindowDescriptor
   MappedTypeGUID: 0da12a8f-b04c-4cd8-91a2-bedcbfce8b91
@@ -29828,7 +29828,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 10
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTHandles
   MappedNamespace: Battlehub.RTHandles
   MappedTypeName: RTHColors
   MappedTypeGUID: 8f6c4d10-e325-41d1-96e8-d11bd18852c2
@@ -30039,7 +30039,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTCommon
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: CameraLayerSettings
   MappedTypeGUID: 0d2e6bf4-9ff2-44bd-9ec8-04e9cc74fe3e
@@ -30190,7 +30190,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: FilePathRecord
   MappedTypeGUID: 237fc11c-b9c5-4c15-957f-43132ac61679
@@ -32646,7 +32646,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetInfo
   MappedTypeGUID: 0867c211-0196-4661-b5fc-872342326887
@@ -32665,7 +32665,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Battlehub.SL2
     PersistentTypeName: AssetFolderInfo
     PersistentName: Folder
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL
     MappedTypeName: AssetFolderInfo
     MappedName: Folder
@@ -33672,7 +33672,7 @@ MonoBehaviour:
   IsLocked: 1
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTCommon
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: ExposeToEditorUnityEvent
   MappedTypeGUID: e7635362-17e8-4c6d-88c6-cec4cdbf6701
@@ -33885,7 +33885,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: PrefabPartInfo
   MappedTypeGUID: c78c2548-f403-4642-89d4-6c1058f4bb49
@@ -34218,7 +34218,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 8
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.UIControls
   MappedNamespace: Battlehub.UIControls
   MappedTypeName: TreeViewItemContainerData
   MappedTypeGUID: 5a9c1db7-493c-4120-a837-2fae58e8f883
@@ -34237,7 +34237,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.Battlehub.SL2
     PersistentTypeName: TreeViewItemContainerData
     PersistentName: m_parent
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.UIControls
     MappedNamespace: Battlehub.UIControls
     MappedTypeName: TreeViewItemContainerData
     MappedName: m_parent
@@ -34297,7 +34297,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.Battlehub.SL2
     PersistentTypeName: TreeViewItemContainerData
     PersistentName: Parent
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.UIControls
     MappedNamespace: Battlehub.UIControls
     MappedTypeName: TreeViewItemContainerData
     MappedName: Parent
@@ -35446,7 +35446,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RTECursor
   MappedTypeGUID: f4d91677-0f52-426e-a498-ae76e6932961
@@ -35480,7 +35480,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.Utils.Battlehub.SL2
     PersistentTypeName: KnownCursor
     PersistentName: Type
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.Utils
     MappedNamespace: Battlehub.Utils
     MappedTypeName: KnownCursor
     MappedName: Type
@@ -36279,7 +36279,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.UIControls
   MappedNamespace: Battlehub.UIControls.MenuControl
   MappedTypeName: MenuItemValidationEvent
   MappedTypeGUID: ddf9a2b3-a907-46ec-b8ea-f5a0af21652f
@@ -36927,7 +36927,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 15
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: PersistentPropertyMapping
   MappedTypeGUID: 02396661-524d-4396-90bd-ce8bf3ca83a6
@@ -37817,7 +37817,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 8
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: PropertyDescriptor
   MappedTypeGUID: 1ecfbd5f-5ea2-42d3-ab58-6a727908d1a3
@@ -37881,7 +37881,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: PropertyEditorCallback
     PersistentName: ValueChangedCallback
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: PropertyEditorCallback
     MappedName: ValueChangedCallback
@@ -37896,7 +37896,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: Range
     PersistentName: Range
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: Range
     MappedName: Range
@@ -37911,7 +37911,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: PropertyDescriptor[]
     PersistentName: ChildDesciptors
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: PropertyDescriptor[]
     MappedName: ChildDesciptors
@@ -37941,7 +37941,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: PropertyEditorCallback
     PersistentName: EndEditCallback
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: PropertyEditorCallback
     MappedName: EndEditCallback
@@ -38691,7 +38691,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 37
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTCommon
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: RuntimeTools
   MappedTypeGUID: e2b23674-b4bc-42d2-8598-e97c89610b46
@@ -38710,7 +38710,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: LockObject
     PersistentName: m_lockAxes
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: LockObject
     MappedName: m_lockAxes
@@ -38725,7 +38725,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: ToolChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: ToolChanged
@@ -38740,7 +38740,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotRotationChanging
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotRotationChanging
@@ -38755,7 +38755,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotRotationChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotRotationChanged
@@ -38770,7 +38770,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotModeChanging
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotModeChanging
@@ -38785,7 +38785,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotModeChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotModeChanged
@@ -38800,7 +38800,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: IsViewingChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: IsViewingChanged
@@ -38815,7 +38815,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: ShowSelectionGizmosChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: ShowSelectionGizmosChanged
@@ -38830,7 +38830,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: ShowGizmosChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: ShowGizmosChanged
@@ -38845,7 +38845,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: AutoFocusChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: AutoFocusChanged
@@ -38860,7 +38860,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: UnitSnappingChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: UnitSnappingChanged
@@ -38875,7 +38875,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: IsSnappingChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: IsSnappingChanged
@@ -38890,7 +38890,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: SnappingModeChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: SnappingModeChanged
@@ -38905,7 +38905,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: LockAxesChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: LockAxesChanged
@@ -38920,7 +38920,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeTool
     PersistentName: m_current
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeTool
     MappedName: m_current
@@ -38935,7 +38935,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotMode
     PersistentName: m_pivotMode
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotMode
     MappedName: m_pivotMode
@@ -38950,7 +38950,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotRotation
     PersistentName: m_pivotRotation
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotRotation
     MappedName: m_pivotRotation
@@ -39055,7 +39055,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: SnappingMode
     PersistentName: m_snappingMode
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: SnappingMode
     MappedName: m_snappingMode
@@ -39175,7 +39175,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: SnappingMode
     PersistentName: SnappingMode
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: SnappingMode
     MappedName: SnappingMode
@@ -39205,7 +39205,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: LockObject
     PersistentName: LockAxes
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: LockObject
     MappedName: LockAxes
@@ -39220,7 +39220,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeTool
     PersistentName: Current
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeTool
     MappedName: Current
@@ -39235,7 +39235,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotRotation
     PersistentName: PivotRotation
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotRotation
     MappedName: PivotRotation
@@ -39250,7 +39250,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotMode
     PersistentName: PivotMode
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTCommon
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotMode
     MappedName: PivotMode
@@ -39745,7 +39745,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 28
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RTEColors
   MappedTypeGUID: 69e07ca4-7f26-42c9-a4c6-29ac555b342e
@@ -39944,7 +39944,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: MainMenuButton
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: MainMenuButton
@@ -39974,7 +39974,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTEMenuItemColors
     PersistentName: MenuItem
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTEMenuItemColors
     MappedName: MenuItem
@@ -39989,7 +39989,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTEHierarchyColors
     PersistentName: Hierarchy
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTEHierarchyColors
     MappedName: Hierarchy
@@ -40019,7 +40019,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: ConsoleButton
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: ConsoleButton
@@ -40034,7 +40034,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: ScrollBar
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: ScrollBar
@@ -40064,7 +40064,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: Toggle
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: Toggle
@@ -40079,7 +40079,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: ToggleButton
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: ToggleButton
@@ -40094,7 +40094,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: InputField
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: InputField
@@ -40109,7 +40109,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: InputField2
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: InputField2
@@ -40124,7 +40124,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: Button
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: Button
@@ -40139,7 +40139,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: Button2
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: Button2
@@ -40154,7 +40154,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: Slider
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: Slider
@@ -40169,7 +40169,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RTESelectableColors
     PersistentName: Dropdown
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RTESelectableColors
     MappedName: Dropdown
@@ -40499,7 +40499,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.Utils
   MappedNamespace: Battlehub.Utils
   MappedTypeName: CursorHelper
   MappedTypeGUID: eea6c59f-78c6-4fe7-bf79-9a05f754a98d
@@ -40551,7 +40551,7 @@ MonoBehaviour:
     PersistentName: m_knownCursorToTexture
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: Dictionary`2[[Battlehub.Utils.KnownCursor, Assembly-CSharp],[UnityEngine.Texture2D,
+    MappedTypeName: Dictionary`2[[Battlehub.Utils.KnownCursor, Battlehub.Utils],[UnityEngine.Texture2D,
       UnityEngine.CoreModule]]
     MappedName: m_knownCursorToTexture
     UseSurrogate: 0
@@ -41394,8 +41394,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1231a511ac909f64eb91de5a7253a6c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
-  PatchCounter: 1
+  Version: 2.2
+  PatchCounter: 2
 --- !u!1 &8142288403558126190
 GameObject:
   m_ObjectHideFlags: 0
@@ -41656,7 +41656,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTSL.Interface
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: ImportItem
   MappedTypeGUID: fa0a1e41-3d43-4317-9fd3-5f51221d8605
@@ -41690,7 +41690,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: ImportStatus
     PersistentName: Status
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTSL.Interface
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: ImportStatus
     MappedName: Status
@@ -42682,7 +42682,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTCommon
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: ComponentEditorSettings
   MappedTypeGUID: ffebf085-9b83-47a2-b6be-fc02bae1f080
@@ -42803,7 +42803,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: CustomWindowDescriptor
   MappedTypeGUID: 8a5586ae-b0fd-4a3f-a45b-edd995941c1d
@@ -42852,7 +42852,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: WindowDescriptor
     PersistentName: Descriptor
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: WindowDescriptor
     MappedName: Descriptor
@@ -44221,7 +44221,7 @@ MonoBehaviour:
   IsLocked: 1
   PersistentPropertyTag: 10
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTEditor
   MappedTypeName: RuntimeAnimationProperty
   MappedTypeGUID: 8d4ce787-c3e0-4ba8-aeb0-7da1d472444e
@@ -44300,7 +44300,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: RuntimeAnimationProperty
     PersistentName: Parent
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: RuntimeAnimationProperty
     MappedName: Parent
@@ -44317,7 +44317,7 @@ MonoBehaviour:
     PersistentName: Children
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[Battlehub.RTEditor.RuntimeAnimationProperty, Assembly-CSharp]]
+    MappedTypeName: List`1[[Battlehub.RTEditor.RuntimeAnimationProperty, Battlehub.RTEditor]]
     MappedName: Children
     UseSurrogate: 1
     UseSurrogate2: 1
@@ -44360,7 +44360,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTEditor.Battlehub.SL2
     PersistentTypeName: AnimationPropertyValueChanged
     PersistentName: ValueChanged
-    MappedAssemblyName: Assembly-CSharp
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTEditor
     MappedTypeName: AnimationPropertyValueChanged
     MappedName: ValueChanged

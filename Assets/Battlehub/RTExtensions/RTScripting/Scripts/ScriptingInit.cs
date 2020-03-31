@@ -2,10 +2,13 @@
 using Battlehub.CodeAnalysis;
 using Battlehub.RTCommon;
 using Battlehub.RTEditor;
+using Battlehub.RTSL;
 using Battlehub.RTSL.Interface;
+using Battlehub.UIControls;
 using Battlehub.UIControls.MenuControl;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 #else
 using UnityEngine;
@@ -45,6 +48,13 @@ namespace Battlehub.RTScripting
             if (m_scriptManager == null)
             {
                 m_scriptManager = gameObject.AddComponent<RuntimeScriptsManager>();
+                m_scriptManager.AddReference(typeof(IRTE).Assembly.Location);
+                m_scriptManager.AddReference(typeof(ILocalization).Assembly.Location);
+                m_scriptManager.AddReference(typeof(IRuntimeEditor).Assembly.Location);
+                m_scriptManager.AddReference(typeof(BHRoot).Assembly.Location);
+                m_scriptManager.AddReference(typeof(VirtualizingTreeView).Assembly.Location);
+                m_scriptManager.AddReference(typeof(RTSLVersion).Assembly.Location);
+                m_scriptManager.AddReference(typeof(TextMeshProUGUI).Assembly.Location);
             }
 
             Subscribe();

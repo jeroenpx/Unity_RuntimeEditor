@@ -59,6 +59,10 @@ namespace Battlehub.RTCommon
         }
 
         private Camera m_camera;
+        public Camera Camera
+        {
+            get { return m_camera; }
+        }
         private RawImage m_output;
         public RawImage Output
         {
@@ -178,6 +182,11 @@ namespace Battlehub.RTCommon
             if (m_skipFrames > 0)
             {
                 m_skipFrames--;
+                return false;
+            }
+
+            if(m_output == null)
+            {
                 return false;
             }
 

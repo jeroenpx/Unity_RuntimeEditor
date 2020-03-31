@@ -11,8 +11,10 @@ Shader "Hidden/RTHandles/LineBillboard"
     {
         Tags
         {
-            "RenderType"="Geometry"
-            "Queue"="Geometry+4"
+			"RenderType" = "Transparent"
+			"Queue" = "Transparent+4" 
+            //"RenderType"="Geometry"
+            //"Queue"="Geometry+4"
             "DisableBatching"="True"
             "ForceNoShadowCasting"="True"
             "IgnoreProjector"="True"
@@ -22,7 +24,8 @@ Shader "Hidden/RTHandles/LineBillboard"
         ZTest [_HandleZTest]
         ZWrite On
         Cull Off
-        Blend Off
+        //Blend Off
+		Blend SrcAlpha OneMinusSrcAlpha
         //Offset -1, -1
 
         Pass

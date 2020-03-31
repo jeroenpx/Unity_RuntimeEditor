@@ -571,6 +571,7 @@ namespace Battlehub.RTHandles
         {
             base.OnDrop();
             m_targetRotation = Target.rotation;
+            OnPivotRotationChanged();
         }
 
         protected override void SyncModelTransform()

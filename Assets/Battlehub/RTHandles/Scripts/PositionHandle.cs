@@ -830,7 +830,9 @@ namespace Battlehub.RTHandles
                 if (EffectiveGridUnitSize == 0.0)
                 {
                     offset = m_matrix.MultiplyVector(offset).normalized * mag;
-                    transform.position += offset;   
+                    transform.position += offset;
+                    m_currentPosition = Position;
+                    m_cursorPosition = Position;
                 }
                 else
                 {

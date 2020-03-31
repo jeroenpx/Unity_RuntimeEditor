@@ -130,7 +130,10 @@ namespace Battlehub.ProBuilderIntegration
 
             foreach(ProBuilderMesh mesh in m_vertexSelection.Meshes)
             {
-                selection.UnselectedIndices.Add(mesh.gameObject, m_vertexSelection.GetVertices(mesh).ToArray());
+                if(mesh != null && mesh.gameObject != null)
+                {
+                    selection.UnselectedIndices.Add(mesh.gameObject, m_vertexSelection.GetVertices(mesh).ToArray());
+                }
             }
 
             m_vertexSelection.Clear();

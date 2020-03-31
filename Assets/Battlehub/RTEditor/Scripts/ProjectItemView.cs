@@ -79,7 +79,7 @@ namespace Battlehub.RTEditor
             {
                 AssetItem assetItem = (AssetItem)m_projectItem;
                 Type assetItemType = m_project.ToType(assetItem);
-                if (assetItem.Preview == null || assetItem.Preview.PreviewData == null)
+                if (assetItem.Preview == null || assetItem.Preview.PreviewData == null || assetItemType == null)
                 {
                     m_imgPreview.sprite = appearance.GetAssetIcon("None");
                 }

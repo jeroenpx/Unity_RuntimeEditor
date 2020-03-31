@@ -1,0 +1,15 @@
+{
+    "name": "Battlehub.RTDemoGame",
+    "references": [
+        "GUID:b9f5efe54bcd2ad429a32b7c3dbfb90f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

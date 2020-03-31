@@ -4,13 +4,7 @@ using UnityEngine;
 namespace Battlehub.RTSL.Battlehub.SL2
 {
 }
-namespace Battlehub.RTSL
-{
-    public class RuntimePrefab : UnityEngine.Object
-    { }
-    public class RuntimeScene : RuntimePrefab
-    { }
-}
+
 
 namespace Battlehub.RTSL
 {

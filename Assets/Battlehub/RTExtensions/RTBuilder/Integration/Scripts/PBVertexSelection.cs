@@ -100,6 +100,7 @@ namespace Battlehub.ProBuilderIntegration
                 PBBuiltinMaterials.pointShader :
                 PBBuiltinMaterials.dotShader;
 
+            
             m_material = new Material(Shader.Find(vertShader));
             m_material.SetColor("_Color", Color.white);
             m_material.SetInt("_HandleZTest", (int)m_zTest);
@@ -161,8 +162,11 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = m_meshes[i];
                 MeshFilter filter = m_meshToSelection[mesh];
-                Destroy(filter.gameObject);
-
+                if(filter != null)
+                {
+                    Destroy(filter.gameObject);
+                }
+                
                 PBMesh pbMesh = m_pbMeshes[i];
                 if (pbMesh != null)
                 {

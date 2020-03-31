@@ -54,7 +54,7 @@ namespace Battlehub.ProBuilderIntegration
         private float m_scale = 1.0f;
 
         [SerializeField]
-        public CompareFunction m_zTest = CompareFunction.LessEqual;
+        private CompareFunction m_zTest = CompareFunction.LessEqual;
         private Material m_material;
         private readonly Dictionary<ProBuilderMesh, MeshFilter> m_meshToSelection = new Dictionary<ProBuilderMesh, MeshFilter>();
         private readonly Dictionary<ProBuilderMesh, HashSet<Edge>> m_meshToEdges = new Dictionary<ProBuilderMesh, HashSet<Edge>>();

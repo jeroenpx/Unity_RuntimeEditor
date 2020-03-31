@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1231a511ac909f64eb91de5a7253a6c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
-  PatchCounter: 1
+  Version: 2.2
+  PatchCounter: 2
 --- !u!1 &4371749913559535503
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
   IsLocked: 0
   PersistentPropertyTag: 1
   PersistentSubclassTag: 0
-  MappedAssemblyName: Assembly-CSharp
+  MappedAssemblyName: Battlehub.RTBuilder
   MappedNamespace: Battlehub.RTBuilder
   MappedTypeName: MaterialPalette
   MappedTypeGUID: 18564e14-eead-4a0f-9773-33aae7b7583b

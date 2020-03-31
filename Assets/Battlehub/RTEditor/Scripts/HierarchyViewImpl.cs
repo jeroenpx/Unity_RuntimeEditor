@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls;
 using Battlehub.UIControls.MenuControl;
@@ -57,6 +58,7 @@ namespace Battlehub.RTEditor
 
         private HierarchyView m_hierarchyView;
         private ILocalization m_localization;
+        private IRuntimeSelectionComponent m_selectionComponent;
 
         protected virtual void Awake()
         {
@@ -965,6 +967,8 @@ namespace Battlehub.RTEditor
 
         protected void OnAssetItemsLoaded(Object[] objects, ExposeToEditor dropTarget, VirtualizingTreeViewItem treeViewItem)
         {
+            m_selectionComponent = Editor.GetScenePivot();
+
             GameObject[] createdObjects = new GameObject[objects.Length];
             for (int i = 0; i < objects.Length; ++i)
             {
@@ -1030,7 +1034,7 @@ namespace Battlehub.RTEditor
             if (createdObjects.Length > 0)
             {
                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
-                editor.RegisterCreatedObjects(createdObjects);
+                editor.RegisterCreatedObjects(createdObjects, m_selectionComponent != null ? m_selectionComponent.CanSelect : true);
             }
 
             m_treeView.ExternalItemDrop();
@@ -1064,7 +1068,13 @@ namespace Battlehub.RTEditor
 
         protected virtual GameObject InstantiatePrefab(GameObject prefab)
         {
-            return Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            Vector3 pivot = Vector3.zero;
+            if (m_selectionComponent != null)
+            {
+                pivot = m_selectionComponent.SecondaryPivot;
+            }
+
+            return Instantiate(prefab, pivot, Quaternion.identity);
         }
 
     }

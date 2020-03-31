@@ -1,5 +1,5 @@
 ﻿using Battlehub.RTCommon;
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTHandles
@@ -8,6 +8,9 @@ namespace Battlehub.RTHandles
     {
         [SerializeField]
         private GameObject[] m_models = null;
+        private Renderer[] m_renderers;
+        private Renderer m_ssQuadRenderer;
+
         [SerializeField]
         private GameObject m_screenSpaceQuad = null;
         [SerializeField]
@@ -181,13 +184,18 @@ namespace Battlehub.RTHandles
             m_b4ss = m_ssQuadArmature.GetChild(4);
 
             m_materials = m_models[0].GetComponent<Renderer>().materials;
-            m_ssQuadMaterial = m_screenSpaceQuad.GetComponent<Renderer>().sharedMaterial;
+            m_ssQuadRenderer = m_screenSpaceQuad.GetComponent<Renderer>();
+            m_ssQuadRenderer.forceRenderingOff = true;
+            m_ssQuadMaterial = m_ssQuadRenderer.sharedMaterial;
             SetDefaultColors();
 
+            m_renderers = new Renderer[m_models.Length];
             for (int i = 0; i < m_models.Length; ++i)
             {
                 Renderer renderer = m_models[i].GetComponent<Renderer>();
                 renderer.sharedMaterials = m_materials;
+                renderer.forceRenderingOff = true;
+                m_renderers[i] = renderer;
             }
 
             OnVertexSnappingModeChaged();
@@ -291,6 +299,9 @@ namespace Battlehub.RTHandles
         {
             m_normalModeArrows.SetActive(!m_isVertexSnapping);
             m_vertexSnappingModeArrows.SetActive(m_isVertexSnapping && !m_lockObj.IsPositionLocked);
+            m_ssQuadRenderer.forceRenderingOff = !m_vertexSnappingModeArrows.activeSelf;
+
+            PushUpdatesToGraphicLayer();
         }
 
         private void SetDefaultColors()
@@ -542,6 +553,8 @@ namespace Battlehub.RTHandles
             {
                 UpdateColliders(index);
             }
+
+            base.UpdateModel();
         }
 
         private void UpdateColliders(int i)
@@ -791,12 +804,20 @@ namespace Battlehub.RTHandles
             if(m_prevIndex >= 0)
             {
                 m_models[m_prevIndex].SetActive(false);
+
+                Renderer renderer = m_renderers[m_prevIndex];
+                renderer.forceRenderingOff = true;
             }
 
             if(index >= 0)
             {
                 m_models[index].SetActive(true);
+
+                Renderer renderer = m_renderers[index];
+                renderer.forceRenderingOff = false;
             }
+
+            PushUpdatesToGraphicLayer();
 
             m_prevIndex = index;
             return index;

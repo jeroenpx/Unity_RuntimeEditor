@@ -1012,6 +1012,7 @@ namespace Battlehub.UIControls
             else
             {
                 child.Parent = parent;
+                UpdateIndent(child.Item);
             }
         }
 

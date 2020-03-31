@@ -58,13 +58,58 @@ namespace Battlehub.RTHandles
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            RuntimeGraphicsLayer graphicsLayer = Window.GetComponent<RuntimeGraphicsLayer>();
+            SetLayer(transform, Window.Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index);
+        }
+
+    
+        protected virtual void Start()
+        {
+            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
             if (graphicsLayer == null)
             {
                 graphicsLayer = Window.gameObject.AddComponent<RuntimeGraphicsLayer>();
             }
+        }
 
-            SetLayer(transform, graphicsLayer.Window.Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index);
+        protected virtual void OnEnable()
+        {
+            UpdateModel();
+        }
+
+        protected virtual void OnDisable()
+        {
+            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
+            if (graphicsLayer != null)
+            {
+                Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+                graphicsLayer.RemoveRenderers(renderers);
+            }
+        }
+
+        protected virtual void Update()
+        {
+            
+        }
+
+        public virtual void UpdateModel()
+        {
+            PushUpdatesToGraphicLayer();
+        }
+
+        public void PushUpdatesToGraphicLayer()
+        {
+            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
+            if (graphicsLayer != null && gameObject.activeInHierarchy)
+            {
+                Renderer[] renderers = GetRenderers();
+                graphicsLayer.RemoveRenderers(renderers);
+                graphicsLayer.AddRenderers(renderers);
+            }
+        }
+
+        protected virtual Renderer[] GetRenderers()
+        {
+            return gameObject.GetComponentsInChildren<Renderer>(true);
         }
 
         private void SetLayer(Transform t, int layer)
@@ -77,8 +122,8 @@ namespace Battlehub.RTHandles
         }
 
         public virtual void SetLock(LockObject lockObj)
-        { 
-            if(lockObj == null)
+        {
+            if (lockObj == null)
             {
                 lockObj = new LockObject();
             }
@@ -87,7 +132,7 @@ namespace Battlehub.RTHandles
 
         public virtual void Select(RuntimeHandleAxis axis)
         {
-            m_selectedAxis = axis;   
+            m_selectedAxis = axis;
         }
 
         public virtual void SetScale(Vector3 scale)
@@ -101,30 +146,5 @@ namespace Battlehub.RTHandles
             return RuntimeHandleAxis.None;
         }
 
-        protected virtual void Start()
-        {
-        }
-
-        protected virtual void OnEnable()
-        {
-            UpdateModel();
-        }
-
-        protected virtual void OnDisable()
-        {
-
-        }
-
-        protected virtual void Update()
-        {
-
-        }
-
-        public virtual void UpdateModel()
-        {
-
-        }
-
-     
     }
 }

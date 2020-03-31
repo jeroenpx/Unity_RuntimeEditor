@@ -44,8 +44,10 @@ namespace Battlehub.RTEditor
             base.AwakeOverride();
         }
 
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             m_project = IOC.Resolve<IProject>();
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_wm = IOC.Resolve<IWindowManager>();
@@ -153,8 +155,10 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected virtual void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+        
             if(Editor != null)
             {
                 Editor.Tools.ToolChanged -= OnRuntimeToolChanged;

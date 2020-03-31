@@ -67,8 +67,9 @@ namespace Battlehub.RTEditor
             Input.ActivateInputField();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             StartCoroutine(CoActivateInputField());
         }
 

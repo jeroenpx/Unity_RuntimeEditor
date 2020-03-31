@@ -204,7 +204,7 @@ namespace Battlehub.RTCommon
         void RegisterWindow(RuntimeWindow window);
         void UnregisterWindow(RuntimeWindow window);
 
-        void RegisterCreatedObjects(GameObject[] go);
+        void RegisterCreatedObjects(GameObject[] go, bool select = true);
         void Duplicate(GameObject[] go);
         void Delete(GameObject[] go);
         void Close();
@@ -989,7 +989,7 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void RegisterCreatedObjects(GameObject[] gameObjects)
+        public void RegisterCreatedObjects(GameObject[] gameObjects, bool select = true)
         {
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(o => o != null).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
 
@@ -1002,7 +1002,12 @@ namespace Battlehub.RTCommon
             {
                 Undo.RegisterCreatedObjects(exposeToEditor);
             }
-            Selection.objects = gameObjects;
+
+            if(select)
+            {
+                Selection.objects = gameObjects;
+            }
+            
             Undo.EndRecord();
 
             if (ObjectsRegistered != null)

@@ -108,8 +108,9 @@ namespace Battlehub.RTEditor
             }  
         }
 
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             for (int i = 0; i < m_gameCameras.Count; ++i)
             {
                 GameViewCamera gameCamera = m_gameCameras[i];
@@ -118,8 +119,9 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected virtual void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             if (m_gameView == this)
             {
                 for (int i = 0; i < m_gameCameras.Count; ++i)

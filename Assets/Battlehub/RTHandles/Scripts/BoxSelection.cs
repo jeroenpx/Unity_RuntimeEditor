@@ -190,8 +190,17 @@ namespace Battlehub.RTHandles
             }
         }
 
+        protected override void OnWindowActivated()
+        {
+            base.OnWindowActivated();
+            m_canvas.enabled = true;
+
+        }
+
         protected override void OnWindowDeactivated()
         {
+            m_canvas.enabled = false;
+
             base.OnWindowDeactivated();
             if (Editor != null && Editor.Tools != null && Editor.Tools.ActiveTool == this)
             {

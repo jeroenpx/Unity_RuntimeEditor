@@ -133,7 +133,7 @@ namespace Battlehub.UIControls
         }
     }
 
-    public class VirtualizingItemsControl : Selectable,  IDropHandler, IUpdateSelectedHandler, IUpdateFocusedHandler, IPointerClickHandler
+    public class VirtualizingItemsControl : Selectable, IBeginDragHandler,  IDropHandler, IEndDragHandler, IUpdateSelectedHandler, IUpdateFocusedHandler, IPointerClickHandler
     {
         /// <summary>
         /// Raised on begin drag
@@ -210,8 +210,9 @@ namespace Battlehub.UIControls
         public EventSystem m_eventSystem;
 
         public InputProvider InputProvider;
-        public bool SelectUsingLeftButtonOnly = false;
+        private bool m_isDragInProgress;
         public bool SelectOnPointerUp = false;
+        public bool SelectUsingLeftButtonOnly = false;
         public bool CanUnselectAll = true;
         public bool CanSelectAll = true;
         public bool CanMultiSelect = true;
@@ -228,6 +229,7 @@ namespace Battlehub.UIControls
         public bool ExpandChildrenWidth = true;
         public bool ExpandChildrenHeight;
 
+        
         private bool m_isDropInProgress;
         /// <summary>
         /// Protection against stack overflow
@@ -1287,7 +1289,7 @@ namespace Battlehub.UIControls
 
             if (SelectOnPointerUp)
             {
-                if (!m_isDropInProgress)
+                if (!m_isDropInProgress && !m_isDragInProgress)
                 {
                     TryToSelect(sender);
                 }
@@ -1680,6 +1682,16 @@ namespace Battlehub.UIControls
                 return false;
             }
             return m_scrollRect.IsParentOf(itemContainer.transform);
+        }
+
+        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
+        {
+            m_isDragInProgress = true;
+        }
+
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+        {
+            m_isDragInProgress = false;
         }
 
         void IDropHandler.OnDrop(PointerEventData eventData)

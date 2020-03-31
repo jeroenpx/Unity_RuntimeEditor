@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using UnityEngine;
 
 namespace Battlehub.Spline3
 {
@@ -278,11 +278,12 @@ namespace Battlehub.Spline3
             m_renderer.Refresh(positionsOnly);
         }
 
+        public abstract float GetT(int segmentIndex);
         public abstract int GetSegmentIndex(ref float t);
 
         public abstract Vector3 GetControlPoint(int index);
         public abstract Vector3 GetLocalControlPoint(int index);
-        public abstract ControlPointSettings GetSettings(int index);
+        public abstract ControlPointSettings GetSettings(int index, bool useSegmentIndex = false);
 
         public abstract BaseSplineState GetState();
         public abstract void SetState(BaseSplineState state);
@@ -508,7 +509,7 @@ namespace Battlehub.Spline3
 
         public override Vector3 GetPosition(float t)
         {
-            int segmentIndex = GetSegmentIndex(ref t);
+            int segmentIndex = ClampIndex(GetSegmentIndex(ref t) + (m_isLooping ? 0 : 1));
             return GetCatmullRomPosition(segmentIndex, t);
         }
 
@@ -525,7 +526,7 @@ namespace Battlehub.Spline3
 
         public override Vector3 GetLocalPosition(float t)
         {
-            int segmentIndex = GetSegmentIndex(ref t);
+            int segmentIndex = ClampIndex(GetSegmentIndex(ref t) + (m_isLooping ? 0 : 1));
             return GetCatmullRomLocalPosition(segmentIndex, t);
         }
 
@@ -542,7 +543,7 @@ namespace Battlehub.Spline3
 
         public override Vector3 GetTangent(float t)
         {
-            int segmentIndex = GetSegmentIndex(ref t);
+            int segmentIndex = ClampIndex(GetSegmentIndex(ref t) + (m_isLooping ? 0 : 1));
             return GetCatmullRomTangent(segmentIndex, t);
         }
 
@@ -559,7 +560,7 @@ namespace Battlehub.Spline3
 
         public override Vector3 GetLocalTangent(float t)
         {
-            int segmentIndex = GetSegmentIndex(ref t);
+            int segmentIndex = ClampIndex(GetSegmentIndex(ref t) + (m_isLooping ? 0 : 1));
             return GetCatmullRomLocalTangent(segmentIndex, t);
         }
 
@@ -628,8 +629,16 @@ namespace Battlehub.Spline3
             return m_controlPoints[index];
         }
 
-        public override ControlPointSettings GetSettings(int index)
+        public override ControlPointSettings GetSettings(int index, bool useSegmentIndex = false)
         {
+            if(useSegmentIndex)
+            {
+                if (!m_isLooping)
+                {
+                    index++;
+                }
+                index = ClampIndex(index);
+            }
             return m_settings[index];
         }
 
@@ -696,6 +705,21 @@ namespace Battlehub.Spline3
             return pos;
         }
 
+        public override float GetT(int segmentIndex)
+        {
+            float segmentSize;
+            if (m_isLooping)
+            {
+                segmentSize = 1.0f / m_controlPoints.Length;
+            }
+            else
+            {
+                segmentSize = 1.0f / (m_controlPoints.Length - 3);
+            }
+
+            return segmentSize * segmentIndex;
+        }
+
         public override int GetSegmentIndex(ref float t)
         {
             t = Mathf.Clamp01(t);
@@ -718,7 +742,8 @@ namespace Battlehub.Spline3
             else
             {
                 segmentSize = 1.0f / (m_controlPoints.Length - 3);
-                segmentIndex = ClampIndex(Mathf.FloorToInt(t / segmentSize) + 1);
+                //segmentIndex = ClampIndex(Mathf.FloorToInt(t / segmentSize) + 1);
+                segmentIndex = ClampIndex(Mathf.FloorToInt(t / segmentSize));
             }
             return segmentIndex;
         }

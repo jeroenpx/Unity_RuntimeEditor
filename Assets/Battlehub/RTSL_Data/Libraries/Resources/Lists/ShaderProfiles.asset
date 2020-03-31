@@ -169,6 +169,52 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 0000000002000000000000000000000002000000000000000200000000000000000000000000000002000000000000000200000000000000020000000000000002000000020000000200000000000000020000000000000000000000000000000000000000000000
     IsHidden: 0000000000000000000000000000000000000000000001010101
+  - Name: Battlehub/LineBillboard
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color
+    - Scale
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Scale
+    - _HandleZTest
+    PropertyTypes: 000000000300000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 1
+      Min: 0
+      Max: 20
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
+    IsHidden: 000000
+  - Name: Battlehub/MeshEditor/FaceHighlight
+    PropertyCount: 3
+    PropertyDescriptions:
+    - Color Tint
+    - Dithering
+    - _HandleZTest
+    PropertyNames:
+    - _Color
+    - _Dither
+    - _HandleZTest
+    PropertyTypes: 000000000200000002000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 000000000000000000000000
+    IsHidden: 000000
   - Name: Battlehub/RTBuilder/EdgePicker
     PropertyCount: 0
     PropertyDescriptions: []
@@ -231,6 +277,24 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 000000000000000000000000
     IsHidden: 000000
+  - Name: Battlehub/RTBuilder/PBTexturePreview
+    PropertyCount: 2
+    PropertyDescriptions:
+    - Texture
+    - Color
+    PropertyNames:
+    - _MainTex
+    - _Color
+    PropertyTypes: 0400000000000000
+    PropertyRangeLimits:
+    - Def: 0
+      Min: 0
+      Max: 0
+    - Def: 0
+      Min: 0
+      Max: 0
+    PropertyTexDims: 0200000000000000
+    IsHidden: 0000
   - Name: Battlehub/RTBuilder/PointBillboard
     PropertyCount: 3
     PropertyDescriptions:
@@ -4867,29 +4931,6 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 0000000000000000000000000000000002000000
     IsHidden: 0000000000
-  - Name: LineBillboard
-    PropertyCount: 3
-    PropertyDescriptions:
-    - Color
-    - Scale
-    - _HandleZTest
-    PropertyNames:
-    - _Color
-    - _Scale
-    - _HandleZTest
-    PropertyTypes: 000000000300000002000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 7
-      Min: 0
-      Max: 20
-    - Def: 0
-      Min: 0
-      Max: 0
-    PropertyTexDims: 000000000000000000000000
-    IsHidden: 000000
   - Name: Mobile/Bumped Diffuse
     PropertyCount: 2
     PropertyDescriptions:
@@ -5642,29 +5683,6 @@ MonoBehaviour:
       Max: 0
     PropertyTexDims: 000000000200000000000000000000000000000000000000000000000000000000000000
     IsHidden: 000000000000010101
-  - Name: Particles/Priority Alpha Blended
-    PropertyCount: 3
-    PropertyDescriptions:
-    - Tint Color
-    - Particle Texture
-    - Soft Particles Factor
-    PropertyNames:
-    - _TintColor
-    - _MainTex
-    - _InvFade
-    PropertyTypes: 000000000400000003000000
-    PropertyRangeLimits:
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 0
-      Min: 0
-      Max: 0
-    - Def: 1
-      Min: 0.01
-      Max: 3
-    PropertyTexDims: 000000000200000000000000
-    IsHidden: 000000
   - Name: Particles/Standard Surface
     PropertyCount: 31
     PropertyDescriptions:

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
@@ -25,9 +26,6 @@ namespace Battlehub.MeshTools
             GameObject activeSelected = Selection.activeTransform == null ? selection.FirstOrDefault() : Selection.activeTransform.gameObject;
             CombineResult result = MeshUtils.Combine(selection, activeSelected);
         }
-
-
-    
-
     }
 }
+#endif

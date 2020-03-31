@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 
 namespace Battlehub.MeshTools
@@ -40,9 +41,6 @@ namespace Battlehub.MeshTools
             pivot.ToCenterOffMass();
             EditorUtility.SetDirty(pivot.transform);
         }
-
-
     }
 }
-
-
+#endif

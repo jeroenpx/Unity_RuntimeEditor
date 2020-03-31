@@ -350,6 +350,7 @@ namespace Battlehub.RTEditor
                 m_dragItem = null;
             }
 
+            
             IToolCmd cmd = Editor.DragDrop.DragObjects.OfType<IToolCmd>().FirstOrDefault();
             if (cmd != null)
             {
@@ -371,11 +372,15 @@ namespace Battlehub.RTEditor
                         ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
                         go.transform.position = m_point + Vector3.up * exposeToEditor.Bounds.extents.y;
 
-                        bool wasEnabled = Editor.Undo.Enabled;
-                        Editor.Undo.Enabled = false;
-                        Editor.Selection.activeGameObject = null;
-                        Editor.Selection.activeGameObject = go;
-                        Editor.Undo.Enabled = wasEnabled;
+                        IRuntimeSelectionComponent selectionComponent = IOCContainer.Resolve<IRuntimeSelectionComponent>();
+                        if (selectionComponent.CanSelect)
+                        {
+                            bool wasEnabled = Editor.Undo.Enabled;
+                            Editor.Undo.Enabled = false;
+                            Editor.Selection.activeGameObject = null;
+                            Editor.Selection.activeGameObject = go;
+                            Editor.Undo.Enabled = wasEnabled;
+                        }    
                     }
                 }
             }
@@ -387,7 +392,12 @@ namespace Battlehub.RTEditor
 
             Editor.Undo.BeginRecord();
             Editor.Undo.RegisterCreatedObjects(new[] { exposeToEditor });
-            Editor.Selection.activeGameObject = m_prefabInstance;
+
+            IRuntimeSelectionComponent selectionComponent = IOCContainer.Resolve<IRuntimeSelectionComponent>();
+            if(selectionComponent.CanSelect)
+            {
+                Editor.Selection.activeGameObject = m_prefabInstance;
+            }
             Editor.Undo.EndRecord();
         }
 

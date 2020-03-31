@@ -280,6 +280,8 @@ namespace Battlehub.RTHandles
             m_b3z.position = transform.TransformPoint(Vector3.forward * length * m_scale.z);
 
             UpdateColliders();
+
+            base.UpdateModel();
         }
 
         private void UpdateColliders()
@@ -399,7 +401,6 @@ namespace Battlehub.RTHandles
         private float m_prevArrowRadius;
         protected override void Update()
         {
-            base.Update();
             if (m_prevRadius != m_radius || m_prevLength != m_length || m_prevArrowRadius != m_arrowRadius)
             {
                 m_prevRadius = m_radius;
@@ -407,6 +408,8 @@ namespace Battlehub.RTHandles
                 m_prevArrowRadius = m_arrowRadius;
                 UpdateModel();
             }
+
+            base.Update();
 
         }
     }

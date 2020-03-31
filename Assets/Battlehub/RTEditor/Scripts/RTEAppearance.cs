@@ -184,6 +184,7 @@ namespace Battlehub.RTEditor
         public static readonly RTESelectableColors DefaultScrollBar = new RTESelectableColors(DefaultPrimary, DefaultPrimary, DefaultSecondary, new Color32(0xC8, 0xC8, 0xC8, 0x7F));
         public static readonly Color DefaultScrollBarBackground = new Color32(0xB2, 0xB2, 0xB2, 0xFF);
         public static readonly RTESelectableColors DefaultToggle = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F));
+        public static readonly RTESelectableColors DefaultToggle2 = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x38, 0x38, 0x38, 0x7F));
         public static readonly RTESelectableColors DefaultToggleButton = new RTESelectableColors(new Color32(0x44, 0x44, 0x44, 0xFF), new Color32(0x38, 0x38, 0x38, 0xFF), new Color32(0x27, 0x27, 0x27, 0xFF), new Color32(0xC8, 0xC8, 0xC8, 0x7F));
         public static readonly RTESelectableColors DefaultInputField = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x5C, 0x5C, 0x5C, 0x7F), new Color32(0, 0x97, 0xFF, 0xFF));
         public static readonly RTESelectableColors DefaultInputField2 = new RTESelectableColors(DefaultSecondary, DefaultSecondary, new Color32(0x20, 0x20, 0x20, 0xFF), new Color32(0x5C, 0x5C, 0x5C, 0x7F), new Color32(0x20, 0x20, 0x20, 0xFF));
@@ -214,6 +215,7 @@ namespace Battlehub.RTEditor
         public RTESelectableColors ScrollBar;
         public Color ScrollBarBackground;
         public RTESelectableColors Toggle;
+        public RTESelectableColors Toggle2;
         public RTESelectableColors ToggleButton;
         public RTESelectableColors InputField;
         public RTESelectableColors InputField2;
@@ -246,6 +248,7 @@ namespace Battlehub.RTEditor
             ScrollBar = DefaultScrollBar;
             ScrollBarBackground = DefaultScrollBarBackground;
             Toggle = DefaultToggle;
+            Toggle2 = DefaultToggle2;
             ToggleButton = DefaultToggleButton;
             InputField = DefaultInputField;
             InputField2 = DefaultInputField2;
@@ -282,6 +285,7 @@ namespace Battlehub.RTEditor
                     ScrollBar.EqualTo(DefaultScrollBar) &&
                     ScrollBarBackground == DefaultScrollBarBackground &&
                     Toggle.EqualTo(DefaultToggle) &&
+                    Toggle2.EqualTo(DefaultToggle2) &&
                     ToggleButton.EqualTo(DefaultToggleButton) &&
                     InputField.EqualTo(DefaultInputField) &&
                     InputField2.EqualTo(DefaultInputField2) &&
@@ -551,10 +555,10 @@ namespace Battlehub.RTEditor
                         style.ApplyImageColor(Colors.MainMenuBar);
                         break;
                     case "MainMenuButtonColor":
-                        style.ApplyMainButtonColor(Colors.MainMenuButton.Normal, Colors.MainMenuButton.Highlight, Colors.MainMenuButton.Pressed);
+                        UIMenuStyle.ApplyMainButtonColor(style, Colors.MainMenuButton.Normal, Colors.MainMenuButton.Highlight, Colors.MainMenuButton.Pressed);
                         break;
                     case "MenuItemColor":
-                        style.ApplyMenuItemColor(Colors.MenuItem.SelectionColor, Colors.MenuItem.TextColor, Colors.MenuItem.DisabledSelectionColor, Colors.MenuItem.DisabledTextColor);
+                        UIMenuStyle.ApplyMenuItemColor(style, Colors.MenuItem.SelectionColor, Colors.MenuItem.TextColor, Colors.MenuItem.DisabledSelectionColor, Colors.MenuItem.DisabledTextColor);
                         break;
                     case "ToolsToggleColor":
                         style.ApplyImageColor(Colors.ToolsToggle);
@@ -563,7 +567,7 @@ namespace Battlehub.RTEditor
                         style.ApplyImageColor(Colors.Footer);
                         break;
                     case "HierarchyColor":
-                        style.ApplyHierarchyColors(Colors.Hierarchy.NormalItem, Colors.Hierarchy.DisabledItem);
+                        UIEditorStyle.ApplyHierarchyColors(style, Colors.Hierarchy.NormalItem, Colors.Hierarchy.DisabledItem);
                         break;
                     case "ProjectFolderColor":
                         style.ApplyImageColor(Colors.ProjectFolder);
@@ -579,6 +583,9 @@ namespace Battlehub.RTEditor
                         break;
                     case "ToggleColor":
                         style.ApplySelectableColor(Colors.Toggle.Normal, Colors.Toggle.Highlight, Colors.Toggle.Pressed, Colors.Toggle.Disabled, Colors.Toggle.Selected);
+                        break;
+                    case "Toggle2Color":
+                        style.ApplySelectableColor(Colors.Toggle2.Normal, Colors.Toggle2.Highlight, Colors.Toggle2.Pressed, Colors.Toggle2.Disabled, Colors.Toggle2.Selected);
                         break;
                     case "ToggleButtonColor":
                         style.ApplySelectableColor(Colors.ToggleButton.Normal, Colors.ToggleButton.Highlight, Colors.ToggleButton.Pressed, Colors.ToggleButton.Disabled, Colors.ToggleButton.Selected);
@@ -602,10 +609,10 @@ namespace Battlehub.RTEditor
                         style.ApplySelectableColor(Colors.Dropdown.Normal, Colors.Dropdown.Highlight, Colors.Dropdown.Pressed, Colors.Dropdown.Disabled, Colors.Dropdown.Selected);
                         break;
                     case "ToolCmdItemColor":
-                        style.ApplyToolCmdItemColor(Colors.ToolCmdItem.Normal, Colors.ToolCmdItem.Highlight, Colors.ToolCmdItem.Pressed);
+                        UIEditorStyle.ApplyToolCmdItemColor(style, Colors.ToolCmdItem.Normal, Colors.ToolCmdItem.Highlight, Colors.ToolCmdItem.Pressed);
                         break;
                     case "TimlineControlBackgroundColor":
-                        style.ApplyTimelineControlBackgroundColor(Colors.Secondary);
+                        UIEditorStyle.ApplyTimelineControlBackgroundColor(style, Colors.Secondary);
                         break;
                         
                 }

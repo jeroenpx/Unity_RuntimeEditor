@@ -65,7 +65,7 @@ namespace Battlehub.RTEditor
         private void Start()
         {
             List<Assembly> assemblies = new List<Assembly>();
-            foreach (string assemblyName in BHPath.RootAssemblies)
+            foreach (string assemblyName in BHRoot.Assemblies)
             {
                 var asName = new AssemblyName();
                 asName.Name = assemblyName;

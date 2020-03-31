@@ -19,7 +19,9 @@ namespace Battlehub.RTHandles
         private bool m_metric = true;
 
         private MeshFilter m_lines;
+        private MeshRenderer m_linesRenderer;
         private MeshFilter m_points;
+        private MeshRenderer m_pointsRenderer;
 
         public override RuntimeTool Tool
         {
@@ -202,13 +204,13 @@ namespace Battlehub.RTHandles
             m_lines = lines.AddComponent<MeshFilter>();
             m_lines.sharedMesh = new Mesh();
 
-            MeshRenderer linesRenderer = lines.AddComponent<MeshRenderer>();
+            m_linesRenderer = lines.AddComponent<MeshRenderer>();
 
             Material lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
             lineMaterial.SetFloat("_Scale", 1.0f);
             lineMaterial.SetColor("_Color", Color.white);
             lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
-            linesRenderer.sharedMaterial = lineMaterial;
+            m_linesRenderer.sharedMaterial = lineMaterial;
 
 
             GameObject points = new GameObject("Points");
@@ -218,13 +220,13 @@ namespace Battlehub.RTHandles
             m_points = points.AddComponent<MeshFilter>();
             m_points.sharedMesh = new Mesh();
 
-            MeshRenderer pointsRenderer = points.AddComponent<MeshRenderer>();
+            m_pointsRenderer = points.AddComponent<MeshRenderer>();
 
             Material pointMaterial = new Material(Shader.Find("Hidden/RTHandles/PointBillboard"));
             pointMaterial.SetFloat("_Scale", 4.5f);
             pointMaterial.SetColor("_Color", Color.white);
             pointMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
-            pointsRenderer.sharedMaterial = pointMaterial;
+            m_pointsRenderer.sharedMaterial = pointMaterial;
 
             float scale = Appearance.HandleScale;
 
@@ -243,12 +245,26 @@ namespace Battlehub.RTHandles
             base.OnEnableOverride();
             RecalculateBoundsAndRebuild();
             m_connectedTools.Add(this);
+
+            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
+            if(graphicsLayer != null)
+            {
+                Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+                graphicsLayer.AddRenderers(renderers);
+            }
         }
 
         protected override void OnDisableOverride()
         {
             base.OnDisableOverride();
             m_connectedTools.Remove(this);
+
+            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
+            if (graphicsLayer != null)
+            {
+                Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+                graphicsLayer.RemoveRenderers(renderers);
+            }
         }
 
         protected override void UpdateOverride()
