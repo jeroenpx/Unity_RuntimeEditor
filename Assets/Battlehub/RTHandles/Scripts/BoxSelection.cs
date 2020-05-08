@@ -13,7 +13,17 @@ namespace Battlehub.RTHandles
         PixelPerfectDepthTest,
         LooseFitting,
         BoundsCenter,
-        TansformCenter
+        TansformCenter,
+        Default = Vertex
+    }
+
+    public class BeginBoxSelectionArgs : EventArgs
+    {
+        public bool Cancel
+        {
+            get;
+            set;
+        }
     }
 
     public class FilteringArgs : EventArgs
@@ -52,6 +62,7 @@ namespace Battlehub.RTHandles
 
     public interface IBoxSelection
     {
+        event EventHandler<BeginBoxSelectionArgs> Begin;
         event EventHandler<FilteringArgs> Filtering;
         event EventHandler<BoxSelectionArgs> Selection;
         bool IsDragging
@@ -66,6 +77,12 @@ namespace Battlehub.RTHandles
         Canvas Canvas
         {
             get;
+        }
+
+        BoxSelectionMethod MethodOverride
+        {
+            get;
+            set;
         }
     }
 
@@ -88,8 +105,28 @@ namespace Battlehub.RTHandles
 
         public Vector2 ScreenSpaceMargin = new Vector2(2, 2);
         public bool UseCameraSpace = true;
-        public BoxSelectionMethod Method;
-       
+
+        [SerializeField]
+        private BoxSelectionMethod m_method = BoxSelectionMethod.Default;
+        private BoxSelectionMethod m_methodOverride = BoxSelectionMethod.Default;
+        public BoxSelectionMethod MethodOverride
+        {
+            get
+            {
+                if(m_methodOverride != BoxSelectionMethod.Default)
+                {
+                    return m_methodOverride;
+                }
+
+                return m_method;
+            }
+            set
+            {
+                m_methodOverride = value;
+            }
+        }
+
+        public event EventHandler<BeginBoxSelectionArgs> Begin;
         public event EventHandler<FilteringArgs> Filtering;
         public event EventHandler<BoxSelectionArgs> Selection;
 
@@ -120,6 +157,7 @@ namespace Battlehub.RTHandles
                 go.layer = gameObject.layer;
                 go.transform.SetParent(transform.parent, false);
                 m_canvas = go.AddComponent<Canvas>();
+                m_canvas.sortingOrder = 2;
             }
             if (UseCameraSpace)
             {
@@ -218,6 +256,16 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            if(Begin != null)
+            {
+                BeginBoxSelectionArgs args = new BeginBoxSelectionArgs();
+                Begin(this, args);
+                if(args.Cancel)
+                {
+                    return;
+                }
+            }
+
             m_startMousePosition = Window.Pointer.ScreenPoint;
             m_isDragging = GetPoint(out m_startPt) && (!Window.Editor.IsOpened || Window.IsPointerOver);
             if (m_isDragging)
@@ -297,7 +345,7 @@ namespace Battlehub.RTHandles
             HashSet<GameObject> selection;
             Renderer[] renderers = FindObjectsOfType<Renderer>();
 
-            if(Method == BoxSelectionMethod.PixelPerfectDepthTest)
+            if(MethodOverride == BoxSelectionMethod.PixelPerfectDepthTest)
             {
                 Vector2 min = SelectionBounds.min;
                 Vector2 max = SelectionBounds.max;
@@ -379,11 +427,11 @@ namespace Battlehub.RTHandles
                 return;
             }
             bool select;
-            if (Method == BoxSelectionMethod.LooseFitting)
+            if (MethodOverride == BoxSelectionMethod.LooseFitting)
             {
                 select = LooseFitting(ref selectionBounds, ref bounds);              
             }
-            else if(Method == BoxSelectionMethod.Vertex)
+            else if(MethodOverride == BoxSelectionMethod.Vertex)
             {
                 select = LooseFitting(ref selectionBounds, ref bounds);
                 if (select && !selection.Contains(go))
@@ -441,7 +489,7 @@ namespace Battlehub.RTHandles
                     
                 }
             }
-            else if (Method == BoxSelectionMethod.BoundsCenter)
+            else if (MethodOverride == BoxSelectionMethod.BoundsCenter)
             {
                 select = BoundsCenter(ref selectionBounds, ref bounds);
             }
@@ -530,9 +578,14 @@ namespace Battlehub.RTHandles
                 cam = m_canvas.worldCamera;
             }
 
-            Vector3 screenPoint = Window.Pointer.ScreenPoint;
-            if (!UseCameraSpace)
+            Vector3 screenPoint;
+            if (UseCameraSpace)
             {
+                screenPoint = Window.Pointer.ScreenPoint;
+            }
+            else
+            {
+                screenPoint = m_window.Editor.Input.GetPointerXY(0);
                 Rect rect = m_windowRectTransform.rect;
 
                 Vector2 min = RectTransformUtility.WorldToScreenPoint(m_windowCanvasCamera, m_windowRectTransform.TransformPoint(rect.min)) + ScreenSpaceMargin;

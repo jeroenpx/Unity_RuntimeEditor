@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿//#define PB_RENDER_PICKER_TEXTURE
+
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder;
@@ -6,7 +8,33 @@ using UObject = UnityEngine.Object;
 
 namespace Battlehub.ProBuilderIntegration
 {
-    public static class PBSelectionPickerRenderer
+    public interface IPBSelectionPickerRenderer
+    {
+        Dictionary<ProBuilderMesh, HashSet<Face>> PickFacesInRect(
+            Camera camera,
+            Rect pickerRect,
+            IList<ProBuilderMesh> selection,
+            int renderTextureWidth = -1,
+            int renderTextureHeight = -1);
+
+        Dictionary<ProBuilderMesh, HashSet<int>> PickVerticesInRect(
+            Camera camera,
+            Rect pickerRect,
+            IList<ProBuilderMesh> selection,
+            bool doDepthTest,
+            int renderTextureWidth = -1,
+            int renderTextureHeight = -1);
+
+        Dictionary<ProBuilderMesh, HashSet<Edge>> PickEdgesInRect(
+            Camera camera,
+            Rect pickerRect,
+            IList<ProBuilderMesh> selection,
+            bool doDepthTest,
+            int renderTextureWidth = -1,
+            int renderTextureHeight = -1);
+    }
+
+    public class PBSelectionPickerRenderer : IPBSelectionPickerRenderer
     {
         const string k_FacePickerOcclusionTintUniform = "_Tint";
         static readonly Color k_Blackf = new Color(0f, 0f, 0f, 1f);
@@ -54,7 +82,7 @@ namespace Battlehub.ProBuilderIntegration
 #endif
         };
 
-        public static Dictionary<ProBuilderMesh, HashSet<Face>> PickFacesInRect(
+        public virtual Dictionary<ProBuilderMesh, HashSet<Face>> PickFacesInRect(
             Camera camera,
             Rect pickerRect,
             IList<ProBuilderMesh> selection,
@@ -68,8 +96,12 @@ namespace Battlehub.ProBuilderIntegration
 
 
 #if PB_RENDER_PICKER_TEXTURE
-            System.IO.File.WriteAllBytes("Assets/tex.png", tex.EncodeToPNG());
+            System.IO.File.WriteAllBytes("Assets/face_scene.png", tex.EncodeToPNG());
 #endif
+            pickerRect.width /= camera.rect.width;
+            pickerRect.height /= camera.rect.height;
+            pickerRect.x = (pickerRect.x - camera.pixelRect.x) / camera.rect.width;
+            pickerRect.y = (pickerRect.y - (tex.height - (camera.pixelRect.y + camera.pixelRect.height))) / camera.rect.height;
 
             int ox = System.Math.Max(0, Mathf.FloorToInt(pickerRect.x));
             int oy = System.Math.Max(0, Mathf.FloorToInt((tex.height - pickerRect.y) - pickerRect.height));
@@ -144,18 +176,18 @@ namespace Battlehub.ProBuilderIntegration
                 return r << 24 | g << 16 | b << 8;
         }
 
-        static Texture2D RenderSelectionPickerTexture(
-          Camera camera,
-          IList<ProBuilderMesh> selection,
-          out Dictionary<uint, SimpleTuple<ProBuilderMesh, Face>> map,
-          int width = -1,
-          int height = -1)
+        protected virtual Texture2D RenderSelectionPickerTexture(
+            Camera camera,
+            IList<ProBuilderMesh> selection,
+            out Dictionary<uint, SimpleTuple<ProBuilderMesh, Face>> map,
+            int width = -1,
+            int height = -1)
         {
             var pickerObjects = GenerateFacePickingObjects(selection, out map);
 
             PBBuiltinMaterials.facePickerMaterial.SetColor(k_FacePickerOcclusionTintUniform, k_Whitef);
 
-            Texture2D tex = RenderWithReplacementShader(camera, PBBuiltinMaterials.selectionPickerShader, "ProBuilderPicker", width, height);
+            Texture2D tex = RenderFacesWithRepacementShader(camera, PBBuiltinMaterials.selectionPickerShader, "ProBuilderPicker", width, height);
 
             foreach (GameObject go in pickerObjects)
             {
@@ -166,7 +198,7 @@ namespace Battlehub.ProBuilderIntegration
             return tex;
         }
 
-        static GameObject[] GenerateFacePickingObjects(
+        protected virtual GameObject[] GenerateFacePickingObjects(
           IList<ProBuilderMesh> selection,
           out Dictionary<uint, SimpleTuple<ProBuilderMesh, Face>> map)
         {
@@ -218,8 +250,38 @@ namespace Battlehub.ProBuilderIntegration
             return go;
         }
 
+        protected virtual Texture2D RenderFacesWithRepacementShader( 
+            Camera camera,
+            Shader shader,
+            string tag,
+            int width = -1,
+            int height = -1)
+        {
+            return RenderWithReplacementShader(camera, shader, tag, width, height);
+        }
 
-        static Texture2D RenderWithReplacementShader(
+        protected virtual Texture2D RenderVerticesWithRepacementShader(
+            Camera camera,
+            Shader shader,
+            string tag,
+            int width = -1,
+            int height = -1)
+        {
+            return RenderWithReplacementShader(camera, shader, tag, width, height);
+        }
+
+        protected virtual Texture2D RenderEdgesWithRepacementShader(
+          Camera camera,
+          Shader shader,
+          string tag,
+          int width = -1,
+          int height = -1)
+        {
+            return RenderWithReplacementShader(camera, shader, tag, width, height);
+        }
+
+
+        protected virtual Texture2D RenderWithReplacementShader(
            Camera camera,
            Shader shader,
            string tag,
@@ -234,7 +296,8 @@ namespace Battlehub.ProBuilderIntegration
             GameObject go = new GameObject();
             Camera renderCam = go.AddComponent<Camera>();
             renderCam.CopyFrom(camera);
-
+            renderCam.cullingMask = int.MaxValue;
+         
             renderCam.renderingPath = RenderingPath.Forward;
             renderCam.enabled = false;
             renderCam.clearFlags = CameraClearFlags.SolidColor;
@@ -259,7 +322,7 @@ namespace Battlehub.ProBuilderIntegration
                 sRGB = false,
                 useMipMap = false,
                 volumeDepth = 1,
-                msaaSamples = 1
+                msaaSamples = 1,
             };
             RenderTexture rt = RenderTexture.GetTemporary(descriptor);
 #else
@@ -295,7 +358,8 @@ namespace Battlehub.ProBuilderIntegration
                 */
 #endif
 
-            renderCam.RenderWithShader(shader, tag);
+            PrepareCamera(renderCam);
+            Render(shader, tag, renderCam);
 
             Texture2D img = new Texture2D(_width, _height, textureFormat, false, false);
             img.ReadPixels(new Rect(0, 0, _width, _height), 0, 0);
@@ -303,12 +367,23 @@ namespace Battlehub.ProBuilderIntegration
 
             RenderTexture.active = prev;
             RenderTexture.ReleaseTemporary(rt);
-
+            
             UObject.DestroyImmediate(go);
 
             return img;
         }
 
+        protected virtual void PrepareCamera(Camera renderCamera)
+        {
+            float aspect = renderCamera.aspect;
+            renderCamera.rect = new Rect(Vector2.zero, Vector2.one);
+            renderCamera.aspect = aspect;
+        }
+
+        protected virtual void Render(Shader shader, string tag, Camera renderCam)
+        {
+            renderCam.RenderWithShader(shader, tag);
+        }
 
         public static Color32 EncodeRGBA(uint hash)
         {
@@ -361,7 +436,7 @@ namespace Battlehub.ProBuilderIntegration
         /// <param name="renderTextureWidth"></param>
         /// <param name="renderTextureHeight"></param>
         /// <returns>A dictionary of pb_Object selected vertex indexes.</returns>
-        public static Dictionary<ProBuilderMesh, HashSet<int>> PickVerticesInRect(
+        public virtual Dictionary<ProBuilderMesh, HashSet<int>> PickVerticesInRect(
             Camera camera,
             Rect pickerRect,
             IList<ProBuilderMesh> selection,
@@ -375,9 +450,16 @@ namespace Battlehub.ProBuilderIntegration
 #if PB_RENDER_PICKER_TEXTURE
             List<Color> rectImg = new List<Color>();
 #endif
-
             Texture2D tex = RenderSelectionPickerTexture(camera, selection, doDepthTest, out map, renderTextureWidth, renderTextureHeight);
             Color32[] pix = tex.GetPixels32();
+
+#if PB_RENDER_PICKER_TEXTURE
+            System.IO.File.WriteAllBytes("Assets/vertex_scene.png", tex.EncodeToPNG());
+#endif
+            pickerRect.width /= camera.rect.width;
+            pickerRect.height /= camera.rect.height;
+            pickerRect.x = (pickerRect.x - camera.pixelRect.x) / camera.rect.width;
+            pickerRect.y = (pickerRect.y - (tex.height - (camera.pixelRect.y + camera.pixelRect.height))) / camera.rect.height;
 
             int ox = System.Math.Max(0, Mathf.FloorToInt(pickerRect.x));
             int oy = System.Math.Max(0, Mathf.FloorToInt((tex.height - pickerRect.y) - pickerRect.height));
@@ -449,7 +531,7 @@ namespace Battlehub.ProBuilderIntegration
             return selected;
         }
 
-        static Texture2D RenderSelectionPickerTexture(
+        protected virtual Texture2D RenderSelectionPickerTexture(
             Camera camera,
             IList<ProBuilderMesh> selection,
             bool doDepthTest,
@@ -463,7 +545,7 @@ namespace Battlehub.ProBuilderIntegration
 
             PBBuiltinMaterials.facePickerMaterial.SetColor(k_FacePickerOcclusionTintUniform, k_Blackf);
 
-            Texture2D tex = RenderWithReplacementShader(camera, PBBuiltinMaterials.selectionPickerShader, "ProBuilderPicker", width, height);
+            Texture2D tex = RenderVerticesWithRepacementShader(camera, PBBuiltinMaterials.selectionPickerShader, "ProBuilderPicker", width, height);
 
             for (int i = 0, c = pickerObjects.Length; i < c; i++)
             {
@@ -482,7 +564,7 @@ namespace Battlehub.ProBuilderIntegration
             return tex;
         }
 
-        static void GenerateVertexPickingObjects(
+        protected virtual void GenerateVertexPickingObjects(
           IList<ProBuilderMesh> selection,
           bool doDepthTest,
           out Dictionary<uint, SimpleTuple<ProBuilderMesh, int>> map,
@@ -596,13 +678,13 @@ namespace Battlehub.ProBuilderIntegration
             return mesh;
         }
 
-        public static Dictionary<ProBuilderMesh, HashSet<Edge>> PickEdgesInRect(
-         Camera camera,
-         Rect pickerRect,
-         IList<ProBuilderMesh> selection,
-         bool doDepthTest,
-         int renderTextureWidth = -1,
-         int renderTextureHeight = -1)
+        public virtual Dictionary<ProBuilderMesh, HashSet<Edge>> PickEdgesInRect(
+            Camera camera,
+            Rect pickerRect,
+            IList<ProBuilderMesh> selection,
+            bool doDepthTest,
+            int renderTextureWidth = -1,
+            int renderTextureHeight = -1)
         {
             var selected = new Dictionary<ProBuilderMesh, HashSet<Edge>>();
 
@@ -616,6 +698,10 @@ namespace Battlehub.ProBuilderIntegration
 #if PB_RENDER_PICKER_TEXTURE
             System.IO.File.WriteAllBytes("Assets/edge_scene.png", tex.EncodeToPNG());
 #endif
+            pickerRect.width /= camera.rect.width;
+            pickerRect.height /= camera.rect.height;
+            pickerRect.x = (pickerRect.x - camera.pixelRect.x) / camera.rect.width;
+            pickerRect.y = (pickerRect.y - (tex.height - (camera.pixelRect.y + camera.pixelRect.height))) / camera.rect.height;
 
             int ox = System.Math.Max(0, Mathf.FloorToInt(pickerRect.x));
             int oy = System.Math.Max(0, Mathf.FloorToInt((tex.height - pickerRect.y) - pickerRect.height));
@@ -678,20 +764,20 @@ namespace Battlehub.ProBuilderIntegration
             return selected;
         }
 
-        static Texture2D RenderSelectionPickerTexture(
-          Camera camera,
-          IList<ProBuilderMesh> selection,
-          bool doDepthTest,
-          out Dictionary<uint, SimpleTuple<ProBuilderMesh, Edge>> map,
-          int width = -1,
-          int height = -1)
+        protected virtual Texture2D RenderSelectionPickerTexture(
+            Camera camera,
+            IList<ProBuilderMesh> selection,
+            bool doDepthTest,
+            out Dictionary<uint, SimpleTuple<ProBuilderMesh, Edge>> map,
+            int width = -1,
+            int height = -1)
         {
             GameObject[] depthObjects, pickerObjects;
             GenerateEdgePickingObjects(selection, doDepthTest, out map, out depthObjects, out pickerObjects);
 
             PBBuiltinMaterials.facePickerMaterial.SetColor(k_FacePickerOcclusionTintUniform, k_Blackf);
 
-            Texture2D tex = RenderWithReplacementShader(camera, PBBuiltinMaterials.selectionPickerShader, "ProBuilderPicker", width, height);
+            Texture2D tex = RenderEdgesWithRepacementShader(camera, PBBuiltinMaterials.selectionPickerShader, "ProBuilderPicker", width, height);
 
             for (int i = 0, c = pickerObjects.Length; i < c; i++)
             {
@@ -709,7 +795,7 @@ namespace Battlehub.ProBuilderIntegration
             return tex;
         }
 
-        static void GenerateEdgePickingObjects(
+        protected virtual void GenerateEdgePickingObjects(
             IList<ProBuilderMesh> selection,
             bool doDepthTest,
             out Dictionary<uint, SimpleTuple<ProBuilderMesh, Edge>> map,

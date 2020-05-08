@@ -109,7 +109,7 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             m_material = new Material(Shader.Find("Battlehub/RTBuilder/FaceHighlight"));
-            m_material.SetFloat("_Dither", 1f);
+            m_material.SetFloat("_Dither", 0.0f);
             m_material.SetInt("_HandleZTest", (int)CompareFunction.LessEqual);
             m_material.color = new Color(m_color.r, m_color.g, m_color.b, 0.5f);
 

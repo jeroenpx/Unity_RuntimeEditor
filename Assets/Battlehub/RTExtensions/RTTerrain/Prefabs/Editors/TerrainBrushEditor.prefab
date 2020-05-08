@@ -2131,6 +2131,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114000010881545646, guid: 7f48cf159c7eef6459001505aedc96f2,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114000012029900156, guid: 7f48cf159c7eef6459001505aedc96f2,
         type: 3}
       propertyPath: m_Padding.m_Left

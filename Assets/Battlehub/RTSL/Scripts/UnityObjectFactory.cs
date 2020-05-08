@@ -8,13 +8,9 @@ namespace Battlehub.RTSL
 {
     public class UnityObjectFactory : IUnityObjectFactory
     {
-        private static Shader m_standardShader;
         private ITypeMap m_typeMap;
         public UnityObjectFactory()
         {
-            m_standardShader = Shader.Find("Standard");
-            Debug.Assert(m_standardShader != null, "Standard shader is not found");
-
             m_typeMap = IOC.Resolve<ITypeMap>();
         }
 
@@ -61,7 +57,7 @@ namespace Battlehub.RTSL
 
             if (type == typeof(Material))
             {
-                Material material = new Material(m_standardShader);
+                Material material = new Material(RenderPipelineInfo.DefaultMaterial);
                 return material;
             }
             else if (type == typeof(Texture2D))

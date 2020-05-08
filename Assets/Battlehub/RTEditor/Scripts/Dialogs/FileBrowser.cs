@@ -57,13 +57,13 @@ namespace Battlehub.RTEditor
             {
                 m_icons = value;
                 ExtToIcon();
-                if(!string.IsNullOrEmpty(m_currentDir))
+                if (!string.IsNullOrEmpty(m_currentDir))
                 {
                     BindDataItems(m_currentDir);
                 }
             }
         }
-        
+
         [SerializeField]
         private Sprite FolderIcon = null;
 
@@ -83,7 +83,7 @@ namespace Battlehub.RTEditor
             get { return m_currentDir; }
             set
             {
-                if(Directory.Exists(value))
+                if (Directory.Exists(value))
                 {
                     string oldDir = m_currentDir;
                     try
@@ -91,20 +91,20 @@ namespace Battlehub.RTEditor
                         m_currentDir = NormalizePath(value);
                         BindDataItems(m_currentDir);
                     }
-                    catch(UnauthorizedAccessException)
+                    catch (UnauthorizedAccessException)
                     {
                         m_windowManager.MessageBox(Path.GetFileName(value), "You Don’t Currently Have Permission to Access this Folder");
                         m_currentDir = oldDir;
                         BindDataItems(m_currentDir);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         m_windowManager.MessageBox("Unable to open folder", e.ToString());
                         m_currentDir = oldDir;
                         BindDataItems(m_currentDir);
                     }
 
-                    if(m_started)
+                    if (m_started)
                     {
                         Drives.onValueChanged.RemoveListener(OnDriveChanged);
                         FileInfo f = new FileInfo(m_currentDir);
@@ -112,7 +112,7 @@ namespace Battlehub.RTEditor
                         Drives.value = Array.IndexOf(Drives.options.Select(o => o.text).ToArray(), currentDrive);
                         Drives.onValueChanged.AddListener(OnDriveChanged);
                     }
-                    
+
 
                     PlayerPrefs.SetString("Battlehub.FileBrowser.CurrentDir", m_currentDir);
                 }
@@ -135,7 +135,7 @@ namespace Battlehub.RTEditor
                 m_allowedExt = value;
                 if (value == null)
                 {
-                    m_allowedExtHs = null;                    
+                    m_allowedExtHs = null;
                 }
                 else
                 {
@@ -167,7 +167,7 @@ namespace Battlehub.RTEditor
                 m_allowedExtHs = new HashSet<string>(m_allowedExt.Distinct());
             }
 
-            if(string.IsNullOrEmpty(CurrentDir))
+            if (string.IsNullOrEmpty(CurrentDir))
             {
                 CurrentDir = PlayerPrefs.GetString("Battlehub.FileBrowser.CurrentDir");
             }
@@ -188,25 +188,25 @@ namespace Battlehub.RTEditor
             DriveInfo[] drives = DriveInfo.GetDrives();
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
             int driveIndex = 0;
-            for(int i = 0; i < drives.Length; ++i)
+            for (int i = 0; i < drives.Length; ++i)
             {
                 DriveInfo drive = drives[i];
-                if(!drive.IsReady)
+                if (!drive.IsReady)
                 {
                     continue;
                 }
 
-                if(drive.DriveType != DriveType.Fixed && drive.DriveType != DriveType.Removable)
+                if (drive.DriveType != DriveType.Fixed && drive.DriveType != DriveType.Removable)
                 {
                     continue;
                 }
 
                 options.Add(new TMP_Dropdown.OptionData(drive.VolumeLabel));
-                if(currentDrive == drive.VolumeLabel)
+                if (currentDrive == drive.VolumeLabel)
                 {
                     driveIndex = i;
                 }
-                
+
             }
 
             Drives.onValueChanged.RemoveListener(OnDriveChanged);
@@ -240,12 +240,12 @@ namespace Battlehub.RTEditor
 
         private void BindDataItems(string dir)
         {
-            List<FsEntry> content =  GetDirectoryContent(dir);
+            List<FsEntry> content = GetDirectoryContent(dir);
             m_treeView.Items = content;
             if (content.Count > 0)
             {
                 m_treeView.SelectedItem = content[0];
-            }   
+            }
         }
 
         private void OnDestroy()
@@ -257,12 +257,12 @@ namespace Battlehub.RTEditor
                 m_treeView.ItemDoubleClick -= OnItemDoubleClick;
             }
 
-            if(Drives != null)
+            if (Drives != null)
             {
                 Drives.onValueChanged.RemoveListener(OnDriveChanged);
             }
 
-            if(Input != null)
+            if (Input != null)
             {
                 Input.onValueChanged.RemoveListener(OnPathChanged);
                 Input.onSubmit.RemoveListener(OnSubmit);
@@ -276,7 +276,7 @@ namespace Battlehub.RTEditor
 
         private void OnPathChanged(string value)
         {
-            if(PathChanged != null)
+            if (PathChanged != null)
             {
                 PathChanged(value);
             }
@@ -340,13 +340,13 @@ namespace Battlehub.RTEditor
                 image.sprite = item.Icon;
                 image.gameObject.SetActive(true);
 
-                e.HasChildren = false;                
+                e.HasChildren = false;
             }
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedArgs e)
         {
-            if(e.NewItem != null)
+            if (e.NewItem != null)
             {
                 FsEntry entry = (FsEntry)e.NewItem;
                 switch (entry.EntryType)
@@ -363,10 +363,10 @@ namespace Battlehub.RTEditor
                 }
             }
 
-            if(SelectionChanged != null)
+            if (SelectionChanged != null)
             {
                 FsEntry entry = (FsEntry)e.NewItem;
-                if(entry != null)
+                if (entry != null)
                 {
                     SelectionChanged(entry.Path);
                 }
@@ -374,7 +374,7 @@ namespace Battlehub.RTEditor
                 {
                     SelectionChanged(null);
                 }
-                
+
             }
         }
 
@@ -431,7 +431,7 @@ namespace Battlehub.RTEditor
 
             DirectoryInfo dirInfo = new DirectoryInfo(currentDir);
             DirectoryInfo parent = dirInfo.Parent;
-            if(parent != null)
+            if (parent != null)
             {
                 FsEntry up = new FsEntry();
                 up.EntryType = FsEntryType.Up;
@@ -459,11 +459,11 @@ namespace Battlehub.RTEditor
             {
                 string file = NormalizePath(files[i]);
                 string ext = Path.GetExtension(file);
-                if(!string.IsNullOrEmpty(ext))
+                if (!string.IsNullOrEmpty(ext))
                 {
                     ext = ext.ToLower();
                 }
-                if (m_allowedExtHs != null && !m_allowedExtHs.Contains(ext))
+                if (m_allowedExtHs != null && m_allowedExtHs.Count > 0 && !m_allowedExtHs.Contains(ext))
                 {
                     continue;
                 }
@@ -480,7 +480,7 @@ namespace Battlehub.RTEditor
                 }
                 else
                 {
-                    if(icon == null)
+                    if (icon == null)
                     {
                         icon = FileIcon;
                     }

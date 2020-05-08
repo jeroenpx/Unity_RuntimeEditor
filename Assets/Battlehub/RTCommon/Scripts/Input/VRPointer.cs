@@ -2,6 +2,7 @@
 
 namespace Battlehub.RTCommon
 {
+    /*
     public class VRPointer : Pointer
     {
         private IVRTracker m_vrTracker;
@@ -93,7 +94,6 @@ namespace Battlehub.RTCommon
             matrix = Matrix4x4.TRS(planePos, Quaternion.LookRotation(-toCam), Vector3.one);
             return true;
         }
-
-
     }
+    */
 }

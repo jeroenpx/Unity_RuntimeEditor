@@ -4,6 +4,46 @@ namespace Battlehub.RTCommon
 {
     public static class UnitsConverter 
     {
+        public static Vector3 MetersToFeet(Vector3 meters)
+        {
+            return meters * 3.2808f;
+        }
+
+        public static Vector3 FeetToMeters(Vector3 feet)
+        {
+            return feet * 0.3048f;
+        }
+
+        public static float MetersToFeet(float meters)
+        {
+            return meters * 3.2808f;
+        }
+
+        public static float FeetToMeters(float feet)
+        {
+            return feet * 0.3048f;
+        }
+
+        public static Vector3 MetersToInches(Vector3 meters)
+        {
+            return meters * 39.37007874f;
+        }
+
+        public static Vector3 InchesToMeters(Vector3 inches)
+        {
+            return inches * 0.0254f;
+        }
+
+        public static float MetersToInches(float meters)
+        {
+            return meters * 39.37007874f;
+        }
+
+        public static float InchesToMeters(float inches)
+        {
+            return inches * 0.0254f;
+        }
+
         public static string MetersToFeetInches(float meters)
         {
             int feet, inchesleft;

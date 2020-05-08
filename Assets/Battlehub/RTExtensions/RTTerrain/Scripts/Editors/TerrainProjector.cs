@@ -6,7 +6,7 @@ namespace Battlehub.RTTerrain
     [DefaultExecutionOrder(1)]
     public class TerrainProjector : MonoBehaviour
     {
-        private Projector m_projector;
+        private Renderer m_decal;
         private IRTE m_editor;
         private Brush m_terrainBrush;
         private Vector2 m_prevPos;
@@ -24,21 +24,24 @@ namespace Battlehub.RTTerrain
 
         public Texture2D Brush
         {
-            get { return (Texture2D)m_projector.material.GetTexture("_ShadowTex"); }
+            get { return (Texture2D)m_decal.material.GetTexture("_MainTex"); }
             set
             {
-                m_projector.material.SetTexture("_ShadowTex", value);
+                m_decal.material.SetTexture("_MainTex", value);
                 m_terrainBrush.Texture = value;
             }
         }
 
         public float Size
         {
-            get { return m_projector.orthographicSize / 2; }
+            get { return transform.localScale.x; }
             set
             {
-                m_projector.orthographicSize = value * 2;
-                m_terrainBrush.Radius = value * 2;
+                Vector3 localScale = transform.localScale;
+                localScale.x = value;
+                localScale.y = value;
+                transform.localScale = localScale;
+                m_terrainBrush.Radius = value * 0.5f;
             }
         }
 
@@ -50,10 +53,10 @@ namespace Battlehub.RTTerrain
 
         private void Awake()
         {
-            m_projector = GetComponent<Projector>();
-            m_projector.enabled = false;
+            m_decal = GetComponent<Renderer>();
+            m_decal.enabled = false;
             m_editor = IOC.Resolve<IRTE>();
-        }
+                    }
 
         private void Update()
         {
@@ -67,9 +70,9 @@ namespace Battlehub.RTTerrain
 
             if(m_editor.ActiveWindow == null || m_editor.ActiveWindow.WindowType != RuntimeWindowType.Scene || !m_editor.ActiveWindow.IsPointerOver)
             {
-                if(m_projector.enabled)
+                if(m_decal.enabled)
                 {
-                    m_projector.enabled = false;
+                    m_decal.enabled = false;
                 }
                 
                 return;
@@ -81,9 +84,9 @@ namespace Battlehub.RTTerrain
                 return;
             }
 
-            if(!m_projector.enabled)
+            if(!m_decal.enabled)
             {
-                m_projector.enabled = true;
+                m_decal.enabled = true;
             }
 
             if(m_prevPos != m_editor.ActiveWindow.Pointer.ScreenPoint || m_prevCamPos != cam.transform.position || m_prevCamRot != cam.transform.rotation)
@@ -113,11 +116,12 @@ namespace Battlehub.RTTerrain
 
                 if (m_terrain == null)
                 {
-                    transform.position = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+                    Vector3 position = m_editor.ActiveWindow.Camera.transform.position;
+                    transform.position = new Vector3(position.x - 10000, position.y - 10000, position.z - 10000);
                     return;
                 }
 
-                m_position.y += 500;
+                m_position.y += 200;
                 transform.position = m_position;
             }
            
@@ -125,6 +129,12 @@ namespace Battlehub.RTTerrain
             {
                 if(m_editor.Input.GetPointerDown(0))
                 {
+                    IRenderPipelineCameraUtility cameraUtility = IOC.Resolve<IRenderPipelineCameraUtility>();
+                    if(cameraUtility != null)
+                    {
+                        cameraUtility.RequiresDepthTexture(m_editor.ActiveWindow.Camera, true);
+                    }
+                    
                     m_terrainBrush.Terrain = m_terrain;
                     m_terrainBrush.BeginPaint();
                 }

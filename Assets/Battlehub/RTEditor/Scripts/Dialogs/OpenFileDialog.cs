@@ -18,6 +18,12 @@ namespace Battlehub.RTEditor
         {
             get;
         }
+
+        bool SelectDirectory
+        {
+            get;
+            set;
+        }
     }
 
     public class OpenFileDialog : RuntimeWindow, IOpenFileDialog
@@ -25,6 +31,11 @@ namespace Battlehub.RTEditor
         private Dialog m_parentDialog;
         private FileBrowser m_fileBrowser;
         private ILocalization m_localization;
+        public bool SelectDirectory
+        {
+            get;
+            set;
+        }
 
         private string[] m_extensions = new string[0];
         public string[] Extensions
@@ -124,19 +135,34 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            if (File.Exists(path))
+            if(SelectDirectory)
             {
-                TrySetPath(path);
+                if(Directory.Exists(path))
+                {
+                    TrySetPath(path);
+                }
             }
             else
             {
-                m_fileBrowser.Open();
+                if (File.Exists(path))
+                {
+                    TrySetPath(path);
+                }
+                else
+                {
+                    m_fileBrowser.Open();
+                }
             }
+
+           
         }
 
         private void OnFileBrowserDoubleClick(string path)
         {
-            TrySetPath(path);
+            if(!SelectDirectory)
+            {
+                TrySetPath(path);
+            }
         }
 
         private void TrySetPath(string path)
@@ -147,7 +173,7 @@ namespace Battlehub.RTEditor
                 Path = m_fileBrowser.CurrentDir + "\\" + Path;
             }
 
-            if (File.Exists(Path))
+            if (File.Exists(Path) || SelectDirectory && Directory.Exists(path))
             {
                 m_parentDialog.Ok -= OnOk;
                 m_parentDialog.Close(true);

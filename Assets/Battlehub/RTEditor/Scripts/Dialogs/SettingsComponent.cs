@@ -1,11 +1,19 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTHandles;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Battlehub.RTEditor
 {
+    public enum SystemOfMeasurement
+    {
+        Metric,
+        Imperial
+    }
+
     [Serializable]
     public struct InspectorSettings
     {
@@ -54,6 +62,12 @@ namespace Battlehub.RTEditor
         }
     }
 
+    public enum GraphicsQuality
+    {
+        High,
+        Medium,
+        Low
+    }
 
     public interface ISettingsComponent
     {
@@ -128,6 +142,43 @@ namespace Battlehub.RTEditor
         }
 
         bool ConstantZoomSpeed
+        {
+            get;
+            set;
+        }
+
+        event Action SystemOfMeasurementChanged;
+        SystemOfMeasurement SystemOfMeasurement
+        {
+            get;
+            set;
+        }
+
+        GraphicsQuality GraphicsQuality
+        {
+            get;
+            set;
+        }
+
+        Color LightColor
+        {
+            get;
+            set;
+        }
+             
+        float LightIntensity
+        {
+            get;
+            set;
+        }
+ 
+        LightShadows ShadowType
+        {
+            get;
+            set;
+        }
+      
+        float ShadowStrength
         {
             get;
             set;
@@ -330,7 +381,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-
         [SerializeField]
         private float m_zoomSpeedDefault = 5.0f;
         public float ZoomSpeed
@@ -361,6 +411,166 @@ namespace Battlehub.RTEditor
             }
         }
 
+
+        public event Action SystemOfMeasurementChanged;
+        [SerializeField]
+        private SystemOfMeasurement m_systemOfMeasurementDefault = SystemOfMeasurement.Metric;
+        public SystemOfMeasurement SystemOfMeasurement
+        {
+            get { return (SystemOfMeasurement)GetInt("SystemOfMeasurement", (int)m_systemOfMeasurementDefault); }
+            set
+            {
+                SetInt("SystemOfMeasurement", (int)value);
+                foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+                {
+                    sceneComponent.RectTool.Metric = SystemOfMeasurement == SystemOfMeasurement.Metric;
+                }
+                if(SystemOfMeasurementChanged != null)
+                {
+                    SystemOfMeasurementChanged();
+                }
+            }
+        }
+
+        private GraphicsQuality m_graphicsQualityDefault = GraphicsQuality.High;
+        public GraphicsQuality GraphicsQuality
+        {
+            get { return (GraphicsQuality)GetInt("GraphicsQuality", (int)m_graphicsQualityDefault); }
+            set
+            {
+                SetInt("GraphicsQuality", (int)value);
+
+                if (RenderPipelineInfo.Type == RPType.URP)
+                {
+                    RenderPipelineAsset pipelineAsset = null;
+                    int qualityLevel = 0;
+                    switch (GraphicsQuality)
+                    {
+                        case GraphicsQuality.High:
+                            pipelineAsset = Resources.Load<RenderPipelineAsset>("HighQuality_UniversalRenderPipelineAsset");
+                            qualityLevel = QualitySettings.names.Length - 1;
+                            break;
+                        case GraphicsQuality.Medium:
+                            pipelineAsset = Resources.Load<RenderPipelineAsset>("MidQuality_UniversalRenderPipelineAsset");
+                            qualityLevel = (QualitySettings.names.Length - 1) / 2;
+                            break;
+                        case GraphicsQuality.Low:
+                            pipelineAsset = Resources.Load<RenderPipelineAsset>("LowQuality_UniversalRenderPipelineAsset");
+                            qualityLevel = 0;
+                            break;
+                    }
+
+                    GraphicsSettings.renderPipelineAsset = pipelineAsset;
+                    QualitySettings.SetQualityLevel(qualityLevel);
+                    QualitySettings.renderPipeline = pipelineAsset;
+                }
+
+                foreach (RenderTextureCamera renderTextureCamera in FindObjectsOfType<RenderTextureCamera>())
+                {
+                    renderTextureCamera.ResizeRenderTexture();
+                }
+
+                StartCoroutine(CoUpdateGizmos());
+            }
+        }
+
+        private Color m_lightColorDefault = Color.white;
+        public Color LightColor
+        {
+            get { return GetColor("LightColor", m_lightColorDefault); }
+            set
+            {
+                SetColor("LightColor", value);
+                Light[] lights = FindObjectsOfType<Light>();
+                foreach (Light light in lights)
+                {
+                    if(light.type != LightType.Directional)
+                    {
+                        continue;
+                    }
+
+                    light.color = value;
+                }
+            }
+        }
+
+        private float m_ligthIntensityDefault;
+        public float LightIntensity
+        {
+            get { return GetFloat("LightIntensity", m_ligthIntensityDefault); }
+            set
+            {
+                SetFloat("LightIntensity", value >= 0 ? value : 0);
+                Light[] lights = FindObjectsOfType<Light>();
+                foreach (Light light in lights)
+                {
+                    if (light.type != LightType.Directional)
+                    {
+                        continue;
+                    }
+
+                    light.intensity = value;
+                }
+            }
+        }
+
+        private LightShadows m_shadowTypeDefault = LightShadows.Soft;
+        public LightShadows ShadowType
+        {
+            get { return (LightShadows)GetInt("ShadowType", (int)m_shadowTypeDefault); }
+            set
+            {
+                SetInt("ShadowType", (int)value);
+                Light[] lights = FindObjectsOfType<Light>();
+                foreach (Light light in lights)
+                {
+                    if (light.type != LightType.Directional)
+                    {
+                        continue;
+                    }
+
+                    light.shadows = value;
+                }
+            }
+        }
+
+        private float m_shadowStrengthDefault;
+        public float ShadowStrength
+        {
+            get { return GetFloat("ShadowStrength", m_shadowStrengthDefault); }
+            set
+            {
+                SetFloat("ShadowStrength", value);
+                Light[] lights = FindObjectsOfType<Light>();
+                foreach (Light light in lights)
+                {
+                    if (light.type != LightType.Directional)
+                    {
+                        continue;
+                    }
+
+                    light.shadowStrength = value;
+                }
+            }
+        }
+
+        private IEnumerator CoUpdateGizmos()
+        {
+            SceneGizmo[] gizmos = FindObjectsOfType<SceneGizmo>();
+            foreach (SceneGizmo gizmo in gizmos)
+            {
+                gizmo.UpdateLayout();
+                gizmo.DoSceneGizmo();
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            foreach (SceneGizmo gizmo in gizmos)
+            {
+                gizmo.DoSceneGizmo();
+            }
+        }
+
         private List<GameObject> m_customSettings = new List<GameObject>();
         public IList<GameObject> CustomSettings
         {
@@ -369,6 +579,23 @@ namespace Battlehub.RTEditor
 
         private void Awake()
         {
+            m_ligthIntensityDefault = RenderPipelineInfo.Type == RPType.Standard ? 1 : 2;
+            m_shadowStrengthDefault = RenderPipelineInfo.Type == RPType.Standard ? 1 : 0.75f; 
+
+            //simplified user's hardware configuration evaluation
+            if (SystemInfo.graphicsMemorySize > 4096)
+            {
+                m_graphicsQualityDefault = GraphicsQuality.High;
+            }
+            else if(SystemInfo.graphicsMemorySize > 2048)
+            {
+                m_graphicsQualityDefault = GraphicsQuality.Medium;
+            }
+            else
+            {
+                m_graphicsQualityDefault = GraphicsQuality.Low;
+            }
+
             IOC.RegisterFallback<ISettingsComponent>(this);
             m_wm = IOC.Resolve<IWindowManager>();
             m_wm.AfterLayout += OnAfterLayout;
@@ -399,6 +626,7 @@ namespace Battlehub.RTEditor
                     m_sceneComponents.Add(windowTransform, sceneComponent);
                     ApplySettings(sceneComponent);
                 }
+
             }
         }
 
@@ -443,6 +671,9 @@ namespace Battlehub.RTEditor
             sceneComponent.FreeMovementSmoothSpeed = FreeMovementSmoothSpeed;
             sceneComponent.ZoomSpeed = ZoomSpeed;
             sceneComponent.ConstantZoomSpeed = ConstantZoomSpeed;
+            sceneComponent.RectTool.Metric = SystemOfMeasurement == SystemOfMeasurement.Metric;
+
+         
         }
 
         private void ApplySettings()
@@ -450,6 +681,22 @@ namespace Battlehub.RTEditor
             foreach(IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
             {
                 ApplySettings(sceneComponent);
+            }
+
+            GraphicsQuality = GraphicsQuality;
+
+            Light[] lights = FindObjectsOfType<Light>();
+            foreach(Light light in lights)
+            {
+                if(light.type != LightType.Directional)
+                {
+                    continue;
+                }
+
+                light.color = LightColor;
+                light.intensity = LightIntensity;
+                light.shadows = ShadowType;
+                light.shadowStrength = ShadowStrength;
             }
 
             EndEditUIScale();
@@ -469,12 +716,18 @@ namespace Battlehub.RTEditor
             DeleteKey("FreeMovementSmoothSpeed");
             DeleteKey("ZoomSpeed");
             DeleteKey("ConstantZoomSpeed");
+            DeleteKey("SystemOfMeasurement");
+            DeleteKey("GraphicsQuality");
+            DeleteKey("LightColor");
+            DeleteKey("LightIntensity");
+            DeleteKey("ShadowType");
+            DeleteKey("ShadowStrength");
 
-            if(ResetToDefaultsEvent != null)
+            if (ResetToDefaultsEvent != null)
             {
                 ResetToDefaultsEvent(this, EventArgs.Empty);
             }
-            
+
             ApplySettings();
         }
 
@@ -493,6 +746,18 @@ namespace Battlehub.RTEditor
         private void DeleteKey(string propertyName)
         {
             PlayerPrefs.DeleteKey(KeyPrefix + propertyName);
+        }
+
+        private void SetColor(string propertyName, Color color)
+        {
+            SetString(propertyName, color.r + ":" + color.g + ":" + color.b + ":" + color.a);
+        }
+
+        private Color GetColor(string propertyName, Color color)
+        {
+            string colorStr = GetString(propertyName, color.r + ":" + color.g + ":" + color.b + ":" + color.a);
+            string[] c = colorStr.Split(':');
+            return new Color(float.Parse(c[0]), float.Parse(c[1]), float.Parse(c[2]), float.Parse(c[3]));
         }
 
         private void SetString(string propertyName, string value)

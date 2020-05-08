@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.2
-  PatchCounter: 2
+  PatchCounter: 3
 --- !u!1 &970053424083040403
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,12 +90,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 1
   PersistentPropertyTag: 11
   PersistentSubclassTag: 0
-  MappedAssemblyName: ProBuilderIntegration
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.ProBuilderIntegration
   MappedTypeName: PBAutoUnwrapSettings
   MappedTypeGUID: 3dafd06a-06d6-41c1-bdfb-425a7e593e51
@@ -144,7 +144,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.ProBuilderIntegration.Battlehub.SL2
     PersistentTypeName: PBAutoUnwrapSettings+Anchor
     PersistentName: anchor
-    MappedAssemblyName: ProBuilderIntegration
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.ProBuilderIntegration
     MappedTypeName: PBAutoUnwrapSettings+Anchor
     MappedName: anchor
@@ -204,7 +204,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.ProBuilderIntegration.Battlehub.SL2
     PersistentTypeName: PBAutoUnwrapSettings+Fill
     PersistentName: fill
-    MappedAssemblyName: ProBuilderIntegration
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.ProBuilderIntegration
     MappedTypeName: PBAutoUnwrapSettings+Fill
     MappedName: fill
@@ -316,12 +316,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: ProBuilderIntegration
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.ProBuilderIntegration
   MappedTypeName: PBFace
   MappedTypeGUID: 352c8ecd-a131-47af-b05d-3579388b5dd4
@@ -400,7 +400,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.ProBuilderIntegration.Battlehub.SL2
     PersistentTypeName: PBAutoUnwrapSettings
     PersistentName: UnwrapSettings
-    MappedAssemblyName: ProBuilderIntegration
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.ProBuilderIntegration
     MappedTypeName: PBAutoUnwrapSettings
     MappedName: UnwrapSettings

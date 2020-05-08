@@ -80,6 +80,11 @@ namespace Battlehub.RTSL
             set { m_loadedScene = value; }
         }
 
+        public AssetBundle[] LoadedAssetBundles
+        {
+            get { return m_ordinalToAssetBundle.Values.ToArray(); }
+        }
+
         /// <summary>
         /// For fast access when resolving dependencies.
         /// </summary>
@@ -189,29 +194,37 @@ namespace Battlehub.RTSL
             m_actionsQueue.Clear();
         }
 
-        private void UnloadUnregisterDestroy()
+        private void UnloadUnregister()
         {
-            UnityObject[] dynamicResources = m_assetDB.GetDynamicResources();
             m_assetDB.UnloadLibraries();
             m_assetDB.UnregisterSceneObjects();
             m_assetDB.UnregisterDynamicResources();
+            m_idToAssetItem = new Dictionary<long, AssetItem>();
+            m_ordinalToAssetBundleInfo.Clear();
+            m_ordinalToAssetBundle.Clear();
+        }
+
+        private void UnloadUnregisterDestroy()
+        {
+            UnityObject[] dynamicResources = m_assetDB.GetDynamicResources();
+            AssetBundle[] loadedAssetBundles = LoadedAssetBundles;
+
+            UnloadUnregister();
+
             foreach (UnityObject dynamicResource in dynamicResources)
             {
-                if(dynamicResource is Transform)
+                if (dynamicResource is Transform)
                 {
                     continue;
                 }
                 Destroy(dynamicResource);
             }
 
-            m_idToAssetItem = new Dictionary<long, AssetItem>();
-
-            m_ordinalToAssetBundleInfo.Clear();
-            foreach (AssetBundle assetBundle in m_ordinalToAssetBundle.Values)
+            foreach (AssetBundle assetBundle in loadedAssetBundles)
             {
                 assetBundle.Unload(true);
             }
-            m_ordinalToAssetBundle.Clear();
+
         }
 
 
@@ -493,27 +506,27 @@ namespace Battlehub.RTSL
         /// <returns></returns>
         public ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback)
         {
-            return OpenProject(project, true, callback);
+            return OpenProject(project, OpenProjectFlags.Default, callback);
         }
 
-        public ProjectAsyncOperation<ProjectInfo> OpenProject(string project, bool createNewScene, ProjectEventHandler<ProjectInfo> callback)
+        public ProjectAsyncOperation<ProjectInfo> OpenProject(string project, OpenProjectFlags flags, ProjectEventHandler<ProjectInfo> callback)
         {
             ProjectAsyncOperation<ProjectInfo> ao = new ProjectAsyncOperation<ProjectInfo>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _OpenProject(project, createNewScene, callback, ao));
+                m_actionsQueue.Enqueue(() => _OpenProject(project, flags, callback, ao));
             }
             else
             {
 
                 IsBusy = true;
-                _OpenProject(project, createNewScene, callback, ao);
+                _OpenProject(project, flags, callback, ao);
             }
             return ao;
         }
 
 
-        private void _OpenProject(string project, bool createNewScene, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
+        private void _OpenProject(string project, OpenProjectFlags flags, ProjectEventHandler<ProjectInfo> callback, ProjectAsyncOperation<ProjectInfo> ao)
         {
             if (m_projectPath == project)
             {
@@ -522,17 +535,27 @@ namespace Battlehub.RTSL
                 return;
             }
 
-            UnloadUnregisterDestroy();
-
+            if((flags & OpenProjectFlags.DestroyObjects) != 0)
+            {
+                UnloadUnregisterDestroy();
+            }
+            else
+            {
+                UnloadUnregister();
+            }
+            
             if (m_projectInfo != null)
             {
-                if(createNewScene)
+                if((flags & OpenProjectFlags.CreateNewScene) != 0)
                 {
                     CreateNewScene();
                 }
-                else
+                else 
                 {
-                    ClearScene();
+                    if((flags & OpenProjectFlags.ClearScene) != 0)
+                    {
+                        ClearScene();
+                    }
                     m_loadedScene = null;
                 }
             }

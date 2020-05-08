@@ -107,14 +107,35 @@ namespace Battlehub.RTBuilder
 
         private void OnConvertToAutoUVsClick()
         {
+            if (m_uvManualEditorPanel != null)
+            {
+                m_uvManualEditorPanel.gameObject.SetActive(false);
+            }
+
+            if (m_uvAutoEditorPanel != null)
+            {
+                m_uvAutoEditorPanel.gameObject.SetActive(true);
+            }
+
             m_tool.ConvertUVs(true);
             UpdateVisualState();
         }
 
         private void OnConvertToManualUVsClick()
         {
+            if (m_uvManualEditorPanel != null)
+            {
+                m_uvManualEditorPanel.gameObject.SetActive(true);
+            }
+
+            if (m_uvAutoEditorPanel != null)
+            {
+                m_uvAutoEditorPanel.gameObject.SetActive(false);
+            }
+
             m_tool.ConvertUVs(false);
             UpdateVisualState();
+            
         }
 
         private void OnToolSelectionChanged()

@@ -82,11 +82,15 @@ namespace Battlehub.RTTerrain
         {
             IRTE editor = IOC.Resolve<IRTE>();
             TerrainData terrainData = TerrainDataExt.DefaultTerrainData();
-            GameObject go = Terrain.CreateTerrainGameObject(terrainData);
-            go.isStatic = false;
-            if (go != null)
+            GameObject terrainObject = Terrain.CreateTerrainGameObject(terrainData);
+            if (RenderPipelineInfo.Type != RPType.Standard)
             {
-                editor.AddGameObjectToScene(go);
+                terrainObject.GetComponent<Terrain>().materialTemplate = RenderPipelineInfo.DefaultTerrainMaterial;
+            }
+            terrainObject.isStatic = false;
+            if (terrainObject != null)
+            {
+                editor.AddGameObjectToScene(terrainObject);
             }
         }
     }

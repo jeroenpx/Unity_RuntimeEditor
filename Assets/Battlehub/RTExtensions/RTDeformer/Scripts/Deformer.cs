@@ -21,14 +21,28 @@ namespace Battlehub.MeshDeformer3
     {
         public static event Action<Deformer> Created;
         public static event Action<Deformer> Destroyed;
+        public static event Action<Deformer> Refreshed;
+        public static event Action<Deformer> OriginalMeshVisibilityChanged;
 
+        [SerializeField, HideInInspector]
         private BaseSpline m_spline;
+
+        [SerializeField, HideInInspector]
         private MeshFilter m_filter;
+
+        [SerializeField, HideInInspector]
         private MeshCollider m_collider;
+
+        [SerializeField, HideInInspector]
         private MeshRenderer m_meshRenderer;
+
+        [SerializeField, HideInInspector]
         private Contact[] m_contacts;
+
+        [SerializeField, HideInInspector]
         private Contact[] m_colliderContacts;
 
+        [SerializeField, HideInInspector]
         private List<Segment> m_segments = new List<Segment>();
            
         private Mesh Mesh
@@ -67,16 +81,6 @@ namespace Battlehub.MeshDeformer3
                 if(m_axis != value)
                 {
                     m_axis = value;
-                    if(m_spline != null)
-                    {
-                        DestroyImmediate(m_spline);
-                        m_spline = null;
-                        m_spline = gameObject.AddComponent<CatmullRomSpline>();
-                        m_spline.IsLooping = false;
-                        m_spline.IsSelectable = false;
-                        Initialize();
-                        Refresh();
-                    }
                 }
             }
         }
@@ -118,10 +122,72 @@ namespace Battlehub.MeshDeformer3
             set { m_isSelectable = value; }
         }
 
+        public override bool ShowTerminalPoints
+        {
+            get { return m_spline.ShowTerminalPoints; }
+            set { m_spline.ShowTerminalPoints = value; }
+        }
+
         public override ControlPointSettings[] Settings
         {
             get { return m_spline.Settings; }
             set { m_spline.Settings = value; }
+        }
+
+        [SerializeField]
+        private int m_pointsPerSegment = 0;
+        public int PointsPerSegment
+        {
+            get { return m_pointsPerSegment; }
+            set { m_pointsPerSegment = Mathf.Max(0, value); }
+        }
+
+        private bool m_isOriginalVisible;
+        public bool IsOriginalMeshVisible
+        {
+            get { return m_isOriginalVisible; }
+            set
+            {
+                if(m_isOriginalVisible != value)
+                {
+                    m_isOriginalVisible = value;
+                    OnOriginalVisibilityChanged(m_isOriginalVisible);
+
+                    if(OriginalMeshVisibilityChanged != null)
+                    {
+                        OriginalMeshVisibilityChanged(this);
+                    }
+                }
+            }
+        }
+
+        private void OnOriginalVisibilityChanged(bool visible)
+        {
+            if (m_meshRenderer != null)
+            {
+                m_meshRenderer.enabled = visible;
+            }
+
+            if (m_collider != null)
+            {
+                m_collider.enabled = visible;
+            }
+
+            if (visible)
+            {
+                for (int i = 0; i < m_segments.Count; ++i)
+                {
+                    if (m_segments[i] != null)
+                    {
+                        Destroy(m_segments[i].gameObject);
+                    }
+                }
+                m_segments.Clear();
+            }
+            else
+            {
+                Refresh();
+            }
         }
 
         private bool m_initialize;
@@ -139,35 +205,15 @@ namespace Battlehub.MeshDeformer3
                 m_initialize = m_spline.SegmentsCount == 0;
             }
             m_spline.IsSelectable = false;
-
-            if(Created != null)
-            {
-                Created(this);
-            }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             Destroy(m_spline);
-            for (int i = 0; i < m_segments.Count; ++i)
-            {
-                if(m_segments[i] != null)
-                {
-                    Destroy(m_segments[i].gameObject);
-                }
-            }
-            m_segments.Clear();
 
-            if(m_meshRenderer != null)
-            {
-                m_meshRenderer.enabled = true;
-            }
-            if(m_collider != null)
-            {
-                m_collider.enabled = true;
-            }
-
+            OnOriginalVisibilityChanged(true);
+            
             if (Destroyed != null)
             {
                 Destroyed(this);
@@ -179,23 +225,22 @@ namespace Battlehub.MeshDeformer3
             m_filter = GetComponent<MeshFilter>();
             m_collider = GetComponent<MeshCollider>();
             m_meshRenderer = GetComponent<MeshRenderer>();
-            if(m_meshRenderer != null)
-            {
-                m_meshRenderer.enabled = false;
-            }
-            
-            if(m_collider != null)
-            {
-                m_collider.enabled = false;
-            }
 
-            if(m_initialize)
+            OnOriginalVisibilityChanged(IsOriginalMeshVisible);
+
+            if (m_initialize)
             {
                 Initialize();
             }
 
+            if (Created != null)
+            {
+                Created(this);
+            }
+
             Refresh();
         }
+
 
         private void Initialize()
         {
@@ -211,8 +256,15 @@ namespace Battlehub.MeshDeformer3
 
         public void Refresh(bool wrapAndDeform = true, int controlPointIndex = -1)
         {
+            if(IsOriginalMeshVisible)
+            {
+                return;
+            }
+
             if(wrapAndDeform)
             {
+                m_spline.Refresh(false);
+
                 for (int i = 0; i < m_segments.Count; ++i)
                 {
                     DestroyImmediate(m_segments[i].gameObject);
@@ -229,7 +281,9 @@ namespace Battlehub.MeshDeformer3
                     m_colliderContacts = ColliderMesh.FindContacts(from, to, m_axis);
                 }
 
-                for (int i = 0; i < m_spline.SegmentsCount; ++i)
+                int segmentsCount = m_spline.SegmentsCount / (m_pointsPerSegment + 1);
+                int[] indices = new int[m_pointsPerSegment + 1];
+                for (int i = 0; i < segmentsCount; ++i)
                 {
                     GameObject segmentGO = new GameObject();
                     segmentGO.hideFlags = HideFlags.DontSave;
@@ -255,7 +309,12 @@ namespace Battlehub.MeshDeformer3
                     
                     segmentGO.SetActive(true);
 
-                    segment.Wrap(segmentFilter, segmentCollider, Axis, new[] { i }, Approximation);
+                    for(int j = 0; j < indices.Length; ++j)
+                    {
+                        indices[j] = i * indices.Length + j;
+                    }
+
+                    segment.Wrap(segmentFilter, segmentCollider, Axis, indices, Approximation);
                     segment.Deform(this, Mesh, ColliderMesh, false);
                     m_segments.Add(segment);
                 }
@@ -264,15 +323,15 @@ namespace Battlehub.MeshDeformer3
             {
                 if (controlPointIndex == -1)
                 {
-                    for (int i = 0; i < m_spline.SegmentsCount; ++i)
+                    for (int i = 0; i < m_segments.Count; ++i)
                     {
                         m_segments[i].Deform(this, Mesh, ColliderMesh, false);
                     }
                 }
                 else
                 {
-                    int s0 = controlPointIndex - 2;
-                    int s1 = controlPointIndex - 1;
+                    int s0 = (controlPointIndex - 2) / (m_pointsPerSegment + 1);
+                    int s1 = (controlPointIndex - 1) / (m_pointsPerSegment + 1);
                     for(int i = 0; i < 3; ++i)
                     {
                         if(0 <= s0 && s0 < m_segments.Count)
@@ -294,11 +353,16 @@ namespace Battlehub.MeshDeformer3
             }
 
             Segment prev = null;
-            for (int i = 0; i < m_spline.SegmentsCount; ++i)
+            for (int i = 0; i < m_segments.Count;  ++i)
             {
                 Segment segment = m_segments[i];
                 segment.SlerpContacts(this, Mesh, ColliderMesh, prev, null, false);
                 prev = segment;
+            }
+
+            if(Refreshed != null)
+            {
+                Refreshed(this);
             }
         }
 
@@ -306,6 +370,13 @@ namespace Battlehub.MeshDeformer3
         {
             m_spline.Append(distance);
             Refresh();
+        }
+
+        public override int Insert(int segmentIndex, float offset = 0.5F)
+        {
+            int ctrlPointIndex = m_spline.Insert(segmentIndex, offset);
+            Refresh();
+            return ctrlPointIndex;
         }
 
         public override void Prepend(float distance = 0)

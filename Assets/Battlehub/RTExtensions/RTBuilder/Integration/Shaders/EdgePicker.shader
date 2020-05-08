@@ -22,7 +22,7 @@ Shader "Battlehub/RTBuilder/EdgePicker"
             Name "Edges"
             AlphaTest Greater .25
 
-CGPROGRAM
+			CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
@@ -52,7 +52,7 @@ CGPROGRAM
             {
                 return i.color;
             }
-ENDCG
+			ENDCG
         }
     }
 }

@@ -111,7 +111,7 @@ namespace Battlehub.RTBuilder
             
             m_pivotPointSelection = new RuntimeSelection(IOC.Resolve<IRTE>());
 
-            m_pivotPoint = new GameObject("PivotPoint").transform;
+            m_pivotPoint = new GameObject("ManualUVEditorPivotPoint").transform;
             m_pivotPoint.SetParent(transform, false);
             LockAxes la = m_pivotPoint.gameObject.AddComponent<LockAxes>();
             la.PositionZ = true;

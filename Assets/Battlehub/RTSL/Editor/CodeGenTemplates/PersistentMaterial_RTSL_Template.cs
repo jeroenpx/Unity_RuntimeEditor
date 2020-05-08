@@ -36,17 +36,17 @@ namespace Battlehub.RTSL.Internal
         [ProtoMember(4)]
         public string[] m_keywords;
 
-        [ProtoMember(5)]
-        public PersistentVector2 mainTextureOffset;
-
-        [ProtoMember(6)]
-        public PersistentVector2 mainTextureScale;
-
         [ProtoMember(7)]
         public long shader;
 
         [ProtoMember(8)]
         public string m_shaderName;
+
+        [ProtoMember(9)]
+        public List<Vector2> m_textureOffset;
+
+        [ProtoMember(10)]
+        public List<Vector2> m_textureScale;
 
         public override object WriteTo(object obj)
         {
@@ -66,12 +66,6 @@ namespace Battlehub.RTSL.Internal
                 o.shader = Shader.Find(m_shaderName);
             }
 
-            if (o.HasProperty("_MainTex"))
-            {
-                o.mainTextureOffset = (Vector2)mainTextureOffset.WriteTo(o.mainTextureOffset);
-                o.mainTextureScale = (Vector2)mainTextureScale.WriteTo(o.mainTextureScale);
-            }
-
             if (m_keywords != null)
             {
                 foreach (string keyword in m_keywords)
@@ -82,6 +76,7 @@ namespace Battlehub.RTSL.Internal
 
             if (m_propertyNames != null)
             {
+                int textureIndex = 0;
                 for (int i = 0; i < m_propertyNames.Length; ++i)
                 {
                     string name = m_propertyNames[i];
@@ -110,6 +105,15 @@ namespace Battlehub.RTSL.Internal
                             if (m_propertyValues[i].ValueBase is long)
                             {
                                 o.SetTexture(name, FromID<Texture>((long)m_propertyValues[i].ValueBase));
+                                if(m_textureOffset != null)
+                                {
+                                    o.SetTextureOffset(name, m_textureOffset[textureIndex]);
+                                }
+                                if(m_textureScale != null)
+                                {
+                                    o.SetTextureScale(name, m_textureScale[textureIndex]);
+                                }
+                                textureIndex++;
                             }
                             break;
                         case RTShaderPropertyType.Vector:
@@ -202,14 +206,6 @@ namespace Battlehub.RTSL.Internal
             }
 
             Material o = (Material)obj;
-            if (o.HasProperty("_MainTex"))
-            {
-                mainTextureOffset = new PersistentVector2();
-                mainTextureOffset.ReadFrom(o.mainTextureOffset);
-                mainTextureScale = new PersistentVector2();
-                mainTextureScale.ReadFrom(o.mainTextureScale);
-            }
-
             if (o.shader == null)
             {
                 shader = m_assetDB.NullID;
@@ -234,7 +230,8 @@ namespace Battlehub.RTSL.Internal
             m_propertyNames = new string[shaderInfo.PropertyCount];
             m_propertyTypes = new RTShaderPropertyType[shaderInfo.PropertyCount];
             m_propertyValues = new PrimitiveContract[shaderInfo.PropertyCount];
-
+            m_textureOffset = new List<Vector2>();
+            m_textureScale = new List<Vector2>();
             for (int i = 0; i < shaderInfo.PropertyCount; ++i)
             {
                 string name = shaderInfo.PropertyNames[i];
@@ -262,6 +259,8 @@ namespace Battlehub.RTSL.Internal
                         {
                             m_propertyValues[i] = PrimitiveContract.Create(m_assetDB.ToID(texture));
                         }
+                        m_textureOffset.Add(o.GetTextureOffset(name));
+                        m_textureScale.Add(o.GetTextureScale(name));
                         break;
                     case RTShaderPropertyType.Vector:
                         m_propertyValues[i] = PrimitiveContract.Create((PersistentVector4)o.GetVector(name));

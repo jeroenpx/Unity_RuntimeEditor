@@ -28,50 +28,50 @@ namespace Battlehub.RTCommon
         bool GetPointer(int button);
     }
 
-    public class InputLowVR : InputLow
-    {
-        private IVRTracker m_tracker;
+    //public class InputLowVR : InputLow
+    //{
+    //    private IVRTracker m_tracker;
 
-        public InputLowVR(IVRTracker tracker)
-        {
-            m_tracker = tracker;
-        }
+    //    public InputLowVR(IVRTracker tracker)
+    //    {
+    //        m_tracker = tracker;
+    //    }
 
-        public override float GetAxis(InputAxis axis)
-        {
-            switch (axis)
-            {
-                case InputAxis.X:
-                    return Input.GetAxis("Horizontal");
-                case InputAxis.Y:
-                    return 0;
-                case InputAxis.Z:
-                    return Input.GetAxis("Vertical");
-                default:
-                    return 0;
-            }
-        }
+    //    public override float GetAxis(InputAxis axis)
+    //    {
+    //        switch (axis)
+    //        {
+    //            case InputAxis.X:
+    //                return Input.GetAxis("Horizontal");
+    //            case InputAxis.Y:
+    //                return 0;
+    //            case InputAxis.Z:
+    //                return Input.GetAxis("Vertical");
+    //            default:
+    //                return 0;
+    //        }
+    //    }
 
-        public override Vector3 GetPointerXY(int pointer)
-        {
-            return Vector3.zero;
-        }
+    //    public override Vector3 GetPointerXY(int pointer)
+    //    {
+    //        return Vector3.zero;
+    //    }
 
-        public override bool GetPointerDown(int index)
-        {
-            return m_tracker.RightHand.GetKeyDown(VRInputKey.Trigger);
-        }
+    //    public override bool GetPointerDown(int index)
+    //    {
+    //        return m_tracker.RightHand.GetKeyDown(VRInputKey.Trigger);
+    //    }
 
-        public override bool GetPointerUp(int index)
-        {
-            return m_tracker.RightHand.GetKeyUp(VRInputKey.Trigger);
-        }
+    //    public override bool GetPointerUp(int index)
+    //    {
+    //        return m_tracker.RightHand.GetKeyUp(VRInputKey.Trigger);
+    //    }
 
-        public override bool GetPointer(int index)
-        {
-            return m_tracker.RightHand.GetKey(VRInputKey.Trigger);
-        }
-    }
+    //    public override bool GetPointer(int index)
+    //    {
+    //        return m_tracker.RightHand.GetKey(VRInputKey.Trigger);
+    //    }
+    //}
     
     public class DisabledInput : IInput
     {

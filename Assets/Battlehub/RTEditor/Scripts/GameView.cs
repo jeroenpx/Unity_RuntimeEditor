@@ -278,6 +278,18 @@ namespace Battlehub.RTEditor
 
             gameViewCameraGo.SetActive(wasActive);
         }
+
+        protected override void SetCullingMask(Camera camera)
+        {
+            CameraLayerSettings settings = Editor.CameraLayerSettings;
+            camera.cullingMask &= settings.RaycastMask;
+        }
+
+        protected override void ResetCullingMask(Camera camera)
+        {
+            CameraLayerSettings settings = Editor.CameraLayerSettings;
+            camera.cullingMask &= settings.RaycastMask;
+        }
     }
 
 }

@@ -43,7 +43,7 @@ namespace Battlehub.RTCommon
         {
             get
             {
-                return ~((((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer) | (1 << AllScenesLayer) | (1 << ExtraLayer) | (1 << ExtraLayer2));
+                return ~((((1 << MaxGraphicsLayers) - 1) << RuntimeGraphicsLayer) | (1 << AllScenesLayer) | (1 << ExtraLayer) | (1 << ExtraLayer2) | (1 << ResourcePreviewLayer));
             }
         }
 
@@ -575,11 +575,11 @@ namespace Battlehub.RTCommon
 
         protected virtual void BuildUp(GameObject editor)
         {
-            editor.AddComponent<GLRenderer>();
-
             GameObject ui = new GameObject("UI");
             ui.transform.SetParent(editor.transform);
 
+            RenderPipelineInfo.ForceUseRenderTextures = false;
+            
             Canvas canvas = ui.AddComponent<Canvas>();
             if (IsVR)
             {
@@ -588,16 +588,16 @@ namespace Battlehub.RTCommon
             }
             else
             {
-                canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                canvas.worldCamera = Camera.main;
-                canvas.planeDistance = Camera.main.nearClipPlane + 0.01f;
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                //canvas.worldCamera = Camera.main;
+                //canvas.planeDistance = Camera.main.nearClipPlane + 0.01f;
             }
-
             canvas.sortingOrder = short.MinValue;
+             
+            editor.AddComponent<RTEGraphics>();
 
             GameObject scene = new GameObject("SceneWindow");
             scene.transform.SetParent(ui.transform, false);
-
             RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
             sceneView.IsPointerOver = true;
             sceneView.WindowType = RuntimeWindowType.Scene;
@@ -612,6 +612,11 @@ namespace Battlehub.RTCommon
                 sceneView.Camera = Camera.main;
             }
 
+            if (RenderPipelineInfo.Type == RPType.Standard)
+            {
+                scene.AddComponent<RTEGraphicsLayer>();
+            }
+            
             EventSystem eventSystem = FindObjectOfType<EventSystem>();
             if (eventSystem == null)
             {
@@ -643,7 +648,7 @@ namespace Battlehub.RTCommon
 
             if (IsVR)
             {
-                gameObject.AddComponent<VRTracker>();
+                //gameObject.AddComponent<VRTracker>();
             }
             else
             {
@@ -727,8 +732,8 @@ namespace Battlehub.RTCommon
         {
             if (IsVR)
             {
-                IVRTracker tracker = IOC.Resolve<IVRTracker>();
-                m_input = new InputLowVR(tracker);
+               // IVRTracker tracker = IOC.Resolve<IVRTracker>();
+               // m_input = new InputLowVR(tracker);
             }
             else
             {
@@ -993,7 +998,12 @@ namespace Battlehub.RTCommon
         {
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(o => o != null).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
 
-            Undo.BeginRecord();
+            bool isRecording = Undo.IsRecording;
+            if(!isRecording)
+            {
+                Undo.BeginRecord();
+            }
+            
             if (exposeToEditor.Length == 0)
             {
                 Debug.LogWarning("To register created object GameObject add ExposeToEditor script to it");
@@ -1007,9 +1017,12 @@ namespace Battlehub.RTCommon
             {
                 Selection.objects = gameObjects;
             }
-            
-            Undo.EndRecord();
 
+            if(!isRecording)
+            {
+                Undo.EndRecord();
+            }
+            
             if (ObjectsRegistered != null)
             {
                 ObjectsRegistered(gameObjects);

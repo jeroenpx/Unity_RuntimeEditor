@@ -52,13 +52,16 @@ namespace Battlehub.RTBuilder
                 if(m_isSelected != value)
                 {
                     m_isSelected = value;
-                    if(m_isSelected)
+                    if(m_filter != null && m_filter.sharedMesh != null)
                     {
-                        m_filter.sharedMesh.colors = m_selectionColorsCache;
-                    }
-                    else
-                    {
-                        m_filter.sharedMesh.colors = m_normalColorsCache;
+                        if (m_isSelected)
+                        {
+                            m_filter.sharedMesh.colors = m_selectionColorsCache;
+                        }
+                        else
+                        {
+                            m_filter.sharedMesh.colors = m_normalColorsCache;
+                        }
                     }
                 }
             }

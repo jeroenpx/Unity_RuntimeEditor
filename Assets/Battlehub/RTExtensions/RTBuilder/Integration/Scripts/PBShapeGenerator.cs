@@ -24,7 +24,22 @@ namespace Battlehub.ProBuilderIntegration
     {
         public static GameObject CreateShape(PBShapeType shapeType)
         {
-            return ShapeGenerator.CreateShape((ShapeType)shapeType, PivotLocation.Center).gameObject;
+            Material defaultMaterial;
+            try
+            {
+                //ProBuilder throws exception form Init method line 106 (when trying to initialize preview material)
+                defaultMaterial = BuiltinMaterials.defaultMaterial;
+            }
+            catch
+            {
+
+            }
+
+            defaultMaterial = PBBuiltinMaterials.DefaultMaterial;
+            GameObject shape = ShapeGenerator.CreateShape((ShapeType)shapeType, PivotLocation.Center).gameObject;
+            Renderer renderer = shape.GetComponent<Renderer>();
+            renderer.sharedMaterial = defaultMaterial;
+            return shape;
         }
     }
 }

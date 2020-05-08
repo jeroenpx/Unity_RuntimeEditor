@@ -18,7 +18,7 @@ namespace Battlehub.RTBuilder
 
         private readonly List<ManualUVRenderer> m_uvRenderers = new List<ManualUVRenderer>();
         private GameObject m_uvRenderersRoot;
-        private IRuntimeGraphicsLayer m_graphicsLayer;
+        private IRTEGraphicsLayer m_graphicsLayer;
 
         private Plane m_plane;
 
@@ -82,6 +82,7 @@ namespace Battlehub.RTBuilder
         private void OnEnable()
         {
             m_tool.SelectionChanging += OnSelectionChanging;
+
             m_tool.ModeChanged += OnModeChanged;
 
             m_uvEditor.SelectionChanged += OnUVSelectionChanged;
@@ -91,9 +92,8 @@ namespace Battlehub.RTBuilder
 
             if (m_graphicsLayer != null)
             {
-                m_graphicsLayer.BeginRefresh();
                 CreateUVRenderers();
-                m_graphicsLayer.EndRefresh();
+                m_graphicsLayer.Camera.RenderersCache.Refresh();
             }
         }
 
@@ -117,10 +117,9 @@ namespace Battlehub.RTBuilder
         {
             m_plane = new Plane(Vector3.forward, 0);
 
-            m_graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            m_graphicsLayer.BeginRefresh();
+            m_graphicsLayer = Window.IOCContainer.Resolve<IRTEGraphicsLayer>();
             CreateUVRenderers();
-            m_graphicsLayer.EndRefresh();
+            m_graphicsLayer.Camera.RenderersCache.Refresh();
             m_uvEditor.RefreshPivotPoint();
 
             m_selectionComponent = Window.IOCContainer.Resolve<IRuntimeSelectionComponent>();
@@ -310,9 +309,8 @@ namespace Battlehub.RTBuilder
         {
             if (m_graphicsLayer != null)
             {
-                m_graphicsLayer.BeginRefresh();
                 CreateUVRenderers();
-                m_graphicsLayer.EndRefresh();
+                m_graphicsLayer.Camera.RenderersCache.Refresh();
             }
             else
             {
@@ -556,9 +554,8 @@ namespace Battlehub.RTBuilder
 
         private void OnUVChanged()
         {
-            m_graphicsLayer.BeginRefresh();
             RefreshUVRenderers();
-            m_graphicsLayer.EndRefresh();
+            m_graphicsLayer.Camera.RenderersCache.Refresh();
         }
     }
 

@@ -10,6 +10,15 @@ namespace Battlehub.RTSL.Interface
     public delegate void ProjectEventHandler<T>(Error error, T result);
     public delegate void ProjectEventHandler<T, T2>(Error error, T result, T2 result2);
 
+    public enum OpenProjectFlags
+    {
+        None = 0,
+        ClearScene = 1,
+        CreateNewScene = 3,
+        DestroyObjects = 4,
+        Default = CreateNewScene | DestroyObjects
+    }
+
     public interface IProject
     {
         event ProjectEventHandler NewSceneCreating;
@@ -62,6 +71,11 @@ namespace Battlehub.RTSL.Interface
             set;
         }
 
+        AssetBundle[] LoadedAssetBundles
+        {
+            get;
+        }
+
         bool IsStatic(ProjectItem projectItem);
         bool IsScene(ProjectItem projectItem);
         Type ToType(AssetItem assetItem);
@@ -85,7 +99,7 @@ namespace Battlehub.RTSL.Interface
         ProjectAsyncOperation<ProjectInfo[]> GetProjects(ProjectEventHandler<ProjectInfo[]> callback = null);
         ProjectAsyncOperation<ProjectInfo> CreateProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
         ProjectAsyncOperation<ProjectInfo> OpenProject(string project, ProjectEventHandler<ProjectInfo> callback = null);
-        ProjectAsyncOperation<ProjectInfo> OpenProject(string project, bool createNewScene, ProjectEventHandler<ProjectInfo> callback = null);
+        ProjectAsyncOperation<ProjectInfo> OpenProject(string project, OpenProjectFlags flags, ProjectEventHandler<ProjectInfo> callback = null);
         ProjectAsyncOperation<string> CopyProject(string project, string targetProject, ProjectEventHandler<string> callback = null);
         ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null);
         ProjectAsyncOperation<string> ExportProject(string project, string targetPath, ProjectEventHandler<string> callback = null);

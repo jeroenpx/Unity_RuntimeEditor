@@ -92,7 +92,6 @@ namespace Battlehub.RTCommon
         public bool CanSnap = true;
         public bool AddColliders = true;
 
-
         private bool m_markAsDestroyed;
         public bool MarkAsDestroyed
         {
@@ -106,6 +105,7 @@ namespace Battlehub.RTCommon
                     {
                         _MarkAsDestroyedChanging(this);
                     }
+                    gameObject.hideFlags = m_markAsDestroyed ? HideFlags.DontSave : HideFlags.None;
                     gameObject.SetActive(!m_markAsDestroyed);
                     if (_MarkAsDestroyedChanged != null)
                     {
@@ -180,6 +180,44 @@ namespace Battlehub.RTCommon
             }
         }
 
+        public Vector3 LocalPosition
+        {
+            get { return transform.localPosition; }
+            set { transform.localPosition = value; }
+        }
+
+        public Vector3 LocalScale
+        {
+            get { return transform.localScale; }
+            set { transform.localScale = value; }
+        }
+
+        private Vector3 m_localEulerAngles;
+        public Vector3 LocalEuler
+        {
+            get
+            {
+                if(transform.localRotation != Quaternion.Euler(m_localEulerAngles))
+                {
+                    m_localEulerAngles = transform.localEulerAngles;
+                }
+                return m_localEulerAngles;
+            }
+            set
+            {
+                if(m_localEulerAngles != value)
+                {
+                    m_localEulerAngles = value;
+                    transform.localRotation = Quaternion.Euler(m_localEulerAngles);
+                }
+            }
+        }
+
+        public bool IsAwaked
+        {
+            get;
+            private set;
+        }
 
         private bool m_initialized;
         public void Init()
@@ -193,12 +231,6 @@ namespace Battlehub.RTCommon
                 BoundsObject = gameObject;
             }
             m_initialized = true;
-        }
-
-        public bool IsAwaked
-        {
-            get;
-            private set;
         }
 
         private void Awake()

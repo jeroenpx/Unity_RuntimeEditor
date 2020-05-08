@@ -7,6 +7,7 @@ namespace Battlehub.RTHandles
     {
         public KeyCode FocusKey = KeyCode.F;
         public KeyCode SnapToGridKey = KeyCode.G;
+        public KeyCode SnapToGridKey2 = KeyCode.LeftShift;
         public KeyCode RotateKey = KeyCode.LeftAlt;
         public KeyCode RotateKey2 = KeyCode.RightAlt;
         public KeyCode RotateKey3 = KeyCode.AltGr;
@@ -74,7 +75,7 @@ namespace Battlehub.RTHandles
         protected virtual bool SnapToGridAction()
         {
             IInput input = m_component.Editor.Input;
-            return input.GetKeyDown(SnapToGridKey) && input.GetKey(ModifierKey);
+            return input.GetKeyDown(SnapToGridKey) && input.GetKey(SnapToGridKey2);
         }
 
         protected virtual Vector2 RotateAxes()
@@ -139,7 +140,6 @@ namespace Battlehub.RTHandles
                 m_isActive = m_component.IsWindowActive;
             }
         }
-
 
         protected override void LateUpdate()
         {
@@ -265,11 +265,6 @@ namespace Battlehub.RTHandles
                     }
                 }
             }
-
-            //if (SelectAction())
-            //{
-            //    SelectGO();
-            //}
         }
     }
 

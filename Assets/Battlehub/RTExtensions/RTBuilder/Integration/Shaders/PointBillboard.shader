@@ -78,6 +78,15 @@ Shader "Battlehub/RTBuilder/PointBillboard"
                     return v;
                 }
 
+				inline float4 GammaToLinearSpace(float4 sRGB)
+				{
+					if (IsGammaSpace())
+					{
+						return sRGB;
+					}
+					return sRGB * (sRGB * (sRGB * 0.305306011h + 0.682171111h) + 0.012522878h);
+				}
+
                 GS_INPUT vert(appdata v)
                 {
                     GS_INPUT output = (GS_INPUT)0;
@@ -89,7 +98,7 @@ Shader "Battlehub/RTBuilder/PointBillboard"
                     output.pos = mul(UNITY_MATRIX_P, output.pos);
                     // convert clip -> ndc -> screen, build billboards in geo shader, then screen -> ndc -> clip
                     output.pos = ClipToScreen(output.pos);
-                    output.color = v.color;
+					output.color = GammaToLinearSpace(v.color);
 
                     return output;
                 }

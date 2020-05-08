@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.Utils;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
@@ -73,7 +74,7 @@ namespace Battlehub.ProBuilderIntegration
             {
                 if (depthTest)
                 {
-                    return PBSelectionPickerRenderer.PickFacesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), Mathf.RoundToInt(uiRect.width), Mathf.RoundToInt(uiRect.height));
+                    return PBSelectionPicker.Renderer.PickFacesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), Mathf.RoundToInt(uiRect.width), Mathf.RoundToInt(uiRect.height));
                 }
 
                 return SelectionPicker.PickFacesInRect(camera, rect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = false }, 1);
@@ -90,7 +91,7 @@ namespace Battlehub.ProBuilderIntegration
             return PBSelectionPicker.PickEdgesInRect(camera, rect, uiRootRect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = depthTest });
         }
 
-        public static float PickEdge(Camera camera, Vector3 mousePosition, float maxDistance, GameObject pickedObject, IEnumerable<ProBuilderMesh> meshes, ref SceneSelection selection)
+        public static float PickEdge(Camera camera, Vector3 mousePosition, float maxDistance, GameObject pickedObject, IEnumerable<ProBuilderMesh> meshes, bool depthTest, ref SceneSelection selection)
         {
             selection.Clear();
             selection.gameObject = pickedObject;
@@ -98,10 +99,7 @@ namespace Battlehub.ProBuilderIntegration
 
             float bestDistance = maxDistance;
             float unselectedBestDistance = maxDistance;
-            //bool hoveredIsInSelection = meshes.Contains(hoveredMesh);
-            //const bool allowUnselected = true;
-
-            //if (hoveredMesh != null && (allowUnselected || hoveredIsInSelection))
+            
             if(hoveredMesh != null)
             {
                 EdgeAndDistance tup = GetNearestEdgeOnMesh(camera, hoveredMesh, mousePosition);
@@ -121,14 +119,27 @@ namespace Battlehub.ProBuilderIntegration
                 }
             }
 
+            ProBuilderMesh pickedMesh = pickedObject != null ? pickedObject.GetComponent<ProBuilderMesh>() : null;
+            HashSet<ProBuilderMesh> hs = new HashSet<ProBuilderMesh>();
             foreach (ProBuilderMesh mesh in meshes)
+            {
+                if(!hs.Contains(mesh))
+                {
+                    hs.Add(mesh);
+                }
+            }
+
+            if(pickedMesh != null && !hs.Contains(pickedMesh))
+            {
+                hs.Add(pickedMesh);
+            }
+
+            foreach (ProBuilderMesh mesh in hs)
             {
                 Transform trs = mesh.transform;
                 IList<Vector3> positions = mesh.positions;
                 m_edges.Clear();
 
-                //When the pointer is over another object, apply a modifier to the distance to prefer picking the object hovered over the currently selected
-                //var distMultiplier = (hoveredMesh == mesh || hoveredMesh == null) ? 1.0f : pickerPrefs.offPointerMultiplier;
                 const float distMultiplier = 1.0f;
 
                 foreach (Face face in mesh.faces)
@@ -138,11 +149,28 @@ namespace Battlehub.ProBuilderIntegration
                         int x = edge.a;
                         int y = edge.b;
 
+                        Vector3 projectedPoint;
+                        Vector3 p0 = trs.TransformPoint(positions[x]);
+                        Vector3 p1 = trs.TransformPoint(positions[y]);
+                        float d = MathHelper.DistanceToLine(camera, mousePosition,
+                                p0,
+                                p1, out projectedPoint);
 
-                        float d = DistanceToLine(camera, mousePosition,
-                                trs.TransformPoint(positions[x]),
-                                trs.TransformPoint(positions[y]));
+                        if(depthTest)
+                        {
+                            Ray ray = camera.ScreenPointToRay(projectedPoint);
+                            Vector3 cpl0;
+                            Vector3 cpl1;
 
+                            if(MathHelper.ClosestPointsOnTwoLines(out cpl0, out cpl1, ray.origin, ray.direction, p0, p1 - p0))
+                            {
+                                if(PointIsOccluded(camera, mesh, cpl1))
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                       
                         d *= distMultiplier;
 
                         if (d == bestDistance)
@@ -183,7 +211,7 @@ namespace Battlehub.ProBuilderIntegration
             return Mathf.Infinity;
         }
 
-        static Edge GetClosestEdgeToCamera(Camera camera, Vector3 mousePosition, IList<Vector3> positions, IEnumerable<Edge> edges)
+        private static Edge GetClosestEdgeToCamera(Camera camera, Vector3 mousePosition, IList<Vector3> positions, IEnumerable<Edge> edges)
         {
             Vector3 camPos = camera.transform.position;
             float closestDistToScreen = Mathf.Infinity;
@@ -211,7 +239,7 @@ namespace Battlehub.ProBuilderIntegration
             return closest;
         }
 
-        struct EdgeAndDistance
+        private struct EdgeAndDistance
         {
             public Edge edge;
             public float distance;
@@ -239,7 +267,7 @@ namespace Battlehub.ProBuilderIntegration
                 {
                     foreach (var edge in dualCullModeRaycastBackFace.item1.edges)
                     {
-                        float d = DistanceToLine(dualCullModeRaycastBackFace.item2, v[edge.a], v[edge.b]);
+                        float d = MathHelper.DistanceToLine(dualCullModeRaycastBackFace.item2, v[edge.a], v[edge.b]);
 
                         if (d < res.distance)
                         {
@@ -259,7 +287,7 @@ namespace Battlehub.ProBuilderIntegration
                     {
                         foreach (var edge in dualCullModeRaycastFrontFace.item1.edges)
                         {
-                            float d = DistanceToLine(dualCullModeRaycastFrontFace.item2, v[edge.a], v[edge.b]);
+                            float d = MathHelper.DistanceToLine(dualCullModeRaycastFrontFace.item2, v[edge.a], v[edge.b]);
 
                             if (d < res.distance)
                             {
@@ -272,7 +300,7 @@ namespace Battlehub.ProBuilderIntegration
 
                 if (res.edge.IsValid())
                 {
-                    res.distance = DistanceToLine(camera, mousePosition,
+                    res.distance = MathHelper.DistanceToLine(camera, mousePosition,
                         mesh.transform.TransformPoint(v[res.edge.a]),
                         mesh.transform.TransformPoint(v[res.edge.b]));
                 }
@@ -348,116 +376,6 @@ namespace Battlehub.ProBuilderIntegration
             return back.item1 != null || front.item1 != null;
         }
 
-        private static float DistanceToLine(Vector3 position, Vector3 linePoint1, Vector3 linePoint2)
-        {
-            Vector3 projectedPoint = ProjectPointOnLineSegment(linePoint1, linePoint2, position);
-            Vector3 vector = projectedPoint - position;
-            return vector.magnitude;
-        }
-
-        private static float DistanceToLine(Camera camera, Vector3 mousePosition, Vector3 linePoint1, Vector3 linePoint2)
-        {
-            Vector3 screenPos1 = camera.WorldToScreenPoint(linePoint1);
-            Vector3 screenPos2 = camera.WorldToScreenPoint(linePoint2);
-            Vector3 projectedPoint = ProjectPointOnLineSegment(screenPos1, screenPos2, mousePosition);
-
-            //set z to zero
-            projectedPoint = new Vector3(projectedPoint.x, projectedPoint.y, 0f);
-
-            Vector3 vector = projectedPoint - mousePosition;
-            return vector.magnitude;
-        }
-
-        //This function returns a point which is a projection from a point to a line.
-        //The line is regarded infinite. If the line is finite, use ProjectPointOnLineSegment() instead.
-        private static Vector3 ProjectPointOnLine(Vector3 linePoint, Vector3 lineVec, Vector3 point)
-        {
-
-            //get vector from point on line to point in space
-            Vector3 linePointToPoint = point - linePoint;
-
-            float t = Vector3.Dot(linePointToPoint, lineVec);
-
-            return linePoint + lineVec * t;
-        }
-
-        //This function returns a point which is a projection from a point to a line segment.
-        //If the projected point lies outside of the line segment, the projected point will 
-        //be clamped to the appropriate line edge.
-        //If the line is infinite instead of a segment, use ProjectPointOnLine() instead.
-        private static Vector3 ProjectPointOnLineSegment(Vector3 linePoint1, Vector3 linePoint2, Vector3 point)
-        {
-            Vector3 vector = linePoint2 - linePoint1;
-
-            Vector3 projectedPoint = ProjectPointOnLine(linePoint1, vector.normalized, point);
-
-            int side = PointOnWhichSideOfLineSegment(linePoint1, linePoint2, projectedPoint);
-
-            //The projected point is on the line segment
-            if (side == 0)
-            {
-
-                return projectedPoint;
-            }
-
-            if (side == 1)
-            {
-
-                return linePoint1;
-            }
-
-            if (side == 2)
-            {
-
-                return linePoint2;
-            }
-
-            //output is invalid
-            return Vector3.zero;
-        }
-
-        //This function finds out on which side of a line segment the point is located.
-        //The point is assumed to be on a line created by linePoint1 and linePoint2. If the point is not on
-        //the line segment, project it on the line using ProjectPointOnLine() first.
-        //Returns 0 if point is on the line segment.
-        //Returns 1 if point is outside of the line segment and located on the side of linePoint1.
-        //Returns 2 if point is outside of the line segment and located on the side of linePoint2.
-        private static int PointOnWhichSideOfLineSegment(Vector3 linePoint1, Vector3 linePoint2, Vector3 point)
-        {
-
-            Vector3 lineVec = linePoint2 - linePoint1;
-            Vector3 pointVec = point - linePoint1;
-
-            float dot = Vector3.Dot(pointVec, lineVec);
-
-            //point is on side of linePoint2, compared to linePoint1
-            if (dot > 0)
-            {
-
-                //point is on the line segment
-                if (pointVec.magnitude <= lineVec.magnitude)
-                {
-
-                    return 0;
-                }
-
-                //point is not on the line segment and it is on the side of linePoint2
-                else
-                {
-
-                    return 2;
-                }
-            }
-
-            //Point is not on side of linePoint2, compared to linePoint1.
-            //Point is not on the line segment and it is on the side of linePoint1.
-            else
-            {
-
-                return 1;
-            }
-        }
-
         public static Dictionary<ProBuilderMesh, HashSet<int>> PickVertices(Camera camera, Rect rect, Rect uiRootRect, GameObject[] gameObjects, bool depthTest)
         {
             return PBSelectionPicker.PickVerticesInRect(camera, rect, uiRootRect, gameObjects.Select(g => g.GetComponent<ProBuilderMesh>()).Where(pbm => pbm != null).ToArray(), new PickerOptions { rectSelectMode = RectSelectMode.Partial, depthTest = depthTest });
@@ -490,7 +408,6 @@ namespace Battlehub.ProBuilderIntegration
             }
 
             m_nearestVertices.Sort((x, y) => x.screenDistance.CompareTo(y.screenDistance));
-
 
             ProBuilderMesh selectedMesh = selection.mesh;
             int selectedVertex = selection.vertex;

@@ -2114,7 +2114,7 @@ namespace Battlehub.RTSL
             EditorGUILayout.Separator();
             EditorGUILayout.BeginHorizontal();
 
-            bool patchRequired = m_uoMapperGUI != null && (m_uoMapperGUI.Storage == null || m_uoMapperGUI.Storage.PatchCounter < 2) || m_surrogatesMapperGUI != null && (m_surrogatesMapperGUI.Storage == null || m_surrogatesMapperGUI.Storage.PatchCounter < 2);
+            bool patchRequired = m_uoMapperGUI != null && (m_uoMapperGUI.Storage == null || m_uoMapperGUI.Storage.PatchCounter < 3) || m_surrogatesMapperGUI != null && (m_surrogatesMapperGUI.Storage == null || m_surrogatesMapperGUI.Storage.PatchCounter < 3);
 
             if (patchRequired)
             {
@@ -2519,7 +2519,6 @@ namespace Battlehub.RTSL
             return templates;
         }
 
-
         private static bool HasCustomImplementation(CodeGen codeGen, PersistentClassMapping mapping)
         {
             Type persistentType = codeGen.GetPersistentType(mapping.PersistentFullTypeName);
@@ -2607,6 +2606,18 @@ namespace Battlehub.RTSL
                 UpdateMappedAssemblyNames(path);
             }
             UpdateMappedAssemblyNames(RTSLPath.SurrogatesMappingsStoragePath);
+
+            //2.2 -> 2.2.1
+            foreach (string path in RTSLPath.ClassMappingsTemplatePath)
+            {
+                UpdateMappedAssemblyNames2(path);
+            }
+            UpdateMappedAssemblyNames2(RTSLPath.ClassMappingsStoragePath);
+            foreach (string path in RTSLPath.SurrogatesMappingsTemplatePath)
+            {
+                UpdateMappedAssemblyNames2(path);
+            }
+            UpdateMappedAssemblyNames2(RTSLPath.SurrogatesMappingsStoragePath);
 
         }
 
@@ -2774,6 +2785,91 @@ namespace Battlehub.RTSL
             }
 
             return string.Join(".", ns.Split('.').Take(2));
+        }
+
+        //2.2 -> 2.2.1
+        private static void UpdateMappedAssemblyNames2(string storagePath)
+        {
+            GameObject storageGO = (GameObject)AssetDatabase.LoadAssetAtPath(storagePath, typeof(GameObject));
+            if (storageGO == null)
+            {
+                return;
+            }
+
+            if (!IsUpdateRequired(storageGO, 3))
+            {
+                return;
+            }
+
+            storageGO = Instantiate(storageGO);
+            PersistentClassMappingsStorage storage = storageGO.GetComponent<PersistentClassMappingsStorage>();
+            if (storage == null)
+            {
+                storage = storageGO.AddComponent<PersistentClassMappingsStorage>();
+            }
+            storage.Version = RTSLVersion.Version.ToString();
+            storage.PatchCounter = 3;
+
+            PersistentClassMapping[] mappings = storageGO.GetComponentsInChildren<PersistentClassMapping>(true);
+            for (int i = 0; i < mappings.Length; ++i)
+            {
+                PersistentClassMapping mapping = mappings[i];
+                mapping.Version = RTSLVersion.Version.ToString();
+                mapping.MappedTypeName = FixTypeName2(mapping.MappedTypeName);
+                mapping.MappedAssemblyName = FixAssemblyName2(mapping.MappedAssemblyQualifiedName, mapping.MappedNamespace, mapping.MappedAssemblyName);
+
+                PersistentPropertyMapping[] properties = mapping.PropertyMappings;
+                for (int j = 0; j < properties.Length; ++j)
+                {
+                    PersistentPropertyMapping property = properties[j];
+                    property.MappedTypeName = FixTypeName2(property.MappedTypeName);
+                    property.MappedAssemblyName = FixAssemblyName2(property.MappedAssemblyQualifiedName, property.MappedNamespace, property.MappedAssemblyName);
+                }
+            }
+
+            EditorUtility.SetDirty(storageGO);
+            PrefabUtility.SaveAsPrefabAsset(storageGO, storagePath);
+            DestroyImmediate(storageGO);
+        }
+
+        private static string FixTypeName2(string typeName)
+        {
+            if (typeName.Contains("Battlehub.RTEditor"))
+            {
+                return typeName.Replace(", Assembly-CSharp]", ", Battlehub.RTEditor]");
+            }
+            else if (typeName.Contains("Battlehub.UIControls"))
+            {
+                return typeName.Replace(", Battlehub.UIControls]", ",  Battlehub.RTEditor]");
+            }
+            else if (typeName.Contains("Battlehub.Utils"))
+            {
+                return typeName.Replace(", Battlehub.Utils]", ", Battlehub.RTEditor]");
+            }
+            else if (typeName.Contains("Battlehub.RTCommon"))
+            {
+                return typeName.Replace(", Battlehub.RTCommon]", ", Battlehub.RTEditor]");
+            }
+            else if (typeName.Contains("Battlehub.RTSL.Interface"))
+            {
+                return typeName.Replace(", Battlehub.RTSL.Interface]", ", Battlehub.RTEditor]");
+            }
+            else if (typeName.Contains("Battlehub.RTSL.RuntimeShaderInfo"))
+            {
+                return typeName.Replace(", Battlehub.RTSL.Interface]", ", Battlehub.RTEditor]");
+            }
+
+            return typeName;
+        }
+
+        private static string FixAssemblyName2(string assemblyQualifiedName, string ns, string mappedAssemblyName)
+        {
+            if (!ns.Contains("Battlehub") || ns.Contains("Battlehub.RTSaveLoad") || ns.Contains("Battlehub.Cubeman"))
+            {
+                return mappedAssemblyName;
+            }
+
+            return "Battlehub.RTEditor";
         }
     }
 }

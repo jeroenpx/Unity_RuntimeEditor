@@ -2,12 +2,17 @@
 
 namespace Battlehub.RTCommon
 {
-    public class SpriteGizmo : MonoBehaviour, IGL
+    public class SpriteGizmo : MonoBehaviour
     {
-        public Material Material;
+        public Mesh Mesh;
+
+        private Vector3 m_position;
+        private Quaternion m_rotation;
+
         [SerializeField, HideInInspector]
         private SphereCollider m_collider;
         private SphereCollider m_destroyedCollider;
+
         [SerializeField]
         private float m_scale = 1.0f;
         public float Scale
@@ -22,25 +27,9 @@ namespace Battlehub.RTCommon
                 }
             }
         }
-
-        private void Awake()
-        {
-            if (GLRenderer.Instance == null)
-            {
-                GameObject glRenderer = new GameObject();
-                glRenderer.name = "GLRenderer";
-                glRenderer.AddComponent<GLRenderer>();
-            }
-        }     
-
+        
         private void OnEnable()
         {
-            GLRenderer glRenderer = GLRenderer.Instance;
-            if (glRenderer)
-            {
-                glRenderer.Add(this);
-            }
-
             m_collider = GetComponent<SphereCollider>();
 
             if (m_collider == null || m_collider == m_destroyedCollider)
@@ -60,12 +49,6 @@ namespace Battlehub.RTCommon
 
         private void OnDisable()
         {
-            GLRenderer glRenderer = GLRenderer.Instance;
-            if (glRenderer)
-            {
-                glRenderer.Remove(this);
-            }
-
             if(m_collider != null)
             {
                 Destroy(m_collider);
@@ -80,13 +63,6 @@ namespace Battlehub.RTCommon
             {
                 m_collider.radius = 0.25f * m_scale;
             }
-        }
-
-
-        void IGL.Draw(int cullingMask, Camera camera)
-        {
-            Material.SetPass(0);
-            RuntimeGraphics.DrawQuad(Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one * m_scale));
         }
     }
 }

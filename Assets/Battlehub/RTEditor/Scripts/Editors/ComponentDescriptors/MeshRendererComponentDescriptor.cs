@@ -1,4 +1,4 @@
-﻿//#define SIMPLIFIED_MESHRENDERER
+﻿#define SIMPLIFIED_MESHRENDERER
 
 using UnityEngine;
 using System.Reflection;
@@ -14,10 +14,17 @@ namespace Battlehub.RTEditor
     {
         public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
+            ILocalization lc = IOC.Resolve<ILocalization>();
+
+            MemberInfo shadowCastingMode = Strong.PropertyInfo((MeshRenderer x) => x.shadowCastingMode, "shadowCastingMode");
+            MemberInfo receiveShadows = Strong.PropertyInfo((MeshRenderer x) => x.receiveShadows, "receiveShadows");
             MemberInfo materials = Strong.PropertyInfo((MeshRenderer x) => x.sharedMaterials, "sharedMaterials");
+            
             return new[]
                 {
-                    new PropertyDescriptor( "Materials", editor.Component, materials, materials),
+                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_CastShadows", "Cast Shadows"), editor.Component, shadowCastingMode),
+                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_ReceiveShadows", "Receive Shadows"), editor.Component, receiveShadows, "m_ReceiveShadows"),
+                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_Materials", "Materials"), editor.Component, materials),
                 };
         }
     }

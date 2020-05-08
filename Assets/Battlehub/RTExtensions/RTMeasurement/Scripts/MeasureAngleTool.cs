@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.RTCommon;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Battlehub.RTMeasurement
@@ -45,13 +46,9 @@ namespace Battlehub.RTMeasurement
                         Renderer.Refresh(true);
                     }
 
-                    if (Output != null && Canvas != null)
+                    if(Output != null)
                     {
-                        Camera worldCamera = Canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Canvas.worldCamera;
-
-                        Vector2 position;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Output.transform.parent, Editor.Input.GetPointerXY(0), worldCamera, out position);
-                        Output.transform.localPosition = position;
+                        Output.transform.position = point;
                         if (m_points.Count == 3)
                         {
                             Vector3 v1 = (m_points[0] - m_points[1]).normalized;
@@ -64,10 +61,9 @@ namespace Battlehub.RTMeasurement
                             }
                             else
                             {
-                                Output.text = (angle).ToString("F2");
+                                Output.text = angle.ToString("F2");
+                                Output.text += System.Environment.NewLine + System.Environment.NewLine;
                             }
-
-                            
                         }
                         else
                         {
@@ -76,7 +72,23 @@ namespace Battlehub.RTMeasurement
                     }
                 }
             }
+        }
 
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            m_points.Clear();
+        }
+
+        protected override void OnCommandBufferRefresh(IRTECamera camera)
+        {
+            base.OnCommandBufferRefresh(camera);
+            if (Output != null)
+            {
+                Renderer renderer = Output.GetComponent<Renderer>();
+                renderer.enabled = false;
+                camera.CommandBuffer.DrawRenderer(renderer, renderer.sharedMaterial);
+            }
         }
     }
 }

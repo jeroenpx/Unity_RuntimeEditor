@@ -48,7 +48,7 @@ namespace Battlehub.RTBuilder
         {
             Mesh_Editing,
             UV_Editing,
-            Materials_Editing
+            Materials_Editing,
         }
 
         [SerializeField]
@@ -75,12 +75,12 @@ namespace Battlehub.RTBuilder
 
             if (m_uvEditor != null)
             {
-                m_uvEditor.gameObject.SetActive(m_uiMode == UIModes.UV_Editing);
+                m_uvEditor.SetActive(m_uiMode == UIModes.UV_Editing);
             }
 
             if (m_materialPaletteEditor != null)
             {
-                m_materialPaletteEditor.gameObject.SetActive(m_uiMode == UIModes.Materials_Editing);
+                m_materialPaletteEditor.SetActive(m_uiMode == UIModes.Materials_Editing);
             }
         }
 
@@ -305,7 +305,10 @@ namespace Battlehub.RTBuilder
             UpdateFlagsAndDataBindVisible();
             if(m_isProBuilderMeshSelected)
             {
-                StartCoroutine(CoUpdateFlagsAndDataBindVisible());
+                if(gameObject.activeSelf)
+                {
+                    StartCoroutine(CoUpdateFlagsAndDataBindVisible());
+                }
             }
         }
 

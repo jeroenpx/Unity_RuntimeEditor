@@ -152,6 +152,11 @@ namespace Battlehub.RTTerrain
                 {
                     m_defaultTexture = texture;
                 }
+
+                if(m_defaultTexture != null)
+                {
+                    m_defaultTexture.hideFlags = HideFlags.None;
+                }
             });
         }
 

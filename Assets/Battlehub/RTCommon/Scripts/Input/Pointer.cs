@@ -69,11 +69,18 @@ namespace Battlehub.RTCommon
             Vector2 viewPoint;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(m_renderTextureCamera.RectTransform, screenPoint, m_renderTextureCamera.Canvas.worldCamera, out viewPoint);
 
-            if (m_canvasScaler != null)
+            if(m_canvasScaler != null)
             {
-                viewPoint *= m_canvasScaler.scaleFactor;
+                if (m_canvasScaler.uiScaleMode == CanvasScaler.ScaleMode.ScaleWithScreenSize)
+                {
+                    viewPoint = screenPoint;
+                }
+                else
+                {
+                    viewPoint *= m_canvasScaler.scaleFactor;
+                }
             }
-
+            
             return viewPoint;
         }
 

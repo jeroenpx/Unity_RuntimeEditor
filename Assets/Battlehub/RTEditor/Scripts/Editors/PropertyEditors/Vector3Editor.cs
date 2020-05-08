@@ -5,7 +5,7 @@ using TMPro;
 
 namespace Battlehub.RTEditor
 {
-    public class Vector3Editor : PropertyEditor<Vector3>
+    public class Vector3Editor : ConvertablePropertyEditor<Vector3>
     {
         [SerializeField]
         private TMP_InputField m_xInput = null;
@@ -47,7 +47,6 @@ namespace Battlehub.RTEditor
         {
             base.AwakeOverride();
             
-
             m_xInput.onValueChanged.AddListener(OnXValueChanged);
             m_yInput.onValueChanged.AddListener(OnYValueChanged);
             m_zInput.onValueChanged.AddListener(OnZValueChanged);
@@ -55,7 +54,6 @@ namespace Battlehub.RTEditor
             m_xInput.onEndEdit.AddListener(OnEndEdit);
             m_yInput.onEndEdit.AddListener(OnEndEdit);
             m_zInput.onEndEdit.AddListener(OnEndEdit);
-
 
             for (int i = 0; i < m_dragFields.Length; ++i)
             {
@@ -99,9 +97,9 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Vector3 value)
         {
-            m_xInput.text = value.x.ToString();
-            m_yInput.text = value.y.ToString();
-            m_zInput.text = value.z.ToString();
+            m_xInput.text = FromMeters(value.x).ToString();
+            m_yInput.text = FromMeters(value.y).ToString();
+            m_zInput.text = FromMeters(value.z).ToString();
         }
 
         private void OnXValueChanged(string value)
@@ -110,7 +108,7 @@ namespace Battlehub.RTEditor
             if (float.TryParse(value, out val))
             {
                 Vector3 vector = GetValue();
-                vector.x = val;
+                vector.x = ToMeters(val);
                 SetValue(vector);
             }
         }
@@ -121,7 +119,7 @@ namespace Battlehub.RTEditor
             if (float.TryParse(value, out val))
             {
                 Vector3 vector = GetValue();
-                vector.y = val;
+                vector.y = ToMeters(val);
                 SetValue(vector);
             }
         }
@@ -132,7 +130,7 @@ namespace Battlehub.RTEditor
             if (float.TryParse(value, out val))
             {
                 Vector3 vector = GetValue();
-                vector.z = val;
+                vector.z = ToMeters(val);
                 SetValue(vector);
             }
         }
@@ -140,9 +138,9 @@ namespace Battlehub.RTEditor
         private void OnEndEdit(string value)
         {
             Vector3 vector = GetValue();
-            m_xInput.text = vector.x.ToString();
-            m_yInput.text = vector.y.ToString();
-            m_zInput.text = vector.z.ToString();
+            m_xInput.text = FromMeters(vector.x).ToString();
+            m_yInput.text = FromMeters(vector.y).ToString();
+            m_zInput.text = FromMeters(vector.z).ToString();
 
             EndEdit();
         }

@@ -67,7 +67,6 @@ namespace Battlehub.RTBuilder
             }
         }
 
-
         protected virtual void OnObjectStarted(ExposeToEditor obj)
         {
             TryCreateWireframe(obj);
@@ -76,7 +75,7 @@ namespace Battlehub.RTBuilder
         protected virtual void TryCreateWireframe(ExposeToEditor obj)
         {
             PBMesh pbMesh = obj.GetComponent<PBMesh>();
-            if (pbMesh != null)
+            if (pbMesh != null && !pbMesh.GetComponentsInChildren<WireframeMesh>().Any(w => !w.IsIndividual))
             {
                 CreateWireframeMesh(pbMesh);
             }

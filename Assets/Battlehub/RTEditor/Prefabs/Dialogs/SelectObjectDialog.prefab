@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
-  m_resizeCamera: 1
+  m_renderTextureUsage: 0
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 2
@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8509804, g: 0.8509804, b: 0.8509804, a: 1}
+  m_Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -545,17 +545,17 @@ PrefabInstance:
     - target: {fileID: 114124913510521820, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.8490566
+      value: 0.15294118
       objectReference: {fileID: 0}
     - target: {fileID: 114124913510521820, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.8490566
+      value: 0.15294118
       objectReference: {fileID: 0}
     - target: {fileID: 114124913510521820, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.8490566
+      value: 0.15294118
       objectReference: {fileID: 0}
     - target: {fileID: 114124913510521820, guid: f4d9b253bcb78574fb946d44b6934649,
         type: 3}
@@ -798,17 +798,17 @@ PrefabInstance:
     - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_Colors.m_PressedColor.r
-      value: 0.8509804
+      value: 0.1254902
       objectReference: {fileID: 0}
     - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_Colors.m_PressedColor.g
-      value: 0.8509804
+      value: 0.1254902
       objectReference: {fileID: 0}
     - target: {fileID: 2695604099711716462, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}
       propertyPath: m_Colors.m_PressedColor.b
-      value: 0.8509804
+      value: 0.1254902
       objectReference: {fileID: 0}
     - target: {fileID: 3316179381635285955, guid: f43d236fa1937fc44829764302e692ed,
         type: 3}

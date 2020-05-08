@@ -2,6 +2,7 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Battlehub.RTMeasurement
 {
@@ -14,13 +15,7 @@ namespace Battlehub.RTMeasurement
         private LineStripRenderer m_pointerRenderer;
 
         [SerializeField]
-        private TextMeshProUGUI m_output;
-
-        private Canvas m_canvas;
-        protected Canvas Canvas
-        {
-            get { return m_canvas; }
-        }
+        private TextMeshPro m_output = null;
 
         protected LineStripRenderer Renderer
         {
@@ -32,21 +27,9 @@ namespace Battlehub.RTMeasurement
             get { return m_pointerRenderer; }
         }
 
-        public TextMeshProUGUI Output
+        public TextMeshPro Output
         {
             get { return m_output; }
-            set
-            {
-                m_output = value;
-                if (m_output == null)
-                {
-                    m_canvas = null;
-                }
-                else
-                {
-                    m_canvas = m_output.GetComponentInParent<Canvas>();
-                }
-            }
         }
 
         public override RuntimeWindow Window
@@ -54,6 +37,8 @@ namespace Battlehub.RTMeasurement
             get;
             set;
         }
+
+        private IRTECamera m_rteCamera;
 
         protected override void AwakeOverride()
         {
@@ -64,6 +49,19 @@ namespace Battlehub.RTMeasurement
                 m_renderer = gameObject.AddComponent<LineStripRenderer>();
             }
 
+            if(m_output != null)
+            {
+                m_output.GetComponent<Renderer>().enabled = false;
+            }
+
+            if(Window != null)
+            {
+                m_rteCamera = Window.Camera.gameObject.AddComponent<RTECamera>();
+                m_rteCamera.Event = CameraEvent.AfterImageEffects;
+                m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
+            }
+            
             if (m_pointerRenderer == null)
             {
                 GameObject pointerGo = new GameObject("Pointer");
@@ -78,11 +76,6 @@ namespace Battlehub.RTMeasurement
             {
                 transforms[i].gameObject.layer = Editor.CameraLayerSettings.AllScenesLayer;
             }
-
-            if (m_output != null)
-            {
-                m_canvas = m_output.GetComponentInParent<Canvas>();
-            }
         }
 
         protected virtual void OnDisable()
@@ -91,11 +84,37 @@ namespace Battlehub.RTMeasurement
             {
                 m_pointerRenderer.transform.position = Vector3.one * 10000;
             }
+
+            if(m_renderer != null)
+            {
+                m_renderer.Vertices = new Vector3[0];
+                m_renderer.Refresh();
+            }
+
+            if(Output != null)
+            {
+                Output.text = "";
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                m_rteCamera.Destroy();
+                m_rteCamera = null;
+            }
         }
 
         protected virtual void Update()
         {
             if (Window == null)
+            {
+                return;
+            }
+
+            if(Editor.ActiveWindow != Window)
             {
                 return;
             }
@@ -123,6 +142,14 @@ namespace Battlehub.RTMeasurement
         protected override void OnActiveWindowChanged(RuntimeWindow deactivatedWindow)
         {
             base.OnActiveWindowChanged(deactivatedWindow);
+
+            if (m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                m_rteCamera.Destroy();
+                m_rteCamera = null;
+            }
+
             if (Editor.ActiveWindow == null || Editor.ActiveWindow.WindowType != RuntimeWindowType.Scene)
             {
                 Window = null;
@@ -130,6 +157,11 @@ namespace Battlehub.RTMeasurement
             else
             {
                 Window = Editor.ActiveWindow;
+
+                m_rteCamera = Window.Camera.gameObject.AddComponent<RTECamera>();
+                m_rteCamera.Event = CameraEvent.AfterImageEffects;
+                m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
         }
 
@@ -314,6 +346,11 @@ namespace Battlehub.RTMeasurement
             }
 
             return mesh;
+        }
+
+        protected virtual void OnCommandBufferRefresh(IRTECamera camera)
+        {
+              
         }
     }
 }

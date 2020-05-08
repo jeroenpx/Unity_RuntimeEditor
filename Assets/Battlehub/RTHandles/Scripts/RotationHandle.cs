@@ -18,6 +18,7 @@ namespace Battlehub.RTHandles
         private float m_deltaX;
         private float m_deltaY;
         private Vector2 m_prevPointer;
+        private MaterialPropertyBlock[] m_propertyBlocks;
 
         public override RuntimeTool Tool
         {
@@ -50,6 +51,11 @@ namespace Battlehub.RTHandles
         {
             base.AwakeOverride();
             Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
+
+            m_propertyBlocks = new[] 
+            {
+                new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock()
+            };
         }
 
         protected override void OnDestroyOverride()
@@ -583,9 +589,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void DrawOverride(Camera camera)
+        protected override void RefreshCommandBuffer(IRTECamera camera)
         {
-            Appearance.DoRotationHandle(camera, Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject, Editor.IsVR);
+            Appearance.DoRotationHandle(camera.CommandBuffer, m_propertyBlocks, camera.Camera, Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject, Editor.IsVR);
         }
     }
 }

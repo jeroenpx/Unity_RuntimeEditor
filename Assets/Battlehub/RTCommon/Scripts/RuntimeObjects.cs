@@ -446,7 +446,7 @@ namespace Battlehub.RTCommon
                 {
                     if (obj.AddColliders && !isRigidBody)
                     {
-                        Mesh box = RuntimeGraphics.CreateCubeMesh(Color.black, obj.CustomBounds.center, 1, obj.CustomBounds.extents.x * 2, obj.CustomBounds.extents.y * 2, obj.CustomBounds.extents.z * 2);
+                        Mesh box = GraphicsUtility.CreateCube(Color.black, obj.CustomBounds.center, 1, obj.CustomBounds.extents.x * 2, obj.CustomBounds.extents.y * 2, obj.CustomBounds.extents.z * 2);
 
                         MeshCollider collider = obj.BoundsObject.AddComponent<MeshCollider>();
                         collider.convex = isRigidBody;

@@ -131,6 +131,11 @@ namespace Battlehub.ProBuilderIntegration
 
             foreach (ProBuilderMesh mesh in m_edgeSelection.Meshes)
             {
+                if(mesh == null || mesh.gameObject == null)
+                {
+                    continue;
+                }
+
                 selection.UnselectedEdges.Add(mesh.gameObject, m_edgeSelection.GetEdges(mesh).ToArray());
             }
 
@@ -269,7 +274,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             MeshSelection selection = null;
             GameObject pickedObject = PBUtility.PickObject(camera, pointer);
-            float result = PBUtility.PickEdge(camera, pointer, 20, pickedObject, m_edgeSelection.Meshes, ref m_selection);
+            float result = PBUtility.PickEdge(camera, pointer, 20, pickedObject, m_edgeSelection.Meshes, depthTest, ref m_selection);
 
             if (result != Mathf.Infinity)
             {

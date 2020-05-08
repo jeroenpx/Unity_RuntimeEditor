@@ -85,14 +85,14 @@ namespace Battlehub.Utils
             }
 
             prefab.SetActive(isActive);
-            Renderer[] renderers = go.GetComponentsInChildren<Renderer>(true);
+            Renderer[] renderers = go.GetComponentsInChildren<Renderer>(false);
             if(renderers.Length == 0 )
             {
                 if(fallback != null)
                 {
                     DestroyImmediate(go);
                     go = Instantiate(fallback, position, rotation) as GameObject;
-                    renderers = new[] { fallback.GetComponentInChildren<Renderer>(true) };
+                    renderers = new[] { fallback.GetComponentInChildren<Renderer>(false) };
                 }
             }
             Texture2D texture = null;

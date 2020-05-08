@@ -9,27 +9,17 @@ Shader "Battlehub/RTBuilder/LineBillboard"
 
     SubShader
     {
-        Tags
-        {
-            "ProBuilderPicker"="EdgePass"
-            "RenderType"="Geometry"
-            "Queue"="Geometry"
-            "DisableBatching"="True"
-            "ForceNoShadowCasting"="True"
-            "IgnoreProjector"="True"
-        }
+		Tags{ "Queue" = "Transparent"  "RenderType" = "Transparent" "DisableBatching" = "True" "ForceNoShadowCasting" = "True" "IgnoreProjector" = "True" }
 
-        Lighting Off
-        ZTest [_HandleZTest]
-        ZWrite On
-        Cull Off
-        Blend Off
-        Offset -1, -1
+		Blend SrcAlpha OneMinusSrcAlpha
+		Lighting Off
+		ZTest[_HandleZTest]
+		ZWrite On
+		Cull Off
+		Offset -1, -1
 
         Pass
         {
-            Name "EdgePass"
-
             CGPROGRAM
             #pragma target 4.0
             #pragma vertex vert
@@ -74,6 +64,15 @@ Shader "Battlehub/RTBuilder/LineBillboard"
                 return v;
             }
 
+			inline float4 GammaToLinearSpace(float4 sRGB)
+			{
+				if (IsGammaSpace())
+				{
+					return sRGB;
+				}
+				return sRGB * (sRGB * (sRGB * 0.305306011h + 0.682171111h) + 0.012522878h);
+			}
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -85,7 +84,7 @@ Shader "Battlehub/RTBuilder/LineBillboard"
                 o.pos = mul(UNITY_MATRIX_P, o.pos);
                 // convert clip -> ndc -> screen, build billboards in geo shader, then screen -> ndc -> clip
                 o.pos = ClipToScreen(o.pos);
-                o.color = v.color;
+				o.color = GammaToLinearSpace(v.color);
                 return o;
             }
 
@@ -115,7 +114,7 @@ Shader "Battlehub/RTBuilder/LineBillboard"
 
             fixed4 frag (v2f i) : COLOR
             {
-                return i.color * _Color;
+				return i.color;
             }
 
             ENDCG

@@ -100,7 +100,6 @@ namespace Battlehub.ProBuilderIntegration
                 PBBuiltinMaterials.pointShader :
                 PBBuiltinMaterials.dotShader;
 
-            
             m_material = new Material(Shader.Find(vertShader));
             m_material.SetColor("_Color", Color.white);
             m_material.SetInt("_HandleZTest", (int)m_zTest);

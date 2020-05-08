@@ -15,10 +15,9 @@ namespace Battlehub.RTHandles
     /// Base class for all handles (Position, Rotation and Scale)
     /// </summary>
     [DefaultExecutionOrder(-50)]
-    public abstract class BaseHandle : RTEComponent, IGL
+    public abstract class BaseHandle : RTEComponent
     {
         private const float SelectionMarginPixels = 10;
-
         /// <summary>
         /// current size of grid 
         /// </summary>
@@ -66,7 +65,7 @@ namespace Battlehub.RTHandles
         }
 
         /// <summary>
-        /// Target objects which will be affected by handle (for example if m_targets array containes O1 and O2 objects, and O1 is parent of O2 then m_activeTargets array will contain only O1 object)
+        /// Target objects which will be affected by handle (for example if m_targets array contains O1 and O2 objects and O1 is parent of O2 then m_activeTargets array will contain only O1 object)
         /// </summary>
         private Transform[] m_activeTargets;
         public virtual Transform[] ActiveTargets
@@ -80,7 +79,7 @@ namespace Battlehub.RTHandles
             get { return m_activeRealTargets; }
         }
         private Transform[] m_realTargets;
-        protected virtual Transform[] RealTargets
+        public virtual Transform[] RealTargets
         {
             get
             {
@@ -433,6 +432,13 @@ namespace Battlehub.RTHandles
                     {
                         Model.Select(SelectedAxis);
                     }
+                    else
+                    {
+                        if(m_rteCamera != null)
+                        {
+                            m_rteCamera.RefreshCommandBuffer();
+                        }
+                    }
                 }
             }
         }
@@ -467,9 +473,29 @@ namespace Battlehub.RTHandles
             set;
         }
 
-        public BaseHandleUnityEvent BeforeDrag;
-        public BaseHandleUnityEvent Drag;
-        public BaseHandleUnityEvent Drop;
+        public BaseHandleUnityEvent BeforeDrag = new BaseHandleUnityEvent();
+        public BaseHandleUnityEvent Drag = new BaseHandleUnityEvent();
+        public BaseHandleUnityEvent Drop = new BaseHandleUnityEvent();
+
+        private IRTECamera m_rteCamera;
+        protected IRTECamera RTECamera
+        {
+            get { return m_rteCamera; }
+        }
+
+        private Vector3 m_prevScale;
+        private Vector3 m_prevCamPosition;
+        private Quaternion m_prevCamRotation;
+        private bool m_prevCamOrthographic;
+        private float m_prevCamOrthographicsSize;
+        private Rect m_prevCamRect;
+
+        private bool m_refreshOnCameraChanged = true;
+        protected bool RefreshOnCameraChanged
+        {
+            get { return m_refreshOnCameraChanged; }
+            set { m_refreshOnCameraChanged = value; }
+        }
 
         protected override void AwakeOverride()
         {
@@ -503,24 +529,6 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (GLRenderer.Instance == null)
-            {
-                GameObject glRenderer = new GameObject();
-                glRenderer.name = "GLRenderer";
-                glRenderer.transform.SetParent(Editor.Root, false);
-                glRenderer.AddComponent<GLRenderer>();
-            }
-
-            if (GLRenderer.Instance != null)
-            {
-                GLRenderer.Instance.Add(this);
-            }
-
-            if (Targets[0].position != transform.position)
-            {
-                transform.position = Targets[0].position;
-            }
-
             if (Model != null)
             {
                 bool activeSelf = Model.gameObject.activeSelf;
@@ -549,7 +557,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-    
         private void Start()
         {
             m_input = GetComponent<BaseHandleInput>();
@@ -558,6 +565,37 @@ namespace Battlehub.RTHandles
                 m_input = gameObject.AddComponent<BaseHandleInput>();
                 m_input.Handle = this;
             }
+
+            IRTEGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRTEGraphicsLayer>();
+            if (graphicsLayer != null)
+            {
+                m_rteCamera = graphicsLayer.Camera;
+            }
+
+            if (m_rteCamera == null && Window.Camera != null)
+            {
+                m_rteCamera = Window.Camera.GetComponent<IRTECamera>();
+                if (m_rteCamera == null)
+                {
+                    m_rteCamera = Window.Camera.gameObject.AddComponent<RTECamera>();
+                    m_rteCamera.Event = UnityEngine.Rendering.CameraEvent.AfterImageEffectsOpaque;
+                }
+            }
+
+            if (Model == null && m_rteCamera != null)
+            {
+                m_prevScale = transform.localScale;
+
+                m_prevCamPosition = m_rteCamera.Camera.transform.position;
+                m_prevCamRotation = m_rteCamera.Camera.transform.rotation;
+                m_prevCamOrthographic = m_rteCamera.Camera.orthographic;
+                m_prevCamOrthographicsSize = m_rteCamera.Camera.orthographicSize;
+                m_prevCamRect = m_rteCamera.Camera.rect;
+
+                m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
+            }
+
             OnStartOverride();
         }
 
@@ -568,6 +606,7 @@ namespace Battlehub.RTHandles
 
         private void OnEnable()
         {
+            Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
             Editor.Tools.PivotModeChanged += OnPivotModeChanged;
             Editor.Tools.ToolChanged += OnRuntimeToolChanged;
             Editor.Tools.LockAxesChanged += OnLockAxesChanged;
@@ -594,13 +633,13 @@ namespace Battlehub.RTHandles
                 {
                     Model.SetLock(LockObject);
                 }
-        
             }
             else
             {
-                if (GLRenderer.Instance != null)
+                if (m_rteCamera != null)
                 {
-                    GLRenderer.Instance.Add(this);
+                    m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+                    m_rteCamera.RefreshCommandBuffer();
                 }
             }
         }
@@ -612,9 +651,10 @@ namespace Battlehub.RTHandles
 
         private void OnDisable()
         {
-            if (GLRenderer.Instance != null)
+            if (m_rteCamera != null)
             {
-                GLRenderer.Instance.Remove(this);
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
 
             if (HitTester != null)
@@ -625,6 +665,7 @@ namespace Battlehub.RTHandles
             if (Editor != null)
             {
                 Editor.Tools.PivotModeChanged -= OnPivotModeChanged;
+                Editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
                 Editor.Tools.ToolChanged -= OnRuntimeToolChanged;
                 Editor.Tools.LockAxesChanged -= OnLockAxesChanged;
                 Editor.Undo.UndoCompleted -= OnUndoCompleted;
@@ -662,9 +703,15 @@ namespace Battlehub.RTHandles
 
             m_allHandles.Remove(this);
 
-            if (GLRenderer.Instance != null)
+            if (m_input != null && m_input.Handle == this)
             {
-                GLRenderer.Instance.Remove(this);
+                Destroy(m_input);
+            }
+
+            if (m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
 
             DestroyCommonCenter(false);
@@ -796,11 +843,6 @@ namespace Battlehub.RTHandles
 
             if (m_isDragging)
             {
-                if(Drag != null)
-                {
-                    Drag.Invoke(this);
-                }
-                
                 if (PivotMode == RuntimePivotMode.Center && m_commonCenterTarget != null && m_realTargets != null && m_realTargets.Length > 1)
                 {
                     for (int i = 0; i < m_commonCenterTarget.Length; ++i)
@@ -811,9 +853,14 @@ namespace Battlehub.RTHandles
                         target.transform.rotation = commonCenterTarget.rotation;
                         target.transform.localScale = commonCenterTarget.lossyScale;
                     }
-                }   
+                }
 
-                if(m_commonCenter != null && m_commonCenter.Length > 0)
+                if (Drag != null)
+                {
+                    Drag.Invoke(this);
+                }
+
+                if (m_commonCenter != null && m_commonCenter.Length > 0)
                 {
                     for (int i = 0; i < m_allHandles.Count; ++i)
                     {
@@ -827,16 +874,23 @@ namespace Battlehub.RTHandles
                     }
                 }
             }
-            if (Model != null && Window != null)
+
+            if(Window != null)
             {
-                SyncModelTransform();
+                if (Model != null)
+                {
+                    SyncModelTransform();
+                }
             }
         }
 
         protected virtual void UpdateOverride()
         {
-            if (Targets != null && Targets.Length > 0 && Targets[0] != null && Targets[0].position != transform.position)
+            //bool refreshCommandBuffer = false;
+            Transform target = Targets != null && Targets.Length > 0 && Targets[0] != null ? Targets[0] : null;
+            if (target != null && (target.position != transform.position || target.rotation != transform.rotation || target.localScale != m_prevScale))
             {
+                m_prevScale = transform.localScale;
                 if (IsDragging)
                 {
                     Vector3 offset = transform.position - Targets[0].position;
@@ -847,12 +901,16 @@ namespace Battlehub.RTHandles
                             ActiveTargets[i].position += offset;
                         }
                     }
-
                 }
                 else
                 {
-                    transform.position = Targets[0].position;
-                    transform.rotation = Targets[0].rotation;
+                    transform.position = target.position;
+                    transform.rotation = target.rotation;
+                }
+
+                if (Model == null && m_rteCamera != null)
+                {
+                    m_rteCamera.RefreshCommandBuffer();
                 }
             }
         }
@@ -867,9 +925,35 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (Model != null && Window != null)
+            if(Window != null)
             {
-                SyncScale();
+                if (Model != null)
+                {
+                    SyncScale();
+                }
+                else
+                {
+                    if (m_refreshOnCameraChanged)
+                    {
+                        Camera camera = m_rteCamera.Camera;
+                        if (m_prevCamPosition != camera.transform.position ||
+                            m_prevCamRotation != camera.transform.rotation ||
+                            m_prevCamOrthographic != camera.orthographic ||
+                            m_prevCamOrthographicsSize != camera.orthographicSize ||
+                            m_prevCamRect != camera.rect)
+                        {
+                            m_prevCamPosition = camera.transform.position;
+                            m_prevCamRotation = camera.transform.rotation;
+                            m_prevCamOrthographic = camera.orthographic;
+                            m_prevCamOrthographicsSize = camera.orthographicSize;
+                            m_prevCamRect = camera.rect;
+                            if (m_rteCamera != null)
+                            {
+                                m_rteCamera.RefreshCommandBuffer();
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -906,7 +990,6 @@ namespace Battlehub.RTHandles
 
         public void BeginDrag()
         {
-            //if (Editor.Tools.Current != Tool && Editor.Tools.Current != RuntimeTool.None || Editor.Tools.IsViewing)
             if(Editor.Tools.IsViewing)
             {
                 return;
@@ -927,7 +1010,7 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            //m_isPointerDown = true;
+            
             m_isDragging = OnBeginDrag();
             if (m_isDragging)
             {
@@ -950,13 +1033,17 @@ namespace Battlehub.RTHandles
 
         public void EndDrag()
         {
-            //m_isPointerDown = false;
-
             if (m_isDragging)
             {
                 OnDrop();
                 EndRecordTransform();
                 m_isDragging = false;
+
+                if (Model == null && m_rteCamera != null)
+                {
+                    m_rteCamera.RefreshCommandBuffer();
+                }
+
                 if (Drop != null)
                 {
                     Drop.Invoke(this);
@@ -964,7 +1051,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        /// Drag And Drop virtual methods
         protected virtual bool OnBeginDrag()
         {
             if(!IsWindowActive)
@@ -1005,7 +1091,20 @@ namespace Battlehub.RTHandles
             if(Target != null)
             {
                 transform.position = Target.position;
-            }            
+            }    
+            
+            if(Model == null && m_rteCamera != null)
+            {
+                m_rteCamera.RefreshCommandBuffer();
+            }
+        }
+
+        private void OnPivotRotationChanged()
+        {
+            if (Model == null && m_rteCamera != null)
+            {
+                m_rteCamera.RefreshCommandBuffer();
+            }
         }
 
         private void OnLockAxesChanged()
@@ -1020,6 +1119,13 @@ namespace Battlehub.RTHandles
                 if (!Model.gameObject.IsPrefab())
                 {
                     Model.SetLock(LockObject);
+                }
+            }
+            else
+            {
+                if(m_rteCamera != null)
+                {
+                    m_rteCamera.RefreshCommandBuffer();
                 }
             }
         }
@@ -1061,7 +1167,6 @@ namespace Battlehub.RTHandles
                 {
                     Targets = m_realTargets;
                 }
-             
             }
         }
 
@@ -1076,7 +1181,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        /// Hit testing methods      
         public virtual RuntimeHandleAxis HitTest(out float distance)
         {
             distance = float.PositiveInfinity;
@@ -1200,7 +1304,6 @@ namespace Battlehub.RTHandles
             return false;
         }
 
-
         private static Vector2 PerpendicularClockwise(Vector2 vector2)
         {
             return new Vector2(-vector2.y, vector2.x);
@@ -1216,24 +1319,6 @@ namespace Battlehub.RTHandles
             return offset;
         }
 
-        void IGL.Draw(int cullingMask, Camera camera)
-        {
-            if((cullingMask & (1 << (Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index))) == 0)
-            {
-                return;
-            }
-
-            if(Model == null)
-            {
-                DrawOverride(camera);
-            }
-        }
-
-        protected virtual void DrawOverride(Camera camera)
-        {
-
-        }
-
         public void SetModel(BaseHandleModel model)
         {
             model.Appearance = Appearance;
@@ -1245,5 +1330,19 @@ namespace Battlehub.RTHandles
 
             Model = model;
         }
+
+        private void OnCommandBufferRefresh(IRTECamera camera)
+        {
+            if(Target != null)
+            {
+                RefreshCommandBuffer(camera);
+            }
+        }
+
+        protected virtual void RefreshCommandBuffer(IRTECamera camera)
+        {
+
+        }
+
     }
 }

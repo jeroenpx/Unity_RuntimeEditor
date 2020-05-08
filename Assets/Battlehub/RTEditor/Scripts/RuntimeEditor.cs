@@ -518,21 +518,8 @@ namespace Battlehub.RTEditor
 
         public ProjectAsyncOperation<AssetItem[]> CreatePrefab(ProjectItem dropTarget, ExposeToEditor dragObject, bool? includeDependencies, Action<AssetItem[]> done)
         {
-            SelectionGizmoModel gizmo = dragObject.GetComponentInChildren<SelectionGizmoModel>();
-            if (gizmo != null)
-            {
-                gizmo.transform.SetParent(null);
-                gizmo.gameObject.SetActive(false);
-            }
-
             Action<AssetItem[]> callback = assetItems =>
             {
-                if (gizmo != null)
-                {
-                    gizmo.transform.SetParent(dragObject.transform);
-                    gizmo.gameObject.SetActive(true);
-                }
-
                 if(done != null)
                 {
                     done(assetItems);

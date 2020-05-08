@@ -1651,6 +1651,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MinHeightEditor
       objectReference: {fileID: 0}
+    - target: {fileID: 114000010248129414, guid: 3cb05b183312f1e498e885e875ffab05,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114000012323015688, guid: 3cb05b183312f1e498e885e875ffab05,
         type: 3}
       propertyPath: m_Padding.m_Left
@@ -2965,6 +2970,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MaxWidthEditor
       objectReference: {fileID: 0}
+    - target: {fileID: 114000010248129414, guid: 3cb05b183312f1e498e885e875ffab05,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114000012323015688, guid: 3cb05b183312f1e498e885e875ffab05,
         type: 3}
       propertyPath: m_Padding.m_Left
@@ -3280,6 +3290,11 @@ PrefabInstance:
     - target: {fileID: 1000012517089462, guid: 3cb05b183312f1e498e885e875ffab05, type: 3}
       propertyPath: m_Name
       value: MinWidthEditor
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010248129414, guid: 3cb05b183312f1e498e885e875ffab05,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114000012323015688, guid: 3cb05b183312f1e498e885e875ffab05,
         type: 3}
@@ -3927,6 +3942,11 @@ PrefabInstance:
     - target: {fileID: 1000012517089462, guid: 3cb05b183312f1e498e885e875ffab05, type: 3}
       propertyPath: m_Name
       value: MaxHeightEditor
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010248129414, guid: 3cb05b183312f1e498e885e875ffab05,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114000012323015688, guid: 3cb05b183312f1e498e885e875ffab05,
         type: 3}

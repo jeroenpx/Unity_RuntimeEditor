@@ -61,7 +61,6 @@ namespace Battlehub.RTEditor
         bool ActivateWindow(Transform content);
 
         Transform CreateWindow(string windowTypeName, out WindowDescriptor wd, out GameObject content, out bool isDialog);
-        //Transform CreateWindow(string windowTypeName, out Dialog dialog);
         Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null);
         void DestroyWindow(Transform conent);
 

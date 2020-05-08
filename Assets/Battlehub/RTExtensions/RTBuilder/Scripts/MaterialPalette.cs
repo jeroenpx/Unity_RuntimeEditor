@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace Battlehub.RTBuilder
             for(int i = 0; i < Materials.Count; ++i)
             {
                 Material material = Materials[i];
-                if(material != null && material.mainTexture == texutre)
+                if(material != null && material.MainTexture() == texutre)
                 {
                     return material;
                 }

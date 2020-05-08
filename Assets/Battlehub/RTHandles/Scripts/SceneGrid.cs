@@ -62,15 +62,8 @@ namespace Battlehub.RTHandles
 
             m_commandBuffer = new CommandBuffer();
             m_commandBuffer.name = "SceneGrid Command Buffer";
-            if(RenderPipelineInfo.Type == RPType.Standard)
-            {
-                Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
-            }
-            else
-            {
-                Window.Camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
-            }
-            
+            Window.Camera.AddCommandBuffer(CameraEvent.AfterForwardAlpha, m_commandBuffer);
+
             Rebuild();
         }
 
@@ -88,17 +81,9 @@ namespace Battlehub.RTHandles
         {
             if (Window != null && Window.Camera != null && m_commandBuffer != null)
             {
-                if (RenderPipelineInfo.Type == RPType.Standard)
-                {
-                    Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
-                }
-                else
-                {
-                    Window.Camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
-                }
+                Window.Camera.RemoveCommandBuffer(CameraEvent.AfterForwardAlpha, m_commandBuffer);
             }
             
-
             base.OnDestroyOverride();
             Cleanup();
         }
@@ -161,17 +146,8 @@ namespace Battlehub.RTHandles
                 transform.localToWorldMatrix * Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1);
 
             m_commandBuffer.Clear();
-
-            if (RenderPipelineInfo.Type == RPType.Standard)
-            {
-                m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material);
-                m_commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material);
-            }
-            else
-            {
-                m_commandBuffer.DrawMeshInstanced(m_grid0Mesh, 0, m_grid0Material, 0, new[] { grid0 });
-                m_commandBuffer.DrawMeshInstanced(m_grid1Mesh, 0, m_grid1Material, 0, new[] { grid1 });
-            }
+            m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material, 0, 0);
+            m_commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material, 0, 0);
         }
 
         private Vector3 GetGridPostion(float spacing)
@@ -207,9 +183,11 @@ namespace Battlehub.RTHandles
         {
             Shader shader =  Shader.Find("Battlehub/RTHandles/Grid");
             Material material = new Material(shader);
-            material.SetColor("_GridColor", Appearance.Colors.GridColor);
+
+            Color gridColor = Appearance.Colors.GridColor;
+            material.SetColor("_GridColor", gridColor);
             material.SetFloat("_ZTest", zTest ? (float)CompareFunction.LessEqual : (float)CompareFunction.Always);
-            material.enableInstancing = true;
+            
             return material;
         }
 

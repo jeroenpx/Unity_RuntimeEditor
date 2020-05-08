@@ -9,7 +9,10 @@ namespace Battlehub.ProBuilderIntegration
     {
         public override void Drag(Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            base.Drag(position, rotation, scale);
+            if (Meshes == null)
+            {
+                return;
+            }
 
             float angle = (Quaternion.Inverse(InitialRotation) * rotation).eulerAngles.z;
 

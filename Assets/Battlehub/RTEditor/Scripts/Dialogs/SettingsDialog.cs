@@ -57,6 +57,33 @@ namespace Battlehub.RTEditor
         private BoolEditor m_constantZoomSpeedEditor = null;
 
         [SerializeField]
+        private HeaderLabel m_measurementHeader = null;
+
+        [SerializeField]
+        private EnumEditor m_measurementSystemEditor = null;
+
+        [SerializeField]
+        private HeaderLabel m_graphicsHeader = null;
+
+        [SerializeField]
+        private EnumEditor m_graphicsQualityEditor = null;
+
+        [SerializeField]
+        private HeaderLabel m_lightSettingsHeader = null;
+
+        [SerializeField]
+        private ColorEditor m_lightColorEditor = null;
+
+        [SerializeField]
+        private FloatEditor m_lightIntensityEditor = null;
+
+        [SerializeField]
+        private EnumEditor m_shadowTypeEditor = null;
+
+        [SerializeField]
+        private RangeEditor m_shadowStrengthEditor = null;
+
+        [SerializeField]
         private Transform m_panel = null;
 
         private List<GameObject> m_customSettings = new List<GameObject>();
@@ -116,6 +143,11 @@ namespace Battlehub.RTEditor
             if (m_sceneNavigationSettingsHeader != null)
             {
                 m_sceneNavigationSettingsHeader.Init(null, null, null, null, m_localization.GetString("ID_RTEditor_SettingsDialog_SceneNavigationSettings", "Scene Navigation Settings"));
+            }
+
+            if(m_measurementHeader != null)
+            {
+                m_measurementHeader.Init(null, null, null, null, m_localization.GetString("ID_RTEditor_SettingsDialog_MeasurementSettings", "Measurement Settings"));
             }
 
             if (m_isGridVisibleEditor != null)
@@ -200,6 +232,50 @@ namespace Battlehub.RTEditor
             if(m_constantZoomSpeedEditor != null)
             {
                 m_constantZoomSpeedEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.ConstantZoomSpeed), null, m_localization.GetString("ID_RTEditor_SettingsDialog_ConstantZoomSpeed", "Constant Zoom Speed"));
+            }
+
+            if(m_measurementSystemEditor != null)
+            {
+                m_measurementSystemEditor.Init(m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.SystemOfMeasurement), m_localization.GetString("ID_RTEditor_SettingsDialog_SystemOfMeasurement", "System Of Measurement"));
+            }
+
+            if (m_graphicsHeader != null)
+            {
+                m_graphicsHeader.gameObject.SetActive(RenderPipelineInfo.Type != RPType.Standard);
+                m_graphicsHeader.Init(null, null, null, null, m_localization.GetString("ID_RTEditor_SettingsDialog_GraphicsSettings", "Graphics Settings"));
+            }
+
+            if (m_graphicsQualityEditor != null)
+            {
+                m_graphicsQualityEditor.gameObject.SetActive(RenderPipelineInfo.Type != RPType.Standard);
+                m_graphicsQualityEditor.Init(m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.GraphicsQuality), m_localization.GetString("ID_RTEditor_SettingsDialog_GraphicsQuality", "Quality"));
+            }
+
+            if(m_lightSettingsHeader != null)
+            {
+                m_lightSettingsHeader.Init(null, null, null, null, m_localization.GetString("ID_RTEditor_SettingsDialog_DefaultLightSettings", "Default Light Settings"));
+            }
+
+            if(m_lightColorEditor != null)
+            {
+                m_lightColorEditor.Init(m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.LightColor), m_localization.GetString("ID_RTEditor_SettingsDialog_LightColor", "Light Color"));
+            }
+
+            if (m_lightIntensityEditor != null)
+            {
+                m_lightIntensityEditor.Init(m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.LightIntensity), m_localization.GetString("ID_RTEditor_SettingsDialog_LightIntensity", "Light Intensity"));
+            }
+
+            if (m_shadowTypeEditor != null)
+            {
+                m_shadowTypeEditor.Init(m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.ShadowType), m_localization.GetString("ID_RTEditor_SettingsDialog_ShadowType", "Shadow Type"));
+            }
+
+            if(m_shadowStrengthEditor != null)
+            {
+                m_shadowStrengthEditor.Min = 0;
+                m_shadowStrengthEditor.Max = 1;
+                m_shadowStrengthEditor.Init(m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.ShadowStrength), m_localization.GetString("ID_RTEditor_SettingsDialog_ShadowStrenth", "Shadow Strength"));
             }
 
             m_customSettings.Clear();

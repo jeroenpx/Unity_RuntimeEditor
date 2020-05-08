@@ -9,6 +9,11 @@ namespace Battlehub.ProBuilderIntegration
     {
         public override void Drag(Vector3 position, Quaternion rotation, Vector3 scale)
         {
+            if(Meshes == null)
+            {
+                return;
+            }
+
             scale.x = 1f / scale.x;
             scale.y = 1f / scale.y;
 

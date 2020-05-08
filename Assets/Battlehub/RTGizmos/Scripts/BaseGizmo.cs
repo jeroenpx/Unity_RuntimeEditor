@@ -1,16 +1,32 @@
 ﻿using UnityEngine;
 using Battlehub.RTCommon;
-using UnityEngine.EventSystems;
 
 namespace Battlehub.RTGizmos
 {
     [DefaultExecutionOrder(-50)]
-    public abstract class BaseGizmo : RTEComponent, IGL
+    public abstract class BaseGizmo : RTEComponent
     {
         public float GridSize = 1.0f;
         public Color LineColor = new Color(0.0f, 1, 0.0f, 0.75f);
         public Color HandlesColor = new Color(0.0f, 1, 0.0f, 0.75f);
         public Color SelectionColor = new Color(1.0f, 1.0f, 0, 1.0f);
+
+        private MaterialPropertyBlock m_lineProperties;
+        protected MaterialPropertyBlock LineProperties
+        {
+            get { return m_lineProperties; }
+        }
+        private MaterialPropertyBlock m_handleProperties;
+        protected MaterialPropertyBlock HandleProperties
+        {
+            get { return m_handleProperties; }
+        }
+        
+        private MaterialPropertyBlock m_selectionProperties;
+        protected MaterialPropertyBlock SelectionProperties
+        {
+            get { return m_selectionProperties; }
+        }
 
         public bool EnableUndo = true;
 
@@ -25,16 +41,28 @@ namespace Battlehub.RTGizmos
         /// </summary>
         public float SelectionMargin = 10;
 
-
         public Transform Target;
-
         private bool m_isDragging;
         private int m_dragIndex;
         private Plane m_dragPlane;
         private Vector3 m_prevPoint;
         private Vector3 m_normal;
 
-        // private static BaseGizmo m_dragGizmo;
+        private Vector3 m_prevPosition;
+        private Quaternion m_prevRotation;
+        private Vector3 m_prevScale;
+
+        private Vector3 m_prevCamPosition;
+        private Quaternion m_prevCamRotation;
+        private bool m_prevOrthographic;
+
+        private bool m_refreshOnCameraChanged;
+        protected bool RefreshOnCameraChanged
+        {
+            get { return m_refreshOnCameraChanged; }
+            set { m_refreshOnCameraChanged = value; }
+        }
+
         protected int DragIndex
         {
             get { return m_dragIndex; }
@@ -70,7 +98,6 @@ namespace Battlehub.RTGizmos
         private Matrix4x4 m_handlesTransform;
         private Matrix4x4 m_handlesInverseTransform;
 
-
         public override RuntimeWindow Window
         {
             get { return m_window; }
@@ -79,6 +106,12 @@ namespace Battlehub.RTGizmos
                 m_window = value;
                 m_editor = IOC.Resolve<IRTE>();
             }
+        }
+
+        private IRTECamera m_rteCamera;
+        protected IRTECamera RTECamera
+        {
+            get { return m_rteCamera; }
         }
 
         private void Start()
@@ -115,24 +148,34 @@ namespace Battlehub.RTGizmos
                 }
             }
 
-            if (GLRenderer.Instance == null)
+            IRTEGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRTEGraphicsLayer>();
+            if (graphicsLayer != null)
             {
-                GameObject glRenderer = new GameObject();
-                glRenderer.name = "GLRenderer";
-                glRenderer.AddComponent<GLRenderer>();
+                m_rteCamera = graphicsLayer.Camera;
             }
 
-            if (SceneCamera != null)
+            if (m_rteCamera == null && SceneCamera != null)
             {
-                if (!SceneCamera.GetComponent<GLCamera>())
+                m_rteCamera = SceneCamera.GetComponent<IRTECamera>();
+                if(m_rteCamera == null)
                 {
-                    SceneCamera.gameObject.AddComponent<GLCamera>();
+                    m_rteCamera = SceneCamera.gameObject.AddComponent<RTECamera>();
+                    m_rteCamera.Event = UnityEngine.Rendering.CameraEvent.AfterImageEffectsOpaque;
                 }
             }
 
-            if (GLRenderer.Instance != null)
+            if(m_rteCamera != null)
             {
-                GLRenderer.Instance.Add(this);
+                m_prevPosition = transform.position;
+                m_prevRotation = transform.rotation;
+                m_prevScale = transform.localScale;
+
+                m_prevCamPosition = m_rteCamera.Camera.transform.position;
+                m_prevCamRotation = m_rteCamera.Camera.transform.rotation;
+                m_prevOrthographic = m_rteCamera.Camera.orthographic;
+
+                m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
 
             StartOverride();
@@ -140,9 +183,10 @@ namespace Battlehub.RTGizmos
 
         private void OnEnable()
         {
-            if (GLRenderer.Instance != null)
+            if (m_rteCamera != null)
             {
-                GLRenderer.Instance.Add(this);
+                m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
 
             OnEnableOverride();
@@ -150,9 +194,10 @@ namespace Battlehub.RTGizmos
 
         private void OnDisable()
         {
-            if (GLRenderer.Instance != null)
+            if (m_rteCamera != null)
             {
-                GLRenderer.Instance.Remove(this);
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
 
             OnDisableOverride();
@@ -190,6 +235,10 @@ namespace Battlehub.RTGizmos
                             if (OnDrag(m_dragIndex, gridOffset))
                             {
                                 m_prevPoint = point;
+                                if(m_rteCamera != null)
+                                {
+                                    m_rteCamera.RefreshCommandBuffer();
+                                }
                             }
                         }
                     }
@@ -198,24 +247,61 @@ namespace Battlehub.RTGizmos
                         if (OnDrag(m_dragIndex, offset))
                         {
                             m_prevPoint = point;
+                            if(m_rteCamera != null)
+                            {
+                                m_rteCamera.RefreshCommandBuffer();
+                            }
+                            
                         }
                     }
-
                 }
+            }
+            else
+            {
+                if (m_rteCamera != null)
+                {
+                    if (m_prevPosition != transform.position || m_prevRotation != transform.rotation || m_prevScale != transform.localScale)
+                    {
+                        m_prevPosition = transform.position;
+                        m_prevRotation = transform.rotation;
+                        m_prevScale = transform.localScale;
 
+                        m_rteCamera.RefreshCommandBuffer();
+                    }  
+                }
             }
 
             UpdateOverride();
         }
 
-        /// Lifecycle method overrides
+        private void LateUpdate()
+        {
+            if (!m_isDragging)
+            {
+                if (m_rteCamera != null && m_refreshOnCameraChanged)
+                {
+                    Camera camera = m_rteCamera.Camera;
+                    if (m_prevCamPosition != camera.transform.position || m_prevCamRotation != camera.transform.rotation || m_prevOrthographic != camera.orthographic)
+                    {
+                        m_prevCamPosition = camera.transform.position;
+                        m_prevCamRotation = camera.transform.rotation;
+                        m_prevOrthographic = camera.orthographic;
+
+                        m_rteCamera.RefreshCommandBuffer();
+                    }
+                }
+            }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
-            m_handlesPositions = RuntimeGizmos.GetHandlesPositions();
-            m_handlesNormals = RuntimeGizmos.GetHandlesNormals();
+            m_handlesPositions = GizmoUtility.GetHandlesPositions();
+            m_handlesNormals = GizmoUtility.GetHandlesNormals();
 
-            
+            m_lineProperties = new MaterialPropertyBlock();
+            m_handleProperties = new MaterialPropertyBlock();
+            m_selectionProperties = new MaterialPropertyBlock();            
         }
 
         protected override void OnDestroyOverride()
@@ -227,14 +313,15 @@ namespace Battlehub.RTGizmos
                 Destroy(gizmoInput);
             }
 
-            if (GLRenderer.Instance != null)
-            {
-                GLRenderer.Instance.Remove(this);
-            }
-
             if (Window.Editor.Tools.ActiveTool == this)
             {
                 Window.Editor.Tools.ActiveTool = null;
+            }
+
+            if (m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                m_rteCamera.RefreshCommandBuffer();
             }
         }
 
@@ -255,7 +342,7 @@ namespace Battlehub.RTGizmos
 
         protected virtual void UpdateOverride()
         {
-
+          
         }
 
         protected virtual void BeginRecordOverride()
@@ -279,8 +366,6 @@ namespace Battlehub.RTGizmos
             base.OnActiveWindowChanged(deactivatedWindow);
         }
 
-
-        /// Drag And Drop virtual methods
         protected virtual bool OnBeginDrag(int index)
         {
             return true;
@@ -296,25 +381,11 @@ namespace Battlehub.RTGizmos
 
         }
 
-        void IGL.Draw(int cullingMask, Camera camera)
+        protected virtual void OnCommandBufferRefresh(IRTECamera camera)
         {
-            //RTLayer layer = RTLayer.SceneView;
-            //if ((cullingMask & (int)layer) == 0)
-            //{
-            //    return;
-            //}
-
-            if(Target == null)
-            {
-                return;
-            }
-
-            DrawOverride(camera);
-        }
-
-        protected virtual void DrawOverride(Camera camera)
-        {
-            
+            HandleProperties.SetColor("_Color", HandlesColor);
+            LineProperties.SetColor("_Color", LineColor);
+            SelectionProperties.SetColor("_Color", SelectionColor);
         }
 
         protected virtual bool HitOverride(int index, Vector3 vertex, Vector3 normal)
@@ -449,6 +520,7 @@ namespace Battlehub.RTGizmos
                 }
                 m_isDragging = false;
                 Window.Editor.Tools.ActiveTool = null;
+                m_rteCamera.RefreshCommandBuffer();
             }
         }
 

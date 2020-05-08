@@ -175,7 +175,7 @@ namespace Battlehub.RTBuilder
             Material material = (Material)e.NewItem;
             if (material != null)
             {
-                Texture = material.mainTexture;
+                Texture = material.MainTexture();
                 m_texturePickerPlaceholder.gameObject.SetActive(true);
                 m_texturePicker.gameObject.SetActive(true);
                 TreeView.ScrollIntoView(material);

@@ -19,7 +19,6 @@ namespace Battlehub.RTHandles
         {
             m_editor = IOC.Resolve<IRTE>();
 
-            UnityEditorToolsListener.ToolChanged += OnUnityEditorToolChanged;
         }
 
         private void Start()
@@ -27,18 +26,9 @@ namespace Battlehub.RTHandles
             m_editor.Tools.Current = RuntimeTool.Move;
         }
 
-        private void OnDestroy()
-        {
-            UnityEditorToolsListener.ToolChanged -= OnUnityEditorToolChanged;
-        }
 
-   
         private void Update()
         {
-            #if UNITY_EDITOR
-            //UnityEditorToolsListener.Update();
-            #endif
-
             if(m_editor.Tools.ActiveTool != null || m_editor.IsInputFieldActive)
             {
                 return;
@@ -94,37 +84,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnUnityEditorToolChanged()
-        {
-            #if UNITY_EDITOR    
-            switch (UnityEditor.Tools.current)
-            {
-                case UnityEditor.Tool.None:
-                    m_editor.Tools.Current = RuntimeTool.None;
-                    break;
-                case UnityEditor.Tool.Move:
-                    m_editor.Tools.Current = RuntimeTool.Move;
-                    break;
-                case UnityEditor.Tool.Rotate:
-                    m_editor.Tools.Current = RuntimeTool.Rotate;
-                    break;
-                case UnityEditor.Tool.Scale:
-                    m_editor.Tools.Current = RuntimeTool.Scale;
-                    break;
-                case UnityEditor.Tool.Rect:
-                    m_editor.Tools.Current = RuntimeTool.Rect;
-                    break;
-                case UnityEditor.Tool.View:
-                    m_editor.Tools.Current = RuntimeTool.View;
-                    break;
-                default:
-                    m_editor.Tools.Current = RuntimeTool.None;
-                    break;
-            }
-            #endif
-        }
-
-      
         protected virtual bool ViewAction()
         {
             return m_editor.Input.GetKeyDown(ViewKey);

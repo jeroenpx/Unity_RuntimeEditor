@@ -395,7 +395,7 @@ namespace Battlehub.MeshDeformer3
 
                 if (dir == Vector3.zero)
                 {
-                    continue;
+                   // continue;
                 }
 
                 float twistAngle = deformer.GetTwist(slice.SegmentIndex, t);
@@ -417,7 +417,6 @@ namespace Battlehub.MeshDeformer3
                         vertices[index] = vertex;
                     }
                 }
-
             }
             return vertices;
         }

@@ -17,6 +17,19 @@ namespace Battlehub.RTHandles
         private TextMeshPro m_txtSize2 = null;
         [SerializeField]
         private bool m_metric = true;
+        public bool Metric
+        {
+            get { return m_metric; }
+            set
+            {
+                if (m_metric != value)
+                {
+                    m_metric = value;
+                    UpdateText();
+                }
+            }
+        }
+
 
         private MeshFilter m_lines;
         private MeshRenderer m_linesRenderer;
@@ -206,7 +219,7 @@ namespace Battlehub.RTHandles
 
             m_linesRenderer = lines.AddComponent<MeshRenderer>();
 
-            Material lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
+            Material lineMaterial = new Material(Shader.Find("Battlehub/RTCommon/LineBillboard"));
             lineMaterial.SetFloat("_Scale", 1.0f);
             lineMaterial.SetColor("_Color", Color.white);
             lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
@@ -246,11 +259,22 @@ namespace Battlehub.RTHandles
             RecalculateBoundsAndRebuild();
             m_connectedTools.Add(this);
 
-            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            if(graphicsLayer != null)
+            if(RTECamera != null)
             {
                 Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-                graphicsLayer.AddRenderers(renderers);
+                RTECamera.RenderersCache.Add(renderers, false, true);
+                RTECamera.RenderersCache.Refresh();
+            }
+        }
+
+        protected override void OnStartOverride()
+        {
+            base.OnStartOverride();
+            if (RTECamera != null)
+            {
+                Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
+                RTECamera.RenderersCache.Add(renderers, false, true);
+                RTECamera.RenderersCache.Refresh();
             }
         }
 
@@ -259,19 +283,19 @@ namespace Battlehub.RTHandles
             base.OnDisableOverride();
             m_connectedTools.Remove(this);
 
-            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            if (graphicsLayer != null)
+            if (RTECamera != null)
             {
                 Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-                graphicsLayer.RemoveRenderers(renderers);
+                RTECamera.RenderersCache.Remove(renderers);
+                RTECamera.RenderersCache.Refresh();
             }
         }
+
 
         protected override void UpdateOverride()
         {
             //base.UpdateOverride();
 
-            UpdateFontSize();
 
             if (!IsDragging)
             {
@@ -353,10 +377,14 @@ namespace Battlehub.RTHandles
                             colors[m_selectedEdgeIndex * 2] = color;
                             colors[m_selectedEdgeIndex * 2 + 1] = color;
                         }
-                        m_lines.sharedMesh.colors = colors;
                     }
                 }
             }
+        }
+
+        protected virtual void LateUpdate()
+        {
+            UpdateFontSize();
         }
 
         private void UpdateConnectedTools()
@@ -875,12 +903,12 @@ namespace Battlehub.RTHandles
         {
             if (m_txtSize1 != null)
             {
-                m_txtSize1.fontSize = RuntimeGraphics.GetScreenScale(m_txtSize1.transform.position, Window.Camera) * 1.7f;
+                m_txtSize1.fontSize = GraphicsUtility.GetScreenScale(m_txtSize1.transform.position, Window.Camera) * 1.7f;
             }
 
             if (m_txtSize2 != null)
             {
-                m_txtSize2.fontSize = RuntimeGraphics.GetScreenScale(m_txtSize2.transform.position, Window.Camera) * 1.7f;
+                m_txtSize2.fontSize = GraphicsUtility.GetScreenScale(m_txtSize2.transform.position, Window.Camera) * 1.7f;
             }
         }
 

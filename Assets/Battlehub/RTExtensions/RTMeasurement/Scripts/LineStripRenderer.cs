@@ -37,7 +37,7 @@ namespace Battlehub.RTMeasurement
         {
             if (m_lineMaterial == null)
             {
-                m_lineMaterial = new Material(Shader.Find("Hidden/RTHandles/LineBillboard"));
+                m_lineMaterial = new Material(Shader.Find("Battlehub/RTCommon/LineBillboard"));
                 m_lineMaterial.SetFloat("_Scale", 1.0f);
                 m_lineMaterial.SetColor("_Color", Color.white);
                 m_lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);

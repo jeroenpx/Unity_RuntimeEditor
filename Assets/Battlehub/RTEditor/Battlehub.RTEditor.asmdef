@@ -1,15 +1,11 @@
 {
     "name": "Battlehub.RTEditor",
     "references": [
-        "GUID:8e6c9de9865976e4a9ae5319c0251b65",
-        "GUID:b9f5efe54bcd2ad429a32b7c3dbfb90f",
-        "GUID:d04e78915aa543c4f85e76b063a0baca",
-        "GUID:d53f277e6e23e914487a2b3116931a49",
         "GUID:ac16a7f1382387c4fb4aa45510c7883d",
-        "GUID:8fc108502a9b1ee45af373fc453fa4aa",
-        "GUID:26441a3f7503e0f42b3fd97b6f274fcd",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:87494dd5f0eae244faefdc0364122ed5"
+        "GUID:87494dd5f0eae244faefdc0364122ed5",
+        "GUID:1826c0224c0d048b88112c79bbb0cd85",
+        "GUID:d8b63aba1907145bea998dd612889d6b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

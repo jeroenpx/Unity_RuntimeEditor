@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 11
@@ -269,7 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 14
@@ -601,7 +601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 35
@@ -1188,7 +1188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 13
@@ -1444,7 +1444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -1550,7 +1550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 16
@@ -1912,7 +1912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 20
@@ -2273,7 +2273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -2394,7 +2394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
@@ -2605,7 +2605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -2773,7 +2773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -2939,7 +2939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -3015,7 +3015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 7
@@ -3181,7 +3181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -3242,7 +3242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -3333,7 +3333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -3499,7 +3499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 31
@@ -4025,7 +4025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -4116,7 +4116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -4222,12 +4222,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: Preview
   MappedTypeGUID: 5f7fa829-8d68-4e90-bf23-cb964f559d72
@@ -4313,12 +4313,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: PrefabPart
   MappedTypeGUID: c15b94a1-e61c-4515-b7cf-05804bae7d04
@@ -4434,7 +4434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 40
@@ -5095,7 +5095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -5156,7 +5156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -5247,7 +5247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -5398,7 +5398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -5459,7 +5459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -5550,12 +5550,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTCommon
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: IOCContainer
   MappedTypeGUID: f75879ac-5352-4041-b6ee-9660a970512e
@@ -5578,7 +5578,7 @@ MonoBehaviour:
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
     MappedTypeName: Dictionary`2[[System.Type, mscorlib],[Battlehub.RTCommon.IOCContainer+Item,
-      Battlehub.RTCommon]]
+      Battlehub.RTEditor]]
     MappedName: m_registered
     UseSurrogate: 0
     UseSurrogate2: 0
@@ -5595,7 +5595,7 @@ MonoBehaviour:
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
     MappedTypeName: Dictionary`2[[System.Type, mscorlib],[Battlehub.RTCommon.IOCContainer+Item,
-      Battlehub.RTCommon]]
+      Battlehub.RTEditor]]
     MappedName: m_fallbacks
     UseSurrogate: 0
     UseSurrogate2: 0
@@ -5645,12 +5645,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetFolderInfo
   MappedTypeGUID: 37dd456e-13be-4b3b-97a1-0bc8105247a5
@@ -5736,7 +5736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -5857,12 +5857,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: AssetItem
   MappedTypeGUID: 90ebcc6f-fa14-4f78-a471-5ff7d4b04219
@@ -5896,7 +5896,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: PrefabPart[]
     PersistentName: Parts
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: PrefabPart[]
     MappedName: Parts
@@ -5941,7 +5941,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: Preview
     PersistentName: m_preview
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: Preview
     MappedName: m_preview
@@ -5956,7 +5956,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: Preview
     PersistentName: Preview
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: Preview
     MappedName: Preview
@@ -6008,7 +6008,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -6129,7 +6129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -6190,7 +6190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -6296,7 +6296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -6387,7 +6387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 7
@@ -6553,7 +6553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -6614,7 +6614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 24
@@ -7035,12 +7035,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTHandles
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTHandles
   MappedTypeName: BaseHandleUnityEvent
   MappedTypeGUID: 8ee715da-4a70-461a-9f30-900a137a3b54
@@ -7096,7 +7096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 55
@@ -7984,12 +7984,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.UIControls
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.UIControls
   MappedTypeName: PopupWindowEvent
   MappedTypeGUID: 713bab42-eb99-4f2d-a0dc-4999c870a99c
@@ -8045,7 +8045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -8151,7 +8151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -8289,7 +8289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 9
@@ -8485,7 +8485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
@@ -8696,7 +8696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -8802,7 +8802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -8863,7 +8863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -8939,7 +8939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -9000,7 +9000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 8
@@ -9181,7 +9181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -9257,7 +9257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 5
@@ -9393,7 +9393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 8
@@ -9574,7 +9574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 10
@@ -9785,7 +9785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 1
   PersistentPropertyTag: 5
@@ -9921,7 +9921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -10087,7 +10087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -10148,7 +10148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 4
@@ -10269,7 +10269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -10330,7 +10330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -10391,7 +10391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 4
@@ -10512,7 +10512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 11
@@ -10738,7 +10738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -10777,7 +10777,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.Utils.Battlehub.SL2
     PersistentTypeName: KnownCursor
     PersistentName: Type
-    MappedAssemblyName: Battlehub.Utils
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.Utils
     MappedTypeName: KnownCursor
     MappedName: Type
@@ -10844,7 +10844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 22
@@ -11235,7 +11235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 17
@@ -11551,7 +11551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -11612,7 +11612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -11733,7 +11733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 2
@@ -11824,7 +11824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -11930,7 +11930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -12081,7 +12081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 49
@@ -12877,7 +12877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -12938,7 +12938,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -12999,7 +12999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -13120,7 +13120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -13181,7 +13181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -13242,12 +13242,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetLibraryInfo
   MappedTypeGUID: 375e471d-99fc-459a-aded-1f262524b3d3
@@ -13348,7 +13348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -13469,7 +13469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 12
@@ -13710,7 +13710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -13831,7 +13831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -13922,12 +13922,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.SL2
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.SL2
   MappedTypeName: PersistentTest
   MappedTypeGUID: 3b4f0621-eff4-45d1-9893-2cf6464b17f3
@@ -13998,7 +13998,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 12
@@ -14239,7 +14239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 24
@@ -14660,7 +14660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 0
@@ -14721,7 +14721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -14812,7 +14812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -14933,7 +14933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 4
@@ -15024,7 +15024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -15085,7 +15085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -15206,7 +15206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -15327,7 +15327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -15463,7 +15463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -15629,7 +15629,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -15711,7 +15711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -15772,7 +15772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 0
@@ -15833,7 +15833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -15924,7 +15924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -16045,12 +16045,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 8
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: RuntimeShaderInfo
   MappedTypeGUID: 41bd7528-4988-4151-b71e-c227f757fcd3
@@ -16129,7 +16129,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Battlehub.SL2
     PersistentTypeName: RTShaderPropertyType[]
     PersistentName: PropertyTypes
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL
     MappedTypeName: RTShaderPropertyType[]
     MappedName: PropertyTypes
@@ -16174,7 +16174,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Battlehub.SL2
     PersistentTypeName: RuntimeShaderInfo+RangeLimits[]
     PersistentName: PropertyRangeLimits
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL
     MappedTypeName: RuntimeShaderInfo+RangeLimits[]
     MappedName: PropertyRangeLimits
@@ -16226,7 +16226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 2
@@ -16317,12 +16317,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: ProjectInfo
   MappedTypeGUID: 64eadb32-f760-4a65-8d22-e5affb130a74
@@ -16453,7 +16453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -16514,7 +16514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -16632,7 +16632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -16693,7 +16693,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 17
@@ -17013,7 +17013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
@@ -17224,7 +17224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
@@ -17435,7 +17435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -17556,12 +17556,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: RuntimeShaderInfo+RangeLimits
   MappedTypeGUID: 2acd2984-6eaa-4c53-b872-8a1053173924
@@ -17662,7 +17662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 11
@@ -17888,7 +17888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -17964,7 +17964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -18070,7 +18070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 11
@@ -18296,7 +18296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 10
@@ -18507,7 +18507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 2
@@ -18598,7 +18598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -18734,7 +18734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 19
@@ -19080,7 +19080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -19141,7 +19141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -19217,7 +19217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 9
@@ -19413,7 +19413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -19504,12 +19504,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: ProjectItem
   MappedTypeGUID: 2669da4b-1420-493c-a230-5654aaf4031e
@@ -19573,7 +19573,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: ProjectItem
     PersistentName: Parent
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: ProjectItem
     MappedName: Parent
@@ -19590,7 +19590,7 @@ MonoBehaviour:
     PersistentName: Children
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[Battlehub.RTSL.Interface.ProjectItem, Battlehub.RTSL.Interface]]
+    MappedTypeName: List`1[[Battlehub.RTSL.Interface.ProjectItem, Battlehub.RTEditor]]
     MappedName: Children
     UseSurrogate: 1
     UseSurrogate2: 1
@@ -19640,7 +19640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 8
@@ -19821,7 +19821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
@@ -20032,12 +20032,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 34
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTCommon
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: LockObject
   MappedTypeGUID: a12eaed3-f577-4e2a-b8db-79704eedad01
@@ -20221,7 +20221,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: LockObject
     PersistentName: m_globalLock
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: LockObject
     MappedName: m_globalLock
@@ -20438,7 +20438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -20529,7 +20529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 16
@@ -20830,7 +20830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 24
@@ -21251,7 +21251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 16
@@ -21552,7 +21552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -21688,12 +21688,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.UIControls
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.UIControls
   MappedTypeName: DataItem
   MappedTypeGUID: d88c80d6-568f-451e-8658-687665923da8
@@ -21727,7 +21727,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.Battlehub.SL2
     PersistentTypeName: DataItem
     PersistentName: Parent
-    MappedAssemblyName: Battlehub.UIControls
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.UIControls
     MappedTypeName: DataItem
     MappedName: Parent
@@ -21744,7 +21744,7 @@ MonoBehaviour:
     PersistentName: Children
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: List`1[[Battlehub.UIControls.DataItem, Battlehub.UIControls]]
+    MappedTypeName: List`1[[Battlehub.UIControls.DataItem,  Battlehub.RTEditor]]
     MappedName: Children
     UseSurrogate: 1
     UseSurrogate2: 1
@@ -21794,7 +21794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 25
@@ -22230,12 +22230,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.UIControls
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.UIControls.MenuControl
   MappedTypeName: MenuItemInfo
   MappedTypeGUID: 69bd10c9-4326-438d-a6a8-6879583d651e
@@ -22314,7 +22314,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.MenuControl.Battlehub.SL2
     PersistentTypeName: MenuItemEvent
     PersistentName: Action
-    MappedAssemblyName: Battlehub.UIControls
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.UIControls.MenuControl
     MappedTypeName: MenuItemEvent
     MappedName: Action
@@ -22329,7 +22329,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.MenuControl.Battlehub.SL2
     PersistentTypeName: MenuItemValidationEvent
     PersistentName: Validate
-    MappedAssemblyName: Battlehub.UIControls
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.UIControls.MenuControl
     MappedTypeName: MenuItemValidationEvent
     MappedName: Validate
@@ -22381,12 +22381,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: PersistentSubclass
   MappedTypeGUID: 18c82222-2080-45d8-b193-a92c9a9486ef
@@ -22517,7 +22517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -22653,7 +22653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -22804,7 +22804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 2
@@ -22895,7 +22895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 12
@@ -23136,7 +23136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -23287,7 +23287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 16
@@ -23588,7 +23588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -23724,7 +23724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -23845,7 +23845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -23936,7 +23936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -24027,12 +24027,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetLibraryListEntry
   MappedTypeGUID: deeb1a91-7af0-47e8-8354-9b7dee497f74
@@ -24118,12 +24118,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: MappingInfo
   MappedTypeGUID: 35eaaa78-367d-414e-8652-50e8dbeaec61
@@ -24227,7 +24227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -24288,7 +24288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -24409,7 +24409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 12
@@ -24650,7 +24650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -24726,7 +24726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
@@ -24937,7 +24937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -25088,7 +25088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -25239,7 +25239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -25300,7 +25300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -25409,7 +25409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -25500,7 +25500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 10
@@ -25711,12 +25711,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.UIControls
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.UIControls.MenuControl
   MappedTypeName: MenuItemEvent
   MappedTypeGUID: 435778c4-fb46-4dd0-a19d-26d79792ea88
@@ -25772,7 +25772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -25863,7 +25863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -25924,7 +25924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 22
@@ -26315,7 +26315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -26451,7 +26451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -26512,7 +26512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 21
@@ -26888,7 +26888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -26949,7 +26949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 16
@@ -27250,7 +27250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 18
@@ -27581,7 +27581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -27672,7 +27672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 9
@@ -27870,7 +27870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -28006,7 +28006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -28067,7 +28067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -28158,7 +28158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 8
@@ -28339,7 +28339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -28400,7 +28400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -28508,7 +28508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -28599,7 +28599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -28720,7 +28720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 20
@@ -29081,7 +29081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -29142,7 +29142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 3
@@ -29248,7 +29248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -29309,7 +29309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -29430,7 +29430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 9
@@ -29626,7 +29626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -29687,7 +29687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -29823,12 +29823,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 10
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTHandles
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTHandles
   MappedTypeName: RTHColors
   MappedTypeGUID: 8f6c4d10-e325-41d1-96e8-d11bd18852c2
@@ -30034,12 +30034,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTCommon
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: CameraLayerSettings
   MappedTypeGUID: 0d2e6bf4-9ff2-44bd-9ec8-04e9cc74fe3e
@@ -30185,12 +30185,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: FilePathRecord
   MappedTypeGUID: 237fc11c-b9c5-4c15-957f-43132ac61679
@@ -30276,7 +30276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 17
@@ -30592,7 +30592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -30683,7 +30683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -30819,7 +30819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 12
@@ -31060,7 +31060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -31136,7 +31136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 8
@@ -31317,7 +31317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 9
@@ -31513,7 +31513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 35
@@ -32099,7 +32099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 9
@@ -32295,7 +32295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 19
@@ -32641,12 +32641,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: AssetInfo
   MappedTypeGUID: 0867c211-0196-4661-b5fc-872342326887
@@ -32665,7 +32665,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Battlehub.SL2
     PersistentTypeName: AssetFolderInfo
     PersistentName: Folder
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL
     MappedTypeName: AssetFolderInfo
     MappedName: Folder
@@ -32762,7 +32762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -32898,7 +32898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -33049,7 +33049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 18
@@ -33380,7 +33380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -33471,7 +33471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 9
@@ -33667,12 +33667,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTCommon
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: ExposeToEditorUnityEvent
   MappedTypeGUID: e7635362-17e8-4c6d-88c6-cec4cdbf6701
@@ -33728,7 +33728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -33789,7 +33789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -33880,12 +33880,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: PrefabPartInfo
   MappedTypeGUID: c78c2548-f403-4642-89d4-6c1058f4bb49
@@ -34001,7 +34001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 4
@@ -34122,7 +34122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -34213,12 +34213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 8
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.UIControls
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.UIControls
   MappedTypeName: TreeViewItemContainerData
   MappedTypeGUID: 5a9c1db7-493c-4120-a837-2fae58e8f883
@@ -34237,7 +34237,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.Battlehub.SL2
     PersistentTypeName: TreeViewItemContainerData
     PersistentName: m_parent
-    MappedAssemblyName: Battlehub.UIControls
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.UIControls
     MappedTypeName: TreeViewItemContainerData
     MappedName: m_parent
@@ -34297,7 +34297,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.UIControls.Battlehub.SL2
     PersistentTypeName: TreeViewItemContainerData
     PersistentName: Parent
-    MappedAssemblyName: Battlehub.UIControls
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.UIControls
     MappedTypeName: TreeViewItemContainerData
     MappedName: Parent
@@ -34394,7 +34394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -34515,7 +34515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -34681,7 +34681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -34802,7 +34802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 4
@@ -34923,7 +34923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -34984,7 +34984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -35107,7 +35107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 6
@@ -35258,7 +35258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -35319,7 +35319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -35380,7 +35380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -35441,7 +35441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -35480,7 +35480,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.Utils.Battlehub.SL2
     PersistentTypeName: KnownCursor
     PersistentName: Type
-    MappedAssemblyName: Battlehub.Utils
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.Utils
     MappedTypeName: KnownCursor
     MappedName: Type
@@ -35547,7 +35547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -35608,7 +35608,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 5
@@ -35744,7 +35744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -35820,7 +35820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -35941,7 +35941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -36062,7 +36062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -36153,7 +36153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -36274,12 +36274,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.UIControls
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.UIControls.MenuControl
   MappedTypeName: MenuItemValidationEvent
   MappedTypeGUID: ddf9a2b3-a907-46ec-b8ea-f5a0af21652f
@@ -36335,7 +36335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 16
@@ -36636,7 +36636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 15
@@ -36922,12 +36922,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 15
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL
   MappedTypeName: PersistentPropertyMapping
   MappedTypeGUID: 02396661-524d-4396-90bd-ce8bf3ca83a6
@@ -37208,7 +37208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 15
@@ -37494,7 +37494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 2
@@ -37585,7 +37585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -37751,7 +37751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -37812,7 +37812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 8
@@ -37993,7 +37993,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -38084,7 +38084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -38235,7 +38235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 26
@@ -38686,12 +38686,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 37
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTCommon
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: RuntimeTools
   MappedTypeGUID: e2b23674-b4bc-42d2-8598-e97c89610b46
@@ -38710,7 +38710,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: LockObject
     PersistentName: m_lockAxes
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: LockObject
     MappedName: m_lockAxes
@@ -38725,7 +38725,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: ToolChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: ToolChanged
@@ -38740,7 +38740,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotRotationChanging
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotRotationChanging
@@ -38755,7 +38755,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotRotationChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotRotationChanged
@@ -38770,7 +38770,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotModeChanging
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotModeChanging
@@ -38785,7 +38785,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: PivotModeChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: PivotModeChanged
@@ -38800,7 +38800,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: IsViewingChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: IsViewingChanged
@@ -38815,7 +38815,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: ShowSelectionGizmosChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: ShowSelectionGizmosChanged
@@ -38830,7 +38830,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: ShowGizmosChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: ShowGizmosChanged
@@ -38845,7 +38845,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: AutoFocusChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: AutoFocusChanged
@@ -38860,7 +38860,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: UnitSnappingChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: UnitSnappingChanged
@@ -38875,7 +38875,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: IsSnappingChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: IsSnappingChanged
@@ -38890,7 +38890,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: SnappingModeChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: SnappingModeChanged
@@ -38905,7 +38905,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeToolsEvent
     PersistentName: LockAxesChanged
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeToolsEvent
     MappedName: LockAxesChanged
@@ -38920,7 +38920,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeTool
     PersistentName: m_current
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeTool
     MappedName: m_current
@@ -38935,7 +38935,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotMode
     PersistentName: m_pivotMode
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotMode
     MappedName: m_pivotMode
@@ -38950,7 +38950,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotRotation
     PersistentName: m_pivotRotation
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotRotation
     MappedName: m_pivotRotation
@@ -39055,7 +39055,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: SnappingMode
     PersistentName: m_snappingMode
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: SnappingMode
     MappedName: m_snappingMode
@@ -39175,7 +39175,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: SnappingMode
     PersistentName: SnappingMode
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: SnappingMode
     MappedName: SnappingMode
@@ -39205,7 +39205,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: LockObject
     PersistentName: LockAxes
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: LockObject
     MappedName: LockAxes
@@ -39220,7 +39220,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimeTool
     PersistentName: Current
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimeTool
     MappedName: Current
@@ -39235,7 +39235,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotRotation
     PersistentName: PivotRotation
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotRotation
     MappedName: PivotRotation
@@ -39250,7 +39250,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTCommon.Battlehub.SL2
     PersistentTypeName: RuntimePivotMode
     PersistentName: PivotMode
-    MappedAssemblyName: Battlehub.RTCommon
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTCommon
     MappedTypeName: RuntimePivotMode
     MappedName: PivotMode
@@ -39302,7 +39302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -39453,7 +39453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 10
@@ -39664,7 +39664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -39740,7 +39740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 28
@@ -40221,7 +40221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -40342,7 +40342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -40403,7 +40403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -40494,12 +40494,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.Utils
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.Utils
   MappedTypeName: CursorHelper
   MappedTypeGUID: eea6c59f-78c6-4fe7-bf79-9a05f754a98d
@@ -40551,7 +40551,7 @@ MonoBehaviour:
     PersistentName: m_knownCursorToTexture
     MappedAssemblyName: mscorlib
     MappedNamespace: System.Collections.Generic
-    MappedTypeName: Dictionary`2[[Battlehub.Utils.KnownCursor, Battlehub.Utils],[UnityEngine.Texture2D,
+    MappedTypeName: Dictionary`2[[Battlehub.Utils.KnownCursor, Battlehub.RTEditor],[UnityEngine.Texture2D,
       UnityEngine.CoreModule]]
     MappedName: m_knownCursorToTexture
     UseSurrogate: 0
@@ -40602,7 +40602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -40695,7 +40695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -40786,7 +40786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 11
@@ -41012,7 +41012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -41395,7 +41395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.2
-  PatchCounter: 2
+  PatchCounter: 3
 --- !u!1 &8142288403558126190
 GameObject:
   m_ObjectHideFlags: 0
@@ -41439,7 +41439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -41500,7 +41500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 6
@@ -41651,12 +41651,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTSL.Interface
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTSL.Interface
   MappedTypeName: ImportItem
   MappedTypeGUID: fa0a1e41-3d43-4317-9fd3-5f51221d8605
@@ -41690,7 +41690,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.RTSL.Interface.Battlehub.SL2
     PersistentTypeName: ImportStatus
     PersistentName: Status
-    MappedAssemblyName: Battlehub.RTSL.Interface
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.RTSL.Interface
     MappedTypeName: ImportStatus
     MappedName: Status
@@ -41742,7 +41742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -41863,7 +41863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 32
@@ -42404,7 +42404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -42510,7 +42510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -42571,7 +42571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -42677,12 +42677,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTCommon
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTCommon
   MappedTypeName: ComponentEditorSettings
   MappedTypeGUID: ffebf085-9b83-47a2-b6be-fc02bae1f080
@@ -42798,7 +42798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 3
@@ -42904,7 +42904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -43025,7 +43025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 14
@@ -43296,7 +43296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 17
@@ -43612,7 +43612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 11
@@ -43838,7 +43838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -43929,7 +43929,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 7
@@ -44095,7 +44095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -44216,7 +44216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 10
@@ -44427,7 +44427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -44503,7 +44503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1
@@ -44579,7 +44579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -44700,7 +44700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 27
@@ -45166,7 +45166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 2
@@ -45257,7 +45257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 4
@@ -45378,7 +45378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -45469,7 +45469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -45605,7 +45605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 2
@@ -45696,7 +45696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 5
@@ -45832,7 +45832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 13
@@ -46088,7 +46088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 24
@@ -46509,7 +46509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 0
@@ -46570,7 +46570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 45
@@ -47306,7 +47306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 1
   PersistentPropertyTag: 12
@@ -47547,7 +47547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 11
@@ -47773,7 +47773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 0
   IsLocked: 0
   PersistentPropertyTag: 1

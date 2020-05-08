@@ -97,6 +97,18 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private GameObject m_targetGameObject;
+        public GameObject TargetGameObject
+        {
+            get { return m_targetGameObject; }
+            set
+            {
+                m_targetGameObject = value;
+                UpdateTargetAnimation();
+                UpdateCreateViewState();
+            }
+        }
+
         private RuntimeAnimation m_target;
         public RuntimeAnimation Target
         {
@@ -160,10 +172,7 @@ namespace Battlehub.RTEditor
 
             m_animationCreateView = GetComponentInChildren<AnimationCreateView>(true);
             m_animationCreateView.Click += OnCreateClick;
-
-            OnSelectionChanged(null);
-
-            Editor.Selection.SelectionChanged += OnSelectionChanged;
+            
             Editor.Object.ComponentAdded += OnComponentAdded;
 
             UnityEventHelper.AddListener(m_previewToggle, toggle => toggle.onValueChanged, OnPreviewToggleValueChanged);
@@ -181,6 +190,14 @@ namespace Battlehub.RTEditor
             UnityEventHelper.AddListener(m_dopesheetToggle, toggle => toggle.onValueChanged, OnDopesheetToggleValueChanged);
         }
 
+        protected virtual void Start()
+        {
+            if (!GetComponent<AnimationViewImpl>())
+            {
+                gameObject.AddComponent<AnimationViewImpl>();
+            }
+        }
+
         protected override void OnDestroyOverride()
         {
             base.OnDestroyOverride();
@@ -189,7 +206,6 @@ namespace Battlehub.RTEditor
             {
                 SaveCurrentClip();
 
-                Editor.Selection.SelectionChanged -= OnSelectionChanged;
                 if(Editor.Object != null)
                 {
                     Editor.Object.ComponentAdded -= OnComponentAdded;
@@ -426,15 +442,9 @@ namespace Battlehub.RTEditor
             
         }
 
-        private void OnSelectionChanged(UnityObject[] unselectedObjects)
-        {
-            UpdateTargetAnimation();
-            UpdateCreateViewState();
-        }
-
         private void OnComponentAdded(ExposeToEditor obj, Component addedComponent)
         {
-            if(Editor.Selection.activeGameObject == obj.gameObject)
+            if(TargetGameObject == obj.gameObject)
             {
                 if(addedComponent is RuntimeAnimation)
                 {
@@ -470,41 +480,50 @@ namespace Battlehub.RTEditor
             }
 
             RuntimeAnimationClip clip = (RuntimeAnimationClip)asset;
-            GameObject go = Editor.Selection.activeGameObject;
+            GameObject go = TargetGameObject;
             
             ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
-            Editor.Undo.BeginRecord();
-
-            if(!exposeToEditor.GetComponent<RuntimeAnimation>())
+            if(exposeToEditor != null)
             {
-                Editor.Undo.AddComponent(exposeToEditor, typeof(RuntimeAnimation));
-            }
-            Editor.Undo.CreateRecord(redoRecord =>
-            {
-                SetAnimationClip(clip, exposeToEditor);
-                return true;
-            },
-            undoRecord =>
-            {
-                RuntimeAnimation animation = exposeToEditor.GetComponent<RuntimeAnimation>();
-                if(animation != null)
+                Editor.Undo.BeginRecord();
+                if (!exposeToEditor.GetComponent<RuntimeAnimation>())
                 {
-                    animation.Clips = null;
+                    Editor.Undo.AddComponent(exposeToEditor, typeof(RuntimeAnimation));
                 }
-                UpdateTargetAnimation();
-                m_propertiesView.Target = null;
-                m_timelineView.Target = null;
-                UpdateCreateViewState();
-                return true;
-            });
-            Editor.Undo.EndRecord();
-
-            SetAnimationClip(clip, exposeToEditor);
+                Editor.Undo.CreateRecord(redoRecord =>
+                {
+                    SetAnimationClip(clip, go);
+                    return true;
+                },
+                undoRecord =>
+                {
+                    RuntimeAnimation animation = exposeToEditor.GetComponent<RuntimeAnimation>();
+                    if (animation != null)
+                    {
+                        animation.Clips = null;
+                    }
+                    UpdateTargetAnimation();
+                    m_propertiesView.Target = null;
+                    m_timelineView.Target = null;
+                    UpdateCreateViewState();
+                    return true;
+                });
+                Editor.Undo.EndRecord();
+            }
+            else
+            {
+                if(!go.GetComponent<RuntimeAnimation>())
+                {
+                    go.AddComponent<RuntimeAnimation>();
+                }
+            }
+            
+            SetAnimationClip(clip, go);
         }
 
-        private void SetAnimationClip(RuntimeAnimationClip clip, ExposeToEditor exposeToEditor)
+        private void SetAnimationClip(RuntimeAnimationClip clip, GameObject go)
         {
-            RuntimeAnimation animation = exposeToEditor.GetComponent<RuntimeAnimation>();
+            RuntimeAnimation animation = go.GetComponent<RuntimeAnimation>();
             animation.Clips = new List<RuntimeAnimationClip> { clip };
             animation.ClipIndex = 0;
 
@@ -514,6 +533,7 @@ namespace Battlehub.RTEditor
 
             CurrentClip = clip;
 
+            ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
             if (exposeToEditor != null && animation != null)
             {
                 exposeToEditor.ReloadComponentEditor(animation, true);
@@ -664,9 +684,9 @@ namespace Battlehub.RTEditor
 
         private void UpdateTargetAnimation()
         {
-            if (Editor.Selection.activeGameObject != null)
+            if (TargetGameObject != null)
             {
-                RuntimeAnimation animation = Editor.Selection.activeGameObject.GetComponent<RuntimeAnimation>();
+                RuntimeAnimation animation = TargetGameObject.GetComponent<RuntimeAnimation>();
                 Target = animation;
             }
             else
@@ -677,7 +697,7 @@ namespace Battlehub.RTEditor
 
         private void UpdateCreateViewState()
         {
-            if (Editor.Selection.activeGameObject == null || Editor.Selection.activeGameObject.isStatic)
+            if (TargetGameObject == null || TargetGameObject.isStatic)
             {
                 m_animationCreateView.gameObject.SetActive(false);
             }
@@ -685,12 +705,12 @@ namespace Battlehub.RTEditor
             {
                 if (Target == null)
                 {
-                    m_animationCreateView.Text = string.Format(m_localization.GetString("ID_RTEditor_AnimationView_Condition2", "To begin animating {0}, create a RuntimeAnimation and a RuntimeAnimation Clip"), Editor.Selection.activeGameObject.name);
+                    m_animationCreateView.Text = string.Format(m_localization.GetString("ID_RTEditor_AnimationView_Condition2", "To begin animating {0}, create a RuntimeAnimation and a RuntimeAnimation Clip"), TargetGameObject.name);
                 }
 
                 if (m_clips.Count == 0)
                 {
-                    m_animationCreateView.Text = string.Format(m_localization.GetString("ID_RTEditor_AnimationView_Condition1", "To begin animating {0}, create a RuntimeAnimation Clip"), Editor.Selection.activeGameObject.name);
+                    m_animationCreateView.Text = string.Format(m_localization.GetString("ID_RTEditor_AnimationView_Condition1", "To begin animating {0}, create a RuntimeAnimation Clip"), TargetGameObject.name);
                 }
 
                 if (Target != null && m_clips.Count > 0)

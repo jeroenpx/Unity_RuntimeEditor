@@ -144,18 +144,18 @@ namespace Battlehub.RTBuilder
 
         public void ApplyTexture(Material material, Texture texture)
         {
-            Texture oldTexture = material.mainTexture;
+            Texture oldTexture = material.MainTexture();
             Texture newTexture = texture;
-            material.mainTexture = newTexture;
+            material.MainTexture(newTexture);
 
             m_rte.Undo.CreateRecord(record =>
             {
-                material.mainTexture = newTexture;
+                material.MainTexture(newTexture);
                 return true;
             },
             record =>
             {
-                material.mainTexture = oldTexture;
+                material.MainTexture(oldTexture);
                 return true;
             });
         }

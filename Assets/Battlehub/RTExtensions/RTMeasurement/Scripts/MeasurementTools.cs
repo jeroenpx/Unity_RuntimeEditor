@@ -50,10 +50,10 @@ namespace Battlehub.RTMeasurement
                     }
                     m_editor.Tools.ToolChanged += OnToolChanged;
 
-                    if(m_output != null)
-                    {
-                        m_output.gameObject.SetActive(m_current != MeasurementToolType.None);
-                    }
+                    //if(m_output != null)
+                    //{
+                    //    m_output.gameObject.SetActive(m_current != MeasurementToolType.None);
+                    //}
                     
                     m_distanceTool.gameObject.SetActive(m_current == MeasurementToolType.Distance);
                     m_angleTool.gameObject.SetActive(m_current == MeasurementToolType.Angle);
@@ -83,10 +83,11 @@ namespace Battlehub.RTMeasurement
         [SerializeField]
         private MeasureAngleTool m_angleTool = null;
 
-        [SerializeField]
-        private TextMeshProUGUI m_output = null;
+        //[SerializeField]
+        //private TextMeshProUGUI m_output = null;
 
         private ISelectionComponentState m_selectionComponentState;
+        private ISettingsComponent m_settingsComponent;
 
         protected override void OnEditorExist()
         {
@@ -96,6 +97,12 @@ namespace Battlehub.RTMeasurement
             m_editor = IOC.Resolve<IRuntimeEditor>();
             m_editor.Tools.ToolChanged += OnToolChanged;
 
+            m_settingsComponent = IOC.Resolve<ISettingsComponent>();
+            if(m_settingsComponent != null)
+            {
+                m_settingsComponent.SystemOfMeasurementChanged += OnSystemOfMeasurementChanged;
+            }
+
             if(m_distanceTool == null)
             {
                 GameObject go = new GameObject("MeasureDistanceTool");
@@ -103,10 +110,10 @@ namespace Battlehub.RTMeasurement
                 go.SetActive(false);
 
                 m_distanceTool = go.AddComponent<MeasureDistanceTool>();
-                if(m_output != null)
-                {
-                    m_distanceTool.Output = m_output;
-                }
+                //if(m_output != null)
+                //{
+                //    m_distanceTool.Output = m_output;
+                //}
             }
 
             if(m_angleTool == null)
@@ -116,10 +123,10 @@ namespace Battlehub.RTMeasurement
                 go.SetActive(false);
 
                 m_angleTool = go.AddComponent<MeasureAngleTool>();
-                if (m_output != null)
-                {
-                    m_angleTool.Output = m_output;
-                }
+                //if (m_output != null)
+                //{
+                //    m_angleTool.Output = m_output;
+                //}
             }
         }
 
@@ -131,6 +138,11 @@ namespace Battlehub.RTMeasurement
             {
                 m_editor.Tools.ToolChanged -= OnToolChanged;
             }
+
+            if (m_settingsComponent != null)
+            {
+                m_settingsComponent.SystemOfMeasurementChanged -= OnSystemOfMeasurementChanged;
+            }
         }
 
         protected override void OnDestroy()
@@ -140,6 +152,10 @@ namespace Battlehub.RTMeasurement
             if (m_editor != null)
             {
                 m_editor.Tools.ToolChanged -= OnToolChanged;
+            }
+            if (m_settingsComponent != null)
+            {
+                m_settingsComponent.SystemOfMeasurementChanged -= OnSystemOfMeasurementChanged;
             }
         }
 
@@ -180,6 +196,11 @@ namespace Battlehub.RTMeasurement
         private void OnToolChanged()
         {
             Current = MeasurementToolType.None;
+        }
+
+        private void OnSystemOfMeasurementChanged()
+        {
+            m_distanceTool.Metric = m_settingsComponent.SystemOfMeasurement == SystemOfMeasurement.Metric;
         }
     }
 

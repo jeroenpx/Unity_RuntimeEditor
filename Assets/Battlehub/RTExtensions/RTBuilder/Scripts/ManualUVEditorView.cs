@@ -30,12 +30,14 @@ namespace Battlehub.RTBuilder
         private IMaterialPaletteManager m_paletteManager;
         private List<Transform> m_extraComponents;
  
-        private IRuntimeGraphicsLayer m_graphicsLayer;
+        private IRTEGraphicsLayer m_graphicsLayer;
         private DockPanel m_parentDockPanel;
+        private RenderTextureCamera m_renderTextureCamera;
 
         protected override void AwakeOverride()
         {
-            ForceUseRenderTextures = true;
+            RenderTextureUsage = RenderTextureUsage.On;
+            
             base.AwakeOverride();
             CanvasGroup.alpha = 0;
 
@@ -77,8 +79,8 @@ namespace Battlehub.RTBuilder
             m_texturePreview.transform.rotation = Quaternion.Euler(90, 180, 0);
             m_texturePreview.transform.localScale = Vector3.one * 10;
             m_texturePreview.sharedMaterial.mainTextureScale = Vector2.one * 10;
-            m_graphicsLayer = IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            m_graphicsLayer.AddRenderers(new[] { m_texturePreview });
+            m_graphicsLayer = IOCContainer.Resolve<IRTEGraphicsLayer>();
+            m_graphicsLayer.Camera.RenderersCache.Add(m_texturePreview);
 
             m_materialEditor = IOC.Resolve<IMaterialEditor>();
             m_materialEditor.MaterialsApplied += OnMaterialApplied;
@@ -107,7 +109,7 @@ namespace Battlehub.RTBuilder
             scene.CanFreeMove = false;
             scene.CanSelect = false;
             scene.CanSelectAll = false;
-            scene.ChangeOrthographicSizeOnly = true;
+           // scene.ChangeOrthographicSizeOnly = true;
 
             if (scene.Selection != m_uvEditor.PivotPointSelection)
             {
@@ -181,7 +183,7 @@ namespace Battlehub.RTBuilder
             }
 
             UnityEventHelper.RemoveListener(m_texturesDropDown, dd => dd.onValueChanged, OnTextureChanged);
-            m_graphicsLayer.RemoveRenderers(new[] { m_texturePreview });
+            m_graphicsLayer.Camera.RenderersCache.Remove(m_texturePreview);
         }
 
         private void SetComponentsActive(bool active)
@@ -203,7 +205,7 @@ namespace Battlehub.RTBuilder
         private void OnTextureChanged(int index)
         {
             m_lastSelectedTexture = m_textures[index];
-            m_texturePreview.material.mainTexture = m_textures[index];
+            m_texturePreview.material.MainTexture(m_textures[index]);
         }
 
         private void OnMaterialsChanged(Material obj)
@@ -238,9 +240,9 @@ namespace Battlehub.RTBuilder
                         {
                             foreach (Material material in renderer.sharedMaterials)
                             {
-                                if (material != null && material.mainTexture != null && !textures.Contains(material.mainTexture))
+                                if (material != null && material.MainTexture() != null && !textures.Contains(material.MainTexture()))
                                 {
-                                    textures.Add(material.mainTexture);
+                                    textures.Add(material.MainTexture());
                                 }
                             }
                         }
@@ -254,7 +256,7 @@ namespace Battlehub.RTBuilder
             if (m_textures.Length == 0)
             {
                 m_texturesDropDown.gameObject.SetActive(false);
-                m_texturePreview.material.mainTexture = null;
+                m_texturePreview.material.MainTexture(null);
                 return;
             }
 
@@ -279,7 +281,7 @@ namespace Battlehub.RTBuilder
                 selectedIndex = 0;
             }
 
-            m_texturePreview.material.mainTexture = m_textures[selectedIndex];
+            m_texturePreview.material.MainTexture(m_textures[selectedIndex]);
             m_texturesDropDown.SetValueWithoutNotify(selectedIndex);
         }
     }

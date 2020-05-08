@@ -17,6 +17,7 @@ namespace Battlehub.RTHandles
         private Vector3 m_scale;
         private Vector3[] m_refScales;
         private float m_screenScale;
+        private MaterialPropertyBlock[] m_propertyBlocks;
 
         public override bool SnapToGrid
         {
@@ -46,6 +47,7 @@ namespace Battlehub.RTHandles
         
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
+            m_propertyBlocks = new[] { new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock() };
         }
 
         protected override void UpdateOverride()
@@ -297,9 +299,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected override void DrawOverride(Camera camera)
+        protected override void RefreshCommandBuffer(IRTECamera camera)
         {
-            Appearance.DoScaleHandle(camera, m_roundedScale, Target.position, Rotation,  SelectedAxis, LockObject);
+            Appearance.DoScaleHandle(camera.CommandBuffer, m_propertyBlocks, camera.Camera, m_roundedScale, Target.position, Rotation, SelectedAxis, LockObject);
         }
     }
 }

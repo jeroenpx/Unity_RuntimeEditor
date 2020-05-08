@@ -791,6 +791,11 @@ PrefabInstance:
       propertyPath: m_PreferredHeight
       value: 22
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012298040480, guid: 4f2c36514ecb19c4d8a69997aaa1eab5,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013233024166, guid: 4f2c36514ecb19c4d8a69997aaa1eab5,
         type: 3}
       propertyPath: m_Padding.m_Left
@@ -1231,6 +1236,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_PreferredHeight
       value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012298040480, guid: 4f2c36514ecb19c4d8a69997aaa1eab5,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114000013233024166, guid: 4f2c36514ecb19c4d8a69997aaa1eab5,
         type: 3}

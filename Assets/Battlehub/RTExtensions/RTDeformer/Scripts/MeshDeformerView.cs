@@ -20,19 +20,36 @@ namespace Battlehub.MeshDeformer3
         private Toggle m_toggleObject = null;
         [SerializeField]
         private Toggle m_toggleControlPoints = null;
+        [SerializeField]
+        private Toggle m_toggleSettings = null;
 
         [SerializeField]
         private VirtualizingTreeView m_commandsList = null;
+        [SerializeField]
+        private GameObject m_settingsPanel = null;
+
+        [SerializeField]
+        private GameObject m_deformerSettingsSection = null;
+        [SerializeField]
+        private BoolEditor m_showTerminalPointsEditor = null;
+        [SerializeField]
+        private BoolEditor m_showOriginalMeshEditor = null;
+        [SerializeField]
+        private RangeIntEditor m_pointsPerSegmentEditor = null;
+
         private ToolCmd[] m_commands;
         private bool m_isMeshDeformerSelected;
         private bool m_isDragging;
         private IMeshDeformerTool m_tool;
         private IRuntimeEditor m_runtimeEditor;
+        private ILocalization m_localization;
 
         protected override void AwakeOverride()
         {
             WindowType = RuntimeWindowType.Custom;
             base.AwakeOverride();
+
+            m_localization = IOC.Resolve<ILocalization>();
 
             m_tool = IOC.Resolve<IMeshDeformerTool>();
             m_tool.ModeChanged += OnModeChanged;
@@ -42,6 +59,9 @@ namespace Battlehub.MeshDeformer3
             m_runtimeEditor.SceneLoading += OnSceneLoading;
             m_runtimeEditor.SceneLoaded += OnSceneLoaded;
             m_runtimeEditor.Selection.SelectionChanged += OnEditorSelectionChanged;
+            m_runtimeEditor.Undo.UndoCompleted += OnEditorUndo;
+            m_runtimeEditor.Undo.RedoCompleted += OnEditorRedo;
+            m_runtimeEditor.Undo.StateChanged += OnEditorUndoStateChanged;
 
             m_commandsList.ItemClick += OnItemClick;
             m_commandsList.ItemDataBinding += OnItemDataBinding;
@@ -61,6 +81,15 @@ namespace Battlehub.MeshDeformer3
 
             UnityEventHelper.AddListener(m_toggleObject, o => o.onValueChanged, OnObjectMode);
             UnityEventHelper.AddListener(m_toggleControlPoints, o => o.onValueChanged, OnControlPointMode);
+            UnityEventHelper.AddListener(m_toggleSettings, o => o.onValueChanged, OnSettings);
+
+            m_showTerminalPointsEditor.Init(m_tool, Strong.PropertyInfo((IMeshDeformerTool x) => x.ShowTerminalPoints), m_localization.GetString("ID_RTDeformer_View_ShowTerminalPoints"));
+
+            m_showOriginalMeshEditor.Init(m_tool, Strong.PropertyInfo((IMeshDeformerTool x) => x.ShowOriginal), m_localization.GetString("ID_RTDeformer_View_ShowOriginal"));
+
+            m_pointsPerSegmentEditor.Min = 0;
+            m_pointsPerSegmentEditor.Max = 10;
+            m_pointsPerSegmentEditor.Init(m_tool, Strong.PropertyInfo((IMeshDeformerTool x) => x.PointsPerSegment), m_localization.GetString("ID_RTDeformer_View_PointsPerSegment"));
         }
 
         protected override void OnDestroyOverride()
@@ -82,6 +111,12 @@ namespace Battlehub.MeshDeformer3
                 }
                 m_runtimeEditor.SceneLoading -= OnSceneLoading;
                 m_runtimeEditor.SceneLoaded -= OnSceneLoaded;
+                if(m_runtimeEditor.Undo != null)
+                {
+                    m_runtimeEditor.Undo.UndoCompleted -= OnEditorUndo;
+                    m_runtimeEditor.Undo.RedoCompleted -= OnEditorRedo;
+                    m_runtimeEditor.Undo.StateChanged -= OnEditorUndoStateChanged;
+                }
             }
 
             if (m_commandsList != null)
@@ -98,6 +133,7 @@ namespace Battlehub.MeshDeformer3
 
             UnityEventHelper.RemoveListener(m_toggleObject, o => o.onValueChanged, OnObjectMode);
             UnityEventHelper.RemoveListener(m_toggleControlPoints, o => o.onValueChanged, OnControlPointMode);
+            UnityEventHelper.RemoveListener(m_toggleSettings, o => o.onValueChanged, OnSettings);
         }
 
         protected virtual void Start()
@@ -156,6 +192,13 @@ namespace Battlehub.MeshDeformer3
             }
         }
 
+        private void OnSettings(bool value)
+        {
+            if(value)
+            {
+                m_tool.Mode = MeshDeformerToolMode.Settings;
+            }
+        }
 
         private void OnSelectionChanged()
         {
@@ -172,11 +215,17 @@ namespace Battlehub.MeshDeformer3
             {
                 m_toggleControlPoints.isOn = true;
             }
+            else if(m_tool.Mode == MeshDeformerToolMode.Settings)
+            {
+                m_toggleSettings.isOn = true;
+            }
+
+            m_settingsPanel.SetActive(m_tool.Mode == MeshDeformerToolMode.Settings);
+            m_commandsList.gameObject.SetActive(m_tool.Mode != MeshDeformerToolMode.Settings);
 
             UpdateFlagsAndDataBind();
         }
 
-    
         private List<ToolCmd> GetCommands()
         {
             ILocalization lc = IOC.Resolve<ILocalization>();
@@ -191,11 +240,17 @@ namespace Battlehub.MeshDeformer3
                     new ToolCmd(lc.GetString("ID_RTDeformer_View_DeformY", "Deform Y"), () => DeformAxis(Axis.Y), CanDeform) { Parent = deformCmd },
                 };
                 commands.Add(deformCmd);
+
+                ToolCmd subdivideMeshCmd = new ToolCmd(lc.GetString("ID_RTDeformer_View_SubdivideMesh"), Subdivide, CanSubdivide);
+                commands.Add(subdivideMeshCmd);
+
+                ToolCmd removeDeformerCmd = new ToolCmd(lc.GetString("ID_RTDeformer_View_RemoveDeformer"), RemoveDeformer, CanDestroyDeformer);
+                commands.Add(removeDeformerCmd);
             }
             else if(m_tool.Mode == MeshDeformerToolMode.ControlPoint)
             {
                 commands.Add(new ToolCmd(lc.GetString("ID_RTDeformer_View_Append", "Append"), Append, CanAppend));
-                commands.Add(new ToolCmd(lc.GetString("ID_RTDeformer_View_Remove", "Remove"), Remove, () => m_isMeshDeformerSelected));
+                commands.Add(new ToolCmd(lc.GetString("ID_RTDeformer_View_Remove", "Remove"), Remove, CanRemove));
             }
 
             return commands;
@@ -212,6 +267,26 @@ namespace Battlehub.MeshDeformer3
             m_tool.Mode = MeshDeformerToolMode.ControlPoint;
         }
 
+        private bool CanDestroyDeformer()
+        {
+            return m_tool.CanDestroy();
+        }
+
+        private void RemoveDeformer()
+        {
+            m_tool.Destroy();
+        }
+
+        private bool CanSubdivide()
+        {
+            return m_tool.CanSubdivide();
+        }
+
+        private void Subdivide()
+        {
+            m_tool.Subdivide();
+        }
+
         private bool CanAppend()
         {
             if(!m_isMeshDeformerSelected)
@@ -226,6 +301,15 @@ namespace Battlehub.MeshDeformer3
             m_tool.Append();
         }
 
+        private bool CanRemove()
+        {
+            if(!m_isMeshDeformerSelected)
+            {
+                return false;
+            }
+            return m_tool.CanRemove();
+        }
+
         private void Remove()
         {
             m_tool.Remove();
@@ -238,6 +322,11 @@ namespace Battlehub.MeshDeformer3
             {
                 m_isMeshDeformerSelected = selected.Where(go =>
                 {
+                    if (go.GetComponent<Deformer>())
+                    {
+                        return true;
+                    }
+
                     ControlPointPicker picker = go.GetComponentInParent<ControlPointPicker>();
                     return picker != null && picker.Selection != null && picker.Selection.GetSpline() is Deformer && picker.Selection.Index >= 0;
                 }).Any();
@@ -246,6 +335,11 @@ namespace Battlehub.MeshDeformer3
             {
                 m_isMeshDeformerSelected = false;
             }
+
+            if (m_deformerSettingsSection != null)
+            {
+                m_deformerSettingsSection.SetActive(m_isMeshDeformerSelected);
+            }
         }
 
         private void UpdateFlagsAndDataBind()
@@ -253,7 +347,10 @@ namespace Battlehub.MeshDeformer3
             UpdateFlags();
             m_commands = GetCommands().ToArray();
             m_commandsList.Items = m_commands;
-            m_commandsList.Expand(m_commands[0]);
+            if(m_commands.Length > 0)
+            {
+                m_commandsList.Expand(m_commands[0]);
+            }
         }
 
         private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
@@ -335,6 +432,22 @@ namespace Battlehub.MeshDeformer3
         {
             Editor.DragDrop.RaiseDrop(e.PointerEventData);
         }
+
+        private void OnEditorUndoStateChanged()
+        {
+            UpdateFlagsAndDataBind();
+        }
+
+        private void OnEditorRedo()
+        {
+            UpdateFlagsAndDataBind();
+        }
+
+        private void OnEditorUndo()
+        {
+            UpdateFlagsAndDataBind();
+        }
+
     }
 }
 

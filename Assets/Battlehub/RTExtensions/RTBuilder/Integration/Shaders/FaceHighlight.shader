@@ -14,7 +14,7 @@
 		ZTest[_HandleZTest]
 		ZWrite On
 		Cull Off
-		Blend Off
+		Blend SrcAlpha OneMinusSrcAlpha
 		Offset -1, -1
 
 		Pass

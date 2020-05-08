@@ -8,6 +8,7 @@ Shader "Battlehub/RTBuilder/VertexPicker"
         {
             "ProBuilderPicker"="VertexPass"
             "RenderType"="Transparent"
+			"RenderQueue"="Transparent"
             "IgnoreProjector"="True"
             "DisableBatching"="True"
         }
@@ -23,7 +24,7 @@ Shader "Battlehub/RTBuilder/VertexPicker"
         {
             Name "Vertices"
 
-CGPROGRAM
+			CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
@@ -57,7 +58,7 @@ CGPROGRAM
 
                 // convert vertex to screen space, add pixel-unit xy to vertex, then transform back to clip space.
                 float4 clip = o.pos;
-
+				
                 clip.xy /= clip.w;
                 clip.xy = clip.xy * .5 + .5;
                 clip.xy *= _ScreenParams.xy;
@@ -71,6 +72,7 @@ CGPROGRAM
 
                 o.pos = clip;
                 o.uv = v.texcoord.xy;
+				
                 o.color = v.color;
 
                 return o;
@@ -78,7 +80,7 @@ CGPROGRAM
 
             float4 frag (v2f i) : COLOR
             {
-                return i.color;
+				return i.color;
             }
 
 ENDCG

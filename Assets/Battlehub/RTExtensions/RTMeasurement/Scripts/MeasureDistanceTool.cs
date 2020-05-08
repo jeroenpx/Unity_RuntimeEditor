@@ -8,9 +8,13 @@ namespace Battlehub.RTMeasurement
     {
         [SerializeField]
         private bool m_metric = true;
+        public bool Metric
+        {
+            get { return m_metric; }
+            set { m_metric = value; }
+        }
 
         protected List<Vector3> m_points = new List<Vector3>();
-        
         protected override void UpdateOverride()
         {
             base.UpdateOverride();
@@ -46,17 +50,14 @@ namespace Battlehub.RTMeasurement
                         Renderer.Refresh(true);
                     }
 
-                    if (Output != null && Canvas != null)
+                    if(Output != null)
                     {
-                        Camera worldCamera = Canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Canvas.worldCamera;
-
-                        Vector2 position;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)Output.transform.parent, Editor.Input.GetPointerXY(0), worldCamera, out position);
-                        Output.transform.localPosition = position;
-                        if(m_points.Count == 2)
+                        Output.transform.position = point;
+                        if (m_points.Count == 2)
                         {
                             float mag = (m_points[1] - m_points[0]).magnitude;
                             Output.text = m_metric ? mag.ToString("F2") : UnitsConverter.MetersToFeetInches(mag);
+                            Output.text += System.Environment.NewLine + System.Environment.NewLine;
                         }
                         else
                         {
@@ -64,11 +65,25 @@ namespace Battlehub.RTMeasurement
                         }
                     }
                 }
-            }
-           
+            } 
         }
 
-      
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            m_points.Clear();
+        }
+
+        protected override void OnCommandBufferRefresh(IRTECamera camera)
+        {
+            base.OnCommandBufferRefresh(camera);
+            if (Output != null)
+            {
+                Renderer renderer = Output.GetComponent<Renderer>();
+                renderer.enabled = false;
+                camera.CommandBuffer.DrawRenderer(renderer, renderer.sharedMaterial);
+            }
+        }
     }
 }
 

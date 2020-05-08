@@ -41,10 +41,7 @@ namespace Battlehub
         public static readonly string[] Assemblies =
         {
             "Assembly-CSharp",
-            "Battlehub.RTEditor",
-            "Battlehub.RTTerrain",
-            "Battlehub.RTBuilder",
-            "Battlehub.RTScripting",
+            "Battlehub.RTEditor"
         };
     }
 

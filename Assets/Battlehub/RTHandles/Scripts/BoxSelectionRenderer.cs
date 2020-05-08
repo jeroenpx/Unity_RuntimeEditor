@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Battlehub.RTCommon;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityObject = UnityEngine.Object;
 namespace Battlehub.RTHandles
 {
@@ -67,10 +69,6 @@ namespace Battlehub.RTHandles
                 Material[] materials = renderer.sharedMaterials;
                 for (int materialIndex = 0; materialIndex < materials.Length; ++materialIndex)
                 {
-                    //disable instancing when done? do I need to enable it at all
-                    materials[materialIndex].enableInstancing = true;
-
-                    //is this really needed to create new instance each time?
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                     renderer.GetPropertyBlock(propertyBlock, materialIndex);
                     propertyBlock.SetColor("_SelectionColor", EncodeRGBA((uint)i + 1));
@@ -78,9 +76,14 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            Texture2D tex = RenderWithReplacementShader(camera, ObjectSelectionShader, null, renderTextureWidth, renderTextureHeight);
-
+            Texture2D tex = Render(camera, ObjectSelectionShader, renderers, renderTextureWidth, renderTextureHeight);
             Color32[] pix = tex.GetPixels32();
+
+            selectionRect.width /= camera.rect.width;
+            selectionRect.height /= camera.rect.height;
+            selectionRect.x = (selectionRect.x - camera.pixelRect.x) / camera.rect.width;
+            selectionRect.y = (selectionRect.y - (tex.height - (camera.pixelRect.y + camera.pixelRect.height))) / camera.rect.height;
+
             int ox = System.Math.Max(0, Mathf.FloorToInt(selectionRect.x));
             int oy = System.Math.Max(0, Mathf.FloorToInt((tex.height - selectionRect.y) - selectionRect.height));
             int imageWidth = tex.width;
@@ -127,8 +130,6 @@ namespace Battlehub.RTHandles
 
         private static Color32 EncodeRGBA(uint hash)
         {
-            // skip using BitConverter.GetBytes since this is super simple
-            // bit math, and allocating arrays for each conversion is expensive
             if (System.BitConverter.IsLittleEndian)
                 return new Color32(
                     (byte)(hash >> 16 & 0xFF),
@@ -143,10 +144,10 @@ namespace Battlehub.RTHandles
                     (byte)(255));
         }
 
-        private static Texture2D RenderWithReplacementShader(
+        private static Texture2D Render(
             Camera camera,
             Shader shader,
-            string tag,
+            Renderer[] renderers,
             int width = -1,
             int height = -1)
         {
@@ -163,10 +164,15 @@ namespace Battlehub.RTHandles
             renderCam.enabled = false;
             renderCam.clearFlags = CameraClearFlags.SolidColor;
             renderCam.backgroundColor = Color.white;
+            renderCam.cullingMask = 0;
 
             renderCam.allowHDR = false;
             renderCam.allowMSAA = false;
             renderCam.forceIntoRenderTexture = true;
+
+            float aspect = renderCam.aspect;
+            renderCam.rect = new Rect(Vector2.zero, Vector2.one);
+            renderCam.aspect = aspect;
 
             RenderTextureDescriptor descriptor = new RenderTextureDescriptor()
             {
@@ -175,24 +181,49 @@ namespace Battlehub.RTHandles
                 colorFormat = RenderTextureFormat,
                 autoGenerateMips = false,
                 depthBufferBits = 16,
-                dimension = UnityEngine.Rendering.TextureDimension.Tex2D,
+                dimension = TextureDimension.Tex2D,
                 enableRandomWrite = false,
                 memoryless = RenderTextureMemoryless.None,
-                sRGB = false,
+                sRGB = true,
                 useMipMap = false,
                 volumeDepth = 1,
                 msaaSamples = 1
             };
             RenderTexture rt = RenderTexture.GetTemporary(descriptor);
 
-
             RenderTexture prev = RenderTexture.active;
             renderCam.targetTexture = rt;
             RenderTexture.active = rt;
 
-            Debug.Log(shader.name);
-            renderCam.RenderWithShader(shader, tag);
+            CommandBuffer commandBuffer = new CommandBuffer();
+            commandBuffer.name = "RenderBoxSelection";
+            Material replacementMaterial = new Material(shader);
+            foreach(Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.sharedMaterials;
+                for(int i = 0; i < materials.Length; ++i)
+                {
+                    if(materials[i] != null)
+                    {
+                        commandBuffer.DrawRenderer(renderer, replacementMaterial, i, -1);
+                    }
+                }
+            }
+            renderCam.AddCommandBuffer(CameraEvent.AfterForwardAlpha, commandBuffer);
 
+            if(RenderPipelineInfo.Type != RPType.Standard)
+            {
+                bool invertCulling = GL.invertCulling;
+                GL.invertCulling = true;
+                renderCam.projectionMatrix *= Matrix4x4.Scale(new Vector3(1, -1, 1));
+                renderCam.Render();
+                GL.invertCulling = invertCulling;
+            }
+            else
+            {
+                renderCam.Render();
+            }
+            
             Texture2D img = new Texture2D(_width, _height, TextureFormat, false, false);
             img.ReadPixels(new Rect(0, 0, _width, _height), 0, 0);
             img.Apply();
@@ -201,6 +232,8 @@ namespace Battlehub.RTHandles
             RenderTexture.ReleaseTemporary(rt);
 
             UnityObject.DestroyImmediate(go);
+
+            //System.IO.File.WriteAllBytes("Assets/box_selection.png", img.EncodeToPNG());
 
             return img;
         }

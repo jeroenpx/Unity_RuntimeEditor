@@ -276,11 +276,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_dragDropTargetGO: {fileID: 0}
-  m_resizeCamera: 1
+  m_forceUseRenderTextures: 0
   m_activateOnAnyKey: 0
   m_canActivate: 1
   m_windowType: 0
-  m_forceUseRenderTextures: 0
   m_background: {fileID: 0}
   m_camera: {fileID: 0}
   m_pointer: {fileID: 0}
@@ -3842,6 +3841,11 @@ PrefabInstance:
       propertyPath: m_Colors.m_DisabledColor.a
       value: 0.4
       objectReference: {fileID: 0}
+    - target: {fileID: 7099324879077384483, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7101395470281208895, guid: 962c4b531a03aed4da0cf24ae485ce7b,
         type: 3}
       propertyPath: m_Colors.m_PressedColor.r
@@ -4542,6 +4546,11 @@ PrefabInstance:
       propertyPath: m_Colors.m_DisabledColor.a
       value: 0.4
       objectReference: {fileID: 0}
+    - target: {fileID: 8566770939528346325, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8568380129112793507, guid: 962c4b531a03aed4da0cf24ae485ce7b,
         type: 3}
       propertyPath: m_fontColor.a
@@ -4701,6 +4710,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Colors.m_DisabledColor.a
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9009571624904807918, guid: 962c4b531a03aed4da0cf24ae485ce7b,
+        type: 3}
+      propertyPath: m_convertUnits
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 962c4b531a03aed4da0cf24ae485ce7b, type: 3}

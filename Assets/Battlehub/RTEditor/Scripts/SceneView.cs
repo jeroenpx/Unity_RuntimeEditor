@@ -9,8 +9,13 @@ namespace Battlehub.RTEditor
         {
             ActivateOnAnyKey = true;
             WindowType = RuntimeWindowType.Scene;
-            base.AwakeOverride();
-            
+            base.AwakeOverride();   
+
+            if(RenderPipelineInfo.Type == RPType.URP)
+            {
+                RTEGraphicsLayer graphicsLayer = GetComponent<RTEGraphicsLayer>();
+                DestroyImmediate(graphicsLayer);
+            }
         }
 
         protected virtual void Start()

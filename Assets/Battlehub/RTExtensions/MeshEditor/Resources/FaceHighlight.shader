@@ -37,6 +37,15 @@
 				float4 pos : SV_POSITION;
 			};
 
+			inline float4 GammaToLinearSpace(float4 sRGB)
+			{
+				if (IsGammaSpace())
+				{
+					return sRGB;
+				}
+				return sRGB * (sRGB * (sRGB * 0.305306011h + 0.682171111h) + 0.012522878h);
+			}
+
 			v2f vert(appdata v)
 			{
 				v2f o;
@@ -55,7 +64,9 @@
 				float checker = -frac(i.pos.x + i.pos.y);
 				clip(lerp(1, checker, _Dither));
 				
-				return _Color;
+				float4 color = GammaToLinearSpace(_Color);
+				color.a = _Color.a;
+				return color;
 			}
 
 			ENDCG

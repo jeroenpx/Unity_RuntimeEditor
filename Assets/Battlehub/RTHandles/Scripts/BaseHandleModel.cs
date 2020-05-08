@@ -60,15 +60,10 @@ namespace Battlehub.RTHandles
             base.AwakeOverride();
             SetLayer(transform, Window.Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index);
         }
-
     
         protected virtual void Start()
         {
-            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            if (graphicsLayer == null)
-            {
-                graphicsLayer = Window.gameObject.AddComponent<RuntimeGraphicsLayer>();
-            }
+
         }
 
         protected virtual void OnEnable()
@@ -78,11 +73,12 @@ namespace Battlehub.RTHandles
 
         protected virtual void OnDisable()
         {
-            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            if (graphicsLayer != null)
+            IRTECamera rteCamera = GetRTECamera();
+
+            if (rteCamera != null)
             {
-                Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>(true);
-                graphicsLayer.RemoveRenderers(renderers);
+                rteCamera.RenderersCache.Remove(GetRenderers());
+                rteCamera.RenderersCache.Refresh();
             }
         }
 
@@ -96,14 +92,37 @@ namespace Battlehub.RTHandles
             PushUpdatesToGraphicLayer();
         }
 
+        private IRTECamera GetRTECamera()
+        {
+            if(Window == null || Window.Camera == null)
+            {
+                return null;
+            }
+
+            IRTECamera rteCamera;
+            IRTEGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRTEGraphicsLayer>();
+            if (graphicsLayer == null)
+            {
+                rteCamera = Window.Camera.GetComponent<IRTECamera>();
+            }
+            else
+            {
+                rteCamera = graphicsLayer.Camera;
+            }
+
+            return rteCamera;
+        }
+
         public void PushUpdatesToGraphicLayer()
         {
-            IRuntimeGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRuntimeGraphicsLayer>();
-            if (graphicsLayer != null && gameObject.activeInHierarchy)
+            IRTECamera rteCamera = GetRTECamera();
+
+            if (rteCamera != null && gameObject.activeInHierarchy && rteCamera.RenderersCache != null)
             {
                 Renderer[] renderers = GetRenderers();
-                graphicsLayer.RemoveRenderers(renderers);
-                graphicsLayer.AddRenderers(renderers);
+                rteCamera.RenderersCache.Remove(renderers);
+                rteCamera.RenderersCache.Add(renderers, false, true);
+                rteCamera.RenderersCache.Refresh();
             }
         }
 

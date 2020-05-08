@@ -4,6 +4,8 @@ using Battlehub.RTEditor;
 using Battlehub.RTHandles;
 using Battlehub.Utils;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -322,7 +324,7 @@ namespace Battlehub.RTBuilder
         private PBTextureScaleTool m_textureScaleTool = new PBTextureScaleTool();
         private bool m_hasManualUVs;
         private bool m_hasAutoUVs;
-        
+
         private void Awake()
         {
             IOC.RegisterFallback<IProBuilderTool>(this);
@@ -411,8 +413,6 @@ namespace Battlehub.RTBuilder
                 {
                     m_runtimeEditor.SceneLoading += OnSceneLoading;
                 }
-
-                
             }
         }
 
@@ -659,7 +659,29 @@ namespace Battlehub.RTBuilder
                     if (meshEditor.Select(window.Camera, m_rte.Input.GetPointerXY(0), shift, ctrl, depthTest) != null)
                     {
                         CurrentSelection = meshEditor.GetSelection();
-                        RecordSelection(oldSelection, CurrentSelection);
+                        
+                        if (UVEditingMode && m_rte.Input.GetKey(KeyCode.S) && oldSelection != null && CurrentSelection != null)
+                        {
+                            PBMesh prevMesh = oldSelection.GetSelectedMeshes().FirstOrDefault();
+                            PBMesh mesh = CurrentSelection.GetSelectedMeshes().FirstOrDefault();
+                            IEnumerable<int> oldFaces = oldSelection.GetFaces(mesh);
+                            IEnumerable<int> newFaces = CurrentSelection.GetFaces(mesh);
+                            if (prevMesh == mesh && oldFaces.Count() == 1 && newFaces.Count() == 1 && oldFaces.First() != newFaces.First())
+                            {
+                                MeshEditorState oldState = meshEditor.GetState(true);
+                                PBUVEditing.AutoStitch(mesh, oldFaces.First(), newFaces.First(), 0);
+                                MeshEditorState newState = meshEditor.GetState(true);
+                                RecordStateAndSelection(oldState, newState, oldSelection, CurrentSelection);
+                            }
+                            else
+                            {
+                                RecordSelection(oldSelection, CurrentSelection);
+                            }
+                        }
+                        else
+                        {
+                            RecordSelection(oldSelection, CurrentSelection);
+                        }
                     }
 
                     if (meshEditor.HasSelection)
@@ -675,7 +697,6 @@ namespace Battlehub.RTBuilder
                             m_rte.Selection.activeGameObject = null;
                         }
                     }
-
 
                     m_rte.Undo.EndRecord();
 
@@ -985,6 +1006,9 @@ namespace Battlehub.RTBuilder
 
         private void OnActiveWindowChanged(RuntimeWindow window)
         {
+            m_hasAutoUVs = false;
+            m_hasManualUVs = false;
+
             UnsubscribeFromEvents();
 
             if (m_rte.ActiveWindow != null && m_rte.ActiveWindow.WindowType == RuntimeWindowType.Scene)
@@ -1023,6 +1047,7 @@ namespace Battlehub.RTBuilder
         {
             if (m_boxSelection != null)
             {
+                m_boxSelection.Begin += OnBeginBoxSelection;
                 m_boxSelection.Selection += OnBoxSelection;
             }
 
@@ -1052,6 +1077,7 @@ namespace Battlehub.RTBuilder
         {
             if (m_boxSelection != null)
             {
+                m_boxSelection.Begin -= OnBeginBoxSelection;
                 m_boxSelection.Selection -= OnBoxSelection;
             }
 
@@ -1089,8 +1115,17 @@ namespace Battlehub.RTBuilder
             }
         }
 
+        private void OnBeginBoxSelection(object sender, BeginBoxSelectionArgs e)
+        {
+            RuntimeWindow window = m_rte.ActiveWindow;
+            // bool depthTest = IsDepthTestEnabled(window);
+            // m_boxSelection.MethodOverride = depthTest ? BoxSelectionMethod.PixelPerfectDepthTest : BoxSelectionMethod.Default;
+            m_boxSelection.MethodOverride = BoxSelectionMethod.PixelPerfectDepthTest;
+        }
+
         private void OnBoxSelection(object sender, BoxSelectionArgs e)
         {
+            m_boxSelection.MethodOverride = BoxSelectionMethod.Default;
             IMeshEditor meshEditor = m_meshEditors[(int)m_mode];
             if (meshEditor == null)
             {
@@ -1664,13 +1699,13 @@ namespace Battlehub.RTBuilder
                 PBAutoUnwrapSettings settings = m_autoUVEditor.GetSettings(selection);
                 m_uv.CopyFrom(settings);
 
-                if (UVEditingMode)
-                {
-                    LockAxes lockAxes = m_pivot.gameObject.GetComponent<LockAxes>();
-                    lockAxes.PositionX = lockAxes.PositionY = !HasSelectedFaces;
-                    lockAxes.ScaleX = lockAxes.ScaleY = !HasSelectedFaces;
-                    lockAxes.RotationZ = !HasSelectedFaces;
-                }
+                //if (UVEditingMode)
+                //{
+                //    LockAxes lockAxes = m_pivot.gameObject.GetComponent<LockAxes>();
+                //    lockAxes.PositionX = lockAxes.PositionY = !HasSelectedFaces;
+                //    lockAxes.ScaleX = lockAxes.ScaleY = !HasSelectedFaces;
+                //    lockAxes.RotationZ = !HasSelectedFaces;
+                //}
             }
 
             if (SelectionChanged != null)

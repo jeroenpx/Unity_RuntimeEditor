@@ -74,7 +74,7 @@ Shader "Battlehub/RTHandles/Grid" {
 				output.pos = UnityObjectToClipPos(input.vertex);
 				output.worldPos = mul(unity_ObjectToWorld, input.vertex);
 
-				output.color = input.color;
+				output.color = GammaToLinearSpace(input.color);
 				output.color.a = input.color.a;
 				return output;
 			}

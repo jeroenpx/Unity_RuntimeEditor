@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
+
 namespace Battlehub.RTCommon
 {
     public interface ISpriteGizmoManager
@@ -21,11 +23,13 @@ namespace Battlehub.RTCommon
                 {  typeof(AudioSource), "BattlehubAudioSourceGizmo" }
             };
 
-        private Dictionary<Type, Material> m_registered = new Dictionary<Type, Material>();
-        private Dictionary<Type, Material> m_typeToMaterial;
+        private Dictionary<Type, Tuple<Mesh, Material>> m_registered = new Dictionary<Type, Tuple<Mesh, Material>>();
+        private Dictionary<Type, Tuple<Mesh, Material>> m_typeToMeshAndMaterial;
         private Type[] m_types;
         private IRTE m_editor;
-
+        private IRTEGraphics m_graphics;
+        private IMeshesCache m_meshesCache;
+  
         [SerializeField]
         private float m_gizmoScale = 1;
         public float GizmoScale
@@ -48,6 +52,10 @@ namespace Battlehub.RTCommon
 
         private void Start()
         {
+            m_graphics = IOC.Resolve<IRTEGraphics>();
+            m_meshesCache = m_graphics.CreateMeshesCache(CameraEvent.BeforeImageEffects);
+            m_meshesCache.RefreshMode = CacheRefreshMode.OnTransformChange;
+
             Refresh();
             StartOverride();
         }
@@ -56,7 +64,9 @@ namespace Battlehub.RTCommon
         {
             Cleanup();
 
-            m_typeToMaterial = null;
+            m_graphics.Destroy(m_meshesCache);
+
+            m_typeToMeshAndMaterial = null;
             m_types = null;
 
             OnDestroyOverride();
@@ -86,7 +96,13 @@ namespace Battlehub.RTCommon
 
         public void Register(Type type, Material material)
         {
-            m_registered[type] = material;
+            if(!material.enableInstancing)
+            {
+                Debug.LogWarning("material enableInstance == false");
+                return;
+            }
+
+            m_registered[type] = new Tuple<Mesh, Material>(GraphicsUtility.CreateQuad(), material);
         }
 
         public void Refresh()
@@ -97,8 +113,8 @@ namespace Battlehub.RTCommon
 
         protected virtual void GreateGizmo(GameObject go, Type type)
         {
-            Material material;
-            if (m_typeToMaterial.TryGetValue(type, out material))
+            Tuple<Mesh, Material> tuple;
+            if (m_typeToMeshAndMaterial.TryGetValue(type, out tuple))
             {
                 SpriteGizmo gizmo = go.GetComponent<SpriteGizmo>();
                 if (!gizmo)
@@ -106,7 +122,9 @@ namespace Battlehub.RTCommon
                     gizmo = go.AddComponent<SpriteGizmo>();
                 }
 
-                gizmo.Material = material;
+                gizmo.Mesh = tuple.Item1;
+                m_meshesCache.Add(gizmo.Mesh, gizmo.transform);
+                m_meshesCache.SetMaterial(tuple.Item1, tuple.Item2);
             }
         }
 
@@ -116,6 +134,7 @@ namespace Battlehub.RTCommon
             if (gizmo)
             {
                 Destroy(gizmo);
+                m_meshesCache.Remove(gizmo.Mesh, gizmo.transform);
             }
         }
 
@@ -127,18 +146,18 @@ namespace Battlehub.RTCommon
                 return;
             }
 
-            m_typeToMaterial = new Dictionary<Type, Material>();
-            foreach(KeyValuePair<Type, Material> kvp in m_registered)
+            m_typeToMeshAndMaterial = new Dictionary<Type, Tuple<Mesh, Material>>();
+            foreach(KeyValuePair<Type, Tuple<Mesh, Material>> kvp in m_registered)
             {
                 if (kvp.Value != null)
                 {
-                    m_typeToMaterial.Add(kvp.Key, kvp.Value);
+                    m_typeToMeshAndMaterial.Add(kvp.Key, kvp.Value);
                 }   
             }
 
             foreach (KeyValuePair<Type, string> kvp in m_builtIn)
             {
-                if(m_typeToMaterial.ContainsKey(kvp.Key))
+                if(m_typeToMeshAndMaterial.ContainsKey(kvp.Key))
                 {
                     continue;
                 }
@@ -146,13 +165,13 @@ namespace Battlehub.RTCommon
                 Material material = Resources.Load<Material>(kvp.Value);
                 if (material != null)
                 {
-                    m_typeToMaterial.Add(kvp.Key, material);
+                    m_typeToMeshAndMaterial.Add(kvp.Key, new Tuple<Mesh, Material>(GraphicsUtility.CreateQuad(), material));
                 }
             }
 
             int index = 0;
-            m_types = new Type[m_typeToMaterial.Count];
-            foreach (Type type in m_typeToMaterial.Keys)
+            m_types = new Type[m_typeToMeshAndMaterial.Count];
+            foreach (Type type in m_typeToMeshAndMaterial.Keys)
             {
                 m_types[index] = type;
                 index++;
@@ -166,7 +185,7 @@ namespace Battlehub.RTCommon
         private void Cleanup()
         {
             m_types = null;
-            m_typeToMaterial = null;
+            m_typeToMeshAndMaterial = null;
             if(m_editor != null)
             {
                 m_editor.IsOpenedChanged -= OnIsOpenedChanged;
@@ -204,6 +223,7 @@ namespace Battlehub.RTCommon
                     }
                 }
 
+                m_meshesCache.Refresh();
                 Subscribe();
             }
             else
@@ -237,6 +257,7 @@ namespace Battlehub.RTCommon
                     GreateGizmo(obj.gameObject, m_types[i]);
                 }
             }
+            m_meshesCache.Refresh();
         }
 
         private void OnDestroyed(ExposeToEditor obj)

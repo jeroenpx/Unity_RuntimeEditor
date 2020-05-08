@@ -5,19 +5,6 @@ using UnityEngine;
 
 namespace Battlehub.RTHandles
 {
-    public interface IOutlineManager
-    {
-        IRuntimeSelection Selection
-        {
-            get;
-            set;
-        }
-        bool ContainsRenderer(Renderer renderer);
-        void AddRenderers(Renderer[] renderers);
-        void RemoveRenderers(Renderer[] renderers);
-        void RecreateCommandBuffer();
-    }
-
     public class OutlineManager : MonoBehaviour, IOutlineManager
     {
         private IRTE m_editor;
@@ -67,8 +54,15 @@ namespace Battlehub.RTHandles
 
         private void Start()
         {
-            m_outlineEffect =  Camera.gameObject.AddComponent<OutlineEffect>();
+            if (RenderPipelineInfo.Type != RPType.Standard)
+            {
+                //Debug.Log("OutlineManager is not supported");
+                Destroy(this);
+                return;
+            }
 
+            m_outlineEffect =  Camera.gameObject.AddComponent<OutlineEffect>();
+            
             m_editor = IOC.Resolve<IRTE>();
 
             TryToAddRenderers(m_editor.Selection);
@@ -78,21 +72,17 @@ namespace Battlehub.RTHandles
             if(rteComponent != null)
             {
                 m_sceneWindow = rteComponent.Window;
-                if(m_sceneWindow != null)
-                {
-                    m_sceneWindow.IOCContainer.RegisterFallback<IOutlineManager>(this);
-                }
-            }
-
-            if(RenderPipelineInfo.Type != RPType.Standard)
-            {
-                Debug.Log("OutlineManager is not supported");
-                Destroy(this);
+                m_sceneWindow.IOCContainer.RegisterFallback<IOutlineManager>(this);
             }
         }
 
         private void OnDestroy()
         {
+            if(m_sceneWindow != null)
+            {
+                m_sceneWindow.IOCContainer.UnregisterFallback<IOutlineManager>(this);
+            }
+
             if(m_editor != null)
             {
                 m_editor.Selection.SelectionChanged -= OnRuntimeEditorSelectionChanged;
@@ -106,11 +96,6 @@ namespace Battlehub.RTHandles
             if(m_outlineEffect != null)
             {
                 Destroy(m_outlineEffect);
-            }
-
-            if (m_sceneWindow != null)
-            {
-                m_sceneWindow.IOCContainer.UnregisterFallback<IOutlineManager>(this);
             }
         }
 

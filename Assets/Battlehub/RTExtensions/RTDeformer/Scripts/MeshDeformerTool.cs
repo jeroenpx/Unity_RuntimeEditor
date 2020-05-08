@@ -1,8 +1,14 @@
-﻿using Battlehub.RTCommon;
+﻿using Battlehub.MeshDeformer3.Battlehub.MeshDeformer2;
+using Battlehub.MeshTools;
+using Battlehub.RTCommon;
 using Battlehub.RTEditor;
 using Battlehub.RTHandles;
 using Battlehub.Spline3;
+using Battlehub.Utils;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Battlehub.MeshDeformer3
@@ -11,6 +17,7 @@ namespace Battlehub.MeshDeformer3
     {
         Object = 0,
         ControlPoint = 1,
+        Settings = 2,
     }
 
     public interface IMeshDeformerTool
@@ -24,14 +31,36 @@ namespace Battlehub.MeshDeformer3
             set;
         }
 
+        bool ShowTerminalPoints
+        {
+            get;
+            set;
+        }
+
+        int PointsPerSegment
+        {
+            get;
+            set;
+        }
+
+        bool ShowOriginal
+        {
+            get;
+            set;
+        }
+
         void SelectControlPoint(Camera camera, Vector2 point);
         bool DragControlPoint(bool extend);
         bool CanDeform();
         void DeformAxis(Axis axis);
+        bool CanSubdivide();
+        void Subdivide();
         bool CanAppend();
         void Append();
         bool CanRemove();
         void Remove();
+        bool CanDestroy();
+        void Destroy();
     }
 
     [DefaultExecutionOrder(-90)]
@@ -43,25 +72,19 @@ namespace Battlehub.MeshDeformer3
         private ISelectionComponentState m_selectionComponentState;
         private ControlPointPicker m_controlPointPicker;
         private IRTE m_editor;
-        
+
         private MeshDeformerToolMode m_mode = MeshDeformerToolMode.Object;
         public MeshDeformerToolMode Mode
         {
             get { return m_mode; }
             set
             {
-                if(m_mode != value)
+                if (m_mode != value)
                 {
                     m_mode = value;
                     UnsubscribeEvents();
                     if (m_mode != MeshDeformerToolMode.Object)
                     {
-                        //RuntimeTool current = m_editor.Tools.Current;
-                        //m_editor.Tools.ToolChanged -= OnEditorToolChanged;
-                        //m_editor.Tools.Current = RuntimeTool.None;
-                        //m_editor.Tools.Current = current;
-                        //m_editor.Tools.ToolChanged += OnEditorToolChanged;
-
                         SetupSelectionComponentAndSubscribeEvents();
                         m_editor.ActiveWindowChanged += OnActiveWindowChanged;
                         EnableSplineRenderers(true);
@@ -72,6 +95,7 @@ namespace Battlehub.MeshDeformer3
                         m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
                         EnableSplineRenderers(false);
                     }
+
                     if (ModeChanged != null)
                     {
                         ModeChanged();
@@ -80,10 +104,58 @@ namespace Battlehub.MeshDeformer3
             }
         }
 
+        private Deformer m_selectedDeformer;
+        private Deformer SelectedDeformer
+        {
+            get { return m_selectedDeformer; }
+        }
+
+
+        public bool ShowTerminalPoints
+        {
+            get { return SelectedDeformer != null ? SelectedDeformer.ShowTerminalPoints : false; }
+            set
+            {
+                if (SelectedDeformer != null)
+                {
+                    SelectedDeformer.ShowTerminalPoints = value;
+                    SelectedDeformer.Refresh();
+                }
+            }
+        }
+
+        public int PointsPerSegment
+        {
+            get { return SelectedDeformer != null ? SelectedDeformer.PointsPerSegment : 0; }
+            set
+            {
+                if (SelectedDeformer != null)
+                {
+                    SelectedDeformer.PointsPerSegment = value;
+                    SelectedDeformer.Refresh();
+                }
+            }
+        }
+
+        private bool m_showOriginal;
+        public bool ShowOriginal
+        {
+            get { return m_showOriginal; }
+            set
+            {
+                m_showOriginal = value;
+                if(SelectedDeformer != null)
+                {
+                    SelectedDeformer.IsOriginalMeshVisible = m_showOriginal;
+                }
+            }
+        }
+
         private void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
             m_editor.Tools.ToolChanged += OnEditorToolChanged;
+            m_editor.Selection.SelectionChanged += OnEditorSelectionChanged;
 
             IOC.RegisterFallback<IMeshDeformerTool>(this);
 
@@ -98,8 +170,10 @@ namespace Battlehub.MeshDeformer3
 
             m_controlPointPicker = controlPointPicker.AddComponent<ControlPointPicker>();
             m_controlPointPicker.SelectionChanged += OnPickerSelectionChanged;
+
+            Deformer.Refreshed += OnDeformerRefreshed;
         }
-    
+
         private void OnActiveWindowChanged(RuntimeWindow arg)
         {
             SetupSelectionComponentAndSubscribeEvents();
@@ -107,10 +181,13 @@ namespace Battlehub.MeshDeformer3
 
         private void OnDestroy()
         {
-            if(m_editor != null)
+            Deformer.Refreshed -= OnDeformerRefreshed;
+
+            if (m_editor != null)
             {
                 m_editor.Tools.ToolChanged -= OnEditorToolChanged;
                 m_editor.ActiveWindowChanged -= OnActiveWindowChanged;
+                m_editor.Selection.SelectionChanged -= OnEditorSelectionChanged;
             }
 
             if(m_controlPointPicker != null)
@@ -136,7 +213,8 @@ namespace Battlehub.MeshDeformer3
 
         private void OnPickerSelectionChanged()
         {
-            if(SelectionChanged != null)
+            GetSelectedDeformer();
+            if (SelectionChanged != null)
             {
                 SelectionChanged();
             }
@@ -150,6 +228,20 @@ namespace Battlehub.MeshDeformer3
             }
         }
 
+        private void OnEditorSelectionChanged(UnityEngine.Object[] unselectedObjects)
+        {
+            GetSelectedDeformer();
+        }
+
+        private void GetSelectedDeformer()
+        {
+            m_selectedDeformer = m_controlPointPicker.Selection != null && m_controlPointPicker.Selection.Spline != null ? m_controlPointPicker.Selection.Spline.GetComponentInParent<Deformer>() : null;
+            if (m_selectedDeformer == null)
+            {
+                m_selectedDeformer = m_editor.Selection.activeGameObject != null ? m_editor.Selection.activeGameObject.GetComponentInParent<Deformer>() : null;
+            }
+        }
+
         private void SetupSelectionComponentAndSubscribeEvents()
         {
             UnsubscribeEvents();
@@ -158,7 +250,10 @@ namespace Battlehub.MeshDeformer3
             {
                 SetCanSelect(true);
                 m_selectionComponentState = m_editor.ActiveWindow.IOCContainer.Resolve<ISelectionComponentState>();
-                SetCanSelect(false);
+                if (Mode != MeshDeformerToolMode.Object)
+                {
+                    SetCanSelect(false);
+                }
                 SubscribeEvents();
             }
             else
@@ -283,8 +378,6 @@ namespace Battlehub.MeshDeformer3
             }
         }
 
-    
-
         public bool DragControlPoint(bool extend)
         {
             PositionHandle positionHandle = m_editor.Tools.ActiveTool as PositionHandle;
@@ -321,39 +414,143 @@ namespace Battlehub.MeshDeformer3
             return
                 m_editor.Selection.activeGameObject != null &&
                 m_editor.Selection.activeGameObject.GetComponent<MeshFilter>() &&
-                m_editor.Selection.activeGameObject.GetComponent<MeshCollider>();
+                m_editor.Selection.activeGameObject.GetComponent<MeshCollider>() &&
+                m_editor.Selection.activeGameObject.GetComponentInParent<Deformer>() == null;
         }
 
         public void DeformAxis(Axis axis)
         {
-            Deformer deformer = m_editor.Selection.activeGameObject.GetComponent<Deformer>();
-            if (deformer == null)
+            Deformer meshDeformer = m_editor.Selection.activeGameObject.GetComponent<Deformer>();
+            if (meshDeformer == null)
             {
                 m_editor.Undo.BeginRecord();
-                m_editor.Undo.AddComponent(m_editor.Selection.activeGameObject.GetComponent<ExposeToEditor>(), typeof(Deformer));
+                GameObject go = m_editor.Selection.activeGameObject;
+                m_editor.Undo.AddComponent(go.GetComponent<ExposeToEditor>(), typeof(Deformer));
+                meshDeformer = go.GetComponent<Deformer>();
+                meshDeformer.Axis = axis;
                 m_editor.Undo.CreateRecord(redo =>
                 {
+                    Deformer deformer = go.GetComponent<Deformer>();
+                    deformer.Axis = axis;
                     EnableSplineRenderers(Mode == MeshDeformerToolMode.ControlPoint);
+                    GetSelectedDeformer();
                     return false;
-                }, undo => false);
+                }, undo =>
+                {
+                    return false;
+                }
+                );
                 m_editor.Undo.EndRecord();
-            }
-            else
-            {
-                BaseSplineState oldState = deformer.GetState();
-                PickResult oldSelection = m_controlPointPicker.Selection != null ? new PickResult(m_controlPointPicker.Selection) : null;
-                deformer.Axis = axis;
-                BaseSplineState newState = deformer.GetState();
-                PickResult newSelection = m_controlPointPicker.Selection != null ? new PickResult(m_controlPointPicker.Selection) : null;
-                RecordState(deformer.gameObject, oldState, newState, m_controlPointPicker, oldSelection, newSelection);
+                GetSelectedDeformer();
             }
 
             EnableSplineRenderers(false);
         }
 
+        private void OnDeformerRefreshed(Deformer obj)
+        {
+            if(obj.gameObject == m_editor.Selection.activeObject)
+            {
+                UpdateSelection();
+            }
+        }
+
+        private void UpdateSelection()
+        {
+            var activeObject = m_editor.Selection.activeObject;
+            var objects = m_editor.Selection.objects;
+
+            m_editor.Selection.Select(null, null);
+            m_editor.Selection.Select(activeObject, objects);
+        }
+
+        public bool CanSubdivide()
+        {
+            return
+                m_editor.Selection.activeGameObject != null &&
+                m_editor.Selection.activeGameObject.GetComponentInParent<Deformer>();
+        }
+
+        public void Subdivide()
+        {
+            Deformer meshDeformer = m_editor.Selection.activeGameObject.GetComponentInParent<Deformer>();
+
+            MeshFilter meshFilter = meshDeformer.GetComponent<MeshFilter>();
+
+            MeshCollider meshCollider = meshDeformer.GetComponent<MeshCollider>();
+
+            if(meshFilter.sharedMesh != null)
+            {
+                Mesh newMesh = MeshSubdivider.Subdivide(meshFilter.sharedMesh, 2);
+                Mesh oldMesh = Instantiate(meshFilter.sharedMesh);
+                oldMesh.name = meshFilter.sharedMesh.name;
+                newMesh.name = meshFilter.sharedMesh.name;
+                meshFilter.sharedMesh = null;
+                meshFilter.sharedMesh = Instantiate(newMesh);
+                if(meshCollider != null)
+                {
+                    meshCollider.sharedMesh = null;
+                    meshCollider.sharedMesh = meshFilter.sharedMesh;
+                }
+                meshDeformer.Refresh();
+
+                GameObject go = meshDeformer.gameObject;
+                m_editor.Undo.CreateRecord(redo =>
+                {
+                    Mesh newMeshInstance = Instantiate(newMesh);
+                    newMeshInstance.name = newMesh.name;
+
+                    MeshFilter filter = go.GetComponent<MeshFilter>();
+                    Destroy(filter.sharedMesh);
+                    filter.sharedMesh = newMeshInstance;
+
+                    MeshCollider collider = go.GetComponent<MeshCollider>();
+                    if (collider != null)
+                    {
+                        Destroy(collider.sharedMesh);
+                        collider.sharedMesh = newMeshInstance;
+                    }
+
+                    Deformer deformer = go.GetComponent<Deformer>();
+                    deformer.Refresh();
+
+                    return true;
+                }, undo =>
+                {
+                    Mesh oldMeshInstance = Instantiate(oldMesh);
+                    oldMeshInstance.name = oldMesh.name;
+
+                    MeshFilter filter = go.GetComponent<MeshFilter>();
+                    Destroy(filter.sharedMesh);
+                    filter.sharedMesh = oldMeshInstance;
+                    
+                    MeshCollider collider = go.GetComponent<MeshCollider>();
+                    if (collider != null)
+                    {
+                        Destroy(collider.sharedMesh);
+                        collider.sharedMesh = oldMeshInstance;
+                    }
+
+                    Deformer deformer = go.GetComponent<Deformer>();
+                    deformer.Refresh();
+
+                    return true;
+                }, 
+                purge =>
+                {
+                    Destroy(newMesh);
+                    Destroy(oldMesh);
+                });
+            }
+        }
+
         public bool CanAppend()
         {
             ControlPointPicker picker = m_editor.Selection.activeGameObject.GetComponent<ControlPointPicker>();
+            if(picker == null)
+            {
+                return false;
+            }
             BaseSpline spline = picker.Selection.GetSpline();
             return picker.Selection.Index == spline.SegmentsCount + 1 ||
                    picker.Selection.Index == spline.SegmentsCount + 2 ||
@@ -383,7 +580,12 @@ namespace Battlehub.MeshDeformer3
 
         public bool CanRemove()
         {
-            return m_controlPointPicker != null && m_controlPointPicker.Selection != null && m_controlPointPicker.Selection.GetSpline().SegmentsCount > 1;
+            ControlPointPicker picker = m_editor.Selection.activeGameObject.GetComponent<ControlPointPicker>();
+            if (picker == null)
+            {
+                return false;
+            }
+            return picker != null && picker.Selection != null && picker.Selection.GetSpline().SegmentsCount > 1 && picker.Selection.Index >= 0;
         }
 
         public void Remove()
@@ -398,6 +600,31 @@ namespace Battlehub.MeshDeformer3
             spline = picker.Selection.GetSpline();
             BaseSplineState newState = spline.GetState();
             RecordState(spline.gameObject, oldState, newState, picker, oldSelection, newSelection);
+        }
+
+        public bool CanDestroy()
+        {
+            return
+                m_editor.Selection.activeGameObject != null &&
+                m_editor.Selection.activeGameObject.GetComponent<MeshFilter>() &&
+                m_editor.Selection.activeGameObject.GetComponent<MeshCollider>() &&
+                m_editor.Selection.activeGameObject.GetComponentInParent<Deformer>() != null;
+        }
+
+        public void Destroy()
+        {
+            GameObject go = m_editor.Selection.activeGameObject;
+            
+            GameObject copy = Instantiate(go);
+            copy.name = go.name;
+
+            Deformer deformer = copy.GetComponent<Deformer>();
+            Destroy(deformer);
+
+            m_editor.Undo.BeginRecord();
+            m_editor.RegisterCreatedObjects(new[] { copy }, true);
+            m_editor.Delete(new[] { go });
+            m_editor.Undo.EndRecord();
         }
 
         private void RecordState(GameObject spline,

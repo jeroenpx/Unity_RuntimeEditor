@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
@@ -7,6 +6,13 @@ namespace Battlehub.ProBuilderIntegration
 {
     public static class PBSelectionPicker 
     {
+        private static IPBSelectionPickerRenderer m_renderer = new PBSelectionPickerRenderer();
+        public static IPBSelectionPickerRenderer Renderer
+        {
+            set { m_renderer = value; }
+            get { return m_renderer; }
+        }
+
         public static Dictionary<ProBuilderMesh, HashSet<int>> PickVerticesInRect(
             Camera cam,
             Rect rect,
@@ -17,7 +23,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             if (options.depthTest)
             {
-                return PBSelectionPickerRenderer.PickVerticesInRect(
+                return m_renderer.PickVerticesInRect(
                     cam,
                     rect,
                     selectable,
@@ -75,13 +81,13 @@ namespace Battlehub.ProBuilderIntegration
             PickerOptions options,
             float pixelsPerPoint = 1f)
         {
-            if (options.depthTest && options.rectSelectMode == RectSelectMode.Partial)
+            if (/*options.depthTest &&*/ options.rectSelectMode == RectSelectMode.Partial)
             {
-                return PBSelectionPickerRenderer.PickEdgesInRect(
+                return m_renderer.PickEdgesInRect(
                     cam,
                     rect,
                     selectable,
-                    true,
+                    options.depthTest,
                     (int)(uiRootRect.width / pixelsPerPoint),
                     (int)(uiRootRect.height / pixelsPerPoint));
             }

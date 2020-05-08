@@ -298,17 +298,6 @@ namespace Battlehub.RTEditor
                 }
             });
         }
-
-        //private int m_updateCounter = 0;
-        //private void Update()
-        //{
-        //    m_updateCounter++;
-        //    m_updateCounter %= 120;
-        //    if (m_updateCounter == 0)
-        //    {
-        //        UpdatePreview(Material);
-        //    }
-        //}
     }
 }
 

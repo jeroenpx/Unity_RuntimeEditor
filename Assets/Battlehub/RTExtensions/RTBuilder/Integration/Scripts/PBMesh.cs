@@ -117,6 +117,16 @@ namespace Battlehub.ProBuilderIntegration
         private ProBuilderMesh m_pbMesh;
         private MeshFilter m_meshFilter;
 
+        internal ProBuilderMesh ProBuilderMesh
+        {
+            get { return m_pbMesh; }
+        }
+
+        public Mesh Mesh
+        {
+            get { return m_meshFilter.sharedMesh; }
+        }
+
         private PBFace[] m_faces;
         public PBFace[] Faces
         {
@@ -175,10 +185,10 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        internal ProBuilderMesh Mesh
-        {
-            get { return m_pbMesh; }
-        }
+        //internal ProBuilderMesh Mesh
+        //{
+        //    get { return m_pbMesh; }
+        //}
 
         public bool IsMarkedAsDestroyed
         {
@@ -280,7 +290,7 @@ namespace Battlehub.ProBuilderIntegration
             ConnectElements.Connect(m_pbMesh, m_pbMesh.faces);
             m_pbMesh.Refresh();
             m_pbMesh.ToMesh();
-
+            
             RaiseChanged(false, true);
         }
 
@@ -433,9 +443,17 @@ namespace Battlehub.ProBuilderIntegration
             }
         }
 
-        public static PBMesh ProBuilderize(GameObject gameObject, bool hierarchy)
+        public static PBMesh ProBuilderize(GameObject gameObject, bool hierarchy, bool localScaleToUvScale = false)
         {
-            return ProBuilderize(gameObject, hierarchy, Vector2.one);
+            Vector3 scale = Vector3.one;
+            if(localScaleToUvScale)
+            {
+                scale = gameObject.transform.localScale;
+                float minScale = Mathf.Min(scale.x, scale.y, scale.z);
+                scale = new Vector3(minScale, minScale);
+            }
+                
+            return ProBuilderize(gameObject, hierarchy, scale);
         }
 
         public static PBMesh ProBuilderize(GameObject gameObject, bool hierarchy, Vector2 uvScale)

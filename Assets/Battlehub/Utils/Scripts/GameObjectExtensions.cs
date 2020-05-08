@@ -26,7 +26,7 @@ namespace Battlehub.Utils
         public static Bounds CalculateBounds(this GameObject g)
         {
             Transform t = g.transform;
-            Renderer renderer = t.GetComponentInChildren<Renderer>(true);
+            Renderer renderer = t.GetComponentInChildren<Renderer>(false);
             if (renderer)
             {
                 Bounds bounds = renderer.bounds;

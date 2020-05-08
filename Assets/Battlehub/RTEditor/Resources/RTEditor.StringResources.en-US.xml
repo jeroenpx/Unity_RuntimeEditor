@@ -432,8 +432,18 @@
 		<StringResource id="ID_RTEditor_SettingsDialog_UISettings" value="UI Settings"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_SceneSettings" value="Scene Settings"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_SceneNavigationSettings" value="Scene Navigation Settings"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_SystemOfMeasurement" value="System Of Measurement"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_MeasurementSettings" value="Measurement Settings"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_GraphicsSettings" value="Graphics Settings"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_GraphicsQuality" value="Quality"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_DefaultLightSettings" value="Default Light Settings"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_LightColor" value="Color"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_LightIntensity" value="Intensity"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_ShadowType" value="Shadow Type"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_ShadowStrenth" value="Shadow Strength"/>
 
-		<!-- GameObjectCmd -->
+
+    <!-- GameObjectCmd -->
 		<StringResource id="ID_RTEditor_GameObjectCmd_Empty" value="Empty"/>
 		<StringResource id="ID_RTEditor_GameObjectCmd_DirectionalLight" value="Directional Light"/>
 		<StringResource id="ID_RTEditor_GameObjectCmd_PointLight" value="Point Light"/>

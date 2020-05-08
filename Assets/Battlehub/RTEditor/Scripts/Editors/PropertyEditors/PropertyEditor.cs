@@ -522,6 +522,37 @@ namespace Battlehub.RTEditor
             }
         }
     }
+    public abstract class ConvertablePropertyEditor<T> : PropertyEditor<T>
+    {
+        [SerializeField]
+        protected bool m_convertUnits = false;
+
+        private ISettingsComponent m_settings;
+
+        protected override void AwakeOverride()
+        {
+            m_settings = IOC.Resolve<ISettingsComponent>();
+            base.AwakeOverride();
+        }
+
+        protected float FromMeters(float units)
+        {
+            if (m_convertUnits && m_settings != null && m_settings.SystemOfMeasurement == SystemOfMeasurement.Imperial)
+            {
+                return UnitsConverter.MetersToFeet(units);
+            }
+            return units;
+        }
+
+        protected float ToMeters(float units)
+        {
+            if (m_convertUnits && m_settings != null && m_settings.SystemOfMeasurement == SystemOfMeasurement.Imperial)
+            {
+                return UnitsConverter.FeetToMeters(units);
+            }
+            return units;
+        }
+    }
 
     public abstract class PropertyEditor<T> : PropertyEditor
     {

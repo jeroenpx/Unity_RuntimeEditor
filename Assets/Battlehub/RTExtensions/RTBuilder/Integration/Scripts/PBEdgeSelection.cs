@@ -218,8 +218,11 @@ namespace Battlehub.ProBuilderIntegration
             {
                 ProBuilderMesh mesh = m_meshes[i];
                 MeshFilter filter = m_meshToSelection[mesh];
-                Destroy(filter.gameObject);
-
+                if(filter != null)
+                {
+                    Destroy(filter.gameObject);
+                }
+                
                 PBMesh pbMesh = m_pbMeshes[i];
                 if(pbMesh != null)
                 {

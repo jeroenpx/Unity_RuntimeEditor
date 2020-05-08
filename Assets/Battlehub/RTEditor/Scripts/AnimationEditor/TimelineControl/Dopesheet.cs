@@ -50,7 +50,6 @@ namespace Battlehub.RTEditor
             public int SamplesCount
             {
                 get { return ColsCount - 1; }
-               // private set;
             }
 
             private readonly Dictionary<int, DsRow> m_visibleIndexToRow = new Dictionary<int, DsRow>();

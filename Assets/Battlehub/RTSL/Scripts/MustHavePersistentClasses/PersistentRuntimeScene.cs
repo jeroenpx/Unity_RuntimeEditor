@@ -75,7 +75,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
                     try
                     {
                         PersistentObject persistentObject = (PersistentObject)Activator.CreateInstance(persistentType);
-                        if (!(uo is GameObject) && !(uo is Component))
+                        if (!(uo is GameObject) && !(uo is Component) && (uo.hideFlags & HideFlags.DontSave) == 0)
                         {
                             if (!m_assetDB.IsMapped(uo))
                             {

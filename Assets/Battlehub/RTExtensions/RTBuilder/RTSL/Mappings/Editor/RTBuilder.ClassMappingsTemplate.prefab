@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Version: 2.2
-  PatchCounter: 2
+  PatchCounter: 3
 --- !u!1 &4371749913559535503
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,12 +91,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 1
   PersistentSubclassTag: 0
-  MappedAssemblyName: Battlehub.RTBuilder
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.RTBuilder
   MappedTypeName: MaterialPalette
   MappedTypeGUID: 18564e14-eead-4a0f-9773-33aae7b7583b
@@ -167,12 +167,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 3
   PersistentSubclassTag: 0
-  MappedAssemblyName: ProBuilderIntegration
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.ProBuilderIntegration
   MappedTypeName: PBMesh
   MappedTypeGUID: 72a7b756-6651-4a48-ad31-91e180873d46
@@ -191,7 +191,7 @@ MonoBehaviour:
     PersistentNamespace: Battlehub.ProBuilderIntegration.Battlehub.SL2
     PersistentTypeName: PBFace[]
     PersistentName: Faces
-    MappedAssemblyName: ProBuilderIntegration
+    MappedAssemblyName: Battlehub.RTEditor
     MappedNamespace: Battlehub.ProBuilderIntegration
     MappedTypeName: PBFace[]
     MappedName: Faces
@@ -273,12 +273,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0530efbda98e7b4f8991b85a6e01467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Version: 2.1
+  Version: 2.2
   IsSelected: 1
   IsLocked: 0
   PersistentPropertyTag: 5
   PersistentSubclassTag: 0
-  MappedAssemblyName: ProBuilderIntegration
+  MappedAssemblyName: Battlehub.RTEditor
   MappedNamespace: Battlehub.ProBuilderIntegration
   MappedTypeName: PBPolyShape
   MappedTypeGUID: 6ffca28a-9868-4043-8efe-b9b4635cac1d

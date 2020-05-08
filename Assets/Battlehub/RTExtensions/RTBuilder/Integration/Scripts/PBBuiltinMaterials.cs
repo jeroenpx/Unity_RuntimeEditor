@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.ProBuilder;
+using UnityEngine.Rendering;
 
 namespace Battlehub.ProBuilderIntegration
 {
@@ -14,9 +16,36 @@ namespace Battlehub.ProBuilderIntegration
         private static Material s_EdgePickerMaterial;
         private static Shader s_SelectionPickerShader;
 
+        private static Material m_defaultMaterial;
+
         public static Material DefaultMaterial
         {
-            get { return BuiltinMaterials.defaultMaterial; }
+            get
+            {
+                if(GraphicsSettings.renderPipelineAsset == null)
+                {
+                    return BuiltinMaterials.defaultMaterial;
+                }
+                else
+                {
+                    if(m_defaultMaterial == null)
+                    {
+                        Type pipelineType = GraphicsSettings.renderPipelineAsset.GetType();
+                        if (pipelineType.Name == "UniversalRenderPipelineAsset")
+                        {
+                            m_defaultMaterial = Resources.Load<Material>("ProBuilder Default URP");
+                        }
+                        else
+                        {
+                            m_defaultMaterial = BuiltinMaterials.defaultMaterial;
+                        }
+                    }
+
+                    return m_defaultMaterial;
+                }
+
+                
+            }
         }
  
         private static Material m_linesMaterial;
@@ -92,17 +121,17 @@ namespace Battlehub.ProBuilderIntegration
 
             s_SelectionPickerShader = (Shader)Shader.Find("Battlehub/RTBuilder/SelectionPicker");
 
-            if ((s_FacePickerMaterial = Resources.Load<Material>("Materials/FacePicker")) == null)
+            if ((s_FacePickerMaterial = Resources.Load<Material>("Materials/PBFacePicker")) == null)
             {
                 s_FacePickerMaterial = new Material(Shader.Find("Battlehub/RTBuilder/FacePicker"));
             }
 
-            if ((s_VertexPickerMaterial = Resources.Load<Material>("Materials/VertexPicker")) == null)
+            if ((s_VertexPickerMaterial = Resources.Load<Material>("Materials/PBVertexPicker")) == null)
             {
                 s_VertexPickerMaterial = new Material(Shader.Find("Battlehub/RTBuilder/VertexPicker"));
             }
 
-            if ((s_EdgePickerMaterial = Resources.Load<Material>("Materials/EdgePicker")) == null)
+            if ((s_EdgePickerMaterial = Resources.Load<Material>("Materials/PBEdgePicker")) == null)
             {                
                 s_EdgePickerMaterial = new Material(Shader.Find("Battlehub/RTBuilder/EdgePicker"));
             }

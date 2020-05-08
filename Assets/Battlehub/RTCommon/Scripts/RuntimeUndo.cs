@@ -430,7 +430,7 @@ namespace Battlehub.RTCommon
         void BeginRecordValue(object target, MemberInfo memberInfo);
         void BeginRecordValue(object target, object accessor, MemberInfo memberInfo);
         void EndRecordValue(object target, MemberInfo memberInfo, Action afterRedo = null, Action afterUndo = null);
-        void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased, Action afterRedo = null, Action afterUndo = null);
+        void EndRecordValue(object target, object accessor, MemberInfo memberInfo, Action<object, object> targetErased = null, Action afterRedo = null, Action afterUndo = null);
 
         void BeginRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
         void EndRecordTransform(Transform target, Transform parent = null, int siblingIndex = -1);
