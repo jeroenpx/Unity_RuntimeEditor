@@ -68,7 +68,7 @@ namespace Battlehub.RTEditor
         private EditorDescriptor[] m_stdComponentEditorDescriptors;
         private EditorDescriptor[] m_scriptEditorDescriptors;
         private MaterialEditorDescriptor[] m_materialDescriptors;
-        
+
         private void Awake()
         {
             Init();
@@ -100,12 +100,15 @@ namespace Battlehub.RTEditor
         private void Init()
         {
             m_map = Resources.Load<EditorsMapStorage>(EditorsMapStorage.EditorsMapPrefabName);
-            if(m_map == null)
+            if (m_map == null)
             {
                 m_map = Resources.Load<EditorsMapStorage>(EditorsMapStorage.EditorsMapTemplateName);
             }
-            EditorsMap editorsMap = new EditorsMap();
-            
+
+            GameObject editorsMapGo = new GameObject();
+            EditorsMap editorsMap = editorsMapGo.AddComponent<EditorsMap>();
+            editorsMap.LoadMap();
+
             Assembly[] allAssemblies;
             Type[] types;
             GetUOAssembliesAndTypes(out allAssemblies, out types);
@@ -117,7 +120,7 @@ namespace Battlehub.RTEditor
                 .Where(t => t.IsPublic && !t.IsGenericType)
                 .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsObjectEditorEnabled(t), m_map != null ? editorsMap.GetObjectEditor(t, true) : null, false)).ToArray();
             m_propertyEditorDescriptors = new[] { typeof(object), typeof(UnityEngine.Object), typeof(bool), typeof(Enum), typeof(List<>), typeof(Array), typeof(string), typeof(int), typeof(float), typeof(Range), typeof(Vector2), typeof(Vector3), typeof(Vector4), typeof(Quaternion), typeof(Color), typeof(Bounds), typeof(RangeInt), typeof(RangeOptions), typeof(HeaderText), typeof(MethodInfo) }
-                .Where(t =>  t.IsPublic)
+                .Where(t => t.IsPublic)
                 .Select(t => new EditorDescriptor(t, m_map != null && editorsMap.IsPropertyEditorEnabled(t), m_map != null ? editorsMap.GetPropertyEditor(t, true) : null, true)).ToArray();
             m_stdComponentEditorDescriptors = unityAssemblies.SelectMany(a => a.GetTypes())
                 .Where(t => typeof(Component).IsAssignableFrom(t) && t.IsPublic && !t.IsGenericType)
@@ -130,9 +133,9 @@ namespace Battlehub.RTEditor
 
             List<Material> materials = new List<Material>();
             string[] assets = AssetDatabase.GetAllAssetPaths();
-            foreach(string asset in assets)
+            foreach (string asset in assets)
             {
-                if(!asset.EndsWith(".mat"))
+                if (!asset.EndsWith(".mat"))
                 {
                     continue;
                 }
@@ -155,6 +158,8 @@ namespace Battlehub.RTEditor
                 .Select(s => new MaterialEditorDescriptor(s, m_map != null && editorsMap.IsMaterialEditorEnabled(s), m_map != null ? editorsMap.GetMaterialEditor(s, true) : null)).ToArray();
 
             m_materialDescriptors = defaultDescriptors.Union(materialDescriptors).ToArray();
+
+            DestroyImmediate(editorsMapGo);
         }
 
         private EditorDescriptor GetScriptEditorDescriptor(Type t, EditorsMap editorsMap)
@@ -162,7 +167,7 @@ namespace Battlehub.RTEditor
             bool isPropertyEditorType = typeof(PropertyEditor).IsAssignableFrom(t);
             bool isEditorEnabled = false;
             GameObject editor = null;
-            if(m_map != null)
+            if (m_map != null)
             {
                 if (isPropertyEditorType)
                 {
@@ -175,7 +180,7 @@ namespace Battlehub.RTEditor
                     editor = editorsMap.GetObjectEditor(t, true);
                 }
             }
-            return new EditorDescriptor(t, isEditorEnabled, editor, isPropertyEditorType);  
+            return new EditorDescriptor(t, isEditorEnabled, editor, isPropertyEditorType);
         }
 
         private bool m_objectsGroup = true;
@@ -205,7 +210,7 @@ namespace Battlehub.RTEditor
                     EditorsMapGen.Generate(m_objectEditorDescriptors
                         .Union(m_propertyEditorDescriptors)
                         .Union(m_stdComponentEditorDescriptors)
-                        .Union(m_scriptEditorDescriptors).ToArray(), 
+                        .Union(m_scriptEditorDescriptors).ToArray(),
                         m_materialDescriptors);
                     Close();
                 }
@@ -216,7 +221,7 @@ namespace Battlehub.RTEditor
             EditorGUILayout.Separator();
             ShowGroup(ref m_propertiesGroup, "Property Editors", m_propertyEditorDescriptors, d =>
             {
-                if(d.Type == typeof(object))
+                if (d.Type == typeof(object))
                 {
                     return "Custom Type";
                 }
@@ -258,7 +263,7 @@ namespace Battlehub.RTEditor
                 EditorGUI.indentLevel--;
             }
 
-            
+
             EditorGUIUtility.labelWidth = 0;
         }
 
