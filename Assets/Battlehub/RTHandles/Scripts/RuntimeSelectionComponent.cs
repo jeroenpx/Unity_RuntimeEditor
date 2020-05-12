@@ -343,7 +343,16 @@ namespace Battlehub.RTHandles
                     m_customHandle.Window = Window;
                     m_customHandle.gameObject.SetActive(false);
 
+                    if (m_customHandle.BeforeDrag == null)
+                    {
+                        m_customHandle.BeforeDrag = new BaseHandleUnityEvent();
+                    }
                     m_customHandle.BeforeDrag.AddListener(OnBeforeDrag);
+
+                    if (m_customHandle.Drop == null)
+                    {
+                        m_customHandle.Drop = new BaseHandleUnityEvent();
+                    }
                     m_customHandle.Drop.AddListener(OnDrop);
 
                     if (Editor.Tools.Current == RuntimeTool.Custom)
