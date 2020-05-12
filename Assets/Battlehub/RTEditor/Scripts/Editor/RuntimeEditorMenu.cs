@@ -19,6 +19,12 @@ namespace Battlehub.RTEditor
         public static void CreateRuntimeEditor()
         {
             Undo.RegisterCreatedObjectUndo(InstantiateRuntimeEditor(), "Battlehub.RTEditor.Create");
+            GameObject urpSupport = InstantiateURPSupport();
+            if(urpSupport != null)
+            {
+                Undo.RegisterCreatedObjectUndo(urpSupport, "Battlehub.RTEditor.URPSupport");
+            }
+            
             EventSystem eventSystem = UnityObject.FindObjectOfType<EventSystem>();
             if (!eventSystem)
             {
@@ -45,14 +51,15 @@ namespace Battlehub.RTEditor
 
         public static GameObject InstantiateRuntimeEditor()
         {
-            return InstantiatePrefab("RuntimeEditor.prefab");
+            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHRoot.Path + "/RTEditor/Prefabs/RuntimeEditor.prefab" , typeof(GameObject));
+            return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         }
 
-        public static GameObject InstantiatePrefab(string name)
+        public static GameObject InstantiateURPSupport()
         {
-            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + Root + "Prefabs/" + name, typeof(GameObject));
+            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHRoot.Path + "/UniversalRP/RTEditorInitURP.prefab", typeof(GameObject));
             return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-        } 
+        }
     }
 }
 #endif
