@@ -103,6 +103,8 @@
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\Utils\UnitsConverter.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\BeforeSaveSceneExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\ConsoleFilteringExample.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\CustomHandle\CustomHandleExample.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\CustomHandle\RegisterCustomHandleExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\FbxImporterExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\HandleDragEventExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\HierarchyViewOverrideExample.cs" />
