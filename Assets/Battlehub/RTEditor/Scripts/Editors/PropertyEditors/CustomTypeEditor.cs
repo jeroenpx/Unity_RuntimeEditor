@@ -99,7 +99,9 @@ namespace Battlehub.RTEditor
 
         private void CreateElementEditors(object value)
         {
-            FieldInfo[] fields = Reflection.GetSerializableFields(MemberInfoType, false);
+            Type memberInfoType = value != null ? value.GetType() : MemberInfoType;
+
+            FieldInfo[] fields = Reflection.GetSerializableFields(memberInfoType, false);
             for (int i = 0; i < fields.Length; ++i)
             {
                 MemberInfo memberInfo = fields[i];
@@ -107,7 +109,7 @@ namespace Battlehub.RTEditor
                 CreateElementEditor(memberInfo, type);
             }
 
-            PropertyInfo[] properties = Reflection.GetSerializableProperties(MemberInfoType);
+            PropertyInfo[] properties = Reflection.GetSerializableProperties(memberInfoType);
             for(int i = 0; i < properties.Length; ++i)
             {
                 PropertyInfo propertyInfo = properties[i];
