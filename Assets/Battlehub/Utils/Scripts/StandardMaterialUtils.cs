@@ -3,8 +3,24 @@ using UnityEngine.Rendering;
 
 namespace Battlehub.Utils
 {
-    public static class StandardMaterialUtils 
+    public interface IMaterialUtil
     {
+        void SetMaterialKeywords(Material material);
+    }
+
+    public class StandardMaterialUtils : IMaterialUtil
+    {
+        void IMaterialUtil.SetMaterialKeywords(Material material)
+        {
+            if(material == null || material.shader == null || material.shader.name != "Standard")
+            {
+                return;
+            }
+
+            SetupMaterialWithBlendMode(material, GetBlendMode(material));
+            SetMaterialKeywords(material, m_workflow);
+        }
+
         public enum WorkflowMode
         {
             Specular,
@@ -150,5 +166,4 @@ namespace Battlehub.Utils
             }
         }
     }
-
 }

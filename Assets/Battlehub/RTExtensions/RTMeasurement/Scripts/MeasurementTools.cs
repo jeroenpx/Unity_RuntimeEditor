@@ -181,16 +181,23 @@ namespace Battlehub.RTMeasurement
 
         private void DisallowSelection()
         {
-            m_selectionComponentState.IsBoxSelectionEnabled(this, false);
-            m_selectionComponentState.CanSelect(this, false);
-            m_selectionComponentState.CanSelectAll(this, false);
+            if(m_selectionComponentState != null)
+            {
+                m_selectionComponentState.IsBoxSelectionEnabled(this, false);
+                m_selectionComponentState.CanSelect(this, false);
+                m_selectionComponentState.CanSelectAll(this, false);
+            }
+          
         }
 
         private void AllowSelection()
         {
-            m_selectionComponentState.IsBoxSelectionEnabled(this, true);
-            m_selectionComponentState.CanSelect(this, true);
-            m_selectionComponentState.CanSelectAll(this, false);
+            if (m_selectionComponentState != null)
+            {
+                m_selectionComponentState.IsBoxSelectionEnabled(this, true);
+                m_selectionComponentState.CanSelect(this, true);
+                m_selectionComponentState.CanSelectAll(this, false);
+            }
         }
 
         private void OnToolChanged()

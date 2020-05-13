@@ -79,6 +79,12 @@ namespace Battlehub.RTEditor
             set;
         }
 
+        float GridOpacity
+        {
+            get;
+            set;
+        }
+
         bool IsGridEnabled
         {
             get;
@@ -227,6 +233,31 @@ namespace Battlehub.RTEditor
                 {
                     sceneComponent.IsGridVisible = value;
                 }
+            }
+        }
+
+        [SerializeField]
+        private float m_gridOpacity = 0.33f;
+        public float GridOpacity
+        {
+            get { return GetFloat("GridOpacity", m_gridOpacity); }
+            set
+            {
+                SetFloat("GridOpacity", value);
+                ApplyGridOpacity(value);
+            }
+        }
+
+        private void ApplyGridOpacity(float value)
+        {
+            IRuntimeHandlesComponent handlesComponent = IOC.Resolve<IRuntimeHandlesComponent>();
+            Color gridColor = handlesComponent.Colors.GridColor;
+            gridColor.a = value;
+            handlesComponent.Colors.GridColor = gridColor;
+            foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+            {
+                sceneComponent.GridZTest = !sceneComponent.GridZTest;
+                sceneComponent.GridZTest = !sceneComponent.GridZTest;
             }
         }
 
@@ -672,13 +703,13 @@ namespace Battlehub.RTEditor
             sceneComponent.ZoomSpeed = ZoomSpeed;
             sceneComponent.ConstantZoomSpeed = ConstantZoomSpeed;
             sceneComponent.RectTool.Metric = SystemOfMeasurement == SystemOfMeasurement.Metric;
-
-         
         }
 
         private void ApplySettings()
         {
-            foreach(IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
+            ApplyGridOpacity(GridOpacity);
+
+            foreach (IRuntimeSceneComponent sceneComponent in m_sceneComponents.Values)
             {
                 ApplySettings(sceneComponent);
             }
@@ -707,6 +738,7 @@ namespace Battlehub.RTEditor
             DeleteKey("IsGridVisible");
             DeleteKey("IsGridEnabled");
             DeleteKey("GridSize");
+            DeleteKey("GridOpacity");
             DeleteKey("GridZTest");
             DeleteKey("UIAutoScale");
             DeleteKey("UIScale");

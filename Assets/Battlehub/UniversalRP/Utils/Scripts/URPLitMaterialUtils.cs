@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Battlehub.RTCommon;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Battlehub.RTEditor.URP
+namespace Battlehub.Utils.URP
 {
     public enum WorkflowMode
     {
@@ -42,8 +41,22 @@ namespace Battlehub.RTEditor.URP
         Front = 2
     }
 
-    public class URPLitMaterialUtils
+    public class URPLitMaterialUtils : IMaterialUtil
     {
+        void IMaterialUtil.SetMaterialKeywords(Material material)
+        {
+            if (material == null || material.shader == null || material.shader.name != RenderPipelineInfo.DefaultShaderName)
+            {
+                return;
+            }
+
+            SetMaterialKeywords(material, SetMaterialKeywords);
+            if(material.Color().a == 1)
+            {
+                material.SetShaderPassEnabled("ShadowCaster", true);
+            }
+        }
+    
         private const int queueOffsetRange = 50;
 
         public static SmoothnessMapChannel GetSmoothnessMapChannel(Material material)

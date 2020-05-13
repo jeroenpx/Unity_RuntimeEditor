@@ -480,6 +480,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_raycaster: {fileID: 0}
+  m_tabPrefab: {fileID: 6123953020192339200, guid: 8e707ceb975f7cc43b57546c7b660a72,
+    type: 3}
   m_regionPrefab: {fileID: 4130894439911558076, guid: 0b6743e02eb89554bb2598ab31431ecf,
     type: 3}
   m_rootRegion: {fileID: 0}
@@ -3893,6 +3895,7 @@ MonoBehaviour:
         ShowRemoveButton: 1
       ShowAddComponentButton: 1
   m_isGridVisibleDefault: 1
+  m_gridOpacity: 0.33
   m_isGridEnabledDefault: 0
   m_gridZTest: 1
   m_gridSizeDefault: 0.5

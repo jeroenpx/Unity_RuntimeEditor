@@ -51,11 +51,11 @@ namespace Battlehub.RTEditor.Demo
 
             LayoutInfo layout = new LayoutInfo(false,
                 new LayoutInfo(
-                    new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
-                    new LayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon)),
+                    wm.CreateLayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
+                    wm.CreateLayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon)),
                 new LayoutInfo(true,
-                    new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
-                    new LayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
+                    wm.CreateLayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
+                    wm.CreateLayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
                     0.5f),
                 0.75f);
 

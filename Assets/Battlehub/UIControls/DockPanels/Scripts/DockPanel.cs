@@ -41,6 +41,13 @@ namespace Battlehub.UIControls.DockPanels
         }
 
         [SerializeField]
+        private Tab m_tabPrefab = null;
+        public Tab TabPrefab
+        {
+            get { return m_tabPrefab; }
+        }
+
+        [SerializeField]
         private Region m_regionPrefab = null;
         public Region RegionPrefab
         {
@@ -119,7 +126,6 @@ namespace Battlehub.UIControls.DockPanels
         {
             get { return m_minWidth; }
         }
-
 
         [SerializeField]
         private float m_minHeight = 0;
@@ -542,9 +548,9 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        public void AddRegion(Sprite icon, string header, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, bool canDrag = true, bool canClose = true)
+        public void AddRegion(Tab tab, Transform content, bool isFree = false, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f)
         {
-            m_rootRegion.Add(icon, header, content, isFree, splitType, flexibleSize, canDrag, canClose);
+            m_rootRegion.Add(tab, content, isFree, splitType, flexibleSize);
         }
 
         public void RemoveRegion(Transform content)

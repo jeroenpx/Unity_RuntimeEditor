@@ -31,6 +31,7 @@ namespace Battlehub.RTEditor
         event Action<Transform> WindowCreated;
         event Action<Transform> WindowDestroyed;
 
+        LayoutInfo CreateLayoutInfo(Transform content, string header, Sprite icon);
         bool ValidateLayout(LayoutInfo layout);
         void OverrideDefaultLayout(Func<IWindowManager, LayoutInfo> callback, string activateWindowOfType = null);
         void SetDefaultLayout();
@@ -138,19 +139,19 @@ namespace Battlehub.RTEditor
             LayoutInfo layout = new LayoutInfo(false,
                 new LayoutInfo(false,
                     new LayoutInfo(true,
-                        new LayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
-                        new LayoutInfo(consoleContent.transform, consoleWd.Header, consoleWd.Icon),
+                        wm.CreateLayoutInfo(inspectorContent.transform, inspectorWd.Header, inspectorWd.Icon),
+                        wm.CreateLayoutInfo(consoleContent.transform, consoleWd.Header, consoleWd.Icon),
                         0.5f),
                     new LayoutInfo(true,
-                        new LayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
+                        wm.CreateLayoutInfo(sceneContent.transform, sceneWd.Header, sceneWd.Icon),
                         new LayoutInfo(
-                            new LayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon),
-                            new LayoutInfo(animationContent.transform, animationWd.Header, animationWd.Icon)),
+                            wm.CreateLayoutInfo(gameContent.transform, gameWd.Header, gameWd.Icon),
+                            wm.CreateLayoutInfo(animationContent.transform, animationWd.Header, animationWd.Icon)),
                         0.75f),
                     0.25f),
                 new LayoutInfo(true,
-                    new LayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
-                    new LayoutInfo(projectContent.transform, projectWd.Header, projectWd.Icon),
+                    wm.CreateLayoutInfo(hierarchyContent.transform, hierarchyWd.Header, hierarchyWd.Icon),
+                    wm.CreateLayoutInfo(projectContent.transform, projectWd.Header, projectWd.Icon),
                     0.5f),
                 0.75f);
 
@@ -871,6 +872,14 @@ namespace Battlehub.RTEditor
             return true;
         }
 
+        public LayoutInfo CreateLayoutInfo(Transform content, string header, Sprite icon)
+        {
+            Tab tab = Instantiate(m_dockPanels.TabPrefab);
+            tab.Text = header;
+            tab.Icon = icon;
+            return new LayoutInfo(content, tab);
+        }
+
         public bool ValidateLayout(LayoutInfo layoutInfo)
         {
             return m_dockPanels.RootRegion.Validate(layoutInfo);
@@ -890,7 +899,7 @@ namespace Battlehub.RTEditor
             }
             else
             {
-                SetLayout(IWindowManagerExt.GetBuiltInDefaultLayout, RuntimeWindowType.Scene.ToString().ToLower());
+                SetLayout(wm => IWindowManagerExt.GetBuiltInDefaultLayout(wm), RuntimeWindowType.Scene.ToString().ToLower());
             }
         }
 
@@ -1252,8 +1261,11 @@ namespace Battlehub.RTEditor
                     targetRegion = m_dockPanels.RootRegion;
                 }
 
-                targetRegion.Add(wd.Icon, wd.Header, content.transform, isFree, splitType, flexibleSize);
+                Tab tab = Instantiate(m_dockPanels.TabPrefab);
+                tab.Text = wd.Header;
+                tab.Icon = wd.Icon;
 
+                targetRegion.Add(tab, content.transform, isFree, splitType, flexibleSize);
                 
                 if (!isFree)
                 {
@@ -1724,16 +1736,20 @@ namespace Battlehub.RTEditor
                 bool isDialog;
                 CreateWindow(persistentLayoutInfo.WindowType, out wd, out content, out isDialog);
 
+                Tab tab = Instantiate(m_dockPanels.TabPrefab);
                 if(content == null)
                 {
+                    tab.Text = "Empty";
+
                     layoutInfo.Content = new GameObject("Empty").AddComponent<RectTransform>();
-                    layoutInfo.Header = "Empty";
+                    layoutInfo.Tab = tab;
                 }
                 else
                 {
+                    tab.Text = wd.Header;
+                    tab.Icon = wd.Icon;
                     layoutInfo.Content = content.transform;
-                    layoutInfo.Header = wd.Header;
-                    layoutInfo.Icon = wd.Icon;
+                    layoutInfo.Tab = tab;
                     layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
                     layoutInfo.CanClose = persistentLayoutInfo.CanClose;
                     layoutInfo.IsHeaderVisible = persistentLayoutInfo.IsHeaderVisible;

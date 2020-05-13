@@ -98,6 +98,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1600331208432396, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1783882218524766, guid: b3cc40c5c5adfaa4d8e1c4b7bf739dd0, type: 3}
       propertyPath: m_Name
       value: Region

@@ -99,7 +99,7 @@ namespace Battlehub.RTEditor
             get { return m_editor; }
         }
 
-        public string Name
+        public virtual string Name
         {
             get;
             private set;
@@ -152,13 +152,13 @@ namespace Battlehub.RTEditor
 
     public class PropertyEditor : MonoBehaviour
     {
-        private PropertyEditorCallback m_valueChangingCallback;
-        private PropertyEditorCallback m_valueChangedCallback;
-        private PropertyEditorCallback m_endEditCallback;
-        private PropertyEditorCallback m_beginRecordCallback;
-        private PropertyEditorCallback m_endRecordCallback;
-        private PropertyEditorCallback m_afterRedoCallback;
-        private PropertyEditorCallback m_afterUndoCallback;
+        protected PropertyEditorCallback m_valueChangingCallback;
+        protected PropertyEditorCallback m_valueChangedCallback;
+        protected PropertyEditorCallback m_endEditCallback;
+        protected PropertyEditorCallback m_beginRecordCallback;
+        protected PropertyEditorCallback m_endRecordCallback;
+        protected PropertyEditorCallback m_afterRedoCallback;
+        protected PropertyEditorCallback m_afterUndoCallback;
 
         private Dictionary<MemberInfo, PropertyDescriptor> m_childDescriptors;
         protected Dictionary<MemberInfo, PropertyDescriptor> ChildDescriptors
@@ -233,7 +233,7 @@ namespace Battlehub.RTEditor
         //    }
         //}
 
-        private Action<object, object> m_eraseTargetCallback;
+        protected Action<object, object> m_eraseTargetCallback;
 
         public MemberInfo MemberInfo
         {
@@ -449,9 +449,13 @@ namespace Battlehub.RTEditor
 
         protected void EndEdit(bool record = true)
         {
-            if(m_isEditing && record)
+            if(m_isEditing)
             {
-                EndRecord();
+                if(record)
+                {
+                    EndRecord();
+                }
+                
                 if(m_endEditCallback != null)
                 {
                     m_endEditCallback();

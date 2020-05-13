@@ -66,12 +66,13 @@
     <Compile Include="Assets\Battlehub\UniversalRP\RTCommon\Scripts\RenderCache.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTEditor\Scripts\SceneGizmoOutput.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTEditor\Scripts\URPInit.cs" />
-    <Compile Include="Assets\Battlehub\UniversalRP\RTEditor\Scripts\URPLitMaterialUtils.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTExtensions\RTBuilder\Scripts\PBSelectionPickerRendererURP.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTExtensions\RTBuilder\Scripts\ProBuilderInitURP.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTHandles\Scripts\ExecuteCommandBuffers.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTHandles\Scripts\OutlineManagerURP.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTHandles\Scripts\RenderSelection.cs" />
+    <Compile Include="Assets\Battlehub\UniversalRP\RTSL\Scripts\RTSLDepsURP.cs" />
+    <Compile Include="Assets\Battlehub\UniversalRP\Utils\Scripts\URPLitMaterialUtils.cs" />
     <None Include="Assets\Battlehub\UniversalRP\RTHandles\Outline\OutlineComposite.shader" />
     <None Include="Assets\Battlehub\UniversalRP\RTHandles\Outline\OutlineBlur.shader" />
     <None Include="Assets\Battlehub\UniversalRP\RTHandles\Outline\OutlinePrepass.shader" />

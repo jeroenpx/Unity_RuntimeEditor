@@ -67,14 +67,13 @@ namespace Battlehub.UIControls.DockPanels
         private void Awake()
         {
             m_region = GetComponentInParent<Region>();
-
+            
             m_region.Root.TabBeginDrag += OnTabBeginDrag;
             m_region.Root.TabEndDrag += OnTabEndDrag;
-            LayoutElement layoutElement = m_region.TabPrefab.GetComponent<LayoutElement>();
-
+            
             UpdateContentSize();
             m_viewport = GetComponent<RectTransform>();
-            m_transformChildrenChangeListener = m_content.gameObject.AddComponent<TransformChildrenChangeListener>();
+            m_transformChildrenChangeListener = m_content.gameObject.AddComponent<TransformChildrenChangeListener>();    
         }
 
         private void Start()
@@ -86,7 +85,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnDestroy()
         {
-            if (m_region != null && m_region.Root != null)
+            if(m_region != null && m_region.Root != null)
             {
                 m_region.Root.TabBeginDrag -= OnTabBeginDrag;
                 m_region.Root.TabEndDrag -= OnTabEndDrag;
@@ -113,7 +112,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void OnRectTransformDimensionsChange()
         {
-            if (m_isStarted)
+            if(m_isStarted)
             {
                 m_updateButtonsState = true;
             }
@@ -193,7 +192,7 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Update()
         {
-            if (m_updateButtonsState)
+            if(m_updateButtonsState)
             {
                 OnTabPanelChildrenChanged();
                 m_updateButtonsState = false;
@@ -249,3 +248,4 @@ namespace Battlehub.UIControls.DockPanels
         }
     }
 }
+

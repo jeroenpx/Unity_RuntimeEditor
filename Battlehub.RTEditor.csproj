@@ -216,6 +216,7 @@
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\ObjectEditor.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\ObjectEditorLoader.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\OptionsEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\OptionsEditorFloat.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\PropertyEditor.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\QuaternionEditor.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\Editors\PropertyEditors\RangeEditor.cs" />
@@ -476,12 +477,12 @@
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\DepthMaskingBehavior.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\DockPanel.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\EatDragEvent.cs" />
+    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\HeaderPanel.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\Region.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\RepeatButton.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\Resizer.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\Tab.cs" />
     <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\TabPanelScroller.cs" />
-    <Compile Include="Assets\Battlehub\UIControls\DockPanels\Scripts\TabPreview.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Menu\Demo\MenuDemo.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\ContextMenuTrigger.cs" />
     <Compile Include="Assets\Battlehub\UIControls\Menu\Scripts\Editor\MenuEditor.cs" />
@@ -528,6 +529,7 @@
     <Compile Include="Assets\Battlehub\Utils\Dispatcher\Dispatcher.cs" />
     <Compile Include="Assets\Battlehub\Utils\Dispatcher\DispatcherTest.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\ReadOnlyPropertyDrawer.cs" />
+    <Compile Include="Assets\Battlehub\Utils\Editor\UnityGuidRegenerator.cs" />
     <Compile Include="Assets\Battlehub\Utils\Scripts\CursorHelper.cs" />
     <Compile Include="Assets\Battlehub\Utils\Scripts\GameObjectExtensions.cs" />
     <Compile Include="Assets\Battlehub\Utils\Scripts\MathHelper.cs" />

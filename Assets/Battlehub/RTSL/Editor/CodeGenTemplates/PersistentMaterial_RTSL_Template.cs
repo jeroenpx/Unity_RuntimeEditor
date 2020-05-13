@@ -128,11 +128,8 @@ namespace Battlehub.RTSL.Internal
                 }
             }
 
-            if (m_shaderName == "Standard")
-            {
-                StandardMaterialUtils.SetupMaterialWithBlendMode(o, StandardMaterialUtils.GetBlendMode(o));
-                StandardMaterialUtils.SetMaterialKeywords(o, StandardMaterialUtils.m_workflow);
-            }
+            IMaterialUtil util = IOC.Resolve<IMaterialUtil>();
+            util.SetMaterialKeywords(o);
 
             return obj;
         }

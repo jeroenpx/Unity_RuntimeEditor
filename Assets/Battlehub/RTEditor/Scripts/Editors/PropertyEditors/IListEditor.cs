@@ -14,16 +14,16 @@ namespace Battlehub.RTEditor
     public abstract class IListEditor : PropertyEditor<IList>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private GameObject SizeEditor = null;
+        protected GameObject SizeEditor = null;
         [SerializeField]
-        private TMP_InputField SizeInput = null;
+        protected TMP_InputField SizeInput = null;
         [SerializeField]
-        private TextMeshProUGUI SizeLabel = null;
+        protected TextMeshProUGUI SizeLabel = null;
 
         [SerializeField]
-        private Transform Panel = null;
+        protected Transform Panel = null;
         [SerializeField]
-        private Toggle Expander = null;
+        protected Toggle Expander = null;
 
         private PropertyEditor m_editorPrefab;
 
@@ -178,7 +178,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnExpanded(bool isExpanded)
+        protected virtual void OnExpanded(bool isExpanded)
         {
             SizeEditor.SetActive(isExpanded);
             Panel.gameObject.SetActive(isExpanded);
@@ -208,6 +208,11 @@ namespace Battlehub.RTEditor
             CreateElementEditors(m_currentValue);
         }
 
+        protected virtual IListElementAccessor CreateAccessor(int i)
+        {
+            return new IListElementAccessor(this, i, "Element " + i);
+        }
+
         private void CreateElementEditors(IList value)
         {
             if(value ==  null)
@@ -219,8 +224,13 @@ namespace Battlehub.RTEditor
             {
                 PropertyEditor editor = Instantiate(m_editorPrefab);
                 editor.transform.SetParent(Panel, false);
-                IListElementAccessor accessor = new IListElementAccessor(this, i, "Element " + i);
-                editor.Init(accessor, accessor, accessor.GetType().GetProperty("Value"), null, accessor.Name, OnValueChanging, OnValueChanged, null, false);
+
+                IListElementAccessor accessor = CreateAccessor(i);
+                editor.Init(accessor, accessor, accessor.GetType().GetProperty("Value"), null, accessor.Name, OnValueChanging, OnValueChanged, () =>
+                {
+                    
+                }, 
+                false);
             }
         }
 
@@ -253,6 +263,7 @@ namespace Battlehub.RTEditor
                     Destroy(c.gameObject);
                 }
 
+                int oldSize = list.Count;
                 IList newList = Resize(list, size);
                 if(size > 0)
                 {

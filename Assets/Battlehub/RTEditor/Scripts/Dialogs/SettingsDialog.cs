@@ -18,6 +18,9 @@ namespace Battlehub.RTEditor
         private BoolEditor m_isGridVisibleEditor = null;
 
         [SerializeField]
+        private RangeEditor m_gridOpacityEditor = null;
+
+        [SerializeField]
         private BoolEditor m_gridZTest = null;
 
         [SerializeField]
@@ -155,7 +158,12 @@ namespace Battlehub.RTEditor
                 m_isGridVisibleEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.IsGridVisible), null, m_localization.GetString("ID_RTEditor_SettingsDialog_IsGridVisible", "Is Grid Visible"));
             }
 
-            if(m_gridZTest != null)
+            if (m_gridOpacityEditor != null)
+            {
+                m_gridOpacityEditor.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.GridOpacity), null, m_localization.GetString("ID_RTEditor_SettingsDialog_GridOpacity", "Grid Opacity"));
+            }
+
+            if (m_gridZTest != null)
             {
                 m_gridZTest.Init(m_settings, m_settings, Strong.PropertyInfo((ISettingsComponent x) => x.GridZTest), null, m_localization.GetString("ID_RTEditor_SettingsDialog_GridZTest", "Grid Z Test"));
             }

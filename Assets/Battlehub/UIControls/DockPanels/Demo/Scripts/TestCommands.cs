@@ -104,7 +104,12 @@ namespace Battlehub.UIControls.DockPanels
                 m_counter++;
 
                 Transform content = Instantiate(m_contentPrefab);
-                m_dockPanels.SelectedRegion.Add(m_sprite, m_headerText + " " + m_counter, content, false, m_splitType);
+
+                Tab tab = Instantiate(m_dockPanels.TabPrefab);
+                tab.Icon = m_sprite;
+                tab.Text = m_headerText + " " + m_counter;
+
+                m_dockPanels.SelectedRegion.Add(tab, content, false, m_splitType);
             }
         }
 
@@ -163,14 +168,23 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             LayoutInfo layout = new LayoutInfo(false,
-                new LayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
+                CreateLayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
                 new LayoutInfo(true,
-                    new LayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
-                    new LayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
+                    CreateLayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
+                    CreateLayoutInfo(Instantiate(m_contentPrefab).transform, m_headerText + " " + m_counter++, m_sprite),
                     0.5f),
                 0.75f);
 
             m_dockPanels.RootRegion.Build(layout);
+        }
+
+        private LayoutInfo CreateLayoutInfo(Transform content, string header, Sprite icon)
+        {
+            Tab tab = Instantiate(m_dockPanels.TabPrefab);
+            tab.Icon = icon;
+            tab.Text = header;
+
+            return new LayoutInfo(content, tab);
         }
 
         private void Update()
@@ -302,8 +316,11 @@ namespace Battlehub.UIControls.DockPanels
             if (!string.IsNullOrEmpty(persistentLayoutInfo.WindowType))
             {
                 Transform content = Instantiate(m_contentPrefab);
+                Tab tab = Instantiate(m_dockPanels.TabPrefab);
+                tab.Text = persistentLayoutInfo.WindowType;
+
+                layoutInfo.Tab = tab;
                 layoutInfo.Content = content.transform;
-                layoutInfo.Header = persistentLayoutInfo.WindowType;
                 layoutInfo.CanDrag = persistentLayoutInfo.CanDrag;
                 layoutInfo.CanClose = persistentLayoutInfo.CanClose;
                 layoutInfo.IsHeaderVisible = persistentLayoutInfo.IsHeaderVisible;

@@ -4,22 +4,15 @@ using System.Collections;
 using System.Reflection;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
-using Battlehub.Utils;
 using System;
 using System.Collections.Generic;
 
 using Battlehub.RTCommon;
 using Battlehub.RTSL;
-using Battlehub.RTSL.Interface;
 using TMPro;
-#if PROC_MATERIAL
-using ProcPropertyDescription = UnityEngine.ProceduralPropertyDescription;
-using ProcPropertyType = UnityEngine.ProceduralPropertyType;
-#endif
+
 namespace Battlehub.RTEditor
 {
- 
-
     public class MaterialPropertyDescriptor
     {
         public object Target;
@@ -63,40 +56,39 @@ namespace Battlehub.RTEditor
 
     public class MaterialEditor : MonoBehaviour
     {
-        private static Dictionary<string, IMaterialDescriptor> m_propertySelectors;
+        public readonly static Dictionary<string, IMaterialDescriptor> PropertyDescriptors;
         static MaterialEditor()
         {
             var type = typeof(IMaterialDescriptor);
             var types = Reflection.GetAssignableFromTypes(type);
 
-            m_propertySelectors = new Dictionary<string, IMaterialDescriptor>();
+            PropertyDescriptors = new Dictionary<string, IMaterialDescriptor>();
             foreach (Type t in types)
             {
-                IMaterialDescriptor selector = (IMaterialDescriptor)Activator.CreateInstance(t);
-                if (selector == null)
+                IMaterialDescriptor descriptor = (IMaterialDescriptor)Activator.CreateInstance(t);
+                if (descriptor == null)
                 {
-                    Debug.LogWarningFormat("Unable to instantiate selector of type " + t.FullName);
+                    Debug.LogWarningFormat("Unable to instantiate descriptor of type " + t.FullName);
                     continue;
                 }
-                if (selector.ShaderName == null)
+                if (descriptor.ShaderName == null)
                 {
-                    Debug.LogWarningFormat("ComponentType is null. Selector ShaderName is null {0}", t.FullName);
+                    Debug.LogWarningFormat("ComponentType is null. ShaderName is null {0}", t.FullName);
                     continue;
                 }
-                if (m_propertySelectors.ContainsKey(selector.ShaderName))
+                if (PropertyDescriptors.ContainsKey(descriptor.ShaderName))
                 {
-                    Debug.LogWarningFormat("Duplicate component selector for {0} found. Type name {1}. Using {2} instead", selector.ShaderName, selector.GetType().FullName, m_propertySelectors[selector.ShaderName].GetType().FullName);
+                    Debug.LogWarningFormat("Duplicate component descriptor for {0} found. Type name {1}. Using {2} instead", descriptor.ShaderName, descriptor.GetType().FullName, PropertyDescriptors[descriptor.ShaderName].GetType().FullName);
                 }
                 else
                 {
-                    m_propertySelectors.Add(selector.ShaderName, selector);
+                    PropertyDescriptors.Add(descriptor.ShaderName, descriptor);
                 }
             }
         }
         
         [SerializeField]
         private RangeEditor RangeEditor = null;
-
         [SerializeField]
         private Image m_image = null;
         [SerializeField]
@@ -146,13 +138,9 @@ namespace Battlehub.RTEditor
                 TxtShaderName.text = "Shader missing";
             }
 
-    
             UpdatePreview(Material);
-
             BuildEditor();
         }
-
-        
 
         private void Update()
         {   
@@ -165,7 +153,6 @@ namespace Battlehub.RTEditor
                 TxtMaterialName.text = Material.name;
             }
         }
-
 
         private void OnDestroy()
         {
@@ -189,7 +176,7 @@ namespace Battlehub.RTEditor
             }
 
             IMaterialDescriptor selector;
-            if(!m_propertySelectors.TryGetValue(Material.shader.name, out selector))
+            if(!PropertyDescriptors.TryGetValue(Material.shader.name, out selector))
             {
                 selector = new MaterialDescriptor();
             }

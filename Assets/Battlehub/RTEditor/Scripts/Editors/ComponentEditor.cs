@@ -291,7 +291,7 @@ namespace Battlehub.RTEditor
             }   
         }
 
-        private PropertyInfo EnabledProperty
+        protected PropertyInfo EnabledProperty
         {
             get
             {

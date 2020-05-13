@@ -17,10 +17,24 @@ namespace Battlehub.RTEditor
         }
     }
 
-    public class OptionsEditor : PropertyEditor<int>
+    public class OptionsEditor : OptionsEditor<int>
+    {
+        protected override void SetInputField(int value)
+        {
+            m_input.value = value;
+        }
+
+        protected override void OnValueChanged(int index)
+        {
+            SetValue(index);
+            EndEdit();
+        }
+    }
+
+    public class OptionsEditor<T> : PropertyEditor<T>
     {
         [SerializeField]
-        private TMP_Dropdown m_input = null;
+        protected TMP_Dropdown m_input = null;
 
         public string[] Options = new string[0];
 
@@ -65,15 +79,15 @@ namespace Battlehub.RTEditor
             m_input.options = options;
         }
 
-        protected override void SetInputField(int value)
-        {
-            m_input.value = value;
-        }
+        //protected override void SetInputField(T value)
+        //{
+        //    m_input.value = value;
+        //}
 
-        private void OnValueChanged(int index)
+        protected virtual void OnValueChanged(int index)
         {
-            SetValue(index);
-            EndEdit();
+            //SetValue(index);
+            //EndEdit();
         }
     }
 }

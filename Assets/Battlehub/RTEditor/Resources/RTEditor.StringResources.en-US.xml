@@ -419,7 +419,8 @@
 		<StringResource id="ID_RTEditor_SettingsDialog_Close" value="Close"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_IsGridVisible" value="Is Grid Visible"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_GridZTest" value="Grid Z Test"/>
-		<StringResource id="ID_RTEditor_SettingsDialog_SnapToGrid" value="Snap To Grid"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_GridOpacity" value="Grid Opacity"/>
+    <StringResource id="ID_RTEditor_SettingsDialog_SnapToGrid" value="Snap To Grid"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_GridSize" value="Grid Size"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_UIAutoScale" value="UI Auto Scale"/>
 		<StringResource id="ID_RTEditor_SettingsDialog_UIScale" value="UI Scale"/>

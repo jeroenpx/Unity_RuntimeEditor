@@ -102,15 +102,24 @@ namespace Battlehub.RTEditor
             return null;
         }
 
-        public MaterialPropertyDescriptor[] GetProperties(MaterialEditor editor, object converter)
+        public object CreateConverter(Material material)
+        {
+            return null;
+        }
+
+        public virtual MaterialPropertyDescriptor[] GetProperties(MaterialEditor editor, object converter)
+        {
+            return GetProperties(editor.Material);
+        }
+
+        public static MaterialPropertyDescriptor[] GetProperties(Material material)
         {
             RuntimeShaderInfo shaderInfo = null;
             IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
             if (shaderUtil != null)
             {
-                shaderInfo = shaderUtil.GetShaderInfo(editor.Material.shader);
+                shaderInfo = shaderUtil.GetShaderInfo(material.shader);
             }
-
 
             if (shaderInfo == null)
             {
@@ -133,69 +142,85 @@ namespace Battlehub.RTEditor
                     RTShaderPropertyType propertyType = shaderInfo.PropertyTypes[i];
                     RuntimeShaderInfo.RangeLimits limits = shaderInfo.PropertyRangeLimits[i];
                     TextureDimension dim = shaderInfo.PropertyTexDims[i];
-                    PropertyInfo propertyInfo = null;
-                    switch (propertyType)
-                    {
-                        case RTShaderPropertyType.Color:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Color, "Color");
-                            break;
-                        case RTShaderPropertyType.Float:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
-                            break;
-                        case RTShaderPropertyType.Range:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
-                            break;
-                        case RTShaderPropertyType.TexEnv:
-                            switch (dim)
-                            {
-                                case TextureDimension.Any:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture, "Texture");
-                                    break;
-                                case TextureDimension.Cube:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Cubemap, "Cubemap");
-                                    break;
-                                case TextureDimension.None:
-                                    propertyInfo = null;
-                                    break;
-                                case TextureDimension.Tex2D:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2D, "Texture2D");
-                                    break;
-                                case TextureDimension.Tex2DArray:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2DArray, "Texture2DArray");
-                                    break;
-                                case TextureDimension.Tex3D:
-                                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture3D, "Texture3D");
-                                    break;
-                                case TextureDimension.Unknown:
-                                    propertyInfo = null;
-                                    break;
-                            }
-
-                            break;
-                        case RTShaderPropertyType.Vector:
-                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Vector, "Vector");
-                            break;
-                    }
+                    PropertyInfo propertyInfo = GetPropertyInfo(propertyType, dim);
 
                     if (propertyInfo == null)
                     {
                         continue;
                     }
 
-                    MaterialPropertyDescriptor propertyDescriptor = new MaterialPropertyDescriptor(
-                        editor.Material, 
-                        new MaterialPropertyAccessor(editor.Material, propertyName),
-                        propertyDescr, propertyType, propertyInfo, limits, dim, null,
-                        (accessorRef, newTarget) =>
-                        {
-                            MaterialPropertyAccessor accessor = (MaterialPropertyAccessor)accessorRef;
-                            accessor.Material = newTarget as Material;
-                        });
+                    MaterialPropertyDescriptor propertyDescriptor = CreatePropertyDescriptor(material, propertyInfo, propertyDescr, propertyName, propertyType, dim, limits);
                     descriptors.Add(propertyDescriptor);
                 }
             }
-
             return descriptors.ToArray();
+        }
+
+        public static PropertyInfo GetPropertyInfo(RTShaderPropertyType propertyType, TextureDimension dim)
+        {
+            PropertyInfo propertyInfo = null;
+            switch (propertyType)
+            {
+                case RTShaderPropertyType.Color:
+                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Color, "Color");
+                    break;
+                case RTShaderPropertyType.Float:
+                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
+                    break;
+                case RTShaderPropertyType.Range:
+                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Float, "Float");
+                    break;
+                case RTShaderPropertyType.TexEnv:
+                    switch (dim)
+                    {
+                        case TextureDimension.Any:
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture, "Texture");
+                            break;
+                        case TextureDimension.Cube:
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Cubemap, "Cubemap");
+                            break;
+                        case TextureDimension.None:
+                            propertyInfo = null;
+                            break;
+                        case TextureDimension.Tex2D:
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2D, "Texture2D");
+                            break;
+                        case TextureDimension.Tex2DArray:
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture2DArray, "Texture2DArray");
+                            break;
+                        case TextureDimension.Tex3D:
+                            propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Texture3D, "Texture3D");
+                            break;
+                        case TextureDimension.Unknown:
+                            propertyInfo = null;
+                            break;
+                    }
+
+                    break;
+                case RTShaderPropertyType.Vector:
+                    propertyInfo = Strong.PropertyInfo((MaterialPropertyAccessor x) => x.Vector, "Vector");
+                    break;
+            }
+
+            return propertyInfo;
+        }
+
+        public static MaterialPropertyDescriptor CreatePropertyDescriptor(Material material, PropertyInfo propertyInfo, string propertyDescr, string propertyName, RTShaderPropertyType propertyType)
+        {
+            return CreatePropertyDescriptor(material, propertyInfo, propertyDescr, propertyName, propertyType, TextureDimension.Tex2D, new RuntimeShaderInfo.RangeLimits());
+        }
+
+        public static MaterialPropertyDescriptor CreatePropertyDescriptor(Material material, PropertyInfo propertyInfo, string propertyDescr, string propertyName, RTShaderPropertyType propertyType, TextureDimension dim, RuntimeShaderInfo.RangeLimits limits)
+        {
+            return new MaterialPropertyDescriptor(
+                material,
+                new MaterialPropertyAccessor(material, propertyName),
+                propertyDescr, propertyType, propertyInfo, limits, dim, null,
+                (accessorRef, newTarget) =>
+                {
+                    MaterialPropertyAccessor accessor = (MaterialPropertyAccessor)accessorRef;
+                    accessor.Material = newTarget as Material;
+                });
         }
     }
 

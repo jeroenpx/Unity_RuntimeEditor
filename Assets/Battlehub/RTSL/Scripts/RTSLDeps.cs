@@ -9,7 +9,7 @@ namespace Battlehub.RTSL
 {
     [DefaultExecutionOrder(-100)]
     [RequireComponent(typeof(RTSLIgnore))]
-    public class RTSLDeps : MonoBehaviour 
+    public class RTSLDeps : MonoBehaviour
     {
         private IAssetDB m_assetDB;
         private ITypeMap m_typeMap;
@@ -17,6 +17,7 @@ namespace Battlehub.RTSL
         private ISerializer m_serializer;
         private IStorage m_storage;
         private IProject m_project;
+        private IMaterialUtil m_materialUtil;
         private IRuntimeShaderUtil m_shaderUtil;
         private IAssetBundleLoader m_assetBundleLoader;
         private IPlayerPrefsStorage m_playerPrefs;
@@ -25,17 +26,22 @@ namespace Battlehub.RTSL
         {
             get
             {
-                #if USE_GOOGLE_DRIVE
+#if USE_GOOGLE_DRIVE
                 if(File.Exists(Application.streamingAssetsPath + "/credentials.json"))
                 {
                     return new GoogleDriveAssetBundleLoader();
                 }
                 else
-                #endif
+#endif
                 {
                     return new AssetBundleLoader();
                 }
             }
+        }
+
+        protected virtual IMaterialUtil MaterialUtil
+        {
+            get { return new StandardMaterialUtils(); }
         }
 
         protected virtual IRuntimeShaderUtil ShaderUtil
@@ -106,6 +112,7 @@ namespace Battlehub.RTSL
 
             m_assetBundleLoader = AssetBundleLoader;
             m_assetDB = AssetDB;
+            m_materialUtil = MaterialUtil;
             m_shaderUtil = ShaderUtil;
             m_typeMap = TypeMap;
             m_objectFactory = ObjectFactory;
@@ -125,6 +132,7 @@ namespace Battlehub.RTSL
             OnDestroyOverride();
 
             m_assetBundleLoader = null;
+            m_materialUtil = null;
             m_shaderUtil = null;
             m_assetDB = null;
             m_typeMap = null;
@@ -176,6 +184,7 @@ namespace Battlehub.RTSL
             IOC.RegisterFallback<IIDMap>(() => Instance.m_assetDB);
             IOC.RegisterFallback(() => Instance.m_project);
             IOC.RegisterFallback(() => Instance.m_shaderUtil);
+            IOC.RegisterFallback(() => Instance.m_materialUtil);
             IOC.RegisterFallback(() => Instance.m_playerPrefs);
         }
 
