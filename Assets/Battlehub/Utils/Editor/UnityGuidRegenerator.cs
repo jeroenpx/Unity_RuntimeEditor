@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -7,7 +8,7 @@ namespace UnityGuidRegenerator
 {
     public class UnityGuidRegeneratorMenu
     {
-        [MenuItem("Tools/Regenerate asset GUIDs")]
+        //[MenuItem("Tools/Regenerate asset GUIDs")]
         public static void RegenerateGuids()
         {
             if (EditorUtility.DisplayDialog("GUIDs regeneration",
@@ -205,3 +206,4 @@ namespace UnityGuidRegenerator
         }
     }
 }
+#endif

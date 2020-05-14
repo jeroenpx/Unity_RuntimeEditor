@@ -1649,7 +1649,6 @@ namespace Battlehub.UIControls.DockPanels
             Region region = GetRegion(args);
             tab.transform.SetParent(region.m_tabPanel.transform, false);
             
-
             m_isDraggingTab = false;
 
             if (m_isFree)

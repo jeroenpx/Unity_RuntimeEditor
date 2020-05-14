@@ -844,6 +844,11 @@ namespace Battlehub.RTHandles
                 return;
             }
 
+            if(m_points == null)
+            {
+                return;
+            }
+
             Vector3[] v = m_points.sharedMesh.vertices;
             if (m_txtSize1 != null)
             {

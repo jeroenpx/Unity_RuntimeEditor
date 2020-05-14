@@ -54,21 +54,22 @@ namespace Battlehub.UIControls.DockPanels
 
         private void RecalculateHeight()
         {
-            if(m_tabPanel.childCount == 0)
-            {
-                return;
-            }
-
             float height = 0;
-            foreach(RectTransform child in m_tabPanel)
+            Transform panel = transform;
+            if (m_tabPanel.childCount > 0)
             {
-                Tab tab = child.GetComponent<Tab>();
+                panel = m_tabPanel;
+            }
+           
+            foreach (RectTransform child in panel)
+            {
                 LayoutElement layoutElement = child.GetComponent<LayoutElement>();
-                if(layoutElement != null)
+                if (layoutElement != null)
                 {
                     height = Mathf.Max(height, Mathf.Max(layoutElement.preferredHeight, layoutElement.minHeight));
-                } 
+                }
             }
+
             m_layoutElement.preferredHeight = m_isVisible ? height : 0;
         }
 
