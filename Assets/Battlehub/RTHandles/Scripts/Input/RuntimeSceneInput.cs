@@ -11,6 +11,8 @@ namespace Battlehub.RTHandles
         public KeyCode RotateKey = KeyCode.LeftAlt;
         public KeyCode RotateKey2 = KeyCode.RightAlt;
         public KeyCode RotateKey3 = KeyCode.AltGr;
+        public KeyCode MoveDownKey = KeyCode.Q;
+        public KeyCode MoveUpKey = KeyCode.E;
 
         public float RotateXSensitivity = 5.0f;
         public float RotateYSensitivity = 5.0f;
@@ -100,11 +102,11 @@ namespace Battlehub.RTHandles
             float deltaY = input.GetAxis(InputAxis.Vertical);
          
             float deltaZ = 0;
-            if (input.GetKey(KeyCode.Q))
+            if (input.GetKey(MoveUpKey))
             {
                 deltaZ = 0.5f;
             }
-            else if (input.GetKey(KeyCode.E))
+            else if (input.GetKey(MoveDownKey))
             {
                 deltaZ = -0.5f;
             }

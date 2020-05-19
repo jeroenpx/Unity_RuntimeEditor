@@ -60,6 +60,7 @@ namespace Battlehub.ProBuilderIntegration
         public int[] Indexes;
         public int SubmeshIndex;
         public int TextureGroup;
+        public int SmoothingGroup;
         public bool IsManualUV;
         public PBAutoUnwrapSettings UnwrapSettings;
 
@@ -68,7 +69,8 @@ namespace Battlehub.ProBuilderIntegration
             Indexes = face.indexes.ToArray();
             SubmeshIndex = face.submeshIndex;
             TextureGroup = face.textureGroup;
-            if(recordUV)
+            SmoothingGroup = face.smoothingGroup;
+            if (recordUV)
             {
                 IsManualUV = face.manualUV;
                 UnwrapSettings = face.uv;
@@ -84,7 +86,7 @@ namespace Battlehub.ProBuilderIntegration
         {
             Face face = new Face(Indexes);
             face.submeshIndex = SubmeshIndex;
-            
+            face.smoothingGroup = SmoothingGroup;
             if(UnwrapSettings != null)
             {
                 face.textureGroup = TextureGroup;

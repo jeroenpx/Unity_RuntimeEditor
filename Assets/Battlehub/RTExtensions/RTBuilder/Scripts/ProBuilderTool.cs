@@ -25,6 +25,8 @@ namespace Battlehub.RTBuilder
         event Action SelectionChanging;
         event Action SelectionChanged;
         event Action<ProBuilderToolMode> ModeChanged;
+        event Action MeshesChanged;
+
         ProBuilderToolMode Mode
         {
             get;
@@ -85,6 +87,8 @@ namespace Battlehub.RTBuilder
         void SelectFaceGroup();
         void ConvertUVs(bool auto);
         void ResetUVs();
+
+        void RecordState(MeshEditorState oldState, MeshEditorState newState, bool raiseMeshChanged = false);
     }
 
     [DefaultExecutionOrder(-90)]
@@ -94,6 +98,7 @@ namespace Battlehub.RTBuilder
         public event Action<bool> UVEditingModeChanged;
         public event Action SelectionChanging;
         public event Action SelectionChanged;
+        public event Action MeshesChanged;
 
         private bool m_modeChaning;
         private ProBuilderToolMode m_mode = ProBuilderToolMode.Object;
@@ -623,6 +628,11 @@ namespace Battlehub.RTBuilder
                         PivotLocalScale = localScale;
                         meshEditor.Scale(PivotLocalScale, PivotRotation);
                     }
+                }
+
+                if(MeshesChanged != null)
+                {
+                    MeshesChanged();
                 }
             }
             else
@@ -1866,7 +1876,7 @@ namespace Battlehub.RTBuilder
             OnSelectionChanged();
         }
 
-        private void RecordState(MeshEditorState oldState, MeshEditorState newState, bool raiseMeshChanged = false)
+        public void RecordState(MeshEditorState oldState, MeshEditorState newState, bool raiseMeshChanged = false)
         {
             UndoRedoCallback redo = record =>
             {

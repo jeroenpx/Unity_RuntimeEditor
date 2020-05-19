@@ -7,6 +7,41 @@ using Battlehub.Utils;
 
 namespace Battlehub.UIControls.DockPanels
 {
+    public class PanelDelegate : IPanelDelegate
+    {
+        private DialogManager m_dm;
+        
+        public PanelDelegate(DialogManager dialogManager)
+        {
+            m_dm = dialogManager;
+        }
+
+        public void OnPanelAttemptClose(Tab tab)
+        {
+            Dialog dlg = m_dm.ShowDialog(null, "Confirmation", "Are you sure you want to close panel?", (sender, okArgs) =>
+            {
+                tab.Close();
+            }, "Yes", (sender, cancelArgs) =>
+            {
+                
+            }, "No");
+
+            dlg.IsOkVisible = true;
+            dlg.IsCancelVisible = true;
+        }
+
+        public void OnPanelClosing(Tab tab)
+        {
+            
+        }
+
+        public void OnPanelVisible(Tab tab, bool isVisible)
+        {
+            
+        }
+    }
+
+
     public class TestCommands : MonoBehaviour
     {
         [SerializeField]
@@ -108,6 +143,7 @@ namespace Battlehub.UIControls.DockPanels
                 Tab tab = Instantiate(m_dockPanels.TabPrefab);
                 tab.Icon = m_sprite;
                 tab.Text = m_headerText + " " + m_counter;
+                tab.PanelDelegate = new PanelDelegate(m_dialog);
 
                 m_dockPanels.SelectedRegion.Add(tab, content, false, m_splitType);
             }

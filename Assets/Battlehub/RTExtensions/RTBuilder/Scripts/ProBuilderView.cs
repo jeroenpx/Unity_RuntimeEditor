@@ -22,6 +22,8 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private GameObject m_materialPaletteEditor = null;
         [SerializeField]
+        private GameObject m_smoothGroupEditor = null;
+        [SerializeField]
         private EnumEditor m_modeSelector = null;
         [SerializeField]
         private bool m_useSceneViewToolbar = true;
@@ -49,6 +51,7 @@ namespace Battlehub.RTBuilder
             Mesh_Editing,
             UV_Editing,
             Materials_Editing,
+            Smooth_Groups,
         }
 
         [SerializeField]
@@ -81,6 +84,11 @@ namespace Battlehub.RTBuilder
             if (m_materialPaletteEditor != null)
             {
                 m_materialPaletteEditor.SetActive(m_uiMode == UIModes.Materials_Editing);
+            }
+
+            if(m_smoothGroupEditor != null)
+            {
+                m_smoothGroupEditor.SetActive(m_uiMode == UIModes.Smooth_Groups);
             }
         }
 

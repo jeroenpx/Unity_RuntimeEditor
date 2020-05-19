@@ -172,6 +172,7 @@ namespace Battlehub.RTHandles
                     m_commonCenter[0] = new GameObject { name = "CommonCenter" }.transform;
                     m_commonCenter[0].SetParent(transform.parent, true);
                     m_commonCenter[0].position = centerPosition;
+                    m_commonCenter[0].rotation = Rotation;
                     m_commonCenterTarget = new Transform[m_realTargets.Length];
                     for (int i = 0; i < m_commonCenterTarget.Length; ++i)
                     {
@@ -251,6 +252,7 @@ namespace Battlehub.RTHandles
                 centerPosition = centerPosition / RealTargets.Length;
 
                 m_commonCenter[0].position = centerPosition;
+                m_commonCenter[0].rotation = Rotation;
 
                 for (int i = 0; i < m_allHandles.Count; ++i)
                 {
@@ -411,12 +413,12 @@ namespace Battlehub.RTHandles
         {
             get
             {
-                if(Targets == null || Targets.Length <= 0 || Target == null)
+                if(ActiveRealTargets == null || ActiveRealTargets.Length <= 0 || ActiveRealTargets == null)
                 {
                     return Quaternion.identity;
                 }
-
-                return PivotRotation == RuntimePivotRotation.Local ? Target.rotation : Quaternion.identity;
+                
+                return PivotRotation == RuntimePivotRotation.Local ? ActiveRealTargets[0].rotation : Quaternion.identity;
             }
         }
 
@@ -1104,6 +1106,11 @@ namespace Battlehub.RTHandles
             if (Model == null && m_rteCamera != null)
             {
                 m_rteCamera.RefreshCommandBuffer();
+            }
+
+            if(m_commonCenter != null && m_commonCenter.Length > 0)
+            {
+                Targets = RealTargets;
             }
         }
 

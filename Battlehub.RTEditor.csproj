@@ -116,6 +116,8 @@
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\RaiseMouseOverExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\RegisterHierarchyViewOverrideExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\SceneParametersOverrideExample.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\SelectDisplayFieldsBehaviour.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\SelectDisplayFieldsDescriptor.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\SetWindowSizeExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\ToolbarsOverrideExample.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Demo\ExampleScripts\ToolsPanelOverrideExample.cs" />
@@ -289,6 +291,8 @@
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBSelectionPicker.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBSelectionPickerRenderer.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBShapeGenerator.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBSmoothGroupData.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBSmoothing.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBSurfaceTopology.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBTextureMoveTool.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Scripts\PBTextureRotateTool.cs" />
@@ -316,6 +320,8 @@
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\ProBuilderView.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\RaycastHelper.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\SaveSceneHandler.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\SmoothGroupEditor.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\SmoothGroupsEditor.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\UVAutoEditorPanel.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\UVEditor.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTBuilder\Scripts\Wireframe.cs" />
@@ -530,6 +536,7 @@
     <Compile Include="Assets\Battlehub\Utils\Dispatcher\DispatcherTest.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\ReadOnlyPropertyDrawer.cs" />
     <Compile Include="Assets\Battlehub\Utils\Editor\UnityGuidRegenerator.cs" />
+    <Compile Include="Assets\Battlehub\Utils\Scripts\Colors.cs" />
     <Compile Include="Assets\Battlehub\Utils\Scripts\CursorHelper.cs" />
     <Compile Include="Assets\Battlehub\Utils\Scripts\GameObjectExtensions.cs" />
     <Compile Include="Assets\Battlehub\Utils\Scripts\MathHelper.cs" />
@@ -548,6 +555,7 @@
     <None Include="Assets\Battlehub\Utils\Battlehub.Utils.asmref" />
     <None Include="Assets\Battlehub\UIControls\Battlehub.UIControls.asmref" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\Grid.shader" />
+    <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\NormalsPreview.shader" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Resources\RTBuilder.StringResources.en-US.xml" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\FaceHighlight.shader" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\VertexShader.shader" />
@@ -567,6 +575,7 @@
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\LineBillboardBillboard.shader" />
     <None Include="Assets\Battlehub\RTHandles\Fonts\FontLicense!.txt" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\SSCircleShader.shader" />
+    <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\SmoothingPreview.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\AxisShader.shader" />
     <None Include="Assets\Battlehub\RTEditor\Prefabs\AnimationEditor\TimelineControl\Resources\TimelineGrid.shader" />
     <None Include="Assets\Battlehub\RTExtensions\RTDeformer\Resources\RTDeformer.StringResources.en-US.xml" />

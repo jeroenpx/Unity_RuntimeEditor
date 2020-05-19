@@ -91,6 +91,11 @@
 		<StringResource id="ID_Battlehub.ProBuilderIntegration.PBAutoUnwrapSettings+Anchor.LowerCenter" value="Lower Center"/>
 		<StringResource id="ID_Battlehub.ProBuilderIntegration.PBAutoUnwrapSettings+Anchor.LowerRight" value="Lower Right"/>
 		<StringResource id="ID_Battlehub.ProBuilderIntegration.PBAutoUnwrapSettings+Anchor.None" value="None"/>
-		
-	</Resources>
+
+    <!-- Smooth Groups Editor -->
+    <StringResource id="ID_RTBuilder_SmoothGroupsEditor_NormalsScale" value="Normals Scale"/>
+    <StringResource id="ID_RTBuilder_SmoothGroupsEditor_PreviewOpacity" value="Preview Opacity"/>
+    
+
+  </Resources>
 </StringResources>

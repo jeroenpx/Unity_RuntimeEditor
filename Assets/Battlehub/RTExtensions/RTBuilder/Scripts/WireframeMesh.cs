@@ -1,4 +1,5 @@
 ﻿using Battlehub.ProBuilderIntegration;
+using Battlehub.Utils;
 using System;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -19,26 +20,7 @@ namespace Battlehub.RTBuilder
         }
 
         private static readonly MD5 s_hashAlgo = MD5.Create();
-        private readonly Color[] m_fineColors =
-        {
-            new Color32(0x99, 0x00, 0x00, 0xFF),
-            new Color32(0x93, 0x33, 0x00, 0xFF),
-            new Color32(0x99, 0x66, 0x00, 0xFF),
-            new Color32(0x66, 0x99, 0x00, 0xFF),
-            new Color32(0x19, 0x99, 0x00, 0xFF),
-            new Color32(0x00, 0x99, 0x1A, 0xFF),
-            new Color32(0x00, 0x99, 0x4D, 0xFF),
-            new Color32(0x00, 0x99, 0x7f, 0xFF),
-            new Color32(0x00, 0x7f, 0x99, 0xFF),
-            new Color32(0x00, 0x66, 0x99, 0xFF),
-            new Color32(0x00, 0x33, 0x99, 0xFF),
-            new Color32(0x66, 0x00, 0x99, 0xFF),
-            new Color32(0x99, 0x00, 0x99, 0xFF),
-            new Color32(0x99, 0x00, 0x66, 0xFF),
-            new Color32(0x99, 0x00, 0x33, 0xFF),
-            new Color32(0x99, 0x00, 0x19, 0xFF),
-        };
-
+        
         private Color m_selectionColor = new Color(1, 0.35f, 0, 1);
         private Color[] m_selectionColorsCache;
         private Color[] m_normalColorsCache;
@@ -75,7 +57,8 @@ namespace Battlehub.RTBuilder
             m_pbMesh.Unselected += OnPBMeshUnselected;
 
             int instanceId = Mathf.Abs(BitConverter.ToInt32(s_hashAlgo.ComputeHash(BitConverter.GetBytes(m_pbMesh.GetInstanceID())), 0));
-            m_color = m_fineColors[instanceId % m_fineColors.Length];
+            Color32[] colors = Colors.Kellys;
+            m_color = colors[instanceId % colors.Length];
             m_filter = GetComponent<MeshFilter>();
             if (!m_filter)
             {

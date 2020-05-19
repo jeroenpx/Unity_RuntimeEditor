@@ -38,6 +38,11 @@ namespace Battlehub.RTHandles
             get { return PivotRotation == RuntimePivotRotation.Global ? m_startinRotationInv : Quaternion.identity; }
         }
 
+        private Quaternion TargetRotation
+        {
+            get { return PivotRotation == RuntimePivotRotation.Global ? Target.rotation : ActiveRealTargets[0].rotation; }
+        }
+
         private Quaternion m_targetInverse = Quaternion.identity;
         private Matrix4x4 m_targetInverseMatrix;
         private Vector3 m_startingRotationAxis = Vector3.zero;
@@ -93,15 +98,15 @@ namespace Battlehub.RTHandles
             {
                 if (HightlightOnHover)
                 {
-                    m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation * StartingRotationInv, Vector3.one).inverse;
+                    m_targetInverseMatrix = Matrix4x4.TRS(Target.position, TargetRotation * StartingRotationInv, Vector3.one).inverse;
                     SelectedAxis = HitTester.GetSelectedAxis(this);
                 }
 
-                if (m_targetRotation != Target.rotation)
+                if (m_targetRotation != TargetRotation)
                 {
-                    m_startingRotation = Target.rotation;
+                    m_startingRotation = TargetRotation;
                     m_startinRotationInv = Quaternion.Inverse(m_startingRotation);
-                    m_targetRotation = Target.rotation;
+                    m_targetRotation = TargetRotation;
                 }
             }
         }

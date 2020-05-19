@@ -430,7 +430,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-
         private static void SnapActiveTargetsToGround(Transform[] targets, Camera camera,  bool rotate)
         {
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
