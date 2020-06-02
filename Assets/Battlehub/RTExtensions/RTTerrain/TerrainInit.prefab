@@ -48,6 +48,9 @@ MonoBehaviour:
     type: 3}
   m_terrainComponentEditor: {fileID: 1860928297357902606, guid: 8f929c4fd16376a40af25b7cdee5ed89,
     type: 3}
+  m_prefabs:
+  - {fileID: 1779855925843524, guid: 77ed7409779e6524fb907ea5e26763ae, type: 3}
+  - {fileID: 1779855925843524, guid: f4a64afea9c843440b27460dbaf7f4fa, type: 3}
 --- !u!1001 &8254285358765720067
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55,11 +58,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8254285356726720195}
     m_Modifications:
-    - target: {fileID: 1220928184416827035, guid: cafd7f36aa1780a4f934b201f4abd043,
-        type: 3}
-      propertyPath: m_Name
-      value: TerrainSelectionHandlesTool
-      objectReference: {fileID: 0}
     - target: {fileID: 1220928184416827034, guid: cafd7f36aa1780a4f934b201f4abd043,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -114,6 +112,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220928184416827035, guid: cafd7f36aa1780a4f934b201f4abd043,
+        type: 3}
+      propertyPath: m_Name
+      value: TerrainSelectionHandlesTool
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cafd7f36aa1780a4f934b201f4abd043, type: 3}

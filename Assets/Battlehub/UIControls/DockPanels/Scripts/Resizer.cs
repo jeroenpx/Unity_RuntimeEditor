@@ -63,12 +63,20 @@ namespace Battlehub.UIControls.DockPanels
 
         public void UpdateState()
         {
-            StartCoroutine(CoUpdateState());
+            if(gameObject.activeInHierarchy)
+            {
+                StartCoroutine(CoUpdateState());
+            }
         }
 
         private IEnumerator CoUpdateState()
         {
             yield return new WaitForEndOfFrame();
+            if(m_region.transform.parent == null)
+            {
+                yield break;
+            }
+
             m_isEnabled = m_isFree = m_region.IsFreeOrModal();
             if (!m_isFree)
             {
@@ -140,7 +148,15 @@ namespace Battlehub.UIControls.DockPanels
                 return;
             }
             eventData.useDragThreshold = false;
-            m_region.Root.CursorHelper.SetCursor(this, m_cursor);
+
+            if(m_cursor != null)
+            {
+                m_region.Root.CursorHelper.SetCursor(this, m_cursor);
+            }
+            else
+            {
+                m_region.Root.CursorHelper.SetCursor(this, m_dx != 0 ? KnownCursor.HResize : KnownCursor.VResize);
+            }   
         }
 
 
@@ -377,9 +393,15 @@ namespace Battlehub.UIControls.DockPanels
 
             if (!m_isDragging)
             {
-                m_region.Root.CursorHelper.SetCursor(this, m_cursor);
+                if(m_cursor != null)
+                {
+                    m_region.Root.CursorHelper.SetCursor(this, m_cursor);
+                }
+                else
+                {
+                    m_region.Root.CursorHelper.SetCursor(this, m_dx != 0 ? KnownCursor.HResize : KnownCursor.VResize);
+                }
             }
-            
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)

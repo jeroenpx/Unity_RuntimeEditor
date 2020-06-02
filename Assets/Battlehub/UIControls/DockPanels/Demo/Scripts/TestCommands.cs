@@ -7,18 +7,18 @@ using Battlehub.Utils;
 
 namespace Battlehub.UIControls.DockPanels
 {
-    public class PanelDelegate : IPanelDelegate
+    public class TestTabDelegate : ITabDelegate
     {
         private DialogManager m_dm;
         
-        public PanelDelegate(DialogManager dialogManager)
+        public TestTabDelegate(DialogManager dialogManager)
         {
             m_dm = dialogManager;
         }
 
-        public void OnPanelAttemptClose(Tab tab)
+        public void OnTabAttemptClose(Tab tab)
         {
-            Dialog dlg = m_dm.ShowDialog(null, "Confirmation", "Are you sure you want to close panel?", (sender, okArgs) =>
+            Dialog dlg = m_dm.ShowDialog(null, "Confirmation", string.Format("Are you sure you want to close {0} tab", tab.Text), (sender, okArgs) =>
             {
                 tab.Close();
             }, "Yes", (sender, cancelArgs) =>
@@ -30,12 +30,12 @@ namespace Battlehub.UIControls.DockPanels
             dlg.IsCancelVisible = true;
         }
 
-        public void OnPanelClosing(Tab tab)
+        public void OnTabClosing(Tab tab)
         {
             
         }
 
-        public void OnPanelVisible(Tab tab, bool isVisible)
+        public void OnTabVisible(Tab tab, bool isVisible)
         {
             
         }
@@ -143,7 +143,7 @@ namespace Battlehub.UIControls.DockPanels
                 Tab tab = Instantiate(m_dockPanels.TabPrefab);
                 tab.Icon = m_sprite;
                 tab.Text = m_headerText + " " + m_counter;
-                tab.PanelDelegate = new PanelDelegate(m_dialog);
+                tab.TabDelegate = new TestTabDelegate(m_dialog);
 
                 m_dockPanels.SelectedRegion.Add(tab, content, false, m_splitType);
             }
@@ -196,11 +196,11 @@ namespace Battlehub.UIControls.DockPanels
         private void OnDefaultLayout()
         {
             Region rootRegion = m_dockPanels.RootRegion;
-            rootRegion.Clear();
+            rootRegion.CloseAllTabs();
             foreach (Transform child in m_dockPanels.Free)
             {
                 Region region = child.GetComponent<Region>();
-                region.Clear();
+                region.CloseAllTabs();
             }
 
             LayoutInfo layout = new LayoutInfo(false,
@@ -225,14 +225,29 @@ namespace Battlehub.UIControls.DockPanels
 
         private void Update()
         {
-            if(Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S))
             {
                 SaveLayout("Default");
             }
-            else if(Input.GetKeyDown(KeyCode.L))
+            else if (Input.GetKeyDown(KeyCode.L))
             {
                 LoadLayout("Default");
             }
+            else if (Input.GetKeyDown(KeyCode.X))
+            {
+                if (m_dockPanels.RootRegion != null)
+                {
+                    m_dockPanels.RootRegion.CloseAllTabs();
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.C))
+            {
+                if (m_dockPanels.SelectedRegion != null)
+                {
+                    m_dockPanels.SelectedRegion.CloseAllTabs();
+                }
+            }
+
         }
 
 

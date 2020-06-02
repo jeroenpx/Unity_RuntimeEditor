@@ -13,6 +13,9 @@ namespace Battlehub.RTTerrain
         [SerializeField]
         private TerrainComponentEditor m_terrainComponentEditor = null;
 
+        [SerializeField]
+        private GameObject[] m_prefabs;
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -34,14 +37,15 @@ namespace Battlehub.RTTerrain
             ILocalization lc = IOC.Resolve<ILocalization>();
             lc.LoadStringResources("RTTerrain.StringResources");
 
+            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             if (m_terrainView != null)
             {
                 RegisterWindow(wm, "TerrainEditor", lc.GetString("ID_RTTerrain_WM_Header_TerrainEditor", "Terrain Editor"),
                     Resources.Load<Sprite>("icons8-earth-element-24"), m_terrainView, false);
 
-                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-                appearance.ApplyColors(m_terrainView);
+                appearance.RegisterPrefab(m_terrainView);
             }
 
             if(m_terrainComponentEditor != null)
@@ -49,8 +53,15 @@ namespace Battlehub.RTTerrain
                 IEditorsMap editorsMap = IOC.Resolve<IEditorsMap>();
                 editorsMap.AddMapping(typeof(Terrain), m_terrainComponentEditor.gameObject, true, false);
 
-                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-                appearance.ApplyColors(m_terrainComponentEditor.gameObject);
+                appearance.RegisterPrefab(m_terrainComponentEditor.gameObject);
+            }
+
+            foreach(GameObject prefab in m_prefabs)
+            {
+                if(prefab != null)
+                {
+                    appearance.RegisterPrefab(prefab);
+                }
             }
         }
 

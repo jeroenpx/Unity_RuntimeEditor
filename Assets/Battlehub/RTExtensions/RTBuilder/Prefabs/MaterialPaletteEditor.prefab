@@ -70,6 +70,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_text: {fileID: 7803527037865331590}
+--- !u!114 &2310159993257981188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3249182348359683914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: TextColor
 --- !u!114 &5283217362020744991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,6 +217,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -378,6 +392,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -411,11 +426,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2286654867833756720}
     m_Modifications:
-    - target: {fileID: 5988601999549773384, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_Name
-      value: TexturePicker
-      objectReference: {fileID: 0}
     - target: {fileID: 4627454390458409757, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -521,6 +531,36 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5988601999549773384, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
+      propertyPath: m_Name
+      value: TexturePicker
+      objectReference: {fileID: 0}
+    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 987
+      objectReference: {fileID: 0}
+    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 6461879305156950664, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -547,31 +587,6 @@ PrefabInstance:
       value: 987
       objectReference: {fileID: 0}
     - target: {fileID: 6461879305156950664, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 987
-      objectReference: {fileID: 0}
-    - target: {fileID: 6461879299159798556, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 20
@@ -653,6 +668,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: VirtualizingTreeView
       objectReference: {fileID: 0}
+    - target: {fileID: 1812419194018620, guid: 370f94e0ffbc8b645974abea347d3405, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114393156819851530, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: CanUnselectAll
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114766226435074124, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: ContainerPrefab
+      value: 
+      objectReference: {fileID: 224568699337757300, guid: 99883382e08424442a46fd32a0817555,
+        type: 3}
+    - target: {fileID: 224656941681176730, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224656941681176730, guid: 370f94e0ffbc8b645974abea347d3405,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224889818864426658, guid: 370f94e0ffbc8b645974abea347d3405,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -773,36 +818,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114766226435074124, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: ContainerPrefab
-      value: 
-      objectReference: {fileID: 224568699337757300, guid: 99883382e08424442a46fd32a0817555,
-        type: 3}
-    - target: {fileID: 114704784156180930, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: CanUnselectAll
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1812419194018620, guid: 370f94e0ffbc8b645974abea347d3405, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114393156819851530, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: m_Value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224656941681176730, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224656941681176730, guid: 370f94e0ffbc8b645974abea347d3405,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 370f94e0ffbc8b645974abea347d3405, type: 3}
 --- !u!1 &3949534578023416454 stripped
@@ -836,11 +851,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3202635988216685582}
     m_Modifications:
-    - target: {fileID: 5291077066712620994, guid: 31a4c62e2016fb941974afc5d0db834f,
-        type: 3}
-      propertyPath: m_Name
-      value: CreateMaterialButton
-      objectReference: {fileID: 0}
     - target: {fileID: 2870649190769780950, guid: 31a4c62e2016fb941974afc5d0db834f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -956,16 +966,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7973352662790738131, guid: 31a4c62e2016fb941974afc5d0db834f,
-        type: 3}
-      propertyPath: m_FlexibleHeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7973352662790738131, guid: 31a4c62e2016fb941974afc5d0db834f,
-        type: 3}
-      propertyPath: m_PreferredHeight
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 3354502808491346413, guid: 31a4c62e2016fb941974afc5d0db834f,
         type: 3}
       propertyPath: m_firstOverflowCharacterIndex
@@ -1010,6 +1010,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isTextTruncated
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5291077066712620994, guid: 31a4c62e2016fb941974afc5d0db834f,
+        type: 3}
+      propertyPath: m_Name
+      value: CreateMaterialButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7973352662790738131, guid: 31a4c62e2016fb941974afc5d0db834f,
+        type: 3}
+      propertyPath: m_FlexibleHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7973352662790738131, guid: 31a4c62e2016fb941974afc5d0db834f,
+        type: 3}
+      propertyPath: m_PreferredHeight
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7973352662790738131, guid: 31a4c62e2016fb941974afc5d0db834f, type: 3}

@@ -123,6 +123,8 @@ MonoBehaviour:
   RotateKey: 308
   RotateKey2: 307
   RotateKey3: 313
+  MoveDownKey: 113
+  MoveUpKey: 101
   RotateXSensitivity: 5
   RotateYSensitivity: 5
   MoveZSensitivity: 1
@@ -273,7 +275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &224154404041186762
 RectTransform:
   m_ObjectHideFlags: 0

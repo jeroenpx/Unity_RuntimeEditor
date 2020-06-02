@@ -466,9 +466,12 @@ namespace Battlehub.RTHandles
 
         public void DoSceneGizmo()
         {
-            m_camera.enabled = true;
-            m_commandBuffer.Clear();
-            Appearance.DoSceneGizmo(m_commandBuffer, m_propertyBlocks, m_camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Appearance.SceneGizmoScale, m_textColor, m_xAlpha, m_yAlpha, m_zAlpha);
+            if(m_camera != null)
+            {
+                m_camera.enabled = true;
+                m_commandBuffer.Clear();
+                Appearance.DoSceneGizmo(m_commandBuffer, m_propertyBlocks, m_camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Appearance.SceneGizmoScale, m_textColor, m_xAlpha, m_yAlpha, m_zAlpha);
+            }    
         }
 
         public void Click()

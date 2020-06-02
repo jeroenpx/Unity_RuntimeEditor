@@ -295,7 +295,6 @@ namespace Battlehub.UIControls.DockPanels
 
         private bool m_isDraggingTab;
         private bool m_isDraggingOutside;
-        private Vector2 m_beginDragTabPos;
         private RectTransform m_pointerOverTab;
         private Region m_pointerOverRegion;
         private Region m_beginDragRegion;
@@ -313,12 +312,12 @@ namespace Battlehub.UIControls.DockPanels
                 m_root = GetComponentInParent<DockPanel>();
             }
 
-            if(m_layoutElement != null)
+            if (m_layoutElement != null)
             {
                 m_layoutElement.minWidth = m_minWidth;
                 m_layoutElement.minHeight = m_minHeight;
             }
-            
+
             if (Created != null)
             {
                 Created(this);
@@ -363,7 +362,7 @@ namespace Battlehub.UIControls.DockPanels
 
                     parent.CanResize = CanResize;
                     parent.IsHeaderVisible = IsHeaderVisible;
-                    
+
                     parent.RaiseDepthChanged();
 
                     UpdateResizers();
@@ -425,22 +424,36 @@ namespace Battlehub.UIControls.DockPanels
             return m_childrenPanel.GetChild(index).GetComponent<Region>();
         }
 
-        public void Clear(bool destroy = true)
+        private bool m_closing = false;
+        public void CloseAllTabs()
         {
-            for (int i = m_tabPanel.transform.childCount - 1; i >= 0; i--)
+            m_closing = true;
+
+            Tab[] tabs = GetComponentsInChildren<Tab>();
+            for (int i = 0; i < tabs.Length; i++)
             {
-                RemoveAt(i, destroy);
+                Tab tab = tabs[i];
+                tab.Close();
             }
 
-            foreach (Transform child in m_childrenPanel)
+            Region[] regions = GetComponentsInChildren<Region>();
+            for (int i = 0; i < regions.Length; ++i)
             {
-                Destroy(child.gameObject);
+                Region region = regions[i];
+                if(region == m_root.RootRegion)
+                {
+                    continue;
+                }
+
+                Destroy(region.gameObject);
             }
+
+            m_closing = false;
         }
 
         public void Build(LayoutInfo layout)
         {
-            Clear(false);
+            CloseAllTabs();
             Build(layout, this);
             RaiseDepthChanged();
 
@@ -450,20 +463,14 @@ namespace Battlehub.UIControls.DockPanels
             }
             else
             {
-                if (m_tabScroller != null)
-                {
-                    m_tabScroller.ScrollToLeft();
-                }
+                ScrollTabHeaderToLeft();
             }
         }
 
         private IEnumerator CoScrollToLeft()
         {
             yield return new WaitForEndOfFrame();
-            if (m_tabScroller != null)
-            {
-                m_tabScroller.ScrollToLeft();
-            }
+            ScrollTabHeaderToLeft();
         }
 
         private void Build(LayoutInfo layout, Region region)
@@ -475,7 +482,7 @@ namespace Battlehub.UIControls.DockPanels
                 for (int i = 0; i < layout.TabGroup.Length; ++i)
                 {
                     LayoutInfo tab = layout.TabGroup[i];
-                    if(tab.Tab == null) 
+                    if (tab.Tab == null)
                     {
                         //For backward compatbility
                         tab.Tab = CreateTab(tab.Icon, tab.Header, tab.CanDrag, tab.CanClose);
@@ -535,14 +542,14 @@ namespace Battlehub.UIControls.DockPanels
 
         public bool Validate(LayoutInfo layoutInfo)
         {
-            if(layoutInfo.Child0 == null && layoutInfo.Child0 == null && layoutInfo.Content == null)
+            if (layoutInfo.Child0 == null && layoutInfo.Child0 == null && layoutInfo.Content == null)
             {
-                if(layoutInfo.TabGroup == null || layoutInfo.TabGroup.Length == 0)
+                if (layoutInfo.TabGroup == null || layoutInfo.TabGroup.Length == 0)
                 {
                     return false;
                 }
 
-                for(int i = 0; i < layoutInfo.TabGroup.Length; ++i)
+                for (int i = 0; i < layoutInfo.TabGroup.Length; ++i)
                 {
                     LayoutInfo tabGroupLayoutInfo = layoutInfo.TabGroup[i];
                     if (tabGroupLayoutInfo != null)
@@ -559,7 +566,7 @@ namespace Battlehub.UIControls.DockPanels
                 }
             }
 
-            if(layoutInfo.Child0 != null && layoutInfo.Child1 != null && (!Validate(layoutInfo.Child0) || !Validate(layoutInfo.Child1)))
+            if (layoutInfo.Child0 != null && layoutInfo.Child1 != null && (!Validate(layoutInfo.Child0) || !Validate(layoutInfo.Child1)))
             {
                 return false;
             }
@@ -821,7 +828,7 @@ namespace Battlehub.UIControls.DockPanels
 
         public void ScrollTabHeaderToRight()
         {
-            if(m_tabScroller != null)
+            if (m_tabScroller != null)
             {
                 m_tabScroller.ScrollToRight();
             }
@@ -920,6 +927,7 @@ namespace Battlehub.UIControls.DockPanels
             RemoveAt(index, true);
         }
 
+        /*
         private void RemoveAt(int index, bool destroy)
         {
             if (index < 0 || m_tabPanel.transform.childCount <= index)
@@ -965,6 +973,55 @@ namespace Battlehub.UIControls.DockPanels
                 {
                     TabClosed(this, content);
                 }
+                DestroyImmediate(tab.gameObject);
+                Destroy(content.gameObject);
+            }
+
+            UpdateResizers();
+            UpdateVisualState();
+
+            m_root.CursorHelper.ResetCursor(this);
+        }
+        */
+      
+        private void RemoveAt(int index, bool destroyRegionIfPossible)
+        {
+            if (index < 0 || m_tabPanel.transform.childCount <= index)
+            {
+                return;
+            }
+
+            Tab tab = m_tabPanel.transform.GetChild(index).GetComponent<Tab>();
+            if (m_tabPanel.transform.childCount > 1 && index == ActiveTabIndex)
+            {
+                Tab nextTab;
+                if (index < m_tabPanel.transform.childCount - 1)
+                {
+                    nextTab = m_tabPanel.transform.GetChild(index + 1).GetComponent<Tab>();
+                }
+                else
+                {
+                    nextTab = m_tabPanel.transform.GetChild(index - 1).GetComponent<Tab>();
+                }
+                nextTab.IsOn = true;
+            }
+
+            tab.OnClosing();
+            Unsubscribe(tab, this);
+
+            Transform content = m_contentPanel.transform.GetChild(index);
+            if (TabClosed != null)
+            {
+                TabClosed(this, content);
+            }
+
+            // If there will be no more tabs, then also destroy the region 
+            if (destroyRegionIfPossible && m_tabPanel.transform.childCount == 1 && this != m_root.RootRegion)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
                 Destroy(tab.gameObject);
                 Destroy(content.gameObject);
             }
@@ -974,6 +1031,7 @@ namespace Battlehub.UIControls.DockPanels
 
             m_root.CursorHelper.ResetCursor(this);
         }
+       
 
         public void Move(int index, int targetIndex, Region targetRegion, RegionSplitType targetSplitType = RegionSplitType.None)
         {
@@ -1370,7 +1428,8 @@ namespace Battlehub.UIControls.DockPanels
             {
                 Maximize(false);
             }
-            RemoveAt(sender.Index);
+
+            RemoveAt(sender.Index, !m_closing);
         }
 
         private void OnTabInitializePotentialDrag(Tab tab, PointerEventData args)
@@ -1382,7 +1441,6 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             m_isDraggingTab = true;
-
         }
 
         private void SetRaycastTargets(bool value)
@@ -1417,7 +1475,7 @@ namespace Battlehub.UIControls.DockPanels
             SetRaycastTargets(true);
             BeginDragInsideOfTabPanel(this, tab, args);
 
-            if(TabBeginDrag != null)
+            if (TabBeginDrag != null)
             {
                 TabBeginDrag(this);
             }
@@ -1435,7 +1493,10 @@ namespace Battlehub.UIControls.DockPanels
             {
                 isRegionChanged = true;
                 m_pointerOverRegion = region;
-               // tab.transform.SetParent(region.m_tabPanel.transform, false);
+                if (region.m_tabPanel.gameObject.activeInHierarchy && region.m_childrenPanel.childCount == 0)
+                {
+                    tab.transform.SetParent(region.m_tabPanel.transform, false);
+                }
             }
 
             Vector2 localPoint;
@@ -1483,19 +1544,15 @@ namespace Battlehub.UIControls.DockPanels
 
         private void BeginDragInsideOfTabPanel(Region region, Tab tab, PointerEventData args)
         {
-            Vector2 tabScreenPos = RectTransformUtility.WorldToScreenPoint(args.pressEventCamera, tab.transform.position);
-            RectTransform tabPanelRT = (RectTransform)region.m_tabPanel.transform;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(tabPanelRT, tabScreenPos, args.pressEventCamera, out m_beginDragTabPos))
+            if (region.m_tabPanel.gameObject.activeInHierarchy)
             {
-                Debug.Assert(false);
+                tab.transform.SetParent(region.m_tabPanel.transform, false);
             }
-
-            tab.transform.SetParent(region.m_tabPanel.transform, false);
         }
 
         private void DragInsideOfTabPanel(Region region, Tab tab, PointerEventData args, Vector2 localPoint, RectTransform tabPanelRT)
         {
-            localPoint.y = m_beginDragTabPos.y;
+            localPoint.y = 0;
             tab.PreviewPosition = tabPanelRT.TransformPoint(localPoint);
 
             RectTransform tabTransform = (RectTransform)tab.transform;
@@ -1522,12 +1579,10 @@ namespace Battlehub.UIControls.DockPanels
                 RegionSplitType splitType = RegionSplitType.None;
                 bool isFree = false;
 
-
                 float w = contentRT.rect.width;
                 float h = contentRT.rect.height;
 
                 localPoint.y = -localPoint.y;
-
 
                 if (w / 3 <= localPoint.x && localPoint.x <= 2 * w / 3 &&
                     h / 3 <= localPoint.y && localPoint.y <= 2 * h / 3 ||
@@ -1651,7 +1706,7 @@ namespace Battlehub.UIControls.DockPanels
 
             Region region = GetRegion(args);
             tab.transform.SetParent(region.m_tabPanel.transform, false);
-            
+
             m_isDraggingTab = false;
 
             if (m_isFree)
@@ -1729,7 +1784,7 @@ namespace Battlehub.UIControls.DockPanels
 
             ForceUpdateLayoutImmediate(m_root.transform);
 
-            if(TabEndDrag != null)
+            if (TabEndDrag != null)
             {
                 TabEndDrag(this);
             }
@@ -1939,7 +1994,6 @@ namespace Battlehub.UIControls.DockPanels
 
             m_root.CursorHelper.SetCursor(this, null);
             m_dragRegion = GetDragRegion();
-
 
             if (m_dragRegion)
             {

@@ -462,13 +462,13 @@ namespace Battlehub.RTEditor
         {
             if (!cursorSettings.Any(c => c.Type == cursorType))
             {
-                RTECursor dropAllowedCursor = new RTECursor
+                RTECursor cursor = new RTECursor
                 {
                     Name = name,
                     Type = cursorType,
                     Texture = Resources.Load<Texture2D>(texture)
                 };
-                cursorSettings.Add(dropAllowedCursor);
+                cursorSettings.Add(cursor);
             }
         }
 
@@ -579,6 +579,25 @@ namespace Battlehub.RTEditor
                         style.ApplySelectableColor(Colors.ScrollBar.Normal, Colors.ScrollBar.Highlight, Colors.ScrollBar.Pressed, Colors.ScrollBar.Disabled, Colors.ScrollBar.Selected);
                         break;
                     case "ScrollBarBackgroundColor":
+                        Image image = style.GetComponent<Image>();
+                        if (image != null)
+                        {
+                            if (Colors.ScrollBarBackground != RTEColors.DefaultScrollBarBackground)
+                            {
+                                image.sprite = null;
+                            }
+                            else
+                            {
+                                if (image.name.Contains("V"))
+                                {
+                                    image.sprite = Resources.Load<Sprite>("DarkBackV");
+                                }
+                                else
+                                {
+                                    image.sprite = Resources.Load<Sprite>("DarkBackH");
+                                }
+                            }
+                        }
                         style.ApplyImageColor(Colors.ScrollBarBackground);
                         break;
                     case "ToggleColor":

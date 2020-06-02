@@ -20,26 +20,26 @@ namespace Battlehub.UIControls.DockPanels
         }
     }
 
-    public interface IPanelDelegate { 
+    public interface ITabDelegate
+    {
 
         // Called when the given tab (and corresponding panel) receives an event where the panel should attempt to close and be destroyed.  
         // The handler of this method promises to eventually call tab.Close() if the closing should proceed.
-        void OnPanelAttemptClose(Tab tab); 
+        void OnTabAttemptClose(Tab tab);
 
         // When received, the host region is about to close and destory this tab and corresponding panel.   
         // A receiver typically uses this callback to release/recycle allocated resources.
-        // When a receiver gets this callback, either OnAttemptClose() called proceedToClose(true), or this tab panel is being closed forcibly.
-        void OnPanelClosing(Tab tab); 
+        void OnTabClosing(Tab tab);
 
-        // When received, this tab and corresponding panel has been brought to the foreground and will be visible.
-        void OnPanelVisible(Tab tab, bool isVisible); 
+        // When received, this tab and corresponding panel has been brought to the foreground and will be visible (or is being sent to the back and no longer visible).
+        void OnTabVisible(Tab tab, bool isVisible);
 
     }
 
     public delegate void TabEventArgs(Tab sender);
     public delegate void TabEventArgs<T>(Tab sender, T args);
 
-    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IInitializePotentialDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler, 
+    public class Tab : MonoBehaviour, IBeginDragHandler, IDragHandler, IInitializePotentialDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler,
         IPointerEnterHandler, IPointerExitHandler
     {
         public event TabEventArgs<bool> Toggle;
@@ -52,7 +52,7 @@ namespace Battlehub.UIControls.DockPanels
         public event TabEventArgs Closed;
 
         // Optional -- set in order to receive additional callbacks.
-        public IPanelDelegate PanelDelegate;
+        public ITabDelegate TabDelegate;
 
         private bool m_closing = false;
         public bool Closing
@@ -60,29 +60,29 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_closing; }
         }
 
-        private DockPanel m_root;
+        protected DockPanel m_root;
 
-        private Tab m_tabPreview;
-
-        [SerializeField]
-        private CanvasGroup m_canvasGroup = null;
+        protected Tab m_tabPreview;
 
         [SerializeField]
-        private Image m_img = null;
+        protected CanvasGroup m_canvasGroup = null;
 
         [SerializeField]
-        private TextMeshProUGUI m_text = null;
+        protected Image m_img = null;
 
         [SerializeField]
-        private Toggle m_toggle = null;
+        protected TextMeshProUGUI m_text = null;
 
         [SerializeField]
-        private Button m_closeButton = null;
+        protected Toggle m_toggle = null;
 
         [SerializeField]
-        private RectTransform m_contentPart = null;
+        protected Button m_closeButton = null;
 
-        private RectTransform m_rt;
+        [SerializeField]
+        protected RectTransform m_contentPart = null;
+
+        protected RectTransform m_rt;
 
         public Sprite Icon
         {
@@ -105,7 +105,7 @@ namespace Battlehub.UIControls.DockPanels
             get { return m_toggle.group; }
             set
             {
-                if(m_toggle.group)
+                if (m_toggle.group)
                 {
                     m_toggle.group.UnregisterToggle(m_toggle);
                 }
@@ -118,7 +118,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             get { return GetComponentInParent<Region>(); }
         }
-     
+
         public bool IsOn
         {
             get { return m_toggle.isOn; }
@@ -142,7 +142,7 @@ namespace Battlehub.UIControls.DockPanels
             set
             {
                 m_canClose = value;
-                if(m_canClose)
+                if (m_canClose)
                 {
                     IsCloseButtonVisible = m_canClose && (!m_showOnPointerOver || m_isPointerOver);
                 }
@@ -157,7 +157,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             get
             {
-                if(m_closeButton != null)
+                if (m_closeButton != null)
                 {
                     return m_closeButton.transform.parent.gameObject.activeSelf;
                 }
@@ -165,7 +165,7 @@ namespace Battlehub.UIControls.DockPanels
             }
             set
             {
-                if(m_closeButton != null)
+                if (m_closeButton != null)
                 {
                     m_closeButton.transform.parent.gameObject.SetActive(value && CanClose);
                 }
@@ -220,15 +220,15 @@ namespace Battlehub.UIControls.DockPanels
 
         public Vector2 RectSize
         {
-            get {  return m_rt.rect.size; }
+            get { return m_rt.rect.size; }
         }
 
         public Vector2 PreviewContentSize
         {
             set
             {
-               m_tabPreview.MaxWidth = m_rt.rect.width; 
-               m_tabPreview.Size = value;
+                m_tabPreview.MaxWidth = m_rt.rect.width;
+                m_tabPreview.Size = value;
             }
         }
 
@@ -242,15 +242,15 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             m_rt = (RectTransform)transform;
-            if(m_toggle != null)
+            if (m_toggle != null)
             {
                 m_toggle.onValueChanged.AddListener(OnToggleValueChanged);
             }
-            
-            if(m_closeButton != null)
+
+            if (m_closeButton != null)
             {
                 m_closeButton.onClick.AddListener(AttemptClose);
             }
@@ -259,14 +259,14 @@ namespace Battlehub.UIControls.DockPanels
             IsContentActive = false;
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             m_root = GetComponentInParent<DockPanel>();
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
-            if(m_toggle != null)
+            if (m_toggle != null)
             {
                 m_toggle.onValueChanged.RemoveListener(OnToggleValueChanged);
             }
@@ -277,11 +277,11 @@ namespace Battlehub.UIControls.DockPanels
             }
         }
 
-        private void OnToggleValueChanged(bool value)
+        protected void OnToggleValueChanged(bool value)
         {
-            PanelDelegate?.OnPanelVisible(this, value);
+            TabDelegate?.OnTabVisible(this, value);
 
-            if(Toggle != null)
+            if (Toggle != null)
             {
                 Toggle(this, value);
             }
@@ -289,12 +289,12 @@ namespace Battlehub.UIControls.DockPanels
 
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
         {
-            if(!m_canDrag)
+            if (!m_canDrag)
             {
                 return;
             }
 
-            if(InitializePotentialDrag != null)
+            if (InitializePotentialDrag != null)
             {
                 InitializePotentialDrag(this, eventData);
             }
@@ -362,10 +362,10 @@ namespace Battlehub.UIControls.DockPanels
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
-        {            
+        {
             m_toggle.isOn = true;
 
-            if(PointerDown != null)
+            if (PointerDown != null)
             {
                 PointerDown(this, eventData);
             }
@@ -373,20 +373,20 @@ namespace Battlehub.UIControls.DockPanels
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            if(PointerUp != null)
+            if (PointerUp != null)
             {
                 PointerUp(this, eventData);
             }
         }
 
-        public void OnClosing() 
+        public void OnClosing()
         {
-            PanelDelegate?.OnPanelClosing(this);
+            TabDelegate?.OnTabClosing(this);
         }
 
         public void Close()
         {
-            if(Closed != null && m_closing == false)
+            if (Closed != null && m_closing == false)
             {
                 m_closing = true;
                 Closed(this);
@@ -395,11 +395,11 @@ namespace Battlehub.UIControls.DockPanels
 
         public void AttemptClose()
         {
-            if (PanelDelegate != null)
+            if (TabDelegate != null)
             {
                 if (m_closing == false)
                 {
-                    PanelDelegate.OnPanelAttemptClose(this);
+                    TabDelegate.OnTabAttemptClose(this);
                 }
             }
             else
@@ -411,11 +411,10 @@ namespace Battlehub.UIControls.DockPanels
         public void OnPointerEnter(PointerEventData eventData)
         {
             m_isPointerOver = true;
-            if(m_showOnPointerOver && m_canClose)
+            if (m_showOnPointerOver && m_canClose)
             {
                 IsCloseButtonVisible = true;
             }
-            
         }
 
         public void OnPointerExit(PointerEventData eventData)

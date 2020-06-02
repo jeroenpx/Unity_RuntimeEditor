@@ -117,6 +117,10 @@ namespace Battlehub.RTCommon
         }
 
         private Canvas m_canvas;
+        protected Canvas Canvas
+        {
+            get { return m_canvas; }
+        }
         [SerializeField]
         private Image m_background;
         public Image Background

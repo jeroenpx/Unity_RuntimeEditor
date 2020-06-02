@@ -10,6 +10,9 @@ namespace Battlehub.RTBuilder
         [SerializeField]
         private GameObject m_proBuilderWindow = null;
 
+        [SerializeField]
+        private GameObject[] m_prefabs = null;
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -22,14 +25,24 @@ namespace Battlehub.RTBuilder
             lc.LoadStringResources("RTBuilder.StringResources");
 
             IWindowManager wm = IOC.Resolve<IWindowManager>();
+            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
             if (m_proBuilderWindow != null)
             {
                 RegisterWindow(wm, "ProBuilder", lc.GetString("ID_RTBuilder_WM_Header_Builder", "Builder"),
                     Resources.Load<Sprite>("hammer-24"), m_proBuilderWindow, false);
 
-                IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-                appearance.ApplyColors(m_proBuilderWindow);
+                appearance.RegisterPrefab(m_proBuilderWindow);
             }
+
+            foreach(GameObject prefab in m_prefabs)
+            {
+                if(prefab != null)
+                {
+                    appearance.RegisterPrefab(prefab);
+                }
+            }
+
+
         }
 
         private void RegisterWindow(IWindowManager wm, string typeName, string header, Sprite icon, GameObject prefab, bool isDialog)

@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_proBuilderWindow: {fileID: 5186639825075379583, guid: 58758e7aa7b8a8d4eb7e3c1c79986fff,
     type: 3}
+  m_prefabs:
+  - {fileID: 1402118384106398, guid: 99883382e08424442a46fd32a0817555, type: 3}
 --- !u!114 &4488577733346686937
 MonoBehaviour:
   m_ObjectHideFlags: 0

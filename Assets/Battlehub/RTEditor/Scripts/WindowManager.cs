@@ -1107,7 +1107,7 @@ namespace Battlehub.RTEditor
                     OnContentDestroyed(content);
                 }
             }
-            rootRegion.Clear();
+            rootRegion.CloseAllTabs();
         }
 
         public bool Exists(string windowTypeName)

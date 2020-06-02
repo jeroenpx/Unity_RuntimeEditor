@@ -90,7 +90,11 @@ namespace Battlehub.RTEditor
         public Color NormalColor
         {
             get { return m_normalColor; }
-            set { m_normalColor = value; }
+            set
+            {
+                m_normalColor = value;
+                UpdateVisualState();
+            }
         }
 
         [SerializeField]
@@ -98,7 +102,11 @@ namespace Battlehub.RTEditor
         public Color PointerOverColor
         {
             get { return m_pointerOverColor; }
-            set { m_pointerOverColor = value; }
+            set
+            {
+                m_pointerOverColor = value;
+                UpdateVisualState();
+            }
         }
 
         [SerializeField]
@@ -106,7 +114,11 @@ namespace Battlehub.RTEditor
         public Color PressedColor
         {
             get { return m_pressedColor; }
-            set { m_pressedColor = value; }
+            set
+            {
+                m_pressedColor = value;
+                UpdateVisualState();
+            }
         }
 
         private bool m_isPointerOver;

@@ -137,6 +137,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.21960784, g: 0.21960784, b: 0.21960784, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5047,6 +5048,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScrollView
       objectReference: {fileID: 0}
+    - target: {fileID: 8174974070598244016, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.69803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174974070598244016, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.69803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174974070598244016, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.69803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174974070598244016, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5215f91f57f175d489f05614e9fc56e5,
+        type: 3}
     - target: {fileID: 8174974070598244030, guid: c8275a73875189e47810c97a6051cc88,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -5257,6 +5279,27 @@ PrefabInstance:
       propertyPath: m_Colors.m_SelectedColor.b
       value: 0.21960784
       objectReference: {fileID: 0}
+    - target: {fileID: 8174974071336286612, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.69803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174974071336286612, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.69803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174974071336286612, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.69803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174974071336286612, guid: c8275a73875189e47810c97a6051cc88,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ae0fd232a77d8e344a645b7716e25d2f,
+        type: 3}
     - target: {fileID: 8174974071413747258, guid: c8275a73875189e47810c97a6051cc88,
         type: 3}
       propertyPath: m_SizeDelta.y

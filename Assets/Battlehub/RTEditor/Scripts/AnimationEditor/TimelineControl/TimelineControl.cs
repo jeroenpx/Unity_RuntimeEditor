@@ -911,7 +911,7 @@ namespace Battlehub.RTEditor
             }
 
             Clip.RemoveKeyframes(true, keyframesList.ToArray());
-            Clip.Refresh(false, true, true);
+            Clip.Refresh(true, true, true);
             RenderGraphics();
         }
 
