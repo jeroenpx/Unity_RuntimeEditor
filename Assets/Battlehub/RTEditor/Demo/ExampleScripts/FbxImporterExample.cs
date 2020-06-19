@@ -12,8 +12,6 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-
-
     public class FbxImporterExample : FileImporter
     {
         public override string FileExt

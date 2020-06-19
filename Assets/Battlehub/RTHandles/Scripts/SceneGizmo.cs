@@ -30,8 +30,7 @@ namespace Battlehub.RTHandles
         private Rect m_cameraPixelRect;
         private float m_aspect;
         private Camera m_camera;
-        private CommandBuffer m_commandBuffer;
-
+        
         private MaterialPropertyBlock[] m_propertyBlocks;
         private float m_xAlpha = 1.0f;
         private float m_yAlpha = 1.0f;
@@ -148,6 +147,7 @@ namespace Battlehub.RTHandles
         private RenderTexture m_renderTexture;
         private IRTEGraphics m_graphics;
         private IRTECamera m_rteCamera;
+        private RTECamera m_rteGizmoCamera;
         private IRenderPipelineCameraUtility m_cameraUtility;
         private bool m_disableCamera;
         
@@ -179,17 +179,17 @@ namespace Battlehub.RTHandles
             m_colliders = new[] { m_colliderProj, m_colliderUp, m_colliderDown, m_colliderRight, m_colliderLeft, m_colliderForward, m_colliderBackward };
             DisableColliders();
 
-            m_commandBuffer = new CommandBuffer();
-            m_commandBuffer.name = "SceneGizmoCommandBuffer";
+            m_camera = GetComponent<Camera>();
+            m_rteGizmoCamera = m_camera.gameObject.AddComponent<RTECamera>();
+            m_rteGizmoCamera.Event = CameraEvent.BeforeImageEffects;
+            m_rteGizmoCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+
             m_propertyBlocks = new[] { new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock() };
     
-
-            m_camera = GetComponent<Camera>();
-            m_camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
-
             m_cameraUtility = IOC.Resolve<IRenderPipelineCameraUtility>();
             if (m_cameraUtility != null)
             {
+                m_cameraUtility.EnablePostProcessing(m_camera, false);
                 m_cameraUtility.PostProcessingEnabled += OnPostProcessingEnabled;
             }
 
@@ -270,9 +270,10 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if(m_camera != null)
+            if(m_rteGizmoCamera != null)
             {
-                m_camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+                m_rteGizmoCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                Destroy(m_rteGizmoCamera);
             }
 
             if(m_material != null)
@@ -305,9 +306,9 @@ namespace Battlehub.RTHandles
                 camera = graphicsLayer.Camera.Camera;
             }
 
-            m_rteCamera = m_graphics.CreateCamera(camera);
+            IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
+            m_rteCamera = graphics.CreateCamera(camera, CameraEvent.AfterImageEffects, false, true);
             m_rteCamera.RenderersCache.Add(m_output.GetComponent<Renderer>());
-            m_rteCamera.Event = CameraEvent.AfterImageEffects;
 
             DoSceneGizmo();
 
@@ -372,8 +373,11 @@ namespace Battlehub.RTHandles
                 }
                 else
                 {
-                    m_camera.enabled = false;
-                    m_disableCamera = false;
+                    if(RenderPipelineInfo.Type != RPType.HDRP)
+                    {
+                        m_camera.enabled = false;
+                        m_disableCamera = false;
+                    }
                 }
             }
             
@@ -469,9 +473,13 @@ namespace Battlehub.RTHandles
             if(m_camera != null)
             {
                 m_camera.enabled = true;
-                m_commandBuffer.Clear();
-                Appearance.DoSceneGizmo(m_commandBuffer, m_propertyBlocks, m_camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Appearance.SceneGizmoScale, m_textColor, m_xAlpha, m_yAlpha, m_zAlpha);
+                m_rteGizmoCamera.RefreshCommandBuffer();
             }    
+        }
+
+        private void OnCommandBufferRefresh(IRTECamera rteCamera)
+        {
+            Appearance.DoSceneGizmo(rteCamera.CommandBuffer, m_propertyBlocks, m_camera, GetGizmoPosition(), Quaternion.identity, m_selectedAxis, Appearance.SceneGizmoScale, m_textColor, m_xAlpha, m_yAlpha, m_zAlpha);
         }
 
         public void Click()

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Battlehub.RTCommon;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Battlehub.RTEditor
@@ -17,7 +18,8 @@ namespace Battlehub.RTEditor
 
     public class TimelineGrid : MonoBehaviour
     {
-        private CommandBuffer m_commandBuffer;
+        //private CommandBuffer m_commandBuffer;
+        private RTECamera m_rteCamera;
         private Camera m_camera;
 
         private Mesh m_vGridMesh0;
@@ -45,26 +47,49 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
-            if(m_camera != null)
+            /*
+            if (m_camera != null)
             {
                 m_camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            }
+            */
+
+            if (m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                Destroy(m_rteCamera);
+                m_rteCamera = null;
             }
         }
 
-        public void Init(Camera camera)
+         public void Init(Camera camera)
         {
+            /*
             if(m_camera != null)
             {
                 m_camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             }
-
+          
             if (m_commandBuffer == null)
             {
                 m_commandBuffer = new CommandBuffer();
+            }  
+            */
+
+            if (m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                Destroy(m_rteCamera);
+                m_rteCamera = null;
             }
 
             m_camera = camera;
-            m_camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            //m_camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+
+            m_rteCamera = m_camera.gameObject.AddComponent<RTECamera>();
+            m_rteCamera.Event = CameraEvent.BeforeImageEffects;
+            m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+
             m_vGridMaterial1 = CreateGridMaterial();
             m_vGridMaterial2 = CreateGridMaterial();
             m_vGridMaterial0 = CreateGridMaterial();
@@ -81,7 +106,7 @@ namespace Battlehub.RTEditor
 
         public void SetGridParameters(TimelineGridParameters parameters, Vector2 viewportSize)
         {
-            m_commandBuffer.Clear();
+            //m_commandBuffer.Clear();
 
             m_parameters = parameters;
 
@@ -163,124 +188,24 @@ namespace Battlehub.RTEditor
             material.color = color;
         }
 
+        private class UpdateGraphicsArgs
+        {
+            public Vector2 ViewportSize;
+            public Vector2 ContentSize;
+            public Vector2 NormalizedOffset;
+            public Vector2 NormalizedSize;
+            public Vector2 Interval;
+        }
+        private UpdateGraphicsArgs m_updateGraphicsArgs = new UpdateGraphicsArgs();
         public void UpdateGraphics(Vector2 viewportSize, Vector2 contentSize, Vector2 normalizedOffset, Vector2 normalizedSize, Vector2 interval)
         {
-            if (m_parameters == null)
-            {
-                throw new System.InvalidOperationException("Call SetGridParameters method first");
-            }
+            m_updateGraphicsArgs.ViewportSize = viewportSize;
+            m_updateGraphicsArgs.ContentSize = contentSize;
+            m_updateGraphicsArgs.NormalizedOffset = normalizedOffset;
+            m_updateGraphicsArgs.NormalizedSize = normalizedSize;
+            m_updateGraphicsArgs.Interval = interval;
 
-            bool fixedHeight = m_parameters.FixedHeight > 0;
-            if(fixedHeight)
-            {
-                m_parameters.HorLinesSecondary = 2;
-            }
-
-            m_commandBuffer.Clear();
-
-            int vLinesCount = m_parameters.VertLines;
-            int hLinesCount = m_parameters.HorLines;
-            Color lineColor = m_parameters.LineColor;
-
-            int vLinesSq = m_parameters.VertLinesSecondary * m_parameters.VertLinesSecondary;
-            int hLinesSq = m_parameters.HorLinesSecondary * m_parameters.HorLinesSecondary;
-
-            Vector2 contentScale = new Vector2(
-                1.0f / normalizedSize.x,
-                1.0f / normalizedSize.y);
-
-            Vector3 offset = new Vector3(-0.5f, 0.5f, 2.0f);
-            offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * vLinesSq / Mathf.Max(1, vLinesCount));
-            if (!fixedHeight)
-            {
-                offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * hLinesSq / Mathf.Max(1, hLinesCount));
-            }
-
-            Vector3 scale = Vector3.one;
-
-            float aspect = viewportSize.x / viewportSize.y;
-            offset.x *= aspect;
-           // scale.x = aspect;
-
-            float px = interval.x * normalizedSize.x;
-            float py = interval.y * normalizedSize.y;
-
-            //required to match grid scale to scroll viewer viewport size & offset
-            px = Mathf.Log(px * m_parameters.VertLinesSecondary, m_parameters.VertLinesSecondary); 
-            py = Mathf.Log(py * m_parameters.HorLinesSecondary, m_parameters.HorLinesSecondary);
-
-            float fadeOutOffset = Mathf.Min(0.4f, 1 - Mathf.Clamp01(viewportSize.x / 600.0f));
-
-            SetAlpha(m_vGridMaterial0, fadeOutOffset, px - 1);
-            SetAlpha(m_vGridMaterial1, fadeOutOffset, px);
-            SetAlpha(m_vGridMaterial2, fadeOutOffset, px + 1);
-
-            SetAlpha(m_hGridMaterial0, fadeOutOffset, py - 1);
-            SetAlpha(m_hGridMaterial1, fadeOutOffset, py);
-            SetAlpha(m_hGridMaterial2, fadeOutOffset, py + 1);
-
-            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px - 1) % 3.0f);
-            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py - 1) % 3.0f);
-            if (fixedHeight)
-            {
-                offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y);
-                scale.y = hLinesCount * m_parameters.FixedHeight / viewportSize.y;
-                m_hGridMaterial0.color = m_parameters.LineColor;
-            }
-
-            Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-            if (m_vGridMesh0 != null)
-            {
-                m_commandBuffer.DrawMesh(m_vGridMesh0, vMatrix, m_vGridMaterial0);
-            }
-
-            Matrix4x4 hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-            if (m_hGridMesh0 != null)
-            {
-                m_commandBuffer.DrawMesh(m_hGridMesh0, hMatrix, m_hGridMaterial0);
-            }
-
-            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, px % 3.0f);
-            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, py % 3.0f);
-
-            vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-            if (m_vGridMesh1 != null)
-            {
-                m_commandBuffer.DrawMesh(m_vGridMesh1, vMatrix, m_vGridMaterial1);
-            }
-
-            if (!fixedHeight)
-            {
-                hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-                if (m_hGridMesh1 != null)
-                {
-                    m_commandBuffer.DrawMesh(m_hGridMesh1, hMatrix, m_hGridMaterial1);
-                }
-            }
-
-            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px + 1) % 3.0f);
-            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py + 1) % 3.0f);
-
-            vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-            if (m_vGridMesh2 != null)
-            {
-                if(interval.x > m_parameters.VertLinesSecondary)
-                {
-                    m_commandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vGridMaterial2);
-                }
-            }
-
-            if(!fixedHeight)
-            {
-                hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
-                if (m_hGridMesh2 != null)
-                {
-                    if (interval.y > m_parameters.HorLinesSecondary)
-                    {
-                        m_commandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
-                    }
-                }
-            }   
+            m_rteCamera.RefreshCommandBuffer();
         }
 
         private Material CreateGridMaterial()
@@ -361,6 +286,132 @@ namespace Battlehub.RTEditor
             mesh.colors = colors;
 
             return mesh;
+        }
+
+        private void OnCommandBufferRefresh(IRTECamera camera)
+        {
+            Vector2 viewportSize = m_updateGraphicsArgs.ViewportSize;
+            Vector2 contentSize = m_updateGraphicsArgs.ContentSize;
+            Vector2 normalizedOffset = m_updateGraphicsArgs.NormalizedOffset;
+            Vector2 normalizedSize = m_updateGraphicsArgs.NormalizedSize;
+            Vector2 interval = m_updateGraphicsArgs.Interval;
+
+            if (m_parameters == null)
+            {
+                throw new System.InvalidOperationException("Call SetGridParameters method first");
+            }
+
+            bool fixedHeight = m_parameters.FixedHeight > 0;
+            if (fixedHeight)
+            {
+                m_parameters.HorLinesSecondary = 2;
+            }
+
+            //m_commandBuffer.Clear();
+
+            int vLinesCount = m_parameters.VertLines;
+            int hLinesCount = m_parameters.HorLines;
+            Color lineColor = m_parameters.LineColor;
+
+            int vLinesSq = m_parameters.VertLinesSecondary * m_parameters.VertLinesSecondary;
+            int hLinesSq = m_parameters.HorLinesSecondary * m_parameters.HorLinesSecondary;
+
+            Vector2 contentScale = new Vector2(
+                1.0f / normalizedSize.x,
+                1.0f / normalizedSize.y);
+
+            Vector3 offset = new Vector3(-0.5f, 0.5f, 2.0f);
+            offset.x -= ((1 - normalizedSize.x) * normalizedOffset.x / normalizedSize.x) % (contentScale.x * vLinesSq / Mathf.Max(1, vLinesCount));
+            if (!fixedHeight)
+            {
+                offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y) % (contentScale.y * hLinesSq / Mathf.Max(1, hLinesCount));
+            }
+
+            Vector3 scale = Vector3.one;
+
+            float aspect = viewportSize.x / viewportSize.y;
+            offset.x *= aspect;
+            // scale.x = aspect;
+
+            float px = interval.x * normalizedSize.x;
+            float py = interval.y * normalizedSize.y;
+
+            //required to match grid scale to scroll viewer viewport size & offset
+            px = Mathf.Log(px * m_parameters.VertLinesSecondary, m_parameters.VertLinesSecondary);
+            py = Mathf.Log(py * m_parameters.HorLinesSecondary, m_parameters.HorLinesSecondary);
+
+            float fadeOutOffset = Mathf.Min(0.4f, 1 - Mathf.Clamp01(viewportSize.x / 600.0f));
+
+            SetAlpha(m_vGridMaterial0, fadeOutOffset, px - 1);
+            SetAlpha(m_vGridMaterial1, fadeOutOffset, px);
+            SetAlpha(m_vGridMaterial2, fadeOutOffset, px + 1);
+
+            SetAlpha(m_hGridMaterial0, fadeOutOffset, py - 1);
+            SetAlpha(m_hGridMaterial1, fadeOutOffset, py);
+            SetAlpha(m_hGridMaterial2, fadeOutOffset, py + 1);
+
+            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px - 1) % 3.0f);
+            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py - 1) % 3.0f);
+            if (fixedHeight)
+            {
+                offset.y += ((1 - normalizedSize.y) * (1 - normalizedOffset.y) / normalizedSize.y);
+                scale.y = hLinesCount * m_parameters.FixedHeight / viewportSize.y;
+                m_hGridMaterial0.color = m_parameters.LineColor;
+            }
+
+            Matrix4x4 vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_vGridMesh0 != null)
+            {
+                m_rteCamera.CommandBuffer.DrawMesh(m_vGridMesh0, vMatrix, m_vGridMaterial0);
+            }
+
+            Matrix4x4 hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_hGridMesh0 != null)
+            {
+                m_rteCamera.CommandBuffer.DrawMesh(m_hGridMesh0, hMatrix, m_hGridMaterial0);
+            }
+
+            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, px % 3.0f);
+            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, py % 3.0f);
+
+            vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_vGridMesh1 != null)
+            {
+                m_rteCamera.CommandBuffer.DrawMesh(m_vGridMesh1, vMatrix, m_vGridMaterial1);
+            }
+
+            if (!fixedHeight)
+            {
+                hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+                if (m_hGridMesh1 != null)
+                {
+                    m_rteCamera.CommandBuffer.DrawMesh(m_hGridMesh1, hMatrix, m_hGridMaterial1);
+                }
+            }
+
+            scale.x = aspect * vLinesSq / Mathf.Pow(m_parameters.VertLinesSecondary, (px + 1) % 3.0f);
+            scale.y = hLinesSq / Mathf.Pow(m_parameters.HorLinesSecondary, (py + 1) % 3.0f);
+
+            vMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+            if (m_vGridMesh2 != null)
+            {
+                if (interval.x > m_parameters.VertLinesSecondary)
+                {
+                    m_rteCamera.CommandBuffer.DrawMesh(m_vGridMesh2, vMatrix, m_vGridMaterial2);
+                }
+            }
+
+            if (!fixedHeight)
+            {
+                hMatrix = Matrix4x4.TRS(offset, Quaternion.identity, scale);
+                if (m_hGridMesh2 != null)
+                {
+                    if (interval.y > m_parameters.HorLinesSecondary)
+                    {
+                        m_rteCamera.CommandBuffer.DrawMesh(m_hGridMesh2, hMatrix, m_hGridMaterial2);
+                    }
+                }
+            }
         }
 
     }

@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 using UnityObject = UnityEngine.Object;
 using Battlehub.RTSL;
+using Battlehub.RTCommon;
 
 namespace Battlehub.RTEditor
 {
@@ -19,10 +20,22 @@ namespace Battlehub.RTEditor
         public static void CreateRuntimeEditor()
         {
             Undo.RegisterCreatedObjectUndo(InstantiateRuntimeEditor(), "Battlehub.RTEditor.Create");
-            GameObject urpSupport = InstantiateURPSupport();
-            if(urpSupport != null)
+
+            if(RenderPipelineInfo.Type == RPType.URP)
             {
-                Undo.RegisterCreatedObjectUndo(urpSupport, "Battlehub.RTEditor.URPSupport");
+                GameObject urpSupport = InstantiateURPSupport();
+                if (urpSupport != null)
+                {
+                    Undo.RegisterCreatedObjectUndo(urpSupport, "Battlehub.RTEditor.URPSupport");
+                }
+            }
+            else if(RenderPipelineInfo.Type == RPType.HDRP)
+            {
+                GameObject hdrpSupport = InstantiateHDRPSupport();
+                if(hdrpSupport != null)
+                {
+                    Undo.RegisterCreatedObjectUndo(hdrpSupport, "Battlehub.RTEditor.HDRPSupport");
+                }
             }
             
             EventSystem eventSystem = UnityObject.FindObjectOfType<EventSystem>();
@@ -58,6 +71,12 @@ namespace Battlehub.RTEditor
         public static GameObject InstantiateURPSupport()
         {
             UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHRoot.Path + "/UniversalRP/RTEditorInitURP.prefab", typeof(GameObject));
+            return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        }
+
+        public static GameObject InstantiateHDRPSupport()
+        {
+            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHRoot.Path + "/HDRP/RTEditorInitHDRP.prefab", typeof(GameObject));
             return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         }
     }

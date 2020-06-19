@@ -1,5 +1,6 @@
 ﻿using Battlehub.RTCommon;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Battlehub.RTHandles
 {
@@ -101,13 +102,14 @@ namespace Battlehub.RTHandles
 
             IRTECamera rteCamera;
             IRTEGraphicsLayer graphicsLayer = Window.IOCContainer.Resolve<IRTEGraphicsLayer>();
-            if (graphicsLayer == null)
+            if (graphicsLayer != null)
             {
-                rteCamera = Window.Camera.GetComponent<IRTECamera>();
+                rteCamera = graphicsLayer.Camera;
             }
             else
             {
-                rteCamera = graphicsLayer.Camera;
+                IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
+                rteCamera = graphics.GetOrCreateCamera(Window.Camera, CameraEvent.AfterImageEffectsOpaque);
             }
 
             return rteCamera;

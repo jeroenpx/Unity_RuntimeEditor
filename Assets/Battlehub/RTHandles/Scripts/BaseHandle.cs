@@ -5,6 +5,7 @@ using UnityEngine;
 using Battlehub.RTCommon;
 using Battlehub.Utils;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 namespace Battlehub.RTHandles
 {
@@ -576,11 +577,16 @@ namespace Battlehub.RTHandles
 
             if (m_rteCamera == null && Window.Camera != null)
             {
-                m_rteCamera = Window.Camera.GetComponent<IRTECamera>();
+                IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
+                if(graphics != null)
+                {
+                    m_rteCamera = graphics.GetOrCreateCamera(Window.Camera, CameraEvent.AfterImageEffectsOpaque);
+                }
+                
                 if (m_rteCamera == null)
                 {
                     m_rteCamera = Window.Camera.gameObject.AddComponent<RTECamera>();
-                    m_rteCamera.Event = UnityEngine.Rendering.CameraEvent.AfterImageEffectsOpaque;
+                    m_rteCamera.Event = CameraEvent.AfterImageEffectsOpaque;
                 }
             }
 
@@ -805,7 +811,7 @@ namespace Battlehub.RTHandles
             m_commonCenterTarget = null;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if(Model != null)
             {
@@ -917,7 +923,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void LateUpdate()
+        protected virtual void LateUpdate()
         {            
             if(!m_isDragging)
             {

@@ -111,7 +111,7 @@ namespace Battlehub.RTEditor
             GameObject sceneContent;
             bool isDialog;
             wm.CreateWindow(RuntimeWindowType.Scene.ToString(), out sceneWd, out sceneContent, out isDialog);
-
+      
             WindowDescriptor gameWd;
             GameObject gameContent;
             wm.CreateWindow(RuntimeWindowType.Game.ToString(), out gameWd, out gameContent, out isDialog);
@@ -154,8 +154,8 @@ namespace Battlehub.RTEditor
                     wm.CreateLayoutInfo(projectContent.transform, projectWd.Header, projectWd.Icon),
                     0.5f),
                 0.75f);
-
-            return layout;
+           
+            return layout; 
         }
     }
 
@@ -413,6 +413,11 @@ namespace Battlehub.RTEditor
             for (int i = 0; i < Windows.Length; ++i)
             {
                 RuntimeWindow window = Windows[i];
+                if(window == null)
+                {
+                    continue;
+                }
+
                 if (window == testWindow)
                 {
                     continue;
@@ -1215,11 +1220,6 @@ namespace Battlehub.RTEditor
             tab.IsOn = true;
             return true;
         }
-
-        //public Transform CreateWindow(string windowTypeName, out Dialog dialog)
-        //{
-        //    return CreateWindow(windowTypeName, out dialog, true, RegionSplitType.None, 0.3f, null);
-        //}
 
         public Transform CreateWindow(string windowTypeName, bool isFree = true, RegionSplitType splitType = RegionSplitType.None, float flexibleSize = 0.3f, Transform parentWindow = null)
         {

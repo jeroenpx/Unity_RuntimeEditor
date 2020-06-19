@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Battlehub.RTCommon;
+using UnityEngine.Rendering;
 
 namespace Battlehub.RTGizmos
 {
@@ -156,11 +157,16 @@ namespace Battlehub.RTGizmos
 
             if (m_rteCamera == null && SceneCamera != null)
             {
-                m_rteCamera = SceneCamera.GetComponent<IRTECamera>();
+                IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
+                if(graphics != null)
+                {
+                    m_rteCamera = graphics.GetOrCreateCamera(SceneCamera, CameraEvent.AfterImageEffectsOpaque);
+                }
+                
                 if(m_rteCamera == null)
                 {
                     m_rteCamera = SceneCamera.gameObject.AddComponent<RTECamera>();
-                    m_rteCamera.Event = UnityEngine.Rendering.CameraEvent.AfterImageEffectsOpaque;
+                    m_rteCamera.Event = CameraEvent.AfterImageEffectsOpaque;
                 }
             }
 
@@ -276,6 +282,12 @@ namespace Battlehub.RTGizmos
 
         private void LateUpdate()
         {
+            if(SceneCamera == null )
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             if (!m_isDragging)
             {
                 if (m_rteCamera != null && m_refreshOnCameraChanged)

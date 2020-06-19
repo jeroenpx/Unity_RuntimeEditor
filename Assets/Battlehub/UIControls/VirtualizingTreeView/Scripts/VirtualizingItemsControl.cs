@@ -1207,14 +1207,14 @@ namespace Battlehub.UIControls
 
         private void TryToSelect(VirtualizingItemContainer sender)
         {
-            if (InputProvider.IsFunctional2ButtonPressed)
+            if (CanMultiSelect && InputProvider.IsFunctional2ButtonPressed)
             {
                 if (sender.Item != null)
                 {
                     SelectRange(sender);
                 }
             }
-            else if (InputProvider.IsFunctionalButtonPressed)
+            else if (CanMultiSelect && InputProvider.IsFunctionalButtonPressed)
             {
                 if (sender.Item != null)
                 {

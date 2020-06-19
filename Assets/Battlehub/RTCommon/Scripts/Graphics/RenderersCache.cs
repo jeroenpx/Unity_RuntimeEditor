@@ -13,6 +13,12 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        Material MaterialOverride
+        {
+            get;
+            set;
+        }
+
         IList<Renderer> Renderers
         {
             get;
@@ -34,6 +40,12 @@ namespace Battlehub.RTCommon
         public bool IsEmpty
         {
             get { return m_renderers.Count == 0;  }
+        }
+
+        public Material MaterialOverride
+        {
+            get;
+            set;
         }
 
         private readonly List<Tuple<bool?, bool?>> m_settingsBackup = new List<Tuple<bool?, bool?>>();

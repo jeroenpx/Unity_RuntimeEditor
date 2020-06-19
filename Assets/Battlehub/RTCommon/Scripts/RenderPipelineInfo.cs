@@ -22,6 +22,8 @@ namespace Battlehub.RTCommon
 
         bool IsPostProcessingEnabled(Camera camera);
         void EnablePostProcessing(Camera camera, bool value);
+
+        void SetBackgroundColor(Camera camera, Color color);
     }
 
     public static class RenderPipelineInfo 
@@ -103,9 +105,6 @@ namespace Battlehub.RTCommon
                 Type pipelineType = GraphicsSettings.renderPipelineAsset.GetType();
                 if (pipelineType.Name == "UniversalRenderPipelineAsset")
                 {
-
-                    
-
                     Type = RPType.URP;
                     ForceUseRenderTextures = false;
                     m_msaaProperty = pipelineType.GetProperty("msaaSampleCount");
@@ -114,13 +113,15 @@ namespace Battlehub.RTCommon
                     ColorPropertyID = Shader.PropertyToID("_BaseColor");
                     MainTexturePropertyID = Shader.PropertyToID("_BaseMap");
                 }
-                else if (pipelineType.Name == "HDRenderRenderPipelineAsset")
+                else if (pipelineType.Name == "HDRenderPipelineAsset")
                 {
                     Type = RPType.HDRP;
+                    ForceUseRenderTextures = false;
                     m_msaaProperty = pipelineType.GetProperty("msaaSampleCount");
-                    DefaultShaderName = "HD Render Pipeline/Lit";
-                    ColorPropertyID = Shader.PropertyToID("_BaseColor"); //??
-                    MainTexturePropertyID = Shader.PropertyToID("_BaseMap"); //??
+                    DefaultShaderName = "HDRP/Lit";
+                    DefaultTerrainShaderName = "HDRP/TerrainLit";
+                    ColorPropertyID = Shader.PropertyToID("_BaseColor"); 
+                    MainTexturePropertyID = Shader.PropertyToID("_BaseMap"); 
                 }
                 else
                 {

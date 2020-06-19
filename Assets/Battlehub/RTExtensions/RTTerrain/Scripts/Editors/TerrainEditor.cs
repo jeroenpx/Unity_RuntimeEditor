@@ -278,10 +278,8 @@ namespace Battlehub.RTTerrain
         private EnumEditor m_paintToolSelector = null;
         [SerializeField]
         private GameObject[] m_paintTools = null;
-        [SerializeField]
-        private TerrainProjector m_terrainProjectorPrefab = null;
 
-        public TerrainProjector Projector
+        public TerrainProjectorBase Projector
         {
             get;
             private set;
@@ -357,7 +355,8 @@ namespace Battlehub.RTTerrain
             m_wm.WindowCreated += OnWindowCreated;
             m_wm.AfterLayout += OnAfterLayout;
 
-            Projector = Instantiate(m_terrainProjectorPrefab, m_editor.Root);
+            Projector = IOC.Resolve<TerrainProjectorBase>();
+            Projector.transform.SetParent(m_editor.Root, false);
             Projector.gameObject.SetActive(false);
 
             if(IOC.Resolve<ITerrainSelectionHandlesTool>() == null)

@@ -4,6 +4,8 @@ using Battlehub.UIControls.MenuControl;
 using UnityEngine;
 namespace Battlehub.RTTerrain
 {
+    
+
     [MenuDefinition(-1)]
     public class TerrainInit : EditorExtension
     {
@@ -14,7 +16,14 @@ namespace Battlehub.RTTerrain
         private TerrainComponentEditor m_terrainComponentEditor = null;
 
         [SerializeField]
-        private GameObject[] m_prefabs;
+        private GameObject[] m_prefabs = null;
+
+        [SerializeField]
+        private TerrainProjectorBase m_terrainProjectorPrefab = null;
+        private TerrainProjectorBase InstantiateTerrainProjector()
+        {
+            return Instantiate(m_terrainProjectorPrefab);
+        }
 
         protected override void OnEditorExist()
         {
@@ -30,6 +39,19 @@ namespace Battlehub.RTTerrain
             }
 
             Register();
+            IOC.RegisterFallback(InstantiateTerrainProjector);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            IOC.UnregisterFallback(InstantiateTerrainProjector);
+        }
+
+        protected override void OnEditorClosed()
+        {
+            base.OnEditorClosed();
+            IOC.UnregisterFallback(InstantiateTerrainProjector);
         }
 
         private void Register()
@@ -38,7 +60,6 @@ namespace Battlehub.RTTerrain
             lc.LoadStringResources("RTTerrain.StringResources");
 
             IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
-
             IWindowManager wm = IOC.Resolve<IWindowManager>();
             if (m_terrainView != null)
             {

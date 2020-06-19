@@ -69,6 +69,11 @@ namespace Battlehub.RTCommon.URP
             baseData.cameraStack.Add(overlayCamera);
             overlayCamera.clearFlags = CameraClearFlags.Depth;
         }
+
+        public void SetBackgroundColor(Camera camera, Color color)
+        {
+            camera.backgroundColor = color;
+        }
     }
 
 }

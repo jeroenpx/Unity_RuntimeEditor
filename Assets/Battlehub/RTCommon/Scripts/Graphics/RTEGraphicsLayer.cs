@@ -132,7 +132,15 @@ namespace Battlehub.RTCommon
             m_camera.depth = m_window.Camera.depth + 1;
             m_camera.cullingMask = 0;
 
-            m_graphicsCamera = m_graphics.CreateCamera(m_camera);
+            if (RenderPipelineInfo.Type == RPType.Standard)
+            {
+                m_graphicsCamera = m_graphics.CreateCamera(m_camera, CameraEvent.BeforeImageEffects, true, true);
+            }
+            else
+            {
+                m_graphicsCamera = m_graphics.CreateCamera(m_camera, CameraEvent.AfterImageEffectsOpaque, true, true);
+            }
+            
             m_renderTextureCamera = m_camera.GetComponent<RenderTextureCamera>();
             if (m_renderTextureCamera == null)
             {

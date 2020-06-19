@@ -6,16 +6,16 @@ namespace Battlehub.RTCommon
 {
     public interface IRTEGraphics
     {
-        IRTECamera CreateCamera(Camera camera);
-        
         void RegisterCamera(Camera camera);
         void UnregisterCamera(Camera camera);
+        IRTECamera GetOrCreateCamera(Camera camera, CameraEvent cameraEvent);
+        IRTECamera CreateCamera(Camera camera, CameraEvent cameraEvent, bool meshesCache = false, bool renderersCache = false);
 
-        IRenderersCache CreateRenderersCache(CameraEvent cameraEvent);
-        void Destroy(IRenderersCache cache);
+        IMeshesCache CreateSharedMeshesCache(CameraEvent cameraEvent);
+        IRenderersCache CreateSharedRenderersCache(CameraEvent cameraEvent);
 
-        IMeshesCache CreateMeshesCache(CameraEvent cameraEvent);
-        void Destroy(IMeshesCache cache);
+        void DestroySharedMeshesCache(IMeshesCache cache);
+        void DestroySharedRenderersCache(IRenderersCache cache);
     }
 
     [DefaultExecutionOrder(-60)]
@@ -31,28 +31,8 @@ namespace Battlehub.RTCommon
             IOC.UnregisterFallback<IRTEGraphics>(this);
         }
 
-        public IRTECamera CreateCamera(Camera camera)
-        {
-            RenderersCache renderersCache = camera.gameObject.AddComponent<RenderersCache>();
-            MeshesCache meshesCache = camera.gameObject.AddComponent<MeshesCache>();
-            meshesCache.RefreshMode = CacheRefreshMode.Manual;
+        private Dictionary<Camera, Dictionary<CameraEvent, RTECamera>> m_cameras = new Dictionary<Camera, Dictionary<CameraEvent, RTECamera>>();
 
-            RTECamera rteCamera = camera.gameObject.AddComponent<RTECamera>();
-            rteCamera.RenderersCache = renderersCache;
-            rteCamera.MeshesCache = meshesCache;
-
-            if(RenderPipelineInfo.Type == RPType.Standard)
-            {
-                rteCamera.Event = CameraEvent.BeforeImageEffects;
-            }
-            else
-            {
-                rteCamera.Event = CameraEvent.AfterImageEffectsOpaque;
-            }
-            
-            return rteCamera;
-        }
-    
         private class Data
         {
             public MonoBehaviour MonoBehaviour;
@@ -66,53 +46,129 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private readonly List<GameObject> m_cameras = new List<GameObject>();
         private readonly Dictionary<IMeshesCache, Data> m_meshesCache = new Dictionary<IMeshesCache, Data>();
         private readonly Dictionary<IRenderersCache, Data> m_renderersCache = new Dictionary<IRenderersCache, Data>();
 
-        public IMeshesCache CreateMeshesCache(CameraEvent cameraEvent)
+        public void RegisterCamera(Camera camera)
+        {
+            foreach (KeyValuePair<IMeshesCache, Data> kvp in m_meshesCache)
+            {
+                IMeshesCache cache = kvp.Key;
+                Data data = kvp.Value;
+                CreateRTECamera(camera.gameObject, data.Event, cache, data.RTECameras);
+            }
+
+            foreach (KeyValuePair<IRenderersCache, Data> kvp in m_renderersCache)
+            {
+                IRenderersCache cache = kvp.Key;
+                Data data = kvp.Value;
+                CreateRTECamera(camera.gameObject, data.Event, cache, data.RTECameras);
+            }
+
+            if (!m_cameras.ContainsKey(camera))
+            {
+                m_cameras.Add(camera, new Dictionary<CameraEvent, RTECamera>());
+            }
+        }
+
+        public void UnregisterCamera(Camera camera)
+        {
+            foreach (KeyValuePair<IMeshesCache, Data> kvp in m_meshesCache)
+            {
+                Data data = kvp.Value;
+                DestroyRTECameras(camera, data);
+            }
+
+            foreach (KeyValuePair<IRenderersCache, Data> kvp in m_renderersCache)
+            {
+                Data data = kvp.Value;
+                DestroyRTECameras(camera, data);
+            }
+
+            Dictionary<CameraEvent, RTECamera> rteCameras;
+            if(m_cameras.TryGetValue(camera, out rteCameras))
+            {
+                foreach(IRTECamera rteCamera in rteCameras.Values)
+                {
+                    rteCamera.Destroy();
+                }
+                m_cameras.Remove(camera);
+            }
+        }
+
+        public IRTECamera GetOrCreateCamera(Camera camera, CameraEvent cameraEvent)
+        {
+            Dictionary<CameraEvent, RTECamera> rteCameras;
+            if (!m_cameras.TryGetValue(camera, out rteCameras))
+            {
+                return null;
+            }
+
+            RTECamera rteCamera;
+            if(!rteCameras.TryGetValue(cameraEvent, out rteCamera))
+            {
+                rteCamera = _CreateCamera(camera, cameraEvent, true, true);
+                rteCameras.Add(cameraEvent, rteCamera);
+            }
+
+            return rteCamera;
+        }
+
+        public IRTECamera CreateCamera(Camera camera, CameraEvent cameraEvent, bool createMeshesCache = false, bool createRenderersCache = false)
+        {
+            return _CreateCamera(camera, cameraEvent, createMeshesCache, createRenderersCache);
+        }
+
+        private RTECamera _CreateCamera(Camera camera, CameraEvent cameraEvent, bool createMeshesCache, bool createRenderersCache)
+        {
+            RTECamera rteCamera = camera.gameObject.AddComponent<RTECamera>();
+            rteCamera.Event = cameraEvent;
+
+            if (createMeshesCache)
+            {
+                MeshesCache meshesCache = gameObject.AddComponent<MeshesCache>();
+                meshesCache.RefreshMode = CacheRefreshMode.Manual;
+                rteCamera.MeshesCache = meshesCache;
+            }
+
+            if (createRenderersCache)
+            {
+                RenderersCache renderersCache = gameObject.AddComponent<RenderersCache>();
+                rteCamera.RenderersCache = renderersCache;
+            }
+
+            return rteCamera;
+        }
+
+        public IMeshesCache CreateSharedMeshesCache(CameraEvent cameraEvent)
         {
             MeshesCache cache = gameObject.AddComponent<MeshesCache>();
             cache.RefreshMode = CacheRefreshMode.Manual;
 
             List<RTECamera> rteCameras = new List<RTECamera>();
-            foreach (GameObject camera in m_cameras)
+            foreach (Camera camera in m_cameras.Keys)
             {
-                CreateRTECamera(camera, cameraEvent, cache, rteCameras);
+                CreateRTECamera(camera.gameObject, cameraEvent, cache, rteCameras);
             }
 
             m_meshesCache.Add(cache, new Data(cache, cameraEvent, rteCameras));
             return cache;
         }
 
-        public IRenderersCache CreateRenderersCache(CameraEvent cameraEvent)
+        public IRenderersCache CreateSharedRenderersCache(CameraEvent cameraEvent)
         {
             RenderersCache cache = gameObject.AddComponent<RenderersCache>();
             List<RTECamera> rteCameras = new List<RTECamera>();
-            foreach (GameObject camera in m_cameras)
+            foreach (Camera camera in m_cameras.Keys)
             {
-                CreateRTECamera(camera, cameraEvent, cache, rteCameras);
+                CreateRTECamera(camera.gameObject, cameraEvent, cache, rteCameras);
             }
 
             m_renderersCache.Add(cache, new Data(cache, cameraEvent, rteCameras));
             return cache;
         }
 
-        public void Destroy(IRenderersCache cache)
-        {
-            Data tuple;
-            if(m_renderersCache.TryGetValue(cache, out tuple))
-            {
-                Destroy(tuple.MonoBehaviour);
-                for (int i = 0; i < tuple.RTECameras.Count; ++i)
-                {
-                    Destroy(tuple.RTECameras[i]);
-                }
-                m_renderersCache.Remove(cache);
-            }
-        }
-
-        public void Destroy(IMeshesCache cache)
+        public void DestroySharedMeshesCache(IMeshesCache cache)
         {
             Data tuple;
             if (m_meshesCache.TryGetValue(cache, out tuple))
@@ -126,40 +182,17 @@ namespace Battlehub.RTCommon
             }
         }
 
-        public void RegisterCamera(Camera camera)
+        public void DestroySharedRenderersCache(IRenderersCache cache)
         {
-            m_cameras.Add(camera.gameObject);
-
-            foreach(KeyValuePair<IMeshesCache, Data> kvp in m_meshesCache)
+            Data tuple;
+            if (m_renderersCache.TryGetValue(cache, out tuple))
             {
-                IMeshesCache cache = kvp.Key;
-                Data data = kvp.Value;
-                CreateRTECamera(camera.gameObject, data.Event, cache, data.RTECameras);
-            }
-
-            foreach (KeyValuePair<IRenderersCache, Data> kvp in m_renderersCache)
-            {
-                IRenderersCache cache = kvp.Key;
-                Data data = kvp.Value;
-                CreateRTECamera(camera.gameObject, data.Event, cache, data.RTECameras);
-            }
-        }
-
-        public void UnregisterCamera(Camera camera)
-        {
-            m_cameras.Remove(camera.gameObject);
-
-            foreach (KeyValuePair<IMeshesCache, Data> kvp in m_meshesCache)
-            {
-                Data data = kvp.Value;
-
-                DestroyRTECameras(camera, data);
-            }
-
-            foreach (KeyValuePair<IRenderersCache, Data> kvp in m_renderersCache)
-            {
-                Data data = kvp.Value;
-                DestroyRTECameras(camera, data);
+                Destroy(tuple.MonoBehaviour);
+                for (int i = 0; i < tuple.RTECameras.Count; ++i)
+                {
+                    Destroy(tuple.RTECameras[i]);
+                }
+                m_renderersCache.Remove(cache);
             }
         }
 

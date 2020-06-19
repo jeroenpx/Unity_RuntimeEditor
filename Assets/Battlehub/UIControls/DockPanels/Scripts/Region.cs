@@ -864,11 +864,10 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             int index = content.GetSiblingIndex();
-            if (region.m_tabPanel.transform.childCount == 0)
+            if (index < 0 || index >= region.m_tabPanel.transform.childCount)
             {
                 return null;
             }
-
             return region.m_tabPanel.transform.GetChild(index).GetComponent<Tab>();
         }
 

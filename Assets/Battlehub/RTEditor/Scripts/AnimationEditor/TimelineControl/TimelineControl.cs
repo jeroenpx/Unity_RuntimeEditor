@@ -311,6 +311,14 @@ namespace Battlehub.RTEditor
             {
                 m_camera = cameraGo.AddComponent<Camera>();
             }
+
+            IRenderPipelineCameraUtility cameraUtility = IOC.Resolve<IRenderPipelineCameraUtility>();
+            if(cameraUtility != null)
+            {
+                cameraUtility.EnablePostProcessing(m_camera, false);
+                cameraUtility.SetBackgroundColor(m_camera, m_backgroundColor);
+            }
+
             m_camera.enabled = false;
             m_camera.orthographic = true;
             m_camera.orthographicSize = 0.5f;
@@ -367,8 +375,6 @@ namespace Battlehub.RTEditor
                 m_boxSelection.Selection += OnBoxSelection;
 
             }
-
-            RenderGraphics();
         }
 
         protected override void Start()
@@ -382,6 +388,7 @@ namespace Battlehub.RTEditor
             {
                 gameObject.AddComponent<TimelineControlInput>();
             }
+            RenderGraphics();
         }
 
         protected override void OnDestroy()

@@ -53,7 +53,7 @@ namespace Battlehub.RTCommon
         private void Start()
         {
             m_graphics = IOC.Resolve<IRTEGraphics>();
-            m_meshesCache = m_graphics.CreateMeshesCache(CameraEvent.BeforeImageEffects);
+            m_meshesCache = m_graphics.CreateSharedMeshesCache(CameraEvent.BeforeImageEffects);
             m_meshesCache.RefreshMode = CacheRefreshMode.OnTransformChange;
 
             Refresh();
@@ -64,7 +64,7 @@ namespace Battlehub.RTCommon
         {
             Cleanup();
 
-            m_graphics.Destroy(m_meshesCache);
+            m_graphics.DestroySharedMeshesCache(m_meshesCache);
 
             m_typeToMeshAndMaterial = null;
             m_types = null;

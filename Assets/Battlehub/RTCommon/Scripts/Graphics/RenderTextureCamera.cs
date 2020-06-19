@@ -232,6 +232,7 @@ namespace Battlehub.RTCommon
                 sizeX = Mathf.RoundToInt(size.x);
                 sizeY = Mathf.RoundToInt(size.y);
             }
+
             ResizeRenderTexture(sizeX, sizeY);
         }
 
@@ -239,7 +240,8 @@ namespace Battlehub.RTCommon
         {
             RenderTexture oldTexture = m_texture;
 
-            m_texture = new RenderTexture(Mathf.Max(1, sizeX), Mathf.Max(1, sizeY), 24, RenderTextureFormat.ARGB32);
+            //UnityEngine.Camera:Render() Thread group size must be above zero fix ==> min size == 2 ?
+            m_texture = new RenderTexture(Mathf.Max(2, sizeX), Mathf.Max(2, sizeY), 24, RenderTextureFormat.ARGB32);
             m_texture.name = m_camera.name + " RenderTexture";
             m_texture.filterMode = FilterMode.Point;
             m_texture.antiAliasing = m_allowMSAA ? Mathf.Max(1, RenderPipelineInfo.MSAASampleCount) : 1;
@@ -287,7 +289,7 @@ namespace Battlehub.RTCommon
                     m_output.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Abs(p1.y - p0.y));
                 }
             }
-
+           
             m_position = m_output.rectTransform.position;
         }
     }

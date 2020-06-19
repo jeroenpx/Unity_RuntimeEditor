@@ -5,7 +5,7 @@ using UnityEditor;
 
 using UnityObject = UnityEngine.Object;
 
-namespace Battlehub.RTExtensions
+namespace Battlehub.RTEditor
 {
     public static class RTExtensionsMenu
     {

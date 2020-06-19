@@ -63,12 +63,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Battlehub\UniversalRP\RTCommon\Scripts\CameraUtilityURP.cs" />
+    <Compile Include="Assets\Battlehub\UniversalRP\RTCommon\Scripts\ExecuteCommandBuffers.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTCommon\Scripts\RenderCache.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTEditor\Scripts\SceneGizmoOutput.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTEditor\Scripts\URPInit.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTExtensions\RTBuilder\Scripts\PBSelectionPickerRendererURP.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTExtensions\RTBuilder\Scripts\ProBuilderInitURP.cs" />
-    <Compile Include="Assets\Battlehub\UniversalRP\RTHandles\Scripts\ExecuteCommandBuffers.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTHandles\Scripts\OutlineManagerURP.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTHandles\Scripts\RenderSelection.cs" />
     <Compile Include="Assets\Battlehub\UniversalRP\RTSL\Scripts\RTSLDepsURP.cs" />
@@ -319,7 +319,7 @@
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory">
-      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.render-pipelines.core@7.3.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
+      <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.render-pipelines.core@7.4.1/Editor/ShaderGenerator/ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>E:/Development/GitHub/Unity_RuntimeEditor/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>

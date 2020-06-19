@@ -17,7 +17,7 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private Vector3 m_gridOffset = new Vector3(0f, 0.01f, 0f);
 
-        private CommandBuffer m_commandBuffer;
+        private RTECamera m_rteCamera;
 
         private float m_gridSize = 0.5f;
         public float SizeOfGrid
@@ -59,33 +59,39 @@ namespace Battlehub.RTHandles
         {
             base.AwakeOverride();
             RuntimeHandlesComponent.InitializeIfRequired(ref Appearance);
-
-            m_commandBuffer = new CommandBuffer();
-            m_commandBuffer.name = "SceneGrid Command Buffer";
-            Window.Camera.AddCommandBuffer(CameraEvent.AfterForwardAlpha, m_commandBuffer);
-
-            Rebuild();
         }
 
         protected virtual void OnEnable()
         {
-            
+            m_rteCamera = Window.Camera.gameObject.AddComponent<RTECamera>();
+            m_rteCamera.Event = CameraEvent.AfterForwardAlpha;
+            m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
+
+            Rebuild();
+            m_rteCamera.RefreshCommandBuffer();
         }
 
         protected virtual void OnDisable()
         {
-            m_commandBuffer.Clear();
+            if(m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+            }
+            Destroy(m_rteCamera);
         }
 
         protected override void OnDestroyOverride()
         {
-            if (Window != null && Window.Camera != null && m_commandBuffer != null)
-            {
-                Window.Camera.RemoveCommandBuffer(CameraEvent.AfterForwardAlpha, m_commandBuffer);
-            }
-            
             base.OnDestroyOverride();
             Cleanup();
+        }
+
+        private void Update()
+        {
+            if (m_rteCamera.CommandBufferOverride == null)
+            {
+                m_rteCamera.RefreshCommandBuffer();
+            }
         }
 
         private void Cleanup()
@@ -123,7 +129,7 @@ namespace Battlehub.RTHandles
             m_grid1Mesh = Appearance.CreateGridMesh(Appearance.Colors.GridColor, m_gridSize);
         }
 
-        protected virtual void Update()
+        private void OnCommandBufferRefresh(IRTECamera obj)
         {
             float h = GetCameraOffset();
             h = Mathf.Abs(h);
@@ -145,9 +151,9 @@ namespace Battlehub.RTHandles
             Matrix4x4 grid1 =
                 transform.localToWorldMatrix * Matrix4x4.TRS(GetGridPostion(pow1), Quaternion.identity, Vector3.one * pow1);
 
-            m_commandBuffer.Clear();
-            m_commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material, 0, 0);
-            m_commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material, 0, 0);
+            CommandBuffer commandBuffer = m_rteCamera.CommandBuffer;
+            commandBuffer.DrawMesh(m_grid0Mesh, grid0, m_grid0Material, 0, 0);
+            commandBuffer.DrawMesh(m_grid1Mesh, grid1, m_grid1Material, 0, 0);
         }
 
         private Vector3 GetGridPostion(float spacing)

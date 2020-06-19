@@ -19,6 +19,12 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        CommandBuffer CommandBufferOverride
+        {
+            get;
+            set;
+        }
+
         CameraEvent Event
         {
             get;
@@ -41,6 +47,9 @@ namespace Battlehub.RTCommon
 
     public class RTECamera : MonoBehaviour, IRTECamera
     {
+        public static event Action<IRTECamera> Created;
+        public static event Action<IRTECamera> Destroyed;
+
         public event Action<IRTECamera> CommandBufferRefresh;
 
         private Camera m_camera;
@@ -52,8 +61,27 @@ namespace Battlehub.RTCommon
         private CommandBuffer m_commandBuffer;
         public CommandBuffer CommandBuffer
         {
-            get { return m_commandBuffer; }
+            get { return m_commandBufferOverride != null ? m_commandBufferOverride :  m_commandBuffer; }
         }
+
+        private CommandBuffer m_commandBufferOverride;
+        public CommandBuffer CommandBufferOverride
+        {
+            get { return m_commandBufferOverride; }
+            set
+            {
+                m_commandBufferOverride = value;
+                if(m_commandBufferOverride != null)
+                {
+                    RemoveCommandBuffer();
+                }
+                else
+                {
+                    CreateCommandBuffer();
+                }
+            }
+        }
+
 
         [SerializeField]
         private CameraEvent m_cameraEvent = CameraEvent.BeforeImageEffects;
@@ -63,8 +91,12 @@ namespace Battlehub.RTCommon
             set
             {
                 m_cameraEvent = value;
-                RemoveCommandBuffer();
-                CreateCommandBuffer();
+
+                if(m_commandBufferOverride == null)
+                {
+                    RemoveCommandBuffer();
+                    CreateCommandBuffer();
+                }
             }
         }
 
@@ -95,17 +127,11 @@ namespace Battlehub.RTCommon
 
         private void Start()
         {
-            CreateCommandBuffer();
-
-            if(m_renderersCache == null)
+            if(m_commandBufferOverride == null)
             {
-                m_renderersCache = gameObject.GetComponent<IRenderersCache>();
+                CreateCommandBuffer();
             }
-
-            if(m_meshesCache == null)
-            {
-                m_meshesCache = gameObject.GetComponent<IMeshesCache>();
-            }
+            
             
             RefreshCommandBuffer();
 
@@ -117,6 +143,11 @@ namespace Battlehub.RTCommon
             if(m_meshesCache != null)
             {
                 m_meshesCache.Refreshing += OnRefresh;
+            }
+
+            if (Created != null)
+            {
+                Created(this);
             }
         }
 
@@ -135,6 +166,11 @@ namespace Battlehub.RTCommon
             if (m_camera != null)
             {
                 RemoveCommandBuffer();
+            }
+
+            if(Destroyed != null)
+            {
+                Destroyed(this);
             }
         }
 
@@ -166,17 +202,32 @@ namespace Battlehub.RTCommon
 
         public void RefreshCommandBuffer()
         {
-            if(m_commandBuffer == null)
+            if(Camera == null)
             {
                 return;
             }
 
-            m_commandBuffer.Clear();
-            if(m_cameraEvent == CameraEvent.AfterImageEffects || m_cameraEvent == CameraEvent.AfterImageEffectsOpaque)
+            CommandBuffer commandBuffer;
+            if(m_commandBufferOverride == null)
             {
-                m_commandBuffer.ClearRenderTarget(true, false, Color.black);
+                if (m_commandBuffer == null)
+                {
+                    return;
+                }
+
+                m_commandBuffer.Clear();
+                if (m_cameraEvent == CameraEvent.AfterImageEffects || m_cameraEvent == CameraEvent.AfterImageEffectsOpaque)
+                {
+                    m_commandBuffer.ClearRenderTarget(true, false, Color.black);
+                }
+
+                commandBuffer = m_commandBuffer;
             }
-   
+            else
+            {
+                commandBuffer = m_commandBufferOverride;
+            }
+            
             if(m_meshesCache != null)
             {
                 IList<RenderMeshesBatch> batches = m_meshesCache.Batches;
@@ -194,7 +245,7 @@ namespace Battlehub.RTCommon
                         {
                             if (batch.Mesh != null)
                             {
-                                m_commandBuffer.DrawMeshInstanced(batch.Mesh, j, batch.Material, -1, batch.Matrices, batch.Matrices.Length);
+                                commandBuffer.DrawMeshInstanced(batch.Mesh, j, batch.Material, -1, batch.Matrices, batch.Matrices.Length);
                             }
                         }
                     }
@@ -207,7 +258,7 @@ namespace Battlehub.RTCommon
                             {
                                 if (batch.Mesh != null)
                                 {
-                                    m_commandBuffer.DrawMesh(batch.Mesh, matrices[m], batch.Material, j, -1);
+                                    commandBuffer.DrawMesh(batch.Mesh, matrices[m], batch.Material, j, -1);
                                 }
                             }
                         }
@@ -225,8 +276,15 @@ namespace Battlehub.RTCommon
                     Material[] materials = renderer.sharedMaterials;
                     for (int j = 0; j < materials.Length; ++j)
                     {
-                        Material material = materials[j];
-                        m_commandBuffer.DrawRenderer(renderer, material, j, -1);
+                        if(m_renderersCache.MaterialOverride != null)
+                        {
+                            commandBuffer.DrawRenderer(renderer, m_renderersCache.MaterialOverride, j, -1);
+                        }
+                        else
+                        {
+                            Material material = materials[j];
+                            commandBuffer.DrawRenderer(renderer, material, j, -1);
+                        }
                     }
                 }
             }

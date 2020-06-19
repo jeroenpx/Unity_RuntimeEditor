@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Battlehub.RTCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -562,7 +563,8 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private Material m_selectionMaterial = null;
 
-        private CommandBuffer m_commandBuffer;
+        //private CommandBuffer m_commandBuffer;
+        private RTECamera m_rteCamera;
         private Camera m_camera;
 
         private TimelineGridParameters m_parameters = null;
@@ -579,14 +581,25 @@ namespace Battlehub.RTEditor
 
         private void OnDestroy()
         {
+            /*
             if (m_camera != null)
             {
                 m_camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
             }
+            */
+
+            if(m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                Destroy(m_rteCamera);
+                m_rteCamera = null;
+            }
+            
         }
 
         public void Init(Camera camera)
         {
+            /*
             if (m_camera != null)
             {
                 m_camera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
@@ -595,10 +608,20 @@ namespace Battlehub.RTEditor
             if (m_commandBuffer == null)
             {
                 m_commandBuffer = new CommandBuffer();
+            }*/
+
+            if(m_rteCamera != null)
+            {
+                m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;
+                Destroy(m_rteCamera);
+                m_rteCamera = null;
             }
 
             m_camera = camera;
-            m_camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            //m_camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, m_commandBuffer);
+            m_rteCamera = m_camera.gameObject.AddComponent<RTECamera>();
+            m_rteCamera.Event = CameraEvent.BeforeImageEffects;
+            m_rteCamera.CommandBufferRefresh += OnCommandBufferRefresh;
         }
 
         public void SetGridParameters(TimelineGridParameters parameters)
@@ -609,7 +632,7 @@ namespace Battlehub.RTEditor
 
         public void SetGridParameters(TimelineGridParameters parameters, Vector2 viewportSize)
         {
-            m_commandBuffer.Clear();
+            //m_commandBuffer.Clear();
 
             m_parameters = parameters;
         }
@@ -621,14 +644,14 @@ namespace Battlehub.RTEditor
                 throw new System.InvalidOperationException("Call SetGridParameters method first");
             }
 
-            m_commandBuffer.Clear();
+            //m_commandBuffer.Clear();
 
             int vLinesCount = m_parameters.VertLines;
             int hLinesCount = m_parameters.HorLines;
             Color lineColor = m_parameters.LineColor;
 
             int index = 0;
-          //  int cols = m_clip.Cols;
+            //  int cols = m_clip.Cols;
             int rows = m_clip.RowsCount;
 
             float rowHeight = m_parameters.FixedHeight / viewportSize.y;
@@ -650,9 +673,41 @@ namespace Battlehub.RTEditor
             float visibleColumns = m_parameters.VertLines * Mathf.Pow(m_parameters.VertLinesSecondary, Mathf.Log(px, m_parameters.VertLinesSecondary));
             float offsetColumns = -(1 - 1 / normalizedSize.x) * normalizedOffset.x * visibleColumns;
 
-            //Debug.Log(offsetColumns + " " + visibleColumns);
-
             Vector3 keyframeScale = Vector3.one * rowHeight * 0.5f;
+            UpdateKeyframes(index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
+        }
+
+        private class UpdateKeyframesArgs
+        {
+            public int Index;
+            public float RowHeight;
+            public float Aspect;
+            public Vector3 Offset;
+            public float VisibileColumns;
+            public Vector3 KeyframeScale;
+        }
+
+        private UpdateKeyframesArgs m_updateKeyframeArgs = new UpdateKeyframesArgs();
+        private void UpdateKeyframes(int index, float rowHeight, float aspect, Vector3 offset, float visibleColumns, Vector3 keyframeScale)
+        {
+            m_updateKeyframeArgs.Index = index;
+            m_updateKeyframeArgs.RowHeight = rowHeight;
+            m_updateKeyframeArgs.Aspect = aspect;
+            m_updateKeyframeArgs.Offset = offset;
+            m_updateKeyframeArgs.VisibileColumns = visibleColumns;
+            m_updateKeyframeArgs.KeyframeScale = keyframeScale;
+
+            m_rteCamera.RefreshCommandBuffer();
+        }
+
+        private void OnCommandBufferRefresh(IRTECamera camera)
+        {
+            int index = m_updateKeyframeArgs.Index;
+            float rowHeight = m_updateKeyframeArgs.RowHeight;
+            float aspect = m_updateKeyframeArgs.Aspect;
+            Vector3 offset = m_updateKeyframeArgs.Offset;
+            float visibleColumns = m_updateKeyframeArgs.VisibileColumns;
+            Vector3 keyframeScale = m_updateKeyframeArgs.KeyframeScale;
 
             UpdateKeyframes(false, m_clip.Rows, m_material, index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
             UpdateKeyframes(true, m_clip.Rows, m_selectionMaterial, index, rowHeight, aspect, offset, visibleColumns, keyframeScale);
@@ -661,10 +716,10 @@ namespace Battlehub.RTEditor
         private void UpdateKeyframes(bool selected, IList<DsRow> rows, Material material, int index, float rowHeight, float aspect, Vector3 offset, float visibleColumns, Vector3 keyframeScale)
         {
             int rowNumber = 0;
-            for(int i = 0; i < rows.Count; ++i)
+            for (int i = 0; i < rows.Count; ++i)
             {
                 DsRow row = rows[i];
-                if(row.IsVisible)
+                if (row.IsVisible)
                 {
                     List<DsKeyframe> keyframes = selected ? row.SelectedKeyframes : row.Keyframes;
                     for (int j = 0; j < keyframes.Count; ++j)
@@ -679,7 +734,7 @@ namespace Battlehub.RTEditor
                         if (index == k_batchSize)
                         {
                             index = 0;
-                            m_commandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, k_batchSize);
+                            m_rteCamera.CommandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, k_batchSize);
                         }
                     }
 
@@ -689,8 +744,9 @@ namespace Battlehub.RTEditor
 
             if (0 < index && index < k_batchSize)
             {
-                m_commandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, index);
+                m_rteCamera.CommandBuffer.DrawMeshInstanced(m_quad, 0, material, 0, m_matrices, index);
             }
         }
+
     }
 }

@@ -10,7 +10,7 @@ namespace Battlehub.RTEditor
             WindowType = RuntimeWindowType.Scene;
             base.AwakeOverride();   
 
-            if(RenderPipelineInfo.Type == RPType.URP)
+            if(RenderPipelineInfo.Type != RPType.Standard)
             {
                 RTEGraphicsLayer graphicsLayer = GetComponent<RTEGraphicsLayer>();
                 DestroyImmediate(graphicsLayer);

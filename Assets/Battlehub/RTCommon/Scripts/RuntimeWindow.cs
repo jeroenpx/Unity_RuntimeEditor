@@ -145,7 +145,7 @@ namespace Battlehub.RTCommon
                     ResetCullingMask();
 
                     UnregisterGraphicsCamera();
-                    DestroyGraphicsCamera();
+                    //DestroyGraphicsCamera();
                 }
 
                 m_camera = value;
@@ -156,7 +156,7 @@ namespace Battlehub.RTCommon
                     {
                         RegisterGraphicsCamera();
                     }
-                    CreateGraphicsCamera();
+                    //CreateGraphicsCamera();
                 }
             }
         }
@@ -270,7 +270,6 @@ namespace Battlehub.RTCommon
                 {
                     RegisterGraphicsCamera();
                 }
-                CreateGraphicsCamera();
             }
 
             Editor.RegisterWindow(this);
@@ -293,7 +292,6 @@ namespace Battlehub.RTCommon
                 {
                     UnregisterGraphicsCamera();
                 }
-                DestroyGraphicsCamera();
             }
         }
 
@@ -306,34 +304,12 @@ namespace Battlehub.RTCommon
             }
         }
 
-        private void CreateGraphicsCamera()
-        {
-            IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
-            if (graphics != null)
-            {
-                IRTECamera rteCamera = graphics.CreateCamera(m_camera);
-                IOCContainer.RegisterFallback(rteCamera);
-            }
-        }
-
         private void UnregisterGraphicsCamera()
         {
             IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
             if (graphics != null)
             {
                 graphics.UnregisterCamera(m_camera);
-            }
-        }
-
-        private void DestroyGraphicsCamera()
-        {
-            IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
-            if (graphics != null)
-            {
-                IRTECamera camera = IOCContainer.Resolve<IRTECamera>();
-                IOCContainer.UnregisterFallback(camera);
-
-                camera.Destroy();
             }
         }
 

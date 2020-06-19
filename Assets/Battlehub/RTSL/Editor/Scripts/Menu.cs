@@ -30,7 +30,7 @@ namespace Battlehub.RTSL
             return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Open Scene")]
+        //[MenuItem("Tools/Runtime SaveLoad/Open Scene")]
         public static void OpenScene()
         {
             if(Application.isPlaying)
@@ -356,7 +356,7 @@ namespace Battlehub.RTSL
             }            
         }
 
-        [MenuItem("Tools/Runtime SaveLoad/Build All")]
+        //[MenuItem("Tools/Runtime SaveLoad/Build All")]
         public static void BuildAll()
         {
             Selection.activeObject = null;

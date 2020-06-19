@@ -382,8 +382,9 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual void LateUpdate()
+        protected override void LateUpdate()
         {
+            base.LateUpdate();
             UpdateFontSize();
         }
 
