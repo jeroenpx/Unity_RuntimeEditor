@@ -72,6 +72,7 @@
     <Compile Include="Assets\Battlehub\HDRP\RTExtensions\RTTerrain\Scripts\TerrainProjectorHDRP.cs" />
     <Compile Include="Assets\Battlehub\HDRP\RTHandles\Scripts\OutlineManagerHDRP.cs" />
     <Compile Include="Assets\Battlehub\HDRP\RTHandles\Scripts\RenderSelection.cs" />
+    <None Include="Assets\Battlehub\HDRP\RTEditor\Resources\UIForeground.shader" />
     <None Include="Assets\Battlehub\HDRP\RTHandles\Outline\Selection_Fullscreen.shader" />
     <None Include="Assets\Battlehub\HDRP\RTHandles\Outline\Selection_Objects.shader" />
     <Reference Include="UnityEngine">

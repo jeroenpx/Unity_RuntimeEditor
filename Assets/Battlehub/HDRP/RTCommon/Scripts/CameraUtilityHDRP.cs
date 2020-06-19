@@ -109,6 +109,10 @@ namespace Battlehub.RTCommon.HDRP
         public void SetBackgroundColor(Camera camera, Color color)
         {
             HDAdditionalCameraData data = camera.GetComponent<HDAdditionalCameraData>();
+            if(data == null)
+            {
+                data = camera.gameObject.AddComponent<HDAdditionalCameraData>();
+            }
             data.backgroundColorHDR = color;
             data.clearColorMode = HDAdditionalCameraData.ClearColorMode.Color;
         }

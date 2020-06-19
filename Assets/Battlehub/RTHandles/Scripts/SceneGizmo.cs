@@ -189,6 +189,7 @@ namespace Battlehub.RTHandles
             m_cameraUtility = IOC.Resolve<IRenderPipelineCameraUtility>();
             if (m_cameraUtility != null)
             {
+                m_cameraUtility.SetBackgroundColor(m_camera, new Color(0, 0, 0, 0));
                 m_cameraUtility.EnablePostProcessing(m_camera, false);
                 m_cameraUtility.PostProcessingEnabled += OnPostProcessingEnabled;
             }

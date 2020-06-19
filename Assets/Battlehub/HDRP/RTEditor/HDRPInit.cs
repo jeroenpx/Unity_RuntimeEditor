@@ -47,7 +47,7 @@ namespace Battlehub.RTEditor.HDRP
                 RenderTextureCamera renderTextureCamera = foregroundCamera.gameObject.AddComponent<RenderTextureCamera>();
                 renderTextureCamera.OutputRoot = foregroundCanvas.gameObject.GetComponent<RectTransform>();
                 renderTextureCamera.Output = m_foregroundOutput.AddComponent<RawImage>();
-                renderTextureCamera.OverlayMaterial = new Material(Shader.Find("Battlehub/URP/RTEditor/UIForeground"));
+                renderTextureCamera.OverlayMaterial = new Material(Shader.Find("Battlehub/HDRP/RTEditor/UIForeground"));
                 foregroundCamera.gameObject.SetActive(true);
 
                 foregroundCanvas.sortingOrder = -1;
