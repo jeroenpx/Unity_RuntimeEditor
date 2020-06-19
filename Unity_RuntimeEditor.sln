@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSVPicker", "HSVPicker.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandaloneFileBrowser", "StandaloneFileBrowser.csproj", "{1459CD07-FA33-4F20-FBFC-54147EA2B559}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battlehub.RTEditor.HDRP", "Battlehub.RTEditor.HDRP.csproj", "{0007C130-B050-1AB0-E9F7-4D00A76C18EB}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battlehub.RTDemoGame", "Battlehub.RTDemoGame.csproj", "{8BDB3994-F469-A89A-6192-736EA31A01AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battlehub.RTScripting", "Battlehub.RTScripting.csproj", "{0BAE68BD-2B89-0C5F-D9B7-B5F75D78527A}"
@@ -45,6 +47,10 @@ Global
 		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1459CD07-FA33-4F20-FBFC-54147EA2B559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0007C130-B050-1AB0-E9F7-4D00A76C18EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0007C130-B050-1AB0-E9F7-4D00A76C18EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0007C130-B050-1AB0-E9F7-4D00A76C18EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0007C130-B050-1AB0-E9F7-4D00A76C18EB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8BDB3994-F469-A89A-6192-736EA31A01AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8BDB3994-F469-A89A-6192-736EA31A01AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BDB3994-F469-A89A-6192-736EA31A01AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
