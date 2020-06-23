@@ -1,5 +1,6 @@
 ﻿using Battlehub.Utils;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Battlehub.RTEditor.Demo
@@ -13,22 +14,25 @@ namespace Battlehub.RTEditor.Demo
             MemberInfo field2Info = Strong.MemberInfo((SelectDisplayFieldsBehaviour x) => x.Field2);
 
             List<PropertyDescriptor> descriptors = new List<PropertyDescriptor>();
-            descriptors.Add(new PropertyDescriptor("Group", editor.Component, groupInfo)
+            descriptors.Add(new PropertyDescriptor("Group", editor.Components, groupInfo)
             {
                 ValueChangedCallback = () => editor.BuildEditor()
             });
 
-            SelectDisplayFieldsBehaviour behaviour = (SelectDisplayFieldsBehaviour)editor.Component;
-            switch (behaviour.Group)
+            IEnumerable<FieldGroup> groups = editor.Components.Where(component => component != null).OfType<SelectDisplayFieldsBehaviour>().Select(behavior => behavior.Group).Distinct();
+            foreach(FieldGroup group in groups)
             {
-                case FieldGroup.Group1:
-                    descriptors.Add(new PropertyDescriptor("Field1", editor.Component, field1Info));
-                    break;
-                case FieldGroup.Group2:
-                    descriptors.Add(new PropertyDescriptor("Field2", editor.Component, field2Info));
-                    break;
+                switch (group)
+                {
+                    case FieldGroup.Group1:
+                        descriptors.Add(new PropertyDescriptor("Field1", editor.Components, field1Info));
+                        break;
+                    case FieldGroup.Group2:
+                        descriptors.Add(new PropertyDescriptor("Field2", editor.Components, field2Info));
+                        break;
+                }
             }
-
+            
             return descriptors.ToArray();
         }
     }

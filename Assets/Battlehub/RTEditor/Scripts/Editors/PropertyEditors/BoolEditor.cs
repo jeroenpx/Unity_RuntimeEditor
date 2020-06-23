@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +8,9 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         private Toggle m_input = null;
+
+        [SerializeField]
+        private TextMeshProUGUI m_mixedValuesIndicator = null;
 
         protected override void AwakeOverride()
         {
@@ -26,12 +29,28 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(bool value)
         {
-            m_input.isOn = value;
+            if(HasMixedValues())
+            {
+                m_input.SetIsOnWithoutNotify(false);
+                if(m_mixedValuesIndicator != null)
+                {
+                    m_mixedValuesIndicator.text = "-";
+                }
+            }
+            else
+            {
+                m_input.SetIsOnWithoutNotify(value);
+                if(m_mixedValuesIndicator != null)
+                {
+                    m_mixedValuesIndicator.text = null;
+                }
+            }
         }
 
         private void OnValueChanged(bool value)
         {
             SetValue(value);
+            SetInputField(value);
             EndEdit();
         }
     }

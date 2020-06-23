@@ -1,5 +1,8 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTHandles;
 using Battlehub.Utils;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Battlehub.RTEditor
@@ -11,10 +14,10 @@ namespace Battlehub.RTEditor
             base.InitEditor(editor, descriptor);
 
             bool canTransform = true;
-            if(Component != null)
+            if(Components != null && Components.Length > 0)
             {
-                ExposeToEditor exposeToEditor = Component.gameObject.GetComponentInParent<ExposeToEditor>();
-                if(exposeToEditor != null && !exposeToEditor.CanTransform)
+                IEnumerable<ExposeToEditor> exposeToEditor = NotNullComponents.Select(component => component.GetComponentInParent<ExposeToEditor>());
+                if(exposeToEditor.Any(o => o != null && !o.CanTransform))
                 {
                     canTransform = false;
                 }
@@ -76,6 +79,45 @@ namespace Battlehub.RTEditor
                 }
             }
         }
+
+        protected override void OnValueChanged()
+        {
+            base.OnValueChanged();
+            RefreshTransformHandles();
+        }
+
+       
+        protected override void OnEndEdit()
+        {
+            base.OnEndEdit();
+            ResetTransformHandles();
+        }
+
+        protected override void OnResetClick()
+        {
+            base.OnResetClick();
+            ResetTransformHandles();
+        }
+
+        private static void RefreshTransformHandles()
+        {
+            BaseHandle[] handles = FindObjectsOfType<BaseHandle>();
+            foreach (BaseHandle handle in handles)
+            {
+                handle.Refresh();
+            }
+        }
+
+        private static void ResetTransformHandles()
+        {
+            BaseHandle[] handles = FindObjectsOfType<BaseHandle>();
+            foreach (BaseHandle handle in handles)
+            {
+                handle.Targets = handle.RealTargets;
+            }
+        }
+
+
     }
 }
 

@@ -44,7 +44,7 @@ namespace Battlehub.RTBuilder
 
         private void BeginSave(Error error, object[] result)
         {
-            if(result[0] is Scene)
+            if(result != null && result.Length > 0 && result[0] is Scene)
             {
                 IEnumerable<PBMesh> pbMeshes = Resources.FindObjectsOfTypeAll<PBMesh>().Where(mesh => !mesh.gameObject.IsPrefab());
                 foreach (PBMesh pbMesh in pbMeshes)

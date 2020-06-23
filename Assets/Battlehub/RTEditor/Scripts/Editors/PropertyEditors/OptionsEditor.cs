@@ -21,13 +21,28 @@ namespace Battlehub.RTEditor
     {
         protected override void SetInputField(int value)
         {
-            m_input.value = value;
+            if (HasMixedValues())
+            {
+                m_mixedValuesIndicator.text = "-";
+            }
+            else
+            {
+                m_input.value = value;
+                m_mixedValuesIndicator.text = m_input.options[value].text;
+            }
         }
 
         protected override void OnValueChanged(int index)
         {
             SetValue(index);
+            SetInputField(index);
             EndEdit();
+        }
+
+        protected override void InitOverride(object[] target, object[] accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
+        {
+            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
+            m_currentValue = -1;
         }
     }
 
@@ -35,6 +50,9 @@ namespace Battlehub.RTEditor
     {
         [SerializeField]
         protected TMP_Dropdown m_input = null;
+
+        [SerializeField]
+        protected TextMeshProUGUI m_mixedValuesIndicator = null;
 
         public string[] Options = new string[0];
 
@@ -66,9 +84,8 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
+        protected override void InitOverride(object[] target, object[] accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
 
             for (int i = 0; i < Options.Length; ++i)
@@ -77,17 +94,13 @@ namespace Battlehub.RTEditor
             }
 
             m_input.options = options;
-        }
 
-        //protected override void SetInputField(T value)
-        //{
-        //    m_input.value = value;
-        //}
+            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
+        }
 
         protected virtual void OnValueChanged(int index)
         {
-            //SetValue(index);
-            //EndEdit();
+           
         }
     }
 }

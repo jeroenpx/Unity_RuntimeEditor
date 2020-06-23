@@ -34,7 +34,7 @@ namespace Battlehub.RTTerrain
 
         private void TryRefreshTerrainEditor()
         {
-            if (Editor.Selection.activeGameObject == null)
+            if (Editor.Selection.activeGameObject == null || Editor.Selection.objects.Length > 1)
             {
                 m_terrainEditor.gameObject.SetActive(false);
                 m_terrainEditor.Terrain = null;

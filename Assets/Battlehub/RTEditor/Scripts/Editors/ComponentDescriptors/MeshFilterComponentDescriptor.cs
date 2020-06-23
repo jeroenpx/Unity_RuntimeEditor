@@ -14,7 +14,7 @@ namespace Battlehub.RTEditor
             MemberInfo sharedMeshInfo = Strong.PropertyInfo((MeshFilter x) => x.sharedMesh, "sharedMesh");
             return new[]
             {
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshFilter_Mesh", "Mesh"), editor.Component, sharedMeshInfo, sharedMeshInfo)
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshFilter_Mesh", "Mesh"), editor.Components, sharedMeshInfo, sharedMeshInfo)
             };
         }
     }

@@ -39,7 +39,7 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(int value)
         {
-            m_input.text = value.ToString();
+            m_input.text = HasMixedValues() ? null : value.ToString();
         }
 
         protected virtual void OnValueChanged(string value)
@@ -53,7 +53,7 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnEndEdit(string value)
         {
-            m_input.text = GetValue().ToString();
+            SetInputField(GetValue());
             EndEdit();
         }
 

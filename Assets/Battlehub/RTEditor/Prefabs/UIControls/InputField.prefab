@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -230,6 +231,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -351,8 +353,8 @@ GameObject:
   - component: {fileID: 3849523543463818082}
   - component: {fileID: 3849523574531396536}
   - component: {fileID: 2695604099711716462}
-  - component: {fileID: 7041864547773719092}
   - component: {fileID: -4129674881984495396}
+  - component: {fileID: -7208023533694737603}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -403,6 +405,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -532,19 +535,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 1
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &7041864547773719092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3817590832400499690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8df8c08cfef364ca5ae8aade7b80b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: InputFieldColor
 --- !u!114 &-4129674881984495396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -558,6 +548,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_inputField: {fileID: 2695604099711716462}
+--- !u!114 &-7208023533694737603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3817590832400499690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1455551feef4d5449b3ceb5cf394a580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: InputFieldColor
 --- !u!1 &5380002231023497837
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,9 +22,9 @@ namespace Battlehub.RTEditor
             
             return new[]
                 {
-                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_CastShadows", "Cast Shadows"), editor.Component, shadowCastingMode),
-                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_ReceiveShadows", "Receive Shadows"), editor.Component, receiveShadows, "m_ReceiveShadows"),
-                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_Materials", "Materials"), editor.Component, materials),
+                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_CastShadows", "Cast Shadows"), editor.Components, shadowCastingMode),
+                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_ReceiveShadows", "Receive Shadows"), editor.Components, receiveShadows, "m_ReceiveShadows"),
+                    new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_MeshRenderer_Materials", "Materials"), editor.Components, materials),
                 };
         }
     }

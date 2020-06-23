@@ -7,40 +7,43 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTEditor
 {
+    
     public class BoundsAccessor
     {
+        private int m_index;
         private PropertyEditor<Bounds> m_editor;
 
         public Vector3 Center
         {
-            get { return GetBounds().center; }
+            get { return GetBounds(m_index).center; }
             set
             {
-                Bounds bounds = GetBounds();
+                Bounds bounds = GetBounds(m_index);
                 bounds.center = value;
-                m_editor.SetValue(bounds);
+                m_editor.SetValue(bounds, m_index);
             }
         }
 
         public Vector3 Extents
         {
-            get { return GetBounds().extents; }
+            get { return GetBounds(m_index).extents; }
             set
             {
-                Bounds bounds = GetBounds();
+                Bounds bounds = GetBounds(m_index);
                 bounds.extents = value;
-                m_editor.SetValue(bounds);
+                m_editor.SetValue(bounds, m_index);
             }
         }
 
-        private Bounds GetBounds()
+        private Bounds GetBounds(int index = -1)
         {
-            return m_editor.GetValue();
+            return m_editor.GetValue(index);
         }
 
-        public BoundsAccessor(PropertyEditor<Bounds> editor)
+        public BoundsAccessor(PropertyEditor<Bounds> editor, int index = -1)
         {
             m_editor = editor;
+            m_index = index;
         }
     }
 
@@ -61,15 +64,21 @@ namespace Battlehub.RTEditor
             base.OnDestroyOverride();
         }
 
-        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
+        protected override void InitOverride(object[] targets, object[] accessors, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
+            base.InitOverride(targets, accessors, memberInfo, eraseTargetCallback, label);
 
             ILocalization localization = IOC.Resolve<ILocalization>();
 
-            BoundsAccessor boundsAccessor = new BoundsAccessor(this);
-            m_center.Init(boundsAccessor, boundsAccessor, Strong.PropertyInfo((BoundsAccessor x) => x.Center, "Center"), null, localization.GetString("ID_RTEditor_PE_BoundsEditor_Center", "Center"), OnValueChanging, null, OnEndEdit, false);
-            m_extents.Init(boundsAccessor, boundsAccessor, Strong.PropertyInfo((BoundsAccessor x) => x.Extents, "Extents"), null, localization.GetString("ID_RTEditor_PE_BoundsEditor_Extents", "Extents"), OnValueChanging, null, OnEndEdit, false);
+            int targetsCount = targets.Length;
+            BoundsAccessor[] boundsAccessors = new BoundsAccessor[targetsCount];
+            for(int i = 0; i < targets.Length; ++i)
+            {
+                boundsAccessors[i] = new BoundsAccessor(this, i); 
+            }
+
+            m_center.Init(boundsAccessors, boundsAccessors, Strong.PropertyInfo((BoundsAccessor x) => x.Center, "Center"), null, localization.GetString("ID_RTEditor_PE_BoundsEditor_Center", "Center"), OnValueChanging, null, OnEndEdit, false);
+            m_extents.Init(boundsAccessors, boundsAccessors, Strong.PropertyInfo((BoundsAccessor x) => x.Extents, "Extents"), null, localization.GetString("ID_RTEditor_PE_BoundsEditor_Extents", "Extents"), OnValueChanging, null, OnEndEdit, false);
         }
 
         protected override void ReloadOverride(bool force)

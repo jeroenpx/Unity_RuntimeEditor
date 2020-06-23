@@ -79,7 +79,7 @@ namespace Battlehub.RTEditor
                 if(editor.IsDirty)
                 {
                     editor.IsDirty = false;
-                    editor.SaveAsset(unselectedObjects[0], result =>
+                    editor.SaveAssets(unselectedObjects, result =>
                     {
                         CreateEditor();
                     });
@@ -102,12 +102,11 @@ namespace Battlehub.RTEditor
             if (editor.IsDirty && editor.Selection.activeObject != null)
             {
                 editor.IsDirty = false;
-                editor.SaveAsset(editor.Selection.activeObject, result =>
+                editor.SaveAssets(editor.Selection.objects, result =>
                 {
                 });
             }
         }
-
 
         private void DestroyEditor()
         {
@@ -127,6 +126,19 @@ namespace Battlehub.RTEditor
             }
         }
 
+        private bool OfSameType(UnityObject[] objects, out Type type)
+        {
+            type = objects[0].GetType();
+            for(int i = 1; i < objects.Length; ++i)
+            {
+                if(type != objects[i].GetType())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void CreateEditor()
         {
             DestroyEditor();
@@ -136,30 +148,28 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            UnityObject[] selectedObjects = Editor.Selection.objects.Where(o => o != null).ToArray();
-            if (selectedObjects.Length != 1)
+            if(Editor.Selection.objects[0] == null)
             {
                 return;
             }
 
-            Type objType = selectedObjects[0].GetType();
-            for (int i = 1; i < selectedObjects.Length; ++i)
+            UnityObject[] selectedObjects = Editor.Selection.objects.Where(o => o != null).ToArray();
+            Type objType;
+            if(!OfSameType(selectedObjects, out objType))
             {
-                if (objType != selectedObjects[i].GetType())
+                return;
+            }
+
+            ExposeToEditor exposeToEditor = null;
+            if (objType == typeof(GameObject))
+            {
+                exposeToEditor = Editor.Selection.activeGameObject.GetComponent<ExposeToEditor>();
+                if (exposeToEditor != null && !exposeToEditor.CanInspect)
                 {
                     return;
                 }
             }
-
-            ExposeToEditor exposeToEditor = Editor.Selection.activeGameObject != null ?
-                Editor.Selection.activeGameObject.GetComponent<ExposeToEditor>() : 
-                null;
-
-            if(exposeToEditor != null && !exposeToEditor.CanInspect)
-            {
-                return;
-            }
-
+                       
             GameObject editorPrefab;
             if (objType == typeof(Material))
             {
@@ -167,6 +177,16 @@ namespace Battlehub.RTEditor
                 if (mat.shader == null)
                 {
                     return;
+                }
+
+                Shader shader = mat.shader;
+                for(int i = 0; i < selectedObjects.Length; ++i)
+                {
+                    Material material = (Material)selectedObjects[i];
+                    if(material.shader != shader)
+                    {
+                        return;
+                    }
                 }
 
                 editorPrefab = m_editorsMap.GetMaterialEditor(mat.shader);
@@ -204,10 +224,16 @@ namespace Battlehub.RTEditor
         private void OnAddComponent(Type type)
         {
             IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
+            editor.Undo.BeginRecord();
 
-            GameObject go = editor.Selection.activeGameObject;
+            GameObject[] gameObjects = editor.Selection.gameObjects;
+            for (int i = 0; i < gameObjects.Length; ++i)
+            {
+                GameObject go = gameObjects[i];
+                editor.Undo.AddComponent(go.GetComponent<ExposeToEditor>(), type);
+            }
 
-            editor.Undo.AddComponent(go.GetComponent<ExposeToEditor>(), type);
+            editor.Undo.EndRecord();       
         }
     }
 }

@@ -47,16 +47,27 @@ namespace Battlehub.RTEditor
     {
         public override object CreateConverter(ComponentEditor editor)
         {
-            CapsuleColliderPropertyConverter converter = new CapsuleColliderPropertyConverter();
-            converter.Component = (CapsuleCollider)editor.Component;
-            return converter;
+            object[] converters = new object[editor.Components.Length];
+            Component[] components = editor.Components;
+            for (int i = 0; i < components.Length; ++i)
+            {
+                CapsuleCollider collider = (CapsuleCollider)components[i];
+                if (collider != null)
+                {
+                    converters[i] = new CapsuleColliderPropertyConverter
+                    {
+                        Component = collider
+                    };
+                }
+            }
+            return converters;
         }
 
-        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            ILocalization lc = IOC.Resolve<ILocalization>();
+            object[] converters = (object[])converter;
 
-            CapsuleColliderPropertyConverter converter = (CapsuleColliderPropertyConverter)converterObj;
+            ILocalization lc = IOC.Resolve<ILocalization>();
 
             MemberInfo isTriggerInfo = Strong.PropertyInfo((CapsuleCollider x) => x.isTrigger, "isTrigger");
             MemberInfo materialInfo = Strong.PropertyInfo((CapsuleCollider x) => x.sharedMaterial, "sharedMaterial");
@@ -68,12 +79,12 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_IsTrigger", "Is Trigger"), editor.Component, isTriggerInfo, "m_IsTrigger"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Material", "Material"), editor.Component, materialInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Center", "Center"), editor.Component, centerInfo, "m_Center"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Radius", "Radius"), editor.Component, radiusInfo, "m_Radius"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Height", "Height"), editor.Component, heightInfo, "m_Height"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Direction", "Direction"), converter, directionConvertedInfo, "m_Direction"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_IsTrigger", "Is Trigger"), editor.Components, isTriggerInfo, "m_IsTrigger"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Material", "Material"), editor.Components, materialInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Center", "Center"), editor.Components, centerInfo, "m_Center"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Radius", "Radius"), editor.Components, radiusInfo, "m_Radius"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Height", "Height"), editor.Components, heightInfo, "m_Height"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_CapsuleCollider_Direction", "Direction"), converters, directionConvertedInfo, "m_Direction"),
             };
         }
     }

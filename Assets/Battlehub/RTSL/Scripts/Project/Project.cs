@@ -2684,6 +2684,7 @@ namespace Battlehub.RTSL
                 Error error = new Error(Error.E_InvalidOperation);
                 error.ErrorText = "Unable to load asset library. Open project first";
                 RaiseLoadAssetLibraryCallback(callback, ao, error);
+                return;
             }
 
             if (isBuiltIn)

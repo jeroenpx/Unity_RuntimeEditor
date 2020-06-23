@@ -46,7 +46,6 @@ namespace Battlehub.RTEditor
             m_zInput.onEndEdit.AddListener(OnEndEdit);
             m_wInput.onEndEdit.AddListener(OnEndEdit);
 
-
             for (int i = 0; i < m_dragFields.Length; ++i)
             {
                 if (m_dragFields[i])
@@ -103,60 +102,86 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(T v)
         {
-            m_xInput.text = GetX(v).ToString();
-            m_yInput.text = GetY(v).ToString();
-            m_zInput.text = GetZ(v).ToString();
-            m_wInput.text = GetW(v).ToString();
+            if(HasMixedValues())
+            {
+                m_xInput.text = HasMixedValues((target, accessor) => GetX(GetValue(target, accessor)), (v1, v2) => v1.Equals(v2)) ? null : GetX(v).ToString(); 
+                m_yInput.text = HasMixedValues((target, accessor) => GetY(GetValue(target, accessor)), (v1, v2) => v1.Equals(v2)) ? null : GetY(v).ToString(); 
+                m_zInput.text = HasMixedValues((target, accessor) => GetZ(GetValue(target, accessor)), (v1, v2) => v1.Equals(v2)) ? null : GetZ(v).ToString();
+                m_wInput.text = HasMixedValues((target, accessor) => GetW(GetValue(target, accessor)), (v1, v2) => v1.Equals(v2)) ? null : GetW(v).ToString();
+            }
+            else
+            {
+                m_xInput.text = GetX(v).ToString();
+                m_yInput.text = GetY(v).ToString();
+                m_zInput.text = GetZ(v).ToString();
+                m_wInput.text = GetW(v).ToString();
+            }
         }
 
         private void OnXValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                T v = SetX(GetValue(), val);
-                SetValue(v);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    T v = SetX(GetValue(targets[i], accessors[i]), val);
+                    SetValue(v, i);
+                }
             }
         }
 
         private void OnYValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                T v = SetY(GetValue(), val);
-                SetValue(v);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    T v = SetY(GetValue(targets[i], accessors[i]), val);
+                    SetValue(v, i);
+                }   
             }
         }
 
         private void OnZValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                T v = SetZ(GetValue(), val);
-                SetValue(v);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    T v = SetZ(GetValue(targets[i], accessors[i]), val);
+                    SetValue(v, i);
+                }
             }
         }
 
         private void OnWValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                T v = SetW(GetValue(), val);
-                SetValue(v);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    T v = SetW(GetValue(targets[i], accessors[i]), val);
+                    SetValue(v, i);
+                }
             }
         }
 
         protected virtual void OnEndEdit(string value)
         {
             T v = GetValue();
-            m_xInput.text = GetX(v).ToString();
-            m_yInput.text = GetY(v).ToString();
-            m_zInput.text = GetZ(v).ToString();
-            m_wInput.text = GetW(v).ToString();
-
+            SetInputField(v);
             EndEdit();
         }
 

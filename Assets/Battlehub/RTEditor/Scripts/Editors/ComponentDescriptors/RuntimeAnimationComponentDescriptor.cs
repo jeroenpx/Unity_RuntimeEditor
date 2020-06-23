@@ -16,9 +16,9 @@ namespace Battlehub.RTEditor
 
             return new[]
             {   
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_RuntimeAnimation_PlayOnAwake", "Play On Awake"), editor.Component, playOnAwakeInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_RuntimeAnimation_Loop", "Loop"), editor.Component, loopInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_RuntimeAnimation_Clips", "Clips"), editor.Component, clipsInfo)
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_RuntimeAnimation_PlayOnAwake", "Play On Awake"), editor.Components, playOnAwakeInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_RuntimeAnimation_Loop", "Loop"), editor.Components, loopInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_RuntimeAnimation_Clips", "Clips"), editor.Components, clipsInfo)
             };
         }
     }

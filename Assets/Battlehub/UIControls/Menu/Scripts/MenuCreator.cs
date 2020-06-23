@@ -78,6 +78,15 @@ namespace Battlehub.UIControls.MenuControl
             Priority = int.MaxValue;
             RequiresInstance = requiresInstance;
         }
+
+	public MenuCommandAttribute(string path, string iconPath, int priority, bool requiresInstance = false)
+        {
+            Path = path;
+            Validate = false;
+            IconPath = iconPath;
+            Priority = priority;
+            RequiresInstance = requiresInstance;
+        }
     }
 
     [DefaultExecutionOrder(-25)]

@@ -290,7 +290,7 @@ namespace Battlehub.UIControls.DockPanels
 
         public bool HasChildren
         {
-            get { return ChildrenPanel.childCount > 0; }
+            get { return ChildrenPanel != null && ChildrenPanel.childCount > 0; }
         }
 
         private bool m_isDraggingTab;
@@ -864,10 +864,11 @@ namespace Battlehub.UIControls.DockPanels
             }
 
             int index = content.GetSiblingIndex();
-            if (index < 0 || index >= region.m_tabPanel.transform.childCount)
+            if (region.m_tabPanel.transform.childCount == 0)
             {
                 return null;
             }
+
             return region.m_tabPanel.transform.GetChild(index).GetComponent<Tab>();
         }
 

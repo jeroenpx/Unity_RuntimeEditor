@@ -250,9 +250,9 @@ namespace Battlehub.RTSL.Interface
             }
             if (string.IsNullOrEmpty(ext))
             {
-                return sb.ToString();
+                return sb.ToString().TrimStart('/'); 
             }
-            return string.Format("{0}{1}", sb.ToString(), Ext);
+            return string.Format("{0}{1}", sb.ToString(), Ext).TrimStart('/');
         }
 
         public override string ToString()

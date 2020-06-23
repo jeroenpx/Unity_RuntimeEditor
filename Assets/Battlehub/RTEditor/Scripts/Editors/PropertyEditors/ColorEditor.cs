@@ -17,10 +17,19 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Color value)
         {
-            Color color = value;
-            color.a = 1.0f;
-            MainColor.color = color;
-            Alpha.transform.localScale = new Vector3(value.a, 1, 1);   
+            if(HasMixedValues())
+            {
+                MainColor.color = new Color(0, 0, 0, 0);
+                Alpha.gameObject.SetActive(false);
+            }
+            else
+            {
+                Color color = value;
+                color.a = 1.0f;
+                MainColor.color = color;
+                Alpha.transform.localScale = new Vector3(value.a, 1, 1);
+                Alpha.gameObject.SetActive(true);
+            }   
         }
 
         protected override void AwakeOverride()

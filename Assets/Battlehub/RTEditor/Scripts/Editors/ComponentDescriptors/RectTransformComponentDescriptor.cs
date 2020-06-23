@@ -9,16 +9,27 @@ namespace Battlehub.RTEditor
     {
         public override object CreateConverter(ComponentEditor editor)
         {
-            TransformPropertyConverter converter = new TransformPropertyConverter();
-            converter.ExposeToEditor = editor.Component.GetComponent<ExposeToEditor>();
-            return converter;
+            object[] converters = new object[editor.Components.Length];
+            Component[] components = editor.Components;
+            for (int i = 0; i < components.Length; ++i)
+            {
+                Transform transform = (Transform)components[i];
+                if (transform != null)
+                {
+                    converters[i] = new TransformPropertyConverter
+                    {
+                        ExposeToEditor = transform.GetComponent<ExposeToEditor>()
+                    };
+                }
+            }
+            return converters;
         }
 
-        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converterObj)
+        public override PropertyDescriptor[] GetProperties(ComponentEditor editor, object converter)
         {
-            ILocalization lc = IOC.Resolve<ILocalization>();
+            object[] converters = (object[])converter;
 
-            TransformPropertyConverter converter = (TransformPropertyConverter)converterObj;
+            ILocalization lc = IOC.Resolve<ILocalization>();
 
             MemberInfo position = Strong.PropertyInfo((Transform x) => x.localPosition, "localPosition");
             MemberInfo positionConverted = Strong.PropertyInfo((TransformPropertyConverter x) => x.LocalPosition, "LocalPosition");
@@ -29,9 +40,9 @@ namespace Battlehub.RTEditor
 
             return new[]
                 {
-                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Position", "Position"),converter, positionConverted, position) ,
-                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Rotation", "Rotation"), converter, rotationConverted, rotation),
-                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Scale", "Scale"), converter, scaleConverted, scale)
+                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Position", "Position"), converters, positionConverted, position) ,
+                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Rotation", "Rotation"), converters, rotationConverted, rotation),
+                    new PropertyDescriptor( lc.GetString("ID_RTEditor_CD_Transform_Scale", "Scale"), converters, scaleConverted, scale)
                 };
         }
     }

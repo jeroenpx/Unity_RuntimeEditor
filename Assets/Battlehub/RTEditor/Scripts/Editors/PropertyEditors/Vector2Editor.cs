@@ -58,37 +58,54 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Vector2 value)
         {
-            m_xInput.text = FromMeters(value.x).ToString();
-            m_yInput.text = FromMeters(value.y).ToString();
+            if (HasMixedValues())
+            {
+                m_xInput.text = HasMixedValues((target, accessor) => GetValue(target, accessor).x, (v1, v2) => v1.Equals(v2)) ? null : FromMeters(value.x).ToString();
+                m_yInput.text = HasMixedValues((target, accessor) => GetValue(target, accessor).y, (v1, v2) => v1.Equals(v2)) ? null : FromMeters(value.y).ToString();
+            }
+            else
+            {
+                m_xInput.text = FromMeters(value.x).ToString();
+                m_yInput.text = FromMeters(value.y).ToString();
+            }
         }
 
         private void OnXValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                Vector2 vector = GetValue();
-                vector.x = ToMeters(val);
-                SetValue(vector);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    Vector3 vector = GetValue(targets[i], accessors[i]);
+                    vector.x = ToMeters(val);
+                    SetValue(vector, i);
+                }
             }
         }
 
         private void OnYValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                Vector2 vector = GetValue();
-                vector.y = ToMeters(val);
-                SetValue(vector);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    Vector3 vector = GetValue(targets[i], accessors[i]);
+                    vector.y = ToMeters(val);
+                    SetValue(vector, i);
+                }
             }
         }
 
         private void OnEndEdit(string value)
         {
             Vector2 vector = GetValue();
-            m_xInput.text = FromMeters(vector.x).ToString();
-            m_yInput.text = FromMeters(vector.y).ToString();
+            SetInputField(vector);
 
             EndEdit();
         }

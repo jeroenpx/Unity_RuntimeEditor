@@ -114,9 +114,6 @@ namespace Battlehub.RTBuilder
             m_proBuilderTool.ModeChanged += OnProBuilderToolModeChanged;
             m_proBuilderTool.SelectionChanged += UpdateFlagsAndDataBindVisible;
             
-            CreateToolbar();
-            m_toolbar.gameObject.SetActive(m_useToolbar);
-
             Editor.Selection.SelectionChanged += OnSelectionChanged;
             Editor.Undo.UndoCompleted += OnUndoStateChanged;
             Editor.Undo.RedoCompleted += OnUndoStateChanged;
@@ -187,6 +184,9 @@ namespace Battlehub.RTBuilder
 
         protected virtual void Start()
         {
+            CreateToolbar();
+            m_toolbar.gameObject.SetActive(m_useToolbar);
+
             UpdateFlags();
             m_commands = GetCommands().ToArray();
             m_commandsList.Items = m_commands;

@@ -29,6 +29,11 @@ namespace Battlehub.RTEditor
         public string PropertyDisplayName;
         public RuntimeAnimationProperty Parent;
         public List<RuntimeAnimationProperty> Children;
+        public bool HasChildren
+        {
+            get { return Children != null && Children.Count > 0; }
+        }
+
         public AnimationCurve Curve;
         public object Component;
         public bool ComponentIsNull
@@ -70,6 +75,7 @@ namespace Battlehub.RTEditor
             Component = item.Component;
         }
 
+            
         public float FloatValue
         {
             get
@@ -236,6 +242,22 @@ namespace Battlehub.RTEditor
 
             Children = children;
             return true;
+        }
+
+        public void AddKey(float time, float value)
+        {
+            if(Curve != null)
+            {
+                Curve.AddKey(time, value);
+            }
+        }
+
+        public void RemoveKey(int index)
+        {
+            if(Curve != null)
+            {
+                Curve.RemoveKey(index);
+            }
         }
 
         public void RaiseBeginEdit()

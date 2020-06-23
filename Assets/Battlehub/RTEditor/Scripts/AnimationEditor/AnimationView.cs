@@ -754,6 +754,7 @@ namespace Battlehub.RTEditor
                     }
                 }
             }
+
             m_timelineView.EndSetKeyframeValues(true);
         }
 
@@ -764,7 +765,7 @@ namespace Battlehub.RTEditor
                 IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
                 if(editor != null)
                 {
-                    editor.SaveAsset(CurrentClip);
+                    editor.SaveAssets(new[] { CurrentClip });
                 }
             }
         }

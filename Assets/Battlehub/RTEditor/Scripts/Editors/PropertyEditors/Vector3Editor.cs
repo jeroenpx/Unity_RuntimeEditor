@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System;
-using UnityEngine.UI;
 using TMPro;
 
 namespace Battlehub.RTEditor
@@ -77,7 +75,6 @@ namespace Battlehub.RTEditor
             {
                 m_yInput.onValueChanged.RemoveListener(OnYValueChanged);
                 m_yInput.onEndEdit.RemoveListener(OnEndEdit);
-                
             }
 
             if (m_zInput != null)
@@ -97,50 +94,72 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Vector3 value)
         {
-            m_xInput.text = FromMeters(value.x).ToString();
-            m_yInput.text = FromMeters(value.y).ToString();
-            m_zInput.text = FromMeters(value.z).ToString();
+            if(HasMixedValues())
+            {
+                m_xInput.text = HasMixedValues((target, accessor) => GetValue(target, accessor).x, (v1, v2) => v1.Equals(v2)) ? null : FromMeters(value.x).ToString();
+                m_yInput.text = HasMixedValues((target, accessor) => GetValue(target, accessor).y, (v1, v2) => v1.Equals(v2)) ? null : FromMeters(value.y).ToString();
+                m_zInput.text = HasMixedValues((target, accessor) => GetValue(target, accessor).z, (v1, v2) => v1.Equals(v2)) ? null : FromMeters(value.z).ToString();
+            }
+            else
+            {
+                m_xInput.text = FromMeters(value.x).ToString();
+                m_yInput.text = FromMeters(value.y).ToString();
+                m_zInput.text = FromMeters(value.z).ToString();
+            }            
         }
 
         private void OnXValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                Vector3 vector = GetValue();
-                vector.x = ToMeters(val);
-                SetValue(vector);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for(int i = 0; i < targets.Length; ++i)
+                {
+                    Vector3 vector = GetValue(targets[i], accessors[i]);
+                    vector.x = ToMeters(val);
+                    SetValue(vector, i);
+                }
             }
         }
 
         private void OnYValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                Vector3 vector = GetValue();
-                vector.y = ToMeters(val);
-                SetValue(vector);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    Vector3 vector = GetValue(targets[i], accessors[i]);
+                    vector.y = ToMeters(val);
+                    SetValue(vector, i);
+                }
             }
         }
 
         private void OnZValueChanged(string value)
         {
             float val;
-            if (float.TryParse(value, out val))
+            if (float.TryParse(value, out val) && Target != null)
             {
-                Vector3 vector = GetValue();
-                vector.z = ToMeters(val);
-                SetValue(vector);
+                object[] targets = Targets;
+                object[] accessors = Accessors;
+                for (int i = 0; i < targets.Length; ++i)
+                {
+                    Vector3 vector = GetValue(targets[i], accessors[i]);
+                    vector.z = ToMeters(val);
+                    SetValue(vector, i);
+                }
             }
         }
 
         private void OnEndEdit(string value)
         {
             Vector3 vector = GetValue();
-            m_xInput.text = FromMeters(vector.x).ToString();
-            m_yInput.text = FromMeters(vector.y).ToString();
-            m_zInput.text = FromMeters(vector.z).ToString();
+            SetInputField(vector);
 
             EndEdit();
         }

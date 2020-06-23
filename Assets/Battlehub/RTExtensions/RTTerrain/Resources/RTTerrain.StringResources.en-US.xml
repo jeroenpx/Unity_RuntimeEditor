@@ -5,7 +5,8 @@
 		<!-- Terrain Init -->
 		<StringResource id="ID_RTTerrain_WM_Header_TerrainEditor" value="Terrain Editor"/>
 		<StringResource id="ID_RTTerrain_MenuGameObject_Terrain" value="Terrain"/>
-
+    
+    
 		<!-- Terrain Settings Editor -->
 		<StringResource id="ID_RTTerrain_Settings_DefaultTextureChanged" value="Default terrain texture changed"/>
 		<StringResource id="ID_RTTerrain_Settings_WouldYouLikeToApplyTexture" value="Would you like to apply this texture to the terrain in the scene?"/>
@@ -24,8 +25,9 @@
 		<StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_Settings" value="Settings"/>
 		<StringResource id="ID_RTTerrain_TerrainEditor_EmptyEditor" value="No tool selected&lt;br&gt;Please select a tool"/>
 		<StringResource id="ID_RTTerrain_TerrainEditor_Tool" value="Tool:"/>
-
-		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Raise_Or_Lower_Terrain" value="Raise Or Lower Terrain"/>
+    <StringResource id="ID_RTTerrain_TerrainEditor_MultiObjectEditingProhibited" value="Multi-object editing is not supported"/>
+    
+    <StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Raise_Or_Lower_Terrain" value="Raise Or Lower Terrain"/>
 		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Paint_Texture" value="Paint Texture"/>
 		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Stamp_Terrain" value="Stamp Terrain"/>
 		<StringResource id="ID_Battlehub.RTTerrain.TerrainEditor+PaintTool.Set_Height" value="Set Height"/>

@@ -56,10 +56,29 @@ namespace Battlehub.RTEditor
             get { return m_window; }
         }
 
+        private TMP_InputField m_filterInput;
+        protected TMP_InputField FilterInput
+        {
+            get { return m_filterInput; }
+        }
+
+        protected bool IsFilterEmpty
+        {
+            get { return string.IsNullOrWhiteSpace(m_filter); }
+        }
+        
+        protected bool Filter(ExposeToEditor go)
+        {
+            return go.name.ToLower().Contains(m_filter.ToLower());
+        }
+
+        private float m_applyFilterTime;
+        private string m_filter = string.Empty;
+
         private HierarchyView m_hierarchyView;
         private ILocalization m_localization;
         private IRuntimeSelectionComponent m_selectionComponent;
-
+        
         protected virtual void Awake()
         {
             m_localization = IOC.Resolve<ILocalization>();
@@ -73,7 +92,11 @@ namespace Battlehub.RTEditor
             m_project = IOC.Resolve<IProject>();
             m_editor = IOC.Resolve<IRuntimeEditor>();
 
-            m_treeView = Instantiate(m_hierarchyView.TreeViewPrefab, transform).GetComponent<VirtualizingTreeView>();
+            m_filterInput = m_hierarchyView.FilterInput;
+            m_filterInput.onValueChanged.AddListener(OnFiltering);
+
+            Transform parent = m_hierarchyView.TreePanel != null ? m_hierarchyView.TreePanel : transform;
+            m_treeView = Instantiate(m_hierarchyView.TreeViewPrefab, parent).GetComponent<VirtualizingTreeView>();
             m_treeView.name = "HierarchyTreeView";
             m_treeView.CanSelectAll = false;
             m_treeView.SelectOnPointerUp = true;
@@ -132,12 +155,9 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnDestroy()
         {
-            if(m_window != null)
+            if (m_filterInput != null)
             {
-                m_window.DragEnterEvent -= OnDragEnter;
-                m_window.DragLeaveEvent -= OnDragLeave;
-                m_window.DragEvent -= OnDrag;
-                m_window.DropEvent -= OnDrop;
+                m_filterInput.onValueChanged.RemoveListener(OnFiltering);
             }
 
             if (m_treeView != null)
@@ -161,11 +181,31 @@ namespace Battlehub.RTEditor
                 m_treeView.PointerEnter -= OnTreeViewPointerEnter;
                 m_treeView.PointerExit -= OnTreeViewPointerExit;
             }
+
+            if (m_window != null)
+            {
+                m_window.DragEnterEvent -= OnDragEnter;
+                m_window.DragLeaveEvent -= OnDragLeave;
+                m_window.DragEvent -= OnDrag;
+                m_window.DropEvent -= OnDrop;
+            }
         }
 
         protected virtual void LateUpdate()
         {
             m_rootGameObjects = null;
+
+            if (Time.time > m_applyFilterTime)
+            {
+                m_applyFilterTime = float.PositiveInfinity;
+                BindGameObjects(true, true);
+            }
+        }
+
+        protected virtual void OnFiltering(string value)
+        {
+            m_filter = value;
+            m_applyFilterTime = Time.time + 0.3f;
         }
 
         public virtual void SelectAll()
@@ -236,22 +276,31 @@ namespace Battlehub.RTEditor
         protected virtual void BindGameObjects(bool forceUseCache = false, bool updateSelection = true)
         {
             bool useCache = Editor.IsPlaying;
-            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(true, useCache || forceUseCache);
 
-            if (objects.Any())
+            string filter = m_filterInput.text;
+            IEnumerable<ExposeToEditor> objects = Editor.Object.Get(IsFilterEmpty, useCache || forceUseCache);
+            if(IsFilterEmpty)
             {
-                Transform commonParent = objects.First().transform.parent;
-                foreach (ExposeToEditor obj in objects)
+                if (objects.Any())
                 {
-                    if (obj.transform.parent != commonParent)
+                    Transform commonParent = objects.First().transform.parent;
+                    foreach (ExposeToEditor obj in objects)
                     {
-                        Debug.LogWarning("ExposeToEditor objects have different parents, hierarchy may not work correctly.");
-                        break;
+                        if (obj.transform.parent != commonParent)
+                        {
+                            Debug.LogWarning("ExposeToEditor objects have different parents, hierarchy may not work correctly.");
+                            break;
+                        }
                     }
                 }
-            }
 
-            m_treeView.SetItems(objects.OrderBy(g => g.transform.GetSiblingIndex()), updateSelection);
+                m_treeView.SetItems(objects.OrderBy(g => g.transform.GetSiblingIndex()), updateSelection);
+            }
+            else
+            {
+                objects = objects.Where(Filter);
+                m_treeView.SetItems(objects.OrderBy(g => g.name), updateSelection);
+            }
         }
 
         protected virtual void OnPlaymodeStateChanged()
@@ -348,7 +397,6 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnItemsRemoved(object sender, ItemsRemovedArgs e)
         {
-
         }
 
         protected virtual void OnItemDataBinding(object sender, VirtualizingTreeViewItemDataBindingArgs e)
@@ -367,8 +415,11 @@ namespace Battlehub.RTEditor
                     text.color = m_hierarchyView.DisabledItemColor;
                 }
 
-                e.CanEdit = dataItem.CanRename;
-                e.HasChildren = dataItem.HasChildren();
+                bool isFilterEmpty = IsFilterEmpty;
+
+                e.CanEdit = dataItem.CanRename && isFilterEmpty;
+                e.HasChildren = isFilterEmpty && dataItem.HasChildren();
+                e.CanDrag = isFilterEmpty;
             }
         }
 
@@ -506,7 +557,6 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnItemDragExit(object sender, System.EventArgs e)
         {
-
         }
 
         protected virtual void OnTreeViewPointerEnter(object sender, PointerEventArgs e)
@@ -539,142 +589,137 @@ namespace Battlehub.RTEditor
         {
             if (e.IsExternal)
             {
+                return;
+            }
 
+            Editor.Undo.BeginRecord();
+            Editor.Undo.CreateRecord(null, null, false,
+                record => RefreshTree(record, true),
+                record => RefreshTree(record, false));
+
+            IEnumerable<ExposeToEditor> dragItems = e.DragItems.OfType<ExposeToEditor>();
+
+            if (e.Action == ItemDropAction.SetLastChild || dragItems.Any(d => (object)d.GetParent() != e.DropTarget))
+            {
+                foreach (ExposeToEditor exposed in dragItems.Reverse())
+                {
+                    Transform dragT = exposed.transform;
+                    int siblingIndex = dragT.GetSiblingIndex();
+                    Editor.Undo.BeginRecordTransform(dragT, dragT.parent, siblingIndex);
+                }
             }
             else
             {
-                Editor.Undo.BeginRecord();
-                Editor.Undo.CreateRecord(null, null, false,
-                    record => RefreshTree(record, true),
-                    record => RefreshTree(record, false));
+                Transform dropT = ((ExposeToEditor)e.DropTarget).transform;
+                int dropTIndex = dropT.GetSiblingIndex();
 
-                IEnumerable<ExposeToEditor> dragItems = e.DragItems.OfType<ExposeToEditor>();
-
-                if (e.Action == ItemDropAction.SetLastChild || dragItems.Any(d => (object)d.GetParent() != e.DropTarget))
+                foreach (ExposeToEditor exposed in dragItems
+                    .Where(o => o.transform.GetSiblingIndex() > dropTIndex)
+                    .OrderBy(o => o.transform.GetSiblingIndex())
+                    .Union(dragItems
+                        .Where(o => o.transform.GetSiblingIndex() < dropTIndex)
+                        .OrderByDescending(o => o.transform.GetSiblingIndex())))
                 {
-                    foreach (ExposeToEditor exposed in dragItems.Reverse())
-                    {
-                        Transform dragT = exposed.transform;
-                        int siblingIndex = dragT.GetSiblingIndex();
-                        Editor.Undo.BeginRecordTransform(dragT, dragT.parent, siblingIndex);
-                    }
+                    Transform dragT = exposed.transform;
+                    int siblingIndex = dragT.GetSiblingIndex();
+                    Editor.Undo.BeginRecordTransform(dragT, dragT.parent, siblingIndex);
                 }
-                else
-                {
-                    Transform dropT = ((ExposeToEditor)e.DropTarget).transform;
-                    int dropTIndex = dropT.GetSiblingIndex();
-
-                    foreach (ExposeToEditor exposed in dragItems
-                        .Where(o => o.transform.GetSiblingIndex() > dropTIndex)
-                        .OrderBy(o => o.transform.GetSiblingIndex())
-                        .Union(dragItems
-                            .Where(o => o.transform.GetSiblingIndex() < dropTIndex)
-                            .OrderByDescending(o => o.transform.GetSiblingIndex())))
-                    {
-                        Transform dragT = exposed.transform;
-                        int siblingIndex = dragT.GetSiblingIndex();
-                        Editor.Undo.BeginRecordTransform(dragT, dragT.parent, siblingIndex);
-                    }
-                }
-
-                Editor.Undo.EndRecord();
             }
+
+            Editor.Undo.EndRecord();
         }
 
         protected virtual void OnItemDrop(object sender, ItemDropArgs e)
         {
             if (e.IsExternal)
             {
-                
+                return;
             }
-            else
+            Transform dropT = ((ExposeToEditor)e.DropTarget).transform;
+            if (e.Action == ItemDropAction.SetLastChild)
             {
-                Transform dropT = ((ExposeToEditor)e.DropTarget).transform;
-                if (e.Action == ItemDropAction.SetLastChild)
+                Editor.Undo.BeginRecord();
+                for (int i = 0; i < e.DragItems.Length; ++i)
                 {
-                    Editor.Undo.BeginRecord();
-                    for (int i = 0; i < e.DragItems.Length; ++i)
-                    {
-                        ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
-                        Transform dragT = exposed.transform;
-                        dragT.SetParent(dropT, true);
-                        dragT.SetAsLastSibling();
+                    ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                    Transform dragT = exposed.transform;
+                    dragT.SetParent(dropT, true);
+                    dragT.SetAsLastSibling();
 
-                        Editor.Undo.EndRecordTransform(dragT, dropT, dragT.GetSiblingIndex());
-                    }
-                    Editor.Undo.CreateRecord(null, null, true,
-                       record => RefreshTree(record, true),
-                       record => RefreshTree(record, false));
-                    Editor.Undo.EndRecord();
+                    Editor.Undo.EndRecordTransform(dragT, dropT, dragT.GetSiblingIndex());
                 }
-                else if (e.Action == ItemDropAction.SetNextSibling)
+                Editor.Undo.CreateRecord(null, null, true,
+                   record => RefreshTree(record, true),
+                   record => RefreshTree(record, false));
+                Editor.Undo.EndRecord();
+            }
+            else if (e.Action == ItemDropAction.SetNextSibling)
+            {
+                Editor.Undo.BeginRecord();
+
+                for (int i = e.DragItems.Length - 1; i >= 0; --i)
                 {
-                    Editor.Undo.BeginRecord();
+                    ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                    Transform dragT = exposed.transform;
 
-                    for (int i = e.DragItems.Length - 1; i >= 0; --i)
+                    int dropTIndex = dropT.GetSiblingIndex();
+                    if (dragT.parent != dropT.parent)
                     {
-                        ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
-                        Transform dragT = exposed.transform;
-
-                        int dropTIndex = dropT.GetSiblingIndex();
-                        if (dragT.parent != dropT.parent)
-                        {
-                            dragT.SetParent(dropT.parent, true);
-                            dragT.SetSiblingIndex(dropTIndex + 1);
-                        }
-                        else
-                        {
-                            int dragTIndex = dragT.GetSiblingIndex();
-                            if (dropTIndex < dragTIndex)
-                            {
-                                dragT.SetSiblingIndex(dropTIndex + 1);
-                            }
-                            else
-                            {
-                                dragT.SetSiblingIndex(dropTIndex);
-                            }
-                        }
-                        Editor.Undo.EndRecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
+                        dragT.SetParent(dropT.parent, true);
+                        dragT.SetSiblingIndex(dropTIndex + 1);
                     }
-                    Editor.Undo.CreateRecord(null, null, true,
-                        record => RefreshTree(record, true),
-                        record => RefreshTree(record, false));
-                    Editor.Undo.EndRecord();
-
-                }
-                else if (e.Action == ItemDropAction.SetPrevSibling)
-                {
-                    Editor.Undo.BeginRecord();
-                    for (int i = 0; i < e.DragItems.Length; ++i)
+                    else
                     {
-                        ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
-                        Transform dragT = exposed.transform;
-                        if (dragT.parent != dropT.parent)
-                        {
-                            dragT.SetParent(dropT.parent, true);
-                        }
-
-                        int dropTIndex = dropT.GetSiblingIndex();
                         int dragTIndex = dragT.GetSiblingIndex();
-                        if (dropTIndex > dragTIndex)
+                        if (dropTIndex < dragTIndex)
                         {
-                            dragT.SetSiblingIndex(dropTIndex - 1);
+                            dragT.SetSiblingIndex(dropTIndex + 1);
                         }
                         else
                         {
                             dragT.SetSiblingIndex(dropTIndex);
                         }
-
-                        Editor.Undo.EndRecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
                     }
-                    Editor.Undo.CreateRecord(null, null, true,
-                        record => RefreshTree(record, true),
-                        record => RefreshTree(record, false));
-                    Editor.Undo.EndRecord();
+                    Editor.Undo.EndRecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
                 }
+                Editor.Undo.CreateRecord(null, null, true,
+                    record => RefreshTree(record, true),
+                    record => RefreshTree(record, false));
+                Editor.Undo.EndRecord();
 
-                Editor.DragDrop.RaiseDrop(e.PointerEventData);
             }
+            else if (e.Action == ItemDropAction.SetPrevSibling)
+            {
+                Editor.Undo.BeginRecord();
+                for (int i = 0; i < e.DragItems.Length; ++i)
+                {
+                    ExposeToEditor exposed = (ExposeToEditor)e.DragItems[i];
+                    Transform dragT = exposed.transform;
+                    if (dragT.parent != dropT.parent)
+                    {
+                        dragT.SetParent(dropT.parent, true);
+                    }
+
+                    int dropTIndex = dropT.GetSiblingIndex();
+                    int dragTIndex = dragT.GetSiblingIndex();
+                    if (dropTIndex > dragTIndex)
+                    {
+                        dragT.SetSiblingIndex(dropTIndex - 1);
+                    }
+                    else
+                    {
+                        dragT.SetSiblingIndex(dropTIndex);
+                    }
+
+                    Editor.Undo.EndRecordTransform(dragT, dragT.parent, dragT.GetSiblingIndex());
+                }
+                Editor.Undo.CreateRecord(null, null, true,
+                    record => RefreshTree(record, true),
+                    record => RefreshTree(record, false));
+                Editor.Undo.EndRecord();
+            }
+
+            Editor.DragDrop.RaiseDrop(e.PointerEventData);
         }
 
         protected virtual void OnItemEndDrag(object sender, ItemArgs e)
@@ -695,7 +740,6 @@ namespace Battlehub.RTEditor
 
             BindGameObjects(true, false);
 
-
             if (m_treeView.SelectedItems != null)
             {
                 foreach (ExposeToEditor obj in m_treeView.SelectedItems.OfType<ExposeToEditor>().OrderBy(o => o.transform.GetSiblingIndex()))
@@ -709,10 +753,11 @@ namespace Battlehub.RTEditor
 
         protected virtual void Expand(ExposeToEditor item)
         {
-            if (item == null)
+            if (item == null || !IsFilterEmpty)
             {
                 return;
             }
+
             ExposeToEditor parent = item.GetParent();
             if (parent != null && !m_treeView.IsExpanded(parent))
             {
@@ -731,15 +776,24 @@ namespace Battlehub.RTEditor
             {
                 if (!obj.MarkAsDestroyed && m_treeView.IndexOf(obj) == -1)
                 {
-                    ExposeToEditor parent = obj.GetParent();
-                    m_treeView.AddChild(parent, obj);
+                    if(IsFilterEmpty)
+                    {
+                        ExposeToEditor parent = obj.GetParent();
+                        m_treeView.AddChild(parent, obj);
+                    }
+                    else
+                    {
+                        if(Filter(obj))
+                        {
+                            m_treeView.Add(obj);
+                        }
+                    }
                 }
             }
         }
 
         protected virtual void OnObjectStarted(ExposeToEditor obj)
         {
-
         }
 
         protected virtual void OnObjectEnabled(ExposeToEditor obj)
@@ -766,11 +820,18 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnObjectDestroying(ExposeToEditor o)
         {
-            ExposeToEditor parent = o.GetParent();
             try
             {
                 m_treeView.ItemsRemoved -= OnItemsRemoved;
-                m_treeView.RemoveChild(parent, o);
+                if (IsFilterEmpty)
+                {
+                    ExposeToEditor parent = o.GetParent();
+                    m_treeView.RemoveChild(parent, o);
+                }
+                else
+                {
+                    m_treeView.RemoveChild(null, o);
+                }
             }
             finally
             {
@@ -780,52 +841,80 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnObjectDestroyed(ExposeToEditor o)
         {
-
         }
 
         protected virtual void OnObjectMarkAsDestoryedChanging(ExposeToEditor o)
         {
-            if (o.MarkAsDestroyed)
-            {
+        }
 
+        protected virtual void OnObjectMarkAsDestroyedChanged(ExposeToEditor obj)
+        {
+            if (obj.MarkAsDestroyed)
+            {
+                m_treeView.RemoveChild(obj.GetParent(), obj);
             }
             else
             {
-
+                if (IsFilterEmpty)
+                {
+                    ExposeToEditor parent = obj.GetParent();
+                    m_treeView.AddChild(parent, obj);
+                    SetSiblingIndex(obj);
+                }
+                else
+                {
+                    if (Filter(obj))
+                    {
+                        AddSortedByName(obj);
+                    }
+                }
             }
         }
 
-        protected virtual void OnObjectMarkAsDestroyedChanged(ExposeToEditor o)
+        private void AddSortedByName(ExposeToEditor obj)
         {
-            if (o.MarkAsDestroyed)
+            string[] names = m_treeView.Items.OfType<ExposeToEditor>().Select(go => go.name).Union(new[] { obj.name }).OrderBy(k => k).ToArray();
+            int index = System.Array.IndexOf(names, obj.name);
+            ExposeToEditor sibling;
+            if (index == 0)
             {
-                m_treeView.RemoveChild(o.GetParent(), o);
+                sibling = m_treeView.Items.OfType<ExposeToEditor>().FirstOrDefault();
+                m_treeView.Add(obj);
+                if (sibling != null)
+                {
+                    m_treeView.SetPrevSibling(sibling, obj);
+                }
             }
             else
             {
-                ExposeToEditor parent = o.GetParent();
-                m_treeView.AddChild(parent, o);
-                SetSiblingIndex(o);
+                sibling = m_treeView.Items.OfType<ExposeToEditor>().ElementAt(index - 1);
+                m_treeView.Add(obj);
+                m_treeView.SetNextSibling(sibling, obj);
             }
         }
 
-        protected virtual void SetSiblingIndex(ExposeToEditor o)
+        protected virtual void SetSiblingIndex(ExposeToEditor obj)
         {
-            if (o.transform.parent == null && m_rootGameObjects == null)
+            if (obj.transform.parent == null && m_rootGameObjects == null)
             {
                 m_rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects().OrderBy(g => g.transform.GetSiblingIndex()).ToList();
             }
 
-            ExposeToEditor nextSibling = o.NextSibling(m_rootGameObjects);
+            ExposeToEditor nextSibling = obj.NextSibling(m_rootGameObjects);
             if (nextSibling != null)
             {
-                m_treeView.SetPrevSibling(nextSibling, o);
+                m_treeView.SetPrevSibling(nextSibling, obj);
             }
         }
 
         protected virtual void OnParentChanged(ExposeToEditor obj, ExposeToEditor oldParent, ExposeToEditor newParent)
         {
             if (Editor.IsPlaymodeStateChanging)
+            {
+                return;
+            }
+
+            if(!IsFilterEmpty)
             {
                 return;
             }
@@ -876,11 +965,33 @@ namespace Battlehub.RTEditor
 
                 m_treeView.RemoveChild(oldParent, obj);
             }
-
         }
 
         protected virtual void OnNameChanged(ExposeToEditor obj)
         {
+            if(!IsFilterEmpty)
+            {
+                m_treeView.ItemsRemoving -= OnItemRemoving;
+                m_treeView.ItemsRemoved -= OnItemsRemoved;
+
+                if(Filter(obj))
+                {
+                    if(m_treeView.GetItemContainerData(obj) == null)
+                    {
+                        AddSortedByName(obj);
+                        m_treeView.SelectedItems = Editor.Selection.gameObjects.Select(go => go.GetComponent<ExposeToEditor>()).Where(exposed => exposed != null);
+                    }
+                }
+                else
+                {
+                    m_treeView.RemoveChild(null, obj);
+                }
+                
+
+                m_treeView.ItemsRemoving += OnItemRemoving;
+                m_treeView.ItemsRemoved += OnItemsRemoved;
+            }
+
             VirtualizingTreeViewItem tvItem = m_treeView.GetTreeViewItem(obj);
             if (tvItem == null)
             {
@@ -899,17 +1010,33 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnDragEnter(PointerEventData pointerEventData)
         {
-            m_treeView.ExternalBeginDrag(pointerEventData.position);
+            if(IsFilterEmpty)
+            {
+                m_treeView.ExternalBeginDrag(pointerEventData.position);
+            }
+            else
+            {
+                Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
+            }
         }
 
         protected virtual void OnDragLeave(PointerEventData pointerEventData)
         {
-            m_treeView.ExternalItemDrop();
+            if(IsFilterEmpty)
+            {
+                m_treeView.ExternalItemDrop();
+            }
+            
             Editor.DragDrop.SetCursor(KnownCursor.DropNotAllowed);
         }
 
         protected virtual void OnDrag(PointerEventData pointerEventData)
         {
+            if(!IsFilterEmpty)
+            {
+                return;
+            }
+
             object[] dragObjects = Editor.DragDrop.DragObjects;
             m_treeView.ExternalItemDrag(pointerEventData.position);
             m_lastDropAction = m_treeView.DropAction;
@@ -926,6 +1053,11 @@ namespace Battlehub.RTEditor
 
         protected virtual void OnDrop(PointerEventData pointerEventData)
         {
+            if (!IsFilterEmpty)
+            {
+                return;
+            }
+
             object[] dragObjects = Editor.DragDrop.DragObjects;
             if (CanDrop(dragObjects))
             {

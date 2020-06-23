@@ -19,11 +19,11 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_ConnectedBody", "Connected Body"), editor.Component, connectedBodyInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_BreakForce", "Break Force"), editor.Component, breakForceInfo, "m_BreakForce"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_BreakTorque", "Break Torque"), editor.Component, breakTorqueInfo, "m_BreakTorque"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_EnableCollision", "Enable Collision"), editor.Component, enableCollisionInfo, "m_EnableCollision"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_EnablePerprocessing", "Enable Preprocessing"), editor.Component, enablePreporcessingInfo, "m_EnablePreprocessing"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_ConnectedBody", "Connected Body"), editor.Components, connectedBodyInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_BreakForce", "Break Force"), editor.Components, breakForceInfo, "m_BreakForce"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_BreakTorque", "Break Torque"), editor.Components, breakTorqueInfo, "m_BreakTorque"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_EnableCollision", "Enable Collision"), editor.Components, enableCollisionInfo, "m_EnableCollision"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_FixedJoint_EnablePerprocessing", "Enable Preprocessing"), editor.Components, enablePreporcessingInfo, "m_EnablePreprocessing"),
             };            
         }
     }

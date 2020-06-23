@@ -107,17 +107,18 @@ namespace Battlehub.RTEditor
                 {
                     continue;
                 }
-                m_voidComponentEditor.Component = Target.GetComponent(editableType);
-                if(m_voidComponentEditor.Component == null)
+                Component targetComponent = Target.GetComponent(editableType);
+                if(targetComponent == null)
                 {
                     continue;
                 }
+                m_voidComponentEditor.Components = new[] { targetComponent };
 
                 RuntimeAnimationProperty component = new RuntimeAnimationProperty();
                 component.ComponentDisplayName = editableType.Name;
                 component.ComponentTypeName = string.Format("{0},{1}", editableType.FullName, editableType.Assembly.FullName.Split(',')[0]);
                 component.Children = new List<RuntimeAnimationProperty>();
-                component.Component = m_voidComponentEditor.Component;
+                component.Component = m_voidComponentEditor.Components[0];
                 
                 PropertyDescriptor[] propertyDescriptors = editorsMap.GetPropertyDescriptors(editableType, m_voidComponentEditor);
                 for (int j = 0; j < propertyDescriptors.Length; ++j)
@@ -178,7 +179,7 @@ namespace Battlehub.RTEditor
                     components.Add(component);
                 }
 
-                m_voidComponentEditor.Component = null;
+                m_voidComponentEditor.Components = null;
             }
 
             m_propertiesTreeView.Items = components;

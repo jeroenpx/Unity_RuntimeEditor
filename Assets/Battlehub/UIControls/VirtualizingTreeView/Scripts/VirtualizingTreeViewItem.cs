@@ -330,24 +330,14 @@ namespace Battlehub.UIControls
             }
         }
 
-        public override void Clear()
+        private void LateUpdate()
         {
-            base.Clear();
-            //if(m_treeViewItemData != null)
-            //{
-            //    Parent = null;
-            //    ZeroIndent();
-            //    m_isSelected = false;
-            //    m_toggle.isOn = m_isSelected;
-            //    m_treeViewItemData.IsExpanded = false;
-            //    m_treeViewItemData.CanExpand = false;
-            //    m_expander.IsOn = false;
-            //    m_expander.CanExpand = false;
-            //}
+            /// This is dirty fix of wrong selection after databinding (in runtime editor such buggy behavior can be reproduced by filtering hierarchy)
+            /// TODO: replace with something better
+            if (IsSelected != m_treeViewItemData.IsSelected)
+            {
+                IsSelected = m_treeViewItemData.IsSelected;
+            }
         }
-
-        
-
     }
-
 }

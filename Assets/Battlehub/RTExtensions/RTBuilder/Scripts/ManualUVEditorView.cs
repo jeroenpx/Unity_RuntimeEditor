@@ -88,8 +88,9 @@ namespace Battlehub.RTBuilder
             m_paletteManager = IOC.Resolve<IMaterialPaletteManager>();
             m_paletteManager.PaletteChanged += OnPaletteChanged;
             m_paletteManager.MaterialAdded += OnMaterialsChanged;
-            m_paletteManager.MaterialCreated += OnMaterialsChanged;
             m_paletteManager.MaterialRemoved += OnMaterialsChanged;
+            m_paletteManager.MaterialCreated += OnMaterialsChanged;
+            m_paletteManager.MaterialReplaced += OnMaterialReplaced;
         }
 
         protected override void OnEnable()
@@ -170,8 +171,10 @@ namespace Battlehub.RTBuilder
             {
                 m_paletteManager.PaletteChanged -= OnPaletteChanged;
                 m_paletteManager.MaterialAdded -= OnMaterialsChanged;
+                m_paletteManager.MaterialReplaced -= OnMaterialReplaced;
                 m_paletteManager.MaterialCreated -= OnMaterialsChanged;
                 m_paletteManager.MaterialRemoved -= OnMaterialsChanged;
+                
             }
 
             for (int i = 0; i < m_extraComponents.Count; ++i)
@@ -209,6 +212,11 @@ namespace Battlehub.RTBuilder
         }
 
         private void OnMaterialsChanged(Material obj)
+        {
+            UpdateTexturesDrowDown();
+        }
+
+        private void OnMaterialReplaced(Material oldMaterial, Material newMaterial)
         {
             UpdateTexturesDrowDown();
         }

@@ -229,7 +229,7 @@ namespace Battlehub.RTCommon
         private CameraLayerSettings m_cameraLayerSettings = new CameraLayerSettings(20, 21, 4, 17, 18, 19, 16);
         [SerializeField]
         private bool m_createHierarchyRoot = false;
-                
+
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
@@ -544,13 +544,13 @@ namespace Battlehub.RTCommon
             get { return IOC.Resolve<IRTE>("Instance"); }
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     IOC.Register<IRTE>("Instance", value);
                 }
                 else
                 {
-                    IOC.Unregister<IRTE>("Instance", value);
+                    IOC.Unregister<IRTE>("Instance", Instance);
                 }
             }
         }
@@ -579,7 +579,7 @@ namespace Battlehub.RTCommon
             ui.transform.SetParent(editor.transform);
 
             RenderPipelineInfo.ForceUseRenderTextures = false;
-            
+
             Canvas canvas = ui.AddComponent<Canvas>();
             if (IsVR)
             {
@@ -593,7 +593,7 @@ namespace Battlehub.RTCommon
                 //canvas.planeDistance = Camera.main.nearClipPlane + 0.01f;
             }
             canvas.sortingOrder = short.MinValue;
-             
+
             editor.AddComponent<RTEGraphics>();
 
             GameObject scene = new GameObject("SceneWindow");
@@ -616,7 +616,7 @@ namespace Battlehub.RTCommon
             {
                 scene.AddComponent<RTEGraphicsLayer>();
             }
-            
+
             EventSystem eventSystem = FindObjectOfType<EventSystem>();
             if (eventSystem == null)
             {
@@ -711,15 +711,15 @@ namespace Battlehub.RTCommon
             m_activeInput = m_disabledInput;
 
             Instance = this;
-            
+
             bool isOpened = m_isOpened;
             m_isOpened = !isOpened;
             IsOpened = isOpened;
 
-            if(m_createHierarchyRoot)
+            if (m_createHierarchyRoot)
             {
                 GameObject hierarchyRoot = GameObject.FindGameObjectWithTag(ExposeToEditor.HierarchyRootTag);
-                if(hierarchyRoot == null)
+                if (hierarchyRoot == null)
                 {
                     hierarchyRoot = new GameObject("HierarchyRoot");
                 }
@@ -727,13 +727,13 @@ namespace Battlehub.RTCommon
                 hierarchyRoot.tag = ExposeToEditor.HierarchyRootTag;
             }
         }
-        
+
         protected virtual void Start()
         {
             if (IsVR)
             {
-               // IVRTracker tracker = IOC.Resolve<IVRTracker>();
-               // m_input = new InputLowVR(tracker);
+                // IVRTracker tracker = IOC.Resolve<IVRTracker>();
+                // m_input = new InputLowVR(tracker);
             }
             else
             {
@@ -978,11 +978,11 @@ namespace Battlehub.RTCommon
 
         public virtual void ActivateWindow(RuntimeWindow window)
         {
-            if (m_activeWindow != window && (window == null ||  window.CanActivate))
+            if (m_activeWindow != window && (window == null || window.CanActivate))
             {
                 RuntimeWindow deactivatedWindow = m_activeWindow;
 
-                if(ActiveWindowChanging != null)
+                if (ActiveWindowChanging != null)
                 {
                     ActiveWindowChanging(window);
                 }
@@ -999,11 +999,11 @@ namespace Battlehub.RTCommon
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(o => o != null).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
 
             bool isRecording = Undo.IsRecording;
-            if(!isRecording)
+            if (!isRecording)
             {
                 Undo.BeginRecord();
             }
-            
+
             if (exposeToEditor.Length == 0)
             {
                 Debug.LogWarning("To register created object GameObject add ExposeToEditor script to it");
@@ -1013,16 +1013,16 @@ namespace Battlehub.RTCommon
                 Undo.RegisterCreatedObjects(exposeToEditor);
             }
 
-            if(select)
+            if (select)
             {
                 Selection.objects = gameObjects;
             }
 
-            if(!isRecording)
+            if (!isRecording)
             {
                 Undo.EndRecord();
             }
-            
+
             if (ObjectsRegistered != null)
             {
                 ObjectsRegistered(gameObjects);
@@ -1051,7 +1051,7 @@ namespace Battlehub.RTCommon
                     }
                 }
 
-                if(ObjectsDuplicated != null)
+                if (ObjectsDuplicated != null)
                 {
                     ObjectsDuplicated(gameObjects);
                 }
@@ -1085,7 +1085,7 @@ namespace Battlehub.RTCommon
                 duplicates.Add(duplicate);
             }
 
-            if(duplicates.Count > 0)
+            if (duplicates.Count > 0)
             {
                 ExposeToEditor[] exposeToEditor = duplicates.Select(o => o.GetComponent<ExposeToEditor>()).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
                 Undo.BeginRecord();
@@ -1116,7 +1116,7 @@ namespace Battlehub.RTCommon
                     {
                         ExposeToEditor exposed = go.GetComponent<ExposeToEditor>();
 
-                        if(exposed == null || exposed.CanDelete)
+                        if (exposed == null || exposed.CanDelete)
                         {
                             Destroy(go);
                         }
@@ -1132,25 +1132,25 @@ namespace Battlehub.RTCommon
             }
 
             ExposeToEditor[] exposeToEditor = gameObjects.Select(o => o.GetComponent<ExposeToEditor>()).Where(exposed => exposed != null && exposed.CanDelete).OrderByDescending(o => o.transform.GetSiblingIndex()).ToArray();
-            if(exposeToEditor.Length == 0)
+            if (exposeToEditor.Length == 0)
             {
                 return;
             }
 
             HashSet<GameObject> removeObjectsHs = new HashSet<GameObject>(exposeToEditor.Select(exposed => exposed.gameObject));
             bool isRecording = Undo.IsRecording;
-            if(!isRecording)
+            if (!isRecording)
             {
                 Undo.BeginRecord();
             }
-            
+
             if (Selection.objects != null)
             {
                 List<UnityEngine.Object> selection = Selection.objects.ToList();
                 for (int i = selection.Count - 1; i >= 0; --i)
                 {
                     if (removeObjectsHs.Contains(selection[i]))
-                    {   
+                    {
                         selection.RemoveAt(i);
                     }
                 }
@@ -1160,7 +1160,7 @@ namespace Battlehub.RTCommon
 
             Undo.DestroyObjects(exposeToEditor);
 
-            if(!isRecording)
+            if (!isRecording)
             {
                 Undo.EndRecord();
             }
@@ -1179,16 +1179,16 @@ namespace Battlehub.RTCommon
 
         public void AddGameObjectToHierarchy(GameObject go, bool scaleStays = true)
         {
-            if(m_createHierarchyRoot)
+            if (m_createHierarchyRoot)
             {
                 GameObject hierarchyRoot = GameObject.FindGameObjectWithTag(ExposeToEditor.HierarchyRootTag);
-                if(hierarchyRoot != null)
+                if (hierarchyRoot != null)
                 {
                     Vector3 localScale = go.transform.localScale;
 
                     go.transform.SetParent(hierarchyRoot.transform, true);
 
-                    if(scaleStays)
+                    if (scaleStays)
                     {
                         go.transform.localScale = localScale;
                     }

@@ -109,16 +109,16 @@ namespace Battlehub.RTEditor
 
         public virtual MaterialPropertyDescriptor[] GetProperties(MaterialEditor editor, object converter)
         {
-            return GetProperties(editor.Material);
+            return GetProperties(editor.Materials);
         }
 
-        public static MaterialPropertyDescriptor[] GetProperties(Material material)
+        public static MaterialPropertyDescriptor[] GetProperties(Material[] materials)
         {
             RuntimeShaderInfo shaderInfo = null;
             IRuntimeShaderUtil shaderUtil = IOC.Resolve<IRuntimeShaderUtil>();
             if (shaderUtil != null)
             {
-                shaderInfo = shaderUtil.GetShaderInfo(material.shader);
+                shaderInfo = shaderUtil.GetShaderInfo(materials[0].shader);
             }
 
             if (shaderInfo == null)
@@ -149,7 +149,7 @@ namespace Battlehub.RTEditor
                         continue;
                     }
 
-                    MaterialPropertyDescriptor propertyDescriptor = CreatePropertyDescriptor(material, propertyInfo, propertyDescr, propertyName, propertyType, dim, limits);
+                    MaterialPropertyDescriptor propertyDescriptor = CreatePropertyDescriptor(materials, propertyInfo, propertyDescr, propertyName, propertyType, dim, limits);
                     descriptors.Add(propertyDescriptor);
                 }
             }
@@ -205,16 +205,26 @@ namespace Battlehub.RTEditor
             return propertyInfo;
         }
 
-        public static MaterialPropertyDescriptor CreatePropertyDescriptor(Material material, PropertyInfo propertyInfo, string propertyDescr, string propertyName, RTShaderPropertyType propertyType)
+        private static MaterialPropertyAccessor[] CreateAccessors(Material[] materials, string propertyName)
         {
-            return CreatePropertyDescriptor(material, propertyInfo, propertyDescr, propertyName, propertyType, TextureDimension.Tex2D, new RuntimeShaderInfo.RangeLimits());
+            MaterialPropertyAccessor[] accessors = new MaterialPropertyAccessor[materials.Length];
+            for (int i = 0; i < materials.Length; ++i)
+            {
+                accessors[i] = new MaterialPropertyAccessor(materials[i], propertyName);
+            }
+            return accessors;
         }
 
-        public static MaterialPropertyDescriptor CreatePropertyDescriptor(Material material, PropertyInfo propertyInfo, string propertyDescr, string propertyName, RTShaderPropertyType propertyType, TextureDimension dim, RuntimeShaderInfo.RangeLimits limits)
+        public static MaterialPropertyDescriptor CreatePropertyDescriptor(Material[] materials, PropertyInfo propertyInfo, string propertyDescr, string propertyName, RTShaderPropertyType propertyType)
+        {
+            return CreatePropertyDescriptor(materials, propertyInfo, propertyDescr, propertyName, propertyType, TextureDimension.Tex2D, new RuntimeShaderInfo.RangeLimits());
+        }
+
+        public static MaterialPropertyDescriptor CreatePropertyDescriptor(Material[] materials, PropertyInfo propertyInfo, string propertyDescr, string propertyName, RTShaderPropertyType propertyType, TextureDimension dim, RuntimeShaderInfo.RangeLimits limits)
         {
             return new MaterialPropertyDescriptor(
-                material,
-                new MaterialPropertyAccessor(material, propertyName),
+                materials,
+                CreateAccessors(materials, propertyName),
                 propertyDescr, propertyType, propertyInfo, limits, dim, null,
                 (accessorRef, newTarget) =>
                 {

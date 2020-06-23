@@ -1671,7 +1671,6 @@ namespace Battlehub.RTCommon
             Component component = exposeToEditor.AddComponent(type);
             if (component is Rigidbody)
             {
-
                 Rigidbody rb = (Rigidbody)component;
                 rb.isKinematic = true;
             }

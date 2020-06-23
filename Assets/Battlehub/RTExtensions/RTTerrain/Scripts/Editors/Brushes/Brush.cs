@@ -78,6 +78,10 @@ namespace Battlehub.RTTerrain
 
         protected virtual float Eval(float u, float v)
         {
+            if(Texture == null)
+            {
+                return 0;
+            }
             return Texture.GetPixelBilinear(u, v).a;
         }
 

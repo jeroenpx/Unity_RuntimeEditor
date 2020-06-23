@@ -38,9 +38,12 @@ namespace Battlehub.RTEditor
         void CmdEdit(string cmd);
 
         ProjectAsyncOperation<AssetItem[]> CreatePrefab(ProjectItem folder, ExposeToEditor obj, bool? includeDependencies = null, Action<AssetItem[]> done = null);
-        ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done = null);
+        ProjectAsyncOperation<AssetItem[]> SaveAssets(UnityObject[] assets, Action<AssetItem[]> done = null);
         ProjectAsyncOperation<ProjectItem[]> DeleteAssets(ProjectItem[] projectItems, Action<ProjectItem[]> done = null);
         ProjectAsyncOperation<AssetItem> UpdatePreview(UnityObject obj, Action<AssetItem> done = null);
+
+        [Obsolete("Use SaveAssets")]
+        ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done = null);
     }
 
     public static class IRuntimEditorExt
@@ -685,26 +688,41 @@ namespace Battlehub.RTEditor
             }
         }
 
-        public ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done)
+        public ProjectAsyncOperation<AssetItem[]> SaveAssets(UnityObject[] assets, Action<AssetItem[]> done)
         {
-            ProjectAsyncOperation<AssetItem> ao = new ProjectAsyncOperation<AssetItem>();
+            ProjectAsyncOperation<AssetItem[]> ao = new ProjectAsyncOperation<AssetItem[]>();
 
             IProject project = IOC.Resolve<IProject>();
-            AssetItem assetItem = project.ToAssetItem(obj);
-            if(assetItem == null)
+
+            List<UnityObject> assetsToSave = new List<UnityObject>();
+            List<AssetItem> assetItems = new List<AssetItem>();
+
+            for(int i = 0; i < assets.Length; ++i)
+            {
+                UnityObject asset = assets[i];
+                AssetItem assetItem = project.ToAssetItem(asset);
+                if (assetItem == null)
+                {
+                    continue;
+                }
+
+                assetsToSave.Add(asset);
+                assetItems.Add(assetItem);
+            }
+
+            if(assetsToSave.Count == 0)
             {
                 if(done != null)
                 {
-                    done(null);
+                    done(assetItems.ToArray());
                 }
-
-                ao.Error = new Error();
+                ao.Error = Error.NoError;
                 ao.IsCompleted = true;
                 return ao;
             }
 
             IsBusy = true;
-            m_project.Save(new[] { assetItem }, new[] { obj }, (saveError, saveResult) =>
+            m_project.Save(assetItems.ToArray(), assets.ToArray(), (saveError, saveResult) =>
             {
                 if (saveError.HasError)
                 {
@@ -724,12 +742,12 @@ namespace Battlehub.RTEditor
                 UpdateDependantAssetPreviews(saveResult, () =>
                 {
                     IsBusy = false;
-                    if(done != null)
+                    if (done != null)
                     {
-                        done(saveResult[0]);
+                        done(saveResult);
                     }
-                    ao.Error = new Error();
-                    ao.Result = saveResult[0];
+                    ao.Error = Error.NoError;
+                    ao.Result = saveResult;
                     ao.IsCompleted = true;
                 });
             });
@@ -873,7 +891,7 @@ namespace Battlehub.RTEditor
                 assetItem.Preview = new Preview { ItemID = assetItem.ItemID, PreviewData = preview };
             }
 
-            if(done != null)
+            if (done != null)
             {
                 done(assetItem);
             }
@@ -883,6 +901,7 @@ namespace Battlehub.RTEditor
             ao.IsCompleted = true;
             return ao;
         }
+
 
         private void OnNewSceneCreating(Error error)
         {
@@ -1050,6 +1069,60 @@ namespace Battlehub.RTEditor
             }
         }
 
+        #region Obsolete
+        [Obsolete("Use Save Assets instead")]
+        public ProjectAsyncOperation<AssetItem> SaveAsset(UnityObject obj, Action<AssetItem> done)
+        {
+            ProjectAsyncOperation<AssetItem> ao = new ProjectAsyncOperation<AssetItem>();
 
+            IProject project = IOC.Resolve<IProject>();
+            AssetItem assetItem = project.ToAssetItem(obj);
+            if (assetItem == null)
+            {
+                if (done != null)
+                {
+                    done(null);
+                }
+
+                ao.Error = new Error();
+                ao.IsCompleted = true;
+                return ao;
+            }
+
+            IsBusy = true;
+            m_project.Save(new[] { assetItem }, new[] { obj }, (saveError, saveResult) =>
+            {
+                if (saveError.HasError)
+                {
+                    IsBusy = false;
+                    m_wm.MessageBox(m_localization.GetString("ID_RTEditor_UnableToSaveAsset", "Unable to save asset"), saveError.ErrorText);
+
+                    if (done != null)
+                    {
+                        done(null);
+                    }
+
+                    ao.Error = saveError;
+                    ao.IsCompleted = true;
+                    return;
+                }
+
+                UpdateDependantAssetPreviews(saveResult, () =>
+                {
+                    IsBusy = false;
+                    if (done != null)
+                    {
+                        done(saveResult[0]);
+                    }
+                    ao.Error = new Error();
+                    ao.Result = saveResult[0];
+                    ao.IsCompleted = true;
+                });
+            });
+
+            return ao;
+        }
+
+        #endregion
     }
 }

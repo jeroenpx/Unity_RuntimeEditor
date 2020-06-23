@@ -133,12 +133,12 @@ namespace Battlehub.RTEditor
                 if (componentType.IsScript())
                 {
                     FieldInfo[] serializableFields = componentType.GetSerializableFields(false);
-                    return serializableFields.Select(f => new PropertyDescriptor(f.Name, editor.Component, f, f)).ToArray();
+                    return serializableFields.Select(f => new PropertyDescriptor(f.Name, editor.Components, f, f)).ToArray();
                 }
                 else
                 {
                     PropertyInfo[] properties = componentType.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToArray();
-                    return properties.Select(p => new PropertyDescriptor(p.Name, editor.Component, p, p)).ToArray();
+                    return properties.Select(p => new PropertyDescriptor(p.Name, editor.Components, p, p)).ToArray();
                 }
             }
         }

@@ -142,9 +142,9 @@ namespace Battlehub.RTEditor
             return m_elementType;
         }
 
-        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
+        protected override void InitOverride(object[] targets, object[] accessors, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            m_elementType = GetElementType(accessor, memberInfo);
+            m_elementType = accessors != null && accessors.Length > 0 ? GetElementType(accessors[0], memberInfo) : null;
 
             if (m_elementType != null)
             {
@@ -160,7 +160,7 @@ namespace Battlehub.RTEditor
                     Destroy(gameObject);
                 }
 
-                base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
+                base.InitOverride(targets, accessors, memberInfo, eraseTargetCallback, label);
             }
             else
             {
@@ -197,7 +197,6 @@ namespace Battlehub.RTEditor
             }
         }
 
-
         private void BuildEditor()
         {
             foreach (Transform c in Panel)
@@ -208,9 +207,9 @@ namespace Battlehub.RTEditor
             CreateElementEditors(m_currentValue);
         }
 
-        protected virtual IListElementAccessor CreateAccessor(int i)
+        protected virtual IListElementAccessor CreateAccessor(int listIndex, int i)
         {
-            return new IListElementAccessor(this, i, "Element " + i);
+            return new IListElementAccessor(this, listIndex, i, "Element " + i);
         }
 
         private void CreateElementEditors(IList value)
@@ -220,17 +219,40 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            for (int i = 0; i < value.Count; ++i)
+            int minCount = value.Count;
+            int targetsCount = Targets.Length;
+            if(targetsCount > 0)
+            {
+                for (int i = 0; i < targetsCount; ++i)
+                {
+                    IList list = GetValue(i);
+                    if (list == null)
+                    {
+                        return;
+                    }
+
+                    if (list.Count < minCount)
+                    {
+                        minCount = list.Count;
+                    }
+                }
+            }
+            
+            for (int i = 0; i < minCount; ++i)
             {
                 PropertyEditor editor = Instantiate(m_editorPrefab);
                 editor.transform.SetParent(Panel, false);
 
-                IListElementAccessor accessor = CreateAccessor(i);
-                editor.Init(accessor, accessor, accessor.GetType().GetProperty("Value"), null, accessor.Name, OnValueChanging, OnValueChanged, () =>
+                IListElementAccessor[] accessors = new IListElementAccessor[targetsCount];
+                for (int l = 0; l < targetsCount; ++l)
                 {
-                    
+                    accessors[l] = CreateAccessor(l, i);
+                }
+
+                editor.Init(accessors, accessors, accessors[0].GetType().GetProperty("Value"), null, accessors[0].Name, OnValueChanging, OnValueChanged, () =>
+                {
                 }, 
-                false);
+                true);
             }
         }
 
@@ -253,8 +275,6 @@ namespace Battlehub.RTEditor
         
         private void OnSizeEndEdit(string value)
         {
-            IList list = GetValue();
-
             int size;
             if (int.TryParse(value, out size) && size >= 0)
             {
@@ -263,38 +283,69 @@ namespace Battlehub.RTEditor
                     Destroy(c.gameObject);
                 }
 
-                int oldSize = list.Count;
-                IList newList = Resize(list, size);
-                if(size > 0)
+                int targetsCount = Targets.Length;
+                for (int l = 0; l < targetsCount; ++l)
                 {
-                    if(!m_elementType.IsSubclassOf(typeof(UnityEngine.Object)))
+                    IList list = GetValue(l);
+                    int oldSize = list.Count;
+                    IList newList = Resize(list, size);
+                    if (size > 0)
                     {
-                        var constructor = m_elementType.GetConstructor(Type.EmptyTypes);
-                        if(constructor != null)
+                        if (!m_elementType.IsSubclassOf(typeof(UnityEngine.Object)))
                         {
-                            for(int i = list != null ? list.Count : 0; i < newList.Count; ++i)
+                            var constructor = m_elementType.GetConstructor(Type.EmptyTypes);
+                            if (constructor != null)
                             {
-                                newList[i] = Activator.CreateInstance(m_elementType);
+                                for (int i = list != null ? list.Count : 0; i < newList.Count; ++i)
+                                {
+                                    newList[i] = Activator.CreateInstance(m_elementType);
+                                }
                             }
                         }
                     }
+                    SetValue(newList, l);
                 }
 
-                SetValue(newList);
                 EndEdit();
                 if (Expander.isOn)
                 {
-                    CreateElementEditors(newList);
+                    CreateElementEditors(GetValue());
                 }
             }
             else
             {
+                IList list = GetValue();
                 SizeInput.text = list.Count.ToString();
             }
         }
 
+        public bool AreSizesEqual()
+        {
+            int targetsCount = Targets.Length;
+            if (targetsCount > 0)
+            {
+                IList list = GetValue(0);
+                int size = list != null ? list.Count : -1;
+                for (int i = 1; i < targetsCount; ++i)
+                {
+                    list = GetValue(i);
+                    if (size != (list != null ? list.Count : -1))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         protected override void SetInputField(IList value)
         {
+            if(!AreSizesEqual())
+            {
+                SizeInput.text = null;
+                return;
+            }
+
             if (value == null)
             {
                 IList newArray = (IList)Activator.CreateInstance(PropertyType);
@@ -302,7 +353,6 @@ namespace Battlehub.RTEditor
                 SizeInput.text = "0";
                 return;
             }
-
             SizeInput.text = value.Count.ToString();
         }
 

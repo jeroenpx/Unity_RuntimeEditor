@@ -93,14 +93,16 @@ namespace Battlehub.RTBuilder
             TreeView.CanSelectAll = false;
             TreeView.CanUnselectAll = true;
             TreeView.CanRemove = false;
+            TreeView.CanMultiSelect = false;
 
             if (m_paletteManager != null)
             {
                 m_paletteManager.PaletteChanged += OnPaletteChanged;
                 m_paletteManager.MaterialAdded += OnMaterialAdded;
                 m_paletteManager.MaterialCreated += OnMaterialCreated;
+                m_paletteManager.MaterialReplaced += OnMaterialReplaced;
                 m_paletteManager.MaterialRemoved += OnMaterialRemoved;
-
+                
                 yield return new WaitUntil(() => m_paletteManager.IsReady);
                 yield return new WaitWhile(() => m_editor.IsBusy);
 
@@ -131,6 +133,7 @@ namespace Battlehub.RTBuilder
             {
                 m_paletteManager.MaterialAdded -= OnMaterialAdded;
                 m_paletteManager.MaterialCreated -= OnMaterialCreated;
+                m_paletteManager.MaterialReplaced -= OnMaterialReplaced;
                 m_paletteManager.MaterialRemoved -= OnMaterialRemoved;
                 m_paletteManager.PaletteChanged -= OnPaletteChanged;
             }
@@ -211,6 +214,11 @@ namespace Battlehub.RTBuilder
             m_paletteManager.CreateMaterial();
         }
 
+        public void ReplaceMaterial(Material oldMaterial, Material newMaterial)
+        {
+            m_paletteManager.ReplaceMaterial(oldMaterial, newMaterial);
+        }
+
         public void RemoveMaterial(Material material)
         {
             TreeView.RemoveChild(null, material);
@@ -244,6 +252,7 @@ namespace Battlehub.RTBuilder
             TreeView.SelectedItem = palette.Materials.FirstOrDefault();
         }
 
+
         private void OnMaterialCreated(Material material)
         {
             TreeView.Add(material);
@@ -254,6 +263,19 @@ namespace Battlehub.RTBuilder
         private void OnMaterialAdded(Material material)
         {
             TreeView.Add(material);
+        }
+
+        private void OnMaterialReplaced(Material oldMaterial, Material newMaterial)
+        {
+            bool wasSelected = TreeView.IsItemSelected(oldMaterial);
+            int index = TreeView.IndexOf(oldMaterial);
+            TreeView.RemoveChild(null, oldMaterial);
+            TreeView.AddChild(null, newMaterial);
+            TreeView.SetIndex(newMaterial, index);
+            if (wasSelected)
+            {
+                TreeView.SelectedItem = newMaterial;
+            }
         }
 
         private void OnMaterialRemoved(Material material)

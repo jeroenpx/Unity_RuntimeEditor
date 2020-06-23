@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTEditor;
+using System.Linq;
 using UnityEngine;
 
 namespace Battlehub.RTTerrain
@@ -8,22 +9,32 @@ namespace Battlehub.RTTerrain
         [SerializeField]
         private TerrainEditor m_terrainEditor = null;
 
-        public override Component Component
+        [SerializeField]
+        private GameObject m_multiComponentEditingProhibited = null;
+
+        public override Component[] Components
         {
-            get { return base.Component; }
+            get { return base.Components; }
             set
             {
-                base.Component = value;
-                if(m_terrainEditor != value)
+                base.Components = value;
+
+                if (value != null)
                 {
-                    m_terrainEditor.Terrain = value as Terrain;
+                    m_terrainEditor.gameObject.SetActive(value.Length == 1);
+                    m_terrainEditor.Terrain = value.OfType<Terrain>().FirstOrDefault();
+
+                    if(m_multiComponentEditingProhibited != null)
+                    {
+                        m_multiComponentEditingProhibited.SetActive(value.Length > 1);
+                    }
                 }
             }
         }
 
         protected override void DestroyEditor()
         {
-            DestroyGizmo();
+            DestroyGizmos();
         }
 
         protected override void BuildEditor(IComponentDescriptor componentDescriptor, PropertyDescriptor[] descriptors)

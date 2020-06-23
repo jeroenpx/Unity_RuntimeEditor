@@ -48,6 +48,9 @@ namespace Battlehub.RTSL.Internal
         [ProtoMember(10)]
         public List<Vector2> m_textureScale;
 
+        [ProtoMember(11)]
+        public int m_renderQueue;
+
         public override object WriteTo(object obj)
         {
             obj = base.WriteTo(obj);
@@ -130,6 +133,7 @@ namespace Battlehub.RTSL.Internal
 
             IMaterialUtil util = IOC.Resolve<IMaterialUtil>();
             util.SetMaterialKeywords(o);
+            o.renderQueue = m_renderQueue;
 
             return obj;
         }
@@ -247,7 +251,7 @@ namespace Battlehub.RTSL.Internal
                         m_propertyValues[i] = PrimitiveContract.Create(o.GetFloat(name));
                         break;
                     case RTShaderPropertyType.TexEnv:
-                        Texture2D texture = (Texture2D)o.GetTexture(name);
+                        Texture texture = o.GetTexture(name);
                         if (texture == null)
                         {
                             m_propertyValues[i] = PrimitiveContract.Create(m_assetDB.NullID);
@@ -269,6 +273,7 @@ namespace Battlehub.RTSL.Internal
             }
 
             m_keywords = o.shaderKeywords;
+            m_renderQueue = o.renderQueue;
         }
         //<TEMPLATE_BODY_END>
 #endif

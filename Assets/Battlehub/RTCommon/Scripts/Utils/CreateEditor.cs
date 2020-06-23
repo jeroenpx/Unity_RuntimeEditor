@@ -1,7 +1,4 @@
-﻿using Battlehub.RTCommon;
-using Battlehub.Utils;
-using System;
-using System.Collections;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,12 +23,12 @@ namespace Battlehub.RTCommon
         private Splash m_splashPrefab = null;
 
         private RTEBase m_editor;
-          
+
         private void Awake()
         {
             IOC.RegisterFallback<IRTEState>(this);
             m_editor = (RTEBase)FindObjectOfType(m_editorPrefab.GetType());
-            if(m_editor != null)
+            if (m_editor != null)
             {
                 if (m_editor.IsOpened)
                 {
@@ -45,11 +42,11 @@ namespace Battlehub.RTCommon
         private void OnDestroy()
         {
             IOC.UnregisterFallback<IRTEState>(this);
-            if(m_createEditorButton != null)
+            if (m_createEditorButton != null)
             {
                 m_createEditorButton.onClick.RemoveListener(OnOpen);
             }
-            if(m_editor != null)
+            if (m_editor != null)
             {
                 m_editor.IsOpenedChanged -= OnIsOpenedChanged;
             }
@@ -58,7 +55,7 @@ namespace Battlehub.RTCommon
         private void OnOpen()
         {
             Debug.Log("OnOpen");
-            if(m_splashPrefab != null)
+            if (m_splashPrefab != null)
             {
                 Instantiate(m_splashPrefab).Show(() => InstantiateRuntimeEditor());
             }
@@ -81,24 +78,26 @@ namespace Battlehub.RTCommon
             gameObject.SetActive(false);
         }
 
-
         private void OnIsOpenedChanged()
         {
-            if(m_editor != null)
+            if (m_editor != null)
             {
-                m_editor.IsOpenedChanged -= OnIsOpenedChanged;
-            }
-            
-            if(this != null)
-            {
-                gameObject.SetActive(true);
-            }
+                if (!m_editor.IsOpened)
+                {
+                    m_editor.IsOpenedChanged -= OnIsOpenedChanged;
 
-            Destroy(m_editor);
+                    if (this != null)
+                    {
+                        gameObject.SetActive(true);
+                    }
 
-            if(Destroyed != null)
-            {
-                Destroyed(m_editor);
+                    Destroy(m_editor);
+
+                    if (Destroyed != null)
+                    {
+                        Destroyed(m_editor);
+                    }
+                }
             }
         }
     }

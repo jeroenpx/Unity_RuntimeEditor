@@ -16,6 +16,7 @@ namespace Battlehub.RTBuilder
         event Action<Material> MaterialAdded;
         event Action<Material> MaterialRemoved;
         event Action<MaterialPalette> PaletteChanged;
+        event Action<Material, Material> MaterialReplaced;
 
         bool IsReady
         {
@@ -29,6 +30,7 @@ namespace Battlehub.RTBuilder
         
         void CreateMaterial();
         void AddMaterial(Material material, bool setUniqueName = false);
+        void ReplaceMaterial(Material oldMaterial, Material newMaterial);
         void RemoveMaterial(Material material);
         void ApplyTexture(Material material, Texture texture);
     }
@@ -40,6 +42,7 @@ namespace Battlehub.RTBuilder
         public event Action<Material> MaterialAdded;
         public event Action<Material> MaterialRemoved;
         public event Action<MaterialPalette> PaletteChanged;
+        public event Action<Material, Material> MaterialReplaced;
 
         public bool IsReady
         {
@@ -130,6 +133,20 @@ namespace Battlehub.RTBuilder
             if(MaterialAdded != null)
             {
                 MaterialAdded(material);
+            }
+        }
+
+        public void ReplaceMaterial(Material oldMaterial, Material newMaterial)
+        {
+            int index = m_palette.Materials.IndexOf(oldMaterial);
+            m_palette.Materials.RemoveAt(index);
+            if(!m_palette.Materials.Contains(newMaterial))
+            {
+                m_palette.Materials.Insert(index, newMaterial);
+            }
+            if(MaterialReplaced != null)
+            {
+                MaterialReplaced(oldMaterial, newMaterial);
             }
         }
 

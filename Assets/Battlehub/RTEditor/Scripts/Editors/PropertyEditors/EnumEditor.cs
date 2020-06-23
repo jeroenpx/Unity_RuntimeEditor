@@ -14,6 +14,9 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private TMP_Dropdown m_input = null;
 
+        [SerializeField]
+        private TextMeshProUGUI m_mixedValuesIndicator = null;
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();
@@ -42,7 +45,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
+        protected override void InitOverride(object[] target, object[] accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
         {
             base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
@@ -63,12 +66,21 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(Enum value)
         {
-            int index = 0;
-
-            Type enumType = GetEnumType(Accessor);
-            index = Array.IndexOf(Enum.GetValues(enumType), value);
-            
-            m_input.value = index;
+            if (HasMixedValues())
+            {
+                m_mixedValuesIndicator.text = "-";
+            }
+            else
+            {
+                int index = 0;
+                Type enumType = GetEnumType(Accessor);
+                index = Array.IndexOf(Enum.GetValues(enumType), value);
+                if(index >= 0 && index < m_input.options.Count)
+                {
+                    m_input.value = index;
+                    m_mixedValuesIndicator.text = m_input.options[index].text;
+                }   
+            }
         }
 
         private void OnValueChanged(int index)
@@ -76,6 +88,7 @@ namespace Battlehub.RTEditor
             Type enumType = GetEnumType(Accessor);
             Enum value = (Enum)Enum.GetValues(enumType).GetValue(index);
             SetValue(value);
+            SetInputField(value);
             EndEdit();
         }
     }

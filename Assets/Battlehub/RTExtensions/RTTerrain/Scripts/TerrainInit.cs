@@ -4,8 +4,6 @@ using Battlehub.UIControls.MenuControl;
 using UnityEngine;
 namespace Battlehub.RTTerrain
 {
-    
-
     [MenuDefinition(-1)]
     public class TerrainInit : EditorExtension
     {

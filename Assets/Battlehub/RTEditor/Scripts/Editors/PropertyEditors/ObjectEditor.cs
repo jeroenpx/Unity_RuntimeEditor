@@ -29,40 +29,47 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(UnityObject value)
         {
-            string memberInfoTypeName = m_localization.GetString("ID_RTEditor_PE_TypeName_" + MemberInfoType.Name, MemberInfoType.Name);
-
-            bool isDestroyed = value == null;
-
-            if (!isDestroyed)
+            if (HasMixedValues())
             {
-                GameObject go = null;
-                if (value is GameObject)
-                {
-                    go = (GameObject)value;
-                }
-                else if (value is Component)
-                {
-                    go = ((Component)value).gameObject;
-                }
-
-                if (go != null)
-                {
-                    ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
-                    if (exposeToEditor != null && exposeToEditor.MarkAsDestroyed)
-                    {
-                        isDestroyed = true;
-                    }
-                }
-            }
-
-            if (isDestroyed)
-            {
-                Input.text = string.Format(m_localization.GetString("ID_RTEditor_PE_ObjectEditor_None", "None") + " ({0})", memberInfoTypeName);
+                Input.text = null;
             }
             else
             {
-                Input.text = string.Format("{1} ({0})", memberInfoTypeName, value.name);
-            }
+                string memberInfoTypeName = m_localization.GetString("ID_RTEditor_PE_TypeName_" + MemberInfoType.Name, MemberInfoType.Name);
+
+                bool isDestroyed = value == null;
+
+                if (!isDestroyed)
+                {
+                    GameObject go = null;
+                    if (value is GameObject)
+                    {
+                        go = (GameObject)value;
+                    }
+                    else if (value is Component)
+                    {
+                        go = ((Component)value).gameObject;
+                    }
+
+                    if (go != null)
+                    {
+                        ExposeToEditor exposeToEditor = go.GetComponent<ExposeToEditor>();
+                        if (exposeToEditor != null && exposeToEditor.MarkAsDestroyed)
+                        {
+                            isDestroyed = true;
+                        }
+                    }
+                }
+
+                if (isDestroyed)
+                {
+                    Input.text = string.Format(m_localization.GetString("ID_RTEditor_PE_ObjectEditor_None", "None") + " ({0})", memberInfoTypeName);
+                }
+                else
+                {
+                    Input.text = string.Format("{1} ({0})", memberInfoTypeName, value.name);
+                }
+            }  
         }
 
         protected override void AwakeOverride()

@@ -21,13 +21,13 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_Mass", "Mass"), editor.Component, massInfo, "m_Mass"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_Drag", "Drag"), editor.Component, dragInfo, "m_Drag"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_AngularDrag", "Angular Drag"), editor.Component, angularDragInfo, "m_AngularDrag"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_UseGravity", "Use Gravity"), editor.Component, useGravityInfo, "m_UseGravity"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_IsKinematic", "Is Kinematic"), editor.Component, isKinematicInfo, "m_IsKinematic"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_Interpolation", "Interpolation"), editor.Component, interpolationInfo, interpolationInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_CollisionDetection", "Collision Detection"), editor.Component, collisionDetectionInfo, collisionDetectionInfo)
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_Mass", "Mass"), editor.Components, massInfo, "m_Mass"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_Drag", "Drag"), editor.Components, dragInfo, "m_Drag"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_AngularDrag", "Angular Drag"), editor.Components, angularDragInfo, "m_AngularDrag"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_UseGravity", "Use Gravity"), editor.Components, useGravityInfo, "m_UseGravity"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_IsKinematic", "Is Kinematic"), editor.Components, isKinematicInfo, "m_IsKinematic"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_Interpolation", "Interpolation"), editor.Components, interpolationInfo, interpolationInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Rigidbody_CollisionDetection", "Collision Detection"), editor.Components, collisionDetectionInfo, collisionDetectionInfo)
             };
         }
     }

@@ -33,8 +33,13 @@ namespace Battlehub.RTBuilder
             get { return m_material; }
             set
             {
+                Material oldMaterial = m_material;
                 m_material = value;
                 m_objectEditor.Reload();
+                if(oldMaterial != null && m_material != null && m_paletteEditor != null)
+                {
+                    m_paletteEditor.ReplaceMaterial(oldMaterial, m_material);
+                }
             }
         }
 

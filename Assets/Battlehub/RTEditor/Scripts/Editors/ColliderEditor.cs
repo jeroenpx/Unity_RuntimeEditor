@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,7 +56,7 @@ namespace Battlehub.RTEditor
         {
             base.BuildEditor(componentDescriptor, descriptors);
 
-            if((Component.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0)
+            if(NotNullComponents.Any() && NotNullComponents.All(component => (component.gameObject.hideFlags & HideFlags.HideInHierarchy) == 0))
             {
                 m_editColliderButton = Instantiate(ToggleButton).GetComponent<Toggle>();
                 m_editColliderButton.transform.SetParent(EditorsPanel, false);
@@ -83,7 +84,7 @@ namespace Battlehub.RTEditor
             {
                 m_lastTool = Editor.Tools.Current;
                 Editor.Tools.Current = RuntimeTool.None;
-                TryCreateGizmo(GetComponentDescriptor());
+                TryCreateGizmos(GetComponentDescriptor());
             }
             else
             {
@@ -92,21 +93,21 @@ namespace Battlehub.RTEditor
                 {
                     EndEditCallback();
                 }
-                DestroyGizmo();
+                DestroyGizmos();
             }
         }
 
-        protected override void TryCreateGizmo(IComponentDescriptor componentDescriptor)
+        protected override void TryCreateGizmos(IComponentDescriptor componentDescriptor)
         {
             if(m_isEditing)
             {
-                base.TryCreateGizmo(componentDescriptor);
+                base.TryCreateGizmos(componentDescriptor);
             }   
         }
 
-        protected override void DestroyGizmo()
+        protected override void DestroyGizmos()
         {
-            base.DestroyGizmo();
+            base.DestroyGizmos();
         }
     }
 }

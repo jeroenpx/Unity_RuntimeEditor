@@ -21,6 +21,66 @@ namespace Battlehub.RTEditor
             get { return m_properties; }
         }
 
+        /// <summary>
+        /// Read property values and add keyframes
+        /// </summary>
+        /// <param name="time">keyframes time</param>
+        public void AddKeyframes(float time)
+        {
+            for(int i = 0; i < m_properties.Count; ++i)
+            {
+                RuntimeAnimationProperty property = m_properties[i];
+                AddKeyframes(time, property);
+            }
+        }
+
+        private void AddKeyframes(float time, RuntimeAnimationProperty property)
+        {
+            if (property.HasChildren)
+            {
+                List<RuntimeAnimationProperty> children = property.Children;
+                for (int j = 0; j < children.Count; ++j)
+                {
+                    RuntimeAnimationProperty child = children[j];
+                    AddKeyframes(time, child);
+                }
+            }
+            else
+            {
+                property.AddKey(time, property.FloatValue);
+            }
+        }
+
+        /// <summary>
+        /// Remove keyframes by index
+        /// </summary>
+        /// <param name="index"></param>
+        public void RemoveKeyframes(int index)
+        {
+            for (int i = 0; i < m_properties.Count; ++i)
+            {
+                RuntimeAnimationProperty property = m_properties[i];
+                RemoveKeyframes(index, property);
+            }
+        }
+
+        private void RemoveKeyframes(int index, RuntimeAnimationProperty property)
+        {
+            if (property.HasChildren)
+            {
+                List<RuntimeAnimationProperty> children = property.Children;
+                for (int j = 0; j < children.Count; ++j)
+                {
+                    RuntimeAnimationProperty child = children[j];
+                    RemoveKeyframes(index, child);
+                }
+            }
+            else
+            {
+                property.RemoveKey(index);
+            }
+        }
+
         public void Add(RuntimeAnimationProperty property)
         {
             m_properties.Add(property);

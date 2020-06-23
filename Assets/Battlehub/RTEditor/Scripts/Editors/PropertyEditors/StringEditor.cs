@@ -27,18 +27,20 @@ namespace Battlehub.RTEditor
 
         protected override void SetInputField(string value)
         {
-            m_input.text = value;
+            bool hasMixedValues = HasMixedValues();
+            m_input.placeholder.gameObject.SetActive(hasMixedValues);
+            m_input.SetTextWithoutNotify(hasMixedValues ? null : value);
         }
 
         protected virtual void OnValueChanged(string value)
         {
             SetValue(value);
+            SetInputField(value);
         }
 
         protected virtual void OnEndEdit(string value)
         {
-            m_input.text = GetValue();
-            
+            SetInputField(GetValue());
             EndEdit();
         }
 

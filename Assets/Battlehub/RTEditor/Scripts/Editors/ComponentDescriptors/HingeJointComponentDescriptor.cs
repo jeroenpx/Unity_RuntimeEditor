@@ -30,17 +30,17 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_ConnectedBody", "Connected Body"), editor.Component, connectedBodyInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Anchor", "Anchor"), editor.Component, anchorInfo, "m_Anchor"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Axis", "Axis"), editor.Component, axisInfo, "m_Axis"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_AutoConfigure", "Auto Configure Connected Anchor"), editor.Component, autoConfigAnchorInfo, "m_AutoConfigureConnectedAnchor"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_ConnectedAnchor", "Connected Anchor"), editor.Component, connectedAnchorInfo, "m_ConnectedAnchor"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_UseSpring", "Use Spring"), editor.Component, useSpringInfo, "m_UseSpring"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Spring", "Spring"), editor.Component, springInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_UseMotor", "Use Motor"), editor.Component, useMotorInfo, "m_UseMotor"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Motor", "Motor"), editor.Component, motorInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_UseLimits", "Use Limits"), editor.Component, useLimitsInfo, "m_UseLimits"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Limits", "Limits"), editor.Component, limitsInfo)
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_ConnectedBody", "Connected Body"), editor.Components, connectedBodyInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Anchor", "Anchor"), editor.Components, anchorInfo, "m_Anchor"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Axis", "Axis"), editor.Components, axisInfo, "m_Axis"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_AutoConfigure", "Auto Configure Connected Anchor"), editor.Components, autoConfigAnchorInfo, "m_AutoConfigureConnectedAnchor"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_ConnectedAnchor", "Connected Anchor"), editor.Components, connectedAnchorInfo, "m_ConnectedAnchor"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_UseSpring", "Use Spring"), editor.Components, useSpringInfo, "m_UseSpring"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Spring", "Spring"), editor.Components, springInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_UseMotor", "Use Motor"), editor.Components, useMotorInfo, "m_UseMotor"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Motor", "Motor"), editor.Components, motorInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_UseLimits", "Use Limits"), editor.Components, useLimitsInfo, "m_UseLimits"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_Limits", "Limits"), editor.Components, limitsInfo)
                 {
                     ChildDesciptors = new[]
                     {
@@ -51,10 +51,10 @@ namespace Battlehub.RTEditor
                         new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_ContactDistance", "Contact Distance"), null, Strong.PropertyInfo((JointLimits x) => x.contactDistance, "contactDistance")),
                     }
                 },
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakForce", "Break Force"), editor.Component, breakForceInfo, "m_BreakForce"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakTorque", "Break Torque"), editor.Component, breakTorqueInfo, "m_BreakTorque"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakEnableCollision", "Enable Collision"), editor.Component, enableCollisionInfo, "m_EnableCollision"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakEnablePreprocessing", "Enable Preprocessing"), editor.Component, enablePreporcessingInfo, "m_EnablePreprocessing"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakForce", "Break Force"), editor.Components, breakForceInfo, "m_BreakForce"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakTorque", "Break Torque"), editor.Components, breakTorqueInfo, "m_BreakTorque"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakEnableCollision", "Enable Collision"), editor.Components, enableCollisionInfo, "m_EnableCollision"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_HingeJoint_BreakEnablePreprocessing", "Enable Preprocessing"), editor.Components, enablePreporcessingInfo, "m_EnablePreprocessing"),
             };            
         }
     }

@@ -19,10 +19,10 @@ namespace Battlehub.RTEditor
 
             return new[]
             {
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_IsTrigger", "Is Trigger"), editor.Component, isTriggerInfo, "m_IsTrigger"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_Material", "Material"), editor.Component, materialInfo),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_Center", "Center"), editor.Component, centerInfo, "m_Center"),
-                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_Radius", "Radius"), editor.Component, radiusInfo, "m_Radius")
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_IsTrigger", "Is Trigger"), editor.Components, isTriggerInfo, "m_IsTrigger"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_Material", "Material"), editor.Components, materialInfo),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_Center", "Center"), editor.Components, centerInfo, "m_Center"),
+                new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_SphereCollider_Radius", "Radius"), editor.Components, radiusInfo, "m_Radius")
             };
         }
     }

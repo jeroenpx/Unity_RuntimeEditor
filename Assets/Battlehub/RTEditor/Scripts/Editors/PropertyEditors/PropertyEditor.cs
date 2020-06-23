@@ -1,10 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 using UnityEngine;
-using UnityEngine.UI;
 
 using Battlehub.RTCommon;
 
@@ -12,12 +10,13 @@ using UnityObject = UnityEngine.Object;
 using System.Linq;
 using System.Collections;
 using TMPro;
-using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
     public class CustomTypeFieldAccessor
     {
+        private int m_index;
+
         private MemberInfo m_memberInfo;
         private PropertyEditor<object> m_editor;
 
@@ -37,7 +36,7 @@ namespace Battlehub.RTEditor
         {
             get
             {
-                object obj = m_editor.GetValue();
+                object obj = m_editor.GetValue(m_index);
                 if (obj == null)
                 {
                     return null;
@@ -54,21 +53,26 @@ namespace Battlehub.RTEditor
             }
             set
             {
-                object obj = m_editor.GetValue();
-                if (m_memberInfo is FieldInfo)
+                int targetsCount = m_editor.Target != null ? m_editor.Targets.Length : 0;
+                for(int i = 0; i < targetsCount; ++i)
                 {
-                    ((FieldInfo)m_memberInfo).SetValue(obj, value);
+                    object obj = m_editor.GetValue(i);
+                    if (m_memberInfo is FieldInfo)
+                    {
+                        ((FieldInfo)m_memberInfo).SetValue(obj, value);
+                    }
+                    else if (m_memberInfo is PropertyInfo)
+                    {
+                        ((PropertyInfo)m_memberInfo).SetValue(obj, value, null);
+                    }
+                    m_editor.SetValue(obj, i);
                 }
-                else if (m_memberInfo is PropertyInfo)
-                {
-                    ((PropertyInfo)m_memberInfo).SetValue(obj, value, null);
-                }
-                m_editor.SetValue(obj);
             }
         }
 
-        public CustomTypeFieldAccessor(PropertyEditor<object> editor, MemberInfo fieldInfo, string name)
+        public CustomTypeFieldAccessor(PropertyEditor<object> editor, int index, MemberInfo fieldInfo, string name)
         {
+            m_index = index;
             m_editor = editor;
             m_memberInfo = fieldInfo;
             Name = name;
@@ -87,6 +91,8 @@ namespace Battlehub.RTEditor
 
     public class IListElementAccessor
     {
+        private int m_listIndex;
+
         private int m_index;
         public int Index
         {
@@ -114,7 +120,7 @@ namespace Battlehub.RTEditor
         {
             get
             {
-                IList list = GetList();
+                IList list = GetList(m_listIndex);
                 if(list == null)
                 {
                     return null;
@@ -129,20 +135,33 @@ namespace Battlehub.RTEditor
             }
             set
             {
-                IList list = GetList();
-                list[m_index] = value;
-                m_editor.SetValue(list);
+                int targetsCount = m_editor.Targets.Length;
+                for(int i = 0; i < targetsCount; ++i)
+                {
+                    IList list = GetList(i);
+                    list[m_index] = value;
+                    m_editor.SetValue(list, i);
+                }
             }
         }
 
-        private IList GetList()
+        private IList GetList(int index = -1)
         {
-            return m_editor.GetValue();
+            return m_editor.GetValue(index);
         }
 
+        [Obsolete("Use IListElementAccessor(IListEditor editor, int listIndex, int index, string name)")]
         public IListElementAccessor(IListEditor editor, int index, string name)
         {
             m_editor = editor;
+            m_index = index;
+            Name = name;
+        }
+
+        public IListElementAccessor(IListEditor editor, int listIndex, int index, string name)
+        {
+            m_editor = editor;
+            m_listIndex = listIndex;
             m_index = index;
             Name = name;
         }
@@ -152,6 +171,7 @@ namespace Battlehub.RTEditor
 
     public class PropertyEditor : MonoBehaviour
     {
+        protected Action<object, object> m_eraseTargetCallback;
         protected PropertyEditorCallback m_valueChangingCallback;
         protected PropertyEditorCallback m_valueChangedCallback;
         protected PropertyEditorCallback m_endEditCallback;
@@ -159,7 +179,7 @@ namespace Battlehub.RTEditor
         protected PropertyEditorCallback m_endRecordCallback;
         protected PropertyEditorCallback m_afterRedoCallback;
         protected PropertyEditorCallback m_afterUndoCallback;
-
+        
         private Dictionary<MemberInfo, PropertyDescriptor> m_childDescriptors;
         protected Dictionary<MemberInfo, PropertyDescriptor> ChildDescriptors
         {
@@ -168,8 +188,10 @@ namespace Battlehub.RTEditor
 
         [SerializeField]
         protected TextMeshProUGUI Label;
+
         [SerializeField]
         protected int Indent = 10;
+
         private int m_effectiveIndent;
         private bool m_enableUndo;
         private bool m_isEditing;
@@ -180,61 +202,29 @@ namespace Battlehub.RTEditor
             get { return m_lockValue; }
         }
 
+        private object[] m_targets;
+        public object[] Targets
+        {
+            get { return m_targets; }
+        }
+
+        private object[] m_accessors;
+        public object[] Accessors
+        {
+            get { return m_accessors; }
+        }
+
         public object Target
         {
-            get;
-            private set;
+            get { return m_targets != null && m_targets.Length > 0 ? m_targets[0] : null; }
         }
 
         public object Accessor
         {
-            get;
-            private set;
+            get { return m_accessors != null && m_accessors.Length > 0 ? m_accessors[0] : null; }
         }
 
-        //protected object[] m_targets;
-        //protected object[] m_accessors;
-
-        //protected object Target
-        //{
-        //    get
-        //    {
-        //        return m_targets != null && m_targets.Length > 0 ? m_targets[0] : null;
-        //    }
-        //    private set
-        //    {
-        //        if(value == null)
-        //        {
-        //            m_targets = null;
-        //        }
-        //        else
-        //        {
-        //            m_targets = new[] { value };
-        //        }
-        //    }
-        //}
         
-        //protected object Accessor
-        //{
-        //    get
-        //    {
-        //        return m_accessors != null && m_accessors.Length > 0 ? m_accessors[0] : null;
-        //    }
-        //    private set
-        //    {
-        //        if (value == null)
-        //        {
-        //            m_accessors = null;
-        //        }
-        //        else
-        //        {
-        //            m_accessors = new[] { value };
-        //        }
-        //    }
-        //}
-
-        protected Action<object, object> m_eraseTargetCallback;
-
         public MemberInfo MemberInfo
         {
             get;
@@ -301,17 +291,14 @@ namespace Battlehub.RTEditor
 
         protected virtual void AwakeOverride()
         {
-
         }
 
         protected virtual void StartOverride()
         {
-
         }
 
         protected virtual void OnDestroyOverride()
         {
-
         }
 
         public void Init(object target, MemberInfo memberInfo, string label, bool enableUndo = true,
@@ -319,6 +306,15 @@ namespace Battlehub.RTEditor
             PropertyEditorCallback endRecordCallback = null,
             PropertyEditorCallback afterRedoCallback = null,
             PropertyEditorCallback afterUndoCallback = null)
+        {
+            Init(target, target, memberInfo, null, label, null, null, null, enableUndo, null, beginRecordCallback, endRecordCallback, afterRedoCallback, afterUndoCallback);
+        }
+
+        public void Init(object[] target, MemberInfo memberInfo, string label, bool enableUndo = true,
+           PropertyEditorCallback beginRecordCallback = null,
+           PropertyEditorCallback endRecordCallback = null,
+           PropertyEditorCallback afterRedoCallback = null,
+           PropertyEditorCallback afterUndoCallback = null)
         {
             Init(target, target, memberInfo, null, label, null, null, null, enableUndo, null, beginRecordCallback, endRecordCallback, afterRedoCallback, afterUndoCallback);
         }
@@ -337,6 +333,30 @@ namespace Battlehub.RTEditor
             PropertyEditorCallback afterRedoCallback = null,
             PropertyEditorCallback afterUndoCallback = null)
         {
+            Init(new[] { target }, new[] { accessor }, memberInfo,
+                eraseTargetCallback,
+                label,
+                valueChangingCallback, valueChangedCallback, endEditCallback,
+                enableUndo,
+                childDescriptors,
+                beginRecordCallback, endRecordCallback,
+                afterRedoCallback, afterUndoCallback);   
+        }
+
+        public void Init(object[] targets, object[] accessors,
+           MemberInfo memberInfo,
+           Action<object, object> eraseTargetCallback = null,
+           string label = null,
+           PropertyEditorCallback valueChangingCallback = null,
+           PropertyEditorCallback valueChangedCallback = null,
+           PropertyEditorCallback endEditCallback = null,
+           bool enableUndo = true,
+           PropertyDescriptor[] childDescriptors = null,
+           PropertyEditorCallback beginRecordCallback = null,
+           PropertyEditorCallback endRecordCallback = null,
+           PropertyEditorCallback afterRedoCallback = null,
+           PropertyEditorCallback afterUndoCallback = null)
+        {
             m_enableUndo = enableUndo;
             m_valueChangingCallback = valueChangingCallback;
             m_valueChangedCallback = valueChangedCallback;
@@ -351,13 +371,21 @@ namespace Battlehub.RTEditor
                 m_childDescriptors = childDescriptors.ToDictionary(d => d.MemberInfo);
             }
             m_lockValue = true;
-            InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
-            m_lockValue = false;
-        }       
+            InitOverride(targets, accessors, memberInfo, eraseTargetCallback, label);
 
-        protected virtual void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
+#pragma warning disable 0618
+            InitOverride(targets[0], accessors[0], memberInfo, eraseTargetCallback, label);
+#pragma warning restore 0618
+
+            m_lockValue = false;
+        }
+
+        protected virtual void InitOverride(object[] targets, object[] accessors, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
         {
-            if(target == null)
+            m_targets = targets;
+            m_accessors = accessors;
+
+            if(Target == null)
             {
                 if (Label != null)
                 {
@@ -367,17 +395,11 @@ namespace Battlehub.RTEditor
                     }
                 }
                 return;
-                //throw new ArgumentNullException("target");
             }
 
-            IListElementAccessor arrayElement = target as IListElementAccessor;
+            IListElementAccessor arrayElement = Target as IListElementAccessor;
             if (arrayElement == null)
             {
-                //if (!(memberInfo is PropertyInfo) && !(memberInfo is FieldInfo))
-                //{
-                //    throw new ArgumentException("memberInfo should be PropertyInfo or FieldInfo");
-                //}
-
                 if (memberInfo is PropertyInfo)
                 {
                     Type propType = ((PropertyInfo)memberInfo).PropertyType;
@@ -411,8 +433,6 @@ namespace Battlehub.RTEditor
                 MemberInfoType = arrayElement.Type;
             }
 
-            Target = target;
-            Accessor = accessor;
             MemberInfo = memberInfo;
             m_eraseTargetCallback = eraseTargetCallback;
         }
@@ -477,7 +497,13 @@ namespace Battlehub.RTEditor
         {
             if(m_enableUndo)
             {
-                Editor.Undo.BeginRecordValue(Target, Accessor, MemberInfo);
+                if(m_targets != null)
+                {
+                    for(int i = 0; i < m_targets.Length; ++i)
+                    {
+                        Editor.Undo.BeginRecordValue(m_targets[i], m_accessors[i], MemberInfo);
+                    }
+                }
             }
             else
             {
@@ -492,14 +518,28 @@ namespace Battlehub.RTEditor
         {
             if(m_enableUndo)
             {
-                if(m_afterRedoCallback != null && m_afterUndoCallback != null)
+                if(m_targets != null && m_targets.Length > 0)
                 {
-                    Editor.Undo.EndRecordValue(Target, Accessor, MemberInfo, m_eraseTargetCallback, () => m_afterRedoCallback(), () => m_afterUndoCallback());
+                    Editor.Undo.BeginRecord();
+
+                    if (m_afterRedoCallback != null && m_afterUndoCallback != null)
+                    {
+                        for (int i = 0; i < m_targets.Length; ++i)
+                        {
+                            Editor.Undo.EndRecordValue(m_targets[i], m_accessors[i], MemberInfo, m_eraseTargetCallback, () => m_afterRedoCallback(), () => m_afterUndoCallback());
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < m_targets.Length; ++i)
+                        {
+                            Editor.Undo.EndRecordValue(m_targets[i], m_accessors[i], MemberInfo, m_eraseTargetCallback);
+                        }
+                    }
+
+                    Editor.Undo.EndRecord();
                 }
-                else
-                {
-                    Editor.Undo.EndRecordValue(Target, Accessor, MemberInfo, m_eraseTargetCallback);
-                }
+              
             }
             else
             {
@@ -525,6 +565,15 @@ namespace Battlehub.RTEditor
                 m_valueChangedCallback();
             }
         }
+
+        #region obsolete
+
+        [Obsolete("Use  void InitOverride(object[] targets, object[] accessors, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)")]
+        protected virtual void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
+        {
+        }
+
+        #endregion
     }
     public abstract class ConvertablePropertyEditor<T> : PropertyEditor<T>
     {
@@ -562,7 +611,7 @@ namespace Battlehub.RTEditor
     {
         protected T m_currentValue;
    
-        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
+        protected override void InitOverride(object[] target, object[] accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback = null, string label = null)
         {
             base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
             SetInputField(GetValue());
@@ -572,18 +621,62 @@ namespace Battlehub.RTEditor
         {
         }
 
-        public T GetValue()
+        /// <summary>
+        /// Returns true if target properties has different (mixed) values
+        /// </summary>
+        public virtual bool HasMixedValues()
         {
-            if(Target is UnityObject)
+            return HasMixedValues(_GetValue, Equals);
+        }
+
+        protected virtual bool HasMixedValues(Func<object, object, object> getValue, Func<object, object, bool> equals)
+        {
+            object[] targets = Targets;
+            if (targets == null || targets.Length == 0)
             {
-                UnityObject obj = (UnityObject)Target;
-                if(obj == null)
+                return false;
+            }
+
+            object[] accessors = Accessors;
+            object val0 = getValue(targets[0], accessors[0]);
+            for (int i = 1; i < targets.Length; ++i)
+            {
+                object val1 = getValue(targets[i], accessors[i]);
+                if (!equals(val0, val1))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public T GetValue(int index = -1)
+        {
+            if(index == -1)
+            {
+                return (T)_GetValue(Target, Accessor);
+            }
+
+            return (T)_GetValue(Targets[index], Accessors[index]);   
+        }
+
+        protected T GetValue(object target, object accessor)
+        {
+            return (T)_GetValue(target, accessor);
+        }
+
+        private object _GetValue(object target, object accessor)
+        {
+            if (target is UnityObject)
+            {
+                UnityObject obj = (UnityObject)target;
+                if (obj == null)
                 {
                     return default(T);
                 }
             }
 
-            if (Accessor == null)
+            if (accessor == null)
             {
                 return default(T);
             }
@@ -591,20 +684,30 @@ namespace Battlehub.RTEditor
             if (MemberInfo is PropertyInfo)
             {
                 PropertyInfo prop = (PropertyInfo)MemberInfo;
-                return (T)prop.GetValue(Accessor, null);
+                return prop.GetValue(accessor, null);
             }
-            
 
             FieldInfo field = (FieldInfo)MemberInfo;
-            return (T)field.GetValue(Accessor);
+            return field.GetValue(accessor);
         }
 
-        public void SetValue(T value)
+        /// <summary>
+        /// Set Target value
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <param name="index">accessor index. Use all accessors if index == -1</param>
+        public void SetValue(T value, int index = -1)
         {
             if(LockValue)
             {
                 return;
             }
+
+            if(Target == null)
+            {
+                return;
+            }
+
             if (Target is UnityObject)
             {
                 UnityObject obj = (UnityObject)Target;
@@ -615,21 +718,37 @@ namespace Battlehub.RTEditor
             }
 
             RaiseValueChanging();
-            BeginEdit();
+            BeginEdit(); //where is EndEdit? is this mistake?
             if (MemberInfo is PropertyInfo)
             {
                 PropertyInfo prop = (PropertyInfo)MemberInfo;
-                if(Accessor != null)
+                object[] accessors = Accessors;
+                if (index < 0)
                 {
-                    prop.SetValue(Accessor, value, null);
+                    for (int i = 0; i < accessors.Length; ++i)
+                    {
+                        prop.SetValue(accessors[i], value, null);
+                    }
                 }
+                else
+                {
+                    prop.SetValue(accessors[index], value, null);
+                }  
             }
             else
             {
                 FieldInfo field = (FieldInfo)MemberInfo;
-                if(Accessor != null)
+                object[] accessors = Accessors;
+                if (index < 0)
                 {
-                    field.SetValue(Accessor, value);
+                    for (int i = 0; i < accessors.Length; ++i)
+                    {
+                        field.SetValue(accessors[i], value);
+                    }
+                }
+                else
+                {
+                    field.SetValue(accessors[index], value);
                 }
             }
 
@@ -645,8 +764,7 @@ namespace Battlehub.RTEditor
             {
                 return;
             }
-            
-            
+
             m_nextUpate = Time.time + m_updateInterval;
             
             if (MemberInfo == null)
@@ -674,13 +792,18 @@ namespace Battlehub.RTEditor
         protected override void ReloadOverride(bool force)
         {
             base.ReloadOverride(force);
-            
+
             T value = GetValue();
-            if (force || !EqualityComparer<T>.Default.Equals(m_currentValue, value))
+            if (force || !Equals(m_currentValue, value)) // || HasMixedValues ?
             {
                 m_currentValue = value;
                 SetInputField(value);
             }
+        }
+
+        protected virtual bool Equals(T x, T y)
+        {
+            return EqualityComparer<T>.Default.Equals(x, y);
         }
     }
 }

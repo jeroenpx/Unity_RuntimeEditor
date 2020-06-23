@@ -56,9 +56,9 @@ namespace Battlehub.RTEditor
             }
         }
 
-        protected override void InitOverride(object target, object accessor, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
+        protected override void InitOverride(object[] targets, object[] accessors, MemberInfo memberInfo, Action<object, object> eraseTargetCallback, string label = null)
         {
-            base.InitOverride(target, accessor, memberInfo, eraseTargetCallback, label);
+            base.InitOverride(targets, accessors, memberInfo, eraseTargetCallback, label);
            
             FieldInfo[] serializableFields = Reflection.GetSerializableFields(memberInfo.GetType(), false);
 
@@ -135,25 +135,35 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            CustomTypeFieldAccessor accessor = null;
+            List<CustomTypeFieldAccessor> accessorsList = new List<CustomTypeFieldAccessor>();
+            int targetsCount = Targets.Length;
             if(ChildDescriptors == null)
             {
-                accessor = new CustomTypeFieldAccessor(this, memberInfo, memberInfo.Name);
+                for(int i = 0; i < targetsCount; ++i)
+                {
+                    accessorsList.Add(new CustomTypeFieldAccessor(this, i, memberInfo, memberInfo.Name));
+                }
+                
             }
             else
             {
                 PropertyDescriptor childPropertyDescriptor;
                 if(ChildDescriptors.TryGetValue(memberInfo, out childPropertyDescriptor))
                 {
-                    accessor = new CustomTypeFieldAccessor(
-                        this, 
-                        childPropertyDescriptor.MemberInfo, childPropertyDescriptor.Label);
+                    for (int i = 0; i < targetsCount; ++i)
+                    {
+                        accessorsList.Add(new CustomTypeFieldAccessor(
+                            this, i, childPropertyDescriptor.MemberInfo, childPropertyDescriptor.Label));
+                    }
                 }
             }
-            if(accessor != null)
+
+            if(accessorsList.Count > 0)
             {
+                CustomTypeFieldAccessor[] accessors = accessorsList.ToArray();
+
                 editor.transform.SetParent(Panel, false);
-                editor.Init(accessor, accessor, accessor.GetType().GetProperty("Value"), null, accessor.Name, OnValueChanging, OnValueChanged, null, false);
+                editor.Init(accessors, accessors, accessors[0].GetType().GetProperty("Value"), null, accessors[0].Name, OnValueChanging, OnValueChanged, null, false);
             }
         }
 

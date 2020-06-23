@@ -192,13 +192,7 @@ namespace Battlehub.RTEditor
 
                 foreach (RuntimeAnimationProperty property in Clip.Properties)
                 {
-                    //Type componentType = property.ComponentType;
-                    //if(componentType != null)
-                    //{
-                    //    property.Component = Target.GetComponent(componentType);
-                    //}
-
-                    ResolveComponent(property);
+                    ResolveComponent(property, Target);
 
                     m_props.Add(property);
                     
@@ -492,7 +486,7 @@ namespace Battlehub.RTEditor
                 RuntimeAnimationProperty property = m_props[i];
                 if(property.ComponentType == type && property.ComponentIsNull)
                 {
-                    ResolveComponent(property);
+                    ResolveComponent(property, Target);
                     //property.Component = component;
                     m_propertiesTreeView.DataBindItem(property);
                     if(property.Children != null)
@@ -507,7 +501,7 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void ResolveComponent(RuntimeAnimationProperty property)
+        private void ResolveComponent(RuntimeAnimationProperty property, RuntimeAnimation target)
         {
             Type componentType = property.ComponentType;
             if(componentType == null)
@@ -515,7 +509,7 @@ namespace Battlehub.RTEditor
                 return;
             }
 
-            m_voidComponentEditor.Component = Target.GetComponent(componentType);
+            m_voidComponentEditor.Components = new[] { target.GetComponent(componentType) };
 
             PropertyDescriptor[] propertyDescriptors = m_editorsMap.GetPropertyDescriptors(componentType, m_voidComponentEditor);
             for(int i = 0; i < propertyDescriptors.Length; ++i)
@@ -523,11 +517,42 @@ namespace Battlehub.RTEditor
                 PropertyDescriptor desc = propertyDescriptors[i];
                 if(property.PropertyName == desc.MemberInfo.Name)
                 {
-                    property.Component = desc.Target;
+                    property.Component = desc.Target; 
                     break;
                 }
             }
-            
+        }
+
+        public void ResolveComponents(RuntimeAnimationClip clip, RuntimeAnimation animation)
+        {
+            foreach(RuntimeAnimationProperty property in clip.Properties)
+            {
+                _ResolveComponents(property, animation);
+            }
+        }
+
+        private void _ResolveComponents(RuntimeAnimationProperty property, RuntimeAnimation animation)
+        {
+            if(property.HasChildren)
+            {
+                if(property.ComponentIsNull)
+                {
+                    ResolveComponent(property, animation);
+                }
+                
+                foreach (RuntimeAnimationProperty child in property.Children)
+                {
+                    _ResolveComponents(child, animation);
+                }
+            }
+            else
+            {
+                if(property.ComponentIsNull)
+                {
+                    ResolveComponent(property, animation);
+                }                
+            }
+          
         }
     }
 }

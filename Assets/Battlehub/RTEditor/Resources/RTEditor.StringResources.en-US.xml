@@ -239,7 +239,7 @@
 		<StringResource id="ID_RTEditor_CD_SpringJoint_EnableCollision" value="Enable Collision"/>
 		<StringResource id="ID_RTEditor_CD_SpringJoint_EnablePreprocessing" value="Enable Preprocessing"/>
 		
-		<StringResource id="ID_RTEditor_CD_StandardMaterial_RenderingMode" value="RenderingMode"/>
+		<StringResource id="ID_RTEditor_CD_StandardMaterial_RenderingMode" value="Rendering Mode"/>
 		<StringResource id="ID_RTEditor_CD_StandardMaterial_Albedo" value="Albedo"/>
 		<StringResource id="ID_RTEditor_CD_StandardMaterial_AlbedoColor" value="Albedo Color"/>
 		<StringResource id="ID_RTEditor_CD_StandardMaterial_AlphaCutoff" value="Alpha Cutoff"/>

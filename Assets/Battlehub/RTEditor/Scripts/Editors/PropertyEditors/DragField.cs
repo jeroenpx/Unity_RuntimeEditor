@@ -71,6 +71,10 @@ namespace Battlehub.RTEditor
                 d += IncrementFactor * eventData.delta.x;
                 Field.text = d.ToString();
             }
+            else if(string.IsNullOrEmpty(Field.text))
+            {
+                Field.text = (IncrementFactor * eventData.delta.x).ToString();
+            }
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
