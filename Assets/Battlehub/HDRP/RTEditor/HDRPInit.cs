@@ -12,7 +12,11 @@ namespace Battlehub.RTEditor.HDRP
     {
         private GameObject m_foregroundOutput;
         private IRenderPipelineCameraUtility m_cameraUtility;
-    
+        private OutlineManagerHDRP m_outlineManager;
+
+        [SerializeField]
+        private Material m_selectionMaterial;
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -22,7 +26,9 @@ namespace Battlehub.RTEditor.HDRP
             }
 
             m_cameraUtility = GetComponent<IRenderPipelineCameraUtility>();
-
+            m_outlineManager = gameObject.AddComponent<OutlineManagerHDRP>();
+            m_outlineManager.SelectionMaterial = m_selectionMaterial;
+            
             IRTE rte = IOC.Resolve<IRTE>();
             Canvas foregroundCanvas = IOC.Resolve<IRTEAppearance>().UIForegroundScaler.GetComponent<Canvas>();
             Camera foregroundCamera = foregroundCanvas.worldCamera;
@@ -63,6 +69,26 @@ namespace Battlehub.RTEditor.HDRP
                     m_cameraUtility.SetBackgroundColor(backgroundCamera, new Color(0, 0, 0, 0));
                 }
             }   
+        }
+
+        protected override void OnEditorClosed()
+        {
+            base.OnEditorClosed();
+            if(m_outlineManager != null)
+            {
+                Destroy(m_outlineManager);
+                m_outlineManager = null;
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if(m_outlineManager != null)
+            {
+                Destroy(m_outlineManager);
+                m_outlineManager = null;
+            }
         }
     }
 }

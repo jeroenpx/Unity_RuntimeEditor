@@ -16,6 +16,11 @@ namespace Battlehub.RTHandles.HDRP
 
         [SerializeField]
         private Material m_selectionMaterial = null;
+        public Material SelectionMaterial
+        {
+            get { return m_selectionMaterial; }
+            set { m_selectionMaterial = value; }
+        }
 
         private IRuntimeSelection m_selectionOverride;
         public IRuntimeSelection Selection
