@@ -93,8 +93,11 @@ namespace Battlehub.RTEditor
             m_editor = IOC.Resolve<IRuntimeEditor>();
 
             m_filterInput = m_hierarchyView.FilterInput;
-            m_filterInput.onValueChanged.AddListener(OnFiltering);
-
+            if(m_filterInput != null)
+            {
+                m_filterInput.onValueChanged.AddListener(OnFiltering);
+            }
+            
             Transform parent = m_hierarchyView.TreePanel != null ? m_hierarchyView.TreePanel : transform;
             m_treeView = Instantiate(m_hierarchyView.TreeViewPrefab, parent).GetComponent<VirtualizingTreeView>();
             m_treeView.name = "HierarchyTreeView";

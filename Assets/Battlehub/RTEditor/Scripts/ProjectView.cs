@@ -4,6 +4,8 @@ using System.Linq;
 using Battlehub.RTSL.Interface;
 using Battlehub.UIControls.DockPanels;
 using System.Collections;
+using TMPro;
+using Battlehub.UIControls;
 
 namespace Battlehub.RTEditor
 {
@@ -18,6 +20,10 @@ namespace Battlehub.RTEditor
         private ProjectTreeView m_projectTree = null;
         [SerializeField]
         private ProjectFolderView m_projectResources = null;
+        [SerializeField]
+        private TMP_InputField m_filterInput = null;
+        private string m_filter = string.Empty;
+        private float m_applyFilterTime;
         
         protected override void AwakeOverride()
         {
@@ -49,6 +55,8 @@ namespace Battlehub.RTEditor
                 dockPanelsRoot.CursorHelper = Editor.CursorHelper;
             }
 
+            UnityEventHelper.AddListener(m_filterInput, inputField => inputField.onValueChanged, OnFiltering);
+
             m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
             m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
             m_projectResources.ItemsDeleted += OnProjectResourcesDeleted;
@@ -75,7 +83,6 @@ namespace Battlehub.RTEditor
                 m_projectTree.SelectedItem = m_project.Root;
             }
         }
-
 
         protected override void OnDestroyOverride()
         {
@@ -106,6 +113,19 @@ namespace Battlehub.RTEditor
                 m_project.MoveCompleted -= OnMoveCompleted;
                 m_project.SaveCompleted -= OnSaveCompleted;
                 m_project.DuplicateCompleted -= OnDuplicateCompleted;
+            }
+
+            UnityEventHelper.RemoveListener(m_filterInput, inputField => inputField.onValueChanged, OnFiltering);
+        }
+
+        protected override void UpdateOverride()
+        {
+            base.UpdateOverride();
+
+            if (Time.time > m_applyFilterTime)
+            {
+                m_applyFilterTime = float.PositiveInfinity;
+                ApplyFilter();
             }
         }
 
@@ -138,7 +158,6 @@ namespace Battlehub.RTEditor
 
         private void OnImportCompleted(Error error, AssetItem[] result)
         {
-            //Editor.IsBusy = false;
             if (error.HasError)
             {
                 m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToImportAssets", "Unable to import assets") , error.ErrorText);
@@ -173,8 +192,7 @@ namespace Battlehub.RTEditor
             if (error.HasError)
             {
                 m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_UnableToRemove", "Unable to remove"), error.ErrorText);
-            }
-           
+            }  
         }
 
         private void OnDeleteCompleted(Error error, ProjectItem[] result)
@@ -195,7 +213,6 @@ namespace Battlehub.RTEditor
                     Editor.Undo.Enabled = wasEnabled;
                 }
             }
-            
         }
 
         private void OnRenameCompleted(Error error, ProjectItem result)
@@ -258,8 +275,17 @@ namespace Battlehub.RTEditor
 
         private void OnProjectTreeSelectionChanged(object sender, SelectionChangedArgs<ProjectItem> e)
         {
-            m_project.GetAssetItems(e.NewItems, (error, assets) =>
-            {  
+            if (m_filterInput != null)
+            {
+                m_filterInput.SetTextWithoutNotify(string.Empty);
+            }
+            ApplyFilter();
+        }
+
+        private void DataBind(ProjectItem[] projectItems)
+        {
+            m_project.GetAssetItems(projectItems, (error, assets) =>
+            {
                 if (error.HasError)
                 {
                     m_windowManager.MessageBox(m_localization.GetString("ID_RTEditor_ProjectView_CantGetAssets", "Can't get assets"), error.ToString());
@@ -267,24 +293,24 @@ namespace Battlehub.RTEditor
                 }
 
                 StartCoroutine(ProjectItemView.CoCreatePreviews(assets, m_project, m_resourcePreview));
-                StartCoroutine(CoSetItems(e, assets));
+                StartCoroutine(CoSetItems(projectItems, assets));
             });
         }
 
-        private void SetItems(SelectionChangedArgs<ProjectItem> e, ProjectItem[] assets)
+        private void SetItems(ProjectItem[] projectItems, ProjectItem[] assets)
         {
             bool wasEnabled = Editor.Selection.Enabled;
             Editor.Selection.Enabled = false;
-            m_projectResources.SetItems(e.NewItems.ToArray(), assets, true);
+            m_projectResources.SetItems(projectItems.ToArray(), assets, true);
             Editor.Selection.Enabled = true;
         }
 
-        private IEnumerator CoSetItems(SelectionChangedArgs<ProjectItem> e, ProjectItem[] assets)
+        private IEnumerator CoSetItems(ProjectItem[] projectItems, ProjectItem[] assets)
         {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
-            SetItems(e, assets);
+            SetItems(projectItems, assets);
         }
 
         private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)
@@ -368,5 +394,23 @@ namespace Battlehub.RTEditor
             editor.DeleteAssets(e.ProjectItems);
         }
 
+        private void OnFiltering(string value)
+        {
+            m_filter = value;
+            m_applyFilterTime = Time.time + 0.3f;
+        }
+
+        private void ApplyFilter()
+        {
+            Debug.Log(m_filter);
+            if (!string.IsNullOrWhiteSpace(m_filter))
+            {
+                DataBind(m_project.Root.Flatten(false, true));
+            }
+            else
+            {
+                DataBind(m_projectTree.SelectedFolders);
+            }
+        }
     }
 }
