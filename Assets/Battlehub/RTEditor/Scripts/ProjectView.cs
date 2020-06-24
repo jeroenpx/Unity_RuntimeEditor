@@ -23,6 +23,7 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private TMP_InputField m_filterInput = null;
         private string m_filter = string.Empty;
+        private bool m_tryToChangeSelectedFolder;
         private float m_applyFilterTime;
         
         protected override void AwakeOverride()
@@ -57,10 +58,10 @@ namespace Battlehub.RTEditor
 
             UnityEventHelper.AddListener(m_filterInput, inputField => inputField.onValueChanged, OnFiltering);
 
-            m_projectResources.ItemDoubleClick += OnProjectResourcesDoubleClick;
-            m_projectResources.ItemRenamed += OnProjectResourcesRenamed; 
-            m_projectResources.ItemsDeleted += OnProjectResourcesDeleted;
-            m_projectResources.SelectionChanged += OnProjectResourcesSelectionChanged;
+            m_projectResources.ItemDoubleClick += OnProjectFolderItemDoubleClick;
+            m_projectResources.ItemRenamed += OnProjectFolderItemRenamed; 
+            m_projectResources.ItemsDeleted += OnProjectFolderItemDeleted;
+            m_projectResources.SelectionChanged += OnProjectFolderSelectionChanged;
                 
             m_projectTree.SelectionChanged += OnProjectTreeSelectionChanged;
             m_projectTree.ItemRenamed += OnProjectTreeItemRenamed;
@@ -89,10 +90,10 @@ namespace Battlehub.RTEditor
             base.OnDestroyOverride();
             if (m_projectResources != null)
             {
-                m_projectResources.ItemDoubleClick -= OnProjectResourcesDoubleClick;
-                m_projectResources.ItemRenamed -= OnProjectResourcesRenamed;
-                m_projectResources.ItemsDeleted -= OnProjectResourcesDeleted;
-                m_projectResources.SelectionChanged -= OnProjectResourcesSelectionChanged;
+                m_projectResources.ItemDoubleClick -= OnProjectFolderItemDoubleClick;
+                m_projectResources.ItemRenamed -= OnProjectFolderItemRenamed;
+                m_projectResources.ItemsDeleted -= OnProjectFolderItemDeleted;
+                m_projectResources.SelectionChanged -= OnProjectFolderSelectionChanged;
             }
 
             if(m_projectTree != null)
@@ -279,12 +280,14 @@ namespace Battlehub.RTEditor
             {
                 m_filterInput.SetTextWithoutNotify(string.Empty);
             }
+            m_filter = string.Empty;
+            m_tryToChangeSelectedFolder = false;
             ApplyFilter();
         }
 
-        private void DataBind(ProjectItem[] projectItems)
+        private void DataBind(ProjectItem[] projectItems, string searchPattern)
         {
-            m_project.GetAssetItems(projectItems, (error, assets) =>
+            m_project.GetAssetItems(projectItems, searchPattern, (error, assets) =>
             {
                 if (error.HasError)
                 {
@@ -313,13 +316,13 @@ namespace Battlehub.RTEditor
             SetItems(projectItems, assets);
         }
 
-        private void OnProjectResourcesDeleted(object sender, ProjectTreeEventArgs e)
+        private void OnProjectFolderItemDeleted(object sender, ProjectTreeEventArgs e)
         {
             IRuntimeEditor editor = IOC.Resolve<IRuntimeEditor>();
             editor.DeleteAssets(e.ProjectItems);
         }
 
-        private void OnProjectResourcesDoubleClick(object sender, ProjectTreeEventArgs e)
+        private void OnProjectFolderItemDoubleClick(object sender, ProjectTreeEventArgs e)
         {
             if(e.ProjectItem == null)
             {
@@ -348,14 +351,14 @@ namespace Battlehub.RTEditor
             }
         }
 
-        private void OnProjectResourcesRenamed(object sender, ProjectTreeRenamedEventArgs e)
+        private void OnProjectFolderItemRenamed(object sender, ProjectTreeRenamedEventArgs e)
         {
             m_projectTree.UpdateProjectItem(e.ProjectItem);            
             Editor.IsBusy = true;
             m_project.Rename(e.ProjectItem, e.OldName);
         }
 
-        private void OnProjectResourcesSelectionChanged(object sender, ProjectTreeEventArgs e)
+        private void OnProjectFolderSelectionChanged(object sender, ProjectTreeEventArgs e)
         {
             if(m_projectResources.SelectedItems == null)
             {
@@ -396,20 +399,34 @@ namespace Battlehub.RTEditor
 
         private void OnFiltering(string value)
         {
+            m_tryToChangeSelectedFolder = !string.IsNullOrWhiteSpace(m_filter) && string.IsNullOrWhiteSpace(value);
             m_filter = value;
             m_applyFilterTime = Time.time + 0.3f;
         }
 
         private void ApplyFilter()
         {
-            Debug.Log(m_filter);
             if (!string.IsNullOrWhiteSpace(m_filter))
             {
-                DataBind(m_project.Root.Flatten(false, true));
+                DataBind(m_project.Root.Flatten(false, true), m_filter);
             }
             else
             {
-                DataBind(m_projectTree.SelectedFolders);
+                if(m_tryToChangeSelectedFolder)
+                {
+                    ProjectItem selectedFolder = m_projectTree.SelectedItem;
+                    ProjectItem[] selectedItems = m_projectResources.SelectedItems;
+                    if (selectedFolder != null && selectedItems != null && selectedItems.Length > 0)
+                    {
+                        if (!selectedItems.Any(item => item.Parent == selectedFolder))
+                        {
+                            m_projectTree.SelectedItem = selectedItems[0].Parent;
+                            return;
+                        }
+                    }
+                }
+
+                DataBind(m_projectTree.SelectedFolders, m_filter);
             }
         }
     }

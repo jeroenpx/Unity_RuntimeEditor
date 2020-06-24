@@ -37,6 +37,7 @@ namespace Battlehub.RTSL
         void GetProjectTree(string projectPath, StorageEventHandler<ProjectItem> callback);
         void GetPreviews(string projectPath, string[] assetPath, StorageEventHandler<Preview[]> callback);
         void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback);
+        void GetPreviews(string projectPath, string[] folderPath, string searchPattern, StorageEventHandler<Preview[][]> callback);
         void Save(string projectPath, string[] folderPaths, AssetItem[] assetItems, PersistentObject[] persistentObjects, ProjectInfo projectInfo, bool previewOnly, StorageEventHandler callback);
         void Save(string projectPath, AssetBundleInfo assetBundleInfo, ProjectInfo project, StorageEventHandler callback);
         void Load(string projectPath, string[] assetPaths, Type[] types, StorageEventHandler<PersistentObject[]> callback);
@@ -432,6 +433,11 @@ namespace Battlehub.RTSL
 
         public void GetPreviews(string projectPath, string[] folderPath, StorageEventHandler<Preview[][]> callback)
         {
+            GetPreviews(projectPath, folderPath, string.Empty, callback);
+        }
+
+        public void GetPreviews(string projectPath, string[] folderPath, string searchPattern, StorageEventHandler<Preview[][]> callback)
+        {
             projectPath = FullPath(projectPath);
 
             ISerializer serializer = IOC.Resolve<ISerializer>();
@@ -444,7 +450,16 @@ namespace Battlehub.RTSL
                     continue;
                 }
 
-                string[] files = Directory.GetFiles(path, "*" + PreviewExt);
+                if(searchPattern == null)
+                {
+                    searchPattern = string.Empty;
+                }
+                else
+                {
+                    searchPattern = searchPattern.Replace("..", ".");
+                }
+
+                string[] files = Directory.GetFiles(path, string.Format("*{0}*{1}", searchPattern, PreviewExt));
                 Preview[] previews = new Preview[files.Length];
                 for(int j = 0; j < files.Length; ++j)
                 {

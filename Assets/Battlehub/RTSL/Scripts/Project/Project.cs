@@ -925,18 +925,34 @@ namespace Battlehub.RTSL
             ProjectAsyncOperation<ProjectItem[]> ao = new ProjectAsyncOperation<ProjectItem[]>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _GetAssetItems(folders, callback, ao));
+                m_actionsQueue.Enqueue(() => _GetAssetItems(folders, string.Empty, callback, ao));
             }
             else
             {
                 IsBusy = true;
-                _GetAssetItems(folders, callback, ao);
+                _GetAssetItems(folders, string.Empty, callback, ao);
             }
             
             return ao;
         }
 
-        private void _GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback, ProjectAsyncOperation<ProjectItem[]> ao)
+        public ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, string searchPattern, ProjectEventHandler<ProjectItem[]> callback)
+        {
+            ProjectAsyncOperation<ProjectItem[]> ao = new ProjectAsyncOperation<ProjectItem[]>();
+            if (IsBusy)
+            {
+                m_actionsQueue.Enqueue(() => _GetAssetItems(folders, searchPattern, callback, ao));
+            }
+            else
+            {
+                IsBusy = true;
+                _GetAssetItems(folders, searchPattern, callback, ao);
+            }
+
+            return ao;
+        }
+
+        private void _GetAssetItems(ProjectItem[] folders, string searchPattern, ProjectEventHandler<ProjectItem[]> callback, ProjectAsyncOperation<ProjectItem[]> ao)
         {
             m_storage.GetPreviews(m_projectPath, folders.Select(f => f.ToString()).ToArray(), (error, result) =>
             {
@@ -959,11 +975,11 @@ namespace Battlehub.RTSL
                     IsBusy = false;
                     return;
                 }
-                OnGetPreviewsCompleted(folders, ao, callback, error, result);
+                OnGetPreviewsCompleted(folders, searchPattern, ao, callback, error, result);
             });
         }
 
-        private void OnGetPreviewsCompleted(ProjectItem[] folders, ProjectAsyncOperation<ProjectItem[]> ao, ProjectEventHandler<ProjectItem[]> callback, Error error, Preview[][] result)
+        private void OnGetPreviewsCompleted(ProjectItem[] folders, string searchPattern, ProjectAsyncOperation<ProjectItem[]> ao, ProjectEventHandler<ProjectItem[]> callback, Error error, Preview[][] result)
         {
             for (int i = 0; i < result.Length; ++i)
             {
@@ -1000,7 +1016,12 @@ namespace Battlehub.RTSL
                 }
             }
 
-            ProjectItem[] projectItems = folders.Where(f => f.Children != null).SelectMany(f => f.Children).ToArray();
+            if(searchPattern == null)
+            {
+                searchPattern = string.Empty;
+            }
+
+            ProjectItem[] projectItems = folders.Where(f => f.Children != null).SelectMany(f => f.Children).Where(item => item.Name.ToLower().Contains(searchPattern.ToLower())).ToArray();
             if (callback != null)
             {
                 callback(error, projectItems);

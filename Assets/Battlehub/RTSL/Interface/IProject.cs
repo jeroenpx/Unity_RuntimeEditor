@@ -108,6 +108,7 @@ namespace Battlehub.RTSL.Interface
 
         ProjectAsyncOperation<AssetItem[]> GetAssetItems(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null); /*no events raised*/
         ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, ProjectEventHandler<ProjectItem[]> callback = null); /*GetAssetItemsCompleted raised*/
+        ProjectAsyncOperation<ProjectItem[]> GetAssetItems(ProjectItem[] folders, string searchPattern, ProjectEventHandler<ProjectItem[]> callback = null);
 
         ProjectAsyncOperation<object[]> GetDependencies(object obj, bool exceptMappedObject = false, ProjectEventHandler<object[]> callback = null); /*no events raised*/
 
