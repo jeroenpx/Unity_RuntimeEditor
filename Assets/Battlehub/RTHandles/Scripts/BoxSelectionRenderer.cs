@@ -151,6 +151,7 @@ namespace Battlehub.RTHandles
             int width = -1,
             int height = -1)
         {
+            
             bool autoSize = width < 0 || height < 0;
 
             int _width = autoSize ? (int)camera.pixelRect.width : width;
@@ -165,6 +166,13 @@ namespace Battlehub.RTHandles
             renderCam.clearFlags = CameraClearFlags.SolidColor;
             renderCam.backgroundColor = Color.white;
             renderCam.cullingMask = 0;
+
+            IRenderPipelineCameraUtility cameraUtility = IOC.Resolve<IRenderPipelineCameraUtility>();
+            if(cameraUtility != null)
+            {
+                cameraUtility.EnablePostProcessing(renderCam, false);
+                cameraUtility.SetBackgroundColor(renderCam, Color.white);
+            }
 
             renderCam.allowHDR = false;
             renderCam.allowMSAA = false;
@@ -195,23 +203,25 @@ namespace Battlehub.RTHandles
             renderCam.targetTexture = rt;
             RenderTexture.active = rt;
 
-            CommandBuffer commandBuffer = new CommandBuffer();
-            commandBuffer.name = "RenderBoxSelection";
             Material replacementMaterial = new Material(shader);
-            foreach(Renderer renderer in renderers)
+
+            IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
+            IRTECamera rteCamera = graphics.CreateCamera(renderCam, CameraEvent.AfterForwardAlpha, false, true);
+            rteCamera.RenderersCache.MaterialOverride = replacementMaterial;
+            rteCamera.Camera.name = "BoxSelectionCamera";
+            foreach (Renderer renderer in renderers)
             {
                 Material[] materials = renderer.sharedMaterials;
-                for(int i = 0; i < materials.Length; ++i)
+                for (int i = 0; i < materials.Length; ++i)
                 {
-                    if(materials[i] != null)
+                    if (materials[i] != null)
                     {
-                        commandBuffer.DrawRenderer(renderer, replacementMaterial, i, -1);
+                        rteCamera.RenderersCache.Add(renderer);
                     }
                 }
             }
-            renderCam.AddCommandBuffer(CameraEvent.AfterForwardAlpha, commandBuffer);
 
-            if(RenderPipelineInfo.Type != RPType.Standard)
+            if (RenderPipelineInfo.Type != RPType.Standard)
             {
                 bool invertCulling = GL.invertCulling;
                 GL.invertCulling = true;
@@ -232,7 +242,8 @@ namespace Battlehub.RTHandles
             RenderTexture.ReleaseTemporary(rt);
 
             UnityObject.DestroyImmediate(go);
-
+#warning Not tested
+            UnityObject.Destroy(replacementMaterial);
             //System.IO.File.WriteAllBytes("Assets/box_selection.png", img.EncodeToPNG());
 
             return img;

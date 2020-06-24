@@ -4,33 +4,37 @@ using UnityEngine;
 using UnityEditor;
 
 using UnityObject = UnityEngine.Object;
+using Battlehub.RTCommon;
 
 namespace Battlehub.RTEditor
 {
     public static class RTExtensionsMenu
     {
-        public static string Root
-        {
-            get { return BHRoot.Path + @"/RTExtensions/"; }
-        }
 
         [MenuItem("Tools/Runtime Editor/Create Extensions")]
         public static void CreateRuntimeEditor()
         {
             GameObject editorExtensions = InstantiateEditorExtensions();
             Undo.RegisterCreatedObjectUndo(editorExtensions, "Battlehub.RTExtensions.Create");
+
+            if (RenderPipelineInfo.Type == RPType.HDRP)
+            {
+                GameObject hdrpSupport = InstantiateHDRPSupport();
+                Undo.RegisterCreatedObjectUndo(hdrpSupport, "Battlehub.RTExtensions.CreateHDRP");
+            }
         }
 
         public static GameObject InstantiateEditorExtensions()
         {
-            return InstantiatePrefab("EditorExtensions.prefab");
+            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHRoot.Path + @"/RTExtensions/EditorExtensions.prefab", typeof(GameObject));
+            return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         }
 
-        public static GameObject InstantiatePrefab(string name)
+        public static GameObject InstantiateHDRPSupport()
         {
-            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + Root + "/" + name, typeof(GameObject));
+            UnityObject prefab = AssetDatabase.LoadAssetAtPath("Assets/" + BHRoot.Path + "/HDRP/EditorExtensionsHDRP.prefab", typeof(GameObject));
             return (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-        } 
+        }
     }
 }
 #endif

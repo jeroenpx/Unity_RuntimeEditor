@@ -1130,6 +1130,9 @@ namespace Battlehub.RTBuilder
             RuntimeWindow window = m_rte.ActiveWindow;
             // bool depthTest = IsDepthTestEnabled(window);
             // m_boxSelection.MethodOverride = depthTest ? BoxSelectionMethod.PixelPerfectDepthTest : BoxSelectionMethod.Default;
+
+#warning Enable PixelPerfectDepthTest only when Mode != Object;
+
             m_boxSelection.MethodOverride = BoxSelectionMethod.PixelPerfectDepthTest;
         }
 

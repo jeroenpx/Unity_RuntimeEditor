@@ -121,6 +121,8 @@ namespace Battlehub.RTCommon
 
         private RTECamera _CreateCamera(Camera camera, CameraEvent cameraEvent, bool createMeshesCache, bool createRenderersCache)
         {
+            bool wasActive = camera.gameObject.activeSelf;
+            camera.gameObject.SetActive(false);
             RTECamera rteCamera = camera.gameObject.AddComponent<RTECamera>();
             rteCamera.Event = cameraEvent;
 
@@ -136,6 +138,8 @@ namespace Battlehub.RTCommon
                 RenderersCache renderersCache = gameObject.AddComponent<RenderersCache>();
                 rteCamera.RenderersCache = renderersCache;
             }
+
+            camera.gameObject.SetActive(wasActive);
 
             return rteCamera;
         }
@@ -212,18 +216,28 @@ namespace Battlehub.RTCommon
 
         private static void CreateRTECamera(GameObject camera, CameraEvent cameraEvent, IMeshesCache cache, List<RTECamera> rteCameras)
         {
+            bool wasActive = camera.gameObject.activeSelf;
+            camera.SetActive(false);
+
             RTECamera rteCamera = camera.AddComponent<RTECamera>();
             rteCamera.Event = cameraEvent;
             rteCamera.MeshesCache = cache;
             rteCameras.Add(rteCamera);
+
+            camera.SetActive(wasActive);
         }
 
         private static void CreateRTECamera(GameObject camera, CameraEvent cameraEvent, IRenderersCache cache, List<RTECamera> rteCameras)
         {
+            bool wasActive = camera.gameObject.activeSelf;
+            camera.SetActive(false);
+
             RTECamera rteCamera = camera.AddComponent<RTECamera>();
             rteCamera.Event = cameraEvent;
             rteCamera.RenderersCache = cache;
             rteCameras.Add(rteCamera);
+
+            camera.SetActive(wasActive);
         }
     }
 

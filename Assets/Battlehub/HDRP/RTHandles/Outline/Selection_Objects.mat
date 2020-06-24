@@ -23,4 +23,5 @@ Material:
     - _AlphaCutoff: 0.5
     - _MaxDistance: 1000
     m_Colors:
+    - _OutlineColor: {r: 1, g: 0.39200455, b: 0, a: 1}
     - _SelectionColor: {r: 1, g: 0.44459432, b: 0, a: 1}

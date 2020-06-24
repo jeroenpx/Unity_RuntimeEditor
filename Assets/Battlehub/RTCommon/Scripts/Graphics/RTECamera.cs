@@ -123,15 +123,38 @@ namespace Battlehub.RTCommon
         private void Awake()
         {
             m_camera = GetComponent<Camera>();
+
+            if (m_commandBufferOverride == null)
+            {
+                CreateCommandBuffer();
+            }
+
+            RefreshCommandBuffer();
+
+            if (m_renderersCache != null)
+            {
+                m_renderersCache.Refreshed += OnRefresh;
+            }
+
+            if (m_meshesCache != null)
+            {
+                m_meshesCache.Refreshing += OnRefresh;
+            }
+
+            if (Created != null)
+            {
+                Created(this);
+            }
         }
 
+
+        /*
         private void Start()
         {
             if(m_commandBufferOverride == null)
             {
                 CreateCommandBuffer();
             }
-            
             
             RefreshCommandBuffer();
 
@@ -150,6 +173,7 @@ namespace Battlehub.RTCommon
                 Created(this);
             }
         }
+        */
 
         private void OnDestroy()
         {

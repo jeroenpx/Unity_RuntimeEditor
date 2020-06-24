@@ -15,7 +15,7 @@ namespace Battlehub.RTEditor.HDRP
         private OutlineManagerHDRP m_outlineManager;
 
         [SerializeField]
-        private Material m_selectionMaterial;
+        private Material m_selectionMaterial = null;
 
         protected override void OnEditorExist()
         {
