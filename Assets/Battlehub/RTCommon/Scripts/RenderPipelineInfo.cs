@@ -121,7 +121,7 @@ namespace Battlehub.RTCommon
                     DefaultShaderName = "HDRP/Lit";
                     DefaultTerrainShaderName = "HDRP/TerrainLit";
                     ColorPropertyID = Shader.PropertyToID("_BaseColor"); 
-                    MainTexturePropertyID = Shader.PropertyToID("_BaseMap"); 
+                    MainTexturePropertyID = Shader.PropertyToID("_BaseColorMap"); 
                 }
                 else
                 {

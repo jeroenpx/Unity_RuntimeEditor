@@ -94,7 +94,9 @@ namespace Battlehub.RTEditor
             }
 
             descriptors.Add(new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Light_Color", "Color"), editor.Components, colorInfo, "m_Color"));
-            descriptors.Add(new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Light_Intensity", "Intensity"), editor.Components, intensityInfo, intensityInfo, null, new Range(0, 8)) { AnimationPropertyName = "m_Intensity" });
+
+            Range lightIntensityRange = RenderPipelineInfo.Type == RPType.HDRP ? new Range(0, 128000) : new Range(0, 8);
+            descriptors.Add(new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Light_Intensity", "Intensity"), editor.Components, intensityInfo, intensityInfo, null, lightIntensityRange) { AnimationPropertyName = "m_Intensity" });
             descriptors.Add(new PropertyDescriptor(lc.GetString("ID_RTEditor_CD_Light_BounceIntensity", "Bounce Intensity"), editor.Components, bounceIntensityInfo, bounceIntensityInfo, null, new Range(0, 8)) { AnimationPropertyName = "m_BounceIntensity" });
 
             if(hasMixedLightTypes == false)

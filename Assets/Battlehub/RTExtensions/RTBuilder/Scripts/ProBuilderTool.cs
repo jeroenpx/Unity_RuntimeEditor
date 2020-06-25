@@ -565,7 +565,6 @@ namespace Battlehub.RTBuilder
                         }
                         else if (m_hasManualUVs)
                         {
-                            //m_textureRotateTool.Drag(PivotPosition, PivotRotation, PivotLocalScale);
                             m_textureRotateTool.Drag(m_pivot);
                         }
                     }
@@ -1127,13 +1126,11 @@ namespace Battlehub.RTBuilder
 
         private void OnBeginBoxSelection(object sender, BeginBoxSelectionArgs e)
         {
-            RuntimeWindow window = m_rte.ActiveWindow;
-            // bool depthTest = IsDepthTestEnabled(window);
-            // m_boxSelection.MethodOverride = depthTest ? BoxSelectionMethod.PixelPerfectDepthTest : BoxSelectionMethod.Default;
-
-#warning Enable PixelPerfectDepthTest only when Mode != Object;
-
-            m_boxSelection.MethodOverride = BoxSelectionMethod.PixelPerfectDepthTest;
+            if(Mode != ProBuilderToolMode.Object)
+            {
+                RuntimeWindow window = m_rte.ActiveWindow;
+                m_boxSelection.MethodOverride = BoxSelectionMethod.PixelPerfectDepthTest;
+            }
         }
 
         private void OnBoxSelection(object sender, BoxSelectionArgs e)
@@ -1711,14 +1708,6 @@ namespace Battlehub.RTBuilder
                 MeshSelection selection = editor.GetSelection();
                 PBAutoUnwrapSettings settings = m_autoUVEditor.GetSettings(selection);
                 m_uv.CopyFrom(settings);
-
-                //if (UVEditingMode)
-                //{
-                //    LockAxes lockAxes = m_pivot.gameObject.GetComponent<LockAxes>();
-                //    lockAxes.PositionX = lockAxes.PositionY = !HasSelectedFaces;
-                //    lockAxes.ScaleX = lockAxes.ScaleY = !HasSelectedFaces;
-                //    lockAxes.RotationZ = !HasSelectedFaces;
-                //}
             }
 
             if (SelectionChanged != null)

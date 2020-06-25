@@ -19,36 +19,36 @@ namespace Battlehub.RTBuilder.HDRP
             IRenderPipelineCameraUtility cameraUtil = IOC.Resolve<IRenderPipelineCameraUtility>();
             cameraUtil.EnablePostProcessing(renderCamera, false);
             cameraUtil.SetBackgroundColor(renderCamera, Color.white);
-
-            IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
-            m_rteCamera = graphics.CreateCamera(renderCamera, UnityEngine.Rendering.CameraEvent.AfterForwardAlpha, false, true);
-            
         }
 
-        protected override void Render(Shader shader, string tag, Camera renderCam)
+        protected override void Render(Shader shader, string tag, Camera renderCamera)
         {
-            for(int i = 0; i < m_renderers.Count; ++i)
+            IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
+            m_rteCamera = graphics.CreateCamera(renderCamera, UnityEngine.Rendering.CameraEvent.AfterForwardAlpha, false, true);
+
+            for (int i = 0; i < m_renderers.Count; ++i)
             {
                 Renderer[] renderers = m_renderers[i];
-                for(int j = 0; j < renderers.Length; ++j)
+                for (int j = 0; j < renderers.Length; ++j)
                 {
                     m_rteCamera.RenderersCache.Add(renderers[j]);
                 }
             }
 
+            //Material material = new Material(shader);
+            //m_rteCamera.RenderersCache.MaterialOverride = material;
+
             bool invertCulling = GL.invertCulling;
 
-            m_rteCamera.RenderersCache.MaterialOverride = new Material(shader); 
-
             GL.invertCulling = true;
-            renderCam.projectionMatrix *= Matrix4x4.Scale(new Vector3(1, -1, 1));
-
-            renderCam.Render();
+            renderCamera.projectionMatrix *= Matrix4x4.Scale(new Vector3(1, -1, 1));
+            renderCamera.Render();
             GL.invertCulling = invertCulling;
 
-            m_renderers.Clear();
+            //Object.Destroy(material);
+            m_rteCamera.Destroy();
 
-            Object.Destroy(m_rteCamera.RenderersCache.MaterialOverride);
+            m_renderers.Clear();
         }
 
         protected override void GenerateEdgePickingObjects(IList<ProBuilderMesh> selection, bool doDepthTest, out Dictionary<uint, SimpleTuple<ProBuilderMesh, Edge>> map, out GameObject[] depthObjects, out GameObject[] pickerObjects)

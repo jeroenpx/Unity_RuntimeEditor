@@ -35,7 +35,7 @@ namespace Battlehub.ProBuilderIntegration
                         {
                             m_defaultMaterial = Resources.Load<Material>("ProBuilder Default URP");
                         }
-                        else if(pipelineType.Name == "HighDefinitionRenderPipelineAsset" )
+                        else if(pipelineType.Name == "HDRenderPipelineAsset" )
                         {
                             m_defaultMaterial = Resources.Load<Material>("ProBuilder Default HDRP");
                         }

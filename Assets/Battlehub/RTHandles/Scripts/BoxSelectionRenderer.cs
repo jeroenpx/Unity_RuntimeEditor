@@ -25,7 +25,6 @@ namespace Battlehub.RTHandles
         }
 
         private static TextureFormat TextureFormat { get { return TextureFormat.ARGB32; } }
-
         private static Shader s_objectSelectionShader;
         private static Shader ObjectSelectionShader
         {
@@ -242,7 +241,6 @@ namespace Battlehub.RTHandles
             RenderTexture.ReleaseTemporary(rt);
 
             UnityObject.DestroyImmediate(go);
-#warning Not tested
             UnityObject.Destroy(replacementMaterial);
             //System.IO.File.WriteAllBytes("Assets/box_selection.png", img.EncodeToPNG());
 

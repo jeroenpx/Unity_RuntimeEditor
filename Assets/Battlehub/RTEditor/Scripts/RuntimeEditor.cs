@@ -937,6 +937,11 @@ namespace Battlehub.RTEditor
                     light.type = LightType.Directional;
                     light.shadows = LightShadows.Soft;
                     lightGO.AddComponent<ExposeToEditor>();
+
+                    if(RenderPipelineInfo.Type == RPType.HDRP)
+                    {
+                        light.intensity = 10000;
+                    }
                 }
             }
 

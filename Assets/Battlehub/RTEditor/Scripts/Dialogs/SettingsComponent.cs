@@ -610,9 +610,22 @@ namespace Battlehub.RTEditor
 
         private void Awake()
         {
-            m_ligthIntensityDefault = RenderPipelineInfo.Type == RPType.Standard ? 1 : 2;
-            m_shadowStrengthDefault = RenderPipelineInfo.Type == RPType.Standard ? 1 : 0.75f; 
-
+            if(RenderPipelineInfo.Type == RPType.HDRP)
+            {
+                m_ligthIntensityDefault = 10000;
+                m_shadowStrengthDefault = 1;
+            }
+            else if(RenderPipelineInfo.Type == RPType.URP)
+            {
+                m_ligthIntensityDefault = 2;
+                m_shadowStrengthDefault = 0.75f;
+            }
+            else
+            {
+                m_ligthIntensityDefault = 1;
+                m_shadowStrengthDefault = 1;
+            }
+            
             //simplified user's hardware configuration evaluation
             if (SystemInfo.graphicsMemorySize > 4096)
             {
