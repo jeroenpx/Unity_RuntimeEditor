@@ -186,7 +186,6 @@ namespace Battlehub.RTCommon
             m_fallbacks[typeof(T)] = new Item(func);
         }
 
-
         public void RegisterFallback<T>(T instance)
         {
             if (instance == null)

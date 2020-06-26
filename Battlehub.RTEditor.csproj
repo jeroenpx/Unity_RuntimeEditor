@@ -263,6 +263,7 @@
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\UIControls\UIEditorStyle.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\WindowManager.cs" />
     <Compile Include="Assets\Battlehub\RTEditor\Scripts\WindowOverlay.cs" />
+    <Compile Include="Assets\Battlehub\RTEditor\Scripts\Workspace.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\Editor\RTExtensionsMenu.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\MeshEditor\Scripts\Debug\DrawNormals.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\MeshEditor\Scripts\Debug\NormalsSolver.cs" />
