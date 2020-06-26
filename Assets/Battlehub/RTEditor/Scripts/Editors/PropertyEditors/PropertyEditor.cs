@@ -374,7 +374,10 @@ namespace Battlehub.RTEditor
             InitOverride(targets, accessors, memberInfo, eraseTargetCallback, label);
 
 #pragma warning disable 0618
-            InitOverride(targets[0], accessors[0], memberInfo, eraseTargetCallback, label);
+            if(targets != null && accessors != null)
+            {
+                InitOverride(targets[0], accessors[0], memberInfo, eraseTargetCallback, label);
+            }
 #pragma warning restore 0618
 
             m_lockValue = false;
