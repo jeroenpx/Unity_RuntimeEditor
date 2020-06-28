@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Battlehub/RTEditor/Demo/RTEditor.unity
+    path: Assets/Battlehub/RTEditor/Demo/RTEditor_HDRP.unity
     guid: 4215a0f4652834c40978a0dc505ae257
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d1da6bb7a8c7d9f43adfae000fffd666,

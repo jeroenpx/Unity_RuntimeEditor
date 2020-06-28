@@ -202,7 +202,7 @@ namespace Battlehub.RTHandles
             m_output.transform.localPosition = Vector3.forward * m_camera.nearClipPlane;
             m_output.AddComponent<MeshFilter>().sharedMesh = Appearance.CreateRawImageMesh();
             m_output.AddComponent<MeshRenderer>().sharedMaterial = m_material;
-            m_output.gameObject.SetActive(true);
+            //m_output.gameObject.SetActive(true);
 
             m_graphics = IOC.Resolve<IRTEGraphics>();
 
@@ -311,6 +311,7 @@ namespace Battlehub.RTHandles
             IRTEGraphics graphics = IOC.Resolve<IRTEGraphics>();
             m_rteCamera = graphics.CreateCamera(camera, CameraEvent.AfterImageEffects, false, true);
             m_rteCamera.RenderersCache.Add(m_output.GetComponent<Renderer>());
+            m_rteCamera.RefreshCommandBuffer();
 
             DoSceneGizmo();
 
