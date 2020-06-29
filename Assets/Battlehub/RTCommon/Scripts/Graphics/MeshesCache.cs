@@ -197,7 +197,14 @@ namespace Battlehub.RTCommon
 
         public void SetMaterial(Mesh mesh, Material material)
         {
-            m_meshToData[mesh] = new Tuple<Material, List<Transform>>(material, m_meshToData[mesh].Item2);
+            if (m_meshToData.ContainsKey(mesh))
+            {
+                m_meshToData[mesh] = new Tuple<Material, List<Transform>>(material, m_meshToData[mesh].Item2);
+            }
+            else
+            {
+                m_meshToData.Add(mesh, new Tuple<Material, List<Transform>>(material, new List<Transform>()));
+            }
         }
 
         public void Remove(Mesh mesh, Transform transform)
@@ -207,8 +214,11 @@ namespace Battlehub.RTCommon
             {
                 data.Item2.Remove(transform);
                 int index = m_transforms.IndexOf(transform);
-                m_transforms.RemoveAt(index);
-                m_prs.RemoveAt(index);
+                if(index >= 0)
+                {
+                    m_transforms.RemoveAt(index);
+                    m_prs.RemoveAt(index);
+                }
                 if (data.Item2.Count == 0)
                 {
                     m_meshToData.Remove(mesh);

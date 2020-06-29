@@ -202,8 +202,7 @@ namespace Battlehub.RTHandles
             m_output.transform.localPosition = Vector3.forward * m_camera.nearClipPlane;
             m_output.AddComponent<MeshFilter>().sharedMesh = Appearance.CreateRawImageMesh();
             m_output.AddComponent<MeshRenderer>().sharedMaterial = m_material;
-            //m_output.gameObject.SetActive(true);
-
+            
             m_graphics = IOC.Resolve<IRTEGraphics>();
 
             m_camera.clearFlags = CameraClearFlags.SolidColor;
@@ -211,6 +210,7 @@ namespace Battlehub.RTHandles
             m_camera.cullingMask = 0;
             m_camera.orthographic = Window.Camera.orthographic;
             m_camera.rect = new Rect(0, 0, 1, 1);
+            m_camera.stereoTargetEye = StereoTargetEyeMask.None;
 
             m_screenHeight = Screen.height;
             m_screenWidth = Screen.width;

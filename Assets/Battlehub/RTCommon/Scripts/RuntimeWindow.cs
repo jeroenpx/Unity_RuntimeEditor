@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 namespace Battlehub.RTCommon
 {
@@ -145,7 +147,6 @@ namespace Battlehub.RTCommon
                     ResetCullingMask();
 
                     UnregisterGraphicsCamera();
-                    //DestroyGraphicsCamera();
                 }
 
                 m_camera = value;
@@ -156,10 +157,13 @@ namespace Battlehub.RTCommon
                     {
                         RegisterGraphicsCamera();
                     }
-                    //CreateGraphicsCamera();
+
+                    RenderPipelineInfo.XRFix(Camera);
                 }
             }
         }
+
+     
 
         private int m_cameraDepth;
         public int CameraDepth
@@ -203,8 +207,9 @@ namespace Battlehub.RTCommon
                     {
                         DestroyImmediate(renderTextureCamera);
                     }
-                    //Camera.allowMSAA = true;
                 }
+
+                RenderPipelineInfo.XRFix(Camera);
             }
         
 

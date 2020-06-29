@@ -95,6 +95,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        [Obsolete]
         bool IsVR
         {
             get;
@@ -337,7 +338,7 @@ namespace Battlehub.RTCommon
             get { return m_cameraLayerSettings; }
         }
 
-
+        [Obsolete]
         public virtual bool IsVR
         {
             get;
@@ -703,7 +704,7 @@ namespace Battlehub.RTCommon
                 m_raycaster = GetComponent<GraphicRaycaster>();
             }
 
-            IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
+            IsVR = false; /// UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
             m_object = gameObject.GetComponent<RuntimeObjects>();

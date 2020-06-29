@@ -45,7 +45,7 @@ namespace Battlehub.RTTerrain
                 Camera = gameObject.AddComponent<Camera>();
                 Camera.orthographic = true;
                 Camera.clearFlags = CameraClearFlags.Depth;
-                
+                Camera.stereoTargetEye = StereoTargetEyeMask.None;
             }
             Camera.enabled = false;
 

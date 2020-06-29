@@ -91,7 +91,7 @@ namespace Battlehub.RTHandles
 
         public void RecreateCommandBuffer()
         {
-            int antialiasing = Mathf.Max(1, RenderPipelineInfo.MSAASampleCount);
+            int antialiasing = m_camera.allowMSAA ? Mathf.Max(1, RenderPipelineInfo.MSAASampleCount) : 1;
             RenderTargetIdentifier depthRTID = BuiltinRenderTextureType.Depth;
             if (m_camera.targetTexture != null && RenderPipelineInfo.Type == RPType.Standard)
             {

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.XR;
 
 namespace Battlehub.RTCommon
 {
@@ -35,7 +37,6 @@ namespace Battlehub.RTCommon
         }
 
         public static readonly RPType Type;
-        
         public static readonly string DefaultShaderName;
         public static readonly string DefaultTerrainShaderName;
         public static readonly int ColorPropertyID;
@@ -130,6 +131,34 @@ namespace Battlehub.RTCommon
                     ColorPropertyID = Shader.PropertyToID("_Color");
                     MainTexturePropertyID = Shader.PropertyToID("_MainTex");
                 }
+            }
+        }
+
+        public static bool IsXRDeviceResent()
+        {
+            var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetInstances(xrDisplaySubsystems);
+            foreach (var xrDisplay in xrDisplaySubsystems)
+            {
+                if (xrDisplay.running)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static void XRFix(Camera camera)
+        {
+            if (Type == RPType.Standard && IsXRDeviceResent())
+            {
+                if (camera.allowMSAA || camera.allowHDR)
+                {
+                    Debug.LogFormat("XRDevice present. Setting camera {0} allowMSSA and allowHDR to false", camera.name);
+
+                    //unity 2019.3.15 Standard RP, camera viewport rect behaves incorrectly -> hotfix : allowMSAA = false
+                    camera.allowMSAA = false;
+                    camera.allowHDR = false;
+                }   
             }
         }
     }

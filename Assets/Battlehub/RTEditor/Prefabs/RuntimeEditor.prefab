@@ -3577,7 +3577,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 3
+  m_TargetEye: 0
   m_HDR: 0
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
@@ -5544,7 +5544,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
-  m_TargetEye: 3
+  m_TargetEye: 0
   m_HDR: 0
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
@@ -6039,6 +6039,7 @@ MonoBehaviour:
   m_bottomBar: {fileID: 436286296837115800}
   m_leftBar: {fileID: 5969410305584732099}
   m_rightBar: {fileID: 3920881386252674504}
+  m_activeWorkspace: {fileID: 0}
 --- !u!114 &1868234900
 MonoBehaviour:
   m_ObjectHideFlags: 0

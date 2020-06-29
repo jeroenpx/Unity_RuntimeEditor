@@ -10,6 +10,7 @@ namespace Battlehub.RTCommon
     public interface ISpriteGizmoManager
     {
         void Register(Type type, Material material);
+        Material Unregister(Type type);
         void Refresh();
     }
 
@@ -64,6 +65,11 @@ namespace Battlehub.RTCommon
         {
             Cleanup();
 
+            foreach (Type type in m_registered.Keys.ToArray())
+            {
+                Unregister(type);
+            }
+
             m_graphics.DestroySharedMeshesCache(m_meshesCache);
 
             m_typeToMeshAndMaterial = null;
@@ -103,6 +109,22 @@ namespace Battlehub.RTCommon
             }
 
             m_registered[type] = new Tuple<Mesh, Material>(GraphicsUtility.CreateQuad(), material);
+        }
+
+        public Material Unregister(Type type)
+        {
+            Tuple<Mesh, Material> tuple;
+            if (!m_registered.TryGetValue(type, out tuple))
+            {
+                return null;
+            }
+
+            if (tuple.Item1 != null)
+            {
+                Destroy(tuple.Item1);
+            }
+
+            return tuple.Item2;
         }
 
         public void Refresh()
@@ -184,6 +206,23 @@ namespace Battlehub.RTCommon
 
         private void Cleanup()
         {
+            if(m_typeToMeshAndMaterial != null)
+            {
+                foreach(var kvp in m_typeToMeshAndMaterial)
+                {
+                    if(m_registered.ContainsKey(kvp.Key))
+                    {
+                        continue;
+                    }
+
+                    Mesh mesh = kvp.Value.Item1;
+                    if(mesh != null)
+                    {
+                        Destroy(mesh);
+                    }
+                }
+            }
+
             m_types = null;
             m_typeToMeshAndMaterial = null;
             if(m_editor != null)
