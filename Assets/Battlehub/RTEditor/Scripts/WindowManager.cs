@@ -319,7 +319,7 @@ namespace Battlehub.RTEditor
             get { return m_editor.Windows; }
         }
 
-        private GraphicRaycaster Raycaster
+        private BaseRaycaster Raycaster
         {
             get { return m_editor.Raycaster; }
         }

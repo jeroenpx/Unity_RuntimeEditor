@@ -85,7 +85,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        GraphicRaycaster Raycaster
+        BaseRaycaster Raycaster
         {
             get;
         }
@@ -222,7 +222,7 @@ namespace Battlehub.RTCommon
     public class RTEBase : MonoBehaviour, IRTE
     {
         [SerializeField]
-        protected GraphicRaycaster m_raycaster;
+        protected BaseRaycaster m_raycaster;
         [SerializeField]
         protected EventSystem m_eventSystem;
 
@@ -234,7 +234,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
-        [SerializeField]
+        [SerializeField, Obsolete]
         private bool m_enableVRIfAvailable = true;
 
         [SerializeField]
@@ -273,7 +273,7 @@ namespace Battlehub.RTCommon
         protected InputField m_currentInputFieldUI;
         protected float m_zAxis;
 
-        public GraphicRaycaster Raycaster
+        public BaseRaycaster Raycaster
         {
             get { return m_raycaster; }
         }
@@ -701,7 +701,7 @@ namespace Battlehub.RTCommon
 
             if (m_raycaster == null)
             {
-                m_raycaster = GetComponent<GraphicRaycaster>();
+                m_raycaster = GetComponent<BaseRaycaster>();
             }
 
             IsVR = false; /// UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;

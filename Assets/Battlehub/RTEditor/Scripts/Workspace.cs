@@ -9,6 +9,7 @@ using System.Linq;
 using Battlehub.Utils;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Battlehub.RTEditor
 {
@@ -101,7 +102,7 @@ namespace Battlehub.RTEditor
             get { return m_editor.Input; }
         }
 
-        private GraphicRaycaster Raycaster
+        private BaseRaycaster Raycaster
         {
             get { return m_editor.Raycaster; }
         }
