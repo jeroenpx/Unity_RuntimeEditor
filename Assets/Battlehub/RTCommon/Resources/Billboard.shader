@@ -4,13 +4,14 @@
 	{
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Texture Image", 2D) = "white" {}
+		_Cutoff("Cutoff", Float) = 0.01
 	}
 	SubShader
 	{
 		Blend SrcAlpha OneMinusSrcAlpha
 		Cull Off
 		ZTest LEqual
-		ZWrite Off
+		ZWrite On
 
 		Tags{ "Queue" = "Transparent+20" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 
@@ -26,6 +27,7 @@
 			// User-specified uniforms            
 			uniform sampler2D _MainTex;
 			fixed4 _Color;
+			float _Cutoff;
 
 			struct vertexInput {
 				float4 vertex : POSITION;
@@ -58,7 +60,9 @@
 			float4 frag(vertexOutput input) : COLOR
 			{
 				UNITY_SETUP_INSTANCE_ID(input);
-				return _Color * tex2D(_MainTex, float2(input.tex.xy));
+				float4 color = _Color * tex2D(_MainTex, float2(input.tex.xy));
+				clip(color.a - _Cutoff);
+				return color;
 			}
 
 			ENDCG

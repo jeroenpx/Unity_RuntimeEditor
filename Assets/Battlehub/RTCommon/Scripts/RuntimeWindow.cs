@@ -187,6 +187,26 @@ namespace Battlehub.RTCommon
             get { return m_pointer; }
         }
 
+        public override bool IsPointerOver
+        {
+            get { return base.IsPointerOver; }
+            set
+            {
+                if (base.IsPointerOver != value)
+                {
+                    if (value)
+                    {
+                        Editor.SetPointerOverWindow(this);
+                    }
+                    else
+                    {
+                        Editor.SetPointerOverWindow(null);
+                    }
+                    base.IsPointerOver = value;
+                }
+            }
+        }
+
         protected override void AwakeOverride()
         {
             base.AwakeOverride();

@@ -192,6 +192,11 @@ namespace Battlehub.RTCommon
             get;
         }
 
+        RuntimeWindow PointerOverWindow
+        {
+            get;
+        }
+
         RuntimeWindow[] Windows
         {
             get;
@@ -202,9 +207,9 @@ namespace Battlehub.RTCommon
         RuntimeWindow GetWindow(RuntimeWindowType windowType);
         void ActivateWindow(RuntimeWindowType window);
         void ActivateWindow(RuntimeWindow window);
+        void SetPointerOverWindow(RuntimeWindow window);
         void RegisterWindow(RuntimeWindow window);
         void UnregisterWindow(RuntimeWindow window);
-
         void RegisterCreatedObjects(GameObject[] go, bool select = true);
         void Duplicate(GameObject[] go);
         void Delete(GameObject[] go);
@@ -311,6 +316,12 @@ namespace Battlehub.RTCommon
         public virtual RuntimeWindow ActiveWindow
         {
             get { return m_activeWindow; }
+        }
+
+        private RuntimeWindow m_pointerOverWindow;
+        public virtual RuntimeWindow PointerOverWindow
+        {
+            get { return m_pointerOverWindow; }
         }
 
         public virtual RuntimeWindow[] Windows
@@ -993,6 +1004,11 @@ namespace Battlehub.RTCommon
                     ActiveWindowChanged(deactivatedWindow);
                 }
             }
+        }
+
+        public virtual void SetPointerOverWindow(RuntimeWindow window)
+        {
+            m_pointerOverWindow = window;
         }
 
         public void RegisterCreatedObjects(GameObject[] gameObjects, bool select = true)
