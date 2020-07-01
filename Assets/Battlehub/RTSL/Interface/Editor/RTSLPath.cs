@@ -5,13 +5,13 @@ using UnityEditor;
 
 namespace Battlehub.RTSL
 {
-    public static class RTSLPath 
+    public static class RTSLPath
     {
         public static string SaveLoadRoot
         {
             get { return @"/" + BHRoot.Path + @"/RTSL"; }
         }
-        
+
         public static string UserRoot
         {
             get
@@ -20,24 +20,24 @@ namespace Battlehub.RTSL
                 if (string.IsNullOrEmpty(userRoot))
                 {
                     string dll = AssetDatabase.FindAssets(TypeModelDll.Replace(".dll", string.Empty)).FirstOrDefault();
-                    if(string.IsNullOrEmpty(dll))
+                    if (string.IsNullOrEmpty(dll))
                     {
                         return "/" + BHRoot.Path + "/RTSL_Data";
                     }
                     string path = AssetDatabase.GUIDToAssetPath(dll).Replace(TypeModelDll, "");
-                    if(string.IsNullOrEmpty(path))
+                    if (string.IsNullOrEmpty(path))
                     {
                         return "/" + BHRoot.Path + "/RTSL_Data";
                     }
                     int firstIndex = path.IndexOf("/");
-                    if(firstIndex < 0)
+                    if (firstIndex < 0)
                     {
                         return "/" + BHRoot.Path + "/RTSL_Data";
                     }
 
-                    return path.Remove(0, firstIndex + 1);
+                    return "/" + path.Remove(0, firstIndex + 1).TrimEnd(new[] { '/', '\\' });
                 }
-                if(!userRoot.StartsWith("/"))
+                if (!userRoot.StartsWith("/"))
                 {
                     userRoot = "/" + userRoot;
                 }
