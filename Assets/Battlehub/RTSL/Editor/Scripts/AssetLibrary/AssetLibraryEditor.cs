@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,8 +9,6 @@ namespace Battlehub.RTSL
     {
         private AssetLibraryProjectGUI m_projectGUI;
         private AssetLibraryAssetsGUI m_assetsGUI;
-        private AssetLibraryAsset m_minAsset;
-
         private AssetLibraryAsset Asset
         {
             get { return (AssetLibraryAsset)target; }

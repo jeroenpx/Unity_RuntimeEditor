@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -92,6 +93,24 @@ namespace Battlehub.RTSL
             get { return m_assetLibrary; }
             set { m_assetLibrary = value; }
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (Event.current != null && Event.current.commandName == "Duplicate")
+            {
+                int identity = AssetLibrariesListGen.GetIdentity();
+                Ordinal = identity;
+                EditorCoroutine.Start(CoUpdateList(identity));
+            }
+        }
+
+        private IEnumerator CoUpdateList(int identity)
+        {
+            yield return null;
+            AssetLibrariesListGen.UpdateList(identity + 1);
+        }
+#endif
 
         public void UnloadIDMappingFrom(MappingInfo mapping)
         {

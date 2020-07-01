@@ -583,7 +583,7 @@ namespace Battlehub.RTSL
 
         private void DoTreeView()
         {
-            Rect rect = GUILayoutUtility.GetRect(0, 0, GUILayout.MaxHeight((Screen.height - 280) * 0.5f));
+            Rect rect = GUILayoutUtility.GetRect(0, 0, GUILayout.MaxHeight((Screen.height - 300) * 0.5f));
             TreeView.OnGUI(rect);
         }
 

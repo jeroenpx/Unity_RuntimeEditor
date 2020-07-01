@@ -275,7 +275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &224154404041186762
 RectTransform:
   m_ObjectHideFlags: 0
@@ -643,7 +643,6 @@ GameObject:
   - component: {fileID: 4325474510697060}
   - component: {fileID: 20090656926083822}
   - component: {fileID: 114592105554459430}
-  - component: {fileID: 3843089294297894870}
   m_Layer: 0
   m_Name: SceneGizmo
   m_TagString: Untagged
@@ -738,37 +737,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_textColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &3843089294297894870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1885975157631318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
 --- !u!1 &1552082948561856951
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,37 +827,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e80b589043a09543a8eae0047813bb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4317901608381991265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1708309488207944305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
 --- !u!114 &4620350619406079189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1440,9 +1377,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f47faa506d0cc4c49a4f3b0fe00356f2, type: 3}
---- !u!20 &4784833976956820791 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 2506638835922586931, guid: f47faa506d0cc4c49a4f3b0fe00356f2,
+--- !u!1 &1708309488207944305 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8582552430161824373, guid: f47faa506d0cc4c49a4f3b0fe00356f2,
     type: 3}
   m_PrefabInstance: {fileID: 6966641580092837892}
   m_PrefabAsset: {fileID: 0}
@@ -1452,9 +1389,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6966641580092837892}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1708309488207944305 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8582552430161824373, guid: f47faa506d0cc4c49a4f3b0fe00356f2,
+--- !u!20 &4784833976956820791 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2506638835922586931, guid: f47faa506d0cc4c49a4f3b0fe00356f2,
     type: 3}
   m_PrefabInstance: {fileID: 6966641580092837892}
   m_PrefabAsset: {fileID: 0}
@@ -1532,6 +1469,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a9fd029cb189ca43abd4a0945cbbff3, type: 3}
+--- !u!4 &8829643547642093219 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2290264491671209939, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
+    type: 3}
+  m_PrefabInstance: {fileID: 7296277170279029104}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6765689039206119964 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4081698565014184812, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
@@ -1544,9 +1487,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0a97d366b6adb4d8180e523123a144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &8829643547642093219 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2290264491671209939, guid: 4a9fd029cb189ca43abd4a0945cbbff3,
-    type: 3}
-  m_PrefabInstance: {fileID: 7296277170279029104}
-  m_PrefabAsset: {fileID: 0}

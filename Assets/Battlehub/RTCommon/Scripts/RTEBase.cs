@@ -95,7 +95,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        [Obsolete]
+        //[Obsolete]
         bool IsVR
         {
             get;
@@ -239,7 +239,7 @@ namespace Battlehub.RTCommon
         [SerializeField]
         private bool m_useBuiltinUndo = true;
 
-        [SerializeField, Obsolete]
+        [SerializeField]
         private bool m_enableVRIfAvailable = true;
 
         [SerializeField]
@@ -349,7 +349,7 @@ namespace Battlehub.RTCommon
             get { return m_cameraLayerSettings; }
         }
 
-        [Obsolete]
+        //[Obsolete]
         public virtual bool IsVR
         {
             get;
@@ -715,7 +715,7 @@ namespace Battlehub.RTCommon
                 m_raycaster = GetComponent<BaseRaycaster>();
             }
 
-            IsVR = false; /// UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
+            IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
             m_selection = new RuntimeSelection(this);
             m_dragDrop = new DragDrop(this);
             m_object = gameObject.GetComponent<RuntimeObjects>();
