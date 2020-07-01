@@ -37,7 +37,7 @@ namespace Battlehub.RTSL
         private static void OnFirstUpdate()
         {
             EditorApplication.update -= OnFirstUpdate;
-            if(!AllowAutoShow)
+            if (!AllowAutoShow)
             {
                 return;
             }
@@ -58,6 +58,16 @@ namespace Battlehub.RTSL
             m_path = RTSLPath.UserRoot;
         }
 
+        private void ReadOnlyTextField(string label, string text)
+        {
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField(label, GUILayout.Width(EditorGUIUtility.labelWidth - 4));
+                EditorGUILayout.SelectableLabel(text, EditorStyles.textField, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
         private void OnGUI()
         {
             EditorGUILayout.Separator();
@@ -66,8 +76,9 @@ namespace Battlehub.RTSL
 
             EditorGUILayout.Separator();
 
-            m_path = EditorGUILayout.TextField("Data Path:", m_path);
-            if(m_path.EndsWith("/") || m_path.EndsWith("\\"))
+            //m_path = EditorGUILayout.TextField("Data Path:", m_path);
+            EditorGUILayout.LabelField("Data Path: " + m_path);
+            if (m_path.EndsWith("/") || m_path.EndsWith("\\"))
             {
                 m_path = m_path.TrimEnd(new[] { '/', '\\' });
             }
@@ -77,7 +88,7 @@ namespace Battlehub.RTSL
             EditorGUI.BeginChangeCheck();
 
             m_doNotShowItAgain = GUILayout.Toggle(m_doNotShowItAgain, "Do not show this window again");
-            
+
             if (EditorGUI.EndChangeCheck())
             {
                 AllowAutoShow = !m_doNotShowItAgain;
@@ -102,7 +113,7 @@ namespace Battlehub.RTSL
                 }
             }
 
-            if(GUILayout.Button("Cancel"))
+            if (GUILayout.Button("Cancel"))
             {
                 Close();
             }
@@ -112,5 +123,5 @@ namespace Battlehub.RTSL
     }
 }
 
-    
+
 
