@@ -182,6 +182,11 @@ namespace Battlehub.RTEditor
         /// <returns>true if component is valid</returns>
         private static bool IsComponentValid(Component component, HashSet<Component> ignoreComponents)
         {
+            if(component == null)
+            {
+                return false;
+            }
+
             return !ignoreComponents.Contains(component) && (component.hideFlags & HideFlags.HideInInspector) == 0;
         }
 

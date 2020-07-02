@@ -9,6 +9,9 @@ namespace Battlehub.RTCommon.HDRP
     {
         protected Dictionary<Camera, List<IRTECamera>> m_cameras;
 
+        [SerializeField]
+        private bool m_afterImageEffects = false;
+
         protected override void Setup(ScriptableRenderContext renderContext, CommandBuffer cmd)
         {
             base.Setup(renderContext, cmd);
@@ -49,29 +52,41 @@ namespace Battlehub.RTCommon.HDRP
             {
                 case CustomPassInjectionPoint.BeforeTransparent:
                     if (camera.Event == CameraEvent.BeforeForwardAlpha ||
-                       camera.Event == CameraEvent.AfterForwardAlpha)
+                        camera.Event == CameraEvent.AfterForwardAlpha)
                     {
                         List<IRTECamera> cameras = GetList(camera);
                         cameras.Add(camera);
                     }
                     break;
                 case CustomPassInjectionPoint.BeforePostProcess:
-                    if (camera.Event == CameraEvent.BeforeImageEffects ||
-                       camera.Event == CameraEvent.BeforeImageEffectsOpaque)
+                    if(!m_afterImageEffects)
                     {
-                        List<IRTECamera> cameras = GetList(camera);
-                        cameras.Add(camera);
+                        if (camera.Event == CameraEvent.BeforeImageEffects ||
+                            camera.Event == CameraEvent.BeforeImageEffectsOpaque)
+                        {
+                            List<IRTECamera> cameras = GetList(camera);
+                            cameras.Add(camera);
+                        }
                     }
-                   
-                    break;
-                case CustomPassInjectionPoint.AfterPostProcess:
-                    if (camera.Event == CameraEvent.AfterImageEffects ||
-                       camera.Event == CameraEvent.AfterImageEffectsOpaque)
+                    else
                     {
-                        List<IRTECamera> cameras = GetList(camera);
-                        cameras.Add(camera);
+                        if (camera.Event == CameraEvent.AfterImageEffects ||
+                            camera.Event == CameraEvent.AfterImageEffectsOpaque)
+                        {
+                            List<IRTECamera> cameras = GetList(camera);
+                            cameras.Add(camera);
+                        }
                     }
+
                     break;
+                //case CustomPassInjectionPoint.AfterPostProcess:
+                //    if (camera.Event == CameraEvent.AfterImageEffects ||
+                //       camera.Event == CameraEvent.AfterImageEffectsOpaque)
+                //    {
+                //        List<IRTECamera> cameras = GetList(camera);
+                //        cameras.Add(camera);
+                //    }
+                //    break;
             }
         }
 

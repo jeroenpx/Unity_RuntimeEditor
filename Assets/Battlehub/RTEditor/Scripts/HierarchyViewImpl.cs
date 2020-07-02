@@ -439,29 +439,33 @@ namespace Battlehub.RTEditor
                 IContextMenu menu = IOC.Resolve<IContextMenu>();
                 List<MenuItemInfo> menuItems = new List<MenuItemInfo>();
 
-                MenuItemInfo duplicate = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Duplicate", "Duplicate") };
-                duplicate.Action = new MenuItemEvent();
-                duplicate.Action.AddListener(DuplicateContextMenuCmd);
-                duplicate.Validate = new MenuItemValidationEvent();
-                duplicate.Validate.AddListener(DuplicateValidateContextMenuCmd);
-                menuItems.Add(duplicate);
-
-                MenuItemInfo delete = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Delete", "Delete") };
-                delete.Action = new MenuItemEvent();
-                delete.Action.AddListener(DeleteContextMenuCmd);
-                delete.Validate = new MenuItemValidationEvent();
-                delete.Validate.AddListener(DeleteValidateContextMenuCmd);
-                menuItems.Add(delete);
-
-                MenuItemInfo rename = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Rename", "Rename") };
-                rename.Action = new MenuItemEvent();
-                rename.Action.AddListener(RenameContextMenuCmd);
-                rename.Validate = new MenuItemValidationEvent();
-                rename.Validate.AddListener(RenameValidateContextMenuCmd);
-                menuItems.Add(rename);
+                OnContextMenu(menuItems);
 
                 menu.Open(menuItems.ToArray());
             }
+        }
+        protected virtual void OnContextMenu(List<MenuItemInfo> menuItems)
+        {
+            MenuItemInfo duplicate = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Duplicate", "Duplicate") };
+            duplicate.Action = new MenuItemEvent();
+            duplicate.Action.AddListener(DuplicateContextMenuCmd);
+            duplicate.Validate = new MenuItemValidationEvent();
+            duplicate.Validate.AddListener(DuplicateValidateContextMenuCmd);
+            menuItems.Add(duplicate);
+
+            MenuItemInfo delete = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Delete", "Delete") };
+            delete.Action = new MenuItemEvent();
+            delete.Action.AddListener(DeleteContextMenuCmd);
+            delete.Validate = new MenuItemValidationEvent();
+            delete.Validate.AddListener(DeleteValidateContextMenuCmd);
+            menuItems.Add(delete);
+
+            MenuItemInfo rename = new MenuItemInfo { Path = m_localization.GetString("ID_RTEditor_HierarchyViewImpl_Rename", "Rename") };
+            rename.Action = new MenuItemEvent();
+            rename.Action.AddListener(RenameContextMenuCmd);
+            rename.Validate = new MenuItemValidationEvent();
+            rename.Validate.AddListener(RenameValidateContextMenuCmd);
+            menuItems.Add(rename);
         }
 
         protected virtual void RenameValidateContextMenuCmd(MenuItemValidationArgs args)
