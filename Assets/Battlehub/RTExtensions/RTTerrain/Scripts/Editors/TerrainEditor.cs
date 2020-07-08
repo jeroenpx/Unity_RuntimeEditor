@@ -253,9 +253,10 @@ namespace Battlehub.RTTerrain
         public enum EditorType
         {
             Empty = 0,
-            Paint_Terrain = 1,
-            Selection_Handles = 2,
-            Settings = 3,
+            Paint = 1,
+            Area = 2,
+            Grid = 3,
+            Settings = 4,
         }
 
         public enum PaintTool
@@ -332,7 +333,7 @@ namespace Battlehub.RTTerrain
 
         public void UpdatePaintToolVisibility()
         {
-            UpdateProjectorState(EditorType.Paint_Terrain);
+            UpdateProjectorState(EditorType.Paint);
 
             for (int i = 0; i < m_paintTools.Length; ++i)
             {
@@ -359,11 +360,11 @@ namespace Battlehub.RTTerrain
             Projector.transform.SetParent(m_editor.Root, false);
             Projector.gameObject.SetActive(false);
 
-            if(IOC.Resolve<ITerrainSelectionHandlesTool>() == null)
+            if(IOC.Resolve<ITerrainGridTool>() == null)
             {
-                if(m_toggles[(int)EditorType.Selection_Handles])
+                if(m_toggles[(int)EditorType.Grid])
                 {
-                    m_toggles[(int)EditorType.Selection_Handles].gameObject.SetActive(false);
+                    m_toggles[(int)EditorType.Grid].gameObject.SetActive(false);
                 }
             }
 
@@ -463,9 +464,7 @@ namespace Battlehub.RTTerrain
         {
             if (Projector != null)
             {
-                if (Terrain == null || editorType == EditorType.Empty || 
-                                       editorType == EditorType.Settings || 
-                                       editorType == EditorType.Selection_Handles || !m_toggles[(int)editorType].isOn)
+                if (Terrain == null || editorType != EditorType.Paint || !m_toggles[(int)editorType].isOn)
                 {
                     Projector.gameObject.SetActive(false);
                 }
@@ -531,7 +530,7 @@ namespace Battlehub.RTTerrain
             else
             {
                 EditorType editorType = (EditorType)customTool;
-                m_editor.Tools.IsBoxSelectionEnabled = editorType == EditorType.Selection_Handles;
+                m_editor.Tools.IsBoxSelectionEnabled = editorType == EditorType.Grid;
             }
         }
 
@@ -546,7 +545,7 @@ namespace Battlehub.RTTerrain
             if (m_editor.Tools.Custom is EditorType)
             {
                 EditorType editorType = (EditorType)m_editor.Tools.Custom;
-                if(editorType != EditorType.Empty && editorType != EditorType.Selection_Handles)
+                if(editorType != EditorType.Empty && editorType != EditorType.Grid)
                 {
                     IRuntimeSelectionComponent component = (IRuntimeSelectionComponent)sender;
                     RaycastHit[] hits = Physics.RaycastAll(component.Window.Pointer);

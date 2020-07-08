@@ -17,7 +17,7 @@ namespace Battlehub.RTCommon.XR
         [SerializeField]
         private GraphicsRaycasterXR m_raycaster = null;
         [SerializeField]
-        private XRRayInteractor[] m_rayInteractors;
+        private XRRayInteractor[] m_rayInteractors = null;
 
         private IInput m_input;
         private IRTE m_editor;

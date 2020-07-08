@@ -402,9 +402,9 @@ namespace Battlehub.RTHandles
         /// <summary>
         /// Tool type
         /// </summary>
-        public abstract RuntimeTool Tool
+        public virtual RuntimeTool Tool
         {
-            get;
+            get { return RuntimeTool.Custom; }
         }
 
         /// <summary>
@@ -452,9 +452,9 @@ namespace Battlehub.RTHandles
             set { m_dragPlane = value; }
         }
 
-        protected abstract float CurrentGridUnitSize
+        protected virtual float CurrentGridUnitSize
         {
-            get;
+            get { return 0.0f; }
         }
 
         private bool m_unitSnapping;

@@ -2,7 +2,7 @@
 
 namespace Battlehub.RTTerrain
 {
-    public class TerrainSelectionHandle : MonoBehaviour
+    public class TerrainGridHandle : MonoBehaviour
     {
         [SerializeField]
         private Color m_pointerOverColor = Color.yellow;

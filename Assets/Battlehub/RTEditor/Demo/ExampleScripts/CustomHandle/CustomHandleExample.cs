@@ -8,16 +8,6 @@ namespace Battlehub.RTEditor.Demo
     {
         private Vector3 m_prevPoint;
 
-        public override RuntimeTool Tool
-        {
-            get { return RuntimeTool.Custom; }
-        }
-
-        protected override float CurrentGridUnitSize
-        {
-            get;
-        }
-
         protected override bool OnBeginDrag()
         {
             if (!base.OnBeginDrag())

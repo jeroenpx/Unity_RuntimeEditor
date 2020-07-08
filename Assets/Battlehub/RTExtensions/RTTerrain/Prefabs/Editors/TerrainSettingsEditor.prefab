@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: -10
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
@@ -1691,17 +1691,17 @@ PrefabInstance:
     - target: {fileID: 7828451774859218600, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 7828451774859218600, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7828451774859218600, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
         type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828451774859218600, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
+        type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7828451774859218600, guid: 2642c8fbcf2c9a24d8eaad75cb5ff041,
         type: 3}

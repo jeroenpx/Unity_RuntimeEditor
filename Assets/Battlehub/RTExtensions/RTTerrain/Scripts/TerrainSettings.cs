@@ -298,7 +298,7 @@ namespace Battlehub.RTTerrain
 
             redo();
 
-            ITerrainSelectionHandlesTool tool = IOC.Resolve<ITerrainSelectionHandlesTool>();
+            ITerrainGridTool tool = IOC.Resolve<ITerrainGridTool>();
             if (tool == null || !tool.Refresh(redo, undo))
             {
                 IRTE editor = IOC.Resolve<IRTE>();

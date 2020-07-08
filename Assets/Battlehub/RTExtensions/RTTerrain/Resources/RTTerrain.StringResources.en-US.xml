@@ -21,8 +21,10 @@
 		
 		<!-- Terrain Editor -->
 		<StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_TerrainPaintTool" value="Terrain Paint Tool"/>
-		<StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_SelectionHandles" value="Selection handles"/>
-		<StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_Settings" value="Settings"/>
+		<StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_AreaTool" value="Terrain Area Tool"/>
+    <StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_TerrainGridTool" value="Terrain Grid Tool"/>
+    
+    <StringResource id="ID_RTTerrain_TerrainEditor_ToolTip_Settings" value="Settings"/>
 		<StringResource id="ID_RTTerrain_TerrainEditor_EmptyEditor" value="No tool selected&lt;br&gt;Please select a tool"/>
 		<StringResource id="ID_RTTerrain_TerrainEditor_Tool" value="Tool:"/>
     <StringResource id="ID_RTTerrain_TerrainEditor_MultiObjectEditingProhibited" value="Multi-object editing is not supported"/>

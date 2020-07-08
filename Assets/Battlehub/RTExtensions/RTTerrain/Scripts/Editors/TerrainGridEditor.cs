@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Battlehub.RTTerrain
 {
-    public class TerrainSelectionHandlesEditor : MonoBehaviour
+    public class TerrainGridEditor : MonoBehaviour
     {
         [SerializeField]
         private VirtualizingTreeView m_commandsList = null;
@@ -36,7 +36,7 @@ namespace Battlehub.RTTerrain
 
 
         private ToolCmd[] m_commands;
-        private ITerrainSelectionHandlesTool m_terrainTool;
+        private ITerrainGridTool m_terrainTool;
         private ICustomSelectionComponent m_customSelection;
         private IRuntimeEditor m_editor;
         private ILocalization m_localization;
@@ -64,7 +64,7 @@ namespace Battlehub.RTTerrain
             m_commandsList.CanRemove = false;
 
             m_localization = IOC.Resolve<ILocalization>();
-            m_terrainTool = IOC.Resolve<ITerrainSelectionHandlesTool>();
+            m_terrainTool = IOC.Resolve<ITerrainGridTool>();
             m_customSelection = IOC.Resolve<ICustomSelectionComponent>();
             m_customSelection.Selection.SelectionChanged += OnTerrainToolSelectionChanged;
                         
@@ -72,19 +72,19 @@ namespace Battlehub.RTTerrain
             {
                 m_xSpacingEditor.Min = 5;
                 m_xSpacingEditor.Max = 40;
-                m_xSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.XSpacing), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_XSpacing", "X Space"), null, null, () => m_terrainTool.Refresh(), false);
+                m_xSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainGridTool x) => x.XSpacing), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_XSpacing", "X Space"), null, null, () => m_terrainTool.Refresh(), false);
             }
 
             if (m_zSpacingEditor != null)
             {
                 m_zSpacingEditor.Min = 5;
                 m_zSpacingEditor.Max = 40;
-                m_zSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.ZSpacing), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_ZSpacing", "Z Space"), null, null, () => m_terrainTool.Refresh(), false);
+                m_zSpacingEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainGridTool x) => x.ZSpacing), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_ZSpacing", "Z Space"), null, null, () => m_terrainTool.Refresh(), false);
             }
 
             if (m_zTestEditor != null)
             {
-                m_zTestEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainSelectionHandlesTool x) => x.EnableZTest), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_ZTest", "Z Test"));
+                m_zTestEditor.Init(m_terrainTool, m_terrainTool, Strong.PropertyInfo((ITerrainGridTool x) => x.EnableZTest), null, m_localization.GetString("ID_RTTerrain_SelectionHandles_ZTest", "Z Test"));
             }
         }
 
@@ -129,7 +129,7 @@ namespace Battlehub.RTTerrain
 
             if(m_terrainTool != null)
             {
-                m_terrainTool.IsEnabled = true;
+                m_terrainTool.IsActive = true;
             }
             
             UpdateFlags();
@@ -140,7 +140,7 @@ namespace Battlehub.RTTerrain
         {
             if(m_terrainTool != null)
             {
-                m_terrainTool.IsEnabled = false;
+                m_terrainTool.IsActive = false;
             }
 
             if (m_editor != null)
@@ -209,7 +209,7 @@ namespace Battlehub.RTTerrain
             GameObject[] selected = m_customSelection.Selection.gameObjects;
             if (selected != null && selected.Length > 0)
             {
-                m_isTerrainHandleSelected = selected.Where(go => go.GetComponent<TerrainSelectionHandle>() != null).Any();
+                m_isTerrainHandleSelected = selected.Where(go => go.GetComponent<TerrainGridHandle>() != null).Any();
             }
             else
             {

@@ -11,7 +11,7 @@ using Battlehub.RTEditor;
 
 namespace Battlehub.RTTerrain
 {
-    public interface ITerrainSelectionHandlesTool
+    public interface ITerrainGridTool
     {
         float ZSpacing
         {
@@ -31,7 +31,7 @@ namespace Battlehub.RTTerrain
             set;
         }
 
-        bool IsEnabled
+        bool IsActive
         {
             get;
             set;
@@ -49,7 +49,7 @@ namespace Battlehub.RTTerrain
         void ClearHoles();
     }
 
-    public class TerrainSelectionHandlesTool : EditorExtension, ITerrainSelectionHandlesTool
+    public class TerrainGridTool : EditorExtension, ITerrainGridTool
     {
         private float m_zCount;
         private float m_xCount;
@@ -67,12 +67,12 @@ namespace Battlehub.RTTerrain
 
         private Transform m_handlesRoot;
         [SerializeField]
-        public TerrainSelectionHandle m_handlePrefab = null;
+        public TerrainGridHandle m_handlePrefab = null;
         [SerializeField]
         private PositionHandle m_positionHandlePrefab = null;
 
         private bool m_isDragging;
-        private TerrainSelectionHandle m_pointerOverHandle;
+        private TerrainGridHandle m_pointerOverHandle;
 
         public enum Interpolation
         {
@@ -104,7 +104,7 @@ namespace Battlehub.RTTerrain
 
                 foreach (GameObject go in m_handleToKey.Keys)
                 {
-                    TerrainSelectionHandle handle = go.GetComponent<TerrainSelectionHandle>();
+                    TerrainGridHandle handle = go.GetComponent<TerrainGridHandle>();
                     handle.ZTest = value;
                 }
             }
@@ -122,19 +122,19 @@ namespace Battlehub.RTTerrain
             set;
         }
 
-        private bool m_isEnabled;
-        public bool IsEnabled
+        private bool m_isActive;
+        public bool IsActive
         {
-            get { return m_isEnabled; }
+            get { return m_isActive; }
             set
             {
-                if(m_isEnabled != value)
+                if(m_isActive != value)
                 {
-                    Disable();
-                    m_isEnabled = value;
-                    if(m_isEnabled)
+                    Deactivate();
+                    m_isActive = value;
+                    if(m_isActive)
                     {
-                        Enable();
+                        Activate();
                     }
                 }
             }
@@ -186,7 +186,7 @@ namespace Battlehub.RTTerrain
 
             m_terrainHandlesSelection = IOC.Resolve<ICustomSelectionComponent>();
          
-            IOC.RegisterFallback<ITerrainSelectionHandlesTool>(this);
+            IOC.RegisterFallback<ITerrainGridTool>(this);
 
             OnEditorSelectionChanged(null);
             m_editor.Selection.SelectionChanged += OnEditorSelectionChanged;
@@ -226,9 +226,9 @@ namespace Battlehub.RTTerrain
                 }
             }
 
-            Disable();
+            Deactivate();
 
-            IOC.UnregisterFallback<ITerrainSelectionHandlesTool>(this);
+            IOC.UnregisterFallback<ITerrainGridTool>(this);
         }
 
         private void OnEditorSelectionChanged(UnityObject[] unselectedObjects)
@@ -243,7 +243,7 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void Enable()
+        private void Activate()
         {
             m_cutoutMaskRenderer = IOC.Resolve<ITerrainCutoutMaskRenderer>();
             m_cutoutMaskRenderer.ObjectImageLayer = m_editor.CameraLayerSettings.ResourcePreviewLayer;
@@ -297,7 +297,7 @@ namespace Battlehub.RTTerrain
             EnableZTest = EnableZTest;
         }
 
-        private void Disable()
+        private void Deactivate()
         {
             if(m_terrainHandlesSelection != null)
             {
@@ -344,7 +344,7 @@ namespace Battlehub.RTTerrain
             m_state.XSpacing = m_state.XSize / (m_xCount - 1);
 
             InitAdditiveAndInterpolatedHeights();
-            if(IsEnabled)
+            if(IsActive)
             {
                 CreateHandles();
             }
@@ -371,7 +371,7 @@ namespace Battlehub.RTTerrain
 
                 InitAdditiveAndInterpolatedHeights();
 
-                if(IsEnabled)
+                if(IsActive)
                 {
                     CreateHandles();
                 }
@@ -399,7 +399,7 @@ namespace Battlehub.RTTerrain
 
                 InitAdditiveAndInterpolatedHeights();
 
-                if(IsEnabled)
+                if(IsActive)
                 {
                     CreateHandles();
                 }
@@ -500,7 +500,7 @@ namespace Battlehub.RTTerrain
             {
                 for (int z = 0; z < zCount; ++z)
                 {
-                    TerrainSelectionHandle handle;
+                    TerrainGridHandle handle;
                     LockAxes lockAxes;
 
                     handle = Instantiate(m_handlePrefab, m_handlesRoot);
@@ -543,7 +543,7 @@ namespace Battlehub.RTTerrain
                 {
                     int hid = z * xCount + x;
 
-                    TerrainSelectionHandle handle = m_keyToHandle[hid].GetComponent<TerrainSelectionHandle>();
+                    TerrainGridHandle handle = m_keyToHandle[hid].GetComponent<TerrainGridHandle>();
                     float y = m_state.Grid[hid] * data.heightmapScale.y;
                     handle.transform.localPosition = new Vector3(x * m_state.XSpacing, y, z * m_state.ZSpacing);
                 }
@@ -659,7 +659,7 @@ namespace Battlehub.RTTerrain
                     GameObject go = obj as GameObject;
                     if (go != null)
                     {
-                        TerrainSelectionHandle handle = go.GetComponent<TerrainSelectionHandle>();
+                        TerrainGridHandle handle = go.GetComponent<TerrainGridHandle>();
                         if (handle != null)
                         {
                             handle.IsSelected = false;
@@ -677,7 +677,7 @@ namespace Battlehub.RTTerrain
                 IEnumerable<GameObject> selectedHandles = m_terrainHandlesSelection.Selection.gameObjects.Where(go => go != null && m_handleToKey.ContainsKey(go));
                 foreach (GameObject go in selectedHandles)
                 {
-                    TerrainSelectionHandle handle = go.GetComponent<TerrainSelectionHandle>();
+                    TerrainGridHandle handle = go.GetComponent<TerrainGridHandle>();
                     handle.IsSelected = true;
                 }
 
@@ -837,7 +837,7 @@ namespace Battlehub.RTTerrain
 
         private void LateUpdate()
         {
-            if(!IsEnabled)
+            if(!IsActive)
             {
                 return;
             }
@@ -887,7 +887,7 @@ namespace Battlehub.RTTerrain
 
         private void TryHitTerrainHandle(RaycastHit hit)
         {
-            TerrainSelectionHandle handle = hit.collider.GetComponent<TerrainSelectionHandle>();
+            TerrainGridHandle handle = hit.collider.GetComponent<TerrainGridHandle>();
             if (m_pointerOverHandle != handle)
             {
                 if (m_pointerOverHandle != null)
