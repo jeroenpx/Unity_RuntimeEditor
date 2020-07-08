@@ -384,7 +384,6 @@ namespace Battlehub.RTCommon
             {
                 m_canvasGroup.blocksRaycasts = true;
             }
-            
         }
 
         public void DisableRaycasts()

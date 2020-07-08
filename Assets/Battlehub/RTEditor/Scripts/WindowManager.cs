@@ -319,7 +319,7 @@ namespace Battlehub.RTEditor
             get { return m_editor.Windows; }
         }
 
-        private BaseRaycaster Raycaster
+        private IUIRaycaster Raycaster
         {
             get { return m_editor.Raycaster; }
         }
@@ -464,11 +464,8 @@ namespace Battlehub.RTEditor
 
             if (canActivate)
             {
-                PointerEventData pointerEventData = new PointerEventData(m_editor.EventSystem);
-                pointerEventData.position = Input.GetPointerXY(0);
-
                 List<RaycastResult> results = new List<RaycastResult>();
-                Raycaster.Raycast(pointerEventData, results);
+                Raycaster.Raycast(results);
 
                 RectTransform activeRectTransform = GetRegionTransform(ActiveWindow);
                 bool activeWindowContainsScreenPoint = activeRectTransform != null && RectTransformUtility.RectangleContainsScreenPoint(activeRectTransform, Input.GetPointerXY(0), Raycaster.eventCamera);

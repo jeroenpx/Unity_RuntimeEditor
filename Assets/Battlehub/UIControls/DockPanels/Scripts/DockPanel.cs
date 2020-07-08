@@ -1,6 +1,7 @@
 ﻿using Battlehub.Utils;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Battlehub.UIControls.DockPanels
@@ -34,8 +35,8 @@ namespace Battlehub.UIControls.DockPanels
         public event ResizerEventHandler RegionEndResize;
 
         [SerializeField]
-        private GraphicRaycaster m_raycaster = null;
-        public GraphicRaycaster Raycaster
+        private BaseRaycaster m_raycaster = null;
+        public BaseRaycaster Raycaster
         {
             get { return m_raycaster; }
         }
@@ -138,7 +139,7 @@ namespace Battlehub.UIControls.DockPanels
         {
             if (m_raycaster == null)
             {
-                m_raycaster = GetComponentInParent<GraphicRaycaster>();
+                m_raycaster = GetComponentInParent<BaseRaycaster>();
                 if (m_raycaster == null)
                 {
                     Canvas canvas = GetComponentInParent<Canvas>();

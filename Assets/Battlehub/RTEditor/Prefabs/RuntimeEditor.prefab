@@ -5614,7 +5614,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21371d036bda9424ca706afd5d239902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_raycaster: {fileID: 6389508947412869153}
   m_eventSystem: {fileID: 0}
   m_cameraLayerSettings:
     ResourcePreviewLayer: 20
@@ -6481,6 +6480,7 @@ GameObject:
   - component: {fileID: 6389508947412869152}
   - component: {fileID: 6389508947412869153}
   - component: {fileID: 8562282175041704604}
+  - component: {fileID: 7770418088276858615}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -6530,7 +6530,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &6389508947412869153
 MonoBehaviour:
@@ -6571,6 +6571,19 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &7770418088276858615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6389508947412869167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 270e1064ce9e1e64d9c8d21f00b8818b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_raycaster: {fileID: 6389508947412869153}
 --- !u!1 &6468069147904468126
 GameObject:
   m_ObjectHideFlags: 0

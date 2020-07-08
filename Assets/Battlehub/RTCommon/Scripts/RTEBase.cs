@@ -85,7 +85,7 @@ namespace Battlehub.RTCommon
             get;
         }
 
-        BaseRaycaster Raycaster
+        IUIRaycaster Raycaster
         {
             get;
         }
@@ -226,8 +226,7 @@ namespace Battlehub.RTCommon
     [DefaultExecutionOrder(-90)]
     public class RTEBase : MonoBehaviour, IRTE
     {
-        [SerializeField]
-        protected BaseRaycaster m_raycaster;
+        private IUIRaycaster m_uiRaycaster;
         [SerializeField]
         protected EventSystem m_eventSystem;
 
@@ -264,7 +263,7 @@ namespace Battlehub.RTCommon
         public event RTEEvent<GameObject[]> ObjectsDeleted;
 
         private IInput m_disabledInput;
-        private InputLow m_input;
+        private IInput m_input;
         private IInput m_activeInput;
         private RuntimeSelection m_selection;
         private RuntimeTools m_tools = new RuntimeTools();
@@ -278,9 +277,9 @@ namespace Battlehub.RTCommon
         protected InputField m_currentInputFieldUI;
         protected float m_zAxis;
 
-        public BaseRaycaster Raycaster
+        public IUIRaycaster Raycaster
         {
-            get { return m_raycaster; }
+            get { return m_uiRaycaster; }
         }
 
         public EventSystem EventSystem
@@ -570,7 +569,7 @@ namespace Battlehub.RTCommon
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Init()
         {
-            Debug.Log("RTE Initialized, 2_2_y");
+            Debug.Log("RTE Initialized, 2_2");
             IOC.RegisterFallback<IRTE>(RegisterRTE);
         }
 
@@ -601,11 +600,8 @@ namespace Battlehub.RTCommon
             else
             {
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                //canvas.worldCamera = Camera.main;
-                //canvas.planeDistance = Camera.main.nearClipPlane + 0.01f;
             }
             canvas.sortingOrder = short.MinValue;
-
             editor.AddComponent<RTEGraphics>();
 
             GameObject scene = new GameObject("SceneWindow");
@@ -658,14 +654,7 @@ namespace Battlehub.RTCommon
                 }
             }
 
-            if (IsVR)
-            {
-                //gameObject.AddComponent<VRTracker>();
-            }
-            else
-            {
-                m_raycaster = ui.AddComponent<GraphicRaycaster>();
-            }
+            m_uiRaycaster = ui.AddComponent<RTEUIRaycaster>();
             m_eventSystem = eventSystem;
         }
 
@@ -710,9 +699,10 @@ namespace Battlehub.RTCommon
                 m_undo = new DisabledUndo();
             }
 
-            if (m_raycaster == null)
+            m_uiRaycaster = IOC.Resolve<IUIRaycaster>();
+            if (m_uiRaycaster == null)
             {
-                m_raycaster = GetComponent<BaseRaycaster>();
+                m_uiRaycaster = GetComponentInChildren<IUIRaycaster>();
             }
 
             IsVR = UnityEngine.XR.XRDevice.isPresent && m_enableVRIfAvailable;
@@ -742,15 +732,12 @@ namespace Battlehub.RTCommon
 
         protected virtual void Start()
         {
-            if (IsVR)
-            {
-                // IVRTracker tracker = IOC.Resolve<IVRTracker>();
-                // m_input = new InputLowVR(tracker);
-            }
-            else
+            m_input = IOC.Resolve<IInput>();
+            if(m_input == null)
             {
                 m_input = new InputLow();
             }
+
             SetInput();
 
             if (GetComponent<RTEBaseInput>() == null)
@@ -880,11 +867,8 @@ namespace Battlehub.RTCommon
                 mwheel ||
                 Input.IsAnyKeyDown() && !IsInputFieldFocused)
             {
-                PointerEventData pointerEventData = new PointerEventData(m_eventSystem);
-                pointerEventData.position = Input.GetPointerXY(0);
-
                 List<RaycastResult> results = new List<RaycastResult>();
-                m_raycaster.Raycast(pointerEventData, results);
+                m_uiRaycaster.Raycast(results);
 
                 IEnumerable<Selectable> selectables = results.Select(r => r.gameObject.GetComponent<Selectable>()).Where(s => s != null);
                 if (selectables.Count() == 1)

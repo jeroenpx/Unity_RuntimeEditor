@@ -13,6 +13,9 @@ namespace Battlehub.RTEditor
         [SerializeField]
         private GameObject m_timeline = null;
 
+        [SerializeField]
+        private float m_defaultClipLength = 1; //seconds
+
         public int CurrentSample
         {
             get
@@ -94,8 +97,17 @@ namespace Battlehub.RTEditor
                     AnimationClip clip = m_clip.Clip;
                     const int frameRate = 60;
                     clip.frameRate = frameRate;
-                    int samplesCount = Mathf.CeilToInt(clip.length * clip.frameRate);
 
+                    int samplesCount;
+                    if (clip.empty)
+                    {
+                        samplesCount = Mathf.CeilToInt(m_defaultClipLength * clip.frameRate);
+                    }
+                    else
+                    {
+                        samplesCount = Mathf.CeilToInt(clip.length * clip.frameRate);
+                    }
+                    
                     Dopesheet.Clip = new Dopesheet.DsAnimationClip(samplesCount, frameRate);
                     Dopesheet.VisibleRowsCount = 1;
 

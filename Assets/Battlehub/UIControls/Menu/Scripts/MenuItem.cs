@@ -115,17 +115,17 @@ namespace Battlehub.UIControls.MenuControl
             get { return m_submenu; }
         }
 
-        private GraphicRaycaster m_raycaster;
+        private BaseRaycaster m_raycaster;
 
         private void Awake()
         {
-            m_raycaster = GetComponentInParent<GraphicRaycaster>();
+            m_raycaster = GetComponentInParent<BaseRaycaster>();
             if(m_raycaster == null)
             {
                 Canvas canvas = GetComponentInParent<Canvas>();
                 if(canvas != null)
                 {
-                    m_raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
+                    m_raycaster = canvas.gameObject.AddComponent<BaseRaycaster>();
                 }
             }
         }
@@ -430,24 +430,6 @@ namespace Battlehub.UIControls.MenuControl
         {
             
         }
-
-        //private bool IsPointerOverParentMenu(PointerEventData eventData)
-        //{
-        //    HashSet<GameObject> parentsHs = new HashSet<GameObject>(GetComponentsInParent<Menu>().Select(m => m.gameObject));
-
-        //    List<RaycastResult> raycastResultList = new List<RaycastResult>();
-        //    m_raycaster.Raycast(eventData, raycastResultList);
-        //    for (int i = 0; i < raycastResultList.Count; ++i)
-        //    {
-        //        RaycastResult raycastResult = raycastResultList[i];
-        //        if (parentsHs.Contains(raycastResult.gameObject))
-        //        {
-        //            return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
     }
 }
 

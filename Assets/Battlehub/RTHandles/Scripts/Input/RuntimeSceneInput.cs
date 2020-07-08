@@ -22,11 +22,15 @@ namespace Battlehub.RTHandles
 
         public bool SwapLRMB = false;
 
-        private bool m_rotate;
-        private bool m_pan;
-        private bool m_freeMove;
+        [SerializeField]
+        private bool m_beginRotateImmediately = true;
         [SerializeField]
         private bool m_beginFreeMoveImmediately = true;
+
+        private bool m_rotate;
+        private bool m_rotateActive;
+        private bool m_pan;
+        private bool m_freeMove;
         private bool m_freeMoveActive;
         private bool m_isActive;
 
@@ -173,6 +177,10 @@ namespace Battlehub.RTHandles
             }
             bool endRotate = m_rotate != rotate && !rotate;
             m_rotate = rotate;
+            if (!m_rotate)
+            {
+                m_rotateActive = false;
+            }
 
             bool beginPan = m_pan != pan && pan;
             if (beginPan && !isPointerOverAndSelected)
@@ -198,9 +206,9 @@ namespace Battlehub.RTHandles
             Vector3 pointerPosition = input.GetPointerXY(0);
             tools.IsViewing = m_rotate || m_pan || m_freeMove;
 
-            if (beginPan || endPan || beginRotate || endRotate || beginFreeMove && m_beginFreeMoveImmediately || endFreeMove)
+            if (beginPan || endPan || beginRotate && m_beginRotateImmediately || endRotate || beginFreeMove && m_beginFreeMoveImmediately || endFreeMove)
             {
-                SceneComponent.UpdateCursorState(true, m_pan, m_rotate, beginFreeMove && m_beginFreeMoveImmediately);
+                SceneComponent.UpdateCursorState(true, m_pan, m_rotate && m_beginRotateImmediately, beginFreeMove && m_beginFreeMoveImmediately);
             }
 
             if (m_freeMove)
@@ -220,7 +228,13 @@ namespace Battlehub.RTHandles
                 if (canRotate)
                 {
                     Vector2 orbitAxes = RotateAxes();
-                    SceneComponent.Orbit(orbitAxes.x * RotateXSensitivity, orbitAxes.y * RotateYSensitivity, ZoomAxis() * MoveZSensitivity);
+                    float zoomAxis = ZoomAxis();
+                    SceneComponent.Orbit(orbitAxes.x * RotateXSensitivity, orbitAxes.y * RotateYSensitivity, zoomAxis * MoveZSensitivity);
+                    if (!m_rotateActive && (orbitAxes != Vector2.zero || zoomAxis != 0))
+                    {
+                        SceneComponent.UpdateCursorState(true, m_pan, m_rotate, m_freeMove);
+                        m_rotateActive = true;
+                    }
                 }
                 else
                 {

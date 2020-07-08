@@ -102,7 +102,7 @@ namespace Battlehub.RTEditor
             get { return m_editor.Input; }
         }
 
-        private BaseRaycaster Raycaster
+        private IUIRaycaster Raycaster
         {
             get { return m_editor.Raycaster; }
         }

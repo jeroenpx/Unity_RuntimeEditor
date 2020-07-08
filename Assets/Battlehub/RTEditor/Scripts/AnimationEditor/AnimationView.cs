@@ -463,6 +463,7 @@ namespace Battlehub.RTEditor
 
             ISaveAssetDialog saveAssetDialog = IOC.Resolve<ISaveAssetDialog>();
             RuntimeAnimationClip clip = ScriptableObject.CreateInstance<RuntimeAnimationClip>();
+                        
             clip.name = m_localization.GetString("ID_RTEditor_AnimationView_NewAnimationClip", "New Animation Clip");
             
             saveAssetDialog.Asset = clip;

@@ -86,6 +86,7 @@
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\LockAxes.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RTEBase.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RTEComponent.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\RTEUIRaycaster.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RenderPipelineInfo.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RenderPipelineSetActive.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\ResourcePreviewUtility.cs" />

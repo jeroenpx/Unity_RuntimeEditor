@@ -98,7 +98,7 @@ namespace Battlehub.RTEditor
         private TimelinePointer m_pointer = null;
         [SerializeField]
         private TimelineBoxSelection m_boxSelection = null;
-
+        
         private Dopesheet m_dopesheet;
         private TimelineGrid m_timelineGrid;
 
@@ -789,9 +789,14 @@ namespace Battlehub.RTEditor
         public void ChangeInterval(Vector2 delta)
         {
             Vector2 newInterval = m_interval - delta;
-            float widthPerLine = m_scrollRect.viewport.rect.width / m_timelineGridParams.VertLines;
-            newInterval.x = Mathf.Clamp(newInterval.x, 1.0f, Mathf.Log(3600 * 24, m_timelineGridParams.VertLinesSecondary)); //at 60 samples per second
-            newInterval.y = Mathf.Clamp(newInterval.y, 1.0f, 10000.0f); //TODO: handle negative values
+            
+            Vector2 maxInterval = new Vector2(
+                3600 * 24, //seconds
+                10000.0f
+                );
+
+            newInterval.x = Mathf.Clamp(newInterval.x, 1.0f, Mathf.Log(maxInterval.x, m_timelineGridParams.VertLinesSecondary)); //at 60 samples per second
+            newInterval.y = Mathf.Clamp(newInterval.y, 1.0f, maxInterval.y); //TODO: handle negative values
 
             if (newInterval != m_interval)
             {
