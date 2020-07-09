@@ -22,8 +22,7 @@ namespace Battlehub.RTHandles
         private Transform[] m_snapTargets;
         private Bounds[] m_snapTargetsBounds;
         private ExposeToEditor[] m_allExposedToEditor;
-        private MaterialPropertyBlock[] m_propertyBlocks;
-
+    
         public override float SizeOfGrid
         {
             get { return GridSize; }
@@ -91,16 +90,6 @@ namespace Battlehub.RTHandles
             get { return SizeOfGrid; }
         }
 
-        protected override void AwakeOverride()
-        {
-            base.AwakeOverride();
-
-            m_propertyBlocks = new MaterialPropertyBlock[11];
-            for(int i = 0; i < m_propertyBlocks.Length; ++i)
-            {
-                m_propertyBlocks[i] = new MaterialPropertyBlock();
-            }
-        }
 
         protected override void OnEnableOverride()
         {
@@ -625,41 +614,6 @@ namespace Battlehub.RTHandles
             return false;
         }
 
-        private bool HitQuad(Vector3 axis, Matrix4x4 matrix, float size, out float distance)
-        {
-            Ray ray = Window.Pointer;
-            Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));
-
-            if(!plane.Raycast(ray, out distance))
-            {
-                return false;
-            }
-
-            Vector3 point = ray.GetPoint(distance);
-            point = matrix.inverse.MultiplyPoint(point);
-
-            Vector3 toCam = matrix.inverse.MultiplyVector(Window.Camera.transform.position - Position);
-
-            float fx = Mathf.Sign(Vector3.Dot(toCam, Vector3.right));
-            float fy = Mathf.Sign(Vector3.Dot(toCam, Vector3.up));
-            float fz = Mathf.Sign(Vector3.Dot(toCam, Vector3.forward));
-
-            point.x *= fx;
-            point.y *= fy;
-            point.z *= fz;
-
-            float lowBound = -0.01f;
-
-            bool result = point.x >= lowBound && point.x <= size && point.y >= lowBound && point.y <= size && point.z >= lowBound && point.z <= size;
-
-            if(result)
-            {
-                DragPlane = GetDragPlane(matrix, axis);
-            }
-           
-            return result;
-        }
-
         public override RuntimeHandleAxis HitTest(out float distance)
         {
             m_matrix = Matrix4x4.TRS(Position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
@@ -670,66 +624,7 @@ namespace Battlehub.RTHandles
                 return Model.HitTest(Window.Pointer, out distance);
             }
 
-            float scale = RuntimeHandlesComponent.GetScreenScale(Position, Window.Camera);
-            Matrix4x4 matrix = Matrix4x4.TRS(Position, Rotation, new Vector3(scale, scale, scale));
-
-            if(!Appearance.PositionHandleArrowOnly)
-            {
-                float s = 0.23f * scale;
-
-                if(LockObject == null || !LockObject.PositionX && !LockObject.PositionZ)
-                {
-                    if (HitQuad(Vector3.up, m_matrix, s * Appearance.HandleScale, out distance))
-                    {
-                        return RuntimeHandleAxis.XZ;
-                    }
-                }
-
-                if (LockObject == null || !LockObject.PositionY && !LockObject.PositionZ)
-                {
-                    if (HitQuad(Vector3.right, m_matrix, s * Appearance.HandleScale, out distance))
-                    {
-                        return RuntimeHandleAxis.YZ;
-                    }
-                }
-
-                if (LockObject == null || !LockObject.PositionX && !LockObject.PositionY)
-                {
-                    if (HitQuad(Vector3.forward, m_matrix, s * Appearance.HandleScale, out distance))
-                    {
-                        return RuntimeHandleAxis.XY;
-                    }
-                }
-            }
-
-            float distToYAxis = float.MaxValue;
-            float distToZAxis = float.MaxValue;
-            float distToXAxis = float.MaxValue;
-            bool hit = (LockObject == null || !LockObject.PositionY) && HitAxis(Vector3.up * Appearance.HandleScale, matrix, out distToYAxis);
-            hit |= (LockObject == null || !LockObject.PositionZ) && HitAxis(Appearance.Forward * Appearance.HandleScale, matrix, out distToZAxis);
-            hit |= (LockObject == null || !LockObject.PositionX) && HitAxis(Vector3.right * Appearance.HandleScale, matrix, out distToXAxis);
-
-            if (hit)
-            {
-                if (distToYAxis <= distToZAxis && distToYAxis <= distToXAxis)
-                {
-                    distance = distToYAxis;
-                    return RuntimeHandleAxis.Y;
-                }
-                else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
-                {
-                    distance = distToXAxis;
-                    return RuntimeHandleAxis.X;
-                }
-                else
-                {
-                    distance = distToZAxis;
-                    return RuntimeHandleAxis.Z;
-                }
-            }
-
-            distance = float.PositiveInfinity;
-            return  RuntimeHandleAxis.None;
+            return Appearance.HitTestPositionHandle(Window.Camera, Window.Pointer, m_settings, out distance);
         }
 
         protected override bool OnBeginDrag()
@@ -911,9 +806,15 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private DrawingSettings m_settings = new DrawingSettings();
         protected override void RefreshCommandBuffer(IRTECamera camera)
         {
-            Appearance.DoPositionHandle(camera.CommandBuffer, m_propertyBlocks, camera.Camera, Position, Rotation, SelectedAxis, IsInVertexSnappingMode || Editor.Tools.IsSnapping, LockObject);
+            m_settings.Position = Position;
+            m_settings.Rotation = Rotation;
+            m_settings.SelectedAxis = SelectedAxis;
+            m_settings.LockObject = LockObject;
+
+            Appearance.DoPositionHandle(camera.CommandBuffer, camera.Camera, m_settings, IsInVertexSnappingMode || Editor.Tools.IsSnapping);
         }
     }
 }

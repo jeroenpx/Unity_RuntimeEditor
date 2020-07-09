@@ -91,6 +91,7 @@ MonoBehaviour:
         passFoldout: 0
         m_Version: 0
         m_afterImageEffects: 0
+        m_clearDepth: 0
 --- !u!114 &7146658313205492313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,10 +122,11 @@ MonoBehaviour:
         enabled: 1
         targetColorBuffer: 0
         targetDepthBuffer: 0
-        clearFlags: 2
+        clearFlags: 0
         passFoldout: 0
         m_Version: 0
         m_afterImageEffects: 0
+        m_clearDepth: 1
     00000001:
       type: {class: RenderSelection, ns: Battlehub.RTCommon.HDRP, asm: Battlehub.RTEditor.HDRP}
       data:
@@ -136,6 +138,7 @@ MonoBehaviour:
         passFoldout: 0
         m_Version: 0
         m_afterImageEffects: 0
+        m_clearDepth: 0
     00000002:
       type: {class: FullScreenCustomPass, ns: UnityEngine.Rendering.HighDefinition,
         asm: Unity.RenderPipelines.HighDefinition.Runtime}
@@ -163,6 +166,7 @@ MonoBehaviour:
         passFoldout: 0
         m_Version: 0
         m_afterImageEffects: 1
+        m_clearDepth: 1
 --- !u!114 &6358415634100831509
 MonoBehaviour:
   m_ObjectHideFlags: 0

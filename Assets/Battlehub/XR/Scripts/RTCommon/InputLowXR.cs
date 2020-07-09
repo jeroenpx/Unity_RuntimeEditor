@@ -9,7 +9,7 @@ namespace Battlehub.RTCommon.XR
     public class InputLowXR : MonoBehaviour, IInput
     {
         [SerializeField]
-        private XRController[] m_controllers;
+        private XRController[] m_controllers = null;
 
         private XRController[] m_activeController = new XRController[1];
         private bool[] m_isPressed = new bool[1];

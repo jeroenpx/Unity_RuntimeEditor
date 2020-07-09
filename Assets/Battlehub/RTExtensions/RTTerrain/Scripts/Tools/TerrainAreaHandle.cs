@@ -1,4 +1,5 @@
 ﻿using Battlehub.RTCommon;
+using Battlehub.RTEditor;
 using Battlehub.RTHandles;
 using UnityEngine;
 
@@ -27,6 +28,19 @@ namespace Battlehub.RTTerrain
             base.OnDrop();
             Debug.Log("OnDrop");
         }
-    }
 
+
+        private DrawingSettings m_drawingSettings = new DrawingSettings
+        {
+            LockObject = new LockObject { PositionX = true, PositionZ = true },
+            DrawLocked = false
+        };
+        protected override void RefreshCommandBuffer(IRTECamera camera)
+        {
+            base.RefreshCommandBuffer(camera);
+            m_drawingSettings.Position = transform.position;
+            m_drawingSettings.Rotation = transform.rotation;
+            Appearance.DoPositionHandle(camera.CommandBuffer, camera.Camera, m_drawingSettings);
+        }
+    }
 }

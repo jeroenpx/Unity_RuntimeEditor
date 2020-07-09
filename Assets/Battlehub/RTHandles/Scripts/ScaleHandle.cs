@@ -17,8 +17,7 @@ namespace Battlehub.RTHandles
         private Vector3 m_scale;
         private Vector3[] m_refScales;
         private float m_screenScale;
-        private MaterialPropertyBlock[] m_propertyBlocks;
-
+ 
         public override bool SnapToGrid
         {
             get { return AbsoluteGrid; }
@@ -47,7 +46,6 @@ namespace Battlehub.RTHandles
         
             m_scale = Vector3.one;
             m_roundedScale = m_scale;
-            m_propertyBlocks = new[] { new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock() };
         }
 
         protected override void UpdateOverride()
@@ -79,40 +77,7 @@ namespace Battlehub.RTHandles
                 return Model.HitTest(Window.Pointer, out distance);
             }
 
-            Matrix4x4 matrix = Matrix4x4.TRS(transform.position, Rotation, new Vector3(m_screenScale, m_screenScale, m_screenScale));
-
-            if (HitCenter(out distance))
-            {
-                return RuntimeHandleAxis.Free;
-            }
-            float distToYAxis;
-            float distToZAxis;
-            float distToXAxis;
-            bool hit = HitAxis(Vector3.up, matrix, out distToYAxis);
-            hit |= HitAxis(Appearance.Forward, matrix, out distToZAxis);
-            hit |= HitAxis(Vector3.right, matrix, out distToXAxis);
-
-            if (hit)
-            {
-                if (distToYAxis <= distToZAxis && distToYAxis <= distToXAxis)
-                {
-                    distance = distToYAxis;
-                    return RuntimeHandleAxis.Y;
-                }
-                else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
-                {
-                    distance = distToXAxis;
-                    return RuntimeHandleAxis.X;
-                }
-                else
-                {
-                    distance = distToZAxis;
-                    return RuntimeHandleAxis.Z;
-                }
-            }
-
-            distance = float.PositiveInfinity;
-            return RuntimeHandleAxis.None;
+            return Appearance.HitTestScaleHandle(Window.Camera, Window.Pointer, m_settings, out distance);
         }
 
         protected override bool OnBeginDrag()
@@ -299,9 +264,17 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private DrawingSettings m_settings = new DrawingSettings();
         protected override void RefreshCommandBuffer(IRTECamera camera)
         {
-            Appearance.DoScaleHandle(camera.CommandBuffer, m_propertyBlocks, camera.Camera, m_roundedScale, Target.position, Rotation, SelectedAxis, LockObject);
+            m_settings.Position = Target.position;
+            m_settings.Rotation = Rotation;
+            m_settings.Scale = m_roundedScale;
+            m_settings.SelectedAxis = SelectedAxis;
+            m_settings.LockObject = LockObject;
+
+            Appearance.DoScaleHandle(camera.CommandBuffer, camera.Camera, m_settings);
         }
+
     }
 }

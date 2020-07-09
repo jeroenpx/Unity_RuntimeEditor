@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Battlehub.RTCommon;
 using UnityEngine.Rendering;
+using UnityEditor.Graphs;
 #if UNITY_EDITOR
 #endif
 
@@ -33,6 +34,40 @@ namespace Battlehub.RTHandles
         public Color32 SelectionAltColor = new Color(0, 0, 0, 0.1f);
         public Color32 BoundsColor = Color.green;
         public Color32 GridColor = new Color(1, 1, 1, 0.1f);
+    }
+
+    public class DrawingSettings
+    {
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public Vector3 Scale;
+
+        public RuntimeHandleAxis SelectedAxis;
+        public LockObject LockObject;
+        public bool DrawLocked;
+
+        public DrawingSettings()
+        {
+            Position = Vector3.zero;
+            Rotation = Quaternion.identity;
+            Scale = Vector3.one;
+            SelectedAxis = RuntimeHandleAxis.None;
+            LockObject = null;
+            DrawLocked = true;
+        }
+
+        internal MaterialPropertyBlock[] PropertyBlocks;
+        internal void Init(int propertyBlocksCount)
+        {
+            if (PropertyBlocks == null)
+            {
+                PropertyBlocks = new MaterialPropertyBlock[propertyBlocksCount];
+                for (int i = 0; i < propertyBlocksCount; ++i)
+                {
+                    PropertyBlocks[i] = new MaterialPropertyBlock();
+                }
+            }
+        }
     }
 
     public interface IRuntimeHandlesComponent
@@ -164,7 +199,6 @@ namespace Battlehub.RTHandles
         protected Mesh SceneGizmoCube;
         protected Mesh SceneGizmoSelectedCube;
         protected Mesh SceneGizmoQuad;
-
 
         protected Material m_shapesMaterialZTest;
         protected Material m_shapesMaterialZTest2;
@@ -573,11 +607,11 @@ namespace Battlehub.RTHandles
             return GraphicsUtility.GetScreenScale(position, camera);
         }
 
-        private void DoAxes(CommandBuffer commandBuffer, MaterialPropertyBlock[] propertyBlocks, Matrix4x4 transform, RuntimeHandleAxis selectedAxis, bool xLocked, bool yLocked, bool zLocked)
+        private void DoAxes(CommandBuffer commandBuffer, MaterialPropertyBlock[] propertyBlocks, Matrix4x4 transform, RuntimeHandleAxis selectedAxis, bool xLocked, bool yLocked, bool zLocked, bool drawLocked)
         {
             if (xLocked)
             {
-                if(m_colors.DisabledColor.a > 0)
+                if(drawLocked && m_colors.DisabledColor.a > 0)
                 {
                     propertyBlocks[0].SetColor("_Color", m_colors.DisabledColor);
                     commandBuffer.DrawMesh(Axes, transform, m_linesMaterial, 0, 0, propertyBlocks[0]);
@@ -591,7 +625,7 @@ namespace Battlehub.RTHandles
 
             if (yLocked)
             {
-                if(m_colors.DisabledColor.a > 0)
+                if(drawLocked && m_colors.DisabledColor.a > 0)
                 {
                     propertyBlocks[1].SetColor("_Color", m_colors.DisabledColor);
                     commandBuffer.DrawMesh(Axes, transform, m_linesMaterial, 1, 0, propertyBlocks[1]);
@@ -605,7 +639,7 @@ namespace Battlehub.RTHandles
 
             if (zLocked)
             {
-                if(m_colors.DisabledColor.a > 0)
+                if(drawLocked && m_colors.DisabledColor.a > 0)
                 {
                     propertyBlocks[2].SetColor("_Color", m_colors.DisabledColor);
                     commandBuffer.DrawMesh(Axes, transform, m_linesMaterial, 2, 0, propertyBlocks[2]);
@@ -617,23 +651,27 @@ namespace Battlehub.RTHandles
                 commandBuffer.DrawMesh(Axes, transform, m_linesMaterial, 2, 0, propertyBlocks[2]);
             }
         }
-      
-        public void DoPositionHandle(CommandBuffer commandBuffer, MaterialPropertyBlock[] propertyBlocks, Camera camera, Vector3 position, Quaternion rotation, 
-            RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, bool snapMode = false, LockObject lockObject = null)
-        {
-            float screenScale = GetScreenScale(position, camera);
-            Matrix4x4 linesTransform = Matrix4x4.TRS(position, rotation, new Vector3(screenScale, screenScale, screenScale) * m_handleScale);
 
+        public void DoPositionHandle(CommandBuffer commandBuffer, Camera camera, DrawingSettings settings, bool snapMode = false)
+        {
+            settings.Init(propertyBlocksCount: 11);
+
+            MaterialPropertyBlock[] propertyBlocks = settings.PropertyBlocks;
+            LockObject lockObject = settings.LockObject;
+            RuntimeHandleAxis selectedAxis = settings.SelectedAxis;
+
+            bool drawLocked = settings.DrawLocked;
             bool xLocked = lockObject != null && lockObject.PositionX;
             bool yLocked = lockObject != null && lockObject.PositionY;
             bool zLocked = lockObject != null && lockObject.PositionZ;
+            
+            float screenScale = GetScreenScale(settings.Position, camera);
+            Matrix4x4 linesTransform = Matrix4x4.TRS(settings.Position, settings.Rotation, new Vector3(screenScale, screenScale, screenScale) * m_handleScale);
+            DoAxes(commandBuffer, propertyBlocks, linesTransform, selectedAxis, xLocked, yLocked, zLocked, drawLocked);
 
-            DoAxes(commandBuffer, propertyBlocks, linesTransform, selectedAxis, xLocked, yLocked, zLocked);
-
-            Matrix4x4 transform = Matrix4x4.TRS(position, rotation, new Vector3(screenScale, screenScale, screenScale));
+            Matrix4x4 transform = Matrix4x4.TRS(settings.Position, settings.Rotation, new Vector3(screenScale, screenScale, screenScale));
             if (snapMode)
             {
-
                 if (selectedAxis == RuntimeHandleAxis.Snap)
                 {
                     propertyBlocks[4].SetColor("_Color", m_colors.SelectionColor);
@@ -649,8 +687,7 @@ namespace Battlehub.RTHandles
             {
                 if(!PositionHandleArrowOnly)
                 {
-                    Vector3 toCam = transform.inverse.MultiplyVector(camera.transform.position - position);
-
+                    Vector3 toCam = transform.inverse.MultiplyVector(camera.transform.position - settings.Position);
                     Matrix4x4 quadTransform = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,
                         new Vector3(
                             Mathf.Sign(Vector3.Dot(toCam, Vector3.right)) * 0.2f, 
@@ -714,7 +751,10 @@ namespace Battlehub.RTHandles
             {
                 if (xLocked)
                 {
-                    commandBuffer.DrawMesh(DisabledArrowX, transform, m_shapesMaterialZTest, 0, 0);
+                    if(drawLocked)
+                    {
+                        commandBuffer.DrawMesh(DisabledArrowX, transform, m_shapesMaterialZTest, 0, 0);
+                    }
                 }
                 else
                 {
@@ -730,7 +770,10 @@ namespace Battlehub.RTHandles
 
                 if (yLocked)
                 {
-                    commandBuffer.DrawMesh(DisabledArrowY, transform, m_shapesMaterialZTest, 0, 0);
+                    if(drawLocked)
+                    {
+                        commandBuffer.DrawMesh(DisabledArrowY, transform, m_shapesMaterialZTest, 0, 0);
+                    }
                 }
                 else 
                 {
@@ -746,7 +789,10 @@ namespace Battlehub.RTHandles
 
                 if (zLocked)
                 {
-                    commandBuffer.DrawMesh(DisabledArrowZ, transform, m_shapesMaterialZTest, 0, 0);
+                    if(drawLocked)
+                    {
+                        commandBuffer.DrawMesh(DisabledArrowZ, transform, m_shapesMaterialZTest, 0, 0);
+                    }
                 }
                 else 
                 {
@@ -762,16 +808,23 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void DoRotationHandle(CommandBuffer commandBuffer, MaterialPropertyBlock[] propertyBlocks, Camera camera, Quaternion rotation, Vector3 position, RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None, LockObject lockObject = null, bool cameraFacingBillboardMode = true)
+        public void DoRotationHandle(CommandBuffer commandBuffer, Camera camera, DrawingSettings settings, bool cameraFacingBillboardMode = true)
         {
-            float screenScale = GetScreenScale(position, camera);
-            float radius = m_handleScale;
-            Vector3 scale = new Vector3(screenScale, screenScale, screenScale) * radius;
-            Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
-            Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, rotation * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
-            Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, rotation, Vector3.one);
-            Matrix4x4 objToWorld = Matrix4x4.TRS(position, Quaternion.identity, scale);
+            settings.Init(propertyBlocksCount: 5);
 
+            MaterialPropertyBlock[] propertyBlocks = settings.PropertyBlocks;
+            LockObject lockObject = settings.LockObject;
+            RuntimeHandleAxis selectedAxis = settings.SelectedAxis;
+
+            float screenScale = GetScreenScale(settings.Position, camera);
+            float radius = m_handleScale;
+            Vector3 scale = Vector3.Scale(new Vector3(screenScale, screenScale, screenScale) * radius, settings.Scale);
+            Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, settings.Rotation * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
+            Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, settings.Rotation * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
+            Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, settings.Rotation, Vector3.one);
+            Matrix4x4 objToWorld = Matrix4x4.TRS(settings.Position, Quaternion.identity, scale);
+
+            bool drawLocked = settings.DrawLocked;
             bool xLocked = lockObject != null && lockObject.RotationX;
             bool yLocked = lockObject != null && lockObject.RotationY;
             bool zLocked = lockObject != null && lockObject.RotationZ;
@@ -784,7 +837,7 @@ namespace Battlehub.RTHandles
             if (cameraFacingBillboardMode)
             {
                 material = m_linesMaterial;
-                matrix = Matrix4x4.TRS(position, Quaternion.LookRotation(camera.transform.position - position), scale);
+                matrix = Matrix4x4.TRS(settings.Position, Quaternion.LookRotation(camera.transform.position - settings.Position), scale);
             }
             else
             {
@@ -793,15 +846,29 @@ namespace Battlehub.RTHandles
             }
 
             if (freeLocked)
-                propertyBlocks[0].SetColor("_Color", m_colors.DisabledColor);
+            {
+                if(drawLocked)
+                {
+                    propertyBlocks[0].SetColor("_Color", m_colors.DisabledColor);
+                }
+            }
             else
+            {
                 propertyBlocks[0].SetColor("_Color", selectedAxis != RuntimeHandleAxis.Free ? m_colors.AltColor : m_colors.SelectionColor);
+            }
             GraphicsUtility.DrawMesh(commandBuffer, WireCircle, matrix, material, propertyBlocks[0]);
 
             if (screenLocked)
-                propertyBlocks[1].SetColor("_Color", m_colors.DisabledColor);
+            {
+                if (drawLocked)
+                {
+                    propertyBlocks[1].SetColor("_Color", m_colors.DisabledColor);
+                }
+            }
             else
+            {
                 propertyBlocks[1].SetColor("_Color", selectedAxis != RuntimeHandleAxis.Screen ? m_colors.AltColor : m_colors.SelectionColor);
+            }
             GraphicsUtility.DrawMesh(commandBuffer, WireCircle11, matrix, material, propertyBlocks[1]);
 
             if(cameraFacingBillboardMode)
@@ -814,34 +881,65 @@ namespace Battlehub.RTHandles
             }
             
             if(xLocked)
-                propertyBlocks[2].SetColor("_Color", m_colors.DisabledColor);
+            {
+                if (drawLocked)
+                {
+                    propertyBlocks[2].SetColor("_Color", m_colors.DisabledColor);
+                }
+            }
             else
+            {
                 propertyBlocks[2].SetColor("_Color", selectedAxis != RuntimeHandleAxis.X ? m_colors.XColor : m_colors.SelectionColor);
+            }   
             GraphicsUtility.DrawMesh(commandBuffer, WireCircle, objToWorld * xTranform, material, propertyBlocks[2]);
 
             if (yLocked)
-                propertyBlocks[3].SetColor("_Color", m_colors.DisabledColor);
+            {
+                if(drawLocked)
+                {
+                    propertyBlocks[3].SetColor("_Color", m_colors.DisabledColor);
+                }
+            }
             else
+            {
                 propertyBlocks[3].SetColor("_Color", selectedAxis != RuntimeHandleAxis.Y ? m_colors.YColor : m_colors.SelectionColor);
+            }
             GraphicsUtility.DrawMesh(commandBuffer, WireCircle, objToWorld * yTranform, material, propertyBlocks[3]);
             
             if (zLocked)
-                propertyBlocks[4].SetColor("_Color", m_colors.DisabledColor);
+            {
+                if (drawLocked)
+                {
+                    propertyBlocks[4].SetColor("_Color", m_colors.DisabledColor);
+                }
+            }
             else
+            {
                 propertyBlocks[4].SetColor("_Color", selectedAxis != RuntimeHandleAxis.Z ? m_colors.ZColor : m_colors.SelectionColor);
+            }
             GraphicsUtility.DrawMesh(commandBuffer, WireCircle, objToWorld * zTranform, material, propertyBlocks[4]);
         }
 
-        public void DoScaleHandle(CommandBuffer commandBuffer, MaterialPropertyBlock[] propertyBlocks, Camera camera, Vector3 scale, Vector3 position, Quaternion rotation, RuntimeHandleAxis selectedAxis = RuntimeHandleAxis.None,  LockObject lockObject = null)
+        public void DoScaleHandle(CommandBuffer commandBuffer, Camera camera, DrawingSettings settings)
         {
+            settings.Init(propertyBlocksCount: 3);
+
+            MaterialPropertyBlock[] propertyBlocks = settings.PropertyBlocks;
+            LockObject lockObject = settings.LockObject;
+            RuntimeHandleAxis selectedAxis = settings.SelectedAxis;
+            Vector3 position = settings.Position;
+            Quaternion rotation = settings.Rotation;
+            Vector3 scale = settings.Scale;
+
             float sScale = GetScreenScale(position, camera);
             Matrix4x4 linesTransform = Matrix4x4.TRS(position, rotation, scale * sScale * m_handleScale);
 
+            bool drawLocked = settings.DrawLocked;
             bool xLocked = lockObject != null && lockObject.ScaleX;
             bool yLocked = lockObject != null && lockObject.ScaleY;
             bool zLocked = lockObject != null && lockObject.ScaleZ;
 
-            DoAxes(commandBuffer, propertyBlocks, linesTransform, selectedAxis, xLocked, yLocked, zLocked);
+            DoAxes(commandBuffer, propertyBlocks, linesTransform, selectedAxis, xLocked, yLocked, zLocked, drawLocked);
                      
             Matrix4x4 rotM = Matrix4x4.TRS(Vector3.zero, rotation, scale);
             Vector3 screenScale = new Vector3(sScale, sScale, sScale);
@@ -1060,5 +1158,446 @@ namespace Battlehub.RTHandles
             mesh.uv = new[] { Vector2.zero, Vector2.up, Vector2.up + Vector2.right, Vector2.right };
             return mesh;
         }
+
+        public RuntimeHandleAxis HitTestPositionHandle(Camera camera, Ray ray, DrawingSettings settings, out float distance)
+        {
+            LockObject lockObject = settings.LockObject;
+            Vector3 position = settings.Position;
+            Quaternion rotation = settings.Rotation;
+
+            Matrix4x4 m_matrix = Matrix4x4.TRS(position, rotation, InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
+            Matrix4x4 m_inverse = m_matrix.inverse;
+
+            float scale = GetScreenScale(position, camera);
+            if (!PositionHandleArrowOnly)
+            {
+                float s = 0.23f * scale;
+
+                if (lockObject == null || !lockObject.PositionX && !lockObject.PositionZ)
+                {
+                    if (HitQuad(camera, ray, position, Vector3.up, m_matrix, s * HandleScale, out distance))
+                    {
+                        return RuntimeHandleAxis.XZ;
+                    }
+                }
+
+                if (lockObject == null || !lockObject.PositionY && !lockObject.PositionZ)
+                {
+                    if (HitQuad(camera, ray, position, Vector3.right, m_matrix, s * HandleScale, out distance))
+                    {
+                        return RuntimeHandleAxis.YZ;
+                    }
+                }
+
+                if (lockObject == null || !lockObject.PositionX && !lockObject.PositionY)
+                {
+                    if (HitQuad(camera, ray, position, Vector3.forward, m_matrix, s * HandleScale, out distance))
+                    {
+                        return RuntimeHandleAxis.XY;
+                    }
+                }
+            }
+
+            Matrix4x4 matrix = Matrix4x4.TRS(position, rotation, new Vector3(scale, scale, scale));
+            float distToYAxis = float.MaxValue;
+            float distToZAxis = float.MaxValue;
+            float distToXAxis = float.MaxValue;
+            bool hit = (lockObject == null || !lockObject.PositionY) && HitAxis(camera, ray, Vector3.up * HandleScale, matrix, out distToYAxis);
+            hit |= (lockObject == null || !lockObject.PositionZ) && HitAxis(camera, ray, Forward * HandleScale, matrix, out distToZAxis);
+            hit |= (lockObject == null || !lockObject.PositionX) && HitAxis(camera, ray, Vector3.right * HandleScale, matrix, out distToXAxis);
+
+            if (hit)
+            {
+                if (distToYAxis <= distToZAxis && distToYAxis <= distToXAxis)
+                {
+                    distance = distToYAxis;
+                    return RuntimeHandleAxis.Y;
+                }
+                else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
+                {
+                    distance = distToXAxis;
+                    return RuntimeHandleAxis.X;
+                }
+                else
+                {
+                    distance = distToZAxis;
+                    return RuntimeHandleAxis.Z;
+                }
+            }
+
+            distance = float.PositiveInfinity;
+            return RuntimeHandleAxis.None;
+        }
+
+        private bool HitQuad(Camera camera, Ray ray, Vector3 position, Vector3 axis, Matrix4x4 matrix, float size, out float distance)
+        {
+            Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));
+
+            if (!plane.Raycast(ray, out distance))
+            {
+                return false;
+            }
+
+            Vector3 point = ray.GetPoint(distance);
+            point = matrix.inverse.MultiplyPoint(point);
+
+            Vector3 toCam = matrix.inverse.MultiplyVector(camera.transform.position - position);
+
+            float fx = Mathf.Sign(Vector3.Dot(toCam, Vector3.right));
+            float fy = Mathf.Sign(Vector3.Dot(toCam, Vector3.up));
+            float fz = Mathf.Sign(Vector3.Dot(toCam, Vector3.forward));
+
+            point.x *= fx;
+            point.y *= fy;
+            point.z *= fz;
+
+            float lowBound = -0.01f;
+
+            bool result = point.x >= lowBound && point.x <= size && point.y >= lowBound && point.y <= size && point.z >= lowBound && point.z <= size;
+            return result;
+        }
+
+        private const float SelectionMarginPixels = 10;
+        private bool GetScreenPosition(Camera camera, Ray ray, Vector3 position, out Vector2 screenPosition)
+        {
+            Plane plane = new Plane(-camera.transform.forward, position);
+            float distance;
+            if (!plane.Raycast(ray, out distance))
+            {
+                screenPosition = Vector2.zero;
+                return false;
+            }
+
+            screenPosition = camera.WorldToScreenPoint(ray.GetPoint(distance));
+            return true;
+        }
+        private bool HitAxis(Camera camera, Ray ray, Vector3 axis, Matrix4x4 matrix, out float distanceToAxis)
+        {
+            Vector3 position = matrix.GetColumn(3);
+
+            axis = matrix.MultiplyVector(axis);
+            Vector2 screenVectorBegin = camera.WorldToScreenPoint(position);
+            Vector2 screenVectorEnd = camera.WorldToScreenPoint(axis + position);
+            Vector3 screenVector = screenVectorEnd - screenVectorBegin;
+            float screenVectorMag = screenVector.magnitude;
+            screenVector.Normalize();
+
+            Vector2 screenPosition;
+            if(!GetScreenPosition(camera, ray, position, out screenPosition))
+            {
+                distanceToAxis = float.PositiveInfinity;
+                return false;
+            }
+
+            if (screenVector != Vector3.zero)
+            {
+                return HitScreenAxis(screenPosition, screenVectorBegin, screenVector, screenVectorMag, out distanceToAxis);
+            }
+            else
+            {
+                distanceToAxis = (screenVectorBegin - screenPosition).magnitude;
+                bool result = distanceToAxis <= SelectionMargin * SelectionMarginPixels;
+                if (!result)
+                {
+                    distanceToAxis = float.PositiveInfinity;
+                }
+                else
+                {
+                    distanceToAxis = 0.0f;
+                }
+                return result;
+            }
+
+        }
+       
+        private bool HitScreenAxis(Vector2 screenPosition, Vector2 screenVectorBegin, Vector3 screenVector, float screenVectorMag, out float distanceToAxis)
+        {
+            Vector2 perp = PerpendicularClockwise(screenVector).normalized;
+            Vector2 relMousePositon = screenPosition - screenVectorBegin;
+
+            distanceToAxis = Mathf.Abs(Vector2.Dot(perp, relMousePositon));
+            Vector2 hitPoint = (relMousePositon - perp * distanceToAxis);
+            float vectorSpaceCoord = Vector2.Dot(screenVector, hitPoint);
+
+            float selectionMargin = SelectionMargin * SelectionMarginPixels;
+            bool result = vectorSpaceCoord <= screenVectorMag + selectionMargin && vectorSpaceCoord >= -selectionMargin && distanceToAxis <= selectionMargin;
+            if (!result)
+            {
+                distanceToAxis = float.PositiveInfinity;
+            }
+            else
+            {
+                if (screenVectorMag < selectionMargin)
+                {
+                    distanceToAxis = 0.0f;
+                }
+            }
+            return result;
+        }
+
+        private static Vector2 PerpendicularClockwise(Vector2 vector2)
+        {
+            return new Vector2(-vector2.y, vector2.x);
+        }
+
+        private const float innerRadius = 1.0f;
+        private const float outerRadius = 1.2f;
+        private const float hitDot = 0.2f;
+
+        public RuntimeHandleAxis HitTestRotationHandle(Camera camera, Ray ray, DrawingSettings settings, Quaternion startingRotationInv, out float distance)
+        {
+            Vector3 position = settings.Position;
+            
+            float hit1Distance;
+            float hit2Distance;
+            float scale = GetScreenScale(position, camera) * HandleScale;
+            if (Intersect(ray, position, outerRadius * scale, out hit1Distance, out hit2Distance))
+            {
+                RuntimeHandleAxis selectedAxis = HitAxis(camera, ray, settings, startingRotationInv,  out distance);
+                Vector3 axis = Vector3.zero;
+                switch (selectedAxis)
+                {
+                    case RuntimeHandleAxis.X:
+                        axis = Vector3.right;
+                        break;
+                    case RuntimeHandleAxis.Y:
+                        axis = Vector3.up;
+                        break;
+                    case RuntimeHandleAxis.Z:
+                        axis = Vector3.forward;
+                        break;
+                }
+
+                Vector3 dpHitPoint;
+                GetPointOnDragPlane(GetDragPlane(camera, axis, settings), ray, out dpHitPoint);
+
+                if (selectedAxis != RuntimeHandleAxis.None)
+                {
+                    return selectedAxis;
+                }
+
+                bool isInside = (dpHitPoint - position).magnitude <= innerRadius * scale;
+
+                if (isInside)
+                {
+                    return RuntimeHandleAxis.Free;
+                }
+                else
+                {
+                    return RuntimeHandleAxis.Screen;
+                }
+            }
+
+            distance = float.MaxValue;
+            return RuntimeHandleAxis.None;
+        }
+
+        protected Plane GetDragPlane(Camera camera, Vector3 axis, DrawingSettings settings)
+        {
+            Vector3 toCam;
+            if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(camera.transform.forward, settings.Rotation * axis)), 1))
+            {
+                toCam = camera.transform.position - transform.position;
+            }
+            else
+            {
+                toCam = camera.cameraToWorldMatrix.MultiplyVector(Vector3.forward);
+            }
+
+            Plane dragPlane = new Plane(toCam.normalized, transform.position);
+            return dragPlane;
+        }
+
+
+        private bool GetPointOnDragPlane(Plane dragPlane, Ray ray, out Vector3 point)
+        {
+            float distance;
+            if (dragPlane.Raycast(ray, out distance))
+            {
+                point = ray.GetPoint(distance);
+                return true;
+            }
+
+            point = Vector3.zero;
+            return false;
+        }
+
+        private bool Intersect(Ray r, Vector3 sphereCenter, float sphereRadius, out float hit1Distance, out float hit2Distance)
+        {
+            hit1Distance = 0.0f;
+            hit2Distance = 0.0f;
+
+            Vector3 L = sphereCenter - r.origin;
+            float tc = Vector3.Dot(L, r.direction);
+            if (tc < 0.0)
+            {
+                return false;
+            }
+
+            float d2 = Vector3.Dot(L, L) - (tc * tc);
+            float radius2 = sphereRadius * sphereRadius;
+            if (d2 > radius2)
+            {
+                return false;
+            }
+
+            float t1c = Mathf.Sqrt(radius2 - d2);
+            hit1Distance = tc - t1c;
+            hit2Distance = tc + t1c;
+
+            return true;
+        }
+
+        private RuntimeHandleAxis HitAxis(Camera camera, Ray ray, DrawingSettings settings, Quaternion startingRotationInv, out float distance)
+        {
+            Vector3 position = settings.Position;
+            Quaternion rotation = settings.Rotation;
+
+            float screenScale = GetScreenScale(position, camera) * HandleScale;
+            Vector3 scale = new Vector3(screenScale, screenScale, screenScale);
+            Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, rotation * startingRotationInv * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
+            Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, rotation * startingRotationInv * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
+            Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, rotation * startingRotationInv, Vector3.one);
+            Matrix4x4 objToWorld = Matrix4x4.TRS(position, Quaternion.identity, scale);
+
+            float xDistance;
+            float yDistance;
+            float zDistance;
+            bool hitX = HitAxis(camera, ray, xTranform, objToWorld, out xDistance);
+            bool hitY = HitAxis(camera, ray, yTranform, objToWorld, out yDistance);
+            bool hitZ = HitAxis(camera, ray, zTranform, objToWorld, out zDistance);
+
+            if (hitX && xDistance < yDistance && xDistance < zDistance)
+            {
+                distance = xDistance;
+                return RuntimeHandleAxis.X;
+            }
+            else if (hitY && yDistance < xDistance && yDistance < zDistance)
+            {
+                distance = yDistance;
+                return RuntimeHandleAxis.Y;
+            }
+            else if (hitZ && zDistance < xDistance && zDistance < yDistance)
+            {
+                distance = zDistance;
+                return RuntimeHandleAxis.Z;
+            }
+
+            distance = float.MaxValue;
+            return RuntimeHandleAxis.None;
+        }
+
+        private bool HitAxis(Camera camera, Ray ray, Matrix4x4 transform, Matrix4x4 objToWorld, out float minDistance)
+        {
+            bool hit = false;
+            minDistance = float.PositiveInfinity;
+
+            const float radius = 1.0f;
+            const int pointsPerCircle = 32;
+            float angle = 0.0f;
+            float z = 0.0f;
+
+            Vector3 zeroCamPoint = transform.MultiplyPoint(Vector3.zero);
+            zeroCamPoint = objToWorld.MultiplyPoint(zeroCamPoint);
+            zeroCamPoint = camera.worldToCameraMatrix.MultiplyPoint(zeroCamPoint);
+
+            Vector3 prevPoint = transform.MultiplyPoint(new Vector3(radius, 0, z));
+            prevPoint = objToWorld.MultiplyPoint(prevPoint);
+            for (int i = 0; i < pointsPerCircle; i++)
+            {
+                angle += 2 * Mathf.PI / pointsPerCircle;
+                float x = radius * Mathf.Cos(angle);
+                float y = radius * Mathf.Sin(angle);
+                Vector3 point = transform.MultiplyPoint(new Vector3(x, y, z));
+                point = objToWorld.MultiplyPoint(point);
+
+                Vector3 camPoint = camera.worldToCameraMatrix.MultiplyPoint(point);
+
+                if (camPoint.z >= zeroCamPoint.z)
+                {
+                    Vector3 screenVector = camera.WorldToScreenPoint(point) - camera.WorldToScreenPoint(prevPoint);
+                    float screenVectorMag = screenVector.magnitude;
+                    screenVector.Normalize();
+                    if (screenVector != Vector3.zero)
+                    {
+                        Vector3 position = objToWorld.GetColumn(3);
+                        Vector2 screenPosition;
+                        if(!GetScreenPosition(camera, ray, position, out screenPosition))
+                        {
+                            return false;
+                        }
+                        float distance;
+                        if (HitScreenAxis(screenPosition, camera.WorldToScreenPoint(prevPoint), screenVector, screenVectorMag, out distance))
+                        {
+                            if (distance < minDistance)
+                            {
+                                minDistance = distance;
+                                hit = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                prevPoint = point;
+            }
+            return hit;
+        }
+
+        public RuntimeHandleAxis HitTestScaleHandle(Camera camera, Ray ray, DrawingSettings settings, out float distance)
+        {
+            Vector3 position = settings.Position;
+            float screenScale = GetScreenScale(position, camera) * HandleScale;
+          
+            Matrix4x4 matrix = Matrix4x4.TRS(position, settings.Rotation, new Vector3(screenScale, screenScale, screenScale));
+            if (HitCenter(camera, ray, position, out distance))
+            {
+                return RuntimeHandleAxis.Free;
+            }
+
+            float distToYAxis;
+            float distToZAxis;
+            float distToXAxis;
+            bool hit = HitAxis(camera, ray,Vector3.up, matrix, out distToYAxis);
+            hit |= HitAxis(camera, ray, Forward, matrix, out distToZAxis);
+            hit |= HitAxis(camera, ray, Vector3.right, matrix, out distToXAxis);
+
+            if (hit)
+            {
+                if (distToYAxis <= distToZAxis && distToYAxis <= distToXAxis)
+                {
+                    distance = distToYAxis;
+                    return RuntimeHandleAxis.Y;
+                }
+                else if (distToXAxis <= distToYAxis && distToXAxis <= distToZAxis)
+                {
+                    distance = distToXAxis;
+                    return RuntimeHandleAxis.X;
+                }
+                else
+                {
+                    distance = distToZAxis;
+                    return RuntimeHandleAxis.Z;
+                }
+            }
+
+            distance = float.PositiveInfinity;
+            return RuntimeHandleAxis.None;
+        }
+
+        protected virtual bool HitCenter(Camera camera, Ray ray, Vector3 position, out float distance)
+        {
+            Vector2 screenCenter = camera.WorldToScreenPoint(position);
+            Vector2 screnPosition;
+            if(!GetScreenPosition(camera, ray, position, out screnPosition))
+            {
+                distance = float.PositiveInfinity;
+                return false;
+            }
+            
+            distance = (screnPosition - screenCenter).magnitude;
+            return distance <= SelectionMargin * SelectionMarginPixels;
+        }
+
     }
 }

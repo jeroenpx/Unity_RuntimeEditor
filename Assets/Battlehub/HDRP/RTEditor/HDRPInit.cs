@@ -1,9 +1,7 @@
 ﻿using Battlehub.RTCommon;
-using Battlehub.RTCommon.HDRP;
 using Battlehub.RTHandles.HDRP;
 using Battlehub.UIControls;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
 namespace Battlehub.RTEditor.HDRP
@@ -30,45 +28,49 @@ namespace Battlehub.RTEditor.HDRP
             m_outlineManager.SelectionMaterial = m_selectionMaterial;
             
             IRTE rte = IOC.Resolve<IRTE>();
-            Canvas foregroundCanvas = IOC.Resolve<IRTEAppearance>().UIForegroundScaler.GetComponent<Canvas>();
-            Camera foregroundCamera = foregroundCanvas.worldCamera;
-            if (foregroundCamera != null)
+            IRTEAppearance appearance = IOC.Resolve<IRTEAppearance>();
+            if(appearance != null)
             {
-                if(m_cameraUtility != null)
+                Canvas foregroundCanvas = appearance.UIForegroundScaler.GetComponent<Canvas>();
+                Camera foregroundCamera = foregroundCanvas.worldCamera;
+                if (foregroundCamera != null)
                 {
-                    m_cameraUtility.EnablePostProcessing(foregroundCamera, false);
-                    m_cameraUtility.SetBackgroundColor(foregroundCamera, new Color(0, 0, 0, 0));
+                    if (m_cameraUtility != null)
+                    {
+                        m_cameraUtility.EnablePostProcessing(foregroundCamera, false);
+                        m_cameraUtility.SetBackgroundColor(foregroundCamera, new Color(0, 0, 0, 0));
+                    }
+
+                    GameObject foregroundLayer = new GameObject("ForegroundLayer");
+                    foregroundLayer.transform.SetParent(rte.Root, false);
+                    foregroundCanvas = foregroundLayer.AddComponent<Canvas>();
+                    foregroundCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+                    foregroundCamera.gameObject.SetActive(false);
+                    m_foregroundOutput = new GameObject("Output");
+                    m_foregroundOutput.transform.SetParent(foregroundCanvas.transform, false);
+                    m_foregroundOutput.AddComponent<RectTransform>().Stretch();
+
+                    RenderTextureCamera renderTextureCamera = foregroundCamera.gameObject.AddComponent<RenderTextureCamera>();
+                    renderTextureCamera.OutputRoot = foregroundCanvas.gameObject.GetComponent<RectTransform>();
+                    renderTextureCamera.Output = m_foregroundOutput.AddComponent<RawImage>();
+                    renderTextureCamera.OverlayMaterial = new Material(Shader.Find("Battlehub/HDRP/RTEditor/UIForeground"));
+                    foregroundCamera.gameObject.SetActive(true);
+
+                    foregroundCanvas.sortingOrder = -1;
                 }
 
-                GameObject foregroundLayer = new GameObject("ForegroundLayer");
-                foregroundLayer.transform.SetParent(rte.Root, false);
-                foregroundCanvas = foregroundLayer.AddComponent<Canvas>();
-                foregroundCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-                foregroundCamera.gameObject.SetActive(false);
-                m_foregroundOutput = new GameObject("Output");
-                m_foregroundOutput.transform.SetParent(foregroundCanvas.transform, false);
-                m_foregroundOutput.AddComponent<RectTransform>().Stretch();
-
-                RenderTextureCamera renderTextureCamera = foregroundCamera.gameObject.AddComponent<RenderTextureCamera>();
-                renderTextureCamera.OutputRoot = foregroundCanvas.gameObject.GetComponent<RectTransform>();
-                renderTextureCamera.Output = m_foregroundOutput.AddComponent<RawImage>();
-                renderTextureCamera.OverlayMaterial = new Material(Shader.Find("Battlehub/HDRP/RTEditor/UIForeground"));
-                foregroundCamera.gameObject.SetActive(true);
-
-                foregroundCanvas.sortingOrder = -1;
-            }
-
-            Canvas backgroundCanvas = IOC.Resolve<IRTEAppearance>().UIBackgroundScaler.GetComponent<Canvas>();
-            if(backgroundCanvas != null)
-            {
-                Camera backgroundCamera = backgroundCanvas.worldCamera;
-                if(m_cameraUtility != null)
+                Canvas backgroundCanvas = IOC.Resolve<IRTEAppearance>().UIBackgroundScaler.GetComponent<Canvas>();
+                if (backgroundCanvas != null)
                 {
-                    m_cameraUtility.EnablePostProcessing(backgroundCamera, false);
-                    m_cameraUtility.SetBackgroundColor(backgroundCamera, new Color(0, 0, 0, 0));
+                    Camera backgroundCamera = backgroundCanvas.worldCamera;
+                    if (m_cameraUtility != null)
+                    {
+                        m_cameraUtility.EnablePostProcessing(backgroundCamera, false);
+                        m_cameraUtility.SetBackgroundColor(backgroundCamera, new Color(0, 0, 0, 0));
+                    }
                 }
-            }   
+            } 
         }
 
         protected override void OnEditorClosed()

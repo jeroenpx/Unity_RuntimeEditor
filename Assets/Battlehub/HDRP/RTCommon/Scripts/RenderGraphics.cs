@@ -12,6 +12,9 @@ namespace Battlehub.RTCommon.HDRP
         [SerializeField]
         private bool m_afterImageEffects = false;
 
+        [SerializeField]
+        private bool m_clearDepth = true;
+
         protected override void Setup(ScriptableRenderContext renderContext, CommandBuffer cmd)
         {
             base.Setup(renderContext, cmd);
@@ -116,11 +119,11 @@ namespace Battlehub.RTCommon.HDRP
 
         protected override void Execute(ScriptableRenderContext renderContext, CommandBuffer cmd, HDCamera hdCamera, CullingResults cullingResult)
         {
-            //cmd.ClearRenderTarget(m_clearDepth, false, Color.black);
-            
             List<IRTECamera> list;
             if(m_cameras.TryGetValue(hdCamera.camera, out list))
             {
+                cmd.ClearRenderTarget(m_clearDepth, false, Color.black);
+
                 for (int i = 0; i < list.Count; ++i)
                 {
                     IRTECamera rteCamera = list[i];

@@ -1200,72 +1200,7 @@ namespace Battlehub.RTHandles
             return RuntimeHandleAxis.None;
         }
 
-        protected virtual bool HitCenter(out float distance)
-        {
-            Vector2 screenCenter = Window.Camera.WorldToScreenPoint(transform.position);
-            Vector2 mouse = Window.Pointer.ScreenPoint;
-
-            distance = (mouse - screenCenter).magnitude;
-            return distance <= Appearance.SelectionMargin * SelectionMarginPixels;
-        }
-
-        protected virtual bool HitAxis(Vector3 axis, Matrix4x4 matrix, out float distanceToAxis)
-        {
-            axis = matrix.MultiplyVector(axis);
-            Vector2 screenVectorBegin = Window.Camera.WorldToScreenPoint(transform.position);
-            Vector2 screenVectorEnd = Window.Camera.WorldToScreenPoint(axis + transform.position);
-
-            Vector3 screenVector = screenVectorEnd - screenVectorBegin;
-            float screenVectorMag = screenVector.magnitude;
-            screenVector.Normalize();
-            if (screenVector != Vector3.zero)
-            {
-                return HitScreenAxis(out distanceToAxis, screenVectorBegin, screenVector, screenVectorMag);
-            }
-            else
-            {
-                Vector2 mousePosition = Window.Pointer.ScreenPoint;
-
-                distanceToAxis = (screenVectorBegin - mousePosition).magnitude;
-                bool result = distanceToAxis <= Appearance.SelectionMargin * SelectionMarginPixels;
-                if (!result)
-                {
-                    distanceToAxis = float.PositiveInfinity;
-                }
-                else
-                {
-                    distanceToAxis = 0.0f;
-                }
-                return result;
-            }
-        }
-
-        protected virtual bool HitScreenAxis(out float distanceToAxis, Vector2 screenVectorBegin, Vector3 screenVector, float screenVectorMag)
-        {
-            Vector2 perp = PerpendicularClockwise(screenVector).normalized;
-            Vector2 mousePosition = Editor.Input.GetPointerXY(0);
-            Vector2 relMousePositon = mousePosition - screenVectorBegin;
-
-            distanceToAxis = Mathf.Abs(Vector2.Dot(perp, relMousePositon));
-            Vector2 hitPoint = (relMousePositon - perp * distanceToAxis);
-            float vectorSpaceCoord = Vector2.Dot(screenVector, hitPoint);
-
-            float selectionMargin = Appearance.SelectionMargin * SelectionMarginPixels;
-            bool result = vectorSpaceCoord <= screenVectorMag + selectionMargin && vectorSpaceCoord >= -selectionMargin && distanceToAxis <= selectionMargin;
-            if (!result)
-            {
-                distanceToAxis = float.PositiveInfinity;
-            }
-            else
-            {
-                if (screenVectorMag < selectionMargin)
-                {
-                    distanceToAxis = 0.0f;
-                }
-            }
-            return result;
-        }
-
+     
         protected virtual Plane GetDragPlane(Matrix4x4 matrix, Vector3 axis)
         {
             Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));

@@ -18,8 +18,7 @@ namespace Battlehub.RTHandles
         private float m_deltaX;
         private float m_deltaY;
         private Vector2 m_prevPointer;
-        private MaterialPropertyBlock[] m_propertyBlocks;
-
+  
         public override RuntimeTool Tool
         {
             get { return RuntimeTool.Rotate; }
@@ -56,11 +55,6 @@ namespace Battlehub.RTHandles
         {
             base.AwakeOverride();
             Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
-
-            m_propertyBlocks = new[] 
-            {
-                new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock(), new MaterialPropertyBlock()
-            };
         }
 
         protected override void OnDestroyOverride()
@@ -121,169 +115,13 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private bool Intersect(Ray r, Vector3 sphereCenter, float sphereRadius, out float hit1Distance, out float hit2Distance)
-        {
-            hit1Distance = 0.0f;
-            hit2Distance = 0.0f;
-
-            Vector3 L = sphereCenter - r.origin;
-            float tc = Vector3.Dot(L, r.direction);
-            if (tc < 0.0)
-            {
-                return false;
-            }
-
-            float d2 = Vector3.Dot(L, L) - (tc * tc);
-            float radius2 = sphereRadius * sphereRadius;
-            if (d2 > radius2)
-            {
-                return false;
-            }
-
-            float t1c = Mathf.Sqrt(radius2 - d2);
-            hit1Distance = tc - t1c;
-            hit2Distance = tc + t1c;
-
-            return true;
-        }
-
         public override RuntimeHandleAxis HitTest(out float distance)
         {
             if (Model != null)
             {
                 return Model.HitTest(Window.Pointer, out distance);
             }
-
-            float hit1Distance;
-            float hit2Distance;
-            Ray ray = Window.Pointer;
-            float scale = RuntimeHandlesComponent.GetScreenScale(Target.position, Window.Camera) * Appearance.HandleScale;
-            if (Intersect(ray, Target.position, outerRadius * scale, out hit1Distance, out hit2Distance))
-            {
-                RuntimeHandleAxis selectedAxis = HitAxis(out distance);
-                Vector3 axis = Vector3.zero;
-                switch (SelectedAxis)
-                {
-                    case RuntimeHandleAxis.X:
-                        axis = Vector3.right;
-                        break;
-                    case RuntimeHandleAxis.Y:
-                        axis = Vector3.up;
-                        break;
-                    case RuntimeHandleAxis.Z:
-                        axis = Vector3.forward;
-                        break;
-                }
-
-                Vector3 dpHitPoint;
-                GetPointOnDragPlane(GetDragPlane(axis), ray, out dpHitPoint);
-
-                if (selectedAxis != RuntimeHandleAxis.None)
-                {
-                    return selectedAxis;
-                }
-
-                bool isInside = (dpHitPoint - Target.position).magnitude <= innerRadius * scale;
-
-                if (isInside)
-                {
-                    return RuntimeHandleAxis.Free;
-                }
-                else
-                {
-                    return RuntimeHandleAxis.Screen;
-                }
-            }
-
-            distance = float.MaxValue;
-            return RuntimeHandleAxis.None;
-        }
-
-        private RuntimeHandleAxis HitAxis(out float distance)
-        {
-            float screenScale = RuntimeHandlesComponent.GetScreenScale(Target.position, Window.Camera) * Appearance.HandleScale;
-            Vector3 scale = new Vector3(screenScale, screenScale, screenScale);
-            Matrix4x4 xTranform = Matrix4x4.TRS(Vector3.zero, Target.rotation * StartingRotationInv * Quaternion.AngleAxis(-90, Vector3.up), Vector3.one);
-            Matrix4x4 yTranform = Matrix4x4.TRS(Vector3.zero, Target.rotation * StartingRotationInv * Quaternion.AngleAxis(-90, Vector3.right), Vector3.one);
-            Matrix4x4 zTranform = Matrix4x4.TRS(Vector3.zero, Target.rotation * StartingRotationInv, Vector3.one);
-            Matrix4x4 objToWorld = Matrix4x4.TRS(Target.position, Quaternion.identity, scale);
-
-            float xDistance;
-            float yDistance;
-            float zDistance;
-            bool hitX = HitAxis(xTranform, objToWorld, out xDistance);
-            bool hitY = HitAxis(yTranform, objToWorld, out yDistance);
-            bool hitZ = HitAxis(zTranform, objToWorld, out zDistance);
-
-            if (hitX && xDistance < yDistance && xDistance < zDistance)
-            {
-                distance = xDistance;
-                return RuntimeHandleAxis.X;
-            }
-            else if (hitY && yDistance < xDistance && yDistance < zDistance)
-            {
-                distance = yDistance;
-                return RuntimeHandleAxis.Y;
-            }
-            else if (hitZ && zDistance < xDistance && zDistance < yDistance)
-            {
-                distance = zDistance;
-                return RuntimeHandleAxis.Z;
-            }
-
-            distance = float.MaxValue;
-            return RuntimeHandleAxis.None;
-        }
-
-        private bool HitAxis(Matrix4x4 transform, Matrix4x4 objToWorld, out float minDistance)
-        {
-            bool hit = false;
-            minDistance = float.PositiveInfinity;
-
-            const float radius = 1.0f;
-            const int pointsPerCircle = 32;
-            float angle = 0.0f;
-            float z = 0.0f;
-
-            Vector3 zeroCamPoint = transform.MultiplyPoint(Vector3.zero);
-            zeroCamPoint = objToWorld.MultiplyPoint(zeroCamPoint);
-            zeroCamPoint = Window.Camera.worldToCameraMatrix.MultiplyPoint(zeroCamPoint);
-
-            Vector3 prevPoint = transform.MultiplyPoint(new Vector3(radius, 0, z));
-            prevPoint = objToWorld.MultiplyPoint(prevPoint);
-            for (int i = 0; i < pointsPerCircle; i++)
-            {
-                angle += 2 * Mathf.PI / pointsPerCircle;
-                float x = radius * Mathf.Cos(angle);
-                float y = radius * Mathf.Sin(angle);
-                Vector3 point = transform.MultiplyPoint(new Vector3(x, y, z));
-                point = objToWorld.MultiplyPoint(point);
-
-                Vector3 camPoint = Window.Camera.worldToCameraMatrix.MultiplyPoint(point);
-
-                if (camPoint.z >= zeroCamPoint.z)
-                {
-                    Vector3 screenVector = Window.Camera.WorldToScreenPoint(point) - Window.Camera.WorldToScreenPoint(prevPoint);
-                    float screenVectorMag = screenVector.magnitude;
-                    screenVector.Normalize();
-                    if (screenVector != Vector3.zero)
-                    {
-                        float distance;
-                        if (HitScreenAxis(out distance, Window.Camera.WorldToScreenPoint(prevPoint), screenVector, screenVectorMag))
-                        {
-                            if (distance < minDistance)
-                            {
-                                minDistance = distance;
-                                hit = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                prevPoint = point;
-            }
-            return hit;
+            return Appearance.HitTestRotationHandle(Window.Camera, Window.Pointer, m_settings, StartingRotationInv, out distance);
         }
 
         private bool ForceScreenRotationMode()
@@ -594,9 +432,15 @@ namespace Battlehub.RTHandles
             }
         }
 
+        private DrawingSettings m_settings = new DrawingSettings();
         protected override void RefreshCommandBuffer(IRTECamera camera)
         {
-            Appearance.DoRotationHandle(camera.CommandBuffer, m_propertyBlocks, camera.Camera, Target.rotation * StartingRotationInv, Target.position, SelectedAxis, LockObject, Editor.IsVR);
+            m_settings.Position = Target.position;
+            m_settings.Rotation = Target.rotation * StartingRotationInv;
+            m_settings.SelectedAxis = SelectedAxis;
+            m_settings.LockObject = LockObject;
+
+            Appearance.DoRotationHandle(camera.CommandBuffer, camera.Camera, m_settings, Editor.IsVR);
         }
     }
 }
