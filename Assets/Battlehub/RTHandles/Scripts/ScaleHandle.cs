@@ -48,46 +48,12 @@ namespace Battlehub.RTHandles
             m_roundedScale = m_scale;
         }
 
-        protected override void UpdateOverride()
-        {
-            base.UpdateOverride();
-            if (Editor.Tools.IsViewing)
-            {
-                SelectedAxis = RuntimeHandleAxis.None;
-                return;
-            }
-            if (!IsWindowActive || !Window.IsPointerOver)
-            {
-                return;
-            }
-            if (HightlightOnHover && !IsDragging /*&& !IsPointerDown*/)
-            {
-                SelectedAxis = HitTester.GetSelectedAxis(this);
-            }
-        }
-
-        public override RuntimeHandleAxis HitTest(out float distance)
-        {
-            m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera) * Appearance.HandleScale;
-            m_matrix = Matrix4x4.TRS(transform.position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
-            m_inverse = m_matrix.inverse;
-
-            if (Model != null)
-            {
-                return Model.HitTest(Window.Pointer, out distance);
-            }
-
-            return Appearance.HitTestScaleHandle(Window.Camera, Window.Pointer, m_settings, out distance);
-        }
-
         protected override bool OnBeginDrag()
         {
             if(!base.OnBeginDrag())
             {
                 return false;
             }
-
-            SelectedAxis = HitTester.GetSelectedAxis(this);
 
             if(SelectedAxis == RuntimeHandleAxis.Free)
             {
@@ -275,6 +241,18 @@ namespace Battlehub.RTHandles
 
             Appearance.DoScaleHandle(camera.CommandBuffer, camera.Camera, m_settings);
         }
+        public override RuntimeHandleAxis HitTest(out float distance)
+        {
+            m_screenScale = RuntimeHandlesComponent.GetScreenScale(transform.position, Window.Camera) * Appearance.HandleScale;
+            m_matrix = Matrix4x4.TRS(transform.position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
+            m_inverse = m_matrix.inverse;
 
+            if (Model != null)
+            {
+                return Model.HitTest(Window.Pointer, out distance);
+            }
+
+            return Appearance.HitTestScaleHandle(Window.Camera, Window.Pointer, m_settings, out distance);
+        }
     }
 }

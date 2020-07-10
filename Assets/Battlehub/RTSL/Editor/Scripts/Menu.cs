@@ -318,6 +318,10 @@ namespace Battlehub.RTSL
                     CreateShaderProfiles();
                     Debug.Log("Shader Profiles Updated");
                 }
+                catch(Exception e)
+                {
+                    Debug.LogError(e);
+                }
                 finally
                 {
                     AssetDatabase.StopAssetEditing();
@@ -329,8 +333,9 @@ namespace Battlehub.RTSL
                     BuildTypeModel();
                     EditorUtility.DisplayProgressBar("Build All", "Updating type model import settings", 0.99f);
                 }
-                catch
+                catch(Exception e)
                 {
+                    Debug.LogError(e);
                     EditorUtility.ClearProgressBar();
                 }
                 finally

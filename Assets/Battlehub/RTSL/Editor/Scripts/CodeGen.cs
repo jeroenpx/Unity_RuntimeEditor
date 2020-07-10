@@ -1654,7 +1654,6 @@ namespace Battlehub.RTSL
 
         public static void GetUOAssembliesAndTypes(out Assembly[] assemblies, out Type[] types)
         {
-            //assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.Contains("UnityEngine")).OrderBy(a => a.FullName).ToArray();
             assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.Contains("UnityEditor") && !a.FullName.Contains("Assembly-CSharp-Editor")).OrderBy(a => a.FullName).ToArray();
 
             List<Type> allUOTypes = new List<Type>();
@@ -1663,11 +1662,22 @@ namespace Battlehub.RTSL
             for (int i = 0; i < assemblies.Length; ++i)
             {
                 Assembly assembly = assemblies[i];
-                Type[] uoTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(UnityObject)) && !t.IsGenericType).ToArray();
-                if (uoTypes.Length > 0)
+                if (assembly.FullName.StartsWith("RTSLTypeModel"))
                 {
-                    assembliesList.Add(assembly);
-                    allUOTypes.AddRange(uoTypes);
+                    continue;
+                }
+                try
+                {
+                    Type[] uoTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(UnityObject)) && !t.IsGenericType).ToArray();
+                    if (uoTypes.Length > 0)
+                    {
+                        assembliesList.Add(assembly);
+                        allUOTypes.AddRange(uoTypes);
+                    }
+                }
+                catch(Exception e)
+                {
+                    Debug.LogError("Failed to process :" + assembly.FullName + Environment.NewLine + e.ToString());
                 }
             }
 

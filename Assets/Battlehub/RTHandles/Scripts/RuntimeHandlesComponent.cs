@@ -1342,12 +1342,11 @@ namespace Battlehub.RTHandles
 
         private const float innerRadius = 1.0f;
         private const float outerRadius = 1.2f;
-        private const float hitDot = 0.2f;
-
-        public RuntimeHandleAxis HitTestRotationHandle(Camera camera, Ray ray, DrawingSettings settings, Quaternion startingRotationInv, out float distance)
+  
+        public RuntimeHandleAxis HitTestRotationHandle(Camera camera, Ray ray, DrawingSettings settings, out float distance)
         {
             Vector3 position = settings.Position;
-            
+            Quaternion startingRotationInv = Quaternion.identity;
             float hit1Distance;
             float hit2Distance;
             float scale = GetScreenScale(position, camera) * HandleScale;

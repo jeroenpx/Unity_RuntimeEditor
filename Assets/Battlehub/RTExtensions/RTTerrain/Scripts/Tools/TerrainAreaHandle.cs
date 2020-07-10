@@ -9,6 +9,10 @@ namespace Battlehub.RTTerrain
     {
         protected override bool OnBeginDrag()
         {
+            if(!base.OnBeginDrag())
+            {
+                return false;
+            }
             Debug.Log("OnBeginDrag");
             return true;
         }
@@ -29,6 +33,16 @@ namespace Battlehub.RTTerrain
             Debug.Log("OnDrop");
         }
 
+        public override RuntimeHandleAxis HitTest(out float distance)
+        {            
+            return Appearance.HitTestPositionHandle(Window.Camera, Window.Pointer, m_drawingSettings, out distance);
+        }
+
+        protected override void UpdateOverride()
+        {
+            base.UpdateOverride();
+        }
+
 
         private DrawingSettings m_drawingSettings = new DrawingSettings
         {
@@ -40,6 +54,8 @@ namespace Battlehub.RTTerrain
             base.RefreshCommandBuffer(camera);
             m_drawingSettings.Position = transform.position;
             m_drawingSettings.Rotation = transform.rotation;
+            m_drawingSettings.SelectedAxis = SelectedAxis;
+            
             Appearance.DoPositionHandle(camera.CommandBuffer, camera.Camera, m_drawingSettings);
         }
     }

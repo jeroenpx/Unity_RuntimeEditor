@@ -11,10 +11,6 @@ namespace Battlehub.RTHandles
         public float XSpeed = 1.0f;
         public float YSpeed = 1.0f;
 
-        private const float innerRadius = 1.0f;
-        private const float outerRadius = 1.2f;
-        private const float hitDot = 0.2f;
-
         private float m_deltaX;
         private float m_deltaY;
         private Vector2 m_prevPointer;
@@ -24,6 +20,9 @@ namespace Battlehub.RTHandles
             get { return RuntimeTool.Rotate; }
         }
 
+        private Quaternion m_targetInverse = Quaternion.identity;
+        private Matrix4x4 m_targetInverseMatrix;
+        private Vector3 m_startingRotationAxis = Vector3.zero;
         private Quaternion m_targetRotation = Quaternion.identity;
         private Quaternion m_startingRotation = Quaternion.identity;
         private Quaternion StartingRotation
@@ -42,25 +41,9 @@ namespace Battlehub.RTHandles
             get { return PivotRotation == RuntimePivotRotation.Global ? Target.rotation : ActiveRealTargets[0].rotation; }
         }
 
-        private Quaternion m_targetInverse = Quaternion.identity;
-        private Matrix4x4 m_targetInverseMatrix;
-        private Vector3 m_startingRotationAxis = Vector3.zero;
-
         protected override float CurrentGridUnitSize
         {
             get { return GridSize; }
-        }
-
-        protected override void AwakeOverride()
-        {
-            base.AwakeOverride();
-            Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
-        }
-
-        protected override void OnDestroyOverride()
-        {
-            base.OnDestroyOverride();
-            Editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
         }
 
         protected override void OnStartOverride()
@@ -73,6 +56,13 @@ namespace Battlehub.RTHandles
         {
             base.OnEnableOverride();
             OnPivotRotationChanged();
+            Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
+        }
+
+        protected override void OnDisableOverride()
+        {
+            base.OnDisableOverride();
+            Editor.Tools.PivotRotationChanged -= OnPivotRotationChanged;
         }
 
         protected override void UpdateOverride()
@@ -88,40 +78,31 @@ namespace Battlehub.RTHandles
             {
                 return;
             }
-            if (!IsDragging /*&& !IsPointerDown*/)
+            if (!IsDragging)
             {
-                if (HightlightOnHover)
-                {
-                    m_targetInverseMatrix = Matrix4x4.TRS(Target.position, TargetRotation * StartingRotationInv, Vector3.one).inverse;
-                    SelectedAxis = HitTester.GetSelectedAxis(this);
-                }
-
-                if (m_targetRotation != TargetRotation)
-                {
-                    m_startingRotation = TargetRotation;
-                    m_startinRotationInv = Quaternion.Inverse(m_startingRotation);
-                    m_targetRotation = TargetRotation;
-                }
+                UpdateMatricesAndRotations();
             }
         }
 
-        private void OnPivotRotationChanged()
+        protected override void OnPivotRotationChanged()
         {
-            if (Target != null)
-            {
-                m_startingRotation = Target.rotation;
-                m_startinRotationInv = Quaternion.Inverse(Target.rotation);
-                m_targetRotation = Target.rotation;
-            }
+            UpdateMatricesAndRotations();
+            base.OnPivotRotationChanged();
         }
 
-        public override RuntimeHandleAxis HitTest(out float distance)
+        private void UpdateMatricesAndRotations()
         {
-            if (Model != null)
+            if (HightlightOnHover)
             {
-                return Model.HitTest(Window.Pointer, out distance);
+                m_targetInverseMatrix = Matrix4x4.TRS(Target.position, TargetRotation * StartingRotationInv, Vector3.one).inverse;
             }
-            return Appearance.HitTestRotationHandle(Window.Camera, Window.Pointer, m_settings, StartingRotationInv, out distance);
+
+            if (m_targetRotation != TargetRotation)
+            {
+                m_startingRotation = TargetRotation;
+                m_startinRotationInv = Quaternion.Inverse(m_startingRotation);
+                m_targetRotation = TargetRotation;
+            }
         }
 
         private bool ForceScreenRotationMode()
@@ -194,14 +175,14 @@ namespace Battlehub.RTHandles
         private bool m_forceScreenRotationMode;
         protected override bool OnBeginDrag()
         {
+            m_targetRotation = Target.rotation;
+            m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation * StartingRotationInv, Vector3.one).inverse;
+
             if (!base.OnBeginDrag())
             {
                 return false;
             }
 
-            m_targetRotation = Target.rotation;
-            m_targetInverseMatrix = Matrix4x4.TRS(Target.position, Target.rotation * StartingRotationInv, Vector3.one).inverse;
-            SelectedAxis = HitTester.GetSelectedAxis(this);
             m_deltaX = 0.0f;
             m_deltaY = 0.0f;
 
@@ -441,6 +422,15 @@ namespace Battlehub.RTHandles
             m_settings.LockObject = LockObject;
 
             Appearance.DoRotationHandle(camera.CommandBuffer, camera.Camera, m_settings, Editor.IsVR);
+        }
+
+        public override RuntimeHandleAxis HitTest(out float distance)
+        {
+            if (Model != null)
+            {
+                return Model.HitTest(Window.Pointer, out distance);
+            }
+            return Appearance.HitTestRotationHandle(Window.Camera, Window.Pointer, m_settings, out distance);
         }
     }
 }

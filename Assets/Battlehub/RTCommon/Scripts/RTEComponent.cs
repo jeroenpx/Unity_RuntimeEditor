@@ -41,7 +41,7 @@ namespace Battlehub.RTCommon
             get { return m_awaked; }
         }
         
-        private void Awake()
+        protected virtual void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
 
@@ -78,7 +78,7 @@ namespace Battlehub.RTCommon
 
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if(m_editor != null)
             {

@@ -97,8 +97,9 @@ namespace Battlehub.RTMeasurement
             }
         }
 
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             if (m_rteCamera != null)
             {
                 m_rteCamera.CommandBufferRefresh -= OnCommandBufferRefresh;

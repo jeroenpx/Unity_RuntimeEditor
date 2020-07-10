@@ -18,14 +18,29 @@ namespace Battlehub.RTHandles
     [DefaultExecutionOrder(-50)]
     public abstract class BaseHandle : RTEComponent
     {
-        private const float SelectionMarginPixels = 10;
-        /// <summary>
-        /// current size of grid 
-        /// </summary>
-        protected float EffectiveGridUnitSize
+
+        public BaseHandleUnityEvent BeforeDrag = new BaseHandleUnityEvent();
+        public BaseHandleUnityEvent Drag = new BaseHandleUnityEvent();
+        public BaseHandleUnityEvent Drop = new BaseHandleUnityEvent();
+
+        private IRTECamera m_rteCamera;
+        protected IRTECamera RTECamera
         {
-            get;
-            private set;
+            get { return m_rteCamera; }
+        }
+
+        private Vector3 m_prevScale;
+        private Vector3 m_prevCamPosition;
+        private Quaternion m_prevCamRotation;
+        private bool m_prevCamOrthographic;
+        private float m_prevCamOrthographicsSize;
+        private Rect m_prevCamRect;
+
+        private bool m_refreshOnCameraChanged = true;
+        protected bool RefreshOnCameraChanged
+        {
+            get { return m_refreshOnCameraChanged; }
+            set { m_refreshOnCameraChanged = value; }
         }
 
         /// <summary>
@@ -39,6 +54,111 @@ namespace Battlehub.RTHandles
         /// Configurable model
         /// </summary>
         public BaseHandleModel Model;
+
+        /// <summary>
+        /// Selected axis
+        /// </summary>
+        private RuntimeHandleAxis m_selectedAxis;
+
+        /// <summary>
+        /// Whether drag operation in progress
+        /// </summary>
+        private bool m_isDragging;
+
+        /// <summary>
+        /// Drag plane
+        /// </summary>
+        private Plane m_dragPlane;
+        protected virtual Plane DragPlane
+        {
+            get { return m_dragPlane; }
+            set { m_dragPlane = value; }
+        }
+
+        public virtual bool IsDragging
+        {
+            get { return m_isDragging; }
+        }
+
+        /// <summary>
+        /// Tool type
+        /// </summary>
+        public virtual RuntimeTool Tool
+        {
+            get { return RuntimeTool.Custom; }
+        }
+
+        /// <summary>
+        /// Quaternion Rotation based on selected coordinate system (local or global)
+        /// </summary>
+        protected virtual Quaternion Rotation
+        {
+            get
+            {
+                if (ActiveRealTargets == null || ActiveRealTargets.Length <= 0 || ActiveRealTargets == null)
+                {
+                    return Quaternion.identity;
+                }
+
+                return PivotRotation == RuntimePivotRotation.Local ? ActiveRealTargets[0].rotation : Quaternion.identity;
+            }
+        }
+
+        protected virtual RuntimeHandleAxis SelectedAxis
+        {
+            get { return m_selectedAxis; }
+            set
+            {
+                if (m_selectedAxis != value)
+                {
+                    m_selectedAxis = value;
+                    if (Model != null)
+                    {
+                        Model.Select(SelectedAxis);
+                    }
+                    else
+                    {
+                        if (m_rteCamera != null)
+                        {
+                            m_rteCamera.RefreshCommandBuffer();
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool m_unitSnapping;
+        public virtual bool UnitSnapping
+        {
+            get { return m_unitSnapping; }
+            set { m_unitSnapping = value; }
+        }
+
+        public virtual bool SnapToGrid
+        {
+            get;
+            set;
+        }
+
+        public virtual float SizeOfGrid
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// current size of grid 
+        /// </summary>
+        protected float EffectiveGridUnitSize
+        {
+            get;
+            private set;
+        }
+
+        protected virtual float CurrentGridUnitSize
+        {
+            get { return 0.0f; }
+        }
 
         private LockObject m_lockObject;
         public virtual LockObject LockObject
@@ -79,6 +199,7 @@ namespace Battlehub.RTHandles
         {
             get { return m_activeRealTargets; }
         }
+
         private Transform[] m_realTargets;
         public virtual Transform[] RealTargets
         {
@@ -144,6 +265,7 @@ namespace Battlehub.RTHandles
 
             m_activeRealTargets = targetsHS.ToArray();
         }
+
         /// <summary>
         /// All Target objects
         /// </summary>
@@ -191,105 +313,6 @@ namespace Battlehub.RTHandles
                     LockObject = lockObject;
                 }
             }
-        }
-
-        protected virtual RuntimePivotMode PivotMode
-        {
-            get
-            {
-                LockObject lockObject = LockObject;
-                if(lockObject != null && lockObject.PivotMode != null)
-                {
-                    return lockObject.PivotMode.Value;
-                }
-
-                return Editor.Tools.PivotMode;
-            }
-        }
-
-        protected virtual RuntimePivotRotation PivotRotation
-        {
-            get
-            {
-                LockObject lockObject = LockObject;
-                if (lockObject != null && lockObject.PivotRotation != null)
-                {
-                    return lockObject.PivotRotation.Value;
-                }
-
-                return Editor.Tools.PivotRotation;
-            }
-        }
-
-        protected virtual Vector3 GetCommonCenterPosition()
-        {
-            Vector3 centerPosition = GetCenterPosition(Targets_Internal[0]);
-            for (int i = 1; i < Targets_Internal.Length; ++i)
-            {
-                Transform target = Targets_Internal[i];
-                centerPosition += GetCenterPosition(target);
-            }
-
-            centerPosition = centerPosition / Targets_Internal.Length;
-            return centerPosition;
-        }
-
-        public virtual void Refresh()
-        {
-            if (m_commonCenter != null && m_commonCenter.Length > 0)
-            {
-                if (RealTargets == null || RealTargets.Length == 0)
-                {
-                    return;
-                }
-
-                Vector3 centerPosition = GetCenterPosition(RealTargets[0]);
-                for (int i = 1; i < RealTargets.Length; ++i)
-                {
-                    Transform target = RealTargets[i];
-                    centerPosition += GetCenterPosition(target);
-                }
-
-                centerPosition = centerPosition / RealTargets.Length;
-
-                m_commonCenter[0].position = centerPosition;
-                m_commonCenter[0].rotation = Rotation;
-
-                for (int i = 0; i < m_allHandles.Count; ++i)
-                {
-                    BaseHandle handle = m_allHandles[i];
-                    if (handle.Editor == Editor && handle.gameObject.activeSelf)
-                    {
-                        handle.m_commonCenter[0].position = m_commonCenter[0].position;
-                        handle.m_commonCenter[0].rotation = m_commonCenter[0].rotation;
-                        handle.m_commonCenter[0].localScale = m_commonCenter[0].localScale;
-                    }
-
-                    transform.position = m_commonCenter[0].position;
-                }
-
-                if(Model != null)
-                {
-                    SyncModelTransform();    
-                }
-            }
-        }
-
-        protected virtual Vector3 GetCenterPosition(Transform target)
-        {
-            MeshFilter filter = target.GetComponent<MeshFilter>();
-            if (filter != null && filter.sharedMesh != null)
-            {
-                return target.TransformPoint(filter.sharedMesh.bounds.center);
-            }
-
-            SkinnedMeshRenderer smr = target.GetComponent<SkinnedMeshRenderer>();
-            if (smr != null && smr.sharedMesh != null)
-            {
-                return target.TransformPoint(smr.sharedMesh.bounds.center);
-            }
-
-            return target.position;
         }
 
         protected virtual Transform[] Targets_Internal
@@ -379,125 +402,103 @@ namespace Battlehub.RTHandles
             }
         }
 
-        /// <summary>
-        /// Selected axis
-        /// </summary>
-        private RuntimeHandleAxis m_selectedAxis;
-
-        /// <summary>
-        /// Whether drag operation in progress
-        /// </summary>
-        private bool m_isDragging;
-        
-        /// <summary>
-        /// Drag plane
-        /// </summary>
-        private Plane m_dragPlane;
-
-        public virtual bool IsDragging
-        {
-            get { return m_isDragging; }
-        }
-
-        /// <summary>
-        /// Tool type
-        /// </summary>
-        public virtual RuntimeTool Tool
-        {
-            get { return RuntimeTool.Custom; }
-        }
-
-        /// <summary>
-        /// Quaternion Rotation based on selected coordinate system (local or global)
-        /// </summary>
-        protected virtual Quaternion Rotation
+        protected virtual RuntimePivotMode PivotMode
         {
             get
             {
-                if(ActiveRealTargets == null || ActiveRealTargets.Length <= 0 || ActiveRealTargets == null)
+                LockObject lockObject = LockObject;
+                if (lockObject != null && lockObject.PivotMode != null)
                 {
-                    return Quaternion.identity;
+                    return lockObject.PivotMode.Value;
                 }
-                
-                return PivotRotation == RuntimePivotRotation.Local ? ActiveRealTargets[0].rotation : Quaternion.identity;
+
+                return Editor.Tools.PivotMode;
             }
         }
 
-        protected virtual RuntimeHandleAxis SelectedAxis
+        protected virtual RuntimePivotRotation PivotRotation
         {
-            get { return m_selectedAxis; }
-            set
+            get
             {
-                if(m_selectedAxis != value)
+                LockObject lockObject = LockObject;
+                if (lockObject != null && lockObject.PivotRotation != null)
                 {
-                    m_selectedAxis = value;
-                    if (Model != null)
+                    return lockObject.PivotRotation.Value;
+                }
+
+                return Editor.Tools.PivotRotation;
+            }
+        }
+
+        protected virtual Vector3 GetCommonCenterPosition()
+        {
+            Vector3 centerPosition = GetCenterPosition(Targets_Internal[0]);
+            for (int i = 1; i < Targets_Internal.Length; ++i)
+            {
+                Transform target = Targets_Internal[i];
+                centerPosition += GetCenterPosition(target);
+            }
+
+            centerPosition = centerPosition / Targets_Internal.Length;
+            return centerPosition;
+        }
+
+        public virtual void Refresh()
+        {
+            if (m_commonCenter != null && m_commonCenter.Length > 0)
+            {
+                if (RealTargets == null || RealTargets.Length == 0)
+                {
+                    return;
+                }
+
+                Vector3 centerPosition = GetCenterPosition(RealTargets[0]);
+                for (int i = 1; i < RealTargets.Length; ++i)
+                {
+                    Transform target = RealTargets[i];
+                    centerPosition += GetCenterPosition(target);
+                }
+
+                centerPosition = centerPosition / RealTargets.Length;
+
+                m_commonCenter[0].position = centerPosition;
+                m_commonCenter[0].rotation = Rotation;
+
+                for (int i = 0; i < m_allHandles.Count; ++i)
+                {
+                    BaseHandle handle = m_allHandles[i];
+                    if (handle.Editor == Editor && handle.gameObject.activeSelf)
                     {
-                        Model.Select(SelectedAxis);
+                        handle.m_commonCenter[0].position = m_commonCenter[0].position;
+                        handle.m_commonCenter[0].rotation = m_commonCenter[0].rotation;
+                        handle.m_commonCenter[0].localScale = m_commonCenter[0].localScale;
                     }
-                    else
-                    {
-                        if(m_rteCamera != null)
-                        {
-                            m_rteCamera.RefreshCommandBuffer();
-                        }
-                    }
+
+                    transform.position = m_commonCenter[0].position;
+                }
+
+                if (Model != null)
+                {
+                    SyncModelTransform();
                 }
             }
         }
 
-        protected virtual Plane DragPlane
+        protected virtual Vector3 GetCenterPosition(Transform target)
         {
-            get { return m_dragPlane; }
-            set { m_dragPlane = value; }
-        }
+            MeshFilter filter = target.GetComponent<MeshFilter>();
+            if (filter != null && filter.sharedMesh != null)
+            {
+                return target.TransformPoint(filter.sharedMesh.bounds.center);
+            }
 
-        protected virtual float CurrentGridUnitSize
-        {
-            get { return 0.0f; }
-        }
+            SkinnedMeshRenderer smr = target.GetComponent<SkinnedMeshRenderer>();
+            if (smr != null && smr.sharedMesh != null)
+            {
+                return target.TransformPoint(smr.sharedMesh.bounds.center);
+            }
 
-        private bool m_unitSnapping;
-        public virtual bool UnitSnapping
-        {
-            get { return m_unitSnapping; }
-            set { m_unitSnapping = value; }
-        }
-
-        public virtual bool SnapToGrid
-        {
-            get;
-            set;
-        }
-
-        public virtual float SizeOfGrid
-        {
-            get;
-            set;
-        }
-
-        public BaseHandleUnityEvent BeforeDrag = new BaseHandleUnityEvent();
-        public BaseHandleUnityEvent Drag = new BaseHandleUnityEvent();
-        public BaseHandleUnityEvent Drop = new BaseHandleUnityEvent();
-
-        private IRTECamera m_rteCamera;
-        protected IRTECamera RTECamera
-        {
-            get { return m_rteCamera; }
-        }
-
-        private Vector3 m_prevScale;
-        private Vector3 m_prevCamPosition;
-        private Quaternion m_prevCamRotation;
-        private bool m_prevCamOrthographic;
-        private float m_prevCamOrthographicsSize;
-        private Rect m_prevCamRect;
-
-        private bool m_refreshOnCameraChanged = true;
-        protected bool RefreshOnCameraChanged
-        {
-            get { return m_refreshOnCameraChanged; }
-            set { m_refreshOnCameraChanged = value; }
+            return target.position;
         }
 
         protected override void AwakeOverride()
@@ -560,7 +561,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             m_input = GetComponent<BaseHandleInput>();
             if (m_input == null || m_input.Handle != this)
@@ -612,7 +613,7 @@ namespace Battlehub.RTHandles
 
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             Editor.Tools.PivotRotationChanged += OnPivotRotationChanged;
             Editor.Tools.PivotModeChanged += OnPivotModeChanged;
@@ -657,7 +658,7 @@ namespace Battlehub.RTHandles
 
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if (m_rteCamera != null)
             {
@@ -738,7 +739,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnTransformParentChanged()
+        protected virtual void OnTransformParentChanged()
         {
             OnTransformParentChangedOverride();
         }
@@ -783,7 +784,6 @@ namespace Battlehub.RTHandles
                         {
                             Destroy(m_commonCenter[i].gameObject);
                         }
-                        
                     }
                     
                 }
@@ -894,7 +894,6 @@ namespace Battlehub.RTHandles
 
         protected virtual void UpdateOverride()
         {
-            //bool refreshCommandBuffer = false;
             Transform target = Targets != null && Targets.Length > 0 && Targets[0] != null ? Targets[0] : null;
             if (target != null && (target.position != transform.position || target.rotation != transform.rotation || target.localScale != m_prevScale))
             {
@@ -920,6 +919,22 @@ namespace Battlehub.RTHandles
                 {
                     m_rteCamera.RefreshCommandBuffer();
                 }
+            }
+
+            if (Editor.Tools.IsViewing)
+            {
+                SelectedAxis = RuntimeHandleAxis.None;
+                return;
+            }
+
+            if (!IsWindowActive || !Window.IsPointerOver)
+            {
+                return;
+            }
+
+            if (HightlightOnHover && !IsDragging)
+            {
+                SelectedAxis = HitTester.GetSelectedAxis(this);
             }
         }
 
@@ -996,7 +1011,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void BeginDrag()
+        public virtual void BeginDrag()
         {
             if(Editor.Tools.IsViewing)
             {
@@ -1039,7 +1054,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void EndDrag()
+        public virtual void EndDrag()
         {
             if (m_isDragging)
             {
@@ -1065,6 +1080,8 @@ namespace Battlehub.RTHandles
             {
                 return false;
             }
+
+            SelectedAxis = HitTester.GetSelectedAxis(this);
 
             return true;
         }
@@ -1107,7 +1124,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnPivotRotationChanged()
+        protected virtual void OnPivotRotationChanged()
         {
             if (Model == null && m_rteCamera != null)
             {
@@ -1120,7 +1137,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnLockAxesChanged()
+        protected virtual void OnLockAxesChanged()
         {
             if(LockObject != null)
             {
@@ -1171,8 +1188,7 @@ namespace Battlehub.RTHandles
             Editor.Undo.EndRecord();
         }
 
-
-        private void OnRedoCompleted()
+        protected virtual void OnRedoCompleted()
         {
             if (PivotMode == RuntimePivotMode.Center)
             {
@@ -1183,7 +1199,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private void OnUndoCompleted()
+        protected virtual void OnUndoCompleted()
         {
             if (PivotMode == RuntimePivotMode.Center)
             {
@@ -1200,7 +1216,6 @@ namespace Battlehub.RTHandles
             return RuntimeHandleAxis.None;
         }
 
-     
         protected virtual Plane GetDragPlane(Matrix4x4 matrix, Vector3 axis)
         {
             Plane plane = new Plane(matrix.MultiplyVector(axis).normalized, matrix.MultiplyPoint(Vector3.zero));
@@ -1223,17 +1238,6 @@ namespace Battlehub.RTHandles
             return dragPlane;
         }
 
-        protected virtual bool GetPointOnDragPlane(Vector3 screenPos, out Vector3 point)
-        {
-            return GetPointOnDragPlane(m_dragPlane, screenPos, out point);
-        }
-
-        protected virtual bool GetPointOnDragPlane(Plane dragPlane, Vector3 screenPos, out Vector3 point)
-        {
-            Ray ray = Window.Camera.ScreenPointToRay(screenPos);
-            return GetPointOnDragPlane(dragPlane, ray, out point);
-        }
-
         protected virtual bool GetPointOnDragPlane(Ray ray, out Vector3 point)
         {
             return GetPointOnDragPlane(m_dragPlane, ray, out point);
@@ -1252,11 +1256,6 @@ namespace Battlehub.RTHandles
             return false;
         }
 
-        private static Vector2 PerpendicularClockwise(Vector2 vector2)
-        {
-            return new Vector2(-vector2.y, vector2.x);
-        }
-
         protected Vector3 GetGridOffset(float gridSize, Vector3 position)
         {
             Vector3 currentPosition = position;
@@ -1267,7 +1266,7 @@ namespace Battlehub.RTHandles
             return offset;
         }
 
-        public void SetModel(BaseHandleModel model)
+        protected virtual void SetModel(BaseHandleModel model)
         {
             model.Appearance = Appearance;
             model.Window = Window;
@@ -1279,7 +1278,7 @@ namespace Battlehub.RTHandles
             Model = model;
         }
 
-        private void OnCommandBufferRefresh(IRTECamera camera)
+        protected virtual void OnCommandBufferRefresh(IRTECamera camera)
         {
             if(Target != null)
             {

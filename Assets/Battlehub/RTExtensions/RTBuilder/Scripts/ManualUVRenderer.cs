@@ -162,14 +162,8 @@ namespace Battlehub.RTBuilder
             m_graphicsLayer = Window.IOCContainer.Resolve<IRTEGraphicsLayer>();
             m_graphicsLayer.Camera.MeshesCache.RefreshMode = CacheRefreshMode.Always;
 
-        }
-
-        //private void Start()
-        //{
-        
-        //}
-
-        private void OnDestroy()
+        }        
+        protected override void OnDestroy()
         {
             if (m_graphicsLayer != null)
             {

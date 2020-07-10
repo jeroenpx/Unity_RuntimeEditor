@@ -28,6 +28,10 @@ namespace Battlehub.RTHandles
             get { return GridSize; }
             set { GridSize = value; }
         }
+        protected override float CurrentGridUnitSize
+        {
+            get { return SizeOfGrid; }
+        }
 
         public bool SnapToGround
         {
@@ -83,11 +87,6 @@ namespace Battlehub.RTHandles
         public override RuntimeTool Tool
         {
             get { return RuntimeTool.Move; }
-        }
-
-        protected override float CurrentGridUnitSize
-        {
-            get { return SizeOfGrid; }
         }
 
 
@@ -153,11 +152,6 @@ namespace Battlehub.RTHandles
                 }
             }
 
-            if (HightlightOnHover && !IsDragging /*&& !IsPointerDown*/)
-            {
-                SelectedAxis = HitTester.GetSelectedAxis(this);
-            }
-        
             if (IsInVertexSnappingMode || Editor.Tools.IsSnapping)
             {
                 Vector2 mousePosition;
@@ -614,22 +608,13 @@ namespace Battlehub.RTHandles
             return false;
         }
 
-        public override RuntimeHandleAxis HitTest(out float distance)
-        {
-            m_matrix = Matrix4x4.TRS(Position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
-            m_inverse = m_matrix.inverse;
-
-            if (Model != null)
-            {
-                return Model.HitTest(Window.Pointer, out distance);
-            }
-
-            return Appearance.HitTestPositionHandle(Window.Camera, Window.Pointer, m_settings, out distance);
-        }
-
         protected override bool OnBeginDrag()
         {
-            SelectedAxis = HitTester.GetSelectedAxis(this);
+            if(!base.OnBeginDrag())
+            {
+                return false;
+            }
+
             m_currentPosition = Position;
             m_cursorPosition = Position;
 
@@ -782,8 +767,6 @@ namespace Battlehub.RTHandles
                 {
                     m_prevPoint = point;
                 }
-
-               
             }
         }
 
@@ -816,5 +799,19 @@ namespace Battlehub.RTHandles
 
             Appearance.DoPositionHandle(camera.CommandBuffer, camera.Camera, m_settings, IsInVertexSnappingMode || Editor.Tools.IsSnapping);
         }
+
+        public override RuntimeHandleAxis HitTest(out float distance)
+        {
+            m_matrix = Matrix4x4.TRS(Position, Rotation, Appearance.InvertZAxis ? new Vector3(1, 1, -1) : Vector3.one);
+            m_inverse = m_matrix.inverse;
+
+            if (Model != null)
+            {
+                return Model.HitTest(Window.Pointer, out distance);
+            }
+
+            return Appearance.HitTestPositionHandle(Window.Camera, Window.Pointer, m_settings, out distance);
+        }
+
     }
 }

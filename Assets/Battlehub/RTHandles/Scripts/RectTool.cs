@@ -31,6 +31,22 @@ namespace Battlehub.RTHandles
         }
 
 
+        private Quaternion m_rotation;
+        private Vector3 m_position;
+        private Vector3 m_localScale;
+        private float m_currentDot;
+        private RuntimeHandleAxis m_currentAxis;
+        private int m_selectedPointIndex = -1;
+        private int m_selectedEdgeIndex = -1;
+        private Vector3 m_beginDragPoint;
+        private Vector3 m_beginDragOffset;
+
+        private Vector3[] m_referencePoints;
+        private Bounds m_referenceBounds;
+        private Vector3[] m_referenceScale;
+        private Vector3[] m_referencePositions;
+
+
         private MeshFilter m_lines;
         private MeshRenderer m_linesRenderer;
         private MeshFilter m_points;
@@ -66,20 +82,6 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private Quaternion m_rotation;
-        private Vector3 m_position;
-        private Vector3 m_localScale;
-        private float m_currentDot;
-        private RuntimeHandleAxis m_currentAxis;
-        private int m_selectedPointIndex = -1;
-        private int m_selectedEdgeIndex = -1;
-        private Vector3 m_beginDragPoint;
-        private Vector3 m_beginDragOffset;
-
-        private Vector3[] m_referencePoints;
-        private Bounds m_referenceBounds;
-        private Vector3[] m_referenceScale;
-        private Vector3[] m_referencePositions;
 
         protected override Transform[] Targets_Internal
         {
@@ -291,12 +293,8 @@ namespace Battlehub.RTHandles
             }
         }
 
-
         protected override void UpdateOverride()
         {
-            //base.UpdateOverride();
-
-
             if (!IsDragging)
             {
                 RuntimeHandleAxis axis = GetAxis(out m_currentDot);
@@ -398,7 +396,6 @@ namespace Battlehub.RTHandles
                     tool.Bounds = m_bounds;
                     tool.m_lines.transform.position = m_lines.transform.position;
                     tool.m_points.transform.position = m_points.transform.position;
-                    //tool.Position = Position;
                 }
             }
         }
@@ -671,10 +668,8 @@ namespace Battlehub.RTHandles
         {
             base.OnDrop();
 
-
             Targets = RealTargets;
-            //RecalculateBoundsAndRebuild();
-            //UpdateConnectedTools();
+            
             for (int i = 0; i < m_connectedTools.Count; ++i)
             {
                 RectTool tool = m_connectedTools[i];
