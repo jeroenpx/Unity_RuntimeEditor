@@ -19,6 +19,7 @@ namespace Battlehub.RTHandles
         Screen = 8,
         Free = 16,
         Snap = 32,
+        Custom = 65535
     }
 
     [System.Serializable]
