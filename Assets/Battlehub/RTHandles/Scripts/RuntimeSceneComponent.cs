@@ -132,9 +132,6 @@ namespace Battlehub.RTHandles
         [SerializeField]
         private bool m_changeOrthographicSizeOnly = true;
         [SerializeField]
-        private bool m_canFocusTerrain = false;
-
-        [SerializeField]
         private bool m_canRotate = true;
         [SerializeField]
         private bool m_canFreeMove = true;
@@ -512,11 +509,6 @@ namespace Battlehub.RTHandles
                 return;
             }
 
-            if (!m_canFocusTerrain && Selection.activeTransform.GetComponent<Terrain>())
-            {
-                return;
-            }
-
             if ((Selection.activeTransform.gameObject.hideFlags & HideFlags.DontSave) != 0 || Selection.activeGameObject.IsPrefab())
             {
                 return;
@@ -526,8 +518,18 @@ namespace Battlehub.RTHandles
 
             Bounds bounds = CalculateBounds(Selection.activeTransform);
             float objSize = Mathf.Max(bounds.extents.y, bounds.extents.x, bounds.extents.z) * 2.0f;
+
+            Focus(bounds.center, objSize);
+            SecondaryPivotTransform.position = Selection.activeTransform.position;
+        }
+
+        public override void Focus(Vector3 objPosition, float objSize)
+        {
+            PivotTransform.position = objPosition;
+            SecondaryPivotTransform.position = objPosition;
+
             float distance;
-            if(ChangeOrthographicSizeOnly && IsOrthographic)
+            if (ChangeOrthographicSizeOnly && IsOrthographic)
             {
                 distance = m_orbitDistance;
             }
@@ -537,8 +539,11 @@ namespace Battlehub.RTHandles
                 distance = Mathf.Abs(objSize / Mathf.Sin(fov / 2.0f));
             }
 
-            PivotTransform.position = bounds.center;
-            SecondaryPivotTransform.position = Selection.activeTransform.position;
+            Focus(distance, objSize);
+        }
+
+        private void Focus(float distance, float objSize)
+        {
             const float duration = 0.1f;
 
             m_focusAnimation = new Vector3AnimationInfo(Window.Camera.transform.position, PivotTransform.position - distance * Window.Camera.transform.forward, duration, Vector3AnimationInfo.EaseOutCubic,

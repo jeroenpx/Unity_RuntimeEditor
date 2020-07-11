@@ -1,5 +1,4 @@
-﻿using Battlehub.RTCommon;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 
 namespace Battlehub.RTTerrain.HDRP

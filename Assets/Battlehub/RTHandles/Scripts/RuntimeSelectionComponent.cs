@@ -42,6 +42,7 @@ namespace Battlehub.RTHandles
         }
 
         void Focus();
+        void Focus(Vector3 objPosition, float objSize);
     }
 
     public class RuntimeSelectionChangingArgs : EventArgs
@@ -1455,6 +1456,12 @@ namespace Battlehub.RTHandles
         {
 
         }
+
+        public virtual void Focus(Vector3 objPositon, float objSize)
+        {
+
+        }
+
 
         private bool m_wasUnitSnappingEnabled;
         private void OnBeforeDrag(BaseHandle handle)

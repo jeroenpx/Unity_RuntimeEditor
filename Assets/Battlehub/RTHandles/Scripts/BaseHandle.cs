@@ -104,7 +104,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        protected virtual RuntimeHandleAxis SelectedAxis
+        public virtual RuntimeHandleAxis SelectedAxis
         {
             get { return m_selectedAxis; }
             set
@@ -921,22 +921,36 @@ namespace Battlehub.RTHandles
                 }
             }
 
+            TrySelectAxis();
+        }
+
+        protected bool TrySelectAxis()
+        {
+            RuntimeHandleAxis selectedAxis = SelectedAxis;
             if (Editor.Tools.IsViewing)
             {
                 SelectedAxis = RuntimeHandleAxis.None;
-                return;
             }
-
-            if (!IsWindowActive || !Window.IsPointerOver)
+            else
             {
-                return;
+                if (IsWindowActive && Window.IsPointerOver && HightlightOnHover && !IsDragging)
+                {
+                    SelectedAxis = HitTester.GetSelectedAxis(this);
+                }
             }
-
-            if (HightlightOnHover && !IsDragging)
-            {
-                SelectedAxis = HitTester.GetSelectedAxis(this);
-            }
+            return SelectedAxis != selectedAxis;
         }
+
+        protected bool TryRefreshCommandBuffer()
+        {
+            if (Model == null && RTECamera != null)
+            {
+                RTECamera.RefreshCommandBuffer();
+                return true;
+            }
+            return false;
+        }
+
 
         protected virtual void LateUpdate()
         {            

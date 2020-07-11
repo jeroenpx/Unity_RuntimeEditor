@@ -272,7 +272,10 @@ namespace Battlehub.RTHandles
 
                     if (FocusAction())
                     {
-                        SceneComponent.Focus();
+                        if(SceneComponent.Selection.activeTransform != null && SceneComponent.Selection.activeTransform.GetComponent<Terrain>() == null)
+                        {
+                            SceneComponent.Focus();
+                        }
                     }
 
                     if (SelectAllAction())
