@@ -9,27 +9,21 @@ namespace Battlehub.RTTerrain.HDRP
         [SerializeField]
         private TerrainProjectorBase m_projector = null;
 
-        private TerrainProjectorBase InstantiateProjector()
+        private TerrainProjectorBase InstantiateTerrainProjector()
         {
             return Instantiate(m_projector);
         }
 
-        protected override void OnEditorExist()
+        protected override void Awake()
         {
-            base.OnEditorExist();
-            IOC.Register(InstantiateProjector);
+            base.Awake();
+            IOC.Register(InstantiateTerrainProjector);
         }
 
-        protected override void OnEditorOpened()
+        protected override void OnDestroy()
         {
-            base.OnEditorOpened();
-            IOC.Unregister(InstantiateProjector);
-        }
-
-        protected override void OnEditorClosed()
-        {
-            base.OnEditorClosed();
-            IOC.Unregister(InstantiateProjector);
+            base.OnDestroy();
+            IOC.Unregister(InstantiateTerrainProjector);
         }
     }
 }

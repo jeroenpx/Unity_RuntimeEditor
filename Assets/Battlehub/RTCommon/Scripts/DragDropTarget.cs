@@ -27,11 +27,10 @@ namespace Battlehub.RTCommon
 
         private IDragDropTarget[] m_dragDropTargets = new IDragDropTarget[0];
 
-        private bool m_isPointerOver;
         public virtual bool IsPointerOver
         {
-            get { return m_isPointerOver; }
-            set { m_isPointerOver = value; }
+            get;
+            set;
         }
 
         private IRTE m_editor;
@@ -194,6 +193,5 @@ namespace Battlehub.RTCommon
         }
 
     }
-
 }
 

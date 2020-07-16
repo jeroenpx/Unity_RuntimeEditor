@@ -12,7 +12,6 @@ namespace Battlehub.RTCommon
 
         [SerializeField]
         protected RuntimeWindow m_window;
-
         public virtual RuntimeWindow Window
         {
             get { return m_window; }

@@ -227,7 +227,6 @@ namespace Battlehub.RTHandles
             lineMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
             m_linesRenderer.sharedMaterial = lineMaterial;
 
-
             GameObject points = new GameObject("Points");
             points.transform.SetParent(transform);
             points.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer + Window.Index;
@@ -782,7 +781,6 @@ namespace Battlehub.RTHandles
             target.SetIndices(indices, MeshTopology.Points, 0);
             target.colors = colors;
             target.RecalculateBounds();
-
         }
 
         private void UpdatePointsMesh(Mesh target, RuntimeHandleAxis axis, Bounds bounds)

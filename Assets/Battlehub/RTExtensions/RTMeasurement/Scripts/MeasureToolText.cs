@@ -32,7 +32,6 @@ namespace Battlehub.RTMeasurement
                     float scale = GraphicsUtility.GetScreenScale(transform.position, camera) / 10;
                     transform.rotation = Quaternion.LookRotation(camera.transform.forward);
                     m_text.fontSize = m_fontSize * scale;
-                    //m_text.gameObject.layer = m_editor.CameraLayerSettings.RuntimeGraphicsLayer + activeWindow.Index;
                     m_text.enabled = true;
                 }
                 else

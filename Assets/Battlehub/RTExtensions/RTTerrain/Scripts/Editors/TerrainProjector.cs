@@ -36,7 +36,11 @@ namespace Battlehub.RTTerrain
                 localScale.x = value;
                 localScale.y = value;
                 transform.localScale = localScale;
-                m_terrainBrush.Radius = value * 0.5f;
+
+                if(m_terrainBrush != null)
+                {
+                    m_terrainBrush.Radius = value * 0.5f;
+                }
             }
         }
 
@@ -46,16 +50,31 @@ namespace Battlehub.RTTerrain
             set;
         }
 
+        private bool m_handleInput = true;
+        public bool HandleInput
+        {
+            get { return m_handleInput; }
+            set 
+            {
+                m_handleInput = value; 
+            }
+        }
+
         protected virtual void Awake()
         {
             m_editor = IOC.Resolve<IRTE>();
             Enable(false);
         }
 
-        protected abstract void Enable(bool value);
+        public abstract void Enable(bool value);
 
         protected virtual void Update()
         {
+            if (!m_handleInput)
+            {
+                return;
+            }
+
             if (m_terrainBrush != null && m_terrainBrush.IsPainting)
             {
                 if (m_editor.Input.GetPointerUp(0))
@@ -63,11 +82,10 @@ namespace Battlehub.RTTerrain
                     m_terrainBrush.EndPaint();
                 }
             }
-
+       
             if (m_editor.ActiveWindow == null || m_editor.ActiveWindow.WindowType != RuntimeWindowType.Scene || !m_editor.ActiveWindow.IsPointerOver)
             {
                 Enable(false);
-
                 return;
             }
 
@@ -159,7 +177,7 @@ namespace Battlehub.RTTerrain
             base.Awake();
         }
 
-        protected override void Enable(bool value)
+        public override void Enable(bool value)
         {
             if(m_decal.enabled != value)
             {

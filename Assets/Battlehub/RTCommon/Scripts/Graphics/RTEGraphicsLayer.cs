@@ -24,8 +24,8 @@ namespace Battlehub.RTCommon
             get { return m_graphicsCamera; }
         }
 
-        private RuntimeWindow m_window;
-        public RuntimeWindow Window
+        private RuntimeCameraWindow m_window;
+        public RuntimeCameraWindow Window
         {
             get { return m_window; }
         }
@@ -35,7 +35,7 @@ namespace Battlehub.RTCommon
 
         private void Awake()
         {
-            m_window = GetComponent<RuntimeWindow>();
+            m_window = GetComponent<RuntimeCameraWindow>();
             m_window.IOCContainer.RegisterFallback<IRTEGraphicsLayer>(this);
             m_window.CameraResized += OnCameraResized;
             m_graphics = IOC.Resolve<IRTEGraphics>();

@@ -606,7 +606,7 @@ namespace Battlehub.RTCommon
 
             GameObject scene = new GameObject("SceneWindow");
             scene.transform.SetParent(ui.transform, false);
-            RuntimeWindow sceneView = scene.AddComponent<RuntimeWindow>();
+            RuntimeCameraWindow sceneView = scene.AddComponent<RuntimeCameraWindow>();
             sceneView.IsPointerOver = true;
             sceneView.WindowType = RuntimeWindowType.Scene;
             if (Camera.main == null)

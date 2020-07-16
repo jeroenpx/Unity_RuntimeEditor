@@ -37,7 +37,7 @@ namespace Battlehub.RTTerrain.HDRP
             base.Awake();
         }
 
-        protected override void Enable(bool value)
+        public override void Enable(bool value)
         {
             if(m_decal.enabled != value)
             {

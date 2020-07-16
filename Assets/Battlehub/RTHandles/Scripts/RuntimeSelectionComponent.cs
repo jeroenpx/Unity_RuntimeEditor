@@ -223,8 +223,6 @@ namespace Battlehub.RTHandles
         private BaseHandle m_customHandle = null;
         [SerializeField]
         private BoxSelection m_boxSelection = null;
-        //[SerializeField]
-        //private GameObject m_selectionGizmoPrefab = null;
         [SerializeField]
         private SceneGrid m_grid = null;
         [SerializeField]
@@ -1330,18 +1328,6 @@ namespace Battlehub.RTHandles
                     GameObject unselectedObj = unselected[i] as GameObject;
                     if (unselectedObj != null)
                     {
-                        /*
-                        SelectionGizmo[] selectionGizmo = unselectedObj.GetComponents<SelectionGizmo>();
-                        for (int g = 0; g < selectionGizmo.Length; ++g)
-                        {
-                            if (selectionGizmo[g] != null && selectionGizmo[g].Window == Window)
-                            {
-                                //DestroyImmediate(selectionGizmo[g]);
-                                selectionGizmo[g].Internal_Destroyed = true;
-                                Destroy(selectionGizmo[g]);
-                            }
-                        }
-                        */
                         ExposeToEditor exposeToEditor = unselectedObj.GetComponent<ExposeToEditor>();
                         if (exposeToEditor)
                         {
@@ -1363,32 +1349,6 @@ namespace Battlehub.RTHandles
                     ExposeToEditor exposeToEditor = selectedObj.GetComponent<ExposeToEditor>();
                     if (exposeToEditor && !selectedObj.IsPrefab() && !selectedObj.isStatic)
                     {
-                        /*
-                        SelectionGizmo selectionGizmo = selectedObj.GetComponent<SelectionGizmo>();
-                        if (selectionGizmo == null || selectionGizmo.Internal_Destroyed || selectionGizmo.Window != Window)
-                        {
-                            if (!Editor.IsPlaymodeStateChanging || !Editor.IsPlaying)
-                            {
-                                if ((selectedObj.hideFlags & HideFlags.DontSave) == 0)
-                                {
-                                
-                                    if (m_outlineManager == null)
-                                    {
-                                        selectionGizmo = selectedObj.AddComponent<SelectionGizmo>();
-                                        if (m_selectionGizmoPrefab != null)
-                                        {
-                                            selectionGizmo.SelectionGizmoModel = Instantiate(m_selectionGizmoPrefab, selectionGizmo.transform);
-                                            //selectionGizmo.SelectionGizmoModel.layer = Editor.CameraLayerSettings.RuntimeGraphicsLayer;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (selectionGizmo != null)
-                        {
-                            selectionGizmo.Window = Window;
-                        }*/
-
                         if (exposeToEditor.Selected != null)
                         {
                             exposeToEditor.Selected.Invoke(exposeToEditor);

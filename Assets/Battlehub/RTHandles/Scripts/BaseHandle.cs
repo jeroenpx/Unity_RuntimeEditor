@@ -6,6 +6,7 @@ using Battlehub.RTCommon;
 using Battlehub.Utils;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
+using System;
 
 namespace Battlehub.RTHandles
 {
@@ -18,7 +19,6 @@ namespace Battlehub.RTHandles
     [DefaultExecutionOrder(-50)]
     public abstract class BaseHandle : RTEComponent
     {
-
         public BaseHandleUnityEvent BeforeDrag = new BaseHandleUnityEvent();
         public BaseHandleUnityEvent Drag = new BaseHandleUnityEvent();
         public BaseHandleUnityEvent Drop = new BaseHandleUnityEvent();
@@ -182,7 +182,7 @@ namespace Battlehub.RTHandles
         public virtual Vector3 Position
         {
             get { return transform.position; }
-            protected set { transform.position = value; }
+            set { transform.position = value; }
         }
 
         /// <summary>
@@ -215,9 +215,13 @@ namespace Battlehub.RTHandles
 
         private Transform[] m_commonCenter;
         private Transform[] m_commonCenterTarget;
+        private BaseHandleInput m_input;
 
         private static List<BaseHandle> m_allHandles = new List<BaseHandle>();
-        private BaseHandleInput m_input;
+        protected static List<BaseHandle> AllHandles
+        {
+            get { return m_allHandles; }
+        }
 
         private void GetActiveRealTargets()
         {
@@ -443,6 +447,7 @@ namespace Battlehub.RTHandles
             return centerPosition;
         }
 
+
         public virtual void Refresh()
         {
             if (m_commonCenter != null && m_commonCenter.Length > 0)
@@ -467,7 +472,7 @@ namespace Battlehub.RTHandles
                 for (int i = 0; i < m_allHandles.Count; ++i)
                 {
                     BaseHandle handle = m_allHandles[i];
-                    if (handle.Editor == Editor && handle.gameObject.activeSelf)
+                    if (handle.Editor == Editor && handle.gameObject.activeSelf && handle.m_commonCenter != null && handle.m_commonCenter.Length > 0)
                     {
                         handle.m_commonCenter[0].position = m_commonCenter[0].position;
                         handle.m_commonCenter[0].rotation = m_commonCenter[0].rotation;

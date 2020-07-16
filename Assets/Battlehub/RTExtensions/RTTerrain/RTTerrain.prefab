@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8254285356726720195}
   - component: {fileID: 8254285356726718780}
   m_Layer: 0
-  m_Name: TerrainInit
+  m_Name: RTTerrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,6 +53,8 @@ MonoBehaviour:
   - {fileID: 1779855925843524, guid: 77ed7409779e6524fb907ea5e26763ae, type: 3}
   - {fileID: 1779855925843524, guid: f4a64afea9c843440b27460dbaf7f4fa, type: 3}
   m_terrainProjectorPrefab: {fileID: 5477629139208138844, guid: 95c38efaec66d1b49933dc1243fa95a8,
+    type: 3}
+  m_terrainAreaProjectorPrefab: {fileID: -757694980911949150, guid: d60ea41b156899b43a68a9f7ebd8e927,
     type: 3}
 --- !u!1001 &3425006488482868332
 PrefabInstance:

@@ -19,7 +19,7 @@ namespace Battlehub.RTHandles
         Screen = 8,
         Free = 16,
         Snap = 32,
-        Custom = 65535
+        Custom = 65536
     }
 
     [System.Serializable]
@@ -90,7 +90,13 @@ namespace Battlehub.RTHandles
             get;
             set;
         }
-        
+
+        float SelectionMarginPixels
+        {
+            get;
+            set;
+        }
+
         bool InvertZAxis
         {
             get;
@@ -137,6 +143,14 @@ namespace Battlehub.RTHandles
         {
             get { return m_selectionMargin * m_handleScale; }
             set { m_selectionMargin = value; }
+        }
+
+        [SerializeField]
+        public float m_selectionMarginPixels = 10;
+        public float SelectionMarginPixels
+        {
+            get { return m_selectionMarginPixels; }
+            set { m_selectionMarginPixels = value; }
         }
 
         [SerializeField]
@@ -1258,7 +1272,7 @@ namespace Battlehub.RTHandles
             return result;
         }
 
-        private const float SelectionMarginPixels = 10;
+        
         private bool GetScreenPosition(Camera camera, Ray ray, Vector3 position, out Vector2 screenPosition)
         {
             Plane plane = new Plane(-camera.transform.forward, position);
@@ -1297,7 +1311,7 @@ namespace Battlehub.RTHandles
             else
             {
                 distanceToAxis = (screenVectorBegin - screenPosition).magnitude;
-                bool result = distanceToAxis <= SelectionMargin * SelectionMarginPixels;
+                bool result = distanceToAxis <= SelectionMargin * m_selectionMarginPixels;
                 if (!result)
                 {
                     distanceToAxis = float.PositiveInfinity;
@@ -1320,7 +1334,7 @@ namespace Battlehub.RTHandles
             Vector2 hitPoint = (relMousePositon - perp * distanceToAxis);
             float vectorSpaceCoord = Vector2.Dot(screenVector, hitPoint);
 
-            float selectionMargin = SelectionMargin * SelectionMarginPixels;
+            float selectionMargin = SelectionMargin * m_selectionMarginPixels;
             bool result = vectorSpaceCoord <= screenVectorMag + selectionMargin && vectorSpaceCoord >= -selectionMargin && distanceToAxis <= selectionMargin;
             if (!result)
             {
@@ -1596,7 +1610,7 @@ namespace Battlehub.RTHandles
             }
             
             distance = (screnPosition - screenCenter).magnitude;
-            return distance <= SelectionMargin * SelectionMarginPixels;
+            return distance <= SelectionMargin * m_selectionMarginPixels;
         }
 
     }

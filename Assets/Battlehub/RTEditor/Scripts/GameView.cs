@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battlehub.RTEditor
 {
-    public class GameView : RuntimeWindow
+    public class GameView : RuntimeCameraWindow
     {
         [SerializeField]
         private GameObject m_noCamerasRenderingTxt = null;

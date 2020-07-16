@@ -23,6 +23,18 @@ namespace Battlehub.RTTerrain
             return Instantiate(m_terrainProjectorPrefab);
         }
 
+        [SerializeField]
+        private TerrainAreaProjector m_terrainAreaProjectorPrefab = null;
+        private TerrainAreaProjector m_terrainAreaProjector;
+        private ITerrainAreaProjector InstantiateTerrainAreaProjector()
+        {
+            if(m_terrainAreaProjector == null)
+            {
+                m_terrainAreaProjector = Instantiate(m_terrainAreaProjectorPrefab);
+            }
+            return m_terrainAreaProjector;
+        }
+
         protected override void OnEditorExist()
         {
             base.OnEditorExist();
@@ -38,18 +50,29 @@ namespace Battlehub.RTTerrain
 
             Register();
             IOC.RegisterFallback(InstantiateTerrainProjector);
+            IOC.RegisterFallback(InstantiateTerrainAreaProjector);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             IOC.UnregisterFallback(InstantiateTerrainProjector);
+            IOC.UnregisterFallback(InstantiateTerrainAreaProjector);
+            if (m_terrainAreaProjector != null)
+            {
+                Destroy(m_terrainAreaProjector);
+            }
         }
 
         protected override void OnEditorClosed()
         {
             base.OnEditorClosed();
             IOC.UnregisterFallback(InstantiateTerrainProjector);
+            IOC.UnregisterFallback(InstantiateTerrainAreaProjector);
+            if (m_terrainAreaProjector != null)
+            {
+                Destroy(m_terrainAreaProjector);
+            }
         }
 
         private void Register()

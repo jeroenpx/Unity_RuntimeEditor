@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Battlehub.RTBuilder
 {
-    public class ManualUVSceneComponent : RTEComponent
+    public class ManualUVSceneComponent : RTCommon.RTEComponent
     {
         [SerializeField]
         private Color m_selectionColor = Color.yellow;

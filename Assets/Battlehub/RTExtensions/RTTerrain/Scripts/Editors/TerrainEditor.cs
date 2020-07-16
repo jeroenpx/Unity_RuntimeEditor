@@ -464,7 +464,7 @@ namespace Battlehub.RTTerrain
         {
             if (Projector != null)
             {
-                if (Terrain == null || editorType != EditorType.Paint && editorType != EditorType.Area || !m_toggles[(int)editorType].isOn)
+                if (Terrain == null || editorType != EditorType.Paint || !m_toggles[(int)editorType].isOn)
                 {
                     Projector.gameObject.SetActive(false);
                 }

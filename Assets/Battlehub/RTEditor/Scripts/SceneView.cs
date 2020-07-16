@@ -2,7 +2,7 @@
 
 namespace Battlehub.RTEditor
 {
-    public class SceneView : RuntimeWindow
+    public class SceneView : RuntimeCameraWindow
     {
         protected override void AwakeOverride()
         {   

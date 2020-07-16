@@ -78,7 +78,7 @@ namespace Battlehub.RTHandles
         public override Vector3 Position
         {
             get { return transform.position + m_handleOffset; }
-            protected set
+            set
             {
                 transform.position = value - m_handleOffset;
             }

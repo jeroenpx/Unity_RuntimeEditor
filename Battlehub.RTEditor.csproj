@@ -90,6 +90,7 @@
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RenderPipelineInfo.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RenderPipelineSetActive.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\ResourcePreviewUtility.cs" />
+    <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeCameraWindow.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeObjects.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeSelection.cs" />
     <Compile Include="Assets\Battlehub\RTCommon\Scripts\RuntimeTools.cs" />
@@ -386,6 +387,7 @@
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\CachedBicubicInterpolator.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\TerrainAreaHandle.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\TerrainAreaHandleInput.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\TerrainAreaProjector.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\TerrainAreaTool.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\TerrainCutoutMaskRenderer.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Tools\TerrainGridHandle.cs" />

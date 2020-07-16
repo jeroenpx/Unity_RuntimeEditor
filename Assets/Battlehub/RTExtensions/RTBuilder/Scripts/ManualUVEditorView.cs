@@ -4,7 +4,6 @@ using Battlehub.RTEditor;
 using Battlehub.RTHandles;
 using Battlehub.UIControls;
 using Battlehub.UIControls.DockPanels;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ using UnityEngine.EventSystems;
 
 namespace Battlehub.RTBuilder
 {
-    public class ManualUVEditorView : RuntimeWindow
+    public class ManualUVEditorView : RuntimeCameraWindow
     {
         [SerializeField]
         private Renderer m_texturePreview = null;
