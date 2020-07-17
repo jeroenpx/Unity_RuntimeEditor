@@ -36,7 +36,7 @@ namespace Battlehub.RTEditor
                 m_camera = m_gameCameras[0].Camera;
             }
             
-            if (m_renderTextureOutput != null)
+            if (m_renderTextureOutput != null && RenderPipelineInfo.UseRenderTextures)
             {
                 m_renderTextureCameras = new List<RenderTextureCamera>();
                 for (int i = 0; i < m_gameCameras.Count; ++i)

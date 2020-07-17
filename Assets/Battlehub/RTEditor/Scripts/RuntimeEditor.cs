@@ -84,7 +84,11 @@ namespace Battlehub.RTEditor
             editor.AddGameObjectToHierarchy(go);
 
             go.transform.position = pivot;
-            go.AddComponent<ExposeToEditor>();
+            if(go.GetComponent<ExposeToEditor>() == null)
+            {
+                go.AddComponent<ExposeToEditor>();
+            }
+
             go.SetActive(true);
             editor.RegisterCreatedObjects(new[] { go }, selectionComponent != null ? selectionComponent.CanSelect : true);
         }

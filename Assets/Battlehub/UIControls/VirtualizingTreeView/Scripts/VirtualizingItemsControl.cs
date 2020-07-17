@@ -239,7 +239,6 @@ namespace Battlehub.UIControls
             get { return m_isDropInProgress; }
         }
 
-
         private List<object> m_selectionBackup;
         /// <summary>
         /// Navigate VirtualizingItems if is focused
@@ -733,8 +732,7 @@ namespace Battlehub.UIControls
         private VirtualizingScrollRect m_scrollRect;
         protected override void Awake()
         {
-            base.Awake();
-
+            base.Awake();            
             m_scrollRect = GetComponent<VirtualizingScrollRect>();
             if(m_scrollRect == null)
             {
@@ -1510,15 +1508,10 @@ namespace Battlehub.UIControls
                 return;
             }
 
-            if(m_dragItems == null)
-            {
-                return;
-            }
-
             m_isDropInProgress = true; //Prevent ChangeParent operation
             try
             {
-                if (m_dropTarget != null && CanDrop(m_dragItems, GetItemContainerData(m_dropTarget.Item)))
+                if (m_dragItems != null && m_dropTarget != null && CanDrop(m_dragItems, GetItemContainerData(m_dropTarget.Item)))
                 {
                     bool cancel = false;
                     if (ItemBeginDrop != null)
@@ -1538,6 +1531,7 @@ namespace Battlehub.UIControls
 
                         ItemContainerData containerData = GetItemContainerData(dropTarget);
                         Drop(m_dragItems, containerData, m_dropMarker.Action);
+
                         if (ItemDrop != null)
                         {
                             if (dragItems != null && dropTarget != null && m_dropMarker != null)
@@ -1545,6 +1539,9 @@ namespace Battlehub.UIControls
                                 ItemDrop(this, new ItemDropArgs(dragItems, dropTarget, m_dropMarker.Action, false, eventData));
                             }
                         }
+
+                        DataBindVisible();
+                      
                     }
                 }
                 RaiseEndDrag(eventData);
@@ -1751,9 +1748,11 @@ namespace Battlehub.UIControls
                         }
                     }
 
+                    /*
                     m_dropMarker.SetTarget(null);
                     m_dragItems = null;
                     m_dragItemsData = null;
+                    */
                 }
                 finally
                 {
