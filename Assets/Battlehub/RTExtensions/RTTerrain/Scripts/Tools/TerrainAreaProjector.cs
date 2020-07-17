@@ -63,7 +63,10 @@ namespace Battlehub.RTTerrain
 
         public void Destroy()
         {
-            Destroy(gameObject);
+            if(this != null)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

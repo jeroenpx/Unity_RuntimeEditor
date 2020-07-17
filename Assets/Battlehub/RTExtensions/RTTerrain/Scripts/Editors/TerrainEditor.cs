@@ -60,6 +60,16 @@ namespace Battlehub.RTTerrain
             }
         }
 
+        public static float[,] GetHeights(this Terrain terrain, int xBase, int yBase, int width, int height)
+        {
+            if (terrain.terrainData == null)
+            {
+                return null;
+            }
+
+           return terrain.terrainData.GetHeights(xBase, yBase, width, height);  
+        }
+
         public static void SetAlphamaps(this Terrain terrain, int x, int y, float[,,] alphamaps)
         {
             if(terrain.terrainData == null)

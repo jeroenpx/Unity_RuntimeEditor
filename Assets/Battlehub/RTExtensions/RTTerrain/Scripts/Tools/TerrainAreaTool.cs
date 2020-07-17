@@ -3,6 +3,8 @@ using Battlehub.RTEditor;
 using Battlehub.RTEditor.Demo;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace Battlehub.RTTerrain
 {
@@ -14,13 +16,32 @@ namespace Battlehub.RTTerrain
             set;
         }
 
-     
+        Texture2D Brush
+        {
+            get;
+            set;
+        }
+
     }
 
     [DefaultExecutionOrder(1)]
     public class TerrainAreaTool : CustomHandleExtension<TerrainAreaHandle>, ITerrainAreaTool
     {
         private ITerrainAreaProjector m_projector;
+
+        public Texture2D Brush
+        {
+            get { return m_projector.Brush; }
+            set 
+            {
+                if(m_projector == null)
+                {
+                    m_projector = IOC.Resolve<ITerrainAreaProjector>();
+                }
+
+                m_projector.Brush = value; 
+            }
+        }
 
         protected override void Activate()
         {

@@ -8,16 +8,31 @@ namespace Battlehub.RTTerrain
 {
     public class TerrainAreaHandle : BaseHandle
     {
-        private float[,] m_heights;
         private Terrain m_terrain;
+        private float[,] m_beginDragHeights;
+        private float[,] m_heights;
+        private Vector3 m_beginDragPoint;
         private Vector3 m_prevPoint;
         private ITerrainAreaProjector m_projector;
         private Mesh m_areaResizerMesh;
         private Material m_areaResizerMaterial;
-        private Vector3 AreaResizerPosition
+        private int m_areaResizerIndex;
+        private HashSet<Transform> m_objects = new HashSet<Transform>();
+
+        public bool AbsoluteHeightMode
         {
             get;
             set;
+        }
+        
+        public Vector3[] AreaResizerPositions
+        {
+            get { return m_areaResizerMesh.vertices; }
+            set 
+            {
+                m_areaResizerMesh.vertices = value;
+                m_areaResizerMesh.RecalculateBounds();
+            }
         }
 
         public override Transform[] Targets 
@@ -42,7 +57,13 @@ namespace Battlehub.RTTerrain
                     base.Targets = value;
                 }
 
-                AreaResizerPosition = Position;
+                if(m_areaResizerMesh != null)
+                {
+                    Destroy(m_areaResizerMesh);
+                }
+
+                m_areaResizerMesh = new Mesh();
+                BuildPointsMesh(m_areaResizerMesh);
             }
         }
 
@@ -53,6 +74,10 @@ namespace Battlehub.RTTerrain
             m_areaResizerMaterial = new Material(Shader.Find("Hidden/RTHandles/PointBillboard"));
             m_areaResizerMaterial.SetFloat("_Scale", 4.5f);
             m_areaResizerMaterial.SetInt("_HandleZTest", (int)CompareFunction.Always);
+            if (m_areaResizerMesh != null)
+            {
+                Destroy(m_areaResizerMesh);
+            }
             m_areaResizerMesh = new Mesh();
             BuildPointsMesh(m_areaResizerMesh);
         }
@@ -92,10 +117,38 @@ namespace Battlehub.RTTerrain
             if(SelectedAxis == RuntimeHandleAxis.Y)
             {
                 Vector3 scale = WorldScaleToHeightMap(m_projector.Scale);
-                
-                m_heights = new float[Mathf.FloorToInt(scale.x) + 1, Mathf.FloorToInt(scale.z) + 1];
 
-                DragPlane = GetDragPlane(Vector3.up);   
+                Vector3 p = WorldToHeightMapPoint(Position);
+                int res = m_terrain.terrainData.heightmapResolution;
+                int rows = Mathf.FloorToInt(scale.z) + 1;
+                int cols = Mathf.FloorToInt(scale.x) + 1;
+                rows += Mathf.Clamp(Mathf.RoundToInt(p.z - rows / 2), int.MinValue, 0);
+                cols += Mathf.Clamp(Mathf.RoundToInt(p.x - cols / 2), int.MinValue, 0);
+                rows += Mathf.Clamp(-(Mathf.RoundToInt(p.z + rows / 2) - res + 1), int.MinValue, 0);
+                cols += Mathf.Clamp(-(Mathf.RoundToInt(p.x + cols / 2) - res + 1), int.MinValue, 0);
+                
+                if (rows < 0 || cols < 0)
+                {
+                    return false;
+                }
+
+                m_beginDragHeights = m_terrain.GetHeights(
+                       Mathf.Clamp(Mathf.RoundToInt(p.x - cols / 2), 0, res - (cols + 1)),
+                       Mathf.Clamp(Mathf.RoundToInt(p.z - rows / 2), 0, res - (rows + 1)), cols, rows);
+                m_heights = new float[rows, cols];
+
+                m_beginDragPoint = WorldToHeightMapPoint(Position);
+                DragPlane = GetDragPlane(Vector3.up);
+
+                m_objects.Clear();
+                RaycastHit[] hits = Physics.BoxCastAll(m_projector.Position + Vector3.up * m_projector.Scale.y, m_projector.Scale * 0.5f, Vector3.down);
+                foreach (RaycastHit hit in hits)
+                {
+                    if(!m_objects.Contains(hit.transform) && !(hit.collider is TerrainCollider))
+                    {
+                        m_objects.Add(hit.transform);
+                    }
+                }
             }
             else if(SelectedAxis == RuntimeHandleAxis.Custom)
             {
@@ -117,79 +170,159 @@ namespace Battlehub.RTTerrain
                 return;
             }
 
-            Vector3 point;
-            if(!GetPointOnDragPlane(Window.Pointer, out point))
+            if(SelectedAxis == RuntimeHandleAxis.Y)
             {
-                return;
-            }
-
-            if(point != m_prevPoint)
-            {
-                if(SelectedAxis == RuntimeHandleAxis.Y)
+                Vector3 pointOnDragPlane;
+                if (!GetPointOnDragPlane(Window.Pointer, out pointOnDragPlane))
                 {
-                    point.z = m_prevPoint.z;
-                    point.x = m_prevPoint.x;
+                    return;
+                }
 
-                    SetPosition(Position + point - m_prevPoint);
-                    m_prevPoint = point;
+                if (pointOnDragPlane != m_prevPoint)
+                {
+                    pointOnDragPlane.z = m_prevPoint.z;
+                    pointOnDragPlane.x = m_prevPoint.x;
 
-                    Vector3 p = WorldToHeightMapPoint(Position);
+                    SetPosition(Position + pointOnDragPlane - m_prevPoint);
+                    m_prevPoint = pointOnDragPlane;
 
                     int rows = m_heights.GetLength(0);
                     int cols = m_heights.GetLength(1);
-                    for (int i = 0; i < rows; ++i)
+                    Vector3 point = WorldToHeightMapPoint(Position);
+
+                    if (AbsoluteHeightMode)
                     {
-                        for(int j = 0; j < cols; ++j)
+                        for (int i = 0; i < rows; ++i)
                         {
-                            m_heights[i, j] = p.y;
+                            float v = i / (float)(rows - 1);
+                            for (int j = 0; j < cols; ++j)
+                            {
+                                float u = j / (float)(cols - 1);
+                                Color c = m_projector.Brush.GetPixelBilinear(u, v);
+                                m_heights[i, j] = point.y * c.a;
+                            }
                         }
                     }
+                    else
+                    { 
+                        float delta = (point - m_beginDragPoint).y;
+                    
+                        for (int i = 0; i < rows; ++i)
+                        {
+                            float v = i / (float)(rows - 1);
+                            for (int j = 0; j < cols; ++j)
+                            {
+                                float u = j / (float)(cols - 1);
+                                Color c = m_projector.Brush.GetPixelBilinear(u, v);
+                                m_heights[i, j] = m_beginDragHeights[i, j] + delta * c.a;
+                            }
+                        }
 
+                        foreach(Transform obj in m_objects)
+                        {
+                            Vector3 position = obj.position;
+                            position.y = HeightMapPointToWorld(WorldToHeightMapPoint(position)).y;
+                            obj.position = position;
+                        }
+                    }
+                   
                     float res = m_terrain.terrainData.heightmapResolution;
                     m_terrain.SetHeights(
-                        (int)Mathf.Clamp(Mathf.RoundToInt(p.x - rows / 2), 0, res - 1),
-                        (int)Mathf.Clamp(Mathf.RoundToInt(p.z - cols / 2), 0, res - 1), m_heights);
+                        (int)Mathf.Clamp(Mathf.RoundToInt(point.x - cols / 2), 0, res - (cols + 1)),
+                        (int)Mathf.Clamp(Mathf.RoundToInt(point.z - rows / 2), 0, res - (rows + 1)), m_heights);
                 }
-                else 
+            }
+            else if (SelectedAxis == RuntimeHandleAxis.Custom) 
+            {
+                Vector3 point = m_prevPoint;
+                RaycastHit hit;
+                if (Physics.Raycast(Window.Pointer, out hit))
                 {
-                    float d = (point - Position).magnitude;
+                    if (Editor.Selection.IsSelected(hit.collider.gameObject) && hit.collider is TerrainCollider)
+                    {
+                        point = hit.point;
+                    }
+                }
 
-                    SetAreaResizerPosition(point);
+                if(m_prevPoint != point && m_areaResizerIndex >= 0)
+                {
+                    SetAreaResizerPosition(point, m_areaResizerIndex);
                     m_prevPoint = point;
 
-                    m_projector.Scale = HeightMapToWorldScale(WorldScaleToHeightMap(new Vector3(d, 1, d)));
+                    Vector3[] areaResizerPositions = AreaResizerPositions;
+                    Vector3 areaSize = HeightMapToWorldScale(WorldScaleToHeightMap((areaResizerPositions[1] - areaResizerPositions[0]) * 0.5f));
+                    Vector3 areaCenter = m_areaResizerIndex > 0 ? areaResizerPositions[0] + areaSize : areaResizerPositions[1] - areaSize;
+
+                    Position = HeightMapPointToWorld(WorldToHeightMapPoint(areaCenter));
+                    m_projector.Position = HeightMapPointToWorld(WorldToHeightMapPoint(areaCenter));
+
+                    float scaleX = Mathf.Abs(areaSize.x * 2);
+                    float scaleZ = Mathf.Abs(areaSize.z * 2);
+
+                    Vector3 projectorScale = new Vector3(scaleX, 1, scaleZ);
+                    projectorScale.x = Mathf.Max(projectorScale.x, 0.1f);
+                    projectorScale.z = Mathf.Max(projectorScale.z, 0.1f);
+                    m_projector.Scale = projectorScale;
                 }
-                
             }
         }
 
         protected override void OnDrop()
         {
             base.OnDrop();
+            m_objects.Clear();
 
-            if(m_terrain != null)
+            if (m_terrain != null)
             {
                 Vector3 position = Position - m_terrain.GetPosition();
                 position.y = Mathf.Clamp(position.y, 0, m_terrain.terrainData.size.y);
+
+                position = HeightMapPointToWorld(WorldToHeightMapPoint(position));
                 SetPosition(position + m_terrain.GetPosition());
 
-                m_projector.Position = Position;
+                Vector3 projectorScale = m_projector.Scale;
+                projectorScale.y = 0;
+
+                SetAreaResizerPosition(Position - projectorScale * 0.5f, 0);
+                SetAreaResizerPosition(Position + projectorScale * 0.5f, 1);
+
+                UpdateAreaResizersHight();
             }
+        }
+
+        private void UpdateAreaResizersHight()
+        {
+            SetAreaResizerPosition(HeightMapPointToWorld(WorldToHeightMapPoint(AreaResizerPositions[0])), 0);
+            SetAreaResizerPosition(HeightMapPointToWorld(WorldToHeightMapPoint(AreaResizerPositions[1])), 1);
         }
 
         public override RuntimeHandleAxis HitTest(out float distance)
         {
+            if(IsDragging)
+            {
+                distance = 0;
+                return SelectedAxis;
+            }
+
             RuntimeHandleAxis axis = Appearance.HitTestPositionHandle(Window.Camera, Window.Pointer, m_drawingSettings, out distance);
 
-            Vector2 areaResizer = Window.Camera.WorldToScreenPoint(AreaResizerPosition);
-            Vector2 screenPoint = Window.Pointer.ScreenPoint;
-            float toAreaResizer = (screenPoint - areaResizer).magnitude;
+            Vector3[] areaResizerPositions = AreaResizerPositions;
 
-            if (toAreaResizer <= Appearance.SelectionMargin * Appearance.SelectionMarginPixels)
+            m_areaResizerIndex = -1;
+            for(int i = 0; i < areaResizerPositions.Length; ++i)
             {
-                distance = toAreaResizer;
-                return RuntimeHandleAxis.Custom;
+                Vector2 areaResizer = Window.Camera.WorldToScreenPoint(areaResizerPositions[i]);
+                Vector2 screenPoint = Window.Pointer.ScreenPoint;
+                float toAreaResizer = (screenPoint - areaResizer).magnitude;
+
+                if (toAreaResizer <= Appearance.SelectionMargin * Appearance.SelectionMarginPixels)
+                {
+                    distance = toAreaResizer;
+                    axis = RuntimeHandleAxis.Custom;
+                    m_areaResizerIndex = i;
+                }
             }
+
             return axis;
         }
 
@@ -215,23 +348,33 @@ namespace Battlehub.RTTerrain
 
             Appearance.DoPositionHandle(camera.CommandBuffer, camera.Camera, m_drawingSettings);
 
-            m_areaResizerMaterial.SetColor("_Color", SelectedAxis == RuntimeHandleAxis.Custom ? Appearance.Colors.SelectionColor : Appearance.Colors.YColor);
+            Color[] colors = m_areaResizerMesh.colors;
+            for(int i = 0; i < colors.Length; ++i)
+            {
+                colors[i] = Appearance.Colors.YColor;
+            }
 
-            camera.CommandBuffer.DrawMesh(m_areaResizerMesh, Matrix4x4.TRS(AreaResizerPosition, Quaternion.identity, Vector3.one), m_areaResizerMaterial, 0);
+            if(SelectedAxis == RuntimeHandleAxis.Custom && m_areaResizerIndex >= 0)
+            {
+                colors[m_areaResizerIndex] = Appearance.Colors.SelectionColor;
+            }
+
+            m_areaResizerMesh.colors = colors;
+            camera.CommandBuffer.DrawMesh(m_areaResizerMesh, Matrix4x4.identity, m_areaResizerMaterial, 0);
         }
 
         private void BuildPointsMesh(Mesh target)
         {
-            Vector3[] vertices = new[] { Vector3.zero };
+            Vector3[] vertices = new[] { Vector3.zero, Vector3.zero };
 
             int[] indices = new[]
             {
-                0,
+                0, 1
             };
 
-            Color[] colors = new[]
+            Color[] colors = new Color[]
             {
-                Color.white
+                Color.white, Color.white
             };
 
             target.Clear();
@@ -256,9 +399,15 @@ namespace Battlehub.RTTerrain
                     if(m_projector != null)
                     {
                         Vector3 delta = Position - m_projector.Position;
-                        AreaResizerPosition += delta;
+                        Vector3[] resizerPositions = AreaResizerPositions;
+                        for(int i = 0; i < resizerPositions.Length; ++i)
+                        {
+                            resizerPositions[i] += delta;
+                        }
+                        AreaResizerPositions = resizerPositions;
                         m_projector.Position += delta;
                     }
+                    UpdateAreaResizersHight();
                 }
             }
 
@@ -332,14 +481,16 @@ namespace Battlehub.RTTerrain
             }
         }
 
-        private void SetAreaResizerPosition(Vector3 value)
+        private void SetAreaResizerPosition(Vector3 value, int index)
         {
             foreach (BaseHandle handle in AllHandles)
             {
                 if (handle is TerrainAreaHandle)
                 {
                     TerrainAreaHandle terrainAreaHandle = (TerrainAreaHandle)handle;
-                    terrainAreaHandle.AreaResizerPosition = value;
+                    Vector3[] vertices = terrainAreaHandle.AreaResizerPositions;
+                    vertices[index] = value;
+                    terrainAreaHandle.AreaResizerPositions = vertices;
                     terrainAreaHandle.TryRefreshCommandBuffer();
                 }
             }
