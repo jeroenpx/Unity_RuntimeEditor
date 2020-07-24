@@ -6,9 +6,6 @@ namespace Battlehub.RTCommon
     {
         public Mesh Mesh;
 
-        private Vector3 m_position;
-        private Quaternion m_rotation;
-
         [SerializeField, HideInInspector]
         private SphereCollider m_collider;
         private SphereCollider m_destroyedCollider;
@@ -32,18 +29,22 @@ namespace Battlehub.RTCommon
         {
             m_collider = GetComponent<SphereCollider>();
 
-            if (m_collider == null || m_collider == m_destroyedCollider)
+            ExposeToEditor exposeToEditor = GetComponent<ExposeToEditor>();
+            if (exposeToEditor == null || exposeToEditor.AddColliders)
             {
-                m_collider = gameObject.AddComponent<SphereCollider>();
-            }
-            if (m_collider != null)
-            {
-                if (m_collider.hideFlags == HideFlags.None)
+                if (m_collider == null || m_collider == m_destroyedCollider)
                 {
-                    m_collider.hideFlags = HideFlags.HideInInspector;
+                    m_collider = gameObject.AddComponent<SphereCollider>();
                 }
+                if (m_collider != null)
+                {
+                    if (m_collider.hideFlags == HideFlags.None)
+                    {
+                        m_collider.hideFlags = HideFlags.HideInInspector;
+                    }
 
-                UpdateCollider();
+                    UpdateCollider();
+                }
             }
         }
 

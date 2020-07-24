@@ -454,6 +454,7 @@
     <Compile Include="Assets\Battlehub\RTSL\Interface\ITypeMap.cs" />
     <Compile Include="Assets\Battlehub\RTSL\Interface\IUnityObjectFactory.cs" />
     <Compile Include="Assets\Battlehub\RTSL\Interface\ProjectItem.cs" />
+    <Compile Include="Assets\Battlehub\RTSL\Interface\RTSLAdditive.cs" />
     <Compile Include="Assets\Battlehub\RTSL\Interface\RTSLIgnore.cs" />
     <Compile Include="Assets\Battlehub\RTSL\Interface\RTSLVersion.cs" />
     <Compile Include="Assets\Battlehub\RTSL\Interface\RuntimeBinaryAsset.cs" />
@@ -571,11 +572,13 @@
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\VertexShader.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\BoxSelectionShader.shader" />
     <None Include="Assets\Battlehub\RTCommon\Resources\RenderTextureOverlay.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Prefabs\Views\Resources\TemplateWindow.cs.txt" />
     <None Include="Assets\Battlehub\RTGizmos\Shaders\Resources\Handles.shader" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\DepthMaskColorBillboardShader.shader" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\LineBillboard.shader" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\VertexPicker.shader" />
     <None Include="Assets\Battlehub\Utils\Dispatcher\Dispatcher Documentation.txt" />
+    <None Include="Assets\Battlehub\RTEditor\Prefabs\Views\Resources\RegisterTemplateWindow.cs.txt" />
     <None Include="Assets\Battlehub\RTHandles\Prefabs\Models\Materials\Shaders\ArrowShader.shader" />
     <None Include="Assets\Battlehub\RTExtensions\Battehub.RTExtensions.asmref" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\FacePicker.shader" />

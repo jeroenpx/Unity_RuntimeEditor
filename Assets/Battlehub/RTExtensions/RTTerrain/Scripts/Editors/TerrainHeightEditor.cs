@@ -107,11 +107,13 @@ namespace Battlehub.RTTerrain
             editor.Undo.CreateRecord(record =>
             {
                 terrain.SetHeights(0, 0, newHeightmap);
+                terrain.TerrainColliderWithoutHoles();
                 return true;
             },
             record =>
             {
                 terrain.SetHeights(0, 0, oldHeightmap);
+                terrain.TerrainColliderWithoutHoles();
                 return true;
             });
         }

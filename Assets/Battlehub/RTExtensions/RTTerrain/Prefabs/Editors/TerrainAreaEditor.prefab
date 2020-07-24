@@ -60,9 +60,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
   m_MinWidth: -1
-  m_MinHeight: 220
+  m_MinHeight: 200
   m_PreferredWidth: -1
-  m_PreferredHeight: 220
+  m_PreferredHeight: 200
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -350,6 +350,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3187151175747166956}
     m_Modifications:
+    - target: {fileID: 6360697137783216752, guid: 996df978210c6da4293a988b5c36ad85,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6360826333305944732, guid: 996df978210c6da4293a988b5c36ad85,
         type: 3}
       propertyPath: m_Name

@@ -9,9 +9,6 @@ namespace Battlehub.RTTerrain
         [SerializeField]
         private KeyCode m_focusKey = KeyCode.F;
 
-        [SerializeField]
-        private KeyCode m_absoluteHeightKey = KeyCode.LeftShift;
-
         private TerrainAreaHandle TerrainAreaHandle
         {
             get { return (TerrainAreaHandle)m_handle; }
@@ -31,8 +28,6 @@ namespace Battlehub.RTTerrain
                 return;
             }
 
-            TerrainAreaHandle.AbsoluteHeightMode = AbsoluteHeightAction();
-
             if (ChangePositionAction() && !m_handle.IsDragging && m_handle.SelectedAxis == RuntimeHandleAxis.None)
             {
                 TerrainAreaHandle.ChangePosition();
@@ -42,19 +37,13 @@ namespace Battlehub.RTTerrain
             {
                 IScenePivot pivot = m_editor.GetScenePivot();
                 Vector3[] areaResizerPositions = TerrainAreaHandle.AreaResizerPositions;
-                pivot.Focus(m_handle.Position, (areaResizerPositions[1] - areaResizerPositions[0]).magnitude);
+                pivot.Focus(m_handle.Position, Mathf.Max(TerrainAreaHandle.Appearance.HandleScale, (areaResizerPositions[1] - areaResizerPositions[0]).magnitude));
             }
-
         }
 
         protected virtual bool ChangePositionAction()
         {
-            return m_editor.Input.GetPointerDown(0);
-        }
-
-        protected virtual bool AbsoluteHeightAction()
-        {
-            return m_editor.Input.GetKey(m_absoluteHeightKey);
+            return m_editor.Input.GetPointerUp(0);
         }
 
         protected virtual bool FocusAction()

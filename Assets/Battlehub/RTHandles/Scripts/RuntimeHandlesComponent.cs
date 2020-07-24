@@ -37,7 +37,7 @@ namespace Battlehub.RTHandles
         public Color32 GridColor = new Color(1, 1, 1, 0.1f);
     }
 
-    public class DrawingSettings
+    public class RTHDrawingSettings
     {
         public Vector3 Position;
         public Quaternion Rotation;
@@ -47,7 +47,7 @@ namespace Battlehub.RTHandles
         public LockObject LockObject;
         public bool DrawLocked;
 
-        public DrawingSettings()
+        public RTHDrawingSettings()
         {
             Position = Vector3.zero;
             Rotation = Quaternion.identity;
@@ -667,7 +667,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void DoPositionHandle(CommandBuffer commandBuffer, Camera camera, DrawingSettings settings, bool snapMode = false)
+        public void DoPositionHandle(CommandBuffer commandBuffer, Camera camera, RTHDrawingSettings settings, bool snapMode = false)
         {
             settings.Init(propertyBlocksCount: 11);
 
@@ -823,7 +823,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        public void DoRotationHandle(CommandBuffer commandBuffer, Camera camera, DrawingSettings settings, bool cameraFacingBillboardMode = true)
+        public void DoRotationHandle(CommandBuffer commandBuffer, Camera camera, RTHDrawingSettings settings, bool cameraFacingBillboardMode = true)
         {
             settings.Init(propertyBlocksCount: 5);
 
@@ -935,7 +935,7 @@ namespace Battlehub.RTHandles
             GraphicsUtility.DrawMesh(commandBuffer, WireCircle, objToWorld * zTranform, material, propertyBlocks[4]);
         }
 
-        public void DoScaleHandle(CommandBuffer commandBuffer, Camera camera, DrawingSettings settings)
+        public void DoScaleHandle(CommandBuffer commandBuffer, Camera camera, RTHDrawingSettings settings)
         {
             settings.Init(propertyBlocksCount: 3);
 
@@ -1174,7 +1174,7 @@ namespace Battlehub.RTHandles
             return mesh;
         }
 
-        public RuntimeHandleAxis HitTestPositionHandle(Camera camera, Ray ray, DrawingSettings settings, out float distance)
+        public RuntimeHandleAxis HitTestPositionHandle(Camera camera, Ray ray, RTHDrawingSettings settings, out float distance)
         {
             LockObject lockObject = settings.LockObject;
             Vector3 position = settings.Position;
@@ -1358,7 +1358,7 @@ namespace Battlehub.RTHandles
         private const float innerRadius = 1.0f;
         private const float outerRadius = 1.2f;
   
-        public RuntimeHandleAxis HitTestRotationHandle(Camera camera, Ray ray, DrawingSettings settings, out float distance)
+        public RuntimeHandleAxis HitTestRotationHandle(Camera camera, Ray ray, RTHDrawingSettings settings, out float distance)
         {
             Vector3 position = settings.Position;
             Quaternion startingRotationInv = Quaternion.identity;
@@ -1406,7 +1406,7 @@ namespace Battlehub.RTHandles
             return RuntimeHandleAxis.None;
         }
 
-        protected Plane GetDragPlane(Camera camera, Vector3 axis, DrawingSettings settings)
+        protected Plane GetDragPlane(Camera camera, Vector3 axis, RTHDrawingSettings settings)
         {
             Vector3 toCam;
             if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(camera.transform.forward, settings.Rotation * axis)), 1))
@@ -1462,7 +1462,7 @@ namespace Battlehub.RTHandles
             return true;
         }
 
-        private RuntimeHandleAxis HitAxis(Camera camera, Ray ray, DrawingSettings settings, Quaternion startingRotationInv, out float distance)
+        private RuntimeHandleAxis HitAxis(Camera camera, Ray ray, RTHDrawingSettings settings, Quaternion startingRotationInv, out float distance)
         {
             Vector3 position = settings.Position;
             Quaternion rotation = settings.Rotation;
@@ -1558,7 +1558,7 @@ namespace Battlehub.RTHandles
             return hit;
         }
 
-        public RuntimeHandleAxis HitTestScaleHandle(Camera camera, Ray ray, DrawingSettings settings, out float distance)
+        public RuntimeHandleAxis HitTestScaleHandle(Camera camera, Ray ray, RTHDrawingSettings settings, out float distance)
         {
             Vector3 position = settings.Position;
             float screenScale = GetScreenScale(position, camera) * HandleScale;

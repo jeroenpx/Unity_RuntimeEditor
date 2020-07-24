@@ -1,10 +1,17 @@
-﻿using UnityEngine;
+﻿using Battlehub.RTCommon;
+using UnityEngine;
 
 namespace Battlehub.RTTerrain
 {
     public interface ITerrainAreaProjector
     {
         Texture2D Brush
+        {
+            get;
+            set;
+        }
+
+        float BrushOpacity
         {
             get;
             set;
@@ -34,6 +41,17 @@ namespace Battlehub.RTTerrain
             set { m_decal.material.SetTexture("_MainTex", value); }
         }
 
+        public float BrushOpacity
+        {
+            get { return m_decal.material.GetColor("_Color").a; }
+            set
+            {
+                Color color = m_decal.material.GetColor("_Color");
+                color.a = value;
+                m_decal.material.SetColor("_Color", color);
+            }
+        }
+
         public Vector3 Position
         {
             get { return transform.position; }
@@ -60,7 +78,7 @@ namespace Battlehub.RTTerrain
         {
             m_decal = GetComponent<Renderer>();
         }
-
+ 
         public void Destroy()
         {
             if(this != null)

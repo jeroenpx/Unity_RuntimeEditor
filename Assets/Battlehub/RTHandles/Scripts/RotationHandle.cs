@@ -413,7 +413,7 @@ namespace Battlehub.RTHandles
             }
         }
 
-        private DrawingSettings m_settings = new DrawingSettings();
+        private RTHDrawingSettings m_settings = new RTHDrawingSettings();
         protected override void RefreshCommandBuffer(IRTECamera camera)
         {
             m_settings.Position = Target.position;

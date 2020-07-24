@@ -1,10 +1,9 @@
 ﻿using Battlehub.RTCommon;
 using Battlehub.RTEditor;
 using Battlehub.RTEditor.Demo;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 namespace Battlehub.RTTerrain
 {
@@ -22,6 +21,16 @@ namespace Battlehub.RTTerrain
             set;
         }
 
+        float BrushOpacity
+        {
+            get;
+            set;
+        }
+
+        IEnumerable<TerrainAreaHandle> Handles
+        {
+            get;
+        }
     }
 
     [DefaultExecutionOrder(1)]
@@ -40,6 +49,20 @@ namespace Battlehub.RTTerrain
                 }
 
                 m_projector.Brush = value; 
+            }
+        }
+
+        public float BrushOpacity
+        {
+            get { return m_projector.BrushOpacity * 100; }
+            set
+            {
+                if (m_projector == null)
+                {
+                    m_projector = IOC.Resolve<ITerrainAreaProjector>();
+                }
+
+                m_projector.BrushOpacity = value / 100;
             }
         }
 
@@ -85,6 +108,12 @@ namespace Battlehub.RTTerrain
             if (exisitingHandle != null)
             {
                 handle.Position = exisitingHandle.Position;
+            }
+
+            IRenderPipelineCameraUtility cameraUtility = IOC.Resolve<IRenderPipelineCameraUtility>();
+            if (cameraUtility != null)
+            {
+                cameraUtility.RequiresDepthTexture(scene.Camera, true);
             }
 
             return handle;

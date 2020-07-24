@@ -34,14 +34,22 @@ namespace Battlehub.RTEditor
 
         public Type GetEnumType(object target)
         {
-            CustomTypeFieldAccessor fieldAccessor = target as CustomTypeFieldAccessor;
-            if (fieldAccessor != null)
+            CustomTypeFieldAccessor[] fieldAccessors = target as CustomTypeFieldAccessor[];
+            if (fieldAccessors != null && fieldAccessors.Length > 0 && fieldAccessors[0] != null)
             {
-                return fieldAccessor.Type;
+                return fieldAccessors[0].Type;
             }
             else
             {
-                return MemberInfoType;
+                CustomTypeFieldAccessor fieldAccessor = target as CustomTypeFieldAccessor;
+                if (fieldAccessor != null)
+                {
+                    return fieldAccessor.Type;
+                }
+                else
+                {
+                    return MemberInfoType;
+                }
             }
         }
 

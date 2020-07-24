@@ -2540,6 +2540,7 @@ namespace Battlehub.RTSL
                 }
             }
 
+            PersistentObject sceneObject = null;
             for (int i = 0; i < persistentObjects.Length; ++i)
             {
                 PersistentObject persistentObject = persistentObjects[i];
@@ -2547,12 +2548,11 @@ namespace Battlehub.RTSL
                 {
                     if (m_assetDB.IsSceneID(assetItems[i].ItemID))
                     {
-                        persistentObject.WriteTo(SceneManager.GetActiveScene());
+                        sceneObject = persistentObject;
                     }
                     else
                     {
                         UnityObject obj = m_assetDB.FromID<UnityObject>(assetItems[i].ItemID);
-                        //Debug.Assert(obj != null, "obj is null");
                         if (obj != null)
                         {
                             persistentObject.WriteTo(obj);
@@ -2569,6 +2569,11 @@ namespace Battlehub.RTSL
                         }
                     }
                 }
+            }
+
+            if(sceneObject != null)
+            {
+                sceneObject.WriteTo(SceneManager.GetActiveScene());
             }
 
             Error error = new Error(Error.OK);

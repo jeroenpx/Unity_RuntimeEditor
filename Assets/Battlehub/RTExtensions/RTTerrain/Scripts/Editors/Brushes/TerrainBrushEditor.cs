@@ -85,6 +85,12 @@ namespace Battlehub.RTTerrain
             get { return (Sprite)m_brushesList.SelectedItem; }
         }
 
+        private int SelectedBrushIndex
+        {
+            get { return PlayerPrefs.GetInt("Battlehub.RTTerrain.TerrainBrushEditor", 0); }
+            set { PlayerPrefs.SetInt("Battlehub.RTTerrain.TerrainBrushEditor", value); }
+        }
+
         private TerrainBrushSource m_source;
         private ITerrainCutoutMaskRenderer m_terrainCutoutRenderer;
         private ICustomSelectionComponent m_customSelection;
@@ -164,7 +170,17 @@ namespace Battlehub.RTTerrain
             IEnumerable<Sprite> brushes = m_source.Brushes;
 
             m_brushesList.Items = brushes;
-            m_brushesList.SelectedItem = brushes.FirstOrDefault();
+
+            int index = SelectedBrushIndex;
+            if(index >= m_brushesList.ItemsCount)
+            {
+                m_brushesList.SelectedItem = brushes.FirstOrDefault();
+                SelectedBrushIndex = 0;
+            }
+            else
+            {
+                m_brushesList.SelectedItem = brushes.ElementAtOrDefault(index);
+            }
         }
 
         private void OnDisable()
@@ -236,6 +252,8 @@ namespace Battlehub.RTTerrain
             {
                 m_brushPreview.sprite = (Sprite)m_brushesList.SelectedItem;
             }
+
+            SelectedBrushIndex = m_brushesList.SelectedIndex;
 
             if (SelectedBrushChanged != null)
             {

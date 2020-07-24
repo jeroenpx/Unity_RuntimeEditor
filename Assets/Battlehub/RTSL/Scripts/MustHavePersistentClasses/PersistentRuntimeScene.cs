@@ -9,6 +9,7 @@ using UnityEngine.Battlehub.SL2;
 using UnityObject = UnityEngine.Object;
 using UnityEngine;
 
+
 namespace Battlehub.RTSL.Battlehub.SL2
 {
     [ProtoContract]
@@ -25,6 +26,7 @@ namespace Battlehub.RTSL.Battlehub.SL2
             ClearReferencesCache();
 
             Scene scene = (Scene)obj;
+            
             GameObject[] rootGameObjects;
             if (scene.IsValid())
             {
@@ -145,6 +147,11 @@ namespace Battlehub.RTSL.Battlehub.SL2
 
         private void DestroyGameObjects(Scene scene)
         {
+            if(UnityObject.FindObjectOfType<RTSLAdditive>())
+            {
+                return;    
+            }
+
             GameObject[] rootGameObjects = scene.GetRootGameObjects();
             for (int i = 0; i < rootGameObjects.Length; ++i)
             {

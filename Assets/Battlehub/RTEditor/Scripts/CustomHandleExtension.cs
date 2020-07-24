@@ -30,6 +30,10 @@ namespace Battlehub.RTEditor.Demo
             }
         }
 
+        public IEnumerable<T> Handles
+        {
+            get { return m_windowToHandle.Values; }
+        }
 
         protected override void OnEditorExist()
         {

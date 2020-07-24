@@ -9,14 +9,15 @@ namespace Battlehub.RTTerrain
         private ITerrainAreaTool m_tool;
 
         [SerializeField]
-        private TerrainBrushEditor m_terrainBrushEditor;
+        private TerrainBrushEditor m_terrainBrushEditor = null;
 
         private void Awake()
         {
             m_terrainBrushEditor.SelectedBrushChanged += OnSelectedBrushChanged;
+            m_terrainBrushEditor.BrushParamsChanged += OnBrushParamsChanged;
             m_tool = IOC.Resolve<ITerrainAreaTool>();
-            //m_tool.Brush = m_terrainBrushEditor.SelectedBrush.texture;
         }
+
 
         private void OnDestroy()
         {
@@ -24,13 +25,20 @@ namespace Battlehub.RTTerrain
 
             if(m_terrainBrushEditor != null)
             {
-                m_terrainBrushEditor.SelectedBrushChanged += OnSelectedBrushChanged;
+                m_terrainBrushEditor.SelectedBrushChanged -= OnSelectedBrushChanged;
+                m_terrainBrushEditor.BrushParamsChanged -= OnBrushParamsChanged;
             }
         }
 
         private void OnEnable()
         {
-            m_tool.IsActive = true;   
+            m_tool.IsActive = true;
+
+            if(m_terrainBrushEditor.SelectedBrush != null)
+            {
+                m_tool.Brush = m_terrainBrushEditor.SelectedBrush.texture;
+                m_tool.BrushOpacity = m_terrainBrushEditor.BrushOpacity;
+            }
         }
 
         private void OnDisable()
@@ -41,8 +49,13 @@ namespace Battlehub.RTTerrain
         private void OnSelectedBrushChanged(object sender, EventArgs e)
         {
             m_tool.Brush = m_terrainBrushEditor.SelectedBrush.texture;
+            m_tool.BrushOpacity = m_terrainBrushEditor.BrushOpacity;
         }
 
+        private void OnBrushParamsChanged(object sender, EventArgs e)
+        {
+            m_tool.BrushOpacity = m_terrainBrushEditor.BrushOpacity;
+        }
 
     }
 }
