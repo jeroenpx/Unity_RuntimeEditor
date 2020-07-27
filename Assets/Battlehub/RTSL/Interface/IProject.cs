@@ -103,7 +103,7 @@ namespace Battlehub.RTSL.Interface
         ProjectAsyncOperation<string> CopyProject(string project, string targetProject, ProjectEventHandler<string> callback = null);
         ProjectAsyncOperation<string> DeleteProject(string project, ProjectEventHandler<string> callback = null);
         ProjectAsyncOperation<string> ExportProject(string project, string targetPath, ProjectEventHandler<string> callback = null);
-        ProjectAsyncOperation<string> ImportProject(string projectName, string sourcePath, ProjectEventHandler<string> callback = null);
+        ProjectAsyncOperation<string> ImportProject(string projectName, string sourcePath, bool overwrite = false, ProjectEventHandler<string> callback = null);
         void CloseProject();
 
         ProjectAsyncOperation<AssetItem[]> GetAssetItems(AssetItem[] assetItems, ProjectEventHandler<AssetItem[]> callback = null); /*no events raised*/

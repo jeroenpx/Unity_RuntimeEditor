@@ -801,20 +801,51 @@ namespace Battlehub.RTSL
             });
         }
 
-        public ProjectAsyncOperation<string> ImportProject(string project, string sourcePath, ProjectEventHandler<string> callback = null)
+        public ProjectAsyncOperation<string> ImportProject(string project, string sourcePath, bool overwrite = false, ProjectEventHandler<string> callback = null)
         {
             ProjectAsyncOperation<string> pao = new ProjectAsyncOperation<string>();
             if (IsBusy)
             {
-                m_actionsQueue.Enqueue(() => _ImportProject(project, sourcePath, callback, pao));
+                m_actionsQueue.Enqueue(() => _ImportProject(project, sourcePath, overwrite, callback, pao));
             }
             else
             {
                 IsBusy = true;
-                _ImportProject(project, sourcePath, callback, pao);
+                _ImportProject(project, sourcePath, overwrite, callback, pao);
             }
 
             return pao;
+        }
+
+        private void _ImportProject(string project, string sourcePath, bool overwrite, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
+        {
+            if (overwrite)
+            {
+                m_storage.DeleteProject(project, error =>
+                {
+                    
+                    ao.Error = error;
+                    if (ao.HasError)
+                    {
+                        if (callback != null)
+                        {
+                            callback(error, project);
+                        }
+
+                        ao.Result = project;
+                        ao.IsCompleted = true;
+                    }
+                    else
+                    {
+                        _ImportProject(project, sourcePath, callback, ao);
+                    }
+                });
+            }
+            else
+            {
+                _ImportProject(project, sourcePath, callback, ao);
+            }
+
         }
 
         private void _ImportProject(string project, string sourcePath, ProjectEventHandler<string> callback, ProjectAsyncOperation<string> ao)
@@ -830,14 +861,14 @@ namespace Battlehub.RTSL
                 ao.Result = project;
                 ao.IsCompleted = true;
 
-                if(!error.HasError)
+                if (!error.HasError)
                 {
                     if (ImportProjectCompleted != null)
                     {
                         ImportProjectCompleted(error, project);
                     }
                 }
-                
+
                 IsBusy = false;
             });
         }
