@@ -302,7 +302,6 @@ namespace Battlehub.RTEditor
 
         private void SetItems(ProjectItem[] projectItems, ProjectItem[] assets)
         {
-            bool wasEnabled = Editor.Selection.Enabled;
             Editor.Selection.Enabled = false;
             m_projectResources.SetItems(projectItems.ToArray(), assets, true);
             Editor.Selection.Enabled = true;

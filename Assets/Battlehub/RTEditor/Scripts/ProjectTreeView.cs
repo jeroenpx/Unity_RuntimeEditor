@@ -505,8 +505,6 @@ namespace Battlehub.RTEditor
                 ProjectItem projectItem = projectItems[i];
                 if (projectItem.IsFolder)
                 {
-                    //bool isLastChild = projectItem.Parent == null || projectItem.Parent.Children.Where(p => p.IsFolder).Count() == 1;
-                    //m_treeView.RemoveChild(projectItem.Parent, projectItem, isLastChild);
                     m_treeView.RemoveChild(projectItem.Parent, projectItem);
                 }
             }
@@ -966,9 +964,6 @@ namespace Battlehub.RTEditor
             Expand(parentFolder);
             m_treeView.ScrollIntoView(folder);
             m_treeView.SelectedItem = folder;
-
-          // VirtualizingTreeViewItem treeViewItem = m_treeView.GetTreeViewItem(folder);
-          // treeViewItem.IsEditing = true;
         }
     }
 }

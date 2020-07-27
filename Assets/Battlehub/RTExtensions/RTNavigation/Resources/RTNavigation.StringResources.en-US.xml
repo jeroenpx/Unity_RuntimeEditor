@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StringResources xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Resources>
+	
+		<!-- NavigationInit -->
+		<StringResource id="ID_RTNavigation_WM_Header_Navigation" value="Navigation"/>
+		
+		<!-- NavigationView -->
+
+    
+
+  </Resources>
+</StringResources>

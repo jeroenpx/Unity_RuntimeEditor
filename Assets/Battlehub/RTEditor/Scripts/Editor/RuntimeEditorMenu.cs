@@ -105,9 +105,9 @@ namespace Battlehub.RTEditor
 
             CreateScriptFromTemplate action = ScriptableObject.CreateInstance<CreateScriptFromTemplate>();
             action.AssetTemplate = "Assets/" + BHRoot.Path + "/RTEditor/Prefabs/Views/Resources/TemplateWindow.cs.txt";
-
+            path = Path.Combine(Path.GetDirectoryName(path), fileName + ".cs").Replace('\\', '/');
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
-                0, action, Path.GetDirectoryName(path) + "/" + fileName + ".cs",
+                0, action, path,
                 EditorGUIUtility.FindTexture("cs Script Icon"), null);
 
         }
@@ -124,10 +124,10 @@ namespace Battlehub.RTEditor
 
             CreateScriptFromTemplate action = ScriptableObject.CreateInstance<CreateScriptFromTemplate>();
             action.AssetTemplate = "Assets/" + BHRoot.Path + "/RTEditor/Prefabs/Views/Resources/RegisterTemplateWindow.cs.txt";
-            action.Replacements.Add("#WINDOWNAME#", fileName);
-
+            action.Replacements.Add("#WINDOWNAME#", fileName.Replace("Register", ""));
+            path = Path.Combine(Path.GetDirectoryName(path), fileName + ".cs").Replace('\\', '/');
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
-                0, action, Path.GetDirectoryName(path) + "/" + fileName + ".cs",
+                0, action, path,
                 EditorGUIUtility.FindTexture("cs Script Icon"), null);
         }
 

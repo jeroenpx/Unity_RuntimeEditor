@@ -352,6 +352,8 @@
     <Compile Include="Assets\Battlehub\RTExtensions\RTMeasurement\Scripts\MeasureToolText.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTMeasurement\Scripts\MeasurementTools.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTMeasurement\Scripts\MeasurementToolsUI.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTNavigation\Scripts\NavigationInit.cs" />
+    <Compile Include="Assets\Battlehub\RTExtensions\RTNavigation\Scripts\NavigationView.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\RTSL\Mappings\Editor\RegisterTemplates.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Editors\Brushes\Brush.cs" />
     <Compile Include="Assets\Battlehub\RTExtensions\RTTerrain\Scripts\Editors\Brushes\TerrainBrush.cs" />
@@ -561,6 +563,7 @@
     <Compile Include="Assets\Battlehub\Utils\Scripts\XmlSerializerExtensions.cs" />
     <None Include="Assets\Battlehub\RTExtensions\RTBuilder\Integration\Shaders\SelectionPicker.shader" />
     <None Include="Assets\Battlehub\RTHandles\Shaders\Resources\UnlitColor.shader" />
+    <None Include="Assets\Battlehub\RTExtensions\RTNavigation\Resources\RTNavigation.StringResources.en-US.xml" />
     <None Include="Assets\Battlehub\RTCommon\Battlehub.RTCommon.asmref" />
     <None Include="Assets\Battlehub\Tools\MeshCombiner\MeshCombiner Documentation.txt" />
     <None Include="Assets\Battlehub\Utils\Battlehub.Utils.asmref" />
