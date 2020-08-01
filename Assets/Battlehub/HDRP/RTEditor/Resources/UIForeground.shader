@@ -108,12 +108,6 @@
 				clip(color.a - 0.001);
 				#endif
 
-				if (color.a > 0.2)
-				{
-					color.a = 1.0;
-				}
-				
-
 				return color;
 			}
 			ENDCG
